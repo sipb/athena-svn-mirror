@@ -1825,7 +1825,7 @@ xmlTextReaderNextSibling(xmlTextReaderPtr reader) {
     if (reader == NULL)
         return(-1);
     if (reader->doc == NULL) {
-        TODO
+        /* TODO */
 	return(-1);
     }
 
@@ -2629,6 +2629,34 @@ xmlTextReaderReadAttributeValue(xmlTextReaderPtr reader) {
     return(1);
 }
 
+/**
+ * xmlTextReaderConstEncoding:
+ * @reader:  the xmlTextReaderPtr used
+ *
+ * Determine the encoding of the document being read.
+ *
+ * Returns a string containing the encoding of the document or NULL in
+ * case of error.  The string is deallocated with the reader.
+ */
+const xmlChar *
+xmlTextReaderConstEncoding(xmlTextReaderPtr reader) {
+    xmlDocPtr doc = NULL;
+    if (reader == NULL)
+	return(NULL);
+    if (reader->doc != NULL)
+        doc = reader->doc;
+    else if (reader->ctxt != NULL)
+	doc = reader->ctxt->myDoc;
+    if (doc == NULL)
+	return(NULL);
+    
+    if (doc->encoding == NULL)
+	return(NULL);
+    else
+      return(CONSTSTR(doc->encoding));
+}
+
+
 /************************************************************************
  *									*
  *			Acces API to the current node			*
@@ -3187,7 +3215,7 @@ xmlTextReaderHasAttributes(xmlTextReaderPtr reader) {
 	node = reader->node;
 
     if ((node->type == XML_ELEMENT_NODE) &&
-	(node->properties != NULL))
+	((node->properties != NULL) || (node->nsDef != NULL)))
 	return(1);
     /* TODO: handle the xmlDecl */
     return(0);
@@ -3541,6 +3569,43 @@ xmlTextReaderGetParserProp(xmlTextReaderPtr reader, int prop) {
     return(-1);
 }
 
+
+/**
+ * xmlTextReaderGetParserLineNumber:
+ * @reader: the user data (XML reader context)
+ *
+ * Provide the line number of the current parsing point.
+ *
+ * Returns an int or 0 if not available
+ */
+int
+xmlTextReaderGetParserLineNumber(xmlTextReaderPtr reader)
+{
+    if ((reader == NULL) || (reader->ctxt == NULL) ||
+        (reader->ctxt->input == NULL)) {
+        return (0);
+    }
+    return (reader->ctxt->input->line);
+}
+
+/**
+ * xmlTextReaderGetParserColumnNumber:
+ * @reader: the user data (XML reader context)
+ *
+ * Provide the column number of the current parsing point.
+ *
+ * Returns an int or 0 if not available
+ */
+int
+xmlTextReaderGetParserColumnNumber(xmlTextReaderPtr reader)
+{
+    if ((reader == NULL) || (reader->ctxt == NULL) ||
+        (reader->ctxt->input == NULL)) {
+        return (0);
+    }
+    return (reader->ctxt->input->col);
+}
+
 /**
  * xmlTextReaderCurrentNode:
  * @reader:  the xmlTextReaderPtr used
@@ -3696,6 +3761,8 @@ xmlTextReaderCurrentDoc(xmlTextReaderPtr reader) {
  */
 int
 xmlTextReaderRelaxNGSetSchema(xmlTextReaderPtr reader, xmlRelaxNGPtr schema) {
+    if (reader == NULL)
+        return(-1);
     if (schema == NULL) {
         if (reader->rngSchemas != NULL) {
 	    xmlRelaxNGFree(reader->rngSchemas);
@@ -3799,6 +3866,87 @@ xmlTextReaderRelaxNGValidate(xmlTextReaderPtr reader, const char *rng) {
 }
 #endif
 
+/**
+ * xmlTextReaderIsNamespaceDecl:
+ * @reader: the xmlTextReaderPtr used
+ *
+ * Determine whether the current node is a namespace declaration
+ * rather than a regular attribute.
+ *
+ * Returns 1 if the current node is a namespace declaration, 0 if it
+ * is a regular attribute or other type of node, or -1 in case of
+ * error.
+ */
+int
+xmlTextReaderIsNamespaceDecl(xmlTextReaderPtr reader) {
+    xmlNodePtr node;
+    if (reader == NULL)
+	return(-1);
+    if (reader->node == NULL)
+	return(-1);
+    if (reader->curnode != NULL)
+	node = reader->curnode;
+    else
+	node = reader->node;
+    
+    if (XML_NAMESPACE_DECL == node->type)
+	return(1);
+    else
+	return(0);
+}
+
+/**
+ * xmlTextReaderConstXmlVersion:
+ * @reader:  the xmlTextReaderPtr used
+ *
+ * Determine the XML version of the document being read.
+ *
+ * Returns a string containing the XML version of the document or NULL
+ * in case of error.  The string is deallocated with the reader.
+ */
+const xmlChar *
+xmlTextReaderConstXmlVersion(xmlTextReaderPtr reader) {
+    xmlDocPtr doc = NULL;
+    if (reader == NULL)
+	return(NULL);
+    if (reader->doc != NULL)
+        doc = reader->doc;
+    else if (reader->ctxt != NULL)
+	doc = reader->ctxt->myDoc; 
+    if (doc == NULL)
+	return(NULL);
+    
+    if (doc->version == NULL)
+	return(NULL);
+    else
+      return(CONSTSTR(doc->version));
+}
+
+/**
+ * xmlTextReaderStandalone:
+ * @reader:  the xmlTextReaderPtr used
+ *
+ * Determine the standalone status of the document being read.
+ *
+ * Returns 1 if the document was declared to be standalone, 0 if it
+ * was declared to be not standalone, or -1 if the document did not
+ * specify its standalone status or in case of error.
+ */
+int
+xmlTextReaderStandalone(xmlTextReaderPtr reader) {
+    xmlDocPtr doc = NULL;
+    if (reader == NULL)
+	return(-1);
+    if (reader->doc != NULL)
+        doc = reader->doc;
+    else if (reader->ctxt != NULL)
+	doc = reader->ctxt->myDoc;
+    if (doc == NULL)
+	return(-1);
+
+    return(doc->standalone);
+}
+
 /************************************************************************
  *									*
  *			Error Handling Extensions                       *
@@ -3854,6 +4002,8 @@ xmlTextReaderLocatorLineNumber(xmlTextReaderLocatorPtr locator) {
     xmlParserCtxtPtr ctx = (xmlParserCtxtPtr)locator;
     int ret = -1;
 
+    if (locator == NULL)
+        return(-1);
     if (ctx->node != NULL) {
 	ret = xmlGetLineNo(ctx->node);
     }
@@ -3888,6 +4038,8 @@ xmlTextReaderLocatorBaseURI(xmlTextReaderLocatorPtr locator) {
     xmlParserCtxtPtr ctx = (xmlParserCtxtPtr)locator;
     xmlChar *ret = NULL;
 
+    if (locator == NULL)
+        return(NULL);
     if (ctx->node != NULL) {
 	ret = xmlNodeGetBase(NULL,ctx->node);
     }
@@ -4098,8 +4250,8 @@ void
 xmlTextReaderGetErrorHandler(xmlTextReaderPtr reader, 
 			     xmlTextReaderErrorFunc *f, 
 			     void **arg) {
-    *f = reader->errorFunc;
-    *arg = reader->errorFuncArg;
+    if (f != NULL) *f = reader->errorFunc;
+    if (arg != NULL) *arg = reader->errorFuncArg;
 }
 
 
@@ -4520,6 +4672,9 @@ xmlReaderNewWalker(xmlTextReaderPtr reader, xmlDocPtr doc)
     if (reader == NULL)
         return (-1);
 
+    if (reader->input != NULL) {
+        xmlFreeParserInputBuffer(reader->input);
+    }
     if (reader->ctxt != NULL) {
 	xmlCtxtReset(reader->ctxt);
     }

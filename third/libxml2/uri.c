@@ -531,7 +531,7 @@ xmlSaveUri(xmlURIPtr uri) {
  * @stream:  a FILE* for the output
  * @uri:  pointer to an xmlURI
  *
- * Prints the URI in the stream @steam.
+ * Prints the URI in the stream @stream.
  */
 void
 xmlPrintURI(FILE *stream, xmlURIPtr uri) {
@@ -828,7 +828,7 @@ xmlURIUnescapeString(const char *str, int len, char *target) {
     in = str;
     out = ret;
     while(len > 0) {
-	if ((*in == '%') && (is_hex(in[1])) && (is_hex(in[2]))) {
+	if ((len > 2) && (*in == '%') && (is_hex(in[1])) && (is_hex(in[2]))) {
 	    in++;
 	    if ((*in >= '0') && (*in <= '9')) 
 	        *out = (*in - '0');
@@ -874,6 +874,8 @@ xmlURIEscapeStr(const xmlChar *str, const xmlChar *list) {
 
     if (str == NULL)
 	return(NULL);
+    if (str[0] == 0)
+	return(xmlStrdup(str));
     len = xmlStrlen(str);
     if (!(len > 0)) return(NULL);
 
@@ -1690,7 +1692,7 @@ xmlParseURIReference(xmlURIPtr uri, const char *str) {
  * 
  * URI-reference = [ absoluteURI | relativeURI ] [ "#" fragment ]
  *
- * Returns a newly build xmlURIPtr or NULL in case of error
+ * Returns a newly built xmlURIPtr or NULL in case of error
  */
 xmlURIPtr
 xmlParseURI(const char *str) {
@@ -2095,10 +2097,12 @@ xmlBuildRelativeURI (const xmlChar * URI, const xmlChar * base)
 	if (ref->path[ix] == '/')
 	    break;
     }
-    if (ix == 0)
+    if (ix == 0) {
 	uptr = (xmlChar *)ref->path;
-    else
-	uptr = (xmlChar *)&ref->path[ix + 1];
+    } else {
+	ix++;
+	uptr = (xmlChar *)&ref->path[ix];
+    }
 
     /*
      * In base, count the number of '/' from the differing point
@@ -2114,7 +2118,6 @@ xmlBuildRelativeURI (const xmlChar * URI, const xmlChar * base)
 	val = xmlStrdup (uptr);
 	goto done;
     }
-    nbslash--;
 
     /*
      * Allocate just enough space for the returned string -

@@ -1,7 +1,7 @@
 /*
- * Summary: chained hash tables
- * description: this module implement the hash table support used in 
- * various place in the library.
+ * Summary: Chained hash tables
+ * Description: This module implements the hash table support used in 
+ * 		various places in the library.
  *
  * Copy: See Copyright for the status of this software.
  *
@@ -31,6 +31,24 @@ typedef xmlHashTable *xmlHashTablePtr;
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*
+ * Recent version of gcc produce a warning when a function pointer is assigned
+ * to an object pointer, or vice versa.  The following macro is a dirty hack
+ * to allow suppression of the warning.  If your architecture has function
+ * pointers which are a different size than a void pointer, there may be some
+ * serious trouble within the library.
+ */
+/**
+ * XML_CAST_FPTR:
+ * @fptr:  pointer to a function
+ *
+ * Macro to do a casting from an object pointer to a
+ * function pointer without encountering a warning from
+ * gcc
+ *
+ */
+#define XML_CAST_FPTR(fptr) (*(void **)(&fptr))
 
 /*
  * function types:

@@ -248,6 +248,7 @@ struct _xmlRelaxNGParserCtxt {
     xmlAutomataStatePtr state;  /* used to build the automata */
 
     int crng;			/* compact syntax and other flags */
+    int freedoc;		/* need to free the document */
 };
 
 #define FLAGS_IGNORABLE		1
@@ -2781,7 +2782,7 @@ xmlRelaxNGRegisterTypeLibrary(const xmlChar * namespace, void *data,
  *
  * Returns 0 in case of success and -1 in case of error.
  */
-static int
+int
 xmlRelaxNGInitTypes(void)
 {
     if (xmlRelaxNGTypeInitialized != 0)
@@ -3964,14 +3965,17 @@ xmlRelaxNGGetElements(xmlRelaxNGParserCtxtPtr ctxt,
                     return (NULL);
                 }
             } else if (max <= len) {
+	        xmlRelaxNGDefinePtr *temp;
+
                 max *= 2;
-                ret =
-                    xmlRealloc(ret,
+                temp = xmlRealloc(ret,
                                (max + 1) * sizeof(xmlRelaxNGDefinePtr));
-                if (ret == NULL) {
+                if (temp == NULL) {
                     xmlRngPErrMemory(ctxt, "getting element list\n");
+		    xmlFree(ret);
                     return (NULL);
                 }
+		ret = temp;
             }
             ret[len++] = cur;
             ret[len] = NULL;
@@ -6654,6 +6658,7 @@ xmlRelaxNGNewDocParserCtxt(xmlDocPtr doc)
     }
     memset(ret, 0, sizeof(xmlRelaxNGParserCtxt));
     ret->document = copy;
+    ret->freedoc = 1;
     ret->userData = xmlGenericErrorContext;
     return (ret);
 }
@@ -6690,6 +6695,8 @@ xmlRelaxNGFreeParserCtxt(xmlRelaxNGParserCtxtPtr ctxt)
             xmlRelaxNGFreeDefine(ctxt->defTab[i]);
         xmlFree(ctxt->defTab);
     }
+    if ((ctxt->document != NULL) && (ctxt->freedoc))
+        xmlFreeDoc(ctxt->document);
     xmlFree(ctxt);
 }
 
@@ -6746,7 +6753,7 @@ xmlRelaxNGNormExtSpace(xmlChar * value)
 }
 
 /**
- * xmlRelaxNGCheckAttributes:
+ * xmlRelaxNGCleanupAttributes:
  * @ctxt:  a Relax-NG parser context
  * @node:  a Relax-NG node
  *
@@ -7021,7 +7028,8 @@ xmlRelaxNGCleanupTree(xmlRelaxNGParserCtxtPtr ctxt, xmlNodePtr root)
                         } else {
                             xmlNodePtr node;
 
-                            node = xmlNewNode(cur->ns, BAD_CAST "name");
+                            node = xmlNewDocNode(cur->doc, cur->ns,
+			                         BAD_CAST "name", NULL);
                             if (node != NULL) {
                                 xmlAddPrevSibling(cur->children, node);
                                 text = xmlNewText(name);
@@ -7667,6 +7675,8 @@ xmlRelaxNGDumpGrammar(FILE * output, xmlRelaxNGGrammarPtr grammar, int top)
 void
 xmlRelaxNGDump(FILE * output, xmlRelaxNGPtr schema)
 {
+    if (output == NULL)
+        return;
     if (schema == NULL) {
         fprintf(output, "RelaxNG empty or failed to compile\n");
         return;
@@ -7696,6 +7706,8 @@ xmlRelaxNGDump(FILE * output, xmlRelaxNGPtr schema)
 void
 xmlRelaxNGDumpTree(FILE * output, xmlRelaxNGPtr schema)
 {
+    if (output == NULL)
+        return;
     if (schema == NULL) {
         fprintf(output, "RelaxNG empty or failed to compile\n");
         return;
@@ -10035,8 +10047,13 @@ xmlRelaxNGValidateState(xmlRelaxNGValidCtxtPtr ctxt,
                 node = xmlRelaxNGSkipIgnored(ctxt, node);
 
                 errNr = ctxt->errNr;
-                if ((define->dflags & IS_TRIABLE)
-                    && (define->data != NULL)) {
+                if ((define->dflags & IS_TRIABLE) && (define->data != NULL) &&
+		    (node != NULL)) {
+		    /*
+		     * node == NULL can't be optimized since IS_TRIABLE
+		     * doesn't account for choice which may lead to
+		     * only attributes.
+		     */
                     xmlHashTablePtr triage =
                         (xmlHashTablePtr) define->data;
 
@@ -10044,10 +10061,6 @@ xmlRelaxNGValidateState(xmlRelaxNGValidCtxtPtr ctxt,
                      * Something we can optimize cleanly there is only one
                      * possble branch out !
                      */
-                    if (node == NULL) {
-                        ret = -1;
-                        break;
-                    }
                     if ((node->type == XML_TEXT_NODE) ||
                         (node->type == XML_CDATA_SECTION_NODE)) {
                         list =

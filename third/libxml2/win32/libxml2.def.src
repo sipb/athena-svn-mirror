@@ -502,6 +502,9 @@ xmlAutomataNewAllTrans
 xmlAutomataNewCountTrans
 #endif
 #ifdef LIBXML_AUTOMATA_ENABLED
+xmlAutomataNewCountTrans2
+#endif
+#ifdef LIBXML_AUTOMATA_ENABLED
 xmlAutomataNewCountedTrans
 #endif
 #ifdef LIBXML_AUTOMATA_ENABLED
@@ -515,6 +518,9 @@ xmlAutomataNewEpsilon
 #endif
 #ifdef LIBXML_AUTOMATA_ENABLED
 xmlAutomataNewOnceTrans
+#endif
+#ifdef LIBXML_AUTOMATA_ENABLED
+xmlAutomataNewOnceTrans2
 #endif
 #ifdef LIBXML_AUTOMATA_ENABLED
 xmlAutomataNewState
@@ -693,6 +699,9 @@ xmlCtxtResetPush
 xmlCtxtUseOptions
 xmlCurrentChar
 #ifdef LIBXML_DEBUG_ENABLED
+xmlDebugCheckDocument
+#endif
+#ifdef LIBXML_DEBUG_ENABLED
 xmlDebugDumpAttr
 #endif
 #ifdef LIBXML_DEBUG_ENABLED
@@ -729,6 +738,7 @@ xmlDeregisterNodeDefault
 xmlDetectCharEncoding
 xmlDictCreate
 xmlDictCreateSub
+xmlDictExists
 xmlDictFree
 xmlDictLookup
 xmlDictOwns
@@ -736,6 +746,7 @@ xmlDictQLookup
 xmlDictReference
 xmlDictSize
 xmlDocCopyNode
+xmlDocCopyNodeList
 xmlDocDump
 xmlDocDumpFormatMemory
 xmlDocDumpFormatMemoryEnc
@@ -966,6 +977,7 @@ xmlMallocAtomicLoc
 #ifdef DEBUG_MEMORY_LOCATION
 xmlMallocLoc
 #endif
+xmlMemBlocks
 xmlMemDisplay
 xmlMemFree
 xmlMemGet
@@ -979,6 +991,10 @@ xmlMemStrdupLoc
 xmlMemUsed
 xmlMemoryDump
 xmlMemoryStrdup
+xmlModuleClose
+xmlModuleFree
+xmlModuleOpen
+xmlModuleSymbol
 xmlMutexLock
 xmlMutexUnlock
 xmlNamespaceParseNCName
@@ -1060,6 +1076,9 @@ xmlNanoHTTPCleanup
 xmlNanoHTTPClose
 #endif
 #ifdef LIBXML_HTTP_ENABLED
+xmlNanoHTTPContentLength
+#endif
+#ifdef LIBXML_HTTP_ENABLED
 xmlNanoHTTPEncoding
 #endif
 #ifdef LIBXML_HTTP_ENABLED
@@ -1114,6 +1133,7 @@ xmlNewDocComment
 xmlNewDocFragment
 xmlNewDocNode
 xmlNewDocNodeEatName
+xmlNewDocPI
 xmlNewDocProp
 xmlNewDocRawNode
 xmlNewDocText
@@ -1305,6 +1325,12 @@ xmlRecoverDoc
 xmlRecoverFile
 xmlRecoverMemory
 #ifdef LIBXML_REGEXP_ENABLED
+xmlRegExecErrInfo
+#endif
+#ifdef LIBXML_REGEXP_ENABLED
+xmlRegExecNextValues
+#endif
+#ifdef LIBXML_REGEXP_ENABLED
 xmlRegExecPushString
 #endif
 #ifdef LIBXML_REGEXP_ENABLED
@@ -1363,6 +1389,9 @@ xmlRelaxNGGetParserErrors
 #endif
 #ifdef LIBXML_SCHEMAS_ENABLED
 xmlRelaxNGGetValidErrors
+#endif
+#ifdef LIBXML_SCHEMAS_ENABLED
+xmlRelaxNGInitTypes
 #endif
 #ifdef LIBXML_SCHEMAS_ENABLED
 xmlRelaxNGNewDocParserCtxt
@@ -1551,10 +1580,16 @@ xmlSchemaSetParserErrors
 xmlSchemaSetValidErrors
 #endif
 #ifdef LIBXML_SCHEMAS_ENABLED
+xmlSchemaSetValidOptions
+#endif
+#ifdef LIBXML_SCHEMAS_ENABLED
 xmlSchemaValPredefTypeNode
 #endif
 #ifdef LIBXML_SCHEMAS_ENABLED
 xmlSchemaValPredefTypeNodeNoNorm
+#endif
+#ifdef LIBXML_SCHEMAS_ENABLED
+xmlSchemaValidCtxtGetOptions
 #endif
 #ifdef LIBXML_SCHEMAS_ENABLED
 xmlSchemaValidateDoc
@@ -1569,10 +1604,16 @@ xmlSchemaValidateLengthFacet
 xmlSchemaValidateListSimpleTypeFacet
 #endif
 #ifdef LIBXML_SCHEMAS_ENABLED
+xmlSchemaValidateOneElement
+#endif
+#ifdef LIBXML_SCHEMAS_ENABLED
 xmlSchemaValidatePredefinedType
 #endif
 #ifdef LIBXML_SCHEMAS_ENABLED
 xmlSchemaValidateStream
+#endif
+#ifdef LIBXML_SCHEMAS_ENABLED
+xmlSchemaWhiteSpaceReplace
 #endif
 xmlSearchNs
 xmlSearchNsByHref
@@ -1672,6 +1713,7 @@ xmlTextReaderAttributeCount
 xmlTextReaderBaseUri
 xmlTextReaderClose
 xmlTextReaderConstBaseUri
+xmlTextReaderConstEncoding
 xmlTextReaderConstLocalName
 xmlTextReaderConstName
 xmlTextReaderConstNamespaceUri
@@ -1679,6 +1721,7 @@ xmlTextReaderConstPrefix
 xmlTextReaderConstString
 xmlTextReaderConstValue
 xmlTextReaderConstXmlLang
+xmlTextReaderConstXmlVersion
 xmlTextReaderCurrentDoc
 xmlTextReaderCurrentNode
 xmlTextReaderDepth
@@ -1687,12 +1730,15 @@ xmlTextReaderGetAttribute
 xmlTextReaderGetAttributeNo
 xmlTextReaderGetAttributeNs
 xmlTextReaderGetErrorHandler
+xmlTextReaderGetParserColumnNumber
+xmlTextReaderGetParserLineNumber
 xmlTextReaderGetParserProp
 xmlTextReaderGetRemainder
 xmlTextReaderHasAttributes
 xmlTextReaderHasValue
 xmlTextReaderIsDefault
 xmlTextReaderIsEmptyElement
+xmlTextReaderIsNamespaceDecl
 xmlTextReaderIsValid
 xmlTextReaderLocalName
 xmlTextReaderLocatorBaseURI
@@ -1729,6 +1775,7 @@ xmlTextReaderRelaxNGValidate
 xmlTextReaderSetErrorHandler
 xmlTextReaderSetParserProp
 xmlTextReaderSetStructuredErrorHandler
+xmlTextReaderStandalone
 xmlTextReaderValue
 xmlTextReaderXmlLang
 xmlTextWriterEndAttribute

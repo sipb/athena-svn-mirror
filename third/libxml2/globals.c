@@ -430,7 +430,7 @@ xmlSAXHandlerV1 htmlDefaultSAXHandler = {
     NULL,
     xmlSAX2Characters,
     xmlSAX2IgnorableWhitespace,
-    NULL,
+    xmlSAX2ProcessingInstruction,
     xmlSAX2Comment,
     xmlParserWarning,
     xmlParserError,
@@ -513,7 +513,7 @@ xmlInitializeGlobalState(xmlGlobalStatePtr gs)
     gs->oldXMLWDcompatibility = 0;
     gs->xmlBufferAllocScheme = xmlBufferAllocSchemeThrDef;
     gs->xmlDefaultBufferSize = xmlDefaultBufferSizeThrDef;
-#ifdef LIBXML_SAX1_ENABLED
+#if defined(LIBXML_SAX1_ENABLED) && defined(LIBXML_LEGACY_ENABLED)
     initxmlDefaultSAXHandler(&gs->xmlDefaultSAXHandler, 1);
 #endif /* LIBXML_SAX1_ENABLED */
     gs->xmlDefaultSAXLocator.getPublicId = xmlSAX2GetPublicId;

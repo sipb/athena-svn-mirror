@@ -8,34 +8,19 @@
   </vendor>
   <product id="libxml2">
     <name>libxml2</name>
-    <version>2.6.12</version>
-    <last-release> Aug 22 2004</last-release>
+    <version>2.6.16</version>
+    <last-release> Nov 10 2004</last-release>
     <info-url>http://xmlsoft.org/</info-url>
-    <changes>   - build fixes: fix --with-minimum, elfgcchack.h fixes (Peter
-    Breitenlohner), perl path lookup (William), diff on Solaris (Albert
-    Chin), some 64bits cleanups.
-   - Python: avoid a warning with 2.3 (William Brack), tab and space mixes
-    (William), wrapper generator fixes (William), Cygwin support (Gerrit P.
-    Haase), node wrapper fix (Marc-Antoine Parent), XML Schemas support
-    (Torkel Lyng)
-   - Schemas: a lot of bug fixes and improvements from Kasimier Buchcik
-   - fixes: RVT fixes (William), XPath context resets bug (William), memory
-    debug (Steve Hay), catalog white space handling (Peter Breitenlohner),
-    xmlReader state after attribute reading (William), structured error
-    handler (William), XInclude generated xml:base fixup (William), Windows
-    memory reallocation problem (Steve Hay), Out of Memory conditions
-    handling (William and Olivier Andrieu), htmlNewDoc() charset bug,
-    htmlReadMemory init (William), a posteriori validation DTD base
-    (William), notations serialization missing, xmlGetNodePath (Dodji),
-    xmlCheckUTF8 (Diego Tartara), missing line numbers on entity
-  (William)
-   - improvements: DocBook catalog build scrip (William), xmlcatalog tool
-    (Albert Chin), xmllint --c14n option, no_proxy environment (Mike Hommey),
-    xmlParseInNodeContext() addition, extend xmllint --shell, allow XInclude
-    to not generate start/end nodes, extend xmllint --version to include CVS
-    tag (William)
-   - documentation: web pages fixes, validity API docs fixes (William)
-    schemas API fix (Eric Haszlakiewicz), xmllint man page (John Fleck)
+    <changes>   - general hardening and bug fixing crossing all the API based on new
+    automated regression testing
+   - build fix: IPv6 build and test on AIX (Dodji Seketeli)
+   - bug fixes: problem with XML::Libxml reported by Petr Pajas,  encoding
+    conversion functions return values, UTF-8 bug affecting XPath reported by
+    Markus Bertheau, catalog problem with NULL entries (William Brack)
+   - documentation: fix to xmllint man page, some API function descritpion
+    were updated.
+   - improvements: DTD validation APIs provided at the Python level (Brent
+    Hendricks) 
 
 </changes>
   </product>

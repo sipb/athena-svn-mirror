@@ -85,7 +85,6 @@
 #define SOCKLEN_T unsigned int
 #endif
 
-
 /**
  * A couple portability macros
  */
@@ -105,6 +104,9 @@
 #endif
 #endif
 
+#ifdef _AIX
+#define ss_family __ss_family
+#endif
 
 #define FTP_COMMAND_OK		200
 #define FTP_SYNTAX_ERROR	500
@@ -260,12 +262,18 @@ xmlNanoFTPCleanup(void) {
 void
 xmlNanoFTPProxy(const char *host, int port, const char *user,
 	        const char *passwd, int type) {
-    if (proxy != NULL)
+    if (proxy != NULL) {
 	xmlFree(proxy);
-    if (proxyUser != NULL)
+	proxy = NULL;
+    }
+    if (proxyUser != NULL) {
 	xmlFree(proxyUser);
-    if (proxyPasswd != NULL)
+	proxyUser = NULL;
+    }
+    if (proxyPasswd != NULL) {
 	xmlFree(proxyPasswd);
+	proxyPasswd = NULL;
+    }
     if (host)
 	proxy = xmlMemStrdup(host);
     if (user)
@@ -355,8 +363,13 @@ xmlNanoFTPScanURL(void *ctx, const char *URL) {
 
 	if (cur[0] == '[') {
 	    cur++;
-	    while (cur[0] != ']')
+	    while ((cur[0] != ']') && (indx < XML_NANO_MAX_URLBUF-1))
 		buf[indx++] = *cur++;
+	    if (indx >= XML_NANO_MAX_URLBUF-1) {
+		xmlGenericError(xmlGenericErrorContext,
+		                "\nxmlNanoFTPScanURL: %s", "Syntax Error\n");
+		return;
+	    }
 
 	    if (!strchr (buf, ':')) {
 		xmlGenericError (xmlGenericErrorContext, "\nxmlNanoFTPScanURL: %s",
@@ -604,8 +617,14 @@ xmlNanoFTPScanProxy(const char *URL) {
 
 	if (cur[0] == '[') {
 	    cur++;
-	    while (cur[0] != ']')
+	    while ((cur[0] != ']') && (indx < XML_NANO_MAX_URLBUF-1))
 		buf[indx++] = *cur++;
+            if (indx >= XML_NANO_MAX_URLBUF-1) {
+		xmlGenericError (xmlGenericErrorContext,
+			  "\nxmlNanoFTPScanProxy: %s", "Syntax error\n");
+		return;
+	    }
+
 	    if (!strchr (buf, ':')) {
 		xmlGenericError (xmlGenericErrorContext, "\nxmlNanoFTPScanProxy: %s",
 			"Use [IPv6]/IPv4 format\n");
@@ -686,11 +705,11 @@ xmlNanoFTPNewCtxt(const char *URL) {
     ret->controlFd = -1;
 
     unescaped = xmlURIUnescapeString(URL, 0, NULL);
-    if (unescaped != NULL)
+    if (unescaped != NULL) {
 	xmlNanoFTPScanURL(ret, unescaped);
-    else if (URL != NULL)
+	xmlFree(unescaped);
+    } else if (URL != NULL)
 	xmlNanoFTPScanURL(ret, URL);
-    xmlFree(unescaped);
 
     return(ret);
 }
@@ -765,6 +784,8 @@ xmlNanoFTPGetMore(void *ctx) {
     xmlNanoFTPCtxtPtr ctxt = (xmlNanoFTPCtxtPtr) ctx;
     int len;
     int size;
+
+    if ((ctxt == NULL) || (ctxt->controlFd < 0)) return(-1);
 
     if ((ctxt->controlBufIndex < 0) || (ctxt->controlBufIndex > FTP_BUF_SIZE)) {
 #ifdef DEBUG_FTP
@@ -844,6 +865,8 @@ xmlNanoFTPReadResponse(void *ctx) {
     char *ptr, *end;
     int len;
     int res = -1, cur = -1;
+
+    if ((ctxt == NULL) || (ctxt->controlFd < 0)) return(-1);
 
 get_more:
     /*
@@ -932,6 +955,7 @@ xmlNanoFTPCheckResponse(void *ctx) {
     fd_set rfd;
     struct timeval tv;
 
+    if ((ctxt == NULL) || (ctxt->controlFd < 0)) return(-1);
     tv.tv_sec = 0;
     tv.tv_usec = 0;
     FD_ZERO(&rfd);
@@ -1020,6 +1044,8 @@ xmlNanoFTPQuit(void *ctx) {
     char buf[200];
     int len, res;
 
+    if ((ctxt == NULL) || (ctxt->controlFd < 0)) return(-1);
+
     snprintf(buf, sizeof(buf), "QUIT\r\n");
     len = strlen(buf);
 #ifdef DEBUG_FTP
@@ -1095,22 +1121,25 @@ xmlNanoFTPConnect(void *ctx) {
 	if (!tmp) {
 	    if (result)
 		freeaddrinfo (result);
+	    __xmlIOErr(XML_FROM_FTP, 0, "getaddrinfo failed");
 	    return (-1);
 	}
-	else {
-	    if (tmp->ai_family == AF_INET6) {
-		memcpy (&ctxt->ftpAddr, tmp->ai_addr, tmp->ai_addrlen);
-		((struct sockaddr_in6 *) &ctxt->ftpAddr)->sin6_port = htons (port);
-		ctxt->controlFd = socket (AF_INET6, SOCK_STREAM, 0);
-	    }
-	    else {
-		memcpy (&ctxt->ftpAddr, tmp->ai_addr, tmp->ai_addrlen);
-		((struct sockaddr_in *) &ctxt->ftpAddr)->sin_port = htons (port);
-		ctxt->controlFd = socket (AF_INET, SOCK_STREAM, 0);
-	    }
-	    addrlen = tmp->ai_addrlen;
-	    freeaddrinfo (result);
+	if (tmp->ai_addrlen > sizeof(ctxt->ftpAddr)) {
+	    __xmlIOErr(XML_FROM_FTP, 0, "gethostbyname address mismatch");
+	    return (-1);
 	}
+	if (tmp->ai_family == AF_INET6) {
+	    memcpy (&ctxt->ftpAddr, tmp->ai_addr, tmp->ai_addrlen);
+	    ((struct sockaddr_in6 *) &ctxt->ftpAddr)->sin6_port = htons (port);
+	    ctxt->controlFd = socket (AF_INET6, SOCK_STREAM, 0);
+	}
+	else {
+	    memcpy (&ctxt->ftpAddr, tmp->ai_addr, tmp->ai_addrlen);
+	    ((struct sockaddr_in *) &ctxt->ftpAddr)->sin_port = htons (port);
+	    ctxt->controlFd = socket (AF_INET, SOCK_STREAM, 0);
+	}
+	addrlen = tmp->ai_addrlen;
+	freeaddrinfo (result);
     }
     else
 #endif
@@ -1123,10 +1152,15 @@ xmlNanoFTPConnect(void *ctx) {
 	    __xmlIOErr(XML_FROM_FTP, 0, "gethostbyname failed");
 	    return (-1);
 	}
+	if ((unsigned int) hp->h_length >
+	    sizeof(((struct sockaddr_in *)&ctxt->ftpAddr)->sin_addr)) {
+	    __xmlIOErr(XML_FROM_FTP, 0, "gethostbyname address mismatch");
+	    return (-1);
+	}
 
-    /*
-     * Prepare the socket
-     */
+	/*
+	 * Prepare the socket
+	 */
 	((struct sockaddr_in *)&ctxt->ftpAddr)->sin_family = AF_INET;
 	memcpy (&((struct sockaddr_in *)&ctxt->ftpAddr)->sin_addr,
 		hp->h_addr_list[0], hp->h_length);
@@ -1423,6 +1457,8 @@ xmlNanoFTPConnectTo(const char *server, int port) {
     xmlNanoFTPInit();
     if (server == NULL) 
 	return(NULL);
+    if (port <= 0)
+	return(NULL);
     ctxt = (xmlNanoFTPCtxtPtr) xmlNanoFTPNewCtxt(NULL);
     ctxt->hostname = xmlMemStrdup(server);
     if (port != 0)
@@ -1446,11 +1482,13 @@ xmlNanoFTPConnectTo(const char *server, int port) {
  */
 
 int
-xmlNanoFTPCwd(void *ctx, char *directory) {
+xmlNanoFTPCwd(void *ctx, const char *directory) {
     xmlNanoFTPCtxtPtr ctxt = (xmlNanoFTPCtxtPtr) ctx;
     char buf[400];
     int len;
     int res;
+
+    if ((ctxt == NULL) || (ctxt->controlFd < 0)) return(-1);
 
     /*
      * Expected response code for CWD:
@@ -1492,11 +1530,13 @@ xmlNanoFTPCwd(void *ctx, char *directory) {
  */
 
 int
-xmlNanoFTPDele(void *ctx, char *file) {
+xmlNanoFTPDele(void *ctx, const char *file) {
     xmlNanoFTPCtxtPtr ctxt = (xmlNanoFTPCtxtPtr) ctx;
     char buf[400];
     int len;
     int res;
+
+    if ((ctxt == NULL) || (ctxt->controlFd < 0) || (file == NULL)) return(-1);
 
     /*
      * Expected response code for DELE:
@@ -1552,6 +1592,8 @@ xmlNanoFTPGetConnection(void *ctx) {
     struct sockaddr_in dataAddr;
 #endif
     SOCKLEN_T dataAddrLen;
+
+    if (ctxt == NULL) return(-1);
 
     memset (&dataAddr, 0, sizeof(dataAddr));
 #ifdef SUPPORT_IP6
@@ -1715,6 +1757,8 @@ xmlNanoFTPCloseConnection(void *ctx) {
     int res;
     fd_set rfd, efd;
     struct timeval tv;
+
+    if ((ctxt == NULL) || (ctxt->controlFd < 0)) return(-1);
 
     closesocket(ctxt->dataFd); ctxt->dataFd = -1;
     tv.tv_sec = 15;
@@ -1888,7 +1932,7 @@ xmlNanoFTPParseList(const char *list, ftpListCallback callback, void *userData) 
 
 int
 xmlNanoFTPList(void *ctx, ftpListCallback callback, void *userData,
-	       char *filename) {
+	       const char *filename) {
     xmlNanoFTPCtxtPtr ctxt = (xmlNanoFTPCtxtPtr) ctx;
     char buf[4096 + 1];
     int len, res;
@@ -2000,6 +2044,8 @@ xmlNanoFTPGetSocket(void *ctx, const char *filename) {
     xmlNanoFTPCtxtPtr ctxt = (xmlNanoFTPCtxtPtr) ctx;
     char buf[300];
     int res, len;
+    if (ctx == NULL)
+	return(-1);
     if ((filename == NULL) && (ctxt->path == NULL))
 	return(-1);
     ctxt->dataFd = xmlNanoFTPGetConnection(ctxt);

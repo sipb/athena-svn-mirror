@@ -7,7 +7,6 @@
 #undef HAVE_ISNAN
 #undef HAVE_LIBHISTORY
 #undef HAVE_LIBREADLINE
-#undef SOCKLEN_T
 #undef HAVE_LIBPTHREAD
 #undef HAVE_PTHREAD_H
 
@@ -26,6 +25,9 @@
 /* Define to 1 if you have the <arpa/nameser.h> header file. */
 #undef HAVE_ARPA_NAMESER_H
 
+/* Whether struct sockaddr::__ss_family exists */
+#undef HAVE_BROKEN_SS_FAMILY
+
 /* Define to 1 if you have the `class' function. */
 #undef HAVE_CLASS
 
@@ -37,6 +39,12 @@
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
+
+/* Have dlopen based dso */
+#undef HAVE_DLOPEN
+
+/* Define to 1 if you have the <dl.h> header file. */
+#undef HAVE_DL_H
 
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
@@ -92,6 +100,9 @@
 /* Define to 1 if you have the `inet' library (-linet). */
 #undef HAVE_LIBINET
 
+/* Define to 1 if you have the `net' library (-lnet). */
+#undef HAVE_LIBNET
+
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 #undef HAVE_LIBNSL
 
@@ -142,6 +153,9 @@
 
 /* Define to 1 if you have the <resolv.h> header file. */
 #undef HAVE_RESOLV_H
+
+/* Have shl_load based dso */
+#undef HAVE_SHLLOAD
 
 /* Define to 1 if you have the `signal' function. */
 #undef HAVE_SIGNAL
@@ -279,6 +293,9 @@
 
 /* Win32 Std C name mangling work-around */
 #undef snprintf
+
+/* ss_family is not defined here, use __ss_family instead */
+#undef ss_family
 
 /* Win32 Std C name mangling work-around */
 #undef vsnprintf
