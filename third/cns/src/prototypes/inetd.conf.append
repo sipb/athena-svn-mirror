@@ -1,4 +1,0 @@
-klogin	stream	tcp	nowait	root	/usr/kerberos/etc/klogind	klogind
-eklogin	stream	tcp	nowait	root	/usr/kerberos/etc/klogind	eklogind
-kpop	stream	tcp	nowait	root	/usr/kerberos/etc/popper	popper
-kshell	stream	tcp	nowait	root	/usr/kerberos/etc/kshd		kshd
