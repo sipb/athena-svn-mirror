@@ -187,7 +187,7 @@ cp /dev/null etc/named.local
 
 
 cd /var/usr/vice
-for i in  CellServDB SuidCells 
+for i in  CellAlias CellServDB SuidCells 
 	do
 	cp -p /afs/athena/service/$i etc/
 	chown root:root etc/$i
