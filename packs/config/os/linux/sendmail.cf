@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.6 1999-04-11 19:18:02 danw Exp $
+# $Id: sendmail.cf,v 1.7 1999-06-01 19:13:36 danw Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -177,6 +177,7 @@ R$*<@$j>$*		$#local$:$1
 
 # Resolve name (so our CNAMES work)
 R$*<@$+.$D>$*		$:$1<@$[$2$]>$3			@something.mit.edu
+R$*<@mit>$*		$:$1<@$D>$2			avoid mit.MIT.EDU
 R$*<@$->$*		$:$1<@$[$2$]>$3			@something [no .s]
 
 # deliver mail
