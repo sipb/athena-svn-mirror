@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.7 2000-03-24 00:39:59 miki Exp $
+# $Id: phase3.sh,v 1.8 2000-03-30 00:38:46 jweiss Exp $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
@@ -205,7 +205,7 @@ cd /root
 echo "reset the boot device .. just in case"
 /os/usr/platform/$platform/sbin/eeprom \
 	"`/os/usr/platform/$platform/sbin/eeprom boot-device | \
-	sed -e 's/:.* / /'`"
+	sed -e 's/:[^ ]*//'`"
 # Note: device scripts depend on ROOT being set properly.
 auxdir=/srvd/install/aux.devs
 if [ -d $auxdir ]; then
