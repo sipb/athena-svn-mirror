@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.3 2000-02-07 22:23:34 ghudson Exp $
+# $Id: update_ws.sh,v 1.4 2000-02-15 15:45:33 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -141,9 +141,9 @@ if [ true = "$auto" -a reactivate = "$why" ]; then
 	fi
 fi
 
-# Define sed expressions to strip the leading path and the version
+# Define sed expressions to strip the path+extension and the version
 # part of an RPM name.
-strippath='s,^.*/\([^/]*\),\1,'
+strippath='s,^.*/\([^/]*\)\.[^\.]*\.rpm$,\1,'
 stripvers='s/^\(.*\)-[^-]*-[^-]*$/\1/'
 
 # Figure out what we need to delete.  On private machines, delete
@@ -163,17 +163,24 @@ rm -f /var/athena/old-rpms-tmp /var/athena/new-rpms-tmp
 
 # Prune packages we already have (at the same version) out of the new
 # list to find out what we need to update.
-rpm -qa | sort > /var/athena/old-rpms-tmp
-sed -e "$strippath" "$newlist" | sort > /var/athena/new-rpms-tmp
-updates=`comm -13 /var/athena/old-rpms-tmp /var/athena/new-rpms-tmp`
-rm -f /var/athena/old-rpms-tmp /var/athena/new-rpms-tmp
+rawupdates=`cat "$newlist"`
+updates=
+for filename in $rawupdates; do
+        listvers=`echo "$filename" | sed -e "$strippath"`
+        rpmname=`echo "$listvers" | sed -e "$stripvers"`
+        instvers=`rpm -q "$rpmname" 2>/dev/null`
+        echo "$filename $listvers $rpmname $instvers"
+        if [ "$listvers" != "$instvers" ]; then
+                updates="$updates $filename"
+        fi
+done
 
 # On public machines, force downgrades of packages someone might have
 # upgraded.
 if [ true = "$PUBLIC" ]; then
-	oldpackages=--oldpackages
+	oldpackage=--oldpackage
 else
-	oldpackages=
+	oldpackage=
 fi
 
 # Define how to clean up if the update fails.
@@ -189,7 +196,7 @@ failupdate() {
 	echo "Beginning update from $oldvers to $newvers at `date`."
 	echo "Athena Workstation ($hosttype) Version Update `date`" >> \
 		/etc/athena/version
-	rpm --upgrade $oldpackages -v $updates || failupdate
+	rpm --upgrade $oldpackage -v $updates || failupdate
 	rpm --erase -v $removals || logger -t $HOST -p user.notice \
 		"Update ($oldvers -> $newvers) package removal failed"
 	echo "Athena Workstation ($hosttype) Version $newvers `date`" >> \
