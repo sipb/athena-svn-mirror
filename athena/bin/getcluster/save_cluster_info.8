@@ -5,19 +5,15 @@ save_cluster_info \- get a workstation's cluster information
 .SH SYNOPSIS
 .B /etc/athena/save_cluster_info
 .SH DESCRIPTION
-This shell script,
-which is executed as part of
-.I toehold(8)'s
-.I activation
-process,
+This shell script, as part of the reactivatation process,
 retrieves the workstation's network
 environment information from the
 .I hesiod
 nameserver,
 and writes that information into two files:
-.I /etc/clusterinfo,
+.I /etc/athena/clusterinfo,
 and
-.I /etc/clusterinfo.bsh.
+.I /etc/athena/clusterinfo.bsh.
 The first of these files is used
 to set C shell environment variables,
 while the second file sets Bourne shell variables.
@@ -48,11 +44,9 @@ filesystem
 .I activation
 process uses the
 .I SYSLIB
-and
-.I USRLIB
 information to
 .I attach
-the workstation's default filesystems).
+the workstation's default filesystem).
 
 .I save_cluster_info
 retrieves its information by calling the
@@ -64,9 +58,9 @@ If the call to
 fails,
 .I save_cluster_info
 will not change the workstation's current
-.I /etc/clusterinfo
+.I /etc/athena/clusterinfo
 and
-.I /etc/clusterinfo.bsh
+.I /etc/athena/clusterinfo.bsh
 files.
 .SH SEE ALSO
-getcluster(8), activate(8), toehold(8), hesiod(3)
+getcluster(8), activate(8), hesiod(3)
