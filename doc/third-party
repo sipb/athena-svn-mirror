@@ -112,7 +112,7 @@ Distribution sites for software under third
 			libexec/talkd goes in the talkd subdirectory
 			protocols/talkd.h is from include/protocols,
 			 with some modifications for portability.
-	tcp_wrappers	ftp.win.tue.nl:/pub/security
+	tcp_wrappers	ftp.porcupine.org:/pub/security
 	tcsh		ftp.astron.com:pub/tcsh
 			(Old versions at ftp.uu.net:pub/shells/tcsh)
 	tex		See below
