@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.12 1991-01-07 01:47:42 lwvanels Exp $
+ * $Id: Imakefile,v 1.13 1991-01-18 14:53:19 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -41,5 +41,11 @@ SaberProgramTarget(olcd,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
 DependTarget()
 LintTarget()
+
+#ifdef TestInstall
+InstallProgram(olcd,/mit/olcdev/@sys)
+#else
+InstallProgram(olcd,$(DESTDIR)/usr/etc)
+#endif
 
 AllTarget(olcd)
