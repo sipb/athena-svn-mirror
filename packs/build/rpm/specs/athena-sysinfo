@@ -1,8 +1,0 @@
-Name: athena-sysinfo
-Summary: Print system hardware and software info in various formats
-License: Michael A. Cooper
-Group: Applications/System
-
-%description
-Print system hardware and software info in various formats
-
