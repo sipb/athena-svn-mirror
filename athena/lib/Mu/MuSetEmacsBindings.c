@@ -14,8 +14,12 @@
  *
  * MotifUtils:   Utilities for use with Motif and UIL
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuSetEmacsBindings.c,v $
- * $Author: djf $
+ * $Author: vanharen $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  89/12/09  16:36:03  djf
+ * 
+ * changed arg in call to XtGetValues to &arg
+ * 
  * Revision 1.1  89/12/09  15:14:49  djf
  * Initial revision
  * 
@@ -50,12 +54,13 @@ static char EmacsBindingsText[] =
 	Ctrl<Key>P:		previous-line() \n\
 	Ctrl<Key>V:		next-page() \n\
 	Meta<Key>V:		previous-page() \n\
-	Meta<Key><:		beginning-of-file() \n\
+	~Shift Meta<Key><:	beginning-of-file() \n\
+	Shift Meta<Key><:	end-of-file() \n\
 	Meta<Key>>:		end-of-file() \n\
 	Ctrl<Key>L:		redraw-display() \n\
 	Ctrl<Key>M:		newline() \n\
 	Ctrl<Key>J:		newline() \n\
-	<Key>Return:		newline() \n\
+	<Key>Return:		newline()
 ";
 
 static XtTranslations SingleLineEmacsBindings = NULL;
@@ -73,6 +78,9 @@ static char SingleLineEmacsBindingsText[] =
 	Ctrl<Key>E:		end-of-line() \n\
         Meta<Key>F:             forward-word() \n\
         Meta<Key>B:             backward-word() \n\
+	~Shift Meta<Key><:	beginning-of-line() \n\
+	Shift Meta<Key><:	end-of-line() \n\
+	Meta<Key>>:		end-of-line()
 ";
 
 void MuSetEmacsBindings(w)
