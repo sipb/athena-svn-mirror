@@ -1,3 +1,6 @@
+; The first part of this file is taken wholesale from Internic.
+; Afterwards we have the Hesiod root servers.
+
 ;       This file holds the information on root name servers needed to
 ;       initialize cache of Internet domain name servers
 ;       (e.g. reference this file in the "cache  .  <file>"
@@ -12,8 +15,8 @@
 ;              submenu          InterNIC Registration Archives
 ;           file                named.root
 ;
-;       last update:    Aug 22, 1997
-;       related version of root zone:   1997082200
+;       last update:    Feb 28, 1997
+;       related version of root zone:   1997022800
 ;
 ;
 ; formerly NS.INTERNIC.NET
@@ -76,8 +79,23 @@ K.ROOT-SERVERS.NET.      3600000      A     193.0.14.129
 .                        3600000      NS    L.ROOT-SERVERS.NET.
 L.ROOT-SERVERS.NET.      3600000      A     198.32.64.12
 ;
-; housed in Japan, operated by WIDE
+; temporarily housed at ISI (IANA)
 ;
 .                        3600000      NS    M.ROOT-SERVERS.NET.
-M.ROOT-SERVERS.NET.      3600000      A     202.12.27.33
+M.ROOT-SERVERS.NET.      3600000      A     198.32.65.12
 ; End of File
+
+;
+; Root HS servers
+;
+.			3600000	HS	NS	BITSY.MIT.EDU.
+			3600000	HS	NS	W20NS.MIT.EDU.
+			3600000	HS	NS	STRAWB.MIT.EDU.
+BITSY.MIT.EDU.		3600000	HS	A	18.72.0.3
+W20NS.MIT.EDU.		3600000	HS	A	18.70.0.160
+STRAWB.MIT.EDU.		3600000	HS	A	18.71.0.151
+; IN records for HS servers
+; Required for some implementations of gethostbyname using C_ANY/T_A queries.
+BITSY.MIT.EDU.		3600000	IN	A	18.72.0.3
+W20NS.MIT.EDU.		3600000	IN	A	18.70.0.160
+STRAWB.MIT.EDU.		3600000	IN	A	18.71.0.151
