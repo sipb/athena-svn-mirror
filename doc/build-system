@@ -27,7 +27,7 @@ packs/build/packages.
 After attaching the correct locker, you can build a package by doing:
 
 	set src = /mit/source		# or /mit/source-8.1, etc.
-	cp -r /mit/souce/PACKAGE /tmp/PACKAGE
+	cp -r /mit/source/PACKAGE /tmp/PACKAGE
 	cd /tmp/PACKAGE
 	sh $src/packs/build/do.sh dist
 	sh $src/packs/build/do.sh prepare
