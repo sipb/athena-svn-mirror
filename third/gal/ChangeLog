@@ -1,3 +1,19 @@
+2003-03-13  Mike Kestner  <mkestner@ximian.com>
+
+	* gal/util/e-util.c (e_mkdir_hier): use access to check for existence
+	before calling mkdir.
+
+2003-02-12 Suresh Chandrasekharan <suresh.chandrasekharan@sun.com>
+
+	* gal/util/e-iconv.c: Fix for Solaris Bug "31081  Mailer
+	sender/Subject/Date fields blank for Solaris 8 ko_KR.EUC locale." and
+	partial fix for Solaris Bug "32747 additional issues with evolution
+	beta2 in ja_JP.PCK locale"
+
+2003-02-03  Mike Kestner  <mkestner@ximian.com>
+
+	* configure.in : update for 0.23
+
 2003-01-29  Max Horn  <max@quendi.de>
 
 	* gal/widgets/e-categories-master-list-dialog-model.c : mark 

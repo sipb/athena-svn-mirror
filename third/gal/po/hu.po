@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal VERSION\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2001-12-27 23:12+0100\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -267,7 +267,7 @@ msgstr "Aktuális nézet testreszabása..."
 msgid "Define Views for %s"
 msgstr "\"%s\" nézeteinek definiálása"
 
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 #, fuzzy
 msgid "Define Views"
 msgstr "\"%s\" nézeteinek definiálása"
@@ -301,12 +301,12 @@ msgstr "Ú_j..."
 msgid "Table"
 msgstr "Táblázat"
 
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 #, fuzzy
 msgid "Custom View"
 msgstr "Aktuális nézet testreszabása"
 
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 #, fuzzy
 msgid "Save Custom View"
 msgstr "Kiemelt ügyfél"

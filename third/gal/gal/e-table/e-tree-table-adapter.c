@@ -29,6 +29,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include <gtk/gtksignal.h>
 #include <gnome-xml/tree.h>
@@ -961,7 +962,8 @@ e_tree_table_adapter_save_expanded_state (ETreeTableAdapter *etta, const char *f
 			      save_expanded_state_func,
 			      &tar);
 	
-	e_xml_save_file (filename, doc);
+	if (e_xml_save_file (filename, doc) == -1)
+		g_warning ("Unable to save expanded state to %s - %s", filename, g_strerror (errno));
 	
 	xmlFreeDoc (doc);
 }

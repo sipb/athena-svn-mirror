@@ -3,12 +3,12 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001.
 # Richard Hult <rhult@codefactory.se>, 2000.
 #
-# $Id: sv.po,v 1.1.1.8 2003-03-15 15:31:55 ghudson Exp $
+# $Id: sv.po,v 1.1.1.9 2003-04-07 17:15:24 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2001-12-12 01:28+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -271,7 +271,7 @@ msgstr "Anpassa aktuell vy..."
 msgid "Define Views for %s"
 msgstr "Definiera vyer för \"%s\""
 
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 #, fuzzy
 msgid "Define Views"
 msgstr "Definiera vyer för \"%s\""
@@ -305,12 +305,12 @@ msgstr "_Ny..."
 msgid "Table"
 msgstr "Tabell"
 
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 #, fuzzy
 msgid "Custom View"
 msgstr "Anpassa aktuell vy"
 
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 #, fuzzy
 msgid "Save Custom View"
 msgstr "Nyckelkund"

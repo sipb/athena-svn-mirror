@@ -29,7 +29,7 @@
 
 ## Release information
 my $PROGRAM = "intltool-update";
-my $VERSION = "0.22";
+my $VERSION = "0.25";
 my $PACKAGE = "intltool";
 
 ## Loaded modules
@@ -73,6 +73,7 @@ my $ini_extension =
 "directory(\.in)+|".
 "soundlist(\.in)+|".
 "keys(\.in)+|".
+"theme(\.in)+|".
 "server(\.in)+";
 
 ## Always print as the first thing
@@ -188,7 +189,7 @@ sub determine_type ($)
        "(?:xml(\.in)*|ui|oaf(?:\.in)+|server(?:\.in)+|sheet(?:\.in)+|".
        "pong(?:\.in)+|etspec|schemas(?:\.in)+)";
    my $ini_regex =
-       "(?:desktop(?:\.in)+|caves(?:\.in)+|directory(?:\.in)+|".
+       "(?:desktop(?:\.in)+|theme(?:\.in)+|caves(?:\.in)+|directory(?:\.in)+|".
        "soundlist(?:\.in)+)";
 
    if ($type =~ /\[type: gettext\/([^\]].*)]/) {
@@ -248,6 +249,9 @@ sub find_leftout_files
     open POTFILES, "POTFILES.in" or die "$PROGRAM:  there's no POTFILES.in!\n";
 
     @buf_potfiles = grep /^[^#]/, <POTFILES>;
+    foreach (@buf_potfiles) {
+        s/^\[.*]\s*//;
+    }
 			    
     print "Searching for missing translatable files...\n" if $VERBOSE;
 
@@ -452,9 +456,13 @@ sub generate_po_template
     open INFILE, "<POTFILES.in.old";
     open OUTFILE, ">POTFILES.in";
     while (<INFILE>) {
-        s/\.($xml_extension|$ini_extension)$/$&.h/;
-        s/^\[.*]\s*(.*)/$1.h/;
-        print OUTFILE $_;
+        chomp;
+        if (/\.($xml_extension|$ini_extension)$/ || /^\[/) {
+            s/^\[.*]\s*//;
+            print OUTFILE "$_.h\n";
+        } else {
+            print OUTFILE "$_\n";
+        }
     }
     close OUTFILE;
     close INFILE;

@@ -29,6 +29,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
@@ -1795,7 +1796,8 @@ e_table_save_specification (ETable *e_table, const char *filename)
 	g_return_if_fail(E_IS_TABLE(e_table));
 	g_return_if_fail(filename != NULL);
 	
-	e_xml_save_file (filename, doc);
+	if (e_xml_save_file (filename, doc) == -1)
+		g_warning ("Unable to save specification to %s - %s", filename, g_strerror (errno));
 	
 	xmlFreeDoc (doc);
 }

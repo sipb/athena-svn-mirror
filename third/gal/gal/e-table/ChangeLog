@@ -1,3 +1,10 @@
+2003-03-13  Mike Kestner  <mkestner@ximian.com>
+
+	* e-table-state.c (e_table_state_save_to_file): check for save failure
+	* e-table.c (e_table_save_specification): check for save failure
+	* e-tree-table-adapter.c (e_tree_table_adapter_save_expanded_state): 
+	check for save failure
+
 2003-01-29  Max Horn  <max@quendi.de>
 
 	* e-table-memory-store.c : mark parent_class static for OS X build

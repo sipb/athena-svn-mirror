@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.19.0.1\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2001-05-25 13:35+0200\n"
 "Last-Translator: Josu Waliño <josu@elhuyar.com>\n"
 "Language-Team: Euskara\n"
@@ -266,7 +266,7 @@ msgstr "Pertsonalizatu uneko ikuspegia..."
 msgid "Define Views for %s"
 msgstr "Zehaztu honentzako ikuspegiak \"%s\""
 
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 #, fuzzy
 msgid "Define Views"
 msgstr "Zehaztu honentzako ikuspegiak \"%s\""
@@ -300,12 +300,12 @@ msgstr "Berr_ia..."
 msgid "Table"
 msgstr "Taula"
 
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 #, fuzzy
 msgid "Custom View"
 msgstr "Pertsonalizatu uneko ikuspegia"
 
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 #, fuzzy
 msgid "Save Custom View"
 msgstr "Bezero garrantzitsua"

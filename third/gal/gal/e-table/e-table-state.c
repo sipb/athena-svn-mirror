@@ -28,6 +28,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include <gtk/gtksignal.h>
 #include <gtk/gtkobject.h>
@@ -191,7 +192,8 @@ e_table_state_save_to_file      (ETableState *state,
 	
 	xmlDocSetRootElement (doc, e_table_state_save_to_node (state, NULL));
 	
-	e_xml_save_file (filename, doc);
+	if (e_xml_save_file (filename, doc) == -1)
+		g_warning ("Unable to save %s - %s", filename, g_strerror (errno));
 	
 	xmlFreeDoc (doc);
 }

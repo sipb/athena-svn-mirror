@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.1\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2002-03-03 18:27+0100\n"
 "Last-Translator: Christopher R. Gabriel <cgabriel@softwarelibero.org>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -266,7 +266,7 @@ msgstr "Personalizza vista corrente..."
 msgid "Define Views for %s"
 msgstr "Definire viste per \"%s\""
 
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 #, fuzzy
 msgid "Define Views"
 msgstr "Definire viste per \"%s\""
@@ -300,12 +300,12 @@ msgstr "_Nuovo..."
 msgid "Table"
 msgstr "Tabella"
 
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 #, fuzzy
 msgid "Custom View"
 msgstr "Personalizza vista corrente"
 
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 #, fuzzy
 msgid "Save Custom View"
 msgstr "Clienti importanti"

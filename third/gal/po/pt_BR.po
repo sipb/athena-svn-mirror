@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.19.99\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2002-09-01 21:58-0300\n"
 "Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
@@ -266,7 +266,7 @@ msgstr "Personalizar visualização atual..."
 msgid "Define Views for %s"
 msgstr "Definir visualizações para %s"
 
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 msgid "Define Views"
 msgstr "Definir visualizações"
 
@@ -299,11 +299,11 @@ msgstr "_Nova..."
 msgid "Table"
 msgstr "Tabela"
 
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 msgid "Custom View"
 msgstr "Visualização personalizada"
 
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 msgid "Save Custom View"
 msgstr "Salvar visualização personalizada"
 

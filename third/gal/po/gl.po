@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2001-04-28 18:45+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <jba@pobox.com>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
@@ -274,7 +274,7 @@ msgstr "Personalizar a vista actual..."
 msgid "Define Views for %s"
 msgstr "Definir vistas para \"%s\""
 
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 #, fuzzy
 msgid "Define Views"
 msgstr "Definir vistas para \"%s\""
@@ -308,12 +308,12 @@ msgstr "_Novo..."
 msgid "Table"
 msgstr "Táboa"
 
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 #, fuzzy
 msgid "Custom View"
 msgstr "Personalizar a vista actual..."
 
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 msgid "Save Custom View"
 msgstr ""
 

@@ -26,6 +26,7 @@
 #include <util/e-i18n.h>
 #include <ctype.h>
 #include <string.h>
+#include <errno.h>
 #include <gtk/gtksignal.h>
 #include <gnome-xml/parser.h>
 #include <libgnome/gnome-defs.h>
@@ -97,7 +98,8 @@ save_current_view (GalViewInstance *instance)
 	if (instance->current_type)
 		e_xml_set_string_prop_by_name (root, "current_view_type", instance->current_type);
 
-	xmlSaveFile(instance->current_view_filename, doc);
+	if (e_xml_save_file(instance->current_view_filename, doc) == -1)
+		g_warning ("Unable to save view to %s - %s", instance->current_view_filename, g_strerror(errno));
 	xmlFreeDoc(doc);
 }
 
