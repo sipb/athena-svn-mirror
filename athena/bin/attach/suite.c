@@ -15,7 +15,7 @@
 
 /* main() for the attach suite */
 
-static const char rcsid[] = "$Id: suite.c,v 1.5 1999-12-02 20:12:26 danw Exp $";
+static const char rcsid[] = "$Id: suite.c,v 1.6 2000-03-15 20:53:36 ghudson Exp $";
 
 #include <fcntl.h>
 #include <signal.h>
@@ -66,8 +66,6 @@ int main(int argc, char **argv)
     exit(add_main(argc, argv));
   else if (!strcmp(whoami, "attach"))
     exit(attach_main(argc, argv));
-  else if (!strcmp(whoami, "attachandrun"))
-    exit(attachandrun_main(argc, argv));
   else if (!strcmp(whoami, "detach"))
     exit(detach_main(argc, argv));
   else if (!strcmp(whoami, "fsid") || !strcmp(whoami, "nfsid"))

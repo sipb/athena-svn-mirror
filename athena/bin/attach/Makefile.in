@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.7 1999-09-22 22:18:27 danw Exp $
+# $Id: Makefile.in,v 1.8 2000-03-15 20:53:35 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -29,8 +29,7 @@ ALL_CFLAGS=${WARN_CFLAGS} ${ERROR_CFLAGS} -I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
 ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${KRB4_LIBS} ${REGEX_LIBS} \
 	 -lhesiod -lcom_err ${LIBS}
 
-ATTACH_OBJS=suite.o agetopt.o add.o attach.o attachandrun.o detach.o \
-	fsid.o zinit.o
+ATTACH_OBJS=suite.o agetopt.o add.o attach.o detach.o fsid.o zinit.o
 
 all: attach atconvert
 
@@ -52,8 +51,6 @@ install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
 	${INSTALL} -m 4755 -o root attach ${DESTDIR}${lbindir}
-	rm -f ${DESTDIR}${lbindir}/attachandrun
-	ln -s attach ${DESTDIR}${lbindir}/attachandrun
 	rm -f ${DESTDIR}${lbindir}/detach
 	ln -s attach ${DESTDIR}${lbindir}/detach
 	rm -f ${DESTDIR}${lbindir}/fsid
@@ -67,7 +64,6 @@ install:
 	${INSTALL} -m 755 atconvert ${DESTDIR}${sbindir}
 	${INSTALL} -m 644 add.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 644 attach.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 attachandrun.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 644 detach.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 644 fsid.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 644 nfsid.1 ${DESTDIR}${mandir}/man1
