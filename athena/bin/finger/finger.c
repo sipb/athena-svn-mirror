@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.29 1996-09-19 22:36:22 ghudson Exp $
+ * $Id: finger.c,v 1.30 1997-01-24 08:05:56 jweiss Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.29 1996-09-19 22:36:22 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.30 1997-01-24 08:05:56 jweiss Exp $";
 #endif /*lint*/
 
 /*
@@ -579,13 +579,13 @@ print(personn)
 			if (!unshort)
 				if (wide)
 #if defined(SOLARIS) || defined(sgi)
-					printf("Login       Name              TTY  Idle    When     Office\n");
+					printf("Login       Name                TTY  Idle    When     Office\n");
 #else
 					printf("Login       Name              TTY Idle    When            Office\n");
 #endif
 				else
 #if defined(SOLARIS) || defined(sgi)
-					printf("Login    TTY Idle    When     Office\n");
+					printf("Login      TTY Idle    When     Office\n");
 #else
 					printf("Login    TTY Idle    When            Office\n");
 #endif
@@ -766,15 +766,11 @@ shortprint(pers)
 		else
 			printf("        ???          ");
 	}
-#ifndef SOLARIS
 	(void) putchar(' ');  
-#endif
 	if (pers->loggedin && !pers->writable)
 		(void) putchar('*');
-#ifndef SOLARIS
 	else
 		(void) putchar(' '); 
-#endif
 	if (*pers->tty) {
 		if (!strncmp(pers->tty, "tty", 3)) {
 			if (pers->tty[3] == 'd' && pers->loggedin)
