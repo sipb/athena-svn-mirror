@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.14 1990-02-16 05:50:22 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.15 1990-02-23 19:47:07 vanharen Exp $";
 #endif
 
 
@@ -627,7 +627,9 @@ olc_done(fd, request, auth)
   printf("text: %s\n",text);
 #endif
 
-  (void) strcpy(target->question->title, text);
+  (void) strncpy(target->question->title, text,
+		 sizeof(target->question->title));
+  target->question->title[sizeof(target->question->title) - 1] = '\0';
   (void) sprintf(msgbuf, "Resolved by %s@%s.", 
 		 requester->user->username,
 		 requester->user->machine);
