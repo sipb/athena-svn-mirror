@@ -17,7 +17,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
- *	$Id: olc_parser.h,v 1.8 1991-01-21 01:18:38 lwvanels Exp $
+ *	$Id: olc_parser.h,v 1.9 1991-03-05 14:50:20 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -76,9 +76,6 @@ int do_olc_instance P((char **arguments ));
 
 /* p_list.c */
 ERRCODE do_olc_list P((char **arguments ));
-
-/* p_live.c */
-ERRCODE do_olc_live P((char **arguments ));
 
 /* p_local.c */
 int do_quit P((char *arguments []));
