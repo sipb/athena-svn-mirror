@@ -1,3 +1,0 @@
-# $Id: configure.athena,v 1.1 1999-02-22 03:46:20 danw Exp $
-./configure --with-x-toolkit --sharedstatedir=/var/tmp --with-pop \
-	--with-hesiod --with-kerberos
