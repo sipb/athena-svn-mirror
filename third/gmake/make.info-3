@@ -1,5 +1,4 @@
-This is Info file make.info, produced by Makeinfo version 1.67 from the
-input file make.texinfo.
+This is make.info, produced by makeinfo version 4.0 from make.texinfo.
 
 INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
@@ -10,11 +9,11 @@ END-INFO-DIR-ENTRY
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.54, last updated 09 September 1999, of `The GNU
-Make Manual', for `make', Version 3.78.1.
+   This is Edition 0.55, last updated 04 April 2000, of `The GNU Make
+Manual', for `make', Version 3.79.
 
    Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
-'98, '99         Free Software Foundation, Inc.
+'98, '99, 2000         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -106,7 +105,7 @@ using it; *note Chains of Implicit Rules: Chained Rules..
 compiler feature to generate prerequisites on demand with a command like
 `make depend'.  That command would create a file `depend' containing
 all the automatically-generated prerequisites; then the makefile could
-use `include' to read them in (*note Include::.).
+use `include' to read them in (*note Include::).
 
    In GNU `make', the feature of remaking makefiles makes this practice
 obsolete--you need never tell `make' explicitly to regenerate the
@@ -178,8 +177,8 @@ one by one.  Each command line must start with a tab, except that the
 first command line may be attached to the target-and-prerequisites line
 with a semicolon in between.  Blank lines and lines of just comments
 may appear among the command lines; they are ignored.  (But beware, an
-apparently "blank" line that begins with a tab is *not* blank!  It is an
-empty command; *note Empty Commands::..)
+apparently "blank" line that begins with a tab is _not_ blank!  It is an
+empty command; *note Empty Commands::.)
 
    Users use many different shell programs, but commands in makefiles
 are always interpreted by `/bin/sh' unless the makefile specifies
@@ -327,8 +326,8 @@ for `make', you can set the variable `MAKESHELL' to the shell that
 
    ---------- Footnotes ----------
 
-   (1)  On MS-DOS, the value of current working directory is *global*,
-so changing it *will* affect the following command lines on those
+   (1) On MS-DOS, the value of current working directory is *global*,
+so changing it _will_ affect the following command lines on those
 systems.
 
 
@@ -476,7 +475,7 @@ all, the file is corrupted and cannot be used--or at least it is not
 completely updated.  Yet the file's timestamp says that it is now up to
 date, so the next time `make' runs, it will not try to update that
 file.  The situation is just the same as when the command is killed by a
-signal; *note Interrupts::..  So generally the right thing to do is to
+signal; *note Interrupts::.  So generally the right thing to do is to
 delete the target file if the command fails after beginning to change
 the file.  `make' will do this if `.DELETE_ON_ERROR' appears as a
 target.  This is almost always what you want `make' to do, but it is
@@ -628,7 +627,7 @@ anything.
 on the command line, by putting them in the `MAKEFLAGS' variable.
 *Note Options/Recursion::.
 
-   Variables are *not* normally passed down if they were created by
+   Variables are _not_ normally passed down if they were created by
 default by `make' (*note Variables Used by Implicit Rules: Implicit
 Variables.).  The sub-`make' will define these for itself.
 
@@ -637,7 +636,7 @@ Variables.).  The sub-`make' will define these for itself.
 
      export VARIABLE ...
 
-If you want to *prevent* a variable from being exported, use the
+If you want to _prevent_ a variable from being exported, use the
 `unexport' directive, like this:
 
      unexport VARIABLE ...
@@ -682,7 +681,7 @@ is just like:
 
 This tells `make' that variables which are not explicitly mentioned in
 an `export' or `unexport' directive should be exported.  Any variable
-given in an `unexport' directive will still *not* be exported.  If you
+given in an `unexport' directive will still _not_ be exported.  If you
 use `export' by itself to export variables by default, variables whose
 names contain characters other than alphanumerics and underscores will
 not be exported unless specifically mentioned in an `export' directive.
@@ -695,7 +694,7 @@ this behavior and you want to be compatible with old versions of
 will be ignored by old `make's, while the `export' directive will cause
 a syntax error.
 
-   Likewise, you can use `unexport' by itself to tell `make' *not* to
+   Likewise, you can use `unexport' by itself to tell `make' _not_ to
 export variables by default.  Since this is the default behavior, you
 would only need to do this if `export' had been used by itself earlier
 (in an included makefile, perhaps).  You *cannot* use `export' and
@@ -754,7 +753,7 @@ system supports it (most any UNIX system will; others typically won't),
 the parent `make' and all the sub-`make's will communicate to ensure
 that there are only `N' jobs running at the same time between them all.
 Note that any job that is marked recursive (*note Instead of Executing
-the Commands: Instead of Execution.) doesn't count against the total
+the Commands: Instead of Execution.)  doesn't count against the total
 jobs (otherwise we could get `N' sub-`make's running and have no slots
 left over for any real work!)
 
@@ -917,7 +916,7 @@ in Rules: Commands.  For example, using this canned sequence:
      frob-step-2 $@-step-1 -o $@
      endef
 
-`make' will not echo the first line, the `echo' command.  But it *will*
+`make' will not echo the first line, the `echo' command.  But it _will_
 echo the following two command lines.
 
    On the other hand, prefix characters on the command line that refers
@@ -926,7 +925,7 @@ to a canned sequence apply to every line in the sequence.  So the rule:
      frob.out: frob.in
              @$(frobnicate)
 
-does not echo *any* commands.  (*Note Command Echoing: Echoing, for a
+does not echo _any_ commands.  (*Note Command Echoing: Echoing, for a
 full explanation of `@'.)
 
 
@@ -948,7 +947,7 @@ but this would be confusing because such a line looks empty.
    You may be wondering why you would want to define a command string
 that does nothing.  The only reason this is useful is to prevent a
 target from getting implicit commands (from implicit rules or the
-`.DEFAULT' special target; *note Implicit Rules::. and *note Defining
+`.DEFAULT' special target; *note Implicit Rules:: and *note Defining
 Last-Resort Default Rules: Last Resort.).
 
    You may be inclined to define empty command strings for targets that

@@ -113,7 +113,10 @@ dnl AC_SYS_LARGEFILE_FLAGS(FLAGSNAME)
 AC_DEFUN(AC_SYS_LARGEFILE_FLAGS,
   [AC_CACHE_CHECK([for $1 value to request large file support],
      ac_cv_sys_largefile_$1,
-     [ac_cv_sys_largefile_$1=`($GETCONF LFS_$1) 2>/dev/null` || {
+     [if ($GETCONF LFS_$1) >conftest.1 2>conftest.2 && test ! -s conftest.2
+      then
+        ac_cv_sys_largefile_$1=`cat conftest.1`
+      else
 	ac_cv_sys_largefile_$1=no
 	ifelse($1, CFLAGS,
 	  [case "$host_os" in
@@ -139,7 +142,8 @@ changequote([, ])dnl
 	     AC_TRY_LINK(, , , ac_cv_sys_largefile_CFLAGS=no)
 	     CC="$ac_save_CC"
 	   fi])
-      }])])
+      fi
+      rm -f conftest*])])
 
 dnl Internal subroutine of AC_SYS_LARGEFILE.
 dnl AC_SYS_LARGEFILE_SPACE_APPEND(VAR, VAL)
@@ -306,95 +310,6 @@ AC_DEFUN(jm_AC_TYPE_UINTMAX_T,
 ])
 
 
-dnl ---------------------------------------------------------------------------
-dnl From Steve Robbins <steve@nyongwa.montreal.qc.ca>
-
-dnl From a proposed change made on the autoconf list on 2 Feb 1999
-dnl http://sourceware.cygnus.com/ml/autoconf/1999-02/msg00001.html
-dnl Patch for AIX 3.2 by Lars Hecking <lhecking@nmrc.ucc.ie> on 17 May 1999
-
-AC_DEFUN(AC_FUNC_SELECT,
-[AC_CHECK_FUNCS(select)
-if test "$ac_cv_func_select" = yes; then
-  AC_CHECK_HEADERS(unistd.h sys/types.h sys/time.h sys/select.h sys/socket.h)
-  AC_MSG_CHECKING([argument types of select()])
-  AC_CACHE_VAL(ac_cv_type_fd_set_size_t,dnl
-    [AC_CACHE_VAL(ac_cv_type_fd_set,dnl
-      [for ac_cv_type_fd_set in 'fd_set' 'int' 'void'; do
-        for ac_cv_type_fd_set_size_t in 'int' 'size_t' 'unsigned long' 'unsigned'; do
-          for ac_type_timeval in 'struct timeval' 'const struct timeval'; do
-            AC_TRY_COMPILE(dnl
-[#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef HAVE_SYS_SELECT_H
-#include <sys/select.h>
-#endif
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif],
-[#ifdef __STDC__
-extern select ($ac_cv_type_fd_set_size_t,
- $ac_cv_type_fd_set *,  $ac_cv_type_fd_set *, $ac_cv_type_fd_set *,
- $ac_type_timeval *);
-#else
-extern select ();
-  $ac_cv_type_fd_set_size_t s;
-  $ac_cv_type_fd_set *p;
-  $ac_type_timeval *t;
-#endif],
-[ac_found=yes ; break 3],ac_found=no)
-          done
-        done
-      done
-    ])dnl AC_CACHE_VAL
-  ])dnl AC_CACHE_VAL
-  if test "$ac_found" = no; then
-    AC_MSG_ERROR([can't determine argument types])
-  fi
-
-  AC_MSG_RESULT([select($ac_cv_type_fd_set_size_t,$ac_cv_type_fd_set *,...)])
-  AC_DEFINE_UNQUOTED(fd_set_size_t, $ac_cv_type_fd_set_size_t)
-  ac_cast=
-  if test "$ac_cv_type_fd_set" != fd_set; then
-    # Arguments 2-4 are not fd_set.  Some weirdo systems use fd_set type for
-    # FD_SET macros, but insist that you cast the argument to select.  I don't
-    # understand why that might be, but it means we cannot define fd_set.
-    AC_EGREP_CPP(dnl
-changequote(<<,>>)dnl
-<<(^|[^a-zA-Z_0-9])fd_set[^a-zA-Z_0-9]>>dnl
-changequote([,]),dnl
-[#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef HAVE_SYS_SELECT_H
-#include <sys/select.h>
-#endif
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif],dnl
-    # We found fd_set type in a header, need special cast
-    ac_cast="($ac_cv_type_fd_set *)",dnl
-    # No fd_set type; it is safe to define it
-    AC_DEFINE_UNQUOTED(fd_set,$ac_cv_type_fd_set))
-  fi
-  AC_DEFINE_UNQUOTED(SELECT_FD_SET_CAST,$ac_cast)
-fi
-])
-
-
 # The following is taken from automake 1.4,
 # except that it prefers the compiler option -Ae to "-Aa -D_HPUX_SOURCE"
 # because only the former supports 64-bit integral types on HP-UX 10.20.
@@ -486,6 +401,180 @@ case "x$am_cv_prog_cc_stdc" in
   *) CC="$CC $am_cv_prog_cc_stdc" ;;
 esac
 ])
+
+dnl ---------------------------------------------------------------------------
+dnl Enable internationalization support for GNU make.
+dnl Original obtained from the libit 0.7 distribution
+dnl Rewritten by Paul D. Smith <psmith@gnu.org>
+dnl This version is much more straightforward than the original (I think);
+dnl If the user doesn't disable NLS, check whether she asked for the
+dnl included gettext.  If so, we use that.  If not, test to see if the
+dnl system gettext is GNU.  If not, use the included gettext.  If so,
+dnl use the system gettext.  We are very strict about testing for GNU
+dnl gettext; not only must the library be GNU gettext, but the libintl.h
+dnl file must also be GNU.
+dnl
+AC_DEFUN(pds_CHECK_SYSTEM_GETTEXT, [
+
+  # OK.  What we're going to do is see if the system gettext is really
+  # GNU gettext, and we're going to make _sure_ (as we can) that if
+  # it's not we'll use the included gettext.
+
+  pds_keep_LIBS="$LIBS"
+
+  # Look around for gettext() and libintl.h on the system
+  AC_CHECK_HEADERS(locale.h)
+  AC_SEARCH_LIBS(gettext, intl)
+  if test "$ac_cv_search_gettext" = no; then
+    with_included_gettext=yes
+
+  else
+    # We only want to deal with GNU's gettext; if we don't have that
+    # we'll just use our own, thanks very much.
+    AC_CACHE_CHECK([whether the system has GNU gettext],
+                   pds_cv_system_gnu_gettext, [
+      AC_TRY_LINK([
+#include <libintl.h>
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
+], [
+#if __USE_GNU_GETTEXT
+  extern int _nl_msg_cat_cntr;
+  return _nl_msg_cat_cntr;
+#else
+not GNU gettext
+#endif
+],
+	pds_cv_system_gnu_gettext=yes, pds_cv_system_gnu_gettext=no)])
+
+    if test "x$pds_cv_system_gnu_gettext" = xyes; then
+      with_included_gettext=no
+      AC_DEFINE(HAVE_LIBINTL_H, 1, [Define if you have <libintl.h>.])
+    else
+      with_included_gettext=yes
+      LIBS="$pds_keep_LIBS"
+    fi
+  fi
+])
+
+
+AC_DEFUN(pds_WITH_GETTEXT, [
+
+  AC_MSG_CHECKING(whether NLS is wanted)
+  AC_ARG_ENABLE(nls,
+    [  --disable-nls           disallow Native Language Support],
+    enable_nls=$enableval, enable_nls=yes)
+  AC_MSG_RESULT($enable_nls)
+  use_nls=$enable_nls
+  AM_CONDITIONAL(USE_NLS, test $use_nls = yes)
+
+  if test $enable_nls = yes; then
+    AC_DEFINE(ENABLE_NLS, 1, [Define if NLS is requested.])
+
+    # We don't support catgets at all
+    if test "x$with_catgets" != x; then
+      AC_MSG_WARN([catgets not supported; --with-catgets ignored])
+    fi
+
+    # Find out what the user wants.
+
+    AC_ARG_WITH(included-gettext,
+      [  --with-included-gettext use the GNU gettext library included here],
+      with_included_gettext=yes,
+      with_included_gettext=maybe)
+
+    if test "x$with_included_gettext" != xyes; then
+      pds_CHECK_SYSTEM_GETTEXT
+    fi
+
+    AC_MSG_CHECKING([whether to use included gettext])
+    AC_MSG_RESULT($with_included_gettext)
+
+    if test "$with_included_gettext" = yes; then
+      LIBOBJS="$LIBOBJS gettext.o"
+    fi
+
+    AC_DEFINE(HAVE_GETTEXT, 1, [Define if you have the gettext function.])
+    AC_DEFINE(HAVE_DCGETTEXT, 1, [Define if you have the dcgettext function.])
+
+    AC_CHECK_FUNCS(getcwd setlocale stpcpy)
+    AM_LC_MESSAGES
+
+    if test -z "$ALL_LINGUAS"; then
+      AC_MSG_WARN(This package does not install translations yet.)
+    else
+      ac_items="$ALL_LINGUAS"
+      for ac_item in $ac_items; do
+	ALL_POFILES="$ALL_POFILES $ac_item.po"
+	ALL_MOFILES="$ALL_MOFILES $ac_item.mo"
+      done
+    fi
+    AC_SUBST(ALL_LINGUAS)
+    AC_SUBST(ALL_POFILES)
+    AC_SUBST(ALL_MOFILES)
+
+    AC_MSG_CHECKING(which translations to install)
+    if test -z "$LINGUAS"; then
+      ac_print="$ALL_LINGUAS"
+      MOFILES="$ALL_MOFILES"
+    else
+      ac_items="$LINGUAS"
+      for ac_item in $ac_items; do
+	case "$ALL_LINGUAS" in
+	  *$ac_item*)
+	    ac_print="$ac_print $ac_item"
+	    MOFILES="$MOFILES $ac_item.mo"
+	    ;;
+	esac
+      done
+    fi
+    AC_SUBST(MOFILES)
+    if test -z "$ac_print"; then
+      AC_MSG_RESULT(none)
+    else
+      AC_MSG_RESULT($ac_print)
+    fi
+
+    if test "x$prefix" = xNONE; then
+      AC_DEFINE_UNQUOTED(LOCALEDIR, "$ac_default_prefix/share/locale")
+    else
+      AC_DEFINE_UNQUOTED(LOCALEDIR, "$prefix/share/locale")
+    fi
+  fi])
+
+# Define a conditional.
+
+AC_DEFUN(AM_CONDITIONAL,
+[AC_SUBST($1_TRUE)
+AC_SUBST($1_FALSE)
+if $2; then
+  $1_TRUE=
+  $1_FALSE='#'
+else
+  $1_TRUE='#'
+  $1_FALSE=
+fi])
+
+# Check whether LC_MESSAGES is available in <locale.h>.
+# Ulrich Drepper <drepper@cygnus.com>, 1995.
+#
+# This file can be copied and used freely without restrictions.  It can
+# be used in projects which are not available under the GNU Public License
+# but which still want to provide support for the GNU gettext functionality.
+# Please note that the actual code is *not* freely available.
+
+# serial 1
+
+AC_DEFUN(AM_LC_MESSAGES,
+  [if test $ac_cv_header_locale_h = yes; then
+    AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
+      [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],
+       am_cv_val_LC_MESSAGES=yes, am_cv_val_LC_MESSAGES=no)])
+    if test $am_cv_val_LC_MESSAGES = yes; then
+      AC_DEFINE(HAVE_LC_MESSAGES)
+    fi
+  fi])
 
 # Do all the work for Automake.  This macro actually does too much --
 # some checks are only needed if your package does certain things.

@@ -5,8 +5,6 @@
 # This Makefile.DOS is free software; the Free Software Foundation
 # gives unlimited permission to copy, distribute and modify it.
 
-# -*-Makefile-*-, or close enough
-
 
 SHELL = /bin/sh
 
@@ -14,26 +12,28 @@ srcdir = .
 VPATH = $(srcdir)
 # $DJDIR is defined automatically by DJGPP to point
 # to the root of the DJGPP installation tree.
-prefix = ${DJDIR}
+prefix = /dev/env/DJDIR
 exec_prefix = ${prefix}
 
-bindir = ${exec_prefix}/bin
-datadir = ${prefix}/share
-libdir = ${prefix}/lib
-infodir = ${prefix}/info
-# DJGPP doesn't have separate man tree, use info instead.
-mandir = ${prefix}/info
-includedir = ${prefix}/include
+bindir = /bin
+datadir = /share
+libdir = /lib
+infodir = /info
+mandir = /man
+includedir = /include
 oldincludedir = c:/djgpp/include
+
+DESTDIR = /dev/env/DJDIR
 
 pkgdatadir = $(datadir)/make
 pkglibdir = $(libdir)/make
 pkgincludedir = $(includedir)/make
+localedir = $(datadir)/locale
 
-INSTALL = ${bindir}/ginstall -c
-INSTALL_PROGRAM = ${bindir}/ginstall -c
-INSTALL_DATA = ${bindir}/ginstall -c -m 644
-INSTALL_SCRIPT = ${bindir}/ginstall -c
+INSTALL = ${exec_prefix}/bin/ginstall -c
+INSTALL_PROGRAM = ${exec_prefix}/bin/ginstall -c
+INSTALL_DATA = ${exec_prefix}/bin/ginstall -c -m 644
+INSTALL_SCRIPT = ${exec_prefix}/bin/ginstall -c
 transform = s,x,x,
 
 # This will fail even if they don't have a Unix-like shell (stock DOS
@@ -51,18 +51,18 @@ AR = ar
 CC = gcc
 CPP = gcc -E
 LIBOBJS =
-MAKEINFO = ${bindir}/makeinfo
+MAKEINFO = ${exec_prefix}/bin/makeinfo
 PACKAGE = make
 PERL = perl
 RANLIB = ranlib
 REMOTE = stub
-VERSION = 3.78.1
+VERSION = 3.79.1
 
 AUTOMAKE_OPTIONS = 1.2
 
 bin_PROGRAMS =	make
 
-make_SOURCES =	main.c commands.c job.c dir.c file.c misc.c read.c remake.c rule.c implicit.c default.c variable.c expand.c function.c vpath.c version.c ar.c arscan.c commands.h dep.h filedef.h job.h make.h rule.h variable.h signame.c signame.h getopt.c getopt1.c getopt.h remote-$(REMOTE).c
+make_SOURCES =	ar.c arscan.c commands.c dir.c expand.c file.c function.c getopt.c implicit.c job.c main.c misc.c read.c remake.c rule.c signame.c variable.c vpath.c default.c version.c getopt1.c remote-$(REMOTE).c
 # This should include the glob/ prefix
 libglob_a_SOURCES =	glob/fnmatch.c glob/glob.c glob/fnmatch.h glob/glob.h
 make_LDADD =	  glob/libglob.a
@@ -70,14 +70,14 @@ make_LDADD =	  glob/libglob.a
 info_TEXINFOS =	make.texinfo
 man_MANS =	make.1
 
-INCLUDES =	-I$(srcdir)/glob -DLIBDIR=\"c:/djgpp/lib\" -DINCLUDEDIR=\"c:/djgpp/include\"
+INCLUDES =	-I$(srcdir)/glob -DLIBDIR=\"c:/djgpp/lib\" -DINCLUDEDIR=\"c:/djgpp/include\" -DLOCALEDIR=\"$(localedir)\"
 
-BUILT_SOURCES =	README build.sh.in
+BUILT_SOURCES =	README build.sh-in
 
-EXTRA_DIST = 	$(BUILT_SOURCES) $(man_MANS) README.customs remote-cstms.c  make-stds.texi texinfo.tex SCOPTIONS SMakefile  Makefile.ami README.Amiga config.ami amiga.c amiga.h  NMakefile README.DOS configh.dos configure.bat makefile.com  README.W32 build_w32.bat config.h.W32 subproc.bat make.lnk  config.h-vms makefile.vms readme.vms vmsdir.h vmsfunctions.c  vmsify.c
+EXTRA_DIST = 	$(BUILT_SOURCES) $(man_MANS) README.customs remote-cstms.c  make-stds.texi texinfo.tex SCOPTIONS SMakefile  Makefile.ami README.Amiga config.ami amiga.c amiga.h  NMakefile README.DOS configh.dos configure.bat makefile.com  README.W32 build_w32.bat config.h-W32 subproc.bat make.lnk  config.h-vms makefile.vms readme.vms vmsdir.h vmsfunctions.c  vmsify.c
 
 SUBDIRS =	glob
-mkinstalldirs = ${bindir}/gmkdir -p
+mkinstalldirs = ${exec_prefix}/bin/gmkdir -p
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =  build.sh
 PROGRAMS =  $(bin_PROGRAMS)
@@ -89,7 +89,7 @@ DEFS =  -I. -I$(srcdir) -I.
 CPPFLAGS = -DHAVE_CONFIG_H
 LDFLAGS =
 LIBS =
-make_OBJECTS =  main.o commands.o job.o dir.o file.o misc.o read.o remake.o rule.o implicit.o default.o variable.o expand.o function.o vpath.o version.o ar.o arscan.o signame.o getopt.o getopt1.o remote-$(REMOTE).o
+make_OBJECTS =  ar.o arscan.o commands.o dir.o expand.o file.o function.o getopt.o implicit.o job.o main.o misc.o read.o remake.o rule.o signame.o variable.o vpath.o default.o version.o getopt1.o remote-$(REMOTE).o
 make_DEPENDENCIES =    glob/libglob.a
 make_LDFLAGS =
 libglob_a_LIBADD =
@@ -107,7 +107,7 @@ man1dir = $(mandir)/man1
 MANS = $(man_MANS)
 
 NROFF = nroff
-DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am  Makefile.in NEWS acconfig.h aclocal.m4 alloca.c build.sh.in config.h.in  configure configure.in getloadavg.c install-sh missing mkinstalldirs  stamp-h.in texinfo.tex
+DIST_COMMON =  README ABOUT-NLS AUTHORS COPYING ChangeLog INSTALL Makefile.am  Makefile.in NEWS acconfig.h aclocal.m4 alloca.c build.sh.in config.h.in  configure configure.in getloadavg.c gettext.c install-sh missing mkinstalldirs  stamp-h.in texinfo.tex
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -144,11 +144,11 @@ maintainer-clean-binPROGRAMS:
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do    if test -f $$p; then      echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p | sed '$(transform)'`";       $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p | sed '$(transform)'`;    else :; fi;  done
+	@list='$(bin_PROGRAMS)'; for p in $$list; do    if test -f $$p; then      echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p | sed '$(transform)'`";       $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p | sed '$(transform)'`;    else :; fi;  done
 
 uninstall-binPROGRAMS:
 	$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do    rm -f $(bindir)/`echo $$p|sed '$(transform)'`.exe;  done
+	list='$(bin_PROGRAMS)'; for p in $$list; do    rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`.exe;  done
 
 .c.o:
 	$(COMPILE) -c $<
@@ -388,6 +388,9 @@ install-exec: install-exec-recursive install-exec-am
 install-data: install-data-recursive install-data-am
 	@$(NORMAL_INSTALL)
 
+install-recursive uninstall-recursive:
+	@:
+
 install: install-recursive install-exec-am install-data-am
 	@:
 
@@ -543,39 +546,41 @@ check-regression:
 # --------------- DEPENDENCIES
 #
 alloca.o: alloca.c config.h
-ar.o: ar.c make.h config.h signame.h filedef.h dep.h glob/fnmatch.h
-arscan.o: arscan.c make.h config.h signame.h
-commands.o: commands.c make.h config.h signame.h dep.h filedef.h \
+ar.o: ar.c make.h config.h gettext.h filedef.h dep.h glob/fnmatch.h
+arscan.o: arscan.c make.h config.h gettext.h
+commands.o: commands.c make.h config.h gettext.h dep.h filedef.h \
 	variable.h job.h commands.h
-default.o: default.c make.h config.h signame.h rule.h dep.h filedef.h \
+default.o: default.c make.h config.h gettext.h rule.h dep.h filedef.h \
 	job.h commands.h variable.h
-dir.o: dir.c make.h config.h signame.h glob/glob.h
-expand.o: expand.c make.h config.h signame.h filedef.h job.h commands.h \
+dir.o: dir.c make.h config.h gettext.h glob/glob.h
+expand.o: expand.c make.h config.h gettext.h filedef.h job.h commands.h \
 	variable.h rule.h
-file.o: file.c make.h config.h signame.h dep.h filedef.h job.h \
+file.o: file.c make.h config.h gettext.h dep.h filedef.h job.h \
 	commands.h variable.h
-function.o: function.c make.h config.h signame.h filedef.h variable.h \
-	dep.h job.h commands.h
+function.o: function.c make.h config.h gettext.h filedef.h variable.h \
+	dep.h job.h commands.h debug.h
 getloadavg.o: getloadavg.c config.h
-getopt.o: getopt.c config.h getopt.h
+getopt.o: getopt.c config.h gettext.h getopt.h
 getopt1.o: getopt1.c config.h getopt.h
-implicit.o: implicit.c make.h config.h signame.h rule.h dep.h filedef.h
-job.o: job.c make.h config.h signame.h job.h filedef.h commands.h \
-	variable.h
-main.o: main.c make.h config.h signame.h dep.h filedef.h variable.h \
-	job.h commands.h rule.h getopt.h
-misc.o: misc.c make.h config.h signame.h dep.h
-read.o: read.c make.h config.h signame.h glob/glob.h dep.h filedef.h \
-	job.h commands.h variable.h rule.h
-remake.o: remake.c make.h config.h signame.h filedef.h job.h commands.h \
-	dep.h variable.h
-remote-stub.o: remote-stub.c make.h config.h signame.h filedef.h job.h \
-	commands.h
-rule.o: rule.c make.h config.h signame.h dep.h filedef.h job.h \
-	commands.h variable.h rule.h
-signame.o: signame.c make.h config.h signame.h
-variable.o: variable.c make.h config.h signame.h dep.h filedef.h job.h \
+gettext.o: gettext.c config.h gettext.h
+implicit.o: implicit.c make.h config.h gettext.h rule.h dep.h filedef.h \
+	debug.h
+job.o: job.c make.h config.h gettext.h job.h debug.h filedef.h \
 	commands.h variable.h
+main.o: main.c make.h config.h gettext.h dep.h filedef.h variable.h \
+	job.h commands.h rule.h debug.h getopt.h
+misc.o: misc.c make.h config.h gettext.h dep.h debug.h
+read.o: read.c make.h config.h gettext.h glob/glob.h dep.h filedef.h \
+	job.h commands.h variable.h rule.h debug.h
+remake.o: remake.c make.h config.h gettext.h filedef.h job.h commands.h \
+	dep.h variable.h debug.h
+remote-stub.o: remote-stub.c make.h config.h gettext.h filedef.h job.h \
+	commands.h
+rule.o: rule.c make.h config.h gettext.h dep.h filedef.h job.h \
+	commands.h variable.h rule.h
+signame.o: signame.c make.h config.h gettext.h signame.h
+variable.o: variable.c make.h config.h gettext.h dep.h filedef.h job.h \
+	commands.h variable.h rule.h
 version.o: version.c config.h
-vpath.o: vpath.c make.h config.h signame.h filedef.h variable.h
+vpath.o: vpath.c make.h config.h gettext.h filedef.h variable.h
 

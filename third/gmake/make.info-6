@@ -1,5 +1,4 @@
-This is Info file make.info, produced by Makeinfo version 1.67 from the
-input file make.texinfo.
+This is make.info, produced by makeinfo version 4.0 from make.texinfo.
 
 INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
@@ -10,11 +9,11 @@ END-INFO-DIR-ENTRY
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.54, last updated 09 September 1999, of `The GNU
-Make Manual', for `make', Version 3.78.1.
+   This is Edition 0.55, last updated 04 April 2000, of `The GNU Make
+Manual', for `make', Version 3.79.
 
    Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
-'98, '99         Free Software Foundation, Inc.
+'98, '99, 2000         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -29,6 +28,80 @@ permission notice identical to this one.
 manual into another language, under the above conditions for modified
 versions, except that this permission notice may be stated in a
 translation approved by the Free Software Foundation.
+
+
+File: make.info,  Node: Using Implicit,  Next: Catalogue of Rules,  Up: Implicit Rules
+
+Using Implicit Rules
+====================
+
+   To allow `make' to find a customary method for updating a target
+file, all you have to do is refrain from specifying commands yourself.
+Either write a rule with no command lines, or don't write a rule at
+all.  Then `make' will figure out which implicit rule to use based on
+which kind of source file exists or can be made.
+
+   For example, suppose the makefile looks like this:
+
+     foo : foo.o bar.o
+             cc -o foo foo.o bar.o $(CFLAGS) $(LDFLAGS)
+
+Because you mention `foo.o' but do not give a rule for it, `make' will
+automatically look for an implicit rule that tells how to update it.
+This happens whether or not the file `foo.o' currently exists.
+
+   If an implicit rule is found, it can supply both commands and one or
+more prerequisites (the source files).  You would want to write a rule
+for `foo.o' with no command lines if you need to specify additional
+prerequisites, such as header files, that the implicit rule cannot
+supply.
+
+   Each implicit rule has a target pattern and prerequisite patterns.
+There may be many implicit rules with the same target pattern.  For
+example, numerous rules make `.o' files: one, from a `.c' file with the
+C compiler; another, from a `.p' file with the Pascal compiler; and so
+on.  The rule that actually applies is the one whose prerequisites
+exist or can be made.  So, if you have a file `foo.c', `make' will run
+the C compiler; otherwise, if you have a file `foo.p', `make' will run
+the Pascal compiler; and so on.
+
+   Of course, when you write the makefile, you know which implicit rule
+you want `make' to use, and you know it will choose that one because you
+know which possible prerequisite files are supposed to exist.  *Note
+Catalogue of Implicit Rules: Catalogue of Rules, for a catalogue of all
+the predefined implicit rules.
+
+   Above, we said an implicit rule applies if the required
+prerequisites "exist or can be made".  A file "can be made" if it is
+mentioned explicitly in the makefile as a target or a prerequisite, or
+if an implicit rule can be recursively found for how to make it.  When
+an implicit prerequisite is the result of another implicit rule, we say
+that "chaining" is occurring.  *Note Chains of Implicit Rules: Chained
+Rules.
+
+   In general, `make' searches for an implicit rule for each target, and
+for each double-colon rule, that has no commands.  A file that is
+mentioned only as a prerequisite is considered a target whose rule
+specifies nothing, so implicit rule search happens for it.  *Note
+Implicit Rule Search Algorithm: Implicit Rule Search, for the details
+of how the search is done.
+
+   Note that explicit prerequisites do not influence implicit rule
+search.  For example, consider this explicit rule:
+
+     foo.o: foo.p
+
+The prerequisite on `foo.p' does not necessarily mean that `make' will
+remake `foo.o' according to the implicit rule to make an object file, a
+`.o' file, from a Pascal source file, a `.p' file.  For example, if
+`foo.c' also exists, the implicit rule to make an object file from a C
+source file is used instead, because it appears before the Pascal rule
+in the list of predefined implicit rules (*note Catalogue of Implicit
+Rules: Catalogue of Rules.).
+
+   If you do not want an implicit rule to be used for a target that has
+no commands, you can give that target empty commands by writing a
+semicolon (*note Defining Empty Commands: Empty Commands.).
 
 
 File: make.info,  Node: Catalogue of Rules,  Next: Implicit Variables,  Prev: Using Implicit,  Up: Implicit Rules
@@ -230,7 +303,7 @@ executable from a `.X' file uses `LINK.X'; and the rule to preprocess a
 $@', or to be empty, depending on a compile-time option.  You need the
 `-o' option to ensure that the output goes into the right file when the
 source file is in a different directory, as when using `VPATH' (*note
-Directory Search::.).  However, compilers on some systems do not accept
+Directory Search::).  However, compilers on some systems do not accept
 a `-o' switch for object files.  If you use such a system, and use
 `VPATH', some compilations will put their output in the wrong place.  A
 possible workaround for this problem is to give `OUTPUT_OPTION' the
@@ -254,9 +327,9 @@ says `$(CC) -c $(CFLAGS) $(CPPFLAGS)'.  The default values of the
 variables used are `cc' and nothing, resulting in the command `cc -c'.
 By redefining `CC' to `ncc', you could cause `ncc' to be used for all C
 compilations performed by the implicit rule.  By redefining `CFLAGS' to
-be `-g', you could pass the `-g' option to each compilation.  *All*
+be `-g', you could pass the `-g' option to each compilation.  _All_
 implicit rules that do C compilation use `$(CC)' to get the program
-name for the compiler and *all* include `$(CFLAGS)' among the arguments
+name for the compiler and _all_ include `$(CFLAGS)' among the arguments
 given to the compiler.
 
    The variables used in implicit rules fall into two classes: those
@@ -416,7 +489,7 @@ leave well enough alone.  It won't bother updating B, or the ultimate
 target, unless some prerequisite of B is newer than that target or
 there is some other reason to update that target.
 
-   The second difference is that if `make' *does* create B in order to
+   The second difference is that if `make' _does_ create B in order to
 update something else, it deletes B later on after it is no longer
 needed.  Therefore, an intermediate file which did not exist before
 `make' also does not exist after `make'.  `make' reports the deletion
@@ -631,17 +704,17 @@ for the source file name.
 `$<'
      The name of the first prerequisite.  If the target got its
      commands from an implicit rule, this will be the first
-     prerequisite added by the implicit rule (*note Implicit Rules::.).
+     prerequisite added by the implicit rule (*note Implicit Rules::).
 
 `$?'
      The names of all the prerequisites that are newer than the target,
      with spaces between them.  For prerequisites which are archive
-     members, only the member named is used (*note Archives::.).
+     members, only the member named is used (*note Archives::).
 
 `$^'
      The names of all the prerequisites, with spaces between them.  For
      prerequisites which are archive members, only the member named is
-     used (*note Archives::.).  A target has only one prerequisite on
+     used (*note Archives::).  A target has only one prerequisite on
      each other file it depends on, no matter how many times each file
      is listed as a prerequisite.  So if you list a prerequisite more
      than once for a target, the value of `$^' contains just one copy
@@ -875,7 +948,7 @@ Defining Last-Resort Default Rules
 
    You can define a last-resort implicit rule by writing a terminal
 match-anything pattern rule with no prerequisites (*note Match-Anything
-Rules::.).  This is just like any other pattern rule; the only thing
+Rules::).  This is just like any other pattern rule; the only thing
 special about it is that it will match any target.  So such a rule's
 commands are used for all targets and prerequisites that have no
 commands of their own and for which no other implicit rule applies.
@@ -1028,7 +1101,7 @@ rule.
      T or N.  If the target pattern contains a slash, it is matched
      against T; otherwise, against N.
 
-  3. If any rule in that list is *not* a match-anything rule, then
+  3. If any rule in that list is _not_ a match-anything rule, then
      remove all nonterminal match-anything rules from the list.
 
   4. Remove from the list all rules with no commands.
@@ -1098,96 +1171,4 @@ is as subroutine libraries for linking.
 * Archive Pitfalls::            Dangers to watch out for when using archives.
 * Archive Suffix Rules::        You can write a special kind of suffix rule
                                   for updating archives.
-
-
-File: make.info,  Node: Archive Members,  Next: Archive Update,  Up: Archives
-
-Archive Members as Targets
-==========================
-
-   An individual member of an archive file can be used as a target or
-prerequisite in `make'.  You specify the member named MEMBER in archive
-file ARCHIVE as follows:
-
-     ARCHIVE(MEMBER)
-
-This construct is available only in targets and prerequisites, not in
-commands!  Most programs that you might use in commands do not support
-this syntax and cannot act directly on archive members.  Only `ar' and
-other programs specifically designed to operate on archives can do so.
-Therefore, valid commands to update an archive member target probably
-must use `ar'.  For example, this rule says to create a member `hack.o'
-in archive `foolib' by copying the file `hack.o':
-
-     foolib(hack.o) : hack.o
-             ar cr foolib hack.o
-
-   In fact, nearly all archive member targets are updated in just this
-way and there is an implicit rule to do it for you.  *Note:* The `c'
-flag to `ar' is required if the archive file does not already exist.
-
-   To specify several members in the same archive, you can write all the
-member names together between the parentheses.  For example:
-
-     foolib(hack.o kludge.o)
-
-is equivalent to:
-
-     foolib(hack.o) foolib(kludge.o)
-
-   You can also use shell-style wildcards in an archive member
-reference.  *Note Using Wildcard Characters in File Names: Wildcards.
-For example, `foolib(*.o)' expands to all existing members of the
-`foolib' archive whose names end in `.o'; perhaps `foolib(hack.o)
-foolib(kludge.o)'.
-
-
-File: make.info,  Node: Archive Update,  Next: Archive Pitfalls,  Prev: Archive Members,  Up: Archives
-
-Implicit Rule for Archive Member Targets
-========================================
-
-   Recall that a target that looks like `A(M)' stands for the member
-named M in the archive file A.
-
-   When `make' looks for an implicit rule for such a target, as a
-special feature it considers implicit rules that match `(M)', as well as
-those that match the actual target `A(M)'.
-
-   This causes one special rule whose target is `(%)' to match.  This
-rule updates the target `A(M)' by copying the file M into the archive.
-For example, it will update the archive member target `foo.a(bar.o)' by
-copying the *file* `bar.o' into the archive `foo.a' as a *member* named
-`bar.o'.
-
-   When this rule is chained with others, the result is very powerful.
-Thus, `make "foo.a(bar.o)"' (the quotes are needed to protect the `('
-and `)' from being interpreted specially by the shell) in the presence
-of a file `bar.c' is enough to cause the following commands to be run,
-even without a makefile:
-
-     cc -c bar.c -o bar.o
-     ar r foo.a bar.o
-     rm -f bar.o
-
-Here `make' has envisioned the file `bar.o' as an intermediate file.
-*Note Chains of Implicit Rules: Chained Rules.
-
-   Implicit rules such as this one are written using the automatic
-variable `$%'.  *Note Automatic Variables: Automatic.
-
-   An archive member name in an archive cannot contain a directory
-name, but it may be useful in a makefile to pretend that it does.  If
-you write an archive member target `foo.a(dir/file.o)', `make' will
-perform automatic updating with this command:
-
-     ar r foo.a dir/file.o
-
-which has the effect of copying the file `dir/file.o' into a member
-named `file.o'.  In connection with such usage, the automatic variables
-`%D' and `%F' may be useful.
-
-* Menu:
-
-* Archive Symbols::             How to update archive symbol directories.
 

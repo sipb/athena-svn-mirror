@@ -39,12 +39,36 @@ Boston, MA 02111-1307, USA.  */
 # define PARAMS(protos)  ()
 #endif /* C++ or ANSI C.  */
 
+/* Specify we want GNU source code.  This must be defined before any
+   system headers are included.  */
 
-/* For now, set gettext macro to a no-op.  */
-#undef _
-#undef N_
-#define _(s)    s
-#define N_(s)   s
+#define _GNU_SOURCE 1
+
+/* Include libintl.h, if it was found: we don't even look for it unless we
+   want to use the system's gettext().  If not, use the included gettext.h.  */
+
+#ifdef HAVE_LIBINTL_H
+# include <libintl.h>
+# ifdef HAVE_LOCALE_H
+#  include <locale.h>
+# endif
+#else
+# include "gettext.h"
+#endif
+
+#ifndef gettext_noop
+/* For automatic extraction of messages sometimes no real translation is
+   needed.  Instead the string itself is the result.  */
+# define gettext_noop(Str) (Str)
+#endif
+
+#define _(Text)     gettext (Text)
+#define N_(Text)    gettext_noop (Text)
+
+
+#if !HAVE_SETLOCALE
+# define setlocale(Category, Locale) /* empty */
+#endif
 
 
 #ifdef  CRAY
@@ -58,7 +82,6 @@ Boston, MA 02111-1307, USA.  */
 # define __NO_STRING_INLINES
 #endif
 
-#define _GNU_SOURCE 1
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <signal.h>
@@ -70,7 +93,18 @@ Boston, MA 02111-1307, USA.  */
    <sys/timeb.h>?  If any does not, configure should check for it.  */
 # include <sys/timeb.h>
 #endif
-#include <time.h>
+
+#if TIME_WITH_SYS_TIME
+# include <sys/time.h>
+# include <time.h>
+#else
+# if HAVE_SYS_TIME_H
+#  include <sys/time.h>
+# else
+#  include <time.h>
+# endif
+#endif
+
 #include <errno.h>
 
 #ifndef errno
@@ -105,23 +139,6 @@ extern int errno;
 
 #if !defined (POSIX) && defined (_AIX) && defined (_POSIX_SOURCE)
 # define POSIX 1
-#endif
-
-#if defined (HAVE_SYS_SIGLIST) && !defined (SYS_SIGLIST_DECLARED)
-extern char *sys_siglist[];
-#endif
-
-#if !defined (HAVE_SYS_SIGLIST) || !defined (HAVE_STRSIGNAL)
-# include "signame.h"
-#endif
-
-/* Some systems do not define NSIG in <signal.h>.  */
-#ifndef NSIG
-# ifdef _NSIG
-#  define NSIG  _NSIG
-# else
-#  define NSIG  32
-# endif
 #endif
 
 #ifndef RETSIGTYPE
@@ -192,11 +209,9 @@ extern unsigned int get_path_max PARAMS ((void));
 #endif
 
 #ifdef VMS
-# include <stdio.h>
 # include <types.h>
 # include <unixlib.h>
 # include <unixio.h>
-# include <errno.h>
 # include <perror.h>
 #endif
 
@@ -240,23 +255,7 @@ extern void exit PARAMS ((int)) __attribute__ ((noreturn));
 
 #endif /* Standard headers.  */
 
-#if ST_MTIM_NSEC
-# if HAVE_INTTYPES_H
-#  include <inttypes.h>
-# endif
-# define FILE_TIMESTAMP uintmax_t
-#else
-# define FILE_TIMESTAMP time_t
-#endif
-
 #ifdef  ANSI_STRING
-
-# ifndef index
-#  define index(s, c)       strchr((s), (c))
-# endif
-# ifndef rindex
-#  define rindex(s, c)      strrchr((s), (c))
-# endif
 
 # ifndef bcmp
 #  define bcmp(s1, s2, n)   memcmp ((s1), (s2), (n))
@@ -269,6 +268,11 @@ extern void exit PARAMS ((int)) __attribute__ ((noreturn));
 # endif
 
 #else   /* Not ANSI_STRING.  */
+
+# ifndef HAVE_STRCHR
+#  define strchr(s, c)      index((s), (c))
+#  define strrchr(s, c)     rindex((s), (c))
+# endif
 
 # ifndef bcmp
 extern int bcmp PARAMS ((const char *, const char *, int));
@@ -303,6 +307,11 @@ extern char *alloca ();
 # endif /* HAVE_ALLOCA_H.  */
 #endif /* GCC.  */
 
+#if HAVE_INTTYPES_H
+# include <inttypes.h>
+#endif
+#define FILE_TIMESTAMP uintmax_t
+
 /* ISDIGIT offers the following features:
    - Its arg may be any int or unsigned int; it need not be an unsigned char.
    - It's guaranteed to evaluate its argument exactly once.
@@ -321,8 +330,9 @@ extern char *alloca ();
 # ifdef HAVE_CASE_INSENSITIVE_FS
 /* This is only used on Windows/DOS platforms, so we assume strcmpi().  */
 #  define strieq(a, b) \
-    ((a) == (b) || \
-     (tolower(*(a)) == tolower(*(b)) && (*(a) == '\0' || !strcmpi ((a) + 1, (b) + 1))))
+    ((a) == (b) \
+     || (tolower((unsigned char)*(a)) == tolower((unsigned char)*(b)) \
+         && (*(a) == '\0' || !strcmpi ((a) + 1, (b) + 1))))
 # else
 #  define strieq(a, b) streq(a, b)
 # endif
@@ -332,13 +342,16 @@ extern char *alloca ();
 # define strieq(a, b) (strcmp ((a), (b)) == 0)
 #endif
 #define strneq(a, b, l) (strncmp ((a), (b), (l)) == 0)
+#ifdef  VMS
+extern int strcmpi (const char *,const char *);
+#endif
 
 /* Add to VAR the hashing value of C, one character in a name.  */
 #define HASH(var, c) \
   ((var += (c)), (var = ((var) << 7) + ((var) >> 20)))
 #ifdef HAVE_CASE_INSENSITIVE_FS /* Fold filenames */
 # define HASHI(var, c) \
-   ((var += tolower((c))), (var = ((var) << 7) + ((var) >> 20)))
+   ((var += tolower((unsigned char)(c))), (var = ((var) << 7) + ((var) >> 20)))
 #else
 # define HASHI(var, c) HASH(var,c)
 #endif
@@ -422,6 +435,7 @@ extern int alpha_compare PARAMS ((const void *, const void *));
 extern void print_spaces PARAMS ((unsigned int));
 extern char *find_char_unquote PARAMS ((char *, char *, int));
 extern char *find_percent PARAMS ((char *));
+extern FILE *open_tmpfile PARAMS ((char **, const char *));
 
 #ifndef NO_ARCHIVES
 extern int ar_name PARAMS ((char *));
@@ -469,10 +483,9 @@ extern long int lseek ();
 #endif  /* Not GNU C library or POSIX.  */
 
 #ifdef  HAVE_GETCWD
+# if !defined(VMS) && !defined(__DECC)
 extern char *getcwd ();
-# ifdef VMS
-extern char *getwd PARAMS ((char *));
-# endif
+#endif
 #else
 extern char *getwd ();
 # define getcwd(buf, len)       getwd (buf)
@@ -483,10 +496,10 @@ extern const struct floc *reading_file;
 extern char **environ;
 
 extern int just_print_flag, silent_flag, ignore_errors_flag, keep_going_flag;
-extern int debug_flag, print_data_base_flag, question_flag, touch_flag;
+extern int print_data_base_flag, question_flag, touch_flag;
 extern int env_overrides, no_builtin_rules_flag, no_builtin_variables_flag;
 extern int print_version_flag, print_directory_flag;
-extern int warn_undefined_variables_flag, posix_pedantic;
+extern int warn_undefined_variables_flag, posix_pedantic, not_parallel;
 extern int clock_skew_detected;
 
 /* can we run commands via 'sh -c xxx' or must we use batch files? */
@@ -517,10 +530,6 @@ extern int handling_fatal_signal;
 #ifndef MAX
 #define MAX(_a,_b) ((_a)>(_b)?(_a):(_b))
 #endif
-
-#define DEBUGPR(msg) \
-  do if (debug_flag) { print_spaces (depth); printf (msg, file->name); \
-                       fflush (stdout); } while (0)
 
 #ifdef VMS
 # ifndef EXIT_FAILURE

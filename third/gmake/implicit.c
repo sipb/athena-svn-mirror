@@ -1,5 +1,5 @@
 /* Implicit rule searching for GNU Make.
-Copyright (C) 1988,89,90,91,92,93,94,97 Free Software Foundation, Inc.
+Copyright (C) 1988,89,90,91,92,93,94,97,2000 Free Software Foundation, Inc.
 This file is part of GNU Make.
 
 GNU Make is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@ Boston, MA 02111-1307, USA.  */
 #include "rule.h"
 #include "dep.h"
 #include "filedef.h"
+#include "debug.h"
 
 static int pattern_search PARAMS ((struct file *file, int archive, unsigned int depth,
 		unsigned int recursions));
@@ -36,7 +37,7 @@ try_implicit_rule (file, depth)
      struct file *file;
      unsigned int depth;
 {
-  DEBUGPR (_("Looking for an implicit rule for `%s'.\n"));
+  DBF (DB_IMPLICIT, _("Looking for an implicit rule for `%s'.\n"));
 
   /* The order of these searches was previously reversed.  My logic now is
      that since the non-archive search uses more information in the target
@@ -51,7 +52,8 @@ try_implicit_rule (file, depth)
      archive member name to search for implicit rules.  */
   if (ar_name (file->name))
     {
-      DEBUGPR (_("Looking for archive-member implicit rule for `%s'.\n"));
+      DBF (DB_IMPLICIT,
+           _("Looking for archive-member implicit rule for `%s'.\n"));
       if (pattern_search (file, 1, depth, 0))
 	return 1;
     }
@@ -60,11 +62,6 @@ try_implicit_rule (file, depth)
   return 0;
 }
 
-#define DEBUGP2(msg, a1, a2)						      \
-  do {									      \
-    if (debug_flag)							      \
-      { print_spaces (depth); printf (msg, a1, a2); fflush (stdout); }	      \
-  } while (0)
 
 /* Search the pattern rules for a rule with an existing dependency to make
    FILE.  If a rule is found, the appropriate commands and deps are put in FILE
@@ -88,7 +85,7 @@ pattern_search (file, archive, depth, recursions)
      unsigned int recursions;
 {
   /* Filename we are searching for a rule for.  */
-  char *filename = archive ? index (file->name, '(') : file->name;
+  char *filename = archive ? strchr (file->name, '(') : file->name;
 
   /* Length of FILENAME.  */
   unsigned int namelen = strlen (filename);
@@ -120,6 +117,7 @@ pattern_search (file, archive, depth, recursions)
   /* The start and length of the stem of FILENAME for the current rule.  */
   register char *stem = 0;
   register unsigned int stemlen = 0;
+  register unsigned int fullstemlen = 0;
 
   /* Buffer in which we store all the rules that are possibly applicable.  */
   struct rule **tryrules
@@ -165,14 +163,16 @@ pattern_search (file, archive, depth, recursions)
 	 but not counting any slash at the end.  (foo/bar/ counts as
 	 bar/ in directory foo/, not empty in directory foo/bar/.)  */
 #ifdef VMS
-      lastslash = rindex (filename, ']');
+      lastslash = strrchr (filename, ']');
+      if (lastslash == 0)
+	lastslash = strrchr (filename, ':');
 #else
-      lastslash = rindex (filename, '/');
+      lastslash = strrchr (filename, '/');
 #if defined(__MSDOS__) || defined(WINDOWS32)
       /* Handle backslashes (possibly mixed with forward slashes)
 	 and the case of "d:file".  */
       {
-	char *bslash = rindex (filename, '\\');
+	char *bslash = strrchr (filename, '\\');
 	if (lastslash == 0 || bslash > lastslash)
 	  lastslash = bslash;
 	if (lastslash == 0 && filename[0] && filename[1] == ':')
@@ -199,7 +199,7 @@ pattern_search (file, archive, depth, recursions)
 	 don't use it here.  */
       if (rule->in_use)
 	{
-	  DEBUGP2 (_("Avoiding implicit rule recursion.%s%s\n"), "", "");
+	  DBS (DB_IMPLICIT, (_("Avoiding implicit rule recursion.\n")));
 	  continue;
 	}
 
@@ -228,9 +228,11 @@ pattern_search (file, archive, depth, recursions)
 	     prefix and the target pattern does not contain a slash.  */
 
 #ifdef VMS
-	  check_lastslash = lastslash != 0 && index (target, ']') == 0;
+	  check_lastslash = lastslash != 0
+			    && ((strchr (target, ']') == 0)
+			        && (strchr (target, ':') == 0));
 #else
-	  check_lastslash = lastslash != 0 && index (target, '/') == 0;
+	  check_lastslash = lastslash != 0 && strchr (target, '/') == 0;
 #endif
 	  if (check_lastslash)
 	    {
@@ -335,18 +337,16 @@ pattern_search (file, archive, depth, recursions)
 	      stemlen -= (lastslash - filename) + 1;
 	    }
 
-	  DEBUGP2 (_("Trying pattern rule with stem `%.*s'.\n"),
-		   (int) stemlen, stem);
+	  DBS (DB_IMPLICIT, (_("Trying pattern rule with stem `%.*s'.\n"),
+                             (int) stemlen, stem));
 
 	  /* Try each dependency; see if it "exists".  */
 
 	  deps_found = 0;
 	  for (dep = rule->deps; dep != 0; dep = dep->next)
 	    {
-              struct file *fp;
-
 	      /* If the dependency name has a %, substitute the stem.  */
-	      p = index (dep_name (dep), '%');
+	      p = strchr (dep_name (dep), '%');
 	      if (p != 0)
 		{
 		  register unsigned int i;
@@ -376,16 +376,21 @@ pattern_search (file, archive, depth, recursions)
 		     "impossible", then the rule fails and don't
 		     bother trying it on the second pass either
 		     since we know that will fail too.  */
-		  DEBUGP2 (_("Rejecting impossible %s prerequisite `%s'.\n"),
-			   p == depname ? _("implicit") : _("rule"), p);
+		  DBS (DB_IMPLICIT,
+                       (p == depname
+                        ? _("Rejecting impossible implicit prerequisite `%s'.\n")
+                        : _("Rejecting impossible rule prerequisite `%s'.\n"),
+                        p));
 		  tryrules[i] = 0;
 		  break;
 		}
 
 	      intermediate_files[deps_found] = 0;
 
-	      DEBUGP2 (_("Trying %s prerequisite `%s'.\n"),
-		       p == depname ? _("implicit") : _("rule"), p);
+	      DBS (DB_IMPLICIT,
+                   (p == depname
+                    ? _("Trying implicit prerequisite `%s'.\n")
+                    : _("Trying rule prerequisite `%s'.\n"), p));
 
 	      /* The DEP->changed flag says that this dependency resides in a
 		 nonexistent directory.  So we normally can skip looking for
@@ -393,12 +398,9 @@ pattern_search (file, archive, depth, recursions)
 		 dependency file we are actually looking for is in a different
 		 directory (the one gotten by prepending FILENAME's directory),
 		 so it might actually exist.  */
-              /* If we find a file but the intermediate flag is set, then it
-                 was put here by a .INTERMEDIATE: rule so ignore it.  */
 
 	      if ((!dep->changed || check_lastslash)
-		  && (((fp = lookup_file (p)) != 0 && !fp->intermediate)
-                      || file_exists_p (p)))
+		  && (lookup_file (p) != 0 || file_exists_p (p)))
 		{
 		  found_files[deps_found++] = xstrdup (p);
 		  continue;
@@ -408,8 +410,8 @@ pattern_search (file, archive, depth, recursions)
 	      vp = p;
 	      if (vpath_search (&vp, (FILE_TIMESTAMP *) 0))
 		{
-		  DEBUGP2 (_("Found prerequisite `%s' as VPATH `%s'\n"),
-                           p, vp);
+		  DBS (DB_IMPLICIT,
+                       (_("Found prerequisite `%s' as VPATH `%s'\n"), p, vp));
 		  strcpy (vp, p);
 		  found_files[deps_found++] = vp;
 		  continue;
@@ -425,8 +427,9 @@ pattern_search (file, archive, depth, recursions)
 		    intermediate_file
 		      = (struct file *) alloca (sizeof (struct file));
 
-		  DEBUGP2 (_("Looking for a rule with %s file `%s'.\n"),
-			   _("intermediate"), p);
+		  DBS (DB_IMPLICIT,
+                       (_("Looking for a rule with intermediate file `%s'.\n"),
+                        p));
 
 		  bzero ((char *) intermediate_file, sizeof (struct file));
 		  intermediate_file->name = p;
@@ -540,7 +543,6 @@ pattern_search (file, archive, depth, recursions)
 	      dep->name = 0;
 	      dep->file->tried_implicit |= dep->changed;
 	    }
-	  num_intermediates++;
 	}
 
       dep = (struct dep *) xmalloc (sizeof (struct dep));
@@ -580,18 +582,23 @@ pattern_search (file, archive, depth, recursions)
     }
 
   if (!checked_lastslash[foundrule])
-    /* Always allocate new storage, since STEM might be
-       on the stack for an intermediate file.  */
-    file->stem = savestring (stem, stemlen);
+    {
+      /* Always allocate new storage, since STEM might be
+         on the stack for an intermediate file.  */
+      file->stem = savestring (stem, stemlen);
+      fullstemlen = stemlen;
+    }
   else
     {
+      int dirlen = (lastslash + 1) - filename;
+
       /* We want to prepend the directory from
 	 the original FILENAME onto the stem.  */
-      file->stem = (char *) xmalloc (((lastslash + 1) - filename)
-				     + stemlen + 1);
-      bcopy (filename, file->stem, (lastslash + 1) - filename);
-      bcopy (stem, file->stem + ((lastslash + 1) - filename), stemlen);
-      file->stem[((lastslash + 1) - filename) + stemlen] = '\0';
+      fullstemlen = dirlen + stemlen;
+      file->stem = (char *) xmalloc (fullstemlen + 1);
+      bcopy (filename, file->stem, dirlen);
+      bcopy (stem, file->stem + dirlen, stemlen);
+      file->stem[fullstemlen] = '\0';
     }
 
   file->cmds = rule->cmds;
@@ -604,12 +611,12 @@ pattern_search (file, archive, depth, recursions)
       if (i != matches[foundrule])
 	{
 	  struct dep *new = (struct dep *) xmalloc (sizeof (struct dep));
-	  new->name = p = (char *) xmalloc (rule->lens[i] + stemlen + 1);
+	  new->name = p = (char *) xmalloc (rule->lens[i] + fullstemlen + 1);
 	  bcopy (rule->targets[i], p,
 		 rule->suffixes[i] - rule->targets[i] - 1);
 	  p += rule->suffixes[i] - rule->targets[i] - 1;
-	  bcopy (stem, p, stemlen);
-	  p += stemlen;
+	  bcopy (file->stem, p, fullstemlen);
+	  p += fullstemlen;
 	  bcopy (rule->suffixes[i], p,
 		 rule->lens[i] - (rule->suffixes[i] - rule->targets[i]) + 1);
 	  new->file = enter_file (new->name);

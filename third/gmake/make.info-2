@@ -1,5 +1,4 @@
-This is Info file make.info, produced by Makeinfo version 1.67 from the
-input file make.texinfo.
+This is make.info, produced by makeinfo version 4.0 from make.texinfo.
 
 INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
@@ -10,11 +9,11 @@ END-INFO-DIR-ENTRY
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.54, last updated 09 September 1999, of `The GNU
-Make Manual', for `make', Version 3.78.1.
+   This is Edition 0.55, last updated 04 April 2000, of `The GNU Make
+Manual', for `make', Version 3.79.
 
    Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
-'98, '99         Free Software Foundation, Inc.
+'98, '99, 2000         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -216,13 +215,13 @@ and how to update them when necessary.
 
    The criterion for being out of date is specified in terms of the
 PREREQUISITES, which consist of file names separated by spaces.
-(Wildcards and archive members (*note Archives::.) are allowed here
-too.) A target is out of date if it does not exist or if it is older
-than any of the prerequisites (by comparison of last-modification
-times).  The idea is that the contents of the target file are computed
-based on information in the prerequisites, so if any of the
-prerequisites changes, the contents of the existing target file are no
-longer necessarily valid.
+(Wildcards and archive members (*note Archives::) are allowed here too.)
+A target is out of date if it does not exist or if it is older than any
+of the prerequisites (by comparison of last-modification times).  The
+idea is that the contents of the target file are computed based on
+information in the prerequisites, so if any of the prerequisites
+changes, the contents of the existing target file are no longer
+necessarily valid.
 
    How to update is specified by COMMANDS.  These are lines to be
 executed by the shell (normally `sh'), but with some extra features
@@ -322,7 +321,7 @@ directory, and you write this:
              cc -o foo $(CFLAGS) $(objects)
 
 The value of `objects' is the actual string `*.o'.  Wildcard expansion
-happens in the rule for `foo', so that each *existing* `.o' file
+happens in the rule for `foo', so that each _existing_ `.o' file
 becomes a prerequisite of `foo' and will be recompiled if necessary.
 
    But what if you delete all the `.o' files?  When a wildcard matches
@@ -344,9 +343,9 @@ to separate directories in pathnames, like so:
    This is equivalent to the Unix-style `c:/foo/bar/baz.c' (the `c:'
 part is the so-called drive letter).  When `make' runs on these
 systems, it supports backslashes as well as the Unix-style forward
-slashes in pathnames.  However, this support does *not* include the
+slashes in pathnames.  However, this support does _not_ include the
 wildcard expansion, where backslash is a quote character.  Therefore,
-you *must* use Unix-style slashes in these cases.
+you _must_ use Unix-style slashes in these cases.
 
 
 File: make.info,  Node: Wildcard Function,  Prev: Wildcard Pitfall,  Up: Wildcards
@@ -368,7 +367,7 @@ given file name patterns.  If no existing file name matches a pattern,
 then that pattern is omitted from the output of the `wildcard'
 function.  Note that this is different from how unmatched wildcards
 behave in rules, where they are used verbatim rather than ignored
-(*note Wildcard Pitfall::.).
+(*note Wildcard Pitfall::).
 
    One use of the `wildcard' function is to get a list of all the C
 source files in a directory, like this:
@@ -569,14 +568,14 @@ path found via directory search is as follows:
   4. After processing the prerequisites, the target may or may not need
      to be rebuilt:
 
-       a. If the target does *not* need to be rebuilt, the path to the
+       a. If the target does _not_ need to be rebuilt, the path to the
           file found during directory search is used for any
           prerequisite lists which contain this target.  In short, if
           `make' doesn't need to rebuild the target then you use the
           path found via directory search.
 
-       b. If the target *does* need to be rebuilt (is out-of-date), the
-          pathname found during directory search is *thrown away*, and
+       b. If the target _does_ need to be rebuilt (is out-of-date), the
+          pathname found during directory search is _thrown away_, and
           the target is rebuilt using the file name specified in the
           makefile.  In short, if `make' must rebuild, then the target
           is rebuilt locally, not in the directory found via directory
@@ -666,7 +665,7 @@ Directory Search for Link Libraries
 linker.  This special feature comes into play when you write a
 prerequisite whose name is of the form `-lNAME'.  (You can tell
 something strange is going on here because the prerequisite is normally
-the name of a file, and the *file name* of a library generally looks
+the name of a file, and the _file name_ of a library generally looks
 like `libNAME.a', not like `-lNAME'.)
 
    When a prerequisite's name has the form `-lNAME', `make' handles it
@@ -741,7 +740,7 @@ whether there is a file named `clean'.
 
    Since it knows that phony targets do not name actual files that
 could be remade from other files, `make' skips the implicit rule search
-for phony targets (*note Implicit Rules::.).  This is why declaring a
+for phony targets (*note Implicit Rules::).  This is why declaring a
 target phony is good for performance, even if you are not worried about
 the actual file existing.
 
@@ -932,7 +931,8 @@ Special Built-in Target Names
      Interrupting or Killing `make': Interrupts.  Also, if the target
      is an intermediate file, it will not be deleted after it is no
      longer needed, as is normally done.  *Note Chains of Implicit
-     Rules: Chained Rules.
+     Rules: Chained Rules.  In this latter respect it overlaps with the
+     `.SECONDARY' special target.
 
      You can also list the target pattern of an implicit rule (such as
      `%.o') as a prerequisite file of the special target `.PRECIOUS' to
@@ -949,8 +949,9 @@ Special Built-in Target Names
      intermediate files, except that they are never automatically
      deleted.  *Note Chains of Implicit Rules: Chained Rules.
 
-     `.SECONDARY' with no prerequisites marks all file targets mentioned
-     in the makefile as secondary.
+     `.SECONDARY' with no prerequisites causes all targets to be treated
+     as secondary (i.e., no target is removed because it is considered
+     intermediate).
 
 `.DELETE_ON_ERROR'
      If `.DELETE_ON_ERROR' is mentioned as a target anywhere in the
@@ -982,12 +983,19 @@ Special Built-in Target Names
      recommend you use the more selective ways to silence specific
      commands.  *Note Command Echoing: Echoing.  If you want to silence
      all commands for a particular run of `make', use the `-s' or
-     `--silent' option (*note Options Summary::.).
+     `--silent' option (*note Options Summary::).
 
 `.EXPORT_ALL_VARIABLES'
      Simply by being mentioned as a target, this tells `make' to export
      all variables to child processes by default.  *Note Communicating
      Variables to a Sub-`make': Variables/Recursion.
+
+`.NOTPARALLEL'
+     If `.NOTPARALLEL' is mentioned as a target, then this invocation of
+     `make' will be run serially, even if the `-j' option is given.
+     Any recursively invoked `make' command will still be run in
+     parallel (unless its makefile contains this target).  Any
+     prerequisites on this target are ignored.
 
    Any defined implicit rule suffix also counts as a special target if
 it appears as a target, and so does the concatenation of two suffixes,
@@ -1061,7 +1069,7 @@ more than one rule gives commands for the same file, `make' uses the
 last set given and prints an error message.  (As a special case, if the
 file's name begins with a dot, no error message is printed.  This odd
 behavior is only for compatibility with other implementations of
-`make'.) There is no reason to write your makefiles this way; that is
+`make'.)  There is no reason to write your makefiles this way; that is
 why `make' gives you an error message.
 
    An extra rule with just prerequisites can be used to give a few extra
@@ -1104,7 +1112,7 @@ Static Pattern Rules
 construct the prerequisite names for each target based on the target
 name.  They are more general than ordinary rules with multiple targets
 because the targets do not have to have identical prerequisites.  Their
-prerequisites must be *analogous*, but not necessarily *identical*.
+prerequisites must be _analogous_, but not necessarily _identical_.
 
 * Menu:
 
@@ -1210,10 +1218,10 @@ Static Pattern Rules versus Implicit Rules
 defined as a pattern rule (*note Defining and Redefining Pattern Rules:
 Pattern Rules.).  Both have a pattern for the target and patterns for
 constructing the names of prerequisites.  The difference is in how
-`make' decides *when* the rule applies.
+`make' decides _when_ the rule applies.
 
-   An implicit rule *can* apply to any target that matches its pattern,
-but it *does* apply only when the target has no commands otherwise
+   An implicit rule _can_ apply to any target that matches its pattern,
+but it _does_ apply only when the target has no commands otherwise
 specified, and only when the prerequisites can be found.  If more than
 one implicit rule appears applicable, only one applies; the choice
 depends on the order of rules.

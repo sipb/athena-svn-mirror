@@ -19,7 +19,7 @@ Boston, MA 02111-1307, USA.  */
 
 #include "make.h"
 #include "dep.h"
-
+#include "debug.h"
 
 /* Variadic functions.  We go through contortions to allow proper function
    prototypes for both ANSI and pre-ANSI C compilers, and also for those
@@ -49,6 +49,7 @@ Boston, MA 02111-1307, USA.  */
 # define va_alist a1, a2, a3, a4, a5, a6, a7, a8
 # define va_dcl char *a1, *a2, *a3, *a4, *a5, *a6, *a7, *a8;
 # define VA_START(args, lastarg)
+# define VA_PRINTF(fp, lastarg, args) fprintf((fp), (lastarg), va_alist)
 # define VA_END(args)
 #endif
 
@@ -81,7 +82,7 @@ collapse_continuations (line)
   register int backslash;
   register unsigned int bs_write;
 
-  in = index (line, '\n');
+  in = strchr (line, '\n');
   if (in == 0)
     return;
 
@@ -120,7 +121,7 @@ collapse_continuations (line)
       if (backslash)
 	{
 	  in = next_token (in);
-	  while (out > line && isblank (out[-1]))
+	  while (out > line && isblank ((unsigned char)out[-1]))
 	    --out;
 	  *out++ = ' ';
 	}
@@ -168,7 +169,7 @@ remove_comments (line)
     *comment = '\0';
 }
 
-/* Print N spaces (used by DEBUGPR for target-depth).  */
+/* Print N spaces (used in debug for target-depth).  */
 
 void
 print_spaces (n)
@@ -478,7 +479,7 @@ char *
 end_of_token (s)
      char *s;
 {
-  while (*s != '\0' && !isblank (*s))
+  while (*s != '\0' && !isblank ((unsigned char)*s))
     ++s;
   return s;
 }
@@ -495,7 +496,8 @@ end_of_token_w32 (s, stopchar)
   register char *p = s;
   register int backslash = 0;
 
-  while (*p != '\0' && *p != stopchar && (backslash || !isblank (*p)))
+  while (*p != '\0' && *p != stopchar
+	 && (backslash || !isblank ((unsigned char)*p)))
     {
       if (*p++ == '\\')
         {
@@ -522,7 +524,7 @@ next_token (s)
 {
   register char *p = s;
 
-  while (isblank (*p))
+  while (isblank ((unsigned char)*p))
     ++p;
   return p;
 }
@@ -643,7 +645,7 @@ static void
 log_access (flavor)
      char *flavor;
 {
-  if (! debug_flag)
+  if (! ISDB (DB_JOBS))
     return;
 
   /* All the other debugging messages go to stdout,

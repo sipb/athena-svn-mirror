@@ -4,14 +4,14 @@
 /*
  * Component Name: 
  *
- * $Date: 1999-02-18 20:55:15 $
+ * $Date: 2001-04-03 23:39:56 $
  *
  * $Source: /afs/dev.mit.edu/source/repository/third/gmake/w32/include/sub_proc.h,v $
  *
- * $Revision: 1.1.1.1 $
+ * $Revision: 1.1.1.2 $
  */
 
-/* $Id: sub_proc.h,v 1.1.1.1 1999-02-18 20:55:15 danw Exp $ */
+/* $Id: sub_proc.h,v 1.1.1.2 2001-04-03 23:39:56 ghudson Exp $ */
 
 #ifdef WINDOWS32
 

@@ -29,6 +29,7 @@ Boston, MA 02111-1307, USA.  */
 #include "commands.h"
 #include "variable.h"
 #include "rule.h"
+#include "debug.h"
 
 
 #ifndef WINDOWS32
@@ -149,8 +150,7 @@ read_all_makefiles (makefiles)
 {
   unsigned int num_makefiles = 0;
 
-  if (debug_flag)
-    puts (_("Reading makefiles..."));
+  DB (DB_BASIC, (_("Reading makefiles...\n")));
 
   /* If there's a non-null variable MAKEFILES, its value is a list of
      files to read first thing.  But don't let it prevent reading the
@@ -177,9 +177,9 @@ read_all_makefiles (makefiles)
 
     while ((name = find_next_token (&p, &length)) != 0)
       {
-        name = xstrdup (name);
 	if (*p != '\0')
 	  *p++ = '\0';
+        name = xstrdup (name);
 	if (read_makefile (name,
                            RM_NO_DEFAULT_GOAL|RM_INCLUDED|RM_DONTCARE) < 2)
           free (name);
@@ -287,13 +287,12 @@ read_makefile (filename, flags)
   unsigned int commands_len = 200;
   char *commands;
   unsigned int commands_idx = 0;
-  unsigned int cmds_started;
+  unsigned int cmds_started, tgts_started;
   char *p;
   char *p2;
   int len, reading_target;
   int ignoring = 0, in_ignored_define = 0;
   int no_targets = 0;		/* Set when reading a rule without targets.  */
-  int using_filename = 0;
   struct floc fileinfo;
   char *passed_filename = filename;
 
@@ -313,10 +312,12 @@ read_makefile (filename, flags)
     { 									      \
       if (filenames != 0)						      \
         {                                                                     \
+	  struct floc fi;                                                     \
+	  fi.filenm = fileinfo.filenm;                                        \
+	  fi.lineno = tgts_started;                                           \
 	  record_files (filenames, pattern, pattern_percent, deps,            \
                         cmds_started, commands, commands_idx, two_colon,      \
-                        &fileinfo, !(flags & RM_NO_DEFAULT_GOAL)); 	      \
-          using_filename |= commands_idx > 0;                                 \
+                        &fi, !(flags & RM_NO_DEFAULT_GOAL));                  \
         }                                                                     \
       filenames = 0;							      \
       commands_idx = 0;							      \
@@ -327,9 +328,9 @@ read_makefile (filename, flags)
   fileinfo.lineno = 1;
 
   pattern_percent = 0;
-  cmds_started = fileinfo.lineno;
+  cmds_started = tgts_started = fileinfo.lineno;
 
-  if (debug_flag)
+  if (ISDB (DB_VERBOSE))
     {
       printf (_("Reading makefile `%s'"), fileinfo.filenm);
       if (flags & RM_NO_DEFAULT_GOAL)
@@ -478,7 +479,7 @@ read_makefile (filename, flags)
       /* Compare a word, both length and contents. */
 #define	word1eq(s, l) 	(len == l && strneq (s, p, l))
       p = collapsed;
-      while (isspace (*p))
+      while (isspace ((unsigned char)*p))
 	++p;
       if (*p == '\0')
 	/* This line is completely empty.  */
@@ -488,7 +489,7 @@ read_makefile (filename, flags)
        * ":" here since we compare tokens by length (so "export" will never
        * be equal to "export:").
        */
-      for (p2 = p+1; *p2 != '\0' && !isspace(*p2); ++p2)
+      for (p2 = p+1; *p2 != '\0' && !isspace ((unsigned char)*p2); ++p2)
         {}
       len = p2 - p;
 
@@ -496,7 +497,7 @@ read_makefile (filename, flags)
          since it can't be a preprocessor token--this allows targets named
          `ifdef', `export', etc. */
       reading_target = 0;
-      while (isspace (*p2))
+      while (isspace ((unsigned char)*p2))
         ++p2;
       if (*p2 == '\0')
         p2 = NULL;
@@ -546,8 +547,8 @@ read_makefile (filename, flags)
 		 with trailing blanks stripped (comments have already been
 		 removed), so it could be a complex variable/function
 		 reference that might contain blanks.  */
-	      p = index (p2, '\0');
-	      while (isblank (p[-1]))
+	      p = strchr (p2, '\0');
+	      while (isblank ((unsigned char)p[-1]))
 		--p;
 	      do_define (p2, p - p2, o_file, infile, &fileinfo);
 	    }
@@ -559,7 +560,8 @@ read_makefile (filename, flags)
 	  p2 = next_token (p + 8);
 	  if (*p2 == '\0')
 	    error (&fileinfo, _("empty `override' directive"));
-	  if (strneq (p2, "define", 6) && (isblank (p2[6]) || p2[6] == '\0'))
+	  if (strneq (p2, "define", 6)
+	      && (isblank ((unsigned char)p2[6]) || p2[6] == '\0'))
 	    {
 	      if (ignoring)
 		in_ignored_define = 1;
@@ -573,14 +575,14 @@ read_makefile (filename, flags)
 		     with trailing blanks stripped (comments have already been
 		     removed), so it could be a complex variable/function
 		     reference that might contain blanks.  */
-		  p = index (p2, '\0');
-		  while (isblank (p[-1]))
+		  p = strchr (p2, '\0');
+		  while (isblank ((unsigned char)p[-1]))
 		    --p;
 		  do_define (p2, p - p2, o_override, infile, &fileinfo);
 		}
 	    }
 	  else if (!ignoring
-		   && !try_variable_definition (&fileinfo, p2, o_override))
+		   && !try_variable_definition (&fileinfo, p2, o_override, 0))
 	    error (&fileinfo, _("invalid `override' directive"));
 
 	  continue;
@@ -598,7 +600,7 @@ read_makefile (filename, flags)
 	  p2 = next_token (p + 6);
 	  if (*p2 == '\0')
 	    export_all_variables = 1;
-	  v = try_variable_definition (&fileinfo, p2, o_file);
+	  v = try_variable_definition (&fileinfo, p2, o_file, 0);
 	  if (v != 0)
 	    v->export = v_export;
 	  else
@@ -609,7 +611,7 @@ read_makefile (filename, flags)
 		{
 		  v = lookup_variable (p, len);
 		  if (v == 0)
-		    v = define_variable (p, len, "", o_file, 0);
+		    v = define_variable_loc (p, len, "", o_file, 0, &fileinfo);
 		  v->export = v_export;
 		}
 	    }
@@ -626,7 +628,7 @@ read_makefile (filename, flags)
 	    {
 	      v = lookup_variable (p, len);
 	      if (v == 0)
-		v = define_variable (p, len, "", o_file, 0);
+		v = define_variable_loc (p, len, "", o_file, 0, &fileinfo);
 	      v->export = v_noexport;
 	    }
 	}
@@ -699,11 +701,12 @@ read_makefile (filename, flags)
 
               r = read_makefile (name, (RM_INCLUDED | RM_NO_TILDE
                                         | (noerror ? RM_DONTCARE : 0)));
-	      if (!r && !noerror)
-		error (&fileinfo, "%s: %s", name, strerror (errno));
-
-              if (r < 2)
-                free (name);
+	      if (!r)
+                {
+                  if (!noerror)
+                    error (&fileinfo, "%s: %s", name, strerror (errno));
+                  free (name);
+                }
 	    }
 
 	  /* Free any space allocated by conditional_line.  */
@@ -717,13 +720,13 @@ read_makefile (filename, flags)
 	  reading_file = &fileinfo;
 	}
 #undef	word1eq
-      else if (try_variable_definition (&fileinfo, p, o_file))
+      else if (try_variable_definition (&fileinfo, p, o_file, 0))
 	/* This line has been dealt with.  */
 	;
       else if (lb.buffer[0] == '\t')
 	{
 	  p = collapsed;	/* Ignore comments.  */
-	  while (isblank (*p))
+	  while (isblank ((unsigned char)*p))
 	    ++p;
 	  if (*p == '\0')
 	    /* The line is completely blank; that is harmless.  */
@@ -748,13 +751,14 @@ read_makefile (filename, flags)
 
           enum make_word_type wtype;
           enum variable_origin v_origin;
-          char *cmdleft, *lb_next;
+          char *cmdleft, *semip, *lb_next;
           unsigned int len, plen = 0;
           char *colonp;
 
 	  /* Record the previous rule.  */
 
 	  record_waiting_files ();
+          tgts_started = fileinfo.lineno;
 
 	  /* Search the line for an unquoted ; that is not after an
              unquoted #.  */
@@ -768,6 +772,7 @@ read_makefile (filename, flags)
 	  else if (cmdleft != 0)
 	    /* Found one.  Cut the line short there before expanding it.  */
 	    *(cmdleft++) = '\0';
+          semip = cmdleft;
 
 	  collapse_continuations (lb.buffer);
 
@@ -837,8 +842,8 @@ read_makefile (filename, flags)
 		 are whitespace and a left paren.  If others are possible,
 		 they should be added to the string in the call to index.  */
 	      while (colonp && (colonp[1] == '/' || colonp[1] == '\\') &&
-		     colonp > p2 && isalpha(colonp[-1]) &&
-		     (colonp == p2 + 1 || index(" \t(", colonp[-2]) != 0))
+		     colonp > p2 && isalpha ((unsigned char)colonp[-1]) &&
+		     (colonp == p2 + 1 || strchr (" \t(", colonp[-2]) != 0))
 		colonp = find_char_unquote(colonp + 1, ":", 0);
 #endif
               if (colonp != 0)
@@ -879,7 +884,7 @@ read_makefile (filename, flags)
 						  sizeof (struct nameseq),
 						  1),
 				  sizeof (struct nameseq));
-          *colonp = ':';
+          *p2 = ':';
 
           if (!filenames)
             {
@@ -928,6 +933,14 @@ read_makefile (filename, flags)
 
           if (wtype == w_varassign)
             {
+              /* If there was a semicolon found, add it back, plus anything
+                 after it.  */
+              if (semip)
+                {
+                  *(--semip) = ';';
+                  variable_buffer_output (p2 + strlen (p2),
+                                          semip, strlen (semip)+1);
+                }
               record_target_var (filenames, p, two_colon, v_origin, &fileinfo);
               filenames = 0;
               continue;
@@ -957,7 +970,7 @@ read_makefile (filename, flags)
             }
 
 	  /* Is this a static pattern rule: `target: %targ: %dep; ...'?  */
-	  p = index (p2, ':');
+	  p = strchr (p2, ':');
 	  while (p != 0 && p[-1] == '\\')
 	    {
 	      register char *q = &p[-1];
@@ -965,7 +978,7 @@ read_makefile (filename, flags)
 	      while (*q-- == '\\')
 		backslash = !backslash;
 	      if (backslash)
-		p = index (p + 1, ':');
+		p = strchr (p + 1, ':');
 	      else
 		break;
 	    }
@@ -982,7 +995,8 @@ read_makefile (filename, flags)
 	    The rule is that it's only a target, if there are TWO :'s
 	    OR a space around the :.
 	  */
-	  if (p && !(isspace(p[1]) || !p[1] || isspace(p[-1])))
+	  if (p && !(isspace ((unsigned char)p[1]) || !p[1]
+                     || isspace ((unsigned char)p[-1])))
 	    p = 0;
 #endif
 #if defined (WINDOWS32) || defined (__MSDOS__)
@@ -990,9 +1004,9 @@ read_makefile (filename, flags)
             check_again = 0;
             /* For MSDOS and WINDOWS32, skip a "C:\..." or a "C:/..." */
             if (p != 0 && (p[1] == '\\' || p[1] == '/') &&
-		isalpha(p[-1]) &&
-		(p == p2 + 1 || index(" \t:(", p[-2]) != 0)) {
-              p = index(p + 1, ':');
+		isalpha ((unsigned char)p[-1]) &&
+		(p == p2 + 1 || strchr (" \t:(", p[-2]) != 0)) {
+              p = strchr (p + 1, ':');
               check_again = 1;
             }
           } while (check_again);
@@ -1061,7 +1075,7 @@ read_makefile (filename, flags)
 
   reading_file = 0;
 
-  return 1+using_filename;
+  return 1;
 }
 
 /* Execute a `define' directive.
@@ -1103,7 +1117,7 @@ do_define (name, namelen, origin, infile, flocp)
 
       p = next_token (lb.buffer);
       len = strlen (p);
-      if ((len == 5 || (len > 5 && isblank (p[5])))
+      if ((len == 5 || (len > 5 && isblank ((unsigned char)p[5])))
           && strneq (p, "endef", 5))
 	{
 	  p += 5;
@@ -1115,7 +1129,8 @@ do_define (name, namelen, origin, infile, flocp)
 	    definition[0] = '\0';
 	  else
 	    definition[idx - 1] = '\0';
-	  (void) define_variable (var, strlen (var), definition, origin, 1);
+	  (void) define_variable_loc (var, strlen (var), definition, origin,
+                                      1, flocp);
 	  free (definition);
 	  freebuffer (&lb);
 	  return;
@@ -1294,7 +1309,7 @@ conditional_line (line, flocp)
 	{
 	  /* Strip blanks after the first string.  */
 	  char *p = line++;
-	  while (isblank (p[-1]))
+	  while (isblank ((unsigned char)p[-1]))
 	    --p;
 	  *p = '\0';
 	}
@@ -1421,6 +1436,9 @@ record_target_var (filenames, defn, two_colon, origin, flocp)
 
   global = current_variable_set_list;
 
+  /* If the variable is an append version, store that but treat it as a
+     normal recursive variable.  */
+
   for (; filenames != 0; filenames = nextf)
     {
       struct variable *v;
@@ -1450,14 +1468,14 @@ record_target_var (filenames, defn, two_colon, origin, flocp)
 
           /* Get a file reference for this file, and initialize it.  */
           f = enter_file (name);
-          initialize_file_variables (f);
+          initialize_file_variables (f, 1);
           vlist = f->variables;
           fname = f->name;
         }
 
       /* Make the new variable context current and define the variable.  */
       current_variable_set_list = vlist;
-      v = try_variable_definition (flocp, defn, origin);
+      v = try_variable_definition (flocp, defn, origin, 1);
       if (!v)
         error (flocp, _("Malformed per-target variable definition"));
       v->per_target = 1;
@@ -1473,7 +1491,7 @@ record_target_var (filenames, defn, two_colon, origin, flocp)
           gv = lookup_variable (v->name, len);
           if (gv && (gv->origin == o_env_override || gv->origin == o_command))
             define_variable_in_set (v->name, len, gv->value, gv->origin,
-                                    gv->recursive, vlist->set);
+                                    gv->recursive, vlist->set, flocp);
         }
 
       /* Free name if not needed further.  */
@@ -1535,7 +1553,7 @@ record_files (filenames, pattern, pattern_percent, deps, cmds_started,
       char *implicit_percent;
 
       nextf = filenames->next;
-      free ((char *) filenames);
+      free (filenames);
 
       implicit_percent = find_percent (name);
       implicit |= implicit_percent != 0;
@@ -1603,6 +1621,12 @@ record_files (filenames, pattern, pattern_percent, deps, cmds_started,
 		    continue;
 		  o = patsubst_expand (buffer, name, pattern, d->name,
 				       pattern_percent, percent);
+                  /* If the name expanded to the empty string, that's
+                     illegal.  */
+                  if (o == buffer)
+                    fatal (flocp,
+                           _("target `%s' leaves prerequisite pattern empty"),
+                           name);
 		  free (d->name);
 		  d->name = savestring (buffer, o - buffer);
 		}
@@ -1622,7 +1646,8 @@ record_files (filenames, pattern, pattern_percent, deps, cmds_started,
 	  /* If CMDS == F->CMDS, this target was listed in this rule
 	     more than once.  Just give a warning since this is harmless.  */
 	  if (cmds != 0 && cmds == f->cmds)
-	    error (flocp, _("target `%s' given more than once in the same rule."),
+	    error (flocp,
+                   _("target `%s' given more than once in the same rule."),
                    f->name);
 
 	  /* Check for two single-colon entries both with commands.
@@ -1631,7 +1656,8 @@ record_files (filenames, pattern, pattern_percent, deps, cmds_started,
 	  else if (cmds != 0 && f->cmds != 0 && f->is_target)
 	    {
 	      error (&cmds->fileinfo,
-                     _("warning: overriding commands for target `%s'"), f->name);
+                     _("warning: overriding commands for target `%s'"),
+                     f->name);
 	      error (&f->cmds->fileinfo,
                      _("warning: ignoring old commands for target `%s'"),
                      f->name);
@@ -1741,9 +1767,9 @@ record_files (filenames, pattern, pattern_percent, deps, cmds_started,
       /* See if this is first target seen whose name does
 	 not start with a `.', unless it contains a slash.  */
       if (default_goal_file == 0 && set_default
-	  && (*name != '.' || index (name, '/') != 0
+	  && (*name != '.' || strchr (name, '/') != 0
 #if defined(__MSDOS__) || defined(WINDOWS32)
-			   || index (name, '\\') != 0
+			   || strchr (name, '\\') != 0
 #endif
 	      ))
 	{
@@ -1806,8 +1832,8 @@ find_char_unquote (string, stopchars, blank)
 
   while (1)
     {
-      while (*p != '\0' && index (stopchars, *p) == 0
-	     && (!blank || !isblank (*p)))
+      while (*p != '\0' && strchr (stopchars, *p) == 0
+	     && (!blank || !isblank ((unsigned char)*p)))
 	++p;
       if (*p == '\0')
 	break;
@@ -1905,8 +1931,9 @@ parse_file_seq (stringp, stopchar, size, strip)
 	*p =' ';
 #endif
 #ifdef _AMIGA
-      if (stopchar == ':' && p && *p == ':' &&
-	!(isspace(p[1]) || !p[1] || isspace(p[-1])))
+      if (stopchar == ':' && p && *p == ':'
+          && !(isspace ((unsigned char)p[1]) || !p[1]
+               || isspace ((unsigned char)p[-1])))
       {
 	p = find_char_unquote (p+1, stopchars, 1);
       }
@@ -1917,8 +1944,8 @@ parse_file_seq (stringp, stopchar, size, strip)
        Note that tokens separated by spaces should be treated as separate
        tokens since make doesn't allow path names with spaces */
     if (stopchar == ':')
-      while (p != 0 && !isspace(*p) &&
-             (p[1] == '\\' || p[1] == '/') && isalpha (p[-1]))
+      while (p != 0 && !isspace ((unsigned char)*p) &&
+             (p[1] == '\\' || p[1] == '/') && isalpha ((unsigned char)p[-1]))
         p = find_char_unquote (p + 1, stopchars, 1);
 #endif
       if (p == 0)
@@ -2000,14 +2027,14 @@ parse_file_seq (stringp, stopchar, size, strip)
   while (new1 != 0)
     if (new1->name[0] != '('	/* Don't catch "(%)" and suchlike.  */
 	&& new1->name[strlen (new1->name) - 1] == ')'
-	&& index (new1->name, '(') == 0)
+	&& strchr (new1->name, '(') == 0)
       {
 	/* NEW1 ends with a `)' but does not contain a `('.
 	   Look back for an elt with an opening `(' but no closing `)'.  */
 
 	struct nameseq *n = new1->next, *lastn = new1;
 	char *paren = 0;
-	while (n != 0 && (paren = index (n->name, '(')) == 0)
+	while (n != 0 && (paren = strchr (n->name, '(')) == 0)
 	  {
 	    lastn = n;
 	    n = n->next;
@@ -2239,7 +2266,7 @@ get_next_mword (buffer, delim, startp, length)
   char c;
 
   /* Skip any leading whitespace.  */
-  while (isblank(*p))
+  while (isblank ((unsigned char)*p))
     ++p;
 
   beg = p;
@@ -2288,7 +2315,7 @@ get_next_mword (buffer, delim, startp, length)
         }
 
     default:
-      if (delim && index(delim, c))
+      if (delim && strchr (delim, c))
         wtype = w_static;
       break;
     }
@@ -2325,9 +2352,9 @@ get_next_mword (buffer, delim, startp, length)
 	  /* A word CAN include a colon in its drive spec.  The drive
 	     spec is allowed either at the beginning of a word, or as part
 	     of the archive member name, like in "libfoo.a(d:/foo/bar.o)".  */
-	  if (!(p - beg >= 2 &&
-		(*p == '/' || *p == '\\') && isalpha (p[-2]) &&
-		(p - beg == 2 || p[-3] == '(')))
+	  if (!(p - beg >= 2
+		&& (*p == '/' || *p == '\\') && isalpha ((unsigned char)p[-2])
+		&& (p - beg == 2 || p[-3] == '(')))
 #endif
 	  goto done_word;
 
@@ -2379,7 +2406,7 @@ get_next_mword (buffer, delim, startp, length)
           break;
 
         default:
-          if (delim && index(delim, c))
+          if (delim && strchr (delim, c))
             goto done_word;
           break;
         }
@@ -2550,7 +2577,7 @@ tilde_expand (name)
   else
     {
       struct passwd *pwent;
-      char *userend = index (name + 1, '/');
+      char *userend = strchr (name + 1, '/');
       if (userend != 0)
 	*userend = '\0';
       pwent = getpwnam (name + 1);
