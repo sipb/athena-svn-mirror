@@ -93,14 +93,23 @@ chkconfig --level 2345 athena-ws reset
 # there is no generic tool, but if we know what kind of card to do, then
 # we can do it.
 if pnpdump | grep -q CS4236B ; then
-  touch /etc/conf.modules
-  if grep -q cs4232 /etc/conf.modules ; then true ; else
-	cat >> /etc/conf.modules << EOF
+  touch /etc/modules.conf
+  if grep -q cs4232 /etc/modules.conf ; then true ; else
+	cat >> /etc/modules.conf << EOF
 alias sound cs4232
 pre-install sound insmod sound dmabuf=1
 alias midi opl3
 options opl3 io=0x388
 options cs4232 io=0x534 irq=5 dma=1 dma2=0 mpuio=0x330 mpuirq=5
+EOF
+  fi
+fi
+if grep -q i810 /etc/sysconfig/hwconf ; then
+  touch /etc/modules.conf
+  if grep -q sound-slot-0 /etc/modules.conf ; then true ; else
+	cat >> /etc/modules.conf << EOF
+alias sound-slot-0 i810_audio
+options i810_audio ftsodell=1
 EOF
   fi
 fi
