@@ -17,7 +17,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.3 1990-10-25 11:59:07 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.4 1990-10-25 12:05:25 epeisach Exp $";
 #endif
 
 #include <stdio.h>			/* Standard IO */
@@ -83,8 +83,8 @@ char *argv[];
 	  usage_error();
      
      while (optind < argc) {
-	  host_entry = NULL;
 	  char *hostname = argv[optind++];
+	  host_entry = NULL;
 	  
 	  if (*hostname >= '0' && *hostname <= '9') {
 	       unsigned long host_address = inet_addr(hostname);
