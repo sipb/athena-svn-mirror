@@ -12,7 +12,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v $
 #	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v 1.4 1990-02-09 08:51:57 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v 1.5 1990-02-09 09:28:52 epeisach Exp $
 #
 ###########################################################################
 
@@ -64,45 +64,3 @@ depend:
 	touch Make.depend; mkdep -fMake.depend ${CFLAGS} -I${INCLIB} ${SRCS}
 
 
-# DO NOT DELETE THIS LINE -- touch Make.depend; mkdep -fMake.depend uses it.
-
-whatsup.o: whatsup.c ../include/mit-copyright.h /usr/include/curses.h
-whatsup.o: /usr/include/stdio.h /usr/include/sgtty.h /usr/include/sys/ioctl.h
-whatsup.o: /usr/include/sys/ttychars.h /usr/include/sys/ttydev.h
-whatsup.o: /usr/include/signal.h /usr/include/strings.h ../include/whatsup.h
-whatsup.o: /usr/include/gdb.h /usr/include/sys/types.h
-whatsup.o: /usr/include/sys/time.h /usr/include/sys/time.h
-what_ifld.o: what_ifld.c ../include/mit-copyright.h /usr/include/curses.h
-what_ifld.o: /usr/include/stdio.h /usr/include/sgtty.h
-what_ifld.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
-what_ifld.o: /usr/include/sys/ttydev.h /usr/include/ctype.h
-what_ifld.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
-what_ifld.o: /usr/include/sys/time.h /usr/include/sys/time.h
-what_itm.o: what_itm.c ../include/mit-copyright.h /usr/include/curses.h
-what_itm.o: /usr/include/stdio.h /usr/include/sgtty.h
-what_itm.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
-what_itm.o: /usr/include/sys/ttydev.h /usr/include/strings.h
-what_itm.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
-what_itm.o: /usr/include/sys/time.h /usr/include/sys/time.h
-what_sel.o: what_sel.c ../include/mit-copyright.h /usr/include/curses.h
-what_sel.o: /usr/include/stdio.h /usr/include/sgtty.h
-what_sel.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
-what_sel.o: /usr/include/sys/ttydev.h /usr/include/strings.h
-what_sel.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
-what_sel.o: /usr/include/sys/time.h /usr/include/sys/time.h
-what_in.o: what_in.c ../include/mit-copyright.h /usr/include/curses.h
-what_in.o: /usr/include/stdio.h /usr/include/sgtty.h /usr/include/sys/ioctl.h
-what_in.o: /usr/include/sys/ttychars.h /usr/include/sys/ttydev.h
-what_in.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
-what_in.o: /usr/include/sys/time.h /usr/include/sys/time.h
-what_sc.o: what_sc.c ../include/mit-copyright.h /usr/include/curses.h
-what_sc.o: /usr/include/stdio.h /usr/include/sgtty.h /usr/include/sys/ioctl.h
-what_sc.o: /usr/include/sys/ttychars.h /usr/include/sys/ttydev.h
-what_sc.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
-what_sc.o: /usr/include/sys/time.h /usr/include/sys/time.h
-what_time.o: what_time.c ../include/mit-copyright.h /usr/include/curses.h
-what_time.o: /usr/include/stdio.h /usr/include/sgtty.h
-what_time.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
-what_time.o: /usr/include/sys/ttydev.h /usr/include/signal.h
-what_time.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
-what_time.o: /usr/include/sys/time.h /usr/include/sys/time.h

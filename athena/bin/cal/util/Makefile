@@ -12,7 +12,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/util/Makefile,v $
 #	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/util/Makefile,v 1.3 1990-02-09 08:51:34 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/util/Makefile,v 1.4 1990-02-09 09:25:51 epeisach Exp $
 #
 #
 ###########################################################################
@@ -46,11 +46,3 @@ lint:
 depend:
 	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS}
 
-# DO NOT DELETE THIS LINE -- touch Make.depend; mkdep -fMake.depend uses it.
-
-what_lib.o: what_lib.c /usr/include/mit-copyright.h /usr/include/stdio.h
-what_lib.o: /usr/include/curses.h /usr/include/sgtty.h
-what_lib.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
-what_lib.o: /usr/include/sys/ttydev.h /usr/include/gdb.h
-what_lib.o: /usr/include/sys/types.h /usr/include/sys/time.h
-what_lib.o: /usr/include/sys/time.h
