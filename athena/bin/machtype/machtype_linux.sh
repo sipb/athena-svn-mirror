@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: machtype_linux.sh,v 1.2 1999-06-30 19:35:40 jweiss Exp $
+# $Id: machtype_linux.sh,v 1.3 1999-06-30 19:36:36 jweiss Exp $
 
 # We need to support the following options:
 # NOTE: c, v, d, L, and M are needed by olc, and it cares what order
@@ -11,13 +11,13 @@
 #  -r     : disk drive type
 #  -v     : more verbose -- about memory mainly
 #  -A     : print Athena Release
+#  -C     : print out compatible Athena System names
 #  -E     : print out the version of the Base OS
 #  -L     : version of athena from /etc/athena/version
 #  -M     : physical memory
 #  -N     : print out the name of the base OS
 #  -P     : print out Athena System packs (from /srvd/.rvdinfo)
 #  -S     : Print out the Athena System name
-#  -C     : print out compatible Athena System names
 
 PATH=/bin:/usr/bin:/usr/sbin
 
@@ -48,6 +48,9 @@ while getopts cdk:m:rvACELMNPS i; do
 	A)
 		at_rel=1
 		;;
+	C)
+		ath_sys_compat=1
+		;;
 	E) 	
 		base_os_ver=1
 		;;
@@ -65,9 +68,6 @@ while getopts cdk:m:rvACELMNPS i; do
 		;;
 	S)
 		ath_sys_name=1
-		;;
-	C)
-		ath_sys_compat=1
 		;;
 	\?)
 		echo "Usage: machtype [-cdrvACELMNPS]" 1>&2
