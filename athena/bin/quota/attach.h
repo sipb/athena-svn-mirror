@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.1 1991-07-18 22:06:31 probe Exp $
+ * $Id: attach.h,v 1.2 1991-07-18 22:46:59 probe Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <netdb.h>
 #include <strings.h>
+
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/param.h>
@@ -20,7 +21,9 @@
 #include <sys/time.h>
 
 #include <netinet/in.h>
+
 #define MAXOWNERS 64
+#define MAXHOSTS 64
 
 /*
  * We don't really want to deal with malloc'ing and free'ing stuff
@@ -29,31 +32,48 @@
 
 struct _attachtab {
 	struct _attachtab	*next, *prev;
-/*
 	char		version[3];
 	char		explicit;
-*/
 	char		status;
-/*
 	char		mode;
-*/
 	struct _fstypes	*fs;
-/*
-	struct		in_addr hostaddr;
+	struct		in_addr hostaddr[MAXHOSTS];
 	int		rmdir;
 	int		drivenum;
 	int		flags;
 	int		nowners;
 	uid_t		owners[MAXOWNERS];
-*/
 	char		hesiodname[BUFSIZ];
 	char		host[BUFSIZ];
 	char		hostdir[MAXPATHLEN];
 	char		mntpt[MAXPATHLEN];
 };
 
+/*
+ * Attach flags defines
+ *
+ * FLAG_NOSETUID --- this filesystem was mounted nosetuid (no meaning
+ * 	for afs filesystems)
+ * FLAG_LOCKED --- this filesystem is passed over by detach -a, and
+ * 	you must be the owner of the filesystem to detach it.
+ * FLAG_ANYONE --- anyone can detach this filesystem  (not yet implemented)
+ * FLAG_PERMANENT --- when this filesytem is detached, don't do
+ * 	actually unmount it; just deauthenticate, if necessary.  attach
+ * 	sets this flag if it finds the filesystem already mounted but
+ * 	not in attachtab.
+ */
+#define FLAG_NOSETUID	1
+#define FLAG_LOCKED	2
+#define FLAG_ANYONE	4
+#define FLAG_PERMANENT	8
+
+#define ATTACH_VERSION	"A1"
 
 #define ATTACHTABMODE	644
+
+#define STATUS_ATTACHED	       	'+'
+#define STATUS_ATTACHING	'*'
+#define STATUS_DETACHING	'-'
 
 #define TYPE_NFS	001
 #define TYPE_RVD	002
@@ -76,7 +96,7 @@ struct _attachtab {
 struct _fstypes {
     char	*name;
     int		type;
-/*
+#if 0
     int		mount_type;
     int		flags;
     char	*good_flags;
@@ -84,7 +104,7 @@ struct _fstypes {
     int		(*detach)();
     char **	(*explicit)();
     int		(*flush)();
- */
+#endif
 };
 
 /*
@@ -97,10 +117,6 @@ struct _fstypes {
 
 extern struct _fstypes fstypes[];
 
-#define STATUS_ATTACHED	       	'+'
-#define STATUS_ATTACHING	'*'
-#define STATUS_DETACHING	'-'
-
 /*
  * Mount options
  */
@@ -110,40 +126,6 @@ extern struct _fstypes fstypes[];
 #ifndef M_NOSUID
 #define M_NOSUID	0x02		/* mount fs without setuid perms */
 #endif
-
-/*
- * Command option lists
- */
-
-struct command_list {
-    char	*large;
-    char	*small;
-};
-
-
-/*
- * Calls to RPC.MOUNTD
- */
-
-#ifndef MOUNTPROC_KUIDMAP
-#define MOUNTPROC_KUIDMAP	7
-#define MOUNTPROC_KUIDUMAP	8
-#define MOUNTPROC_KUIDPURGE	9
-#define MOUNTPROC_KUIDUPURGE	10
-#endif
-
-/*
- * Command names
- */
-
-#define ATTACH_CMD	"attach"
-#define DETACH_CMD	"detach"
-#define NFSID_CMD	"nfsid"
-#define FSID_CMD	"fsid"
-#ifdef ZEPHYR
-#define ZINIT_CMD	"zinit"
-#endif /* ZEPHYR */
-    
 /*
  * Generic defines
  */
@@ -191,10 +173,22 @@ struct command_list {
 #define	ERR_ZINITZLOSING	20	/* Random zephyr lossage */
 
 /*
- * Externals
+ * Zephyr definitions
  */
 
-extern char *sys_errlist[];
-extern struct _attachtab *attachtab_first;
-extern void free_attachtab();
+#ifdef ZEPHYR
+#define ZEPHYR_CLASS "filsrv"
+#define ZEPHYR_MAXSUBS 100	/* 50 filesystems... */
+#define ZEPHYR_TIMEOUT  60	/* 1 minute timeout */
+#endif /* ZEPHYR */
+
+
+extern void lock_attachtab(), unlock_attachtab();
+extern void get_attachtab(), free_attachtab();
+extern struct _attachtab *attachtab_lookup_mntpt(), *attachtab_first;
 extern struct _fstypes *get_fs();
+    
+
+#if !defined(__STDC__) && !(defined(AIX) && defined(i386))
+#define	const
+#endif
