@@ -30,7 +30,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-MANIFEST_CVS_ID = "@(#) $RCSfile: manifest.mn,v $ $Revision: 1.1.1.7 $ $Date: 2004-09-17 14:23:26 $ $Name: not supported by cvs2svn $"
+MANIFEST_CVS_ID = "@(#) $RCSfile: manifest.mn,v $ $Revision: 1.1.1.8 $ $Date: 2005-01-05 16:30:40 $ $Name: not supported by cvs2svn $"
 
 CORE_DEPTH = ../../../..
 
@@ -51,6 +51,7 @@ CSRCS =			\
 	bslot.c		\
 	btoken.c	\
 	certdata.c	\
+	ckbiver.c	\
 	$(NULL)
 
 REQUIRES = nspr

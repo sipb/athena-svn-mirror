@@ -600,16 +600,6 @@ nsresult nsWidget::CreateWidget(nsIWidget *aParent,
 
   PtWidget_t *parentWidget = nsnull;
 
-  nsIWidget *baseParent = aInitData &&
-                            (aInitData->mWindowType == eWindowType_dialog ||
-                             aInitData->mWindowType == eWindowType_toplevel ||
-                             aInitData->mWindowType == eWindowType_invisible) ?
-                          nsnull : aParent;
-
-  BaseCreate( baseParent, aRect, aHandleEventFunction, aContext, aAppShell, aToolkit, aInitData );
-
-  mParent = aParent;
-
   if( aNativeParent ) {
     parentWidget = (PtWidget_t*)aNativeParent;
     // we've got a native parent so listen for resizes
@@ -620,6 +610,17 @@ nsresult nsWidget::CreateWidget(nsIWidget *aParent,
 		mListenForResizes = aInitData ? aInitData->mListenForResizes : PR_FALSE;
   	}
 
+	if( aInitData->mWindowType == eWindowType_child && !parentWidget ) return NS_ERROR_FAILURE;
+
+  nsIWidget *baseParent = aInitData &&
+                            (aInitData->mWindowType == eWindowType_dialog ||
+                             aInitData->mWindowType == eWindowType_toplevel ||
+                             aInitData->mWindowType == eWindowType_invisible) ?
+                          nsnull : aParent;
+
+  BaseCreate( baseParent, aRect, aHandleEventFunction, aContext, aAppShell, aToolkit, aInitData );
+
+  mParent = aParent;
   mBounds = aRect;
 
   CreateNative (parentWidget);
@@ -1059,7 +1060,7 @@ inline PRBool nsWidget::HandleEvent( PtWidget_t *widget, PtCallbackInfo_t* aCbIn
           switch(event->subtype) {
 
 		  			case Ph_EV_DRAG_COMPLETE: 
-            	{  
+            	{
  		      		nsMouseEvent      theMouseEvent;
               PhPointerEvent_t* ptrev2 = (PhPointerEvent_t*) PhGetData( event );
               ScreenToWidgetPos( ptrev2->pos );
@@ -1070,15 +1071,6 @@ inline PRBool nsWidget::HandleEvent( PtWidget_t *widget, PtCallbackInfo_t* aCbIn
 		  			case Ph_EV_DRAG_MOTION_EVENT: {
       		    PhPointerEvent_t* ptrev2 = (PhPointerEvent_t*) PhGetData( event );
       		    ScreenToWidgetPos( ptrev2->pos );
-
-#ifdef PHOTON_DND
-							if( sDragService ) {
-								nsDragService *d;
-								nsIDragService *s = sDragService;
-								d = ( nsDragService * )s;
-								d->SetNativeDndData( widget, event );
-								}
-#endif
   	  		    InitMouseEvent(ptrev2, this, theMouseEvent, NS_MOUSE_MOVE );
       		    result = DispatchMouseEvent(theMouseEvent);
 							}
@@ -1172,10 +1164,21 @@ void nsWidget::ProcessDrag( PhEvent_t *event, PRUint32 aEventType, PhPoint_t *po
 	sDragService->GetCurrentSession ( getter_AddRefs(currSession) );
 	if( !currSession ) return;
 
-	currSession->SetDragAction( 2 );
+	int action = nsIDragService::DRAGDROP_ACTION_NONE;
+	nsDragService *d = ( nsDragService * ) sDragService;
+	
+  if( d->mActionType & nsIDragService::DRAGDROP_ACTION_MOVE )
+    action = nsIDragService::DRAGDROP_ACTION_MOVE;
+  else if( d->mActionType & nsIDragService::DRAGDROP_ACTION_LINK )
+    action = nsIDragService::DRAGDROP_ACTION_LINK;
+  else if( d->mActionType & nsIDragService::DRAGDROP_ACTION_COPY )
+    action = nsIDragService::DRAGDROP_ACTION_COPY;
 
-	DispatchDragDropEvent( aEventType, pos );
+	currSession->SetDragAction( action );
 
+	DispatchDragDropEvent( event, aEventType, pos );
+
+	int old_subtype = event->subtype;
 	event->subtype = Ph_EV_DND_ENTER;
 
 	PRBool canDrop;
@@ -1189,11 +1192,13 @@ void nsWidget::ProcessDrag( PhEvent_t *event, PRUint32 aEventType, PhPoint_t *po
 		PhAckDnd( event, Ph_EV_DND_MOTION, ( PhCursorDescription_t * ) &drop_cursor );
 		}
 
+	event->subtype = old_subtype;
+
 	// Clear the cached value
 	currSession->SetCanDrop(PR_FALSE);
 	}
 
-void nsWidget::DispatchDragDropEvent( PRUint32 aEventType, PhPoint_t *pos ) {
+void nsWidget::DispatchDragDropEvent( PhEvent_t *phevent, PRUint32 aEventType, PhPoint_t *pos ) {
   nsEventStatus status;
   nsMouseEvent event;
 
@@ -1202,10 +1207,11 @@ void nsWidget::DispatchDragDropEvent( PRUint32 aEventType, PhPoint_t *pos ) {
   event.point.x = pos->x;
   event.point.y = pos->y;
 
-  event.isShift   = 0;
-  event.isControl = 0;
+	PhDndEvent_t *dnd = ( PhDndEvent_t * ) PhGetData( phevent );
+  event.isControl = ( dnd->key_mods & Pk_KM_Ctrl ) ? PR_TRUE : PR_FALSE;
+  event.isShift   = ( dnd->key_mods & Pk_KM_Shift ) ? PR_TRUE : PR_FALSE;
+  event.isAlt     = ( dnd->key_mods & Pk_KM_Alt ) ? PR_TRUE : PR_FALSE;
   event.isMeta    = PR_FALSE;
-  event.isAlt     = 0;
 
 	event.widget = this;
 
@@ -1217,16 +1223,16 @@ void nsWidget::DispatchDragDropEvent( PRUint32 aEventType, PhPoint_t *pos ) {
 
 int nsWidget::DndCallback( PtWidget_t *widget, void *data, PtCallbackInfo_t *cbinfo ) {
 	nsWidget *pWidget = (nsWidget *) data;
-	 PtDndCallbackInfo_t *cbdnd = (  PtDndCallbackInfo_t * ) cbinfo->cbdata;
+	PtDndCallbackInfo_t *cbdnd = (  PtDndCallbackInfo_t * ) cbinfo->cbdata;
 
 	static PtDndFetch_t dnd_data_template = { "Mozilla", "dnddata", Ph_TRANSPORT_INLINE, Pt_DND_SELECT_MOTION,
                         NULL, NULL, NULL, NULL, NULL };
 
 ///* ATENTIE */ printf( "In nsWidget::DndCallback subtype=%d\n", cbinfo->reason_subtype );
 
-			PhPointerEvent_t* ptrev = (PhPointerEvent_t*) PhGetData( cbinfo->event );
+	PhPointerEvent_t* ptrev = (PhPointerEvent_t*) PhGetData( cbinfo->event );
 //printf("Enter pos=%d %d\n", ptrev->pos.x, ptrev->pos.y );
-			pWidget->ScreenToWidgetPos( ptrev->pos );
+	pWidget->ScreenToWidgetPos( ptrev->pos );
 //printf("After trans pos=%d %d pWidget=%p\n", ptrev->pos.x, ptrev->pos.y, pWidget );
 
 
@@ -1246,16 +1252,21 @@ int nsWidget::DndCallback( PtWidget_t *widget, void *data, PtCallbackInfo_t *cbi
 		case Ph_EV_DND_DROP:
 			nsDragService *d;
 			d = ( nsDragService * )sDragService;
-			d->SetDropData( (char*)cbdnd->data+4+100, (PRUint32) *(int*)cbdnd->data, (char*) cbdnd->data + 4 );
-///* ATENTIE */ printf("SetDropData with data=%s\n", (char*) cbdnd->data );
-
+			if( d->SetDropData( (char*)cbdnd->data ) != NS_OK ) break;
 			pWidget->ProcessDrag( cbinfo->event, NS_DRAGDROP_DROP, &ptrev->pos );
 			sDragService->EndDragSession();
+			((nsDragService*) sDragService)->SourceEndDrag();
 			break;
+
 		case Ph_EV_DND_LEAVE:
+			pWidget->ProcessDrag( cbinfo->event, NS_DRAGDROP_EXIT, &ptrev->pos );
+			sDragService->EndDragSession();
+			break;
+
 		case Ph_EV_DND_CANCEL:
 			pWidget->ProcessDrag( cbinfo->event, NS_DRAGDROP_EXIT, &ptrev->pos );
 			sDragService->EndDragSession();
+			((nsDragService*) sDragService)->SourceEndDrag();
 			break;
 		}
 

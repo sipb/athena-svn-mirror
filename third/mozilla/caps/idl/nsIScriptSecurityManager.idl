@@ -41,7 +41,7 @@
 #include "nsIXPCSecurityManager.idl"
 interface nsIURI;
 
-[scriptable, uuid(58df5780-8006-11d2-bd91-00805f8ae3f4)]
+[scriptable, uuid(18158378-b632-436a-9ced-c52ded350bde)]
 interface nsIScriptSecurityManager : nsIXPCSecurityManager
 {
     ///////////////// Security Checks //////////////////

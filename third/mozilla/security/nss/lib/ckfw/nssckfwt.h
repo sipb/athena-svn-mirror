@@ -35,7 +35,7 @@
 #define NSSCKFWT_H
 
 #ifdef DEBUG
-static const char NSSCKFWT_CVS_ID[] = "@(#) $RCSfile: nssckfwt.h,v $ $Revision: 1.1.1.7 $ $Date: 2004-09-17 16:01:30 $ $Name: not supported by cvs2svn $";
+static const char NSSCKFWT_CVS_ID[] = "@(#) $RCSfile: nssckfwt.h,v $ $Revision: 1.1.1.8 $ $Date: 2005-01-05 16:30:39 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
@@ -107,5 +107,10 @@ typedef struct NSSCKFWFindObjectsStr NSSCKFWFindObjects;
 
 struct NSSCKFWMutexStr;
 typedef struct NSSCKFWMutexStr NSSCKFWMutex;
+
+typedef enum {
+    SingleThreaded,
+    MultiThreaded
+} CryptokiLockingState ;
 
 #endif /* NSSCKFWT_H */

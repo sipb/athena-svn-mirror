@@ -225,13 +225,13 @@ nsHistoryController.prototype =
         switch(command) {
         case "cmd_deleteByHostname":
             if (!gGlobalHistory)
-                gGlobalHistory = Components.classes["@mozilla.org/browser/global-history;1"].getService(Components.interfaces.nsIBrowserHistory);
+                gGlobalHistory = Components.classes["@mozilla.org/browser/global-history;2"].getService(Components.interfaces.nsIBrowserHistory);
             gGlobalHistory.removePagesFromHost(gLastHostname, false)
             return true;
 
         case "cmd_deleteByDomain":
             if (!gGlobalHistory)
-                gGlobalHistory = Components.classes["@mozilla.org/browser/global-history;1"].getService(Components.interfaces.nsIBrowserHistory);
+                gGlobalHistory = Components.classes["@mozilla.org/browser/global-history;2"].getService(Components.interfaces.nsIBrowserHistory);
             gGlobalHistory.removePagesFromHost(gLastDomain, true)
             return true;
 
@@ -345,6 +345,14 @@ function OpenURLArrayInTabs(aURLArray)
   } else {
     openTopWin(aURLArray.join("\n")); // Pretend that we're a home page group
   }
+}
+
+/**
+ * Root the tree on a given URI (used for displaying search results)
+ */
+function setRoot(root)
+{
+  gHistoryTree.ref = root;
 }
 
 function GroupBy(aGroupingType)

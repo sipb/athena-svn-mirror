@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: sslnonce.c,v 1.1.1.1 2003-02-14 18:39:53 rbasch Exp $
+ * $Id: sslnonce.c,v 1.1.1.2 2005-01-05 16:30:43 rbasch Exp $
  */
 
 #include "nssrenam.h"
@@ -51,8 +51,8 @@
 PRUint32 ssl_sid_timeout = 100;
 PRUint32 ssl3_sid_timeout = 86400L; /* 24 hours */
 
-static sslSessionID *cache;
-static PZLock *      cacheLock;
+static sslSessionID *cache = NULL;
+static PZLock *      cacheLock = NULL;
 
 /* sids can be in one of 4 states:
  *
@@ -65,14 +65,16 @@ static PZLock *      cacheLock;
 #define LOCK_CACHE 	lock_cache()
 #define UNLOCK_CACHE	PZ_Unlock(cacheLock)
 
+void ssl_InitClientSessionCacheLock(void)
+{
+    if (!cacheLock)
+	nss_InitLock(&cacheLock, nssILockCache);
+}
+
 static void 
 lock_cache(void)
 {
-    /* XXX Since the client session cache has no init function, we must
-     * XXX init the cacheLock on the first call.  Fix in NSS 3.0.
-     */
-    if (!cacheLock)
-	nss_InitLock(&cacheLock, nssILockCache);
+    ssl_InitClientSessionCacheLock();
     PZ_Lock(cacheLock);
 }
 

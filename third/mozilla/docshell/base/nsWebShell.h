@@ -36,6 +36,7 @@
 class nsIEventQueue;
 class nsIController;
 struct PRThread;
+struct OnLinkClickEvent;
 
 typedef enum {
     eCharsetReloadInit,
@@ -99,14 +100,7 @@ public:
 
     // NS_IMETHOD SetURL(const PRUnichar* aURL);
 
-    nsresult OnLinkClickSyncInternal(nsIContent* aContent, nsLinkVerb aVerb,
-                                     nsIURI* aURI,
-                                     const PRUnichar* aTargetSpec,
-                                     nsIInputStream* aPostDataStream,
-                                     nsIInputStream* aHeadersDataStream,
-                                     nsIDocShell** aDocShell,
-                                     nsIRequest** aRequest,
-                                     nsISupports *aOwner);
+    friend struct OnLinkClickEvent;
 
 protected:
     // void GetRootWebShellEvenIfChrome(nsIWebShell** aResult);

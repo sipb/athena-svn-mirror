@@ -928,10 +928,12 @@ BookmarkParser::Parse(nsIRDFResource *aContainer, nsIRDFResource *nodeType)
 
         while(NS_SUCCEEDED(rv) && isActiveFlag && moreData)
         {
-            rv = lineInputStream->ReadLine(line, &moreData);
+            nsCAutoString cLine;
+            rv = lineInputStream->ReadLine(cLine, &moreData);
 
             if (NS_SUCCEEDED(rv))
             {
+                CopyASCIItoUTF16(cLine, line);
                 rv = ProcessLine(container, nodeType, bookmarkNode,
                     line, description, inDescriptionFlag, isActiveFlag);
             }
@@ -968,6 +970,11 @@ BookmarkParser::Unescape(nsString &text)
         {
             text.Cut(offset, 6);
             text.Insert(PRUnichar('\"'), offset);
+        }
+        else if (Substring(text, offset, 5).Equals(NS_LITERAL_STRING("&#39;")))
+        {
+            text.Cut(offset, 5);
+            text.Insert(PRUnichar('\''), offset);
         }
 
         ++offset;
@@ -2719,7 +2726,7 @@ nsBookmarksService::Compare(const void* aElement1, const void* aElement2, void* 
             literal2->GetValueConst(&value2);
 
             if (gCollation) {
-                gCollation->CompareString(kCollationCaseInSensitive,
+                gCollation->CompareString(nsICollation::kCollationCaseInSensitive,
                                           nsDependentString(value1),
                                           nsDependentString(value2),
                                           &result);
@@ -5014,12 +5021,16 @@ nsBookmarksService::EnsureBookmarksFile()
     nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
     if (NS_SUCCEEDED(rv))
     {
-        nsXPIDLCString prefVal;
-        rv = prefBranch->GetCharPref("browser.bookmarks.file",
-                                     getter_Copies(prefVal));      
+        nsCOMPtr<nsISupportsString> prefVal;
+        rv = prefBranch->GetComplexValue("browser.bookmarks.file",
+                                         NS_GET_IID(nsISupportsString),
+                                         getter_AddRefs(prefVal));      
         if (NS_SUCCEEDED(rv))
         {
-            rv = NS_NewNativeLocalFile(prefVal, PR_TRUE, getter_AddRefs(mBookmarksFile));
+            nsAutoString bookmarksFile;
+            prefVal->GetData(bookmarksFile);
+            rv = NS_NewLocalFile(bookmarksFile, PR_TRUE,
+                                 getter_AddRefs(mBookmarksFile));
 
             if (NS_SUCCEEDED(rv))
             {

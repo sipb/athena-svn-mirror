@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- # $Id: nssinit.c,v 1.1.1.3 2004-02-27 16:03:10 rbasch Exp $
+ # $Id: nssinit.c,v 1.1.1.4 2005-01-05 16:30:41 rbasch Exp $
  */
 
 #include <ctype.h>
@@ -568,6 +568,11 @@ NSS_Shutdown(void)
 
 
 extern const char __nss_base_rcsid[];
+PRBool
+NSS_IsInitialized(void)
+{
+    return nss_IsInitted;
+}
 extern const char __nss_base_sccsid[];
 
 PRBool

@@ -145,6 +145,8 @@ PRInt8 nsEventStateManager::sTextfieldSelectModel = eTextfieldSelect_unset;
 PRUint32 nsEventStateManager::mInstanceCount = 0;
 PRInt32 nsEventStateManager::gGeneralAccesskeyModifier = -1; // magic value of -1 means uninitialized
 
+PRInt32 nsEventStateManager::sUserInputEventDepth = 0;
+
 enum {
  MOUSE_SCROLL_N_LINES,
  MOUSE_SCROLL_PAGE,
@@ -253,6 +255,8 @@ nsEventStateManager::Init()
     }
 
     mPrefBranch->AddObserver("accessibility.browsewithcaret", this, PR_TRUE);
+
+    mPrefBranch->AddObserver("dom.popup_allowed_events", this, PR_TRUE);
   }
 
   if (nsEventStateManager::sTextfieldSelectModel == eTextfieldSelect_unset) {
@@ -309,7 +313,8 @@ nsresult
 nsEventStateManager::Shutdown()
 {
   mPrefBranch->RemoveObserver("accessibility.browsewithcaret", this);
-  
+  mPrefBranch->RemoveObserver("dom.popup_allowed_events", this);
+
   mPrefBranch = nsnull;
 
   m_haveShutdown = PR_TRUE;
@@ -340,9 +345,15 @@ nsEventStateManager::Observe(nsISupports *aSubject,
   if (!nsCRT::strcmp(aTopic, NS_XPCOM_SHUTDOWN_OBSERVER_ID))
     Shutdown();
   else if (!nsCRT::strcmp(aTopic, NS_PREFBRANCH_PREFCHANGE_TOPIC_ID)) {
-    if (someData && nsDependentString(someData).Equals(NS_LITERAL_STRING("accessibility.browsewithcaret"))) {
-      PRBool browseWithCaret;
-      ResetBrowseWithCaret(&browseWithCaret);
+    if (someData) {
+      nsDependentString str(someData);
+
+      if (str.Equals(NS_LITERAL_STRING("accessibility.browsewithcaret"))) {
+        PRBool browseWithCaret;
+        ResetBrowseWithCaret(&browseWithCaret);
+      } else if (str.Equals(NS_LITERAL_STRING("dom.popup_allowed_events"))) {
+        nsDOMEvent::PopupAllowedEventsChanged();
+      }
     }
   }
   
@@ -975,6 +986,11 @@ nsEventStateManager::HandleAccessKey(nsIPresContext* aPresContext,
           // B) Click on it if the users prefs indicate to do so.
           nsEventStatus status = nsEventStatus_eIgnore;
           nsMouseEvent event(NS_MOUSE_LEFT_CLICK);
+
+          // Propagate trusted state to the new event.
+          event.internalAppFlags |=
+            aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
+
           content->HandleDOMEvent(mPresContext, &event, nsnull, NS_EVENT_FLAG_INIT, &status);
         }
 
@@ -1079,6 +1095,9 @@ void
 nsEventStateManager::CreateClickHoldTimer(nsIPresContext* inPresContext,
                                           nsGUIEvent* inMouseDownEvent)
 {
+  if (!(inMouseDownEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED))
+    return;
+
   // just to be anal (er, safe)
   if (mClickHoldTimer) {
     mClickHoldTimer->Cancel();
@@ -1186,6 +1205,7 @@ nsEventStateManager::FireContextClick()
   event.clickCount = 1;
   event.point = mEventPoint;
   event.refPoint = mEventRefPoint;
+  event.internalAppFlags |= NS_APP_EVENT_FLAG_TRUSTED;
 
   // Dispatch to the DOM. We have to fake out the ESM and tell it that the
   // current target frame is actually where the mouseDown occurred, otherwise it
@@ -1434,6 +1454,8 @@ nsEventStateManager::GenerateDragGesture(nsIPresContext* aPresContext,
       event.isControl = ((nsMouseEvent*)aEvent)->isControl;
       event.isAlt = ((nsMouseEvent*)aEvent)->isAlt;
       event.isMeta = ((nsMouseEvent*)aEvent)->isMeta;
+      event.internalAppFlags |=
+        aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
 
       // Dispatch to the DOM. We have to fake out the ESM and tell it that the
       // current target frame is actually where the mouseDown occurred, otherwise it
@@ -1616,6 +1638,8 @@ nsEventStateManager::DoScrollText(nsIPresContext* aPresContext,
   // scrolling, to allow tooltips to disappear, etc.
 
   nsMouseEvent mouseOutEvent(NS_MOUSE_EXIT, aEvent->widget);
+  mouseOutEvent.internalAppFlags |=
+    aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
 
   nsIPresShell *presShell = aPresContext->PresShell();
 
@@ -1656,9 +1680,53 @@ nsEventStateManager::DoScrollText(nsIPresContext* aPresContext,
     sv = GetNearestScrollingView(focusView);
   }
 
-  PRBool passToParent;
+  // After firing the mouse event to the content, we need to reget focusFrame,
+  // svp, focusView, and sv as they might have changed as a result of the event.
+  // This is a essentially a cut and paste of the above code and was done
+  // in light of this code already being rewritten on the trunk and therefore 
+  // any meaningful work here would be lost anyway.
+
   if (sv) {
     GenerateMouseEnterExit(aPresContext, &mouseOutEvent);
+
+    if (mCurrentFocus) {
+      GetFocusedFrame(&focusFrame);
+    }
+    else {
+      // If there is no focused content, get the document content
+      EnsureDocument(presShell);
+      focusContent = mDocument->GetRootContent();
+      if (!focusContent)
+        return NS_ERROR_FAILURE;
+    }
+    
+    if (aUseTargetFrame)
+      focusFrame = aTargetFrame;
+    else if (!focusFrame)
+      presShell->GetPrimaryFrameFor(focusContent, &focusFrame);
+  
+    if (!focusFrame)
+      return NS_ERROR_FAILURE;
+  
+    // Now check whether this frame wants to provide us with an
+    // nsIScrollableView to use for scrolling.
+
+    svp = do_QueryInterface(focusFrame);
+    if (svp) {
+      svp->GetScrollableView(aPresContext, &sv);
+      if (sv)
+        CallQueryInterface(sv, &focusView);
+    } else {
+      focusView = focusFrame->GetClosestView();
+      if (!focusView)
+        return NS_ERROR_FAILURE;
+      
+      sv = GetNearestScrollingView(focusView);
+    }
+  }
+
+  PRBool passToParent;
+  if (sv) {
 
     // If we're already at the scroll limit for this view, scroll the
     // parent view instead.
@@ -2487,6 +2555,8 @@ nsEventStateManager::DispatchMouseEvent(nsIPresContext* aPresContext,
   event.isAlt = ((nsMouseEvent*)aEvent)->isAlt;
   event.isMeta = ((nsMouseEvent*)aEvent)->isMeta;
   event.nativeMsg = ((nsMouseEvent*)aEvent)->nativeMsg;
+  event.internalAppFlags |=
+    aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
 
   mCurrentTargetContent = aTargetContent;
   mCurrentRelatedContent = aRelatedContent;
@@ -2543,6 +2613,8 @@ nsEventStateManager::MaybeDispatchMouseEventToIframe(
           event.isAlt = ((nsMouseEvent*)aEvent)->isAlt;
           event.isMeta = ((nsMouseEvent*)aEvent)->isMeta;
           event.nativeMsg = ((nsMouseEvent*)aEvent)->nativeMsg;
+          event.internalAppFlags |=
+            aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
 
           CurrentEventShepherd shepherd(this, &event);
           parentShell->HandleDOMEventWithTarget(docContent, &event, &status);
@@ -2696,6 +2768,8 @@ nsEventStateManager::GenerateDragDropEnterExit(nsIPresContext* aPresContext,
           event.isControl = ((nsMouseEvent*)aEvent)->isControl;
           event.isAlt = ((nsMouseEvent*)aEvent)->isAlt;
           event.isMeta = ((nsMouseEvent*)aEvent)->isMeta;
+          event.internalAppFlags |=
+            aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
 
           //The frame has change but the content may not have.  Check before dispatching to content
           mLastDragOverFrame->GetContentForEvent(aPresContext, aEvent, getter_AddRefs(lastContent));
@@ -2729,6 +2803,8 @@ nsEventStateManager::GenerateDragDropEnterExit(nsIPresContext* aPresContext,
         event.isControl = ((nsMouseEvent*)aEvent)->isControl;
         event.isAlt = ((nsMouseEvent*)aEvent)->isAlt;
         event.isMeta = ((nsMouseEvent*)aEvent)->isMeta;
+        event.internalAppFlags |=
+          aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
 
         mCurrentTargetContent = targetContent;
         mCurrentRelatedContent = lastContent;
@@ -2770,6 +2846,8 @@ nsEventStateManager::GenerateDragDropEnterExit(nsIPresContext* aPresContext,
         event.isControl = ((nsMouseEvent*)aEvent)->isControl;
         event.isAlt = ((nsMouseEvent*)aEvent)->isAlt;
         event.isMeta = ((nsMouseEvent*)aEvent)->isMeta;
+        event.internalAppFlags |=
+          aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
 
         // dispatch to content via DOM
         nsCOMPtr<nsIContent> lastContent;
@@ -2895,6 +2973,8 @@ nsEventStateManager::CheckForAndDispatchClick(nsIPresContext* aPresContext,
     event.isControl = aEvent->isControl;
     event.isAlt = aEvent->isAlt;
     event.isMeta = aEvent->isMeta;
+    event.internalAppFlags |=
+      aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
 
     nsCOMPtr<nsIPresShell> presShell = mPresContext->GetPresShell();
     if (presShell) {
@@ -2925,6 +3005,8 @@ nsEventStateManager::CheckForAndDispatchClick(nsIPresContext* aPresContext,
         event2.isControl = aEvent->isControl;
         event2.isAlt = aEvent->isAlt;
         event2.isMeta = aEvent->isMeta;
+        event2.internalAppFlags |=
+          aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
 
         ret = presShell->HandleEventWithTarget(&event2, mCurrentTarget, mouseContent, flags, aStatus);
       }
@@ -4457,27 +4539,23 @@ nsEventStateManager::DispatchNewEvent(nsISupports* aTarget, nsIDOMEvent* aEvent,
     nsCOMPtr<nsIDOMEventTarget> eventTarget(do_QueryInterface(aTarget));
     privEvt->SetTarget(eventTarget);
 
-    //Key and mouse events have additional security to prevent event spoofing
+    //Check security state to determine if dispatcher is trusted
+    nsIScriptSecurityManager *securityManager =
+      nsContentUtils::GetSecurityManager();
+
+    PRBool trusted;
+    privEvt->IsTrustedEvent(&trusted);
+
+    if (!trusted) {
+      PRBool enabled;
+      nsresult res =
+        securityManager->IsCapabilityEnabled("UniversalBrowserWrite",
+                                             &enabled);
+      privEvt->SetTrusted(NS_SUCCEEDED(res) && enabled);
+    }
+
     nsEvent * innerEvent;
     privEvt->GetInternalNSEvent(&innerEvent);
-    if (innerEvent && (innerEvent->eventStructType == NS_KEY_EVENT ||
-        innerEvent->eventStructType == NS_MOUSE_EVENT)) {
-      //Check security state to determine if dispatcher is trusted
-      nsIScriptSecurityManager *securityManager =
-        nsContentUtils::GetSecurityManager();
-
-      PRBool enabled;
-      nsresult res = securityManager->IsCapabilityEnabled("UniversalBrowserWrite", &enabled);
-      if (NS_SUCCEEDED(res) && enabled) {
-        privEvt->SetTrusted(PR_TRUE);
-      }
-      else {
-        privEvt->SetTrusted(PR_FALSE);
-      } 
-    }
-    else {
-      privEvt->SetTrusted(PR_TRUE);
-    }
 
     if (innerEvent) {
       nsEventStatus status = nsEventStatus_eIgnore;
@@ -5098,38 +5176,21 @@ nsEventStateManager::IsIFrameDoc(nsIDocShell* aDocShell)
 {
   NS_ASSERTION(aDocShell, "docshell is null");
 
-  nsCOMPtr<nsIDocShellTreeItem> treeItem = do_QueryInterface(aDocShell);
-  nsCOMPtr<nsIDocShellTreeItem> parentItem;
-  treeItem->GetParent(getter_AddRefs(parentItem));
-  if (!parentItem)
-    return PR_FALSE;
-  
-  nsCOMPtr<nsIDocShell> parentDS = do_QueryInterface(parentItem);
-  nsCOMPtr<nsIPresShell> parentPresShell;
-  parentDS->GetPresShell(getter_AddRefs(parentPresShell));
-  NS_ASSERTION(parentPresShell, "presshell is null");
-
-  nsCOMPtr<nsIDocument> parentDoc;
-  parentPresShell->GetDocument(getter_AddRefs(parentDoc));
-
-  // The current docshell may not have a presshell, eg if it's a display:none
-  // iframe or if the presshell just hasn't been created yet. Get the
-  // document off the docshell directly.
-  nsCOMPtr<nsIDOMDocument> domDoc = do_GetInterface(aDocShell);
-  if (!domDoc) {
-    NS_ERROR("No document in docshell!  How are we to decide whether this"
-             " is an iframe?  Arbitrarily deciding it's not.");
+  nsCOMPtr<nsPIDOMWindow> domWindow = do_GetInterface(aDocShell);
+  if (!domWindow) {
+    NS_ERROR("We're a child of a docshell without a window?");
     return PR_FALSE;
   }
 
-  nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
-  NS_ASSERTION(doc, "DOM document not implementing nsIDocument");
-
-  nsIContent *docContent = parentDoc->FindContentForSubDocument(doc);
-
-  if (!docContent)
+  nsCOMPtr<nsIContent> docContent;
+  nsCOMPtr<nsIDOMElement> docElement;
+  domWindow->GetFrameElementInternal(getter_AddRefs(docElement));
+  docContent = do_QueryInterface(docElement);
+  
+  if (!docContent) {
     return PR_FALSE;
-
+  }
+  
   return docContent->Tag() == nsHTMLAtoms::iframe;
 }
 

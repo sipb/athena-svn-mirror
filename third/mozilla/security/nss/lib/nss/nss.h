@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: nss.h,v 1.1.1.4 2004-06-30 17:39:07 rbasch Exp $
+ * $Id: nss.h,v 1.1.1.5 2005-01-05 16:30:41 rbasch Exp $
  */
 
 #ifndef __nss_h_
@@ -49,10 +49,10 @@ SEC_BEGIN_PROTOS
  * The format of the version string should be
  *     "<major version>.<minor version>[.<patch level>] [<Beta>]"
  */
-#define NSS_VERSION  "3.9.1"
+#define NSS_VERSION  "3.9.3"
 #define NSS_VMAJOR   3
 #define NSS_VMINOR   9
-#define NSS_VPATCH   1
+#define NSS_VPATCH   3
 #define NSS_BETA     PR_FALSE
 
 
@@ -83,6 +83,11 @@ extern SECStatus NSS_Init(const char *configdir);
  * Default policy settings disallow all ciphers.
  */
 extern SECStatus NSS_InitReadWrite(const char *configdir);
+
+/*
+ * Returns whether NSS has already been initialized or not.
+ */
+extern PRBool NSS_IsInitialized(void);
 
 /*
  * Open the Cert, Key, and Security Module databases, read/write.

@@ -24,6 +24,7 @@
  *   Pierre Phaneuf <pp@ludusdesign.com>
  *   L. David Baron <dbaron@dbaron.org>
  *   Robert O'Callahan <roc+moz@cs.cmu.edu>
+ *   IBM Corporation
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -463,17 +464,12 @@ nsLineLayout::UpdateFrames()
   NS_ASSERTION(nsnull != mRootSpan, "UpdateFrames with no active spans");
 
   PerSpanData* psd = mRootSpan;
-  if (NS_STYLE_DIRECTION_LTR == psd->mDirection) {
-    if (PLACED_LEFT & mPlacedFloats) {
-      PerFrameData* pfd = psd->mFirstFrame;
-      while (nsnull != pfd) {
-        pfd->mBounds.x = psd->mX;
-        pfd = pfd->mNext;
-      }
+  if (PLACED_LEFT & mPlacedFloats) {
+    PerFrameData* pfd = psd->mFirstFrame;
+    while (nsnull != pfd) {
+      pfd->mBounds.x = psd->mX;
+      pfd = pfd->mNext;
     }
-  }
-  else if (PLACED_RIGHT & mPlacedFloats) {
-    // XXX handle DIR=right-to-left
   }
 }
 
@@ -2829,13 +2825,6 @@ nsLineLayout::HorizontalAlignFrames(nsRect& aLineBounds,
 #endif
     return PR_TRUE;
   }
-#ifdef IBMBIDI
-  if (NS_STYLE_DIRECTION_RTL == psd->mDirection) {
-    // This is to ensure proper indentation (e.g. of list items)
-    availWidth -= aLineBounds.x;
-  }
-  else
-#endif // IBMBIDI
   availWidth -= psd->mLeftEdge;
   nscoord remainingWidth = availWidth - aLineBounds.width;
 #ifdef NOISY_HORIZONTAL_ALIGN
@@ -2844,13 +2833,15 @@ nsLineLayout::HorizontalAlignFrames(nsRect& aLineBounds,
            availWidth, aLineBounds.width, remainingWidth);
 #endif
 #ifdef IBMBIDI
-  if (remainingWidth + aLineBounds.x > 0)
-#else
+  nscoord dx = 0;
+#endif
+
   // XXXldb What if it's less than 0??
   if (remainingWidth > 0)
-#endif
   {
+#ifndef IBMBIDI
     nscoord dx = 0;
+#endif
     switch (mTextAlign) {
       case NS_STYLE_TEXT_ALIGN_DEFAULT:
         if (NS_STYLE_DIRECTION_LTR == psd->mDirection) {
@@ -2910,55 +2901,45 @@ nsLineLayout::HorizontalAlignFrames(nsRect& aLineBounds,
         break;
     }
 #ifdef IBMBIDI
-    PerFrameData* lastPfd = psd->mLastFrame;
+  }
+  PRBool isRTL = ( (NS_STYLE_DIRECTION_RTL == psd->mDirection)
+                && (!psd->mChangedFrameDirection) );
+  if (dx || isRTL) {
     PerFrameData* bulletPfd = nsnull;
+    nscoord maxX = aLineBounds.XMost() + dx;
+    PRBool isVisualRTL = PR_FALSE;
 
-    if (lastPfd->GetFlag(PFD_ISBULLET)
-        && (NS_STYLE_DIRECTION_RTL == psd->mDirection) ) {
-      bulletPfd = lastPfd;
-      lastPfd = lastPfd->mPrev;
-    }
-    PRUint32 maxX = lastPfd->mBounds.XMost() + dx;
-    PRBool visualRTL = PR_FALSE;
-
-    if ( (NS_STYLE_DIRECTION_RTL == psd->mDirection)
-         && (!psd->mChangedFrameDirection) ) {
+    if (isRTL) {
+      if (psd->mLastFrame->GetFlag(PFD_ISBULLET) )
+        bulletPfd = psd->mLastFrame;
+  
       psd->mChangedFrameDirection = PR_TRUE;
 
-      /* Assume that all frames have been right aligned.*/
-      if (aShrinkWrapWidth) {
-        return PR_FALSE;
-      }
-      visualRTL = mPresContext->IsVisualMode();
-
-      if (bulletPfd) {
-        bulletPfd->mBounds.x += maxX;
-        bulletPfd->mFrame->SetRect(bulletPfd->mBounds);
-      }
+      isVisualRTL = mPresContext->IsVisualMode();
     }
-    if ( (0 != dx) || (visualRTL) )
+    if (dx || isVisualRTL)
 #else
     if (0 != dx)
-#endif // IBMBIDI
+#endif
     {
       // If we need to move the frames but we're shrink wrapping, then
       // we need to wait until the final width is known
       if (aShrinkWrapWidth) {
         return PR_FALSE;
       }
-
       for (PerFrameData* pfd = psd->mFirstFrame; pfd
 #ifdef IBMBIDI
            && bulletPfd != pfd
 #endif
            ; pfd = pfd->mNext) {
-        pfd->mBounds.x += dx;
 #ifdef IBMBIDI
-        if (visualRTL) {
+        if (isVisualRTL) {
           // XXXldb Ugh.  Could we handle this earlier so we don't get here?
           maxX = pfd->mBounds.x = maxX - (pfd->mMargin.left + pfd->mBounds.width + pfd->mMargin.right);
         }
+        else
 #endif // IBMBIDI
+          pfd->mBounds.x += dx;
         pfd->mFrame->SetRect(pfd->mBounds);
       }
       aLineBounds.x += dx;

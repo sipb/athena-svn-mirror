@@ -170,6 +170,7 @@ ErrorAccordingToNSPR(PRErrorCode errorCode)
     case PR_CONNECT_REFUSED_ERROR:
     case PR_NETWORK_UNREACHABLE_ERROR: // XXX need new nsresult for this!
     case PR_HOST_UNREACHABLE_ERROR:    // XXX and this!
+    case PR_ADDRESS_NOT_AVAILABLE_ERROR:
         rv = NS_ERROR_CONNECTION_REFUSED;
         break;
     case PR_IO_TIMEOUT_ERROR:
@@ -855,7 +856,7 @@ nsSocketTransport::ResolveHost()
 
     mResolving = PR_TRUE;
 
-    rv = dns->AsyncResolve(SocketHost(), PR_FALSE, this, nsnull,
+    rv = dns->AsyncResolve(SocketHost(), 0, this, nsnull,
                            getter_AddRefs(mDNSRequest));
     if (NS_SUCCEEDED(rv)) {
         LOG(("  advancing to STATE_RESOLVING\n"));

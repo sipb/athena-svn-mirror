@@ -1093,14 +1093,15 @@ DrawSelectionIterator::FillCurrentData()
 {
   if (mDone)
     return;
+  mCurrentIdx += mCurrentLength; // advance to this chunk
+  mCurrentLength = 0;
+  if (mCurrentIdx >= mLength)
+  {
+    mDone = PR_TRUE;
+    return;
+  }
   if (!mTypes)
   {
-    mCurrentIdx+=mCurrentLength;
-    if (mCurrentIdx >= mLength)
-    {
-      mDone = PR_TRUE;
-      return;
-    }
     if (mCurrentIdx < (PRUint32)mDetails->mStart)
     {
       mCurrentLength = mDetails->mStart;
@@ -1116,17 +1117,16 @@ DrawSelectionIterator::FillCurrentData()
   }
   else
   {
-    mCurrentIdx+=mCurrentLength;//advance to this chunk
-    if (mCurrentIdx >= mLength)
-    {
-      mDone = PR_TRUE;
-      return;
-    }
     uint8 typevalue = mTypes[mCurrentIdx];
-    while (typevalue == mTypes[mCurrentIdx+mCurrentLength] && (mCurrentIdx+mCurrentLength) <mLength)
+    while (mCurrentIdx+mCurrentLength < mLength && typevalue == mTypes[mCurrentIdx+mCurrentLength])
     {
       mCurrentLength++;
     }
+  }
+  // never overrun past mLength
+  if (mCurrentIdx+mCurrentLength > mLength)
+  {
+    mCurrentLength = mLength - mCurrentIdx;
   }
 }
 
@@ -4530,6 +4530,12 @@ nsTextFrame::EstimateNumChars(PRUint32 aAvailableWidth,
 // Replaced by precompiled CCMap (see bug 180266). To update the list
 // of characters, see one of files included below. As for the way
 // the original list of characters was obtained by Frank Tang, see bug 54467.
+// Updated to fix the regression (bug 263411). The list contains
+// characters of the following Unicode character classes : Ps, Pi, Po, Pf, Pe.
+// (ref.: http://www.w3.org/TR/2004/CR-CSS21-20040225/selector.html#first-letter)
+// Note that the file does NOT yet include non-BMP characters because 
+// there's no point including them without fixing the way we identify 
+// 'first-letter' currently working only with BMP characters.
 #include "punct_marks.ccmap"
 DEFINE_CCMAP(gPuncCharsCCMap, const);
   

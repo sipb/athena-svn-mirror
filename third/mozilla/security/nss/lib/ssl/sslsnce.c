@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: sslsnce.c,v 1.1.1.3 2004-02-27 16:42:53 rbasch Exp $
+ * $Id: sslsnce.c,v 1.1.1.4 2005-01-05 16:30:43 rbasch Exp $
  */
 
 /* Note: ssl_FreeSID() in sslnonce.c gets used for both client and server 
@@ -1169,6 +1169,8 @@ SSL_ConfigServerSessionIDCache(	int      maxCacheEntries,
 			       	PRUint32 ssl3_timeout, 
 			  const char *   directory)
 {
+    ssl_InitClientSessionCacheLock();
+    ssl_InitSymWrapKeysLock();
     return SSL_ConfigServerSessionIDCacheInstance(&globalCache, 
     		maxCacheEntries, ssl2_timeout, ssl3_timeout, directory, PR_FALSE);
 }
@@ -1276,6 +1278,10 @@ SSL_InheritMPServerSIDCacheInstance(cacheDesc *cache, const char * envString)
 	}
     	return SECSuccess;	/* already done. */
     }
+
+    ssl_InitClientSessionCacheLock();
+    ssl_InitSymWrapKeysLock();
+
     ssl_sid_lookup  = ServerSessionIDLookup;
     ssl_sid_cache   = ServerSessionIDCache;
     ssl_sid_uncache = ServerSessionIDUncache;

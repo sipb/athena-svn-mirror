@@ -33,7 +33,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: utf8.c,v $ $Revision: 1.1.1.7 $ $Date: 2004-09-17 15:12:58 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: utf8.c,v $ $Revision: 1.1.1.8 $ $Date: 2005-01-05 16:04:52 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #include "seccomon.h"

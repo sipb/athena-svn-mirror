@@ -890,12 +890,16 @@ nsRenderingContextImpl::DrawTile(imgIContainer *aImage,
   mTranMatrix->TransformCoord(&dr.x, &dr.y, &dr.width, &dr.height);
   mTranMatrix->TransformCoord(&aXImageStart, &aYImageStart);
 
+  // may have become empty due to transform shinking small number to 0
+  if (dr.IsEmpty())
+    return NS_OK;
+
   nscoord width, height;
   aImage->GetWidth(&width);
   aImage->GetHeight(&height);
 
   if (width == 0 || height == 0)
-    return PR_FALSE;
+    return NS_OK;
 
   nscoord xOffset = (dr.x - aXImageStart) % width;
   nscoord yOffset = (dr.y - aYImageStart) % height;
@@ -934,11 +938,3 @@ nsRenderingContextImpl::FlushRect(nscoord aX, nscoord aY, nscoord aWidth, nscoor
 {
     return NS_OK;
 }
-
-NS_IMETHODIMP
-nsRenderingContextImpl::RenderPostScriptDataFragment(const unsigned char *aData, unsigned long aDatalen)
-{
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-

@@ -48,6 +48,7 @@
 #include "nsIScrollableView.h"
 #include "nsWidgetsCID.h"
 #include "nsGfxScrollFrame.h"
+#include "nsScrollBoxFrame.h"
 #include "nsLayoutAtoms.h"
 #include "nsXULAtoms.h"
 #include "nsHTMLAtoms.h"
@@ -282,6 +283,11 @@ nsGfxScrollFrame::GetScrollPreference(nsIPresContext* aPresContext, nsScrollPref
   }
 
   return NS_OK;
+}
+
+void nsGfxScrollFrame::ScrollToRestoredPosition() {
+  NS_STATIC_CAST(nsScrollBoxFrame*, mInner->mScrollAreaBox)
+    ->ScrollToRestoredPosition();
 }
 
 nsMargin nsGfxScrollFrame::GetActualScrollbarSizes() const {
@@ -1226,23 +1232,25 @@ PRBool
 nsGfxScrollFrameInner::AddRemoveScrollbar(PRBool& aHasScrollbar, nscoord& aXY, nscoord& aSize, nscoord aSbSize, PRBool aRightOrBottom, PRBool aAdd)
 { 
    nscoord size = aSize;
+   nscoord xy = aXY;
 
    if (size != NS_INTRINSICSIZE) {
      if (aAdd) {
         size -= aSbSize;
         if (!aRightOrBottom && size >= 0)
-          aXY += aSbSize;
+          xy += aSbSize;
      } else {
         size += aSbSize;
         if (!aRightOrBottom)
-          aXY -= aSbSize;
+          xy -= aSbSize;
      }
    }
 
    // not enough room? Yes? Return true.
-   if (size >= aSbSize) {
+   if (size >= 0) {
        aHasScrollbar = aAdd;
        aSize = size;
+       aXY = xy;
        return PR_TRUE;
    }
 

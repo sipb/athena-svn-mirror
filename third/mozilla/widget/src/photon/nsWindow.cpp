@@ -148,7 +148,7 @@ void nsWindow::DestroyNative(void)
   }
   // destroy all of the children that are nsWindow() classes
   // preempting the gdk destroy system.
-  DestroyNativeChildren();
+  if( mWidget ) DestroyNativeChildren();
 
   // Call the base class to actually PtDestroy mWidget.
   nsWidget::DestroyNative();
@@ -274,7 +274,7 @@ NS_METHOD nsWindow::CreateNative( PtWidget_t *parentWidget ) {
   else
   {
     // No border or decorations is the default
-    render_flags = Ph_WM_RENDER_RESIZE;
+    render_flags = 0; // Ph_WM_RENDER_RESIZE;
 
     if( mWindowType != eWindowType_popup ) {
 
@@ -973,4 +973,40 @@ NS_IMETHODIMP nsWindow::SetFocus(PRBool aRaise)
 		PtContainerGiveFocus( mWidget, NULL );
 		}
 	return NS_OK;
+}
+
+NS_IMETHODIMP nsWindow::MakeFullScreen(PRBool aFullScreen)
+{
+	/* we can use static data here because there can be only one full-screen window at a time */
+	static unsigned short old_render_flags;
+	static PhPoint_t old_pos;
+
+	PtArg_t args[3];
+
+	if( aFullScreen ) {
+		unsigned short p, *pflags;
+		PhArea_t area;
+
+		PtSetArg( &args[0], Pt_ARG_WINDOW_RENDER_FLAGS, &pflags, 0 );
+		PtGetResources( mWidget, 1, args );
+		p = old_render_flags = *pflags; // save the render flags
+		p &= ~(Ph_WM_RENDER_TITLE|Ph_WM_RENDER_BORDER);
+
+		PtWidgetArea( mWidget, &area );
+		old_pos = area.pos;
+
+		QueryVisible( );
+		PtSetArg( &args[0], Pt_ARG_POS, &gConsoleRect.ul, 0 );
+		PtSetArg( &args[1], Pt_ARG_WINDOW_RENDER_FLAGS, p, -1 );
+		PtSetArg( &args[2], Pt_ARG_WINDOW_STATE, Ph_WM_STATE_ISFRONT, Ph_WM_STATE_ISFRONT );
+		PtSetResources( mWidget, 3, args );
+		}
+	else {
+		PtSetArg( &args[0], Pt_ARG_POS, &old_pos, 0 );
+		PtSetArg( &args[1], Pt_ARG_WINDOW_RENDER_FLAGS, old_render_flags, -1 ); /* restore the render flags to the previous value */
+		PtSetArg( &args[2], Pt_ARG_WINDOW_STATE, Ph_WM_STATE_ISNORMAL, Ph_WM_STATE_ISFRONT|Ph_WM_STATE_ISNORMAL );
+		PtSetResources( mWidget, 3, args );
+		}
+
+	return nsBaseWidget::MakeFullScreen( aFullScreen );
 }

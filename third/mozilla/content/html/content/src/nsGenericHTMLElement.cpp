@@ -98,6 +98,7 @@
 #include "nsHTMLAtoms.h"
 #include "nsIEventStateManager.h"
 #include "nsIDOMEvent.h"
+#include "nsIDOMNSEvent.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsDOMCID.h"
 #include "nsIServiceManager.h"
@@ -1387,6 +1388,18 @@ nsGenericHTMLElement::HandleDOMEventForAnchors(nsIPresContext* aPresContext,
   if (NS_FAILED(ret))
     return ret;
 
+  // Ensure that this is a trusted DOM event before going further.
+  // XXXldb Why can aDOMEvent by null?
+  if (aDOMEvent && *aDOMEvent) {
+    nsCOMPtr<nsIDOMNSEvent> nsEvent = do_QueryInterface(*aDOMEvent);
+    NS_ENSURE_TRUE(nsEvent, NS_OK);
+    PRBool isTrusted;
+    ret = nsEvent->GetIsTrusted(&isTrusted);
+    NS_ENSURE_SUCCESS(ret, NS_OK);
+    if (!isTrusted)
+      return NS_OK;
+  }
+
   if ((*aEventStatus == nsEventStatus_eIgnore ||
        (*aEventStatus != nsEventStatus_eConsumeNoDefault &&
         (aEvent->message == NS_MOUSE_ENTER_SYNTH ||
@@ -1408,7 +1421,7 @@ nsGenericHTMLElement::HandleDOMEventForAnchors(nsIPresContext* aPresContext,
         {
           // don't make the link grab the focus if there is no link handler
           nsILinkHandler *handler = aPresContext->GetLinkHandler();
-          if (handler && mDocument) {
+          if (handler && mDocument && ShouldFocus(this)) {
             // If the window is not active, do not allow the focus to bring the
             // window to the front.  We update the focus controller, but do
             // nothing else.
@@ -1472,6 +1485,8 @@ nsGenericHTMLElement::HandleDOMEventForAnchors(nsIPresContext* aPresContext,
             event.isControl = keyEvent->isControl;
             event.isAlt = keyEvent->isAlt;
             event.isMeta = keyEvent->isMeta;
+            event.internalAppFlags |=
+              aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED;
 
             nsIPresShell *presShell = aPresContext->GetPresShell();
             if (presShell) {
@@ -1645,7 +1660,7 @@ nsGenericHTMLElement::SetAttrAndNotify(PRInt32 aNamespaceID,
   }
   else {
     nsCOMPtr<nsINodeInfo> ni;
-    rv = mNodeInfo->NodeInfoManager()->GetNodeInfo(aAttribute, nsnull,
+    rv = mNodeInfo->NodeInfoManager()->GetNodeInfo(aAttribute, aPrefix,
                                                    aNamespaceID,
                                                    getter_AddRefs(ni));
     NS_ENSURE_SUCCESS(rv, rv);

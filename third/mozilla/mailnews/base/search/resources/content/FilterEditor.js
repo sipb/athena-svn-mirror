@@ -38,6 +38,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+
+var gPromptService = GetPromptService();
+
 // the actual filter that we're editing
 var gFilter;
 // cache the key elements we need
@@ -67,7 +70,7 @@ var gFilterActionList;
 
 var nsMsgFilterAction = Components.interfaces.nsMsgFilterAction;
 
-var gFilterEditorMsgWindow=null;
+var gFilterEditorMsgWindow = null;
      
 function filterEditorOnLoad()
 {
@@ -162,20 +165,13 @@ function onAccept()
 {
     if (duplicateFilterNameExists(gFilterNameElement.value))
     {
-        var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService();
-        promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
-
-        if (promptService)
-        {
-            promptService.alert(window,
-                gFilterBundle.getString("cannotHaveDuplicateFilterTitle"),
-                gFilterBundle.getString("cannotHaveDuplicateFilterMessage")
-            );
-        }
-
+        if (gPromptService)
+          gPromptService.alert(window,
+            gFilterBundle.getString("cannotHaveDuplicateFilterTitle"),
+            gFilterBundle.getString("cannotHaveDuplicateFilterMessage")
+          );
         return false;
     }
-
 
     if (!saveFilter()) return false;
 
@@ -391,16 +387,47 @@ function InitMessageLabel()
 function saveFilter() 
 {
   var isNewFilter;
-  var str;
   var filterAction; 
+  var targetUri;
 
   var filterName= gFilterNameElement.value;
   if (!filterName || filterName == "") 
   {
-    str = gFilterBundle.getString("mustEnterName");
-    window.alert(str);
+    if (gPromptService)
+      gPromptService.alert(window, null,
+                           gFilterBundle.getString("mustEnterName"));
     gFilterNameElement.focus();
     return false;
+  }
+
+  if (!(gMoveToFolderCheckbox.checked ||
+        gChangePriorityCheckbox.checked ||
+        gLabelCheckbox.checked ||
+        gJunkScoreCheckbox.checked ||
+        gMarkReadCheckbox.checked ||
+        gMarkFlaggedCheckbox.checked ||
+        gDeleteCheckbox.checked ||
+        gWatchCheckbox.checked ||
+        gKillCheckbox.checked ||
+        gDeleteFromServerCheckbox.checked))
+  {
+    if (gPromptService)
+      gPromptService.alert(window, null,
+                           gFilterBundle.getString("mustSelectAction"));
+    return false;
+  }
+
+  if (gMoveToFolderCheckbox.checked)
+  {
+    if (gActionTargetElement)
+      targetUri = gActionTargetElement.getAttribute("uri");
+    if (!targetUri || targetUri == "")
+    {
+      if (gPromptService)
+        gPromptService.alert(window, null,
+                             gFilterBundle.getString("mustSelectFolder"));
+      return false;
+    }
   }
 
   if (!gFilter) 
@@ -427,15 +454,6 @@ function saveFilter()
 
   if (gMoveToFolderCheckbox.checked)
   {
-    if (gActionTargetElement)
-      targetUri = gActionTargetElement.getAttribute("uri");
-    if (!targetUri || targetUri == "") 
-    {
-      str = gFilterBundle.getString("mustSelectFolder");
-      window.alert(str);
-      return false;
-    }
-      
     filterAction = gFilter.createAction();
     filterAction.type = nsMsgFilterAction.MoveToFolder;
     filterAction.targetFolderUri = targetUri;
@@ -444,13 +462,6 @@ function saveFilter()
     
   if (gChangePriorityCheckbox.checked)  
   {
-    if (!gActionPriority.selectedItem) 
-    {
-      str = gFilterBundle.getString("mustSelectPriority");
-      window.alert(str);
-      return false;
-    }
-
     filterAction = gFilter.createAction();
     filterAction.type = nsMsgFilterAction.ChangePriority;
     filterAction.priority = gActionPriority.selectedItem.getAttribute("value");
@@ -459,13 +470,6 @@ function saveFilter()
 
   if (gLabelCheckbox.checked) 
   {
-    if (!gActionLabel.selectedItem) 
-    {
-      str = gFilterBundle.getString("mustSelectLabel");
-      window.alert(str);
-      return false;
-    }
-
     filterAction = gFilter.createAction();
     filterAction.type = nsMsgFilterAction.Label;
     filterAction.label = gActionLabel.selectedItem.getAttribute("value");
@@ -520,17 +524,6 @@ function saveFilter()
     filterAction = gFilter.createAction();
     filterAction.type = nsMsgFilterAction.DeleteFromPop3Server;
     gFilter.appendAction(filterAction);
-  }
-
-  if (gFilter.actionList.Count() <= 0)
-  {
-    str = gFilterBundle.getString("mustSelectAction");
-    window.alert(str);
-
-    // reset gFilter so that filter is still saved next time around
-    // see bug #186217
-    gFilter = null;
-    return false;
   }
 
   if (getScope(gFilter) == Components.interfaces.nsMsgSearchScope.newsFilter)
@@ -716,4 +709,15 @@ function SetBusyCursor(window, enable)
 function doHelpButton()
 {
   openHelp("mail-filters");
+}
+
+function GetPromptService()
+{
+  try {
+    return Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                     .getService(Components.interfaces.nsIPromptService);
+  }
+  catch (e) {
+    return null;
+  }
 }

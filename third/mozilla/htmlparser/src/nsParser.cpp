@@ -64,7 +64,8 @@
 #include "nsIEventQueueService.h"
 #include "nsExpatDriver.h"
 #include "nsIServiceManager.h"
-//#define rickgdebug 
+#include "nsICategoryManager.h"
+#include "nsISupportsPrimitives.h"
 
 #ifdef MOZ_VIEW_SOURCE
 #include "nsViewSourceHTML.h" 
@@ -85,6 +86,8 @@ static NS_DEFINE_IID(kIParserIID, NS_IPARSER_IID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 
 //-------------------------------------------------------------------
+
+nsCOMArray<nsIUnicharStreamListener> *nsParser::sParserDataListeners;
  
 
 class CDTDDeallocator: public nsDequeFunctor{
@@ -252,7 +255,7 @@ static CSharedParserObjects* gSharedParserObjects=0;
 
 //-------------------------------------------------------------------------
 
-nsresult
+static nsresult
 GetSharedObjects(CSharedParserObjects** aSharedParserObjects) {
   if (!gSharedParserObjects) {
     gSharedParserObjects = new CSharedParserObjects();
@@ -264,16 +267,81 @@ GetSharedObjects(CSharedParserObjects** aSharedParserObjects) {
   return NS_OK;
 }
 
+static void
+FreeSharedObjects(void) {
+  if (gSharedParserObjects) {
+    delete gSharedParserObjects;
+    gSharedParserObjects=0;
+  }
+}
+
+
+/** 
+ *  This gets called when the htmlparser module is initialized.
+ */
+// static
+nsresult nsParser::Init()
+{
+  nsresult rv;
+  nsCOMPtr<nsICategoryManager> cm =
+    do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsISimpleEnumerator> e;
+  rv = cm->EnumerateCategory("Parser data listener", getter_AddRefs(e));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCAutoString categoryEntry;
+  nsXPIDLCString contractId;
+  nsCOMPtr<nsISupports> entry;
+
+  while (NS_SUCCEEDED(e->GetNext(getter_AddRefs(entry)))) {
+    nsCOMPtr<nsISupportsCString> category(do_QueryInterface(entry));
+
+    if (!category) {
+      NS_WARNING("Category entry not an nsISupportsCString!");
+
+      continue;
+    }
+
+    rv = category->GetData(categoryEntry);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    rv = cm->GetCategoryEntry("Parser data listener", categoryEntry.get(),
+                              getter_Copies(contractId));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    nsCOMPtr<nsIUnicharStreamListener> listener =
+      do_CreateInstance(contractId.get());
+
+    if (listener) {
+      if (!sParserDataListeners) {
+        sParserDataListeners = new nsCOMArray<nsIUnicharStreamListener>();
+
+        if (!sParserDataListeners)
+          return NS_ERROR_OUT_OF_MEMORY;
+      }
+
+      sParserDataListeners->AppendObject(listener);
+    }
+  }
+
+  return NS_OK;
+}
+
+
 /** 
  *  This gets called when the htmlparser module is shutdown.
  *   
  *  @update  gess 01/04/99
  */
-void nsParser::FreeSharedObjects(void) {
-  if (gSharedParserObjects) {
-    delete gSharedParserObjects;
-    gSharedParserObjects=0;
-  }
+// static
+void nsParser::Shutdown()
+{
+  FreeSharedObjects();
+
+  delete sParserDataListeners;
+  sParserDataListeners = nsnull;
 }
 
 
@@ -1207,9 +1275,11 @@ nsParser::WillBuildModel(nsString& aFilename)
   if (eUnknownDetect != mParserContext->mAutoDetectStatus)
     return NS_OK;
 
-  nsAutoString theBuffer;
+  PRUnichar buf[1025];
+  nsFixedString theBuffer(buf, 1024, 0);
+
   // XXXVidur Make a copy and only check in the first 1k
-  mParserContext->mScanner->Peek(theBuffer, 1024);
+  mParserContext->mScanner->Peek(theBuffer, 1024, mParserContext->mScanner->FirstNonWhitespacePosition());
 
   if (eDTDMode_unknown == mParserContext->mDTDMode ||
       eDTDMode_autodetect == mParserContext->mDTDMode)
@@ -1422,6 +1492,34 @@ void nsParser::HandleParserContinueEvent() {
   ContinueParsing();
 }
 
+nsresult nsParser::DataAdded(const nsSubstring& aData, nsIRequest *aRequest)
+{
+  NS_ASSERTION(sParserDataListeners,
+               "Don't call this with no parser data listeners!");
+
+  if (!mSink || !aRequest) {
+    return NS_OK;
+  }
+
+  nsISupports *ctx = mSink->GetTarget();
+  PRInt32 count = sParserDataListeners->Count();
+  nsresult rv = NS_OK;
+  PRBool canceled = PR_FALSE;
+
+  while (count--) {
+    rv |= sParserDataListeners->ObjectAt(count)->
+      OnUnicharDataAvailable(aRequest, ctx, aData);
+
+    if (NS_FAILED(rv) && !canceled) {
+      aRequest->Cancel(rv);
+
+      canceled = PR_TRUE;
+    }
+  }
+
+  return rv;
+}
+
 PRBool nsParser::CanInterrupt(void) {
   return mFlags & NS_PARSER_FLAG_CAN_INTERRUPT;
 }
@@ -1481,6 +1579,13 @@ nsParser::Parse(nsIURI* aURL,
       pc->mContextType=CParserContext::eCTURL;
       pc->mDTDMode=aMode;
       PushContext(*pc);
+
+      // Here, and only here, hand this parser off to the scanner. We
+      // only want to do that here since the only reason the scanner
+      // needs the parser is to call DataAdded() on it, and that's
+      // only ever wanted when parsing from an URI.
+      theScanner->SetParser(this);
+
       result=NS_OK;
     }
     else{
@@ -1964,7 +2069,19 @@ nsresult nsParser::OnStartRequest(nsIRequest *request, nsISupports* aContext) {
   gOutFile= new fstream("c:/temp/out.file",ios::trunc);
 #endif
 
-  return NS_OK;
+  rv = NS_OK;
+
+  if (sParserDataListeners && mSink) {
+    nsISupports *ctx = mSink->GetTarget();
+    PRInt32 count = sParserDataListeners->Count();
+
+    while (count--) {
+      rv |= sParserDataListeners->ObjectAt(count)->
+        OnStartRequest(request, ctx);
+    }
+  }
+
+  return rv;
 }
 
 
@@ -2360,8 +2477,8 @@ ParserWriteFunc(nsIInputStream* in,
 
   if(pws->mParserFilter) 
     pws->mParserFilter->RawBuffer(buf, &theNumRead); 
-  
-  result = pws->mScanner->Append(buf, theNumRead);
+
+  result = pws->mScanner->Append(buf, theNumRead, pws->mRequest);
   if (NS_SUCCEEDED(result)) {
     *writeCount = count;
   }
@@ -2423,7 +2540,11 @@ NS_PRECONDITION((eOnStart == mParserContext->mStreamListenerState ||
       return result;
     }
 
-    result=ResumeParse(); 
+    // Don't bother to start parsing until we've seen some
+    // non-whitespace data
+    if (theContext->mScanner->FirstNonWhitespacePosition() >= 0) {
+      result = ResumeParse();
+    }
   }
 
   return result; 
@@ -2441,7 +2562,7 @@ nsresult nsParser::OnStopRequest(nsIRequest *request, nsISupports* aContext,
                                  nsresult status)
 {  
 
-  nsresult result=NS_OK;
+  nsresult rv = NS_OK;
   
   if(eOnStart==mParserContext->mStreamListenerState) {
     nsAutoString temp;
@@ -2459,7 +2580,7 @@ nsresult nsParser::OnStopRequest(nsIRequest *request, nsISupports* aContext,
       temp.Assign(NS_LITERAL_STRING(" "));
     }
     mParserContext->mScanner->Append(temp);
-    result=ResumeParse(PR_TRUE,PR_TRUE);    
+    rv = ResumeParse(PR_TRUE,PR_TRUE);    
   }
 
   mParserContext->mStreamListenerState=eOnStop;
@@ -2469,7 +2590,7 @@ nsresult nsParser::OnStopRequest(nsIRequest *request, nsISupports* aContext,
      mParserFilter->Finish();
 
   mParserContext->mScanner->SetIncremental(PR_FALSE);
-  result=ResumeParse(PR_TRUE,PR_TRUE);
+  rv = ResumeParse(PR_TRUE,PR_TRUE);
   
   // If the parser isn't enabled, we don't finish parsing till
   // it is reenabled.
@@ -2489,7 +2610,17 @@ nsresult nsParser::OnStopRequest(nsIRequest *request, nsISupports* aContext,
   }
 #endif
 
-  return result;
+  if (sParserDataListeners && mSink) {
+    nsISupports *ctx = mSink->GetTarget();
+    PRInt32 count = sParserDataListeners->Count();
+
+    while (count--) {
+      rv |= sParserDataListeners->ObjectAt(count)->OnStopRequest(request, ctx,
+                                                                 status);
+    }
+  }
+
+  return rv;
 }
 
 

@@ -43,6 +43,7 @@
 
 #include "nsIPrincipal.h"
 #include "nsJSPrincipals.h"
+#include "nsIPrincipalObsolete.h"
 
 #define NS_SYSTEMPRINCIPAL_CLASSNAME "systemprincipal"
 #define NS_SYSTEMPRINCIPAL_CID \
@@ -51,12 +52,22 @@
 #define NS_SYSTEMPRINCIPAL_CONTRACTID "@mozilla.org/systemprincipal;1"
 
 
-class nsSystemPrincipal : public nsIPrincipal
+class nsSystemPrincipal : public nsIPrincipal,
+                          public nsIPrincipalObsolete
 {
 public:
     NS_DECL_ISUPPORTS_INHERITED
     NS_DECL_NSIPRINCIPAL
     NS_DECL_NSISERIALIZABLE
+
+    // nsIPrincipalObsolete declarations, written out because some of them
+    // overlap with nsIPrincipal.
+
+    NS_IMETHOD ToString(char **aResult);
+    NS_IMETHOD ToUserVisibleString(char **aResult);
+    NS_IMETHOD Equals(nsIPrincipalObsolete *aOther, PRBool *aResult);
+    NS_IMETHOD HashValue(PRUint32 *aResult);
+    NS_IMETHOD GetJSPrincipals(JSPrincipals **aResult);
 
     nsresult Init();
 

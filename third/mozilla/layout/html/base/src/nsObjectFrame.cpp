@@ -44,6 +44,7 @@
 #include "nsHTMLContainerFrame.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
+#include "nsStyleSet.h"
 #include "nsWidgetsCID.h"
 #include "nsViewsCID.h"
 #include "nsIView.h"
@@ -52,6 +53,7 @@
 #include "nsIPluginHost.h"
 #include "nsplugin.h"
 #include "nsString.h"
+#include "nsPrintfCString.h"
 #include "nsReadableUtils.h"
 #include "prmem.h"
 #include "nsHTMLAtoms.h"
@@ -68,6 +70,7 @@
 #endif
 #include "nsIWebShell.h"
 #include "nsINameSpaceManager.h"
+#include "nsIElementFactory.h"
 #include "nsIEventListener.h"
 #include "nsIScrollableView.h"
 #include "nsIScrollPositionListener.h"
@@ -80,9 +83,14 @@
 #include "nsIDOMElement.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDOMHTMLObjectElement.h"
+#include "nsIDOMHTMLEmbedElement.h"
 #include "nsIDOMHTMLAppletElement.h"
+#include "nsIDOMElementCSSInlineStyle.h"
+#include "nsIDOMCSSStyleDeclaration.h"
+#include "nsIDOMCSS2Properties.h"
 #include "nsContentPolicyUtils.h"
 #include "nsIDOMWindow.h"
+#include "nsIDOMDocumentEvent.h"
 #include "nsIDOMMouseListener.h"
 #include "nsIDOMMouseMotionListener.h"
 #include "nsIDOMFocusListener.h"
@@ -90,6 +98,7 @@
 #include "nsIDOMDragListener.h"
 #include "nsIDOMEventReceiver.h"
 #include "nsIDOMNSEvent.h"
+#include "nsITextContent.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIDocumentEncoder.h"
 #include "nsXPIDLString.h"
@@ -110,6 +119,7 @@
 #include "nsIImageLoadingContent.h"
 #include "nsIFocusController.h"
 #include "nsPIDOMWindow.h"
+#include "nsIStringBundle.h"
 
 // headers for plugin scriptability
 #include "nsIScriptGlobalObject.h"
@@ -152,7 +162,8 @@
 #include <errno.h>
 
 #include "nsContentCID.h"
-static NS_DEFINE_CID(kRangeCID,     NS_RANGE_CID);
+static NS_DEFINE_CID(kHTMLElementFactoryCID, NS_HTML_ELEMENT_FACTORY_CID);
+static NS_DEFINE_CID(kRangeCID, NS_RANGE_CID);
 
 /* X headers suck */
 #ifdef KeyPress
@@ -164,9 +175,17 @@ static NS_DEFINE_CID(kRangeCID,     NS_RANGE_CID);
 #include <winuser.h>
 #endif
 
+#ifdef CreateEvent // Thank you MS.
+#undef CreateEvent
+#endif
+
 #ifdef PR_LOGGING 
 static PRLogModuleInfo *nsObjectFrameLM = PR_NewLogModule("nsObjectFrame");
 #endif /* PR_LOGGING */
+
+ // True if the default plugin is disabled. Initialize to non-boolean
+ // value so that we know if we've checked the pref or not.
+static PRBool sDefaultPluginDisabled = 0xffffffff;
 
 // special class for handeling DOM context menu events
 // because for some reason it starves other mouse events if implemented on the same class
@@ -240,14 +259,14 @@ public:
 
   NS_IMETHOD GetValue(nsPluginInstancePeerVariable variable, void *value);
 
+  NS_IMETHOD PluginNotAvailable(const char *aMimeType);
+
   //nsIPluginTagInfo interface
 
   NS_IMETHOD GetAttributes(PRUint16& n, const char*const*& names,
                            const char*const*& values);
 
   NS_IMETHOD GetAttribute(const char* name, const char* *result);
-
-  NS_IMETHOD GetDOMElement(nsIDOMElement* *result);
 
   //nsIPluginTagInfo2 interface
 
@@ -274,6 +293,8 @@ public:
   NS_IMETHOD GetBorderHorizSpace(PRUint32 *result);
 
   NS_IMETHOD GetUniqueID(PRUint32 *result);
+
+  NS_IMETHOD GetDOMElement(nsIDOMElement* *result);
 
 #ifdef OJI
   //nsIJVMPluginTagInfo interface
@@ -474,8 +495,41 @@ nsObjectFrame::GetSkipSides() const
 }
 
 // #define DO_DIRTY_INTERSECT 1   // enable dirty rect intersection during paint
+static PRBool
+IsSupportedImageMimeType(const char *aMimeType)
+{
+  nsCOMPtr<imgILoader> loader(do_GetService("@mozilla.org/image/loader;1"));
 
-PRBool nsObjectFrame::IsSupportedImage(nsIContent* aContent)
+  PRBool supported;
+  nsresult rv = loader->SupportImageWithMimeType(aMimeType, &supported);
+
+  return NS_SUCCEEDED(rv) && supported;
+}
+
+static PRBool
+IsSupportedDocumentMimeType(const char *aMimeType)
+{
+  nsCOMPtr<nsICategoryManager> catman =
+    do_GetService(NS_CATEGORYMANAGER_CONTRACTID);
+  if (!catman)
+    return PR_FALSE;
+
+  nsXPIDLCString value;
+  nsresult rv = catman->GetCategoryEntry("Gecko-Content-Viewers", aMimeType,
+                                         getter_Copies(value));
+
+  // If we have a content viewer entry in the catagory manager for
+  // this mime type and it's not the full-page plugin one, return
+  // PR_TRUE to act like an IFRAME.
+  return
+    NS_SUCCEEDED(rv) && 
+    !value.IsEmpty() &&
+    !value.Equals("@mozilla.org/content/plugin/document-loader-factory;1");
+
+}
+
+PRBool
+nsObjectFrame::IsSupportedImage(nsIContent* aContent)
 {
   if (!aContent)
     return PR_FALSE;
@@ -521,10 +575,7 @@ PRBool nsObjectFrame::IsSupportedImage(nsIContent* aContent)
 
   }
   
-  nsCOMPtr<imgILoader> loader(do_GetService("@mozilla.org/image/loader;1"));
-  PRBool supported;
-  rv = loader->SupportImageWithMimeType(type.get(), &supported);
-  return NS_SUCCEEDED(rv) && supported;
+  return IsSupportedImageMimeType(type.get());
 }
 
 PRBool nsObjectFrame::IsSupportedDocument(nsIContent* aContent)
@@ -533,9 +584,6 @@ PRBool nsObjectFrame::IsSupportedDocument(nsIContent* aContent)
   
   if(aContent == nsnull)
     return PR_FALSE;
-
-  nsCOMPtr<nsICategoryManager> catman = do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv);
-  if (NS_FAILED(rv)) return PR_FALSE;
 
   nsAutoString type;
   nsCAutoString typeStr;
@@ -566,16 +614,8 @@ PRBool nsObjectFrame::IsSupportedDocument(nsIContent* aContent)
   } else {
     CopyUTF16toUTF8(type, typeStr);
   }
-    
-  nsXPIDLCString value;
-  rv = catman->GetCategoryEntry("Gecko-Content-Viewers",typeStr.get(), getter_Copies(value));
 
-  // If we have a content viewer entry in the catagory manager for this mime type
-  // and it's not the full-page plugin one, return PR_TRUE to act like an IFRAME.
-  return
-    NS_SUCCEEDED(rv) && 
-    !value.IsEmpty() &&
-    !value.Equals("@mozilla.org/content/plugin/document-loader-factory;1");
+  return IsSupportedDocumentMimeType(typeStr.get());
 }
 
 NS_IMETHODIMP nsObjectFrame::SetInitialChildList(nsIPresContext* aPresContext,
@@ -589,6 +629,28 @@ NS_IMETHODIMP nsObjectFrame::SetInitialChildList(nsIPresContext* aPresContext,
   return rv;
 }
 
+static void
+FirePluginNotFoundEvent(nsIContent *aTarget)
+{
+  nsCOMPtr<nsIDOMDocumentEvent> eventDoc =
+    do_QueryInterface(aTarget->GetDocument());
+  nsCOMPtr<nsIDOMEventTarget> target(do_QueryInterface(aTarget));
+
+  if (eventDoc) {
+    nsCOMPtr<nsIDOMEvent> event;
+    nsresult rv = eventDoc->CreateEvent(NS_LITERAL_STRING("Events"),
+                                        getter_AddRefs(event));
+    if (NS_SUCCEEDED(rv)) {
+      rv = event->InitEvent(NS_LITERAL_STRING("PluginNotFound"), PR_TRUE,
+                            PR_TRUE);
+      if (NS_SUCCEEDED(rv)) {
+        PRBool unused;
+        target->DispatchEvent(event, &unused);
+      }
+    }
+  }
+}
+
 NS_IMETHODIMP 
 nsObjectFrame::Init(nsIPresContext*  aPresContext,
                     nsIContent*      aContent,
@@ -596,6 +658,17 @@ nsObjectFrame::Init(nsIPresContext*  aPresContext,
                     nsStyleContext*  aContext,
                     nsIFrame*        aPrevInFlow)
 {
+  mIsBrokenPlugin = PR_FALSE;
+
+  if (sDefaultPluginDisabled == 0xffffffff) {
+    nsCOMPtr<nsIPrefBranch> prefBranch =
+      do_GetService(NS_PREFSERVICE_CONTRACTID);
+    if (NS_FAILED(prefBranch->GetBoolPref("plugin.default_plugin_disabled",
+                                          &sDefaultPluginDisabled))) {
+      sDefaultPluginDisabled = PR_FALSE;
+    }
+  }
+
   nsresult rv = nsObjectFrameSuper::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
 
   if(rv != NS_OK)
@@ -645,30 +718,27 @@ nsObjectFrame::Init(nsIPresContext*  aPresContext,
 
   
   // only do the following for the object tag
-  if (aContent->Tag() != nsHTMLAtoms::object)
-    return rv;
-
-  // for now, we should try to do the same for "document" types and create
-  // and IFrame-like sub-frame
-  PRBool bDoc = IsSupportedDocument(aContent);
-
-  if(bDoc)
-  {
-    nsIFrame * aNewFrame = nsnull;
-    rv = NS_NewSubDocumentFrame(aPresContext->PresShell(), &aNewFrame);
-    if(NS_FAILED(rv))
-      return rv;
-
-    // XXX we're using the same style context for ourselves and the
-    // iframe.  If this ever changes, please fix HandleChild() to deal.
-    rv = aNewFrame->Init(aPresContext, aContent, this, aContext, aPrevInFlow);
-    if(NS_SUCCEEDED(rv))
+  if (aContent->Tag() == nsHTMLAtoms::object) {
+    // for now, we should try to do the same for "document" types and create
+    // and IFrame-like sub-frame
+    if (IsSupportedDocument(aContent))
     {
-      nsHTMLContainerFrame::CreateViewForFrame(aNewFrame, nsnull, PR_FALSE);
-      mFrames.AppendFrame(this, aNewFrame);
+      nsIFrame * aNewFrame = nsnull;
+      rv = NS_NewSubDocumentFrame(aPresContext->PresShell(), &aNewFrame);
+      if(NS_FAILED(rv))
+        return rv;
+
+      // XXX we're using the same style context for ourselves and the
+      // iframe.  If this ever changes, please fix HandleChild() to deal.
+      rv = aNewFrame->Init(aPresContext, aContent, this, aContext, aPrevInFlow);
+      if(NS_SUCCEEDED(rv))
+      {
+        nsHTMLContainerFrame::CreateViewForFrame(aNewFrame, nsnull, PR_FALSE);
+        mFrames.AppendFrame(this, aNewFrame);
+      }
+      else
+        aNewFrame->Destroy(aPresContext);
     }
-    else
-      aNewFrame->Destroy(aPresContext);
   }
 
   return rv;
@@ -682,7 +752,8 @@ nsObjectFrame::Destroy(nsIPresContext* aPresContext)
   if(mInstanceOwner != nsnull)
   {
     nsCOMPtr<nsIPluginInstance> inst;
-    if(NS_SUCCEEDED(mInstanceOwner->GetInstance(*getter_AddRefs(inst))))
+    mInstanceOwner->GetInstance(*getter_AddRefs(inst));
+    if(inst)
     {
       nsPluginWindow *win;
       mInstanceOwner->GetWindow(win);
@@ -960,8 +1031,38 @@ nsObjectFrame::MakeAbsoluteURL(nsIURI* *aFullURI,
   nsCAutoString originCharset;
   if (document)
     originCharset = document->GetDocumentCharacterSet();
- 
+
   return NS_NewURI(aFullURI, aSrc, originCharset.get(), aBaseURI);
+}
+
+static void
+SizeDiv(nsIContent *aDiv, PRInt32 aWidth, PRInt32 aHeight)
+{
+  nsCOMPtr<nsIDOMElementCSSInlineStyle> element(do_QueryInterface(aDiv));
+
+  if (!element)
+    return;
+
+  nsCOMPtr<nsIDOMCSSStyleDeclaration> style;
+  element->GetStyle(getter_AddRefs(style));
+
+  nsCOMPtr<nsIDOMCSS2Properties> css2props(do_QueryInterface(style));
+
+  if (!css2props) {
+    return;
+  }
+
+  nsAutoString tmp;
+  tmp.AppendInt(aWidth);
+  AppendASCIItoUTF16("px", tmp);
+
+  css2props->SetWidth(tmp);
+
+  tmp.Truncate();
+  tmp.AppendInt(aHeight);
+  AppendASCIItoUTF16("px", tmp);
+
+  css2props->SetHeight(tmp);
 }
 
 NS_IMETHODIMP
@@ -976,6 +1077,39 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
 
   // If we have a child, we toss the reflow over to it.
   nsIFrame * child = mFrames.FirstChild();
+
+  if (IsBroken()) {
+    // This is a broken plugin, if we don't already have a child
+    // frame, create the child frames manually. If any of this frame
+    // construction code ever changes to use the frame constructor, or
+    // any other change, this probably needs some changes too.
+    if (!child) {
+      CreateDefaultFrames(aPresContext, aMetrics, aReflowState);
+
+      child = mFrames.FirstChild();
+    }
+
+    if (child) {
+      GetDesiredSize(aPresContext, aReflowState, aMetrics);
+
+      float t2p = aPresContext->TwipsToPixels();
+
+      PRInt32 width = NSTwipsToIntPixels(aMetrics.width, t2p);
+      PRInt32 height = NSTwipsToIntPixels(aMetrics.height, t2p);
+
+      SizeDiv(child->GetContent(), width, height);
+
+      // SizeDiv() is seriously evil as it ends up setting an
+      // attribute (through the style changes that it does) while
+      // we're in reflow. This is also seriously evil, as it pulls
+      // that reflow command out of the reflow queue, as leaving it
+      // there can get us into infinite loops while reflowing object
+      // frames for missing plugins.
+      nsReflowType reflowType(eReflowType_StyleChanged);
+      aPresContext->PresShell()->CancelReflowCommand(child, &reflowType);
+    }
+  }
+
   if (child) {
     // Reflow the child; our size just depends on that of the child,
     // pure and simple
@@ -1012,8 +1146,12 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
     NS_ADDREF(mInstanceOwner);
     mInstanceOwner->Init(aPresContext, this);
 
-    nsCOMPtr<nsISupports>     container;
-    nsCOMPtr<nsIPluginHost>   pluginHost;
+    // get the nsIPluginHost service
+    nsCOMPtr<nsIPluginHost> pluginHost(do_GetService(kCPluginManagerCID));
+    if (!pluginHost)
+      return NS_ERROR_FAILURE;
+
+    nsCOMPtr<nsISupports> container;
     nsCOMPtr<nsIURI> fullURL;
 
     nsAutoString classid;
@@ -1042,10 +1180,6 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
 
         fullURL = baseURI;
 
-        // get the nsIPluginHost interface
-        pluginHost = do_GetService(kCPluginManagerCID);
-        if (!pluginHost) return NS_ERROR_FAILURE;
-
         mInstanceOwner->SetPluginHost(pluginHost);
         rv = InstantiatePlugin(aPresContext, aMetrics, aReflowState,
                                pluginHost, "application/x-java-vm", fullURL);
@@ -1064,10 +1198,6 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
           if (!baseURI) return NS_ERROR_FAILURE;
 
           fullURL = baseURI;
-
-          // get the nsIPluginHost interface
-          pluginHost = do_GetService(kCPluginManagerCID);
-          if (!pluginHost) return NS_ERROR_FAILURE;
 
           mInstanceOwner->SetPluginHost(pluginHost);
           if (NS_SUCCEEDED(pluginHost->IsPluginEnabledForType("application/x-oleobject"))) {
@@ -1092,10 +1222,6 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
       nsAutoString    src;
       if (!baseURI) return NS_ERROR_FAILURE;
 
-      // get the nsIPluginHost interface
-      pluginHost = do_GetService(kCPluginManagerCID);
-      if (!pluginHost) return NS_ERROR_FAILURE;
-
       mInstanceOwner->SetPluginHost(pluginHost);
 
       nsIAtom *tag = mContent->Tag();
@@ -1110,6 +1236,8 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
         rv = InstantiatePlugin(aPresContext, aMetrics, aReflowState,
                                pluginHost, "application/x-java-vm", fullURL);
       } else { // traditional plugin
+
+        // XXXjst: Clean up this string mess.
         nsXPIDLCString mimeTypeStr;
         nsAutoString type;
         mContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::type, type);
@@ -1170,13 +1298,18 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
   if (NS_FAILED(rv)) {
     // if we got an error, we are probably going to be replaced
 
-    // for a replaced object frame, clear our vertical alignment style info, see bug 36997
-    nsStyleTextReset* text = NS_STATIC_CAST(nsStyleTextReset*,
-      mStyleContext->GetUniqueStyleData(eStyleStruct_TextReset));
-    text->mVerticalAlign.SetNormalValue();
+    if (mContent->Tag() == nsHTMLAtoms::object) {
+      // for a replaced object frame, clear our vertical alignment
+      // style info, see bug 36997
+      nsStyleTextReset* text = NS_STATIC_CAST(nsStyleTextReset*,
+        mStyleContext->GetUniqueStyleData(eStyleStruct_TextReset));
+      text->mVerticalAlign.SetNormalValue();
 
-    //check for alternative content with CantRenderReplacedElement()
-    rv = aPresContext->PresShell()->CantRenderReplacedElement(this);
+      //check for alternative content with CantRenderReplacedElement()
+      rv = aPresContext->PresShell()->CantRenderReplacedElement(this);
+    } else {
+      rv = NS_OK;
+    }
   } else {
     NotifyContentObjectWrapper();
   }
@@ -1189,9 +1322,9 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
 
 nsresult
 nsObjectFrame::InstantiateWidget(nsIPresContext*          aPresContext,
-                            nsHTMLReflowMetrics&     aMetrics,
-                            const nsHTMLReflowState& aReflowState,
-                            nsCID aWidgetCID)
+                                 nsHTMLReflowMetrics&     aMetrics,
+                                 const nsHTMLReflowState& aReflowState,
+                                 nsCID aWidgetCID)
 {
   nsresult rv;
 
@@ -1224,7 +1357,7 @@ nsObjectFrame::InstantiatePlugin(nsIPresContext* aPresContext,
                                  nsHTMLReflowMetrics& aMetrics,
                                  const nsHTMLReflowState& aReflowState,
                                  nsIPluginHost* aPluginHost, 
-                                 const char* aMimetype,
+                                 const char* aMimeType,
                                  nsIURI* aURI)
 {
   nsIView *parentWithView;
@@ -1300,16 +1433,14 @@ nsObjectFrame::InstantiatePlugin(nsIPresContext* aPresContext,
       NS_ConvertUTF8toUCS2 url(spec);
 
       nsCOMPtr<nsIStreamListener> stream;
-      rv = aPluginHost->InstantiateFullPagePlugin(aMimetype,
-                                                  url,
+      rv = aPluginHost->InstantiateFullPagePlugin(aMimeType, url,
             /* resulting stream listener */       *getter_AddRefs(stream),
                                                   mInstanceOwner);
       if (NS_SUCCEEDED(rv))
         pDoc->SetStreamListener(stream);
     }
   } else {   /* embedded mode */
-    rv = aPluginHost->InstantiateEmbededPlugin(aMimetype,
-                                               aURI,
+    rv = aPluginHost->InstantiateEmbededPlugin(aMimeType, aURI,
                                                mInstanceOwner);
   }
 
@@ -1361,14 +1492,25 @@ nsObjectFrame::HandleChild(nsIPresContext*          aPresContext,
                            nsReflowStatus&          aStatus,
                            nsIFrame* child)
 {
-  // Note that the child shares our style context, so we simply want
-  // to reflow the child with pretty much our own reflow state....
-  // XXXbz maybe it should have a different style context?
+  // Note that in the image and document cases the child shares our
+  // style context, so we simply want to reflow the child with pretty
+  // much our own reflow state, in the case of a broken plugin, the
+  // child has its own style context, so we create a new reflow
+  // state....  XXXbz maybe we should always have a different style context?
 
   nsReflowStatus status;
 
-  ReflowChild(child, aPresContext, aMetrics, aReflowState, 0, 0, 0, status);
-  FinishReflowChild(child, aPresContext, &aReflowState, aMetrics, 0, 0, 0);
+  if (IsBroken()) {
+    nsHTMLReflowState state(aPresContext, aReflowState, child,
+                            nsSize(aReflowState.availableWidth,
+                                   aReflowState.availableHeight));
+
+    ReflowChild(child, aPresContext, aMetrics, state, 0, 0, 0, status);
+    FinishReflowChild(child, aPresContext, &state, aMetrics, 0, 0, 0);
+  } else {
+    ReflowChild(child, aPresContext, aMetrics, aReflowState, 0, 0, 0, status);
+    FinishReflowChild(child, aPresContext, &aReflowState, aMetrics, 0, 0, 0);
+  }
 
   aStatus = NS_FRAME_COMPLETE;
   return NS_OK;
@@ -1443,6 +1585,189 @@ nsPoint nsObjectFrame::GetWindowOriginInPixels(PRBool aWindowless)
   origin.y = NSTwipsToIntPixels(origin.y, t2p);
 
   return origin;
+}
+
+void
+nsObjectFrame::CreateDefaultFrames(nsIPresContext *aPresContext,
+                                   nsHTMLReflowMetrics& aMetrics,
+                                   const nsHTMLReflowState& aReflowState)
+{
+  NS_ASSERTION(IsBroken(),
+               "CreateDefaultFrames() called on non-broken plugin!");
+
+  nsIFrame * child = mFrames.FirstChild();
+  if (child) {
+    NS_ERROR("Um, this should only be called once!");
+
+    // We have a child already, don't do anything
+    return;
+  }
+
+  // first, we need to get the document
+  nsIDocument *doc = mContent->GetDocument();
+
+  nsIPresShell *shell = aPresContext->GetPresShell();
+  nsStyleSet *styleSet = shell->StyleSet();
+
+  nsCOMPtr<nsIElementFactory> ef(do_GetService(kHTMLElementFactoryCID));
+  if (!ef)
+    return;
+
+  nsINodeInfoManager *nimgr = mContent->GetNodeInfo()->NodeInfoManager();
+
+  nsCOMPtr<nsINodeInfo> ni;
+  nimgr->GetNodeInfo(nsHTMLAtoms::div, nsnull, kNameSpaceID_XHTML,
+                     getter_AddRefs(ni));
+
+  nsCOMPtr<nsIContent> div;
+  nsresult rv = ef->CreateInstanceByTag(ni, getter_AddRefs(div));
+
+  nimgr->GetNodeInfo(nsHTMLAtoms::img, nsnull, kNameSpaceID_XHTML,
+                     getter_AddRefs(ni));
+
+  nsCOMPtr<nsIContent> img;
+  rv |= ef->CreateInstanceByTag(ni, getter_AddRefs(img));
+
+  nsCOMPtr<nsITextContent> text;
+  rv |= NS_NewTextNode(getter_AddRefs(text));
+
+  if (NS_FAILED(rv))
+    return;
+
+  // Mark the nodes anonymous
+  div->SetNativeAnonymous(PR_TRUE);
+  img->SetNativeAnonymous(PR_TRUE);
+  text->SetNativeAnonymous(PR_TRUE);
+
+  // Set up the anonymous tree
+  div->SetParent(mContent);
+  div->SetDocument(doc, PR_TRUE, PR_TRUE);
+
+  div->AppendChildTo(img, PR_FALSE, PR_TRUE);
+  div->AppendChildTo(text, PR_FALSE, PR_TRUE);
+
+  nsAutoString style;
+  CopyASCIItoUTF16("text-align: -moz-center;"
+                   "overflow: -moz-hidden-unscrollable;"
+                   "display: block;"
+                   "border: 1px outset;"
+                   "padding: 5px;"
+                   "font-size: 12px;"
+                   "font-family: sans-serif;"
+                   "background: white;"
+                   "cursor: pointer;"
+                   "-moz-user-select: none;"
+                   "color: black;", style);
+
+  // Style things and load the image
+  div->SetAttr(kNameSpaceID_None, nsHTMLAtoms::style, style, PR_TRUE);
+
+  NS_NAMED_LITERAL_STRING(src,
+                          "chrome://mozapps/skin/xpinstall/xpinstallItemGeneric.png");
+  img->SetAttr(kNameSpaceID_None, nsHTMLAtoms::src, src, PR_FALSE);
+  img->SetAttr(kNameSpaceID_None, nsHTMLAtoms::style,
+               NS_LITERAL_STRING("display: block; width: 32px; height: 32px;"),
+               PR_FALSE);
+
+  // Kick off the image load.
+  nsCOMPtr<nsIImageLoadingContent> imageLoader = do_QueryInterface(img);
+  imageLoader->ImageURIChanged(src);
+
+  // get the localized text
+  nsXPIDLString missingPluginLabel;
+
+  nsCOMPtr<nsIStringBundleService> stringBundleService =
+    do_GetService(NS_STRINGBUNDLE_CONTRACTID);
+
+  if (stringBundleService) {
+    nsCOMPtr<nsIStringBundle> stringBundle;
+    rv = stringBundleService->CreateBundle(
+      "chrome://mozapps/locale/plugins/plugins.properties", 
+      getter_AddRefs(stringBundle));
+
+    if (NS_SUCCEEDED(rv))
+      rv = stringBundle->GetStringFromName(NS_LITERAL_STRING("missingPlugin.label").get(), 
+                                getter_Copies(missingPluginLabel));
+  }
+
+  if (!stringBundleService || NS_FAILED(rv))
+    missingPluginLabel = NS_LITERAL_STRING("Click here to download plugin.");
+
+  text->SetText(missingPluginLabel, PR_FALSE);
+
+  // Resolve style for the div, img, and text nodes.
+  nsRefPtr<nsStyleContext> divStyleContext =
+    styleSet->ResolveStyleFor(div, mStyleContext);
+  nsRefPtr<nsStyleContext> imgStyleContext =
+    styleSet->ResolveStyleFor(img, divStyleContext);
+  nsRefPtr<nsStyleContext> textStyleContext =
+    shell->StyleSet()->ResolveStyleForNonElement(divStyleContext);
+
+  if (!divStyleContext || !imgStyleContext || !textStyleContext)
+    return;
+
+  nsIFrame *divFrame = nsnull;
+  nsIFrame *imgFrame = nsnull;
+  nsIFrame *textFrame = nsnull;
+
+  do {
+    rv = NS_NewBlockFrame(shell, &divFrame);
+    if (NS_FAILED(rv))
+      break;
+
+    rv = divFrame->Init(aPresContext, div, this, divStyleContext, PR_FALSE);
+    if (NS_FAILED(rv))
+      break;
+
+    nsHTMLContainerFrame::CreateViewForFrame(divFrame, this, PR_FALSE);
+    mFrames.AppendFrame(this, divFrame);
+
+    rv = NS_NewImageFrame(shell, &imgFrame);
+    if (NS_FAILED(rv))
+      return;
+
+    rv = imgFrame->Init(aPresContext, img, divFrame, imgStyleContext, PR_FALSE);
+    if (NS_FAILED(rv))
+      break;
+
+    nsHTMLContainerFrame::CreateViewForFrame(imgFrame, divFrame, PR_FALSE);
+    divFrame->AppendFrames(aPresContext, *shell, nsnull, imgFrame);
+
+    rv = NS_NewTextFrame(shell, &textFrame);
+    if (NS_FAILED(rv))
+      break;
+
+    rv = textFrame->Init(aPresContext, text, divFrame, textStyleContext,
+                         PR_FALSE);
+    if (NS_FAILED(rv))
+      break;
+
+    textFrame->SetInitialChildList(aPresContext, nsnull, nsnull);
+
+    divFrame->AppendFrames(aPresContext, *shell, nsnull, textFrame);
+  } while (0);
+
+  if (NS_FAILED(rv)) {
+    if (divFrame)
+      divFrame->Destroy(aPresContext);
+
+    if (imgFrame)
+      imgFrame->Destroy(aPresContext);
+
+    if (textFrame)
+      textFrame->Destroy(aPresContext);
+  }
+
+  nsCOMPtr<nsISupportsArray> array;
+  NS_NewISupportsArray(getter_AddRefs(array));
+
+  if (array) {
+    array->AppendElement(div);
+    array->AppendElement(img);
+    array->AppendElement(text);
+
+    shell->SetAnonymousContentFor(mContent, array);
+  }
 }
 
 NS_IMETHODIMP
@@ -1637,71 +1962,10 @@ nsObjectFrame::Paint(nsIPresContext*      aPresContext,
      * printer.
      */
 
-    PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("nsObjectFrame::Paint() start for X11 platforms\n"));
-           
-    FILE *plugintmpfile = tmpfile();
-    if( !plugintmpfile ) {
-      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("error: could not open tmp. file, errno=%d\n", errno));
-      return NS_ERROR_FAILURE;
-    }
- 
-    /* Send off print info to plugin */
-    NPPrintCallbackStruct npPrintInfo;
-    npPrintInfo.type = NP_PRINT;
-    npPrintInfo.fp   = plugintmpfile;
-    npprint.print.embedPrint.platformPrint = (void *)&npPrintInfo;
-    npprint.print.embedPrint.window        = window;
-    rv = pi->Print(&npprint);
-    if (NS_FAILED(rv)) {
-      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("error: plugin returned failure %lx\n", (long)rv));
-      fclose(plugintmpfile);
-      return rv;
-    }
-
-    unsigned char *pluginbuffer;
-    long           fileLength;
-
-    /* Get file size */
-    fseek(plugintmpfile, 0, SEEK_END);
-    fileLength = ftell(plugintmpfile);
-    
-    /* Safeguard against bogus values
-     * (make sure we clamp the size to a reasonable value (say... 128 MB)) */
-    if( fileLength <= 0 || fileLength > (128 * 1024 * 1024) ) {
-      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("error: file size %ld too large\n", fileLength));
-      fclose(plugintmpfile);
-      return NS_ERROR_FAILURE;
-    }
-
-    pluginbuffer = new unsigned char[fileLength+1];
-    if (!pluginbuffer) {
-      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("error: no buffer memory for %ld bytes\n", fileLength+1));
-      fclose(plugintmpfile);
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
-
-    /* Read data into temp. buffer */
-    long numBytesRead = 0;
-    fseek(plugintmpfile, 0, SEEK_SET);
-    numBytesRead = fread(pluginbuffer, 1, fileLength, plugintmpfile);
-    
-    if( numBytesRead == fileLength ) {
-      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("sending %ld bytes of PostScript data to printer\n", numBytesRead));
-
-      /* Send data to printer */
-      aRenderingContext.RenderPostScriptDataFragment(pluginbuffer, numBytesRead);
-    }
-    else
-    {
-      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG,
-             ("error: bytes read in buffer (%ld) does not match file length (%ld)\n",
-             numBytesRead, fileLength));
-    }
-
-    fclose(plugintmpfile);
-    delete [] pluginbuffer;
-
-    PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("plugin printing done, return code is %lx\n", (long)rv));
+    /* The old unix plugin printing API has been removed to avoid potential
+     * problems with plugins implementing the new API. See bug 234470 and
+     * bug 261589.
+     */
 
 #else  // Windows and non-UNIX, non-Mac(Classic) cases
 
@@ -1743,8 +2007,9 @@ nsObjectFrame::Paint(nsIPresContext*      aPresContext,
       mInstanceOwner->Paint(aDirtyRect);
 #elif defined (XP_WIN) || defined(XP_OS2)
   if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer) {
-    nsIPluginInstance * inst;
-    if (NS_OK == GetPluginInstance(inst)) {
+    nsCOMPtr<nsIPluginInstance> inst;
+    GetPluginInstance(*getter_AddRefs(inst));
+    if (inst) {
       // Look if it's windowless
       nsPluginWindow * window;
       mInstanceOwner->GetWindow(window);
@@ -1833,7 +2098,6 @@ nsObjectFrame::Paint(nsIPresContext*      aPresContext,
 
         mInstanceOwner->Paint(aDirtyRect, hdc);
       }
-      NS_RELEASE(inst);
     }
   }
 #endif /* !XP_MAC */
@@ -1891,8 +2155,8 @@ nsresult nsObjectFrame::GetPluginInstance(nsIPluginInstance*& aPluginInstance)
 
   if(mInstanceOwner == nsnull)
     return NS_ERROR_NULL_POINTER;
-  else
-    return mInstanceOwner->GetInstance(aPluginInstance);
+  
+  return mInstanceOwner->GetInstance(aPluginInstance);
 }
 
 void
@@ -2247,15 +2511,9 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetDOMElement(nsIDOMElement* *result)
 
 NS_IMETHODIMP nsPluginInstanceOwner::GetInstance(nsIPluginInstance *&aInstance)
 {
-  if (mInstance)
-  {
-    aInstance = mInstance;
-    NS_ADDREF(aInstance);
+  NS_IF_ADDREF(aInstance = mInstance);
 
-    return NS_OK;
-  }
-
-  return NS_ERROR_FAILURE;
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsPluginInstanceOwner::GetURL(const char *aURL, const char *aTarget, void *aPostData, PRUint32 aPostDataLen, void *aHeadersData, 
@@ -2313,6 +2571,17 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetURL(const char *aURL, const char *aTarge
       if (NS_FAILED(rv)) return rv;
     }
   }
+
+  PRInt32 blockPopups = 0;
+  nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID);
+  if (!prefBranch ||
+      NS_FAILED(prefBranch->GetIntPref("privacy.popups.disable_from_plugins",
+                                       &blockPopups))) {
+    blockPopups = 0;
+  }
+
+  nsAutoPopupStatePusher popupStatePusher((PopupControlState)blockPopups);
 
   rv = lh->OnLinkClick(content, eLinkVerb_Replace, 
                        uri, unitarget.get(), 
@@ -2447,6 +2716,16 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetValue(nsPluginInstancePeerVariable varia
   }
 
   return rv;
+}
+
+NS_IMETHODIMP
+nsPluginInstanceOwner::PluginNotAvailable(const char *aMimeType)
+{
+  if (mOwner) {
+    mOwner->PluginNotAvailable(aMimeType);
+  }
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsPluginInstanceOwner::GetTagType(nsPluginTagType *result)
@@ -2832,6 +3111,44 @@ void nsObjectFrame::FixUpURLS(const nsString &name, nsAString &value)
       value = newURL;
   }
 }
+
+void
+nsObjectFrame::PluginNotAvailable(const char *aMimeType)
+{
+  // Tell mContent about the mime type
+
+  nsCOMPtr<nsIDOMHTMLObjectElement> object(do_QueryInterface(mContent));
+  NS_ConvertASCIItoUTF16 mimeType(aMimeType);
+
+  if (object) {
+    object->SetType(mimeType);
+  } else {
+    nsCOMPtr<nsIDOMHTMLEmbedElement> embed(do_QueryInterface(mContent));
+    if (embed) {
+      embed->SetType(mimeType);
+    }
+  }
+
+  if (!sDefaultPluginDisabled) {
+    // The default plugin is enabled, don't fire events etc.
+    return;
+  }
+
+  // For non-image and non-document mime types, fire the plugin not
+  // found event and mark this plugin as broken.
+  if (!IsSupportedImageMimeType(aMimeType) &&
+      !IsSupportedDocumentMimeType(aMimeType)) {
+    FirePluginNotFoundEvent(mContent);
+
+    mIsBrokenPlugin = PR_TRUE;
+
+    mState |= NS_FRAME_HAS_DIRTY_CHILDREN;
+
+    GetParent()->ReflowDirtyChild(mContent->GetDocument()->GetShellAt(0),
+                                  this);
+  }
+}
+
 
 // Cache the attributes and/or parameters of our tag into a single set
 // of arrays to be compatible with 4.x. The attributes go first,
@@ -3242,81 +3559,71 @@ nsresult nsPluginInstanceOwner::DispatchFocusToPlugin(nsIDOMEvent* aFocusEvent)
 /*=============== nsIDOMDragListener ======================*/
 nsresult nsPluginInstanceOwner::DragEnter(nsIDOMEvent* aMouseEvent)
 {
-#if defined(XP_MAC) || defined(XP_MACOSX)
   if (mInstance) {
-    // If this event is going to the plugin, we want to kill it.
-    // Not actually sending drag events to the plugin, since we didn't before.
+    // Let the plugin handle drag events.
     aMouseEvent->PreventDefault();
     nsCOMPtr<nsIDOMNSEvent> nsevent(do_QueryInterface(aMouseEvent));
     if (nsevent) {
       nsevent->PreventBubble();
     }
   }
-#endif
+
   return NS_OK;
 }
 
 nsresult nsPluginInstanceOwner::DragOver(nsIDOMEvent* aMouseEvent)
 {
-#if defined(XP_MAC) || defined(XP_MACOSX)
   if (mInstance) {
-    // If this event is going to the plugin, we want to kill it.
-    // Not actually sending drag events to the plugin, since we didn't before.
+    // Let the plugin handle drag events.
     aMouseEvent->PreventDefault();
     nsCOMPtr<nsIDOMNSEvent> nsevent(do_QueryInterface(aMouseEvent));
     if (nsevent) {
       nsevent->PreventBubble();
     }
   }
-#endif
+
   return NS_OK;
 }
 
 nsresult nsPluginInstanceOwner::DragExit(nsIDOMEvent* aMouseEvent)
 {
-#if defined(XP_MAC) || defined(XP_MACOSX)
   if (mInstance) {
-    // If this event is going to the plugin, we want to kill it.
-    // Not actually sending drag events to the plugin, since we didn't before.
+    // Let the plugin handle drag events.
     aMouseEvent->PreventDefault();
     nsCOMPtr<nsIDOMNSEvent> nsevent(do_QueryInterface(aMouseEvent));
     if (nsevent) {
       nsevent->PreventBubble();
     }
   }
-#endif
+
   return NS_OK;
 }
 
 nsresult nsPluginInstanceOwner::DragDrop(nsIDOMEvent* aMouseEvent)
 {
-#if defined(XP_MAC) || defined(XP_MACOSX)
   if (mInstance) {
-    // If this event is going to the plugin, we want to kill it.
-    // Not actually sending drag events to the plugin, since we didn't before.
+    // Let the plugin handle drag events.
     aMouseEvent->PreventDefault();
     nsCOMPtr<nsIDOMNSEvent> nsevent(do_QueryInterface(aMouseEvent));
     if (nsevent) {
       nsevent->PreventBubble();
     }
   }
-#endif
+
   return NS_OK;
 }
 
 nsresult nsPluginInstanceOwner::DragGesture(nsIDOMEvent* aMouseEvent)
 {
-#if defined(XP_MAC) || defined(XP_MACOSX)
   if (mInstance) {
-    // If this event is going to the plugin, we want to kill it.
-    // Not actually sending drag events to the plugin, since we didn't before.
+    // Let the plugin handle drag events.
     aMouseEvent->PreventDefault();
     nsCOMPtr<nsIDOMNSEvent> nsevent(do_QueryInterface(aMouseEvent));
     if (nsevent) {
       nsevent->PreventBubble();
     }
   }
-#endif
+
   return NS_OK;
 }
 
@@ -3490,6 +3797,14 @@ nsPluginInstanceOwner::MouseUp(nsIDOMEvent* aMouseEvent)
 nsresult
 nsPluginInstanceOwner::MouseClick(nsIDOMEvent* aMouseEvent)
 {
+  if (mOwner->IsBroken()) {
+    FirePluginNotFoundEvent(mOwner->GetContent());
+
+    aMouseEvent->PreventDefault();
+
+    return NS_OK;
+  }
+
   return DispatchMouseToPlugin(aMouseEvent);
 }
 

@@ -49,6 +49,9 @@ class nsIDOMWindow;
 class nsIDOMNSHTMLOptionCollection;
 class nsIPluginInstance;
 class nsIForm;
+class nsIDOMNodeList;
+class nsIDOMDocument;
+class nsIHTMLDocument;
 
 struct nsDOMClassInfoData;
 
@@ -197,6 +200,8 @@ protected:
   static nsresult DefineStaticJSVals(JSContext *cx);
 
   static PRBool sIsInitialized;
+  static PRBool sDisableDocumentAllSupport;
+  static PRBool sDisableGlobalScopePollutionSupport;
 
   static jsval sTop_id;
   static jsval sParent_id;
@@ -254,6 +259,7 @@ protected:
   static jsval sScrollMaxY_id;
   static jsval sOpen_id;
   static jsval sItem_id;
+  static jsval sNamedItem_id;
   static jsval sEnumerate_id;
   static jsval sNavigator_id;
   static jsval sDocument_id;
@@ -262,6 +268,8 @@ protected:
   static jsval sSelf_id;
   static jsval sOpener_id;
   static jsval sAdd_id;
+  static jsval sAll_id;
+  static jsval sTags_id;
 
   static const JSClass *sObjectClass;
 
@@ -351,8 +359,26 @@ public:
   NS_IMETHOD Finalize(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
                       JSObject *obj);
 
-  static nsresult CacheDocumentProperty(JSContext *cx, JSObject *obj,
-                                        nsIDOMWindow *window);
+  static nsresult OnDocumentChanged(JSContext *cx, JSObject *obj,
+                                    nsIDOMWindow *window);
+
+  static JSBool JS_DLL_CALLBACK GlobalScopePolluterNewResolve(JSContext *cx,
+                                                              JSObject *obj,
+                                                              jsval id,
+                                                              uintN flags,
+                                                              JSObject **objp);
+  static JSBool JS_DLL_CALLBACK GlobalScopePolluterGetProperty(JSContext *cx,
+                                                               JSObject *obj,
+                                                               jsval id,
+                                                               jsval *vp);
+  static JSBool JS_DLL_CALLBACK SecurityCheckOnSetProp(JSContext *cx,
+                                                       JSObject *obj, jsval id,
+                                                       jsval *vp);
+  static JSObject *GetInvalidatedGlobalScopePolluter(JSContext *cx,
+                                                     JSObject *obj);
+  static nsresult InstallGlobalScopePolluter(JSContext *cx, JSObject *obj,
+                                             JSObject *oldPolluter,
+                                             nsIHTMLDocument *doc);
 
   static nsIClassInfo *doCreate(nsDOMClassInfoData* aData)
   {
@@ -429,7 +455,7 @@ protected:
 
 public:
   NS_IMETHOD PostCreate(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
-                    JSObject *obj);
+                        JSObject *obj);
 
   static nsIClassInfo *doCreate(nsDOMClassInfoData* aData)
   {
@@ -675,8 +701,37 @@ protected:
   static JSBool JS_DLL_CALLBACK DocumentOpen(JSContext *cx, JSObject *obj,
                                              uintN argc, jsval *argv,
                                              jsval *rval);
+  static JSBool GetDocumentAllNodeList(JSContext *cx, JSObject *obj,
+                                       nsIDOMDocument *doc,
+                                       nsIDOMNodeList **nodeList);
 
 public:
+  static JSBool JS_DLL_CALLBACK DocumentAllGetProperty(JSContext *cx,
+                                                       JSObject *obj, jsval id,
+                                                       jsval *vp);
+  static JSBool JS_DLL_CALLBACK DocumentAllNewResolve(JSContext *cx,
+                                                      JSObject *obj, jsval id,
+                                                      uintN flags,
+                                                      JSObject **objp);
+  static void JS_DLL_CALLBACK ReleaseDocument(JSContext *cx, JSObject *obj);
+  static JSBool JS_DLL_CALLBACK CallToGetPropMapper(JSContext *cx,
+                                                    JSObject *obj, uintN argc,
+                                                    jsval *argv, jsval *rval);
+  static JSBool JS_DLL_CALLBACK DocumentAllHelperGetProperty(JSContext *cx,
+                                                             JSObject *obj,
+                                                             jsval id,
+                                                             jsval *vp);
+  static JSBool JS_DLL_CALLBACK DocumentAllHelperNewResolve(JSContext *cx,
+                                                            JSObject *obj,
+                                                            jsval id,
+                                                            uintN flags,
+                                                            JSObject **objp);
+  static JSBool JS_DLL_CALLBACK DocumentAllTagsNewResolve(JSContext *cx,
+                                                          JSObject *obj,
+                                                          jsval id,
+                                                          uintN flags,
+                                                          JSObject **objp);
+
   NS_IMETHOD NewResolve(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
                         JSObject *obj, jsval id, PRUint32 flags,
                         JSObject **objp, PRBool *_retval);
@@ -810,8 +865,13 @@ protected:
 public:
   NS_IMETHOD PostCreate(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
                         JSObject *obj);
+  NS_IMETHOD GetProperty(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
+                         JSObject *obj, jsval id, jsval *vp, PRBool *_retval);
   NS_IMETHOD SetProperty(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
                          JSObject *obj, jsval id, jsval *vp, PRBool *_retval);
+  NS_IMETHOD Call(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
+                  JSObject *obj, PRUint32 argc, jsval *argv, jsval *vp,
+                  PRBool *_retval);
 };
 
 
