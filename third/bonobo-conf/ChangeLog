@@ -1,0 +1,927 @@
+2001-11-01  Michael Meeks  <michael@ximian.com>
+
+	* Version 0.14
+
+2001-11-01  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: depend on bonobo >= 1.0.14
+
+	* bonobo-conf/bonobo-property-editor-list.c
+	(subproperty_change_cb): remove redundant typecode
+	duplicate.
+
+	* tests/test-moniker.c (run_tests): save some
+	string sequence...
+
+	* tests/Makefile.am (test_moniker_SOURCES): why not
+	just build the tests ? - go on.
+
+	* tests/test-moniker.c (save_calendars_to_load),
+	(get_calendars_to_load): add.
+	(discard_config_db, get_config_db): add in a hurry.
+
+	* idl/Bonobo_Config.idl: add StringSeq
+
+2001-10-23  Michael Meeks  <michael@ximian.com>
+
+	* Version 0.13
+
+2001-10-23  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-conf/bonobo-config-database.c
+	(bonobo_config_database_finalize): impl.
+	(bonobo_config_database_destroy): make re-enterancy safe.
+	(bonobo_config_database_class_init): hook finalize.
+	(impl_Bonobo_ConfigDatabase_addDatabase): paranoid
+	precondition, protect against CORBA_Object_is_equivalent
+	re-enterancy, hold references on the config database
+	during iteration.
+	(get_default, impl_Bonobo_ConfigDatabase_listDirs),
+	(impl_Bonobo_ConfigDatabase_listKeys),
+	(impl_Bonobo_ConfigDatabase_dirExists): hold a ref on the
+	database wherever we iterate over priv->db_list, so that
+	it can't be destroyed underneath us by re-enterancy.
+
+2001-10-22  Chema Celorio  <chema@celorio.com>
+
+	* bonobo-conf/bonobo-property-frame.h: remove text after #endif
+
+	* bonobo-conf/bonobo-preferences.h: ditto
+
+2001-09-28  Bradford Hovinen  <hovinen@ximian.com>
+
+	* bonobo-conf/bonobo-property-bag-proxy.c
+	(bonobo_pbproxy_set_bag): Notify listeners of a change in the
+	property when old property data are detected
+
+2001-09-28  Chema Celorio   <chema@celorio.com>
+
+	* configure.in: Bump version to 0.12
+
+2001-09-28  Bradford Hovinen  <hovinen@ximian.com>
+
+	* bonobo-conf/bonobo-config-bag.c (bonobo_config_bag_new): Store
+	listener id in the config bag object
+	(bonobo_config_bag_init): Initialize listener_id to 0 to be
+	absolutely paranoid
+	(bonobo_config_bag_destroy): Disconnect the listener
+
+2001-09-26  Dan Nguyen <dnn@austin.ibm.com>
+
+	* removed all C++ comments, AIX compile fixes
+
+2001-09-25  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "tr" to the languages list.
+
+2001-09-22  Christophe Merlet  <redfox@eikonex.org>
+
+	* configure.in: Added fr to ALL_LINGUAS.
+
+2001-09-16  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in (ALL_LINGUAS): Add da to ALL_LINGUAS
+	since bonobo-conf won't build otherwise.
+
+2001-09-15  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Move AM_PROG_XML_I18N_TOOLS macro to top.
+
+2001-09-12  Iain Holmes  <iain@ximian.com>
+
+	* bonobo-conf/bonobo-config-database.c (bonobo_config_get_value):
+	bonobo_exception_get_text needs to be freed.
+
+2001-09-03  Bradford Hovinen  <hovinen@ximian.com>
+
+	* bonobo-conf/bonobo-property-bag-proxy.c
+	(bonobo_pbproxy_set_bag): Enable code to release the property bag;
+	move it to after the code that releases the properties (possibly a
+	Bonobo bug -- this shouldn't make a difference in principle)
+
+2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
+
+2001-08-24  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/bonobo-config-xmldb.c (real_set_value): added check if the
+	dir entry is found.
+
+	* monikers/test-xmldb.c (test_xmldb): test what happens if we try
+	to write on a directoy.
+
+2001-08-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* Version: 0.11
+
+	* tests/Makefile.am: Remove the gconf test as it fails.
+
+2001-08-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* tests/Makefile.am: Build test-xml-strings and add it to the
+	test suite.
+
+	* tests/test-xml-strings.c: Regression test for xml strings.
+
+	* bonobo-conf/bonobo-config-utils.c (encode_simple_value): Use
+	bonobo_ui_util_encode_str() to encode the string to hex as a
+	workaround for UTF-8 (and 8bit) strings.
+	(decode_simple_value): Decode here.
+
+2001-08-11  Martin Baulig  <baulig@suse.de>
+
+	* acinclude.m4: Removed. This wasn't used anymore, but it contains
+	code which doesn't work with autoconf 2.52
+	(AM_FUNC_ERROR_AT_LINE).
+
+2001-07-30  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* configure.in: Added "es" to ALL_LINGUAS.
+
+2001-07-30  Bradford Hovinen  <hovinen@ximian.com>
+
+	* RELEASE : 0.10
+
+	* bonobo-conf/bonobo-property-editor-option.c
+	(bonobo_peditor_option_new): Use rbs[0] rather than rbs[i] for
+	radio_button_new_from_widget call
+	(bonobo_peditor_option_new): Use g_new0 rather than g_new
+
+2001-07-30  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/bonobo-moniker-config.c (config_resolve): disabled the
+	dbproxy code, since it does not support notification - we need to
+	fix that in the future.
+
+2001-07-30  Bradford Hovinen  <hovinen@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor-option.c
+	(bonobo_peditor_option_new): Remember to return the object in the
+	radio button case
+
+2001-07-30  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "zh_TW.Big5" to ALL_LINGUAS.
+	
+2001-07-27  Bradford Hovinen  <hovinen@ximian.com>
+
+	* RELEASE : 0.9
+
+2001-07-26  Chema Celorio  <chema@celorio.com>
+
+	* bump to 0.9
+
+2001-07-24  Bradford Hovinen  <hovinen@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor-option.c
+	(bonobo_peditor_option_menu_construct):
+	(bonobo_peditor_option_radio_construct): Implement
+	(bonobo_peditor_option_new): Use
+	bonobo_peditor_option_{menu|radio}_construct
+	(bonobo_peditor_option_new): Store all radio buttons for passing
+	to bonobo_peditor_option_radio_construct
+	(bonobo_peditor_option_radio_construct): Store the list of widgets
+	in the first widget in the list
+	(bonobo_peditor_option_radio_construct): Connect destroy signal to
+	destroy_cb
+	(destroy_cb): Destroy the list of widgets
+	(toggle_set_value_cb): Rewrite for use with widget list
+	(toggled_cb): Accept real_widgets argument and use that to
+	determine argument value
+
+	* bonobo-conf/bonobo-property-editor.h: Eliminate
+	bonobo_peditor_option_construct; add
+	bonobo_peditor_option_{menu|radio}_construct
+
+2001-07-24  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-config-subdir.c (bonobo_config_proxy_new):
+	dupliate the returned object.
+
+	* bonobo-conf/bonobo-config-bag.c (bonobo_config_bag_destroy): use
+	bonobo_object_release_unref again.
+
+	* monikers/bonobo-moniker-config.c (config_resolve): use
+	bonobo_object_release_unref again.
+
+2001-07-24  JP Rosevear  <jpr@ximian.com>
+
+	* bonobo-conf/bonobo-config-database.c: make MAKE_SET_SIMPLE take
+	an extra argument, the corba type, in order to avoid casting
+	problems
+
+2001-07-19  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in: Bump version to 0.8
+
+2001-07-18  Bradford Hovinen  <hovinen@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor.c
+	(bonobo_peditor_set_property):
+	(bonobo_peditor_destroy): ref/unref the property bag to prevent
+	its being destroyed before the property editor
+	(remove_listener_cb): 
+	(bonobo_peditor_set_guard): ref/unref the property bag
+
+	* monikers/bonobo-moniker-config.c (config_resolve): Use
+	Bonobo_Unknown_unref rather than bonobo_object_release_unref
+
+	* bonobo-conf/bonobo-config-bag.c (bonobo_config_bag_destroy): 
+	Ditto
+
+	* bonobo-conf/bonobo-property-proxy.c (transient_destroy_cb): 
+	(bonobo_property_proxy_transient): Don't ref/unref the pbproxy
+	(transient_destroy_cb): Free the callback data object, not the pbp
+
+2001-07-17  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* configure.in: Added pl to ALL_LINGUAS.
+
+2001-07-07  Dietmar Maurer  <dietmar@ximian.com>
+
+	* tests/Makefile.am (test_gconf_LDADD): conditionally compile the
+	gconf stuff
+
+2001-07-05  Dietmar Maurer  <dietmar@ximian.com>
+
+	* autogen.sh (have_libtool): add check for libtool 1.4
+
+2001-07-05  Bradford Hovinen  <hovinen@ximian.com>
+
+	* Makefile.am (bonobo_confConf.sh): Added sed expression for @INCLUDEDIR@
+
+	* bonobo_confConf.sh.in (BONOBO_CONF_INCLUDEDIR): Added -I@INCLUDEDIR@
+
+2001-07-05  Dietmar Maurer  <dietmar@ximian.com>
+
+	* tests/test-gconf.c: impl.
+
+	* monikers/bonobo-config-gconfdb.c (real_get_value): implemented
+	access to schema documentation.
+
+2001-07-04  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/Makefile.am (libmoniker_config_la_LIBADD): added
+	libbonobo_conf.la 
+
+	* monikers/bonobo-moniker-config.c (config_resolve): use the new
+	proxy code.
+
+	* bonobo-conf/bonobo-config-subdir.c (bonobo_config_proxy_new): impl.
+
+	* tests/test-moniker.c (run_tests): test the new
+	bonobo-config-subdir code.
+
+	* monikers/bonobo-moniker-config.c (config_resolve): we can now
+	request a subtree of the whole database from the "config:" moniker.
+
+	* bonobo-conf/bonobo-config-bag.c (bonobo_config_bag_new): small
+	bug fix (use cb->path instead of path)
+
+	* bonobo-conf/bonobo-config-subdir.[ch]: impl.
+
+2001-07-03  Peter Williams  <peterw@ximian.com>
+
+	* bonobo-conf/bonobo-config-database.c: Fix for fatal typo.
+
+2001-07-03  Dietmar Maurer  <dietmar@ximian.com>
+
+	* doc/bonobo-conf.sgml: updated some docs 
+
+2001-07-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added "no" and "nn" to all linguas.
+	
+2001-07-03  Dietmar Maurer  <dietmar@ximian.com>
+
+	* *: s/PropertyEditor/PEditor/ s/property_editor/peditor/
+	
+	* examples/evolution-calendar-config.c: make it work with the new
+	property editor code. 
+
+	* configure.in: set version number to 0.7
+
+2001-07-02  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/bonobo-config-gconfdb.c (real_get_value): do not pass a
+	locale to gconf_client_get_entry because GConf does not support it.
+
+	* idl/Bonobo_Config.idl: added flags to addDatabase()
+
+	* examples/simple.c: another example
+
+	* configure.in: removed AM_CONDITIONAL(INSIDE_GNOME_COMMON, true)
+
+2001-06-29  Bradford Hovinen  <hovinen@ximian.com>
+
+	* bonobo-conf/bonobo-property-bag-proxy.c (bonobo_pbproxy_update):
+	Free ev inside the while loop to prevent memory leaks; use for
+	loop rather than while loop
+
+	* bonobo-conf/bonobo-property-editor.c
+	(bonobo_property_editor_construct): Connect destroy signal on
+	widget to destroy method on property editor
+	(bonobo_property_editor_destroy): 
+	(bonobo_property_editor_construct): Don't ref/unref widget
+
+	* bonobo-conf/bonobo-property-editor*.[ch]: Use bonobo_peditor_..._new for constructor names;
+	rename bonobo_property_editor_..._new_from_widget to bonobo_peditor_..._construct
+
+2001-06-28  Bradford Hovinen  <hovinen@ximian.com>
+
+	* bonobo-conf/bonobo-property-bag-editor.c
+	(bonobo_property_bag_editor_new): Don't assume a PropertyEditor is
+	a GtkWidget
+
+	* bonobo-conf/bonobo-property-editor.c (bonobo_property_editor_construct): Don't add widget to container
+	Add widget to struct _BonoboPropertyEditorPrivate
+
+	* bonobo-conf/bonobo-property-editor.[ch]: Inherit from GtkObject rather than GtkBin
+
+	* bonobo-conf/bonobo-property-editor-struct.c (bonobo_property_editor_struct_new_from_widget): Implement
+	(bonobo_property_editor_struct_new): Use bonobo_property_editor_struct_new_from_widget
+
+	* bonobo-conf/bonobo-property-editor-option.c (bonobo_property_editor_option_new_from_widget): Implement
+	(bonobo_property_editor_option_new): Use bonobo_property_editor_option_new_from_widget
+
+	* bonobo-conf/bonobo-property-editor-list.c (bonobo_property_editor_sequence_new_from_widget): Implement
+	(bonobo_property_editor_sequence_new): Use bonobo_property_editor_sequence_new_from_widget
+
+2001-06-28  Dietmar Maurer  <dietmar@ximian.com>
+
+	* configure.in: set version number to 0.6
+
+	* monikers/test-xmldb.c (test_xmldb): add more tests
+
+	* bonobo-conf/bonobo-config-database.c: bug fix: cast to
+	CORBA_boolean to extract the value.
+
+2001-06-27  Bradford Hovinen  <hovinen@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor-boolean.c (bonobo_property_editor_boolean_new): 
+	(bonobo_property_editor_boolean_new_from_widget): Ditto below
+
+	* bonobo-conf/bonobo-property-editor-basic.c
+	(bonobo_property_editor_basic_new): Call
+	bonobo_property_editor_basic_new_from_widet
+	(bonobo_property_editor_basic_new_from_widget): Implement
+	Add _new_from_widget () implementations
+
+2001-06-15  Dietmar Maurer  <dietmar@ximian.com>
+
+	* tests/test-moniker.c: test for the default database moniker "config:"
+
+	* monikers/bonobo-moniker-config.c (config_resolve): use the gconf:
+	moniker as default database.
+
+	* monikers/bonobo-config-dirdb.[ch]: a new backend.
+
+2001-06-13  Dietmar Maurer  <dietmar@ximian.com>
+
+	* autogen.sh (PKG_NAME): removed the check for libtool 1.4, this
+	should be in macros/autogen.sh
+
+2001-06-08  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/bonobo-config-xmldb.c (bonobo_config_xmldb_destroy):
+	don't unref the event source (because it is aggregated)
+
+2001-06-12  Jens Finke <jens@gnome.org>
+	
+	* bonobo-conf/Makefile.am (libbonobo_confinclude_HEADERS): Added
+	bonobo-config-control.h.
+
+2001-06-07  Jens Finke <jens@gnome.org>
+
+	* Makefile.am (EXTRA_DIST): Added bonobo-conf.spec.
+
+2001-06-06  Jens Finke <jens@gnome.org>
+
+	* bonobo-conf.spec.in: New initial spec file.
+
+	* configure.in: Generate spec file.
+
+2001-06-04  Dietmar Maurer  <dietmar@ximian.com>
+
+	* tests/Makefile.am (xml_in_files): renamed .xmldb.in to .xml.in
+
+	* monikers/bonobo-config-xmldb.c (bonobo_config_xmldb_new): use
+	bonobo-config instead of bonobo-conf
+
+	* tests/test-config.xmldb.in: replace bonobo-conf with bonobo-config
+
+2001-05-31  Jason Leach  <jleach@ximian.com>
+
+	* autogen.sh: Correct a cut and paste error with the libtool check
+	and correct the download URL.
+
+2001-05-25  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor-basic.c (spin_set_value_cb):
+	impl. set_value callback for spin buttons.
+
+2001-05-23  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor-option.c: impl. ability to
+	display as option menu.
+
+	* examples/evolution-calendar-config.c: impl.
+	added i18n support.
+
+	* monikers/bonobo-moniker-config.c: disabled/deleted all features
+	that will not work for Gnome 2.
+
+2001-05-21  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/bonobo-config-xmldb.c (real_sync): changed back to
+	atomic save, everything else is not reliable enough.
+
+2001-05-17  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/Makefile.am: make it work with libtool1.4
+
+2001-05-16  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor-default.c
+	(bonobo_property_editor_default_new): use an GtkEntry to display
+	the value. 
+
+2001-05-15  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor.c
+	(bonobo_property_editor_new): changed the method signature.
+
+	* bonobo-conf/bonobo-property-editor-radio.c: impl.
+
+	* bonobo-conf/config-moniker-demo.c (demo5): use the new property
+	editor. 
+
+	* bonobo-conf/bonobo-property-editor.c (remove_listener_cb):
+	remove the listener if the widget is destroyed.
+
+2001-05-14  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-bag-proxy.c
+	(bonobo_pbproxy_set_value): do not emit that PropertyProxy:change
+	signal - use the gtk signal instead.
+
+	* idl/Bonobo_Config.idl: discarded the PropertyEditor IDL.
+
+	* bonobo_property_editor_*: we do not use oaf any longer to load
+	property editors. 
+	
+	* configure.in: version 0.4
+
+2001-05-08  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor.c
+	(bonobo_config_widget_set_guard): impl. 
+
+	* bonobo-conf/config-moniker-demo.c (demo5): use the new function.
+
+2001-05-07  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor.c
+	(bonobo_property_editor_new): add a property bag to each editor.
+
+	* bonobo-conf/bonobo-property-editor-boolean.c (toggled_cb): use a
+	GtkCheckButton instead of a ComboBox.
+
+	* bonobo-conf/bonobo-property-editor-color.c (set_value_cb): impl.
+
+	* bonobo-conf/config-moniker-demo.c (demo5): impl.
+	(demo5): added some PropertyEditors for colors.
+
+2001-05-06  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* monikers/Makefile.am: added config.status dependency to 
+	Bonobo_Moniker_*.oaf targets -- to rebuild them when $(monikerdir)
+	changes.
+
+2001-04-30  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor-filename.c: impl.
+	(changed_cb): use dynany.
+
+	* bonobo-conf/bonobo-property-editor-basic.c (set_value_cb): block
+	the signal handler to avoid an event loop
+
+	* bonobo-conf/bonobo-property-editor-boolean.c (set_value_cb):
+	simplified the code.
+	(set_value_cb): block the signal handler to avoid an event loop.
+	(changed_cb): simplified the code
+
+2001-04-27  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor-basic.c
+	(bonobo_property_editor_basic_new): connect to the changed signal
+	to immediately apply changes. real apply is done by the PropertyProxy
+
+	* bonobo-conf/bonobo-property-frame.c: make it work with glade
+
+2001-04-26  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-bag-proxy.c: use the set_value function
+	(bonobo_pbproxy_class_init): added a "modified" signal
+
+	* bonobo-conf/bonobo-property-editor-basic.c
+	(bonobo_property_editor_basic_new): enable property editor by default.
+
+	* bonobo-conf/bonobo-property-editor.h: add add Corba_TypeCode
+	parameter.
+
+	* bonobo-conf/bonobo-property-editor.c
+	(impl_Bonobo_PropertyEditor_setProperty): changed to make it work
+	with glade.
+
+2001-04-20  Dietmar Maurer  <dietmar@ximian.com>
+
+	* configure.in: version = 0.3
+
+2001-04-19  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-frame.c: impl.
+
+	* bonobo-conf/bonobo-property-bag-proxy.c: removed the sync
+	attribute, cleanup th code
+	
+	* configure.in (BONOBO_*): add gnome flags/libs to BONOBO_*
+
+2001-04-17  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-editor-basic.c: renamed
+	Bonobo_PropertyEditor_Data_long to Bonobo_PropertyEditor_Data_basic
+	(key_press_cb): check if someone has set a property (editor->tc)
+
+2001-04-18  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added sv to ALL_LINGUAS.
+
+2001-04-16  Dietmar Maurer  <dietmar@ximian.com>
+
+	* *: some cleanup for release 0.2, added a new tag  BONOBO_CONF_0_2
+	
+	* bonobo-conf/Makefile.am (dist-hook): removed BUILD_SOURCES
+
+2001-04-13  Dietmar Maurer  <dietmar@ximian.com>
+
+	* doc/bonobo-conf.pdf: printable documentation.
+
+	* doc/Makefile.am: add a print target to gererate a printable pdf
+	file
+
+	* bonobo-conf/bonobo-property-editor.c (bonobo_config_widget_new):
+	impl. 
+
+	* bonobo-conf/bonobo-property-bag-proxy.c
+	(bonobo_pbproxy_set_value): emit another event to notify the
+	outside of changes.
+
+	* monikers/bonobo-config-xmldb.c (real_sync): rewind the stream
+	before writing something.
+
+2001-04-12  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-property-bag-proxy.c (bonobo_pbproxy_update):
+	impl.
+
+	* bonobo-conf/bonobo-config-control.c: use the PropertyProxy code.
+
+	* bonobo-conf/bonobo-property-bag-proxy.c
+	(bonobo_pbproxy_set_value): support for change notifications added
+
+	* bonobo-conf/bonobo-property-bag-editor.c
+	(bonobo_property_bag_editor_new): clear the exception at the start
+	of the loop.
+
+2001-04-11  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-preferences.c: various fixes.
+
+	* bonobo-conf/bonobo-preferences.[ch]: new files.
+
+2001-04-10  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-config-database.c (MAKE_GET_WITH_DEFAULT):
+	new macro to generate _with_default functions
+	(bonobo_config_set_value): don't print a warning
+
+2001-04-09  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/bonobo-config-xmldb.c (bonobo_config_xmldb_new): set
+	the right file permissions
+
+	* bonobo-conf/bonobo-config-database.c (bonobo_config_get_value):
+	check for exceptions
+
+	* bonobo_confConf.sh.in (BONOBO_CONF_LIBDIR): added the necessary
+	files for gnome-config
+
+	* monikers/bonobo-config-gconfdb.c (real_get_value): raise
+	appropriate exceptions. 
+
+	* bonobo-conf/bonobo-config-database.c
+	(impl_Bonobo_ConfigDatabase_getDefault): raise appropriate exceptions.
+
+	* monikers/bonobo-config-xmldb.c (real_get_value): fix for
+	localized values.
+
+2001-04-06  Dietmar Maurer  <dietmar@ximian.com>
+
+	* idl/Bonobo_Config.idl: add a locale parameter to the get methods.
+
+	* *.[hc]: added the new locale parameter.
+
+	* monikers/bonobo-config-xmldb.c (lookup_dir_entry): bug fix.
+
+2001-04-05  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/bonobo-config-xmldb.c (fill_cache): code cleanup
+	(create_doc): use the push method to read XML files.
+	(real_sync): write to the same file
+
+	* bonobo-conf/bonobo-config-property.c
+	(bonobo_config_property_new): ensure that each path starts with a slash
+	(impl_Bonobo_Property_getDocString): impl.
+
+	* bonobo-conf/bonobo-config-bag-property.c
+	(impl_Bonobo_Property_getDefault): impl. 
+	(impl_Bonobo_Property_getDocString): impl.
+
+	* bonobo-conf/bonobo-config-utils.c (bonobo_config_dir_name):
+	return NULL if there is no directory component.
+
+	* doc/bonobo-conf.sgml: more docu.
+
+2001-04-04  Dietmar Maurer  <dietmar@ximian.com>
+
+	* Makefile.am (EXTRA_DIST): added xml-i18n-*.in to EXTRA_DIST
+
+	* doc/bonobo-conf.sgml: wrote more documentation. 
+
+	* monikers/bonobo-config-gconfdb.c: finished the GConf backend.
+
+2001-04-03  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/bonobo-config-xmldb.c (delete_dir_data): unlink the xml node
+	(real_remove_dir): do not remove the root dir
+
+	* monikers/bonobo-config-gconfdb.c: impl. the GConf backend - untested
+
+	* monikers/bonobo-config-xmldb.c (bonobo_config_xmldb_destroy):
+	unref the event source
+
+	* configure.in (vers): check for gconf
+
+	* bonobo-conf/bonobo-config-database.c (MAKE_SET_SIMPLE): wrote
+	some handy macros for helper functions.
+	(impl_Bonobo_ConfigDatabase_addDatabase): check if the database
+	was already added.
+
+2001-04-02  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-conf/bonobo-config-utils.c (decode_simple_value): bug fix.
+	(get_value_with_locale): use the xml:lang attribute
+
+	* bonobo-conf/bonobo-config-database.c (bonobo_config_get_value):
+	check if value is zero.
+
+	* tests/Makefile.am: added example: localized configuration file.
+
+2001-03-30  Dietmar Maurer  <dietmar@ximian.com>
+
+	* doc/bonobo-conf.sgml: more documentation
+
+	* bonobo-conf/bonobo-config-database.c: moved some function from
+	bonobo-config-utils.
+
+2001-03-29  Dietmar Maurer  <dietmar@ximian.com>
+
+	* renamed ./src to ./bonobo-conf
+
+	* doc/*: we now use gtk-doc 
+
+	* doc/usage.txt: updated.
+
+	* src/bonobo-config-utils.c (bonobo_config_get_string): impl.
+	(bonobo_config_get_long): impl.
+	(bonobo_config_get_float): impl.
+	(bonobo_config_get_double): impl.
+	(bonobo_config_get_bool): impl.
+	(bonobo_config_set_string): impl.
+	(bonobo_config_set_long): impl.
+	(bonobo_config_set_float): impl.
+	(bonobo_config_set_double): impl.
+	(bonobo_config_set_bool): impl.
+
+2001-03-28  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/bonobo-config-utils.c (bonobo_config_get_value): impl.
+	(bonobo_config_set_value): impl.
+
+	* use i18n
+
+2001-03-22  Dietmar Maurer  <dietmar@ximian.com>
+
+	* configure.in: add AM_PROG_XML_I18N_TOOLS
+
+	* monikers/bonobo-config-xmldb.c (bonobo_config_xmldb_new): check
+	if the database is writeable.
+	(real_remove_value): impl.
+	(real_remove_dir): impl.
+
+2001-03-21  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/wombat-example.c: impl. a small example how to use the
+	wombat moniker.
+
+2001-03-20  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/bonobo-config-bag-property.c
+	(impl_Bonobo_Property_getFlags): impl. 
+
+	* src/bonobo-config-database.c
+	(impl_Bonobo_ConfigDatabase__get_writeable): impl.
+
+	* src/bonobo-config-property.c (impl_Bonobo_Property_addListener):
+	make exact compares.
+	(impl_Bonobo_Property_getDefault): impl.
+	(impl_Bonobo_Property_getFlags): impl.
+
+	* idl/Bonobo_Config.idl: removed all unnecessary things.
+
+	* src/bonobo-config-database.c
+	(impl_Bonobo_ConfigDatabase_getDefault): impl. 
+
+2001-03-19  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/bonobo-config-bag.c (notify_cb): implemented notifications.
+
+	* monikers/bonobo-config-xmldb.c (notify_listeners): implemented
+	notifications.
+
+	* src/bonobo-config-bag.c (bonobo_config_bag_destroy): do not
+	release the event source, since it is aggregated with the bag.
+
+	* monikers/bonobo-config-xmldb.c (FLUSH_INTERVAL): implemented a
+	timeout to flush data to disk.
+
+	* monikers/bonobo-moniker-xmldb.c (xmldb_resolve): simplified the
+	code.
+
+2001-03-16  Dietmar Maurer  <dietmar@ximian.com>
+
+	* monikers/bonobo-config-xmldb.c (bonobo_config_xmldb_new):
+	substitute HOME for ~
+
+	* src/bonobo-config-database.c: implemented support for default
+	databases.
+
+	* monikers/bonobo-moniker-xmldb.c (xmldb_resolve): add support for
+	parent monikers.
+
+2001-03-15  Dietmar Maurer  <dietmar@ximian.com>
+
+	* *: removed the GConf dependency and restructured the whole code.
+
+2001-03-06  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/bonobo-property-bag-proxy.c: finished the implementation.
+
+2001-02-28  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/bonobo-property-proxy.[ch]: impl.
+
+	* src/*.c: remove all unnecessary #include  
+
+	* src/bonobo-property-bag-proxy.[ch]: impl.
+
+	* src/bonobo-property-bag-editor.[ch]
+	(bonobo_property_bag_editor_new): split the code out into separate
+	files.
+
+2001-02-23  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/bonobo-moniker-config.c (create_subtree): we need to
+	ref the control
+
+	* src/*.c: many small memory leak fixes, better use of DynAny
+	interface.  
+
+2001-02-20  Dietmar Maurer  <dietmar@ximian.com>
+
+	* *.c: fixed all memory leaks.
+
+2001-02-19  Dietmar Maurer  <dietmar@ximian.com>
+
+	* cedit/cedit.c: started work on a generic configuration editor.
+
+2001-02-16  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/bonobo-property-editor-list.[ch]: start working on an editor
+	for lists and arrays.
+
+2001-02-14  Dietmar Maurer  <dietmar@ximian.com>
+
+	* *: support for structures and aliases
+
+2001-02-09  Michael Meeks  <michael@ximian.com>
+
+	* src/test-config-moniker.c (listener_callback): use the
+          correct free function.
+
+2001-02-09  Dietmar Maurer  <dietmar@ximian.com>
+
+	* Version 0.1
+	
+	* configure.in: check for proper versions 
+
+2001-02-08  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/bonobo-config-bag.c (bonobo_config_bag_class_init): use the
+	new XObject code
+
+2001-02-07  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/test-config-moniker.c: cleanup
+
+	* src/config-moniker-demo.c: impl. 
+
+	* doc/usage.txt: wrote (cut/paste) some documentation.
+
+	* src/bonobo-property-editor.c (bonobo_property_editor_get_type):
+	us the new bonobo-x-object stuff.
+
+2001-02-06  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/gtkwtree*: added a very simple tree widget (modified GtkTree) 
+
+2001-01-30  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/bonobo-property-editor-enum.c: use the CORBA_DynAny
+	interface where possible.
+
+2001-01-29  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/bonobo-property-editor-enum.c: a very ugly prototype :-(
+
+	* src/bonobo-property-editor.c (bonobo_property_editor_resolve):
+	impl. 
+
+2001-01-26  Dietmar Maurer  <dietmar@ximian.com>
+
+	* *.*: resolve to controls (experimental code)
+
+2001-01-17  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/*.c: make it work with the latest bonobo changes
+
+2001-01-08  Dietmar Maurer  <dietmar@helixcode.com>
+
+	* src/bonobo-config-property.c
+	(impl_Bonobo_Property_queryInterface): impl.
+	(impl_Bonobo_Property_addListener): impl.
+	(impl_Bonobo_Property_removeListener): impl.
+
+	* src/bonobo-config-bag-property.c
+	(impl_Bonobo_Property_addListener): impl. 
+	(impl_Bonobo_Property_removeListener): impl.
+
+	* src/bonobo-config-bag.c
+	(impl_Bonobo_PropertyBag_getEventSource): impl. 
+
+2001-01-03  Dietmar Maurer  <dietmar@helixcode.com>
+
+	* src/test-config-moniker.c (test_moniker): use the new listener code.
+
+	* src/bonobo-config-bag.c (extract_property_name): impl.
+
+2000-12-22  Dietmar Maurer  <dietmar@helixcode.com>
+
+	* src/bonobo-moniker-config.c (config_resolve): also resolve
+	"IDL:Bonobo/Property:1.0" 
+
+	* src/bonobo-config-property.[ch]: this work without a PropertyBag 
+
+	* src/bonobo-config-bag-property.[ch]: renamed
+	bonobo-config-property.[ch]   
+
+2000-12-21  Dietmar Maurer  <dietmar@helixcode.com>
+
+	* src/bonobo-config-bag.c (gconf_to_bonobo_arg): return
+	bonobo_arg_new (BONOBO_ARG_NULL) if we pass a NULL value.
+	(bonobo_config_notify_listeners): pass the property value to the
+	listener. 
+
+	* src/bonobo-config-bag.h: remove the add/remove ChangeListener
+	methods, since we use an EventSource.
+
+	* src/bonobo-config-bag.c (bonobo_config_bag_new): aggregate it
+	with an EventSource.
+
+	* bonobo-conf/*: import it into the gnome cvs tree. 
+
+2000-12-20  Dietmar Maurer  <dietmar@helixcode.com>
+
+	* src/bonobo-moniker-config.c: use the new shlib factory code
