@@ -70,49 +70,13 @@ append()
   fi
 }
 
-while [ -n "$1" ]; do
+handle()
+{
   case "$1" in
-    -n)  debug=1 ;;
-    -q1) ECHO1=: ;;
-    -q)  ECHO=: ;;
-     *)  echo "Usage: syncconf [-n] [-q]"; exit ;;
-  esac
-  shift
-done
-
-debug=1
-
-if [ $debug = 1 ]; then
-  RCCONF=/tmp/rc.conf
-  RCSYNC=/tmp/rc.conf.sync
-fi
-
-ALL="timeclient timehub timesrv afsclient nfssrv nfsclient sendmail snmp savecore account quotas host addr"
-
-$ECHO "Synchronizing configuration... \c"
-
-. $RCCONF
-
-if test -f $RCSYNC; then
-  . $RCSYNC
-else
-  CHANGES="$ALL"
-fi
-
-if [ "$CHANGES" = "" ]; then
-  $ECHO "No changes to synchronize."
-  exit
-fi
-
-j=$CHANGES
-
-for i in $j; do
-  $ECHO "$i \c"
-
-  case "$i" in
   TIMECLIENT|timeclient)
     # gettime and AFS time synchronization
     syncvar timeclient ${TIMECLIENT}
+    DEPENDENCIES="$DEPENDENCIES AFSCLIENT"
     ;;
 
   TIMEHUB|timehub)
@@ -124,24 +88,28 @@ for i in $j; do
     ;;
 
   AFSCLIENT|afsclient)
-    if [ "${AFSCLIENT}" != "false" ]; then
+    if [ "$afsc_done" -ne 1 ]; then
+      if [ "${AFSCLIENT}" != "false" ]; then
 
-      syncvar afsml true
-      syncvar afsclient true
+        syncvar afsml true
+        syncvar afsclient true
 
-      AFSCLIENTNUM=4
-      if [ "${AFSCLIENT}" != "true" ]; then
-        AFSCLIENTNUM=${AFSCLIENT}
+        AFSCLIENTNUM=4
+        if [ "${AFSCLIENT}" != "true" ]; then
+          AFSCLIENTNUM=${AFSCLIENT}
+        fi
+
+        if [ "${TIMECLIENT}" = "false" ]; then
+          AFSTIME="-nosettime "
+        fi
+
+        syncvar afsd.options "${AFSTIME}-stat 2000 -dcache 800 -daemons $AFSCLIENTNUM -volumes 70"
+      else
+        syncvar afsml false
+        syncvar afsclient false
       fi
 
-      if [ "${TIMECLIENT}" = "false" ]; then
-        AFSTIME="-nosettime "
-      fi
-
-      syncvar afsd.options "${AFSTIME}-stat 2000 -dcache 800 -daemons $AFSCLIENTNUM -volumes 70"
-    else
-      syncvar afsml false
-      syncvar afsclient false
+    afsc_done=1
     fi
     ;;
 
@@ -225,11 +193,56 @@ for i in $j; do
 
   *)
     $ECHO ""
-    echo "syncconf: unknown variable $i"
+    echo "syncconf: unknown variable $1"
     ;;
   esac
+}
 
+while [ -n "$1" ]; do
+  case "$1" in
+    -n)  debug=1 ;;
+    -q1) ECHO1=: ;;
+    -q)  ECHO=: ;;
+     *)  echo "Usage: syncconf [-n] [-q]"; exit ;;
+  esac
+  shift
 done
+
+debug=1
+
+if [ $debug = 1 ]; then
+  RCCONF=/tmp/rc.conf
+  RCSYNC=/tmp/rc.conf.sync
+fi
+
+ALL="timeclient timehub timesrv afsclient nfssrv nfsclient sendmail snmp savecore account quotas host addr"
+
+$ECHO "Synchronizing configuration... \c"
+
+. $RCCONF
+
+if test -f $RCSYNC; then
+  . $RCSYNC
+else
+  CHANGES="$ALL"
+fi
+
+if [ "$CHANGES" = "" ]; then
+  $ECHO "No changes to synchronize."
+  exit
+fi
+
+for i in $CHANGES; do
+  $ECHO "$i \c"
+  handle "$i"
+done
+
+if [ "$DEPENDENCIES" != "" ]; then
+  for i in $DEPENDENCIES; do
+    $ECHO "($i) \c"
+    handle "$i"
+  done
+fi
 
 $ECHO ""
 
