@@ -42,6 +42,7 @@
  *     	InstallAppDefaults                       (class)
  *      DependDependency                         ()
  *     	DependTarget                             ()
+ #	DependSrcs				 ()
  *     	CleanTarget                              ()
  *     	TagsTarget                               ()
  *      ImakeDependency                          (target)
@@ -562,6 +563,17 @@ depend: Makefile							@@\
 	$(DEPEND) -s "# DO NOT DELETE" -- $(ALLDEFINES) -- $(SRCS)
 #endif /* DependTarget */
 
+/*
+ * DependSrcs - generate rules to compute dependencies for all files in the
+ * current directory
+ */
+#ifndef DependSrcs
+#define	DependSrcs()							@@\
+DependDependency()							@@\
+									@@\
+depend: Makefile							@@\
+	$(DEPEND) -s "# DO NOT DELETE" -- $(ALLDEFINES) *.[ch]
+#endif /* DependSrcs */
 
 /*
  * CleanTarget - generate rules to remove any garbage files; the #* is here
