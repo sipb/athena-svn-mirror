@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.1.1.1 2004-10-06 18:46:32 ghudson Exp $
+dnl $Id: configure.ac,v 1.1.1.2 2005-03-10 21:48:07 ghudson Exp $
 dnl
 dnl Copyright (c) 2003  Noah Levitt
 dnl
@@ -18,9 +18,9 @@ dnl 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 dnl
 
 AC_PREREQ([2.50])
-AC_INIT([gucharmap], [1.4.1])
+AC_INIT([gucharmap], [1.4.2])
 AM_CONFIG_HEADER([config.h])
-AM_INIT_AUTOMAKE([gucharmap], [1.4.1])
+AM_INIT_AUTOMAKE([gucharmap], [1.4.2])
 
 AM_MAINTAINER_MODE
 
@@ -28,7 +28,7 @@ AM_MAINTAINER_MODE
 AC_PROG_CC
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
-AC_PROG_INTLTOOL([0.27])
+AC_PROG_INTLTOOL([0.29])
 
 
 # checks for stuff
@@ -36,7 +36,7 @@ GETTEXT_PACKAGE=gucharmap
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", 
                    [Define the gettext package to be used])
-ALL_LINGUAS="am ar az ca be bn cs cy da de el en_CA en_GB eo es fa fi fr ga hi hr hu id is it ja ko lt mk ml mn ms nl nn no pa pl pt pt_BR ru sk sq sr sr@Latn sv ta th uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn bs ca cs cy da de el en_CA en_GB eo es fa fi fr ga gu hi hr hu id is it ja ko lt mi mk ml mn ms nb nl nn no pa pl pt pt_BR ru sk sq sr sr@Latn sv ta th tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 

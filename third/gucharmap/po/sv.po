@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the gucharmap package.
 # Christian Rose <menthos@menthos.com>, 2003, 2004.
 #
-# $Id: sv.po,v 1.1.1.1 2004-10-06 18:46:55 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2005-03-10 21:48:27 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gucharmap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-22 20:23-0500\n"
+"POT-Creation-Date: 2004-08-24 11:01+0200\n"
 "PO-Revision-Date: 2004-02-16 16:10+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"

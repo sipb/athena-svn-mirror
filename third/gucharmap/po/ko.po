@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gucharmap 1.2.0\n"
+"Project-Id-Version: [gucharmap] [1.3.0]\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-22 20:23-0500\n"
-"PO-Revision-Date: 2004-02-17 01:55+0900\n"
+"POT-Creation-Date: 2004-08-24 11:01+0200\n"
+"PO-Revision-Date: 2004-08-14 00:26+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -310,19 +310,19 @@ msgstr "차영호 <ganadist at mizi.com>, 2003"
 
 #: gucharmap/gucharmap-window.c:420 gucharmap/gucharmap-window.c:602
 msgid "Next Script"
-msgstr "다음 글자"
+msgstr "다음 글자 범위"
 
 #: gucharmap/gucharmap-window.c:421 gucharmap/gucharmap-window.c:603
 msgid "Previous Script"
-msgstr "이전 글자"
+msgstr "이전 글자 범위"
 
 #: gucharmap/gucharmap-window.c:433 gucharmap/gucharmap-window.c:607
 msgid "Next Block"
-msgstr "다음 블럭"
+msgstr "다음 블럭 범위"
 
 #: gucharmap/gucharmap-window.c:434 gucharmap/gucharmap-window.c:608
 msgid "Previous Block"
-msgstr "이전 블럭"
+msgstr "이전 블럭 범위"
 
 #: gucharmap/gucharmap-window.c:469
 msgid "_File"
@@ -342,7 +342,7 @@ msgstr "이동(_G)"
 
 #: gucharmap/gucharmap-window.c:494
 msgid "By _Script"
-msgstr "글자순(_S)"
+msgstr "글자 범위순(_S)"
 
 #: gucharmap/gucharmap-window.c:500
 msgid "By _Unicode Block"
@@ -694,11 +694,11 @@ msgstr "여러가지 기호와 화살표"
 
 #: gucharmap/unicode-blocks.h:90
 msgid "CJK Radicals Supplement"
-msgstr "CJK 어근 추가영역"
+msgstr "CJK 부수 추가영역"
 
 #: gucharmap/unicode-blocks.h:91
 msgid "Kangxi Radicals"
-msgstr "강희제 기본문자"
+msgstr "강희자전 부수"
 
 #: gucharmap/unicode-blocks.h:92
 msgid "Ideographic Description Characters"
@@ -718,7 +718,7 @@ msgstr "카타카나"
 
 #: gucharmap/unicode-blocks.h:96 gucharmap/unicode-scripts.h:15
 msgid "Bopomofo"
-msgstr "보포모포(중국어 발음기호)"
+msgstr "주음 기호(중국어 발음기호)"
 
 #: gucharmap/unicode-blocks.h:97
 msgid "Hangul Compatibility Jamo"
@@ -762,7 +762,7 @@ msgstr "Yi 음절문자"
 
 #: gucharmap/unicode-blocks.h:107
 msgid "Yi Radicals"
-msgstr "Yi 기본문자"
+msgstr "Yi 부수"
 
 #: gucharmap/unicode-blocks.h:108
 msgid "Hangul Syllables"
@@ -955,7 +955,7 @@ msgstr "유니코드 범위"
 
 #: gucharmap/gucharmap-script-chapters.c:76
 msgid "Script"
-msgstr "글자"
+msgstr "글자 범위"
 
 #: gucharmap/gucharmap-search-dialog.c:419
 msgid "Information"

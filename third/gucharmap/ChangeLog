@@ -1,3 +1,44 @@
+2004-09-19  Abel Cheung  <maddog@linuxhall.org>
+
+	* configure.ac: Added "tr" to ALL_LINGUAS.
+
+2004-09-03  Akagic Amila  <bono@linux.org.ba>
+
+	* configure.ac: Again added 'bs' to ALL_LINGUAS. 
+
+2004-09-02  Christian Rose  <menthos@menthos.com>
+
+	* configure.ac: Removed "bs" from ALL_LINGUAS, as
+	this translation contains errors.
+
+2004-08-29  Akagic Amila <bono@linux.org.ba>
+
+	* configure.ac: Added 'bs'
+
+2004-08-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.ac: Add «nb» to ALL_LINGUAS.
+
+2004-05-24  Alexander Shopov  <ash@contact.bg>
+
+	* configure.ac (ALL_LINGUAS) Added "bg"
+	Bulgarian language
+
+2004-05-23  Noah Levitt
+
+	* gucharmap/gucharmap-block-chapters.c (go_to_character):
+	* gucharmap/gucharmap-script-chapters.c (go_to_character): Have
+	chapter list scroll to selection automatically when searching.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.ac: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-01  Noah Levitt
+
+	* gucharmap/gucharmap-search-dialog.c: Fix crash when closing search
+	dialog with escape.
+
 2004-03-29  Samúel Jón Gunnarsson  <sammi@techattack.nu>
 
 	* configure.ac: Added "is" to ALL_LINGUAS.

@@ -1,3 +1,107 @@
+2004-09-19  Abel Cheung  <maddog@linuxhall.org>
+
+	* zh_TW.po: Updated traditional Chinese translation by GNOME HK Team
+
+2004-09-12  Supranee Thirawatthanasuk  <supranee@opentle.org>
+
+	* th.po: Updated Thai translation.
+
+2004-09-11  Baris Cicek <baris@teamforce.name.tr>
+
+	* tr.po: Updated Turkish Translation by Burcin Donmez
+
+2004-09-08  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-06  Åsmund Skjæveland <aasmunds@fys.uio.no>
+
+	* nn.po: Updated Norwegian Nynorsk translation.
+
+2004-09-03  Akagic Amila <bono@linux.org.ba>
+
+	* bs.po: Updated Bosnian translation.
+
+2004-08-29  Akagic Amila <bono@linux.org.ba>
+
+	* bs.po: Added Bosnian translation.
+
+2004-08-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* nb.po: Add.
+	* no.po: Update.
+
+2004-08-20  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-08-18  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-08-13  Tommi Vainikainen  <thv@iki.fi>
+
+	* fi.po: Unified some fields in po headers for Finnish team.
+
+2004-08-14  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-07-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * hi.po: Updated Hindi translation.
+
+2004-07-19  Alexander Shopov  <ash@contact.bg>
+
+	* bg.po: Updated Bulgarian translation by
+	Rostislav Raykov <zbrox@i-space.org>
+
+2004-07-19  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-07-05  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-06-28  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Translation updated.
+
+2004-06-26  John C Barstow  <jbowtie@amathaine.com>
+
+	* mi.po: Translation added.
+
+2004-05-24  Alexander Shopov  <ash@contact.bg>
+
+	* bg.po: Added Bulgarian translation
+	by Rostislav Raikov <zbrox@dir.bg>
+
+2004-05-22  Åsmund Skjæveland  <aasmunds@fys.uio.no>
+
+	* nn.po: Updated Norwegian Nynorsk translation.
+
+2004-05-19  Mohammad DAMT  <mdamt@bisnisweb.com>
+                                                                                
+        * id.po: Updated Indonesian translation by Ahmad Riza H Nst <ari@160c.afraid.org>
+                                                                                
+2004-05-16  Yukihiro Nakai <nakai@gnome.gr.jp>
+
+	* ja.po: Minor fix for Japanese.
+
+2004-05-14  Andras Timar  <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2004-04-13  Andras Timar  <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * gu.po: Added Gujurati translation by
+        Gujarati Team <magnet@magnet-i.com>.
+
 2004-03-29  Samúel Jón Gunnarsson  <sammi@techattack.nu>
 
 	* is.po: Added Icelandic Translation by

@@ -1,28 +1,29 @@
-# gucharmap Hungarian translation.
-# Copyright (C) 2003. Andras Timar
+# Hungarian translation of gucharmap.
+# Copyright (C) 2003-2004 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gucharmap package.
-# Andras Timar <timar@gnome.hu>, 2003.
+# Andras Timar <timar@fsf.hu>, 2003-2004.
+# Laszlo Dvornik <dvornikl@mailbox.hu>, 2004.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: gucharmap CVS\n"
+"Project-Id-Version: gucharmap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-22 20:23-0500\n"
-"PO-Revision-Date: 2003-09-05 23:38+0200\n"
-"Last-Translator: Andras Timar <timar@gnome.hu>\n"
-"Language-Team: Hungarian <hu@gnome.hu>\n"
+"POT-Creation-Date: 2004-08-24 11:01+0200\n"
+"PO-Revision-Date: 2004-05-12 13:10+0200\n"
+"Last-Translator: Laszlo Dvornik <dvornikl@mailbox.hu>\n"
+"Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gucharmap.desktop.in.h:1 gucharmap/gucharmap-window.c:324
 #: gucharmap/gucharmap-window.c:856
-#, fuzzy
 msgid "Character Map"
 msgstr "Karaktertábla"
 
 #: gucharmap.desktop.in.h:2
 msgid "Insert special characters into documents"
-msgstr ""
+msgstr "Különleges karakterek dokumentumokba illesztése"
 
 #: gucharmap/gucharmap-charmap.c:250
 msgid "Canonical decomposition:"
@@ -42,9 +43,8 @@ msgid "Unicode category:"
 msgstr "Unicode-kategória:"
 
 #: gucharmap/gucharmap-charmap.c:313
-#, fuzzy
 msgid "Various Useful Representations"
-msgstr "StarImpress prezentáció"
+msgstr "Többféle hasznos reprezentáció"
 
 #: gucharmap/gucharmap-charmap.c:322
 msgid "UTF-8:"
@@ -52,17 +52,15 @@ msgstr "UTF-8:"
 
 #: gucharmap/gucharmap-charmap.c:330
 msgid "Octal escaped UTF-8:"
-msgstr ""
+msgstr "Oktális formában írt UTF-8:"
 
 #: gucharmap/gucharmap-charmap.c:336
-#, fuzzy
 msgid "Decimal entity reference:"
-msgstr "Szótár tulajdonságai"
+msgstr "Decimális entitásreferencia:"
 
 #: gucharmap/gucharmap-charmap.c:342
-#, fuzzy
 msgid "Annotations and Cross References"
-msgstr "Gnometris beállítások"
+msgstr "Magyarázó jegyzetek és kereszthivatkozások"
 
 #: gucharmap/gucharmap-charmap.c:349
 msgid "Alias names:"
@@ -85,14 +83,12 @@ msgid "Equivalents:"
 msgstr "Egyenértékű:"
 
 #: gucharmap/gucharmap-charmap.c:400
-#, fuzzy
 msgid "CJK Ideograph Information"
-msgstr "Naplóinformáció"
+msgstr "CJK képírásjel-információ"
 
 #: gucharmap/gucharmap-charmap.c:405
-#, fuzzy
 msgid "Definition in English:"
-msgstr "Célcsatorna:"
+msgstr "Angol definíció:"
 
 #: gucharmap/gucharmap-charmap.c:410
 msgid "Mandarin Pronunciation:"
@@ -139,7 +135,7 @@ msgstr "Betűméret"
 #: gucharmap/gucharmap-script-codepoint-list.c:458
 #: gucharmap/unicode-scripts.h:20
 msgid "Common"
-msgstr ""
+msgstr "Közös"
 
 #: gucharmap/gucharmap-table.c:1509
 msgid "Unknown character, unable to identify."
@@ -150,9 +146,8 @@ msgid "Not found."
 msgstr "Nem található."
 
 #: gucharmap/gucharmap-table.c:1514
-#, fuzzy
 msgid "Character found."
-msgstr "Karakterkódolások"
+msgstr "Karakter megtalálva."
 
 #: gucharmap/gucharmap-table.c:1578
 msgid "Character Table"
@@ -160,94 +155,82 @@ msgstr "Karaktertábla"
 
 #: gucharmap/gucharmap-unicode-info.c:94
 msgid "<Non Private Use High Surrogate>"
-msgstr ""
+msgstr "<Felső pótlás nem személyes felhasználásra>"
 
 #: gucharmap/gucharmap-unicode-info.c:96
 msgid "<Private Use High Surrogate>"
-msgstr ""
+msgstr "<Felső pótlás személyes felhasználásra>"
 
 #: gucharmap/gucharmap-unicode-info.c:98
-#, fuzzy
 msgid "<Low Surrogate>"
-msgstr "Egyéb dátum"
+msgstr "<Alsó pótlás>"
 
 #: gucharmap/gucharmap-unicode-info.c:100
-#, fuzzy
 msgid "<Private Use>"
-msgstr "Személyes"
+msgstr "<Személyes felhasználásra>"
 
 #: gucharmap/gucharmap-unicode-info.c:102
 msgid "<Plane 15 Private Use>"
-msgstr ""
+msgstr "<15. sík személyes felhasználásra>"
 
 #: gucharmap/gucharmap-unicode-info.c:104
 msgid "<Plane 16 Private Use>"
-msgstr ""
+msgstr "<16. sík személyes felhasználásra>"
 
 #: gucharmap/gucharmap-unicode-info.c:109
-#, fuzzy
 msgid "<not assigned>"
-msgstr "Hozzárendelve"
+msgstr "<nincs hozzárendelve>"
 
 #: gucharmap/gucharmap-unicode-info.c:120
-#, fuzzy
 msgid "Other, Control"
-msgstr "Egyéb címtárak"
+msgstr "Egyéb, vezérlő"
 
 #: gucharmap/gucharmap-unicode-info.c:121
-#, fuzzy
 msgid "Other, Format"
-msgstr "Egyéb fax"
+msgstr "Egyéb, formátum"
 
 #: gucharmap/gucharmap-unicode-info.c:122
-#, fuzzy
 msgid "Other, Not Assigned"
-msgstr "Nem igazított"
+msgstr "Egyéb, nem hozzárendelt"
 
 #: gucharmap/gucharmap-unicode-info.c:123
-#, fuzzy
 msgid "Other, Private Use"
-msgstr "Egyéb dátum"
+msgstr "Egyéb, személyes felhasználásra"
 
 #: gucharmap/gucharmap-unicode-info.c:124
-#, fuzzy
 msgid "Other, Surrogate"
-msgstr "Egyéb dátum"
+msgstr "Egyéb, pótlás"
 
 #: gucharmap/gucharmap-unicode-info.c:125
 msgid "Letter, Lowercase"
-msgstr ""
+msgstr "Betű, kisbetű"
 
 # #-#-#-#-#  nautilus.HEAD.hu.po-new.po (nautilus CVS-HEAD)  #-#-#-#-#
 # src/file-manager/fm-list-view.c:1988
 # src/file-manager/fm-search-list-view.c:573
 #: gucharmap/gucharmap-unicode-info.c:126
-#, fuzzy
 msgid "Letter, Modifier"
-msgstr "Módosítás dátuma"
+msgstr "Betű, módosító"
 
 #: gucharmap/gucharmap-unicode-info.c:127
-#, fuzzy
 msgid "Letter, Other"
-msgstr "Letter"
+msgstr "Betű, egyéb"
 
 #: gucharmap/gucharmap-unicode-info.c:128
-#, fuzzy
 msgid "Letter, Titlecase"
-msgstr "Cím beállítása"
+msgstr "Betű, nagy kezdőbetű"
 
 #: gucharmap/gucharmap-unicode-info.c:129
 msgid "Letter, Uppercase"
-msgstr ""
+msgstr "Betű, nagybetű"
 
 #: gucharmap/gucharmap-unicode-info.c:130
 msgid "Mark, Spacing Combining"
 msgstr ""
 
 #: gucharmap/gucharmap-unicode-info.c:131
-#, fuzzy
 msgid "Mark, Enclosing"
-msgstr "Karakterkódolás"
+msgstr "Jel, lezárt"
 
 #: gucharmap/gucharmap-unicode-info.c:132
 msgid "Mark, Non-Spacing"
@@ -255,88 +238,77 @@ msgstr ""
 
 #: gucharmap/gucharmap-unicode-info.c:133
 msgid "Number, Decimal Digit"
-msgstr ""
+msgstr "Szám, decimális számjegy"
 
 #: gucharmap/gucharmap-unicode-info.c:134
-#, fuzzy
 msgid "Number, Letter"
-msgstr "Szám elem"
+msgstr "Szám, betű"
 
 #: gucharmap/gucharmap-unicode-info.c:135
-#, fuzzy
 msgid "Number, Other"
-msgstr "Számelmélet"
+msgstr "Szám, egyéb"
 
 #: gucharmap/gucharmap-unicode-info.c:136
-#, fuzzy
 msgid "Punctuation, Connector"
-msgstr "Függvényválasztó"
+msgstr "Központozás, összekötő"
 
 #: gucharmap/gucharmap-unicode-info.c:137
 msgid "Punctuation, Dash"
-msgstr ""
+msgstr "Központozás, kötőjel"
 
 #: gucharmap/gucharmap-unicode-info.c:138
-#, fuzzy
 msgid "Punctuation, Close"
-msgstr "Kapcsolat megszakadt"
+msgstr "Központozás, lezáró"
 
 #: gucharmap/gucharmap-unicode-info.c:139
 msgid "Punctuation, Final Quote"
-msgstr ""
+msgstr "Központozás, záró idézőjel"
 
 #: gucharmap/gucharmap-unicode-info.c:140
 msgid "Punctuation, Initial Quote"
-msgstr ""
+msgstr "Központozás, nyitó idézőjel"
 
 #: gucharmap/gucharmap-unicode-info.c:141
 msgid "Punctuation, Other"
-msgstr ""
+msgstr "Központozás, egyéb"
 
 #: gucharmap/gucharmap-unicode-info.c:142
 msgid "Punctuation, Open"
-msgstr ""
+msgstr "Központozás, nyitó"
 
 #: gucharmap/gucharmap-unicode-info.c:143
-#, fuzzy
 msgid "Symbol, Currency"
-msgstr "Pénznem"
+msgstr "Szimbólum, pénznem"
 
 #: gucharmap/gucharmap-unicode-info.c:144
 msgid "Symbol, Modifier"
-msgstr ""
+msgstr "Szimbólum, módosító"
 
 #: gucharmap/gucharmap-unicode-info.c:145
-#, fuzzy
 msgid "Symbol, Math"
-msgstr "Jel"
+msgstr "Szimbólum, matematikai"
 
 #: gucharmap/gucharmap-unicode-info.c:146
-#, fuzzy
 msgid "Symbol, Other"
-msgstr "Jel"
+msgstr "Szimbólum, egyéb"
 
 # src/bookmarks_callbacks.c:543
 #: gucharmap/gucharmap-unicode-info.c:147
-#, fuzzy
 msgid "Separator, Line"
-msgstr "Elválasztó"
+msgstr "Elválasztó, sor"
 
 #: gucharmap/gucharmap-unicode-info.c:148
-#, fuzzy
 msgid "Separator, Paragraph"
-msgstr "bekezdés"
+msgstr "Elválasztó, bekezdés"
 
 # src/bookmarks_callbacks.c:543
 #: gucharmap/gucharmap-unicode-info.c:149
-#, fuzzy
 msgid "Separator, Space"
-msgstr "Elválasztó"
+msgstr "Elválasztó, szóköz"
 
 #: gucharmap/gucharmap-window.c:189
-#, fuzzy
 msgid "Searching..."
-msgstr "_Keresés"
+msgstr "Keresés..."
 
 #: gucharmap/gucharmap-window.c:319
 msgid "translator_credits"
@@ -344,21 +316,19 @@ msgstr "Tímár András <timar@gnome.hu>"
 
 #: gucharmap/gucharmap-window.c:420 gucharmap/gucharmap-window.c:602
 msgid "Next Script"
-msgstr ""
+msgstr "Következő írásrendszer"
 
 #: gucharmap/gucharmap-window.c:421 gucharmap/gucharmap-window.c:603
-#, fuzzy
 msgid "Previous Script"
-msgstr "_Előző karakter"
+msgstr "Előző írásrendszer"
 
 #: gucharmap/gucharmap-window.c:433 gucharmap/gucharmap-window.c:607
 msgid "Next Block"
-msgstr ""
+msgstr "Következő blokk"
 
 #: gucharmap/gucharmap-window.c:434 gucharmap/gucharmap-window.c:608
-#, fuzzy
 msgid "Previous Block"
-msgstr "_Előző karakter"
+msgstr "Előző blokk"
 
 #: gucharmap/gucharmap-window.c:469
 msgid "_File"
@@ -378,12 +348,11 @@ msgstr "_Ugrás"
 
 #: gucharmap/gucharmap-window.c:494
 msgid "By _Script"
-msgstr ""
+msgstr "Írá_srendszer szerint"
 
 #: gucharmap/gucharmap-window.c:500
-#, fuzzy
 msgid "By _Unicode Block"
-msgstr "Unicode-blokkok listája"
+msgstr "_Unicode-blokk szerint"
 
 #: gucharmap/gucharmap-window.c:508
 msgid "Snap Columns to Power of Two"
@@ -402,7 +371,7 @@ msgstr "_Kicsinyítés"
 #. ctrl-=
 #: gucharmap/gucharmap-window.c:536
 msgid "_Normal Size"
-msgstr ""
+msgstr "_Normál méret"
 
 # #-#-#-#-#  epiphany.gnome-2-4.hu.po-new.po (Epiphany CVS)  #-#-#-#-#
 # src/trans.h:339
@@ -446,40 +415,35 @@ msgstr "Másolás a vágólapra."
 
 #: gucharmap/main.c:39
 msgid "Font to start with; ex: 'Serif 27'"
-msgstr ""
+msgstr "Kiindulási betűkészlet; pl. 'Serif 27'"
 
 #: gucharmap/unicode-blocks.h:18
-#, fuzzy
 msgid "Basic Latin"
-msgstr "Egyszerű hang"
+msgstr "Latin alap"
 
 #: gucharmap/unicode-blocks.h:19
 msgid "Latin-1 Supplement"
-msgstr ""
+msgstr "Latin-1 kiegészítés"
 
 #: gucharmap/unicode-blocks.h:20
-#, fuzzy
 msgid "Latin Extended-A"
-msgstr "Kiterjesztett"
+msgstr "Latin bővített - A"
 
 #: gucharmap/unicode-blocks.h:21
-#, fuzzy
 msgid "Latin Extended-B"
-msgstr "Kiterjesztett"
+msgstr "Latin bővített - B"
 
 #: gucharmap/unicode-blocks.h:22
-#, fuzzy
 msgid "IPA Extensions"
-msgstr "GIMP-kiegészítő"
+msgstr "IPA kiterjesztések"
 
 #: gucharmap/unicode-blocks.h:23
-#, fuzzy
 msgid "Spacing Modifier Letters"
-msgstr "Figyelem: Módosított levél"
+msgstr "Szóköz szélességű módosítójelek"
 
 #: gucharmap/unicode-blocks.h:24
 msgid "Combining Diacritical Marks"
-msgstr ""
+msgstr "Összeolvadó diakritikus jelek"
 
 #: gucharmap/unicode-blocks.h:25
 msgid "Greek and Coptic"
@@ -519,7 +483,7 @@ msgstr "Devanagari"
 
 #: gucharmap/unicode-blocks.h:34 gucharmap/unicode-scripts.h:14
 msgid "Bengali"
-msgstr "Bengali"
+msgstr "Bengáli"
 
 #: gucharmap/unicode-blocks.h:35 gucharmap/unicode-scripts.h:30
 msgid "Gurmukhi"
@@ -632,7 +596,7 @@ msgstr "Tai Le"
 
 #: gucharmap/unicode-blocks.h:62
 msgid "Khmer Symbols"
-msgstr "Khmer jelek"
+msgstr "Khmer szimbólumok"
 
 #: gucharmap/unicode-blocks.h:63
 msgid "Phonetic Extensions"
@@ -640,33 +604,31 @@ msgstr "Fonetikus kiterjesztések"
 
 #: gucharmap/unicode-blocks.h:64
 msgid "Latin Extended Additional"
-msgstr ""
+msgstr "További latin kiterjesztések"
 
 #: gucharmap/unicode-blocks.h:65
-#, fuzzy
 msgid "Greek Extended"
-msgstr "Kiterjesztett"
+msgstr "Bővített görög"
 
 #: gucharmap/unicode-blocks.h:66
-#, fuzzy
 msgid "General Punctuation"
-msgstr "Általános beállítások"
+msgstr "Általános központozás"
 
 #: gucharmap/unicode-blocks.h:67
 msgid "Superscripts and Subscripts"
-msgstr ""
+msgstr "Alsó és felső index"
 
 #: gucharmap/unicode-blocks.h:68
 msgid "Currency Symbols"
-msgstr "Pénznemek jelei"
+msgstr "Pénznemek szimbólumai"
 
 #: gucharmap/unicode-blocks.h:69
 msgid "Combining Diacritical Marks for Symbols"
-msgstr ""
+msgstr "Összeolvadó diakritikus jelek szimbólumokhoz"
 
 #: gucharmap/unicode-blocks.h:70
 msgid "Letterlike Symbols"
-msgstr "Betűszerű jelek"
+msgstr "Betűszerű szimbólumok"
 
 #: gucharmap/unicode-blocks.h:71
 msgid "Number Forms"
@@ -685,91 +647,80 @@ msgid "Miscellaneous Technical"
 msgstr "Egyéb műszaki jelek"
 
 #: gucharmap/unicode-blocks.h:75
-#, fuzzy
 msgid "Control Pictures"
-msgstr "Hátoldal képe:"
+msgstr "Piktogramok"
 
 #: gucharmap/unicode-blocks.h:76
-#, fuzzy
 msgid "Optical Character Recognition"
-msgstr "Karakterkódolások"
+msgstr "Optikai karakterfelismerés"
 
 #: gucharmap/unicode-blocks.h:77
 msgid "Enclosed Alphanumerics"
-msgstr ""
+msgstr "Csatolt alfanumerikus karakterek"
 
 #: gucharmap/unicode-blocks.h:78
-#, fuzzy
 msgid "Box Drawing"
-msgstr "Döntetlen"
+msgstr "Dobozrajzolás"
 
 #: gucharmap/unicode-blocks.h:79
-#, fuzzy
 msgid "Block Elements"
-msgstr "Block ten"
+msgstr "Blokkelemek"
 
 #: gucharmap/unicode-blocks.h:80
-#, fuzzy
 msgid "Geometric Shapes"
-msgstr "Geometriai"
+msgstr "Geometriai alakzatok"
 
 #: gucharmap/unicode-blocks.h:81
-#, fuzzy
 msgid "Miscellaneous Symbols"
-msgstr "Egyebek"
+msgstr "Egyéb szimbólumok"
 
 #: gucharmap/unicode-blocks.h:82
-#, fuzzy
 msgid "Dingbats"
-msgstr "Számjegyek"
+msgstr "Ábrácskák"
 
 #: gucharmap/unicode-blocks.h:83
-#, fuzzy
 msgid "Miscellaneous Mathematical Symbols-A"
-msgstr "Egyéb beállítások"
+msgstr "Egyéb matematikai jelek (A)"
 
 #: gucharmap/unicode-blocks.h:84
 msgid "Supplemental Arrows-A"
-msgstr ""
+msgstr "Kiegészítő nyilak (A)"
 
 #: gucharmap/unicode-blocks.h:85
-#, fuzzy
 msgid "Braille Patterns"
-msgstr "Diffrekciós minták"
+msgstr "Braille-jelek"
 
 #: gucharmap/unicode-blocks.h:86
 msgid "Supplemental Arrows-B"
-msgstr ""
+msgstr "Kiegészítő nyilak (B)"
 
 #: gucharmap/unicode-blocks.h:87
-#, fuzzy
 msgid "Miscellaneous Mathematical Symbols-B"
-msgstr "Egyéb beállítások"
+msgstr "Egyéb matematikai jelek (B)"
 
 #: gucharmap/unicode-blocks.h:88
 msgid "Supplemental Mathematical Operators"
-msgstr ""
+msgstr "Kiegészítő matematikai műveleti jelek"
 
 #: gucharmap/unicode-blocks.h:89
-#, fuzzy
 msgid "Miscellaneous Symbols and Arrows"
-msgstr "Egyéb beállítások"
+msgstr "Egyéb szimbólumok és nyilak"
 
 #: gucharmap/unicode-blocks.h:90
 msgid "CJK Radicals Supplement"
-msgstr ""
+msgstr "Kiegészítő CJK gyökök"
 
 #: gucharmap/unicode-blocks.h:91
 msgid "Kangxi Radicals"
-msgstr ""
+msgstr "Kandzsi gyökök"
 
 #: gucharmap/unicode-blocks.h:92
 msgid "Ideographic Description Characters"
-msgstr ""
+msgstr "Ideogrammatikus leíró karakterek"
 
 #: gucharmap/unicode-blocks.h:93
 msgid "CJK Symbols and Punctuation"
-msgstr ""
+msgstr "CJK (kínai, japán, koreai) szimbólumok és írásjelek"
 
 #: gucharmap/unicode-blocks.h:94 gucharmap/unicode-scripts.h:35
 msgid "Hiragana"
@@ -784,35 +735,32 @@ msgid "Bopomofo"
 msgstr "Bopomofo"
 
 #: gucharmap/unicode-blocks.h:97
-#, fuzzy
 msgid "Hangul Compatibility Jamo"
-msgstr "Kompatibilitás"
+msgstr "Hangul-kompatibilis Jamo"
 
 #: gucharmap/unicode-blocks.h:98
 msgid "Kanbun"
 msgstr "Kanbun"
 
 #: gucharmap/unicode-blocks.h:99
-#, fuzzy
 msgid "Bopomofo Extended"
-msgstr "Kiterjesztett"
+msgstr "Bővített bopofomo"
 
 #: gucharmap/unicode-blocks.h:100
 msgid "Katakana Phonetic Extensions"
-msgstr ""
+msgstr "Katakana fonetikus kiterjesztések"
 
 #: gucharmap/unicode-blocks.h:101
 msgid "Enclosed CJK Letters and Months"
-msgstr ""
+msgstr "Csatolt CJK betűk és hónapok"
 
 #: gucharmap/unicode-blocks.h:102
-#, fuzzy
 msgid "CJK Compatibility"
-msgstr "Kompatibilitás"
+msgstr "CJK visszafelé kompatibilitási"
 
 #: gucharmap/unicode-blocks.h:103
 msgid "CJK Unified Ideographs Extension A"
-msgstr ""
+msgstr "CJK egyesített ideogramok A kiterjesztés"
 
 #: gucharmap/unicode-blocks.h:104
 msgid "Yijing Hexagram Symbols"
@@ -820,102 +768,85 @@ msgstr ""
 
 #: gucharmap/unicode-blocks.h:105
 msgid "CJK Unified Ideographs"
-msgstr ""
+msgstr "CJK egyesített ideogramok"
 
 #: gucharmap/unicode-blocks.h:106
-#, fuzzy
 msgid "Yi Syllables"
-msgstr "Görgethető"
+msgstr "Yi szótagok"
 
 #: gucharmap/unicode-blocks.h:107
-#, fuzzy
 msgid "Yi Radicals"
-msgstr ""
-"#-#-#-#-#  gimp.HEAD.hu.po-new.po (GIMP 1.3)  #-#-#-#-#\n"
-"sugaras\n"
-"#-#-#-#-#  gimp-plug-ins.HEAD.hu.po-new.po (GIMP plug-ins /gnome-cvs)  #-#-#-"
-"#-#\n"
-"Radiális"
+msgstr "Yi gyökök"
 
 #: gucharmap/unicode-blocks.h:108
 msgid "Hangul Syllables"
-msgstr ""
+msgstr "Hangul szótagok"
 
 #: gucharmap/unicode-blocks.h:109
 msgid "High Surrogates"
-msgstr ""
+msgstr "Felső pótlások"
 
 #: gucharmap/unicode-blocks.h:110
 msgid "High Private Use Surrogates"
-msgstr ""
+msgstr "Felső pótlások személyes felhasználásra"
 
 #: gucharmap/unicode-blocks.h:111
 msgid "Low Surrogates"
-msgstr ""
+msgstr "Alsó pótlások"
 
 #: gucharmap/unicode-blocks.h:112
-#, fuzzy
 msgid "Private Use Area"
-msgstr "Személyes"
+msgstr "Saját használatra kijelölt tartomány"
 
 #: gucharmap/unicode-blocks.h:113
-#, fuzzy
 msgid "CJK Compatibility Ideographs"
-msgstr "Kompatibilitás"
+msgstr "CJK visszafelé kompatibilis ideogramok"
 
 #: gucharmap/unicode-blocks.h:114
-#, fuzzy
 msgid "Alphabetic Presentation Forms"
-msgstr "Applixware prezentáció"
+msgstr "Alfabetikus alakok"
 
 #: gucharmap/unicode-blocks.h:115
-#, fuzzy
 msgid "Arabic Presentation Forms-A"
-msgstr "MagicPoint prezentáció"
+msgstr "Arab alakok-A"
 
 #: gucharmap/unicode-blocks.h:116
-#, fuzzy
 msgid "Variation Selectors"
-msgstr "Függvényválasztó"
+msgstr "Variációválasztók"
 
 #: gucharmap/unicode-blocks.h:117
 msgid "Combining Half Marks"
-msgstr ""
+msgstr "Összeolvadó fél jelek"
 
 #: gucharmap/unicode-blocks.h:118
-#, fuzzy
 msgid "CJK Compatibility Forms"
-msgstr "Kompatibilitás"
+msgstr "CJK visszafelé kompatibilitási alakok"
 
 #: gucharmap/unicode-blocks.h:119
-#, fuzzy
 msgid "Small Form Variants"
-msgstr "Hívástovábbítás"
+msgstr "Kisalakú változatok"
 
 #: gucharmap/unicode-blocks.h:120
-#, fuzzy
 msgid "Arabic Presentation Forms-B"
-msgstr "MagicPoint prezentáció"
+msgstr "Arab alakok-B"
 
 #: gucharmap/unicode-blocks.h:121
 msgid "Halfwidth and Fullwidth Forms"
-msgstr ""
+msgstr "Fél- és teljes szélességű alakok"
 
 # #-#-#-#-#  nautilus.HEAD.hu.po-new.po (nautilus CVS-HEAD)  #-#-#-#-#
 # data/browser.xml.h:75
 #: gucharmap/unicode-blocks.h:122
-#, fuzzy
 msgid "Specials"
-msgstr "Speciális"
+msgstr "Különleges"
 
 #: gucharmap/unicode-blocks.h:123
 msgid "Linear B Syllabary"
 msgstr "Lineáris B szótagírás"
 
 #: gucharmap/unicode-blocks.h:124
-#, fuzzy
 msgid "Linear B Ideograms"
-msgstr "Bináris program"
+msgstr "Lineáris B ideogrammok"
 
 #: gucharmap/unicode-blocks.h:125
 msgid "Aegean Numbers"
@@ -959,19 +890,19 @@ msgstr "Hangjegyek"
 
 #: gucharmap/unicode-blocks.h:135
 msgid "Tai Xuan Jing Symbols"
-msgstr ""
+msgstr "Tai Xuan Jing szimbólumok"
 
 #: gucharmap/unicode-blocks.h:136
 msgid "Mathematical Alphanumeric Symbols"
-msgstr ""
+msgstr "Matematikai alfanumerikus jelek"
 
 #: gucharmap/unicode-blocks.h:137
 msgid "CJK Unified Ideographs Extension B"
-msgstr ""
+msgstr "CJK egyesített ideogramok B kiterjesztés"
 
 #: gucharmap/unicode-blocks.h:138
 msgid "CJK Compatibility Ideographs Supplement"
-msgstr ""
+msgstr "CJK egyesített ideogramok kiterjesztés"
 
 #: gucharmap/unicode-blocks.h:139
 msgid "Tags"
@@ -979,74 +910,67 @@ msgstr "Elemek"
 
 #: gucharmap/unicode-blocks.h:140
 msgid "Variation Selectors Supplement"
-msgstr ""
+msgstr "Variációválasztók kiegészítés"
 
 #: gucharmap/unicode-blocks.h:141
 msgid "Supplementary Private Use Area-A"
-msgstr ""
+msgstr "Kiegészítés személyes felhasználásra A-terület"
 
 #: gucharmap/unicode-blocks.h:142
 msgid "Supplementary Private Use Area-B"
-msgstr ""
+msgstr "Kiegészítés személyes felhasználásra B-terület"
 
 #: gucharmap/unicode-scripts.h:16
-#, fuzzy
 msgid "Braille"
-msgstr "Diffrekciós minták"
+msgstr "Braille"
 
 #: gucharmap/unicode-scripts.h:18
-#, fuzzy
 msgid "Canadian Aboriginal"
-msgstr "Egységes kanadai bennszülött szótagok"
+msgstr "Kanadai bennszülött"
 
 #: gucharmap/unicode-scripts.h:21
 msgid "Cypriot"
-msgstr ""
+msgstr "Ciprióta"
 
 #: gucharmap/unicode-scripts.h:28
 msgid "Greek"
-msgstr ""
+msgstr "Görög"
 
 #: gucharmap/unicode-scripts.h:31
-#, fuzzy
 msgid "Han"
-msgstr "Hanunoo"
+msgstr "Han"
 
 #: gucharmap/unicode-scripts.h:32
-#, fuzzy
 msgid "Hangul"
-msgstr "Hangul Jamo"
+msgstr "Hangul"
 
 #: gucharmap/unicode-scripts.h:36
 msgid "Inherited"
-msgstr ""
+msgstr "Örökölt"
 
 #: gucharmap/unicode-scripts.h:41
-#, fuzzy
 msgid "Latin"
-msgstr "Egyszerű hang"
+msgstr "Latin"
 
 #: gucharmap/unicode-scripts.h:43
-#, fuzzy
 msgid "Linear B"
-msgstr "Lineáris B szótagírás"
+msgstr "Lineáris B"
 
 #: gucharmap/unicode-scripts.h:64
 msgid "Yi"
-msgstr ""
+msgstr "Yi"
 
 #: gucharmap/gucharmap-block-chapters.c:61
 msgid "All"
-msgstr ""
+msgstr "Összes"
 
 #: gucharmap/gucharmap-block-chapters.c:79
-#, fuzzy
 msgid "Unicode Block"
-msgstr "Unicode-blokkok listája"
+msgstr "Unicode-blokk"
 
 #: gucharmap/gucharmap-script-chapters.c:76
 msgid "Script"
-msgstr ""
+msgstr "Írásrendszer"
 
 #: gucharmap/gucharmap-search-dialog.c:419
 msgid "Information"
@@ -1063,54 +987,13 @@ msgid "Find"
 msgstr "Keresés"
 
 #: gucharmap/gucharmap-search-dialog.c:606
-#, fuzzy
 msgid "_Previous"
-msgstr "_Előző találat"
+msgstr "_Előző"
 
 #: gucharmap/gucharmap-search-dialog.c:613
-#, fuzzy
 msgid "_Next"
-msgstr "_Következő találat"
+msgstr "_Következő"
 
 #: gucharmap/gucharmap-search-dialog.c:623
 msgid "_Search:"
 msgstr "_Keresés:"
-
-#~ msgid "Unicode Character Map"
-#~ msgstr "Unicode-karaktertábla"
-
-#~ msgid "_Bold"
-#~ msgstr "_Félkövér"
-
-#~ msgid "_Italic"
-#~ msgstr "_Dőlt"
-
-#~ msgid "Clipboard is empty."
-#~ msgstr "A vágólap üres."
-
-#~ msgid "There is no selected text."
-#~ msgstr "Nincs kijelölt szöveg."
-
-#~ msgid "HANGUL SYLLABLE %s%s%s"
-#~ msgstr "HANGUL SZÓTAG %s%s%s"
-
-#, fuzzy
-#~ msgid "Nothing to search for."
-#~ msgstr "Ezen a _helyen keresd:"
-
-# #-#-#-#-#  epiphany.gnome-2-4.hu.po-new.po (Epiphany CVS)  #-#-#-#-#
-# src/trans.h:33
-# #-#-#-#-#  galeon.HEAD.hu.po-new.po (Galeon 1.2)  #-#-#-#-#
-# src/trans.h:33
-#, fuzzy
-#~ msgid "Code _Point..."
-#~ msgstr "_Nyomtatás..."
-
-#~ msgid "Character in _Clipboard"
-#~ msgstr "Karakter a _vágólapon"
-
-#~ msgid "Back"
-#~ msgstr "Vissza"
-
-#~ msgid "Forward"
-#~ msgstr "Előre"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gucharmap.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-22 20:23-0500\n"
+"POT-Creation-Date: 2004-08-24 11:01+0200\n"
 "PO-Revision-Date: 2004-02-21 15:21+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -422,7 +422,7 @@ msgstr "Latinishte e zgjeruar-B"
 
 #: gucharmap/unicode-blocks.h:22
 msgid "IPA Extensions"
-msgstr "Shtime IPA"
+msgstr "Prapashtesa IPA"
 
 #: gucharmap/unicode-blocks.h:23
 msgid "Spacing Modifier Letters"
@@ -442,7 +442,7 @@ msgstr "Cyrillic"
 
 #: gucharmap/unicode-blocks.h:27
 msgid "Cyrillic Supplementary"
-msgstr "Cyrillic suplementare"
+msgstr "Cyrillic shtesë"
 
 #: gucharmap/unicode-blocks.h:28 gucharmap/unicode-scripts.h:13
 msgid "Armenian"
@@ -474,7 +474,7 @@ msgstr "Bengali"
 
 #: gucharmap/unicode-blocks.h:35 gucharmap/unicode-scripts.h:30
 msgid "Gurmukhi"
-msgstr "Gurmukhi"
+msgstr "Gurmuki"
 
 #: gucharmap/unicode-blocks.h:36 gucharmap/unicode-scripts.h:29
 msgid "Gujarati"
@@ -494,11 +494,11 @@ msgstr "Telugu"
 
 #: gucharmap/unicode-blocks.h:40 gucharmap/unicode-scripts.h:37
 msgid "Kannada"
-msgstr "Kanadeze"
+msgstr "Kanada"
 
 #: gucharmap/unicode-blocks.h:41 gucharmap/unicode-scripts.h:44
 msgid "Malayalam"
-msgstr "Malayalam"
+msgstr "Malajalam"
 
 #: gucharmap/unicode-blocks.h:42 gucharmap/unicode-scripts.h:53
 msgid "Sinhala"
@@ -514,7 +514,7 @@ msgstr "Lao"
 
 #: gucharmap/unicode-blocks.h:45 gucharmap/unicode-scripts.h:62
 msgid "Tibetan"
-msgstr "Tibetan"
+msgstr "Tibetiane"
 
 #: gucharmap/unicode-blocks.h:46 gucharmap/unicode-scripts.h:46
 msgid "Myanmar"
@@ -610,7 +610,7 @@ msgstr "Simbolet e valutës"
 
 #: gucharmap/unicode-blocks.h:69
 msgid "Combining Diacritical Marks for Symbols"
-msgstr "Shenja diakritike tv kombinueshme sipas simboleve"
+msgstr "Shenja diakritike të kombinueshme sipas simboleve"
 
 #: gucharmap/unicode-blocks.h:70
 msgid "Letterlike Symbols"
@@ -646,7 +646,7 @@ msgstr "Alfanumerikë të mbyllur"
 
 #: gucharmap/unicode-blocks.h:78
 msgid "Box Drawing"
-msgstr "Vizatues drejtkëndësish"
+msgstr "Vizatues drejtkëndëshi"
 
 #: gucharmap/unicode-blocks.h:79
 msgid "Block Elements"
@@ -694,7 +694,7 @@ msgstr "Simbole e shigjeta të ndryshme"
 
 #: gucharmap/unicode-blocks.h:90
 msgid "CJK Radicals Supplement"
-msgstr "Suplemente radikale CJK"
+msgstr "Shtesa radikale CJK"
 
 #: gucharmap/unicode-blocks.h:91
 msgid "Kangxi Radicals"
@@ -702,7 +702,7 @@ msgstr "Radikale Kangxi"
 
 #: gucharmap/unicode-blocks.h:92
 msgid "Ideographic Description Characters"
-msgstr "Simbole përshkrimi ideografikëve"
+msgstr "Simbole përshkrimi ideografike"
 
 #: gucharmap/unicode-blocks.h:93
 msgid "CJK Symbols and Punctuation"
@@ -742,7 +742,7 @@ msgstr "Shkronja CJK të mbyllura dhe muaj"
 
 #: gucharmap/unicode-blocks.h:102
 msgid "CJK Compatibility"
-msgstr "Kompatibiliteti CJK"
+msgstr "Përputhshmëri CJK"
 
 #: gucharmap/unicode-blocks.h:103
 msgid "CJK Unified Ideographs Extension A"
@@ -806,7 +806,7 @@ msgstr "Gjysmëshënja të kombinuara"
 
 #: gucharmap/unicode-blocks.h:118
 msgid "CJK Compatibility Forms"
-msgstr "Forme kompatibiliteti CJK"
+msgstr "Forma përputhshmërie CJK"
 
 #: gucharmap/unicode-blocks.h:119
 msgid "Small Form Variants"
@@ -858,11 +858,11 @@ msgstr "Shavian"
 
 #: gucharmap/unicode-blocks.h:131 gucharmap/unicode-scripts.h:50
 msgid "Osmanya"
-msgstr "Osmanya"
+msgstr "Osmania"
 
 #: gucharmap/unicode-blocks.h:132
 msgid "Cypriot Syllabary"
-msgstr "Cypriot Syllabary"
+msgstr "Silabari Qiproite"
 
 #: gucharmap/unicode-blocks.h:133
 msgid "Byzantine Musical Symbols"
@@ -910,7 +910,7 @@ msgstr "Braille"
 
 #: gucharmap/unicode-scripts.h:18
 msgid "Canadian Aboriginal"
-msgstr "Canadian Aboriginal"
+msgstr "Aboriginali Kanadez"
 
 #: gucharmap/unicode-scripts.h:21
 msgid "Cypriot"
