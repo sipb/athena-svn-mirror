@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.30 2001-12-13 22:05:44 zacheiss Exp $
+# $Id: Makefile,v 1.31 2002-11-11 22:18:29 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -29,6 +29,7 @@ install:
 	install -c -m 0644 krb.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 krb.realms ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 krb5.conf ${DESTDIR}${ETCDIR}
+	install -c -m 0644 local-lockers.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 lpd.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 lpd.perms ${DESTDIR}${ETCDIR}
 	install -c -m 0644 mailcap ${DESTDIR}${ATHETCDIR}

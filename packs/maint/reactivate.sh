@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.71 2002-10-24 23:01:00 rbasch Exp $
+# $Id: reactivate.sh,v 1.72 2002-11-11 22:18:28 ghudson Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -221,7 +221,7 @@ if [ "$full" = true ]; then
 	nuke /var/athena/tmphomedir > /dev/null 2>&1
 fi
 
-# Copy in latest password file
+# Copy in a few config files
 if [ "$PUBLIC" = true ]; then
 	if [ -r $config/etc/passwd ]; then
 		syncupdate -c /etc/passwd.local.new $config/etc/passwd \
@@ -236,6 +236,8 @@ if [ "$PUBLIC" = true ]; then
 			/etc/group.local
 	fi
 	rm -rf /etc/athena/access >/dev/null 2>&1
+	cp -p $config/etc/athena/athinfo.access /etc/athena
+	cp -p $config/etc/athena/local-lockers.conf /etc/athena
 fi
 
 # Restore password and group files

@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.9 2002-04-05 18:10:01 ghudson Exp $
+## $Id: sys_rvd,v 1.10 2002-11-11 22:18:29 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -43,7 +43,8 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		athinfo.access
 		athinfo.defs
 		attach.conf
-                inetd.conf
+		inetd.conf
+		local-lockers.conf
 		newsyslog.conf
 		rc.conf
 		version

@@ -28,6 +28,7 @@ mkdir $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/{/usr/athena/man,/etc/athena,/etc/cron.d}
 mkdir -p $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults
 cp masks $RPM_BUILD_ROOT/etc/athena/masks
+cp local-lockers.conf $RPM_BUILD_ROOT/etc/athena/local-lockers.conf
 cp man.config $RPM_BUILD_ROOT/etc/man.config.athena
 cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
 cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
@@ -43,6 +44,7 @@ rm $RPM_BUILD_ROOT/etc/athena/config_afs
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/athena/local-lockers.conf$|%config(noreplace) \0|" \
       -e "s|^/etc/syslog.conf.athena$|%config \0|" |
   sort > rpm.filelist
 
