@@ -1,4 +1,4 @@
-# $Id: packages,v 1.50 1998-12-03 19:40:40 ghudson Exp $
+# $Id: packages,v 1.51 1998-12-18 18:09:36 danw Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -54,6 +54,7 @@ third/bind
 third/kpasswd
 third/ksrvutil
 third/inetd
+third/mdoc
 athena/lib/ares
 athena/lib/acl
 athena/lib/zephyr
