@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.9 2001-01-13 15:31:16 ghudson Exp $
+# $Id: xsession,v 1.10 2001-03-28 01:40:35 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -88,7 +88,7 @@ if ($?ATHENA_DASH_INTERFACE) then
 	set terminal='xterm -geometry 80x48+0+38'
 else
 	set default_windowmanager=sawfish
-	set terminal='gnome-terminal --geometry 80x48+0+30'
+	set terminal='gnome-terminal --geometry=80x48+0+30'
 endif
 
 
@@ -133,7 +133,7 @@ if ( ! $?ATHENA_DASH_INTERFACE) then
 	# TODO: deal with NOCALLS; add logout confirmation
 	if (! $?skip_panel && ! ($?skip_dash && $?skip_xlogout)) then
 		if ($?verbose_login) echo "Starting panel..."
-		(panel && kill -HUP $XSESSION &)
+		(panel-wrapper && kill -HUP $XSESSION &)
 	endif
 else if (! $?skip_dash) then
 	if (! $?skip_xlogout) then
