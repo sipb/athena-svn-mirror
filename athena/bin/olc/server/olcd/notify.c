@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.12 1990-01-30 03:01:09 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.13 1990-01-30 03:58:26 vanharen Exp $";
 #endif
 
 
@@ -347,23 +347,21 @@ zwrite_message(username, message)
      char *username, *message;
 #endif
 {
-   char error[ERROR_SIZE];
 
     /* Sanity check the username. */
   if (username == NULL)
     {
-      (void) sprintf(error, "zwrite_message: null username");
-      log_error(error);
+      log_error("zwrite_message: null username");
       return(ERROR);
     }
   if (strlen(username) == 0)
     {
-      (void) sprintf(error, "zwrite_message: zero length username");
-      log_error(error);
+      log_error("zwrite_message: zero length username");
       return(ERROR);
     }
 
-  if(zsend_message(MESSAGE_CLASS,PERSONAL_INSTANCE,"olc hello",username,message,0) 
+  if(zsend_message(MESSAGE_CLASS,PERSONAL_INSTANCE,"olc hello",
+		   username,message,0) 
      == ERROR)
     return(ERROR);
    
