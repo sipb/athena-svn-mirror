@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.4 1990-07-03 16:29:45 epeisach Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.5 1990-07-13 13:41:22 ilham Exp $";
 #endif
 /* pscomm.c
  *
@@ -81,6 +81,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  90/07/03  16:29:45  epeisach
+ * Fixup for openlog
+ * 
  * Revision 1.3  90/04/16  17:07:58  epeisach
  * Added zephyr notification and mediacost and account number logging.
  * Format of dump file changed.
@@ -236,7 +239,7 @@ private char	*name;			/* user login name */
 private char	*host;			/* host name */
 private char	*pname;			/* printer name */
 private char	*accountingfile;	/* file for printer accounting */
-private char    *account = NULL;        /* account number - Ilham (2/20/90) */
+private char    *account = "0";        /* account number - Ilham (2/20/90) */
 private char    *mediacost = "0";	/* media cost     - Ilham (2/20/90 */
 private int	doactng;		/* true if we can do accounting */
 private int	progress, oldprogress;	/* finite progress counts */
@@ -388,6 +391,7 @@ main(argc,argv)            /* MAIN ROUTINE */
     VOIDC signal(SIGTERM, GotDieSig);
     VOIDC signal(SIGALRM, GotAlarmSig);
     VOIDC signal(SIGEMT, GotEmtSig);
+
 
 #ifdef SYSLOG
 #ifdef LOG_LPR
@@ -1576,7 +1580,7 @@ long    *pagecount;        /* The current page count in the printer */
 /* Make an entry in the accounting file */
 private VOID acctentry(start,end,account,mediacost)
 long start,end;         /* Starting and ending page counts for job */
-char *mediacost, account;
+char *mediacost, *account;
 {
     struct timeval timestamp;
     debugp((stderr,"%s: Make acct entry s=%ld, e=%ld\n",prog,start,end));
@@ -1590,14 +1594,9 @@ char *mediacost, account;
 	}
     else if( freopen(accountingfile,"a",stdout) != NULL ) {
 	gettimeofday(&timestamp, NULL);
-	if (account == NULL) 
-	    printf("%d\t%s:%s\t%ld\t0\t%s\t%d\n",(end-start),host,name,
-		   timestamp.tv_sec,mediacost, (end-start-bannerpages));
-	else if (mediacost == NULL) 
-	    printf("%d\t%s:%s\t%ld\t%s\t0\t%d\n",(end-start),host,name,
-		   timestamp.tv_sec,account, (end-start-bannerpages));
-	else printf("%d\t%s:%s\t%ld\t%s\t%s\t%d\n",(end-start),host,name,
-		    timestamp.tv_sec,account,mediacost, (end-start-bannerpages));
+	/* account and mediacost is either "0" or the actual value */
+	printf("%d\t%s:%s\t%ld\t%s\t%s\t%d\n",(end-start),host,name,
+		   timestamp.tv_sec,account,mediacost,(end-start-bannerpages));
 	VOIDC fclose(stdout);
 	}
 }
@@ -1637,3 +1636,4 @@ NotifyUser(user, message)
     return;
 }
 #endif ZEPHYR
+
