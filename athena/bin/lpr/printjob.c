@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.10 1990-07-02 14:29:42 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.11 1990-07-03 16:09:37 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.10 1990-07-02 14:29:42 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.11 1990-07-03 16:09:37 epeisach Exp $";
 #endif lint
 
 /*
@@ -27,6 +27,9 @@ static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
  */
 
 #include "lp.h"
+#ifdef _AUX_SOURCE
+#include <sys/termio.h>
+#endif
 
 #define DORETURN	0	/* absorb fork error */
 #define DOABORT		1	/* abort if dofork fails */
@@ -1444,17 +1447,31 @@ struct bauds {
  */
 setty()
 {
+#ifndef _AUX_SOURCE
 	struct sgttyb ttybuf;
+#else
+	struct termio ttybuf;
+#endif
 	register struct bauds *bp;
 
+#ifndef _AUX_SOURCE
+	/* I cannot determine if under AUX you can open a line exclusively */
 	if (ioctl(pfd, TIOCEXCL, (char *)0) < 0) {
 		syslog(LOG_ERR, "%s: ioctl(TIOCEXCL): %m", printer);
 		exit(1);
 	}
+#endif
+#ifndef _AUX_SOURCE
 	if (ioctl(pfd, TIOCGETP, (char *)&ttybuf) < 0) {
 		syslog(LOG_ERR, "%s: ioctl(TIOCGETP): %m", printer);
 		exit(1);
 	}
+#else
+	if (ioctl(pfd, TCGETA, (char *)&ttybuf) < 0) {
+		syslog(LOG_ERR, "%s: ioctl(TCGETA): %m", printer);
+		exit(1);
+	}
+#endif
 	if (BR > 0) {
 		for (bp = bauds; bp->baud; bp++)
 			if (BR == bp->baud)
@@ -1463,8 +1480,16 @@ setty()
 			syslog(LOG_ERR, "%s: illegal baud rate %d", printer, BR);
 			exit(1);
 		}
+#ifndef _AUX_SOURCE
 		ttybuf.sg_ispeed = ttybuf.sg_ospeed = bp->speed;
+#else
+		ttybuf.c_cflag &= ~CBAUD;
+		ttybuf.c_cflag |= bp->speed;
+		if (XC) ttybuf.c_lflag &= ~XC;
+		if (XS) ttybuf.c_lflag |=  XS;
+#endif
 	}
+#ifndef _AUX_SOURCE
 	ttybuf.sg_flags &= ~FC;
 	ttybuf.sg_flags |= FS;
 	if (ioctl(pfd, TIOCSETP, (char *)&ttybuf) < 0) {
@@ -1472,6 +1497,18 @@ setty()
 		syslog(LOG_ERR, "%s: ioctl(TIOCSETP): %m", printer);
 		exit(1);
 	}
+#else
+	ttybuf.c_cflag &= ~FC;
+	ttybuf.c_cflag |= FS;
+	if (ioctl(pfd, TCSETA, (char *)&ttybuf) < 0) {
+	        syslog(LOG_INFO, "SETA failed..");
+		syslog(LOG_ERR, "%s: ioctl(TCSETA): %m", printer);
+		exit(1);
+	}
+#endif /*_AUX_SOURCE */
+#ifndef _AUX_SOURCE
+	/* AUX does not appear to have old/new line disciplines that 
+	   do anything */
 	if (XC || XS) {
 		int ldisc = NTTYDISC;
 
@@ -1480,6 +1517,7 @@ setty()
 			exit(1);
 		}
 	}
+	/* For AUX, XC and XS handled above */
 	if (XC) {
 		if (ioctl(pfd, TIOCLBIC, &XC) < 0) {
 			syslog(LOG_ERR, "%s: ioctl(TIOCLBIC): %m", printer);
@@ -1493,6 +1531,7 @@ setty()
 			exit(1);
 		}
 	}
+#endif
 }
 
 /*VARARGS1*/
