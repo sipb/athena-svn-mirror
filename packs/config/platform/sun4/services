@@ -110,6 +110,7 @@ eklogin		2105/tcp			# Kerberos encrypted rlogin
 moira_db	775/tcp				# Moira database
 moira_update	777/tcp				# Moira update protocol.
 moira_ureg	779/udp				# Moira user registration.
+moira_ureg	9001/tcp			# New Moira user registration
 sms_db		775/tcp				# Moira database
 sms_update	777/tcp				# Moira update protocol.
 sms_ureg	779/udp				# Moira user registration.
