@@ -185,7 +185,7 @@ for s in %{extrashells}; do
 done
 
 grep "^/usr/athena/lib$" /etc/ld.so.conf >/dev/null 2>&1
-[ $? -ne 0 ] && echo "/usr/athena/lib" >> /etc/ld.so.conf
+[ $? -ne 0 ] && echo "/usr/athena/lib" >> /etc/ld.so.conf || true
 
 %postun
 [ $1 = 0 ] || exit 0
