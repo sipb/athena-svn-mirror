@@ -108,6 +108,7 @@ Distribution sites for software under third
 	lprng		ftp.astart.com:pub/LPRng; see below
 	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
 	nmh		ftp.math.gatech.edu:pub/nmh
+	nvi		http://www.bostic.com/vi/
 	patch		ftp.gnu.org:pub/gnu/patch
 	perl		ftp.gnu.org:pub/gnu/perl
 	readline	ftp.gnu.org:pub/gnu/readline
