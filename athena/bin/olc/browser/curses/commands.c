@@ -11,7 +11,7 @@
  */
 
 #ifndef lint
-static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.2 1986-01-22 18:02:08 treese Exp $";
+static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.3 1986-01-22 21:15:34 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -109,15 +109,17 @@ up_level()
   char new_dir[FILENAME_SIZE];		/* New current directory. */
   char *tail;				/* Ptr. to tail of path. */
   
-  Current_Index = Previous_Index;
-  Previous_Index = 1;
   strcpy(new_dir, Current_Dir);
   tail = rindex(new_dir, '/');
   if (tail != NULL)
     {
       *tail = (char) NULL;
       if ( strlen(new_dir) >= strlen(Root_Dir) )
-	set_current_dir(new_dir);
+	{
+	  set_current_dir(new_dir);
+	  Current_Index = Previous_Index;
+	  Previous_Index = 0;
+	}
     }
   make_display();
 }
