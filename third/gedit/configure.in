@@ -2,16 +2,19 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.52)
 
-AC_INIT(gedit, 2.2.0.1, http://bugzilla.gnome.org/enter_bug.cgi?product=gedit)
-AC_CONFIG_SRCDIR(src/gedit2.c)
+AC_INIT(gedit, 2.8.0, http://bugzilla.gnome.org/enter_bug.cgi?product=gedit)
+AC_CONFIG_SRCDIR(gedit/gedit2.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+
+GEDIT_MAJOR=2.8
+AC_SUBST(GEDIT_MAJOR)
 
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
 AM_DISABLE_STATIC
 
 AC_PATH_PROG(GCONFTOOL, gconftool-2)
-AC_PROG_INTLTOOL([0.22])
+AC_PROG_INTLTOOL([0.31])
 
 AM_PROG_LIBTOOL
 
@@ -20,14 +23,16 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
+dnl make sure we keep ACLOCAL_FLAGS around for maintainer builds to work
+AC_SUBST(ACLOCAL_AMFLAGS, "$ACLOCAL_FLAGS")
 
 dnl ================================================================
 dnl Gettext stuff.
 dnl ================================================================
-GETTEXT_PACKAGE=gedit-2.0
+GETTEXT_PACKAGE=gedit-2.6
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
-ALL_LINGUAS="am ar be bg az ca cs da de el es et eu fi fr ga gl he hi hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sv sk sl ta th tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="af am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu id is it ja kn ko lt lv mi mk ml mn mr ms nb ne nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tk tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 dnl ******************
@@ -59,16 +64,13 @@ else
 fi
 
 AC_SUBST(PSPELL_LIBS)
-AC_SUBST(CFLAGS)
-AC_SUBST(CPPFLAGS)
-AC_SUBST(LDFLAGS)
 
 dnl
 dnl Start of pkg-config checks
 dnl
-PKG_CHECK_MODULES(GEDIT, libgnomeui-2.0 >= 2.2.0 libglade-2.0 >= 2.0.0
-                         libgnomeprintui-2.2 >= 2.2.0 
-                         eel-2.0 >= 2.2.0)
+PKG_CHECK_MODULES(GEDIT, libgnomeui-2.0 >= 2.6.0 libglade-2.0 >= 2.3.6
+                         eel-2.0 >= 2.6.0 gtksourceview-1.0 >= 1.0.0
+			 libgnomeprintui-2.2 >= 2.6.0)
 GEDIT_LIBS="${GEDIT_LIBS}"
 AC_SUBST(GEDIT_LIBS)
 AC_SUBST(GEDIT_CFLAGS)
@@ -77,18 +79,7 @@ dnl
 dnl GConf related settings
 dnl
 
-GCONF_CONFIG_SOURCE=
-
-AC_ARG_ENABLE(gconf-source, [  --enable-gconf-source=sourceaddress Where to install schema files.], GCONF_CONFIG_SOURCE=$enable_gconf_source,)
-
-if test "x$GCONF_CONFIG_SOURCE" = "x"; then
-	GCONF_CONFIG_SOURCE="xml::\${sysconfdir}/gconf/gconf.xml.defaults"
-fi
-
-AC_SUBST(GCONF_CONFIG_SOURCE)
-
-AC_MSG_CHECKING("GConf configuration source")
-AC_MSG_RESULT(${GCONF_CONFIG_SOURCE})
+AM_GCONF_SOURCE_2
 
 dnl
 dnl Check popt
@@ -97,6 +88,11 @@ dnl
 AC_CHECK_LIB(popt, poptStrippedArgv,, AC_MSG_ERROR([popt 1.5 or newer is required to build
 gedit. You can download the latest version from ftp://people.redhat.com/sopwith/popt/]))
 
+dnl
+dnl Check ngettext
+dnl
+
+AC_CHECK_FUNCS(ngettext,, AC_MSG_ERROR([ngettext function is required to build gedit.]))
 
 dnl ================================================================
 dnl GEDIT_DATA_DIR - Sets the location of the data directory, where we install
@@ -127,52 +123,23 @@ fi
 AC_SUBST(pixmapsdir)
 
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+			      
+GNOME_COMPILE_WARNINGS(yes)
 
-dnl ==========================================================================
+AC_ARG_ENABLE(deprecations,
+              [AC_HELP_STRING([--enable-deprecations],
+                              [warn about deprecated usages [default=no]])],,
+              [enable_deprecations=no])
 
-dnl Turn on the additional warnings last, so -Werror doesn't affect other tests.
-
-AC_ARG_ENABLE(more-warnings,
-[  --enable-more-warnings  Maximum compiler warnings],
-set_more_warnings="$enableval",[
-if test -f $srcdir/CVSVERSION; then
-	is_cvs_version=true
-	set_more_warnings=yes
-else
-	set_more_warnings=no
+if test "x$enable_deprecations" = "xyes"; then
+   DISABLE_DEPRECATED_CFLAGS="\
+-DG_DISABLE_DEPRECATED \
+-DGDK_DISABLE_DEPRECATED \
+-DGTK_DISABLE_DEPRECATED \
+-DGDK_PIXBUF_DISABLE_DEPRECATED \
+-DGNOME_DISABLE_DEPRECATED"
+   AC_SUBST(DISABLE_DEPRECATED_CFLAGS)
 fi
-])
-AC_MSG_CHECKING(for more warnings, including -Werror)
-if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
-	AC_MSG_RESULT(yes)
-	CFLAGS="\
-	-Wall \
-	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
-	-Wnested-externs -Wpointer-arith \
-	-Wcast-align -Wsign-compare \
-	-Werror \
-	$CFLAGS"
-
-	for option in -Wsign-promo -Wno-sign-compare; do
-		SAVE_CFLAGS="$CFLAGS"
-		CFLAGS="$option $CFLAGS"
-		AC_MSG_CHECKING([whether gcc understands $option])
-		AC_TRY_COMPILE([], [],
-			has_option=yes,
-			has_option=no,)
-		if test $has_option = no; then
-			CFLAGS="$SAVE_CFLAGS"
-		fi
-		AC_MSG_RESULT($has_option)
-		unset has_option
-		unset SAVE_CFLAGS
-	done
-	unset option
-else
-	AC_MSG_RESULT(no)
-fi
-
-dnl ==========================================================================
 
 dnl stuff for the CORBA interface
 
@@ -190,26 +157,37 @@ AC_SUBST(PLUGIN_LIBTOOL_FLAGS)
 
 AC_OUTPUT([
 Makefile
+data/gedit.pc
 data/Makefile
 po/Makefile.in
-src/Makefile
-src/dialogs/Makefile
-src/recent-files/Makefile
+gedit/Makefile
+gedit/dialogs/Makefile
+gedit/recent-files/Makefile
 pixmaps/Makefile
 plugins/Makefile
-plugins/ASCII/Makefile
+plugins/changecase/Makefile
 plugins/spell/Makefile
-plugins/diff/Makefile
 plugins/docinfo/Makefile
 plugins/sample/Makefile
-plugins/cvschangelog/Makefile
+plugins/time/Makefile
 plugins/indent/Makefile
 plugins/taglist/Makefile
-plugins/time/Makefile
 plugins/shell_output/Makefile
 plugins/sort/Makefile
+viewer/Makefile
 help/Makefile
 help/C/Makefile
+help/de/Makefile
+help/es/Makefile
+help/eu/Makefile
+help/fr/Makefile
+help/it/Makefile
+help/sv/Makefile
+help/ja/Makefile
+help/ko/Makefile
+help/zh_CN/Makefile
+help/zh_HK/Makefile
+help/zh_TW/Makefile
 help/ro/Makefile
 ])
 
@@ -223,4 +201,4 @@ Configuration:
 
 "
 
-# cat $srcdir/message-of-doom
+dnl cat $srcdir/message-of-doom
