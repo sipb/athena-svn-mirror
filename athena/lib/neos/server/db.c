@@ -3,7 +3,7 @@
  *
  * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.1 1992-04-27 13:24:45 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.2 1992-04-27 13:26:18 epeisach Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.1 1992-04-27 13:24:45 epeisach Exp $";
+static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.2 1992-04-27 13:26:18 epeisach Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -139,13 +139,31 @@ db_open(name)
 }
 
 /*
+ * Flush a database file from the cache if it's there
+ * XXX What if a connection has this db open?
+ */
+
+db_flush(name)
+     char *name;
+{
+  int i;
+
+  for(i=0; i<MAX_NUM_DBS; i++) {
+    if (!dblist[i].dbm) continue;
+    if (!strcmp(dblist[i].path, name))
+      _db_close(i+1);
+  }
+  return;
+}
+    
+/*
  * Close a database file.  Handle reference counts properly.
  */
 
 db_close(idx)
      int idx;
 {
-  int i, n=0, oldest=-1;	/* n = number of open databases */
+  int i, n=0, oldest= -1;	/* n = number of open databases */
 
   DebugDB(("db_close: %d\n", idx));
 
@@ -243,15 +261,17 @@ _db_add_key(key)
 
   if (dblist[IDX].nkeys) {
     i = db_key_position(key);
-    if (!strcmp(dblist[IDX].keylist[i], key)) return;
+    if (i < dblist[IDX].nkeys)
+      if (!strcmp(dblist[IDX].keylist[i], key)) return;
   }
 
   dblist[IDX].keylist = (char**)xrealloc((char*)dblist[IDX].keylist,
 					 (dblist[IDX].nkeys+1)*
 					 sizeof(char*));
 
-  bcopy((char*)(dblist[IDX].keylist+i), (char*)(dblist[IDX].keylist+i+1),
-	(dblist[IDX].nkeys-i)*sizeof(char*));
+  if (i < dblist[IDX].nkeys)
+    bcopy((char*)(dblist[IDX].keylist+i), (char*)(dblist[IDX].keylist+i+1),
+	  (dblist[IDX].nkeys-i)*sizeof(char*));
   dblist[IDX].keylist[i] = xsave_string(key);
   dblist[IDX].nkeys++;
 }
@@ -375,7 +395,7 @@ Contents *db_firstkey(criterion)
   _db_read_and_sort();
   MAKEKEY(keybuf, criterion);
   cur_key = db_key_position(keybuf);
-  if (!dblist[IDX].nkeys) return(NULL);
+  if (cur_key >= dblist[IDX].nkeys) return(NULL);
   return(_db_contents_of_key(cur_key, 0));
 }  
 
@@ -410,8 +430,8 @@ Contents *db_fullcontents()
 }
 
 /*
- * The the current key pointer to a given key or immediately after
- * where it would appear if it existed.
+ * Return an index to a given key if it exists,
+ * or to the position where such a key should appear if created.
  */
 
 db_key_position(key)
@@ -422,7 +442,18 @@ db_key_position(key)
   _db_read_and_sort();
 
   hi = dblist[IDX].nkeys - 1;
-  if (hi<0) hi=0;
+  if (hi<0) return(0);
+
+  /* Make sure low bound really is low bound */
+  i = strcmp(dblist[IDX].keylist[lo], key);
+  if (i>0 || i==0) return(lo);
+
+  /* make sure high bound really is high bound */
+  i = strcmp(dblist[IDX].keylist[hi], key);
+  if (i<0) return(hi+1);
+  if (i==0) return(hi);
+
+  /* do binary search */
   while (hi - lo > 1) {
     med = (lo+hi)/2;
     if (!(i = strcmp(dblist[IDX].keylist[med], key))) return(med);
@@ -436,6 +467,7 @@ db_key_position(key)
  * Store a "contents" into the database, replacing one with the same
  * key if necessary.
  */
+
 db_store(contents)
      Contents *contents;
 {
@@ -498,6 +530,10 @@ db_fetch(contents)
 
   i = db_key_position(keybfr);
   DebugDB(("db_fetch: Seeking %s\n", keybfr));
+  if (i >= dblist[IDX].nkeys) {
+    DebugDB(("db_fetch: Finding nothing.\n"));
+    return(1);
+  }
   DebugDB(("db_fetch: Finding %s\n", dblist[IDX].keylist[i]));
   if (strcmp(dblist[IDX].keylist[i], keybfr)) return(1);
   *contents = *_db_contents_of_key(i, 1);
@@ -519,6 +555,7 @@ db_delete(contents)
 
   if (dblist[IDX].keylist) {
     i = db_key_position(keybfr);
+    if (i >= dblist[IDX].nkeys) return;
     if (!strcmp(dblist[IDX].keylist[i], keybfr)) {
       bcopy((char*)(dblist[IDX].keylist+i+1),
 	    (char*)(dblist[IDX].keylist+i),
