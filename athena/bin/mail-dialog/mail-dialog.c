@@ -2,7 +2,7 @@
 #include <gnome.h>
 
 /* mail-dialog: Display a dialog about the change in default mail
- * client.  Exit with status 1 through 5 for the five menu options, or
+ * client.  Exit with status 0 through 4 for the five menu options, or
  * with status 255 if the user presses cancel.
  */
 
