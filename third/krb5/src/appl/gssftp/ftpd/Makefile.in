@@ -22,7 +22,7 @@ OBJS	= ftpd.o ftpcmd.o glob.o popen.o vers.o radix.o \
 
 ATHLIBS = -L$(ATHTOOLROOT)/usr/athena/lib -lal -lhesiod -llocker -lzephyr
 KLIB = ../../../krb524/libkrb524.a @KRB4_LIB@ @KRB4_CRYPTO_LIB@ \
-	-lgssapi_krb5 -lkrb5 -lcrypto $(COMERRLIB)
+	-lgssapi_krb5 -lkrb5 -lcrypto -lcom_err
 DEPKLIB = $(TOPLIBD)/gssapi/libgssapi_krb5.a $(TOPLIBD)/libkrb5.a \
 		$(TOPLIBD)/libcrypto.a $(COMERRLIB)
 EXTRALIBS = @EXTRALIBS@

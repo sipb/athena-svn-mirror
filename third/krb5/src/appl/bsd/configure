@@ -2931,7 +2931,7 @@ else
 fi
 done
 
-for ac_hdr in sys/ptyvar.h utmp.h sys/time.h arpa/nameser.h
+for ac_hdr in sys/ptyvar.h utmp.h sys/time.h arpa/nameser.h sys/ioctl_compat.h paths.h
 do
 ac_safe=`echo "$ac_hdr" | tr './\055' '___'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6

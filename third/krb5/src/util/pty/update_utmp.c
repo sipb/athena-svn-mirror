@@ -142,6 +142,7 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
     strncpy(utx.ut_user, ent.ut_user, sizeof(ent.ut_user));
     strncpy(utx.ut_id, ent.ut_id, sizeof(ent.ut_id));
     strncpy(utx.ut_line, ent.ut_line, sizeof(ent.ut_line));
+    utx.ut_pid = pid;		/* kludge for Irix, etc. to avoid trunc. */
     utx.ut_type = ent.ut_type;
 #ifdef UT_EXIT_STRUCTURE_DIFFER
     utx.ut_exit.ut_exit = ent.ut_exit.e_exit;
@@ -151,7 +152,7 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
     utx.ut_exit.__e_termination = ent.ut_exit.e_termination;
     utx.ut_exit.__e_exit = ent.ut_exit.e_exit;
 #else
-    utx.ut_exit = ent.ut_exit;
+    /*xxx do nothing for now; we don't even know the structure member exists*/
 #endif
 #endif
     utx.ut_tv.tv_sec = ent.ut_time;
