@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.5 1989-12-18 10:20:59 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.6 1989-12-20 22:17:30 vanharen Exp $";
 #endif
 
 
@@ -124,13 +124,19 @@ char * fmt (va_alist) va_dcl {
     static char buf[BUFSIZ];
     FILE strbuf;
     char *format;
+    int len;
+
     va_start (pvar);
     format = va_arg (pvar, char *);
     /* copied from sprintf.c, BSD */
     strbuf._flag = _IOWRT + _IOSTRG;
     strbuf._ptr = buf;
     strbuf._cnt = 32767;
-    _doprnt (format, pvar, &strbuf);
+    bzero (buf, sizeof (buf));
+    len = _doprnt (format, pvar, &strbuf);
+#if 0
+    buf[len] = '\0';
+#endif
     va_end (pvar);
     return buf;
 }
@@ -414,9 +420,9 @@ init_log(knuckle, question)
   char topic[TOPIC_SIZE];	/* Real topic. */
 	
 #ifdef TEST
-  printf("init_log: %s (%d) \n %s\n",knuckle->user->username, 
-	 knuckle->instance, question);
-#endif TEST
+  log_status (fmt ("init_log: %s (%d)\n",knuckle->user->username,
+		   knuckle->instance));
+#endif
 
   (void) sprintf(knuckle->question->logfile, "%s/%s_%d.log", LOG_DIR, 
 	  knuckle->user->username,knuckle->instance);
