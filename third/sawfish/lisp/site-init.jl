@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.6 2001-03-31 05:41:21 ghudson Exp $
+;; $Id: site-init.jl,v 1.7 2001-04-12 17:11:15 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -26,7 +26,7 @@
 			 "M-Button3-Click1" 'popup-window-menu)
 (unbind-keys title-keymap "Button1-Click2" "Button2-Move" "Button3-Off")
 (bind-keys title-keymap "Button3-Click1" 'popup-window-menu)
-(unbind-keys global-keymap "C-Left" "C-Right")
+(unbind-keys global-keymap "W-Left" "W-Right")
 
 ;; Special treatment for zwgc windows
 (require 'sawfish.wm.ext.match-window)
