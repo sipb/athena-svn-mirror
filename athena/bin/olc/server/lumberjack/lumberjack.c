@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.11 1991-01-16 10:40:28 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.12 1991-03-28 14:01:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.11 1991-01-16 10:40:28 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.12 1991-03-28 14:01:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -63,17 +63,17 @@ main (argc, argv)
  *  Set up syslogging
  */
 
-#if defined(ultrix)
+#ifdef mips
 #ifdef LOG_CONS
-	openlog ("olc", LOG_CONS | LOG_PID);
+	openlog ("rpd", LOG_CONS | LOG_PID);
 #else
-	openlog ("olc", LOG_PID);
+	openlog ("rpd", LOG_PID);
 #endif /* LOG_CONS */
 #else
 #ifdef LOG_CONS
-	openlog ("olc", LOG_CONS | LOG_PID);
+	openlog ("rpd", LOG_CONS | LOG_PID, SYSLOG_LEVEL);
 #else
-	openlog ("olc", LOG_PID);
+	openlog ("rpd", LOG_PID, SYSLOG_LEVEL);
 #endif /* LOG_CONS */
 #endif /* ultrix */
 
