@@ -32,7 +32,7 @@
 ## Release information
 my $PROGRAM      = "intltool-extract";
 my $PACKAGE      = "intltool";
-my $VERSION      = "0.12";
+my $VERSION      = "0.22";
 
 ## Loaded modules
 use strict; 
@@ -182,6 +182,18 @@ sub convert($) {
     &type_xml if $gettext_type eq "xml";
     &type_glade if $gettext_type eq "glade";
     &type_scheme if $gettext_type eq "scheme";
+    &type_schemas  if $gettext_type eq "schemas";
+}
+
+sub entity_decode_minimal
+{
+    local ($_) = @_;
+
+    s/&apos;/'/g; # '
+    s/&quot;/"/g; # "
+    s/&amp;/&/g;
+
+    return $_;
 }
 
 sub entity_decode
@@ -189,10 +201,10 @@ sub entity_decode
     local ($_) = @_;
 
     s/&apos;/'/g; # '
-    s/&gt;/>/g;
-    s/&lt;/</g;
     s/&quot;/"/g; # "
     s/&amp;/&/g;
+    s/&lt;/</g;
+    s/&gt;/>/g;
 
     return $_;
 }
@@ -230,15 +242,28 @@ sub type_xml {
     ### For generic translatable XML files ###
         
     while ($input =~ /\s_$w+=\"([^"]+)\"/sg) { # "
-        $messages{entity_decode($1)} = [];
+        $messages{entity_decode_minimal($1)} = [];
     }
 
-    while ($input =~ /<_($w+)>([^<]+)<\/_\1>/sg) {
+    while ($input =~ /<_($w+)>(.+?)<\/_\1>/sg) {
         $_ = $2;
         s/\s+/ /g;
 	s/^ //;
 	s/ $//;
-        $messages{entity_decode($_)} = [];
+        $messages{entity_decode_minimal($_)} = [];
+    }
+}
+
+sub type_schemas {
+    ### For schemas XML files ###
+         
+    # FIXME: We should handle escaped < (less than)
+    while ($input =~ /<(short|long)>([^<]+)<\/\1>/sg) {
+        $_ = $2;
+        s/\s+/ /g;
+	s/^ //;
+	s/ $//;
+        $messages{entity_decode_minimal($_)} = [];
     }
 }
 
@@ -260,6 +285,13 @@ sub type_glade {
 	}
     }
 
+    ## handle new glade files
+    while ($input =~ /<(property|atkproperty)\s+[^>]*translatable\s*=\s*"yes"[^>]*>([^<]+)<\/\1>/sg) {
+	$messages{entity_decode($2)} = [] unless $2 =~ /^(window|label)[0-9]+$/;
+    }
+    while ($input =~ /<atkaction\s+action_name="([^>]*)"\s+description="([^>]+)"\/>/sg) {
+        $messages{entity_decode_minimal($2)} = [];
+    }
 }
 
 sub type_scheme {

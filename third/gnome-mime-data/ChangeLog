@@ -1,3 +1,692 @@
+2002-08-20  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.applications:
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime:
+
+	Add entry for shoutcast playlist (audio/x-scpls)
+	
+2002-08-18  James Willcox  <jwillcox@cs.indiana.edu>
+
+	* gnome-vfs.applications:  gedit expects URIs, not local paths
+
+2002-08-17  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.keys.in: added gimp as a possible application for g3fax,
+	pcx, targa and xwd images
+	* check-mime.pl: s/category/_category/ so the script doesn't print
+	boatloads of useless warnings about Jody's change
+
+2002-08-07  Jody Goldberg <jody@gnome.org>
+
+	* gnome-vfs.keys.in : now that 2.0.1 is locked we can mark the
+	  categories as translatable.
+
+2002-08-05  Michael Meeks  <michael@ximian.com>
+
+	* gnome-vfs-mime-magic: re-order so check-mime passes.
+
+	* gnome-vfs.keys.in: ditto.
+
+2002-08-04  Bastien Nocera  <hadess@hadess.net>
+
+	* CVS_COMMITS: added
+	* gnome-vfs-mime-magic: added magic for Apple's new .mp4 files
+
+2002-08-02  Thomas Meeks  <thomas@imaginator.com>
+
+	* gnome-vfs-mime-magic: Added image/x-dcm, x-sun-raster, x-sgi,
+	x-pcx, x-dib, x-fits, x-fpx, x-icb, x-dpx
+
+	* gnome-vfs.keys.in: Added appropiate file descriptions and viewers
+
+	* gnome-vfs.mime: Added above extensions also added miff, gray,
+	palm, and pict
+
+2002-07-12  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.keys.in: Added MacBinaryII file types
+	fix warning about the position of the vfolder-desktop mime-type in
+	gnome-vfs.keys.in
+
+2002-07-02  Peteris Krisjanis <pecisk@inbox.lv>
+
+	* configure.in: (ALL_LINGUAS) added Latvian (lv) support.
+
+2002-06-29  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs.mime:
+
+	Change extension for C++ headers from "hp" to "hpp".
+
+2002-06-28  Damon Chaplin  <damon@ximian.com>
+
+	* gnome-vfs.keys.in: changed default action for text/html to
+	application. We're doing this as nautilus 2.0 doesn't have a decent
+	html component and it currently displays it as ascii text (bad!).
+	Unfortunately this change will also affect nautilus 1.4 users, who
+	may prefer the mozilla component. They'll have to change their default
+	view themselves. Fixes bug #81615. 
+
+2002-06-26  Jakub Steiner <jimmac@ximian.com>
+
+	* icons/Makefile.am: added i-web and i-network
+	* icons/i-network.png: 
+	* icons/i-web.png: hadess' request
+
+2002-06-26  Bastien Nocera  <hadess@hadess.net>
+
+	* icons/Makefile.am: added 2 files from ximian-south by jimmac
+	* icons/i-ftp.png: added
+	* icons/i-nfs.png: updated
+	* icons/i-smb.png: added
+
+2002-06-19  Jakub Steiner <jimmac@ximian.com>
+
+	* icons/gnome-application-vnd.sun.xml.calc.png:
+	* icons/gnome-application-vnd.sun.xml.impress.png:
+	* icons/gnome-application-vnd.sun.xml.writer.png: update labels
+
+2002-06-19  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs.applications:
+	* gnome-vfs.keys.in:
+
+	Nasty hack to allow XMMS and FreeAmp to only handle
+	MP3 files over http: (not playlists).
+
+	Patch from Ben Liblit.
+
+2002-06-17  Yanko Kaneti  <yaneti@declera.com>
+
+	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
+
+2002-06-12  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs.applications:
+
+	Change binary name to gnome-sound-recorder
+	
+2002-06-12  Jakub Steiner <jimmac@ximian.com>
+
+	* icons/gnome-application-x-abiword.png: forgot to update this
+	  one too
+
+2002-06-12  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+
+	Release 2.0.0.
+
+2002-06-11  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs.keys.in:
+
+	Don't use ogg123 for OGG files, prefer xmms & freeamp.
+
+2002-06-06  Rajeev Karale <rajeev.karale@wipro.com>
+
+	* icons/Makefile.am : Bigfix #84350. Fix for document-icons not 
+	  getting installed properly. 
+
+2002-06-03  Jody Goldberg <jody@gnome.org>
+
+	* gnome-vfs.keys.in : Doh! the category should be 'Images' not 'Image'
+
+2002-05-31  Alex Graveley  <alex@ximian.com>
+
+	* gnome-vfs.mime: Add image/x-emf, image/x-pcx, image/x-photo-cd,
+	image/x-pict mimetypes.
+
+	* gnome-vfs.applications: Add openoffice application, add new
+	mimetypes as supported by staroffice.
+
+	* gnome-vfs.keys.in: Add openoffice as a supported application
+	wherever staroffice is used.  Add staroffice/openoffice
+	application handlers for added mime types.
+
+2002-05-31  Jakub Steiner <jimmac@ximian.com>
+
+	* icons/i-dvd.png: we can't use the DVD logo I was told. 
+	* icons/gnome-text-abiword.png: don't use the app icon for abi
+     files
+	* icons/gnome-text-x-lyx.png: LyX files
+
+Thu May 30 09:32:41 2002  George Lebl <jirka@5z.com>
+
+	* gnome-vfs.keys.in: add x-directory/vfolder-desktop
+
+2002-05-29  Jody Goldberg <jody@gnome.org>
+
+	* gnome-vfs.keys.in : Add more categories.
+
+2002-05-24  Alex Graveley  <alex@ximian.com>
+
+	* gnome-vfs-mime-magic: Move audio/x-wav matchers above
+	audio/x-riff, as wav files start with RIFF, and were being wrongly
+	identified as audio/x-riff.
+
+2002-05-23  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs.mime:
+
+	Add cls and sty extensions to TeX type (x-tex). Probably should be
+	split into LaTex types post string freeze.
+	
+2002-05-20  Jaka Mocnik  <jaka@gnu.org>
+
+	* gnome-vfs.keys.in: added GGV control component iids for
+	application/postscript mime type. made component the default
+	action type.
+
+2002-05-20  Bastien Nocera  <hadess@hadess.net>
+
+	* icons/Makefile.am:
+	* icons/i-dvd.png: added a crummy home-made icon for DVDs
+
+2002-05-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added "mk" to ALL_LINGUAS.
+	
+2002-05-16  Bastien Nocera  <hadess@hadess.net>
+
+	* icons/Makefile.am:
+	* icons/i-cdrom-audio.png: add a dodgy home-made icon for Audio CDs
+
+2002-05-13  Jacob Berkman  <jacob@ximian.com>
+
+	* gnome-vfs-mime-magic: read more byts for svgs, as some have a
+	comment before the <!DOCTYPE> tag which broke scalable gorilla
+
+2002-05-06  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.keys.in: added gnome-audio-x-it.png as the icon for
+	audio/x-it
+	* icons/Makefile.am:
+	* icons/gnome-audio-x-it.png: updated
+
+2002-05-01  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs-mime-magic: added magic for Impulse Tracker modules
+
+2002-05-01  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Basque (eu) and Vietnamese (vi) to ALL_LINGUAS
+
+2002-04-25  Seth Nickell  <snickell@stanford.edu>
+
+	* check-mime.pl:
+
+	Update to handle component keyword change.
+
+	_ALWAYS_ run this script before checking in please.
+
+	* gnome-vfs.applications:
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime:
+
+	Add several new types, change icon names.
+	
+	* icons/Makefile.am:
+	* icons/gnome-application-pdf.png:
+	* icons/gnome-application-pgp-encrypted.png:
+	* icons/gnome-application-pgp-keys.png:
+	* icons/gnome-application-x-applix-spreadsheet.png:
+	* icons/gnome-application-x-applix-word.png:
+	* icons/gnome-application-x-c-header.png:
+	* icons/gnome-application-x-c-source.png:
+	* icons/gnome-application-x-cc-source.png:
+	* icons/gnome-application-x-deb.png:
+	* icons/gnome-application-x-gnome-app-info.png:
+	* icons/gnome-application-x-jar.png:
+	* icons/gnome-application-x-java-byte-code.png:
+	* icons/gnome-application-x-java-source.png:
+	* icons/gnome-application-x-mrproject.png:
+	* icons/gnome-application-x-php.png:
+	* icons/gnome-application-x-python-bytecode.png:
+	* icons/gnome-application-x-rpm.png:
+	* icons/gnome-image-pbm.png:
+	* icons/gnome-image-psd.png:
+	* icons/gnome-image-xwd.png:
+	* icons/gnome-pack-deb.png:
+	* icons/gnome-pack-rpm.png:
+	* icons/gnome-text-css.png:
+	* icons/gnome-text-x-c++.png:
+	* icons/gnome-text-x-c-header.png:
+	* icons/gnome-text-x-c.png:
+	* icons/gnome-text-x-csh.png:
+	* icons/gnome-text-x-install.png:
+	* icons/gnome-text-x-java.png:
+	* icons/gnome-text-x-python.png:
+	* icons/gnome-text-x-sh.png:
+	* icons/gnome-video-quicktime.png:
+	* icons/gnome-video-x-ms-asf.png:
+	* icons/gnome-video-x-msvideo.png:
+
+	Update icons, and add some new ones from Tuomas.
+	
+2002-04-23  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump.
+
+2002-04-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.0.7
+
+2002-04-23  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : bump version.
+
+2002-04-23  Jody Goldberg <jody@gnome.org>
+
+	* gnome-vfs.keys.in : gnumeric is now usable as a component
+
+2002-04-21  Anders Carlsson  <andersca@gnu.org>
+
+	* gnome-vfs.keys.in:
+	Doh, it's "video", not "vidoe".
+	
+	* icons/Makefile.am:
+	Add trailing slash.
+	
+2002-04-21  Anders Carlsson  <andersca@gnu.org>
+
+	* gnome-vfs.keys.in:
+	Fix the component id mess, we now use 
+	"short_list_component_iids" for gnome-vfs 2
+	and "short_list_component_iids_<userlevel>" for
+	gnome-vfs 1. Also add Haskell and WMV definitions.
+	
+	* gnome-vfs.mime:
+	Add haskell and WMV extensions.
+	
+	* icons/Makefile.am:
+	* icons/gnome-text-x-haskell.png:
+	* icons/gnome-text-x-literate-haskell.png:
+	* icons/gnome-video-x-ms-wmv.png:
+	Add Haskell and WMV icons.
+	
+2002-04-18  Michael Meeks  <michael@ximian.com>
+
+	* gnome-vfs.keys.in: update all the OAFIIDs
+	to the new nautilus versions, needs a new
+	nautilus to play well.
+
+2002-03-28  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+
+	Bump version number to 1.0.6
+
+2002-03-19  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs.applications:
+	* gnome-vfs.mime:
+
+	Add Wine for windows executables.
+
+	Fix regexp for anim files.
+	
+2002-03-16  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+
+	Up the version number to 1.0.5.
+	
+	* gnome-vfs-mime-magic:
+
+	Add magic for detecting libraries and core files, from
+	Havard Wigtil (sorry, the character didn't want to stick
+	in the file correctly :-)
+	
+	* gnome-vfs.keys.in:
+
+	Better descriptions for .m3u files and for RealMedia
+	files.
+	
+2002-03-16  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in: Added "zh_CN" to ALL_LINGUAS.
+
+2002-03-05  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+	* icons/Makefile.am:
+	* icons/gnome-text-plain.png:
+
+	Delete icon because Nautilus wants to have text previews.
+	
+2002-03-03  Bastien Nocera  <hadess@hadess.net>
+
+	* icons/Makefile.am: install the icons mentioned underneath there
+
+2002-02-27  Bastien Nocera  <hadess@hadess.net>
+
+	reviewed by: Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.applications:
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime: added ROM filetypes,
+	gtktalog, zsh, binhex and stuffit. Added file-roller as the default
+	program for archives.
+	* icons/gnome-application-x-dc-rom.png:
+	* icons/gnome-application-x-gameboy-rom.png:
+	* icons/gnome-application-x-genesis-rom.png:
+	* icons/gnome-application-x-gtktalog.png:
+	* icons/gnome-application-x-msx-rom.png:
+	* icons/gnome-application-x-n64-rom.png:
+	* icons/gnome-application-x-nes-rom.png:
+	* icons/gnome-application-x-sms-rom.png:
+	* icons/gnome-application-x-stuffit.png:
+	* icons/gnome-text-x-patch.png:
+	* icons/gnome-text-x-perl.png:
+	* icons/gnome-text-x-zsh.png:
+	* icons/gnome-text-xml.png: added some (!) icons
+	by jimmac
+
+2002-02-25  Hasbullah Bin Pit <sebol@ikhlas.com>
+
+	* configure.in: Added Malay (ms)to ALL_LINGUAS.
+	* po/ms.po: Added Malay Translation.
+
+2002-02-25  Seth Nickell  <snickell@stanford.edu>
+
+	* icons/Makefile.am:
+	* icons/gnome-application-vnd.stardivision.calc.png:
+	* icons/gnome-application-vnd.stardivision.impress.png:
+	* icons/gnome-application-vnd.stardivision.writer.png:
+	* icons/gnome-application-vnd.sun.xml.calc.png:
+	* icons/gnome-application-vnd.sun.xml.impress.png:
+	* icons/gnome-application-vnd.sun.xml.writer.png:
+	* icons/gnome-application-x-staroffice-words.png:
+
+	Add icons for the most common of these document types.
+	
+2002-02-21  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs.applications:
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime:
+
+	Add a huge hoarde of StarOffice and OpenOffice document types
+	as specified by: 
+	http://framework.openoffice.org/documentation/mimetypes/mimetypes.html
+	
+2002-02-21  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs-mime-magic:
+
+	Temporarily disable "zip" magic. Its more important to
+	detect StarOffice files in the release than the occasional
+	zip file without an extension.
+
+2002-02-18  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs-mime-magic: added mpeg transport stream from
+	movieshaker files, as video/mpeg
+
+2002-02-14  Tõivo Leedjärv  <leedjarv@interest.ee>
+
+	* configure.in: Added et to ALL_LINGUAS.
+
+2002-02-11  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+
+	Release 1.0.3.
+
+2002-02-11  Gregory Leblanc  <gleblanc@linuxweasel.com>
+
+	* gnome-mime-data.spec.in: Fixed to make actually work.
+
+2002-02-09  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.mime:
+	* icons/Makefile.am:
+	* icons/gnome-application-x-abiword.png:
+
+	Change abiword's default type to be appliction/x-abiword.
+	This is advised by DV, and seems better to me too
+	(the AbiWord people don't seem to have a preference). Its
+	also what KDE currently uses.
+	
+2002-02-08  Darin Adler  <darin@bentspoon.com>
+
+	* check-mime.pl: Add new keywords so the check doesn't fail.
+
+2002-02-07  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs-mime-magic:
+
+	Add magic for the "new" AbiWord format.
+
+2002-02-07  Seth Nickell  <snickell@stanford.edu>
+
+	* icons/Makefile.am:
+	* icons/gnome-text-abiword.png:
+
+	Add an AbiWord icon. Should be replaced with an icon
+	that is "in theme" though.
+	
+2002-02-06  Larry Ewing  <lewing@ximian.com>
+
+	* gnome-vfs.applications: use gimp-remote --new rather than just
+	gimp so that calls don't start multiple gimp instances.
+
+2002-02-01  Michael Meeks  <michael@ximian.com>
+
+	* gnome-vfs.keys.in: replace EOG with image-viewer.
+
+2002-01-31  Bradford Hovinen  <hovinen@ximian.com>
+
+	* gnome-vfs.keys.in: Added category, use_category_default fields
+
+2002-01-30  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+
+	Bump version number to 1.0.2.
+	
+2002-01-30  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs.keys.in:
+
+	Update "GNOME application launcher" to
+	"application launcher", since KDE uses .desktop files
+	too.
+
+2002-01-27  Anders Carlsson  <andersca@gnu.org>
+
+	* icons/gnome-application-x-gnome-app-info.png: 
+	Update icon.
+
+2002-01-27  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs-mime-magic:
+
+	Remove magic for "detecting" C source code, because it
+	often misfires and I can't think of a situation where
+	source code isn't properly identified by extension
+	anyway.
+
+2002-01-22  jacob berkman  <jacob@ximian.com>
+
+	* configure.in (AC_OUTPUT):
+	* Makefile.am (SUBDIRS): move man page from gnome-vfs here
+
+2002-01-21  Seth Nickell  <snickell@stanford.edu>
+
+	* icons/gnome-application-x-gnumeric.png:
+	* icons/gnome-video-mpeg.png:
+
+	Updated icons.
+
+2002-01-21  Seth Nickell  <snickell@stanford.edu>
+
+	* check-mime.pl:
+
+	Update to look for icons in ./icons.
+	
+	* gnome-vfs.keys.in:
+
+	Change a few weird icon_filename entries.
+	
+	* icons/Makefile.am:
+	* icons/gnome-application-x-generic-spreadsheet.png:
+	* icons/gnome-application-x-gnumeric.png:
+	* icons/i-cdrom-192.png:
+	* icons/i-fifo.png:
+	* icons/i-harddisk-72.png:
+	* icons/i-manual.png:
+	* icons/i-music-12.png:
+	* icons/i-music-24.png:
+	* icons/i-music-36.png:
+	* icons/i-nfs.png:
+	* icons/i-sock.png:
+	* icons/i-spreadsheet.png:
+
+	Move more icons out of Nautilus.
+
+2002-01-21  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* configure.in:
+	* gnome-vfs.keys.in:
+	* icons/.cvsignore:
+	* icons/Makefile.am:
+	* icons/gnome-application-encapsulated_postscript.png:
+	* icons/gnome-application-msword.png:
+	* icons/gnome-application-pdf.png:
+	* icons/gnome-application-pgp.png:
+	* icons/gnome-application-postscript.png:
+	* icons/gnome-application-qif.png:
+	* icons/gnome-application-rtf.png:
+	* icons/gnome-application-smil.png:
+	* icons/gnome-application-vnd.lotus-1-2-3.png:
+	* icons/gnome-application-vnd.ms-excel.png:
+	* icons/gnome-application-vnd.ms-powerpoint.png:
+	* icons/gnome-application-vnd.rn-realmedia.png:
+	* icons/gnome-application-x-arj.png:
+	* icons/gnome-application-x-backup.png:
+	* icons/gnome-application-x-blender.png:
+	* icons/gnome-application-x-bzip.png:
+	* icons/gnome-application-x-c-header.png:
+	* icons/gnome-application-x-c-source.png:
+	* icons/gnome-application-x-cc-source.png:
+	* icons/gnome-application-x-compress.png:
+	* icons/gnome-application-x-dia-diagram.png:
+	* icons/gnome-application-x-e-theme.png:
+	* icons/gnome-application-x-font-sunos-news.png:
+	* icons/gnome-application-x-generic-spreadsheet.png:
+	* icons/gnome-application-x-gnome-app-info.png:
+	* icons/gnome-application-x-gzip.png:
+	* icons/gnome-application-x-jar.png:
+	* icons/gnome-application-x-java-source.png:
+	* icons/gnome-application-x-kde-app-info.png:
+	* icons/gnome-application-x-killustrator.png:
+	* icons/gnome-application-x-kpresenter.png:
+	* icons/gnome-application-x-kspread.png:
+	* icons/gnome-application-x-kword.png:
+	* icons/gnome-application-x-ogg.png:
+	* icons/gnome-application-x-php.png:
+	* icons/gnome-application-x-reject.png:
+	* icons/gnome-application-x-scheme-source.png:
+	* icons/gnome-application-x-sql.png:
+	* icons/gnome-application-x-staroffice-presentation.png:
+	* icons/gnome-application-x-staroffice-words.png:
+	* icons/gnome-audio-ac3.png:
+	* icons/gnome-audio-basic.png:
+	* icons/gnome-audio-midi.png:
+	* icons/gnome-audio-mpeg.png:
+	* icons/gnome-audio-ulaw.png:
+	* icons/gnome-audio-x-aiff.png:
+	* icons/gnome-audio-x-bmx.png:
+	* icons/gnome-audio-x-mod.png:
+	* icons/gnome-audio-x-pn-realaudio.png:
+	* icons/gnome-audio-x-s3m.png:
+	* icons/gnome-audio-x-stm.png:
+	* icons/gnome-audio-x-voc.png:
+	* icons/gnome-audio-x-wav.png:
+	* icons/gnome-audio-x-xi.png:
+	* icons/gnome-audio-x-xm.png:
+	* icons/gnome-audio.png:
+	* icons/gnome-compressed.png:
+	* icons/gnome-font-afm.png:
+	* icons/gnome-font-bdf.png:
+	* icons/gnome-font-linux-psf.png:
+	* icons/gnome-font-ttf.png:
+	* icons/gnome-font-x-pcf.png:
+	* icons/gnome-http-url.png:
+	* icons/gnome-image-bmp.png:
+	* icons/gnome-image-generic.png:
+	* icons/gnome-image-gif.png:
+	* icons/gnome-image-ief.png:
+	* icons/gnome-image-jpeg.png:
+	* icons/gnome-image-pbm.png:
+	* icons/gnome-image-pgm.png:
+	* icons/gnome-image-png.png:
+	* icons/gnome-image-pnm.png:
+	* icons/gnome-image-ppm.png:
+	* icons/gnome-image-psd.png:
+	* icons/gnome-image-ras.png:
+	* icons/gnome-image-rgb.png:
+	* icons/gnome-image-svg.png:
+	* icons/gnome-image-tga.png:
+	* icons/gnome-image-tiff.png:
+	* icons/gnome-image-x-3ds.png:
+	* icons/gnome-image-x-applix-graphic.png:
+	* icons/gnome-image-x-lwo.png:
+	* icons/gnome-image-x-lws.png:
+	* icons/gnome-image-x-xfig.png:
+	* icons/gnome-image-xbm.png:
+	* icons/gnome-image-xcf.png:
+	* icons/gnome-image-xpm.png:
+	* icons/gnome-image-xwd.png:
+	* icons/gnome-library.png:
+	* icons/gnome-objectfile.png:
+	* icons/gnome-pack-deb.png:
+	* icons/gnome-pack-rpm.png:
+	* icons/gnome-package.png:
+	* icons/gnome-tex.png:
+	* icons/gnome-text-html.png:
+	* icons/gnome-text-plain.png:
+	* icons/gnome-text-x-authors.png:
+	* icons/gnome-text-x-c.png:
+	* icons/gnome-text-x-copying.png:
+	* icons/gnome-text-x-credits.png:
+	* icons/gnome-text-x-install.png:
+	* icons/gnome-text-x-makefile.png:
+	* icons/gnome-text-x-readme.png:
+	* icons/gnome-text-x-sql.png:
+	* icons/gnome-textfile.png:
+	* icons/gnome-video-mpeg.png:
+	* icons/gnome-video-quicktime.png:
+	* icons/gnome-video-x-ms-asf.png:
+	* icons/gnome-video-x-msvideo.png:
+	* icons/gnome-x-font-afm.png:
+	* icons/gnome-x-troff-man.png:
+	* icons/i-blockdev.png:
+	* icons/i-cdrom.png:
+	* icons/i-chardev.png:
+	* icons/i-core.png:
+	* icons/i-executable.png:
+	* icons/i-floppy.png:
+	* icons/i-harddisk.png:
+	* icons/i-music.png:
+	* icons/i-printer.png:
+	* icons/i-regular-72.png:
+	* icons/i-regular-96.png:
+	* icons/i-regular.png:
+	* icons/i-regular.xml:
+	* icons/i-zipdisk.png:
+
+	Move document icons into gnome-mime-data out of Nautilus.
+	Use Tigert/Jimmac's new document icons.
+	
 2001-12-18  Seth Nickell  <snickell@stanford.edu>
 
 	* gnome-vfs-mime-magic:
