@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.54 1997-02-05 00:05:26 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.55 1997-02-05 17:56:03 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -16,6 +16,7 @@
 #include <fcntl.h>
 #include <X11/Intrinsic.h>
 #include <ctype.h>
+#include <errno.h>
 #include <X11/Wc/WcCreate.h>
 #include <X11/StringDefs.h>
 #include <X11/Xaw/Label.h>
@@ -100,7 +101,6 @@ void sigconsACT(), sigconsCB(), callbackACT(), attachandrunCB();
 #ifdef sgi
 void windowShutdownACT(), windowShutdownCB();
 #endif
-char *malloc(), *strdup();
 extern void add_converter ();
 
 
@@ -1825,59 +1825,37 @@ String s;
     exit(1);
 }
 
-/* Because we're not willing to bet this will work under Ultrix. */
-#if defined(SOLARIS) || defined(sgi)
-#define POSIXWAIT
-#endif
-
 static void catch_child()
 {
     int pid;
-#ifndef POSIXWAIT
-    union wait status;
-#else
     int status;
-#endif
     char *number();
 
-
-#ifdef POSIXWAIT
-    pid = waitpid(-1, &status, WNOHANG);
-#else
-    pid = wait3(&status, WNOHANG, 0);
-#endif
-    if (pid == activation_pid) {
-	switch (activation_state) {
-	case REACTIVATING:
-	    if (pid == activation_pid)
-	      activation_state = ACTIVATED;
+    while (1) {
+	pid = waitpid(-1, &status, WNOHANG);
+	if (pid == -1 && errno == ECHILD)
 	    break;
-	case ACTIVATED:
-	default:
-	    fprintf(stderr, "XLogin: child %d exited\n", pid);
+	if (pid == activation_pid) {
+	    switch (activation_state) {
+	    case REACTIVATING:
+		if (pid == activation_pid)
+		    activation_state = ACTIVATED;
+		break;
+	    case ACTIVATED:
+	    default:
+		fprintf(stderr, "XLogin: child %d exited\n", pid);
+	    }
+	} else if (pid == attach_pid) {
+	    attach_state = WEXITSTATUS(status);
+	} else if (pid == attachhelp_pid) {
+	    attachhelp_state =  WEXITSTATUS(status);
+	} else if (pid == quota_pid) {
+	    quota_pid = 0;
+	} else {
+	    fprintf(stderr, "XLogin: child %d exited with status %d\n",
+		    pid, WEXITSTATUS(status));
 	}
-    } else if (pid == attach_pid) {
-#ifdef POSIXWAIT
-	attach_state = WEXITSTATUS(status);
-#else
-	attach_state = status.w_retcode;
-#endif
-    } else if (pid == attachhelp_pid) {
-#ifdef POSIXWAIT
-	attachhelp_state =  WEXITSTATUS(status);
-#else
-	attachhelp_state =  status.w_retcode;
-#endif
-    } else if (pid == quota_pid) {
-	quota_pid = 0;
-    } else
-#ifdef POSIXWAIT
-      fprintf(stderr, "XLogin: child %d exited with status %d\n",
-	      pid, WEXITSTATUS(status));
-#else
-      fprintf(stderr, "XLogin: child %d exited with status %d\n",
-	      pid, status.w_retcode);
-#endif
+    }
 }
 
 
