@@ -1,7 +1,7 @@
 #
 # Makefile for etc subdirectory
 #
-# $Id: Makefile.in,v 1.3 1999-05-05 16:59:52 danw Exp $
+# $Id: Makefile.in,v 1.4 1999-05-10 15:57:15 danw Exp $
 #
 
 SHELL = /bin/sh
@@ -38,10 +38,11 @@ SED = sed
 DIST_FILES = mhl.body mhl.digest mhl.format mhl.forward mhl.headers \
              mhl.reply scan.default scan.mailx scan.nomime scan.size scan.time \
              scan.timely scan.unseen components digestcomps distcomps \
-             forwcomps rcvdistcomps replcomps replgroupcomps MailAliases
+             forwcomps rcvdistcomps replcomps replgroupcomps MailAliases \
+             mhn.defaults
 
 # format and configuration files to generate
-GEN_FILES = mhn.defaults mts.conf
+GEN_FILES = mts.conf
 
 # data files we need to install
 FILES = $(DIST_FILES) $(GEN_FILES)
