@@ -1,4 +1,4 @@
-/* $Id: al.h,v 1.4 1998-04-08 02:15:31 ghudson Exp $ */
+/* $Id: al.h,v 1.5 1998-05-07 17:08:38 ghudson Exp $ */
 
 /* Copyright 1997, 1998 by the Massachusetts Institute of Technology.
  *
@@ -34,16 +34,17 @@
 #define AL_EPASSWD		7
 #define AL_ESESSION		8
 #define AL_EPERM		9
-#define AL_ENOMEM		10
+#define AL_ENOENT		10
+#define AL_ENOMEM		11
 
 /* Warning values */
 #define AL_ISWARNING(n) 	(AL_WBADSESSION <= (n) && (n) <= AL_WNOATTACH)
-#define AL_WBADSESSION		11
-#define AL_WGROUP		12
-#define AL_WXTMPDIR		13
-#define AL_WTMPDIR		14
-#define AL_WNOHOMEDIR		15
-#define AL_WNOATTACH		16
+#define AL_WBADSESSION		12
+#define AL_WGROUP		13
+#define AL_WXTMPDIR		14
+#define AL_WTMPDIR		15
+#define AL_WNOHOMEDIR		16
+#define AL_WNOATTACH		17
 
 /* Public functions */
 int al_login_allowed(const char *username, int isremote, int *local_acct,
@@ -55,5 +56,7 @@ int al_acct_revert(const char *username, pid_t sessionpid);
 int al_acct_cleanup(const char *username);
 const char *al_strerror(int code, char **mem);
 void al_free_errmem(char *mem);
+int al_get_access(const char *username, char **access, char **text);
+int al_is_local_acct(const char *username);
 
 #endif
