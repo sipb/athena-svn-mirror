@@ -16,7 +16,6 @@
 #include <fcntl.h>
 #include <sys/socket.h>
 #include <sys/uio.h>
-#include <ndbm.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/time.h>
@@ -220,7 +219,6 @@ char * pname;
 char * result;
 int onetime;
 {
-  DBM *dbm_open();
   DBM *db;
   DBM *db2;
   datum data;
