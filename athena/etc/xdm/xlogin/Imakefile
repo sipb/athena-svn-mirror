@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.36 1996-03-31 21:41:37 ghudson Exp $
+# $Id: Imakefile,v 1.37 1996-04-19 02:25:14 cfields Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
@@ -18,23 +18,29 @@ ARIOBJ=AriRegAll.o
 #if defined(sgi) || defined(SOLARIS)
 /* R5 changes actually, not SGI. */
 WCL=$(WCLDIR)/Wc/libWc.a
+WCLDEFS=-I$(WCLDIR)
 ARISRC=
 ARIOBJ=$(WCLDIR)/Xp/libXp.a
 #endif
 
 #ifdef sgi
-MACHLIBS = ../misc/libnanny.a
+/* AFS 3.4a rx depends on sys now; sys already depended on rx */
+MACHLIBS = -lsys ../misc/libnanny.a
+
+/* SGI doesn't include the clock in their Xaw anymore. */
+CLOCKSRC=Clock.c
+CLOCKOBJ=Clock.o
 #endif
 
 KRB5_DEFS = -DKRB5 -I$(KRB5DIR)/include
 KRB5_LIBS = -L$(KRB5DIR)/lib -lkrb5 -lcrypto -lcom_err
 
-DEFINES = -DSETPAG $(KRB5_DEFS) $(MACHDEFS)
+DEFINES = -DSETPAG $(KRB5_DEFS) $(MACHDEFS) $(WCLDEFS)
 AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp
 
 
-SRCS = xlogin.c ${ARISRC} verify.c SmeBSB.c StringToPixel.c
-OBJS = xlogin.o ${ARIOBJ} verify.o SmeBSB.o StringToPixel.o
+SRCS = xlogin.c ${ARISRC} verify.c SmeBSB.c StringToPixel.c ${CLOCKSRC}
+OBJS = xlogin.o ${ARIOBJ} verify.o SmeBSB.o StringToPixel.o ${CLOCKOBJ}
 LIBS = -lXaw  ${WCL} -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
 	$(KRB5_LIBS) $(AFSLIBS) $(MACHLIBS) -lm
 
