@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.3 1990-04-20 01:30:10 jfc Exp $";
+static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.4 1991-01-22 16:17:44 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -59,7 +59,7 @@ static int zephyr_op(func)
 
     if (!inited) {
 	if ((retval = ZInitialize()) != ZERR_NONE) {
-	    fprintf(stderr, "Can't intialize Zephyr library!\n");
+	    com_err(progname, retval, "while intializing Zephyr library");
 	    inited = -1;
 	    return 1;
 	}
