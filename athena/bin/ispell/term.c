@@ -71,6 +71,13 @@ terminit ()
 {
 	int done();
 #ifdef USG
+#ifdef POSIX
+        struct sigaction act;
+ 
+        sigemptyset(&act.sa_mask);
+        act.sa_flags = 0;
+#endif
+
 	if (!isatty(0)) {
 		fprintf (stderr, "Can't deal with non interactive use yet.\n");
 		exit (1);
@@ -89,7 +96,12 @@ terminit ()
 	erasechar = osbuf.c_cc[VERASE];
 	killchar = osbuf.c_cc[VKILL];
 
+#ifdef POSIX
+        act.sa_handler= (void (*)()) done;
+        (void) sigaction(SIGINT, &act, NULL);
+#else
 	(void) signal (SIGINT, done);
+#endif
 #else
 	int tpgrp;
 	int onstop();
