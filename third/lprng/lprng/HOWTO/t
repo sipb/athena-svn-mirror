@@ -1,0 +1,21 @@
+<tt>printing_disabled&nbsp;&nbsp;&nbsp;</tt>
+<tt>0 or 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>
+<tt>disable printing of jobs in queue</tt> <newline>
+<tt>spooling_disabled&nbsp;&nbsp;&nbsp;</tt>
+<tt>0 or 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>
+<tt>disable placing jobs in queue</tt> <newline>
+<tt>holdall&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>
+<tt>0 or 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>
+<tt>hold jobs until released</tt> <newline>
+<tt>redirect&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>
+<tt>printer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>
+<tt>transfer jobs to indicated printer</tt> <newline>
+<tt>class&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>
+<tt>glob expression&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>
+<tt>print only jobs whose class matches glob expression</tt> <newline>
+<tt>server_order&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>
+<tt>printer name list&nbsp;&nbsp;&nbsp;</tt>
+<tt>preferred order of printer use</tt> <newline>
+<tt>debug&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>
+<tt>debugging options&nbsp;&nbsp;&nbsp;</tt>
+<tt>debugging and tracing</tt> <newline>

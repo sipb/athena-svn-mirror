@@ -1,6 +1,16 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ *     papowell@astart.com
+ * See LICENSE for conditions of use.
+ * $Id: portable.h,v 1.1.1.2 1999-05-04 18:07:04 danw Exp $
+ ***************************************************************************/
+
+
+/***************************************************************************
+ * LPRng - An Extended Print Spooler System
+ *
  * Copyright 1988-1997, Patrick Powell, San Diego, CA
  *     papowell@sdsu.edu
  * See LICENSE for conditions of use.
@@ -27,6 +37,11 @@
 
 #ifndef _PLP_PORTABLE_H
 #define _PLP_PORTABLE_H 1
+
+#if !defined(EXTERN)
+#define EXTERN extern
+#define DEFINE(X) 
+#endif
 
 #ifndef __STDC__
 LPRng requires ANSI Standard C compiler
@@ -123,14 +138,6 @@ LPRng requires ANSI Standard C compiler
 # define IS_LINUX
 #endif
 
-
-/*************************************************************************/
-#if defined(__hpux) || defined(_HPUX_SOURCE)
-# define IS_HPUX
-# undef _HPUX_SOURCE
-# define _HPUX_SOURCE 1
-#endif
-  
 /*************************************************************************/
 
 #if defined(__convex__) /* Convex OS 11.0 - from w_stef */
@@ -267,6 +274,9 @@ LPRng requires ANSI Standard C compiler
 
 #include <sys/stat.h>
 #include <pwd.h>
+#if defined(HAVE_SYS_SIGNAL_H)
+#  include <sys/signal.h>
+#endif
 #include <signal.h>
 #include <sys/wait.h>
 #include <ctype.h>
@@ -289,6 +299,9 @@ LPRng requires ANSI Standard C compiler
 #endif
 #if !defined(HAVE_STRNCASECMP)
  int strncasecmp (const char *s1, const char *s2, int len );
+#endif
+#if !defined(HAVE_STRCASECMP_DEF)
+ int strcasecmp (const char *s1, const char *s2 );
 #endif
 
 
@@ -352,9 +365,9 @@ typedef struct dirent plp_dir_t;
 # include <time.h>
 #else
 # ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
-#else
-# include <time.h>
+#   include <sys/time.h>
+# else
+#   include <time.h>
 # endif
 #endif
 
@@ -608,20 +621,14 @@ XX ** NO VARARGS ** XX
  * different systems
  */
 
-#ifndef O_NONBLOCK
-#define O_NONBLOCK 0
-#endif
-
-#ifndef O_NOCTTY
-#define O_NOCTTY 0
-#endif
-
-
 #define NONBLOCK (O_NDELAY|O_NONBLOCK)
-#ifdef IS_HPUX
-#undef NONBLOCK
-#define NONBLOCK (O_NONBLOCK)
+#if defined(HPUX) && HPUX<1100
+#  undef NONBLOCK
+#  define NONBLOCK (O_NONBLOCK)
+#  undef FD_SET_FIX
+#  define FD_SET_FIX(X) (int *)
 #endif
+
 
 
 /*********************************************************************
@@ -637,13 +644,18 @@ XX ** NO VARARGS ** XX
  **********************************************************************/
 #ifdef HAVE_SIGPROCMASK
 /* a signal set */
-typedef sigset_t plp_block_mask;
+#define plp_block_mask sigset_t
 #else
 /* an integer */
-typedef int plp_block_mask;
+#define plp_block_mask int
 #endif
 
-#define FD_SET_FIX(X) X
+/**********************************************************************
+ *  Select() problems
+ **********************************************************************/
+#if !defined(FD_SET_FIX)
+# define FD_SET_FIX(X) X
+#endif
 
 /**********************************************************************
  * IPV6 and newer versions
@@ -732,20 +744,14 @@ extern int getdtablesize(void);
 #endif
 #endif
 
-#ifdef HPUX
+#if !defined(HAVE_SYSLOG_DEF)
 extern void syslog(int, const char *, ...);
+#endif
 #if !defined(HAVE_OPENLOG_DEF)
 extern int openlog( const char *ident, int logopt, int facility );
 #endif
-#undef FD_SET_FIX
-#define FD_SET_FIX(X) (int *)
-#endif
 
 #ifdef IS_AIX32
-#if !defined(HAVE_OPENLOG_DEF)
-void openlog(const char *, int, int);
-void syslog(int, const char *, ...);
-#endif
 extern int seteuid(uid_t);
 #endif
 
@@ -781,5 +787,28 @@ struct sockaddr_in6 {
 #if defined(HAVE_RESOLV_H)
 # include <resolv.h>
 #endif
+
+/* the dreaded QUAD_T strikes again... */
+#if defined(quad_t) && qaud_t == NONE
+# undef HAVE_QUAD_T
+#else
+# define HAVE_QUAD_T 1
+/* suspender and belts on this one */
+struct have_quad_t {
+	quad_t t;
+};
+#endif
+
+#ifdef HAVE_INNETGR
+#if !defined(HAVE_INNETGR_DEF)
+extern int innetgr(const char *netgroup,
+    const char *machine, const char *user, const char *domain);
+#endif
+#endif
+
+
+#define Cast_int_to_voidstar(v) ((void *)(long)(v))
+#define Cast_ptr_to_int(v) ((int)(long)(v))
+#define Cast_ptr_to_long(v) ((long)(v))
 
 #endif	/* PLP_PORTABLE_H */
