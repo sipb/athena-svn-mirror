@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_Window_h
+#define _Xj_Window_h
+
 #include "Jets.h"
 #include <X11/Xutil.h>
 
@@ -99,3 +102,5 @@ typedef struct _WindowInfo {
 #define XjNborderColor "borderColor"
 #define XjCClientMessageProc "ClientMessageProc"
 #define XjNclientMessageProc "clientMessageProc"
+
+#endif /* _Xj_Window_h */

@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_Form_h
+#define _Xj_Form_h
+
 #include "Jets.h"
 
 extern JetClass formJetClass;
@@ -40,3 +43,5 @@ typedef struct _FormClassRec *FormJetClass;
 #define XjNform "form"
 #define XjCPadding "Padding"
 #define XjNpadding "padding"
+
+#endif /* _Xj_Form_h */

@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _warn_h
+#define _warn_h
+
 typedef struct _wstruct {
   Jet top;
   ButtonJet button;
@@ -17,3 +20,5 @@ typedef struct _wstruct {
 } Warning;
 
 extern Warning *UserWarning();
+
+#endif /* _warn_h */

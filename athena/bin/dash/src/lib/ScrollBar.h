@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_ScrollBar_h
+#define _Xj_ScrollBar_h
+
 #include "Jets.h"
 
 extern JetClass scrollBarJetClass;
@@ -89,3 +92,5 @@ typedef struct _ScrollBarClassRec *ScrollBarJetClass;
 #define XjCOrientation "Orientation"
 #define XjNshowArrows "showArrows"
 #define XjCShowArrows "ShowArrows"
+
+#endif /* _Xj_ScrollBar_h */

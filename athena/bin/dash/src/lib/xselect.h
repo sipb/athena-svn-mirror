@@ -24,4 +24,4 @@ extern int xselProcessSelection();
 extern void xselOwnershipLost();
 extern void xselGiveUpOwnership();
 
-#endif
+#endif /* _XSELECT_H_ */

@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _dash_h
+#define _dash_h
+
 typedef struct _MyResources
 {
   Boolean verifyOn, notifyOn, run, send, kill, restart, debug, nofork;
@@ -19,3 +22,5 @@ typedef struct _MyResources
 } MyResources;
 
 typedef struct _MyResources *MyResourcesPtr;
+
+#endif /* _dash_h */

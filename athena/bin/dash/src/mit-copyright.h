@@ -1,3 +1,6 @@
+#ifndef _mit_copyright_h
+#define _mit_copyright_h
+
 /*
  *
  * Copyright 1991 by the Massachusetts Institute of Technology.
@@ -15,3 +18,5 @@
  * without express or implied warranty.
  * 
  */
+
+#endif /* _mit_copyright_h */

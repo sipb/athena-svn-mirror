@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_Tree_h
+#define _Xj_Tree_h
+
 #include "Jets.h"
 
 extern JetClass treeJetClass;
@@ -36,3 +39,5 @@ typedef struct _TreeClassRec *TreeJetClass;
 
 #define XjCTree "Tree"
 #define XjNtree "tree"
+
+#endif /* _Xj_Tree_h */

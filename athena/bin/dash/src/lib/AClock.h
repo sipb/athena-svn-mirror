@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_AClock_h
+#define _Xj_AClock_h
+
 #include "Jets.h"
 
 #define ANGLES 256 /* 1K of data for 90 degrees */
@@ -91,3 +94,5 @@ typedef struct _AClockClassRec *AClockJetClass;
 #define XjCRound "Round"
 #define XjNround "round"
 #endif
+
+#endif /* _Xj_AClock_h */

@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_DClock_h
+#define _Xj_DClock_h
+
 #include "Jets.h"
 
 extern JetClass dClockJetClass;
@@ -63,3 +66,5 @@ typedef struct _DClockClassRec *DClockJetClass;
 #define XjNinterval "interval"
 #define XjCBlink "Blink"
 #define XjNblinkColons "blinkColons"
+
+#endif /* _Xj_DClock_h */

@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_Label_h
+#define _Xj_Label_h
+
 #include "Jets.h"
 
 extern JetClass labelJetClass;
@@ -43,3 +46,5 @@ typedef struct _LabelClassRec *LabelJetClass;
 
 #define XjCLabel "Label"
 #define XjNlabel "label"
+
+#endif /* _Xj_Label_h */

@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_TextDisplay_h
+#define _Xj_TextDisplay_h
+
 #include "Jets.h"
 
 extern JetClass textDisplayJetClass;
@@ -67,3 +70,5 @@ typedef struct _TextDisplayClassRec *TextDisplayJetClass;
 #define XjNinternalBorder "internalBorder"
 #define XjCMultiClickTime "MultiClickTime"
 #define XjNmultiClickTime "multiClickTime"
+
+#endif /* _Xj_TextDisplay_h */

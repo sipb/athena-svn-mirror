@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_StripChart_h
+#define _Xj_StripChart_h
+
 #include "Jets.h"
 
 extern JetClass stripChartJetClass;
@@ -64,3 +67,5 @@ typedef struct _StripChartInitRec {
 #define XjCScaleColor "ScaleColor"
 #define XjNdotScale "dotScale"
 #define XjCDotScale "DotScale"
+
+#endif /* _Xj_StripChart_h */

@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_Menu_h
+#define _Xj_Menu_h
+
 #include <X11/Xlib.h>
 #include <X11/Xresource.h>
 #include "Jets.h"
@@ -200,3 +203,5 @@ typedef struct _MenuInfo
   MenuJet menubar;
   Menu *menu;
 } MenuInfo;
+
+#endif /* _Xj_Menu_h */

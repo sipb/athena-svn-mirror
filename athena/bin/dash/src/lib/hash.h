@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _hash_h
+#define _hash_h
+
 #include <sys/types.h>
 
 /* Hash table declarations */
@@ -29,3 +32,5 @@ struct hash {
 extern struct hash *create_hash();
 extern caddr_t hash_lookup();
 extern int hash_store();
+
+#endif /* _hash_h */

@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_Icon_h
+#define _Xj_Icon_h
+
 #include "Jets.h"
 
 extern JetClass iconJetClass;
@@ -43,3 +46,5 @@ typedef struct _IconClassRec *IconJetClass;
 
 #define XjCIcon "Icon"
 #define XjNicon "icon"
+
+#endif /* _Xj_Icon_h */

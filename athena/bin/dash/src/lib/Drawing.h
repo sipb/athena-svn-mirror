@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _Xj_Drawing_h
+#define _Xj_Drawing_h
+
 #include "Jets.h"
 
 extern JetClass drawingJetClass;
@@ -57,3 +60,5 @@ typedef struct _DrawingClassRec *DrawingJetClass;
 #define XjNeventProc "eventProc"
 #define XjCLineWidth "LineWidth"
 #define XjNlineWidth "lineWidth"
+
+#endif /* _Xj_Drawing_h */
