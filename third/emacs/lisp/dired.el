@@ -217,8 +217,10 @@ directory name and the cdr is the actual files to list.")
 ;; "Regexp matching a marked line.
 ;; Important: the match ends just after the marker."
 (defvar dired-re-maybe-mark "^. ")
-(defvar dired-re-dir (concat dired-re-maybe-mark dired-re-inode-size "d"))
-(defvar dired-re-sym (concat dired-re-maybe-mark dired-re-inode-size "l"))
+;; The [^:] part after "d" and "l" is to avoid confusion with the
+;; DOS/Windows-style drive letters in directory names, like in "d:/foo".
+(defvar dired-re-dir (concat dired-re-maybe-mark dired-re-inode-size "d[^:]"))
+(defvar dired-re-sym (concat dired-re-maybe-mark dired-re-inode-size "l[^:]"))
 (defvar dired-re-exe;; match ls permission string of an executable file
   (mapconcat (function
 	      (lambda (x)
@@ -989,7 +991,7 @@ If DIRNAME is already in a dired buffer, that buffer is used without refresh."
       '("Flag..." . dired-flag-files-regexp))
     (define-key map [menu-bar regexp mark]
       '("Mark..." . dired-mark-files-regexp))
-    (define-key map [menu-bar regexp mark]
+    (define-key map [menu-bar regexp mark-cont]
       '("Mark Containing..." . dired-mark-files-containing-regexp))
 
     (define-key map [menu-bar mark]
@@ -1356,7 +1358,9 @@ DIR must be a directory name, not a file name."
   (let* ((l "\\([A-Za-z]\\|[^\0-\177]\\)")
 	 ;; In some locales, month abbreviations are as short as 2 letters,
 	 ;; and they can be padded on the right with spaces.
-	 (month (concat l l "+ *"))
+	 ;; weiand: changed: month ends potentially with . or , or .,
+;;old	 (month (concat l l "+ *"))
+	 (month (concat l l "+[.]?,? *"))
 	 ;; Recognize any non-ASCII character.  
 	 ;; The purpose is to match a Kanji character.
 	 (k "[^\0-\177]")
@@ -1364,15 +1368,21 @@ DIR must be a directory name, not a file name."
 	 (s " ")
 	 (yyyy "[0-9][0-9][0-9][0-9]")
 	 (mm "[ 0-1][0-9]")
-	 (dd "[ 0-3][0-9]")
+;;old	 (dd "[ 0-3][0-9]")
+	 (dd "[ 0-3][0-9][.]?")
 	 (HH:MM "[ 0-2][0-9]:[0-5][0-9]")
 	 (western (concat "\\(" month s dd "\\|" dd s month "\\)"
-			  s "\\(" HH:MM "\\|" s yyyy "\\|" yyyy s "\\)"))
+         ;; weiand: changed: year potentially unaligned
+;;old			  s "\\(" HH:MM "\\|" s yyyy "\\|" yyyy s "\\)"))
+			  s "\\(" HH:MM "\\|" s "?" yyyy "\\|" yyyy s "\\)"))
 	 (japanese (concat mm k s dd k s "\\(" s HH:MM "\\|" yyyy k "\\)")))
-	 ;; Require the previous column to end in a digit.
+	 ;; The "[0-9]" below requires the previous column to end in a digit.
 	 ;; This avoids recognizing `1 may 1997' as a date in the line:
 	 ;; -r--r--r--   1 may      1997        1168 Oct 19 16:49 README
-    (concat "[0-9]" s "\\(" western "\\|" japanese "\\)" s))
+	 ;; The ".*" below finds the last match if there are multiple matches.
+	 ;; This avoids recognizing `jservice  10  1024' as a date in the line:
+	 ;; drwxr-xr-x  3 jservice  10  1024 Jul  2  1997 esg-host
+    (concat ".*[0-9]" s "\\(" western "\\|" japanese "\\)" s))
   "Regular expression to match up to the file name in a directory listing.
 The default value is designed to recognize dates and times
 regardless of the language.")
@@ -2165,17 +2175,22 @@ A prefix argument means to unmark them instead.
      (and (not (looking-at dired-re-dot))
 	  (not (eolp))			; empty line
 	  (let ((fn (dired-get-filename nil t)))
-	    (and fn (save-excursion
-		      ;; For now we do it inside emacs
-		      ;; Grep might be better if there are a lot of files
-		      (message "Checking %s" fn)
-		      (let* ((prebuf (get-file-buffer fn)))
-			(find-file fn)
+	    (when (and fn (file-readable-p fn)
+		       (not (file-directory-p fn)))
+	      (let ((prebuf (get-file-buffer fn)))
+		(message "Checking %s" fn)
+		;; For now we do it inside emacs
+		;; Grep might be better if there are a lot of files
+		(if prebuf
+		    (with-current-buffer prebuf
+		      (save-excursion
 			(goto-char (point-min))
-			(prog1 
-			    (re-search-forward regexp nil t)
-			  (if (not prebuf) (kill-buffer nil))))
-		      ))))
+			(re-search-forward regexp nil t)))
+		  (with-temp-buffer
+		    (insert-file-contents fn)
+		    (goto-char (point-min))
+		    (re-search-forward regexp nil t))))
+		      )))
      "matching file")))
 
 (defun dired-flag-files-regexp (regexp)
@@ -2593,17 +2608,17 @@ With a zero prefix arg, renaming by regexp affects the complete
 
 (autoload 'dired-do-copy-regexp "dired-aux"
   "Copy all marked files containing REGEXP to NEWNAME.
-See function `dired-rename-regexp' for more info."
+See function `dired-do-rename-regexp' for more info."
   t)
 
 (autoload 'dired-do-hardlink-regexp "dired-aux"
   "Hardlink all marked files containing REGEXP to NEWNAME.
-See function `dired-rename-regexp' for more info."
+See function `dired-do-rename-regexp' for more info."
   t)
 
 (autoload 'dired-do-symlink-regexp "dired-aux"
   "Symlink all marked files containing REGEXP to NEWNAME.
-See function `dired-rename-regexp' for more info."
+See function `dired-do-rename-regexp' for more info."
   t)
 
 (autoload 'dired-upcase "dired-aux"

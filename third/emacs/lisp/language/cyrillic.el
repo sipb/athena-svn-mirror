@@ -1,4 +1,4 @@
-;;; cyrillic.el --- Support for languages which use Cyrillic characters
+;;; cyrillic.el --- Support for Cyrillic -*- coding: iso-2022-7bit; -*-
 
 ;; Copyright (C) 1995 Electrotechnical Laboratory, JAPAN.
 ;; Licensed to the Free Software Foundation.
@@ -71,8 +71,8 @@
    112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127
    128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143
    144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159
-   32  32  32 ?,Lq(B   32  32  32  32  32  32  32  32  32  32  32  32
-   32  32  32 ?,L!(B   32  32  32  32  32  32  32  32  32  32  32  32
+   160 161 162 ?,Lq(B  164 165 166 167 168 169 170 171 172 173 174 175
+   176 177 178 ?,L!(B  180 181 182 183 184 185 186 187 188 189 190 191
    ?,Ln(B  ?,LP(B  ?,LQ(B  ?,Lf(B  ?,LT(B  ?,LU(B  ?,Ld(B  ?,LS(B  ?,Le(B  ?,LX(B  ?,LY(B  ?,LZ(B  ?,L[(B  ?,L\(B  ?,L](B  ?,L^(B 
    ?,L_(B  ?,Lo(B  ?,L`(B  ?,La(B  ?,Lb(B  ?,Lc(B  ?,LV(B  ?,LR(B  ?,Ll(B  ?,Lk(B  ?,LW(B  ?,Lh(B  ?,Lm(B  ?,Li(B  ?,Lg(B  ?,Lj(B 
    ?,LN(B  ?,L0(B  ?,L1(B  ?,LF(B  ?,L4(B  ?,L5(B  ?,LD(B  ?,L3(B  ?,LE(B  ?,L8(B  ?,L9(B  ?,L:(B  ?,L;(B  ?,L<(B  ?,L=(B  ?,L>(B 
@@ -87,7 +87,7 @@
 	     (split (split-char ch)))
 	(if (eq (car split) 'cyrillic-iso8859-5)
 	    (aset table (logior (nth 1 split) 128) i)
-	  (if (/= ch 32)
+	  (if (< ch 128)
 	      (aset table ch i))))
       (setq i (1+ i)))
     table)
@@ -122,7 +122,9 @@
  '(ccl-decode-koi8 . ccl-encode-koi8)
  '((safe-charsets ascii cyrillic-iso8859-5)
    (mime-charset . koi8-r)
-   (valid-codes (0 . 127) 163 179 (192 . 255))))
+   (valid-codes (0 . 127) 163 179 (192 . 255))
+   (charset-origin-alist (cyrillic-iso8859-5 "KOI8-R"
+					     cyrillic-encode-koi8-r-char))))
 
 (define-coding-system-alias 'koi8-r 'cyrillic-koi8)
 (define-coding-system-alias 'koi8 'cyrillic-koi8)
@@ -144,11 +146,9 @@
  "Cyrillic-KOI8" `((charset cyrillic-iso8859-5)
 		   (nonascii-translation
 		    . ,cyrillic-koi8-r-nonascii-translation-table)
-		   (charset-origin-alist
-		    (cyrillic-iso8859-5 "KOI8-R" cyrillic-encode-koi8-r-char))
 		   (coding-system cyrillic-koi8)
 		   (coding-priority cyrillic-koi8)
-		   (input-method . "cyrillic-yawerty")
+		   (input-method . "cyrillic-jcuken")
 		   (features cyril-util)
 		   (unibyte-display . cyrillic-koi8)
 		   (sample-text . "Russian (,L@caaZXY(B)	,L7T`PRabRcYbU(B!")
@@ -172,11 +172,11 @@
    ?,L0(B  ?,L1(B  ?,L2(B  ?,L3(B  ?,L4(B  ?,L5(B  ?,L6(B  ?,L7(B  ?,L8(B  ?,L9(B  ?,L:(B  ?,L;(B  ?,L<(B  ?,L=(B  ?,L>(B  ?,L?(B
    ?,L@(B  ?,LA(B  ?,LB(B  ?,LC(B  ?,LD(B  ?,LE(B  ?,LF(B  ?,LG(B  ?,LH(B  ?,LI(B  ?,LJ(B  ?,LK(B  ?,LL(B  ?,LM(B  ?,LN(B  ?,LO(B
    ?,LP(B  ?,LQ(B  ?,LR(B  ?,LS(B  ?,LT(B  ?,LU(B  ?,LV(B  ?,LW(B  ?,LX(B  ?,LY(B  ?,LZ(B  ?,L[(B  ?,L\(B  ?,L](B  ?,L^(B  ?,L_(B
-   32  32  32  32  32  32  32  32  32  32  32  32  32  32  32  32
-   32  32  32  32  32  32  32  32  32  32  32  32  32  32  32  32
-   32  32  32  32  32  32  32  32  32  32  32  32  32  32  32  32
+   176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191
+   192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207
+   208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223
    ?,L`(B  ?,La(B  ?,Lb(B  ?,Lc(B  ?,Ld(B  ?,Le(B  ?,Lf(B  ?,Lg(B  ?,Lh(B  ?,Li(B  ?,Lj(B  ?,Lk(B  ?,Ll(B  ?,Lm(B  ?,Ln(B  ?,Lo(B
-   ?,L!(B  ?,Lq(B   32  32  32  32  32  32  32  32  32  32  32  32  32 ?,Lp(B]
+   ?,L!(B  ?,Lq(B  242 243 244 245 246 247 248 249 250 251 252 253 254 ?,Lp(B]
   "Cyrillic ALTERNATIVNYJ decoding table.")
 
 (defvar cyrillic-alternativnyj-encode-table
@@ -187,7 +187,7 @@
 	     (split (split-char ch)))
 	(if (eq (car split) 'cyrillic-iso8859-5)
 	    (aset table (logior (nth 1 split) 128) i)
-	  (if (/= ch 32)
+	  (if (< ch 128)
 	      (aset table ch i))))
       (setq i (1+ i)))
     table)
@@ -218,7 +218,10 @@
  "ALTERNATIVNYJ 8-bit encoding for Cyrillic"
  '(ccl-decode-alternativnyj . ccl-encode-alternativnyj)
  '((safe-charsets ascii cyrillic-iso8859-5)
-   (valid-codes (0 . 175) (224 . 241) 255)))
+   (valid-codes (0 . 175) (224 . 241) 255)
+   (charset-origin-alist (cyrillic-iso8859-5 "ALTERNATIVNYJ"
+					     cyrillic-encode-koi8-r-char))))
+
 
 (define-coding-system-alias 'alternativnyj 'cyrillic-alternativnyj)
 
@@ -240,12 +243,9 @@
  "Cyrillic-ALT" `((charset cyrillic-iso8859-5)
 		  (nonascii-translation
 		   . ,cyrillic-alternativnyj-nonascii-translation-table)
-		  (charset-origin-alist
-		   (cyrillic-iso8859-5 "ALTERNATIVNYJ"
-				       cyrillic-encode-koi8-r-char))
 		  (coding-system cyrillic-alternativnyj)
 		  (coding-priority cyrillic-alternativnyj)
-		  (input-method . "cyrillic-yawerty")
+		  (input-method . "cyrillic-jcuken")
 		  (features cyril-util)
 		  (unibyte-display . cyrillic-alternativnyj)
 		  (sample-text . "Russian (,L@caaZXY(B)	,L7T`PRabRcYbU(B!")

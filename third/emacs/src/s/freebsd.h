@@ -43,7 +43,9 @@
 
 #define LIBS_DEBUG
 #define LIBS_SYSTEM -lutil
+#if __FreeBSD_version < 400000
 #define LIBS_TERMCAP -ltermcap
+#endif
 
 #define SYSV_SYSTEM_DIR
 
@@ -107,7 +109,7 @@
 #define BSD_SYSTEM 199103
 #elif __FreeBSD__ == 2
 #define BSD_SYSTEM 199306
-#elif __FreeBSD__ == 3
+#elif __FreeBSD__ >= 3
 #define BSD_SYSTEM 199506
 #endif
 
@@ -132,3 +134,19 @@
    remaining in /tmp or other directories with +t bit.
    To avoid this problem, you could #undef it to use no file lock. */
 /* #undef CLASH_DETECTION */
+
+/* Circumvent a bug in FreeBSD.  In the following sequence of
+   writes/reads on a PTY, read(2) returns bogus data:
+
+   write(2)  1022 bytes
+   write(2)   954 bytes, get EAGAIN
+   read(2)   1024 bytes in process_read_output
+   read(2)     11 bytes in process_read_output
+
+   That is, read(2) returns more bytes than have ever been written
+   successfully.  The 1033 bytes read are the 1022 bytes written
+   successfully after processing (for example with CRs added if the
+   terminal is set up that way which it is here).  The same bytes will
+   be seen again in a later read(2), without the CRs.  */
+
+#define BROKEN_PTY_READ_AFTER_EAGAIN 1

@@ -29,6 +29,8 @@ Boston, MA 02111-1307, USA.  */
 #include "keyboard.h"
 #include "blockinput.h"
 #include "buffer.h"
+#include "charset.h"
+#include "coding.h"
 
 /* This may include sys/types.h, and that somehow loses
    if this is not done before the other system files.  */
@@ -41,6 +43,8 @@ Boston, MA 02111-1307, USA.  */
 #endif
 
 #include "dispextern.h"
+
+#undef HAVE_MULTILINGUAL_MENU
 
 /******************************************************************/
 /* Definitions copied from lwlib.h */
@@ -1231,6 +1235,10 @@ single_submenu (item_key, item_name, maps)
 	  char *pane_string;
 	  pane_name = XVECTOR (menu_items)->contents[i + MENU_ITEMS_PANE_NAME];
 	  prefix = XVECTOR (menu_items)->contents[i + MENU_ITEMS_PANE_PREFIX];
+#ifndef HAVE_MULTILINGUAL_MENU
+	  if (STRINGP (pane_name) && STRING_MULTIBYTE (pane_name))
+	    pane_name = ENCODE_SYSTEM (pane_name);
+#endif
 	  pane_string = (NILP (pane_name)
 			 ? "" : (char *) XSTRING (pane_name)->data);
 	  /* If there is just one top-level pane, put all its items directly
@@ -1269,7 +1277,12 @@ single_submenu (item_key, item_name, maps)
 	  descrip
 	    = XVECTOR (menu_items)->contents[i + MENU_ITEMS_ITEM_EQUIV_KEY];
 	  def = XVECTOR (menu_items)->contents[i + MENU_ITEMS_ITEM_DEFINITION];
-
+#ifndef HAVE_MULTILINGUAL_MENU
+	  if (STRING_MULTIBYTE (item_name))
+	    item_name = ENCODE_SYSTEM (item_name);
+	  if (STRINGP (descrip) && STRING_MULTIBYTE (descrip))
+	    descrip = ENCODE_SYSTEM (descrip);
+#endif
 	  wv = xmalloc_widget_value ();
 	  if (prev_wv) 
 	    prev_wv->next = wv;
@@ -1667,6 +1680,10 @@ w32_menu_show (f, x, y, for_click, keymaps, title, error)
 	  char *pane_string;
 	  pane_name = XVECTOR (menu_items)->contents[i + MENU_ITEMS_PANE_NAME];
 	  prefix = XVECTOR (menu_items)->contents[i + MENU_ITEMS_PANE_PREFIX];
+#ifndef HAVE_MULTILINGUAL_MENU
+	  if (!NILP (pane_name) && STRING_MULTIBYTE (pane_name))
+	    pane_name = ENCODE_SYSTEM (pane_name);
+#endif
 	  pane_string = (NILP (pane_name)
 			 ? "" : (char *) XSTRING (pane_name)->data);
 	  /* If there is just one top-level pane, put all its items directly
@@ -1710,6 +1727,13 @@ w32_menu_show (f, x, y, for_click, keymaps, title, error)
 	    = XVECTOR (menu_items)->contents[i + MENU_ITEMS_ITEM_EQUIV_KEY];
 	  def = XVECTOR (menu_items)->contents[i + MENU_ITEMS_ITEM_DEFINITION];
 
+#ifndef HAVE_MULTILINGUAL_MENU
+	  if (STRING_MULTIBYTE (item_name))
+	    item_name = ENCODE_SYSTEM (item_name);
+	  if (STRINGP (descrip) && STRING_MULTIBYTE (descrip))
+	    descrip = ENCODE_SYSTEM (descrip);
+#endif
+
 	  wv = xmalloc_widget_value ();
 	  if (prev_wv) 
 	    prev_wv->next = wv;
@@ -1740,6 +1764,10 @@ w32_menu_show (f, x, y, for_click, keymaps, title, error)
       wv_sep->name = "--";
       wv_sep->next = first_wv->contents;
 
+#ifndef HAVE_MULTILINGUAL_MENU
+      if (STRING_MULTIBYTE (title))
+	title = ENCODE_SYSTEM (title);
+#endif
       wv_title->name = (char *) XSTRING (title)->data;
       /* Handle title specially, so it looks better.  */
       wv_title->title = True;

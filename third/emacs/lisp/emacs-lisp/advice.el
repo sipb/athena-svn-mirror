@@ -230,7 +230,7 @@
 
 ;; @@ Terminology:
 ;; ===============
-;; - Emacs, Emacs-19: FSF's version of Emacs with major version 19
+;; - Emacs, Emacs-19: Emacs as released by the GNU Project
 ;; - Lemacs: Lucid's version of Emacs with major version 19
 ;; - v18: Any Emacs with major version 18 or built as an extension to that
 ;;        (such as Epoch)
@@ -2473,12 +2473,13 @@ will clear the cache."
 ;; hence we need this list (which is probably out of date):
 (defvar ad-special-forms
   (mapcar 'symbol-function
-	  '(and catch cond condition-case defconst defmacro
-			       defun defvar function if interactive let let*
-			       or prog1 prog2 progn quote save-excursion
-                               save-restriction save-window-excursion setq
-			       setq-default unwind-protect while
-			       with-output-to-temp-buffer)))
+	  (append '(and catch cond condition-case defconst defmacro
+			defun defvar function if interactive let let*
+			or prog1 prog2 progn quote save-current-buffer
+			save-excursion save-restriction save-window-excursion
+			setq setq-default unwind-protect while
+			with-output-to-temp-buffer)
+		  (if (fboundp 'track-mouse) '(track-mouse)))))
 
 (defmacro ad-special-form-p (definition)
   ;;"non-nil if DEFINITION is a special form."

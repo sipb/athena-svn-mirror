@@ -1,3 +1,131 @@
+2000-06-13  Gerd Moellmann  <gerd@gnu.org>
+
+	* Version 20.7 released.
+	
+2000-05-23  Andrew Innes  <andrewi@gnu.org>
+
+	* makefile.nt ($(TIT)): Set emacs_dir in the environment before
+	running emacs, to ensure load-path is correct.
+	(leim-list.el): Ditto.
+
+2000-02-26  Gerd Moellmann  <gerd@gnu.org>
+
+	* Version 20.6 released.
+	
+1999-12-07  Gerd Moellmann  <gerd@gnu.org>
+
+	* Version 20.5 released.
+	
+1999-11-22  Andrew Innes  <andrewi@gnu.org>
+
+	* makefile.nt: No need to generate subdirs.el.
+
+1999-11-21  Andrew Innes  <andrewi@gnu.org>
+
+	* makefile.nt: New file.
+
+1999-09-19  Ken'ichi Handa  <handa@gnu.org>
+
+	* quail/latin-alt.el ("turkish-latin-3-alt-postfix"): Renamed from
+	turkish-postfix.
+	("turkish-postfix"): New Turkish input method which inserts
+	Latin-5 characters.
+
+	* quail/latin-alt.el ("turkish-latin-3-alt-postfix"): Renamed from
+	turkish-alt-postfix.
+	("turkish-alt-postfix"): New Turkish input method which inserts
+	Latin-5 characters.
+
+1999-07-12  Richard Stallman  <rms@gnu.org>
+
+	* Version 20.4 released.
+
+1998-07-12  Oleg S. Tihonov  <ost@benetnash.ffke-campus.mipt.ru>
+
+	* quail/cyrillic.el (cyrillic-jcuken): Use X11 keyboard layout.
+
+1999-06-14  Ken'ichi Handa  <handa@gnu.org>
+
+	* quail/ethiopic.el ("ethiopic"): Add translation rules.
+
+1999-06-01  Jae-youn Chung  <jay@compiler.kaist.ac.kr>
+
+	* quail/hanja3.el: Newly generated from hangul.el, hangul3.el, and
+	hanja.el.
+
+1999-05-25  Ken'ichi Handa  <handa@gnu.org>
+
+	* quail/hangul3.el ("korean-hangul3"): Give MAXIMUM-SHORTEST t.
+
+1999-05-09  Tudor Hulubei  <tudor@cs.unh.edu>
+
+	* quail/latin-pre.el ("romanian-prefix"): New input method.
+	("romanian-alt-prefix"): New input method.
+
+1999-03-04  Kenichi Handa  <handa@etl.go.jp>
+
+	* quail/latin-post.el ("spanish-postfix"): Add rule U" and u".
+
+1999-01-14  Kenichi Handa  <handa@etl.go.jp>
+
+	* quail/japanese.el (quail-japanese-kanji-kkc): If the last char
+	to convert is `n', change it to Japanese Hiragana `n' before
+	conversion.
+
+1999-01-11  Kenichi Handa  <handa@etl.go.jp>
+
+	* Makefile.in (MISC): Add ${srcdir}/quail/hebrew.el.
+
+	* quail/hebrew.el: New file.
+
+1998-12-15  Kenichi Handa  <handa@etl.go.jp>
+
+	* quail/devanagari.el (quail-devanagari-compose-characters):
+	Adjusted for the change of input method handling.
+	(quail-devanagari-hindi-compose-characters): Likewise.
+
+1998-10-15  Kenichi Handa  <handa@etl.go.jp>
+
+	* Makefile.in (leim-list.el): Use `(cd foo && pwd)` instead of
+	`(cd foo; pwd)`.
+	(install): Likewise.
+
+1998-10-15  Francesco Potorti`  <F.Potorti@cnuce.cnr.it>
+
+	* quail/latin-post.el: Many doc fixes.
+	("latin-1-postfix"): Add sequence for the small superscript o.
+	* quail/latin-pre.el: Many doc fixes.
+	("latin-1-prefix"): Add sequences for the small
+	superscript underlined o and a.
+
+1998-10-13  Francesco Potorti`  <F.Potorti@cnuce.cnr.it>
+
+	* latin-alt.el ("latin-1-alt-postfix"): Add a method to enter the
+	small superscript underlined o and a.
+	("italian-alt-postfix"): Change it to something useful and
+	different from italian-postfix. 
+	* latin-post.el ("latin-1-postfix"): Add a method to enter the
+	small superscript underlined o and a.
+	("italian-postfix"): Same as above.
+	("italian-postfix"): Add methods to enter e with acute accent and
+	the >> and << symbols.
+
+1998-09-25  Kenichi Handa  <handa@etl.go.jp>
+
+	* quail/japanese.el (quail-japanese-hankaku-update-translation):
+	Adjusted for the change of input method handling.
+
+1998-09-11  Kenichi HANDA  <handa@etl.go.jp>
+
+	* quail/japanese.el (quail-japanese-katakana-update-translation):
+	Adjusted for the change of input method handling.
+
+1998-08-31  Kenichi Handa  <handa@etl.go.jp>
+
+	* quail/tibetan.el (quail-tibetan-input-wylie): Adjusted for the
+	change of input method handling.
+	(quail-tibetan-input-tibkey): Likewise.
+
 1998-08-19  Richard Stallman  <rms@psilocin.ai.mit.edu>
 
 	* Version 20.3 released.

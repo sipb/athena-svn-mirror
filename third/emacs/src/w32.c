@@ -57,6 +57,8 @@ Boston, MA 02111-1307, USA.
 #undef read
 #undef write
 
+#undef strerror
+
 #include "lisp.h"
 
 #include <pwd.h>
@@ -286,9 +288,9 @@ init_user_info ()
 
   /* Ensure HOME and SHELL are defined. */
   if (getenv ("HOME") == NULL)
-    putenv ("HOME=c:/");
+    abort ();
   if (getenv ("SHELL") == NULL)
-    putenv (os_subtype == OS_WIN95 ? "SHELL=command" : "SHELL=cmd");
+    abort ();
 
   /* Set dir and shell from environment variables. */
   strcpy (the_passwd.pw_dir, getenv ("HOME"));
@@ -503,9 +505,10 @@ w32_get_long_filename (char * name, char * buf, int size)
   len = parse_root (full, &p);
   memcpy (o, full, len);
   o += len;
+  *o = '\0';
   size -= len;
 
-  do
+  while (p != NULL && *p)
     {
       q = p;
       p = strchr (q, '\\');
@@ -528,7 +531,6 @@ w32_get_long_filename (char * name, char * buf, int size)
       else
 	return FALSE;
     }
-  while (p != NULL && *p);
 
   return TRUE;
 }
@@ -639,7 +641,7 @@ char *get_emacs_configuration (void);
 extern Lisp_Object Vsystem_configuration;
 
 void
-init_environment ()
+init_environment (char ** argv)
 {
   int len;
   static const char * const tempdirs[] = {
@@ -677,52 +679,96 @@ init_environment ()
 		     Qnil)),
        "While setting TMPDIR: ");
 
-  /* Check for environment variables and use registry if they don't exist */
+  /* Check for environment variables and use registry settings if they
+     don't exist.  Fallback on default values where applicable.  */
   {
     int i;
     LPBYTE lpval;
     DWORD dwType;
 
-    static char * env_vars[] = 
+    static struct env_entry
     {
-      "HOME",
-      "PRELOAD_WINSOCK",
-      "emacs_dir",
-      "EMACSLOADPATH",
-      "SHELL",
-      "CMDPROXY",
-      "EMACSDATA",
-      "EMACSPATH",
-      "EMACSLOCKDIR",
+      char * name;
+      char * def_value;
+    } env_vars[] = 
+    {
+      {"HOME", "C:/"},
+      {"PRELOAD_WINSOCK", NULL},
+      {"emacs_dir", "C:/emacs"},
+      {"EMACSLOADPATH", "%emacs_dir%/site-lisp;%emacs_dir%/lisp;%emacs_dir%/leim"},
+      {"SHELL", "%emacs_dir%/bin/cmdproxy.exe"},
+      {"EMACSDATA", "%emacs_dir%/etc"},
+      {"EMACSPATH", "%emacs_dir%/bin"},
+      {"EMACSLOCKDIR", "%emacs_dir%/lock"},
       /* We no longer set INFOPATH because Info-default-directory-list
-	 is then ignored.  We use a hook in winnt.el instead.  */
-      /*      "INFOPATH", */
-      "EMACSDOC",
-      "TERM",
+	 is then ignored.  */
+      /*  {"INFOPATH", "%emacs_dir%/info"},  */
+      {"EMACSDOC", "%emacs_dir%/etc"},
+      {"TERM", "cmd"}
     };
+
+#define SET_ENV_BUF_SIZE (4 * MAX_PATH)	/* to cover EMACSLOADPATH */
+
+    /* Treat emacs_dir specially: set it unconditionally based on our
+       location, if it appears that we are running from the bin subdir
+       of a standard installation.  */
+    {
+      char *p;
+      char modname[MAX_PATH];
+
+      if (!GetModuleFileName (NULL, modname, MAX_PATH))
+	abort ();
+      if ((p = strrchr (modname, '\\')) == NULL)
+	abort ();
+      *p = 0;
+
+      if ((p = strrchr (modname, '\\')) && stricmp (p, "\\bin") == 0)
+	{
+	  char buf[SET_ENV_BUF_SIZE];
+
+	  *p = 0;
+	  for (p = modname; *p; p++)
+	    if (*p == '\\') *p = '/';
+		  
+	  _snprintf (buf, sizeof(buf)-1, "emacs_dir=%s", modname);
+	  putenv (strdup (buf));
+	}
+    }
 
     for (i = 0; i < (sizeof (env_vars) / sizeof (env_vars[0])); i++) 
       {
-	if (!getenv (env_vars[i])
-	    && (lpval = w32_get_resource (env_vars[i], &dwType)) != NULL)
+	if (!getenv (env_vars[i].name))
 	  {
-	    if (dwType == REG_EXPAND_SZ)
-	      {
-		char buf1[500], buf2[500];
+	    int dont_free = 0;
 
-		ExpandEnvironmentStrings ((LPSTR) lpval, buf1, 500);
-		_snprintf (buf2, 499, "%s=%s", env_vars[i], buf1);
-		putenv (strdup (buf2));
-	      }
-	    else if (dwType == REG_SZ)
+	    if ((lpval = w32_get_resource (env_vars[i].name, &dwType)) == NULL)
 	      {
-		char buf[500];
+		lpval = env_vars[i].def_value;
+		dwType = REG_EXPAND_SZ;
+		dont_free = 1;
+	      }
+
+	    if (lpval)
+	      {
+		if (dwType == REG_EXPAND_SZ)
+		  {
+		    char buf1[SET_ENV_BUF_SIZE], buf2[SET_ENV_BUF_SIZE];
+
+		    ExpandEnvironmentStrings ((LPSTR) lpval, buf1, sizeof(buf1));
+		    _snprintf (buf2, sizeof(buf2)-1, "%s=%s", env_vars[i].name, buf1);
+		    putenv (strdup (buf2));
+		  }
+		else if (dwType == REG_SZ)
+		  {
+		    char buf[SET_ENV_BUF_SIZE];
 		  
-		_snprintf (buf, 499, "%s=%s", env_vars[i], lpval);
-		putenv (strdup (buf));
-	      }
+		    _snprintf (buf, sizeof(buf)-1, "%s=%s", env_vars[i].name, lpval);
+		    putenv (strdup (buf));
+		  }
 
-	    xfree (lpval);
+		if (!dont_free)
+		  xfree (lpval);
+	      }
 	  }
       }
   }
@@ -758,7 +804,7 @@ init_environment ()
 
   {
     char *p;
-    char modname[MAX_PATH];
+    static char modname[MAX_PATH];
 
     if (!GetModuleFileName (NULL, modname, MAX_PATH))
       abort ();
@@ -767,6 +813,10 @@ init_environment ()
     *p = 0;
 
     SetCurrentDirectory (modname);
+
+    /* Ensure argv[0] has the full path to Emacs.  */
+    *p = '\\';
+    argv[0] = modname;
   }
 
   init_user_info ();
@@ -783,6 +833,7 @@ char *
 get_emacs_configuration (void)
 {
   char *arch, *oem, *os;
+  int build_num;
 
   /* Determine the processor type.  */
   switch (get_processor_type ()) 
@@ -824,10 +875,37 @@ get_emacs_configuration (void)
   /* Let oem be "*" until we figure out how to decode the OEM field.  */
   oem = "*";
 
-  os = (GetVersion () & OS_WIN95) ? "windows95" : "nt";
+  switch (osinfo_cache.dwPlatformId) {
+  case VER_PLATFORM_WIN32_NT:
+    os = "nt";
+    build_num = osinfo_cache.dwBuildNumber;
+    break;
+  case VER_PLATFORM_WIN32_WINDOWS:
+    if (osinfo_cache.dwMinorVersion == 0) {
+      os = "windows95";
+    } else {
+      os = "windows98";
+    }
+    build_num = LOWORD (osinfo_cache.dwBuildNumber);
+    break;
+  case VER_PLATFORM_WIN32s:
+    /* Not supported, should not happen. */
+    os = "windows32s";
+    build_num = LOWORD (osinfo_cache.dwBuildNumber);
+    break;
+  default:
+    os = "unknown";
+    build_num = 0;
+    break;
+  }
 
-  sprintf (configuration_buffer, "%s-%s-%s%d.%d", arch, oem, os,
-	   get_w32_major_version (), get_w32_minor_version ());
+  if (osinfo_cache.dwPlatformId == VER_PLATFORM_WIN32_NT) {
+    sprintf (configuration_buffer, "%s-%s-%s%d.%d.%d", arch, oem, os,
+	     get_w32_major_version (), get_w32_minor_version (), build_num);
+  } else {
+    sprintf (configuration_buffer, "%s-%s-%s.%d", arch, oem, os, build_num);
+  }
+
   return configuration_buffer;
 }
 
@@ -1097,6 +1175,13 @@ map_w32_filename (const char * name, const char ** pPath)
   char * path;
   const char * save_name = name;
 
+  if (strlen (name) >= MAX_PATH)
+    {
+      /* Return a filename which will cause callers to fail.  */
+      strcpy (shortname, "?");
+      return shortname;
+    }
+
   if (is_fat_volume (name, &path)) /* truncate to 8.3 */
     {
       register int left = 8;	/* maximum number of chars in part */
@@ -1210,7 +1295,7 @@ static WIN32_FIND_DATA dir_find_data;
 /* Support shares on a network resource as subdirectories of a read-only
    root directory. */
 static HANDLE wnet_enum_handle = INVALID_HANDLE_VALUE;
-HANDLE open_unc_volume (char *);
+HANDLE open_unc_volume (const char *);
 char  *read_unc_volume (HANDLE, char *, int);
 void   close_unc_volume (HANDLE);
 
@@ -1323,7 +1408,7 @@ readdir (DIR *dirp)
 }
 
 HANDLE
-open_unc_volume (char *path)
+open_unc_volume (const char *path)
 {
   NETRESOURCE nr; 
   HANDLE henum;
@@ -1334,7 +1419,7 @@ open_unc_volume (char *path)
   nr.dwDisplayType = RESOURCEDISPLAYTYPE_SERVER; 
   nr.dwUsage = RESOURCEUSAGE_CONTAINER; 
   nr.lpLocalName = NULL; 
-  nr.lpRemoteName = map_w32_filename (path, NULL);
+  nr.lpRemoteName = (LPSTR) map_w32_filename (path, NULL);
   nr.lpComment = NULL; 
   nr.lpProvider = NULL;   
 
@@ -1380,7 +1465,7 @@ close_unc_volume (HANDLE henum)
 }
 
 DWORD
-unc_volume_file_attributes (char *path)
+unc_volume_file_attributes (const char *path)
 {
   HANDLE henum;
   DWORD attrs;
@@ -1960,19 +2045,6 @@ stat (const char * path, struct stat * buf)
 
       if (GetFileInformationByHandle (fh, &info))
 	{
-	  switch (GetFileType (fh))
-	    {
-	    case FILE_TYPE_DISK:
-	      buf->st_mode = _S_IFREG;
-	      break;
-	    case FILE_TYPE_PIPE:
-	      buf->st_mode = _S_IFIFO;
-	      break;
-	    case FILE_TYPE_CHAR:
-	    case FILE_TYPE_UNKNOWN:
-	    default:
-	      buf->st_mode = _S_IFCHR;
-	    }
 	  buf->st_nlink = info.nNumberOfLinks;
 	  /* Might as well use file index to fake inode values, but this
 	     is not guaranteed to be unique unless we keep a handle open
@@ -1980,13 +2052,27 @@ stat (const char * path, struct stat * buf)
 	     not unique).  Reputedly, there are at most 48 bits of info
 	     (on NTFS, presumably less on FAT). */
 	  fake_inode = info.nFileIndexLow ^ info.nFileIndexHigh;
-	  CloseHandle (fh);
 	}
       else
 	{
-	  errno = EACCES;
-	  return -1;
+	  buf->st_nlink = 1;
+	  fake_inode = 0;
 	}
+
+      switch (GetFileType (fh))
+	{
+	case FILE_TYPE_DISK:
+	  buf->st_mode = _S_IFREG;
+	  break;
+	case FILE_TYPE_PIPE:
+	  buf->st_mode = _S_IFIFO;
+	  break;
+	case FILE_TYPE_CHAR:
+	case FILE_TYPE_UNKNOWN:
+	default:
+	  buf->st_mode = _S_IFCHR;
+	}
+      CloseHandle (fh);
     }
   else
     {
@@ -2351,6 +2437,99 @@ static void check_errno ()
     pfn_WSASetLastError (0);
 }
 
+/* Extend strerror to handle the winsock-specific error codes.  */
+struct {
+  int errnum;
+  char * msg;
+} _wsa_errlist[] = {
+  WSAEINTR                , "Interrupted function call",
+  WSAEBADF                , "Bad file descriptor",
+  WSAEACCES               , "Permission denied",
+  WSAEFAULT               , "Bad address",
+  WSAEINVAL               , "Invalid argument",
+  WSAEMFILE               , "Too many open files",
+			
+  WSAEWOULDBLOCK          , "Resource temporarily unavailable",
+  WSAEINPROGRESS          , "Operation now in progress",
+  WSAEALREADY             , "Operation already in progress",
+  WSAENOTSOCK             , "Socket operation on non-socket",
+  WSAEDESTADDRREQ         , "Destination address required",
+  WSAEMSGSIZE             , "Message too long",
+  WSAEPROTOTYPE           , "Protocol wrong type for socket",
+  WSAENOPROTOOPT          , "Bad protocol option",
+  WSAEPROTONOSUPPORT      , "Protocol not supported",
+  WSAESOCKTNOSUPPORT      , "Socket type not supported",
+  WSAEOPNOTSUPP           , "Operation not supported",
+  WSAEPFNOSUPPORT         , "Protocol family not supported",
+  WSAEAFNOSUPPORT         , "Address family not supported by protocol family",
+  WSAEADDRINUSE           , "Address already in use",
+  WSAEADDRNOTAVAIL        , "Cannot assign requested address",
+  WSAENETDOWN             , "Network is down",
+  WSAENETUNREACH          , "Network is unreachable",
+  WSAENETRESET            , "Network dropped connection on reset",
+  WSAECONNABORTED         , "Software caused connection abort",
+  WSAECONNRESET           , "Connection reset by peer",
+  WSAENOBUFS              , "No buffer space available",
+  WSAEISCONN              , "Socket is already connected",
+  WSAENOTCONN             , "Socket is not connected",
+  WSAESHUTDOWN            , "Cannot send after socket shutdown",
+  WSAETOOMANYREFS         , "Too many references",	    /* not sure */
+  WSAETIMEDOUT            , "Connection timed out",
+  WSAECONNREFUSED         , "Connection refused",
+  WSAELOOP                , "Network loop",		    /* not sure */
+  WSAENAMETOOLONG         , "Name is too long",
+  WSAEHOSTDOWN            , "Host is down",
+  WSAEHOSTUNREACH         , "No route to host",
+  WSAENOTEMPTY            , "Buffer not empty",		    /* not sure */
+  WSAEPROCLIM             , "Too many processes",
+  WSAEUSERS               , "Too many users",		    /* not sure */
+  WSAEDQUOT               , "Double quote in host name",    /* really not sure */
+  WSAESTALE               , "Data is stale",		    /* not sure */
+  WSAEREMOTE              , "Remote error",		    /* not sure */
+			
+  WSASYSNOTREADY          , "Network subsystem is unavailable",
+  WSAVERNOTSUPPORTED      , "WINSOCK.DLL version out of range",
+  WSANOTINITIALISED       , "Winsock not initialized successfully",
+  WSAEDISCON              , "Graceful shutdown in progress",
+#ifdef WSAENOMORE
+  WSAENOMORE              , "No more operations allowed",   /* not sure */
+  WSAECANCELLED           , "Operation cancelled",	    /* not sure */
+  WSAEINVALIDPROCTABLE    , "Invalid procedure table from service provider",
+  WSAEINVALIDPROVIDER     , "Invalid service provider version number",
+  WSAEPROVIDERFAILEDINIT  , "Unable to initialize a service provider",
+  WSASYSCALLFAILURE       , "System call failured",
+  WSASERVICE_NOT_FOUND    , "Service not found",	    /* not sure */
+  WSATYPE_NOT_FOUND       , "Class type not found",
+  WSA_E_NO_MORE           , "No more resources available",  /* really not sure */
+  WSA_E_CANCELLED         , "Operation already cancelled",  /* really not sure */
+  WSAEREFUSED             , "Operation refused",	    /* not sure */
+#endif
+			
+  WSAHOST_NOT_FOUND       , "Host not found",
+  WSATRY_AGAIN            , "Authoritative host not found during name lookup",
+  WSANO_RECOVERY          , "Non-recoverable error during name lookup",
+  WSANO_DATA              , "Valid name, no data record of requested type",
+
+  -1, NULL
+};
+
+char *
+sys_strerror(int error_no)
+{
+  int i;
+  static char unknown_msg[40];
+
+  if (error_no >= 0 && error_no < _sys_nerr)
+    return _sys_errlist[error_no];
+
+  for (i = 0; _wsa_errlist[i].errnum >= 0; i++)
+    if (_wsa_errlist[i].errnum == error_no)
+      return _wsa_errlist[i].msg;
+
+  sprintf(unknown_msg, "Unidentified error: %d", error_no);
+  return unknown_msg;
+}
+
 /* [andrewi 3-May-96] I've had conflicting results using both methods,
    but I believe the method of keeping the socket handle separate (and
    insuring it is not inheritable) is the correct one. */
@@ -2400,35 +2579,51 @@ sys_socket(int af, int type, int protocol)
 	  _set_osfhnd (fd, s);
 	  /* setmode (fd, _O_BINARY); */
 #else
-	  /* Make a non-inheritable copy of the socket handle. */
+	  /* Make a non-inheritable copy of the socket handle.  Note
+             that it is possible that sockets aren't actually kernel
+             handles, which appears to be the case on Windows 9x when
+             the MS Proxy winsock client is installed.  */
 	  {
-	    HANDLE parent;
-	    HANDLE new_s = INVALID_HANDLE_VALUE;
-
-	    parent = GetCurrentProcess ();
-
 	    /* Apparently there is a bug in NT 3.51 with some service
 	       packs, which prevents using DuplicateHandle to make a
 	       socket handle non-inheritable (causes WSACleanup to
 	       hang).  The work-around is to use SetHandleInformation
 	       instead if it is available and implemented. */
-	    if (!pfn_SetHandleInformation
-		|| !pfn_SetHandleInformation ((HANDLE) s,
-					      HANDLE_FLAG_INHERIT,
-					      0))
+	    if (pfn_SetHandleInformation)
 	      {
-		DuplicateHandle (parent,
-				 (HANDLE) s,
-				 parent,
-				 &new_s,
-				 0,
-				 FALSE,
-				 DUPLICATE_SAME_ACCESS);
-		pfn_closesocket (s);
-		s = (SOCKET) new_s;
+		pfn_SetHandleInformation ((HANDLE) s, HANDLE_FLAG_INHERIT, 0);
 	      }
-	    fd_info[fd].hnd = (HANDLE) s;
+	    else
+	      {
+		HANDLE parent = GetCurrentProcess ();
+		HANDLE new_s = INVALID_HANDLE_VALUE;
+
+		if (DuplicateHandle (parent,
+				     (HANDLE) s,
+				     parent,
+				     &new_s,
+				     0,
+				     FALSE,
+				     DUPLICATE_SAME_ACCESS))
+		  {
+		    /* It is possible that DuplicateHandle succeeds even
+                       though the socket wasn't really a kernel handle,
+                       because a real handle has the same value.  So
+                       test whether the new handle really is a socket.  */
+		    long nonblocking = 0;
+		    if (pfn_ioctlsocket ((SOCKET) new_s, FIONBIO, &nonblocking) == 0)
+		      {
+			pfn_closesocket (s);
+			s = (SOCKET) new_s;
+		      }
+		    else
+		      {
+			CloseHandle (new_s);
+		      }
+		  } 
+	      }
 	  }
+	  fd_info[fd].hnd = (HANDLE) s;
 #endif
 
 	  /* set our own internal flags */
@@ -3024,40 +3219,49 @@ check_windows_init_file ()
      it cannot find the Windows installation file.  If this file does
      not exist in the expected place, tell the user.  */
 
-  if (!noninteractive && !inhibit_window_system) {
-    extern Lisp_Object Vwindow_system, Vload_path;
-    Lisp_Object init_file;
-    int fd;
+  if (!noninteractive && !inhibit_window_system) 
+    {
+      extern Lisp_Object Vwindow_system, Vload_path, Qfile_exists_p;
+      Lisp_Object objs[2];
+      Lisp_Object full_load_path;
+      Lisp_Object init_file;
+      int fd;
 
-    init_file = build_string ("term/w32-win");
-    fd = openp (Vload_path, init_file, ".el:.elc", NULL, 0);
-    if (fd < 0) {
-      Lisp_Object load_path_print = Fprin1_to_string (Vload_path, Qnil);
-      char *init_file_name = XSTRING (init_file)->data;
-      char *load_path = XSTRING (load_path_print)->data;
-      char *buffer = alloca (1024);
+      objs[0] = Vload_path;
+      objs[1] = decode_env_path (0, (getenv ("EMACSLOADPATH")));
+      full_load_path = Fappend (2, objs);
+      init_file = build_string ("term/w32-win");
+      fd = openp (full_load_path, init_file, ".el:.elc", NULL, 0);
+      if (fd < 0) 
+	{
+	  Lisp_Object load_path_print = Fprin1_to_string (full_load_path, Qnil);
+	  char *init_file_name = XSTRING (init_file)->data;
+	  char *load_path = XSTRING (load_path_print)->data;
+	  char *buffer = alloca (1024);
 
-      sprintf (buffer, 
-	       "The Emacs Windows initialization file \"%s.el\" "
-	       "could not be found in your Emacs installation.  "
-	       "Emacs checked the following directories for this file:\n"
-	       "\n%s\n\n"
-	       "When Emacs cannot find this file, it usually means that it "
-	       "was not installed properly, or its distribution file was "
-	       "not unpacked properly.\nSee the README.W32 file in the "
-	       "top-level Emacs directory for more information.",
-	       init_file_name, load_path);
-      MessageBox (NULL,
-		  buffer,
-		  "Emacs Abort Dialog",
-		  MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
-      close (fd);
-
+	  sprintf (buffer, 
+		   "The Emacs Windows initialization file \"%s.el\" "
+		   "could not be found in your Emacs installation.  "
+		   "Emacs checked the following directories for this file:\n"
+		   "\n%s\n\n"
+		   "When Emacs cannot find this file, it usually means that it "
+		   "was not installed properly, or its distribution file was "
+		   "not unpacked properly.\nSee the README.W32 file in the "
+		   "top-level Emacs directory for more information.",
+		   init_file_name, load_path);
+	  MessageBox (NULL,
+		      buffer,
+		      "Emacs Abort Dialog",
+		      MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
       /* Use the low-level Emacs abort. */
 #undef abort
-      abort ();
+	  abort ();
+	}
+      else
+	{
+	  close (fd);
+	}
     }
-  }
 }
 
 void
@@ -3067,12 +3271,6 @@ term_ntproc ()
   /* shutdown the socket interface if necessary */
   term_winsock ();
 #endif
-
-  /* Check whether we are shutting down because we cannot find the
-     Windows initialization file.  Do this during shutdown so that
-     Emacs is initialized as possible, and so that it is out of the 
-     critical startup path.  */
-  check_windows_init_file ();
 }
 
 void
@@ -3172,6 +3370,9 @@ init_ntproc ()
       (*drive)++;
     }
   }
+  
+  /* Check to see if Emacs has been installed correctly.  */
+  check_windows_init_file ();
 }
 
 /* end of nt.c */
