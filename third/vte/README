@@ -1,0 +1,65 @@
+* What is VTE?
+- You could say that VTE is something of a research project of mine, based on
+  the simple question:  "if programs can use a termcap file (through either
+  libtermcap or curses or ncurses) to determine how to drive a terminal, why
+  can't a terminal emulator use a termcap file to determine how to behave?"
+
+* What does VTE include?
+- VTE includes a library (libvte) which implements such a terminal emulator
+  widget for GTK+ 2.0, and a sample application (vte) which wraps that widget
+  in a GTK window.  Because I'm more concerned with whether or not it works,
+  all settings are hard-coded to whatever I needed to test the last time I
+  touched it.  If you actually want to use the widget to get work done, you
+  should probably be using gnome-terminal.
+
+* How does it work?
+- The VTE library inserts terminal capability strings into a tree of tables,
+  and then uses it to determine if data received from a pseudo-terminal is a
+  control sequence or just random data.  The sample program "interpret"
+  illustrates more or less what the widget sees after it filters incoming data.
+
+* What's missing?
+- Accessibility doesn't work right yet.
+- Chinese and Korean text isn't displayed correctly because we pass it through
+  iconv() before performing substitutions, and they both use GR characters.
+  Japanese works because it only uses GL characters, which iconv() essentially
+  casts to gunichars, where we perform substitutions.  Probably we need to break
+  the text into narrow and wide chunks by performing substitution first (to find
+  and break out the wide chunks) and then iconv the narrow sets (what's left)
+  one chunk at a time.
+- Mouse hilite tracking isn't implemented yet.
+- Most control sequences are recognized, but many aren't implemented.  There
+  are enough to run ls, vim, less, emacs and mutt, but more need to be
+  implemented (ff, i1, i3, is, iP, LF, LO, MC, mh, ML, mm, mo, nw, pf,
+  pk, pl, pf, po, pO, ps, px, r1, r2, r3, RA, RF, rp, rs, RX, SA, SX, wi,
+  several more from the XTerm set).
+- I'm not sure the widget implementation itself is correct.  There are many
+  changes in going from GTK+ 1.2 to 2.0, and examples of the proper way to do
+  things is currently scarce, so some of it's guesswork.
+- An actual property interface needs to be retrofitted over the various options
+  which are only presented as get/set accessors.
+
+* What's weird?
+- Relative cursor motion is weird.  When the character to the right of the
+  cursor is a 3-byte UTF-8 sequence for a character which occupies two
+  columns on the screen, three things may happen when the application sends
+  the "cursor left" control sequence:
+  * the cursor moves two columns (one character) to the left
+    This eliminates the possibility of moving the cursor into the middle of
+    a multi-column character.
+  * the cursor moves one column (one half-character) to the left
+    This makes determining where the cursor is easier, but requires the
+    application to emit a control sequence more than once for multi-column
+    characters.
+  * the cursor moves one "byte" to the left
+    This happens to work for a few locales, and is otherwise just broken.
+  Currently VTE follows the second convention.  More on this topic:
+  http://czyborra.com/unicode/terminals.html
+  http://mail.nl.linux.org/linux-utf8/1999-10/msg00014.html
+  http://www.debian.org/doc/manuals/intro-i18n/ch-output.en.html
+- Depending on your locale, the current encoding, and possibly the strengh
+  of cosmic rays, the display width of certain Unicode characters changes.
+  For the most part this works correctly now, but if you find that it
+  doesn't, please file a bug report including a screenshot, the typescript
+  file produced by the incorrectly displayed program run under "script", and
+  the contents of your LANG environment variable.
