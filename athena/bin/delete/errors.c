@@ -11,10 +11,9 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/errors.c,v 1.2 1989-11-06 21:27:20 jik Exp $";
+     static char rcsid_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/errors.c,v 1.3 1990-11-12 02:28:28 jik Exp $";
 #endif
 
-#include <varargs.h>
 #include <com_err.h>
 #include <stdio.h>
 #include "delete_errs.h"
