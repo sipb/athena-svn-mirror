@@ -18,7 +18,7 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olcd.h,v 1.48 1999-01-22 23:13:27 ghudson Exp $
+ *	$Id: olcd.h,v 1.49 1999-03-06 16:48:27 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -31,23 +31,12 @@
 #include <common.h>
 #include <server_defines.h>
 #include <server_structs.h>
-#ifdef DBMALLOC
-#include "/afs/athena.mit.edu/contrib/watchmaker/src/include/malloc.h"
-#endif
-/*
- * this ugliness is due to a (supposedly) standard-C compiler that
- * doesn't provide stdarg.h.
- */
 
-#if defined(__STDC__) && !defined(__HIGHC__) && !defined(SABER)
-/* Stupid High-C claims to be ANSI but doesn't have the include files.. */
-/* Ditto for saber */
+#ifdef STDC_HEADERS
 #include <stdarg.h>
-#define HAS_STDARG
 #endif
 
-
-#define VERSION_INFO	"3.1"
+#define VERSION_INFO	"3.2"
 
 /* useful macros */
 
@@ -101,10 +90,21 @@ int acl_add P((char *acl , char *principal ));
 int acl_delete P((char *acl , char *principal ));
 
 /* backup.c */
+void ensure_consistent_state P((void ));
 void reconnect_knuckles P((void ));
-void backup_data P((void ));
-void load_data P((void ));
-void dump_data P((char *file ));
+char *fget_line P((char **buf, size_t *size, FILE *fp));
+ERRCODE expect_long P((long *val, char *lead,
+		       char **buf, size_t *size, FILE *fp));
+ERRCODE expect_str_fixwid P((char *dst, size_t dstlen, char *lead,
+			     char **buf, size_t *size, FILE *fp));
+void backup_data P((void));
+void load_data P((void));
+/* backup-bin.c */
+void binary_backup_data P((void));
+void binary_load_data P((void));
+/* backup-dump.c */
+ERRCODE dump_data P((char *file));
+ERRCODE undump_data P((char *file));
 
 /* data_utils.c */
 KNUCKLE *create_user P((PERSON *person ));
@@ -232,13 +232,14 @@ void write_ask_stats P((char *username, char *topic, char *machine, char
 			*ask_by ));
 void write_res_stats P((QUESTION *q));
 
-
 /* syslog.c */
-void log_error P((char *message ));
-void log_zephyr_error P((char *message ));
-void log_status P((char *message ));
-void log_admin P((char *message ));
-void log_debug P((char *message ));
+void init_logs P((void));
+void log_error P((const char *fmt, ...));
+void log_zephyr_error P((const char *fmt, ...));
+void log_status P((const char *fmt, ...));
+void log_admin P((const char *fmt, ...));
+void log_debug P((const char *fmt, ...));
+void log_error_string P((const char *msg));
 
 /* utils.c */
 void get_list_info P((KNUCKLE *k , LIST *data ));
@@ -248,11 +249,9 @@ ERRCODE olc_version P((int fd , REQUEST *request ));
 
 
 /* other libraries */
-/* Kerberos */
-
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
 #include <zephyr/zephyr.h>
-#endif /* Zephyr */
+#endif /* HAVE_ZEPHYR */
 
 #undef P
 

@@ -22,19 +22,19 @@
 /* This file is part of the CREF finder.  It contains miscellaneous useful
  * utilities.
  *
- *	$Id: cref_utils.c,v 2.12 1999-01-22 23:11:44 ghudson Exp $
+ *	$Id: cref_utils.c,v 2.13 1999-03-06 16:47:23 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_utils_c = "$Id: cref_utils.c,v 2.12 1999-01-22 23:11:44 ghudson Exp $";
+static char *rcsid_cref_utils_c = "$Id: cref_utils.c,v 2.13 1999-03-06 16:47:23 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <stdio.h>			/* Standard I/O definitions. */
-#include <string.h>
 #include <curses.h>			/* Curses package defs. */
 #include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
@@ -42,7 +42,7 @@ static char *rcsid_cref_utils_c = "$Id: cref_utils.c,v 2.12 1999-01-22 23:11:44 
 #include <ctype.h>			/* Character type macros. */
 #include <sys/param.h>			/* System parameters file. */
 
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
 #include <termio.h>
 #else
 #include <sgtty.h>
@@ -115,11 +115,7 @@ call_program(program, argument)
   int pid;				/* Process id for forking. */
   char error[ERRSIZE];			/* Error message. */
   
-#ifdef NO_VFORK
   pid = fork();
-#else
-  pid = vfork();
-#endif
   if (pid == -1)
     {
       sprintf(error, "Can't fork to execute %s\n", program);
@@ -152,7 +148,7 @@ call_program(program, argument)
 get_input(buffer)
      char *buffer;
 {
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
   struct termio tty;			/* Terminal description structure. */
 #else
   struct sgttyb tty;			/* Terminal description structure. */
@@ -163,7 +159,7 @@ get_input(buffer)
   int length;				/* Length of input string.  */
   char *ptr;				/* Current character in buffer. */
   
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
   if ( ioctl(fileno(stdin), TCGETA, &tty) < 0 )
 #else
   if ( ioctl(fileno(stdin), TIOCGETP, &tty) < 0 )
@@ -183,7 +179,7 @@ get_input(buffer)
   refresh();
   while ( (c = getch()) != '\n')
     {
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
       if (c == tty.c_cc[VERASE])
 #else
       if (c == tty.sg_erase)
@@ -206,7 +202,7 @@ get_input(buffer)
 	      *ptr = (char) NULL;
 	    }
 	}
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
       else if (c == tty.c_cc[VKILL])
 #else
       else if (c == tty.sg_kill)

@@ -26,16 +26,17 @@
  * contains several local state variables that are only accessible by
  * the functions in this file.
  *
- *	$Id: update.c,v 1.16 1999-01-22 23:11:47 ghudson Exp $
+ *	$Id: update.c,v 1.17 1999-03-06 16:47:25 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_update_c = "$Id: update.c,v 1.16 1999-01-22 23:11:47 ghudson Exp $";
+static char *rcsid_update_c = "$Id: update.c,v 1.17 1999-03-06 16:47:25 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */

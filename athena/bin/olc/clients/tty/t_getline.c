@@ -1,6 +1,6 @@
 #ifndef lint
 static char     rcsid[] =
-"$Id: t_getline.c,v 1.6 1997-04-30 18:06:50 ghudson Exp $";
+"$Id: t_getline.c,v 1.7 1999-03-06 16:48:09 ghudson Exp $";
 #endif
 
 /* 
@@ -92,10 +92,12 @@ static char *copyright = "Copyright (C) 1991, Chris Thewalt";
  * implied warranty.
  */
 
-#if defined(__STDC__) && !defined(__HIGHC__)
+#include "config.h"
+
+#ifdef STDC_HEADERS
 #include <stdlib.h>
-#endif
 #include <string.h>
+#endif
 #include <ctype.h>
 #include <errno.h>
 #include <signal.h>
@@ -155,13 +157,13 @@ extern void     _exit();
 
 extern int      read();
 #include <sys/ioctl.h>
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
 #include <termio.h>
 struct termio   tty, old_tty;
-#else
+#else /* don't HAVE_TERMIO */
 #include <sgtty.h>
 struct sgttyb   tty, old_tty;
-#endif
+#endif /* don't HAVE_TERMIO */
 
 void
 gl_char_init()
@@ -173,31 +175,31 @@ gl_char_init()
   signal(SIGCONT,gl_char_init);
 #endif
 
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
     ioctl(0, TCGETA, &old_tty);
     tty = old_tty;
     tty.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
     tty.c_cc[VMIN] = 1;
     tty.c_cc[VTIME] = 0;
     ioctl(0, TCSETA, &tty);
-#else
+#else /* don't HAVE_TERMIO */
     ioctl(0, TIOCGETP, &old_tty);
     tty = old_tty;
     tty.sg_flags |= CBREAK;
     tty.sg_flags &= ~ECHO;
     ioctl(0, TIOCSETN, &tty);
-#endif 
+#endif /* don't HAVE_TERMIO */
 }
 
 void
 gl_char_cleanup()
 /* undo effects of gl_char_init, as necessary */
 {
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
     ioctl(0, TCSETA, &old_tty);
-#else
+#else /* don't HAVE_TERMIO */
     ioctl(0, TIOCSETN, &old_tty);
-#endif
+#endif /* don't HAVE_TERMIO */
 
 #if defined(ultrix)
     signal(SIGCONT,SIG_DFL);

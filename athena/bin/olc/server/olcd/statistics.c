@@ -9,21 +9,22 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: statistics.c,v 1.14 1999-01-22 23:14:33 ghudson Exp $
+ *	$Id: statistics.c,v 1.15 1999-03-06 16:49:00 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: statistics.c,v 1.14 1999-01-22 23:14:33 ghudson Exp $";
+static char rcsid[] ="$Id: statistics.c,v 1.15 1999-03-06 16:49:00 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
-
+#include <olcd.h>
 #include <fcntl.h>
 #include <sys/time.h>
-#include <olcd.h>
+
 void
 write_ask_stats(username,topic,machine,ask_by)
      char *username;
@@ -36,10 +37,12 @@ write_ask_stats(username,topic,machine,ask_by)
   char ask_time[26];
   time_t now;
 
-  if ((fd = open(ASK_STATS_FILE,O_APPEND|O_WRONLY,0600)) < 0) {
-    if (errno != ENOENT) {
-      sprintf(buf,"Error opening ask stats file %s: %%m", ASK_STATS_FILE);
-      log_error(buf);
+  fd = open(ASK_STATS_FILE, O_APPEND|O_WRONLY, 0600);
+  if (fd < 0) {
+    if (errno == ENOENT) {
+      log_admin("Not logging ask stats: %s is missing.", ASK_STATS_FILE);
+    } else {
+      log_error("Error opening ask stats file %s: %m", ASK_STATS_FILE);
     }
     return;
   }
@@ -62,10 +65,12 @@ write_res_stats(q)
   char ask_time[26],res_time[26];
   time_t now;
 
-  if ((fd = open(RES_STATS_FILE,O_APPEND|O_WRONLY,0600)) < 0) {
-    if (errno != ENOENT) {
-      sprintf(buf,"Error opening res stats file %s: %%m", RES_STATS_FILE);
-      log_error(buf);
+  fd = open(RES_STATS_FILE, O_APPEND|O_WRONLY, 0600);
+  if (fd < 0) {
+    if (errno == ENOENT) {
+      log_admin("Not logging res stats: %s is missing.", RES_STATS_FILE);
+    } else {
+      log_error("Error opening res stats file %s: %m", RES_STATS_FILE);
     }
     return;
   }

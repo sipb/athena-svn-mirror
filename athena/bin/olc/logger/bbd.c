@@ -1,7 +1,7 @@
 /**********************************************************************
  * usage tracking daemon
  *
- * $Id: bbd.c,v 1.16 1999-01-22 23:14:03 ghudson Exp $
+ * $Id: bbd.c,v 1.17 1999-03-06 16:48:42 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -10,20 +10,21 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Id: bbd.c,v 1.16 1999-01-22 23:14:03 ghudson Exp $";
+static char rcsid_[] = "$Id: bbd.c,v 1.17 1999-03-06 16:48:42 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <stdio.h>
 #include <signal.h>
-#include <syslog.h>
 #include <sys/types.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <sys/file.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <termios.h>
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -35,21 +36,19 @@ static char rcsid_[] = "$Id: bbd.c,v 1.16 1999-01-22 23:14:03 ghudson Exp $";
 #if defined(__STDC__)
 #include <stdlib.h>
 #endif
-#ifdef POSIX
-#include <termios.h>
-#endif
+
+#ifdef   HAVE_SYSLOG_H
+#include   <syslog.h>
+#ifndef    LOG_CONS
+#define      LOG_CONS 0  /* if LOG_CONS isn't defined, just ignore it */
+#endif     /* LOG_CONS */
+#endif /* HAVE_SYSLOG_H */
 
 #define SERVICE_NAME "ols"
 
 char *lf;
 int log_fd;
 int tick=0;
-
-#ifdef NEEDS_ERRNO_DEFS
-extern int      errno;
-extern char     *sys_errlist[];
-extern int      sys_nerr;
-#endif
 
 void
 handle_startup(s,msg,len,from,logfile)
@@ -71,7 +70,9 @@ handle_startup(s,msg,len,from,logfile)
     fd = open(cfile,O_RDONLY,0644);
     if (fd < 0) {
       if (errno != ENOENT) {
+#ifdef HAVE_SYSLOG
 	syslog(LOG_ERR,"Could not open counter file %s: %m", cfile);
+#endif
 	exit(1);
       }
       else
@@ -91,15 +92,19 @@ handle_startup(s,msg,len,from,logfile)
   sprintf(buf,"%d\n",counter);
   fd = open(cfile,O_WRONLY|O_CREAT,0644);
   if (fd < 0) {
+#ifdef HAVE_SYSLOG
     syslog(LOG_ERR,"Could not open counter file %s for writing: %m", cfile);
+#endif
     exit(1);
   }
   write(fd,buf,strlen(buf));
   close(fd);
 
   if (sendto(s, buf, strlen(buf), 0, &from, sizeof(from)) <0) {
+#ifdef HAVE_SYSLOG
     syslog(LOG_ERR,"Error sending datagram to %s/%d: %m",
 	   inet_ntoa(from.sin_addr), ntohs(from.sin_port));
+#endif
     close(fd);
     exit(1);
   }
@@ -112,61 +117,41 @@ handle_startup(s,msg,len,from,logfile)
   write(log_fd,buf,strlen(buf));
 }
 
-#ifdef VOID_SIGRET
-void
-#else
-int
-#endif
-do_tick(sig)
-     int sig;
+RETSIGTYPE
+do_tick(int sig)
 {
   long now;
-
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
   struct sigaction action;
 
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
   action.sa_handler = do_tick;
   sigaction(SIGALRM, &action, NULL);
-#else /* not POSIX */
+#else /* don't HAVE_SIGACTION */
   signal(SIGALRM,do_tick);
-#endif /* not POSIX */
+#endif /* don't HAVE_SIGACTION */
 
   alarm(60 * tick);
   now = time(0);
   write(log_fd,"TICK ",5);
   write(log_fd,ctime(&now),25);
-#ifdef VOID_SIGRET
   return;
-#else
-  return(0);
-#endif
 }
 
-#ifdef VOID_SIGRET
-void
-#else
-int
-#endif
-handle_hup(sig)
-     int sig;
+RETSIGTYPE
+handle_hup(int sig)
 {
-#ifndef POSIX
-  signal(SIGHUP,handle_hup);    /* Reset the handler if needed (non-POSIX) */
-#endif
   close(log_fd);
   log_fd = open(lf,O_WRONLY|O_CREAT|O_APPEND,0600);
   if (log_fd < 0) {
+#ifdef HAVE_SYSLOG
     syslog(LOG_ERR,"opening %s: %m");
+#endif
     exit(1);
   }
   do_tick(0);
-#ifdef VOID_SIGRET
   return;
-#else
-  return(0);
-#endif
 }
 
 main(argc, argv)
@@ -181,12 +166,14 @@ main(argc, argv)
   int onoff;
   int len,rlen,i;
   int port=0;
-#ifdef POSIX
-  sigset_t oldmask,alarmmask;
+#ifdef HAVE_SIGACTION
   struct sigaction action;
-#else
-  int oldmask,alarmmask;
-#endif
+#endif /* HAVE_SIGACTION */
+#ifdef HAVE_SIGPROCMASK
+  sigset_t oldmask, alarmmask;
+#else /* don't HAVE_SIGPROCMASK */
+  int oldmask, alarmmask;
+#endif /* don't HAVE_SIGPROCMASK */
   char *pidfile = "/usr/local/bin/bbd.pid";
 
   for (i=1;i<argc;i++) {
@@ -281,22 +268,24 @@ main(argc, argv)
     }
   }
 
+#ifdef HAVE_SYSLOG
+  openlog("bbd", LOG_CONS | LOG_PID, LOG_LOCAL2);
+#endif
+
   log_fd = open(lf,O_WRONLY|O_CREAT|O_APPEND,0600);
   if (log_fd < 0) {
+#ifdef HAVE_SYSLOG
     syslog(LOG_ERR,"opening %s: %m",lf);
+#endif
     exit(1);
   }
-
-#ifdef ultrix
-  openlog("bbd",LOG_PID);
-#else
-  openlog("bbd",LOG_CONS|LOG_PID,LOG_LOCAL2);
-#endif
 
   unlink(pidfile);
   fd = open(pidfile,O_WRONLY|O_CREAT|O_TRUNC,0400);
   if (fd < 0) {
+#ifdef HAVE_SYSLOG
     syslog(LOG_ERR,"opening %s: %m",pidfile);
+#endif
     exit(1);
   }
 
@@ -307,7 +296,9 @@ main(argc, argv)
   /* Create socket */
   fd = socket(AF_INET, SOCK_DGRAM, 0);
   if (fd < 0) {
+#ifdef HAVE_SYSLOG
     syslog(LOG_ERR,"opening datagram socket: %m");
+#endif
     exit(1);
   }
 
@@ -316,7 +307,9 @@ main(argc, argv)
   if (port == 0) {
     service = getservbyname(SERVICE_NAME,"tcp");
     if (service == NULL) {
+#ifdef HAVE_SYSLOG
       syslog(LOG_ERR,"error getting service %s/udp: %m",SERVICE_NAME);
+#endif
       exit(1);
     }
     port = service->s_port;
@@ -330,47 +323,53 @@ main(argc, argv)
 
   onoff = 1;
   if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &onoff, sizeof(int))) {
+#ifdef HAVE_SYSLOG
     syslog(LOG_ERR,"setsockopt: %m");
+#endif
     exit(1);
   }
 
   if (bind(fd, (struct sockaddr *) &name, sizeof(struct sockaddr_in)) < 0) {
+#ifdef HAVE_SYSLOG
     syslog(LOG_ERR,"Can't bind socket: %m");
+#endif
     exit(1);
   }
   
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
   action.sa_handler = handle_hup;
   sigaction(SIGHUP, &action, NULL);
-#else /* not POSIX */
+#else /* don't HAVE_SIGACTION */
   signal(SIGHUP,handle_hup);
-#endif /* not POSIX */
+#endif /* don't HAVE_SIGACTION */
 
   if (tick != 0) {
     do_tick(0);
   }
 
-#ifdef POSIX
+#ifdef HAVE_SIGPROCMASK
   sigemptyset(&alarmmask);
   sigaddset(&alarmmask, SIGALRM);
-#else
+#else /* don't HAVE_SIGPROCMASK */
   alarmmask = sigmask(SIGALRM);
-#endif
+#endif /* don't HAVE_SIGPROCMASK */
   while (1) {
     len = sizeof(struct sockaddr_in);
     rlen = recvfrom(fd,buf,1024,0,&from,&len);
     if (rlen < 0) {
+#ifdef HAVE_SYSLOG
       if (errno != EINTR)
 	syslog(LOG_ERR,"recvfrom: %m");
+#endif
       continue;
     }
-#ifdef POSIX
+#ifdef HAVE_SIGPROCMASK
     sigprocmask(SIG_BLOCK, &alarmmask, &oldmask);
-#else
+#else /* don't HAVE_SIGPROCMASK */
     oldmask = sigblock(alarmmask);
-#endif
+#endif /* don't HAVE_SIGPROCMASK */
     if (buf[0] == 'S')
       handle_startup(fd,&buf[1],(rlen-1),from,lf);
     else {
@@ -378,11 +377,11 @@ main(argc, argv)
       write(log_fd,&buf[1],(rlen-1));
       write(log_fd,"\n",1);
     }
-#ifdef POSIX
+#ifdef HAVE_SIGPROCMASK
     sigprocmask(SIG_BLOCK, &oldmask, NULL);
-#else
-    (void) sigblock(oldmask);
-#endif
+#else /* don't HAVE_SIGPROCMASK */
+    sigblock(oldmask);
+#endif /* don't HAVE_SIGPROCMASK */
   }
 }
 

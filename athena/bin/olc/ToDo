@@ -1,51 +1,99 @@
-This is a list of the OLC-related things I've been working on recently, plus
-some ideas for the future.  The general format is a overview of each of the
-ideas (the ones finished have a "*" next to them), followed by a list of
-some of the issues that need to be decided.  I'm sure there are more idea of
-things which need to be developed, as well as more issues to be decided;
-this is just my first pass at it.
+This is a general list of things that may want to be done to the OLC tree.
+Things marked with `-' were inherited from Chris Vanharen's version. =)
 
 Server:
-    - Parameterize clients so that they can be easily adapted for OLTA, OLRL,
-     and so on (in the past, they had to be re-compiled for each different
-     application).  Currently, they read their configuration (what to call the
-     "consultants", "users", what to put up as a banner) out of an include
-     file at compile time.   This should be done by asking the daemon for
-     a set of strings to use instead
+  - The number/names of queues and the rules for how questions get
+    automatically moved between them should be parameterized in a
+    file, instead of being hardcoded into the binary.
 
-?   - Statistics generated as the questions are asked, instead of by
-?   groveling over the discuss logs at a later date.  By having the daemon
-?   keep these logs, they are up to date minute-by-minute, and require no
-?   human effort to collect (vs. the fair amount of effort that went into
-?   extracting them from the logs the last time I did it).  There is
-?   rudimentary support for this in the daemon already.
-
-    - The number/names of queues and the rules for how questions get
-    automatically moved between them should be parameterized in a file, instead
-    of being hardcoded into the binary.
-
-    - A better load_data() needs to be written for olcd that reads the
-    information from the queue list file and the individual info files instead
-    of the backup.dat file; this way, the expensive calls to backup_data can
-    be avoided.  At the same time, a more comprehensive check of the data
-    integrity and the check of the logs that are actually present can be done.
-
-    - Additional (non-user visible) optimizations can be made in the main
+  - Additional (non-user visible) optimizations can be made in the main
     daemon:
     	- hash table instead of linked-list for "knuckles" (user records)
 	- tuning of memory allocation
 
+    olcd: propagate Kerberos instance names from the authenticator, so
+    ACL checking can differentiate instances of the same principal.
+
+    rpd: make standard rpd clients actually use olcd, so we can
+    eventually scrap it.  [if people are uneasy about this, we should
+    look into how much extra load this would generate, but I
+    personally don't think this is an issue.]
+
+    switch from using TIOCNOTTY to setsid() to dissociate from terminal.
+    (see notes on terminal handling, below.)
 
 Clients:
-     - Simplify adding people to acl's - most of them are redundant, and
-     should be the same things as existing lists.  Perhaps getting the lists
-     from moria instead of maintaining them locally?  Or just having a batch
-     procedure for entering masses of volunteers/consultants to the "right"
-     acls?   (This comes up most in OLTA, when batches of TA's need to be
-     added at the beginning of the semester). (low priority)
+  - Simplify adding people to ACLs.  How about a Moira feed?
 
-     - Some sort of broadcast message to all users in a certain
-     category- for example, the ability to tell all users with unseen
-     questions "xxxx is down right now; to find out if your home directory
-     is on xxx.... otherwise, a consultant will be with you soon".  The
-     issues of how to select/narrow down the category needs to be worked out.
+  - Some sort of broadcast message to all users in a certain
+    category- for example, the ability to tell all users with unseen
+    questions "xxxx is down right now; to find out if your home directory
+    is on xxx.... otherwise, a consultant will be with you soon".  The
+    issues of how to select/narrow down the category needs to be worked out.
+
+    add more configuration to error messages: who to talk to when a
+    machine is down, etc.  (possibly put it in the cfg file?
+    different behavior for public vs. private workstations on Athena?)
+
+    clean up machtype info generation (in clients/lib/ask.c) and
+    extraction a bit further?
+
+    either fix or remove mailhub checking (look for CHECK_MAILHUB___BROKEN
+    in clients/lib/utils.c).  [i'm unconvinced fixing it is worth it...]
+
+    use configurable parameters for xbrowser attach (in
+    browser/motif/callbacks.c)!
+
+General source code maintenance:
+
+    go through the  #include lists and eliminate prehistoric debris.
+
+    go through the code and clean it up, so it generates fewer
+    warnings under gcc -Wall.  (Note: I didn't say "all" because some
+    of the warnings are silly.)
+
+    get rid of silly casts to void [when a function returns an arg].
+
+    rework the include-file hierarchy to improve sanity and ordering.
+
+    rename multiple-inclusion-protection symbols in include files to
+    follow the standard Athena format.  or at least the same format
+    for all.
+
+    rename uses of min() and max() to use MIN() and MAX(); then remove
+    the former from include/olc/macros.h.
+
+    clean up uses of __STDC__.
+
+    think about what to do with tests to placate SABER and lint.
+
+Specific source code maintenance:
+
+    consolidate all the `string_eqiv(str, "-flag", MAX(strlen(str), 2))' calls
+    into a new function, something like `flag_is(str, "-flag")'?
+
+    reduce the number of copies of acl_files.c in OLC tree to 1 or,
+    better, 0.  [take care to propagate any local fixes into the
+    release -lacl.]
+
+    move cfg files et al. from lib/olc to share/olc (?).
+
+    clean up the floating-point part of common/my_vsnprintf.c (which
+    isn't used in OLC, but...)
+
+Build system related improvements:
+
+    improve the Motif/Wcl autoconfiscation, add --with-wcl
+
+    add options to configure to set/unset OLCD_LOG_ACTIONS,
+    OLCD_SILENT, value to ZEPHYR_PUNT_TIME?
+
+    fix the Xolc app-defaults process not to use cpp
+
+    flags to machtype and dspipe should be a part of the configuration
+
+    make a "central" TTY handling library that deals with
+    termios/termio/sgtty as available, and call this unified interface
+    from places that currently check HAVE_TERMIO (or should).  (Is
+    there such a thing Out There already?)  Or at the very least
+    switch all the way to POSIX.

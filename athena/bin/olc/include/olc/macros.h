@@ -17,8 +17,11 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *	$Id: macros.h,v 1.12 1999-01-22 23:13:41 ghudson Exp $
+ *	$Id: macros.h,v 1.13 1999-03-06 16:48:32 ghudson Exp $
  */
+
+#ifndef OLC__OLC_MACROS_H
+#define OLC__OLC_MACROS_H
 
 #include <mit-copyright.h>
 #include <olc/lang.h>
@@ -53,23 +56,29 @@
  */
 
 typedef long     ERRCODE;        /* An error code. */
-typedef ERRCODE (*FUNCTION) OPrototype ((int, struct tREQUEST *));
-				/* A pointer to a function. */
 typedef int     RESPONSE;       /* A response code. */
 
 /* Useful macros. */
 
-#define string_eq(a,b) ((a[0]==b[0])?(!strcmp((a),(b))):FALSE)
+#define string_eq(a,b) (((a)[0]==(b)[0])?(!strcmp((a),(b))):FALSE)
 /* Compare two strings.- */
 #define string_equiv(a,b,c)   (!strncmp((a),(b),(c) < strlen((a)) \
 					? strlen((a)) : (c)))		 
 
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif  /* MIN */
+
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif /* MAX */
+
 #ifndef min
-#define min(a,b) a < b ? a : b
+#define min(a,b) MIN(a,b)
 #endif  /* min */
 
 #ifndef max
-#define max(a,b) a > b ? a : b
+#define max(a,b) MAX(a,b)
 #endif /* max */
 
 #define is_option(r,option) r & option
@@ -92,9 +101,12 @@ typedef int     RESPONSE;       /* A response code. */
 #define NAME_SIZE       64      /* Maximum length for a filename. */
 #define NOTE_SIZE       64
 #define LINE_SIZE      128      /* Maximum length for an input line. */
+#define HOSTNAME_SIZE  256	/* Maximum length of a fully-qual. hostname */
 #define ERROR_SIZE     512      /* Size of an error message. */
 #define COMMENT_SIZE   512
 #define BUF_SIZE      1024      /* Size of a message buffer. */
 
 #define MAX_BYTES       512     /* Max. bytes to use on a socket. */
 #define COMMAND_LENGTH  1000    /* Maximum length of command line. */
+
+#endif /* OLC__OLC_MACROS_H */

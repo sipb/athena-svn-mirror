@@ -8,60 +8,65 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: server_defines.h,v 1.5 1999-01-22 23:13:30 ghudson Exp $
+ *	$Id: server_defines.h,v 1.6 1999-03-06 16:48:29 ghudson Exp $
  */
-/*  NEED to change /usr/athena/lib to something like /var/server/olc/....  
 
-*/
 #include <mit-copyright.h>
 
 #ifndef __server_defines_h
 #define __server_defines_h __FILE__
 
-#define DATABASE_FILE 		"/usr/athena/lib/olc/database"
-#define SPECIALTY_DIR 		"/usr/athena/lib/olc/specialties"
-#define ACL_DIR 		"/usr/athena/lib/olc/acls"
-#define LOG_DIR 		"/usr/spool/olc"
-#define BACKUP_FILE 		"/usr/spool/olc/backup.dat"
-#define BACKUP_TEMP 		"/usr/spool/olc/backup.temp"
-#define BACKUP_FILE_ASCII 	"/usr/spool/olc/backup.ascii"
-#define BACKUP_TEMP_ASCII	"/usr/spool/olc/backup.ascii.temp"
-#define ERROR_LOG 		"/usr/adm/olc/errors"
-#define STATUS_LOG 		"/usr/adm/olc/status"
-#define ADMIN_LOG 		"/usr/adm/olc/admin"
-#define STDERR_LOG 		"/usr/adm/olc/errors"
-#define TOPIC_FILE 		"/usr/athena/lib/olc/topics"
-#define SERVICES_FILE 		"/usr/athena/lib/olc/services"
-#define MOTD_FILE 		"/usr/athena/lib/olc/motd"
-#define MOTD_TIMEOUT_FILE	"/usr/athena/lib/olc/motd_timeout"
-#define MOTD_HOLD_FILE 		"/usr/athena/lib/olc/motd_hold"
-#define MACH_TRANS_FILE 	"/usr/athena/lib/olc/translations"
-#define LIST_FILE_NAME 		"/usr/spool/olc/qlist_-1.log"
-#define LIST_TMP_NAME 		"/usr/spool/olc/queue.tmp"
-#define HOURS_FILE		"/usr/athena/lib/olc/hours"
-#define LUMBERJACK_LOC		"/usr/local/bin/lumberjack"
-#define ASK_STATS_FILE		"/usr/spool/olc/stats/ask_stats"
-#define RES_STATS_FILE		"/usr/spool/olc/stats/res_stats"
+#include "olc/macros.h"    /* some useful definitions */
+#include "olxx_paths.h"    /* basic server paths, conditionalized for OLxx */
 
-#ifdef ZEPHYR
-#define ZEPHYR_DOWN_FILE	"/usr/spool/olc/punt_zephyr"
-#define ZEPHYR_PUNT_TIME	15
+#define OLC_SRVTAB 		OLXX_CONFIG_DIR "/srvtab"
+#define DATABASE_FILE 		OLXX_CONFIG_DIR "/database"
+#define SPECIALTY_DIR 		OLXX_SPEC_DIR
+#define ACL_DIR 		OLXX_ACL_DIR
+#define TOPIC_FILE 		OLXX_CONFIG_DIR "/topics"
+#define MOTD_FILE 		OLXX_CONFIG_DIR "/motd"
+#define MOTD_TIMEOUT_FILE	OLXX_CONFIG_DIR "/motd_timeout"
+#define MOTD_HOLD_FILE 		OLXX_CONFIG_DIR "/motd_hold"
+#define MACH_TRANS_FILE 	OLXX_CONFIG_DIR "/translations"
+#define HOURS_FILE		OLXX_CONFIG_DIR "/hours"
+#define SERVICES_FILE 		OLXX_CONFIG_DIR "/services" /*used by MacOLX*/
+
+#define ERROR_LOG 		OLXX_LOG_DIR "/errors"
+#define STATUS_LOG 		OLXX_LOG_DIR "/status"
+#define ADMIN_LOG 		OLXX_LOG_DIR "/admin"
+#define STDERR_LOG 		OLXX_LOG_DIR "/errors"
+
+#define CORE_DIR		OLXX_SPOOL_DIR
+#define LOG_DIR 		OLXX_QUEUE_DIR
+#define BINARY_BACKUP_FILE 	OLXX_SPOOL_DIR "/backup.dat"
+#define BINARY_BACKUP_TEMP 	BINARY_BACKUP_FILE ".temp"
+#define ASCII_BACKUP_FILE 	OLXX_SPOOL_DIR "/backup.ascii"
+#define ASCII_BACKUP_TEMP 	ASCII_BACKUP_FILE ".temp"
+#define LIST_FILE_NAME 		OLXX_SPOOL_DIR "/queue" /* was: qlist_-1.log */
+#define LIST_TMP_NAME 		OLXX_SPOOL_DIR "/queue.tmp"
+#define ASK_STATS_FILE		OLXX_STAT_DIR "/ask_stats"
+#define RES_STATS_FILE		OLXX_STAT_DIR "/res_stats"
+
+#if defined (OLTA) || defined (OWL)
+#define LUMBERJACK_LOC          "/usr/athena/etc/lumberjack." OLXX_SERVICE
+#else
+#define LUMBERJACK_LOC		"/usr/athena/etc/lumberjack"
 #endif
 
-#ifdef KERBEROS
-#define TICKET_FILE		"/usr/spool/olc/tkt.olc"
-#endif /* KERBEROS */
+#ifdef HAVE_ZEPHYR
+#define ZEPHYR_DOWN_FILE	OLXX_SPOOL_DIR "/punt_zephyr"
+#ifndef ZEPHYR_PUNT_TIME
+#define ZEPHYR_PUNT_TIME	15
+#endif
+#endif /* HAVE_ZEPHYR */
+
+#ifdef HAVE_KRB4
+#define TICKET_FILE		"/tmp/tkt_" OLXX_SERVICE
+#endif /* HAVE_KRB4 */
 
 /* Use by the acl checking code, so you need it even if you don't have
    kerberos
 */
-
-#ifdef ATHENA
-#define DFLT_SERVER_REALM	"ATHENA.MIT.EDU"
-#else
-/* Put your realm here.... */
-#define DFLT_SERVER_REALM	"ATHENA.MIT.EDU"
-#endif /* ATHENA */
 
 /* system defines */
 
@@ -69,9 +74,7 @@
 #define DAEMON_TIME_OUT        10
 #define MAX_CACHE_SIZE         500
 
-#ifdef SYSLOG
-#define SYSLOG_LEVEL LOG_LOCAL6
-#endif
+#define SYSLOG_FACILITY LOG_LOCAL6
 
 /* for notifications */
 
@@ -109,8 +112,16 @@
 #define DEFAULT_TITLE   "user"
 #define DEFAULT_TITLE2  "TA"
 #else
+#ifdef OWL
+#define DEFAULT_TITLE   "user"
+#define DEFAULT_TITLE2  "Librarian"
+#else
 #define DEFAULT_TITLE   "user"
 #define DEFAULT_TITLE2  "consultant"
-#endif
+#endif /* OWL */
+#endif /* OLTA */
+
+#define OLCD_SERVICE_NAME  OLXX_SERVICE "-locking"
+#define RPD_SERVICE_NAME   OLXX_SERVICE "-query"
 
 #endif

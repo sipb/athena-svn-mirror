@@ -18,16 +18,18 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: ask.c,v 1.20 1999-01-22 23:12:01 ghudson Exp $
+ *	$Id: ask.c,v 1.21 1999-03-06 16:47:34 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: ask.c,v 1.20 1999-01-22 23:12:01 ghudson Exp $";
+static char rcsid[] ="$Id: ask.c,v 1.21 1999-03-06 16:47:34 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 
 ERRCODE
@@ -38,34 +40,34 @@ OAsk_buffer(Request,topic,buf)
 {
   int fd;
   int status;
-  FILE *f;
+  FILE *f = NULL;
   char s[BUF_SIZE], machinfo[BUF_SIZE];
  
   /* Start this early so that things aren't blocked on it later */
 
-  if (! (is_option(Request->options,VERIFY))) {
-#ifdef ATHENA
-  /* This should be gotten rid of when the Mac gets machtype compiled for it */
-#ifdef _AUX_SOURCE
-    strcpy(machinfo,"Macintosh AUX, 8M");
-#else
-#ifdef _IBMR2
-    f = popen("/bin/athena/machtype -c -d -M -L", "r");
-#else
-    f = popen("/bin/athena/machtype -c -d -M -v -L", "r");
-#endif
-  }
+#ifdef MACHTYPE_PATH
+  /* Open the pipe early, so the data is already written when we need it. */
+  if (! (is_option(Request->options,VERIFY)))
+    {
+      f = popen(MACHTYPE_PATH " -c -d -M -v -L", "r");
+    }
+#endif /* MACHTYPE_PATH */
 
   Request->request_type = OLC_ASK;
   status = open_connection_to_daemon(Request, &fd);
   if(status)
-    return(status);
+    {
+      if (f)
+	pclose(f);
+      return(status);
+    }
 
   status = send_request(fd, Request);
   if(status)
     {
       close(fd);
-      fclose(f);
+      if (f)
+	pclose(f);
       return(status);
     }
 
@@ -80,6 +82,8 @@ OAsk_buffer(Request,topic,buf)
   if(is_option(Request->options,VERIFY) || status != SUCCESS)
     {
       close(fd);
+      if (f)
+	pclose(f);
       return(status);
     }
 
@@ -89,30 +93,36 @@ OAsk_buffer(Request,topic,buf)
   if (status != SUCCESS)
     {
       close(fd);
+      if (f)
+	pclose(f);
       return(status);
     }
 
   machinfo[0] = '\0';
-  while (fgets(s, BUF_SIZE, f) != NULL)
+  if (f)
     {
-      strncat(machinfo, s, strlen(s) - 1);
-      strcat(machinfo, ", ");
+      while (fgets(s, BUF_SIZE, f) != NULL)
+	{
+	  strncat(machinfo, s, strlen(s) - 1);
+	  strcat(machinfo, ", ");
+	}
+      machinfo[strlen(machinfo) - 2] = '\0';
     }
-  machinfo[strlen(machinfo) - 2] = '\0';
-#endif /* m68k */
-#else
-  /* Put something useful for your machine; typically
-     processor, display, memory
-  */
-  strcpy(machinfo,"No Machine Information compiled in\n");
-#endif /* Athena */
+  else
+    {
+      strcpy(machinfo,"no machine information is available.\n");
+    }
+
   write_text_to_fd(fd, machinfo);
+
+  if (f)
+    pclose(f);
+
   read_response(fd, &status);
 
   if ((status == CONNECTED) || (status == NOT_CONNECTED))
     read_int_from_fd(fd,&(Request->requester.instance));
   close(fd);
-  fclose(f);
   return(status);
 }
 

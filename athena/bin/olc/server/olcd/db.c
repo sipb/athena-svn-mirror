@@ -17,16 +17,18 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: db.c,v 1.22 1999-01-22 23:14:25 ghudson Exp $
+ *	$Id: db.c,v 1.23 1999-03-06 16:48:54 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: db.c,v 1.22 1999-01-22 23:14:25 ghudson Exp $";
+static char rcsid[] ="$Id: db.c,v 1.23 1999-03-06 16:48:54 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/file.h>
@@ -113,11 +115,11 @@ load_db()
   char buf[BUFSIZ];
   int i=0;
 
-  if((fp = fopen(TOPIC_FILE,"r")) == (FILE *) NULL)
+  fp = fopen(TOPIC_FILE,"r");
+  if (fp == NULL)
     {
-      (void) sprintf(msgbuf, "load_db: can't open OLC database %s: %%m", 
-		     TOPIC_FILE);
-      log_error(msgbuf);
+      log_error("load_db: can't open OLC database %s: %m", 
+		TOPIC_FILE);
       return(ERROR);
     }
 
@@ -129,7 +131,7 @@ load_db()
       t = (TOPIC *) malloc(sizeof(TOPIC));
       if(t == (TOPIC *) NULL)
 	{
-	  log_error("load_db: topic malloc:");
+	  log_error("load_db: topic malloc: %m");
 	  fclose(fp);
 	  return(ERROR);
 	}
@@ -137,7 +139,7 @@ load_db()
       sprintf(t->acl,"%s/%s.acl",SPECIALTY_DIR,t->name);
       t->value = i;
       if (insert_topic(t) != SUCCESS) {
-	log_error("load_db: insert_topic:");
+	log_error("load_db: insert_topic failed");
 	fclose(fp);
 	return(ERROR);
       }
@@ -155,7 +157,7 @@ load_db()
 
   fclose(fp);
 
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
   unlink (ZEPHYR_DOWN_FILE);
 #endif
   return(SUCCESS);
@@ -168,6 +170,35 @@ load_user(user)
   get_specialties(user);
   get_acls(user);
   get_user_info(user);
+
+  /* If a user has NO permissions (not even ask), that's probably a bug. */
+  if (user->permissions == 0)
+    {
+      int external_realm;
+      char *realm = user->realm;
+
+      if (realm && realm[0])
+	{
+	  external_realm = strcasecmp(realm, DFLT_SERVER_REALM);
+	}
+      else
+	{
+	  realm = "???";
+	  external_realm = 1;
+	}
+
+      if (external_realm)
+	log_admin("user '%s@%s' has no permissions (including ask)!",
+		  user->username, realm);
+      else
+	log_error("alert: user '%s@%s' has no permissions (including ask)!",
+		  user->username, realm);
+
+      strcpy(tmpfile, OLXX_SPOOL_DIR "/perm_corrupt_load_XXXX");
+      mktemp(tmpfile);
+      dump_data(tmpfile);
+    }
+
 }
 
 static int
@@ -182,13 +213,13 @@ get_user_info(user)
   struct passwd *pwd;
   char *p;
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   sprintf(canon,"%s@%s",user->username,user->realm);
 #else
   sprintf(canon,"%s@%s",user->username,DFLT_SERVER_REALM);
 #endif
 
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
   pwd = hes_getpwnam(user->username);
 #else
   pwd = getpwnam(user->username);
@@ -200,11 +231,11 @@ get_user_info(user)
       *p = '\0';
   }
 
-  if((fp = fopen(DATABASE_FILE,"r")) == (FILE *) NULL)
+  fp = fopen(DATABASE_FILE,"r");
+  if (fp == NULL)
     {
-      (void) sprintf(msgbuf, "load_user: can't open OLC database %s: %%m",
-		     DATABASE_FILE);
-      log_error(msgbuf);
+      log_error("get_user_info: can't open OLC database %s: %m",
+		DATABASE_FILE);
       return(ERROR);
     }
 

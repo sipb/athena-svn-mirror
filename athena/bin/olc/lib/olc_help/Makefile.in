@@ -1,0 +1,37 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:48:39 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datadir=@datadir@
+
+.SUFFIXES: .nroff .help
+
+OLC_HELP_DIR=${libdir}/olc/olc_help
+OLC_HELP_FILES=answers.help ask.help cancel.help done.help help.help \
+  motd.help olc.help quit.help replay.help send.help show.help status.help \
+  topic.help who.help hours.help version.help
+
+all: $(OLC_HELP_FILES) qmark.help
+
+.nroff.help:
+	nroff -man $*.nroff > $@
+
+clean distclean:
+	rm -f *.help *~
+
+install: $(OLC_HELP_FILES) qmark.help
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${OLC_HELP_DIR}
+	foreach i in $(OLC_HELP_FILES); do \
+	    ${INSTALL} -m 444 $$i ${DESTDIR}${OLC_HELP_DIR}; done
+	${INSTALL} -m 444 qmark.help ${DESTDIR}${OLC_HELP_DIR}/?.help
+
+depend.in:

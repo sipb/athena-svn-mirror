@@ -11,11 +11,12 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Id: oreplay.c,v 1.29 1999-03-03 07:09:22 ghudson Exp $";
+static char *RCSid = "$Id: oreplay.c,v 1.30 1999-03-06 16:47:54 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <stdio.h>
 #include <sys/param.h>
@@ -180,7 +181,7 @@ main(argc,argv)
 
 /* Find out where the server is */
 
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
   if (hp == NULL) {
     olc_servers = hes_resolve(inst, OLC_SERV_NAME);
     if (olc_servers == NULL) {
@@ -195,7 +196,7 @@ main(argc,argv)
       punt(output_fd,filename);
     }
   }
-#endif /* HESIOD */
+#endif /* HAVE_HESIOD */
   if (hp == NULL) {
     cf_server = client_hardcoded_server();
     if (cf_server) {
@@ -254,11 +255,11 @@ main(argc,argv)
 	fprintf(stderr,"Unknown request\n");
 	break;
       default:
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 	fprintf(stderr,"Kerberos Error: %s\n",krb_err_txt[-len]);
-#else
+#else /* not HAVE_KRB4 */
 	fprintf(stderr,"Unknown Error %d\n",-len);
-#endif
+#endif /* not HAVE_KRB4 */
       }
     else
       fprintf(stderr,"Unknown error %d\n",-len);

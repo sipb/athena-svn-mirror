@@ -18,21 +18,20 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: data.c,v 1.13 1999-01-22 23:12:03 ghudson Exp $
+ *	$Id: data.c,v 1.14 1999-03-06 16:47:35 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: data.c,v 1.13 1999-01-22 23:12:03 ghudson Exp $";
+static char rcsid[] ="$Id: data.c,v 1.14 1999-03-06 16:47:35 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <sys/param.h>
-#ifdef SOLARIS
-#include <netdb.h>
-#endif
 
 
 PERSON User;

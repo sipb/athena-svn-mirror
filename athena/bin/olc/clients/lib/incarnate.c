@@ -8,14 +8,16 @@
  * Copyright (C) 1996 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: incarnate.c,v 1.3 1999-01-22 23:12:05 ghudson Exp $
+ *	$Id: incarnate.c,v 1.4 1999-03-06 16:47:36 ghudson Exp $
  */
 
 #if !defined(SABER) && !defined(lint)
-static char rcsid[] = "$Id: incarnate.c,v 1.3 1999-01-22 23:12:05 ghudson Exp $";
+static char rcsid[] = "$Id: incarnate.c,v 1.4 1999-03-06 16:47:36 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <cfgfile/configure.h>
 
@@ -105,7 +107,7 @@ static void karma(char*);       /* Function to complain if un-initialized. */
  */
 static config_keyword olxx_config[] = {
   {"service",		config_set_quoted_string, &service_name},
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
   {"fallback_server",	config_set_quoted_string, &default_server},
 #else
   {"server",		config_set_quoted_string, &default_server},
@@ -339,7 +341,7 @@ static void karma (char *bad)
  *     require even more guessing; ones like "answer" (OWL) are hopeless.
  * Note: defined only if HESIOD (we can't really guess otherwise)
  */
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
 static ERRCODE incarnate_guess(void)
 {
   char *try, *pos;
@@ -437,7 +439,7 @@ offer you more assistance with this; try asking a human instead.\n",
   unincarnated = 0;
   return ERROR; /* i.e. limited success, as opposed to FATAL */
 }
-#endif /* HESIOD */
+#endif /* HAVE_HESIOD */
 
 /* Read in the configuration file and set various variables.
  * Arguments:
@@ -484,15 +486,15 @@ ERRCODE incarnate(const char *client_hint, const char *cfg_path)
   cfg = cfg_fopen_in_path(clt_name, OLC_CONFIG_EXT, cfg_path);
   if (cfg == NULL)
     {
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
       fprintf(stderr, "%s: can't find %s%s in OLXX_CONFIG path (guessing).\n",
 	      clt_name, clt_name, OLC_CONFIG_EXT);
       return incarnate_guess();
-#else
+#else /* not HAVE_HESIOD */
       fprintf(stderr, "%s: can't find %s%s in OLXX_CONFIG path (giving up).\n",
 	      clt_name, clt_name, OLC_CONFIG_EXT);
       return FATAL;
-#endif
+#endif /* not HAVE_HESIOD */
     }
 
   cfg_read_config(clt_name, cfg, olxx_config);
@@ -528,7 +530,7 @@ ERRCODE incarnate(const char *client_hint, const char *cfg_path)
 	      clt_name);
       return FATAL;
     }
-#ifndef HESIOD
+#ifndef HAVE_HESIOD
   /* Not having default_server isn't fatal if we have Hesiod. */
   if (default_server == NULL)
     {
@@ -536,7 +538,7 @@ ERRCODE incarnate(const char *client_hint, const char *cfg_path)
 	      clt_name);
       return FATAL;
     }
-#endif /* HESIOD */
+#endif /* not HAVE_HESIOD */
 
   /* Note: there are other fields which may cause problems if missing; read
    * the comments in olc.cfg (and documentation, when it gets written).  We

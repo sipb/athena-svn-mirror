@@ -20,14 +20,15 @@
 /* This file is part of the CREF finder.  It contains functions for executing
  * CREF commands.
  *
- *	$Id: commands.c,v 2.13 1999-01-22 23:11:43 ghudson Exp $
+ *	$Id: commands.c,v 2.14 1999-03-06 16:47:22 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_commands_c = "$Id: commands.c,v 2.13 1999-01-22 23:11:43 ghudson Exp $";
+static char *rcsid_commands_c = "$Id: commands.c,v 2.14 1999-03-06 16:47:22 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
@@ -647,13 +648,8 @@ insert_entry()
     }
   fclose(fp);
 
-#ifdef POSIX
-#define FILENAME_SIZE MAXPATHLEN
-
-  make_path(getcwd(install_dir,FILENAME_SIZE),install_file,install_path);  
-#else
-  make_path(getwd(install_dir),install_file,install_path);  
-#endif
+  make_path(getcwd(install_dir, sizeof(install_dir)),
+	    install_file, install_path);  
 
   if (type == CREF_FILE)
     {

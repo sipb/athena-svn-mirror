@@ -5,11 +5,13 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Id: get_nm.c,v 1.5 1999-01-22 23:14:49 ghudson Exp $";
+static char *RCSid = "$Id: get_nm.c,v 1.6 1999-03-06 16:49:13 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include "rpd.h"
 
 char *
@@ -27,7 +29,8 @@ int nuke;
   int fd;
 
   sprintf(fnbuf,"%s/%s_%d.nm",LOG_DIRECTORY,username,instance);
-  if ((fd = open(fnbuf,O_RDONLY,0)) < 0) {
+  fd = open(fnbuf,O_RDONLY,0);
+  if (fd < 0) {
     *result = 0;
     return(NULL);
   }
@@ -41,7 +44,8 @@ int nuke;
     if (buflen != 0)
       free(buf);
     buflen = statbuf.st_size;
-    if ((buf = (char *)malloc(buflen)) == NULL) {
+    buf = malloc(buflen);
+    if (buf == NULL) {
       syslog(LOG_ERR,"get_nm: malloc: error alloc'ind %d bytes\n",
 	     statbuf.st_size);
       close(fd);

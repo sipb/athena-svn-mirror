@@ -23,17 +23,18 @@
 /* This file is part of the CREF finder.  It contains the signal handling
  * functions.
  *
- *	$Id: signal.c,v 1.11 1999-01-26 00:42:04 ghudson Exp $
+ *	$Id: signal.c,v 1.12 1999-03-06 16:47:24 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_c = "$Id: signal.c,v 1.11 1999-01-26 00:42:04 ghudson Exp $";
+static char *rcsid_cref_c = "$Id: signal.c,v 1.12 1999-03-06 16:47:24 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -49,13 +50,8 @@ static char *rcsid_cref_c = "$Id: signal.c,v 1.11 1999-01-26 00:42:04 ghudson Ex
 # define P(s) ()
 #endif
 
-#ifdef VOID_SIGRET
-static  void handle_resize_event P((int sig));
-static  void handle_interrupt_event P((int sig));
-#else
-static  int handle_resize_event P((int sig));
-static  int handle_interrupt_event P((int sig));
-#endif
+static RETSIGTYPE handle_resize_event P((int sig));
+static RETSIGTYPE handle_interrupt_event P((int sig));
 void init_signals P((void));
 
 #undef P
@@ -63,51 +59,44 @@ void init_signals P((void));
 void
 init_signals()
 {
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
   struct sigaction act;
+
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
-   act.sa_handler= handle_interrupt_event;
-   sigaction(SIGINT, &act, NULL);
-   act.sa_handler= handle_resize_event;
-   sigaction(SIGWINCH, &act, NULL);
-#else
+  act.sa_handler = handle_interrupt_event;
+  sigaction(SIGINT, &act, NULL);
+  act.sa_handler = handle_resize_event;
+  sigaction(SIGWINCH, &act, NULL);
+#else /* don't HAVE_SIGACTION */
   signal(SIGINT, handle_interrupt_event);
   signal(SIGWINCH, handle_resize_event);
-#endif
+#endif /* don't HAVE_SIGACTION */
 }
 
-#ifdef VOID_SIGRET
-static void
-#else
-static int
-#endif
+static RETSIGTYPE
 handle_resize_event(sig)
      int sig;
 {
     struct winsize ws;
     int lines;
     int cols;
-
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
     struct sigaction act;
+
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     act.sa_handler= SIG_IGN;
     sigaction(SIGWINCH, &act, NULL);
-#else
+#else /* don't HAVE_SIGACTION */
     signal(SIGWINCH, SIG_IGN);
-#endif
+#endif /* don't HAVE_SIGACTION */
 
     /*  Find out the new size.  */
 
     if (ioctl(fileno(stdout), TIOCGWINSZ, &ws) == -1) {
       perror("cref: finding out new screen size");
-#ifdef VOID_SIGRET
       return;
-#else
-      return(-1);
-#endif
     }
     else {
       if (ws.ws_row != 0)
@@ -139,38 +128,31 @@ handle_resize_event(sig)
     addstr(Prompt);
     clrtoeol();
     refresh();
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
     act.sa_handler= handle_resize_event;
     sigaction(SIGWINCH, &act, NULL);
-#else
+#else /* don't HAVE_SIGACTION */
     signal(SIGWINCH, handle_resize_event);
-#endif
-#ifdef VOID_SIGRET
+#endif /* don't HAVE_SIGACTION */
     return;
-#else
-    return(0);
-#endif
 }
 
 
 
-#ifdef VOID_SIGRET
-static void
-#else
-static int
-#endif
+static RETSIGTYPE
 handle_interrupt_event(sig)
      int sig;
 {
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
     struct sigaction act;
+
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     act.sa_handler= SIG_IGN;
     sigaction(SIGINT, &act, NULL);  
-#else
+#else /* don't HAVE_SIGACTION */
     signal(SIGINT, SIG_IGN);
-#endif
+#endif /* don't HAVE_SIGACTION */
 
     quit();
 }

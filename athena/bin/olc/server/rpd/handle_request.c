@@ -8,14 +8,16 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Id: handle_request.c,v 1.22 1999-01-22 23:14:50 ghudson Exp $";
+static char *RCSid = "$Id: handle_request.c,v 1.23 1999-03-06 16:49:14 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include "rpd.h"
 
-#ifndef KERBEROS
+#ifndef HAVE_KRB4
 /* Still need kerberos defs for compatabile protocols.. */
 
 #define         MAX_KTXT_LEN    1250
@@ -49,7 +51,7 @@ handle_request(fd, from)
 
   int ltr;
   KTEXT_ST their_auth;
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   AUTH_DAT their_info;
   int auth;
   char principal_buffer[ANAME_SZ+INST_SZ+REALM_SZ];
@@ -57,11 +59,12 @@ handle_request(fd, from)
 
   if (instance_buffer[0] == '\0')
     instance_buffer[0] = '*';
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
 
   from_addr = inet_ntoa(from.sin_addr);
 
-  if ((len = sread(fd,&version,sizeof(version))) != sizeof(version)) {
+  len = sread(fd,&version,sizeof(version));
+  if (len != sizeof(version)) {
     if (len == -1)
       syslog(LOG_ERR, "(%s) reading version: %m", from_addr);
     else
@@ -80,7 +83,8 @@ handle_request(fd, from)
   }
 
   if (version >= 1) {
-    if ((len = sread(fd,&request,sizeof(request))) != sizeof(request)) {
+    len = sread(fd,&request,sizeof(request));
+    if (len != sizeof(request)) {
       if (len == -1)
 	syslog(LOG_ERR, "(%s) reading request: %m", from_addr);
       else
@@ -94,7 +98,8 @@ handle_request(fd, from)
   else
     request = LIST_REQ;
 
-  if ((len = sread(fd,username,9)) != 9) {
+  len = sread(fd,username,9);
+  if (len != 9) {
     if (len == -1)
       syslog(LOG_ERR, "(%s) reading username: %m", from_addr);
     else
@@ -104,7 +109,8 @@ handle_request(fd, from)
     return;
   }
 
-  if ((len = sread(fd,&instance,sizeof(instance))) != sizeof(instance)) {
+  len = sread(fd,&instance,sizeof(instance));
+  if (len != sizeof(instance)) {
     if (len == -1)
       syslog(LOG_ERR, "(%s) reading instance: %m", from_addr);
     else
@@ -118,7 +124,8 @@ handle_request(fd, from)
 
   if (request == REPLAY_KILL_REQ) {
     /* both of these take a target username */
-    if ((len = sread(fd,tusername,9)) != 9) {
+    len = sread(fd,tusername,9);
+    if (len != 9) {
       if (len == -1)
 	syslog(LOG_ERR, "(%s) reading tusername: %m",
 	       from_addr);
@@ -129,7 +136,8 @@ handle_request(fd, from)
       return;
     }
 
-    if ((len = sread(fd,&tinstance,sizeof(tinstance))) != sizeof(tinstance)) {
+    len = sread(fd,&tinstance,sizeof(tinstance));
+    if (len != sizeof(tinstance)) {
       if (len == -1)
 	syslog(LOG_ERR, "(%s) reading tinstance: %m",
 	       from_addr);
@@ -143,9 +151,8 @@ handle_request(fd, from)
     tinstance = ntohl(tinstance);
   }
 
-  
-  if ((len = sread(fd,&their_auth.length, sizeof(their_auth.length))) !=
-      sizeof(their_auth.length)) {
+  len = sread(fd,&their_auth.length, sizeof(their_auth.length));
+  if (len != sizeof(their_auth.length)) {
     if (len == -1)
       syslog(LOG_ERR, "(%s) reading kticket length: %m",
 	     from_addr);
@@ -159,10 +166,11 @@ handle_request(fd, from)
   their_auth.length = ntohl(their_auth.length);
 
   if (their_auth.length != 0) {
-    memset(their_auth.dat,0,sizeof(their_auth.dat));
+    memset(their_auth.dat, 0, sizeof(their_auth.dat));
     ltr =MIN(sizeof(unsigned char)*their_auth.length,
 	     sizeof(their_auth.dat));
-    if ((len = sread(fd,their_auth.dat,ltr)) != ltr) {
+    len = sread(fd,their_auth.dat,ltr);
+    if (len != ltr) {
       if (len == -1)
 	syslog(LOG_ERR, "(%s) reading kticket: %m", from_addr);
       else
@@ -173,7 +181,7 @@ handle_request(fd, from)
     }
   }
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   auth = krb_rd_req(&their_auth,K_SERVICE,instance_buffer,
 		    (unsigned long) from.sin_addr.s_addr,&their_info,SRVTAB);
   if (auth != RD_AP_OK) {
@@ -190,20 +198,22 @@ handle_request(fd, from)
   sprintf(principal_buffer,"%s.%s@%s",their_info.pname, their_info.pinst,
 	  their_info.prealm);
   if (!acl_check(MONITOR_ACL,principal_buffer))	/* if not on the acl... */
-    if (!strcmp(their_info.pname,username))	/* user's own question */
-      censored = 1;				/* so let him see the */
+    {
+      if (!strcmp(their_info.pname,username))	/* user's own question */
+	censored = 1;				/* so let him see the */
 						/* censored version... */
-    else
-      {				/* not on the acl or owner of the question */
-	/* Twit! */
-	syslog(LOG_WARNING, "(%s) Request from %s who is not on the acl\n",
-	       from_addr,
-	       principal_buffer);
-	output_len = htonl(ERR_NO_ACL);
-	write(fd,&output_len,sizeof(long));
-	punt_connection(fd,from);
-	return;
-      }
+      else
+	{			/* not on the acl or owner of the question */
+	  /* Twit! */
+	  syslog(LOG_WARNING, "(%s) Request from %s who is not on the acl\n",
+		 from_addr,
+		 principal_buffer);
+	  output_len = htonl(ERR_NO_ACL);
+	  write(fd,&output_len,sizeof(long));
+	  punt_connection(fd,from);
+	  return;
+	}
+    }
 
   syslog(LOG_DEBUG, "(%s) %s replays %s [%d]", from_addr,
 	 principal_buffer, username, instance);
@@ -218,18 +228,23 @@ handle_request(fd, from)
     punt_connection(fd,from);
     return;
   }
+#endif /* HAVE_KRB4 */
 
-#endif /* KERBEROS */
+  
 
   switch(request) {
+  case LIST_REQ:
+    /* Check if this was actually a magical request to list the queue. */
+    if ((instance == LIST_INSTANCE) && !strcmp(username, LIST_NAME))
+      buf = get_queue(&result);
+    else
+      buf = get_log(username,instance,&result,censored);
+    break;
   case SHOW_KILL_REQ:
     buf = get_nm(username,instance,&result,1);
     break;
   case SHOW_NO_KILL_REQ:
     buf = get_nm(username,instance,&result,0);
-    break;
-  case LIST_REQ:
-    buf = get_log(username,instance,&result,censored);
     break;
   case REPLAY_KILL_REQ:
     buf = get_nm(tusername,tinstance,&result,1);

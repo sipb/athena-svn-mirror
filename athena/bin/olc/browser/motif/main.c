@@ -9,14 +9,15 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: main.c,v 1.13 1999-01-22 23:11:53 ghudson Exp $
+ *      $Id: main.c,v 1.14 1999-03-06 16:47:28 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]="$Id: main.c,v 1.13 1999-01-22 23:11:53 ghudson Exp $";
+static char rcsid[]="$Id: main.c,v 1.14 1999-03-06 16:47:28 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <Mrm/MrmAppl.h>	/* Motif Toolkit */
 #include <Mu.h>

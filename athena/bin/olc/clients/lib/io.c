@@ -19,16 +19,18 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: io.c,v 1.24 1999-01-22 23:12:07 ghudson Exp $
+ *	$Id: io.c,v 1.25 1999-03-06 16:47:37 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: io.c,v 1.24 1999-01-22 23:12:07 ghudson Exp $";
+static char rcsid[] ="$Id: io.c,v 1.25 1999-03-06 16:47:37 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>        
 
 #include <sys/types.h>             /* System type declarations. */
@@ -42,10 +44,6 @@ static char rcsid[] ="$Id: io.c,v 1.24 1999-01-22 23:12:07 ghudson Exp $";
 #include <netdb.h>
 #include <signal.h>
 
-
-#ifndef MIN
-#define	MIN(a,b)	((a)>(b)?(b):(a))
-#endif
 
 /*
  * Note: All functions that deal with I/O on sockets in this file use the
@@ -74,10 +72,6 @@ send_request(fd, request)
 
   int klength;
 
-#ifdef TEST
-  printf("%d %d\n",request->requester.uid,CURRENT_VERSION);
-#endif /* TEST */
-
   memset(&net_req, 0, sizeof(net_req));
 
 /* build up struct to send over */
@@ -101,7 +95,7 @@ send_request(fd, request)
 
   strncpy(net_req.data+24, request->requester.username,  10);
   strncpy(net_req.data+34, request->requester.realname,  32);
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   strncpy(net_req.data+66, request->requester.realm,     40);
   strncpy(net_req.data+106, request->requester.inst,     40);
 #endif
@@ -117,7 +111,7 @@ send_request(fd, request)
 
   strncpy(net_req.data+236, request->target.username,10);
   strncpy(net_req.data+246, request->target.realname,32);
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   strncpy(net_req.data+278, request->target.realm,40);
   strncpy(net_req.data+318, request->target.inst,40);
 #endif
@@ -128,11 +122,7 @@ send_request(fd, request)
   if (swrite(fd, (char *) &net_req, sizeof(IO_REQUEST)) != sizeof(IO_REQUEST))
     return(ERROR);
 
-#ifdef KERBEROS
-
-#ifdef TEST
-  printf("klength: %d\n",request->kticket.length);
-#endif /* TEST */
+#ifdef HAVE_KRB4
 
   klength     = htonl((u_long) request->kticket.length);
   if (swrite(fd, (char *) &klength, sizeof(int)) != sizeof(int)) 
@@ -148,7 +138,7 @@ send_request(fd, request)
       fprintf(stderr, "Error in sending ticket. \n");
           return(ERROR);
     }
-#else
+#else /* not HAVE_KRB4 */
 
   klength = htonl((u_long) 0);
   if (swrite(fd, &klength, sizeof(int)) != sizeof(int)) 
@@ -157,7 +147,7 @@ send_request(fd, request)
       return(ERROR);
     }
 
-#endif /* KERBEROS */
+#endif /* not HAVE_KRB4 */
 
   return(SUCCESS);
 }
@@ -208,7 +198,7 @@ read_list(fd, list)
   
   strncpy(list->user.username, (char *)net_req.data+132, LOGIN_SIZE+1);
   strncpy(list->user.realname, (char *)net_req.data+142, TITLE_SIZE);
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   strncpy(list->user.realm,    (char *)net_req.data+174, REALM_SZ);
   strncpy(list->user.inst,     (char *)net_req.data+214, INST_SZ);
 #endif
@@ -221,7 +211,7 @@ read_list(fd, list)
   
   strncpy(list->connected.username, (char *)net_req.data+344, LOGIN_SIZE+1);
   strncpy(list->connected.realname, (char *)net_req.data+354, TITLE_SIZE);
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   strncpy(list->connected.realm,    (char *)net_req.data+386, REALM_SZ);
   strncpy(list->connected.inst,     (char *)net_req.data+426, INST_SZ);
 #endif
@@ -229,11 +219,6 @@ read_list(fd, list)
   strncpy(list->connected.title,    (char *)net_req.data+482, TITLE_SIZE);
   strncpy(list->connected.machine,  (char *)net_req.data+514, TITLE_SIZE);
 
-#ifdef TEST
-  printf("%s %s %s\n",list->user.username,list->user.realname,list->user.machine);
-  printf("%s %s %s\n",list->connected.username,list->connected.realname,list->connected.machine);
-  printf("%d %d %d %d",list->nseen,list->ukstatus,list->user.instance,list->user.uid);
-#endif /* TEST */
   return(SUCCESS);
 }
 
@@ -285,11 +270,11 @@ open_connection_to_named_daemon(request, fd, hostname)
   static char cached_hostname[MAXHOSTNAMELEN];
   int status;
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   status =  krb_mk_req(&(request->kticket), K_SERVICE, INSTANCE, REALM, 0);  
   if(status)
     return(status);
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
 
   *fd = socket(AF_INET, SOCK_STREAM, 0);
   
@@ -311,7 +296,7 @@ open_connection_to_named_daemon(request, fd, hostname)
     if (port_env != NULL)
       sin.sin_port = htons (atoi (port_env));
     else {
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
       service = hes_getservbyname(client_service_name(), OLC_PROTOCOL);
 #endif
       /* Fall back to /etc/services if no hesiod information avail. */
@@ -353,7 +338,7 @@ open_connection_to_nl_daemon(fd)
       return(ERROR);
     }
 
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
     service = hes_getservbyname(client_nl_service_name(), OLC_PROTOCOL);
 #endif    
     /* Fall back to /etc/services if no hesiod- */

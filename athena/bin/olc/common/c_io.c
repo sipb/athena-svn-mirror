@@ -19,30 +19,27 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *	$Id: c_io.c,v 1.27 1999-01-22 23:13:12 ghudson Exp $
+ *	$Id: c_io.c,v 1.28 1999-03-06 16:48:15 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: c_io.c,v 1.27 1999-01-22 23:13:12 ghudson Exp $";
+static char rcsid[] ="$Id: c_io.c,v 1.28 1999-03-06 16:48:15 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
-#if defined(__STDC__) && !defined(__HIGHC__) && !defined(SABER)
-/* Stupid High-C claims to be ANSI but doesn't have the include files.. */
-/* Ditto for saber */
+#include "config.h"
+
+#ifdef STDC_HEADERS
 #include <stdlib.h>
 #endif
-
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/socket.h>		/* Network socket defs. */
 #include <sys/file.h>		/* File handling defs. */
 #include <sys/stat.h>
 #include <sys/time.h>		/* System time definitions. */
-#if defined(_IBMR2) && defined(_AIX)
-#include <sys/select.h>
-#endif
+#include <unistd.h>
 #include <netinet/in.h>
 #include <errno.h>		/* System error numbers. */
 #include <netdb.h>
@@ -51,10 +48,6 @@ static char rcsid[] ="$Id: c_io.c,v 1.27 1999-01-22 23:13:12 ghudson Exp $";
 #include <setjmp.h>
 
 #include <olc/olc.h>
-
-#ifndef MIN
-#define	MIN(a,b)	((a)>(b)?(b):(a))
-#endif
 
 #if __STDC__
 static ERRCODE write_chars_to_fd (int, char *, int);
@@ -566,8 +559,6 @@ read_chars_from_fd(fd, buf, nchars)
   return(SUCCESS);
 }
 
-
-
 /*
  * Function:	sread() is just like read() except that it checks to make
  *	 sure that the file descriptor is ready for reading.
@@ -603,10 +594,15 @@ int sread(fd, buf, nbytes)
   n_read = 0;
   do {
     if (loops > 5) {
+#ifdef IO_DUMP
+      dump_current_core_image();
+#endif /* IO_DUMP */
+      olc_perror("sread: retried 5 times, giving up; last error");
       close(fd);
       return(-1);
     }
 
+#ifndef IO_BLOCKING
     tval.tv_sec = select_timeout;
     tval.tv_usec = 0;
     
@@ -623,17 +619,30 @@ int sread(fd, buf, nbytes)
 	if (s_val == 0)
 	  errno = ETIMEDOUT;
 
+#ifdef IO_DUMP
+	dump_current_core_image();
+#endif /* IO_DUMP */
 	olc_perror("sread: select");
 	close(fd);
 	return(-1);
       }
     
     if (! FD_ISSET(fd,&read_fds)) {
+      /* This ought to be impossible if s_val >= 1 */
+#ifdef IO_DUMP
+      dump_current_core_image();
+#endif /* IO_DUMP */
+      olc_perror("sread: select() return isn't consistent; last error");
       close(fd);
       return(-1);
     }
+#endif /* not IO_BLOCKING */
+
     n_read = read(fd, (char *)(buf + tot_read), nbytes);
     if (n_read < 0) {
+#ifdef IO_DUMP
+      dump_current_core_image();
+#endif /* IO_DUMP */
       olc_perror("sread: read");
       close(fd);
       return(n_read);
@@ -682,10 +691,15 @@ int swrite(fd, buf, nbytes)
   n_wrote = 0;
   do {
     if (loops > 5) {
+#ifdef IO_DUMP
+      dump_current_core_image();
+#endif /* IO_DUMP */
+      olc_perror("swrite: retried 5 times, giving up; last error");
       close(fd);
       return(-1);
     }
 
+#ifndef IO_BLOCKING
     tval.tv_sec = select_timeout;
     tval.tv_usec = 0;
     
@@ -702,19 +716,31 @@ int swrite(fd, buf, nbytes)
 	if (s_val == 0)
 	  errno = ETIMEDOUT;
 	
+#ifdef IO_DUMP
+      dump_current_core_image();
+#endif /* IO_DUMP */
 	olc_perror("swrite: select");
 	close(fd);
 	return(-1);
       }
     
     if (! FD_ISSET(fd,&write_fds)) {
+      /* This ought to be impossible if s_val is >= 1 */
+#ifdef IO_DUMP
+      dump_current_core_image();
+#endif /* IO_DUMP */
+      olc_perror("swrite: select() return isn't consistent; last error");
       close(fd);
       return(-1);
     }
+#endif /* not IO_BLOCKING */
 
     n_wrote = write(fd, (char *)(buf + tot_wrote), nbytes);
     if (n_wrote < 0) {
-      olc_perror("swrite: write:");
+#ifdef IO_DUMP
+      dump_current_core_image();
+#endif /* IO_DUMP */
+      olc_perror("swrite: write");
       close(fd);
       return(n_wrote);
     }
@@ -728,4 +754,3 @@ int swrite(fd, buf, nbytes)
 
   return(tot_wrote);
 }
-

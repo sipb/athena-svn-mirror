@@ -18,16 +18,17 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: notify.c,v 1.40 1999-01-22 23:14:28 ghudson Exp $
+ *	$Id: notify.c,v 1.41 1999-03-06 16:48:56 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: notify.c,v 1.40 1999-01-22 23:14:28 ghudson Exp $";
+static char rcsid[] ="$Id: notify.c,v 1.41 1999-03-06 16:48:56 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>	        /* IPC socket defs. */
@@ -41,17 +42,18 @@ static char rcsid[] ="$Id: notify.c,v 1.40 1999-01-22 23:14:28 ghudson Exp $";
 #include <setjmp.h>
 
 #include <netdb.h>              /* Net database defs. */
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
 #include <com_err.h>
 #include <zephyr/zephyr.h>
-#endif /* ZEPHYR */
+#endif /* HAVE_ZEPHYR */
 
 #include <olcd.h>
 
 /* External Variables. */
 
 extern char DaemonHost[];	/* Name of daemon's machine. */
-extern char DaemonInst[];	/* "olc", "olz", "olta", etc. */
+extern char DaemonInst[];	/* "OLC", "OLTA", etc. */
+extern char DaemonZClass[];	/* Zephyr class to use, usually DaemonInst */
 
 static int punt_zephyr = 0;
 static long zpunt_time;
@@ -63,16 +65,13 @@ static int zpunt_duration;
 # define P(s) ()
 #endif
 
-#ifdef VOID_SIGRET
-static void notice_timeout P((int a ));
-#else
-static int notice_timeout P((int a ));
-#endif
-#ifdef ZEPHYR
+static RETSIGTYPE notice_timeout P((int a ));
+
+#ifdef HAVE_ZEPHYR
 static ERRCODE zwrite_message P((char *username , char *message ));
 static ERRCODE zsend_message P((char *c_class , char *instance , char *opcode , char *username , char *message ));
 static ERRCODE zsend P((ZNotice_t *notice ));
-#endif /* Zephyr */
+#endif /* HAVE_ZEPHYR */
 #undef P
 
 
@@ -97,7 +96,7 @@ static jmp_buf env;
 
 static int write_port = 0;
 
-ERRCODE
+static ERRCODE
 write_message(touser, tomachine, fromuser, frommachine, message)
      char *touser, *tomachine, *fromuser, *frommachine, *message;
 {
@@ -109,15 +108,15 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	struct sockaddr_in sin;	/* Socket address. */
 	int flag = 0;
 	long time_now;
+	unsigned long ip_addr;
+#ifdef HAVE_SIGACTION
+	struct sigaction action;
+#endif
 
 	if (touser == (char *)NULL) /* User sanity check. */
 		return(ERROR);
 
-#ifdef SILENT
-	return(SUCCESS);
-#endif
-
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
  	/* First try using Zephyr write.  If return status is anything
 	 * but SUCCESS, try again using Unix write.
 	 */
@@ -138,7 +137,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	    if (zwrite_message(touser, message) == SUCCESS)
 	      return(SUCCESS);
 	  }
-#endif
+#endif /* HAVE_ZEPHYR */
 
 	if (write_port == 0) {
 		struct servent *service;
@@ -150,40 +149,76 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 		write_port = service->s_port;
 	}
 
-	host = gethostbyname(tomachine);
-	if (host == (struct hostent *)NULL) {
-		(void) sprintf(error, 
-			       "Can't resolve name of host '%s'", tomachine);
-		log_error(error);
+	/* "tomachine" may be a hostname or a numeric IP address. */
+	if (strspn(tomachine, "01234567890.") == strlen(tomachine))
+	  {
+	    /* string contains a numeric IP address (#.#.#.#) */
+
+	    ip_addr = inet_addr(tomachine);
+	    if (ip_addr == (unsigned long)-1)
+	      {
+		log_error("Can't convert '%s' to IP address", tomachine);
 		return(ERROR);
-	}
-	sin.sin_family = host->h_addrtype;
-	memcpy(&sin.sin_addr, host->h_addr, host->h_length);
+	      }
+
+	    sin.sin_family = AF_INET;
+	    sin.sin_addr.s_addr = ip_addr;
+	  }
+	else
+	  {
+	    /* string contains a hostname */
+
+	    host = gethostbyname(tomachine);
+	    if (host == (struct hostent *)NULL)
+	      {
+		log_error("Can't resolve hostname '%s'", tomachine);
+		return(ERROR);
+	      }
+
+	    sin.sin_family = host->h_addrtype;
+	    memcpy(&sin.sin_addr, host->h_addr, host->h_length);
+	  }
+
 	sin.sin_port = write_port;
-	fds = socket(host->h_addrtype, SOCK_STREAM, 0);
+	fds = socket(PF_INET, SOCK_STREAM, 0);
 	if (fds < 0) {
 		log_error("write_message: socket: %m");
-		exit(1);
+		exit(2);
 	}
 
-
+#ifdef HAVE_SIGACTION
+	action.sa_flags = 0;
+	sigemptyset(&action.sa_mask);
+	action.sa_handler = notice_timeout;
+	sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
         signal(SIGALRM, notice_timeout);
-        alarm(OLCD_TIMEOUT);
+#endif /* don't HAVE_SIGACTION */
         if(setjmp(env) != 0) {
-                sprintf(error, "Unable to contact writed on %s", tomachine);
-                log_status(error);
+                log_status("Unable to contact writed on %s", tomachine);
 		if(tf!=NULL)
 		  fclose(tf);
 		close(fds);
                 alarm(0);
+#ifdef HAVE_SIGACTION
+		action.sa_handler = SIG_IGN; /* struct already initialized */
+		sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
 		signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
                 return(ERROR);
         }
+        alarm(OLCD_TIMEOUT);
 
 
 	if (connect(fds, (struct sockaddr *) &sin, sizeof (sin)) < 0) {
 	  alarm(0);
+#ifdef HAVE_SIGACTION
+	  action.sa_handler = SIG_IGN;       /* struct already initialized */
+	  sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
 	  signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
 	  (void) close(fds);
 	  return(MACHINE_DOWN);
 	}
@@ -200,7 +235,12 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 		  (void) fclose(tf);
 		  (void) close(fds);
 		  alarm(0);
+#ifdef HAVE_SIGACTION
+		  action.sa_handler = SIG_IGN; /* struct already initialized */
+		  sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
 		  signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
 		  return(LOGGED_OUT);
 		}
 		if (buf[0] == '\n')
@@ -212,16 +252,17 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	(void) fclose(tf);
 	(void) close(fds);
 	alarm(0);
+#ifdef HAVE_SIGACTION
+	action.sa_handler = SIG_IGN;         /* struct already initialized */
+	sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
 	signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
 	return(SUCCESS);
 }
 
  
-#ifdef VOID_SIGRET
-static void
-#else
-static int
-#endif
+static RETSIGTYPE
 notice_timeout(a)
      int a;
 {
@@ -229,10 +270,8 @@ notice_timeout(a)
   a = a;  /* Rand lives! :-) */
 #endif
     longjmp(env, 1);
-#ifndef VOID_SIGRET
   /*NOTREACHED*/
-  return(0);
-#endif
+  return;
 }
 
     
@@ -262,6 +301,11 @@ write_message_to_user(k, message, flags)
 
   if (k == (KNUCKLE *) NULL)
     return(ERROR);
+
+#ifdef OLCD_SILENT
+  /* if OLCD_SILENT is defined, we never talk directly to users. */
+  return(SUCCESS);
+#else /* not OLCD_SILENT */
 
   if (namebuf[0] == 0)  sprintf(namebuf,"%s_Service",DaemonInst);
 
@@ -315,6 +359,7 @@ write_message_to_user(k, message, flags)
       break;
     }
   return(status);
+#endif /* not OLCD_SILENT */
 }
 
 #define MESSAGE_CLASS "MESSAGE"
@@ -334,18 +379,18 @@ ERRCODE
 olc_broadcast_message(instance, message, code)
      char *instance, *message, *code;
 {
-#ifdef ZEPHYR  
+#ifdef HAVE_ZEPHYR  
   if (punt_zephyr)
     return(ERROR);
 
-  if(zsend_message(DaemonInst, instance, code, "", message) == ERROR)
+  if(zsend_message(DaemonZClass, instance, code, "", message) == ERROR)
     return(ERROR);
-#endif
+#endif /* HAVE_ZEPHYR */
 
   return(SUCCESS);
 }
 
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
 
 
 /*
@@ -438,11 +483,24 @@ zsend(notice)
      ZNotice_t *notice;
 {
   int ret;
-  sigset_t mask, omask;
   ZNotice_t retnotice;
   char buf[BUFSIZ];
+#ifdef HAVE_SIGPROCMASK
+  sigset_t sigchld, oldmask;
+#else /* don't HAVE_SIGPROCMASK */
+  int sigm;
+#endif /* don't HAVE_SIGPROCMASK */
+#ifdef HAVE_SIGACTION
+  struct sigaction action;
 
+  action.sa_flags = 0;
+  sigemptyset(&action.sa_mask);
+  action.sa_handler = notice_timeout;
+  sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
   signal(SIGALRM, notice_timeout);
+#endif /* don't HAVE_SIGACTION */
+
   alarm(6 * OLCD_TIMEOUT);	/* Longer timeout than for "write". */
 
   if(setjmp(env) != 0)
@@ -450,25 +508,40 @@ zsend(notice)
       toggle_zephyr(1,ZEPHYR_PUNT_TIME);
       log_zephyr_error("Unable to send message via zephyr.  Punting.");
       alarm(0);
+#ifdef HAVE_SIGACTION
+      action.sa_handler = SIG_IGN;           /* struct already initialized */
+      sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
       signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
       return(ERROR);
     }
 
-
-  if ((ret = ZSendNotice(notice, ZAUTH)) != ZERR_NONE)
+  ret = ZSendNotice(notice, ZAUTH);
+  if (ret != ZERR_NONE)
     {
       /* Some sort of unknown communications error. */
-      sprintf(buf,"zsend: error %s from ZSendNotice",error_message(ret));
-      log_zephyr_error(buf);
+      log_zephyr_error("zsend: error '%s' (%d) from ZSendNotice",
+		       error_message(ret), ret);
       alarm(0);
+#ifdef HAVE_SIGACTION
+      action.sa_handler = SIG_IGN;           /* struct already initialized */
+      sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
       signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
       return(ERROR);
     }
 
   if(notice->z_kind != ACKED)
     {
       alarm(0);			/* If notice isn't acked, no need to wait. */
+#ifdef HAVE_SIGACTION
+      action.sa_handler = SIG_IGN;           /* struct already initialized */
+      sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
       signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
       return(SUCCESS);
     }
 
@@ -479,26 +552,47 @@ zsend(notice)
    * system call error message.
    */
 
-  sigemptyset(&mask);
-  sigaddset(&mask, SIGCHLD);
-  sigprocmask(SIG_BLOCK, &mask, &omask);
-  if ((ret = ZIfNotice(&retnotice, (struct sockaddr_in *) 0,
-		       ZCompareUIDPred, (char *) &notice->z_uid)) !=
-      ZERR_NONE)
+#ifdef HAVE_SIGPROCMASK
+  sigemptyset(&sigchld);
+  sigaddset(&sigchld, SIGCHLD);
+  sigprocmask(SIG_BLOCK, &sigchld, &oldmask);
+#else /* don't HAVE_SIGPROCMASK */
+  sigm = sigblock(sigmask(SIGCHLD));
+#endif /* don't HAVE_SIGPROCMASK */
+  ret = ZIfNotice(&retnotice, (struct sockaddr_in *) 0,
+		  ZCompareUIDPred, (char *) &notice->z_uid);
+  if (ret != ZERR_NONE)
     {
       /* Server acknowledgement error here. */
-      sigprocmask(SIG_SETMASK, &omask, NULL);
-      sprintf(buf,"zsend: error %s from ZIfNotice",error_message(ret));
-      log_zephyr_error(buf);
+#ifdef HAVE_SIGPROCMASK
+      sigprocmask(SIG_SETMASK, &oldmask, NULL);
+#else /* don't HAVE_SIGPROCMASK */
+      sigsetmask(sigm);
+#endif /* don't HAVE_SIGPROCMASK */
+      log_zephyr_error("zsend: error %s from ZIfNotice",error_message(ret));
       ZFreeNotice(&retnotice);
       alarm(0);
+#ifdef HAVE_SIGACTION
+      action.sa_handler = SIG_IGN;           /* struct already initialized */
+      sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
       signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
       return(ERROR);
     }
 
-  sigprocmask(SIG_SETMASK, &omask, NULL);
+#ifdef HAVE_SIGPROCMASK
+  sigprocmask(SIG_SETMASK, &oldmask, NULL);
+#else /* don't HAVE_SIGPROCMASK */
+  sigsetmask(sigm);
+#endif /* don't HAVE_SIGPROCMASK */
   alarm(0);			/* If ZIfNotice came back, shut off alarm. */
+#ifdef HAVE_SIGACTION
+  action.sa_handler = SIG_IGN;               /* struct already initialized */
+  sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
   signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
 
   if (retnotice.z_kind == SERVNAK)
     {
@@ -521,9 +615,6 @@ zsend(notice)
     }
   else
     {
-#ifdef TEST
-      printf("zsend: unknown error sending Zephyr message\n");
-#endif
       ZFreeNotice(&retnotice);
       return(ERROR);   	/* Some error, probably not using Zephyr */
     }
@@ -548,21 +639,20 @@ toggle_zephyr(toggle,punt_time)
     (void) time(&zpunt_time);
     zpunt_duration = punt_time * 60;
     /* Create file to tell other daemons to punt zephyr */
-    if ((fd = creat(ZEPHYR_DOWN_FILE,0644)) < 0) {
-      sprintf(errbuf,"error trying to create %s: %%m",ZEPHYR_DOWN_FILE);
-      log_error(errbuf);
+    fd = creat(ZEPHYR_DOWN_FILE,0644);
+    if (fd < 0) {
+      log_error("error trying to create %s: %m",ZEPHYR_DOWN_FILE);
       return;
     }
     close(fd);
   } else {
     punt_zephyr = 0;
     if (unlink(ZEPHYR_DOWN_FILE) < 0) {
-      sprintf(errbuf,"error unlinking %s: %%m",ZEPHYR_DOWN_FILE);
-      log_error(errbuf);
+      log_error("error unlinking %s: %m",ZEPHYR_DOWN_FILE);
       return;
     }
   }
   return;
 }
-#endif /* ZEPHYR */
+#endif /* HAVE_ZEPHYR */
 

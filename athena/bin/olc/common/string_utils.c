@@ -16,16 +16,18 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *	$Id: string_utils.c,v 1.17 1999-01-22 23:13:14 ghudson Exp $
+ *	$Id: string_utils.c,v 1.18 1999-03-06 16:48:17 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: string_utils.c,v 1.17 1999-01-22 23:13:14 ghudson Exp $";
+static char rcsid[] ="$Id: string_utils.c,v 1.18 1999-03-06 16:48:17 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 
 #include <ctype.h>              /* Character type macros. */
@@ -55,14 +57,32 @@ void uncase(string)
     *s1 = '\0';
 }
 
-void upcase_string(string)
-     char *string;
+/* Convert a string to upper case.  The string is modified in place.
+ * Arguments:  str -- pointer to the string to convert
+ * Returns: nothing
+ */
+void upcase_string(char *str)
 {
-  char *s1 = string;
-  while(*s1 != '\0') {
-    if (islower(*s1)) *s1 = toupper(*s1);
-    s1++;
-  }
+  while(*str != '\0')
+    {
+      if (islower(*str))
+	*str = toupper(*str);
+      str++;
+    }
+}
+
+/* Convert a string to lower case.  The string is modified in place.
+ * Arguments:  string -- pointer to the string to convert
+ * Returns: nothing
+ */
+void downcase_string(char *str)
+{
+  while(*str != '\0')
+    {
+      if (isupper(*str))
+	*str = tolower(*str);
+      str++;
+    }
 }
 
 char *

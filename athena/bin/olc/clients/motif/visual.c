@@ -8,10 +8,11 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: visual.c,v 1.12 1999-01-22 23:12:22 ghudson Exp $
+ *	$Id: visual.c,v 1.13 1999-03-06 16:47:45 ghudson Exp $
  */
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <Xm/Form.h>
 #include <Xm/PushBG.h>

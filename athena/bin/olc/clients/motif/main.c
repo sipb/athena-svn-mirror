@@ -9,16 +9,17 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: main.c,v 1.21 1999-01-22 23:12:21 ghudson Exp $
+ *      $Id: main.c,v 1.22 1999-03-06 16:47:44 ghudson Exp $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Id: main.c,v 1.21 1999-01-22 23:12:21 ghudson Exp $";
+static char rcsid[]="$Id: main.c,v 1.22 1999-03-06 16:47:44 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <pwd.h>
 #include <netdb.h>
@@ -39,13 +40,13 @@ PERSON User;                            /* Structure describing user. */
 char DaemonHost[MAXHOSTNAMELEN];           /* Name of the daemon's machine. */
 char *program;
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 char REALM[REALM_SZ];
 char INSTANCE[INST_SZ];
 
 extern char *LOCAL_REALM;
 extern char *LOCAL_REALMS[];
-#endif
+#endif /* HAVE_KRB4 */
 
 int select_timeout = 300;
 
@@ -177,30 +178,6 @@ main(argc, argv)
   XtMainLoop();
 }
 
-
-/* Set an environment variable.
- * Arguments:	var: a string containing the name of the variable.
- *		value: a string containing the new value.
- * Returns:	nothing.
- * Non-local returns: on some platforms, exits with code 1 if malloc fails.
- */
-
-void
-set_env_var(const char *var, const char *value)
-{
-#ifdef PUTENV
-  char *buf = malloc(strlen(var)+strlen(value)+2);
-  if (buf == NULL)
-    {
-      fprintf(stderr, "Out of memory, can't expand environment.\n");
-      exit(1);
-    }
-  sprintf(buf, "%s=%s", var, value);
-  putenv(buf);
-#else
-  setenv (var, value, 1);
-#endif
-}
 
 /*
  * Function:    olc_init() completes the initialization process for

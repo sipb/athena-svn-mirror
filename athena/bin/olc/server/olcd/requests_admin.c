@@ -19,16 +19,17 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_admin.c,v 1.28 1999-01-22 23:14:30 ghudson Exp $
+ *	$Id: requests_admin.c,v 1.29 1999-03-06 16:48:57 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_admin.c,v 1.28 1999-01-22 23:14:30 ghudson Exp $";
+static char rcsid[] ="$Id: requests_admin.c,v 1.29 1999-03-06 16:48:57 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <olcd.h>
 
@@ -109,12 +110,10 @@ olc_change_motd(fd,request)
     return(status);
 
   status = send_response(fd,read_text_into_file(fd,MOTD_FILE));
-#ifdef DISCUSS
-  /* If using discuss, log motd to it.  If not, you may want to use some */
-  /* other method here. */
+
   log_motd(requester->user->username);
-#endif
   set_motd_timeout(requester);
+
   return(status);
 }
 
@@ -155,14 +154,9 @@ olc_change_acl(fd,request)
   char *name;
   int status;
 
-#ifdef LOG
-  char mesg[BUF_SIZE];
-#endif /* LOG */
-
   status = find_knuckle(&(request->requester), &requester);	
   if(status)
     return(send_response(fd,status));
-
   
   status = get_user(&(request->target), &user);
   if(status)
@@ -179,11 +173,10 @@ olc_change_acl(fd,request)
   if(acl == (char *) NULL)
     return(send_response(fd,ERROR));
 
-#ifdef LOG
-  sprintf(mesg,"%s changing %s acl for %s", request->requester.username, 
-	  acl, name);
-  log_admin(mesg);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_admin("%s changing %s acl for %s", request->requester.username, 
+	    acl, name);
+#endif /* OLCD_LOG_ACTIONS */
 
   for(a_ptr = Acl_List; a_ptr->code > 0; a_ptr++)
     {
@@ -227,6 +220,23 @@ olc_change_acl(fd,request)
     {
       user->permissions = 0;
       get_acls(user);
+
+      /* If a user has NO permissions (not even ask), that's probably a bug. */
+      if (user->permissions == 0)
+	{
+	  char *realm = user->realm;
+
+	  if (!realm || !realm[0])
+	    realm = "???";
+
+	  log_error("alert: all permissions (including ask) "
+		    "for user '%s@%s' have been removed via 'olcr acl'!",
+		    user->username, realm);
+
+	  strcpy(tmpfile, OLXX_SPOOL_DIR "/perm_corrupt_change_XXXX");
+	  mktemp(tmpfile);
+	  dump_data(tmpfile);
+	}
     }
   return 1;  /* is the error code ever used ? */
 }
@@ -291,11 +301,11 @@ olc_get_accesses(fd,request)
       if(status)
 	{
 	  strcpy(u.username, request->target.username);
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 	  strcpy(u.realm, request->target.realm);
-#else
+#else /* not HAVE_KRB4 */
 	  strcpy(u.realm, DFLT_SERVER_REALM);
-#endif	  
+#endif /* not HAVE_KRB4 */
 	  user = &u;    
 	  init_dbinfo(user);
 	}
@@ -387,11 +397,11 @@ olc_change_dbinfo(fd,request)
       if(status)
 	{
 	  strcpy(u.username, request->target.username);
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 	  strcpy(u.realm, request->target.realm);
-#else
+#else /* not HAVE_KRB4 */
 	  strcpy(u.realm, DFLT_SERVER_REALM);
-#endif	  
+#endif /* not HAVE_KRB4 */
 	  user = &u;    /* local init for now */
 	  init_dbinfo(user);
 	}
@@ -442,9 +452,9 @@ olc_set_user_status(fd,request)
 	sprintf(message,"%s %s has logged back in.",
 		cap(target->title), user->username);
 	log_daemon(target,message);
-#ifdef LOG
+#ifdef OLCD_LOG_ACTIONS
 	log_status(message);
-#endif /* LOG */
+#endif /* OLCD_LOG_ACTIONS */
 	
 	strcat(message, "\n");
 	olc_broadcast_message("resurrection",message,
@@ -457,9 +467,9 @@ olc_set_user_status(fd,request)
 	sprintf(message,"%s %s has logged out.",
 		cap(target->title), user->username);
 	log_daemon(target,message);
-#ifdef LOG
+#ifdef OLCD_LOG_ACTIONS
 	log_status(message);
-#endif /* LOG */
+#endif /* OLCD_LOG_ACTIONS */
 	
 	strcat(message, "\n");
 	olc_broadcast_message("aloha",message, target->question->topic);
@@ -471,9 +481,9 @@ olc_set_user_status(fd,request)
 	sprintf(message,"%s %s machine is down.",
 		cap(target->title), user->username);
 	log_daemon(target,message);
-#ifdef LOG
+#ifdef OLCD_LOG_ACTIONS
 	log_status(message);
-#endif /* LOG */
+#endif /* OLCD_LOG_ACTIONS */
 	
 	set_status(user,MACHINE_DOWN);
       }
@@ -488,7 +498,7 @@ olc_set_user_status(fd,request)
   return(SUCCESS);
 }
 
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
 ERRCODE
 olc_toggle_zephyr(fd,request)
      int fd;
@@ -527,4 +537,4 @@ olc_toggle_zephyr(fd,request)
   needs_backup = FALSE;
   return(SUCCESS);
 }
-#endif
+#endif /* HAVE_ZEPHYR */

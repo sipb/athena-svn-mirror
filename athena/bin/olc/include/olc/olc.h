@@ -18,7 +18,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc.h,v 1.28 1999-01-22 23:13:42 ghudson Exp $
+ *	$Id: olc.h,v 1.29 1999-03-06 16:48:33 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -27,20 +27,18 @@
 #define __olc_olc_h
 
 #include <stdio.h>
-#if defined(__STDC__) && !defined(__HIGHC__) && !defined(SABER)
-/* Stupid High-C claims to be ANSI but doesn't have the include files.. */
-/* Ditto for saber */
+#ifdef STDC_HEADERS
 #include <stdlib.h>
-#endif
 #include <string.h>
+#endif
 
 #include <olc/lang.h>
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 #include <krb.h>
 #endif
 
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
 #include <hesiod.h>
 #endif
 
@@ -64,10 +62,9 @@ struct tREQUEST;
  */
 
 #define OLC_SERV_NAME  "sloc"                 /* nameservice key */
-#define OLC_SERVICE    "olc"                  /* olc service name */
 #define OLC_PROTOCOL   "tcp"                  /* protocol */
 
-#define OLC_FALLBACK_PROMPT  "ol??> "       /* prompt if no config file */
+#define OLC_FALLBACK_PROMPT  "ol\?\?> "     /* prompt if no config file */
 #define OLC_FALLBACK_TITLE   "consultant"   /* consultant title if no config */
 
 /* Default path for the incarnation configuration files. */
@@ -76,14 +73,20 @@ struct tREQUEST;
 
 #define OLC_DEFAULT_HELP_EXT	".help"
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 #define K_SERVICE      "olc"                  /* Kerberos service name */
 #define K_INSTANCE     "*"                    /* whatever instance applies */
+/* Kerberos ticket lifetime, in units of 5-minute chunks.  [6 hours] */
+#define TICKET_LIFE    (6*12)
+/* at what age we try getting new tickets, in units of 5-minute chunks. */
+#define TICKET_WHEN    (TICKET_LIFE-3)
+/* Delay between checking the state of the tickets, in minutes. */
+#define TICKET_FREQ    1
 extern char *LOCAL_REALM;
 extern char *LOCAL_REALMS[];
 extern char REALM[];
 extern char INSTANCE[];
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
 
 extern PERSON User;
 extern STATUS Status_Table[];
@@ -94,11 +97,5 @@ extern char DaemonHost[];
  */
 
 #define CLIENT_TIME_OUT 300     
-#ifdef ATHENA
-#define DEFAULT_MAILHUB "mit.edu"
-#else
-/* Define to be whatever's appropriate to your site.. */
-#define DEFAULT_MAILHUB "foo.bar.edu"
-#endif
 
 #endif /* __olc_olc_h */

@@ -8,33 +8,35 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: motd.c,v 1.16 1999-01-22 23:14:27 ghudson Exp $
+ *	$Id: motd.c,v 1.17 1999-03-06 16:48:55 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: motd.c,v 1.16 1999-01-22 23:14:27 ghudson Exp $";
+static char rcsid[] ="$Id: motd.c,v 1.17 1999-03-06 16:48:55 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
+#include "olcd.h"
 
-
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <sys/time.h>
 #include <sys/file.h>
 #include <sys/stat.h>
-#if defined(_AIX) && defined(_IBMR2)
+#ifdef HAVE_TIME_H
 #include <time.h>
 #endif
 
-#ifdef DISCUSS
+#ifdef HAVE_DISCUSS
 #include <lumberjack.h>
 #endif
-#include <olcd.h>
+
 #ifdef __STDC__
 # define        P(s) s
 #else
@@ -64,7 +66,7 @@ void
   if (expire_time == -1) {
     fd = open(MOTD_TIMEOUT_FILE,O_RDONLY,0);
     if (fd < 0) {
-      log_error("check_motd_timeout: Couldn't open motd timeout file");
+      log_error("check_motd_timeout: Couldn't open motd timeout file: %m");
       expire_time = 0;
       in_time = 0;
       write_motd_times();
@@ -83,20 +85,10 @@ void
     p = p+1;
     in_time = atol(p);
 
-    strcpy(buf,"MOTD timeout set to: ");
-    if (expire_time == 0)
-      strcat(buf,"infinite.");
-    else
-      strcat(buf,ctime(&expire_time));
-    log_status(buf);
-
-    strcpy(buf,"  timein set to    : ");
-    if (in_time == 0)
-      strcat(buf,"Never.");
-    else
-      strcat(buf,ctime(&in_time));
-    log_status(buf);
-    
+    log_status("MOTD timeout set to: %s",
+	       (expire_time == 0) ? "infinite." : ctime(&expire_time));
+    log_status("     timein set to:  %s",
+	       (expire_time == 0) ? "never."    : ctime(&in_time));
   }
 
   gettimeofday(&now,0);
@@ -105,7 +97,7 @@ void
     in_time = 0;
     write_motd_times();
     if (rename(MOTD_HOLD_FILE,MOTD_FILE) < 0) {
-      log_error("check_motd_timeout:rename %m");
+      log_error("check_motd_timeout: rename: %m");
       return;
     }
     log_status("MOTD automatically invoked");
@@ -114,7 +106,7 @@ void
   if ((now.tv_sec > expire_time) && (expire_time != 0)) {
     fd = open(MOTD_FILE,O_TRUNC|O_CREAT, 0664);
     if (fd < 0)
-      log_error("check_motd_timeout: Couldn't create/truncate motd file");
+      log_error("check_motd_timeout: Couldn't create/truncate motd file: %m");
     close(fd);
     log_status("MOTD expired");
     expire_time = 0;
@@ -139,7 +131,7 @@ KNUCKLE *requester;
   in_time = 0;
   f = fopen(MOTD_FILE,"r+");
   if (f == NULL) {
-    log_error("set_motd_timeout: Couldn't create/truncate motd file");
+    log_error("set_motd_timeout: Couldn't create/truncate motd file: %m");
     return;
   }
   sprintf(tmp_motd_file,"%s.new",MOTD_FILE);
@@ -199,7 +191,7 @@ KNUCKLE *requester;
   else {
     fd = open(MOTD_FILE,O_TRUNC|O_CREAT, 0664);
     if (fd < 0)
-      log_error("set_motd_timeout: Couldn't create/truncate motd file");
+      log_error("set_motd_timeout: Couldn't create/truncate motd file: %m");
     close(fd);
     check_motd_timeout();
     if (rename(tmp_motd_file,MOTD_HOLD_FILE) != 0)
@@ -289,11 +281,15 @@ char *buf;
   return(when);
 }
 
-#ifdef DISCUSS
+/* Log the new MOTD.  If you don't have Discuss, it'll just silently
+ * do nothing; in that case, you may want to add some other means of
+ * logging the message here... 
+ */
 void
 log_motd(username)
      char *username;
 {
+#ifdef HAVE_DISCUSS
   char newfile[NAME_SIZE];	/* New file name. */
   char ctrlfile[NAME_SIZE];	/* Control file name. */
   FILE *fp;			/* Stream for control file. */
@@ -314,7 +310,8 @@ log_motd(username)
   sprintf(msgbuf,"/bin/cp %s %s",MOTD_FILE,newfile);
   system(msgbuf);
 
-  if ((fp = fopen(ctrlfile, "w")) == NULL)
+  fp = fopen(ctrlfile, "w");
+  if (fp == NULL)
     {
       log_error("Can't create control file: %m");
       return;
@@ -324,25 +321,20 @@ log_motd(username)
 	  username);
   fclose(fp);
       
-#ifdef NO_VFORK
-  if ((pid = fork()) == -1) 
-#else
-  if ((pid = vfork()) == -1) 
-#endif
+  pid = fork();
+  if (pid == -1) 
     {
       log_error("Can't fork to dispose of log: %m");
       return;
     }
   else if (pid == 0) 
     {
-      (void) sprintf(msgbuf, "New motd logged");
-      log_status(msgbuf);
+      log_status("New motd logged");
 
       execl(LUMBERJACK_LOC, "lumberjack", 0);
-      (void) sprintf(msgbuf,"log_motd: cannot exec %s: %%m",LUMBERJACK_LOC);
-      log_error(msgbuf);
-      _exit(0);
+      log_error("log_motd: cannot exec %s: %m",LUMBERJACK_LOC);
+      _exit(4);
     }
+#endif /* HAVE_DISCUSS */
   return;
 }
-#endif

@@ -18,14 +18,16 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: x_topic.c,v 1.5 1999-01-22 23:12:27 ghudson Exp $
+ *      $Id: x_topic.c,v 1.6 1999-03-06 16:47:47 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]= "$Id: x_topic.c,v 1.5 1999-01-22 23:12:27 ghudson Exp $";
+static char rcsid[]= "$Id: x_topic.c,v 1.6 1999-03-06 16:47:47 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <Xm/List.h>
 
 #include "xolc.h"

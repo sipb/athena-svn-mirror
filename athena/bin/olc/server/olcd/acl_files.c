@@ -5,16 +5,17 @@
  * Copyright (C) 1987,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: acl_files.c,v 1.16 1999-01-22 23:14:21 ghudson Exp $
+ *	$Id: acl_files.c,v 1.17 1999-03-06 16:48:51 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: acl_files.c,v 1.16 1999-01-22 23:14:21 ghudson Exp $";
+static char rcsid[] ="$Id: acl_files.c,v 1.17 1999-03-06 16:48:51 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 /* CHANGES from std. file:  fixed fd leak and null ptr. deref.
  *                          increased cache size
@@ -27,14 +28,15 @@ static char rcsid[] ="$Id: acl_files.c,v 1.16 1999-01-22 23:14:21 ghudson Exp $"
 #include <string.h>
 #include <sys/types.h>
 #include <sys/file.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <ctype.h>
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 #include <krb.h>
 #endif
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 #ifndef KRB_REALM
 #define KRB_REALM	"ATHENA.MIT.EDU"
 #endif
@@ -56,7 +58,7 @@ static char rcsid[] ="$Id: acl_files.c,v 1.16 1999-01-22 23:14:21 ghudson Exp $"
 #define NEW_FILE "%s.~NEWACL~"	/* Format for name of altered acl file */
 #define WAIT_TIME 3		/* Maximum time allowed write acl file */
 
-#define CACHED_ACLS  35 /* How many acls to cache */
+#define CACHED_ACLS  45 /* How many acls to cache */
 /* Each acl costs 1 open file descriptor */
 #define ACL_LEN 32		/* Twice a reasonable acl length */
 
@@ -93,15 +95,6 @@ static unsigned int hashval P((char *s ));
 static void add_hash P((struct hashtbl *h , char *el ));
 static int check_hash P((struct hashtbl *h , char *el ));
 static int acl_load P((char *name ));
-
-/* system */
-
-#ifndef HAS_ANSI_INCLUDES
-void *malloc P((unsigned int));
-void *calloc P((unsigned int, unsigned int));
-void perror P((char *msg ));
-void free P((void *));
-#endif
 
 #undef P
 
@@ -167,7 +160,7 @@ char *canon;
     canon += len;
     *canon++ = '\0';
   }
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   else if (krb_get_lrealm(canon, 1) != KSUCCESS) {
     strcpy(canon, KRB_REALM);
   }
@@ -196,7 +189,8 @@ char *acl_file;
   sprintf(new, NEW_FILE, acl_file);
   for(;;) {
     /* Open the new file */
-    if((nfd = open(new, O_WRONLY|O_CREAT|O_EXCL, mode)) < 0) {
+    nfd = open(new, O_WRONLY|O_CREAT|O_EXCL, mode);
+    if(nfd < 0) {
       if(errno == EEXIST) {
 	/* Maybe somebody got here already, maybe it's just old */
 	if(stat(new, &s) < 0) return(NULL);
@@ -217,7 +211,8 @@ char *acl_file;
     
     /* If we got to here, the lock file is ours and ok */
     /* Reopen it under stdio */
-    if((nf = fdopen(nfd, "w")) == NULL) {
+    nf = fdopen(nfd, "w");
+    if(nf == NULL) {
       /* Oops, clean up */
       unlink(new);
     }
@@ -291,7 +286,8 @@ FILE *f;
 
       /* strip off everything after the last slash */
       strcpy(buf, acl_file);
-      if ((ptr = strrchr(buf, '/')) != NULL)
+      ptr = strrchr(buf, '/');
+      if (ptr != NULL)
 	*(ptr+1) = '\0';
 
       /* read in the link name */
@@ -335,11 +331,13 @@ int perm;
   int fd;
   
   /* Check if the file exists already */
-  if((new = acl_lock_file(acl_file)) != NULL) {
+  new = acl_lock_file(acl_file);
+  if(new != NULL) {
     return(acl_commit(acl_file, new));
   } else {
     /* File must be readable and writable by owner */
-    if((fd = open(acl_file, O_CREAT|O_EXCL, perm|0600)) < 0) {
+    fd = open(acl_file, O_CREAT|O_EXCL, perm|0600);
+    if(fd < 0) {
       return(-1);
     } else {
       close(fd);
@@ -479,7 +477,8 @@ char *name;
   struct stat s;
   char buf[MAX_PRINCIPAL_SIZE];
   char canon[MAX_PRINCIPAL_SIZE];
-  
+  int acl_fd;
+
   /* See if it's there already */
   for(i = 0; i < acl_cache_count; i++)
     if(!strcmp(acl_cache[i].filename, name)) {
@@ -507,7 +506,8 @@ char *name;
   /* Set up the acl */
   strcpy(acl_cache[i].filename, name);
  in_cache:
-  if((acl_cache[i].fd = open(name, O_RDONLY, 0)) < 0) return(-1);
+  acl_cache[i].fd = open(name, O_RDONLY, 0);
+  if(acl_cache[i].fd < 0) return(-1);
   /* Force reload */
   acl_cache[i].acl = (struct hashtbl *) 0;
   
@@ -526,8 +526,16 @@ char *name;
      || s.st_ctime != acl_cache[i].status.st_ctime) {
     /* Gotta reload */
     if(acl_cache[i].fd >= 0) close(acl_cache[i].fd);
-    if((acl_cache[i].fd = open(name, O_RDONLY, 0)) < 0) return(-1);
-    if((f = fdopen(acl_cache[i].fd, "r")) == NULL) return(-1);
+    acl_cache[i].fd = open(name, O_RDONLY, 0);
+    if(acl_cache[i].fd < 0) return(-1);
+    /* If we just fdopen() but never fclose(), we leak memory.
+     * On the other hand, if we fclose(), we lose the file descriptor.
+     * We can either reload the ACL every time or use dup()...
+     */
+    acl_fd = dup(acl_cache[i].fd);
+    if(acl_fd < 0) return(-1);
+    f = fdopen(acl_fd, "r");
+    if(f == NULL) return(-1);
     if(acl_cache[i].acl) destroy_hash(acl_cache[i].acl);
     acl_cache[i].acl = make_hash(ACL_LEN);
     while(fgets(buf, sizeof(buf), f) != NULL) {
@@ -535,6 +543,7 @@ char *name;
       acl_canonicalize_principal(buf, canon);
       add_hash(acl_cache[i].acl, canon);
     }
+    /* Yes, close the file.  See above. */
     fclose(f);
     acl_cache[i].status = s;
   }
@@ -576,7 +585,8 @@ char *principal;
   /* Try the wildcards */
   realm = strchr(canon, REALM_SEP);
   *strchr(canon, INST_SEP) = '\0';	/* Chuck the instance */
-  
+  /* TODO: can strchr ever return NULL in this context?  --bert 29jan1997 */
+
   sprintf(buf, "%s.*%s", canon, realm);
   if(acl_exact_match(acl, buf)) return(1);
   
@@ -600,7 +610,8 @@ char *principal;
   
   acl_canonicalize_principal(principal, canon);
   
-  if((new = acl_lock_file(acl)) == NULL) return(-1);
+  new = acl_lock_file(acl);
+  if(new == NULL) return(-1);
   if((acl_exact_match(acl, canon))
      || (idx = acl_load(acl)) < 0) {
     acl_abort(acl, new);
@@ -635,7 +646,8 @@ char *principal;
   
   acl_canonicalize_principal(principal, canon);
   
-  if((new = acl_lock_file(acl)) == NULL) return(-1);
+  new = acl_lock_file(acl);
+  if(new == NULL) return(-1);
   if((!acl_exact_match(acl, canon))
      || (idx = acl_load(acl)) < 0) {
     acl_abort(acl, new);

@@ -18,16 +18,18 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_utils.c,v 1.45 1999-01-22 23:13:08 ghudson Exp $
+ *	$Id: t_utils.c,v 1.46 1999-03-06 16:48:12 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_utils.c,v 1.45 1999-01-22 23:13:08 ghudson Exp $";
+static char rcsid[] ="$Id: t_utils.c,v 1.46 1999-03-06 16:48:12 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
@@ -37,13 +39,22 @@ static char rcsid[] ="$Id: t_utils.c,v 1.45 1999-01-22 23:13:08 ghudson Exp $";
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
 #include <termio.h>
 struct termio mode;
 #else
 #include <sgtty.h>
 struct sgttyb mode;
 #endif
+
+#ifdef HAVE_LRAND48
+#define RANDOM()       lrand48()
+#define SRANDOM(seed)  srand48(seed)
+#else /* don't HAVE_LRAND48 */
+#define RANDOM()       random()
+#define SRANDOM(seed)  srandom(seed)
+#endif /* don't HAVE_LRAND48 */
+
 /*
  * Function:	display_file() prints a file on a user's terminal.
  * Arguments:	filename:	Name of file to be printed.
@@ -225,7 +236,7 @@ get_key_input(text)
   printf("%s",text);
   fflush(stdout);
   raw_mode();
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
   ioctl(0, TCFLSH, 2);
 #else
   ioctl(0, TIOCFLUSH, 0);
@@ -237,7 +248,7 @@ get_key_input(text)
 }
 
 
-#ifdef TERMIO
+#ifdef HAVE_TERMIO
 raw_mode()
 {
   ioctl(0, TCGETA, &mode);
@@ -251,7 +262,7 @@ cooked_mode()
   mode.c_lflag = mode.c_lflag & (ICANON | ISIG | ECHO);
   ioctl(0, TCSETA, &mode);
 }
-#else
+#else /* don't HAVE_TERMIO */
 raw_mode()
 {
   ioctl(0, TIOCGETP, &mode);
@@ -265,7 +276,7 @@ cooked_mode()
   mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
   ioctl(0, TIOCSETP, &mode);
 }
-#endif
+#endif /* don't HAVE_TERMIO */
 
 
 ERRCODE
@@ -273,14 +284,16 @@ handle_response(response, req)
      int response;
      REQUEST *req;
 {
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run this program.  If you were having trouble\nwith a program, try again.\n\n";
-#ifdef ATHENA
-  char *kmessage2 = "If you continue to have difficulty, feel free to contact a user\nconsultant by phone (253-4435).";
-#else
-  char *kmessage2 = "If you continue to have difficulty, please contact a user\nconsultant in person.";
-#endif /* ATHENA */
-#endif /* KERBEROS */
+  char *kmessage2 = "If you continue to have difficulty, you can "
+#ifdef CONSULT_PHONE_NUMBER
+    "contact a user\nconsultant by phone at " CONSULT_PHONE_NUMBER
+#else /* no CONSULT_PHONE_NUMBER */
+    "contact a user\nconsultant in person"
+#endif /* no CONSULT_PHONE_NUMBER */
+    ".";
+#endif /* HAVE_KRB4 */
 
   switch(response)
     {
@@ -405,7 +418,7 @@ If the error persists, seek help.\n", client_service_name());
 	return(ERROR);
       break;
 
-#ifdef KERBEROS     /* these error codes are < 100 */
+#ifdef HAVE_KRB4     /* these error codes are < 100 */
     case MK_AP_TGTEXP: 
     case RD_AP_EXP:
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
@@ -438,18 +451,20 @@ If the error persists, seek help.\n", client_service_name());
       exit(ERROR);
     case RD_AP_TIME:
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
-      printf("Kerberos authentication failed: workstation clock is ");
-      printf("incorrect.\n");
-#ifdef ATHENA
-      printf("Please contact Athena operations and move to ");
-      printf("another workstation.\n");
-#endif
+      printf("Kerberos authentication failed: this workstation's clock is set "
+	     "incorrectly.\nPlease move to another workstation and notify "
+#ifdef HARDWARE_MAINTAINER
+	     HARDWARE_MAINTAINER
+#else /* no HARDWARE_MAINTAINER */
+	     "the workstation's maintainer"
+#endif /* no HARDWARE_MAINTAINER */
+	     " of this problem.");  /* was ATHENA */
       if(client_is_user_client()) {
 	printf("%s",kmessage);
 	printf("%s\n",kmessage2);
       }
       exit(ERROR);
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
 
     case OK:
     case SUCCESS:
@@ -457,7 +472,7 @@ If the error persists, seek help.\n", client_service_name());
 
     default:
       if ((response < 100) && (response >0))   /* this isn't so great */
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 	fprintf(stderr,"%s\n",krb_err_txt[response]);
       else
 #endif
@@ -708,20 +723,16 @@ mail_message(user, consultant, msgfile, args)
 char *
 happy_message()
 {
-#ifdef SOLARIS
-#define random lrand48
-#define srandom srand48
-#endif
   static char do_init = 1;
 
   if (do_init) {
-    srandom( time(NULL) + getuid() + getpid() );
+    SRANDOM( time(NULL) + getuid() + getpid() );
     do_init = 0;
   }
 
-  if(random()%3 == 1)
+  if(RANDOM()%3 == 1)
     {
-      switch(random()%12)
+      switch(RANDOM()%12)
 	{
 	case 1: return("Have a nice day");
 	case 2: return("Have a happy");

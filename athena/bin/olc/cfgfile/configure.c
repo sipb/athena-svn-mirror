@@ -8,14 +8,16 @@
  * Copyright (C) 1996 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: configure.c,v 1.2 1999-01-22 23:11:56 ghudson Exp $
+ *	$Id: configure.c,v 1.3 1999-03-06 16:47:30 ghudson Exp $
  */
 
 #if !defined(SABER) && !defined(lint)
-static char rcsid[] = "$Id: configure.c,v 1.2 1999-01-22 23:11:56 ghudson Exp $";
+static char rcsid[] = "$Id: configure.c,v 1.3 1999-03-06 16:47:30 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <cfgfile/configure.h>
 
 #include <string.h>

@@ -18,19 +18,21 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_list.c,v 1.21 1999-01-22 23:13:02 ghudson Exp $
+ *	$Id: t_list.c,v 1.22 1999-03-06 16:48:09 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_list.c,v 1.21 1999-01-22 23:13:02 ghudson Exp $";
+static char rcsid[] ="$Id: t_list.c,v 1.22 1999-03-06 16:48:09 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
-#if defined(_AUX_SOURCE) || defined(_POSIX_SOURCE)
+#ifdef HAVE_TIME_H
 #include <time.h>
 #endif
 

@@ -22,17 +22,18 @@
 /* This file is part of the CREF finder.  It contains the primary command
  * loop.
  *
- *	$Id: cref.c,v 2.14 1999-01-22 23:11:44 ghudson Exp $
+ *	$Id: cref.c,v 2.15 1999-03-06 16:47:23 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_c = "$Id: cref.c,v 2.14 1999-01-22 23:11:44 ghudson Exp $";
+static char *rcsid_cref_c = "$Id: cref.c,v 2.15 1999-03-06 16:47:23 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */

@@ -18,16 +18,18 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc_stock.c,v 1.23 1999-01-22 23:12:32 ghudson Exp $
+ *	$Id: olc_stock.c,v 1.24 1999-03-06 16:47:52 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olc_stock.c,v 1.23 1999-01-22 23:12:32 ghudson Exp $";
+static char rcsid[] ="$Id: olc_stock.c,v 1.24 1999-03-06 16:47:52 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
 
@@ -128,11 +130,7 @@ do_olc_stock(arguments)
 
   make_temp_name(file);
   
-#ifdef NO_VFORK
   switch(fork()) 
-#else
-  switch(vfork()) 
-#endif
     {
     case -1:                /* error */
       olc_perror("stock: fork");

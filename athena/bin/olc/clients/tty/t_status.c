@@ -18,16 +18,18 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_status.c,v 1.26 1999-01-22 23:13:06 ghudson Exp $
+ *	$Id: t_status.c,v 1.27 1999-03-06 16:48:12 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_status.c,v 1.26 1999-01-22 23:13:06 ghudson Exp $";
+static char rcsid[] ="$Id: t_status.c,v 1.27 1999-03-06 16:48:12 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
@@ -90,10 +92,6 @@ t_display_personal_status(Request,list,chart)
   else
     for(l=list; l->ustatus != END_OF_LIST; ++l)
       count++;
-
-#ifdef TEST
-  printf("count: %d\n", count);
-#endif /* TEST */
 
   if((count == 1) && (list->user.instance == 0) && !chart)
     {

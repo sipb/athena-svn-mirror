@@ -19,16 +19,17 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_olc.c,v 1.58 1999-01-22 23:14:31 ghudson Exp $
+ *	$Id: requests_olc.c,v 1.59 1999-03-06 16:48:58 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_olc.c,v 1.58 1999-01-22 23:14:31 ghudson Exp $";
+static char rcsid[] ="$Id: requests_olc.c,v 1.59 1999-03-06 16:48:58 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <olcd.h>
 
@@ -101,11 +102,10 @@ olc_on(fd, request)
   else
     if(is_option(request->options,SPLIT_OPT))
     {
-#ifdef LOG
-      sprintf(msgbuf,"olc on: created new knuckle2 for %s",
-	      target->user->username);
-      log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+      log_status("olc on: created new knuckle2 for %s",
+		 target->user->username);
+#endif /* OLCD_LOG_ACTIONS */
 
       for (k_ptr = target->user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
 	{
@@ -148,9 +148,9 @@ olc_on(fd, request)
 	  target->user->realname, target->user->username, target->instance,
 	  st);
 
-#ifdef LOG
+#ifdef OLCD_LOG_ACTIONS
   log_status(msgbuf);
-#endif /* LOG */
+#endif /* OLCD_LOG_ACTIONS */
 
   strcat(msgbuf,"\n");
   olc_broadcast_message("nol", msgbuf, "on");
@@ -201,10 +201,6 @@ olc_create_instance(fd,request)
   KNUCKLE *knuckle;
   int status;
   
-#ifdef LOG
-  char buf[BUFSIZ];
-#endif /* LOG */
-
   status = find_knuckle(&(request->requester), &requester);
   if(status != SUCCESS)
     return(send_response(fd,status));
@@ -231,11 +227,10 @@ olc_create_instance(fd,request)
   if(knuckle == (KNUCKLE *) NULL)
     return(send_response(fd,ERROR));
 
-#ifdef LOG
-  sprintf(buf,"%s [%d] extended to %d", target->user->username,
-	  target->instance, knuckle->instance);
-  log_status(buf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] extended to %d", target->user->username,
+	     target->instance, knuckle->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   send_response(fd,SUCCESS);
   write_int_to_fd(fd,knuckle->instance);
@@ -384,9 +379,9 @@ olc_who(fd,request)
 		  cap(requester->title), requester->user->username);
 	  log_daemon(requester,message);
 
-#ifdef LOG
+#ifdef OLCD_LOG_ACTIONS
 	  log_status(message);
-#endif /* LOG */
+#endif /* OLCD_LOG_ACTIONS */
 
 	  strcat(message, "\n");
 	  if (requester->connected != (KNUCKLE *) NULL)
@@ -482,11 +477,10 @@ olc_done(fd, request)
     {
       if(!is_connected(target))
 	{
-#ifdef LOG
-	  sprintf(msgbuf,"%s [%d] is done with question",
-		  target->user->username,target->instance);
-	  log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+	  log_status("%s [%d] is done with question",
+		     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 	  sprintf(target->question->title,
 		  target->question->note[0]
 		  ? target->question->note
@@ -503,11 +497,10 @@ olc_done(fd, request)
 	}
       else
 	{
-#ifdef LOG
-	  sprintf(msgbuf,"%s [%d] signals done",
-		  target->user->username,target->instance);
-	  log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+	  log_status("%s [%d] signals done",
+		     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 	  set_status(target,DONE);
 	  sprintf(msgbuf,"%s %s is done with question.", cap(target->title),
 		  target->user->username);
@@ -535,12 +528,11 @@ olc_done(fd, request)
 	  return(send_response(fd, OK));
 	}
     }
-#ifdef LOG
-	  sprintf(msgbuf,"%s [%d] dones %s [%d]'s question",
-		  requester->user->username,requester->instance,
-		  target->user->username,target->instance);
-	  log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] dones %s [%d]'s question",
+	     requester->user->username,requester->instance,
+	     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   send_response(fd,SEND_INFO);
   if((target == requester) && !(owns_question(requester)))
@@ -656,11 +648,10 @@ olc_cancel(fd, request)
     {
       if(!is_connected(target))
 	{
-#ifdef LOG
-	  sprintf(msgbuf,"%s [%d] has cancelled question",
-		  target->user->username,target->instance);
-	  log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+	  log_status("%s [%d] has cancelled question",
+		     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 	  (void) strcpy(target->question->title,
 			target->question->note[0]
 			? target->question->note
@@ -677,11 +668,10 @@ olc_cancel(fd, request)
 	}
       else
 	{
-#ifdef LOG
-	  sprintf(msgbuf,"%s [%d] signals cancel",
-		  target->user->username,target->instance);
-	  log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+	  log_status("%s [%d] signals cancel",
+		     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 	  sprintf(msgbuf,"%s %s cancelled question.",cap(target->title),
 		  target->user->username);
 	  set_status(target,CANCEL);
@@ -719,12 +709,11 @@ olc_cancel(fd, request)
 		target->question->note[0]
 		? target->question->note
 		: "Cancelled question.");
-#ifdef LOG
-	  sprintf(msgbuf,"%s [%d] cancels %s [%d]'s question",
-		  requester->user->username,requester->instance,
-		  target->user->username,target->instance);
-	  log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] cancels %s [%d]'s question",
+	     requester->user->username,requester->instance,
+	     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   (void) sprintf(msgbuf, "Cancelled by %s@%s.", 
 		 requester->user->username,
@@ -813,11 +802,10 @@ olc_ask(fd, request)
   else
     target = requester;
 
-#ifdef LOG
-  (void) sprintf(msgbuf,"Attempted question from  %s [%d]",
-		 target->user->username,target->instance);
-  log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("Attempted question from  %s [%d]",
+	     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
   
   if(!(is_allowed(requester->user,OLC_ACL) && (is_me(target,requester))) &&
      !(is_allowed(requester->user,GASK_ACL)))
@@ -839,11 +827,10 @@ olc_ask(fd, request)
   else
     if(is_option(request->options,SPLIT_OPT))
     {
-#ifdef LOG
-      sprintf(msgbuf,"olc ask: created new knuckle2 for %s",
-              target->user->username);
-      log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+      log_status("olc ask: created new knuckle2 for %s",
+		 target->user->username);
+#endif /* OLCD_LOG_ACTIONS */
       for (k_ptr = target->user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
         if((*k_ptr)->question != NULL)
           if((*k_ptr)->question-> owner == (*k_ptr))
@@ -892,8 +879,7 @@ olc_ask(fd, request)
     question_len = strlen(text);
     question = (char *) malloc(question_len+1);
     if (!question) {
-      sprintf(msgbuf,"Couldn't malloc %d bytes for question",question_len+1);
-      log_error(msgbuf);
+      log_error("Couldn't malloc %d bytes for question",question_len+1);
       return(send_response(fd,ERROR));
     }
     question[question_len] = '\0';
@@ -936,11 +922,10 @@ olc_ask(fd, request)
   if (request->version >= VERSION_4)
     write_int_to_fd(fd, target->instance);
 
-#ifdef LOG
-  (void) sprintf(msgbuf,"Successful question from  %s [%d]",
-		 target->user->username,target->instance);
-  log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("Successful question from  %s [%d]",
+	     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   write_ask_stats(target->user->username, topic, target->user->machine,
 		  requester->user->username);
@@ -1089,12 +1074,11 @@ olc_forward(fd, request)
 		   requester->user->username, dest_q);
     log_daemon(target,msgbuf);
 
-#ifdef LOG
-    sprintf(msgbuf,"%s [%d] forwards %s [%d]",
-	    requester->user->username,requester->instance,
-	    target->user->username,target->instance);
-    log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+    log_status("%s [%d] forwards %s [%d]",
+	       requester->user->username,requester->instance,
+	       target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
     
     if (consultant) {
 	free_new_messages(consultant);
@@ -1193,9 +1177,9 @@ olc_off(fd, request)
 	  target->user->realname, target->user->username, target->instance);
   olc_broadcast_message("nol",msgbuf,"off");
 
-#ifdef LOG
+#ifdef OLCD_LOG_ACTIONS
   log_status(msgbuf);
-#endif /* LOG */
+#endif /* OLCD_LOG_ACTIONS */
 
   needs_backup = TRUE;
   return(SUCCESS);
@@ -1266,7 +1250,8 @@ olc_send(fd, request)
   if(is_option(request->options,VERIFY))
     return(SUCCESS);
 
-  if ((msg = read_text_from_fd(fd)) == (char *) NULL)
+  msg = read_text_from_fd(fd);
+  if (msg == NULL)
     return(send_response(fd, ERROR));
   
   if (target != requester)
@@ -1323,12 +1308,11 @@ olc_send(fd, request)
       }
 
 
-#ifdef LOG
-  sprintf(mesg,"%s [%d] sends message to %s [%d]",
-	  requester->user->username, requester->instance,
-	  target->user->username,target->instance);
-  log_status(mesg);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] sends message to %s [%d]",
+	     requester->user->username, requester->instance,
+	     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   if (owns_question(requester)) {
     requester->question->stats.n_urepl++;
@@ -1387,10 +1371,6 @@ olc_comment(fd, request)
   char      *msg;		/* Message from consultant. */
   int        status;
 
-#ifdef LOG
-  char mesg[BUFSIZ];
-#endif /* LOG */
-
   status = find_knuckle(&(request->requester), &requester);
   if(status)
     return(send_response(fd,status));
@@ -1425,24 +1405,24 @@ olc_comment(fd, request)
   if(is_option(request->options,VERIFY))
     return(SUCCESS);
 
-  if ((msg = read_text_from_fd(fd)) == (char *)NULL)
+  msg = read_text_from_fd(fd);
+  if (msg == NULL)
     return(send_response(fd, ERROR));
   
   send_response(fd, SUCCESS);
 
-#ifdef LOG
+#ifdef OLCD_LOG_ACTIONS
   if(is_option(request->options,PRIV_COMMENT_OPT))
-    sprintf(mesg,"%s [%d] comments privately in %s [%d]'s log",
-	    requester->user->username, requester->instance,
-	    target->user->username,target->instance);
+    log_status("%s [%d] comments privately in %s [%d]'s log",
+	       requester->user->username, requester->instance,
+	       target->user->username,target->instance);
   else
-    sprintf(mesg,"%s [%d] comments in %s [%d]'s log",
-	    requester->user->username, requester->instance,
-	    target->user->username,target->instance);
-  log_status(mesg);
-#endif /* LOG */
+    log_status("%s [%d] comments in %s [%d]'s log",
+	       requester->user->username, requester->instance,
+	       target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
-  log_comment(target,requester,msg,(request->options &PRIV_COMMENT_OPT));
+  log_comment(target,requester,msg,(request->options & PRIV_COMMENT_OPT));
   return(SUCCESS);
 }
 
@@ -1565,10 +1545,6 @@ olc_replay(fd, request)
   int can_monitor;
   char censored_filename[NAME_SIZE];
 
-#ifdef LOG
-  char mesg[BUFSIZ];
-#endif /* LOG */
-
   status = find_knuckle(&(request->requester), &requester);
   if(status)
     return(send_response(fd, status));
@@ -1618,12 +1594,11 @@ olc_replay(fd, request)
       free_new_messages(target);
     }
 
-#ifdef LOG
-  sprintf(mesg,"%s [%d] replays %s [%d]'s log",
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] replays %s [%d]'s log",
 	  requester->user->username, requester->instance,
 	  target->user->username,target->instance);
-  log_status(mesg);
-#endif /* LOG */
+#endif /* OLCD_LOG_ACTIONS */
 
   return(SUCCESS);
 }
@@ -1646,10 +1621,7 @@ olc_show(fd, request)
   KNUCKLE *requester;	            /* Current user  making request */
   KNUCKLE *target;
   int status;
-
-#ifdef LOG
   char mesg[BUFSIZ];
-#endif /* LOG */
 
   status = find_knuckle(&(request->requester), &requester);
   if(status)
@@ -1688,14 +1660,12 @@ olc_show(fd, request)
 	{
 	  free_new_messages(target);
 	}
-#ifdef LOG
       if((owns_question(requester)) && (is_me(target,requester)))
 	{
 	  sprintf(mesg,"%s %s read reply.", cap(requester->title),
 		  requester->user->username);
 	  log_daemon(requester, mesg);
 	}
-#endif
     }
   else
     {
@@ -1708,12 +1678,11 @@ olc_show(fd, request)
 	send_response(fd,NO_MESSAGES);
     }
   
-#ifdef LOG
-  sprintf(mesg,"%s [%d] showing new messages of %s [%d]",
-	  requester->user->username, requester->instance,
-	  target->user->username,target->instance);
-  log_status(mesg);
-#endif
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] showing new messages of %s [%d]",
+	     requester->user->username, requester->instance,
+	     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
   return(SUCCESS);
 }
 
@@ -1751,7 +1720,6 @@ olc_list(fd, request)
   int topic_codes[SPEC_SIZE];
   int status;
   int n,i;
-  char mesg[BUFSIZ];
 
   status = find_knuckle(&(request->requester), &requester);
   if(status)
@@ -1816,10 +1784,8 @@ olc_list(fd, request)
       status =  send_list(fd,request,&list[i]);
       if(status == ERROR)
 	{
-	  sprintf(mesg,
-		  "Error in sending list to %s@%s.  %d of %d packets sent.",
-		  requester->user->username, requester->user->machine, i, n);
-	  log_error(mesg);
+	  log_error("Error in sending list to %s@%s.  %d of %d packets sent.",
+		    requester->user->username, requester->user->machine, i, n);
 	  break;
 	}
     }
@@ -1853,9 +1819,6 @@ olc_topic(fd, request)
   KNUCKLE *requester;
   KNUCKLE *target;
   int status;
-#ifdef LOG
-  char mesg[BUFSIZ];
-#endif /* LOG */
 
   status = find_knuckle(&(request->requester), &requester);	
   if(status)
@@ -1879,12 +1842,11 @@ olc_topic(fd, request)
   
   if(!(has_question(target)))
     return(send_response(fd, NO_QUESTION));
-#ifdef LOG
-  sprintf(mesg,"%s [%d] topics %s [%d]",
-	  requester->user->username, requester->instance,
-	  target->user->username,target->instance);
-  log_status(mesg);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] topics %s [%d]",
+	     requester->user->username, requester->instance,
+	     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
   send_response(fd,SUCCESS);
   write_text_to_fd(fd,target->question->topic);
   return(SUCCESS);
@@ -1928,17 +1890,17 @@ olc_chtopic(fd, request)
   if(!has_question(target))
     return(send_response(fd, NO_QUESTION));
 
-#ifdef LOG
-  sprintf(msg_buf,"%s [%d] changes topic of  %s [%d]'s question",
-	  requester->user->username, requester->instance,
-	  target->user->username,target->instance);
-  log_status(msg_buf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] changes topic of  %s [%d]'s question",
+	     requester->user->username, requester->instance,
+	     target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   send_response(fd,SUCCESS);
   text = read_text_from_fd(fd);
 
-  if((code = verify_topic(text)) != FAILURE)
+  code = verify_topic(text);
+  if (code != FAILURE)
     {
       send_response(fd,SUCCESS);
       if((owns_question(target)) && !(is_me(target,requester)))
@@ -2000,10 +1962,6 @@ olc_list_topics(fd, request)
   KNUCKLE *requester;
   int status;
 
-#ifdef LOG
-  char mesg[BUFSIZ];
-#endif /* LOG */
-
   status = find_knuckle(&(request->requester), &requester);
   if(status)
     return(send_response(fd,status));
@@ -2011,11 +1969,10 @@ olc_list_topics(fd, request)
   if(!is_allowed(requester->user,OLC_ACL))
     return(send_response(fd,PERMISSION_DENIED));
 
-#ifdef LOG
-  sprintf(mesg,"%s [%d] lists topics",
-	  requester->user->username, requester->instance);
-  log_status(mesg);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] lists topics",
+	     requester->user->username, requester->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   send_response(fd,SUCCESS);
   status = write_file_to_fd(fd,TOPIC_FILE);    
@@ -2029,10 +1986,6 @@ olc_list_services(fd, request)
   KNUCKLE *requester;
   int status;
 
-#ifdef LOG
-  char mesg[BUFSIZ];
-#endif /* LOG */
-
   status = find_knuckle(&(request->requester), &requester);
   if(status)
     return(send_response(fd,status));
@@ -2040,11 +1993,10 @@ olc_list_services(fd, request)
   if(!is_allowed(requester->user,OLC_ACL))
     return(send_response(fd,PERMISSION_DENIED));
 
-#ifdef LOG
-  sprintf(mesg,"%s [%d] lists services",
-	  requester->user->username, requester->instance);
-  log_status(mesg);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] lists services",
+	     requester->user->username, requester->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   send_response(fd,SUCCESS);
   status = write_file_to_fd(fd,SERVICES_FILE);    
@@ -2061,10 +2013,6 @@ olc_motd(fd, request)
   KNUCKLE *requester;
   int status;
   
-#ifdef LOG
-  char mesg[BUFSIZ];
-#endif /* LOG */
-
   status = find_knuckle(&(request->requester), &requester);
   if(status)
     return(send_response(fd,status));
@@ -2072,11 +2020,10 @@ olc_motd(fd, request)
   if(!is_allowed(requester->user,OLC_ACL))
     return(send_response(fd,PERMISSION_DENIED));
 
-#ifdef LOG
-  sprintf(mesg,"%s [%d] gets motd",
-	  requester->user->username, requester->instance);
-  log_status(mesg);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] gets motd",
+	     requester->user->username, requester->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   send_response(fd,SUCCESS);
   check_motd_timeout();
@@ -2093,10 +2040,6 @@ olc_get_hours(fd, request)
   KNUCKLE *requester;
   int status;
   
-#ifdef LOG
-  char mesg[BUFSIZ];
-#endif /* LOG */
-
   status = find_knuckle(&(request->requester), &requester);
   if(status)
     return(send_response(fd,status));
@@ -2104,11 +2047,10 @@ olc_get_hours(fd, request)
   if(!is_allowed(requester->user,OLC_ACL))
     return(send_response(fd,PERMISSION_DENIED));
 
-#ifdef LOG
-  sprintf(mesg,"%s [%d] gets hours",
-	  requester->user->username, requester->instance);
-  log_status(mesg);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] gets hours",
+	     requester->user->username, requester->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   send_response(fd,SUCCESS);
   status = write_file_to_fd(fd,HOURS_FILE);
@@ -2138,9 +2080,7 @@ olc_mail(fd, request)
   KNUCKLE *target;
   char    *msgbuf;		        /* Ptr. to mail message. */
   int status;
-#ifdef LOG
-  char mesg[BUFSIZ];
-#endif /* LOG */
+
   status = find_knuckle(&(request->requester), &requester);
   if(status)
     return(send_response(fd,status));
@@ -2176,7 +2116,8 @@ olc_mail(fd, request)
   if (!(is_option(request->options, VERIFY)))
     {
       send_response(fd, SUCCESS);
-      if ((msgbuf = read_text_from_fd(fd)) != (char *)NULL) 
+      msgbuf = read_text_from_fd(fd);
+      if (msgbuf != NULL) 
 	{
 	  send_response(fd, SUCCESS);
 	  target->question->stats.n_cmail++;
@@ -2189,12 +2130,11 @@ olc_mail(fd, request)
   else
     if(is_option(request->options,VERIFY))
       {
-#ifdef LOG
-  sprintf(mesg,"%s [%d] mails message to %s [%d]",
-	  requester->user->username, requester->instance,
-	  target->user->username,target->instance);
-  log_status(mesg);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+	log_status("%s [%d] mails message to %s [%d]",
+		   requester->user->username, requester->instance,
+		   target->user->username,target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
 	send_response(fd, SUCCESS);
 	return(SUCCESS);
@@ -2231,11 +2171,10 @@ olc_startup(fd, request)
 
   status = find_knuckle(&(request->requester), &requester);
 
-#ifdef LOG
-  sprintf(msgbuf,"hello from %s [%d], status: %d\n", 
-	 request->requester.username, request->requester.instance, status);
-  log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("hello from %s [%d], status: %d\n", 
+	     request->requester.username, request->requester.instance, status);
+#endif /* OLCD_LOG_ACTIONS */
 
   if(status == INSTANCE_NOT_FOUND)
     return(send_response(fd,status));
@@ -2337,11 +2276,10 @@ olc_grab(fd, request)
   else
     if(is_option(request->options,SPLIT_OPT))
     {
-#ifdef LOG
-      sprintf(msgbuf,"olc grab: attempting to create new knuckle for %s",
-	      requester->user->username);
-      log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+      log_status("olc grab: attempting to create new knuckle for %s",
+		 requester->user->username);
+#endif /* OLCD_LOG_ACTIONS */
 
       for (k_ptr = requester->user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
 	if((*k_ptr)->question != NULL)
@@ -2359,11 +2297,10 @@ olc_grab(fd, request)
   else
     if(is_option(request->options,SPLIT_OPT))
       {
-#ifdef LOG
-	sprintf(msgbuf,"olc grab: created new knuckle for %s",
+#ifdef OLCD_LOG_ACTIONS
+	log_status("olc grab: created new knuckle for %s",
 		requester->user->username);
-	log_status(msgbuf);
-#endif /* LOG */
+#endif /* OLCD_LOG_ACTIONS */
 	requester = create_knuckle(requester->user);
     }
 
@@ -2385,12 +2322,11 @@ olc_grab(fd, request)
 		 requester->title,requester->user->username,
 		 requester->user->machine, requester->instance);
   log_daemon(target,msgbuf);
-#ifdef LOG
-  (void) sprintf(msgbuf, "%s [%d] grabbing user %s [%d]",
-		 requester->user->username,requester->instance,
-		 target->user->username, target->instance);
-  log_status(msgbuf);
-#endif /* LOG */
+#ifdef OLCD_LOG_ACTIONS
+  log_status("%s [%d] grabbing user %s [%d]",
+	     requester->user->username,requester->instance,
+	     target->user->username, target->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   if(target->status != NOT_SEEN)
     set_status(target, SERVICED);

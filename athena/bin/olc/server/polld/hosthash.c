@@ -5,16 +5,18 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: hosthash.c,v 1.5 1999-01-22 23:14:42 ghudson Exp $
+ *	$Id: hosthash.c,v 1.6 1999-03-06 16:49:08 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: hosthash.c,v 1.5 1999-01-22 23:14:42 ghudson Exp $";
+static char rcsid[] ="$Id: hosthash.c,v 1.6 1999-03-06 16:49:08 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <netdb.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -109,7 +111,7 @@ c_gethostbyname(name)
 
     /* copy information over */
     strcpy(cache[new].hostname,name);
-    bcopy(host_p->h_addr_list[0],&cache[new].ent,host_p->h_length);
+    memcpy(&cache[new].ent, host_p->h_addr_list[0], host_p->h_length);
 
     /* Add to the head of the linked list */
     /* Need to re-set head, since we may have deleted initial bucket when we */

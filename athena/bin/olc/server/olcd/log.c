@@ -18,23 +18,25 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: log.c,v 1.47 1999-01-22 23:14:26 ghudson Exp $
+ *	$Id: log.c,v 1.48 1999-03-06 16:48:55 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: log.c,v 1.47 1999-01-22 23:14:26 ghudson Exp $";
+static char rcsid[] ="$Id: log.c,v 1.48 1999-03-06 16:48:55 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <sys/time.h>		/* System time definitions. */
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/stat.h>		/* File status definitions. */
 #include <sys/file.h>
 #include <string.h>		/* Defs. for string functions. */
-#ifdef DISCUSS
+#include <unistd.h>
+#ifdef HAVE_DISCUSS
 #include <lumberjack.h>
 #endif
 #include <olcd.h>
@@ -122,11 +124,11 @@ log_log (knuckle, message, header, is_private)
   char error[DB_LINE];
   char censored_filename[NAME_SIZE];
 
-  if ((log = fopen(knuckle->question->logfile, "a")) == (FILE *)NULL) 
+  log = fopen(knuckle->question->logfile, "a");
+  if (log == NULL)
     {
-      (void) sprintf(error, "log_log: can't open log %s: %%m",
-		     knuckle->question->logfile);
-      log_error(error);
+      log_error("log_log: can't open log %s: %m",
+		knuckle->question->logfile);
       return(ERROR);
     }
   fprintf(log, "\n%s",header);
@@ -135,11 +137,11 @@ log_log (knuckle, message, header, is_private)
 
   if (!is_private) {
     sprintf(censored_filename,"%s.censored",knuckle->question->logfile);
-    if ((log = fopen(censored_filename, "a")) == (FILE *)NULL) 
+    log = fopen(censored_filename, "a");
+    if (log == NULL) 
       {
-	(void) sprintf(error, "log_log: can't open log %s: %%m",
-		       knuckle->question->logfile);
-	log_error(error);
+	log_error("log_log: can't open log %s: %m",
+		  knuckle->question->logfile);
 	return(ERROR);
       }
     fprintf(log, "\n%s",header);
@@ -287,29 +289,27 @@ init_log(knuckle, question, machinfo)
   (void) sprintf(censored_filename,"%s.censored",knuckle->question->logfile);
   if (access(knuckle->question->logfile,F_OK) == 0)
     {
-      (void) sprintf(error, 
-		     "init_log: already a log file %s, moving it to log.",
-			knuckle->question->logfile);
-      log_error(error);
+      log_error("init_log: already a log file %s, moving it to log.",
+		knuckle->question->logfile);
       (void) strcpy(topic, knuckle->question->topic);
       (void) strcpy(knuckle->question->topic, "crash");
       terminate_log_crash(knuckle);
       (void) strcpy(knuckle->question->topic, topic);
     }
 
-  if ((logfile = fopen(knuckle->question->logfile, "w")) == (FILE *)NULL) 
+  logfile = fopen(knuckle->question->logfile, "w");
+  if (logfile == NULL) 
     {
-      (void) sprintf(error, "init_log: can't open log file %s: %%m",
-		     knuckle->question->logfile);
-      log_error(error);
+      log_error("init_log: can't open log file %s: %m",
+		knuckle->question->logfile);
       return(ERROR);
     }
 
-  if ((clogfile = fopen(censored_filename, "w+")) == (FILE *)NULL) 
+  clogfile = fopen(censored_filename, "w+");
+  if (clogfile == NULL) 
     {
-      (void) sprintf(error, "init_log: can't open log file %s: %%m",
-		     knuckle->question->logfile);
-      log_error(error);
+      log_error("init_log: can't open log file %s: %m",
+		knuckle->question->logfile);
       return(ERROR);
     }
 
@@ -336,11 +336,11 @@ init_log(knuckle, question, machinfo)
   write_line_to_log(logfile, question);
   write_line_to_log(clogfile, question);
   if (machinfo != NULL) 
-#ifdef ATHENA
+#ifdef MACHTYPE_PATH
     fprintf(logfile, "\nMachine info:%s\n", trans_m_i(machinfo));
-#else
+#else /* no MACHTYPE_PATH */
     fprintf(logfile, "\nMachine info:%s\n", machinfo);
-#endif
+#endif /* no MACHTYPE_PATH */
   write_line_to_log(logfile,"___________________________________________________________\n\n");
   write_line_to_log(clogfile,"___________________________________________________________\n\n");
   fprintf(logfile, "\n");
@@ -370,12 +370,11 @@ terminate_log_answered(knuckle)
   char time_buf[32];	        /* Current time. */
 	
   question = knuckle->question;
-  if ((logfile = fopen(question->logfile, "a")) == (FILE *)NULL) 
+  logfile = fopen(question->logfile, "a");
+  if (logfile == NULL) 
     {
-      (void) sprintf(error,
-		     "terminate_log_answered: can't open temporary log %s: %%m",
-		     question->logfile);
-      log_error(error);
+      log_error("terminate_log_answered: can't open temporary log %s: %m",
+		question->logfile);
       return(ERROR);
     }
 
@@ -411,14 +410,13 @@ terminate_log_unanswered(knuckle)
   char current_time[32];	/* Current time. */
   
   question = knuckle->question;
-  if ((logfile = fopen(question->logfile, "a")) == (FILE *)NULL) 
+  logfile = fopen(question->logfile, "a");
+  if (logfile == NULL) 
     {
-    (void) sprintf(error,
-		   "terminate_log_unanswered: can't open temp. log %s: %%m",
-		   question->logfile);
-    log_error(error);
-    return(ERROR);
-  }
+      log_error("terminate_log_unanswered: can't open temp. log %s: %m",
+		question->logfile);
+      return(ERROR);
+    }
   time_now(current_time);
   fprintf(logfile, 
 	  "\n--- Session terminated without answer at %s\n",
@@ -450,12 +448,11 @@ terminate_log_crash(knuckle)
   char current_time[32];	/* Current time. */
   
   question = knuckle->question;
-  if ((logfile = fopen(question->logfile, "a")) == (FILE *)NULL) 
+  logfile = fopen(question->logfile, "a");
+  if (logfile == NULL) 
     {
-      (void) sprintf(error,
-		     "terminate_log_crash: can't open temp log %s: %%m",
-		     question->logfile);
-      log_error(error);
+      log_error("terminate_log_crash: can't open temp log %s: %m",
+		question->logfile);
       return(ERROR);
     }
   time_now(current_time);
@@ -505,7 +502,7 @@ dispose_of_log(knuckle)
 
   question = knuckle->question;
 
-#ifdef DISCUSS
+#ifdef HAVE_DISCUSS
   /* Spool log off to discuss.... */
   (void) sprintf(ctrlfile, "%s/ctrl%d", DONE_DIR, time_now);
   if (access(ctrlfile,F_OK) == 0) {
@@ -520,13 +517,14 @@ dispose_of_log(knuckle)
       log_error("Can't rename user log: %m");
       return(ERROR);
     }
-  if ((fp = fopen(ctrlfile, "w")) == NULL)
+  fp = fopen(ctrlfile, "w");
+  if (fp == NULL)
     {
       log_error("Can't create control file: %m");
       return(ERROR);
     }
   
-/* Make sure there's no newlines in the title */
+  /* Make sure there's no newlines in the title */
 
   while ((p = strchr(question->title,'\n')) != NULL)
     *p = ' ';
@@ -535,36 +533,30 @@ dispose_of_log(knuckle)
 	  question->topic, question->owner->user->username);
   fclose(fp);
       
-#ifdef NO_VFORK
-  if ((pid = fork()) == -1) 
-#else
-  if ((pid = vfork()) == -1) 
-#endif
+  pid = fork();
+  if (pid == -1) 
     {
       log_error("Can't fork to dispose of log: %m");
       return(ERROR);
     }
   else if (pid == 0) 
     {
-      (void) sprintf(msgbuf, "%s to %s logs",
-		     question->logfile, question->topic);
-      log_status(msgbuf);
+      log_status("%s to %s logs",
+		 question->logfile, question->topic);
 
       execl(LUMBERJACK_LOC, "lumberjack", 0);
-      sprintf(msgbuf,"dispose_of_log: cannot exec %s: %%m",LUMBERJACK_LOC);
-      log_error(msgbuf);
-      _exit(0);
+      log_error("dispose_of_log: cannot exec %s: %m",LUMBERJACK_LOC);
+      _exit(4);
     }
-#else
+#else /* don't HAVE_DISCUSS */
   /* Well, get rid of it- if you have some alternative to discuss, you */
   /* should include a method for getting the log into it here. */
   unlink(question->logfile);
-#endif
+#endif /* don't HAVE_DISCUSS */
 
   return(SUCCESS);
 }
 
-#ifdef ATHENA
 /* Translates obsure stuff from machtype -v in os to "english" */
 
 static char *
@@ -588,16 +580,14 @@ char *os;
     trans_file = fopen(MACH_TRANS_FILE,"r");
     if (trans_file == NULL)
       {
-	(void) sprintf(tmp_buf,
-		       "trans_m_i: could not open translation file %s: %%m",
-		       MACH_TRANS_FILE);
-	log_error(tmp_buf);
+	log_error("trans_m_i: could not open translation file %s: %m",
+		  MACH_TRANS_FILE);
       }
     else {
       fscanf(trans_file,"%d\n",&n_mach);
       mach = (TRANS *) calloc(n_mach,sizeof(TRANS));
       if (mach == NULL) {
-	log_error("trans_m_i: calloc failed");
+	log_error("trans_m_i: calloc failed: %m");
 	return(stuff);
       }
       for (i=0;i<n_mach;i++) {
@@ -698,4 +688,3 @@ char *os;
   strcat(stuff,tmp_buf);
   return(stuff);
 }
-#endif

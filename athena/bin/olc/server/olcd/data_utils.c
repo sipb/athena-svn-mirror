@@ -18,17 +18,19 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: data_utils.c,v 1.45 1999-01-22 23:14:24 ghudson Exp $
+ *	$Id: data_utils.c,v 1.46 1999-03-06 16:48:54 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: data_utils.c,v 1.45 1999-01-22 23:14:24 ghudson Exp $";
+static char rcsid[] ="$Id: data_utils.c,v 1.46 1999-03-06 16:48:54 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
+#include "olcd.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -38,7 +40,7 @@ static char rcsid[] ="$Id: data_utils.c,v 1.45 1999-01-22 23:14:24 ghudson Exp $
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <pwd.h>
-#include <olcd.h>
+
 #ifdef __STDC__
 # define        P(s) s
 #else
@@ -97,12 +99,13 @@ create_user(person)
    * create user
    */
 
-  if((user = (USER *) malloc(sizeof(USER))) == (USER *) NULL)
+  user = malloc(sizeof(USER));
+  if (user == NULL)
     {
-      log_error("create_user: out of memory");
+      log_error("create_user: malloc: %m");
       return((KNUCKLE *) NULL);
     }
-  memset(user, 0, sizeof(USER));
+  memset((char *) user, 0, sizeof(USER));
 
   user->knuckles = (KNUCKLE **) NULL;
 
@@ -111,7 +114,8 @@ create_user(person)
    */
 
   (void) strncpy(user->username,person->username,LOGIN_SIZE);
-  if ((knuckle = create_knuckle(user)) == (KNUCKLE *) NULL)
+  knuckle = create_knuckle(user);
+  if (knuckle == NULL)
     {
       log_error("add_user: could not create knuckle");
       return((KNUCKLE *) NULL);
@@ -169,7 +173,7 @@ create_knuckle(user)
   k = (KNUCKLE *) malloc(sizeof(KNUCKLE));
   if(k == (KNUCKLE *) NULL)
     {
-      log_error("create_knuckle: out of memory");
+      log_error("create_knuckle: malloc: %m");
       return((KNUCKLE *) NULL);
     }  
   memset(k, 0, sizeof(KNUCKLE));
@@ -200,6 +204,7 @@ create_knuckle(user)
   k->user->no_knuckles++;
   k->question = (QUESTION *) NULL;
   k->connected = (KNUCKLE *)  NULL;
+  k->cusername[0] = '\0';
   k->status = 0;
   k->new_messages = -1;
   sprintf(k->nm_file,"%s/%s_%d.nm", LOG_DIR, k->user->username,k->instance);
@@ -237,7 +242,7 @@ insert_knuckle(knuckle)
       Knuckle_List = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
       if (Knuckle_List == (KNUCKLE **) NULL) 
 	{
-	  log_error("malloc(insert_knuckle)");
+	  log_error("insert_knuckle: malloc: %m");
 	  return(ERROR);
 	}
       *Knuckle_List = (KNUCKLE *) NULL;
@@ -256,11 +261,6 @@ insert_knuckle(knuckle)
 	++n_inactive;
     }
 
-#ifdef LOG
-  sprintf(mesg,"no: %d   inactive: %d\n",n_knuckles, n_inactive);
-  log_status(mesg);
-#endif /* LOG */
-
   if(n_inactive < MAX_CACHE_SIZE)
     {
       n_knuckles++;
@@ -272,7 +272,7 @@ insert_knuckle(knuckle)
       Knuckle_List = (KNUCKLE **) realloc((char *) Knuckle_List, (unsigned)
 					  (n_knuckles+1) * sizeof(KNUCKLE *));
       if (Knuckle_List == (KNUCKLE **) NULL) {
-	log_error("insert_knuckle: realloc: ");
+	log_error("insert_knuckle: realloc: %m");
 	return(ERROR);
       }
       Knuckle_List[n_knuckles]   = (KNUCKLE *) NULL;
@@ -330,7 +330,7 @@ insert_knuckle_in_user(knuckle, user)
       user->knuckles = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
       if (user->knuckles == (KNUCKLE **) NULL) 
 	{
-	  log_error("malloc(insert_knuckle)");
+	  log_error("insert_knuckle_in_user: malloc: %m");
 	  return(ERROR);
 	}
       *(user->knuckles) = (KNUCKLE *) NULL;
@@ -352,7 +352,7 @@ insert_knuckle_in_user(knuckle, user)
   user->knuckles = (KNUCKLE **) realloc((char *) user->knuckles, (unsigned)
 				      ((n_knuckles+1) * sizeof(KNUCKLE *)));
   if (user->knuckles == (KNUCKLE **) NULL) {
-    log_error("realloc(insert_knuckle)");
+    log_error("insert_knuckle_in_user: realloc: %m");
     return(ERROR);
   }
   user->knuckles[n_knuckles]   = (KNUCKLE *) NULL;
@@ -385,7 +385,7 @@ insert_topic(t)
 
     Topic_List = (TOPIC **) malloc(20*sizeof(TOPIC *));
     if (Topic_List == (TOPIC **) NULL) {
-      log_error("malloc (insert topic)");
+      log_error("insert_topic: malloc: %m");
       return(ERROR);
     }
     max_topics = 20;
@@ -399,7 +399,7 @@ insert_topic(t)
     Topic_List = (TOPIC **) realloc((char *) Topic_List, (unsigned)
 				    ((max_topics) * sizeof(TOPIC *)));
     if (Topic_List == (TOPIC **) NULL) {
-      log_error("realloc (insert topic)");
+      log_error("insert_topic: realloc: %m");
       return(ERROR);
     }
   }
@@ -518,12 +518,11 @@ delete_knuckle(knuckle,cont)
   knuckle->new_messages = -1;
   knuckle->nm_file[0] = '\0';
       
-#ifdef LOG
+#ifdef OLCD_LOG_ACTIONS
   /* log it */
-  (void) sprintf(msgbuf, "Deleting knuckle %s (%d)", 
-	  knuckle->user->username, knuckle->instance);
-  log_status(msgbuf);
-#endif /* LOG */
+  log_status("Deleting knuckle %s (%d)", 
+	     knuckle->user->username, knuckle->instance);
+#endif /* OLCD_LOG_ACTIONS */
 
   /* free it */
   free((char *)knuckle);
@@ -553,11 +552,11 @@ init_user(knuckle,person)
 
   user = knuckle->user;
   /* Get real name/uid from hesiod */
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
   pw = (struct passwd *) hes_getpwnam(person->username);
-#else
+#else /* not HAVE_HESIOD */
   pw = (struct passwd *) getpwnam(person->username);
-#endif /* Hesiod */
+#endif /* not HAVE_HESIOD */
   if (pw != NULL) {
     user->uid = pw->pw_uid;
     (void) strncpy(user->realname,pw->pw_gecos,NAME_SIZE);
@@ -569,16 +568,14 @@ init_user(knuckle,person)
     strcpy(user->realname,"The Unknown User");
   }
 
-  (void) strncpy(user->username,person->username,LOGIN_SIZE);
-  (void) strncpy(user->machine,person->machine, NAME_SIZE);
-#ifdef KERBEROS
-#ifdef ATHENA
+  strncpy(user->username, person->username, sizeof(user->username));
+  strncpy(user->machine,  person->machine,  sizeof(user->machine));
+#ifdef HAVE_KRB4
   if (person->realm[0] == '\0')
     (void) strncpy(user->realm,DFLT_SERVER_REALM, REALM_SZ);
   else
     (void) strncpy(user->realm,person->realm, REALM_SZ);
-#endif
-#endif
+#endif /* HAVE_KRB4 */
   knuckle->status = 0;
   init_dbinfo(knuckle->user);
   knuckle->title = knuckle->user->title1;
@@ -612,7 +609,7 @@ init_question(k,topic,text, machinfo)
   k->question = (QUESTION *) malloc(sizeof(QUESTION));
   if(k->question == (QUESTION *) NULL)
     {
-      log_error("init_question");
+      log_error("init_question: malloc: %m");
       return(ERROR);
     }
 
@@ -628,6 +625,7 @@ init_question(k,topic,text, machinfo)
   k->question->stats.n_cmail = 0;
   k->question->stats.n_urepl = 0;
   k->question->stats.time_to_fr = -1;
+  k->question->title[0] = '\0';  /* dump_data()'d, but unused until olc_done */
   k->title = k->user->title1;
   (void) strcpy(k->question->topic,topic);
   init_log(k, text, machinfo);
@@ -807,8 +805,7 @@ find_knuckle(person,knuckle)
   status = get_knuckle(person->username, person->instance,knuckle,0);
   if (status == USER_NOT_FOUND || status == EMPTY_LIST)
     {
-      sprintf(mesg,"find_knuckle: creating %s",person->username);
-      log_status(mesg);
+      log_status("find_knuckle: creating %s",person->username);
       *knuckle = create_user(person);
       if(*knuckle != (KNUCKLE *) NULL)
 	{
@@ -819,7 +816,7 @@ find_knuckle(person,knuckle)
 	return(ERROR);
     }
   else if (status == SUCCESS) {
-    strcpy((*knuckle)->user->machine,person->machine);
+    strcpy((*knuckle)->user->machine, person->machine);
     (*knuckle)->user->status = ACTIVE;
   }
   return(status);
@@ -943,11 +940,9 @@ connect_knuckles(a,b)
     {
       if(b->question == (QUESTION *) NULL)
 	{
-	  sprintf(msg,
-		  "connect: neither knuckle has a question -- %s[%d], %s[%d]",
-		  a->user->username, a->instance,
-		  b->user->username, b->instance);
-	  log_error(msg);
+	  log_error("connect: neither knuckle has a question: %s[%d], %s[%d]",
+		    a->user->username, a->instance,
+		    b->user->username, b->instance);
 	  return(ERROR);
 	}
       if (owns_question(b))
@@ -957,10 +952,8 @@ connect_knuckles(a,b)
 	}
       else
 	{
-	  sprintf(msg,
-		  "connect: conectee already connected -- %s[%d]",
-		  b->user->username, b->instance);
-	  log_error(msg);
+	  log_error("connect: conectee already connected: %s[%d]",
+		    b->user->username, b->instance);
 	  return(ERROR);
 	}
     }
@@ -968,11 +961,9 @@ connect_knuckles(a,b)
     {
       if(b->question != (QUESTION *) NULL)
 	{
-	  sprintf(msg,
-		  "connect: both connectees have questions -- %s[%d], %s[%d]",
-		  a->user->username, a->instance,
-		  b->user->username, b->instance);
-	  log_error(msg);
+	  log_error("connect: both connectees have questions: %s[%d], %s[%d]",
+		    a->user->username, a->instance,
+		    b->user->username, b->instance);
 	  return(ERROR);
 	}
       if (owns_question(a))
@@ -982,10 +973,8 @@ connect_knuckles(a,b)
 	}
       else
 	{
-	  sprintf(msg,
-		  "connect: conectee already connected -- %s[%d]",
-		  b->user->username, b->instance);
-	  log_error(msg);
+	  log_error("connect: conectee already connected: %s[%d]",
+		    b->user->username, b->instance);
 	  return(ERROR);
 	}
     }
@@ -1054,14 +1043,14 @@ disconnect_knuckles(a, b)
 {
   if (b != NULL) {
     b->connected = (KNUCKLE *) NULL;
-    b->cusername[0] = (char) NULL;
+    b->cusername[0] = '\0';
     if (owns_question(a))
       b->question = (QUESTION *) NULL;
   }
 
   if (a != NULL) {
     a->connected = (KNUCKLE *) NULL;
-    a->cusername[0] = (char) NULL;
+    a->cusername[0] = '\0';
     if (owns_question(b))
       a->question = (QUESTION *) NULL;
   }
@@ -1185,9 +1174,8 @@ match_maker(knuckle)
 	case CANCEL:
 	case DONE:
 	    /* shouldn't get here */
-	    sprintf(msgbuf,"unconnected user has status %d in match_maker",
+	  log_error("unconnected user has status %d in match_maker",
 		    k_status);
-	    log_error(msgbuf);
 	    return ERROR;
 	default:
 	    /* ok */
@@ -1289,8 +1277,7 @@ new_message(target, sender, message)
   msg_file = fopen(target->nm_file,"a");
 
   if (msg_file == NULL) {
-    sprintf(foo,"new_message: can't open %s: %%m", target->nm_file);
-    log_error(foo);
+    log_error("new_message: can't open %s: %m", target->nm_file);
     return;
   }
 

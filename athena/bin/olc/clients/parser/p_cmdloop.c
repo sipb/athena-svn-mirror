@@ -18,16 +18,17 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_cmdloop.c,v 1.20 1999-01-22 23:12:42 ghudson Exp $
+ *	$Id: p_cmdloop.c,v 1.21 1999-03-06 16:47:59 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_cmdloop.c,v 1.20 1999-01-22 23:12:42 ghudson Exp $";
+static char rcsid[] ="$Id: p_cmdloop.c,v 1.21 1999-03-06 16:47:59 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #if defined(__STDC__)
 #include <stdlib.h>
@@ -37,7 +38,7 @@ static char rcsid[] ="$Id: p_cmdloop.c,v 1.20 1999-01-22 23:12:42 ghudson Exp $"
 #include <olc/olc_parser.h>
 #include <signal.h>
 #include <ctype.h>
-#if defined(_AUX_SOURCE) || defined(_POSIX_SOURCE)
+#ifdef HAVE_TIME_H
 #include <time.h>
 #endif
 
@@ -414,7 +415,7 @@ expand_variable(Request,var)
 	case 6:			/* YEAR (full year number) */
 	  sprintf(buf, "%4d", time_info->tm_year + 1900);
 	  break;
-	case 7:			/* year (year number, century srtipped) */
+	case 7:			/* year (year number, century stripped) */
 	  sprintf(buf, "%2d", time_info->tm_year % 100);
 	  break;
 	case 8:			/* milhour (24 hour time) */

@@ -17,14 +17,15 @@
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
- *      $Id: x_send.c,v 1.5 1999-01-22 23:12:27 ghudson Exp $
+ *      $Id: x_send.c,v 1.6 1999-03-06 16:47:47 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]= "$Id: x_send.c,v 1.5 1999-01-22 23:12:27 ghudson Exp $";
+static char rcsid[]= "$Id: x_send.c,v 1.6 1999-03-06 16:47:47 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <fcntl.h>
 #include <sys/param.h>

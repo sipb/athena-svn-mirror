@@ -4,17 +4,15 @@
  */
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <polld.h>
 
+#include <unistd.h>
 #include <string.h>
 #include <netdb.h>
 #include <signal.h>
 #include <setjmp.h>
-#ifdef _IBMR2
-#include <sys/access.h>
-#else
-#include <sys/file.h>
-#endif
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -27,30 +25,21 @@
 
 
 /* locate.c */
-#ifdef VOID_SIGRET
-static void do_timeout P((int sig ));
-#else
-static int do_timeout P((int sig ));
-#endif
-static int find_finger P((PTF *person ));
-static int find_zephyr P((PTF *person ));
+static RETSIGTYPE do_timeout P((int sig));
+static int find_finger P((PTF *person));
+static int find_zephyr P((PTF *person));
 
 #undef P
 
 static jmp_buf env;		/* for longjmp in finger timeout */
 static int fd;			/* Socket for fingering */
 static FILE *f;			/* Associated FILE * */
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
 static int use_zephyr;		/* If 1, use zephyr */
 #endif
 
-#ifdef VOID_SIGRET
-static void
-#else
-static int
-#endif
-  do_timeout(sig)
-    int sig;
+static RETSIGTYPE
+do_timeout(int sig)
 {
   if (f != NULL)
     fclose(f);
@@ -64,7 +53,7 @@ locate_person(person)
   int new_status;
 
 
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
   if (use_zephyr) {
     new_status = find_zephyr(person);
     if ((new_status == LOGGED_OUT) || (new_status == LOC_ERROR))
@@ -72,9 +61,9 @@ locate_person(person)
   } else {
     new_status = find_finger(person);
   }
-#else
+#else /* don't HAVE_ZEPHYR */
   new_status = find_finger(person);
-#endif
+#endif /* don't HAVE_ZEPHYR */
 
 /* temporary fudge for now- */
   if (new_status == MACHINE_DOWN)
@@ -107,6 +96,9 @@ PTF *person;
   struct hostent *host;		/* Host entry for receiver */
   struct sockaddr_in sin;	/* Socket address */
   int len;
+#ifdef HAVE_SIGACTION
+  struct sigaction action;
+#endif
 
   if (finger_port == 0) {
     struct servent *service;
@@ -128,18 +120,31 @@ PTF *person;
   sin.sin_family = host->h_addrtype;
   memcpy(&sin.sin_addr, host->h_addr, host->h_length);
   sin.sin_port = finger_port;
-  if ((fd = socket(host->h_addrtype, SOCK_STREAM, 0)) < 0) {
+  fd = socket(host->h_addrtype, SOCK_STREAM, 0);
+  if (fd < 0) {
     syslog(LOG_ERR,"locate_person: Error opening socket: %m");
     return(LOC_ERROR);
   }
 
+#ifdef HAVE_SIGACTION
+  action.sa_flags = 0;
+  sigemptyset(&action.sa_mask);
+  action.sa_handler = do_timeout;
+  sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
   signal(SIGALRM, do_timeout);
+#endif /* don't HAVE_SIGACTION */
   alarm(FINGER_TIMEOUT);
   setjmp(env);
 
   if (connect(fd, (struct sockaddr *) &sin, sizeof(sin)) < 0) {
     alarm(0);
+#ifdef HAVE_SIGACTION
+    action.sa_handler = SIG_IGN;             /* struct already initialized */
+    sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
     signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
     close(fd);
     return(MACHINE_DOWN);
   } 
@@ -150,7 +155,12 @@ PTF *person;
   if (f == NULL) {
     syslog(LOG_ERR,"Error fdopening finger fd to %s: %m", person->machine);
     alarm(0);
+#ifdef HAVE_SIGACTION
+    action.sa_handler = SIG_IGN;             /* struct already initialized */
+    sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
     signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
     close(fd);
     return(LOC_ERROR);
   }
@@ -165,14 +175,19 @@ PTF *person;
   
   if (fclose(f) == EOF)
     syslog(LOG_ERR,"Error closing finger fd to %s: %m", person->machine);
+#ifdef HAVE_SIGACTION
+  action.sa_handler = SIG_IGN;               /* struct already initialized */
+  sigaction(SIGALRM, &action, NULL);
+#else /* don't HAVE_SIGACTION */
   signal(SIGALRM, SIG_IGN);
+#endif /* don't HAVE_SIGACTION */
   alarm(0);
 
   return(new_status);
 }
 
 
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
 
 /* Returns the person's login status, with person updated to */
 /* reflect the new information */
@@ -194,7 +209,8 @@ find_zephyr(person)
   strcat(namebuf,"@");
   strcat(namebuf,ZGetRealm());
 
-  if ((retval = ZLocateUser(namebuf,&numlocs,ZAUTH)) != ZERR_NONE) {
+  retval = ZLocateUser(namebuf,&numlocs,ZAUTH);
+  if (retval != ZERR_NONE) {
     syslog(LOG_WARNING,"zephyr error while locating user %s: %s", namebuf,
 	   error_message(retval));
     return(LOC_ERROR);
@@ -208,7 +224,8 @@ find_zephyr(person)
   
   /* if they are logged in according to zephyr: */
   for (i=0;i<numlocs;i++) {
-    if ((retval = ZGetLocations(locations,&one)) != ZERR_NONE) {
+    retval = ZGetLocations(locations,&one);
+    if (retval != ZERR_NONE) {
       syslog(LOG_WARNING,"zephyr error in ZGetLocations for %s: %s", namebuf,
 	     error_message(retval));
       return(LOC_ERROR);
@@ -231,15 +248,11 @@ check_zephyr()
   /* creating ZEPHYR_DOWN_FILE; this is useful when the zephyr servers get */
   /* overwhelmed */
 
-#ifdef _IBMR2
-  if (access(ZEPHYR_DOWN_FILE,E_ACC) == 0) {
-#else
   if (access(ZEPHYR_DOWN_FILE,F_OK) == 0) {
-#endif
     use_zephyr = 0;
   } else {
     use_zephyr = 1;
   }
 }
-#endif /* ZEPHYR */
+#endif /* HAVE_ZEPHYR */
 

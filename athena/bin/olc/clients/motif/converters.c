@@ -1,4 +1,4 @@
-/* $Id: converters.c,v 1.2 1999-01-22 23:12:19 ghudson Exp $ */
+/* $Id: converters.c,v 1.3 1999-03-06 16:47:44 ghudson Exp $ */
 /*******************************************************************
   Copyright (C) 1990 by the Massachusetts Institute of Technology
 
@@ -19,6 +19,9 @@ this software for any purpose.  It is provided "as is" without express
 or implied warranty.
 
 ***************************************************************** */
+
+#include <mit-copyright.h>
+#include "config.h"
 
 #include <X11/IntrinsicP.h>
 #include <X11/CoreP.h>

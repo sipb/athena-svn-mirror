@@ -1,0 +1,44 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:47:33 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@ -I@top_srcdir@/include
+CFLAGS=@CFLAGS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+RANLIB=@RANLIB@
+
+SRCS=ask.c connect.c consult.c generic.c instance.c io.c messages.c motd.c  \
+  queue.c resolve.c send.c topic.c utils.c status.c data.c describe.c acl.c \
+  init.c db.c sort.c list.c nl.c admin.c incarnate.c
+OBJS=ask.o connect.o consult.o generic.o instance.o io.o messages.o motd.o  \
+  queue.o resolve.o send.o topic.o utils.o status.o data.o describe.o acl.o \
+  init.o db.o sort.o list.o nl.o admin.o incarnate.o
+
+all: libclient.a
+
+libclient.a: $(OBJS)
+	rm -f $@
+	ar cq $@ $(OBJS)
+	${RANLIB} $@
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+# we don't install this library anywhere, it's here only for our
+# private use in building the binaries.
+install:
+
+clean:
+	rm -f $(OBJS) libclient.a
+
+distclean: clean
+	rm -f Makefile
+
+depend.in: Makefile.in
+	makedepend -f Makefile.in ${CPPFLAGS} ${DEFS} *.[ch]

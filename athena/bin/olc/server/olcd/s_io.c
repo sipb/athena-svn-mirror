@@ -19,16 +19,17 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: s_io.c,v 1.29 1999-01-22 23:14:32 ghudson Exp $
+ *	$Id: s_io.c,v 1.30 1999-03-06 16:48:59 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: s_io.c,v 1.29 1999-01-22 23:14:32 ghudson Exp $";
+static char rcsid[] ="$Id: s_io.c,v 1.30 1999-03-06 16:48:59 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <sys/types.h>             /* System type declarations. */
 #include <sys/socket.h>            /* Network socket defs. */
@@ -46,13 +47,6 @@ static char rcsid[] ="$Id: s_io.c,v 1.29 1999-01-22 23:14:32 ghudson Exp $";
 
 extern char DaemonHost[];			/* Name of daemon's machine. */
 extern int errno;
-
-#ifndef MIN
-#define	MIN(a,b)	((a)>(b)?(b):(a))
-#endif
-#ifndef MAX
-#define MAX(a,b)        ((a)<(b)?(b):(a))
-#endif
 
 /*
  * Note: All functions that deal with I/O on sockets in this file use the
@@ -105,7 +99,7 @@ read_request(fd, request)
   
   strncpy(request->requester.username, (char *) (net_req.data+24), 10);
   strncpy(request->requester.realname, (char *) (net_req.data+34), 32);
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   strncpy(request->requester.realm, (char *) (net_req.data+66), 40);
   strncpy(request->requester.inst, (char *) (net_req.data+106), 40);
 #endif
@@ -119,7 +113,7 @@ read_request(fd, request)
 
   strncpy(request->target.username, (char *) (net_req.data+236), 10);
   strncpy(request->target.realname, (char *) (net_req.data+246), 32);
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   strncpy(request->target.realm, (char *) (net_req.data+278), 40);
   strncpy(request->target.inst, (char *) (net_req.data+318), 40);
 #endif
@@ -130,11 +124,9 @@ read_request(fd, request)
   if ((request->version != VERSION_5)  &&
       (request->version != VERSION_4))
     {
-      sprintf(msgbuf,
-	      "Error in version from %s@%s\ncurr ver = %d, ver recvd = %d",
-	      request->requester.username, request->requester.machine,
-	      CURRENT_VERSION, request->version);
-      log_error(msgbuf);
+      log_error("Error in version from %s@%s\ncurr ver = %d, ver recvd = %d",
+		request->requester.username, request->requester.machine,
+		CURRENT_VERSION, request->version);
       return(ERROR);
     }
 
@@ -200,8 +192,8 @@ send_list(fd, request, list)
   i = htonl((u_long) list->nseen);
   memcpy(net_req.data+32, &i, sizeof(i));
 
-  strncpy((char *)(net_req.data+36),list->topic, TOPIC_SIZE);
-  strncpy((char *)(net_req.data+60), list->note, NOTE_SIZE);
+  strncpy(net_req.data+36, list->topic, TOPIC_SIZE);
+  strncpy(net_req.data+60, list->note,  NOTE_SIZE);
 
   i = htonl((u_long) list->user.uid);
   memcpy(net_req.data+124, &i, sizeof(i));
@@ -209,15 +201,17 @@ send_list(fd, request, list)
   i = htonl((u_long) list->user.instance);
   memcpy(net_req.data+128, &i, sizeof(i));
   
-  strncpy((char *)(net_req.data+132), list->user.username, LOGIN_SIZE+1);
-  strncpy((char *)(net_req.data+142), list->user.realname, TITLE_SIZE);
-#ifdef KERBEROS
-  strncpy((char *)(net_req.data+174), list->user.realm, REALM_SZ);
-  strncpy((char *)(net_req.data+214), list->user.inst, INST_SZ);
+  strncpy(net_req.data+132, list->user.username, LOGIN_SIZE+1);
+  strncpy(net_req.data+142, list->user.realname, TITLE_SIZE);
+#ifdef HAVE_KRB4
+  strncpy(net_req.data+174, list->user.realm,    REALM_SZ);
+  strncpy(net_req.data+214, list->user.inst,     INST_SZ);
 #endif
-  strncpy((char *)(net_req.data+254), list->user.nickname, STRING_SIZE);
-  strncpy((char *)(net_req.data+270), list->user.title, TITLE_SIZE);
-  strncpy((char *)(net_req.data+302), list->user.machine, TITLE_SIZE);
+  strncpy(net_req.data+254, list->user.nickname, STRING_SIZE);
+  strncpy(net_req.data+270, list->user.title,    TITLE_SIZE);
+  strncpy(net_req.data+302, list->user.machine,  TITLE_SIZE /* truncate! */);
+  /* be nice to old clients and null-terminate the field */
+  net_req.data[333] = '\0';
 
   i = htonl((u_long) list->connected.uid);
   memcpy(net_req.data+336, &i, sizeof(i));
@@ -225,15 +219,19 @@ send_list(fd, request, list)
   i = htonl((u_long) list->connected.instance);
   memcpy(net_req.data+340, &i, sizeof(i));
   
-  strncpy((char *)(net_req.data+344), list->connected.username, LOGIN_SIZE+1);
-  strncpy((char *)(net_req.data+354), list->connected.realname, TITLE_SIZE);
-#ifdef KERBEROS
-  strncpy((char *)(net_req.data+386), list->connected.realm, REALM_SZ);
-  strncpy((char *)(net_req.data+426), list->connected.inst, INST_SZ);
+  strncpy(net_req.data+344, list->connected.username, LOGIN_SIZE+1);
+  strncpy(net_req.data+354, list->connected.realname, TITLE_SIZE);
+#ifdef HAVE_KRB4
+  strncpy(net_req.data+386, list->connected.realm,    REALM_SZ);
+  strncpy(net_req.data+426, list->connected.inst,     INST_SZ);
 #endif
-  strncpy((char *)(net_req.data+466), list->connected.nickname, STRING_SIZE);
-  strncpy((char *)(net_req.data+482), list->connected.title, TITLE_SIZE);
-  strncpy((char *)(net_req.data+514), list->connected.machine, TITLE_SIZE);
+  strncpy(net_req.data+466, list->connected.nickname, STRING_SIZE);
+  strncpy(net_req.data+482, list->connected.title,    TITLE_SIZE);
+  strncpy(net_req.data+514, list->connected.machine,  TITLE_SIZE
+							/* truncate! */);
+  /* be nice to old clients and null-terminate the field */
+  net_req.data[545] = '\0';
+
   
   len = 0;
   while (len < sizeof(IO_LIST)) {

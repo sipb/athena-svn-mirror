@@ -5,16 +5,17 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: list.c,v 1.25 1999-01-22 23:14:26 ghudson Exp $
+ *	$Id: list.c,v 1.26 1999-03-06 16:48:54 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: list.c,v 1.25 1999-01-22 23:14:26 ghudson Exp $";
+static char rcsid[] ="$Id: list.c,v 1.26 1999-03-06 16:48:54 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <olcd.h>
 
@@ -61,7 +62,7 @@ list_user_knuckles(knuckle,data,size)
   d = (LIST *) malloc(sizeof(LIST) * (user->no_knuckles + 1));
   if(d == (LIST *) NULL)
     {
-      log_error("malloc lossage: list user knuckles");
+      log_error("list_user_knuckles: malloc: %m");
       return(ERROR);
     }
   *data = d;
@@ -70,10 +71,6 @@ list_user_knuckles(knuckle,data,size)
   for (k_ptr = user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
     if(is_active((*k_ptr)))
       {
-#ifdef TEST
-        printf("getting %s %d\n",(*k_ptr)->user->username,n);
-#endif /* TEST */
-
 	get_list_info((*k_ptr),d++);
 	n++;
       }
@@ -109,15 +106,11 @@ list_queue(data,topics,stati,name,size)
   d = (LIST *) malloc(1024 * NBLOCKS);
   if(d == (LIST *) NULL)
     {
-      log_error("malloc error: list queue");
+      log_error("list_queue: malloc: %m");
       return(ERROR);
     }
   *data = d;
   n = 0;
-
-#ifdef TEST
-  printf("list ststu: %d %s\n",stati,name);
-#endif /* TEST */
 
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
     if(!list_redundant((*k_ptr)) && is_active((*k_ptr)))
@@ -136,16 +129,19 @@ list_queue(data,topics,stati,name,size)
 	    continue;
 
 	get_list_info((*k_ptr),d);
-#ifdef TEST
-	printf("putting %s %d\n",(*k_ptr)->user->username,n);
-	printf("sizes: %d  %d\n",(1024 * NBLOCKS * page), ((n-1) * sizeof(LIST)));
-	printf("status: %d title %s\n",d->ukstatus, d->user.title);
-        if(d->connected.uid >=0)
-	  printf("connect: %s status: %d\n",d->connected.username, d->ckstatus);
-	if(d->nseen >= 0)
-	  printf("question: %s \n",d->topic);
 
-#endif /* TEST */
+#ifdef DEBUG_QUEUE
+	printf("putting %s %d\n",(*k_ptr)->user->username, n);
+	printf("sizes: %d  %d\n", (1024 * NBLOCKS * page),
+                                  ((n-1) * sizeof(LIST)));
+	printf("status: %d title %s\n", d->ukstatus, d->user.title);
+        if (d->connected.uid >= 0)
+	  printf("connect: %s status: %d\n",
+		 d->connected.username, d->ckstatus);
+	if (d->nseen >= 0)
+	  printf("question: %s \n",d->topic);
+#endif /* DEBUG_QUEUE */
+
 	d++;
 	n++;
 	if((1024 * NBLOCKS * page) <= ((n-1) * sizeof(LIST)))
@@ -154,7 +150,7 @@ list_queue(data,topics,stati,name,size)
 	    d = (LIST *) realloc(d,1024 * NBLOCKS * page);
 	    if(d == (LIST *) NULL)
 	      {
-		log_error("realloc error: list queue");
+		log_error("list_queue: realloc: %m");
 		return(ERROR);
 	      }
 	  }
@@ -163,10 +159,6 @@ list_queue(data,topics,stati,name,size)
   d->ustatus = END_OF_LIST;
   d->ukstatus = END_OF_LIST;
   *size = n;
-
-#ifdef TEST
-  printf("%d elements in list\n",n);
-#endif /* TEST */
 
   return(SUCCESS);
 }
@@ -206,7 +198,7 @@ dump_list()
 	|| (pickup_q == NULL)
 	|| (refer_q == NULL)
 	|| (on_q == NULL)) {
-      log_error("dump_list: calloc failed");
+      log_error("dump_list: calloc failed"); /* errno may be gone now */
       return;
     }
   }
@@ -223,7 +215,7 @@ dump_list()
 	    mx_active *= 2;
 	    active_q = (D_LIST *) realloc(active_q,mx_active*sizeof(D_LIST));
 	    if (active_q == NULL) {
-	      log_error("dump_list: realloc failed");
+	      log_error("dump_list: realloc: %m");
 	      return;
 	    }
 	  }
@@ -235,7 +227,7 @@ dump_list()
 	    mx_on *= 2;
 	    on_q = (D_LIST *) realloc(on_q,mx_on*sizeof(D_LIST));
 	    if (on_q == NULL) {
-	      log_error("dump_list: realloc failed");
+	      log_error("dump_list: realloc: %m");
 	      return;
 	    }
 	  }
@@ -247,7 +239,7 @@ dump_list()
 	    mx_unseen *= 2;
 	    unseen_q = (D_LIST *) realloc(unseen_q,mx_unseen*sizeof(D_LIST));
 	    if (unseen_q == NULL) {
-	      log_error("dump_list: realloc failed");
+	      log_error("dump_list: realloc: %m");
 	      return;
 	    }
 	  }
@@ -260,7 +252,7 @@ dump_list()
 	    mx_pending *= 2;
 	    pending_q = (D_LIST *) realloc(pending_q,mx_pending*sizeof(D_LIST));
 	    if (pending_q == NULL) {
-	      log_error("dump_list: realloc failed");
+	      log_error("dump_list: realloc: %m");
 	      return;
 	    }
 	  }
@@ -272,7 +264,7 @@ dump_list()
 	    mx_pickup *= 2;
 	    pickup_q = (D_LIST *) realloc(pickup_q,mx_pickup*sizeof(D_LIST));
 	    if (pickup_q == NULL) {
-	      log_error("dump_list: realloc failed");
+	      log_error("dump_list: realloc: %m");
 	      return;
 	    }
 	  }
@@ -284,7 +276,7 @@ dump_list()
 	    mx_refer *= 2;
 	    refer_q = (D_LIST *) realloc(refer_q,mx_refer*sizeof(D_LIST));
 	    if (refer_q == NULL) {
-	      log_error("dump_list: realloc failed");
+	      log_error("dump_list: realloc: %m");
 	      return;
 	    }
 	  }
@@ -294,7 +286,7 @@ dump_list()
   /* Got lists, now output them... */
   f = fopen(LIST_TMP_NAME,"w+");
   if (f == NULL) {
-    log_error("dump_list: unable to open list file");
+    log_error("dump_list: unable to open list file: %m");
     return;
   }
   /* number of queues */

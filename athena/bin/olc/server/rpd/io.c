@@ -5,11 +5,12 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: io.c,v 1.12 1999-01-22 23:14:51 ghudson Exp $";
+static char rcsid[] ="$Id: io.c,v 1.13 1999-03-06 16:49:14 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #define SELECT_TIMEOUT	10     /* timeout after 10 seconds */
 
@@ -29,20 +30,12 @@ static char rcsid[] ="$Id: io.c,v 1.12 1999-01-22 23:14:51 ghudson Exp $";
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <ctype.h>
 #include <string.h>
-#if defined(_AIX) && defined(_IBMR2)
-#include <sys/select.h>
-#endif
+#include <unistd.h>
 
 #include "system.h"
-
-#ifdef NEEDS_ERRNO_DEFS
-extern int      errno;
-extern char     *sys_errlist[];
-extern int      sys_nerr;
-#endif
 
 int
 sread(fd, buf, nbytes)
@@ -66,7 +59,8 @@ sread(fd, buf, nbytes)
   
   FD_ZERO(&read_fds);
   FD_SET(fd,&read_fds);
-  if ((s_val = select(fd+1, &read_fds, NULL, NULL, &tval)) < 1) 
+  s_val = select(fd+1, &read_fds, NULL, NULL, &tval);
+  if (s_val < 1) 
     {
       if (s_val == 0)
 	errno = ETIMEDOUT;
@@ -113,7 +107,8 @@ swrite(fd, buf, nbytes)
 
   FD_ZERO(&write_fds);
   FD_SET(fd,&write_fds);
-  if ((s_val = select(fd+1, NULL, &write_fds, NULL, &tval)) != 1) 
+  s_val = select(fd+1, NULL, &write_fds, NULL, &tval);
+  if (s_val != 1)
     {
       if (s_val == 0)
 	errno = ETIMEDOUT;

@@ -18,24 +18,25 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: utils.c,v 1.15 1999-01-22 23:14:34 ghudson Exp $
+ *	$Id: utils.c,v 1.16 1999-03-06 16:49:03 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: utils.c,v 1.15 1999-01-22 23:14:34 ghudson Exp $";
+static char rcsid[] ="$Id: utils.c,v 1.16 1999-03-06 16:49:03 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
-
+#include "olcd.h"
 
 #include <string.h>
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/time.h>		/* System time definitions. */
 #include <ctype.h>		/* character types */
-#include <olcd.h>
+
 
 void
 get_list_info(k,data)

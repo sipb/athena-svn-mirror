@@ -18,16 +18,18 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: data.c,v 1.26 1999-01-22 23:14:22 ghudson Exp $
+ *	$Id: data.c,v 1.27 1999-03-06 16:48:53 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: data.c,v 1.26 1999-01-22 23:14:22 ghudson Exp $";
+static char rcsid[] ="$Id: data.c,v 1.27 1999-03-06 16:48:53 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olcd.h>
 
 /* declaraction of procedure table */
@@ -71,14 +73,10 @@ PROC Proc_List[] =
   OLC_GET_HOURS,       olc_get_hours,	     "olc get hours",
   OLC_CHANGE_HOURS,    olc_change_hours,     "olc change hours",
   OLC_VERSION,	       olc_version,          "olc version",
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
   OLC_TOGGLE_ZEPHYR,   olc_toggle_zephyr,    "olc toggle zephyr",
 #endif
-#ifdef __STDC__
   UNKNOWN_REQUEST,     (FUNCTION) NULL,  (char *) NULL,
-#else
-  UNKNOWN_REQUEST,     (ERRCODE(*)()) NULL,  (char *) NULL,
-#endif
 };
 
 PROC Maint_Proc_List[] = 
@@ -94,11 +92,7 @@ PROC Maint_Proc_List[] =
   OLC_VERSION,	       olc_version,          "olc version",
   OLC_LIST,            olc_list,             "olc list",
   OLC_DUMP,            olc_dump,             "olc dump",
-#ifdef __STDC__
   UNKNOWN_REQUEST,     (FUNCTION) NULL,  (char *) NULL,
-#else
-  UNKNOWN_REQUEST,     (ERRCODE(*)()) NULL,  (char *) NULL,
-#endif
 };
 
 KNUCKLE **Knuckle_List  = (KNUCKLE **) NULL;

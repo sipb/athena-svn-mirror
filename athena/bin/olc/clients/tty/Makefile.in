@@ -1,0 +1,48 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:48:06 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@ -I@top_srcdir@/include
+CFLAGS=@CFLAGS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+RANLIB=@RANLIB@
+
+SRCS=t_ask.c t_connect.c t_consult.c t_instance.c t_messages.c t_motd.c	 \
+  t_queue.c t_resolve.c t_send.c t_topic.c t_data.c t_utils.c t_status.c \
+  t_describe.c t_acl.c t_db.c t_list.c t_admin.c t_version.c t_getline.c
+OBJS=t_ask.o t_connect.o t_consult.o t_instance.o t_messages.o t_motd.o	 \
+  t_queue.o t_resolve.o t_send.o t_topic.o t_data.o t_utils.o t_status.o \
+  t_describe.o t_acl.o t_db.o t_list.o t_admin.o t_version.o t_getline.o
+
+all: libtty.a
+
+libtty.a: version.h $(OBJS)
+	rm -f $@
+	ar cq $@ $(OBJS)
+	${RANLIB} $@
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+FORCE:
+version.h: FORCE
+	sh newvers.sh
+
+# we don't install this library anywhere, it's here only for our
+# private use in building the binaries.
+install:
+
+clean:
+	rm -f $(OBJS) libtty.a version.h
+
+distclean: clean
+	rm -f Makefile
+
+depend.in: version.h Makefile.in
+	makedepend -f Makefile.in ${CPPFLAGS} ${DEFS} *.[ch]

@@ -8,22 +8,24 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_admin.c,v 1.3 1999-01-22 23:12:41 ghudson Exp $
+ *	$Id: p_admin.c,v 1.4 1999-03-06 16:47:59 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_admin.c,v 1.3 1999-01-22 23:12:41 ghudson Exp $";
+static char rcsid[] ="$Id: p_admin.c,v 1.4 1999-03-06 16:47:59 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
 
 extern int num_of_args;
 
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
 ERRCODE
 do_olc_zephyr(arguments)
      char **arguments;
@@ -38,45 +40,35 @@ do_olc_zephyr(arguments)
   
   Request.request_type = OLC_TOGGLE_ZEPHYR;
   arguments++;
-  while(*arguments != (char *) NULL) {
-    if (string_eq(*arguments, "-punt")) {
-      if (what != -1) {
-	fprintf(stderr,"Usage is: \tzephyr -unpunt\n");
-	fprintf(stderr,"          \tzephyr -punt [minutes_to_punt]\n");
-	return(ERROR);
-      }
+  while (*arguments != NULL) {
+    if (string_eq(*arguments, "-punt") && (what < 0)) {
       what = 1;
       ++arguments;
-      if(*arguments != NULL) { /* override default */
+      if (*arguments != NULL) { /* override default */
 	how_long = atoi(*arguments);
-	arguments++;
+	++arguments;
       }
       continue;
     }
-    if (string_eq(*arguments,"-unpunt")) {
-      if (what != -1) {
-	fprintf(stderr,"Usage is: \tzephyr -unpunt\n");
-	fprintf(stderr,"          \tzephyr -punt [minutes_to_punt]\n");
-	return(ERROR);
-      }
+    if (string_eq(*arguments,"-unpunt") && (what < 0)) {
       what = 0;
       ++arguments;
+      continue;
+    }
+
+    arguments = handle_argument(arguments, &Request, &status);
+    if (status) {
+      what = -1;
+      break;
     }
   }
 
-  arguments = handle_argument(arguments, &Request, &status);
-  if(status)
-    return(ERROR);
-	
-  arguments += num_of_args;		/* HACKHACKHACK */
-  
-  if(what == -1) { /* error */
-    fprintf(stderr,"Usage is: \tzephyr -unpunt\n");
-    fprintf(stderr,"          \tzephyr -punt [minutes_to_punt]\n");
+  if (what < 0) { /* error */
+    fprintf(stderr,"Usage is: \tzephyr [-unpunt "
+	           "| -punt [<minutes_to_punt>]]\n");
     return(ERROR);
   }
 
-
   return(t_toggle_zephyr(&Request,what,how_long));
 }
-#endif
+#endif /* HAVE_ZEPHYR */

@@ -22,16 +22,17 @@
 /* This file is part of the CREF finder.  It contains the primary definitions
  * of the global variables.
  *
- *	$Id: globals.c,v 2.8 1999-01-22 23:11:45 ghudson Exp $
+ *	$Id: globals.c,v 2.9 1999-03-06 16:47:24 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_globals_c = "$Id: globals.c,v 2.8 1999-01-22 23:11:45 ghudson Exp $";
+static char *rcsid_globals_c = "$Id: globals.c,v 2.9 1999-03-06 16:47:24 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */

@@ -1,5 +1,5 @@
 /*
- * $Id: oclient.h,v 1.4 1999-01-22 23:13:27 ghudson Exp $
+ * $Id: oclient.h,v 1.5 1999-03-06 16:48:25 ghudson Exp $
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -13,7 +13,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <hesiod.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 
 #include "system.h"
@@ -26,10 +26,9 @@
 # define P(s) ()
 #endif
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 #define K_SERVICE "olc"
-
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
 
 /* oreplay.c */
 void usage P((void));

@@ -22,16 +22,18 @@
  * Copyright (C) 1989-1997 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc.c,v 1.39 1999-01-22 23:12:32 ghudson Exp $
+ *	$Id: olc.c,v 1.40 1999-03-06 16:47:50 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olc.c,v 1.39 1999-01-22 23:12:32 ghudson Exp $";
+static char rcsid[] ="$Id: olc.c,v 1.40 1999-03-06 16:47:50 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
 #include <olc/olc_tty.h>
@@ -44,9 +46,9 @@ static char rcsid[] ="$Id: olc.c,v 1.39 1999-01-22 23:12:32 ghudson Exp $";
 #include <string.h>
 #include <unistd.h>
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 extern int krb_ap_req_debug;
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
 
 /* Template structure used to build the command table for different clients */
 typedef struct tCOMMAND_template  {
@@ -118,14 +120,14 @@ COMMAND_TMPL Command_Table_Template[] = {
  {0,       {"send",     do_olc_send,      "Send a message"}},
  {0,       {"show",     do_olc_show,      "Show any new messages"}},
  {0,       {"status",   do_olc_status,    "Display your status"}},
- /* "stock" used to be consultants-only.  Now it's like "answers". --bert */
+ /* "stock" used to be consultants-only.  Now it's both, like "answers". */
  {ANSWERS, {"stock",    do_olc_stock,     "Browse thru stock answers"}},
  {USER,    {"topic",    do_olc_topic,     "Find question topic"}},
  {CONSULT, {"topic",    do_olc_topic,     "Show/Change question topic"}},
  {0,       {"version",  do_olc_version,   "Print version number"}},
  {USER,    {"who",      do_olc_who,       "Find out who you're connected to"}},
  {CONSULT, {"who",      do_olc_who,       "Find status for current instance"}},
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
  {CONSULT, {"zephyr",   do_olc_zephyr,    "Toggle daemon zephyr use"}},
 #endif
  {-1,      {NULL,       NULL,             ""}}
@@ -166,9 +168,9 @@ main(argc, argv)
   char *prompt = NULL;
   char *config;
   ERRCODE status;
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
   struct sigaction act;
-#endif
+#endif /* HAVE_SIGACTION */
 
 /*
  * All client specific stuff should be initialized here, if they wish
@@ -231,14 +233,14 @@ main(argc, argv)
 
   Command_Table = build_command_table(Command_Table_Template);
 
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
   act.sa_handler= SIG_IGN;
-  (void) sigaction(SIGPIPE, &act, NULL);
-#else /* not POSIX */
+  sigaction(SIGPIPE, &act, NULL);
+#else /* don't HAVE_SIGACTION */
   signal(SIGPIPE, SIG_IGN);
-#endif /* not POSIX */
+#endif /* don't HAVE_SIGACTION */
   if (argc)
     {
       OInitialize();
@@ -327,30 +329,6 @@ COMMAND *build_command_table(COMMAND_TMPL *tmpl)
   return table;
 }
 
-
-/* Set an environment variable.
- * Arguments:	var: a string containing the name of the variable.
- *		value: a string containing the new value.
- * Returns:	nothing.
- * Non-local returns: on some platforms, exits with code 1 if malloc fails.
- */
-
-void
-set_env_var(const char *var, const char *value)
-{
-#ifdef PUTENV
-  char *buf = malloc(strlen(var)+strlen(value)+2);
-  if (buf == NULL)
-    {
-      fprintf(stderr, "Out of memory, can't expand environment.\n");
-      exit(1);
-    }
-  sprintf(buf, "%s=%s", var, value);
-  putenv(buf);
-#else
-  setenv (var, value, 1);
-#endif
-}
 
 /*
  * Function:	olc_init() completes the initialization process for

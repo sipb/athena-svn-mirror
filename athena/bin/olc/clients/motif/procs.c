@@ -10,14 +10,15 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: procs.c,v 1.29 1999-01-22 23:12:21 ghudson Exp $
+ *      $Id: procs.c,v 1.30 1999-03-06 16:47:45 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]="$Id: procs.c,v 1.29 1999-01-22 23:12:21 ghudson Exp $";
+static char rcsid[]="$Id: procs.c,v 1.30 1999-03-06 16:47:45 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <signal.h>
 #include <sys/errno.h>
@@ -41,10 +42,9 @@ static char rcsid[]="$Id: procs.c,v 1.29 1999-01-22 23:12:21 ghudson Exp $";
 char current_topic[TOPIC_SIZE] = "unknown";
 int sa_pid = 0;
 
-#ifdef NEEDS_ERRNO_DEFS
-extern int      errno;
-extern char     *sys_errlist[];
-extern int      sys_nerr;
+#ifndef HAVE_STRERROR
+extern const char *const sys_errlist[];
+#define strerror(x) (sys_errlist[x])
 #endif
 
 #if defined(__STDC__)
@@ -53,13 +53,8 @@ extern int      sys_nerr;
 # define P_(s) ()
 #endif
 
-#ifdef VOID_SIGRET
-static void reaper P_((int sig));
-static void view_ready P_((int sig));
-#else
-static int reaper P_((int sig));
-static int view_ready P_((int sig));
-#endif
+static RETSIGTYPE reaper P_((int sig));
+static RETSIGTYPE view_ready P_((int sig));
 
 #undef P_
 
@@ -68,70 +63,43 @@ static int view_ready P_((int sig));
  *
  */
 
-#ifdef VOID_SIGRET
-static void
-#else
-static int
-#endif
+static RETSIGTYPE
 reaper(sig)
 {
-#ifdef POSIX
   int foo;
-#else
-  union wait foo;
-#endif
   int pid;
   Arg args[1];
 
-#ifndef POSIX   /* POSIX semantics keeps the old handler -> no need to reset */
-  signal(SIGCHLD, reaper);
-#endif
-
-#ifdef POSIX
-   pid = waitpid(-1, &foo, WNOHANG);
-#else
-  pid = wait3(&foo,WNOHANG,0);
-#endif
+#ifdef HAVE_WAITPID
+  pid = waitpid(-1, &foo, WNOHANG);
+#else /* don't HAVE_WAITPID */
+  pid = wait3(&foo, WNOHANG, 0);
+#endif /* don't HAVE_WAITPID */
   if (pid <= 0)
-#ifdef VOID_SIGRET
     return;
-#else
-    return(0);
-#endif
   if (pid == sa_pid) {
     sa_pid = 0;
     XtSetArg(args[0],XmNsensitive,TRUE);
     XtSetValues(w_stock_btn, args, 1);
   }
-#ifdef VOID_SIGRET
   return;
-#else
-  return(0);
-#endif
 }
 
-#ifdef VOID_SIGRET
-static void
-#else
-static int
-#endif
+static RETSIGTYPE
 view_ready(sig)
 {
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
   struct sigaction act;
+
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
   act.sa_handler= SIG_IGN;
   sigaction(SIGUSR1, &act, NULL);
-#else
+#else /* don't HAVE_SIGACTION */
   signal(SIGUSR1, SIG_IGN);
-#endif
+#endif /* don't HAVE_SIGACTION */
   STANDARD_CURSOR;
-#ifdef VOID_SIGRET
   return;
-#else
-  return(0);
-#endif
 }  
 
 void
@@ -226,11 +194,17 @@ olc_send_newq (w, tag, callback_data)
 
   if (x_ask(&Request, current_topic, q_text) != SUCCESS)
     {
-#ifdef ATHENA
-      MuError("An error occurred when trying to enter your question.\n\nEither try again or call a consultant at 253-4435.");
-#else
-      MuError("An error occurred when trying to enter your question.\n\nEither try again or contact a consultant.");
-#endif
+      /* MuError is a macro, so don't try putting #if directives
+       * inside its argument.
+       */
+#ifdef CONSULT_PHONE_NUMBER
+      MuError("An error occurred when trying to enter your question.\n\n"
+	      "Either try again or call a consultant at "
+	      CONSULT_PHONE_NUMBER ".");
+#else /* no CONSULT_PHONE_NUMBER */
+      MuError("An error occurred when trying to enter your question.\n\n"
+	      "Either try again or contact a consultant.");
+#endif /* no CONSULT_PHONE_NUMBER */
       STANDARD_CURSOR;
       return;
     }
@@ -494,7 +468,7 @@ save_cbk (w, tag, callback_data)
 						      XmDIALOG_TEXT));
     out_fd = open(filename,O_WRONLY|O_CREAT|O_TRUNC,0600);
     if (out_fd < 0) {
-      sprintf(buf,"Error opening %s: %s", filename, sys_errlist[errno]);
+      sprintf(buf,"Error opening %s: %s", filename, strerror(errno));
       MuError(buf);
       XtFree(filename);
       return;
@@ -538,22 +512,18 @@ olc_stock (w, tag, callback_data)
 {
   Arg args[1];
   char pidascii[7];
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
   struct sigaction action;
-#endif
+#endif /* don't HAVE_SIGACTION */
 
   WAIT_CURSOR;
   XtSetArg(args[0],XmNsensitive,FALSE);
   XtSetValues(w_stock_btn, args, 1);
   
   sprintf(pidascii,"%d",getpid());
-#ifdef NO_VFORK
   sa_pid = fork();
-#else
-  sa_pid = vfork();
-#endif
   if (sa_pid == -1) {
-    MuError("Error in vfork; cannot start stock answer browser");
+    MuError("Error in fork; cannot start stock answer browser");
     return;
   }
   if (sa_pid == 0) {
@@ -563,7 +533,7 @@ olc_stock (w, tag, callback_data)
       _exit(1);
     }
   }
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
 
@@ -572,10 +542,10 @@ olc_stock (w, tag, callback_data)
   
   action.sa_handler = view_ready;
   sigaction(SIGUSR1, &action, NULL);
-#else
+#else /* don't HAVE_SIGACTION */
   signal(SIGCHLD,reaper);
   signal(SIGUSR1,view_ready);
-#endif
+#endif /* don't HAVE_SIGACTION */
 
 #ifdef LOG_USAGE
   log_view("browser_start");

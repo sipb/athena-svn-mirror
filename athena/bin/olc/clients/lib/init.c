@@ -18,16 +18,18 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: init.c,v 1.24 1999-01-22 23:12:06 ghudson Exp $
+ *	$Id: init.c,v 1.25 1999-03-06 16:47:37 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: init.c,v 1.24 1999-01-22 23:12:06 ghudson Exp $";
+static char rcsid[] ="$Id: init.c,v 1.25 1999-03-06 16:47:37 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <sys/file.h>
 #include <sys/types.h>
@@ -46,7 +48,7 @@ OInitialize()
   char *h;
   char *inst;
   struct hostent *host;
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
   int need_to_free = 0;
 #endif
 
@@ -56,7 +58,7 @@ OInitialize()
     inst = client_service_name();
   }
 
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
   if (!h) {
       char **hp;
 
@@ -82,10 +84,10 @@ OInitialize()
   if (!h) {
     h = client_hardcoded_server();
   }
-#endif /* HESIOD */
+#endif /* HAVE_HESIOD */
 
   strcpy (DaemonHost, h);
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
   if (need_to_free)
     free(h);
 #endif
@@ -130,7 +132,7 @@ OInitialize()
   }
   User.uid = uid;
  
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   expand_hostname(DaemonHost,INSTANCE,REALM);
 #endif
   return(SUCCESS);

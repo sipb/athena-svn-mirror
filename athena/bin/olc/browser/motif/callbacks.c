@@ -10,14 +10,15 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: callbacks.c,v 1.16 1999-01-22 23:11:50 ghudson Exp $
+ *      $Id: callbacks.c,v 1.17 1999-03-06 16:47:28 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]="$Id: callbacks.c,v 1.16 1999-01-22 23:11:50 ghudson Exp $";
+static char rcsid[]="$Id: callbacks.c,v 1.17 1999-03-06 16:47:28 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <Mrm/MrmAppl.h>
 #include <Mu.h>
@@ -465,7 +466,7 @@ void createCB (w, string, callback_data)
       strcpy(file, CurrentDir);
       strcpy(Indexes[0], file);
 
-#ifdef ATHENA
+#if 1 /* XXX FIXME XXX */
       /* At Athena, we use attach to mount the stock answer filesystem; your */
       /* method may differ at other sites */
       if (stat(file, &buf))
@@ -477,6 +478,7 @@ void createCB (w, string, callback_data)
 	  exit(-1);
 	}
 #endif
+
       if (MakeMenu(file) != SUCCESS)
 	{
 	  fprintf(stderr, "%s: Unable to initialize menus.\n",

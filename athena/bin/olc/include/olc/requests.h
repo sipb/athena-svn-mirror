@@ -18,14 +18,18 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests.h,v 1.23 1999-01-22 23:13:45 ghudson Exp $
+ *	$Id: requests.h,v 1.24 1999-03-06 16:48:34 ghudson Exp $
  */
 
-#include <mit-copyright.h>
+#ifndef OLC__OLC_REQUESTS_H
+#define OLC__OLC_REQUESTS_H
 
-#ifdef KERBEROS
+#include <mit-copyright.h>
+#include <olc/structs.h>
+
+#ifdef HAVE_KRB4
 #include <krb.h>
-#else
+#else /* don't HAVE_KRB4 */
 /* Need this just for the structure size; allows some interopability between
    kerberized & non-kerberized clients/servers */
 /* From krb.h */
@@ -39,7 +43,7 @@ struct ktext {
 
 typedef struct ktext *KTEXT;
 typedef struct ktext KTEXT_ST;
-#endif
+#endif /* don't HAVE_KRB4 */
 
 /* request structure */
 
@@ -290,3 +294,5 @@ offset(dec)	name		type		meaning
 #define VERSION_5	5	/* 16 Jul 1990 */
 
 #define CURRENT_VERSION VERSION_5
+
+#endif /* OLC__OLC_REQUESTS_H */

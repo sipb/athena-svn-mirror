@@ -18,16 +18,18 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_connect.c,v 1.19 1999-01-22 23:12:57 ghudson Exp $
+ *	$Id: t_connect.c,v 1.20 1999-03-06 16:48:07 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_connect.c,v 1.19 1999-01-22 23:12:57 ghudson Exp $";
+static char rcsid[] ="$Id: t_connect.c,v 1.20 1999-03-06 16:48:07 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 

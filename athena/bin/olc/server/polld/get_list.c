@@ -8,17 +8,18 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: get_list.c,v 1.7 1999-01-22 23:14:42 ghudson Exp $
+ *	$Id: get_list.c,v 1.8 1999-03-06 16:49:08 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: get_list.c,v 1.7 1999-01-22 23:14:42 ghudson Exp $";
+static char rcsid[] ="$Id: get_list.c,v 1.8 1999-03-06 16:49:08 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <polld.h>
 #include <olcd.h>

@@ -18,16 +18,18 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: messages.c,v 1.13 1999-01-22 23:12:09 ghudson Exp $
+ *	$Id: messages.c,v 1.14 1999-03-06 16:47:38 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: messages.c,v 1.13 1999-01-22 23:12:09 ghudson Exp $";
+static char rcsid[] ="$Id: messages.c,v 1.14 1999-03-06 16:47:38 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 
 ERRCODE

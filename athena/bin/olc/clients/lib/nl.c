@@ -9,28 +9,27 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: nl.c,v 1.10 1999-01-22 23:12:11 ghudson Exp $
+ *	$Id: nl.c,v 1.11 1999-03-06 16:47:39 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: nl.c,v 1.10 1999-01-22 23:12:11 ghudson Exp $";
+static char rcsid[] ="$Id: nl.c,v 1.11 1999-03-06 16:47:39 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <errno.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 #include <krb.h>
 #endif
 
 #include <olc/olc.h>
 #include <nl_requests.h>
-
-#define        MAX(a,b) (((a)>(b))?(a):(b))
 
 #if defined(__STDC__)
 # define P_(s) s
@@ -38,9 +37,10 @@ static char rcsid[] ="$Id: nl.c,v 1.10 1999-01-22 23:12:11 ghudson Exp $";
 # define P_(s) ()
 #endif
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 static ERRCODE get_k_auth P_((KTEXT_ST *my_auth));
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
+
 #undef P_
 
 
@@ -70,7 +70,7 @@ nl_get_log(fd,buf,buflen,username,instance,outlen)
 {
   long i,len,total_read;
   ERRCODE retcode;
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 KTEXT_ST my_auth;
 #endif
 
@@ -108,7 +108,7 @@ KTEXT_ST my_auth;
     return(errno);
   }
   
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   retcode = get_k_auth(&my_auth);
   if (retcode != SUCCESS) {
     close(fd);
@@ -126,14 +126,14 @@ KTEXT_ST my_auth;
     close(fd);
     return(errno);
   }
-#else
+#else /* not HAVE_KRB4 */
   i = htonl((u_long) 0);
   retcode = swrite(fd,(char *) &i,sizeof(i));
   if (retcode == -1) {
     close(fd);
     return(errno);
   }
-#endif
+#endif /* not HAVE_KRB4 */
   
   /* Get length of text to recieve, or error code */
   retcode = sread(fd,(char *) &i,sizeof(i));
@@ -184,7 +184,7 @@ nl_get_nm(fd, buf, buflen, username, instance, nuke, outlen)
 {
   long i,len,total_read;
   ERRCODE retcode;
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 KTEXT_ST my_auth;
 #endif
 
@@ -221,7 +221,7 @@ KTEXT_ST my_auth;
     return(errno);
   }
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   retcode = get_k_auth(&my_auth);
   if (retcode != SUCCESS) {
     close(fd);
@@ -238,7 +238,7 @@ KTEXT_ST my_auth;
     close(fd);
     return(errno);
   }
-#endif
+#endif /* HAVE_KRB4 */
   
   /* Get length of text to recieve, or error code */
   retcode = sread(fd,(char *)&i,sizeof(i));
@@ -275,7 +275,7 @@ KTEXT_ST my_auth;
   return(SUCCESS);
 }
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 static ERRCODE
 get_k_auth(my_auth)
      KTEXT_ST *my_auth;
@@ -291,4 +291,4 @@ get_k_auth(my_auth)
   else
     return(SUCCESS);
 }
-#endif
+#endif /* HAVE_KRB4 */

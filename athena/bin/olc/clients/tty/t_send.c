@@ -18,16 +18,18 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_send.c,v 1.26 1999-01-22 23:13:06 ghudson Exp $
+ *	$Id: t_send.c,v 1.27 1999-03-06 16:48:11 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_send.c,v 1.26 1999-01-22 23:13:06 ghudson Exp $";
+static char rcsid[] ="$Id: t_send.c,v 1.27 1999-03-06 16:48:11 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
@@ -36,10 +38,9 @@ static char rcsid[] ="$Id: t_send.c,v 1.26 1999-01-22 23:13:06 ghudson Exp $";
 #include <sys/stat.h>
 #include <sys/errno.h>
 
-#ifdef NEEDS_ERRNO_DEFS
-extern int      errno;
-extern char     *sys_errlist[];
-extern int      sys_nerr;
+#ifndef HAVE_STRERROR
+extern const char *const sys_errlist[];
+#define strerror(x) (sys_errlist[x])
 #endif
 
 ERRCODE
@@ -277,10 +278,10 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
       if (status != 0) {
 	if ((errno == ENOENT) && header)
 	  (void) OMailHeader(Request, file, username, realname,
-			     list.topic, DEFAULT_MAILHUB, message);
+			     list.topic, DEFAULT_MAIL_DOMAIN, message);
 	else {
 	  fprintf(stderr,"Error with file \"%s\": %s", file,
-		  sys_errlist[errno]);
+		  strerror(errno));
 	  return(ERROR);
 	}
       }

@@ -18,20 +18,19 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: utils.c,v 1.26 1999-01-22 23:12:15 ghudson Exp $
+ *	$Id: utils.c,v 1.27 1999-03-06 16:47:41 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: utils.c,v 1.26 1999-01-22 23:12:15 ghudson Exp $";
+static char rcsid[] ="$Id: utils.c,v 1.27 1999-03-06 16:47:41 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olc/olc.h>
-#ifdef ZEPHYR
-#include <zephyr/zephyr.h>
-#endif
 #include <signal.h>
 #include <ctype.h>
 #include <sys/stat.h>
@@ -53,10 +52,10 @@ ERRCODE
 fill_request(req)
      REQUEST *req;
 {
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   CREDENTIALS k_cred;
   int status;
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
 
   memset(req, 0, sizeof(REQUEST));
 
@@ -77,7 +76,7 @@ fill_request(req)
   (void) strncpy(req->target.machine,  User.machine,
 		 sizeof(req->requester.machine));
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   status = krb_get_cred("krbtgt",REALM,REALM, &k_cred);
   if(status == KSUCCESS)
     {
@@ -86,12 +85,12 @@ fill_request(req)
     }
   else
     fprintf(stderr,"%s\n",krb_err_txt[status]);
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
 
   return(SUCCESS);
 }
 
-#ifdef ATHENA
+#ifdef CHECK_MAILHUB___BROKEN
 
 #define MAIL_SUCCESS 250
 char *host = "athena.mit.edu";
@@ -161,13 +160,13 @@ query_mailhost(s,name)
   return(code);
  }
 
-#endif /* ATHENA */
+#endif /* CHECK_MAILHUB___BROKEN */
 
 ERRCODE
 can_receive_mail(name)   /*ARGSUSED*/
      char *name;
 {
-#ifdef ATHENA
+#ifdef CHECK_MAILHUB___BROKEN
   static int fd, code;
   int status;
 
@@ -187,9 +186,10 @@ can_receive_mail(name)   /*ARGSUSED*/
   else
     return(SUCCESS);
 
-#else  /* ATHENA */
+#else  /* not CHECK_MAILHUB___BROKEN */
+  fprintf(stderr, "Warning: mailhub checking is not supported...\n");
   return(SUCCESS);
-#endif /* ATHENA */
+#endif /* not CHECK_MAILHUB___BROKEN */
 }
 
 
@@ -214,21 +214,13 @@ call_program(program, argument)
      char *argument;		/* Argument to be passed to program. */
 {
   int pid;		/* Process id for forking. */
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
   struct sigaction sa, osa;
-#else /* not POSIX */
-#ifdef VOID_SIGRET
-  void (*func)(int);
-#else /* not VOID_SIGRET */
-  int (*func)();
-#endif /* not VOID_SIGRET */
-#endif /* not POSIX */
+#else /* don't HAVE_SIGACTION */
+  RETSIGTYPE (*func)(int);
+#endif /* don't HAVE_SIGACTION */
 
-#ifdef NO_VFORK
   pid = fork();
-#else
-  pid = vfork();
-#endif
   if (pid == -1)
     {
       olc_perror("call_program");
@@ -243,24 +235,24 @@ call_program(program, argument)
       }
     else 
       {
-#ifdef POSIX
+#ifdef HAVE_SIGACTION
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	sa.sa_handler= SIG_IGN;
-	(void) sigaction(SIGINT, &sa, &osa);
-#else /* not POSIX */
+	sigaction(SIGINT, &sa, &osa);
+#else /* don't HAVE_SIGACTION */
 	func = signal(SIGINT, SIG_IGN);
-#endif /* not POSIX */
+#endif /* don't HAVE_SIGACTION */
 	while (wait(0) != pid) 
 	  {
 			/* ho hum ... (yawn) */
             /* tap tap */
 	  };
-#ifdef POSIX
-	(void) sigaction(SIGINT, &osa, NULL);
-#else /* not POSIX */
+#ifdef HAVE_SIGACTION
+	sigaction(SIGINT, &osa, NULL);
+#else /* don't HAVE_SIGACTION */
 	signal(SIGINT, func);
-#endif /* not POSIX */
+#endif /* don't HAVE_SIGACTION */
 	return(SUCCESS);
       }
 }
@@ -279,7 +271,7 @@ call_program(program, argument)
  *              Snarfed from kerberos document
  */
 
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 void
 expand_hostname(hostname, instance, realm)
      char *hostname;
@@ -299,31 +291,36 @@ expand_hostname(hostname, instance, realm)
     }
   else
     {
+      char *krb_conf_realm;
+
       i = p-hostname;
       (void) strncpy(instance,hostname,i);
       instance[i] = '\0';
-      (void) strcpy(realm, p+1);
+
+      krb_conf_realm = krb_realmofhost(hostname);
+      if (krb_conf_realm)
+	strcpy(realm, krb_conf_realm);
+      else
+	strcpy(realm, p+1);   /* a poor man's guess */
     }
 
-#ifdef REALM
-  if(strlen(realm) == 0)
-    (void) strcpy(realm, LOCAL_REALM);
-#endif /* REALM */
-
-  for(i=0; instance[i] != '\0'; i++)
-    if(isupper(instance[i]))
+  /* lowercase host "instance" */
+  for (i=0; instance[i] != '\0'; i++)
+    if (isupper(instance[i]))
       instance[i] = tolower(instance[i]);
 
-  for(i=0; realm[i] != '\0'; i++)
-    if(islower(realm[i]))
+  /* upcase realm */
+  for (i=0; realm[i] != '\0'; i++)
+    if (islower(realm[i]))
       realm[i] = toupper(realm[i]);
-  
-  for(i=0; strlen(LOCAL_REALMS[i]) !=0; i++)
+
+  /* if the realm is one of LOCAL_REALMS[], map it to LOCAL_REALM */
+  for(i=0; strlen(LOCAL_REALMS[i]) != 0; i++)
     if(strcmp(realm, LOCAL_REALMS[i]) == 0)
       (void) strcpy(realm, LOCAL_REALM);
   return;
 }
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
 
 /*
  * Function:	sendmail() forks a sendmail process to send mail to someone.

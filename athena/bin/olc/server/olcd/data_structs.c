@@ -8,16 +8,18 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: data_structs.c,v 1.3 1999-01-22 23:14:23 ghudson Exp $
+ *	$Id: data_structs.c,v 1.4 1999-03-06 16:48:53 ghudson Exp $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Id: data_structs.c,v 1.3 1999-01-22 23:14:23 ghudson Exp $";
+static char rcsid[] ="$Id: data_structs.c,v 1.4 1999-03-06 16:48:53 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <syslog.h>
 
 #include <olcd.h>
@@ -79,9 +81,10 @@ insert_user(u)
     return(-1);
   }
 
-  if ((new = (struct hash_entry *)malloc(sizeof(struct hash_entry))) == NULL) {
-    log_error("Could not malloc for hash_entry struct");
-    exit(1);
+  new = malloc(sizeof(struct hash_entry));
+  if (new == NULL) {
+    log_error("Could not malloc for hash_entry struct: %m");
+    exit(8);
   }
 
   new->entry = (void *)u;
@@ -113,7 +116,7 @@ remove_user(u)
   if (p == NULL)
     return(-1);
 
-  if (p->prev = NULL) {
+  if (p->prev == NULL) {
     head = p->next;
   } else {
     p->prev->next = p->next;
@@ -137,9 +140,9 @@ alloc_user()
     if (User_free != NULL)
       User_free->prev = NULL;
   } else {
-    if ((User_free = (USER *) calloc(USER_ALLOC_SZ,sizeof(USER)))
-	== NULL) {
-      log_error("olcd: can't allocate User list");
+    User_free = calloc(USER_ALLOC_SZ,sizeof(USER));
+    if (User_free == NULL) {
+      log_error("Can't allocate User list: %m");
       return(NULL);
     }
     for(i=1;i<USER_ALLOC_SZ-2;i++) {
@@ -173,6 +176,8 @@ dealloc_user(u)
 {
   if (u->in_use != 1) {
     log_error("dealloc_user: trying to free user now in use");
+    /* make this separate so if username is broken, we log before coredump */
+    log_error("dealloc_user: user is '%s'", u->username);
     return;
   }
 
@@ -256,9 +261,10 @@ insert_knuc(k)
     return(-1);
   }
 
-  if ((new = (struct hash_entry *)malloc(sizeof(struct hash_entry))) == NULL) {
-    log_error("Could not malloc for hash_entry struct");
-    exit(1);
+  new = malloc(sizeof(struct hash_entry));
+  if (new == NULL) {
+    log_error("Could not malloc for hash_entry struct: %m");
+    exit(8);
   }
 
   new->entry = (void *)k;
@@ -291,7 +297,7 @@ remove_knuc(k)
   if (p == NULL)
     return(-1);
 
-  if (p->prev = NULL) {
+  if (p->prev == NULL) {
     head = p->next;
   } else {
     p->prev->next = p->next;
@@ -315,9 +321,9 @@ alloc_knuc()
     if (Knuckle_free != NULL)
       Knuckle_free->prev = NULL;
   } else {
-    if ((Knuckle_free = (KNUCKLE *) calloc(KNUC_ALLOC_SZ,sizeof(KNUCKLE)))
-	== NULL) {
-      log_error("olcd: can't allocate Knuc list");
+    Knuckle_free = calloc(KNUC_ALLOC_SZ,sizeof(KNUCKLE));
+    if (Knuckle_free == NULL) {
+      log_error("can't allocate Knuc list: %m");
       return(NULL);
     }
     for(i=1;i<KNUC_ALLOC_SZ-2;i++) {

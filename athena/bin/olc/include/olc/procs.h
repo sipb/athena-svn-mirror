@@ -18,7 +18,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: procs.h,v 1.20 1999-01-22 23:13:45 ghudson Exp $
+ *	$Id: procs.h,v 1.21 1999-03-06 16:48:33 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -113,7 +113,6 @@ ERRCODE nl_get_nm P((int fd, char **buf, int *buflen, char *username, int instan
 /* olc.c */
 int main P((int argc , char **argv ));
 ERRCODE do_olc_init P((void ));
-void set_env_var P((const char *var, const char *value));
 
 /* olc_stock.c */
 ERRCODE do_olc_stock P((char **arguments ));

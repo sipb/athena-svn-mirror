@@ -8,7 +8,7 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: polld.h,v 1.5 1999-01-22 23:13:29 ghudson Exp $
+ *	$Id: polld.h,v 1.6 1999-03-06 16:48:28 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -23,7 +23,7 @@
 #include <olc/procs.h>
 #include <server_defines.h>
 
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
 #include <zephyr/zephyr.h>
 #endif
 
@@ -31,7 +31,7 @@
 
 typedef struct tPTF {
   char username[LOGIN_SIZE];
-  char machine[NAME_SIZE];
+  char machine[HOSTNAME_SIZE];
   int status;
 } PTF;
 

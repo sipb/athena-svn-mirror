@@ -9,16 +9,17 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: version.c,v 1.2 1999-01-22 23:14:35 ghudson Exp $
+ *	$Id: version.c,v 1.3 1999-03-06 16:49:03 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: version.c,v 1.2 1999-01-22 23:14:35 ghudson Exp $";
+static char rcsid[] ="$Id: version.c,v 1.3 1999-03-06 16:49:03 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <olcd.h>
 #include "version.h"

@@ -1,7 +1,7 @@
 /**********************************************************************
  * usage tracking library
  *
- * $Id: log.c,v 1.12 1999-01-22 23:14:03 ghudson Exp $
+ * $Id: log.c,v 1.13 1999-03-06 16:48:43 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -10,20 +10,19 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Id: log.c,v 1.12 1999-01-22 23:14:03 ghudson Exp $";
+static char rcsid[] = "$Id: log.c,v 1.13 1999-03-06 16:48:43 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-#if defined(_AIX) && defined(_IBMR2)
-#include <sys/select.h>
-#endif
-#if defined(_AUX_SOURCE) || defined(_ALL_SOURCE)
+#include <unistd.h>
+#ifdef HAVE_TIME_H
 #include <time.h>
 #endif
 #include <netinet/in.h>
@@ -53,7 +52,7 @@ log_startup(type)
   int nfound,len;
   struct timeval timeout;
   int port;
-#ifdef HESIOD  
+#ifdef HAVE_HESIOD  
   char **hesinfo;
 
 /*

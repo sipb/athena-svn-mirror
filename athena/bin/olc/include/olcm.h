@@ -9,26 +9,17 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: olcm.h,v 1.7 1999-01-22 23:13:28 ghudson Exp $
+ *      $Id: olcm.h,v 1.8 1999-03-06 16:48:28 ghudson Exp $
  */
 
 #include <mit-copyright.h>
+#include "olxx_paths.h"
 
 #define DFLT_TOPIC	"test"
-#define DFLT_SERVER	"fionavar.mit.edu"
+#define DFLT_SERVER	"infocalypse.mit.edu"
 #define DFLT_USERNAME	"nobody"
-#define OLCR_PATH	"/usr/local/olcr"
-#define STOCK_HEADER	"/var/server/olc/olcm_default_header"
-#define STOCK_FILE	"/var/server/olc/olcm_default_reply"
-/* #define SRVTAB_LOC	"/usr/athena/lib/olc/olcm_srvtab" */
-#define SRVTAB_LOC	"/var/server/olc/srvtab"
-#define SYSLOG_FACILITY LOG_LOCAL6
+#define STOCK_HEADER	OLXX_MAIL_DIR "/olcm_default_header"
+#define STOCK_FILE	OLXX_MAIL_DIR "/olcm_default_reply"
+#define SRVTAB_LOC	OLXX_CONFIG_DIR "/srvtab"
 
-#ifdef KERBEROS
-#ifdef ATHENA
-#define DFLT_REALM	"ATHENA.MIT.EDU"
-#else
-/* Insert your realm here */
-#define DFLT_REALM	"FOO.BAR.EDU"
-#endif
-#endif
+#define SYSLOG_FACILITY LOG_LOCAL6

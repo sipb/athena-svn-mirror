@@ -5,14 +5,16 @@
 
 #ifndef lint
 #ifndef SABER
-  static char rcsid[] ="$Id: acl_files.c,v 1.7 1999-01-22 23:14:48 ghudson Exp $";
+  static char rcsid[] ="$Id: acl_files.c,v 1.8 1999-03-06 16:49:13 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include "rpd.h"
 
-#ifndef KERBEROS
+#ifndef HAVE_KRB4
 #define         ANAME_SZ        40
 #define         REALM_SZ        40
 #define         INST_SZ         40
@@ -47,7 +49,7 @@ static int check_hash P((struct hashtbl *h, char *el));
 static void destroy_hash P((struct hashtbl *h));
 static unsigned int hashval P((char *s));
 static struct hashtbl *make_hash P((int size));
-static int nuke_whitespace P((char *buf));
+static void nuke_whitespace P((char *buf));
 
 #undef P
 
@@ -119,7 +121,7 @@ char *canon;
     canon += len;
     *canon++ = '\0';
   }
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   else if (krb_get_lrealm(canon, 1) != KSUCCESS) {
     strcpy(canon, KRB_REALM);
   }
@@ -131,7 +133,7 @@ char *canon;
 
 /* Eliminate all whitespace character in buf */
 /* Modifies its argument */
-static
+static void
 nuke_whitespace(buf)
 char *buf;
 {
@@ -219,7 +221,7 @@ char *el;
 }
 
 /* Returns nonzero if el is in h */
-static 
+static int
 check_hash(h, el)
 struct hashtbl *h;
 char *el;
@@ -286,7 +288,8 @@ static int acl_load(name)
   /* Set up the acl */
   strcpy(acl_cache[i].filename, name);
  in_cache:
-  if((acl_cache[i].fd = open(name, O_RDONLY, 0)) < 0) return(-1);
+  acl_cache[i].fd = open(name, O_RDONLY, 0);
+  if(acl_cache[i].fd < 0) return(-1);
   /* Force reload */
   acl_cache[i].acl = (struct hashtbl *) 0;
   
@@ -305,8 +308,10 @@ static int acl_load(name)
      || s.st_ctime != acl_cache[i].status.st_ctime) {
     /* Gotta reload */
     if(acl_cache[i].fd >= 0) close(acl_cache[i].fd);
-    if((acl_cache[i].fd = open(name, O_RDONLY, 0)) < 0) return(-1);
-    if((f = fdopen(acl_cache[i].fd, "r")) == NULL) return(-1);
+    acl_cache[i].fd = open(name, O_RDONLY, 0);
+    if(acl_cache[i].fd < 0) return(-1);
+    f = fdopen(acl_cache[i].fd, "r");
+    if(f == NULL) return(-1);
     if(acl_cache[i].acl) destroy_hash(acl_cache[i].acl);
     acl_cache[i].acl = make_hash(ACL_LEN);
     while(fgets(buf, sizeof(buf), f) != NULL) {
@@ -351,7 +356,8 @@ acl_check(acl, principal)
   /* Try the wildcards */
   realm = strchr(canon, REALM_SEP);
   *strchr(canon, INST_SEP) = '\0';	/* Chuck the instance */
-  
+  /* TODO: can strchr ever return NULL in this context?  --bert 29jan1997 */
+
   sprintf(buf, "%s.*%s", canon, realm);
   if(acl_exact_match(acl, buf)) return(1);
   

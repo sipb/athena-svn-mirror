@@ -8,14 +8,17 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
- *      $Id: features.c,v 1.4 1999-01-22 23:13:13 ghudson Exp $
+ *      $Id: features.c,v 1.5 1999-03-06 16:48:16 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: features.c,v 1.4 1999-01-22 23:13:13 ghudson Exp $";
+static char rcsid[] ="$Id: features.c,v 1.5 1999-03-06 16:48:16 ghudson Exp $";
 #endif
 #endif
+
+#include <mit-copyright.h>
+#include "config.h"
 
 #include <fcntl.h>
 #include <sys/stat.h>

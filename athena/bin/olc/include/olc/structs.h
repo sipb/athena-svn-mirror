@@ -17,10 +17,17 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: structs.h,v 1.11 1999-01-22 23:13:47 ghudson Exp $
+ *	$Id: structs.h,v 1.12 1999-03-06 16:48:34 ghudson Exp $
  */
 
+#ifndef OLC__OLC_STRUCTS_H
+#define OLC__OLC_STRUCTS_H
+
 #include <mit-copyright.h>
+
+#ifdef HAVE_KRB4
+#include <krb.h>	/* for REALM_SZ and INST_SZ */
+#endif
 
 /* Structure describing a person. */
 
@@ -30,13 +37,13 @@ typedef struct tPERSON
   int     instance;                  /* the user's instance id */
   char    username[LOGIN_SIZE+1];    /* Person's username. */
   char    realname[TITLE_SIZE];      /* Person's real name. */
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   char    realm[REALM_SZ];           /* current realm */
   char    inst[INST_SZ];             /* oh well */
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
   char    nickname[STRING_SIZE];     /* Person's first name. */
   char    title[TITLE_SIZE];         /* Person's title */
-  char    machine[TITLE_SIZE];       /* Person's current machine. */
+  char    machine[HOSTNAME_SIZE];    /* Person's current machine. */
 } PERSON;
 
 /* Structure describing the list */
@@ -65,3 +72,5 @@ typedef struct tDBINFO
   char title1[TITLE_SIZE];
   char title2[TITLE_SIZE];
 } DBINFO ;
+
+#endif /* OLC__OLC_STRUCTS_H */

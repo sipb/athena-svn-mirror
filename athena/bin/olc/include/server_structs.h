@@ -18,7 +18,7 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: server_structs.h,v 1.3 1999-01-22 23:13:31 ghudson Exp $
+ *	$Id: server_structs.h,v 1.4 1999-03-06 16:48:29 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -27,6 +27,9 @@
 #define __server_structs_h __FILE__
 
 /* OLCD data definitions */
+
+typedef ERRCODE (*FUNCTION) OPrototype ((int, struct tREQUEST *));
+				/* A pointer to a function. */
 
 typedef struct tUSER 
 {
@@ -37,7 +40,7 @@ typedef struct tUSER
   char   nickname[NAME_SIZE];         
   char   title1[NAME_SIZE];        /* title of user in OLC */
   char   title2[NAME_SIZE];        /* title of consultant in OLC */
-  char   machine[NAME_SIZE];      /* user location */
+  char   machine[HOSTNAME_SIZE];   /* user location */
   char   realm[NAME_SIZE];
   int    specialties[SPEC_SIZE];    /* Specialty list. */
   int    no_specialties;

@@ -17,15 +17,16 @@
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
- *      $Id: x_utils.c,v 1.7 1999-01-22 23:12:28 ghudson Exp $
+ *      $Id: x_utils.c,v 1.8 1999-03-06 16:47:48 ghudson Exp $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Id: x_utils.c,v 1.7 1999-01-22 23:12:28 ghudson Exp $";
+static char rcsid[]= "$Id: x_utils.c,v 1.8 1999-03-06 16:47:48 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
 
 #include "xolc.h"
 
@@ -36,18 +37,22 @@ handle_response(response, req)
 {
   int status;
   char message[BUF_SIZE];
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
   char kmessage[BUF_SIZE];
 
   strcpy(kmessage,"\n\nIf you were having trouble with some other program, problems with your\nkerberos tickets may have been the reason.  Try the other program again\nafter getting new kerberos tickets with `renew'.\n\n");
 
-#ifdef ATHENA
-  strcat(kmessage, "If you continue to have difficulty, feel free to contact a user consultant\nby phone at 253-4435.\n");
-#else
-  strcat(kmessage, "If you continue to have difficulty, contact a user consultant.\n");
-#endif
+  strcat(kmessage, "If you continue to have difficulty, "
+#ifdef CONSULT_PHONE_NUMBER
+	 "you can contact a user consultant\nby phone at "
+	 CONSULT_PHONE_NUMBER ".\n"
+#else /* no CONSULT_PHONE_NUMBER */
+	 "contact a user consultant.\n"
+#endif /* no CONSULT_PHONE_NUMBER */
+	 );
+
   strcat(kmessage, "\nOnce you have gotten new kerberos tickets, you may try to continue with OLC.\nIf you wish to continue, click on the `Try again' button below.\nIf you wish to exit OLC now, click on the `Quit' button.");
-#endif
+#endif /* HAVE_KRB4 */
 
   switch(response)
     {
@@ -154,7 +159,7 @@ handle_response(response, req)
       MuError(message);
       return(ERROR);
 
-#ifdef KERBEROS     /* these error codes are < 100 */
+#ifdef HAVE_KRB4     /* these error codes are < 100 */
     case MK_AP_TGTEXP:
     case RD_AP_EXP:
       strcpy(message, "Your Kerberos ticket has expired.  To renew your Kerberos tickets, type:\n\n        renew"); 
@@ -178,16 +183,20 @@ handle_response(response, req)
       return(status);
 
     case RD_AP_TIME:
-#ifdef ATHENA
-      strcpy(message, "Kerberos authentication failed: workstation clock is incorrect.\nPlease contact Athena operations and move to another workstation.");
-#else
-      strcpy(message, "Kerberos authentication failed; the clock on this workstation is incorrect.\nPlease contact the maintainer of this workstation to update it.");
-#endif
+      strcpy(message, "Kerberos authentication failed: this workstation's "
+	     "clock is set incorrectly.\nPlease move to another workstation "
+	     "and notify "
+#ifdef HARDWARE_MAINTAINER
+             HARDWARE_MAINTAINER
+#else /* no HARDWARE_MAINTAINER */
+             "the workstation's maintainer"
+#endif /* no HARDWARE_MAINTAINER */
+             " of this problem.");  /* was ATHENA */
       if(client_is_user_client())
 	strcat(message, kmessage);
       status = popup_option(message);
       return(status);
-#endif
+#endif /* HAVE_KRB4 */
 
     case SUCCESS:
       return(SUCCESS);

@@ -8,8 +8,11 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: Cursor.c,v 1.4 1999-01-22 23:12:17 ghudson Exp $
+ *      $Id: Cursor.c,v 1.5 1999-03-06 16:47:43 ghudson Exp $
  */
+
+#include <mit-copyright.h>
+#include "config.h"
 
 #include <Mu.h>
 

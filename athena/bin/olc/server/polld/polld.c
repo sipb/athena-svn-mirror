@@ -8,23 +8,35 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: polld.c,v 1.14 1999-01-22 23:14:43 ghudson Exp $
+ *	$Id: polld.c,v 1.15 1999-03-06 16:49:09 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: polld.c,v 1.14 1999-01-22 23:14:43 ghudson Exp $";
+static char rcsid[] ="$Id: polld.c,v 1.15 1999-03-06 16:49:09 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#include "config.h"
+
 #include <olcd.h>
 #include <polld.h>
 
+#include <com_err.h>
+
 #include <signal.h>
-#include <syslog.h>
 #include <sys/file.h>
 #include <sys/ioctl.h>
+#include <termios.h>
+#include <limits.h>
+
+#ifdef   HAVE_SYSLOG_H
+#include   <syslog.h>
+#ifndef    LOG_CONS
+#define      LOG_CONS 0  /* if LOG_CONS isn't defined, just ignore it */
+#endif     /* LOG_CONS */
+#endif /* HAVE_SYSLOG_H */
 
 /* Global variables. */
 
@@ -40,11 +52,7 @@ char DaemonInst[20];
 # define P(s) ()
 #endif
 
-#ifdef VOID_SIGRET
-static void clean_up P(( int sig ));
-#else
-static int clean_up P(( int sig ));
-#endif
+static RETSIGTYPE clean_up P((int sig));
 
 #undef P
 
@@ -52,22 +60,15 @@ static int clean_up P(( int sig ));
 
 static int listening_fd;
 
-#ifdef VOID_SIGRET
-static void
-#else
-static int
-#endif
-clean_up(sig)
-     int sig;
+static RETSIGTYPE
+clean_up(int sig)
 {
   close(listening_fd);
+#ifdef HAVE_SYSLOG
   syslog(LOG_INFO,"Exiting on signal %d",sig);
+#endif /* HAVE_SYSLOG */
   exit(1);
-#ifdef VOID_SIGRET
   return;
-#else
-  return(0);
-#endif
 }
 
 /*
@@ -82,9 +83,7 @@ clean_up(sig)
  *	results back to the main daemon.
  */
 
-main(argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   int nofork = 0;
   int i;
@@ -96,7 +95,7 @@ main(argc, argv)
   int fd;
   int retval;
   char *dhost = NULL;
-#ifdef _POSIX_SOURCE
+#ifdef HAVE_SIGACTION
   struct sigaction action;
 #endif
 
@@ -106,7 +105,8 @@ main(argc, argv)
   moncontrol(0);
 #endif
   
-  strcpy(DaemonInst,"OLC");
+  strcpy(DaemonInst, OLXX_SERVICE);
+  upcase_string(DaemonInst);
 
   for (i=1; i< argc; i++) {
     if (!strcmp (argv[i], "-nofork") || !strcmp (argv[i], "-no_fork")) {
@@ -134,27 +134,20 @@ main(argc, argv)
     }
   }
   
-#ifdef HESIOD
   if (dhost == NULL) {
-    char **hp;
-    if ((hp = hes_resolve(DaemonInst,"sloc")) == NULL) {	
-      syslog(LOG_ERR,"Unable to find %s service location in hesiod",
-	     OLC_SERVICE);
-      exit(1);
+    if (gethostname(DaemonHost, sizeof(DaemonHost)) < 0) {
+      fprintf (stderr, "Can't find server host name!\n");
+      exit (1);
     }
-    else
-      dhost = *hp;
-  }
-#endif /* HESIOD */
-
-  if (dhost == NULL) {
-    fprintf (stderr, "Can't find OLC server host!\n");
-    exit (1);
+  } else {
+    strcpy(DaemonHost, dhost);
   }
 
-  strcpy(DaemonHost,dhost);
+#ifdef HAVE_KRB4
+  set_env_var("KRBTKFILE", TICKET_FILE);    /* piggyback on olcd's tickets */
+#endif /* HAVE_KRB4 */
 
-#ifdef _POSIX_SOURCE
+#ifdef HAVE_SIGACTION
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
   action.sa_handler = clean_up;
@@ -165,27 +158,16 @@ main(argc, argv)
 
   action.sa_handler = SIG_IGN;
   sigaction(SIGPIPE, &action, NULL);
-
-#else /* _POSIX_SOURCE */
+#else /* don't HAVE_SIGACTION */
   signal(SIGHUP,clean_up);
   signal(SIGINT,clean_up);
   signal(SIGTERM,clean_up);
   signal(SIGPIPE,SIG_IGN);
-#endif /* _POSIX_SOURCE */
+#endif /* don't HAVE_SIGACTION */
   
-#if defined(ultrix)
-#ifdef LOG_CONS
-  openlog ("polld", LOG_CONS | LOG_PID);
-#else
-  openlog ("polld", LOG_PID);
-#endif /* LOG_CONS */
-#else
-#ifdef LOG_CONS
-  openlog ("polld", LOG_CONS | LOG_PID,SYSLOG_LEVEL);
-#else
-  openlog ("polld", LOG_PID, SYSLOG_LEVEL);
-#endif /* LOG_CONS */
-#endif /* ultrix */
+#ifdef HAVE_SYSLOG
+  openlog ("polld", LOG_CONS | LOG_PID, SYSLOG_FACILITY);
+#endif /* HAVE_SYSLOG */
 
 #ifdef SABER
   nofork = 1;
@@ -196,7 +178,17 @@ main(argc, argv)
    */
   
   if (!nofork) {
-    int max_fd = getdtablesize ();
+    int max_fd;
+#ifdef RLIMIT_NOFILE
+    struct rlimit rl;
+
+    if (getrlimit(RLIMIT_NOFILE, &rl) < 0)
+      max_fd = OPEN_MAX; /* either that or abort()... --bert 29jan1996 */
+    else
+      max_fd = (int)rl.rlim_cur;
+#else
+    max_fd = getdtablesize ();
+#endif
     
     switch (fork()) {
     case 0:				/* child */
@@ -232,7 +224,7 @@ main(argc, argv)
     }
   }
   
-#ifdef _AUX_SOURCE
+#ifdef HAVE_SETVBUF
   setvbuf(stdout,NULL,_IOLBF,BUFSIZ);
   setvbuf(stderr,NULL,_IOLBF,BUFSIZ);
 #else
@@ -240,25 +232,37 @@ main(argc, argv)
   setlinebuf(stderr);
 #endif
 
-  /* handle setuid-ness, etc., so we can dump core */
-  setreuid((uid_t) geteuid(), -1);
-  setregid((gid_t) getegid(), -1);
-  
   init_cache();
 
+#ifdef HAVE_SYSLOG
   syslog(LOG_INFO,"Ready to start polling...");
+#endif /* HAVE_SYSLOG */
   
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
   initialize_zeph_error_table();
-  if ((retval = ZInitialize()) != ZERR_NONE)
-    syslog(LOG_ERR,"Error in ZInitialize: %s",error_message(retval));
-#endif /* ZEPHYR */
+  retval = ZInitialize();
+  if (retval != ZERR_NONE)
+    {
+#ifdef HAVE_SYSLOG
+      syslog(LOG_ERR,"Error in ZInitialize: %s",error_message(retval));
+#endif /* HAVE_SYSLOG */
+    }
+#endif /* HAVE_ZEPHYR */
     
+  /* Incarnate polld with minimum data, so we won't need a config file */
+  if (incarnate_hardcoded("polld", OLXX_SERVICE, DaemonHost) != SUCCESS) {
+#ifdef HAVE_SYSLOG
+    syslog(LOG_ERR, "Program incarnation failed???");
+#endif /* HAVE_SYSLOG */
+  }
+
   n_people = 0;
   max_people = 100;
   users = (PTF *)calloc(max_people,sizeof(PTF));
   if (users == NULL) {
+#ifdef HAVE_SYSLOG
     syslog(LOG_ERR,"Cannot calloc for user list");
+#endif /* HAVE_SYSLOG */
     exit(1);
   }
 
@@ -277,7 +281,7 @@ main(argc, argv)
        continue;
      }
 
-#ifdef ZEPHYR
+#ifdef HAVE_ZEPHYR
     check_zephyr();
 #endif
 
@@ -296,5 +300,8 @@ main(argc, argv)
   }
   while(cycle);
 
+#ifdef HAVE_SYSLOG
+  syslog(LOG_INFO, "Polling completed, exiting.");
+#endif /* HAVE_SYSLOG */
   exit(0);
 }

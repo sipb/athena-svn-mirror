@@ -6,16 +6,29 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: system.h,v 1.8 1999-01-22 23:13:31 ghudson Exp $
+ *	$Id: system.h,v 1.9 1999-03-06 16:48:30 ghudson Exp $
  */
 
 #include <mit-copyright.h>
 
 #include <sys/types.h>
-#ifdef KERBEROS
+#ifdef HAVE_KRB4
 #include <krb.h>
-#endif /* KERBEROS */
+#endif /* HAVE_KRB4 */
 
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
 #include <hesiod.h>
 #endif
+
+/* This file used to define the prototypes for the functions listed
+ * below.  Unfortunately, having prototypes breaks things if the
+ * prototype is wrong, while not having them is usually just annoying.
+ * Therefore, the prototypes have been removed.  On modern operating
+ * systems, all system functions have prototypes in header files,
+ * which should be included above.
+ *
+ * calloc, malloc, strcpy, strncpy, atoi, [bcopy], [bzero], close,
+ * exit, free, getdtablezise, getopt, getsockopt, gethostbyname,
+ * ioctl, listen, lseek, open, openlog, psignal(?), read,
+ * getservbyname, setsockopt, shutdown, socket, strcmp, syslog, write
+ */
