@@ -28,7 +28,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.7 2004-03-18 12:03:07 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.8 2004-11-05 07:00:24 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1068,6 +1068,7 @@ SRXAFS_InlineBulkStatus(tcon, Fids, OutStats, CallBacks, Sync)
 			     READ_LOCK, &rights, &anyrights)) {
 	    tstatus = &OutStats->AFSBulkStats_val[i];
 	    tstatus->errorCode = errorCode;
+	    PutVolumePackage(parentwhentargetnotdir, targetptr, (Vnode *) 0, volptr);
 	    parentwhentargetnotdir = (Vnode *) 0;
 	    targetptr = (Vnode *) 0;
 	    volptr = (Volume *) 0;

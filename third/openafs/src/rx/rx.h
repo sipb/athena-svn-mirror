@@ -253,6 +253,8 @@ returned with an error code of RX_CALL_DEAD ( transient error ) */
 #define rx_EnableHotThread()		(rx_enable_hot_thread = 1)
 #define rx_DisableHotThread()		(rx_enable_hot_thread = 0)
 
+#define rx_PutConnection(conn) rx_DestroyConnection(conn)
+
 struct rx_securityObjectStats {
     char type;				/* 0:unk 1:null,2:vab 3:kad */
     char level;
@@ -411,7 +413,7 @@ struct rx_peer {
 
     /* For garbage collection */
     afs_uint32 idleWhen;		    /* When the refcountwent to zero */
-    short refCount;		    /* Reference count for this structure */
+    afs_uint32 refCount;		    /* Reference count for this structure */
 
     /* Congestion control parameters */
     u_char burstSize;		    /* Reinitialization size for the burst parameter */
@@ -496,7 +498,7 @@ struct rx_connection {
                                     /* client-- to retransmit the challenge */
     struct rx_service *service;	    /* used by servers only */
     u_short serviceId;		    /* To stamp on requests (clients only) */
-    u_short refCount;		    /* Reference count */
+    afs_uint32 refCount;		    /* Reference count */
     u_char flags;		    /* Defined below */
     u_char type;		    /* Type of connection, defined below */
     u_char secondsUntilPing;	    /* how often to ping for each active call */
@@ -619,7 +621,7 @@ struct rx_call {
     struct clock traceStart;	    /* time the call started running */
     u_short MTU;                    /* size of packets currently sending */
 #ifdef RX_ENABLE_LOCKS
-    short refCount;		    /* Used to keep calls from disappearring
+    u_short refCount;		    /* Used to keep calls from disappearring
 				       when we get them from a queue. */
 #endif /* RX_ENABLE_LOCKS */
 /* Call refcount modifiers */
@@ -633,7 +635,7 @@ struct rx_call {
 #define RX_CALL_REFCOUNT_ABORT  7 /* delayed abort */
 #define RX_CALL_REFCOUNT_MAX    8 /* array size. */
 #ifdef RX_REFCOUNT_CHECK
-    short refCDebug[RX_CALL_REFCOUNT_MAX];
+    u_short refCDebug[RX_CALL_REFCOUNT_MAX];
 #endif  /* RX_REFCOUNT_CHECK */
     int iovNBytes;		/* byte count for current iovec */
     int iovMax;			/* number elements in current iovec */
@@ -921,7 +923,7 @@ struct rx_debugPeer {
     u_short port;
     u_short ifMTU;
     afs_uint32 idleWhen;
-    short refCount;
+    u_short refCount;
     u_char burstSize;
     u_char burst;
     struct clock burstWait;

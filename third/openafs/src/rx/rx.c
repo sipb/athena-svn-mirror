@@ -16,7 +16,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.9 2004-02-13 18:58:42 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.10 2004-11-05 07:00:19 zacheiss Exp $");
 
 #ifdef KERNEL
 #include "../afs/sysincludes.h"
@@ -796,15 +796,16 @@ void rxi_CleanupConnection(conn)
      * idle (refCount == 0) after rx_idlePeerTime (60 seconds) have passed.
      */
     MUTEX_ENTER(&rx_peerHashTable_lock);
-    if (--conn->peer->refCount <= 0) {
-	conn->peer->idleWhen = clock_Sec();
-   	if (conn->peer->refCount < 0) {
-	    conn->peer->refCount = 0; 
-	    MUTEX_ENTER(&rx_stats_mutex);
-	    rxi_lowPeerRefCount ++;
-	    MUTEX_EXIT(&rx_stats_mutex);
-	}
+    if (conn->peer->refCount < 2) {
+        conn->peer->idleWhen = clock_Sec();
+	if (conn->peer->refCount < 1) {
+            conn->peer->refCount = 1;
+            MUTEX_ENTER(&rx_stats_mutex);
+            rxi_lowPeerRefCount++;
+            MUTEX_EXIT(&rx_stats_mutex);
+        }
     }
+    conn->peer->refCount--;
     MUTEX_EXIT(&rx_peerHashTable_lock);
 
     MUTEX_ENTER(&rx_stats_mutex);
@@ -988,6 +989,20 @@ void rx_DestroyConnection(conn)
     NETPRI;
     AFS_RXGLOCK();
     rxi_DestroyConnection (conn);
+    AFS_RXGUNLOCK();
+    USERPRI;
+}
+
+void
+rx_GetConnection(register struct rx_connection *conn)
+{
+    SPLVAR;
+    
+    NETPRI;
+    AFS_RXGLOCK();
+    MUTEX_ENTER(&conn->conn_data_lock);
+    conn->refCount++;
+    MUTEX_EXIT(&conn->conn_data_lock);
     AFS_RXGUNLOCK();
     USERPRI;
 }
