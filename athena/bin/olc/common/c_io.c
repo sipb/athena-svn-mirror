@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.13 1991-04-08 20:57:13 lwvanels Exp $
+ *	$Id: c_io.c,v 1.14 1991-04-15 14:56:10 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.13 1991-04-08 20:57:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.14 1991-04-15 14:56:10 lwvanels Exp $";
 #endif
 #endif
 
@@ -53,7 +53,9 @@ extern int      sys_nerr;
 
 struct hostent *gethostbyname(); /* Get host entry of a host. */
 
+#ifndef MIN
 #define	MIN(a,b)	((a)>(b)?(b):(a))
+#endif
 
 #if __STDC__
 static ERRCODE write_chars_to_fd (int, char *, int);
