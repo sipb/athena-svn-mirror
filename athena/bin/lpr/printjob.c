@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.13 1990-07-07 10:25:38 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.14 1990-08-25 14:08:36 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.13 1990-07-07 10:25:38 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.14 1990-08-25 14:08:36 epeisach Exp $";
 #endif lint
 
 /*
@@ -1257,9 +1257,11 @@ init()
 	if ((PL = pgetnum("pl")) < 0)
 		PL = DEFLENGTH;
 	sprintf(&length[2], "%d", PL);
+#ifdef PQUOTA
 	if ((CP = pgetnum("pc")) < 0)
 	        CP = DEFPC;
 	sprintf(&cost[2], "%d", CP);
+#endif
 	if ((PX = pgetnum("px")) < 0)
 		PX = 0;
 	sprintf(&pxwidth[2], "%d", PX);
