@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v $
- * $Author: cfields $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.13 1995-08-18 03:14:16 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.14 1996-05-01 21:28:27 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -766,18 +766,19 @@ int add(fromJet, what, data)
   int err;
   FILE *a;
   int l;
-  int omask;
+  sigset_t set, oset;
   char line1[100], line2[100];
 
   line2[0] = '\0';
   sprintf(addpath, "attach -p %s", what);
-  omask = sigblock(sigmask(SIGCHLD));		/* THIS IS GROSS... */
-						/* block sigchlds for now... */
+  (void) sigemptyset(&set);
+  (void) sigaddset(&set, SIGCHLD);
+  (void) sigprocmask(SIG_BLOCK, &set, &oset);
   if (NULL != (a = popen(addpath, "r")))
     {
       fgets(addpath, MAXPATHLEN, a);
       err = pclose(a);
-      (void) sigsetmask(omask);			/* unblock sigchlds again... */
+      (void) sigprocmask(SIG_SETMASK, &oset, NULL);
 
       if (err != 0)
 	sprintf(line2, "Attach failed with error %d", err/256);
@@ -790,7 +791,7 @@ int add(fromJet, what, data)
 	  return 0;
 	}
     }
-  (void) sigsetmask(omask);			/* unblock sigchlds again... */
+  (void) sigprocmask(SIG_SETMASK, &oset, NULL);
   sprintf(line1, "Could not attach %s", what);
   XjUserWarning(root, NULL, True, line1, line2);
 
