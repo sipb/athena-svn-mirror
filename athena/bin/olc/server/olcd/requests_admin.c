@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.25 1991-11-05 13:47:53 lwvanels Exp $
+ *	$Id: requests_admin.c,v 1.26 1992-02-05 02:51:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.25 1991-11-05 13:47:53 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.26 1992-02-05 02:51:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -90,57 +90,6 @@ olc_dump(fd,request)
   unlink(file);
   return(SUCCESS);
 }
-
-
-ERRCODE
-olc_dump_req_stats(fd,request)
-     int fd;
-     REQUEST *request;
-{
-  KNUCKLE *requester;
-  int status;
-  char file[NAME_SIZE];
-
-  status = find_knuckle(&(request->requester), &requester);	
-  if(status)
-    return(send_response(fd,status));
-   
-  if(!is_allowed(requester->user, ADMIN_ACL))
-    return(send_response(fd,PERMISSION_DENIED));
-  
-  send_response(fd,SUCCESS);
-  make_temp_name(file);
-  dump_request_stats(file);
-  write_file_to_fd(fd,file);
-  unlink(file);
-  return(SUCCESS);
-}
-
-
-ERRCODE
-olc_dump_ques_stats(fd,request)
-     int fd;
-     REQUEST *request;
-{
-  KNUCKLE *requester;
-  int status;
-  char file[NAME_SIZE];
-
-  status = find_knuckle(&(request->requester), &requester);	
-  if(status)
-    return(send_response(fd,status));
-   
-  if(!is_allowed(requester->user, ADMIN_ACL))
-    return(send_response(fd,PERMISSION_DENIED));
-  
-  send_response(fd,SUCCESS);
-  make_temp_name(file);
-  dump_question_stats(file);
-  write_file_to_fd(fd,file);
-  unlink(file);
-  return(SUCCESS);
-}
-
 
 ERRCODE
 olc_change_motd(fd,request)
