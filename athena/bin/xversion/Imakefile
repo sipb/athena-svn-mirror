@@ -2,16 +2,11 @@
  * Imakefile for 'xversion'
  * Copyright 1989 by the Massachusetts Institute of Technology.
  *
- * $Id: Imakefile,v 1.1 1991-07-04 23:19:50 probe Exp $
+ * $Id: Imakefile,v 1.2 1991-07-04 23:20:12 probe Exp $
  *
  */
 
 SRCS=	xversion.c
 
-SimpleProgram(xversion,xversion.c,-lX11,$(ATHBINDIR))
+SimpleProgram(xversion,xversion.o,-lX11,$(ATHBINDIR))
 install_man(xversion.man,xversion.1)
-
-#if 0
-depend:
-	makedepend $(CFLAGS) $(SRCS)
-#endif
