@@ -92,10 +92,16 @@ INDY)
 
 	hostname=`cat /etc/sys_id`
 	netaddress=`awk /$hostname'/{ print $1 }' /etc/hosts`
+	public=true
+	if /sbin/chkconfig private ; then
+		public=false
+	fi
+	rm -f /etc/config/private
 	sed -e  "s/^HOST=NONAME/HOST=$hostname/
 		s/^ADDR=NOADDR/ADDR=$netaddress/
 		s/^NETDEV=NODEV/NETDEV=ec0/
-		s/^MACHINE=[^;]*/MACHINE=$MACH/" \
+		s/^MACHINE=[^;]*/MACHINE=$MACH/
+		s/^PUBLIC=true/PUBLIC=$public/" \
 	        < /srvd/etc/athena/rc.conf > /etc/athena/rc.conf
 	;;
 esac
