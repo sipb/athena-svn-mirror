@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: bslot.c,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 14:32:23 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: bslot.c,v $ $Revision: 1.1.1.5 $ $Date: 2004-06-30 15:01:38 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #include "builtins.h"
