@@ -38,7 +38,7 @@ esac
 # Check for which compiler we're using
 
 case "$cc" in
-*"cc -n32"*)
+*cc*)
 
 	# Check for which version of the compiler we're running
 	case "`$cc -version 2>&1`" in
