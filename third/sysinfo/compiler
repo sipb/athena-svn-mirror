@@ -1,6 +1,6 @@
 case $OS in
 solaris)
-	cc=`/usr/athena/bin/athdir /mit/sunsoft`/cc
+	cc=/afs/athena.mit.edu/software/sunsoft/SUNWspro/bin/cc
 	;;
 *)
 	cc=$CC
