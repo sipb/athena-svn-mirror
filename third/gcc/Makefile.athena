@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.20 2003-03-08 05:33:28 ghudson Exp $
+# $Id: Makefile.athena,v 1.21 2003-03-13 06:17:03 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -17,7 +17,7 @@ dist:
 	mv src/Makefile.athena .
 	mv src/athena-version .
 	mv src/compiler .
-	[ -f src/do.sh ] && mv src/do.sh .
+	[ -f src/do.sh ] && mv src/do.sh . || :
 	mkdir obj
 
 # We can't use the Athena config.site file because it specifies
