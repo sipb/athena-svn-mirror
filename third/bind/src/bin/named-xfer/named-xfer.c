@@ -110,10 +110,11 @@ char copyright[] =
 
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)named-xfer.c	4.18 (Berkeley) 3/7/91";
-static char rcsid[] = "$Id: named-xfer.c,v 1.1.1.1 1998-05-04 22:23:36 ghudson Exp $";
+static char rcsid[] = "$Id: named-xfer.c,v 1.1.1.2 1998-05-12 18:04:21 ghudson Exp $";
 #endif /* not lint */
 
 #include "port_before.h"
+#include "fd_setsize.h"
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -148,6 +149,8 @@ static char rcsid[] = "$Id: named-xfer.c,v 1.1.1.1 1998-05-04 22:23:36 ghudson E
 #include "../named/named.h"
 #undef MAIN_PROGRAM
 
+#define MAX_XFER_RESTARTS 2
+
 # ifdef SHORT_FNAMES
 extern long pathconf __P((const char *path, int name));	/* XXX */
 # endif
@@ -181,6 +184,8 @@ static	const char	*soa_zinfo(struct zoneinfo *, u_char *, u_char*);
 
 struct zoneinfo		zp_start, zp_finish;
 
+static int		restarts = 0;
+
 FILE			*ddt = NULL;
 
 /*
@@ -211,33 +216,20 @@ int init_xfer_logging() {
 
 	log_ctx_valid = 1;
 
-	chan = (log_channel)malloc(sizeof (struct log_channel));
+	chan = log_new_syslog_channel(0, 0, LOG_DAEMON);
 	if (chan == NULL)
 		return (0);
-	chan->type = log_syslog;
-	chan->flags = 0;
-	chan->out.facility = LOG_DAEMON;
-	chan->level = 0;
-	chan->references = 1;
-
 	if (log_add_channel(log_ctx, ns_log_default, chan) < 0) {
 		perror("log_add_channel syslog");
 		return (0);
 	}
 
 	if (debug) {
-		chan = (log_channel)malloc(sizeof (struct log_channel));
+		unsigned int flags = LOG_USE_CONTEXT_LEVEL|LOG_REQUIRE_DEBUG;
+
+		chan = log_new_file_channel(flags, 0, NULL, ddt, 0, ULONG_MAX);
 		if (chan == NULL)
 			return (0);
-		chan->type = log_file;
-		chan->flags = LOG_USE_CONTEXT_LEVEL|LOG_REQUIRE_DEBUG;
-		chan->out.file.name = NULL;
-		chan->out.file.stream = ddt;
-		chan->out.file.versions = 0;
-		chan->out.file.max_size = ULONG_MAX;
-		chan->level = 0;
-		chan->references = 1;
-
 		if (log_add_channel(log_ctx, ns_log_default, chan) < 0) {
 			perror("log_add_channel debug");
 			return (0);
@@ -255,10 +247,11 @@ void cleanup_for_exit(void) {
 }
 
 	
-void
+int
 main(int argc, char *argv[]) {
 	struct zoneinfo *zp;
 	struct hostent *hp;
+	struct in_addr axfr_src;
  	char *dbfile = NULL, *tracefile = NULL, *tm = NULL;
 	int dbfd, ddtd, result, c, fd, closed = 0;
 	u_int32_t serial_no = 0;
@@ -269,6 +262,7 @@ main(int argc, char *argv[]) {
 #endif
 	int class = C_IN;
 	int n;
+	long num_files;
 
 	ProgName = strrchr(argv[0], '/');
 	if (ProgName != NULL)
@@ -279,7 +273,8 @@ main(int argc, char *argv[]) {
 	(void) umask(022);
 
 	/* this is a hack; closing everything in the parent is hard. */
-	for (fd = sysconf(_SC_OPEN_MAX) - 1;  fd > STDERR_FILENO;  fd--)
+	num_files = MIN(sysconf(_SC_OPEN_MAX), FD_SETSIZE);
+	for (fd = num_files - 1;  fd > STDERR_FILENO;  fd--)
 		closed += (close(fd) == 0);
 
 #ifdef RENICE
@@ -298,10 +293,11 @@ main(int argc, char *argv[]) {
 #else
 	openlog(ProgName, LOG_PID|LOG_CONS|n, LOG_DAEMON);
 #endif
+	axfr_src.s_addr = 0;
 #ifdef STUBS
-	while ((c = getopt(argc, argv, "C:d:l:s:t:z:f:p:P:qS")) != EOF)
+	while ((c = getopt(argc, argv, "C:d:l:s:t:z:f:p:P:qx:S")) != EOF)
 #else
-	while ((c = getopt(argc, argv, "C:d:l:s:t:z:f:p:P:q")) != EOF)
+	while ((c = getopt(argc, argv, "C:d:l:s:t:z:f:p:P:qx:")) != EOF)
 #endif
 	    switch (c) {
 	        case 'C':
@@ -362,6 +358,10 @@ main(int argc, char *argv[]) {
 #endif
 		case 'q':
 			quiet++;
+			break;
+		case 'x':
+			if (!inet_aton(optarg, &axfr_src))
+				panic("bad -x addr: %s", optarg);
 			break;
 		case '?':
 		default:
@@ -482,6 +482,7 @@ main(int argc, char *argv[]) {
 	zp->z_class = class;
 	zp->z_origin = domain;
 	zp->z_source = dbfile;
+	zp->z_axfr_src = axfr_src;
 	zp->z_addrcnt = 0;
 	dprintf(1, "zone found (%d): \"%s\", source = %s\n",
 		zp->z_type,
@@ -540,6 +541,7 @@ main(int argc, char *argv[]) {
 		exit(result);	/* error or timeout */
 	}
 	/*NOTREACHED*/
+	return (0);		/* Make gcc happy. */
 }
  
 static char *UsageText[] = {
@@ -554,6 +556,7 @@ static char *UsageText[] = {
 	"\t[-S]\n",
 #endif
 	"\t[-C class]\n",
+	"\t[-x axfr-src]\n",
 	"\tservers...\n",
 	NULL
 };
@@ -592,7 +595,7 @@ getzone(struct zoneinfo *zp, u_int32_t serial_no, int port) {
 	u_int cnt;
  	u_char *cp, *nmp, *eom, *tmp ;
 	u_char *buf = NULL;
-	u_int bufsize;
+	u_int bufsize = 0;
 	char name[MAXDNAME], name2[MAXDNAME];
 	struct sockaddr_in sin;
 #ifdef POSIX_SIGNALS
@@ -658,15 +661,26 @@ getzone(struct zoneinfo *zp, u_int32_t serial_no, int port) {
 			}
 			bufsize = 2 * PACKETSZ;
 		}
-		memset(&sin, 0, sizeof sin);
-		sin.sin_family = AF_INET;
-		sin.sin_port = port;
-		sin.sin_addr = zp->z_addr[cnt];
-		if ((s = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		if ((s = socket(AF_INET, SOCK_STREAM, PF_UNSPEC)) < 0) {
 			syslog(LOG_INFO, "socket: %m");
 			error++;
 			break;
 		}	
+		if (zp->z_axfr_src.s_addr != 0) {
+			memset(&sin, 0, sizeof sin);
+			sin.sin_family = AF_INET;
+			sin.sin_port = 0;		/* "ANY" */
+			sin.sin_addr = zp->z_axfr_src;
+			dprintf(2, "binding to address [%s]\n",
+				inet_ntoa(sin.sin_addr));
+			if (bind(s, (struct sockaddr *)&sin, sizeof sin) < 0)
+				syslog(LOG_INFO, "warning: bind(%s) failed",
+				       inet_ntoa(zp->z_axfr_src));
+		}
+		memset(&sin, 0, sizeof sin);
+		sin.sin_family = AF_INET;
+		sin.sin_port = port;
+		sin.sin_addr = zp->z_addr[cnt];
 		dprintf(2, "connecting to server #%d [%s].%d\n",
 			cnt+1, inet_ntoa(sin.sin_addr), ntohs(sin.sin_port));
 		if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
@@ -789,6 +803,10 @@ getzone(struct zoneinfo *zp, u_int32_t serial_no, int port) {
 			goto badsoa;
 		}
 		tmp += n;
+		if (tmp + 2 * INT16SZ > eom) {
+			badsoa_msg = "query error";
+			goto badsoa;
+		}
 		NS_GET16(type, tmp);
 		NS_GET16(class, tmp);
 		if (class != curclass || type != T_SOA ||
@@ -827,6 +845,10 @@ getzone(struct zoneinfo *zp, u_int32_t serial_no, int port) {
 			NS_GET16(class, cp4);
 			NS_GET32(ttl, cp4);
 			NS_GET16(dlen, cp4);
+			if (cp4 + dlen > eom) {
+				badsoa_msg = "zinfo dlen too big";
+				goto badsoa;
+			}
 			if (type == T_SOA)
 				break;
 			/* Skip to next record, if any.  */
@@ -969,10 +991,27 @@ getzone(struct zoneinfo *zp, u_int32_t serial_no, int port) {
 					fp_nquery(buf, len, fp);
 #endif
 				if (len < HFIXEDSZ) {
+					struct sockaddr_in my_addr;
+					char my_addr_text[30];
+					int alen;
+
 		badrec:
 					error++;
+					alen = sizeof my_addr;
+					if (getsockname(s, (struct sockaddr *)
+							&my_addr, &alen) < 0)
+						sprintf(my_addr_text,
+							"[errno %d]", errno);
+					else
+						sprintf(my_addr_text,
+							"[%s].%u",
+							inet_ntoa(my_addr.
+								  sin_addr),
+							ntohs(my_addr.sin_port)
+							);
 					syslog(LOG_INFO,
-				       "record too short from [%s], zone %s\n",
+				  "[%s] record too short from [%s], zone %s\n",
+					       my_addr_text,
 					       inet_ntoa(sin.sin_addr),
 					       zp->z_origin);
 					break;
@@ -992,7 +1031,7 @@ getzone(struct zoneinfo *zp, u_int32_t serial_no, int port) {
 			if (zp->z_type == Z_STUB) {
 				ancount = ntohs(hp->ancount);
 				n = 0;
-				for (cnt = 0; cnt < ancount; cnt++) {
+				for (cnt = 0; cnt < (u_int)ancount; cnt++) {
 					n = print_output(zp, serial_no, buf,
 							 len, cp);
 					if (n < 0)
@@ -1017,7 +1056,9 @@ getzone(struct zoneinfo *zp, u_int32_t serial_no, int port) {
 				}
 				if (n >= 0 && hp->nscount) {
 					ancount = ntohs(hp->nscount);
-					for (cnt = 0; cnt < ancount; cnt++) {
+					for (cnt = 0;
+					     cnt < (u_int)ancount;
+					     cnt++) {
 						n = print_output(zp, serial_no,
 								 buf, len,
 								 cp);
@@ -1027,7 +1068,9 @@ getzone(struct zoneinfo *zp, u_int32_t serial_no, int port) {
 					}
 				}
 				ancount = ntohs(hp->arcount);
-				for (cnt = 0; n > 0 && cnt < ancount; cnt ++) {
+				for (cnt = 0;
+				     n > 0 && cnt < (u_int)ancount;
+				     cnt++) {
 					n = print_output(zp, serial_no, buf,
 							 len, cp);
 					cp += n;
@@ -1050,7 +1093,9 @@ getzone(struct zoneinfo *zp, u_int32_t serial_no, int port) {
 			} else {
 #endif /*STUBS*/
 				ancount = ntohs(hp->ancount);
-				for (n = cnt = 0; cnt < ancount; cnt++) {
+				for (n = cnt = 0;
+				     cnt < (u_int)ancount;
+				     cnt++) {
 					n = print_output(zp, serial_no, buf,
 							 len, cp);
 					if (n < 0)
@@ -1218,6 +1263,8 @@ static const char *
 soa_zinfo(struct zoneinfo *zp, u_char *cp, u_char *eom) {
 	int n, type, class;
 	u_int32_t ttl;
+	u_int16_t dlen;
+	u_char *rdatap;
 
 	/* Are type, class, and ttl OK? */
 	if (eom - cp < 3 * INT16SZ + INT32SZ)
@@ -1225,7 +1272,8 @@ soa_zinfo(struct zoneinfo *zp, u_char *cp, u_char *eom) {
 	NS_GET16(type, cp);
 	NS_GET16(class, cp);
 	NS_GET32(ttl, cp);
-	cp += INT16SZ;	/* dlen */
+	NS_GET16(dlen, cp);
+	rdatap = cp;
 	if (type != T_SOA || class != curclass)
 		return ("zinfo wrong typ/cla/ttl");
 	/* Skip master name and contact name, we can't validate them. */
@@ -1243,8 +1291,18 @@ soa_zinfo(struct zoneinfo *zp, u_char *cp, u_char *eom) {
 	NS_GET32(zp->z_retry, cp);
 	NS_GET32(zp->z_expire, cp);
 	NS_GET32(zp->z_minimum, cp);
+	if (cp != rdatap + dlen)
+		return ("bad soa dlen");
 	return (NULL);
 }
+
+#define BOUNDS_CHECK(ptr, count) \
+	do { \
+		if ((ptr) + (count) > eom) { \
+			hp->rcode = FORMERR; \
+			return (-1); \
+		} \
+	} while (0)
 
 /*
  * Parse the message, determine if it should be printed, and if so, print it
@@ -1262,7 +1320,7 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 	u_int class, type, dlen;
 	char data[MAXDATA];
 	u_char *cp1, *cp2, *temp_ptr, *eom, *rr_type_ptr;
-	u_char *cdata;
+	u_char *cdata, *rdatap;
 	char *origin, dname[MAXDNAME];
 	const char *proto;
 	const char *ignore = "";
@@ -1277,6 +1335,7 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 		return (-1);
 	}
 	cp += n;
+	BOUNDS_CHECK(cp, 3 * INT16SZ + INT32SZ);
 	rr_type_ptr = cp;
 	NS_GET16(type, cp);
 	NS_GET16(class, cp);
@@ -1291,6 +1350,8 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 		ttl = 0;
 	}
 	NS_GET16(dlen, cp);
+	BOUNDS_CHECK(cp, dlen);
+	rdatap = cp;
 
 	origin = dname;
 	while (*origin) {
@@ -1364,10 +1425,7 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 		cp += n;
 		cp1 += strlen((char *) cp1) + 1;
 		if (type == T_SOA) {
-			if ((eom - cp) < (5 * INT32SZ)) {
-				hp->rcode = FORMERR;
-				return (-1);
-			}
+			BOUNDS_CHECK(cp, 5 * INT32SZ);
 			temp_ptr = cp + 4 * INT32SZ;
 			NS_GET32(minimum_ttl, temp_ptr);
 			/*
@@ -1391,24 +1449,31 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 
 	case T_NAPTR:
 		/* Grab weight and port. */
+		BOUNDS_CHECK(cp, INT16SZ*2);
 		memcpy(data, cp, INT16SZ*2);
 		cp1 = (u_char *)data + INT16SZ*2;
 		cp += INT16SZ*2;
 
 		/* Flags */
+		BOUNDS_CHECK(cp, 1);
 		n = *cp++;
+		BOUNDS_CHECK(cp, n);
 		*cp1++ = n;
 		memcpy(cp1, cp, n);
 		cp += n; cp1 += n;
 
 		/* Service */
+		BOUNDS_CHECK(cp, 1);
 		n = *cp++;
+		BOUNDS_CHECK(cp, n);
 		*cp1++ = n;
 		memcpy(cp1, cp, n);
 		cp += n; cp1 += n;
 
 		/* Regexp */
+		BOUNDS_CHECK(cp, 1);
 		n = *cp++;
+		BOUNDS_CHECK(cp, n);
 		*cp1++ = n;
 		memcpy(cp1, cp, n);
 		cp += n; cp1 += n;
@@ -1432,11 +1497,13 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 	case T_RT:
 	case T_SRV:
 		/* grab preference */
+		BOUNDS_CHECK(cp, INT16SZ);
 		memcpy(data, cp, INT16SZ);
 		cp1 = (u_char *)data + INT16SZ;
 		cp += INT16SZ;
 
 		if (type == T_SRV) {
+			BOUNDS_CHECK(cp, INT16SZ*2);
 			memcpy(cp1, cp, INT16SZ*2);
 			cp1 += INT16SZ*2;
 			cp += INT16SZ*2;
@@ -1459,6 +1526,7 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 
 	case T_PX:
 		/* grab preference */
+		BOUNDS_CHECK(cp, INT16SZ);
 		memcpy(data, cp, INT16SZ);
 		cp1 = (u_char *)data + INT16SZ;
 		cp += INT16SZ;
@@ -1489,6 +1557,7 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 
 		/* first just copy over the type_covered, algorithm, */
 		/* labels, orig ttl, two timestamps, and the footprint */
+		BOUNDS_CHECK(cp, NS_SIG_SIGNER);
 		memcpy(cp1, cp, NS_SIG_SIGNER);
 		cp  += NS_SIG_SIGNER;
 		cp1 += NS_SIG_SIGNER;
@@ -1504,8 +1573,10 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 		/* finally, we copy over the variable-length signature.
 		   Its size is the total data length, minus what we copied. */
 		n = dlen - (NS_SIG_SIGNER + n);
-		if (n > (sizeof data) - (cp1 - (u_char *)data))
+		if (n > ((int)(sizeof data) - (int)(cp1 - (u_char *)data))) {
+			hp->rcode = FORMERR;
 			return (-1);  /* out of room! */
+		}
 		memcpy(cp1, cp, n);
 		cp += n;
 		cp1 += n;
@@ -1525,11 +1596,15 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 		cp += n;
 		cp1 = (u_char *)data + strlen(data) + 1;
 		n  = dlen - n;
+		if (n > ((int)(sizeof data) - (int)(cp1 - (u_char *)data))) {
+			hp->rcode = FORMERR;
+			return (-1);  /* out of room! */
+		}
 		if (n > 0) { /* Actually, n should never be less than 4 */ 
 			memcpy(cp1, cp, n);
 			cp += n;
 		} else {  
-			hp->rcode =FORMERR; 
+			hp->rcode = FORMERR; 
 			return (-1);
 		}
 		n += cp1 - (u_char *)data;
@@ -1549,6 +1624,14 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 		hp->rcode = FORMERR;
 		return (-1);
 	}
+	if (cp != rdatap + dlen) {
+		dprintf(1,
+		    "encoded rdata length is %u, but actual length was %u\n",
+			dlen, (u_int)(cp - rdatap));
+		hp->rcode = FORMERR;
+		return (-1);
+	}
+
 	cdata = cp1;
 	result = cp - rrp;
 
@@ -1593,6 +1676,14 @@ print_output(struct zoneinfo *zp, u_int32_t serial_no, u_char *msg,
 			dprintf(2, "SOA, serial %u\n", zp_finish.z_serial);
 			if (zp_start.z_serial != zp_finish.z_serial) {
 				dprintf(1, "serial changed, restart\n");
+				restarts++;
+				if (restarts > MAX_XFER_RESTARTS) {
+					syslog(LOG_INFO,
+			       "too many transfer restarts for zone %s",
+					       zp->z_origin);
+					hp->rcode = FORMERR;
+					return (-1);
+				}
 				soa_cnt = 0;
 #ifdef STUBS
 				ns_cnt = 0;

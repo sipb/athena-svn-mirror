@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: dns_pw.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static const char rcsid[] = "$Id: dns_pw.c,v 1.1.1.2 1998-05-12 18:04:56 ghudson Exp $";
 #endif
 
 #include "port_before.h"
@@ -29,6 +29,8 @@ static int __bind_irs_pw_unneeded;
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 

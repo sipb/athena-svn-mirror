@@ -52,7 +52,7 @@
 /* BIND Id: gethnamaddr.c,v 8.15 1996/05/22 04:56:30 vixie Exp $ */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char rcsid[] = "$Id: dns_ho.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static char rcsid[] = "$Id: dns_ho.c,v 1.1.1.2 1998-05-12 18:04:53 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Imports. */
@@ -74,6 +74,8 @@ static char rcsid[] = "$Id: dns_ho.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $
 #include <resolv.h>
 #include <stdio.h>
 #include <string.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 
@@ -98,6 +100,12 @@ extern int h_errno;
 #else
 #define	MAXPACKET	1024
 #endif
+
+#define BOUNDS_CHECK(ptr, count) \
+	if ((ptr) + (count) > eom) { \
+		had_error++; \
+		continue; \
+	} else (void)0
 
 struct pvt {
 	struct hostent	host;
@@ -355,6 +363,10 @@ gethostans(struct irs_ho *this,
 	/*
 	 * Find first satisfactory answer.
 	 */
+	if (ansbuf + HFIXEDSZ > eom) {
+		h_errno = NO_RECOVERY;
+		return (NULL);
+	}
 	hp = (HEADER *)ansbuf;
 	ancount = ntohs(hp->ancount);
 	qdcount = ntohs(hp->qdcount);
@@ -371,6 +383,10 @@ gethostans(struct irs_ho *this,
 		return (NULL);
 	}
 	cp += n + QFIXEDSZ;
+	if (cp > eom) {
+		h_errno = NO_RECOVERY;
+		return (NULL);
+	}
 	if (qtype == T_A || qtype == T_AAAA) {
 		/* res_send() has already verified that the query name is the
 		 * same as the one we sent; this just gets the expanded name
@@ -402,12 +418,14 @@ gethostans(struct irs_ho *this,
 			continue;
 		}
 		cp += n;			/* name */
+		BOUNDS_CHECK(cp, 3 * INT16SZ + INT32SZ);
 		type = ns_get16(cp);
  		cp += INT16SZ;			/* type */
 		class = ns_get16(cp);
  		cp += INT16SZ + INT32SZ;	/* class, TTL */
 		n = ns_get16(cp);
 		cp += INT16SZ;			/* len */
+		BOUNDS_CHECK(cp, n);
 		if (class != C_IN) {
 			cp += n;
 			continue;

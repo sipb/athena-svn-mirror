@@ -1,5 +1,5 @@
 #ifndef LINT
-static char RCSid[] = "$Id: tree.c,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $";
+static char RCSid[] = "$Id: tree.c,v 1.1.1.2 1998-05-12 18:05:37 ghudson Exp $";
 #endif
 
 /*
@@ -19,14 +19,10 @@ static char RCSid[] = "$Id: tree.c,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $";
  * "Algorithms & Data Structures," Niklaus Wirth, Prentice-Hall, 1986, ISBN
  * 0-13-022005-1.  Any errors in the conversion from Modula-2 to C are Paul
  * Vixie's.
- *
- * This code and associated documentation is hereby placed in the public
- * domain, with the wish that my name and Prof. Wirth's not be removed
- * from the source or documentation.
  */
 
 /*
- * Portions Copyright (c) 1996 by Internet Software Consortium.
+ * Portions Copyright (c) 1996,1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -51,6 +47,7 @@ static char RCSid[] = "$Id: tree.c,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $";
 
 #include "port_after.h"
 
+#include <isc/memcluster.h>
 #include <isc/tree.h>
 
 #ifdef DEBUG
@@ -177,7 +174,7 @@ tree_mung(tree **ppr_tree, void	(*pfv_uar)()) {
 		tree_mung(&(**ppr_tree).right, pfv_uar);
 		if (pfv_uar)
 			(*pfv_uar)((**ppr_tree).data);
-		free(*ppr_tree);
+		memput(*ppr_tree, sizeof(tree));
 		*ppr_tree = NULL;
 	}
 	RETV
@@ -197,7 +194,7 @@ sprout(tree **ppr, tree_t p_data, int *pi_balance,
 	 */
 	if (!*ppr) {
 		MSG("grounded. adding new node, setting h=true")
-		*ppr = (tree *) malloc(sizeof(tree));
+		*ppr = (tree *) memget(sizeof(tree));
 		if (*ppr) {
 			(*ppr)->left = NULL;
 			(*ppr)->right = NULL;
@@ -384,7 +381,8 @@ delete(tree **ppr_p, int (*pfi_compare)(), tree_t p_user,
 		}
 		if (!*pi_uar_called && pfv_uar)
 			(*pfv_uar)(pr_q->data);
-		free(pr_q);	/* thanks to wuth@castrov.cuc.ab.ca */
+		/* Thanks to wuth@castrov.cuc.ab.ca for the following stmt. */
+		memput(pr_q, sizeof(tree));
 		i_ret = TRUE;
 	}
 	RET(i_ret)

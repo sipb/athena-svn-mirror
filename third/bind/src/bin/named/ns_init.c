@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)ns_init.c	4.38 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: ns_init.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp $";
+static char rcsid[] = "$Id: ns_init.c,v 1.1.1.2 1998-05-12 18:04:05 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -95,6 +95,7 @@ static char rcsid[] = "$Id: ns_init.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp 
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -137,10 +138,11 @@ ns_init(const char *conffile) {
 	gettime(&tt);
 
 	if (loads == 0) {
-		zones = (struct zoneinfo *)calloc(64, sizeof(struct zoneinfo));
+		zones = (struct zoneinfo *)memget(64 * sizeof *zones);
 		if (zones == NULL)
 			ns_panic(ns_log_config, 0,
 			  "Not enough memory to allocate initial zones array");
+		memset(zones, 0, 64 * sizeof *zones);
 		nzones = 1;		/* zone zero is cache data */
 		/* allocate cache hash table, formerly the root hash table. */
 		hashtab = savehash((struct hashbuf *)NULL);
@@ -149,9 +151,8 @@ ns_init(const char *conffile) {
 		fcachetab = savehash((struct hashbuf *)NULL);
 		/* init zone data */
 		zones[0].z_type = Z_CACHE;
-		zones[0].z_origin = strdup("");
-		if (zones[0].z_origin == NULL)
-			panic("strdup failed allocating root z_origin", NULL);
+		zones[0].z_origin = savestr("", 1);
+		init_configuration();
 	} else {
 		/* Mark previous zones as not yet found in boot file. */
 		for (zp = &zones[1]; zp < &zones[nzones]; zp++)
@@ -322,10 +323,13 @@ do_reload(const char *domain, int type, int class) {
 				zoneinit(zp);
 				break;
 			case Z_PRIMARY:
-			case Z_CACHE:
 				if (db_load(zp->z_source, zp->z_origin, zp, 0)
 				    == 0)
 					zp->z_flags |= Z_AUTH;
+				break;
+			case Z_CACHE:
+				(void)db_load(zp->z_source, zp->z_origin, zp,
+					      0);
 				break;
 			}
 			break;
@@ -359,7 +363,7 @@ ns_ownercontext(type, transport)
 	int type;
 	enum transport transport;
 {
-	enum context context;
+	enum context context = domain_ctx;
 
 	switch (type) {
 	case T_A:
@@ -381,8 +385,9 @@ ns_ownercontext(type, transport)
 	case T_MB:
 	case T_MG:
 		context = mailname_ctx;
+		break;
 	default:
-		context = domain_ctx;
+		/* Nothing to do. */
 		break;
 	}
 	return (context);
@@ -419,27 +424,28 @@ ns_nameok(const char *name, int class, struct zoneinfo *zp,
 		ok = res_hnok(name);
 		break;
 	default:
-		abort();
+		ns_panic(ns_log_default, 1,
+			 "unexpected context %d in ns_nameok", (int)context);
 	}
 	if (!ok) {
 		char *s, *o;
 
 		if (source.s_addr == INADDR_ANY)
-			s = strdup(transport_strings[transport]);
+			s = savestr(transport_strings[transport], 0);
 		else {
-			s = malloc(strlen(transport_strings[transport]) +
-				   sizeof " from [000.000.000.000]");
+			s = newstr(strlen(transport_strings[transport]) +
+				   sizeof " from [000.000.000.000]", 0);
 			if (s)
 				sprintf(s, "%s from [%s]",
 					transport_strings[transport],
 					inet_ntoa(source));
 		}
 		if (strcasecmp(owner, name) == 0)
-			o = strdup("");
+			o = savestr("", 0);
 		else {
 			const char *t = (*owner == '\0') ? "." : owner;
 
-			o = malloc(strlen(t) + sizeof " (owner \"\")");
+			o = newstr(strlen(t) + sizeof " (owner \"\")", 0);
 			if (o)
 				sprintf(o, " (owner \"%s\")", t);
 		}
@@ -452,17 +458,17 @@ ns_nameok(const char *name, int class, struct zoneinfo *zp,
 			  log_info : log_notice,
 			  "%s name \"%s\"%s %s (%s) is invalid - %s",
 			  context_strings[context],
-			  name, o != NULL ? o : "[malloc failed]",
+			  name, o != NULL ? o : "[memget failed]",
 			  p_class(class),
-			  s != NULL ? s : "[malloc failed]",
+			  s != NULL ? s : "[memget failed]",
 			  (severity == fail) ?
 			  "rejecting" : "proceeding anyway");
 		if (severity == warn)
 			ok = 1;
-		if (s)
-			free(s);
-		if (o)
-			free(o);
+		if (s != NULL)
+			freestr(s);
+		if (o != NULL)
+			freestr(o);
 	}
 	return (ok);
 }
@@ -472,4 +478,35 @@ ns_wildcard(const char *name) {
 	if (*name != '*')
 		return (0);
 	return (*++name == '\0');
+}
+
+void
+ns_shutdown() {
+	struct zoneinfo *zp;
+
+	/* Erase zones. */
+	for (zp = &zones[0]; zp < &zones[nzones]; zp++) {
+		if (zp->z_type) {
+			if (zp->z_type != z_hint) {
+				ns_stopxfrs(zp);
+				purge_zone(zp->z_origin, hashtab, zp->z_class);
+			}
+			free_zone_contents(zp, 1);
+		}
+	}
+	memput(zones, ((nzones / 64) + 1) * 64 * sizeof *zones);
+
+	/* Erase the cache. */
+	clean_cache(hashtab, 1);
+	hashtab->h_cnt = 0;		/* ??? */
+	rm_hash(hashtab);
+	clean_cache(fcachetab, 1);
+	fcachetab->h_cnt = 0;		/* ??? */
+	rm_hash(fcachetab);
+
+#ifdef BIND_NOTIFY
+	db_cancel_pending_notifies();
+#endif
+	freeComplaints();
+	shutdown_configuration();
 }

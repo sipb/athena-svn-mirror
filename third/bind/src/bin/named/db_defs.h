@@ -1,6 +1,6 @@
 /*
  *	from db.h	4.16 (Berkeley) 6/1/90
- *	$Id: db_defs.h,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $
+ *	$Id: db_defs.h,v 1.1.1.2 1998-05-12 18:03:52 ghudson Exp $
  */
 
 /* Copyright (c) 1985, 1990
@@ -83,14 +83,16 @@
 #define DB_ROOT_TIMBUF	3600
 #define TIMBUF		300
 
+#define	DICT_INDEXBITS	24
+#define	DICT_MAXLENGTH	127
+#define	DICT_INSERT_P	0x0001
+
 /*
  * Hash table structures.
  */
 struct databuf {
 	struct databuf	*d_next;	/* linked list */
-#ifdef STATS
 	struct nameser	*d_ns;		/* NS from whence this came */
-#endif
 	u_int32_t	d_ttl;		/* time to live */
 					/* if d_zone == DB_Z_CACHE, then
 					 * d_ttl is actually the time when
@@ -102,7 +104,7 @@ struct databuf {
 	unsigned	d_flags :7;	/* see below */
 	unsigned	d_cred :3;	/* DB_C_{??????} */
 	unsigned	d_clev :6;
-	int16_t		d_zone;		/* zone number or 0 for the cache */
+	u_int16_t	d_zone;		/* zone number or 0 for the cache */
 	int16_t		d_class;	/* class number */
 	int16_t		d_type;		/* type number */
 	int16_t		d_size;		/* size of data area */
@@ -110,7 +112,7 @@ struct databuf {
 	unsigned	d_rcode :4;	/* rcode for negative caching */
 	unsigned	d_mark :12;	/* place to mark data */
 	u_int16_t       d_nstime;       /* NS response time, milliseconds */
-	u_char		d_data[sizeof(void*)]; /* malloc'd (padded) */
+	u_char		d_data[sizeof(void*)]; /* dynamic (padded) */
 };
 #define DATASIZE(n) (sizeof(struct databuf) - sizeof(void*) + n)
 
@@ -118,15 +120,17 @@ struct databuf {
 /*
  * d_mark definitions
  */
-#define D_MARK_DELETED  1
-#define D_MARK_ADDED	2
+#define D_MARK_DELETED  0x01
+#define D_MARK_ADDED	0x02
+#define D_MARK_FOUND	0x04
 #endif
 
 /*
  * d_flags definitions
  */
-#define DB_F_HINT       0x01		/* databuf belongs to fcachetab */
-#define DB_F_ACTIVE     0x02		/* databuf is linked into a cache */
+#define DB_F_HINT	0x01		/* databuf belongs to fcachetab */
+#define DB_F_ACTIVE	0x02		/* databuf is linked into a cache */
+#define DB_F_FREE	0x04		/* databuf has been freed */
 
 /*
  * d_cred definitions
@@ -138,21 +142,21 @@ struct databuf {
 #define	DB_C_CACHE	0		/* cache - worst */
 
 struct namebuf {
-	u_int		n_hashval;	/* hash value of n_dname */
+	u_int		n_hashval;	/* hash value of _n_name */
 	struct namebuf	*n_next;	/* linked list */
 	struct databuf	*n_data;	/* data records */
 	struct namebuf	*n_parent;	/* parent domain */
 	struct hashbuf	*n_hash;	/* hash table for children */
-	char		_n_name[sizeof(void*)];	/* Counted str, malloc'ed. */
+	char		_n_name[sizeof(void*)];	/* Counted str (dynamic). */
 };
-#define	NAMESIZE(n) (sizeof(struct namebuf) - sizeof(void*) + 1 + n + 1)
-#define	NAMELEN(nb) ((nb)._n_name[0])
-#define	NAME(nb)    ((nb)._n_name + 1)
+#define	NAMESIZE(n)	(sizeof(struct namebuf) - sizeof(void*) + 1 + n + 1)
+#define	NAMELEN(nb)	(((u_char *)((nb)._n_name))[0])
+#define	NAME(nb)	((nb)._n_name + 1)
 
 struct hashbuf {
 	int		h_size;		/* size of hash table */
 	int		h_cnt;		/* number of entries */
-	struct namebuf	*h_tab[1];	/* malloc'ed as needed */
+	struct namebuf	*h_tab[1];	/* allocated as needed */
 };
 #define HASHSIZE(s) (sizeof(struct hashbuf) + (s-1) * sizeof(struct namebuf *))
 
@@ -170,7 +174,8 @@ struct hashbuf {
 #define DB_PRIMING	0x20	/* is this update the result of priming? */
 
 #define DB_Z_CACHE	0	/* cache-zone-only db_dump() */
-#define DB_Z_ALL        (-1)	/* normal db_dump() */
+#define DB_Z_ALL	65535	/* normal db_dump() */
+#define	DB_Z_SPECIAL(z)	((z) == DB_Z_CACHE || (z) == DB_Z_ALL)
 
 /*
  * Error return codes
@@ -215,8 +220,14 @@ struct hashbuf {
 		else \
 			/* Caller code follows in sequence. */
 
-#define DRCNTINC(x) if (++((x)->d_rcnt) == 0) \
-		ns_panic(ns_log_db, 1, "++d_rcnt == 0"); else (void)NULL
+#define DRCNTINC(x) \
+	do { \
+		if (++((x)->d_rcnt) == 0) \
+			ns_panic(ns_log_db, 1, "++d_rcnt == 0"); \
+	} while (0)
 
-#define DRCNTDEC(x) if (((x)->d_rcnt)-- == 0) \
-		ns_panic(ns_log_db, 1, "d_rcnt-- == 0"); else (void)NULL
+#define DRCNTDEC(x) \
+	do { \
+		if (((x)->d_rcnt)-- == 0) \
+			ns_panic(ns_log_db, 1, "d_rcnt-- == 0"); \
+	} while (0)

@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Id: ns_parse.c,v 1.1.1.1 1998-05-04 22:23:43 ghudson Exp $";
+static char rcsid[] = "$Id: ns_parse.c,v 1.1.1.2 1998-05-12 18:05:39 ghudson Exp $";
 #endif
 
 #include "port_before.h"
@@ -44,12 +44,12 @@ struct _ns_flagdata _ns_flagdata[16] = {
 	{ 0x0020, 5 },		/* ad. */
 	{ 0x0010, 4 },		/* cd. */
 	{ 0x000f, 0 },		/* rcode. */
-	{ 0x0000, 0 },		/* expansion (1/8). */
-	{ 0x0000, 0 },		/* expansion (2/8). */
-	{ 0x0000, 0 },		/* expansion (3/8). */
-	{ 0x0000, 0 },		/* expansion (4/8). */
-	{ 0x0000, 0 },		/* expansion (5/8). */
-	{ 0x0000, 0 },		/* expansion (6/8). */
+	{ 0x0000, 0 },		/* expansion (1/6). */
+	{ 0x0000, 0 },		/* expansion (2/6). */
+	{ 0x0000, 0 },		/* expansion (3/6). */
+	{ 0x0000, 0 },		/* expansion (4/6). */
+	{ 0x0000, 0 },		/* expansion (5/6). */
+	{ 0x0000, 0 },		/* expansion (6/6). */
 };
 
 static int

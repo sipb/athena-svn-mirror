@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 1996, 1997 by Internet Software Consortium
+ * Copyright (c) 1995, 1996, 1997, 1998 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,28 +20,28 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static const char rcsid[] = "$Id: eventlib.c,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $";
+static const char rcsid[] = "$Id: eventlib.c,v 1.1.1.2 1998-05-12 18:05:32 ghudson Exp $";
 #endif
 
 #include "port_before.h"
+#include "fd_setsize.h"
 
 #include <sys/types.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 
-#include <assert.h>
 #include <errno.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include <isc/eventlib.h>
+#include <isc/assertions.h>
 #include "eventlib_p.h"
 
 #include "port_after.h"
 
 /* Forward. */
-
-static struct evEvent_p	*evNew(evContext_p *ctx);
-static void		evFree(evContext_p *ctx, struct evEvent_p *old);
 
 #ifdef NEED_PSELECT
 static int		pselect(int, void *, void *, void *, struct timespec*);
@@ -52,12 +52,24 @@ static int		pselect(int, void *, void *, void *, struct timespec*);
 int
 evCreate(evContext *opaqueCtx) {
 	evContext_p *ctx;
+	int i;
+
+	/* Make sure the memory heap is initialized. */
+	if (meminit(0, 0) < 0 && errno != EEXIST)
+		return (-1);
 
 	OKNEW(ctx);
+
+	/* Global. */
+	ctx->cur = NULL;
 
 	/* Debugging. */
 	ctx->debug = 0;
 	ctx->output = NULL;
+
+	/* Connections. */
+	ctx->conns = NULL;
+	INIT_LIST(ctx->accepts);
 
 	/* Files. */
 	ctx->files = NULL;
@@ -67,14 +79,22 @@ evCreate(evContext *opaqueCtx) {
 	ctx->fdMax = -1;
 	ctx->fdNext = NULL;
 	ctx->fdCount = 0;	/* Invalidate {rd,wr,ex}Last. */
+#ifdef EVENTLIB_TIME_CHECKS
+	ctx->lastFdCount = 0;
+#endif
+	for (i = 0; i < FD_SETSIZE; i++)
+		ctx->fdTable[i] = NULL;
 
 	/* Streams. */
 	ctx->streams = NULL;
-	ctx->strFree = NULL;
 	ctx->strDone = NULL;
 	ctx->strLast = NULL;
 
 	/* Timers. */
+	ctx->lastEventTime = evNowTime();
+#ifdef EVENTLIB_TIME_CHECKS
+	ctx->lastSelectTime = ctx->lastEventTime;
+#endif
 	ctx->timers = evCreateTimers(ctx);
 	if (ctx->timers == NULL)
 		return (-1);
@@ -83,11 +103,6 @@ evCreate(evContext *opaqueCtx) {
 	ctx->waitLists = NULL;
 	ctx->waitDone.first = ctx->waitDone.last = NULL;
 	ctx->waitDone.prev = ctx->waitDone.next = NULL;
-	ctx->waitListFree = NULL;
-	ctx->waitFree = NULL;
-
-	/* Housekeeping. */
-	ctx->evFree = NULL;
 
 	opaqueCtx->opaque = ctx;
 	return (0);
@@ -108,14 +123,14 @@ evDestroy(evContext opaqueCtx) {
 	evWaitList *this_wl, *next_wl;
 	evWait *this_wait, *next_wait;
 
-	/* Files. */
-	while (revs-- > 0 && ctx->files != NULL) {
-		evFileID id;
+	/* Connections. */
+	while (revs-- > 0 && ctx->conns != NULL) {
+		evConnID id;
 
-		id.opaque = ctx->files;
-		(void) evDeselectFD(opaqueCtx, id);
+		id.opaque = ctx->conns;
+		(void) evCancelConn(opaqueCtx, id);
 	}
-	assert(revs >= 0);
+	INSIST(revs >= 0);
 
 	/* Streams. */
 	while (revs-- > 0 && ctx->streams != NULL) {
@@ -124,12 +139,15 @@ evDestroy(evContext opaqueCtx) {
 		id.opaque = ctx->streams;
 		(void) evCancelRW(opaqueCtx, id);
 	}
-	while (revs-- > 0 && ctx->strFree != NULL) {
-		evStream *next = ctx->strFree->next;
 
-		(void) free(ctx->strFree);
-		ctx->strFree = next;
+	/* Files. */
+	while (revs-- > 0 && ctx->files != NULL) {
+		evFileID id;
+
+		id.opaque = ctx->files;
+		(void) evDeselectFD(opaqueCtx, id);
 	}
+	INSIST(revs >= 0);
 
 	/* Timers. */
 	evDestroyTimers(ctx);
@@ -143,43 +161,31 @@ evDestroy(evContext opaqueCtx) {
 		     revs-- > 0 && this_wait != NULL;
 		     this_wait = next_wait) {
 			next_wait = this_wait->next;
-			(void) free(this_wait);
+			FREE(this_wait);
 		}
-		(void) free(this_wl);
+		FREE(this_wl);
 	}
 	for (this_wait = ctx->waitDone.first;
 	     revs-- > 0 && this_wait != NULL;
 	     this_wait = next_wait) {
 		next_wait = this_wait->next;
-		(void) free(this_wait);
-	}
-	for (this_wait = ctx->waitFree;
-	     revs-- > 0 && this_wait != NULL;
-	     this_wait = next_wait) {
-		next_wait = this_wait->next;
-		(void) free(this_wait);
+		FREE(this_wait);
 	}
 
-	/* Housekeeping. */
-	while (revs-- > 0 && ctx->evFree != NULL) {
-		struct evEvent_p *next = ctx->evFree->u.free.next;
-
-		(void) free(ctx->evFree);
-		ctx->evFree = next;
-	}
-	assert(revs >= 0);
-
-	(void) free(ctx);
+	FREE(ctx);
 	return (0);
 }
 
 int
 evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 	evContext_p *ctx = opaqueCtx.opaque;
-	struct timespec now, nextTime;
+	struct timespec nextTime;
 	evTimer *nextTimer;
 	evEvent_p *new;
 	int x, pselect_errno, timerPast;
+#ifdef EVENTLIB_TIME_CHECKS
+	struct timespec interval;
+#endif
 
 	/* Ensure that exactly one of EV_POLL or EV_WAIT was specified. */
 	x = ((options & EV_POLL) != 0) + ((options & EV_WAIT) != 0);
@@ -187,12 +193,22 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 		ERR(EINVAL);
 
 	/* Get the time of day.  We'll do this again after select() blocks. */
-	now = evNowTime();
+	ctx->lastEventTime = evNowTime();
 
  again:
+	/* Finished accept()'s do not require a select(). */
+	if (!EMPTY(ctx->accepts)) {
+		OKNEW(new);
+		new->type = Accept;
+		new->u.accept.this = HEAD(ctx->accepts);
+		UNLINK(ctx->accepts, HEAD(ctx->accepts), link);
+		opaqueEv->opaque = new;
+		return (0);
+	}
+
 	/* Stream IO does not require a select(). */
 	if (ctx->strDone != NULL) {
-		new = evNew(ctx);
+		OKNEW(new);
 		new->type = Stream;
 		new->u.stream.this = ctx->strDone;
 		ctx->strDone = ctx->strDone->nextDone;
@@ -204,7 +220,7 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 
 	/* Waits do not require a select(). */
 	if (ctx->waitDone.first != NULL) {
-		new = evNew(ctx);
+		OKNEW(new);
 		new->type = Wait;
 		new->u.wait.this = ctx->waitDone.first;
 		ctx->waitDone.first = ctx->waitDone.first->next;
@@ -217,8 +233,9 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 	/* Get the status and content of the next timer. */
 	if ((nextTimer = heap_element(ctx->timers, 1)) != NULL) {
 		nextTime = nextTimer->due;
-		timerPast = (evCmpTime(nextTime, now) <= 0);
-	}
+		timerPast = (evCmpTime(nextTime, ctx->lastEventTime) <= 0);
+	} else
+		timerPast = 0;	/* Make gcc happy. */
 
 	evPrintf(ctx, 9, "evGetNext: fdCount %d\n", ctx->fdCount);
 	if (ctx->fdCount == 0) {
@@ -248,15 +265,26 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 			/* ``t'' filled in later. */
 			tp = &t;
 		}
-
+#ifdef EVENTLIB_TIME_CHECKS
+		if (ctx->debug > 0) {
+			interval = evSubTime(ctx->lastEventTime,
+					     ctx->lastSelectTime);
+			if (interval.tv_sec > 0)
+				evPrintf(ctx, 1,
+				   "time between pselect() %u.%09u count %d\n",
+					 interval.tv_sec, interval.tv_nsec,
+					 ctx->lastFdCount);
+		}
+#endif
 		do {
+			/* XXX need to copy only the bits we are using. */
 			ctx->rdLast = ctx->rdNext;
 			ctx->wrLast = ctx->wrNext;
 			ctx->exLast = ctx->exNext;
 
 			if (m == Timer) {
-				assert(tp == &t);
-				t = evSubTime(nextTime, now);
+				INSIST(tp == &t);
+				t = evSubTime(nextTime, ctx->lastEventTime);
 			}
 
 			evPrintf(ctx, 4,
@@ -268,6 +296,7 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 				 tp ? tp->tv_sec : -1,
 				 tp ? tp->tv_nsec : -1);
 
+			/* XXX should predict system's earliness and adjust. */
 			x = pselect(ctx->fdMax+1,
 				    &ctx->rdLast, &ctx->wrLast, &ctx->exLast,
 				    tp);
@@ -278,41 +307,57 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 
 			/* Anything but a poll can change the time. */
 			if (m != JustPoll)
-				now = evNowTime();
+				ctx->lastEventTime = evNowTime();
 
 			/* Select() likes to finish about 10ms early. */
-		} while (x == 0 && m == Timer && evCmpTime(now, nextTime) < 0);
-		if (x < 0) {
-			if (pselect_errno == EINTR
-#ifdef SPURIOUS_ECHILD
-			    || pselect_errno == ECHILD
+		} while (x == 0 && m == Timer &&
+			 evCmpTime(ctx->lastEventTime, nextTime) < 0);
+#ifdef EVENTLIB_TIME_CHECKS
+		ctx->lastSelectTime = ctx->lastEventTime;
 #endif
-			    ) {
+		if (x < 0) {
+			if (pselect_errno == EINTR) {
 				if ((options & EV_NULL) != 0)
 					goto again;
-				if (!(new = evNew(ctx)))
-					return (-1);
+				OKNEW(new);
 				new->type = Null;
 				/* No data. */
 				opaqueEv->opaque = new;
 				return (0);
+			}
+			if (pselect_errno == EBADF) {
+				for (x = 0; x <= ctx->fdMax; x++) {
+					struct stat sb;
+
+					if (FD_ISSET(x, &ctx->rdNext) == 0 &&
+					    FD_ISSET(x, &ctx->wrNext) == 0 &&
+					    FD_ISSET(x, &ctx->exNext) == 0)
+						continue;
+					if (fstat(x, &sb) == -1 &&
+					    errno == EBADF)
+						evPrintf(ctx, 1, "EBADF: %d\n",
+							 x);
+				}
+				abort();
 			}
 			ERR(pselect_errno);
 		}
 		if (x == 0 && (nextTimer && !timerPast) && (options & EV_POLL))
 			ERR(EWOULDBLOCK);
 		ctx->fdCount = x;
+#ifdef EVENTLIB_TIME_CHECKS
+		ctx->lastFdCount = x;
+#endif
 	}
-	assert(nextTimer || ctx->fdCount);
+	INSIST(nextTimer || ctx->fdCount);
 
 	/* Timers go first since we'd like them to be accurate. */
 	if (nextTimer && !timerPast) {
 		/* Has anything happened since we blocked? */
-		timerPast = (evCmpTime(nextTime, now) <= 0);
+		timerPast = (evCmpTime(nextTime, ctx->lastEventTime) <= 0);
 	}
 	if (nextTimer && timerPast) {
-		if (!(new = evNew(ctx)))
-			return (-1);
+		OKNEW(new);
 		new->type = Timer;
 		new->u.timer.this = nextTimer;
 		opaqueEv->opaque = new;
@@ -321,16 +366,27 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 
 	/* No timers, so there should be a ready file descriptor. */
 	x = 0;
-	while (ctx->fdCount) {
+	while (ctx->fdCount > 0) {
 		evFile *fid;
 		int fd, eventmask;
 
-		if (!ctx->fdNext) {
+		if (ctx->fdNext == NULL) {
 			if (++x == 2) {
 				/*
 				 * Hitting the end twice means that the last
 				 * select() found some FD's which have since
 				 * been deselected.
+				 *
+				 * On some systems, the count returned by
+				 * selects is the total number of bits in
+				 * all masks that are set, and on others it's
+				 * the number of fd's that have some bit set,
+				 * and on others, it's just broken.  We 
+				 * always assume that it's the number of
+				 * bits set in all masks, because that's what
+				 * the man page says it should do, and
+				 * the worst that can happen is we do an
+				 * extra select().
 				 */
 				ctx->fdCount = 0;
 				break;
@@ -350,20 +406,33 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 			eventmask |= EV_EXCEPT;
 		eventmask &= fid->eventmask;
 		if (eventmask != 0) {
-			if ((eventmask & EV_READ) != 0)
+			if ((eventmask & EV_READ) != 0) {
+				FD_CLR(fd, &ctx->rdLast);
 				ctx->fdCount--;
-			if ((eventmask & EV_WRITE) != 0)
+			}
+			if ((eventmask & EV_WRITE) != 0) {
+				FD_CLR(fd, &ctx->wrLast);
 				ctx->fdCount--;
-			if ((eventmask & EV_EXCEPT) != 0)
+			}
+			if ((eventmask & EV_EXCEPT) != 0) {
+				FD_CLR(fd, &ctx->exLast);
 				ctx->fdCount--;
-			if (!(new = evNew(ctx)))
-				return (-1);
+			}
+			OKNEW(new);
 			new->type = File;
 			new->u.file.this = fid;
 			new->u.file.eventmask = eventmask;
 			opaqueEv->opaque = new;
 			return (0);
 		}
+	}
+	if (ctx->fdCount < 0) {
+		/*
+		 * select()'s count is off on a number of systems, and
+		 * can result in fdCount < 0.
+		 */
+		evPrintf(ctx, 4, "fdCount < 0 (%d)\n", ctx->fdCount);
+		ctx->fdCount = 0;
 	}
 
 	/* We get here if the caller deselect()'s an FD. Gag me with a goto. */
@@ -374,8 +443,34 @@ int
 evDispatch(evContext opaqueCtx, evEvent opaqueEv) {
 	evContext_p *ctx = opaqueCtx.opaque;
 	evEvent_p *ev = opaqueEv.opaque;
+#ifdef EVENTLIB_TIME_CHECKS
+	void *func;
+	struct timespec start_time;
+	struct timespec interval;
+#endif
 
+#ifdef EVENTLIB_TIME_CHECKS
+	if (ctx->debug > 0)
+		start_time = evNowTime();
+#endif
+	ctx->cur = ev;
 	switch (ev->type) {
+	    case Accept: {
+		evAccept *this = ev->u.accept.this;
+
+		evPrintf(ctx, 5,
+			"Dispatch.Accept: fd %d -> %d, func %#x, uap %#x\n",
+			 this->conn->fd, this->fd,
+			 this->conn->func, this->conn->uap);
+		errno = this->ioErrno;
+		(this->conn->func)(opaqueCtx, this->conn->uap, this->fd,
+				   &this->la, this->lalen,
+				   &this->ra, this->ralen);
+#ifdef EVENTLIB_TIME_CHECKS
+		func = this->conn->func;
+#endif
+		break;
+	    }
 	    case File: {
 		evFile *this = ev->u.file.this;
 		int eventmask = ev->u.file.eventmask;
@@ -384,6 +479,9 @@ evDispatch(evContext opaqueCtx, evEvent opaqueEv) {
 			"Dispatch.File: fd %d, mask 0x%x, func %#x, uap %#x\n",
 			 this->fd, this->eventmask, this->func, this->uap);
 		(this->func)(opaqueCtx, this->uap, this->fd, eventmask);
+#ifdef EVENTLIB_TIME_CHECKS
+		func = this->func;
+#endif
 		break;
 	    }
 	    case Stream: {
@@ -394,6 +492,9 @@ evDispatch(evContext opaqueCtx, evEvent opaqueEv) {
 			 this->fd, this->func, this->uap);
 		errno = this->ioErrno;
 		(this->func)(opaqueCtx, this->uap, this->fd, this->ioDone);
+#ifdef EVENTLIB_TIME_CHECKS
+		func = this->func;
+#endif
 		break;
 	    }
 	    case Timer: {
@@ -402,6 +503,9 @@ evDispatch(evContext opaqueCtx, evEvent opaqueEv) {
 		evPrintf(ctx, 5, "Dispatch.Timer: func %#x, uap %#x\n",
 			 this->func, this->uap);
 		(this->func)(opaqueCtx, this->uap, this->due, this->inter);
+#ifdef EVENTLIB_TIME_CHECKS
+		func = this->func;
+#endif
 		break;
 	    }
 	    case Wait: {
@@ -411,16 +515,39 @@ evDispatch(evContext opaqueCtx, evEvent opaqueEv) {
 			 "Dispatch.Wait: tag %#x, func %#x, uap %#x\n",
 			 this->tag, this->func, this->uap);
 		(this->func)(opaqueCtx, this->uap, this->tag);
+#ifdef EVENTLIB_TIME_CHECKS
+		func = this->func;
+#endif
 		break;
 	    }
 	    case Null: {
 		/* No work. */
+#ifdef EVENTLIB_TIME_CHECKS
+		func = NULL;
+#endif
 		break;
 	    }
 	    default: {
 		abort();
 	    }
 	}
+#ifdef EVENTLIB_TIME_CHECKS
+	if (ctx->debug > 0) {
+		interval = evSubTime(evNowTime(), start_time);
+		/* 
+		 * Complain if it took longer than 50 milliseconds.
+		 *
+		 * We call getuid() to make an easy to find mark in a kernel
+		 * trace.
+		 */
+		if (interval.tv_sec > 0 || interval.tv_nsec > 50000000)
+			evPrintf(ctx, 1,
+			 "dispatch interval %u.%09u uid %d type %d func %p\n",
+				 interval.tv_sec, interval.tv_nsec,
+				 getuid(), ev->type, func);
+	}
+#endif
+	ctx->cur = NULL;
 	evDrop(opaqueCtx, opaqueEv);
 	return (0);
 }
@@ -431,6 +558,10 @@ evDrop(evContext opaqueCtx, evEvent opaqueEv) {
 	evEvent_p *ev = opaqueEv.opaque;
 
 	switch (ev->type) {
+	    case Accept: {
+		FREE(ev->u.accept.this);
+		break;
+	    }
 	    case File: {
 		/* No work. */
 		break;
@@ -462,13 +593,14 @@ evDrop(evContext opaqueCtx, evEvent opaqueEv) {
 			opaque.opaque = this;
 			(void) evResetTimer(opaqueCtx, opaque, this->func,
 					    this->uap,
-					    evAddTime(this->due, this->inter),
+					    evAddTime(ctx->lastEventTime,
+						      this->inter),
 					    this->inter);
 		}
 		break;
 	    }
 	    case Wait: {
-		(void) evFreeWait(ctx, ev->u.wait.this);
+		FREE(ev->u.wait.this);
 		break;
 	    }
 	    case Null: {
@@ -479,7 +611,7 @@ evDrop(evContext opaqueCtx, evEvent opaqueEv) {
 		abort();
 	    }
 	}
-	evFree(ctx, ev);
+	FREE(ev);
 }
 
 int
@@ -503,26 +635,6 @@ evPrintf(const evContext_p *ctx, int level, const char *fmt, ...) {
 		fflush(ctx->output);
 	}
 	va_end(ap);
-}
-
-static struct evEvent_p	*
-evNew(evContext_p *ctx) {
-	struct evEvent_p *new;
-
-	if ((new = ctx->evFree) != NULL) {
-		assert(new->type == Free);
-		ctx->evFree = new->u.free.next;
-		FILL(new);
-	} else
-		NEW(new);
-	return (new);
-}
-
-static void
-evFree(evContext_p *ctx, struct evEvent_p *old) {
-	old->type = Free;
-	old->u.free.next = ctx->evFree;
-	ctx->evFree = old;
 }
 
 #ifdef NEED_PSELECT

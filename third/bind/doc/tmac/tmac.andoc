@@ -31,7 +31,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"	@(#)tmac.andoc	5.6 (Berkeley) 8/5/91
-.\"	$Header: /afs/dev.mit.edu/source/repository/third/bind/doc/tmac/tmac.andoc,v 1.1.1.1 1998-05-04 22:23:31 ghudson Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/third/bind/doc/tmac/tmac.andoc,v 1.1.1.2 1998-05-12 18:09:25 ghudson Exp $
 .\"
 .de Dd
 .rm Dd

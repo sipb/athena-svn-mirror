@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)db_update.c	4.28 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: db_update.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $";
+static char rcsid[] = "$Id: db_update.c,v 1.1.1.2 1998-05-12 18:03:57 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -305,7 +305,7 @@ db_update(const char *name,
 	    (flags & DB_PRIMING) &&
 	    (odp != NULL) &&
 	    (htp != fcachetab) &&
-	    (odp->d_zone <= 0) &&
+	    (DB_Z_SPECIAL(odp->d_zone)) &&
 	    !(odp->d_flags & DB_F_HINT) &&
 	    (!newdp || !newdp->d_rcode) &&
             ((name[0] == '\0' && odp->d_type == T_NS) ||
@@ -328,7 +328,7 @@ db_update(const char *name,
 		    != OK) {
 			ns_debug(ns_log_db, 3,
 				 "db_update: hint %#x freed", dp);
-			db_free(dp);
+			db_freedata(dp);
 		}
         }
 
@@ -566,7 +566,7 @@ db_update(const char *name,
 					    INT32SZ + sizeof(u_char)))
 					goto delete;
 				if (dp->d_type == T_CNAME &&
-				    !ns_option_p(OPTION_MULTIPLE_CNAMES))
+				    !NS_OPTION_P(OPTION_MULTIPLE_CNAMES))
 					goto delete;
 #ifdef BIND_UPDATE
                                 if (dp->d_type == T_SIG)
@@ -591,10 +591,10 @@ db_update(const char *name,
 				}
 			}
 			if ((flags & DB_NODATA) && !db_cmp(dp, odp)) {
-				/* refresh ttl if cache entry */
-				if (dp->d_zone == 0) {
-					if (odp->d_zone != 0) {	/* XXX */
-						/* changing cache->auth */
+				/* Refresh ttl if cache entry. */
+				if (dp->d_zone == DB_Z_CACHE) {
+					if (odp->d_zone != DB_Z_CACHE) {
+						/* Changing cache->auth. */
 						dp->d_zone = odp->d_zone;
 						dp->d_ttl = odp->d_ttl;
 						ns_debug(ns_log_db, 4,
@@ -701,10 +701,10 @@ db_update(const char *name,
 	ns_debug(ns_log_db, 3, "db_update: adding%s %#x",
 		 (newdp->d_flags&DB_F_HINT) ? " hint":"", newdp);
 
-#ifdef STATS
-	if (!newdp->d_zone && !(newdp->d_flags & DB_F_HINT))
+	if (NS_OPTION_P(OPTION_HOSTSTATS) &&
+	    newdp->d_zone == DB_Z_CACHE &&
+	    (newdp->d_flags & DB_F_HINT) == 0)
 		newdp->d_ns = nameserFind(from.sin_addr, NS_F_INSERT);
-#endif
 
 	/* Add to end of list, generally preserving order */
 	newdp->d_next = NULL;
@@ -733,13 +733,13 @@ db_update(const char *name,
 
 void
 fixttl(struct databuf *dp) {
-	if (dp->d_zone == 0 && !(dp->d_flags & DB_F_HINT)) {
-		if (dp->d_ttl <= tt.tv_sec)
+	if (dp->d_zone == DB_Z_CACHE && (dp->d_flags & DB_F_HINT) == 0) {
+		if (dp->d_ttl <= (u_int32_t)tt.tv_sec)
 			return;
-		else if (dp->d_ttl < tt.tv_sec+min_cache_ttl)
-			dp->d_ttl = tt.tv_sec+min_cache_ttl;
-		else if (dp->d_ttl > tt.tv_sec+max_cache_ttl)
-			dp->d_ttl = tt.tv_sec+max_cache_ttl;
+		else if (dp->d_ttl < (u_int32_t)tt.tv_sec+min_cache_ttl)
+			dp->d_ttl = (u_int32_t)tt.tv_sec+min_cache_ttl;
+		else if (dp->d_ttl > (u_int32_t)tt.tv_sec+max_cache_ttl)
+			dp->d_ttl = (u_int32_t)tt.tv_sec+max_cache_ttl;
 	}
 }
 

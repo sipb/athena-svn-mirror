@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)ns_resp.c	4.65 (Berkeley) 3/3/91";
-static char rcsid[] = "$Id: ns_resp.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp $";
+static char rcsid[] = "$Id: ns_resp.c,v 1.1.1.2 1998-05-12 18:04:15 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -120,6 +120,7 @@ static char rcsid[] = "$Id: ns_resp.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp 
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -164,11 +165,11 @@ static void		rrsetadd(struct flush_set *, const char *,
 				 struct databuf *),
 			rrsetupdate(struct flush_set *, int flags,
 				    struct sockaddr_in),
-			flushrrset(struct flush_set *, struct sockaddr_in);
+			flushrrset(struct flush_set *, struct sockaddr_in),
+			free_flushset(struct flush_set *, int);
 static int		rrsetcmp(char *, struct db_list *),
 			check_root(void),
 			check_ns(void),
-			trunc_adjust(u_char *, int, int),
 			rrextract(u_char *, int, u_char *,
 				  struct databuf **, char *, int,
 				  struct sockaddr_in, char **);
@@ -179,7 +180,7 @@ static void		sysnotify_ns(const char *, const char *,
 static void		add_related_additional(char *);
 static void		free_related_additional(void);
 static int		related_additional(char *);
-static void		maybe_free(char **);
+static void		freestr_maybe(char **);
 
 #define MAX_RELATED 100
 
@@ -191,68 +192,76 @@ learntFrom(struct qinfo *qp, struct sockaddr_in *server) {
 	static char *buf = NULL;
 	char *a, *ns, *na;
 	struct databuf *db;
-#ifdef STATS
-	char nsbuf[20];
-	char abuf[20];
-#endif
 	int i;
 	
-	if (buf) {
-		free(buf);
-		buf = NULL;
-	}
-
 	a = ns = na = "<Not Available>";
 
 	for (i = 0; (u_int)i < qp->q_naddr; i++) {
-		if (ina_equal(qp->q_addr[i].ns_addr.sin_addr, server->sin_addr)) {
+		if (ina_equal(qp->q_addr[i].ns_addr.sin_addr,
+			      server->sin_addr)) {
 			db = qp->q_addr[i].ns;
-			if (db) {
-#ifdef STATS
-				if (db->d_ns) {
-					strcpy(nsbuf,
-					       inet_ntoa(db->d_ns->addr));
-					ns = nsbuf;
-				} else {
-					ns = zones[db->d_zone].z_origin;
-				}
-#endif
+			if (db != NULL) {
+				if (NS_OPTION_P(OPTION_HOSTSTATS)) {
+					char nsbuf[20];
 
-				if (!db->d_rcode)
+					if (db->d_ns != NULL) {
+						strcpy(nsbuf,
+						    inet_ntoa(db->d_ns->addr));
+						ns = nsbuf;
+					} else {
+						ns = zones[db->d_zone]
+							.z_origin;
+					}
+				}
+				if (db->d_rcode == 0)
 					na = (char*)qp->q_addr[i].ns->d_data;
 			}
 
-#ifdef STATS
-			db = qp->q_addr[i].nsdata;
-			if (db) {
-				if (db->d_ns) {
-					strcpy(abuf,
-					       inet_ntoa(db->d_ns->addr));
-					a = abuf;
-				} else {
-					a = zones[db->d_zone].z_origin;
+			if (NS_OPTION_P(OPTION_HOSTSTATS)) {
+				char abuf[20];
+
+				db = qp->q_addr[i].nsdata;
+				if (db != NULL) {
+					if (db->d_ns != NULL) {
+						strcpy(abuf,
+						    inet_ntoa(db->d_ns->addr));
+						a = abuf;
+					} else {
+						a = zones[db->d_zone].z_origin;
+					}
 				}
 			}
-#endif
 			break;
 		}
 	}
 
-	if ((a == ns) && (ns == na))	/* all "UNKNOWN" */
-		return ("");
+	if (a == ns && ns == na)	/* all "UNKNOWN" */
+		return (NULL);
 	
-#ifdef STATS
-# define LEARNTFROM " '%s': learnt (A=%s,NS=%s)"
-#else
-# define LEARNTFROM " '%s'"
-#endif
-	buf = malloc(strlen(a = (*a ? a : "\".\"")) +
-		     strlen(ns = (*ns ? ns : "\".\"")) +
-		     strlen(na = (*na ? na : "\".\"")) +
-		     sizeof(LEARNTFROM));
-	if (!buf)
-		return ("");
-	sprintf(buf, LEARNTFROM, na, a, ns);
+	if (*a == '\0')
+		a = "\".\"";
+	if (*ns == '\0')
+		ns = "\".\"";
+	if (*na == '\0')
+		na = "\".\"";
+
+	if (NS_OPTION_P(OPTION_HOSTSTATS)) {
+		static const char fmt[] = " '%s': learnt (A=%s,NS=%s)";
+
+		buf = newstr(sizeof fmt + strlen(na) + strlen(a) + strlen(ns),
+			     0);
+		if (buf == NULL)
+			return (NULL);
+		sprintf(buf, fmt, na, a, ns);
+	} else {
+		static const char fmt[] = " '%s'";
+
+		buf = newstr(sizeof fmt + strlen(na), 0);
+		if (buf == NULL)
+			return (NULL);
+		sprintf(buf, fmt, na);
+	}
+
 	return (buf);
 }
 
@@ -264,13 +273,14 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 	struct databuf *ns, *ns2;
 	u_char *cp;
 	u_char *eom = msg + msglen;
-	struct flush_set *flushset;
+	struct flush_set *flushset = NULL;
+	int flushset_size = 0;
 	struct sockaddr_in *nsa;
 	struct databuf *nsp[NSMAX];
 	int i, c, n, qdcount, ancount, aucount, nscount, arcount, arfirst;
-	int qtype, qclass, dbflags;
+	u_int qtype, qclass;
 	int restart;	/* flag for processing cname response */
-	int validanswer;
+	int validanswer, dbflags;
 	int cname, lastwascname, externalcname;
 	int count, founddata, foundname;
 	int buflen;
@@ -285,13 +295,10 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 	time_t rtrip;
 	struct hashbuf *htp;
 	struct namebuf *np;
-	struct netinfo *lp;
 	struct fwdinfo *fwd;
 	struct databuf *dp;
 	int forcecmsg = 0;
 	char *tname = NULL;
-
-	free_related_additional();
 
 	nameserIncr(from.sin_addr, nssRcvdR);
 	nsp[0] = NULL;
@@ -330,6 +337,10 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 			goto formerr;
 		}
 		cp += n;
+		if (cp + 2 * INT16SZ > eom) {
+			formerrmsg = outofDataQuery;
+			goto formerr;
+		}
 		GETSHORT(qtype, cp);
 		GETSHORT(qclass, cp);
 		if (!ns_nameok(qname, qclass, NULL, response_trans,
@@ -605,16 +616,12 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 			goto formerr;
 		}
 		tp += n;
+		if (tp + 2 * INT16SZ > eom) {
+			formerrmsg = outofDataAuth;
+			goto formerr;
+		}
 		GETSHORT(type, tp);
-		if (tp >= eom) {
-			formerrmsg = outofDataAuth;
-			goto formerr;
-		}
 		GETSHORT(class, tp);
-		if (tp >= eom) {
-			formerrmsg = outofDataAuth;
-			goto formerr;
-		}
 		if (!ns_nameok(name, class, NULL, response_trans,
 			       ns_ownercontext(type, response_trans),
 			       name, from.sin_addr)) {
@@ -641,12 +648,18 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 					qp->q_addr[i].nretry = MAXRETRY;
 			if (class == C_IN &&
 			    !haveComplained(ina_ulong(from.sin_addr),
-					    nhash(qp->q_domain)))
+					    nhash(qp->q_domain))) {
+				char *learnt_from = learntFrom(qp, &from);
+
 				ns_info(ns_log_lame_servers,
 					"Lame server on '%s' (in '%s'?): %s%s",
 					qname, qp->q_domain, 
 					sin_ntoa(from),
-					learntFrom(qp, &from));
+					(learnt_from == NULL) ? "" :
+					learnt_from);
+				if (learnt_from != NULL)
+					freestr(learnt_from);
+			}
 
 			/* XXX - doesn't handle responses sent from the wrong
 			 * interface on a multihomed server
@@ -667,6 +680,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 			u_int type, class, dlen;
 			u_int32_t serial;
 			u_char *tp = cp;
+			u_char *rdatap;
 
 			n = dn_expand(msg, eom, tp, name, sizeof name);
 			if (n < 0) {
@@ -674,14 +688,15 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 				goto formerr;
 			}
 			tp += n;  		/* name */
+			if (tp + 3 * INT16SZ + INT32SZ > eom) {
+				formerrmsg = outofDataAnswer;
+				goto formerr;
+			}
 			GETSHORT(type, tp);	/* type */
 			GETSHORT(class, tp);	/* class */
 			tp += INT32SZ;		/* ttl */
 			GETSHORT(dlen, tp); 	/* dlen */
-			if (tp >= eom) {
-				formerrmsg = outofDataAnswer;
-				goto formerr;
-			}
+			rdatap = tp;		/* start of rdata */
 			if (!ns_nameok(name, class, NULL, response_trans,
 				       ns_ownercontext(type, response_trans),
 				       name, from.sin_addr)) {
@@ -697,11 +712,6 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 				formerrmsg = msgbuf;
 				goto formerr;
 			}
-			if ((u_int)dlen < (5 * INT32SZ)) {
-				formerrmsg = dlenUnderrunAnswer;
-				goto formerr;
-			}
-
 			if (0 >= (n = dn_skipname(tp, eom))) {
 				formerrmsg = skipnameFailedAnswer;
 				goto formerr;
@@ -712,7 +722,16 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 				goto formerr;
 			}
 			tp += n;  		/* rname */
+			if (tp + 5 * INT32SZ > eom) {
+				formerrmsg = dlenUnderrunAnswer;
+				goto formerr;
+			}
 			GETLONG(serial, tp);
+			tp += 4 * INT32SZ;	/* Skip rest of SOA. */
+			if ((u_int)(tp - rdatap) != dlen) {
+				formerrmsg = dlenOverrunAnswer;
+				goto formerr;
+			}
 
 			qserial_answer(qp, serial, from);
 			qremove(qp);
@@ -796,27 +815,33 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 
 	if (count) {
 		/* allocate 1 extra record for end of set detection */
-		flushset = (struct flush_set *)
-				calloc(count+1, sizeof(struct flush_set));
-		if (!flushset)
+		flushset_size = (count + 1) * sizeof *flushset;
+		flushset = memget(flushset_size);
+		if (flushset == NULL)
 			panic("flushset: out of memory", NULL);
+		memset(flushset, 0, flushset_size);
 	} else
 		flushset = NULL;
-
 
 	for (i = 0; i < count; i++) {
 		struct databuf *dp;
 		int type;
 
-		maybe_free(&tname);
+		freestr_maybe(&tname);
 		if (cp >= eom) {
+			free_related_additional();
+			if (flushset != NULL)
+				free_flushset(flushset, flushset_size);
 			formerrmsg = outofDataFinal;
 			goto formerr;
 		}
 		n = rrextract(msg, msglen, cp, &dp, name, sizeof name, from,
 			      &tname);
 		if (n < 0) {
-			maybe_free(&tname);
+			free_related_additional();
+			freestr_maybe(&tname);
+			if (flushset != NULL)
+				free_flushset(flushset, flushset_size);
 			formerrmsg = outofDataFinal;
 			if (hp->rcode == REFUSED)
 				goto refused;
@@ -839,7 +864,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 					ns_debug(ns_log_resp_checks, 3,
 				 "ignoring answer '%s' after external cname",
 						 name);
-				db_free(dp);
+				db_freedata(dp);
 				continue;
 			}
 			if (type == T_CNAME &&
@@ -867,7 +892,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 			if (lastwascname) {
 				ns_debug(ns_log_resp_checks, 3,
 				 "last was cname, ignoring auth. and add.");
-				db_free(dp);
+				db_freedata(dp);
 				break;
 			}
 			if (i < arfirst) {
@@ -880,7 +905,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 						    "bad referral (%s !< %s)",
 							aname[0] ? aname : ".",
 							name[0] ? name : ".");
-						db_free(dp);
+						db_freedata(dp);
 						continue;
 					} else if (!samedomain(name,
 							       qp->q_domain)) {
@@ -890,7 +915,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 							 name[0] ? name : ".",
 							 qp->q_domain[0] ?
 							 qp->q_domain : ".");
-						db_free(dp);
+						db_freedata(dp);
 						continue;
 					}
 					if (type == T_NS) {
@@ -911,7 +936,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 	"invalid RR type '%s' in authority section (name = '%s') from %s",
 						p_type(type), name,
 						sin_ntoa(from));
-					db_free(dp);
+					db_freedata(dp);
 					continue;
 				}
 			} else {
@@ -924,7 +949,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 						ns_debug(ns_log_resp_checks, 3,
 				       "ignoring additional info '%s' type %s",
 							 name, p_type(type));
-						db_free(dp);
+						db_freedata(dp);
 						continue;
 					}
 					if (!related_additional(name)) {
@@ -932,7 +957,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 			     "unrelated additional info '%s' type %s from %s",
 							 name, p_type(type),
 							 sin_ntoa(from));
-						db_free(dp);
+						db_freedata(dp);
 						continue;
 					}
 					break;
@@ -952,7 +977,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 	"invalid RR type '%s' in additional section (name = '%s') from %s",
 						p_type(type), name,
 						sin_ntoa(from));
-					db_free(dp);
+					db_freedata(dp);
 					continue;
 				}
 			}
@@ -962,13 +987,11 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 		}
 		rrsetadd(flushset, name, dp);
 	}
-	maybe_free(&tname);
-	if (flushset) {
+	free_related_additional();
+	freestr_maybe(&tname);
+	if (flushset != NULL) {
 		rrsetupdate(flushset, dbflags, from);
-		for (i = 0; i < count; i++)
-			if (flushset[i].fs_name)
-				free(flushset[i].fs_name);
-		free((char*)flushset);
+		free_flushset(flushset, flushset_size);
  	}
 	if (lastwascname && !externalcname)
 		ns_info(ns_log_cname, "%s (%s)", danglingCname, aname);
@@ -1136,7 +1159,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 	 */
 	for (dp = np->n_data; dp; dp = dp->d_next) {
 		if (!stale(dp) && (dp->d_rcode == NXDOMAIN) &&
-		    (dp->d_class == qclass)) {
+		    (dp->d_class == (int)qclass)) {
 #ifdef RETURNSOA
 			n = finddata(np, qclass, T_SOA, hp, &dname,
 				     &buflen, &count);
@@ -1159,7 +1182,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 			 * we have to work that way by default
 			 * for compatibility with older servers.
 			 */
-			if (!ns_option_p(OPTION_NONAUTH_NXDOMAIN))
+			if (!NS_OPTION_P(OPTION_NONAUTH_NXDOMAIN))
 				hp->aa = 1;
 			ns_debug(ns_log_default, 3, "resp: NXDOMAIN aa = %d",
 				 hp->aa);
@@ -1253,15 +1276,15 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 
 	/* Reset the query control structure */
 
-	nsfree(qp, "ns_resp");
+	ns_freeqns(qp, "ns_resp");
 	qp->q_naddr = 0;
 	qp->q_curaddr = 0;
 	qp->q_fwd = server_options->fwdtab;
 
 	if (qp->q_domain != NULL)
-		free(qp->q_domain);
+		freestr(qp->q_domain);
 	getname(np, tmpdomain, sizeof tmpdomain);
-	qp->q_domain = savestr(tmpdomain);
+	qp->q_domain = savestr(tmpdomain, 1);
 
 	if ((n = nslookup(nsp, qp, dname, "ns_resp")) <= 0) {
 		if (n < 0) {
@@ -1304,15 +1327,18 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 		ns_debug(ns_log_default, 1, "q_cname = %d", qp->q_cname);
 		ns_debug(ns_log_default, 3,
 			 "resp: building recursive query; nslookup");
-		if (!qp->q_cmsg) {
+		if (qp->q_cmsg == NULL) {
 			qp->q_cmsg = qp->q_msg;
 			qp->q_cmsglen = qp->q_msglen;
-		} else if (qp->q_msg)
-			(void) free(qp->q_msg);
-		if ((qp->q_msg = (u_char *)malloc(PACKETSZ)) == NULL) {
-			ns_notice(ns_log_default, "resp: malloc error");
+			qp->q_cmsgsize = qp->q_msgsize;
+		} else if (qp->q_msg != NULL)
+			memput(qp->q_msg, qp->q_msgsize);
+		qp->q_msg = (u_char *)memget(PACKETSZ);
+		if (qp->q_msg == NULL) {
+			ns_notice(ns_log_default, "resp: memget error");
 			goto servfail;
 		}
+		qp->q_msgsize = PACKETSZ;
 		n = res_mkquery(QUERY, dname, qclass, qtype,
 				NULL, 0, NULL, qp->q_msg, PACKETSZ);
 		if (n < 0) {
@@ -1321,8 +1347,8 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 			goto servfail;
 		}
 		if (qp->q_name != NULL)
-			free(qp->q_name);
-		qp->q_name = savestr(dname);
+			freestr(qp->q_name);
+		qp->q_name = savestr(dname, 1);
 		qp->q_msglen = n;
 		hp = (HEADER *) qp->q_msg;
 		hp->rd = 0;
@@ -1365,9 +1391,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 		nameserIncr(nsa->sin_addr, nssSendtoErr);
 	}
 	hp->rd = 0;	/* leave set to 0 for dup detection */
-#ifdef XSTATS
 	nameserIncr(nsa->sin_addr, nssSentFwdR);
-#endif
 	nameserIncr(qp->q_from.sin_addr, nssRcvdFwdR);
 	ns_debug(ns_log_default, 3, "resp: Query sent.");
 	free_nsp(nsp);
@@ -1382,14 +1406,12 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 
  return_msg:
 	nameserIncr(from.sin_addr, nssRcvdFwdR);
-#ifdef XSTATS
 	nameserIncr(qp->q_from.sin_addr, nssSentFwdR);
-#endif
 	/* The "standard" return code */
 	hp->qr = 1;
 	hp->id = qp->q_id;
 	hp->rd = 1;
-	hp->ra = (ns_option_p(OPTION_NORECURSE) == 0);
+	hp->ra = (NS_OPTION_P(OPTION_NORECURSE) == 0);
 	(void) send_msg(msg, msglen, qp);
 	qremove(qp);
 	free_nsp(nsp);
@@ -1398,19 +1420,17 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
  return_newmsg:
 	nameserIncr(qp->q_from.sin_addr, nssSentAns);
 
-#ifdef XSTATS
 	if (!hp->aa)
 		nameserIncr(qp->q_from.sin_addr, nssSentNaAns);
 	if (hp->rcode == NXDOMAIN) 
 		nameserIncr(qp->q_from.sin_addr, nssSentNXD);
-#endif
 	n = doaddinfo(hp, cp, buflen);
 	cp += n;
 	buflen -= n;
 	hp->qr = 1;
 	hp->id = qp->q_id;
 	hp->rd = 1;
-	hp->ra = (ns_option_p(OPTION_NORECURSE) == 0);
+	hp->ra = (NS_OPTION_P(OPTION_NORECURSE) == 0);
 	(void) send_msg(newmsg, cp - newmsg, qp);
 	qremove(qp);
 	free_nsp(nsp);
@@ -1422,7 +1442,7 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 	hp->qr = 1;
 	hp->id = qp->q_id;
 	hp->rd = 1;
-	hp->ra = (ns_option_p(OPTION_NORECURSE) == 0);
+	hp->ra = (NS_OPTION_P(OPTION_NORECURSE) == 0);
 	(void) send_msg((u_char *)hp,
 			(qp->q_cmsglen ? qp->q_cmsglen : qp->q_msglen),
 			qp);
@@ -1431,15 +1451,13 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 	return;
 	
  servfail:
-#ifdef XSTATS
 	nameserIncr(qp->q_from.sin_addr, nssSentFail);
-#endif
 	hp = (HEADER *)(qp->q_cmsglen ? qp->q_cmsg : qp->q_msg);
 	hp->rcode = SERVFAIL;
 	hp->qr = 1;
 	hp->id = qp->q_id;
 	hp->rd = 1;
-	hp->ra = (ns_option_p(OPTION_NORECURSE) == 0);
+	hp->ra = (NS_OPTION_P(OPTION_NORECURSE) == 0);
 	(void) send_msg((u_char *)hp,
 			(qp->q_cmsglen ? qp->q_cmsglen : qp->q_msglen),
 			qp);
@@ -1455,11 +1473,19 @@ ns_resp(u_char *msg, int msglen, struct sockaddr_in from, struct qstream *qsp) {
 	return;
 }
 
+#define BOUNDS_CHECK(ptr, count) \
+	do { \
+		if ((ptr) + (count) > eom) { \
+			hp->rcode = FORMERR; \
+			return (-1); \
+		} \
+	} while (0)
+
 static int
 rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 	  char *dname, int namelen, struct sockaddr_in from, char **tnamep)
 {
-	u_char *cp;
+	u_char *cp, *eom, *rdatap;
 	u_int class, type, dlen;
 	int n, n1;
 	u_int32_t ttl;
@@ -1472,11 +1498,13 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 
 	*dpp = NULL;
 	cp = rrp;
-	if ((n = dn_expand(msg, msg + msglen, cp, dname, namelen)) < 0) {
+	eom = msg + msglen;
+	if ((n = dn_expand(msg, eom, cp, dname, namelen)) < 0) {
 		hp->rcode = FORMERR;
 		return (-1);
 	}
 	cp += n;
+	BOUNDS_CHECK(cp, 2*INT16SZ + INT32SZ + INT16SZ);
 	GETSHORT(type, cp);
 	GETSHORT(class, cp);
 	GETLONG(ttl, cp);
@@ -1486,6 +1514,8 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 		ttl = 0;
 	}
 	GETSHORT(dlen, cp);
+	BOUNDS_CHECK(cp, dlen);
+	rdatap = cp;
 	if (!ns_nameok(dname, class, NULL, response_trans,
 		       ns_ownercontext(type, response_trans),
 		       dname, from.sin_addr)) {
@@ -1539,8 +1569,7 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 	case T_MR:
 	case T_NS:
 	case T_PTR:
-		n = dn_expand(msg, msg + msglen, cp,
-			      (char *)data, sizeof data);
+		n = dn_expand(msg, eom, cp, (char *)data, sizeof data);
 		if (n < 0) {
 			hp->rcode = FORMERR;
 			return (-1);
@@ -1555,7 +1584,7 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 		cp1 = data;
 		n = strlen((char *)data) + 1;
 		if (tnamep != NULL && (type == T_NS || type == T_MB))
-			*tnamep = savestr((char *)cp1);
+			*tnamep = savestr((char *)cp1, 1);
 		break;
 
 	case T_SOA:
@@ -1566,8 +1595,7 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 		context = mailname_ctx;
 		/* FALLTHROUGH */
 	soa_rp_minfo:
-		n = dn_expand(msg, msg + msglen, cp,
-			      (char *)data, sizeof data);
+		n = dn_expand(msg, eom, cp, (char *)data, sizeof data);
 		if (n < 0) {
 			hp->rcode = FORMERR;
 			return (-1);
@@ -1578,11 +1606,15 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 			return (-1);
 		}
 		cp += n;
+		/*
+		 * The next use of 'cp' is dn_expand(), so we don't have
+		 * to BOUNDS_CHECK() here.
+		 */
 		cp1 = data + (n = strlen((char *)data) + 1);
 		n1 = sizeof(data) - n;
 		if (type == T_SOA)
 			n1 -= 5 * INT32SZ;
-		n = dn_expand(msg, msg + msglen, cp, (char *)cp1, n1);
+		n = dn_expand(msg, eom, cp, (char *)cp1, n1);
 		if (n < 0) {
 			hp->rcode = FORMERR;
 			return (-1);
@@ -1600,6 +1632,7 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 		cp1 += strlen((char *)cp1) + 1;
 		if (type == T_SOA) {
 			n = 5 * INT32SZ;
+			BOUNDS_CHECK(cp, n);
 			memcpy(cp1, cp, n);
 			cp += n;
 			cp1 += n;
@@ -1610,30 +1643,37 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 
 	case T_NAPTR:
 		/* Grab weight and port. */
+		BOUNDS_CHECK(cp, INT16SZ*2);
 		memcpy(data, cp, INT16SZ*2);
 		cp1 = data + INT16SZ*2;
 		cp += INT16SZ*2;
 
 		/* Flags */
+		BOUNDS_CHECK(cp, 1);
 		n = *cp++;
+		BOUNDS_CHECK(cp, n);
 		*cp1++ = n;
 		memcpy(cp1, cp, n);
 		cp += n; cp1 += n;
 
 		/* Service */
+		BOUNDS_CHECK(cp, 1);
 		n = *cp++;
+		BOUNDS_CHECK(cp, n);
 		*cp1++ = n;
 		memcpy(cp1, cp, n);
 		cp += n; cp1 += n;
 
 		/* Regexp */
+		BOUNDS_CHECK(cp, 1);
 		n = *cp++;
+		BOUNDS_CHECK(cp, n);
 		*cp1++ = n;
 		memcpy(cp1, cp, n);
 		cp += n; cp1 += n;
 
 		/* Replacement */
-		n = dn_expand(msg, msg + msglen, cp, (char *)cp1,
+		n = dn_expand(msg, eom, cp, (char *)cp1,
 			      sizeof data - (cp1 - data));
 		if (n < 0) {
 			hp->rcode = FORMERR;
@@ -1658,19 +1698,21 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 	case T_RT:
 	case T_SRV:
 		/* grab preference */
+		BOUNDS_CHECK(cp, INT16SZ);
 		memcpy(data, cp, INT16SZ);
 		cp1 = data + INT16SZ;
 		cp += INT16SZ;
 
 		if (type == T_SRV) {
 			/* Grab weight and port. */
+			BOUNDS_CHECK(cp, INT16SZ*2);
 			memcpy(cp1, cp, INT16SZ*2);
 			cp1 += INT16SZ*2;
 			cp += INT16SZ*2;
 		}
 
 		/* get name */
-		n = dn_expand(msg, msg + msglen, cp, (char *)cp1,
+		n = dn_expand(msg, eom, cp, (char *)cp1,
 			      sizeof data - (cp1 - data));
 		if (n < 0) {
 			hp->rcode = FORMERR;
@@ -1684,7 +1726,7 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 		cp += n;
 
 		if (tnamep != NULL)
-			*tnamep = savestr((char *)cp1);
+			*tnamep = savestr((char *)cp1, 1);
 
 		/* compute end of data */
 		cp1 += strlen((char *)cp1) + 1;
@@ -1695,13 +1737,14 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 
 	case T_PX:
 		/* grab preference */
+		BOUNDS_CHECK(cp, INT16SZ);
 		memcpy(data, cp, INT16SZ);
 		cp1 = data + INT16SZ;
 		cp += INT16SZ;
 
 		/* get MAP822 name */
-		n = dn_expand(msg, msg + msglen, cp, (char *)cp1,
-				sizeof data - INT16SZ);
+		n = dn_expand(msg, eom, cp, (char *)cp1,
+			      sizeof data - INT16SZ);
 		if (n < 0) {
 			hp->rcode = FORMERR;
 			return (-1);
@@ -1712,9 +1755,13 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 			return (-1);
 		}
 		cp += n;
+		/*
+		 * The next use of 'cp' is dn_expand(), so we don't have
+		 * to BOUNDS_CHECK() here.
+		 */
 		cp1 += (n = strlen((char *)cp1) + 1);
 		n1 = sizeof(data) - n;
-		n = dn_expand(msg, msg + msglen, cp, (char *)cp1, n1);
+		n = dn_expand(msg, eom, cp, (char *)cp1, n1);
 		if (n < 0) {
 			hp->rcode = FORMERR;
 			return (-1);
@@ -1737,6 +1784,7 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 		/* This code is similar to that in db_load.c.  */
 
 		/* Skip coveredType, alg, labels */
+		BOUNDS_CHECK(cp, INT16SZ + 1 + 1 + 3*INT32SZ);
 		cp1 = cp + INT16SZ + 1 + 1;
 		GETLONG(origTTL, cp1);
 		GETLONG(exptime, cp1);
@@ -1781,23 +1829,31 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 
 		/* first just copy over the type_covered, algorithm, */
 		/* labels, orig ttl, two timestamps, and the footprint */
+		BOUNDS_CHECK(cp, 18);
 		memcpy(cp1, cp, 18);
 		cp  += 18;
 		cp1 += 18;
 
 		/* then the signer's name */
-		n = dn_expand(msg, msg + msglen, cp,
-			      (char *)cp1, (sizeof data) - 18);
-		if (n < 0)
+		n = dn_expand(msg, eom, cp, (char *)cp1, (sizeof data) - 18);
+		if (n < 0) {
+			hp->rcode = FORMERR;
 			return (-1);
+		}
 		cp += n;
 		cp1 += strlen((char*)cp1)+1;
 
 		/* finally, we copy over the variable-length signature.
 		   Its size is the total data length, minus what we copied. */
+		if (18 + (u_int)n > dlen) {
+			hp->rcode = FORMERR;
+			return (-1);
+		}
 		n = dlen - (18 + n);
-		if (n > (sizeof data) - (cp1 - (u_char *)data))
+		if (n > ((int)(sizeof data) - (int)(cp1 - (u_char *)data))) {
+			hp->rcode = FORMERR;
 			return (-1);  /* out of room! */
+		}
 		memcpy(cp1, cp, n);
 		cp += n;
 		cp1 += n;
@@ -1811,6 +1867,18 @@ rrextract(u_char *msg, int msglen, u_char *rrp, struct databuf **dpp,
 	default:
 		ns_debug(ns_log_default, 3, "unknown type %d", type);
 		return ((cp - rrp) + dlen);
+	}
+
+	if (cp > eom) {
+		hp->rcode = FORMERR;
+		return (-1);
+	}
+	if ((u_int)(cp - rdatap) != dlen) {
+		ns_debug(ns_log_default, 3,
+		     "encoded rdata length is %u, but actual length was %u",
+			 dlen, (u_int)(cp - rdatap));
+		hp->rcode = FORMERR;
+		return (-1);
 	}
 	if (n > MAXDATA) {
 		ns_debug(ns_log_default, 1,
@@ -1901,14 +1969,21 @@ void
 prime_cache() {
 	struct qinfo *qp;
 
-	ns_debug(ns_log_default, 1, "prime_cache: priming = %d", priming);
-	if (!priming && fcachetab->h_tab[0] != NULL &&
-	    !ns_option_p(OPTION_FORWARD_ONLY)) {
-		priming++;
-		if (!(qp = sysquery("", C_IN, T_NS, NULL, 0, QUERY)))
-			priming = 0;
-		else
-			qp->q_flags |= (Q_SYSTEM | Q_PRIMING);
+	/*
+	 * XXX - should this always be skipped if OPTION_FORWARD_ONLY
+	 *       or should it be another option?  What about when we are
+	 *	 doing selective forwarding?
+	 */
+	if (!NS_OPTION_P(OPTION_FORWARD_ONLY)) {
+		ns_debug(ns_log_default, 1, "prime_cache: priming = %d",
+			 priming);
+		if (!priming && fcachetab->h_tab[0] != NULL) {
+			priming++;
+			if (!(qp = sysquery("", C_IN, T_NS, NULL, 0, QUERY)))
+				priming = 0;
+			else
+				qp->q_flags |= (Q_SYSTEM | Q_PRIMING);
+		}
 	}
 	needs_prime_cache = 0;
 	return;
@@ -1947,7 +2022,7 @@ sysnotify(const char *dname, int class, int type) {
 	zp = &zones[zn];
 	if (zp->z_notify == znotify_no ||
 	    (zp->z_notify == znotify_use_default &&    
-	     ns_option_p(OPTION_NONOTIFY)))
+	     NS_OPTION_P(OPTION_NONOTIFY)))
 		return;
 	if (zp->z_type != z_master && zp->z_type != z_slave) {
 		ns_warning(ns_log_notify, "sysnotify: %s not master or slave",
@@ -1959,9 +2034,14 @@ sysnotify(const char *dname, int class, int type) {
 	if (zp->z_type == z_master)
 		sysnotify_slaves(dname, zname, class, zn, &nns, &na);
 	if (zp->z_notify_count != 0) {
-		sysquery(dname, class, T_SOA,
-			 zp->z_also_notify, zp->z_notify_count,
-			 NS_NOTIFY_OP);
+		struct in_addr *also_addr = zp->z_also_notify;
+		int i;
+		
+		for (i = 0; i < zp->z_notify_count; i++) {
+			sysquery(dname, class, T_SOA, also_addr, 1,
+				 NS_NOTIFY_OP);
+			also_addr++;
+		}
 		nns += zp->z_notify_count;
 		na += zp->z_notify_count;
 	}
@@ -1993,7 +2073,7 @@ sysnotify_slaves(const char *dname, const char *zname, int class, int zn,
 	}
 	mname = NULL;
 	for (dp = np->n_data; dp; dp = dp->d_next) {
-		if (!dp->d_zone || !match(dp, class, T_SOA))
+		if (dp->d_zone == DB_Z_CACHE || !match(dp, class, T_SOA))
 			continue;
 		if (mname) {
 			ns_notice(ns_log_notify,
@@ -2009,7 +2089,7 @@ sysnotify_slaves(const char *dname, const char *zname, int class, int zn,
 		return;
 	}
 	for (dp = np->n_data; dp != NULL; dp = dp->d_next) {
-		if (dp->d_zone == 0 || !match(dp, class, T_NS))
+		if (dp->d_zone == DB_Z_CACHE || !match(dp, class, T_NS))
 			continue;
 		if (strcasecmp((char*)dp->d_data, mname) == 0)
 			continue;
@@ -2092,7 +2172,7 @@ sysquery(const char *dname, int class, int type,
 				"sysquery: nlookup error on %s?",
 				dname);
  err1:
-			qfree(qp);
+			ns_freeqry(qp);
 			return (NULL);
 		}
 
@@ -2121,12 +2201,13 @@ sysquery(const char *dname, int class, int type,
 	qp->q_flags |= Q_SYSTEM;
 
 	getname(np, tmpdomain, sizeof tmpdomain);
-	qp->q_domain = savestr(tmpdomain);
+	qp->q_domain = savestr(tmpdomain, 1);
 
-	if ((qp->q_msg = (u_char *)malloc(PACKETSZ)) == NULL) {
-		ns_notice(ns_log_default, "sysquery: malloc failed");
+	if ((qp->q_msg = (u_char *)memget(PACKETSZ)) == NULL) {
+		ns_notice(ns_log_default, "sysquery: memget failed");
 		goto err2;
 	}
+	qp->q_msgsize = PACKETSZ;
 	n = res_mkquery(opcode, dname, class,
 			type, NULL, 0, NULL,
 			qp->q_msg, PACKETSZ);
@@ -2187,9 +2268,24 @@ sysquery(const char *dname, int class, int type,
 					dname);
 				goto err2;
 			} else if (np && NAME(*np)[0] == '\0') {
-				ns_warning(ns_log_default,
+				/*
+				 * It's not too serious if we don't have
+				 * the root server addresses if we have to
+				 * go through a forwarder anyway.  Don't
+				 * bother to log it, since prime_cache()
+				 * won't do anything about it as currently
+				 * implemented.
+				 *
+				 * XXX - should we skip setting
+				 *       needs_prime_cache as well?
+				 *
+				 * XXX - what happens when we implement
+				 *       selective forwarding?
+				 */
+				if (!NS_OPTION_P(OPTION_FORWARD_ONLY))
+					ns_warning(ns_log_default,
 				   "sysquery: no addrs found for root NS (%s)",
-					   dname);
+						   dname);
 				if (class == C_IN && !priming)
 					needs_prime_cache = 1;
 				goto err2;
@@ -2273,8 +2369,8 @@ check_root() {
 	pdp = NULL;
 	dp = np->n_data;
 	while (dp != NULL) {
-		if (dp->d_type == T_NS && dp->d_zone == 0 &&
-		    dp->d_ttl < tt.tv_sec) {
+		if (dp->d_type == T_NS && dp->d_zone == DB_Z_CACHE &&
+		    dp->d_ttl < (u_int32_t)tt.tv_sec) {
 			ns_debug(ns_log_default, 1,
 				 "deleting old root server '%s'",
 				 dp->d_data);
@@ -2349,8 +2445,8 @@ check_ns() {
 				if (tdp->d_type != T_A ||
 				    tdp->d_class != dp->d_class)
 					continue;
-				if ((tdp->d_zone == 0) &&
-				    (tdp->d_ttl < curtime)) {
+				if ((tdp->d_zone == DB_Z_CACHE) &&
+				    (tdp->d_ttl < (u_int32_t)curtime)) {
 					ns_debug(ns_log_default, 3, 
 						 "check_ns: stale entry '%s'",
 						 NAME(*tnp));
@@ -2412,6 +2508,10 @@ findns(struct namebuf **npp, int class,
 
  try_again:
 	if (htp == fcachetab && class == C_IN && !priming)
+		/*
+		 * XXX - do we want to set needs_prime_cache if
+		 *       OPTION_FORWARD_ONLY?
+		 */
 		needs_prime_cache = 1;
 	if (np == NULL) {
 		/* find the root */
@@ -2427,7 +2527,7 @@ findns(struct namebuf **npp, int class,
 		if (!flag)
 #endif
 		for (dp = np->n_data; dp != NULL; dp = dp->d_next) {
-			if (dp->d_zone != 0 &&
+			if (dp->d_zone != DB_Z_CACHE &&
 			    ((zones[dp->d_zone].z_type == Z_PRIMARY) ||
 			     (zones[dp->d_zone].z_type == Z_SECONDARY)) &&
 			    match(dp, class, T_SOA)) {
@@ -2465,8 +2565,8 @@ findns(struct namebuf **npp, int class,
 			 *
 			 * XXX:	this is horribly bogus.
 			 */
-			if ((dp->d_zone == 0) &&
-			    (dp->d_ttl < tt.tv_sec) &&
+			if ((dp->d_zone == DB_Z_CACHE) &&
+			    (dp->d_ttl < (u_int32_t)tt.tv_sec) &&
 			    !(dp->d_flags & DB_F_HINT)) {
 				ns_debug(ns_log_default, 1,
 					 "findns: stale entry '%s'",
@@ -2474,9 +2574,9 @@ findns(struct namebuf **npp, int class,
 				/*
 				 * We may have already added NS databufs
 				 * and are going to throw them away. Fix
-				 * fix reference counts. We don't need
-				 * free() them here as we just got them
-				 * from the cache.
+				 * reference counts. We don't need to free
+				 * them here as we just got them from the
+				 * cache.
 				 */
 				while (nspp > &nsp[0]) {
 					nspp--;
@@ -2645,8 +2745,8 @@ finddata(struct namebuf *np, int class, int type,
 		count++;
 #ifdef notdef
 		/* this isn't right for glue records, aa is set in ns_req */
-		if (dp->d_zone &&
-		    (zones[dp->d_zone].z_flags & Z_AUTH) &&
+		if (dp->d_zone != DB_Z_CACHE &&
+		    (zones[dp->d_zone].z_flags & Z_AUTH) != 0 &&
 		    class != C_ANY)
 			hp->aa = 1;			/* XXX */
 #endif
@@ -2678,7 +2778,7 @@ finddata(struct namebuf *np, int class, int type,
 int
 wanted(const struct databuf *dp, int class, int type) {
 	const u_char *cp;
-	u_int coveredType;
+	int coveredType;
 	time_t expiration;
 #ifdef DEBUG
 	char pclass[15], ptype[15];
@@ -2749,7 +2849,7 @@ wanted(const struct databuf *dp, int class, int type) {
 
 	case T_AXFR:
 		/* T_AXFR needs an authoritative SOA */
-		if (dp->d_type == T_SOA && dp->d_zone != 0
+		if (dp->d_type == T_SOA && dp->d_zone != DB_Z_CACHE
 		    && (zones[dp->d_zone].z_flags & Z_AUTH))
 			return (1);
 		break;
@@ -2802,16 +2902,14 @@ rrsetadd(struct flush_set *flushset, const char *name, struct databuf *dp) {
 		fs++;
 	}
 	if (!fs->fs_name) {
-		fs->fs_name = strdup(name);
-		if (!fs->fs_name)
-			panic("rrsetadd: out of memory", NULL);
+		fs->fs_name = savestr(name, 1);
 		fs->fs_class = dp->d_class;
 		fs->fs_type = dp->d_type;
 		fs->fs_cred = dp->d_cred;
 		fs->fs_list = NULL;
 		fs->fs_last = NULL;
 	}
-	dbl = (struct db_list *)malloc(sizeof(struct db_list));
+	dbl = (struct db_list *)memget(sizeof(struct db_list));
 	if (!dbl)
 		panic("rrsetadd: out of memory", NULL);
 	dbl->db_next = NULL;
@@ -2832,7 +2930,7 @@ ttlcheck(const char *name, struct db_list *dbl, int update) {
 	struct namebuf *np;
 	struct db_list *dbp = dbl;
 	struct databuf *dp;
-	u_int32_t ttl;
+	u_int32_t ttl = 0;	/* Make gcc happy. */
 	int first;
 
 
@@ -2847,8 +2945,8 @@ ttlcheck(const char *name, struct db_list *dbl, int update) {
 			continue;
 		if (first) {
  			/* we can't update zone data so return early */
-			if (dp->d_zone != 0)
- 				return(0);
+			if (dp->d_zone != DB_Z_CACHE)
+ 				return (0);
 			ttl = dp->d_ttl;
 			first = 0;
 		} else if (ttl != dp->d_ttl)
@@ -2982,20 +3080,20 @@ rrsetupdate(struct flush_set * flushset, int flags, struct sockaddr_in from) {
 					 fs->fs_name[0] ? fs->fs_name : ".",
 					 n);
 				if (n != OK)
-					db_free(dbp->db_dp);
+					db_freedata(dbp->db_dp);
 				odbp = dbp;
 				dbp = dbp->db_next;
-				free((char *)odbp);
+				memput(odbp, sizeof *odbp);
 			}    
 		} else {
  			if (n == 0)
  				(void)ttlcheck(fs->fs_name,fs->fs_list, 1);
 			dbp = fs->fs_list;
 			while (dbp) {
-				db_free(dbp->db_dp);
+				db_freedata(dbp->db_dp);
 				odbp = dbp;
 				dbp = dbp->db_next;
-				free((char *)odbp);
+				memput(odbp, sizeof *odbp);
 			}
 		}
 		fs->fs_list = NULL;
@@ -3012,7 +3110,7 @@ flushrrset(struct flush_set * fs, struct sockaddr_in from) {
 		 fs->fs_name[0]?fs->fs_name:".", p_type(fs->fs_type),
 		 p_class(fs->fs_class), fs->fs_cred);
 	dp = savedata(fs->fs_class, fs->fs_type, 0, NULL, 0);
-	dp->d_zone = 0;
+	dp->d_zone = DB_Z_CACHE;
 	dp->d_cred = fs->fs_cred;
 	dp->d_clev = 0;	
 	do {
@@ -3020,7 +3118,16 @@ flushrrset(struct flush_set * fs, struct sockaddr_in from) {
 			      from);
 		ns_debug(ns_log_default, 3, "flushrrset: %d", n);
 	} while (n == OK);
-	db_free(dp);
+	db_freedata(dp);
+}
+
+static void
+free_flushset(struct flush_set *flushset, int flushset_size) {
+	struct flush_set *fs;
+
+	for (fs = flushset; fs->fs_name != NULL; fs++)
+		freestr(fs->fs_name);
+	memput(flushset, flushset_size);
 }
 
 /*
@@ -3039,7 +3146,7 @@ delete_all(struct namebuf *np, int class, int type) {
 	pdp = NULL;
 	dp = np->n_data;
 	while (dp != NULL) {
-		if ((dp->d_zone == 0) && !(dp->d_flags & DB_F_HINT)
+		if (dp->d_zone == DB_Z_CACHE && (dp->d_flags & DB_F_HINT) == 0
 		    && match(dp, class, type)) {
 			dp = rm_datum(dp, np, pdp, NULL);
 			continue;
@@ -3065,7 +3172,7 @@ delete_stale(np)
 	struct databuf *dp;
  again:  
         for (dp = np->n_data; dp != NULL; dp = dp->d_next) {
-                if ((dp->d_zone == 0) && stale(dp)) {
+                if (dp->d_zone == DB_Z_CACHE && stale(dp)) {
                         delete_all(np, dp->d_class, dp->d_type);
                         goto again;
 		}
@@ -3082,56 +3189,54 @@ delete_stale(np)
  * return new length
  */
 
-static int
+int
 trunc_adjust(u_char *msg, int msglen, int outlen) {
 	register HEADER *hp;
 	u_int qdcount, ancount, nscount, arcount, dlen;
-	u_char *cp = msg, *cp1;
+	u_char *cp = msg, *cp1, *eom_in, *eom_out;
 	int n;
 
-	hp = (HEADER *)msg;;
+	eom_in = msg + msglen;
+	eom_out = msg + outlen;
 
+	hp = (HEADER *)msg;
 	qdcount = ntohs(hp->qdcount);
 	ancount = ntohs(hp->ancount);
 	nscount = ntohs(hp->nscount);
 	arcount = ntohs(hp->arcount);
-
 	cp += HFIXEDSZ;
 
 	while ((qdcount || ancount || nscount || arcount) &&
-		(cp < (msg+msglen)) &&
-		(cp < (msg+outlen))) {
+	       cp < eom_in && cp < eom_out) {
 
 		cp1 = cp; /* use temporary in case we break */
 
-		n = dn_skipname(cp1, msg + msglen);
+		n = dn_skipname(cp1, eom_in);
 		if (n < 0)
 			break;
 		cp1 += n + 2 * INT16SZ; /* type, class */
 
 		if (!qdcount) {
 			cp1 += INT32SZ;     /* ttl */
-			if ((cp1+INT16SZ) > (msg+msglen))
-			break;
+			if (cp1 + INT16SZ > eom_in)
+				break;
 			GETSHORT(dlen, cp1);
 			cp1 += dlen;
 		}
 
-		if ((cp1 > (msg+msglen)) || (cp1 > (msg + outlen)))
+		if (cp1 > eom_in || cp1 > eom_out)
 			break;
 
 		cp = cp1;
 
-		if (qdcount) {
+		if (qdcount)
 			qdcount--;
-		} else if (ancount) {
+		else if (ancount)
 			ancount--;
-		} else if (nscount) {
+		else if (nscount)
 			nscount--;
-		} else {
+		else
 			arcount--;
-		}
-
 	}
 
 	if (qdcount || ancount || nscount || arcount) {
@@ -3147,7 +3252,8 @@ trunc_adjust(u_char *msg, int msglen, int outlen) {
 		hp->nscount = htons(ntohs(hp->nscount) - nscount);
 		hp->arcount = htons(ntohs(hp->arcount) - arcount);
 	}
-	return(cp-msg);
+	ENSURE(cp <= eom_out);
+	return (cp - msg);
 }
 
 static void
@@ -3157,8 +3263,10 @@ add_related_additional(char *name) {
 	if (num_related >= MAX_RELATED - 1)
 		return;
 	for (i = 0; i < num_related; i++)
-		if (strcasecmp(name, related[i]) == 0)
+		if (strcasecmp(name, related[i]) == 0) {
+			freestr(name);
 			return;
+		}
 	related[num_related++] = name;
 }
 
@@ -3167,7 +3275,7 @@ free_related_additional() {
 	int i;
 
 	for (i = 0; i < num_related; i++)
-		free(related[i]);
+		freestr(related[i]);
 	num_related = 0;
 }
 
@@ -3182,9 +3290,9 @@ related_additional(char *name) {
 }
 
 static void
-maybe_free(char **tname) {
+freestr_maybe(char **tname) {
 	if (tname == NULL || *tname == NULL)
 		return;
-	free(*tname);
+	freestr(*tname);
 	*tname = NULL;
 }

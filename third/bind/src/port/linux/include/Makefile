@@ -52,7 +52,8 @@
 # --Copyright--
 
 SUBDIRS = sys net
-HFILES =
+# Ensure that HFILES isn't empty to keep bash happy
+HFILES = junk
 
 DESTDIR=
 DESTINC= /usr/local/bind/include
@@ -79,8 +80,8 @@ links: FRC
 	done
 
 install:: ${DESTDIR}${DESTINC}
-	-for x in "" ${HFILES}; do \
-	    if [ -n "$$x" ]; then \
+	-for x in ${HFILES}; do \
+	    if [ -f "$$x" ]; then \
 		${INSTALL} -c -m 444 $$x ${DESTDIR}${DESTINC}/$$x; \
 	    fi; \
 	done

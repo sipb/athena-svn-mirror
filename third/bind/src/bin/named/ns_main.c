@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)ns_main.c	4.55 (Berkeley) 7/1/91";
-static char rcsid[] = "$Id: ns_main.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp $";
+static char rcsid[] = "$Id: ns_main.c,v 1.1.1.2 1998-05-12 18:04:09 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -106,12 +106,15 @@ char copyright[] =
 #include <arpa/nameser.h>
 #include <arpa/inet.h>
 
+#include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <grp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <netdb.h>
+#include <pwd.h>
 #include <resolv.h>
 #include <string.h>
 #include <syslog.h>
@@ -120,6 +123,8 @@ char copyright[] =
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
+#include <isc/list.h>
 
 #include "port_after.h"
 
@@ -131,32 +136,22 @@ char copyright[] =
 #include "named.h"
 #undef MAIN_PROGRAM
 
-typedef struct _interface {
-	struct _interface *next;	/* Next datagram. */
-	int		dfd,		/* Datagram file descriptor */
-			sfd;		/* Stream file descriptor. */
-	time_t		gen;		/* Generation number. */
-	struct in_addr	addr;		/* Interface address. */
-	u_int16_t	port;		/* Interface port. */
-	evFileID	evID_d;		/* Handle on datagram read-event. */
-	evConnID	evID_s;		/* Handle on stream listen-event. */
-} interface;
+				/* list of interfaces */
+static	LIST(struct _interface)	iflist;
+static	int 			iflist_initialized = 0;
 
-	/* list of interfaces */
-static	interface		*iflist = NULL;
-
-				/* UDP receive, TCP send buffer size */
-static	const int		rbufsize = 8 * 1024,
-				/* TCP send window size */
-				sbufsize = 16 * 1024;
+				
+static	const int		drbufsize = 8 * 1024,	/* UDP rcv buf size */
+				dsbufsize = 16 * 1024,	/* UDP snd buf size */
+				sbufsize = 16 * 1024;	/* TCP snd buf size */ 
 
 static	u_int16_t		nsid_state;
 static	int			needs;
 
 static	struct qstream		*sq_add(void);
+static	int			opensocket_d(interface *),
+				opensocket_s(interface *);
 static	void			sq_query(struct qstream *),
-				opensocket_d(interface *),
-				opensocket_s(interface *),
 				dq_remove(interface *),
 				ns_handle_needs(void);
 static	int			sq_dowrite(struct qstream *);
@@ -167,21 +162,35 @@ static	interface *		if_find(struct in_addr, u_int16_t port);
 
 static	int			sq_here(struct qstream *);
 
-void				stream_accept(evContext, void *, int,
+static void			stream_accept(evContext, void *, int,
 					      const void *, int,
 					      const void *, int),
 				stream_getlen(evContext, void *, int, int),
 				stream_getmsg(evContext, void *, int, int),
-				datagram_read(evContext, void *, int, int);
+				datagram_read(evContext, void *, int, int),
+				dispatch_message(u_char *, int, int,
+						 struct qstream *,
+						 struct sockaddr_in, int,
+						 interface *);
 static void			stream_send(evContext, void *, int,
 					       const void *, int,
 					       const void *, int);
 static void			init_signals(void);
+static void			set_signal_handler(int, SIG_FN (*)());
+static int			only_digits(const char *);
 
 static void
 usage() {
 	fprintf(stderr,
 "Usage: named [-d #] [-q] [-r] [-f] [-p port] [[-b|-c] configfile]\n");
+#ifdef CAN_CHANGE_ID
+	fprintf(stderr,
+"             [-u (username|uid)] [-g (groupname|gid)]\n");
+#endif
+#ifdef HAVE_CHROOT
+	fprintf(stderr,
+"             [-t directory]\n");
+#endif
 	exit(1);
 }
 
@@ -191,24 +200,28 @@ static char bad_p_option[] =
 static char bad_directory[] = "chdir failed for directory '%s': %s";
 
 /*ARGSUSED*/
-void
+int
 main(int argc, char *argv[], char *envp[]) {
 	int n, udpcnt;
 	char *arg;
 	struct qstream *sp;
 	interface *ifp;
 	const int on = 1;
-	int rfd, size, len, conffile_malloc, debug_option;
+	int rfd, size, len, debug_option;
 	char **argp, *p;
 	int ch;
 	FILE *fp;			/* file descriptor for pid file */
+	struct passwd *pw;
+	struct group *gr;
 #ifdef HAVE_GETRUSAGE
 	struct rlimit rl;
 #endif
 
+	user_id = getuid();
+	group_id = getgid();
+
 	ns_port = htons(NAMESERVER_PORT);
 	desired_debug = debug;
-	conffile_malloc = 0;
 
 	/* BSD has a better random number generator but it's not clear
 	 * that we need it here.
@@ -218,12 +231,13 @@ main(int argc, char *argv[], char *envp[]) {
 
 	(void) umask(022);
 
-	while ((ch = getopt(argc, argv, "b:c:d:p:w:qrf")) != EOF) {
+	while ((ch = getopt(argc, argv, "b:c:d:g:p:t:u:w:qrf")) != EOF) {
 		switch (ch) {
 		case 'b':
 		case 'c':
-			conffile = savestr(optarg);
-			conffile_malloc = 1;
+			if (conffile != NULL)
+				freestr(conffile);
+			conffile = savestr(optarg, 1);
 			break;
 
 		case 'd':
@@ -273,6 +287,54 @@ main(int argc, char *argv[], char *envp[]) {
 			foreground = 1;
 			break;
 
+		case 't':
+			chroot_dir = savestr(optarg, 1);
+			break;
+
+#ifdef CAN_CHANGE_ID
+		case 'u':
+			user_name = savestr(optarg, 1);
+			if (only_digits(user_name))
+				user_id = atoi(user_name);
+			else {
+				pw = getpwnam(user_name);
+				if (pw == NULL) {
+					fprintf(stderr,
+						"user \"%s\" unknown\n",
+						user_name);
+					exit(1);
+				}
+				user_id = pw->pw_uid;
+				if (group_name == NULL) {
+					char name[256];
+					
+					sprintf(name, "%lu",
+						(u_long)pw->pw_gid);
+					group_name = savestr(name, 1);
+					group_id = pw->pw_gid;
+				}
+			}
+			break;
+
+		case 'g':
+			if (group_name != NULL)
+				freestr(group_name);
+			group_name = savestr(optarg, 1);
+			if (only_digits(group_name))
+				group_id = atoi(group_name);
+			else {
+				gr = getgrnam(group_name);
+				if (gr == NULL) {
+					fprintf(stderr,
+						"group \"%s\" unknown\n",
+						group_name);
+					exit(1);
+				}
+				group_id = gr->gr_gid;
+			}
+			break;
+#endif /* CAN_CHANGE_ID */
+
 		case '?':
 		default:
 			usage();
@@ -282,13 +344,16 @@ main(int argc, char *argv[], char *envp[]) {
 	argv += optind;
 
 	if (argc) {
-		if (conffile_malloc)
-			free(conffile);
-		conffile = savestr(*argv);
+		if (conffile != NULL)
+			freestr(conffile);
+		conffile = savestr(*argv, 1);
 		argc--, argv++;
 	}
 	if (argc)
 		usage();
+
+	if (conffile == NULL)
+		conffile = savestr(_PATH_CONF, 1);
 
 	/*
 	 * Make sure we don't inherit any open descriptors
@@ -299,6 +364,28 @@ main(int argc, char *argv[], char *envp[]) {
 		    n != STDOUT_FILENO &&
 		    n != STDERR_FILENO)
 			(void) close(n);
+
+	/*
+	 * Chroot if desired.
+	 */
+	if (chroot_dir != NULL) {
+#ifdef HAVE_CHROOT
+		if (chroot(chroot_dir) < 0) {
+			fprintf(stderr, "chroot %s failed: %s\n", chroot_dir,
+				strerror(errno));
+			exit(1);
+		}
+		if (chdir("/") < 0) {
+			fprintf(stderr, "chdir(\"/\") failed: %s\n",
+				strerror(errno));
+			exit(1);
+		}
+#else
+		fprintf(stderr, "warning: chroot() not available\n");
+		freestr(chroot_dir);
+		chroot_dir = NULL;
+#endif
+	}
 
 	/* Establish global event context. */
 	evCreate(&ev);
@@ -313,7 +400,7 @@ main(int argc, char *argv[], char *envp[]) {
 #ifdef LOG_NDELAY
 	n |= LOG_NDELAY;
 #endif
-#ifdef LOG_CONS
+#if defined(LOG_CONS) && defined(USE_LOG_CONS)
 	n |= LOG_CONS;
 #endif
 #ifdef SYSLOG_42BSD
@@ -323,6 +410,7 @@ main(int argc, char *argv[], char *envp[]) {
 #endif
 
 	init_logging();
+	set_assertion_failure_callback(ns_assertion_failed);
 
 #ifdef DEBUG
 	use_desired_debug();
@@ -351,6 +439,7 @@ main(int argc, char *argv[], char *envp[]) {
 	 * we've done any slow initialization
 	 * and are ready to answer queries.
 	 */
+
 	if (foreground == 0) {
 		if (daemon(1, 0))
 			ns_panic(ns_log_default, 1, "daemon: %s",
@@ -360,6 +449,36 @@ main(int argc, char *argv[], char *envp[]) {
 
 	/* Check that udp checksums are on. */
 	ns_udp();
+
+	/*
+	 * We waited until now to log this because we wanted logging to
+	 * be set up the way the user prefers.
+	 */
+	if (chroot_dir != NULL)
+		ns_info(ns_log_security, "chrooted to %s", chroot_dir);
+
+#ifdef CAN_CHANGE_ID
+	/*
+	 * Set user and group if desired.
+	 */
+	if (group_name != NULL) {
+		if (setgid(group_id) < 0)
+			ns_panic(ns_log_security, 1, "setgid(%s): %s",
+				 group_name, strerror(errno));
+		ns_info(ns_log_security, "group = %s", group_name);
+	}
+	if (user_name != NULL) {
+		if (getuid() == 0 && initgroups(user_name, group_id) < 0)
+			ns_panic(ns_log_security, 1, "initgroups(%s, %d): %s",
+				 user_name, (int)group_id, strerror(errno));
+		endgrent();
+		endpwent();
+		if (setuid(user_id) < 0)
+			ns_panic(ns_log_security, 1, "setuid(%s): %s",
+				 user_name, strerror(errno));
+		ns_info(ns_log_security, "user = %s", user_name);
+	}
+#endif /* CAN_CHANGE_ID */
 
 	ns_notice(ns_log_default, "Ready to answer queries.");
 	gettime(&tt);
@@ -373,6 +492,7 @@ main(int argc, char *argv[], char *envp[]) {
 		INSIST_ERR(evDispatch(ev, event) != -1);
 	}
 	/* NOTREACHED */
+	return (0);
 }
 
 #ifndef IP_OPT_BUF_SIZE
@@ -380,7 +500,7 @@ main(int argc, char *argv[], char *envp[]) {
 #define IP_OPT_BUF_SIZE 50
 #endif
 
-void
+static void
 stream_accept(evContext lev, void *uap, int rfd,
 	      const void *lav, int lalen,
 	      const void *rav, int ralen)
@@ -473,18 +593,23 @@ stream_accept(evContext lev, void *uap, int rfd,
 	}
 
 	/* Condition the socket. */
-	if ((n = fcntl(rfd, F_GETFL, 0)) < 0) {
+
+/* XXX clean up */
+#if 0
+	if ((n = fcntl(rfd, F_GETFL, 0)) == -1) {
 		ns_info(ns_log_default, "fcntl(rfd, F_GETFL): %s",
 			strerror(errno));
 		(void) close(rfd);
 		return;
 	}
-	if (fcntl(rfd, F_SETFL, n|PORT_NONBLOCK) != 0) {
+	if (fcntl(rfd, F_SETFL, n|PORT_NONBLOCK) == -1) {
 		ns_info(ns_log_default, "fcntl(rfd, NONBLOCK): %s",
 			strerror(errno));
 		(void) close(rfd);
 		return;
 	}
+#endif
+#ifndef CANNOT_SET_SNDBUF
 	if (setsockopt(rfd, SOL_SOCKET, SO_SNDBUF,
 		      (char*)&sbufsize, sizeof sbufsize) < 0) {
 		ns_info(ns_log_default, "setsockopt(rfd, SO_SNDBUF, %d): %s",
@@ -492,6 +617,7 @@ stream_accept(evContext lev, void *uap, int rfd,
 		(void) close(rfd);
 		return;
 	}
+#endif
 	if (setsockopt(rfd, SOL_SOCKET, SO_KEEPALIVE,
 		       (char *)&on, sizeof on) < 0) {
 		ns_info(ns_log_default, "setsockopt(rfd, KEEPALIVE): %s",
@@ -539,6 +665,7 @@ stream_accept(evContext lev, void *uap, int rfd,
 	gettime(&tt);
 	sp->s_time = tt.tv_sec;	/* last transaction time */
 	sp->s_from = *ra;	/* address to respond to */
+	sp->s_ifp = ifp;
 	INSIST(sizeof sp->s_temp >= INT16SZ);
 	iov = evConsIovec(sp->s_temp, INT16SZ);
 	INSIST_ERR(evRead(lev, rfd, &iov, 1, stream_getlen, sp, &sp->evID_r)
@@ -560,7 +687,7 @@ tcp_send(struct qinfo *qp) {
 	if ((sp = sq_add()) == NULL) {
 		return(SERVFAIL);
 	}
-	if ((sp->s_rfd = socket(PF_INET, SOCK_STREAM, PF_UNSPEC)) == -1) {
+	if ((sp->s_rfd = socket(AF_INET, SOCK_STREAM, PF_UNSPEC)) == -1) {
 		sq_remove(sp);
 		return(SERVFAIL);
 	}
@@ -635,7 +762,7 @@ stream_write(evContext ctx, void *uap, int fd, int evmask) {
 		return;
 
 	if (sp->s_wbuf) {
-		free(sp->s_wbuf);
+		memput(sp->s_wbuf, sp->s_wbuf_end - sp->s_wbuf);
 		sp->s_wbuf = NULL;
 	}
 	(void) evDeselectFD(ev, sp->evID_w);
@@ -647,16 +774,30 @@ stream_write(evContext ctx, void *uap, int fd, int evmask) {
 	sp->flags |= STREAM_READ_EV;
 }
 
-void
+static void
 stream_getlen(evContext lev, void *uap, int fd, int bytes) {
 	struct qstream *sp = uap;
 	struct iovec iov;
 
 	sp->flags &= ~STREAM_READ_EV;
 	if (bytes != INT16SZ) {
-		if (bytes)		/* don't log normal EOF */
-			ns_info(ns_log_default, "stream_getlen(%s): %s",
-				sin_ntoa(sp->s_from), strerror(errno));
+		/*
+		 * bytes == 0 is normal EOF; see if something unusual 
+		 * happened.
+		 */
+		if (bytes < 0) {
+			/*
+			 * ECONNRESET happens frequently and is not worth
+			 * logging.
+			 */
+			if (errno != ECONNRESET)
+				ns_info(ns_log_default,
+					"stream_getlen(%s): %s",
+					sin_ntoa(sp->s_from), strerror(errno));
+		} else if (bytes != 0)
+			ns_error(ns_log_default,
+				 "stream_getlen(%s): unexpected byte count %d",
+				sin_ntoa(sp->s_from), bytes);
 		sq_remove(sp);
 		return;
 	}
@@ -673,8 +814,8 @@ stream_getlen(evContext lev, void *uap, int fd, int bytes) {
 
 	if (!(sp->flags & STREAM_MALLOC)) {
 		sp->s_bufsize = 64*1024-1; /* maximum tcp message size */
-		sp->s_buf = (u_char *)malloc(sp->s_bufsize);
-		if (sp->s_buf)
+		sp->s_buf = (u_char *)memget(sp->s_bufsize);
+		if (sp->s_buf != NULL)
 			sp->flags |= STREAM_MALLOC;
 		else {
 			sp->s_buf = sp->s_temp;
@@ -690,7 +831,7 @@ stream_getlen(evContext lev, void *uap, int fd, int bytes) {
 	sp->flags |= STREAM_READ_EV;
 }
 
-void
+static void
 stream_getmsg(evContext lev, void *uap, int fd, int bytes) {
 	struct qstream *sp = uap;
 	int buflen, n;
@@ -719,7 +860,7 @@ stream_getmsg(evContext lev, void *uap, int fd, int bytes) {
 		HEADER *hp = (HEADER *)sp->s_buf;
 
 		hp->qr = 1;
-		hp->ra = (ns_option_p(OPTION_NORECURSE) == 0);
+		hp->ra = (NS_OPTION_P(OPTION_NORECURSE) == 0);
 		hp->ancount = htons(0);
 		hp->qdcount = htons(0);
 		hp->nscount = htons(0);
@@ -730,25 +871,24 @@ stream_getmsg(evContext lev, void *uap, int fd, int bytes) {
 		return;
 	}
 
-	/*
-	 * Consult database to get the answer.
-	 */
-#ifdef XSTATS
 	nameserIncr(sp->s_from.sin_addr, nssRcvdTCP);
-#endif
 	sq_query(sp);
-	ns_req(sp->s_buf, bytes, sp->s_bufsize, sp, sp->s_from, -1);
+	dispatch_message(sp->s_buf, bytes, sp->s_bufsize, sp, sp->s_from, -1,
+			 sp->s_ifp);
 }
 
-void
+static void
 datagram_read(evContext lev, void *uap, int fd, int evmask) {
 	interface *ifp = uap;
 	struct sockaddr_in from;
 	int from_len = sizeof from;
 	int n;
-	u_char buf[PACKETSZ];
+	union {
+		HEADER h;			/* Force alignment of 'buf'. */
+		u_char buf[PACKETSZ+1];
+	} u;
 
-	n = recvfrom(fd, (char *)buf, sizeof buf, 0,
+	n = recvfrom(fd, (char *)u.buf, sizeof u.buf, 0,
 		     (struct sockaddr *)&from, &from_len);
 
 	if (n < 0) {
@@ -765,9 +905,6 @@ datagram_read(evContext lev, void *uap, int fd, int evmask) {
 		case ECONNREFUSED:
 #ifdef ENONET
 		case ENONET:
-#endif
-#ifdef SPURIOUS_ECHILD
-		case ECHILD:
 #endif
 			/*
 			 * These errors are expected and harmless, so we
@@ -800,22 +937,51 @@ datagram_read(evContext lev, void *uap, int fd, int evmask) {
 		return;
 #endif
 
-	gettime(&tt);
-	ns_debug(ns_log_default, 1,
-		 "datagram from %s, fd %d, len %d; now %s", sin_ntoa(from),
-		 fd, n, ctimel(tt.tv_sec));
+	ns_debug(ns_log_default, 1, "datagram from %s, fd %d, len %d",
+		 sin_ntoa(from), fd, n);
 
-	if (n < HFIXEDSZ)
+	if (n > PACKETSZ) {
+		/*
+		 * The message is too big.  It's probably a response to
+		 * one of our questions, so we truncate it and press on.
+		 */
+		n = trunc_adjust(u.buf, PACKETSZ, PACKETSZ);
+		ns_debug(ns_log_default, 1, "truncated oversize UDP packet");
+	}
+
+	gettime(&tt);		/* Keep 'tt' current. */
+	dispatch_message(u.buf, n, PACKETSZ, NULL, from, fd, ifp);
+}
+
+static void
+dispatch_message(u_char *msg, int msglen, int buflen, struct qstream *qsp,
+		 struct sockaddr_in from, int dfd, interface *ifp)
+{
+	HEADER *hp = (HEADER *)msg;
+
+	if (msglen < HFIXEDSZ) {
+		ns_debug(ns_log_default, 1, "dropping undersize message");
 		return;
-
-	/* Consult database to get the answer. */
-	ns_req(buf, n, PACKETSZ, NULL, from, fd);
+	}
+	if (hp->qr) {
+		ns_resp(msg, msglen, from, qsp);
+		if (qsp)
+			sq_done(qsp);
+		/* Now is a safe time for housekeeping. */
+		if (needs_prime_cache)
+			prime_cache();
+	} else if (ifp != NULL)
+		ns_req(msg, msglen, buflen, qsp, from, dfd);
+	else {
+		ns_notice(ns_log_security,
+			  "refused query on non-query socket from %s",
+			  sin_ntoa(from));
+		/* XXX Send refusal here. */
+	}
 }
 
 void
-getnetconf(evContext ctx, void *uap, struct timespec due,
-	   struct timespec inter) {
-	struct netinfo *ntp;
+getnetconf(int periodic_scan) {
 	struct ifconf ifc;
 	struct ifreq ifreq;
 	struct in_addr ina;
@@ -833,7 +999,22 @@ getnetconf(evContext ctx, void *uap, struct timespec due,
 
 	ns_debug(ns_log_default, 1, "getnetconf(generation %lu)",
 		 (u_long)my_generation);
-	
+
+	/* Get interface list from system. */
+	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+		if (!periodic_scan)
+			ns_panic(ns_log_default, 1, "socket(SOCK_RAW): %s",
+				 strerror(errno));
+		ns_error(ns_log_default, "socket(SOCK_RAW): %s",
+			 strerror(errno));
+		return;
+	}
+
+	if (!iflist_initialized) {
+		INIT_LIST(iflist);
+		iflist_initialized = 1;
+	}
+
 	if (local_addresses != NULL)
 		free_ip_match_list(local_addresses);
 	local_addresses = new_ip_match_list();
@@ -841,10 +1022,6 @@ getnetconf(evContext ctx, void *uap, struct timespec due,
 		free_ip_match_list(local_networks);
 	local_networks = new_ip_match_list();
 
-	/* Get interface list from system. */
-	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-		ns_panic(ns_log_default, 1, "socket(SOCK_RAW): %s",
-			 strerror(errno));
 	ifc.ifc_len = sizeof buf;
 	ifc.ifc_buf = buf;
 	if (ioctl(s, SIOCGIFCONF, (char *)&ifc) < 0)
@@ -855,7 +1032,6 @@ getnetconf(evContext ctx, void *uap, struct timespec due,
 		 ifc.ifc_len);
 
 	/* Parse system's interface list and open some sockets. */
-	ntp = NULL;
 	cplim = buf + ifc.ifc_len;    /* skip over if's with big ifr_addr's */
 	for (cp = buf; cp < cplim; cp += cpsize) {
 		memcpy(&ifreq, cp, sizeof ifreq);
@@ -864,7 +1040,16 @@ getnetconf(evContext ctx, void *uap, struct timespec due,
 		if (ifreq.ifr_addr.sa_len == 0)
 			ifreq.ifr_addr.sa_len = 16;
 #endif
+#ifdef HAVE_MINIMUM_IFREQ
+		ns_debug(ns_log_default, 2, "%s sa_len = %d",
+			 ifreq.ifr_name, (int)ifreq.ifr_addr.sa_len);
+		cpsize = sizeof ifreq;
+		if (ifreq.ifr_addr.sa_len > sizeof (struct sockaddr))
+			cpsize += (int)ifreq.ifr_addr.sa_len -
+				(int)(sizeof (struct sockaddr));
+#else
 		cpsize = sizeof ifreq.ifr_name + ifreq.ifr_addr.sa_len;
+#endif /* HAVE_MINIMUM_IFREQ */
 #elif defined SIOCGIFCONF_ADDR
 		cpsize = sizeof ifreq;
 #else
@@ -876,14 +1061,14 @@ getnetconf(evContext ctx, void *uap, struct timespec due,
 			continue;
 		}
 #endif
-		ina = ina_get((u_char *)&((struct sockaddr_in *)
-					   &ifreq.ifr_addr)->sin_addr);
 		if (ifreq.ifr_addr.sa_family != AF_INET) {
 			ns_debug(ns_log_default, 2, 
-				 "getnetconf: af %d != INET",
-				 ifreq.ifr_addr.sa_family);
+				 "getnetconf: %s AF %d != INET",
+				 ifreq.ifr_name, ifreq.ifr_addr.sa_family);
 			continue;
 		}
+		ina = ina_get((u_char *)&((struct sockaddr_in *)
+					   &ifreq.ifr_addr)->sin_addr);
 		ns_debug(ns_log_default, 1,
 			 "getnetconf: considering %s [%s]",
 			 ifreq.ifr_name, inet_ntoa(ina));
@@ -925,19 +1110,26 @@ getnetconf(evContext ctx, void *uap, struct timespec due,
 					continue;
 				}
 
-				ifp = (interface *)calloc(1, sizeof *ifp);
+				ifp = (interface *)memget(sizeof *ifp);
 				if (!ifp)
 					ns_panic(ns_log_default, 1,
-						 "malloc(interface)", NULL);
-				ifp->next = iflist;
-				iflist = ifp;
+						 "memget(interface)", NULL);
+				memset(ifp, 0, sizeof *ifp);
+				APPEND(iflist, ifp, link);
 				ifp->addr = ina;
 				ifp->port = li->port;
 				ifp->gen = my_generation;
-				opensocket_d(ifp);
-				opensocket_s(ifp);
+				ifp->flags = 0;
+				ifp->dfd = -1;
+				ifp->sfd = -1;
+				if (opensocket_d(ifp) < 0 ||
+				    opensocket_s(ifp) < 0) {
+					dq_remove(ifp);
+					found = 0;
+					break;
+				}
 				ns_info(ns_log_default,
-					"listening [%s].%u (%s)",
+					"listening on [%s].%u (%s)",
 					inet_ntoa(ina), ntohs(li->port),
 					ifreq.ifr_name);
 			}
@@ -1050,12 +1242,18 @@ getnetconf(evContext ctx, void *uap, struct timespec due,
 	 * and should never be deleted by this code.
 	 */
 	dq_remove_gen(my_generation);
+
+	if (EMPTY(iflist))
+		ns_warning(ns_log_default, "not listening on any interfaces");
 }
 
 /* opensocket_d(ifp)
  *	Open datagram socket bound to interface address.
+ * Returns:
+ *	0 on success.
+ *	-1 on failure.
  */
-static void
+static int
 opensocket_d(interface *ifp) {
 	struct sockaddr_in nsa;
 	const int on = 1;
@@ -1067,9 +1265,11 @@ opensocket_d(interface *ifp) {
 	nsa.sin_addr = ifp->addr;
 	nsa.sin_port = ifp->port;
 
-	if ((ifp->dfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-		ns_panic(ns_log_default, 1, "socket(SOCK_DGRAM): %s",
+	if ((ifp->dfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+		ns_error(ns_log_default, "socket(SOCK_DGRAM): %s",
 			 strerror(errno));
+		return (-1);
+	}
 #ifdef F_DUPFD		/* XXX */
 	/*
 	 * Leave a space for stdio to work in.
@@ -1093,24 +1293,42 @@ opensocket_d(interface *ifp) {
 	m = sizeof n;
 	if ((getsockopt(ifp->dfd, SOL_SOCKET, SO_RCVBUF, (char*)&n, &m) >= 0)
 	    && (m == sizeof n)
-	    && (n < rbufsize)) {
+	    && (n < drbufsize)) {
 		(void) setsockopt(ifp->dfd, SOL_SOCKET, SO_RCVBUF,
-				  (char *)&rbufsize, sizeof(rbufsize));
+				  (char *)&drbufsize, sizeof drbufsize);
 	}
 #endif /* SO_RCVBUF */
-	if (bind(ifp->dfd, (struct sockaddr *)&nsa, sizeof nsa))
-		ns_panic(ns_log_default, 1, "bind(dfd=%d, %s): %s",
+#ifndef CANNOT_SET_SNDBUF
+	if (setsockopt(ifp->dfd, SOL_SOCKET, SO_SNDBUF,
+		      (char*)&dsbufsize, sizeof dsbufsize) < 0) {
+		ns_info(ns_log_default,
+			"setsockopt(dfd=%d, SO_SNDBUF, %d): %s",
+			ifp->dfd, dsbufsize, strerror(errno));
+		/* XXX press on regardless, this is not too serious. */
+	}
+#endif
+	if (bind(ifp->dfd, (struct sockaddr *)&nsa, sizeof nsa)) {
+		ns_error(ns_log_default, "bind(dfd=%d, %s): %s",
 			 ifp->dfd, sin_ntoa(nsa), strerror(errno));
+		return (-1);
+	}
 	if (evSelectFD(ev, ifp->dfd, EV_READ, datagram_read, ifp,
-		       &ifp->evID_d) == -1)
-		ns_panic(ns_log_default, 1, "evSelectFD(fd %d): %s",
-			 (void *)ifp->dfd, strerror(errno));
+		       &ifp->evID_d) == -1) {
+		ns_error(ns_log_default, "evSelectFD(dfd=%d): %s",
+			 ifp->dfd, strerror(errno));
+		return (-1);
+	}
+	ifp->flags |= INTERFACE_FILE_VALID;
+	return (0);
 }
 
 /* opensocket_s(ifp)
  *	Open stream (listener) socket bound to interface address.
+ * Returns:
+ *	0 on success.
+ *	-1 on failure.
  */
-static void
+static int
 opensocket_s(interface *ifp) {
 	struct sockaddr_in nsa;
 	const int on = 1;
@@ -1127,9 +1345,11 @@ opensocket_s(interface *ifp) {
 	 */
 	n = 0;
  again:
-	if ((ifp->sfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		ns_panic(ns_log_default, 1, "socket(SOCK_STREAM): %s",
+	if ((ifp->sfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		ns_error(ns_log_default, "socket(SOCK_STREAM): %s",
 			 strerror(errno));
+		return (-1);
+	}
 #ifdef F_DUPFD		/* XXX */
 	/*
 	 * Leave a space for stdio to work in.
@@ -1150,22 +1370,30 @@ opensocket_s(interface *ifp) {
 	if (bind(ifp->sfd, (struct sockaddr *)&nsa, sizeof nsa) < 0) {
 		if (errno != EADDRINUSE || ++n > 4) {
 			if (errno == EADDRINUSE)
-				ns_panic(ns_log_default, 1, 
-			         "There may be a name server already running");
+				ns_error(ns_log_default,
+			  "There may be a name server already running on %s",
+					 sin_ntoa(nsa));
 			else
-				ns_panic(ns_log_default, 1, "bind(%s): %s",
+				ns_error(ns_log_default,
+					 "bind(sfd=%d, %s): %s", ifp->sfd,
 					 sin_ntoa(nsa), strerror(errno));
+			return (-1);
 		}
 
 		/* Retry opening the socket a few times */
 		close(ifp->sfd);
+		ifp->sfd = -1;
 		sleep(30);
 		goto again;
 	}
 	if (evListen(ev, ifp->sfd, 5/*XXX*/, stream_accept, ifp, &ifp->evID_s)
-	    == -1)
-		ns_panic(ns_log_default, 1, "evListen(fd %d): %s",
-			 (void *)ifp->sfd, strerror(errno));
+	    == -1) {
+		ns_error(ns_log_default, "evListen(sfd=%d): %s",
+			 ifp->sfd, strerror(errno));
+		return (-1);
+	}
+	ifp->flags |= INTERFACE_CONN_VALID;
+	return (0);
 }
 
 /* opensocket_f()
@@ -1176,21 +1404,58 @@ void
 opensocket_f() {
 	static struct sockaddr_in prev_qsrc;
 	static int been_here;
+	static interface *prev_ifp;
 	struct sockaddr_in nsa;
 	const int on = 1;
-	int n;
+	int n, need_close;
+	interface *ifp;
 
+	need_close = 0;
 	if (been_here) {
-		if (memcmp(&prev_qsrc, &server_options->query_source,
-			   sizeof(struct sockaddr_in))
-		    == 0)
-			return;
-		evDeselectFD(ev, ds_evID);
-		close(ds);
-	}
+		if (prev_ifp != NULL)
+			prev_ifp->flags &= ~INTERFACE_FORWARDING;
+		else if (server_options->query_source.sin_port == htons(0) ||
+			 prev_qsrc.sin_addr.s_addr !=
+			 server_options->query_source.sin_addr.s_addr ||
+			 prev_qsrc.sin_port !=
+			 server_options->query_source.sin_port)
+			need_close = 1;
+	} else
+		ds = -1;
+
 	been_here = 1;
 	INSIST(server_options != NULL);
+
+	if (need_close) {
+		evDeselectFD(ev, ds_evID);
+		close(ds);
+		ds = -1;
+	}
+
+	/*
+	 * If we're already listening on the query_source address and port,
+	 * we don't need to open another socket.  We mark the interface, so
+	 * we'll notice we're in trouble if it goes away.
+	 */
+	ifp = if_find(server_options->query_source.sin_addr,
+		      server_options->query_source.sin_port);
+	if (ifp != NULL) {
+		ifp->flags |= INTERFACE_FORWARDING;
+		prev_ifp = ifp;
+		ds = ifp->dfd;
+		ns_info(ns_log_default, "forwarding source address is %s",
+			sin_ntoa(server_options->query_source));
+		return;
+	}
+
+	/*
+	 * If we're already using the correct query source, we're done.
+	 */
+	if (ds >= 0)
+		return;
+
 	prev_qsrc = server_options->query_source;
+	prev_ifp = NULL;
 
 	if ((ds = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 		ns_panic(ns_log_default, 1, "socket(SOCK_DGRAM): %s",
@@ -1253,12 +1518,10 @@ onhup(int sig) {
 	ns_need(MAIN_NEED_RELOAD);
 }
 
-#if defined(XSTATS) || defined(BIND_UPDATE)
 static SIG_FN
 onintr(int sig) {
 	ns_need(MAIN_NEED_EXIT);
 }
-#endif
 
 static SIG_FN
 setdumpflg(int sig) {
@@ -1292,8 +1555,12 @@ setstatsflg(int sig) {
 }
 
 static SIG_FN
-discard_signal(int sig) {
-	/* nothing */
+discard_pipe(int sig) {
+#ifdef SIGPIPE_ONE_SHOT
+	int saved_errno = errno;
+	set_signal_handler(SIGPIPE, discard_pipe);
+	errno = saved_errno;
+#endif
 }
 
 /*
@@ -1304,11 +1571,12 @@ static struct qstream *
 sq_add() {
 	struct qstream *sqp;
 
-	if (!(sqp = (struct qstream *)calloc(1, sizeof(struct qstream)))) {
-		ns_error(ns_log_default, "sq_add: calloc: %s",
+	if (!(sqp = (struct qstream *)memget(sizeof *sqp))) {
+		ns_error(ns_log_default, "sq_add: memget: %s",
 			 strerror(errno));
 		return (NULL);
 	}
+	memset(sqp, 0, sizeof *sqp);
 	ns_debug(ns_log_default, 3, "sq_add(%#lx)", (u_long)sqp);
 
 	sqp->flags = 0;
@@ -1331,8 +1599,12 @@ sq_remove(struct qstream *qp) {
 	ns_debug(ns_log_default, 2, "sq_remove(%#lx, %d) rfcnt=%d",
 		 (u_long)qp, qp->s_rfd, qp->s_refcnt);
 
+	if (qp->s_wbuf != NULL) {
+		memput(qp->s_wbuf, qp->s_wbuf_end - qp->s_wbuf);
+		qp->s_wbuf = NULL;
+	}
 	if (qp->flags & STREAM_MALLOC)
-		free(qp->s_buf);
+		memput(qp->s_buf, qp->s_bufsize);
 	if (qp->flags & STREAM_READ_EV)
 		INSIST_ERR(evCancelRW(ev, qp->evID_r) != -1);
 	if (qp->flags & STREAM_WRITE_EV)
@@ -1352,7 +1624,7 @@ sq_remove(struct qstream *qp) {
 		if (qsp)
 			qsp->s_next = qp->s_next;
 	}
-	free((char *)qp);
+	memput(qp, sizeof *qp);
 }
 
 /* void
@@ -1388,8 +1660,8 @@ sq_openw(struct qstream *qs, int buflen) {
 #endif
 
 	INSIST(qs->s_wbuf == NULL);
-	qs->s_wbuf = (u_char *)malloc(buflen);
-	if (!qs->s_wbuf)
+	qs->s_wbuf = (u_char *)memget(buflen);
+	if (qs->s_wbuf == NULL)
 		return (-1);
 	qs->s_wbuf_send = qs->s_wbuf;
 	qs->s_wbuf_free = qs->s_wbuf;
@@ -1558,8 +1830,8 @@ void
 sq_done(struct qstream *sp) {
 	struct iovec iov;
 
-	if (sp->s_wbuf) {
-		free(sp->s_wbuf);
+	if (sp->s_wbuf != NULL) {
+		memput(sp->s_wbuf, sp->s_wbuf_end - sp->s_wbuf);
 		sp->s_wbuf = NULL;
 	}
 	if (sp->flags & STREAM_AXFR)
@@ -1590,8 +1862,8 @@ void
 dq_remove_gen(time_t gen) {
 	interface *this, *next;
 
-	for (this = iflist; this != NULL; this = next) {
-		next = this->next;
+	for (this = HEAD(iflist); this != NULL; this = next) {
+		next = NEXT(this, link);
 		if (this->gen != gen && ina_hlong(this->addr) != INADDR_ANY)
 			dq_remove(this);
 	}
@@ -1607,8 +1879,12 @@ void
 dq_remove_all() {
 	interface *this, *next;
 
-	for (this = iflist; this != NULL; this = next) {
-		next = this->next;
+	for (this = HEAD(iflist); this != NULL; this = next) {
+		next = NEXT(this, link);
+		/* 
+		 * Clear the forwarding flag so we don't panic the server.
+		 */
+		this->flags &= ~INTERFACE_FORWARDING;
 		dq_remove(this);
 	}
 }
@@ -1622,31 +1898,27 @@ dq_remove_all() {
  */
 static void
 dq_remove(interface *this) {
-	interface *prev, *next = this->next;
-
 	ns_notice(ns_log_default, "deleting interface [%s].%u",
 		  inet_ntoa(this->addr), ntohs(this->port));
 
-	/* Locate `prev'.  This is N**2 when called from dq_remove_*(). */
-	for (prev = NULL, next = iflist;
-	     next != this && next != NULL;
-	     prev = next, next = next->next)
-		(void)NULL;
-	INSIST(next == this);
+	if ((this->flags & INTERFACE_FORWARDING) != 0)
+		ns_panic(ns_log_default, 0,
+			 "forwarding interface [%s].%u gone",
+			 inet_ntoa(this->addr),
+			 ntohs(this->port));
 
 	/* Deallocate fields. */
-	(void) evDeselectFD(ev, this->evID_d);
-	(void) close(this->dfd);
-	(void) evCancelConn(ev, this->evID_s);
-	(void) close(this->sfd);
+	if ((this->flags & INTERFACE_FILE_VALID) != 0)
+		(void) evDeselectFD(ev, this->evID_d);
+	if (this->dfd >= 0)
+		(void) close(this->dfd);
+	if ((this->flags & INTERFACE_CONN_VALID) != 0)
+		(void) evCancelConn(ev, this->evID_s);
+	if (this->sfd >= 0)
+		(void) close(this->sfd);
 
-	/* Deallocate interface, relink list. */
-	next = this->next;
-	(void) free(this);
-	if (prev == NULL)
-		iflist = next;
-	else
-		prev->next = next;
+	UNLINK(iflist, this, link);
+	memput(this, sizeof *this);
 }
 
 /* struct in_addr
@@ -1697,7 +1969,7 @@ static interface *
 if_find(struct in_addr addr, u_int16_t port) {
 	interface *ifp;
 
-	for (ifp = iflist; ifp != NULL; ifp = ifp->next)
+	for (ifp = HEAD(iflist); ifp != NULL; ifp = NEXT(ifp, link))
 		if (ina_equal(addr, ifp->addr))
 			if (port == 0 || ifp->port == port)
 				break;
@@ -1727,6 +1999,40 @@ nsid_next() {
 }
 
 static void
+deallocate_everything(void) {
+	FILE *f;
+
+	f = write_open(server_options->memstats_filename);
+
+	ns_freestats();
+	qflush();
+	sq_flush(NULL);
+	free_addinfo();
+	ns_shutdown();
+	dq_remove_all();
+	if (local_addresses != NULL)
+		free_ip_match_list(local_addresses);
+	if (local_networks != NULL)
+		free_ip_match_list(local_networks);
+	destroyservicelist();
+	destroyprotolist();
+	shutdown_logging();
+	evDestroy(ev);
+	if (conffile != NULL)
+		freestr(conffile);
+	if (user_name != NULL)
+		freestr(user_name);
+	if (group_name != NULL)
+		freestr(group_name);
+	if (chroot_dir != NULL)
+		freestr(chroot_dir);
+	if (f != NULL) {
+		memstats(f);
+		(void)fclose(f);
+	}
+}
+	
+static void
 ns_exit(void) {
 	ns_info(ns_log_default, "named shutting down");
 #ifdef BIND_UPDATE
@@ -1734,9 +2040,9 @@ ns_exit(void) {
 #endif
 	if (server_options && server_options->pid_filename)
 		(void)unlink(server_options->pid_filename);
-#ifdef XSTATS
 	ns_logstats(ev, NULL, evNowTime(), evConsTime(0, 0));
-#endif
+	if (NS_OPTION_P(OPTION_DEALLOC_ON_EXIT))
+		deallocate_everything();
 	exit(0);
 }
 
@@ -1786,10 +2092,12 @@ toggle_qrylog(void) {
 	ns_notice(ns_log_default, "query log %s\n", qrylog ?"on" :"off");
 }
 
+#ifdef BIND_NOTIFY
 static void
 do_notify_after_load(void) {
 	evDo(ev, (const void *)notify_after_load);
 }
+#endif
 	
 /*
  * This is a functional interface to the global needs and options.
@@ -1808,7 +2116,9 @@ static	const struct need_handler {
 		{ MAIN_NEED_EXIT,	ns_exit },
 		{ MAIN_NEED_QRYLOG,	toggle_qrylog },
 		{ MAIN_NEED_DEBUG,	use_desired_debug },
+#ifdef BIND_NOTIFY
 		{ MAIN_NEED_NOTIFY,	do_notify_after_load },
+#endif
 		{ 0,			NULL }
 	};
 
@@ -1832,7 +2142,7 @@ ns_handle_needs() {
 	const struct need_handler *nhp;
 
 	for (nhp = need_handlers; nhp->need && nhp->handler; nhp++) {
-		if (needs & nhp->need) {
+		if ((needs & nhp->need) != 0) {
 			/*
 			 * Turn off flag first, handler might turn it back on.
 			 */
@@ -1856,7 +2166,7 @@ writestream(struct qstream *sp, const u_char *msg, int msglen) {
 	sq_writeh(sp, sq_flushw);
 }
 
-void
+static void
 set_signal_handler(int sig, SIG_FN (*handler)()) {
 	struct sigaction sa;
 
@@ -1887,12 +2197,22 @@ init_signals() {
 	set_signal_handler(SIGWINCH, setQrylogFlg);
 #endif
 	set_signal_handler(SIGCHLD, reapchild);
-	set_signal_handler(SIGPIPE, discard_signal);
-#if defined(XSTATS) || defined(BIND_UPDATE)
+	set_signal_handler(SIGPIPE, discard_pipe);
 	set_signal_handler(SIGTERM, onintr);
-#endif
 #if defined(SIGXFSZ)	/* XXX */
 	/* Wierd DEC Hesiodism, harmless. */
 	set_signal_handler(SIGXFSZ, onhup);
 #endif
+}
+
+static int
+only_digits(const char *s) {
+	if (*s == '\0')
+		return (0);
+	while (*s != '\0') {
+		if (!isdigit(*s))
+			return (0);
+		s++;
+	}
+	return (1);
 }

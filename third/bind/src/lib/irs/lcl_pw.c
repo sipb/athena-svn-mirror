@@ -49,7 +49,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: lcl_pw.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static const char rcsid[] = "$Id: lcl_pw.c,v 1.1.1.2 1998-05-12 18:05:17 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Extern */
@@ -72,6 +72,8 @@ static int __bind_irs_pw_unneeded;
 #include <syslog.h>
 #include <utmp.h>
 #include <unistd.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 
@@ -232,11 +234,12 @@ static int
 initdb(struct pvt *pvt) {
 	const char *p;
 
-	if (pvt->pw_db)
+	if (pvt->pw_db) {
 		if (lseek((*pvt->pw_db->fd)(pvt->pw_db), 0L, SEEK_CUR) >= 0L)
 			return (1);
 		else
 			(void) (*pvt->pw_db->close)(pvt->pw_db);
+	}
 	pvt->pw_db = dbopen((p = _PATH_SMP_DB), O_RDONLY, 0, DB_HASH, NULL);
 	if (!pvt->pw_db)
 		pvt->pw_db = dbopen((p =_PATH_MP_DB), O_RDONLY,
@@ -253,19 +256,22 @@ initdb(struct pvt *pvt) {
 static int
 hashpw(struct irs_pw *this, DBT *key) {
 	struct pvt *pvt = (struct pvt *)this->private;
-	char *p, *t;
+	char *p, *t, *l;
 	DBT data;
  
 	if ((pvt->pw_db->get)(pvt->pw_db, key, &data, 0))
 		return (0);
 	p = (char *)data.data;
-	if (data.size > pvt->max && !(pvt->line = realloc(pvt->line, 
-							  pvt->max += 1024)))
+	if (data.size > pvt->max &&
+	    (pvt->line = realloc(pvt->line, pvt->max += 1024)) == NULL)
 		return (0);
 	/* THIS CODE MUST MATCH THAT IN pwd_mkdb. */
 	t = pvt->line;
-#define EXPAND(e)       e = t; while ((*t++ = *p++));
-#define SCALAR(v)       memmove(&(v), p, sizeof v); p += sizeof v
+	l = pvt->line + pvt->max;
+#define EXPAND(e) if ((e = t) == NULL) return (0); else \
+		  do if (t >= l) return (0); while ((*t++ = *p++) != '\0')
+#define SCALAR(v) if (t + sizeof v >= l) return (0); else \
+		  (memmove(&(v), p, sizeof v), p += sizeof v)
 	EXPAND(pvt->passwd.pw_name);
 	EXPAND(pvt->passwd.pw_passwd);
 	SCALAR(pvt->passwd.pw_uid);

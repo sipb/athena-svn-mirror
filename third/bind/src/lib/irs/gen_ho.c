@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char rcsid[] = "$Id: gen_ho.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static char rcsid[] = "$Id: gen_ho.c,v 1.1.1.2 1998-05-12 18:04:58 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Imports */
@@ -28,6 +28,8 @@ static char rcsid[] = "$Id: gen_ho.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $
 #include <netdb.h>
 #include <stdio.h>
 #include <string.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 

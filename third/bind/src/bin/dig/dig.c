@@ -1,5 +1,5 @@
 #ifndef lint
-static char rcsid[] = "$Id: dig.c,v 1.1.1.1 1998-05-04 22:23:33 ghudson Exp $";
+static char rcsid[] = "$Id: dig.c,v 1.1.1.2 1998-05-12 18:03:47 ghudson Exp $";
 #endif
 
 /*
@@ -217,7 +217,7 @@ int		queryType, queryClass;
 extern int	StringToClass(), StringToType();	/* subr.c */
 #if defined(BSD) && BSD >= 199006 && !defined(RISCOS_BSD)
 FILE		*yyin = NULL;
-void		yyrestart(f) { }
+void		yyrestart(FILE *f) { }
 #endif
 char		*pager = NULL;
 /* end of nslookup stuff */
@@ -733,7 +733,7 @@ where:	server,\n\
 	d-opt	is of the form ``+keyword=value'' where keyword is one of:\n\
 		[no]debug [no]d2 [no]recurse retry=# time=# [no]ko [no]vc\n\
 		[no]defname [no]search domain=NAME [no]ignore [no]primary\n\
-		[no]aaonly [no]sort [no]cmd [no]stats [no]Header [no]header\n\
+		[no]aaonly [no]cmd [no]stats [no]Header [no]header\n\
 		[no]ttlid [no]cl [no]qr [no]reply [no]ques [no]answer\n\
 		[no]author [no]addit pfdef pfmin pfset=# pfand=# pfor=#\n\
 ", stderr);
@@ -953,7 +953,7 @@ printZone(const char *zone, const struct sockaddr_in *sin) {
 
 	querybuf buf;
 	HEADER *headerPtr;
-	int msglen, amtToRead, numRead, result, sockFD, len;
+	int msglen, amtToRead, numRead, result = 0, sockFD, len;
 	int count, type, class, rlen, done, n;
 	int numAnswers = 0, numRecords = 0, soacnt = 0;
 	u_char *cp, tmp[NS_INT16SZ];
@@ -1030,7 +1030,7 @@ printZone(const char *zone, const struct sockaddr_in *sin) {
 		 * The server sent too much data to fit the existing buffer --
 		 * allocate a new one.
 		 */
-		if (len > (u_int)answerLen) {
+		if (len > answerLen) {
 			if (answerLen != 0)
 				free(answer);
 			answerLen = len;
@@ -1066,11 +1066,23 @@ printZone(const char *zone, const struct sockaddr_in *sin) {
 		/* Question. */
 		for (count = ntohs(((HEADER *)answer)->qdcount);	
 		     count > 0;
-		     count--)
-			cp += dn_skipname(cp, answer + len) + QFIXEDSZ;
+		     count--) {
+			n = dn_skipname(cp, answer + len);
+			if (n < 0) {
+				error = ERR_PRINTING;
+				done++;
+				break;
+			}
+			cp += n + QFIXEDSZ;
+			if (cp > answer + len) {
+				error = ERR_PRINTING;
+				done++;
+				break;
+			}
+		}
 		/* Answer. */
 		for (count = ntohs(((HEADER *)answer)->ancount);
-		     count > 0;
+		     count > 0 && !done;
 		     count--) {
 			n = dn_expand(answer, answer + len, cp,
 				      dname[soacnt], sizeof dname[0]);
@@ -1080,11 +1092,21 @@ printZone(const char *zone, const struct sockaddr_in *sin) {
 				break;
 			}
 			cp += n;
+			if (cp + 3 * INT16SZ + INT32SZ > answer + len) {
+				error = ERR_PRINTING;
+				done++;
+				break;
+			}
 			GETSHORT(type, cp);
 			GETSHORT(class, cp);
 			cp += INT32SZ;	/* ttl */
 			GETSHORT(rlen, cp);
 			cp += rlen;
+			if (cp > answer + len) {
+				error = ERR_PRINTING;
+				done++;
+				break;
+			}
 			if (type == T_SOA && soacnt++ &&
 			    !strcasecmp(dname[0], dname[1])) {
 				done++;

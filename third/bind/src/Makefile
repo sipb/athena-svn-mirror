@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.1 1998-05-04 22:23:32 ghudson Exp $
+# $Id: Makefile,v 1.1.1.2 1998-05-12 18:03:39 ghudson Exp $
 
 TOP=
 SUBDIRS= include port lib bin
@@ -24,16 +24,20 @@ all clean depend install distclean:: FRC
 	@set -e; \
 	version=`cat ${TOP}Version`; \
 	systype=`${SH} ${TOP}port/systype ${TOP}.systype`; \
-	settings=`${SH} ${TOP}port/settings ${TOP}.settings \
-		< ${TOP}port/$$systype/Makefile.set`; \
-	PATH=`pwd`/port/$$systype/bin:$$PATH; export PATH; \
-	for x in ${SUBDIRS}; do \
-		( cd $$x; pwd; \
-		  eval "${MAKE} ${MARGS} SYSTYPE=$$systype $$settings \
-			VER=$$version \
-			$@"; \
-		); \
-	done
+	if [ $$systype = "unknown" ]; then \
+		echo "There is no BIND port for this system in this kit."; \
+	else \
+		settings=`${SH} ${TOP}port/settings ${TOP}.settings \
+			< ${TOP}port/$$systype/Makefile.set`; \
+		PATH=`pwd`/port/$$systype/bin:$$PATH; export PATH; \
+		for x in ${SUBDIRS}; do \
+			( cd $$x; pwd; \
+			  eval "${MAKE} $$settings ${MARGS} SYSTYPE=$$systype \
+				VER=$$version \
+				$@"; \
+			); \
+		done \
+	fi
 
 clean distclean::
 	rm -f .systype .settings
@@ -50,6 +54,9 @@ links: FRC
 	done
 
 stdlinks: FRC
+	if [ ! -d /var/obj ]; then \
+		mkdir /var/obj; \
+	fi
 	${MAKE} ${MARGS} SRC=`pwd` DST=/var/obj/bind links
 
 uplinks: FRC

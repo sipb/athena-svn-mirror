@@ -13,7 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $
+# $Id: Makefile,v 1.1.1.2 1998-05-12 18:05:26 ghudson Exp $
 
 # these are only appropriate for BSD 4.4 or derivatives, and are used in
 # development.  normal builds will be done in the top level directory and
@@ -37,11 +37,13 @@ AR= ar cruv
 RANLIB= ranlib
 INSTALL= install
 
-SRCS=	tree.c base64.c bitncmp.c logging.c heap.c \
+SRCS=	tree.c base64.c bitncmp.c assertions.c \
+	memcluster.c logging.c heap.c \
 	eventlib.c ev_connects.c ev_files.c \
 	ev_timers.c ev_streams.c ev_waits.c
 
-OBJS=	tree.${O} base64.${O} bitncmp.${O} logging.${O} heap.${O} \
+OBJS=	tree.${O} base64.${O} bitncmp.${O} assertions.${O} \
+	memcluster.${O} logging.${O} heap.${O} \
 	eventlib.${O} ev_connects.${O} ev_files.${O} \
 	ev_timers.${O} ev_streams.${O} ev_waits.${O}
 

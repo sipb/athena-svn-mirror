@@ -7,9 +7,8 @@
 #define NEED_PSELECT
 #define SETGRENT_VOID
 #define SETPWENT_VOID
-
-#undef _PATH_XFER
-#define _PATH_XFER	"/usr/local/etc/named-xfer"
+#define HAVE_CHROOT
+#define CAN_CHANGE_ID
 
 #define PORT_NONBLOCK	O_NONBLOCK
 #define PORT_WOULDBLK	EWOULDBLOCK

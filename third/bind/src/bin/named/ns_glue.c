@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_glue.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp $";
+static char rcsid[] = "$Id: ns_glue.c,v 1.1.1.2 1998-05-12 18:04:05 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -43,6 +43,7 @@ static char rcsid[] = "$Id: ns_glue.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp 
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -87,7 +88,8 @@ sin_ntoa(struct sockaddr_in sin) {
  * Logging Support
  */
 
-void ns_debug(int category, int level, const char *format, ...) {
+void
+ns_debug(int category, int level, const char *format, ...) {
 	va_list args;
 
 	if (!log_ctx_valid)
@@ -97,7 +99,8 @@ void ns_debug(int category, int level, const char *format, ...) {
 	va_end(args);
 }
 
-void ns_info(int category, const char *format, ...) {
+void
+ns_info(int category, const char *format, ...) {
 	va_list args;
 
 	if (!log_ctx_valid)
@@ -107,7 +110,8 @@ void ns_info(int category, const char *format, ...) {
 	va_end(args);
 }
 
-void ns_notice(int category, const char *format, ...) {
+void
+ns_notice(int category, const char *format, ...) {
 	va_list args;
 
 	if (!log_ctx_valid)
@@ -117,7 +121,8 @@ void ns_notice(int category, const char *format, ...) {
 	va_end(args);
 }
 
-void ns_warning(int category, const char *format, ...) {
+void
+ns_warning(int category, const char *format, ...) {
 	va_list args;
 
 	if (!log_ctx_valid)
@@ -127,7 +132,8 @@ void ns_warning(int category, const char *format, ...) {
 	va_end(args);
 }
 
-void ns_error(int category, const char *format, ...) {
+void
+ns_error(int category, const char *format, ...) {
 	va_list args;
 
 	if (!log_ctx_valid)
@@ -137,19 +143,32 @@ void ns_error(int category, const char *format, ...) {
 	va_end(args);
 }
 
-void ns_panic(int category, int dump_core, const char *format, ...) {
+void
+ns_panic(int category, int dump_core, const char *format, ...) {
 	va_list args;
 
 	if (!log_ctx_valid)
 		return;
 	va_start(args, format);
 	log_vwrite(log_ctx, category, log_critical, format, args);
+	va_end(args);
+	va_start(args, format);
 	log_vwrite(log_ctx, ns_log_panic, log_critical, format, args);
 	va_end(args);
 	if (dump_core)
 		abort();
 	else
 		exit(1);
+}
+
+void
+ns_assertion_failed(char *file, int line, assertion_type type, char *cond,
+		    int print_errno)
+{
+	ns_panic(ns_log_insist, 1, "%s:%d: %s(%s)%s%s failed.",
+		file, line, assertion_type_to_text(type), cond,
+		(print_errno) ? ": " : "",
+		(print_errno) ? strerror(errno) : "");
 }
 
 /*
@@ -271,25 +290,105 @@ my_fclose(FILE *fp) {
  * Save a counted buffer and return a pointer to it.
  */
 u_char *
-savebuf(const u_char *buf, int len) {
-	u_char *bp = (u_char *)malloc(len);
+savebuf(const u_char *buf, size_t len, int needpanic) {
+	u_char *bp = (u_char *)memget(len);
 
-	if (!bp)
-		panic("malloc(savebuf)", NULL);
+	if (bp == NULL) {
+		if (needpanic)
+			panic("savebuf: memget failed (%s)", strerror(errno));
+		else
+			return (NULL);
+	}
 	memcpy(bp, buf, len);
 	return (bp);
+}
+
+#ifdef DEBUG_STRINGS
+char *
+debug_newstr(size_t len, int needpanic, const char *file, int line) {
+	size_t size;
+
+	size = len + 3;	/* 2 length bytes + NUL. */
+	printf("%s:%d: newstr %d\n", file, line, size);
+	return (__newstr(len, needpanic));
+}
+
+char *
+debug_savestr(const char *str, int needpanic, const char *file, int line) {
+	size_t len;
+
+	len = strlen(str);
+	len += 3;	/* 2 length bytes + NUL. */
+	printf("%s:%d: savestr %d %s\n", file, line, len, str);
+	return (__savestr(str, needpanic));
+}
+
+void
+debug_freestr(char *str, const char *file, int line) {
+	u_char *buf, *bp;
+	size_t len;
+
+	buf = (u_char *)str - 2/*Len*/;
+	bp = buf;
+	NS_GET16(len, bp);
+	len += 3;	/* 2 length bytes + NUL. */
+	printf("%s:%d: freestr %d %s\n", file, line, len, str);
+	__freestr(str);
+	return;
+}
+#endif /* DEBUG_STRINGS */
+
+/*
+ * Return a counted string buffer big enough for a string of length 'len'.
+ */
+char *
+__newstr(size_t len, int needpanic) {
+	u_char *buf, *bp;
+
+	REQUIRE(len <= 65536);
+
+	buf = (u_char *)memget(2/*Len*/ + len + 1/*Nul*/);
+	if (buf == NULL) {
+		if (needpanic)
+			panic("savestr: memget failed (%s)", strerror(errno));
+		else
+			return (NULL);
+	}
+	bp = buf;
+	NS_PUT16(len, bp);
+	return ((char *)bp);
 }
 
 /*
  * Save a NUL terminated string and return a pointer to it.
  */
 char *
-savestr(const char *str) {
-	char *cp = strdup(str);
+__savestr(const char *str, int needpanic) {
+	char *buf;
+	size_t len;
 
-	if (!cp)
-		panic("malloc(savestr)", NULL);
-	return (cp);
+	len = strlen(str);
+	if (len > 65536) {
+		if (needpanic)
+			ns_panic(ns_log_default, 1,
+				 "savestr: string too long");
+		else
+			return (NULL);
+	}
+	buf = __newstr(len, needpanic);
+	memcpy(buf, str, len + 1);
+	return (buf);
+}
+
+void
+__freestr(char *str) {
+	u_char *buf, *bp;
+	size_t len;
+
+	buf = (u_char *)str - 2/*Len*/;
+	bp = buf;
+	NS_GET16(len, bp);
+	memput(buf, 2/*Len*/ + len + 1/*Nul*/);
 }
 
 char *

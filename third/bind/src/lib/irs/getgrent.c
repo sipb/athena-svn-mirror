@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,12 +16,16 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: getgrent.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static char rcsid[] = "$Id: getgrent.c,v 1.1.1.2 1998-05-12 18:05:03 ghudson Exp $";
 #endif
 
 /* Imports */
 
 #include "port_before.h"
+
+#ifndef WANT_IRS_GR
+static int __bind_irs_gr_unneeded;
+#else
 
 #include <sys/types.h>
 
@@ -29,9 +33,10 @@ static char rcsid[] = "$Id: getgrent.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp
 #include <grp.h>
 #include <stdio.h>
 
+#include <irs.h>
+
 #include "port_after.h"
 
-#include "irs.h"
 #include "irs_data.h"
 
 /* Forward */
@@ -138,3 +143,5 @@ init() {
 	}
 	return (net_data.gr);
 }
+
+#endif /* WANT_IRS_GR */

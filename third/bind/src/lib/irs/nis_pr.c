@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: nis_pr.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static const char rcsid[] = "$Id: nis_pr.c,v 1.1.1.2 1998-05-12 18:05:22 ghudson Exp $";
 #endif
 
 /* Imports */
@@ -40,6 +40,8 @@ static int __bind_irs_nis_unneeded;
 #include <ctype.h>
 #include <stdlib.h>
 #include <errno.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 

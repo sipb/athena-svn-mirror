@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: dns_nw.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static const char rcsid[] = "$Id: dns_nw.c,v 1.1.1.2 1998-05-12 18:04:54 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Imports. */
@@ -37,6 +37,8 @@ static const char rcsid[] = "$Id: dns_nw.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 
@@ -221,12 +223,22 @@ get1101answer(struct irs_nw *this,
 	HEADER *hp;
 
 	/* Initialize, and parse header. */
+	eom = ansbuf + anslen;
+	if (ansbuf + HFIXEDSZ > eom) {
+		h_errno = NO_RECOVERY;
+		return (NULL);
+	}
 	hp = (HEADER *)ansbuf;
 	cp = ansbuf + HFIXEDSZ;
-	eom = ansbuf + anslen;
 	qdcount = ntohs(hp->qdcount);
-	while (qdcount-- > 0)
-		cp += dn_skipname(cp, eom) + QFIXEDSZ;
+	while (qdcount-- > 0) {
+		int n = dn_skipname(cp, eom);
+		cp += n + QFIXEDSZ;
+		if (n < 0 || cp > eom) {
+			h_errno = NO_RECOVERY;
+			return (NULL);
+		}
+	}
 	ancount = ntohs(hp->ancount);
 	if (!ancount) {
 		if (hp->aa)
@@ -285,9 +297,12 @@ get1101answer(struct irs_nw *this,
 	while (--ancount >= 0 && cp < eom) {
 		int n = dn_expand(ansbuf, eom, cp, bp, buflen);
 
-		if (n < 0 || !res_dnok(bp))
-			break;
 		cp += n;		/* Owner */
+		if (n < 0 || !res_dnok(bp) ||
+		    cp + 3 * INT16SZ + INT32SZ > eom) {
+			h_errno = NO_RECOVERY;
+			return (NULL);
+		}
 		GETSHORT(type, cp);	/* Type */
 		GETSHORT(class, cp);	/* Class */
 		cp += INT32SZ;		/* TTL */
@@ -365,7 +380,7 @@ get1101mask(struct nwent *nwent) {
 
 	/* Query for the A RR that would hold this network's mask. */
 	anslen = res_query(qbuf, C_IN, T_A, ansbuf, sizeof ansbuf);
-	if (anslen < 0)
+	if (anslen < HFIXEDSZ)
 		return (nwent);
 
 	/* Initialize, and parse header. */
@@ -373,8 +388,12 @@ get1101mask(struct nwent *nwent) {
 	cp = ansbuf + HFIXEDSZ;
 	eom = ansbuf + anslen;
 	qdcount = ntohs(hp->qdcount);
-	while (qdcount-- > 0)
-		cp += dn_skipname(cp, eom) + QFIXEDSZ;
+	while (qdcount-- > 0) {
+		int n = dn_skipname(cp, eom);
+		cp += n + QFIXEDSZ;
+		if (n < 0 || cp > eom)
+			return (nwent);
+	}
 	ancount = ntohs(hp->ancount);
 
 	/* Parse the answer, collect aliases. */
@@ -384,10 +403,14 @@ get1101mask(struct nwent *nwent) {
 		if (n < 0 || !res_dnok(owner))
 			break;
 		cp += n;		/* Owner */
+		if (cp + 3 * INT16SZ + INT32SZ > eom)
+			break;
 		GETSHORT(type, cp);	/* Type */
 		GETSHORT(class, cp);	/* Class */
 		cp += INT32SZ;		/* TTL */
 		GETSHORT(n, cp);	/* RDLENGTH */
+		if (cp + n > eom)
+			break;
 		if (n == INADDRSZ && class == C_IN && type == T_A &&
 		    !strcasecmp(qbuf, owner)) {
 			/* This A RR indicates the actual netmask. */
@@ -412,7 +435,7 @@ make1101inaddr(const u_char *net, int bits, char *name, int size) {
 
 	/* Zero fill any whole bytes left out of the prefix. */
 	for (n = (32 - bits) / 8; n > 0; n--) {
-		if (size < sizeof "0.")
+		if (size < (int)(sizeof "0."))
 			goto emsgsize;
 		m = SPRINTF((name, "0."));
 		name += m;
@@ -421,7 +444,7 @@ make1101inaddr(const u_char *net, int bits, char *name, int size) {
 
 	/* Format the partial byte, if any, within the prefix. */
 	if ((n = bits % 8) != 0) {
-		if (size < sizeof "255.")
+		if (size < (int)(sizeof "255."))
 			goto emsgsize;
 		m = SPRINTF((name, "%u.",
 			     net[bits / 8] & ~((1 << (8 - n)) - 1)));
@@ -431,7 +454,7 @@ make1101inaddr(const u_char *net, int bits, char *name, int size) {
 
 	/* Format the whole bytes within the prefix. */
 	for (n = bits / 8; n > 0; n--) {
-		if (size < sizeof "255.")
+		if (size < (int)(sizeof "255."))
 			goto emsgsize;
 		m = SPRINTF((name, "%u.", net[n - 1]));
 		name += m;
@@ -439,7 +462,7 @@ make1101inaddr(const u_char *net, int bits, char *name, int size) {
 	}
 
 	/* Add the static text. */
-	if (size < sizeof "in-addr.arpa")
+	if (size < (int)(sizeof "in-addr.arpa"))
 		goto emsgsize;
 	(void) SPRINTF((name, "in-addr.arpa"));
 	return (0);

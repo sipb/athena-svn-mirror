@@ -16,13 +16,12 @@
  */
 
 /*
- * $Id: irs_p.h,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $
+ * $Id: irs_p.h,v 1.1.1.2 1998-05-12 18:05:12 ghudson Exp $
  */
 
 #ifndef _IRS_P_H_INCLUDED
 #define _IRS_P_H_INCLUDED
 
-#include "irs.h"
 #include "pathnames.h"
 
 #define	irs_nul_ng	__irs_nul_ng

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 1996, 1997 by Internet Software Consortium
+ * Copyright (c) 1995, 1996, 1997, 1998 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,14 +20,14 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static const char rcsid[] = "$Id: ev_timers.c,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $";
+static const char rcsid[] = "$Id: ev_timers.c,v 1.1.1.2 1998-05-12 18:05:30 ghudson Exp $";
 #endif
 
 /* Import. */
 
 #include "port_before.h"
+#include "fd_setsize.h"
 
-#include <assert.h>
 #include <errno.h>
 
 #include <isc/eventlib.h>
@@ -45,6 +45,17 @@ static int due_sooner(void *, void *);
 static void set_index(void *, int);
 static void free_timer(void *, void *);
 static void print_timer(void *, void *);
+static void idle_timeout(evContext, void *, struct timespec, struct timespec);
+
+/* Private type. */
+
+typedef struct {
+	evTimerFunc	func;
+	void *		uap;
+	struct timespec	lastTouched;
+	struct timespec	max_idle;
+	evTimer *	timer;
+} idle_timer;
 
 /* Public. */
 
@@ -101,6 +112,13 @@ evNowTime() {
 	if (gettimeofday(&now, NULL) < 0)
 		return (evConsTime(0, 0));
 	return (evTimeSpec(now));
+}
+
+struct timespec
+evLastEventTime(evContext opaqueCtx) {
+	evContext_p *ctx = opaqueCtx.opaque;
+
+	return (ctx->lastEventTime);
 }
 
 struct timespec
@@ -169,12 +187,24 @@ evClearTimer(evContext opaqueCtx, evTimerID id) {
 	evContext_p *ctx = opaqueCtx.opaque;
 	evTimer *del = id.opaque;
 
+	if (ctx->cur != NULL &&
+	    ctx->cur->type == Timer &&
+	    ctx->cur->u.timer.this == del) {
+		evPrintf(ctx, 8, "deferring delete of timer (executing)\n");
+		/*
+		 * Setting the interval to zero ensures that evDrop() will
+		 * clean up the timer.
+		 */
+		del->inter = evConsTime(0, 0);
+		return (0);
+	}
+
 	if (heap_element(ctx->timers, del->index) != del)
 		ERR(ENOENT);
 
 	if (heap_delete(ctx->timers, del->index) < 0)
 		return (-1);
-	(void) free(del);
+	FREE(del);
 
 	if (ctx->debug > 7) {
 		evPrintf(ctx, 7, "timers after evClearTimer:\n");
@@ -227,13 +257,86 @@ evResetTimer(evContext opaqueCtx,
 	return (result);
 }
 
-/* Public to the rest of eventlib. */
+int
+evSetIdleTimer(evContext opaqueCtx,
+		evTimerFunc func,
+		void *uap,
+		struct timespec max_idle,
+		evTimerID *opaqueID
+) {
+	evContext_p *ctx = opaqueCtx.opaque;
+	idle_timer *tt;
 
-heap_context evCreateTimers(const evContext_p *ctx) {
-	return (heap_new(due_sooner, set_index, 0));
+	/* Allocate and fill. */
+	OKNEW(tt);
+	tt->func = func;
+	tt->uap = uap;
+	tt->lastTouched = ctx->lastEventTime;
+	tt->max_idle = max_idle;
+
+	if (evSetTimer(opaqueCtx, idle_timeout, tt,
+		       evAddTime(ctx->lastEventTime, max_idle),
+		       max_idle, opaqueID) < 0) {
+		FREE(tt);
+		return (-1);
+	}
+
+	tt->timer = opaqueID->opaque;
+
+	return (0);
 }
 
-void evDestroyTimers(const evContext_p *ctx) {
+int
+evClearIdleTimer(evContext opaqueCtx, evTimerID id) {
+	evContext_p *ctx = opaqueCtx.opaque;
+	evTimer *del = id.opaque;
+	idle_timer *tt = del->uap;
+
+	FREE(tt);
+	return (evClearTimer(opaqueCtx, id));
+}
+
+int
+evResetIdleTimer(evContext opaqueCtx,
+		 evTimerID opaqueID,
+		 evTimerFunc func,
+		 void *uap,
+		 struct timespec max_idle
+) {
+	evContext_p *ctx = opaqueCtx.opaque;
+	evTimer *timer = opaqueID.opaque;
+	idle_timer *tt = timer->uap;
+
+	tt->func = func;
+	tt->uap = uap;
+	tt->lastTouched = ctx->lastEventTime;
+	tt->max_idle = max_idle;
+
+	return (evResetTimer(opaqueCtx, opaqueID, idle_timeout, tt,
+			     evAddTime(ctx->lastEventTime, max_idle),
+			     max_idle));
+}
+
+int
+evTouchIdleTimer(evContext opaqueCtx, evTimerID id) {
+	evContext_p *ctx = opaqueCtx.opaque;
+	evTimer *t = id.opaque;
+	idle_timer *tt = t->uap;
+
+	tt->lastTouched = ctx->lastEventTime;
+
+	return (0);
+}
+
+/* Public to the rest of eventlib. */
+
+heap_context
+evCreateTimers(const evContext_p *ctx) {
+	return (heap_new(due_sooner, set_index, 2048));
+}
+
+void
+evDestroyTimers(const evContext_p *ctx) {
 	(void) heap_for_each(ctx->timers, free_timer, NULL);
 	(void) heap_free(ctx->timers);
 }
@@ -259,7 +362,8 @@ set_index(void *what, int index) {
 
 static void
 free_timer(void *what, void *uap) {
-	free(what);
+	evTimer *t = what;
+	FREE(t);
 }
 
 static void
@@ -273,4 +377,30 @@ print_timer(void *what, void *uap) {
 		 cur->func, cur->uap,
 		 cur->due.tv_sec, cur->due.tv_nsec,
 		 cur->inter.tv_sec, cur->inter.tv_nsec);
+}
+
+static void
+idle_timeout(evContext opaqueCtx,
+	     void *uap,
+	     struct timespec due,
+	     struct timespec inter
+) {
+	evContext_p *ctx = opaqueCtx.opaque;
+	idle_timer *this = uap;
+	struct timespec idle;
+	
+	idle = evSubTime(ctx->lastEventTime, this->lastTouched);
+	if (evCmpTime(idle, this->max_idle) >= 0) {
+		(this->func)(opaqueCtx, this->uap, this->timer->due,
+			     this->max_idle);
+		/*
+		 * Setting the interval to zero will cause the timer to
+		 * be cleaned up in evDrop().
+		 */
+		this->timer->inter = evConsTime(0, 0);
+		FREE(this);
+	} else {
+		/* evDrop() will reschedule the timer. */
+		this->timer->inter = evSubTime(this->max_idle, idle);
+	}
 }

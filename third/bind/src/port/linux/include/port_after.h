@@ -8,6 +8,9 @@
 #define USE_SETSID
 #define SETGRENT_VOID
 #define SIOCGIFCONF_ADDR
+#define USE_LOG_CONS
+#define HAVE_CHROOT
+#define CAN_CHANGE_ID
 
 #if __GLIBC__ >= 2
 #  define dprintf bind_dprintf
@@ -16,11 +19,6 @@
 #  define NEED_DAEMON
 int daemon(int nochdir, int noclose);
 #endif
-
-#undef _PATH_NAMED
-#define _PATH_NAMED	"/usr/sbin/named"
-#undef _PATH_XFER
-#define _PATH_XFER	"/usr/sbin/named-xfer"
 
 #define SPURIOUS_ECONNREFUSED	/* XXX is this still needed for 2.0 kernels? */
 #define _TIMEZONE timezone

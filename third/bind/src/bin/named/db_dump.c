@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)db_dump.c	4.33 (Berkeley) 3/3/91";
-static char rcsid[] = "$Id: db_dump.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $";
+static char rcsid[] = "$Id: db_dump.c,v 1.1.1.2 1998-05-12 18:03:52 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -194,6 +194,9 @@ zt_dump(FILE *fp) {
 		}
 		if (zp->z_addrcnt)
 			fputc('\n', fp);
+		if (zp->z_axfr_src.s_addr != 0)
+			fprintf(fp, "; update source [%s]\n",
+				inet_ntoa(zp->z_axfr_src));
 	}
 	fprintf(fp, ";; --zone table--\n");
 	return (0);
@@ -235,7 +238,7 @@ db_dump(struct hashbuf *htp, FILE *fp, int zone, char *origin) {
 			    continue;
 			/* XXX why are we not calling stale() here? */
 			if (dp->d_zone == DB_Z_CACHE &&
-			    dp->d_ttl <= tt.tv_sec &&
+			    dp->d_ttl <= (u_int32_t)tt.tv_sec &&
 			    (dp->d_flags & DB_F_HINT) == 0)
 				continue;
 			if (!printed_origin) {
@@ -568,7 +571,7 @@ db_dump(struct hashbuf *htp, FILE *fp, int zone, char *origin) {
 				n = strlen ((char *)cp) + 1;
 				cp += n;
 				i = 8 * (dp->d_size - n);  /* How many bits? */
-				for (n = 0; n < i; n++) {
+				for (n = 0; n < (u_int32_t)i; n++) {
 					if (NS_NXT_BIT_ISSET(n, cp)) 
 						fprintf(fp," %s",__p_type(n));
 				}
@@ -588,14 +591,12 @@ db_dump(struct hashbuf *htp, FILE *fp, int zone, char *origin) {
 					sep, dp->d_clev);
 				sep = " ";
 			}
-eoln:
-#ifdef STATS
-			if (dp->d_ns) {
+ eoln:
+			if (dp->d_ns != NULL){
 				fprintf(fp, "%s[%s]",
 					sep, inet_ntoa(dp->d_ns->addr));
 				sep = " ";
 			}
-#endif
 			putc('\n', fp);
 		}
 	    }

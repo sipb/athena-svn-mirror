@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,20 +18,41 @@
 #ifndef LOGGING_P_H
 #define LOGGING_P_H
 
-#define LOG_BUFFER_SIZE 20480
+typedef struct log_file_desc {
+	char *name;
+	size_t name_size;
+	FILE *stream;
+	unsigned int versions;
+	unsigned long max_size;
+} log_file_desc;
+
+typedef union log_output {
+	int facility;
+	log_file_desc file;
+} log_output;
+
+struct log_channel {
+	int level;			/* don't log messages > level */
+	log_channel_type type;
+	log_output out;
+	unsigned int flags;
+	int references;
+};
 
 typedef struct log_channel_list {
 	log_channel channel;
 	struct log_channel_list *next;
 } *log_channel_list;
 
-typedef struct log_context_p {
+#define LOG_BUFFER_SIZE 20480
+
+struct log_context {
 	int num_categories;
 	char **category_names;
 	log_channel_list *categories;
 	int flags;
 	int level;
 	char buffer[LOG_BUFFER_SIZE];
-} *log_context_p;
+};
 
 #endif /* !LOGGING_P_H */

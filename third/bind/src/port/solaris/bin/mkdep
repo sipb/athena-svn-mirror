@@ -55,7 +55,6 @@
 #
 #	@(#)mkdep.sh	5.12 (Berkeley) 6/30/88
 #
-PATH=/bin:/usr/bin:/usr/ucb:$PATH; export PATH
 
 MAKE=Makefile			# default makefile name is "Makefile"
 
@@ -108,7 +107,12 @@ _EOF_
 # egrep '^#include[ 	]*".*"' /dev/null $* |
 # sed -e 's/:[^"]*"\([^"]*\)".*/: \1/' -e 's/\.c/.o/' |
 
-gcc -M $* |
+if [ "${CC}" = "cc" ]; then
+	CDEPEND="-xM"
+else
+	CDEPEND="-M"
+fi
+${CC} ${CDEPEND} $* |
 sed "
 	s; \./; ;g
 	$SED" |

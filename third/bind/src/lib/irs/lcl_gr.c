@@ -32,7 +32,7 @@
  */
 
 /*
- * Portions Copyright (c) 1996 by Internet Software Consortium.
+ * Portions Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -49,7 +49,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: lcl_gr.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static const char rcsid[] = "$Id: lcl_gr.c,v 1.1.1.2 1998-05-12 18:05:13 ghudson Exp $";
 /* from getgrent.c 8.2 (Berkeley) 3/21/94"; */
 /* from BSDI Id: getgrent.c,v 2.8 1996/05/28 18:15:14 bostic Exp $	*/
 #endif /* LIBC_SCCS and not lint */
@@ -57,6 +57,10 @@ static const char rcsid[] = "$Id: lcl_gr.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson
 /* extern */
 
 #include "port_before.h"
+
+#ifndef WANT_IRS_PW
+static int __bind_irs_gr_unneeded;
+#else
 
 #include <sys/param.h>
 #include <sys/types.h>
@@ -68,6 +72,8 @@ static const char rcsid[] = "$Id: lcl_gr.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 
@@ -279,18 +285,22 @@ grscan(struct irs_gr *this, int search, gid_t gid, const char *name) {
 		if (search && name != NULL &&
 		    strcmp(pvt->group.gr_name, name) != 0)
 			continue;
-		if (bp == '\0')
+		if (bp == NULL || *bp == '\0')
 			goto corrupt;
 
 		/* Skip past the password field. */
 		pvt->group.gr_passwd = strsep(&bp, ":");
-		if (bp == '\0')
+		if (bp == NULL || *bp == '\0')
 			goto corrupt;
 
 		/* Checking for a gid. */
 		if ((p = strsep(&bp, ":")) == NULL)
 			continue;
-		if (bp == '\0') {
+		/*
+		 * Unlike the tests above, the test below is supposed to be
+		 * testing 'p' and not 'bp', in case you think it's a typo.
+		 */
+		if (p == NULL || *p == '\0') {
  corrupt:
 			/* warning: corrupted %s file!", _PATH_GROUP */
 			continue;
@@ -329,3 +339,5 @@ grscan(struct irs_gr *this, int search, gid_t gid, const char *name) {
 
 	return (&pvt->group);
 }
+
+#endif /* WANT_IRS_GR */

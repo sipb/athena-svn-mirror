@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1997, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -28,21 +28,9 @@
 #define log_info  		(-1)
 #define log_debug(level)	(level)
 
-typedef enum { log_syslog, log_file, log_null } log_output_type;
-
-typedef struct log_file_desc {
-	char *name;
-	FILE *stream;
-	unsigned int versions;
-	unsigned long max_size;
-} log_file_desc;
+typedef enum { log_syslog, log_file, log_null } log_channel_type;
 
 #define LOG_MAX_VERSIONS 99
-
-typedef union log_output {
-	int facility;
-	log_file_desc file;
-} log_output;
 
 #define LOG_CLOSE_STREAM		0x0001
 #define LOG_TIMESTAMP			0x0002
@@ -54,17 +42,8 @@ typedef union log_output {
 #define LOG_PRINT_CATEGORY		0x0080
 #define LOG_CHANNEL_OFF			0x0100
 
-typedef struct log_channel {
-	int level;			/* don't log messages > level */
-	log_output_type type;
-	log_output out;
-	unsigned int flags;
-	int references;
-} *log_channel;
-
-typedef struct log_context {
-	void *opaque;
-} log_context;
+typedef struct log_context *log_context;
+typedef struct log_channel *log_channel;
 
 #define LOG_OPTION_DEBUG		0x01
 #define LOG_OPTION_LEVEL		0x02
@@ -73,6 +52,8 @@ typedef struct log_context {
 #define log_close_stream	__log_close_stream
 #define log_get_stream		__log_get_stream
 #define log_get_filename	__log_get_filename
+#define log_check_channel	__log_check_channel
+#define log_check		__log_check
 #define log_vwrite		__log_vwrite
 #define log_write		__log_write
 #define log_new_context		__log_new_context
@@ -86,12 +67,15 @@ typedef struct log_context {
 #define log_new_null_channel	__log_new_null_channel
 #define log_inc_references	__log_inc_references
 #define log_dec_references	__log_dec_references
+#define log_get_channel_type	__log_get_channel_type
 #define log_free_channel	__log_free_channel
 
 FILE *			log_open_stream(log_channel);
 int			log_close_stream(log_channel);
 FILE *			log_get_stream(log_channel);
 char *			log_get_filename(log_channel);
+int			log_check_channel(log_context, int, log_channel);
+int			log_check(log_context, int, int);
 void			log_vwrite(log_context, int, int, const char *, 
 				   va_list args);
 void			log_write(log_context, int, int, const char *, ...);
@@ -108,6 +92,7 @@ log_channel		log_new_file_channel(unsigned int, int, char *,
 log_channel		log_new_null_channel(void);
 int			log_inc_references(log_channel);
 int			log_dec_references(log_channel);
+log_channel_type	log_get_channel_type(log_channel);
 int			log_free_channel(log_channel);
 
 #endif /* !LOGGING_H */

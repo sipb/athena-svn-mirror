@@ -49,7 +49,7 @@
  */
 
 /*
- *	$Id: nameser.h,v 1.1.1.1 1998-05-04 22:23:38 ghudson Exp $
+ *	$Id: nameser.h,v 1.1.1.2 1998-05-12 18:04:32 ghudson Exp $
  */
 
 #ifndef _ARPA_NAMESER_H_
@@ -220,6 +220,7 @@ typedef enum __ns_update_operation {
  * This RR-like structure is particular to UPDATE.
  */
 struct ns_updrec {
+	struct ns_updrec *r_prev;	/* prev record */
 	struct ns_updrec *r_next;	/* next record */
 	u_int8_t	r_section;	/* ZONE/PREREQUISITE/UPDATE */
 	char *		r_dname;	/* owner of the RR */
@@ -233,7 +234,7 @@ struct ns_updrec {
 	struct ns_updrec *r_grpnext;	/* next record when grouped */
 	struct databuf *r_dp;		/* databuf to process */
 	struct databuf *r_deldp;	/* databuf's deleted/overwritten */
-	int16_t		r_zone;		/* zone number on server */
+	u_int16_t	r_zone;		/* zone number on server */
 };
 typedef struct ns_updrec ns_updrec;
 

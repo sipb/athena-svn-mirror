@@ -27,4 +27,5 @@ for systype in [a-z]*; do
 	fi
 done
 
-exit 1
+echo unknown
+exit 0

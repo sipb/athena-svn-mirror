@@ -15,13 +15,6 @@
  * SOFTWARE.
  */
 
-#undef _PATH_NAMED
-#define _PATH_NAMED	"/usr/etc/named"
-#undef _PATH_XFER
-#define _PATH_XFER	"/usr/etc/named-xfer"
-#undef _PATH_PIDFILE
-#define _PATH_PIDFILE	"/etc/named.pid"
-
 #define USE_POSIX
 #define USE_UTIME
 #define POSIX_SIGNALS
@@ -32,6 +25,8 @@
 #define NEED_DAEMON
 #define NEED_MKSTEMP
 #define SIOCGIFCONF_ADDR
+#define HAVE_CHROOT
+#define CAN_CHANGE_ID
 
 #define _TIMEZONE	timezone
 #define SIG_FN		void

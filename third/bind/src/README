@@ -1,21 +1,69 @@
-This is the source portion of BIND version 8.1.1.  Its companions are
+This is the source portion of BIND version 8.1.2.  Its companions are
 "doc" and "contrib" so you are probably not missing anything.
 
-Changes from BIND 8.1-REL include:
-
-	-> Improved security.
-	-> libbind.a and .h files are installed under /usr/local/bind instead
-	   of under /usr/local.
-	-> Bug fixes.
-	-> Additional recipients of DNS Change Notification messages may
-	   be specified with the also-notify zone option.
-	-> Added periodic interface scanning.
-	-> New configuration options: dump-file, statistics-file,
-	   clean-interval, interface-interval, and statistics-interval.
-	-> Ports to OpenBSD 2.1, SCO UnixWare 2.1.2, AIX 4.
-
 See the CHANGES file for a detailed listing of all changes.  See the INSTALL
-file for information on building and installing BIND 8.1.1.
+file for information on building and installing BIND 8.1.2.
+
+
+BIND 8.1.2 Highlights
+
+	Security fixes for a number of problems including:
+
+		An attacker could overwrite the stack if inverse query support
+		was enabled.
+
+		A number of denial of service attacks where malformed packets
+		could cause the server to crash.
+
+		The server was willing to answer queries on its forwarding
+		sockets.
+
+	Several memory leaks have been plugged.
+
+	The server no longer panics if a periodic interface scan fails due
+	to no file descriptors being available.
+
+	Updates to a number of ports.  New ports for QNX, LynxOS, HP-UX 9.x,
+	and HP MPE.
+
+	"files unlimited" now works as expected on systems where setting
+	an infinite rlim_max for RLIMIT_NOFILE works.
+
+	Adding and deleting the same record in the same dynamic update no
+	longer crashes the server.
+
+	If a dynamic update fails, rollback is now done in LIFO order instead
+	of FIFO order.
+
+	Better behavior when priming of the root servers fails.
+
+	purge_zone() didn't work correctly for the root zone, allowing
+	old data to persist after loading the zone.
+
+	Improved handling of oversized UDP packets.
+
+	All hosts on the also-notify list are now notified.
+
+	The meaning of the count returned by select() varies somewhat by
+	operating system, and this could cause previous releases of the
+	server to spin.
+
+	Per-host statistics may be disabled by specifying 'host-statistics no'
+	in named.conf.
+
+	The maximum number of zones has been increased from 32768 to 65536.
+
+	query-source may specify an address and port that the server is
+	already listening on.  BIND 8.1.1 required that either the address
+	or port be wild.  E.g., you can now say:
+
+		listen-on port 53 { 10.0.0.1; };
+		query-source address 10.0.0.1 port 53;
+
+	The value of FD_SETSIZE to use may be specified.
+
+	Experimental -u (set user id), -g (set group id), and -t (chroot)
+	command line options.  See the INSTALL file for details.
 
 
 BIND 8 Features

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_update.c,v 1.1.1.1 1998-05-04 22:23:36 ghudson Exp $";
+static char rcsid[] = "$Id: ns_update.c,v 1.1.1.2 1998-05-12 18:04:17 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -50,6 +50,7 @@ static char rcsid[] = "$Id: ns_update.c,v 1.1.1.1 1998-05-04 22:23:36 ghudson Ex
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -108,7 +109,7 @@ static struct map m_section[] = {
 
 /* from ns_req.c */
 
-static ns_updrec *rrecp_start = NULL;
+static ns_updrec *rrecp_start = NULL, *rrecp_last = NULL;
 
 
 /* forward */
@@ -179,7 +180,7 @@ printupdatelog(struct sockaddr_in srcaddr,
 	if (fp == NULL)
 		return;
 
-	sprintf(time, "at %u", tt.tv_sec);
+	sprintf(time, "at %lu", (u_long)tt.tv_sec);
 	fprintf(fp, "[DYNAMIC_UPDATE] id %u from %s %s (named pid %ld):\n",
 	        hp->id, sin_ntoa(srcaddr), time, (long)getpid());
 	for (rrecp = firstp; rrecp; rrecp = rrecp->r_next) {
@@ -366,8 +367,10 @@ process_prereq(ns_updrec *ur, int *rcodep, u_int16_t zclass) {
 	 * processed if it is in the same RRset as a previous
 	 * RRset Exists (value dependent) prerequisite.
 	 */
-	if (rdp && rdp->d_mark) /* already processed */
+	if (rdp && (rdp->d_mark & D_MARK_FOUND) != 0) {
+		/* Already processed. */
 	        return (1);
+	}
 	if (ttl != 0) {
 		ns_debug(ns_log_update, 1,
 			 "process_prereq: ttl!=0 in prereq section");
@@ -481,19 +484,21 @@ process_prereq(ns_updrec *ur, int *rcodep, u_int16_t zclass) {
 			*rcodep = NXRRSET;
 			return (0);
 		}
-		/*
-		 * XXX section should be checked here
-		 */
 		for (dp = np->n_data; dp; dp = dp->d_next) {
 			if (match(dp, class, type)) {
 				int found = 0;
 
 				for (tmp = ur;
 				     tmp && !found;
-				     tmp = tmp->r_next)
-					if (!db_cmp(dp, tmp->r_dp))
-						/* XXXVIX d_mark add/delete */
-						tmp->r_dp->d_mark = found = 1;
+				     tmp = tmp->r_next) {
+					if (tmp->r_section != S_PREREQ)
+						break;
+					if (!db_cmp(dp, tmp->r_dp)) {
+						tmp->r_dp->d_mark |=
+							D_MARK_FOUND;
+						found = 1;
+					}
+				}
 				if (!found) {
 					*rcodep = NXRRSET;
 					return (0);
@@ -505,7 +510,7 @@ process_prereq(ns_updrec *ur, int *rcodep, u_int16_t zclass) {
 			    !strcasecmp(dname, tmp->r_dname) &&
 			    tmp->r_class == class &&
 			    tmp->r_type == type &&
-			    !ur->r_dp->d_mark) {
+			    (ur->r_dp->d_mark & D_MARK_FOUND) == 0) {
 				*rcodep = NXRRSET;
 				return (0);
 			} else {
@@ -765,7 +770,8 @@ class=%s, type=%s, ttl=%d, dp=0x%0x",
  	        cancel_soa_update(zp);
 		schedmaint = 1;
 #ifdef BIND_NOTIFY
-		sysnotify(zp->z_origin, zp->z_class, T_SOA);
+		if (!loading)
+			sysnotify(zp->z_origin, zp->z_class, T_SOA);
 #endif
 	} else {
 		if (schedule_soa_update(zp, numupdated))
@@ -791,7 +797,7 @@ req_update_private(HEADER *hp, u_char *cp, u_char *eom, u_char *msg,
 	struct databuf *dp, *nsp[NSMAX];
 	struct databuf **nspp = &nsp[0];
 	struct zoneinfo *zp;
-	ns_updrec *rrecp, *ur_last;
+	ns_updrec *rrecp;
 	int zonelist[MAXDNAME];
 	int should_use_tcp;
 	u_int32_t old_serial;
@@ -813,6 +819,11 @@ req_update_private(HEADER *hp, u_char *cp, u_char *eom, u_char *msg,
 	}
 	dname = dnbuf;
  	cp += n;
+	if (cp + 2 * INT16SZ > eom) {
+		ns_debug(ns_log_update, 1, "req_update: too short");
+		hp->rcode = FORMERR;
+		return (Finish);
+	}		
 	GETSHORT(type, cp);
 	GETSHORT(class, cp);
 	if (zocount != 1 || type != T_SOA) {
@@ -824,14 +835,14 @@ req_update_private(HEADER *hp, u_char *cp, u_char *eom, u_char *msg,
 	}
 
 	matches = findzone(dname, class, 0, zonelist, MAXDNAME);
-	if (matches) {
+	if (matches == 1) {
 		zonenum = zonelist[0];
 		zp = &zones[zonenum];
-		old_serial = get_serial(zp);
+		if (zp->z_class != (int)class ||
+		    (zp->z_type != z_master && zp->z_type != z_slave))
+			matches = 0;
 	}
-	/* XXXRTH should also check that class == zp->z_class */
-	if (!matches ||
-	    (zp->z_type != Z_PRIMARY && zp->z_type != Z_SECONDARY)) {
+	if (matches != 1) {
 		ns_debug(ns_log_update, 1,
 			 "req_update: non-authoritative server for %s",
 			 dname);
@@ -905,17 +916,20 @@ req_update_private(HEADER *hp, u_char *cp, u_char *eom, u_char *msg,
 			 dname);
 		return (Refuse);
 	}
+	old_serial = get_serial(zp);
 	ns_debug(ns_log_update, 3,
 		 "req_update: update request for zone %s, class %s",
 		 zp->z_origin, p_class(class));
 	rrecp_start = res_mkupdrec(S_ZONE, dname, class, type, 0);
 	rrecp_start->r_zone = zonenum;
-	ur_last = rrecp_start;
+	rrecp_start->r_prev = NULL;
+	rrecp_start->r_next = NULL;
+	rrecp_last = rrecp_start;
 
 	/*
 	 * Parse the prerequisite and update sections for format errors.
 	 */
-	for (i = 0; i < prcount + upcount; i++) {
+	for (i = 0; (u_int)i < prcount + upcount; i++) {
 		if ((n = dn_expand(msg, eom, cp, dnbuf, sizeof(dnbuf))) < 0) {
 			ns_debug(ns_log_update, 1,
 				 "req_update: expand name failed");
@@ -937,6 +951,12 @@ req_update_private(HEADER *hp, u_char *cp, u_char *eom, u_char *msg,
 		n = 0;
 		dp = NULL;
 	   	if (dlen > 0) {
+			if (cp + dlen > eom) {
+				ns_debug(ns_log_update, 1,
+					 "req_update: bad dlen");
+				hp->rcode = FORMERR;
+				return (Finish);
+			}
 			n = rdata_expand(msg, eom, cp, type, dlen,
 					 rdata, sizeof rdata);
 			if (n == 0 || n > MAXDATA) {
@@ -947,7 +967,7 @@ req_update_private(HEADER *hp, u_char *cp, u_char *eom, u_char *msg,
 			}
 			cp += dlen;
 	   	}
-		section = (i < prcount) ? S_PREREQ : S_UPDATE;
+		section = ((u_int)i < prcount) ? S_PREREQ : S_UPDATE;
 		rrecp = res_mkupdrec(section, dname, class, type, ttl);
 		dp = savedata(class, type, ttl, rdata, n);
 		dp->d_zone = zonenum;
@@ -956,8 +976,10 @@ req_update_private(HEADER *hp, u_char *cp, u_char *eom, u_char *msg,
 		/* XXX - also record in dp->d_ns, which host this came from */
 		rrecp->r_dp = dp;
 		/* Append the current record to the end of list of records. */
-		ur_last->r_next = rrecp;
-		ur_last = rrecp;
+		rrecp_last->r_next = rrecp;
+		rrecp->r_prev = rrecp_last;
+		rrecp->r_next = NULL;
+		rrecp_last = rrecp;
            	if (cp > eom) {
 			ns_info(ns_log_update,
 				"Malformed response from %s (overrun)",
@@ -984,59 +1006,75 @@ req_update_private(HEADER *hp, u_char *cp, u_char *eom, u_char *msg,
 }
 
 static void
-free_rrecp(ns_updrec **startpp, int rcode, struct sockaddr_in from) {
-	int flags;
-	ns_updrec *rrecp;
+free_rrecp(ns_updrec **startpp, ns_updrec **lastpp, int rcode,
+	   struct sockaddr_in from)
+{
+	ns_updrec *rrecp, *first_rrecp, *next_rrecp;
 	struct databuf *dp, *tmpdp;
-	int16_t mark;
-	int n;
-	char rdata[MAXDATA];
-	char *dname;
+	char *dname, *msg;
 
-	if (!*startpp)
-		return;
-	ns_debug(ns_log_update, 1, (rcode == NOERROR)
-		 ? "free_rrecp: update transaction succeeded, cleaning up"
-		 : "free_rrecp: update transaction aborted, rolling back");
-	while (*startpp) {
-		rrecp = *startpp;
-		*startpp = (*startpp)->r_next;
+	REQUIRE(startpp != NULL && lastpp != NULL);
+
+	if (rcode == NOERROR) {
+		first_rrecp = *startpp;
+		msg = "free_rrecp: update transaction succeeded, cleaning up";
+	} else {
+		first_rrecp = *lastpp;
+		msg = "free_rrecp: update transaction aborted, rolling back";
+	}
+	ns_debug(ns_log_update, 1, msg);
+	for (rrecp = first_rrecp; rrecp != NULL; rrecp = next_rrecp) {
+		if (rcode == NOERROR)
+			next_rrecp = rrecp->r_next;
+		else
+			next_rrecp = rrecp->r_prev;
 		if (rrecp->r_section != S_UPDATE) {
-			free((char *)rrecp->r_dname);
 			if (rrecp->r_dp)
-				db_free(rrecp->r_dp);
-			free((char *)rrecp);
+				db_freedata(rrecp->r_dp);
+			res_freeupdrec(rrecp);
 			continue;
 		}
 		dname = rrecp->r_dname;
 		dp = rrecp->r_dp;
-		if (dp->d_mark == D_MARK_ADDED) {
+		if ((dp->d_mark & D_MARK_ADDED) != 0) {
 			if (rcode == NOERROR) {
-				/* This databuf is now a part of hashtab. */
-				dp->d_mark = 0;
+				/*
+				 * This databuf is now a part of hashtab,
+				 * or has been deleted by a subsequent update.
+				 * Either way, we must not free it.
+				 */
+				dp->d_mark &= ~D_MARK_ADDED;
 			} else {
 				/* Delete the databuf. */
 				if (db_update(dname, dp, NULL, NULL,
 					      DB_DELETE, hashtab, from)
 				    != OK) {
-					/*
-					 * XXX - print dp->d_size char's from
-					 * dp->d_data into rdata.
-					 */
 					ns_error(ns_log_update,
-	   "free_rrecp: failed to delete databuf: dname=%s, type=%s, rdata=%s",
-						 dname, p_type(dp->d_type),
-						 rdata);
+		     "free_rrecp: failed to delete databuf: dname=%s, type=%s",
+						 dname, p_type(dp->d_type));
 				} else {
 					ns_debug(ns_log_update, 3,
 				         "free_rrecp: deleted databuf 0x%0x",
 						 dp);
-					db_free(dp);
+					/* 
+					 * XXXRTH 
+					 *
+					 * We used to db_freedata() here,
+					 * but I removed it because 'dp' was
+					 * part of a hashtab before we called
+					 * db_update(), and since our delete
+					 * has succeeded, it should have been
+					 * freed.
+					 */
 				}
 			}
 		} else {
-			/* Databuf's matching this were deleted. */
-			db_free(dp);
+			/*
+			 * Databuf's matching this were deleted by this
+			 * update, or were never executed (because we bailed
+			 * out early).
+			 */
+			db_freedata(dp);
 		}
 
 		/* Process deleted databuf's. */
@@ -1052,21 +1090,16 @@ free_rrecp(ns_updrec **startpp, int rcode, struct sockaddr_in from) {
 						 tmpdp->d_rcnt);
 				else {
 					tmpdp->d_next = NULL;
-					db_free(tmpdp);
+					db_freedata(tmpdp);
 				}
 			} else {
 				/* Add the databuf back. */
-				tmpdp->d_mark = 0;
+				tmpdp->d_mark &= ~D_MARK_DELETED;
 				if (db_update(dname, tmpdp, tmpdp, NULL,
 					      0, hashtab, from) != OK) {
-					/*
-					 * XXX - print tmpdp->d_size char's
-					 * from tmpdp->d_data into rdata.
-					 */
 					ns_error(ns_log_update,
-	 "free_rrecp: failed to add back databuf: dname=%s, type=%s, rdata=%s",
-						 dname, p_type(tmpdp->d_type),
-						 rdata);
+	           "free_rrecp: failed to add back databuf: dname=%s, type=%s",
+						 dname, p_type(tmpdp->d_type));
 				} else {
 					ns_debug(ns_log_update, 3,
 				      "free_rrecp: added back databuf 0x%0x",
@@ -1074,9 +1107,10 @@ free_rrecp(ns_updrec **startpp, int rcode, struct sockaddr_in from) {
 				}
 			}
 		}
-		free((char *)rrecp->r_dname);
-		free((char *)rrecp);
+		res_freeupdrec(rrecp);
 	}
+	*startpp = NULL;
+	*lastpp = NULL;
 }
 
 enum req_action
@@ -1086,7 +1120,7 @@ req_update(HEADER *hp, u_char *cp, u_char *eom, u_char *msg,
 	enum req_action ret;
 
 	ret = req_update_private(hp, cp, eom, msg, qsp, dfd, from);
-	free_rrecp(&rrecp_start, hp->rcode, from);
+	free_rrecp(&rrecp_start, &rrecp_last, hp->rcode, from);
 	if (ret == Finish) {
 		hp->qdcount = hp->ancount = hp->nscount = hp->arcount = 0;
 		memset(msg + HFIXEDSZ, 0, (eom - msg) - HFIXEDSZ);
@@ -1103,6 +1137,7 @@ static int
 rdata_expand(const u_char *msg, const u_char *eom, const u_char *cp,
 	     u_int type, size_t dlen, u_char *cp1, size_t size)
 {
+	const u_char *cpinit = cp;
 	const u_char *cp1init = cp1;
 	int n, i;
 
@@ -1129,7 +1164,7 @@ rdata_expand(const u_char *msg, const u_char *eom, const u_char *cp,
 	case T_NS:
 	case T_PTR:
 		n = dn_expand(msg, eom, cp, (char *)cp1, size);
-		if (n < 0 || n != dlen)
+		if (n < 0 || (u_int)n != dlen)
 			return (0);
 		return (strlen((char *)cp1) + 1);
 	case T_MINFO:
@@ -1147,19 +1182,22 @@ rdata_expand(const u_char *msg, const u_char *eom, const u_char *cp,
 		}
 		if (type == T_SOA) {
 			n = 5 * INT32SZ;
-			if (size < n)
+			if (size < (size_t)n || cp + n > eom)
 				return(0);
 			size -= n;
 			memcpy(cp1, cp, n);
+			cp += n;
 			cp1 += n;
 		}
+		if (cp != cpinit + dlen)
+			return (0);
 		return (cp1 - cp1init);
 	case T_MX:
 	case T_AFSDB:
 	case T_RT:
 	case T_SRV:
 		/* Grab preference. */
-		if (size < INT16SZ)
+		if (size < INT16SZ || cp + INT16SZ > eom)
 			return (0);
 		size -= INT16SZ;
 		memcpy(cp1, cp, INT16SZ);
@@ -1167,7 +1205,7 @@ rdata_expand(const u_char *msg, const u_char *eom, const u_char *cp,
 		cp1 += INT16SZ;
 
 		if (type == T_SRV) {
-			if (size < INT16SZ*2)
+			if (size < INT16SZ*2 || cp + INT16SZ*2 > eom)
 				return (0);
 			size -= INT16SZ*2;
 			/* Grab weight and port. */
@@ -1183,10 +1221,12 @@ rdata_expand(const u_char *msg, const u_char *eom, const u_char *cp,
 		cp += n;
 		n = strlen((char *)cp1) + 1;
 		cp1 += n;
+		if (cp != cpinit + dlen)
+			return (0);
 		return (cp1 - cp1init);
 	case T_PX:
 		/* Grab preference. */
-		if (size < INT16SZ)
+		if (size < INT16SZ || cp + INT16SZ > eom)
 			return (0);
 		size -= INT16SZ;
 		memcpy(cp1, cp, INT16SZ);
@@ -1206,6 +1246,8 @@ rdata_expand(const u_char *msg, const u_char *eom, const u_char *cp,
 		cp += n;
 		n = strlen((char *)cp1) + 1;
 		cp1 += n;
+		if (cp != cpinit + dlen)
+			return (0);
 		return (cp1 - cp1init);
 	default:
 		ns_debug(ns_log_update, 3, "unknown type %d", type);
@@ -1508,13 +1550,14 @@ merge_logs(struct zoneinfo *zp) {
 	int id, rcode = NOERROR;
 	u_int32_t n;
 	struct map *mp;
-	ns_updrec *rrecp_start = NULL, *rrecp, *tmprrecp;
+	ns_updrec *rrecp;
 	struct databuf *dp;
 	struct in_addr ina;
 	int zonelist[MAXDNAME];
 	struct stat st;
 	u_char *serialp;
 	struct sockaddr_in empty_from;
+	int datasize;
 
 	empty_from.sin_family = AF_INET;
 	empty_from.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -1578,6 +1621,8 @@ merge_logs(struct zoneinfo *zp) {
 	ns_debug(ns_log_update, 3, "merging logs for %s from %s",
 		 zp->z_origin, zp->z_updatelog);
 	lineno = 1;
+	rrecp_start = NULL;
+	rrecp_last = NULL;
 	for (;;) {
 		if (!getword(buf, sizeof buf, fp, 0)) {
 			if (lineno == (nonempty_lineno + 1)) {
@@ -1655,7 +1700,8 @@ merge_logs(struct zoneinfo *zp) {
 					ns_error(ns_log_update,
 				 "error merging update id %d from log file %s",
 						 id, zp->z_updatelog);
-				free_rrecp(&rrecp_start, rcode, empty_from);
+				free_rrecp(&rrecp_start, &rrecp_last, rcode,
+					   empty_from);
 			}
 			prev_pktdone = 0;
 			if (feof(fp))
@@ -1733,7 +1779,7 @@ merge_logs(struct zoneinfo *zp) {
 			opcode = -1;
 			if (buf[0] == '{') {
 				n = strlen(buf);
-				for (i = 0; i < n; i++)
+				for (i = 0; (u_int32_t)i < n; i++)
 					buf[i] = buf[i+1];
 				if (buf[n-2] == '}')
 					buf[n-2] = '\0';
@@ -1964,13 +2010,25 @@ merge_logs(struct zoneinfo *zp) {
 				case T_X25:
 					i = strlen(buf);
 					cp = data;
+					datasize = sizeof data;
 					cp1 = buf;
 					while (i > 255) {
+						if (datasize < 256) {
+							ns_error(ns_log_update,
+							     "record too big");
+							return (-1);
+						}
+						datasize -= 255;
 						*cp++ = 255;
 						memcpy(cp, cp1, 255);
 						cp += 255;
 						cp1 += 255;
 						i -= 255;
+					}
+					if (datasize < i + 1) {
+						ns_error(ns_log_update,
+							 "record too big");
+						return (-1);
 					}
 					*cp++ = i;
 					memcpy(cp, cp1, i);
@@ -2050,7 +2108,8 @@ merge_logs(struct zoneinfo *zp) {
 			ns_debug(ns_log_update, 1, 
 		      "merge of update id %d failed due to error at line %d",
 				 id, lineno);
-			free_rrecp(&rrecp_start, rcode, empty_from);
+			free_rrecp(&rrecp_start, &rrecp_last, rcode,
+				   empty_from);
 			continue;
 		}
 		rrecp = res_mkupdrec(section, dname, class, type, ttl);
@@ -2063,14 +2122,16 @@ merge_logs(struct zoneinfo *zp) {
 		} else {
 			rrecp->r_zone = zonenum;
 		}
-		if (!rrecp_start) {
+		if (rrecp_start == NULL) {
 			rrecp_start = rrecp;
+			rrecp_last = rrecp;
+			rrecp->r_prev = NULL;
+			rrecp->r_next = NULL;
 		} else {
-			for (tmprrecp = rrecp_start;
-			     tmprrecp->r_next;
-			     tmprrecp = tmprrecp->r_next)
-				;
-			tmprrecp->r_next = rrecp;
+			rrecp_last->r_next = rrecp;
+			rrecp->r_prev = rrecp_last;
+			rrecp->r_next = NULL;
+			rrecp_last = rrecp;
 		}
 	} /* for (;;) */
 
@@ -2270,7 +2331,8 @@ set_serial(struct zoneinfo *zp, u_int32_t serial) {
 	zp->z_soaincrtime = 0;
 	zp->z_updatecnt = 0;
 #ifdef BIND_NOTIFY
-	sysnotify(zp->z_origin, zp->z_class, T_SOA);
+	if (!loading)
+		sysnotify(zp->z_origin, zp->z_class, T_SOA);
 #endif
 	/*
 	 * Note: caller is responsible for scheduling a dump

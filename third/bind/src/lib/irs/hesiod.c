@@ -1,5 +1,5 @@
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: hesiod.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.1.1.2 1998-05-12 18:05:10 ghudson Exp $";
 #endif
 
 /*
@@ -336,8 +336,8 @@ get_txt_records(struct hesiod_p *ctx, int class, const char *name) {
 	struct __res_state save_res;
 	HEADER *hp;
 	u_char qbuf[MAX_HESRESP], abuf[MAX_HESRESP];
-	u_char *cp, *ocp, *eom;
-	char *dst, **list;
+	u_char *cp, *erdata, *eom;
+	char *dst, *edst, **list;
 	int ancount, qdcount;
 	int i, j, n, skip;
 
@@ -360,6 +360,10 @@ get_txt_records(struct hesiod_p *ctx, int class, const char *name) {
 	_res = save_res;
 	if (n < 0) {
 		errno = ECONNREFUSED;
+		return (NULL);
+	}
+	if (n < HFIXEDSZ) {
+		errno = EMSGSIZE;
 		return (NULL);
 	}
 
@@ -395,12 +399,20 @@ get_txt_records(struct hesiod_p *ctx, int class, const char *name) {
 			goto cleanup;
 		}
 		cp += skip;
+		if (cp + 3 * INT16SZ + INT32SZ > eom) {
+			errno = EMSGSIZE;
+			goto cleanup;
+		}
 		rr.type = ns_get16(cp);
 		cp += INT16SZ;
 		rr.class = ns_get16(cp);
 		cp += INT16SZ + INT32SZ;	/* skip the ttl, too */
 		rr.dlen = ns_get16(cp);
 		cp += INT16SZ;
+		if (cp + rr.dlen > eom) {
+			errno = EMSGSIZE;
+			goto cleanup;
+		}
 		rr.data = cp;
 		cp += rr.dlen;
 		if (rr.class != class || rr.type != T_TXT)
@@ -408,12 +420,22 @@ get_txt_records(struct hesiod_p *ctx, int class, const char *name) {
 		if (!(list[j] = malloc(rr.dlen)))
 			goto cleanup;
 		dst = list[j++];
-		ocp = cp = rr.data;
-		while (cp < ocp + rr.dlen) {
+		edst = dst + rr.dlen;
+		erdata = rr.data + rr.dlen;
+		cp = rr.data;
+		while (cp < erdata) {
 			n = (unsigned char) *cp++;
+			if (cp + n > eom || dst + n > edst) {
+				errno = EMSGSIZE;
+				goto cleanup;
+			}
 			memcpy(dst, cp, n);
 			cp += n;
 			dst += n;
+		}
+		if (cp != erdata) {
+			errno = EMSGSIZE;
+			goto cleanup;
 		}
 		*dst = '\0';
 	}

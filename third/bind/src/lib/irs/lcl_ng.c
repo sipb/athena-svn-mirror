@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: lcl_ng.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static char rcsid[] = "$Id: lcl_ng.c,v 1.1.1.2 1998-05-12 18:05:14 ghudson Exp $";
 #endif
 
 /* Imports */
@@ -28,6 +28,8 @@ static char rcsid[] = "$Id: lcl_ng.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 
@@ -376,6 +378,7 @@ read_for_group(struct irs_ng *this, const char *group) {
 			*(lp->l_groupname + len) = '\0';
 			len = strlen(pos);
 			olen = 0;
+			olinep = NULL;
 
 			/*
 			 * Loop around handling line continuations.

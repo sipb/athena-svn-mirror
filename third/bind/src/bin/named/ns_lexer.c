@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_lexer.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp $";
+static char rcsid[] = "$Id: ns_lexer.c,v 1.1.1.2 1998-05-12 18:04:07 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -38,6 +38,7 @@ static char rcsid[] = "$Id: ns_lexer.c,v 1.1.1.1 1998-05-04 22:23:35 ghudson Exp
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -88,7 +89,7 @@ static char special_chars[256];
 static int last_token;
 static YYSTYPE last_yylval;
 
-static int init_once_done = 0;
+static int lexer_initialized = 0;
 
 /*
  * Problem Reporting
@@ -227,6 +228,7 @@ static struct keyword keywords[] = {
 	{"cleaning-interval", T_CLEAN_INTERVAL},
 	{"coresize", T_CORESIZE},
 	{"datasize", T_DATASIZE},
+	{"deallocate-on-exit", T_DEALLOC_ON_EXIT},
 	{"debug", T_DEBUG},
 	{"default", T_DEFAULT},
 	{"directory", T_DIRECTORY}, 
@@ -242,6 +244,7 @@ static struct keyword keywords[] = {
 	{"forward", T_FORWARD},
 	{"forwarders", T_FORWARDERS},
 	{"hint", T_HINT},
+	{"host-statistics", T_HOSTSTATS},
 	{"if-no-answer", T_IF_NO_ANSWER},
 	{"if-no-domain", T_IF_NO_DOMAIN},
 	{"ignore", T_IGNORE},
@@ -255,6 +258,7 @@ static struct keyword keywords[] = {
 	{"master", T_MASTER},
 	{"masters", T_MASTERS},
 	{"max-transfer-time-in", T_MAX_TRANSFER_TIME_IN},
+	{"memstatistics-file", T_MEMSTATS_FILE},
 	{"multiple-cnames", T_MULTIPLE_CNAMES},
 	{"named-xfer", T_NAMED_XFER},
 	{"no", T_NO},
@@ -283,6 +287,7 @@ static struct keyword keywords[] = {
 	{"syslog", T_SYSLOG}, 
 	{"topology", T_TOPOLOGY},
 	{"transfer-format", T_TRANSFER_FORMAT}, 
+	{"transfer-source", T_TRANSFER_SOURCE},
 	{"transfers", T_TRANSFERS}, 
 	{"transfers-in", T_TRANSFERS_IN}, 
 	{"transfers-out", T_TRANSFERS_OUT}, 
@@ -335,9 +340,9 @@ lexer_begin_file(const char *filename, FILE *stream) {
 			return;
 		}
 	}
-	lf = (LexerFileContext)malloc(sizeof (struct lexer_file_context));
+	lf = (LexerFileContext)memget(sizeof (struct lexer_file_context));
 	if (lf == NULL)
-		panic("malloc failed in lexer_begin_file", NULL);
+		panic("memget failed in lexer_begin_file", NULL);
 	INSIST(stream != NULL);
 	lf->stream = stream;
 	lf->name = filename;  /* note copy by reference */
@@ -358,7 +363,7 @@ lexer_end_file(void) {
 	lf = current_file;
 	current_file = lf->next;
 	fclose(lf->stream);
-	free(lf);
+	memput(lf, sizeof *lf);
 }
 
 /*
@@ -480,9 +485,7 @@ dup_identifier(LexerIdentifier id) {
 	char *duplicate;
 
 	INSIST(id != NULL);
-	duplicate = strdup(id->buffer);
-	if (duplicate == NULL)
-		panic("strdup failed in dup_identifier", NULL);
+	duplicate = savestr(id->buffer, 1);
 	return (duplicate);
 }
 
@@ -710,8 +713,8 @@ import_all_constants() {
 	import_constants(syslog_constants, SYM_SYSLOG);
 }
 
-static
-void init_once() {
+void
+lexer_initialize() {
 	memset(special_chars, 0, sizeof special_chars);
 	special_chars[';'] = 1;
 	special_chars['{'] = 1;
@@ -720,18 +723,28 @@ void init_once() {
 	special_chars['/'] = 1;
 	special_chars['"'] = 1;
 	special_chars['*'] = 1;
-	id = (LexerIdentifier)malloc(sizeof (struct lexer_identifier));
+	id = (LexerIdentifier)memget(sizeof (struct lexer_identifier));
 	if (id == NULL)
-		panic("malloc failed in init_once", NULL);
+		panic("memget failed in init_once", NULL);
 	init_keywords();
 	import_all_constants();
-	init_once_done = 1;
+	lexer_initialized = 1;
 }
 
 void
-lexer_initialize(void) {
-	if (!init_once_done)
-		init_once();
+lexer_setup(void) {
+	REQUIRE(lexer_initialized);
+
 	current_file = NULL;    /* XXX should we INSIST(current_file==NULL)? */
 	INSIST(id != NULL);
+}
+
+void
+lexer_shutdown(void) {
+	REQUIRE(lexer_initialized);
+
+	free_symbol_table(keyword_table);
+	free_symbol_table(constants);
+	memput(id, sizeof (struct lexer_identifier));
+	lexer_initialized = 0;
 }

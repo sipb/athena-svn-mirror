@@ -95,7 +95,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)res_debug.c	8.1 (Berkeley) 6/4/93";
-static char rcsid[] = "$Id: res_debug.c,v 1.1.1.1 1998-05-04 22:23:43 ghudson Exp $";
+static char rcsid[] = "$Id: res_debug.c,v 1.1.1.2 1998-05-12 18:05:43 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include "port_before.h"
@@ -318,11 +318,12 @@ p_fqnname(cp, msg, msglen, name, namelen)
 	if ((n = dn_expand(msg, cp + msglen, cp, name, namelen)) < 0)
 		return (NULL);
 	newlen = strlen(name);
-	if (newlen == 0 || name[newlen - 1] != '.')
+	if (newlen == 0 || name[newlen - 1] != '.') {
 		if (newlen + 1 >= namelen)	/* Lack space for final dot */
 			return (NULL);
 		else
 			strcpy(name + newlen, ".");
+	}
 	return (cp + n);
 }
 
@@ -837,7 +838,7 @@ loc_ntoa(binary, ascii)
 	char northsouth, eastwest;
 	int altmeters, altfrac, altsign;
 
-	const int referencealt = 100000 * 100;
+	const u_int32_t referencealt = 100000 * 100;
 
 	int32_t latval, longval, altval;
 	u_int32_t templ;

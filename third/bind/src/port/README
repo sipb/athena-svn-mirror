@@ -1,7 +1,13 @@
 
 Porting BIND 8 to Another System
 
-	Make sure to base your port on an existing one.
+	Make sure to base your port on an existing one.  If your port is
+	for a new release of an already supported operating system, please
+	try to make the existing port support the new release instead of
+	making a new port directory.  For an example of how to do this,
+	look at how the Solaris port uses os_version.h in port_after.h.  See
+	port/solaris/include/Makefile and port/solaris/bin/make_os_version
+	to learn how an os_version.h is made.
 
 	Porting problems fall into broad categories which have simple answers:
 

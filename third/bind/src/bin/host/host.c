@@ -1,5 +1,5 @@
 #ifndef lint
-static char rcsid[] = "$Id: host.c,v 1.1.1.1 1998-05-04 22:23:33 ghudson Exp $";
+static char rcsid[] = "$Id: host.c,v 1.1.1.2 1998-05-12 18:03:49 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -583,10 +583,19 @@ printinfo(const querybuf *answer, const u_char *eom, int filter, int isls) {
 	nmx = 0;
 	buflen = sizeof(hostbuf);
 	cp = answer->qb2 + HFIXEDSZ;
-	if (qdcount) {
-		cp += dn_skipname(cp, eom) + QFIXEDSZ;
-		while (--qdcount > 0)
-			cp += dn_skipname(cp, eom) + QFIXEDSZ;
+	if (qdcount > 0) {
+		while (qdcount-- > 0) {
+			n = dn_skipname(cp, eom);
+			if (n < 0) {
+				printf("Form error.\n");
+				return (0);
+			}
+			cp += n + QFIXEDSZ;
+			if (cp > eom) {
+				printf("Form error.\n");
+				return (0);
+			}
+		}
 	}
 	if (ancount) {
 		if (!hp->aa)
@@ -629,12 +638,14 @@ static const u_char *
 pr_rr(const u_char *cp, const u_char *msg, FILE *file, int filter) {
 	int type, class, dlen, n, c, proto, ttl;
 	struct in_addr inaddr;
+	u_char in6addr[NS_IN6ADDRSZ];
 	const u_char *cp1;
 	struct protoent *protop;
 	struct servent *servp;
-	char punc;
+	char punc = ' ';
 	int doprint;
 	char name[NS_MAXDNAME];
+	char tmpbuf[sizeof "ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255"];
 
 	if ((cp = (u_char *)pr_cdname(cp, msg, name, sizeof(name))) == NULL)
 		return (NULL);			/* compression error */
@@ -654,7 +665,7 @@ pr_rr(const u_char *cp, const u_char *msg, FILE *file, int filter) {
 	else
 		doprint = 0;
 
-	if (doprint)
+	if (doprint) {
 		if (verbose)
 			fprintf(file, "%s\t%d%s\t%s",
 				name, ttl, pr_class(class), pr_type(type));
@@ -665,7 +676,7 @@ pr_rr(const u_char *cp, const u_char *msg, FILE *file, int filter) {
 			punc = '\t';
 		else
 			punc = ' ';
-
+	}
 	dlen = ns_get16(cp);
 	cp += INT16SZ;
 	cp1 = cp;
@@ -675,9 +686,20 @@ pr_rr(const u_char *cp, const u_char *msg, FILE *file, int filter) {
 	 */
 	switch (type) {
 	case ns_t_a:
-		memcpy(&inaddr, cp, INADDRSZ);
+		memcpy(&inaddr, cp, NS_INADDRSZ);
 	        if (doprint)
 			fprintf(file,"%c%s", punc, inet_ntoa(inaddr));
+		cp += dlen;
+		break;
+	case ns_t_aaaa:
+		memcpy(in6addr, cp, NS_IN6ADDRSZ);
+	        if (doprint) {
+			if (inet_ntop(AF_INET6, in6addr, tmpbuf,
+				      sizeof tmpbuf) != NULL)
+				fprintf(file,"%c%s", punc, tmpbuf);
+			else
+				fprintf(file,"%c???", punc);
+		}
 		cp += dlen;
 		break;
 	case ns_t_cname:
@@ -749,13 +771,14 @@ pr_rr(const u_char *cp, const u_char *msg, FILE *file, int filter) {
 	case ns_t_mx:
 	case ns_t_afsdb:
 	case ns_t_rt:
-		if (doprint)
+		if (doprint) {
 			if (type == ns_t_mx && !verbose)
 				fprintf(file," (pri=%d) by ", ns_get16(cp));
 			else if (verbose)
 				fprintf(file,"\t%d ", ns_get16(cp));
 			else
 				fprintf(file," ");
+		}
 		cp += sizeof(u_short);
 		cp = (u_char *)pr_cdname(cp, msg, name, sizeof(name));
 		if (doprint)
@@ -788,27 +811,30 @@ pr_rr(const u_char *cp, const u_char *msg, FILE *file, int filter) {
 		cp += NS_INT16SZ;
 		/* Flags */
 		n = *cp++;
-		if (doprint)
+		if (doprint) {
 			if (n)
 				fprintf(file, "%c%.*s", punc, n, cp);
 			else 
 				fprintf(file, "%c\"\"",punc);
+		}
 		cp += n;
 		/* Service */
 		n = *cp++;
-		if (doprint)
+		if (doprint) {
 			if (n)
 				fprintf(file, "%c%.*s", punc, n, cp);
 			else 
 				fprintf(file,"%c\"\"",punc);
+		}
 		cp += n;
 		/* Regexp  */
 		n = *cp++;
-		if (doprint)
+		if (doprint) {
 			if (n)
 				fprintf(file, "%c%.*s", punc, n, cp);
 			else 
 				fprintf(file, "%c\"\"",punc);
+		}
 		cp += n;
 		/* replacement  */
 		cp = (u_char *)pr_cdname(cp, msg, name, sizeof(name));
@@ -877,14 +903,14 @@ pr_rr(const u_char *cp, const u_char *msg, FILE *file, int filter) {
 		cp += INT32SZ;
 		proto = *cp++;
 		protop = getprotobynumber(proto);
-		if (doprint)
+		if (doprint) {
 			if (protop)
 				fprintf(file, "%c%s %s", punc,
 					inet_ntoa(inaddr), protop->p_name);
 			else
 				fprintf(file, "%c%s %d", punc,
 					inet_ntoa(inaddr), proto);
-
+		}
 		n = 0;
 		while (cp < cp1 + dlen) {
 			c = *cp++;
@@ -895,13 +921,14 @@ pr_rr(const u_char *cp, const u_char *msg, FILE *file, int filter) {
 						servp = getservbyport(htons(n),
 								      protop->
 								       p_name);
-					if (doprint)
+					if (doprint) {
 						if (servp)
 							fprintf(file, " %s",
 								servp->s_name);
 						else
 							fprintf(file, " %d",
 								n);
+					}
 				}
 				c <<= 1;
 			} while (++n & 07);
@@ -988,11 +1015,11 @@ ListHosts(char *namePtr, int queryType) {
 	enum { NO_ERRORS, ERR_READING_LEN, ERR_READING_MSG, ERR_PRINTING }
 		error = NO_ERRORS;
 
-	int msglen, amtToRead, numRead, i, result, len, dlen, type, nscount;
-	int numAnswers = 0, soacnt = 0;
+	int msglen, amtToRead, numRead, i, len, dlen, type, nscount, n;
+	int numAnswers = 0, soacnt = 0, result = 0;
 	u_char tmp[NS_INT16SZ];
 	char name[NS_MAXDNAME], dname[2][NS_MAXDNAME], domain[NS_MAXDNAME];
-	u_char *cp, *nmp;
+	u_char *cp, *nmp, *eom;
 
 	/* Names and addresses of name servers to try. */
 	char nsname[NUMNS][NS_MAXDNAME];
@@ -1067,8 +1094,19 @@ ListHosts(char *namePtr, int queryType) {
 		}
 
 		cp = answer.qb2 + HFIXEDSZ;
-		if (ntohs(answer.qb1.qdcount) > 0)
-			cp += dn_skipname(cp, answer.qb2 + msglen) + QFIXEDSZ;
+		eom = answer.qb2 + msglen;
+		if (ntohs(answer.qb1.qdcount) > 0) {
+			n = dn_skipname(cp, eom);
+			if (n < 0) {
+				printf("Form error.\n");
+				return (ERROR);
+			}
+			cp += n + QFIXEDSZ;
+			if (cp > eom) {
+				printf("Form error.\n");
+				return (ERROR);
+			}
+		}
 
 		numns = 0;
 		numnsaddr = 0;
@@ -1080,12 +1118,20 @@ ListHosts(char *namePtr, int queryType) {
 		for ((void)NULL; nscount; nscount--) {
 			cp += dn_expand(answer.qb2, answer.qb2 + msglen, cp,
 					domain, sizeof(domain));
+			if (cp + 3 * INT16SZ + INT32SZ > eom) {
+				printf("Form error.\n");
+				return (ERROR);
+			}
 			type = ns_get16(cp);
 			cp += INT16SZ + INT16SZ + INT32SZ;
 			dlen = ns_get16(cp);
 			cp += INT16SZ;
+			if (cp + dlen > eom) {
+				printf("Form error.\n");
+				return (ERROR);
+			}
 			if (type == ns_t_ns) {
-				if (dn_expand(answer.qb2, answer.qb2 + msglen,
+				if (dn_expand(answer.qb2, eom,
 					      cp, name, sizeof(name)) >= 0) {
 					if (numns < NUMNS &&
 					    strcasecmp((char *)domain, 
@@ -1287,11 +1333,25 @@ ListHosts(char *namePtr, int queryType) {
 		}
 		numAnswers++;
 		cp = buf.qb2 + HFIXEDSZ;
-		if (ntohs(buf.qb1.qdcount) > 0)
-			cp += dn_skipname(cp, buf.qb2 + len) + QFIXEDSZ;
-
+		if (ntohs(buf.qb1.qdcount) > 0) {
+			n = dn_skipname(cp, buf.qb2 + len);
+			if (n < 0) {
+				error = ERR_PRINTING;
+				break;
+			}
+			cp += n + QFIXEDSZ;
+		}
 		nmp = cp;
-		cp += dn_skipname(cp, buf.qb2 + len);
+		n = dn_skipname(cp, buf.qb2 + len);
+		if (n < 0) {
+			error = ERR_PRINTING;
+			break;
+		}
+		cp += n;
+		if (cp + INT16SZ > buf.qb2 + len) {
+			error = ERR_PRINTING;
+			break;
+		}
 		if ((ns_get16(cp) == ns_t_soa)) {
 			(void) dn_expand(buf.qb2, buf.qb2 + len, nmp,
 					 dname[soacnt], sizeof dname[0]);

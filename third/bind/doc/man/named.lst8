@@ -4,8 +4,9 @@ NNAAMMEE
      nnaammeedd - Internet domain name server (DNS)
 
 SSYYNNOOPPSSIISS
-     NNAAMMEEDD [--dd _d_e_b_u_g_l_e_v_e_l] [--pp _p_o_r_t_#] [--(bb|cc) _c_o_n_f_i_g___f_i_l_e] [--ff --qq --rr] [--ww
-           _d_i_r_e_c_t_o_r_y] [_c_o_n_f_i_g___f_i_l_e]
+     NNAAMMEEDD [--dd _d_e_b_u_g_l_e_v_e_l] [--pp _p_o_r_t_#] [--(bb|cc) _c_o_n_f_i_g___f_i_l_e] [--ff --qq --rr] [--uu
+           _u_s_e_r___n_a_m_e] [--gg _g_r_o_u_p___n_a_m_e] [--tt _d_i_r_e_c_t_o_r_y] [--ww _d_i_r_e_c_t_o_r_y]
+           [_c_o_n_f_i_g___f_i_l_e]
 
 DDEESSCCRRIIPPTTIIOONN
      NNaammeedd is the Internet domain name server.  See RFC's 1033, 1034, and 1035
@@ -73,6 +74,23 @@ DDEESSCCRRIIPPTTIIOONN
                  favor of the ``recursion'' clause of the configuration file's
                  ``options'' statement.
 
+     --uu _u_s_e_r___n_a_m_e
+                 Specifies the user the server should run as after it initial-
+                 izes.  The value specified may be either a username or a nu-
+                 meric user id.  If the ``--gg'' flag is not specified, then the
+                 group id used will be the primary group of the user specified
+                 (initgroups() is called, so all of the user's groups will be
+                 available to the server).
+
+     --gg _g_r_o_u_p___n_a_m_e
+                 Specifies the group the server should run as after it ini-
+                 tializes.  The value specified may be either a groupname or a
+                 numeric group id.
+
+     --tt _d_i_r_e_c_t_o_r_y
+                 Specifies the directory the server should chroot() into as
+                 soon as it is finshed processing command line arguments.
+
      --ww _d_i_r_e_c_t_o_r_y
                  Sets the working directory of the server.  The ``directory''
                  clause of the configuration file's ``options'' statement
@@ -109,6 +127,8 @@ DDEESSCCRRIIPPTTIIOONN
 
      _o_p_t___t_t_l       An optional integer number for the time-to-live field.  It
                    defaults to zero, meaning the minimum value specified in
+
+
                    the SOA record for the zone.
 
      _o_p_t___c_l_a_s_s     The object address type; currently only one type is sup-
@@ -126,8 +146,6 @@ DDEESSCCRRIIPPTTIIOONN
                                     preference value (0..32767), with lower
                                     numeric values representing higher logical
                                     preferences.
-
-
 
                          CNAME      the canonical name for an alias (domain)
 
@@ -176,6 +194,7 @@ DDEESSCCRRIIPPTTIIOONN
      field.  (It's true that we will have to rethink this strategy in the year
      4294, but we're not worried about it.)
 
+
      Secondary servers check the serial number at intervals specified by the
      refresh time in seconds; if the serial number changes, a zone transfer
      will be done to load the new data.  If a master server cannot be contact-
@@ -196,7 +215,7 @@ NNOOTTEESS
      The following signals have the specified effect when sent to the server
      process using the kill(1) command:
 
-     SIGHUP    Causes server to read _n_a_m_e_d_._b_o_o_t and reload the database.  If
+     SIGHUP    Causes server to read _n_a_m_e_d_._c_o_n_f and reload the database.  If
                the server is built with the FORCED_RELOAD compile-time option,
                then SIGHUP will also cause the server to check the serial num-
                ber on all secondary zones; normally, the serial numbers are

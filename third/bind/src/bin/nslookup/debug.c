@@ -53,7 +53,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)debug.c	5.26 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: debug.c,v 1.1.1.1 1998-05-04 22:23:37 ghudson Exp $";
+static char rcsid[] = "$Id: debug.c,v 1.1.1.2 1998-05-12 18:04:24 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -249,6 +249,14 @@ Print_cdname2(const u_char *cp, const u_char *msg, const u_char *eom,
 	return (Print_cdname_sub(cp, msg, eom, file, 1));
 }
 
+#define BOUNDS_CHECK(ptr, count) \
+	do { \
+		if ((ptr) + (count) > eom) { \
+			fprintf(file, "(form error.)\n"); \
+			return (NULL); \
+		} \
+	} while (0)
+
 /*
  * Print resource record fields in human readable form (not master file form).
  */
@@ -265,10 +273,12 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 		return (NULL);			/* compression error */
 	}
 
+	BOUNDS_CHECK(cp, 3 * INT16SZ + INT32SZ);
 	NS_GET16(type, cp);
 	NS_GET16(class, cp);
 	NS_GET32(rrttl, cp);
 	NS_GET16(dlen, cp);
+	BOUNDS_CHECK(cp, dlen);
 
 	debug = _res.options & (RES_DEBUG|RES_DEBUG2);
 	if (debug) {
@@ -288,6 +298,7 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 	 */
 	switch (type) {
 	case T_A:
+		BOUNDS_CHECK(cp, INADDRSZ);
 		memcpy(&inaddr, cp, INADDRSZ);
 		fprintf(file,"\tinternet address = %s\n", inet_ntoa(inaddr));
 		cp += dlen;
@@ -310,26 +321,34 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 		goto doname;
 
 	case T_MX:
+		BOUNDS_CHECK(cp, INT16SZ);
 		fprintf(file,"\tpreference = %u",ns_get16((u_char*)cp));
 		cp += INT16SZ;
 		fprintf(file,", mail exchanger = ");
 		goto doname;
 
-	case T_NAPTR: 
+	case T_NAPTR:
+		BOUNDS_CHECK(cp, 2 * INT16SZ);
 		fprintf(file, "\torder = %u",ns_get16((u_char*)cp));
 		cp += INT16SZ;
 		fprintf(file,", preference = %u\n", ns_get16((u_char*)cp));
 		cp += INT16SZ;
 		/* Flags */
+		BOUNDS_CHECK(cp, 1);
 		n = *cp++;
+		BOUNDS_CHECK(cp, n);
 		fprintf(file,"\tflags = \"%.*s\"\n", (int)n, cp);
 		cp += n;
 		/* Service */
+		BOUNDS_CHECK(cp, 1);
 		n = *cp++;
+		BOUNDS_CHECK(cp, n);
 		fprintf(file,"\tservices = \"%.*s\"\n", (int)n, cp);
 		cp += n;
 		/* Regexp */
+		BOUNDS_CHECK(cp, 1);
 		n = *cp++;
+		BOUNDS_CHECK(cp, n);
 		fprintf(file,"\trule = \"%.*s\"\n", (int)n, cp);
 		cp += n;
 		/* Replacement */
@@ -343,6 +362,7 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 		break;
 
 	case T_SRV: 
+		BOUNDS_CHECK(cp, 3 * INT16SZ);
 		fprintf(file, "\tpriority = %u",ns_get16((u_char*)cp));
 		cp += INT16SZ;
 		fprintf(file,", weight = %u", ns_get16((u_char*)cp));
@@ -354,6 +374,7 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 		goto doname;
 
         case T_PX:
+		BOUNDS_CHECK(cp, INT16SZ);
                 fprintf(file,"\tpreference = %u",ns_get16((u_char*)cp));
                 cp += INT16SZ;
                 fprintf(file,", RFC 822 = ");
@@ -372,12 +393,14 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
                 break;
 
 	case T_RT:
+		BOUNDS_CHECK(cp, INT16SZ);
 		fprintf(file,"\tpreference = %u",ns_get16((u_char*)cp));
 		cp += INT16SZ;
 		fprintf(file,", router = ");
 		goto doname;
 
 	case T_AFSDB:
+		BOUNDS_CHECK(cp, INT16SZ);
 		fprintf(file,"\tsubtype = %d",ns_get16((u_char*)cp));
 		cp += INT16SZ;
 		fprintf(file,", DCE/AFS server = ");
@@ -400,11 +423,14 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 
 	case T_HINFO:
 		cp2 = cp + dlen;
+		BOUNDS_CHECK(cp, 1);
 		if ((n = *cp++) != 0) {
+			BOUNDS_CHECK(cp, n);
 			fprintf(file,"\tCPU = %.*s", n, cp);
 			cp += n;
 		}
 		if ((cp < cp2) && ((n = *cp++) != 0)) {
+			BOUNDS_CHECK(cp, n);
 			fprintf(file,"\tOS = %.*s\n", n, cp);
 			cp += n;
 		} else fprintf(file, "\n*** Warning *** OS-type missing\n");
@@ -412,12 +438,15 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 
 	case T_ISDN:
 		cp2 = cp + dlen;
+		BOUNDS_CHECK(cp, 1);
 		n = *cp++;
 		if (n != 0) {
+			BOUNDS_CHECK(cp, n);
 			fprintf(file,"\tISDN = \"%.*s", n, cp);
 			cp += n;
 		}
 		if ((cp < cp2) && (n = *cp++)) {
+			BOUNDS_CHECK(cp, n);
 			fprintf(file,"-%.*s\"\n", n, cp);
 			cp += n;
 		} else fprintf(file,"\"\n");
@@ -438,6 +467,7 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 			fprintf(file, "(name truncated?)\n");
 			return (NULL);			/* compression error */
 		}
+		BOUNDS_CHECK(cp, 5 * INT32SZ);
 		fprintf(file,"\n\tserial = %lu", ns_get32((u_char*)cp));
 		cp += INT32SZ;
 		ttl = ns_get32((u_char*)cp);
@@ -536,6 +566,7 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 	case T_AAAA: {
 		char t[sizeof "ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255"];
 
+		BOUNDS_CHECK(cp, IN6ADDRSZ);
 		fprintf(file, "\tIPv6 address = %s\n",
 			inet_ntop(AF_INET6, cp, t, sizeof t));
 		cp += IN6ADDRSZ;
@@ -545,12 +576,11 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 	case T_WKS: {
 		struct protoent *protoPtr;
 
-		if (dlen < INT32SZ + 1)
-			break;
+		BOUNDS_CHECK(cp, INADDRSZ + 1);
 		if (!debug)
 		    (void) putc('\n', file);
 		memcpy(&inaddr, cp, INADDRSZ);
-		cp += INT32SZ;
+		cp += INADDRSZ;
 		if ((protoPtr = getprotobynumber(*cp)) != NULL) {
 		    fprintf(file,"\tinet address = %s, protocol = %s\n\t",
 			inet_ntoa(inaddr), protoPtr->p_name);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: dns_gr.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static const char rcsid[] = "$Id: dns_gr.c,v 1.1.1.2 1998-05-12 18:04:52 ghudson Exp $";
 #endif
 
 /*
@@ -26,6 +26,10 @@ static const char rcsid[] = "$Id: dns_gr.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson
 
 #include "port_before.h"
 
+#ifndef WANT_IRS_GR
+static int __bind_irs_gr_unneeded;
+#else
+
 #include <sys/param.h>
 #include <sys/types.h>
 
@@ -34,6 +38,8 @@ static const char rcsid[] = "$Id: dns_gr.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 
@@ -168,7 +174,7 @@ static struct group *
 get_hes_group(struct irs_gr *this, const char *name, const char *type) {
 	struct pvt *pvt = (struct pvt *)this->private;
 	char **hes_list, *cp, **new;
-	int num_members = 0;
+	size_t num_members = 0;
 	u_long t;
 
 	hes_list = hesiod_resolve(pvt->dns->hes_ctx, name, type);
@@ -240,3 +246,5 @@ get_hes_group(struct irs_gr *this, const char *name, const char *type) {
 	}
 	return (NULL);
 }
+
+#endif /* WANT_IRS_GR */

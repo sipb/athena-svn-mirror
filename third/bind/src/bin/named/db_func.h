@@ -67,7 +67,7 @@
 
 /* db_proc.h - prototypes for functions in db_*.c
  *
- * $Id: db_func.h,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $
+ * $Id: db_func.h,v 1.1.1.2 1998-05-12 18:03:53 ghudson Exp $
  */
 
 /* ++from db_update.c++ */
@@ -105,15 +105,17 @@ extern int 		getnonblank(FILE *, const char *),
 			getservices(int, char *, FILE *, const char *);
 extern char		getprotocol(FILE *, const char *);
 extern int		makename(char *, const char *, int);
-extern void		notify_after_load(evContext, void *, const void *);
-extern void		notify_after_delay(evContext, void *,
-					   struct timespec,
-					   struct timespec);
+#ifdef BIND_NOTIFY
+extern void		notify_after_load(evContext, void *, const void *),
+			db_cancel_pending_notifies(void);
+#endif
 /* --from db_load.c-- */
 
 /* ++from db_glue.c++ */
 extern void		buildservicelist(void),
+			destroyservicelist(void),
 			buildprotolist(void),
+			destroyprotolist(void),
 			getname(struct namebuf *, char *, int);
 extern int		servicenumber(const char *),
 			protocolnumber(const char *),
@@ -133,7 +135,8 @@ extern struct databuf	*rm_datum(struct databuf *,
 extern struct namebuf	*rm_name(struct namebuf *, 
 				 struct namebuf **,
 				 struct namebuf *);
-extern void		db_free(struct databuf *);
+extern void		rm_hash(struct hashbuf *);
+extern void		db_freedata(struct databuf *);
 /* --from db_glue.c-- */
 
 /* ++from db_lookup.c++ */
@@ -142,3 +145,7 @@ extern struct namebuf	*nlookup(const char *, struct hashbuf **,
 extern struct namebuf	*np_parent __P((struct namebuf *));
 extern int		match(struct databuf *, int, int);
 /* --from db_lookup.c-- */
+
+/* ++from db_dict.c++ */
+int			dict_lookup(const char *, int, int);
+/* --from db_dict.c-- */

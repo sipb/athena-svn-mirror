@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)db_lookup.c	4.18 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: db_lookup.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $";
+static char rcsid[] = "$Id: db_lookup.c,v 1.1.1.2 1998-05-12 18:03:56 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -157,7 +157,7 @@ nlookup(const char *name, struct hashbuf **htpp,
 	     np != NULL;
 	     np = np->n_next) {
 		if (np->n_hashval == hval &&
-		    ((size_t)NAMELEN(*np) == (cp - name)) && 
+		    ((size_t)NAMELEN(*np) == (size_t)(cp - name)) && 
 		    (strncasecmp(name, NAME(*np), cp - name) == 0)) {
 			*fname = name;
 			return (np);

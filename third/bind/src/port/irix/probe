@@ -4,7 +4,7 @@ uname=/usr/bin/uname
 
 if [ -f $uname ]; then
 	case `$uname -s`-`$uname -r` in
-	IRIX-[56].*) exit 0 ;;
+	IRIX*-[56].*) exit 0 ;;
 	esac
 fi
 

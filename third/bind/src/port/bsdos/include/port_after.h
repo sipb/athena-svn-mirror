@@ -7,6 +7,13 @@
 #define HAVE_FCHMOD
 #define NEED_PSELECT
 #define HAVE_SA_LEN
+#define HAVE_MINIMUM_IFREQ
+#define USE_LOG_CONS
+#define RLIMIT_TYPE quad_t
+#define RLIMIT_LONGLONG
+#define RLIMIT_FILE_INFINITY
+#define HAVE_CHROOT
+#define CAN_CHANGE_ID
 
 #define _TIMEZONE timezone
 
@@ -16,11 +23,6 @@
 #define KSYMS		"/bsd"
 #define KMEM		"/dev/kmem"
 #define UDPSUM		"udpcksum"
-
-#undef _PATH_NAMED
-#define _PATH_NAMED	"/usr/sbin/named"
-#undef _PATH_XFER
-#define _PATH_XFER	"/usr/libexec/named-xfer"
 
 /*
  * We need to know the IPv6 address family number even on IPv4-only systems.

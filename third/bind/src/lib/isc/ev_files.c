@@ -1,4 +1,4 @@
-/* Copyright (c) 1995-1997 by Internet Software Consortium
+/* Copyright (c) 1995, 1996, 1997, 1998 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -19,10 +19,11 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static const char rcsid[] = "$Id: ev_files.c,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $";
+static const char rcsid[] = "$Id: ev_files.c,v 1.1.1.2 1998-05-12 18:05:29 ghudson Exp $";
 #endif
 
 #include "port_before.h"
+#include "fd_setsize.h"
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -106,8 +107,18 @@ evSelectFD(evContext opaqueCtx,
 	 * Maintaining a "tail" pointer for ctx->files would fix this, but I'm
 	 * not sure it would be ``more correct.''
 	 */
+	if (ctx->files != NULL)
+		ctx->files->prev = id;
+	id->prev = NULL;
 	id->next = ctx->files;
 	ctx->files = id;
+
+	/* Insert into fd table. */
+	if (ctx->fdTable[fd] != NULL)
+		ctx->fdTable[fd]->fdprev = id;
+	id->fdprev = NULL;
+	id->fdnext = ctx->fdTable[fd];
+	ctx->fdTable[fd] = id;
 
 	/* Turn on the appropriate bits in the {rd,wr,ex}Next fd_set's. */
 	if (eventmask & EV_READ)
@@ -156,17 +167,21 @@ evDeselectFD(evContext opaqueCtx, evFileID opaqueID) {
 	if (mode == -1 && errno != EBADF)
 		ERR(errno);
 
-	/* Remove this ID.  Its absense is an ENOENT error. */
-	for (old = NULL, cur = ctx->files;
-	     cur != NULL && cur != del;
-	     old = cur, cur = cur->next)
-		(void)NULL;
-	if (! cur)
-		ERR(ENOENT);
-	if (! old)
-		ctx->files = del->next;
+	/* Remove from the list of files. */
+	if (del->prev != NULL)
+		del->prev->next = del->next;
 	else
-		old->next = del->next;
+		ctx->files = del->next;
+	if (del->next != NULL)
+		del->next->prev = del->prev;
+
+	/* Remove from the fd table. */
+	if (del->fdprev != NULL)
+		del->fdprev->fdnext = del->fdnext;
+	else
+		ctx->fdTable[del->fd] = del->fdnext;
+	if (del->fdnext != NULL)
+		del->fdnext->fdprev = del->fdprev;
 
 	/*
 	 * If the file descriptor does not appear in any other select() entry,
@@ -198,12 +213,27 @@ evDeselectFD(evContext opaqueCtx, evFileID opaqueID) {
 			eventmask |= cur->eventmask;
 
 	/* OK, now we know which bits we can clear out. */
-	if (!(eventmask & EV_READ))
+	if (!(eventmask & EV_READ)) {
 		FD_CLR(del->fd, &ctx->rdNext);
-	if (!(eventmask & EV_WRITE))
+		if (FD_ISSET(del->fd, &ctx->rdLast)) {
+			FD_CLR(del->fd, &ctx->rdLast);
+			ctx->fdCount--;
+		}
+	}
+	if (!(eventmask & EV_WRITE)) {
 		FD_CLR(del->fd, &ctx->wrNext);
-	if (!(eventmask & EV_EXCEPT))
+		if (FD_ISSET(del->fd, &ctx->wrLast)) {
+			FD_CLR(del->fd, &ctx->wrLast);
+			ctx->fdCount--;
+		}
+	}
+	if (!(eventmask & EV_EXCEPT)) {
 		FD_CLR(del->fd, &ctx->exNext);
+		if (FD_ISSET(del->fd, &ctx->exLast)) {
+			FD_CLR(del->fd, &ctx->exLast);
+			ctx->fdCount--;
+		}
+	}
 
 	/* If this was the maxFD, find the new one. */
 	if (del->fd == ctx->fdMax) {
@@ -225,7 +255,7 @@ evDeselectFD(evContext opaqueCtx, evFileID opaqueID) {
 		 (u_long)ctx->exNext.fds_bits[0]);
 
 	/* Couldn't free it before now since we were using fields out of it. */
-	(void) free(del);
+	FREE(del);
 
 	return (0);
 }
@@ -234,7 +264,7 @@ static evFile *
 FindFD(const evContext_p *ctx, int fd, int eventmask) {
 	evFile *id;
 
-	for (id = ctx->files; id != NULL; id = id->next)
+	for (id = ctx->fdTable[fd]; id != NULL; id = id->fdnext)
 		if (id->fd == fd && (id->eventmask & eventmask) != 0)
 			break;
 	return (id);

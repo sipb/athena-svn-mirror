@@ -32,7 +32,7 @@
 
 /*
  *      from nameser.h	8.1 (Berkeley) 6/2/93
- *	$Id: nameser_compat.h,v 1.1.1.1 1998-05-04 22:23:38 ghudson Exp $
+ *	$Id: nameser_compat.h,v 1.1.1.2 1998-05-12 18:04:33 ghudson Exp $
  */
 
 #ifndef _ARPA_NAMESER_COMPAT_
@@ -53,7 +53,8 @@
 
 #if defined(vax) || defined(ns32000) || defined(sun386) || defined(i386) || \
     defined(MIPSEL) || defined(_MIPSEL) || defined(BIT_ZERO_ON_RIGHT) || \
-    defined(__alpha__) || defined(__alpha)
+    defined(__alpha__) || defined(__alpha) || \
+    (defined(__Lynx__) && defined(__x86__))
 #define BYTE_ORDER	LITTLE_ENDIAN
 #endif
 
@@ -63,7 +64,9 @@
     defined(apollo) || defined(__convex__) || defined(_CRAY) || \
     defined(__hppa) || defined(__hp9000) || \
     defined(__hp9000s300) || defined(__hp9000s700) || \
-    defined (BIT_ZERO_ON_LEFT) || defined(m68k)
+    defined (BIT_ZERO_ON_LEFT) || defined(m68k) || \
+    (defined(__Lynx__) && \
+     (defined(__68k__) || defined(__sparc__) || defined(__powerpc__)))
 #define BYTE_ORDER	BIG_ENDIAN
 #endif
 #endif /* linux */

@@ -14,7 +14,7 @@
 # SOFTWARE.
 
 SUBDIRS = arpa isc
-HFILES = netdb.h resolv.h
+HFILES = netdb.h resolv.h irs.h hesiod.h
 
 DESTDIR=
 DESTINC= /usr/local/bind/include

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_config.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $";
+static char rcsid[] = "$Id: ns_config.c,v 1.1.1.2 1998-05-12 18:04:00 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -44,6 +44,7 @@ static char rcsid[] = "$Id: ns_config.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Ex
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -55,7 +56,7 @@ static char rcsid[] = "$Id: ns_config.c,v 1.1.1.1 1998-05-04 22:23:34 ghudson Ex
 #include "ns_parseutil.h"
 
 static int tmpnum = 0;
-static int one_time_config_done = 0;
+static int config_initialized = 0;
 
 static int need_logging_free = 0;
 static int default_logging_installed;
@@ -66,6 +67,7 @@ static int default_options_installed;
 static int initial_configuration = 1;
 
 static char **logging_categories;
+static char *current_pid_filename = NULL;
 
 #define ZONE_SYM_TABLE_SIZE 4973
 static symbol_table zone_symbol_table;
@@ -75,12 +77,11 @@ static symbol_table zone_symbol_table;
 void
 free_zone_timerinfo(struct zoneinfo *zp) {
 	if (zp->z_timerinfo != NULL) {
-		free(zp->z_timerinfo->name);
-		free(zp->z_timerinfo);
+		freestr(zp->z_timerinfo->name);
+		memput(zp->z_timerinfo, sizeof *zp->z_timerinfo);
 		zp->z_timerinfo = NULL;
 	} else
-		ns_error(ns_log_config,
-			 "timer for zone '%s' had no timerinfo",
+		ns_error(ns_log_config, "timer for zone '%s' had no timerinfo",
 			 zp->z_origin);
 }
 
@@ -100,9 +101,9 @@ free_zone_contents(struct zoneinfo *zp, int undefine_sym) {
 				 strerror(errno));
 	}
 	if (zp->z_origin != NULL)
-		free(zp->z_origin);
+		freestr(zp->z_origin);
 	if (zp->z_source != NULL)
-		free(zp->z_source);
+		freestr(zp->z_source);
 	if (zp->z_update_acl != NULL)
 		free_ip_match_list(zp->z_update_acl);
 	if (zp->z_query_acl != NULL)
@@ -111,7 +112,7 @@ free_zone_contents(struct zoneinfo *zp, int undefine_sym) {
 		free_ip_match_list(zp->z_transfer_acl);
 #ifdef BIND_UPDATE
 	if (zp->z_updatelog != NULL)
-		free(zp->z_updatelog);
+		freestr(zp->z_updatelog);
 #endif /* BIND_UPDATE */
 }
 
@@ -120,7 +121,7 @@ free_zone(struct zoneinfo *zp) {
 	INSIST(zp != NULL);
 
 	free_zone_contents(zp, 0);
-	free(zp);
+	memput(zp, sizeof *zp);
 }
 
 struct zoneinfo *
@@ -161,19 +162,13 @@ new_zone(int class, int type) {
 	 */
 	if (nzones % 64 == 0) {
 		ns_debug(ns_log_config, 1, "Reallocating zones structure");
-		/*
-		 * Realloc() not used since it might damage zones
-		 * if an error occurs.  Of course, we panic in that
-		 * case so this logic is suspicious.
-		 */
 		zp = (struct zoneinfo *)
-			malloc((64 + nzones)
-			       * sizeof(struct zoneinfo));
-		if (!zp)
+			memget((64 + nzones) * sizeof(struct zoneinfo));
+		if (zp == NULL)
 			panic("no memory for more zones", NULL);
 		memcpy(zp, zones, nzones * sizeof(struct zoneinfo));
 		memset(&zp[nzones], 0, 64 * sizeof(struct zoneinfo));
-		free(zones);
+		memput(zones, nzones * sizeof(struct zoneinfo));
 		zones = zp;
 	}
 	zp = &zones[nzones++];
@@ -282,7 +277,7 @@ validate_zone(struct zoneinfo *zp) {
 			}
 			/* this sprintf() is now safe */
 			sprintf(filename, "%s.log", zp->z_source);
-			zp->z_updatelog = savestr(filename);
+			zp->z_updatelog = savestr(filename, 1);
 		}
 	}
 #endif /* BIND_UPDATE */
@@ -306,9 +301,9 @@ begin_zone(char *name, int class) {
 	ns_debug(ns_log_config, 3, "begin_zone('%s', %d)",
 		 (*name == '\0') ? "." : name, class);
 
-	zp = (struct zoneinfo *)malloc(sizeof (struct zoneinfo));
+	zp = (struct zoneinfo *)memget(sizeof (struct zoneinfo));
 	if (zp == NULL)
-		panic("malloc failed in begin_zone", NULL);
+		panic("memget failed in begin_zone", NULL);
 	memset(zp, 0, sizeof (struct zoneinfo));
 	zp->z_origin = name;
 	zp->z_class = class;
@@ -324,7 +319,7 @@ begin_zone(char *name, int class) {
 static void
 update_zone_info(struct zoneinfo *zp, struct zoneinfo *new_zp) {
 	struct stat f_time;
-	char buf[MAXPATHLEN];
+	char buf[MAXPATHLEN+1];
 	int i;
 
 	INSIST(zp != NULL);
@@ -350,7 +345,7 @@ update_zone_info(struct zoneinfo *zp, struct zoneinfo *new_zp) {
 	 * any data that was dynamically allocated.
 	 */
 	if (zp->z_origin != NULL)
-		free(zp->z_origin);
+		freestr(zp->z_origin);
 	zp->z_origin = new_zp->z_origin;
 	new_zp->z_origin = NULL;
 	zp->z_class = new_zp->z_class;
@@ -367,6 +362,7 @@ update_zone_info(struct zoneinfo *zp, struct zoneinfo *new_zp) {
 		free_ip_match_list(zp->z_query_acl);
 	zp->z_query_acl = new_zp->z_query_acl;
 	new_zp->z_query_acl = NULL;
+	zp->z_axfr_src = new_zp->z_axfr_src;
 	if (zp->z_transfer_acl)
 		free_ip_match_list(zp->z_transfer_acl);
 	zp->z_transfer_acl = new_zp->z_transfer_acl;
@@ -387,7 +383,7 @@ update_zone_info(struct zoneinfo *zp, struct zoneinfo *new_zp) {
 	zp->z_dumpintvl = new_zp->z_dumpintvl;
 	zp->z_deferupdcnt = new_zp->z_deferupdcnt;
 	if (zp->z_updatelog)
-		free(zp->z_updatelog);
+		freestr(zp->z_updatelog);
 	zp->z_updatelog = new_zp->z_updatelog;
 	new_zp->z_updatelog = NULL;
 #endif /* BIND_UPDATE */
@@ -415,7 +411,7 @@ update_zone_info(struct zoneinfo *zp, struct zoneinfo *new_zp) {
 
 		/* File has changed, or hasn't been loaded yet. */
 		if (zp->z_source) {
-			free(zp->z_source);
+			freestr(zp->z_source);
 			clean_cache(fcachetab, 1);
 		}
 		zp->z_source = new_zp->z_source;
@@ -447,8 +443,8 @@ update_zone_info(struct zoneinfo *zp, struct zoneinfo *new_zp) {
 
 	primary_reload:
 #endif /* BIND_UPDATE */
-		if (zp->z_source)
-			free(zp->z_source);
+		if (zp->z_source != NULL)
+			freestr(zp->z_source);
 		zp->z_source = new_zp->z_source;
 		new_zp->z_source = NULL;
 		zp->z_flags &= ~Z_AUTH;
@@ -482,12 +478,7 @@ update_zone_info(struct zoneinfo *zp, struct zoneinfo *new_zp) {
 			 * unconditionally reloads the zone.
 			 */
 			if (merge_logs(zp) == 1) {
-				/* if we didn't make another
-				   copy of zp->z_source, we'd be
-				   in trouble at primary_reload
-				   because the free() would release
-				   source and zp->z_source */
-				new_zp->z_source = savestr(zp->z_source);
+				new_zp->z_source = savestr(zp->z_source, 1);
 				goto primary_reload;
 			}
 #endif
@@ -504,7 +495,7 @@ update_zone_info(struct zoneinfo *zp, struct zoneinfo *new_zp) {
 			 * after a reload.
 			 */
 			sprintf(buf, "NsTmp%ld.%d", (long)getpid(), tmpnum++);
-			new_zp->z_source = savestr(buf);
+			new_zp->z_source = savestr(buf, 1);
 			zp->z_flags |= Z_TMP_FILE;
 		} else
 			zp->z_flags &= ~Z_TMP_FILE;
@@ -520,7 +511,7 @@ update_zone_info(struct zoneinfo *zp, struct zoneinfo *new_zp) {
 		      (zp->z_ftime != f_time.st_mtime)))) {
 			ns_debug(ns_log_config, 1,
 				 "backup file changed or missing");
-			free(zp->z_source);
+			freestr(zp->z_source);
 			zp->z_source = NULL;
 			zp->z_serial = 0;	/* force xfer */
 			ns_stopxfrs(zp);
@@ -605,7 +596,7 @@ end_zone(zone_config zh, int should_install) {
 		zp = new_zone(new_zp->z_class, new_zp->z_type);
 		INSIST(zp != NULL);
 		value.integer = (zp - zones);
-		define_symbol(zone_symbol_table, savestr(new_zp->z_origin),
+		define_symbol(zone_symbol_table, savestr(new_zp->z_origin, 1),
 			      (new_zp->z_type << 16) | new_zp->z_class,
 			      value, SYMBOL_FREE_KEY);
 	}
@@ -721,6 +712,14 @@ set_zone_query_acl(zone_config zh, ip_match_list iml) {
 }
 
 int
+set_zone_transfer_source(zone_config zh, struct in_addr ina) {
+	struct zoneinfo *zp = zh.opaque;
+
+	zp->z_axfr_src = ina;
+	return (1);
+}
+
+int
 set_zone_transfer_acl(zone_config zh, ip_match_list iml) {
 	struct zoneinfo *zp;
 
@@ -790,16 +789,17 @@ new_options() {
 	ip_match_list iml;
 	ip_match_element ime;
 
-	op = (options)malloc(sizeof (struct options));
+	op = (options)memget(sizeof (struct options));
 	if (op == NULL)
-		panic("malloc failed in new_options()", NULL);
+		panic("memget failed in new_options()", NULL);
 
-	op->directory = savestr(".");
-	op->pid_filename = savestr(_PATH_PIDFILE);
-	op->named_xfer = savestr(_PATH_XFER);
-	op->dump_filename = savestr(_PATH_DUMPFILE);
-	op->stats_filename = savestr(_PATH_STATS);
-	op->flags = 0U;
+	op->directory = savestr(".", 1);
+	op->pid_filename = savestr(_PATH_PIDFILE, 1);
+	op->named_xfer = savestr(_PATH_XFER, 1);
+	op->dump_filename = savestr(_PATH_DUMPFILE, 1);
+	op->stats_filename = savestr(_PATH_STATS, 1);
+	op->memstats_filename = savestr(_PATH_MEMSTATS, 1);
+	op->flags = DEFAULT_OPTION_FLAGS;
 	op->transfers_in = DEFAULT_XFERS_RUNNING;
 	op->transfers_per_ns = DEFAULT_XFERS_PER_NS;
 	op->transfers_out = 0;
@@ -821,7 +821,7 @@ new_options() {
 	op->data_size = 0UL;	/* use system default */
 	op->stack_size = 0UL;	/* use system default */
 	op->core_size = 0UL;	/* use system default */
-	op->files = ULONG_MAX;  /* use system maximum */
+	op->files = ULONG_MAX;  /* unlimited */
 	op->check_names[primary_trans] = fail;
 	op->check_names[secondary_trans] = warn;
 	op->check_names[response_trans] = ignore;
@@ -839,13 +839,17 @@ free_options(options op) {
 	INSIST(op != NULL);
 
 	if (op->directory)
-		free(op->directory);
-	if (op->dump_filename)
-		free(op->dump_filename);
+		freestr(op->directory);
 	if (op->pid_filename)
-		free(op->pid_filename);
+		freestr(op->pid_filename);
+	if (op->named_xfer)
+		freestr(op->named_xfer);
+	if (op->dump_filename)
+		freestr(op->dump_filename);
 	if (op->stats_filename)
-		free(op->stats_filename);
+		freestr(op->stats_filename);
+	if (op->memstats_filename)
+		freestr(op->memstats_filename);
 	if (op->query_acl)
 		free_ip_match_list(op->query_acl);
 	if (op->transfer_acl)
@@ -856,7 +860,7 @@ free_options(options op) {
 		free_listen_info_list(op->listen_list);
 	if (op->fwdtab)
 		free_forwarders(op->fwdtab);
-	free(op);
+	memput(op, sizeof *op);
 }
 
 void
@@ -871,6 +875,8 @@ set_boolean_option(options op, int bool_opt, int value) {
 	case OPTION_NONOTIFY:
 	case OPTION_NONAUTH_NXDOMAIN:
 	case OPTION_MULTIPLE_CNAMES:
+	case OPTION_HOSTSTATS:
+	case OPTION_DEALLOC_ON_EXIT:
 		if (value)
 			op->flags |= bool_opt;
 		else
@@ -880,14 +886,6 @@ set_boolean_option(options op, int bool_opt, int value) {
 		panic("unexpected option in set_boolean_option", NULL);
 	}
 }
-
-int
-ns_option_p(int option) {
-	if (server_options == NULL)
-		panic("no server_options in ns_option_p", NULL);
-	return ((server_options->flags & option) != 0);
-}
-
 
 #ifdef HAVE_GETRUSAGE
 enum limit { Datasize, Stacksize, Coresize, Files };
@@ -922,18 +920,22 @@ get_initial_limits() {
 }
 
 static void
-ns_rlimit(enum limit limit, u_long value) {
-	struct rlimit limits;
+ns_rlimit(enum limit limit, u_long limit_value) {
+	struct rlimit limits, old_limits;
 	int rlimit = -1;
 	char *name;
+	rlimit_type value;
 
-	if (value == ULONG_MAX) {
-		if (limit == Files) {
-			/* Some systems don't like RLIM_INFINITY for files. */
-			value = sysconf(_SC_OPEN_MAX);
-		} else
-			value = (u_long)RLIM_INFINITY;
-	}
+	if (limit_value == ULONG_MAX) {
+#ifndef RLIMIT_FILE_INFINITY
+		if (limit == Files)
+			value = MAX((rlimit_type)sysconf(_SC_OPEN_MAX),
+				    initial_num_files.rlim_max);
+		else
+#endif
+			value = (rlimit_type)RLIM_INFINITY;
+	} else
+		value = (rlimit_type)limit_value;
 
 	limits.rlim_cur = limits.rlim_max = value;
 	switch (limit) {
@@ -942,7 +944,7 @@ ns_rlimit(enum limit limit, u_long value) {
 		rlimit = RLIMIT_DATA;
 #endif
 		name = "max data size";
-		if (!value)
+		if (value == 0)
 			limits = initial_data_size;
 		break;
 	case Stacksize:
@@ -950,7 +952,7 @@ ns_rlimit(enum limit limit, u_long value) {
 		rlimit = RLIMIT_STACK;
 #endif
 		name = "max stack size";
-		if (!value)
+		if (value == 0)
 			limits = initial_stack_size;
 		break;
 	case Coresize:
@@ -958,7 +960,7 @@ ns_rlimit(enum limit limit, u_long value) {
 		rlimit = RLIMIT_CORE;
 #endif
 		name = "max core size";
-		if (!value)
+		if (value == 0)
 			limits = initial_core_size;
 		break;
 	case Files:
@@ -966,10 +968,12 @@ ns_rlimit(enum limit limit, u_long value) {
 		rlimit = RLIMIT_NOFILE;
 #endif
 		name = "max number of open files";
-		if (!value)
+		if (value == 0)
 			limits = initial_num_files;
+		/* XXX check < FD_SETSIZE? */
 		break;
 	default:
+		name = NULL;	/* Make gcc happy. */
 		panic("impossible condition in ns_rlimit()", NULL);
 	}
 	if (rlimit == -1) {
@@ -978,18 +982,29 @@ ns_rlimit(enum limit limit, u_long value) {
 			   name);
 		return;
 	}
+	if (getrlimit(rlimit, &old_limits) < 0) {
+		ns_warning(ns_log_config, "getrlimit(%s): %s", name,
+			   strerror(errno));
+	}
+	if (user_id != 0 && limits.rlim_max == RLIM_INFINITY)
+		limits.rlim_cur = limits.rlim_max = old_limits.rlim_max;
 	if (setrlimit(rlimit, &limits) < 0) {
-		ns_warning(ns_log_config, "setrlimit(%s, %ld): %s", name,
-			   value, strerror(errno));
+		ns_warning(ns_log_config, "setrlimit(%s): %s", name,
+			   strerror(errno));
 		return;
 	} else {
 		if (value == 0)
-			ns_debug(ns_log_config, 3, "%s is default (%lu)",
-				 name, (u_long)limits.rlim_cur);
+			ns_debug(ns_log_config, 3, "%s is default",
+				 name);
 		else if (value == RLIM_INFINITY)
 			ns_debug(ns_log_config, 3, "%s is unlimited", name);
 		else
+#ifdef RLIMIT_LONGLONG
+			ns_debug(ns_log_config, 3, "%s is %llu", name,
+				 (unsigned long long)value);
+#else
 			ns_debug(ns_log_config, 3, "%s is %lu", name, value);
+#endif
 	}
 }
 #endif /* HAVE_GETRUSAGE */
@@ -998,9 +1013,9 @@ listen_info_list
 new_listen_info_list() {
 	listen_info_list ll;
 
-	ll = (listen_info_list)malloc(sizeof (struct listen_info_list));
+	ll = (listen_info_list)memget(sizeof (struct listen_info_list));
 	if (ll == NULL)
-		panic("malloc() failed in new_listen_info_list()", NULL);
+		panic("memget failed in new_listen_info_list()", NULL);
 	ll->first = NULL;
 	ll->last = NULL;
 	return (ll);
@@ -1013,9 +1028,10 @@ free_listen_info_list(listen_info_list ll) {
 	INSIST(ll != NULL);
 	for (li = ll->first; li != NULL; li = next_li) {
 		next_li = li->next;
-		free(li);
+		free_ip_match_list(li->list);
+		memput(li, sizeof *li);
 	}
-	free(ll);
+	memput(ll, sizeof *ll);
 }
 
 void
@@ -1028,9 +1044,9 @@ add_listen_on(options op, u_short port, ip_match_list iml) {
 	if (op->listen_list == NULL)
 		op->listen_list = new_listen_info_list();
 	ll = op->listen_list;
-	ni = (listen_info)malloc(sizeof (struct listen_info));
+	ni = (listen_info)memget(sizeof (struct listen_info));
 	if (ni == NULL)
-		panic("malloc() failed in add_listen_on", NULL);
+		panic("memget failed in add_listen_on", NULL);
 	ni->port = port;
 	ni->list = iml;
 	ni->next = NULL;
@@ -1080,11 +1096,24 @@ void
 update_pid_file() {
 	FILE *fp;
 
-	INSIST(server_options != NULL);
+	REQUIRE(server_options != NULL);
+	REQUIRE(server_options->pid_filename != NULL);
 
-	fp = write_open(server_options->pid_filename);
+	/* XXX */ ns_debug(ns_log_default, 1, "update_pid_file()");
+	if (current_pid_filename != NULL) {
+		(void)unlink(current_pid_filename);
+		freestr(current_pid_filename);
+		current_pid_filename = NULL;
+	}
+	current_pid_filename = savestr(server_options->pid_filename, 0);
+	if (current_pid_filename == NULL) {
+		ns_error(ns_log_config,
+			 "savestr() failed in update_pid_file()");
+		return;
+	}
+	fp = write_open(current_pid_filename);
 	if (fp != NULL) {
-		fprintf(fp, "%ld\n", (long)getpid());
+		(void) fprintf(fp, "%ld\n", (long)getpid());
 		(void) fclose(fp);
 	} else
 		ns_error(ns_log_config, "couldn't create pid file '%s'",
@@ -1121,6 +1150,13 @@ os_change_directory(const char *name) {
 }
 
 static void
+periodic_getnetconf(evContext ctx, void *uap, struct timespec due,
+		    struct timespec inter)
+{
+	getnetconf(1);
+}
+				   
+static void
 set_interval_timer(int which_timer, int interval) {
 	evTimerID *tid = NULL;
 	evTimerFunc func = NULL;
@@ -1132,7 +1168,7 @@ set_interval_timer(int which_timer, int interval) {
 		break;
 	case INTERFACE_TIMER:
 		tid = &interface_timer;
-		func = getnetconf;
+		func = periodic_getnetconf;
 		break;
 	case STATS_TIMER:
 		tid = &stats_timer;
@@ -1142,7 +1178,7 @@ set_interval_timer(int which_timer, int interval) {
 		ns_panic(ns_log_config, 1,
 			 "set_interval_timer: unknown timer %d", which_timer);
 	}
-	if (active_timers & which_timer) {
+	if ((active_timers & which_timer) != 0) {
 		if (interval > 0) {
 			if (evResetTimer(ev, *tid, func, NULL, 
 					 evAddTime(evNowTime(), 
@@ -1160,7 +1196,7 @@ set_interval_timer(int which_timer, int interval) {
 			else
 				active_timers &= ~which_timer;
 		}
-	} else {
+	} else if (interval > 0) {
 		if (evSetTimer(ev, func, NULL, 
 			       evAddTime(evNowTime(), 
 					 evConsTime(interval, 0)),
@@ -1195,16 +1231,12 @@ set_options(options op, int is_default) {
 		add_to_ip_match_list(iml, ime);
 		add_listen_on(op, htons(NS_DEFAULTPORT), iml);
 	}
-	if (server_options != NULL) {
-		INSIST(server_options->pid_filename != NULL);
-		(void)unlink(server_options->pid_filename);
+	if (server_options != NULL)
 		free_options(server_options);
-	}
 	server_options = op;
 
 	/* XXX should validate pid filename */
 	INSIST(op->pid_filename != NULL);
-	update_pid_file();
 
 	if (op->directory && !os_change_directory(op->directory))
 		ns_panic(ns_log_config, 0, "can't change directory to %s: %s",
@@ -1251,9 +1283,7 @@ set_options(options op, int is_default) {
 	set_interval_timer(CLEAN_TIMER, server_options->clean_interval);
 	set_interval_timer(INTERFACE_TIMER,
 			   server_options->interface_interval);
-#ifdef XSTATS
 	set_interval_timer(STATS_TIMER, server_options->stats_interval);
-#endif
 
 	options_installed = 1;
 	default_options_installed = is_default;
@@ -1272,9 +1302,9 @@ ip_match_list
 new_ip_match_list() {
 	ip_match_list iml;
 
-	iml = (ip_match_list)malloc(sizeof (struct ip_match_list));
+	iml = (ip_match_list)memget(sizeof (struct ip_match_list));
 	if (iml == NULL)
-		panic("malloc failed in new_ip_match_list", NULL);
+		panic("memget failed in new_ip_match_list", NULL);
 	iml->first = NULL;
 	iml->last = NULL;
 	return (iml);
@@ -1286,9 +1316,9 @@ free_ip_match_list(ip_match_list iml) {
 
 	for (ime = iml->first; ime != NULL; ime = next_element) {
 		next_element = ime->next;
-		free(ime);
+		memput(ime, sizeof *ime);
 	}
-	free(iml);
+	memput(iml, sizeof *iml);
 }	
 
 ip_match_element
@@ -1296,9 +1326,9 @@ new_ip_match_pattern(struct in_addr address, u_int mask_bits) {
 	ip_match_element ime;
 	u_int32_t mask;
 
-	ime = (ip_match_element)malloc(sizeof (struct ip_match_element));
+	ime = (ip_match_element)memget(sizeof (struct ip_match_element));
 	if (ime == NULL)
-		panic("malloc failed in new_ip_match_pattern", NULL);
+		panic("memget failed in new_ip_match_pattern", NULL);
 	ime->type = ip_match_pattern;
 	ime->flags = 0;
 	ime->u.direct.address = address;
@@ -1317,7 +1347,7 @@ new_ip_match_pattern(struct in_addr address, u_int mask_bits) {
 	ime->next = NULL;
 	if (!ina_onnet(ime->u.direct.address, ime->u.direct.address,
 		       ime->u.direct.mask)) {
-		free(ime);
+		memput(ime, sizeof *ime);
 		ime = NULL;
 	}
 	return (ime);
@@ -1327,9 +1357,9 @@ ip_match_element
 new_ip_match_mask(struct in_addr address, struct in_addr mask) {
 	ip_match_element ime;
 
-	ime = (ip_match_element)malloc(sizeof (struct ip_match_element));
+	ime = (ip_match_element)memget(sizeof (struct ip_match_element));
 	if (ime == NULL)
-		panic("malloc failed in new_ip_match_mask", NULL);
+		panic("memget failed in new_ip_match_pattern", NULL);
 	ime->type = ip_match_pattern;
 	ime->flags = 0;
 	ime->u.direct.address = address;
@@ -1337,7 +1367,7 @@ new_ip_match_mask(struct in_addr address, struct in_addr mask) {
 	ime->next = NULL;
 	if (!ina_onnet(ime->u.direct.address, ime->u.direct.address,
 		       ime->u.direct.mask)) {
-		free(ime);
+		memput(ime, sizeof *ime);
 		ime = NULL;
 	}
 	return (ime);
@@ -1349,9 +1379,9 @@ new_ip_match_indirect(ip_match_list iml) {
 
 	INSIST(iml != NULL);
 
-	ime = (ip_match_element)malloc(sizeof (struct ip_match_element));
+	ime = (ip_match_element)memget(sizeof (struct ip_match_element));
 	if (ime == NULL)
-		panic("malloc failed in new_ip_match_pattern", NULL);
+		panic("memget failed in new_ip_match_indirect", NULL);
 	ime->type = ip_match_indirect;
 	ime->flags = 0;
 	ime->u.indirect.list = iml;
@@ -1363,9 +1393,9 @@ ip_match_element
 new_ip_match_localhost() {
 	ip_match_element ime;
 
-	ime = (ip_match_element)malloc(sizeof (struct ip_match_element));
+	ime = (ip_match_element)memget(sizeof (struct ip_match_element));
 	if (ime == NULL)
-		panic("malloc failed in new_ip_match_localhost", NULL);
+		panic("memget failed in new_ip_match_localhost", NULL);
 	ime->type = ip_match_localhost;
 	ime->flags = 0;
 	ime->u.indirect.list = NULL;
@@ -1377,9 +1407,9 @@ ip_match_element
 new_ip_match_localnets() {
 	ip_match_element ime;
 
-	ime = (ip_match_element)malloc(sizeof (struct ip_match_element));
+	ime = (ip_match_element)memget(sizeof (struct ip_match_element));
 	if (ime == NULL)
-		panic("malloc failed in new_ip_match_localnets", NULL);
+		panic("memget failed in new_ip_match_localnets", NULL);
 	ime->type = ip_match_localnets;
 	ime->flags = 0;
 	ime->u.indirect.list = NULL;
@@ -1489,6 +1519,7 @@ ip_match_address(ip_match_list iml, struct in_addr address) {
 			indirect = 1;
 			break;
 		default:
+			indirect = 0;	/* Make gcc happy. */
 			panic("unexpected ime type in ip_match_address()",
 			      NULL);
 		}
@@ -1549,7 +1580,8 @@ ip_match_network(ip_match_list iml, struct in_addr address,
 			indirect = 1;
 			break;
 		default:
-			panic("unexpected ime type in ip_match_address()",
+			indirect = 0;	/* Make gcc happy. */
+			panic("unexpected ime type in ip_match_network()",
 			      NULL);
 		}
 		if (indirect) {
@@ -1599,7 +1631,8 @@ distance_of_address(ip_match_list iml, struct in_addr address) {
 			indirect = 1;
 			break;
 		default:
-			panic("unexpected ime type in ip_match_address()",
+			indirect = 0;	/* Make gcc happy. */
+			panic("unexpected ime type in distance_of_address()",
 			      NULL);
 		}
 		if (indirect) {
@@ -1686,9 +1719,9 @@ add_forwarder(options op, struct in_addr address) {
 	}
 #endif /* SLAVE_FORWARD */
 
-	ftp = (struct fwdinfo *)malloc(sizeof(struct fwdinfo));
+	ftp = (struct fwdinfo *)memget(sizeof(struct fwdinfo));
 	if (!ftp)
-		panic("malloc() failed in add_forwarder", NULL);
+		panic("memget failed in add_forwarder", NULL);
 	ftp->fwdaddr.sin_family = AF_INET;
 	ftp->fwdaddr.sin_addr = address;
 	ftp->fwdaddr.sin_port = ns_port;
@@ -1696,7 +1729,7 @@ add_forwarder(options op, struct in_addr address) {
 	if (aIsUs(ftp->fwdaddr.sin_addr)) {
 		ns_error(ns_log_config, "forwarder '%s' ignored, my address",
 			 inet_ntoa(address));
-		free(ftp);
+		memput(ftp, sizeof *ftp);
 		return;
 	}
 #endif /* FWD_LOOP */
@@ -1727,7 +1760,7 @@ free_forwarders(struct fwdinfo *fwdtab) {
 
 	for (ftp = fwdtab; ftp != NULL; ftp = fnext) {
 		fnext = ftp->next;
-		free((char *)ftp);
+		memput(ftp, sizeof *ftp);
 	}
 }
 
@@ -1740,9 +1773,9 @@ static server_info
 new_server(struct in_addr address) {
 	server_info si;
 
-	si = (server_info)malloc(sizeof (struct server_info));
+	si = (server_info)memget(sizeof (struct server_info));
 	if (si == NULL)
-		panic("malloc() failed in new_server()", NULL);
+		panic("memget failed in new_server()", NULL);
 	si->address = address;
 	si->flags = 0U;
 	si->transfers = 0;
@@ -1754,8 +1787,8 @@ new_server(struct in_addr address) {
 
 static void
 free_server(server_info si) {
-	/* don't free key; it'll be done when the auth table is freed */
-	free(si);
+	/* Don't free key; it'll be done when the auth table is freed. */
+	memput(si, sizeof *si);
 }
 
 server_info
@@ -1898,9 +1931,9 @@ new_key_info(char *name, char *algorithm, char *secret) {
 	INSIST(name != NULL);
 	INSIST(algorithm != NULL);
 	INSIST(secret != NULL);
-	ki = (key_info)malloc(sizeof (struct key_info));
+	ki = (key_info)memget(sizeof (struct key_info));
 	if (ki == NULL)
-		panic("malloc() failed in new_key_info", NULL);
+		panic("memget failed in new_key_info", NULL);
 	ki->name = name;
 	ki->algorithm = algorithm;
 	ki->secret = secret;
@@ -1910,10 +1943,10 @@ new_key_info(char *name, char *algorithm, char *secret) {
 void
 free_key_info(key_info ki) {
 	INSIST(ki != NULL);
-	free(ki->name);
-	free(ki->algorithm);
-	free(ki->secret);
-	free(ki);
+	freestr(ki->name);
+	freestr(ki->algorithm);
+	freestr(ki->secret);
+	memput(ki, sizeof *ki);
 }
 
 void
@@ -1928,9 +1961,9 @@ key_info_list
 new_key_info_list() {
 	key_info_list kil;
 
-	kil = (key_info_list)malloc(sizeof (struct key_info_list));
+	kil = (key_info_list)memget(sizeof (struct key_info_list));
 	if (kil == NULL)
-		panic("malloc() failed in new_key_info_list()", NULL);
+		panic("memget failed in new_key_info_list()", NULL);
 	kil->first = NULL;
 	kil->last = NULL;
 	return (kil);
@@ -1944,9 +1977,9 @@ free_key_info_list(key_info_list kil) {
 	for (kle = kil->first; kle != NULL; kle = kle_next) {
 		kle_next = kle->next;
 		/* note we do NOT free kle->info */
-		free(kle);
+		memput(kle, sizeof *kle);
 	}
-	free(kil);
+	memput(kil, sizeof *kil);
 }
 
 void
@@ -1956,9 +1989,9 @@ add_to_key_info_list(key_info_list kil, key_info ki) {
 	INSIST(kil != NULL);
 	INSIST(ki != NULL);
 
-	kle = (key_list_element)malloc(sizeof (struct key_list_element));
+	kle = (key_list_element)memget(sizeof (struct key_list_element));
 	if (kle == NULL)
-		panic("malloc() failed in add_to_key_info_list()", NULL);
+		panic("memget failed in add_to_key_info_list()", NULL);
 	kle->info = ki;
 	if (kil->last != NULL)
 		kil->last->next = kle;
@@ -1979,25 +2012,18 @@ dprint_key_info_list(key_info_list kil) {
 }
 
 /*
- * Logging
- *
+ * Logging.
  */
-
-void
-free_log_config(log_config log_cfg) {
-	INSIST(log_cfg != NULL);
-	log_free_context(log_cfg->log_ctx);
-}
 
 log_config
 begin_logging() {
 	log_config log_cfg;
 	log_context lc;
 
-	log_cfg = (log_config)malloc(sizeof (struct log_config));
+	log_cfg = (log_config)memget(sizeof (struct log_config));
 	if (log_cfg == NULL)
 		ns_panic(ns_log_config, 0,
-			 "malloc() failed creating log_config");
+			 "memget failed creating log_config");
 	if (log_new_context(ns_log_max_category, logging_categories, &lc) < 0)
 		ns_panic(ns_log_config, 0,
 			 "log_new_context() failed: %s", strerror(errno));
@@ -2010,10 +2036,13 @@ begin_logging() {
 
 void
 add_log_channel(log_config log_cfg, int category, log_channel chan) {
+	log_channel_type type;
+
 	INSIST(log_cfg != NULL);
 	
+	type = log_get_channel_type(chan);
 	if (category == ns_log_eventlib) {
-		if (chan->type != log_file && chan->type != log_null) {
+		if (type != log_file && type != log_null) {
 			ns_error(ns_log_config,
 	 "must specify a file or null channel for the eventlib category");
 			return;
@@ -2026,7 +2055,7 @@ add_log_channel(log_config log_cfg, int category, log_channel chan) {
 		log_cfg->eventlib_channel = chan;
 	}
 	if (category == ns_log_packet) {
-		if (chan->type != log_file && chan->type != log_null) {
+		if (type != log_file && type != log_null) {
 			ns_error(ns_log_config,
 	 "must specify a file or null channel for the packet category");
 			return;
@@ -2159,7 +2188,8 @@ end_logging(log_config log_cfg, int should_install) {
 	if (should_install)
 		set_logging(log_cfg, 0);
 	else
-		free_log_config(log_cfg);
+		log_free_context(log_cfg->log_ctx);
+	memput(log_cfg, sizeof (struct log_config));
 }
 
 void
@@ -2168,6 +2198,7 @@ use_default_logging() {
 
 	log_cfg = begin_logging();
 	set_logging(log_cfg, 1);
+	memput(log_cfg, sizeof (struct log_config));
 }
 
 static void
@@ -2186,7 +2217,7 @@ init_default_log_channels() {
 		name = NULL;
 		stream = stderr;
 	} else {
-		name = savestr(_PATH_DEBUG);
+		name = _PATH_DEBUG;
 		stream = NULL;
 	}
 	debug_channel = log_new_file_channel(flags, log_info, name, stream,
@@ -2200,13 +2231,21 @@ init_default_log_channels() {
 		ns_panic(ns_log_config, 0, "couldn't create stderr_channel");
 
 	null_channel = log_new_file_channel(LOG_CHANNEL_OFF, log_info,
-					    savestr(_PATH_DEVNULL), NULL,
-					    0, ULONG_MAX);
+					    _PATH_DEVNULL, NULL, 0, ULONG_MAX);
 	if (null_channel == NULL || log_inc_references(null_channel) < 0)
 		ns_panic(ns_log_config, 0, "couldn't create null_channel");
 }
 
-void init_logging() {
+static void
+shutdown_default_log_channels() {
+	log_free_channel(syslog_channel);
+	log_free_channel(debug_channel);
+	log_free_channel(stderr_channel);
+	log_free_channel(null_channel);
+}
+
+void
+init_logging() {
 	int i;
 	int size;
 	const struct ns_sym *s;
@@ -2214,25 +2253,40 @@ void init_logging() {
 
 	size = ns_log_max_category * (sizeof (char *));
 
-	logging_categories = (char **)malloc(size);
+	logging_categories = (char **)memget(size);
 	if (logging_categories == NULL)
-		ns_panic(ns_log_config, 0, "malloc failed in init_logging");
+		ns_panic(ns_log_config, 0, "memget failed in init_logging");
 	memset(logging_categories, 0, size);
 	for (s = category_constants; s != NULL && s->name != NULL; s++) {
 		sprintf(category_name, "%s: ", s->name);
-		logging_categories[s->number] = savestr(category_name);
+		logging_categories[s->number] = savestr(category_name, 1);
 	}
 
 	init_default_log_channels();
 	use_default_logging();
 }
 
+void
+shutdown_logging() {
+	int size;
+	const struct ns_sym *s;
+
+	evSetDebug(ev, 0, NULL);
+	shutdown_default_log_channels();
+	log_free_context(log_ctx);
+
+	for (s = category_constants; s != NULL && s->name != NULL; s++)
+		freestr(logging_categories[s->number]);
+	size = ns_log_max_category * (sizeof (char *));
+	memput(logging_categories, size);
+}
+
 /*
  * Main Loader
  */
 
-static void
-one_time_configuration() {
+void
+init_configuration() {
 	/*
 	 * Remember initial limits for use if "default" is specified in
 	 * a config file.
@@ -2240,27 +2294,41 @@ one_time_configuration() {
 #ifdef HAVE_GETRUSAGE
 	get_initial_limits();
 #endif
-
 	zone_symbol_table = new_symbol_table(ZONE_SYM_TABLE_SIZE, NULL);
-
 	use_default_options();
+	parser_initialize();
+	config_initialized = 1;
+}
 
-	one_time_config_done = 1;
+void
+shutdown_configuration() {
+	REQUIRE(config_initialized);
+
+	if (server_options != NULL) {
+		free_options(server_options);
+		server_options = NULL;
+	}
+	if (current_pid_filename != NULL)
+		freestr(current_pid_filename);
+	free_nameserver_info();
+	free_symbol_table(zone_symbol_table);
+	parser_shutdown();
+	config_initialized = 0;
 }
 
 void
 load_configuration(const char *filename) {
+	REQUIRE(config_initialized);
+
 	ns_debug(ns_log_config, 3, "load configuration %s", filename);
 
-	if (!one_time_config_done)
-		one_time_configuration();
+	loading = 1;
 
 	/*
 	 * Clean up any previous configuration and initialize
 	 * global data structures we'll be updating.
 	 */
-	if (nameserver_info != NULL)
-		free_nameserver_info();
+	free_nameserver_info();
 	bogus_nameservers = new_ip_match_list();
 
 	options_installed = 0;
@@ -2290,9 +2358,12 @@ load_configuration(const char *filename) {
 		ns_warning(ns_log_config, "re-establishing default options");
 	}
 
+	update_pid_file();
+
 	/* Init or reinit the interface/port list and associated sockets. */
-	getnetconf(ev, NULL, evConsTime(0, 0), evConsTime(0, 0));
+	getnetconf(0);
 	opensocket_f();
 
 	initial_configuration = 0;
+	loading = 0;
 }

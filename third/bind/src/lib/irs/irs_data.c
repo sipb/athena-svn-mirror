@@ -16,16 +16,17 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: irs_data.c,v 1.1.1.1 1998-05-04 22:23:41 ghudson Exp $";
+static char rcsid[] = "$Id: irs_data.c,v 1.1.1.2 1998-05-12 18:05:11 ghudson Exp $";
 #endif
 
 #include "port_before.h"
 
 #include <stdio.h>
 
+#include <irs.h>
+
 #include "port_after.h"
 
-#include "irs.h"
 #include "irs_data.h"
 
 struct net_data		net_data;

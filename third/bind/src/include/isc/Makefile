@@ -13,7 +13,8 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-HFILES = eventlib.h misc.h tree.h logging.h heap.h
+HFILES = eventlib.h misc.h tree.h logging.h heap.h memcluster.h \
+	assertions.h list.h
 
 DESTDIR =
 DESTINC = /usr/local/bind/include

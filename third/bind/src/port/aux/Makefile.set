@@ -11,6 +11,8 @@
 'DESTEXEC=/usr/local/etc'
 'DESTMAN=/usr/local/man'
 'DESTHELP=/usr/local/lib'
+'DESTETC=/etc'
+'DESTRUN=/var/run'
 'MANDIR=man'
 'MANROFF=mandoc'
 'CATEXT=$$N'

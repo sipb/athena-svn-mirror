@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,12 +16,16 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: gen_gr.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static char rcsid[] = "$Id: gen_gr.c,v 1.1.1.2 1998-05-12 18:04:58 ghudson Exp $";
 #endif
 
 /* Imports */
 
 #include "port_before.h"
+
+#ifndef WANT_IRS_GR
+static int __bind_irs_gr_unneeded;
+#else
 
 #include <sys/types.h>
 
@@ -30,6 +34,8 @@ static char rcsid[] = "$Id: gen_gr.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <irs.h>
 
 #include "port_after.h"
 
@@ -289,7 +295,7 @@ grmerge(struct irs_gr *this, const struct group *src, int preserve) {
 	 * p points to new portion.
 	 */
 	n = ndst + nnew + 1;
-	if (n > pvt->nmemb) {
+	if ((size_t)n > pvt->nmemb) {
 		m = realloc(pvt->group.gr_mem, n * sizeof *m);
 		if (!m) {
 			/* No harm done, no work done. */
@@ -387,3 +393,5 @@ newgid(int ngroups, gid_t *groups, gid_t group) {
 			return (0);
 	return (1);
 }
+
+#endif /* WANT_IRS_GR */

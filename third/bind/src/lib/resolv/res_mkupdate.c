@@ -21,7 +21,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: res_mkupdate.c,v 1.1.1.1 1998-05-04 22:23:43 ghudson Exp $";
+static char rcsid[] = "$Id: res_mkupdate.c,v 1.1.1.2 1998-05-12 18:05:44 ghudson Exp $";
 #endif /* not lint */
 
 #include "port_before.h"
@@ -405,4 +405,15 @@ res_mkupdrec(int section, const char *dname,
 	rrecp->r_ttl = ttl;
 	rrecp->r_section = section;
 	return (rrecp);
+}
+
+/*
+ * Free a resource record buffer created by res_mkupdrec.
+ */
+void
+res_freeupdrec(ns_updrec *rrecp) {
+	/* Note: freeing r_dp is the caller's responsibility. */
+	if (rrecp->r_dname != NULL)
+		free(rrecp->r_dname);
+	free(rrecp);
 }

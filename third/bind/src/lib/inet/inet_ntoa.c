@@ -33,7 +33,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)inet_ntoa.c	8.1 (Berkeley) 6/4/93";
-static char rcsid[] = "$Id: inet_ntoa.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $";
+static char rcsid[] = "$Id: inet_ntoa.c,v 1.1.1.2 1998-05-12 18:04:49 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include "port_before.h"
@@ -44,6 +44,7 @@ static char rcsid[] = "$Id: inet_ntoa.c,v 1.1.1.1 1998-05-04 22:23:40 ghudson Ex
 #include <arpa/inet.h>
 
 #include <stdio.h>
+#include <string.h>
 
 #include "port_after.h"
 
