@@ -13,6 +13,15 @@
 #define lchown chown
 #endif
 
+#ifdef S_IFMT
+/* S_IFMT exists pretty much everywhere, but is not strictly POSIX. */
+#define PERM(mode) ((mode) & ~S_IFMT)
+#else
+/* This is the POSIX way, but it might miss implementation-defined file access
+ * bits like S_ISVTX. */
+#define PERM(mode) ((mode) & (S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID))
+#endif
+
 char *progname;
 
 typedef struct _filename {
@@ -96,17 +105,19 @@ char *getfile(list)
     return NULL;
 }
 
-void newownership(file, relative, name, newuid, newgid)
+void newownership(file, relative, name, newuid, newgid, newmode)
      struct stat *file;
      char *relative, *name;
      uid_t *newuid;
      gid_t *newgid;
+     mode_t *newmode;
 {
   struct stat osfile;
   char ospath[PATH_MAX];
 
   *newuid = file->st_uid;
   *newgid = file->st_gid;
+  *newmode = PERM(file->st_mode);
 
   if (file->st_uid == 1047 || file->st_uid == 3433 || file->st_uid == 3622 ||
       file->st_uid == 16453 || file->st_uid == 19558 || file->st_uid > 32767)
@@ -121,6 +132,7 @@ void newownership(file, relative, name, newuid, newgid)
     {
       *newuid = osfile.st_uid;
       *newgid = osfile.st_gid;
+      *newmode = PERM(osfile.st_mode);
     }
 }
 
@@ -137,6 +149,7 @@ void process(absolute, relative, fangs)
   filelist dirlist;
   uid_t newuid;
   gid_t newgid;
+  mode_t newmode;
 
   if (chdir(absolute))
     {
@@ -168,7 +181,8 @@ void process(absolute, relative, fangs)
 	  if (S_ISDIR(info.st_mode))
 	    savefile(&dirlist, curent->d_name);
 
-	  newownership(&info, relative, curent->d_name, &newuid, &newgid);
+	  newownership(&info, relative, curent->d_name, &newuid, &newgid,
+		       &newmode);
 
 	  if (info.st_uid != newuid && (info.st_mode & S_ISUID))
 	    {
@@ -192,6 +206,15 @@ void process(absolute, relative, fangs)
 		fprintf(stdout, "%s/%s: (%d.%d) -> (%d.%d)\n",
 			absolute, curent->d_name, info.st_uid,
 			info.st_gid, newuid, newgid);
+	    }
+
+	  if (PERM(info.st_mode) != newmode && !S_ISLNK(info.st_mode))
+	    {
+	      if (fangs)
+		chmod(curent->d_name, newmode);
+	      else
+		fprintf(stdout, "%s/%s: %04o -> %04o\n",
+			absolute, curent->d_name, PERM(info.st_mode), newmode);
 	    }
 	}
     }
