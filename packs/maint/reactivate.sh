@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.10 1991-08-26 04:00:50 probe Exp $
+# $Id: reactivate.sh,v 1.11 1991-08-27 18:58:15 epeisach Exp $
 
 trap "" 1 15
 
@@ -101,8 +101,24 @@ if [ "${RVDCLIENT}" = "true" ]; then
 fi
 
 # Perform an update if appropriate
-if [ -f /srvd/auto_update ] ; then 
+if [ "${AUTOUPDATE}" = "true" -a -f /srvd/auto_update ]; then 
 	/srvd/auto_update reactivate
+elif [ -f /srvd/.rvdinfo ]; then
+	NEWVERS=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
+	VERSION=`awk '{a=$5}; END{print a}' /etc/athena/version`
+	if [ "${NEWVERS}" != "${VERSION}" ]; then
+		cat <<EOF
+The workstation software version ($VERSION) does not match the
+version on the system packs ($NEWVERS).  A new version of software
+may be available.  Please contact Athena Operations (x3-1410) to
+have your workstation updated.
+EOF
+		if [ ! -f /usr/tmp/update.check -a -f /usr/ucb/logger ]; then
+			/usr/ucb/logger -t `hostname` -p user.notice at revision $VERSION
+			cp /dev/null /usr/tmp/update.check
+		fi
+		sleep 15
+	fi
 fi
 
 if [ -f /usr/athena/bin/access_off ]; then /usr/athena/bin/access_off; fi
