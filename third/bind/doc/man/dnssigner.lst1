@@ -1,0 +1,126 @@
+DNSSIGNER(1)                 BSD Reference Manual                 DNSSIGNER(1)
+
+NNAAMMEE
+     ddnnssssiiggnneerr - add signatures to DNS zone files
+
+SSYYNNOOPPSSIISS
+     ddnnssssiiggnneerr [ssiiggnneerr--nnaammee _d_e_f_a_u_l_t___s_i_g_n_e_r] [bboooott--ffiillee _f_i_l_e] [ddeebbuugg--ffiillee _f_i_l_e]
+               [oouutt--ddiirr _d_i_r_e_c_t_o_r_y] [sseeqq--nnoo _n_u_m_b_e_r] [eexxppiirraattiioonn--ttiimmee [(++ |
+               ==)]_t_i_m_e] [hhiiddee] [nnooaaxxffrr] [nnoossiiggnn] [vveerriiffyy] [uuppddaattee--zzoonneekkeeyy]
+               [--dd_l_e_v_e_l]
+
+DDEESSCCRRIIPPTTIIOONN
+     DDnnssssiiggnneerr (Sign DNS zone database) is a tool to generate signatures for
+     DNS (Domain Name System) resource records.  It also generates NXT records
+     for each zone.
+
+     ssiiggnneerr--nnaammee _d_e_f_a_u_l_t___s_i_g_n_e_r
+                 Specifies a name of the key to use if no signer is defined
+                 using the $SIGNER directive in the boot files.
+
+     bboooott--ffiillee _f_i_l_e
+                 Specifies the control file for ddnnssssiiggnneerr, which is in the
+                 same format as the BIND-4 _n_a_m_e_d_._b_o_o_t file.
+
+     ddeebbuugg--ffiillee _f_i_l_e
+                 Redirect debug output to the specified _f_i_l_e; default is
+                 _s_i_g_n_e_r___o_u_t in the current directory.
+
+     oouutt--ddiirr _d_i_r_e_c_t_o_r_y
+                 Write signed files to thie specified _d_i_r_e_c_t_o_r_y; default is to
+                 use _/_t_m_p.
+
+                 NNOOTTEE: Specify the full path to this directory; relative paths
+                 may not work.
+
+     eexxppiirraattiioonn--ttiimmee [(++ | ==)] _t_i_m_e
+                 Time when the signature records are to expire.  Using either
+                 ``=='' or _n_o sign before the _t_i_m_e argument (i.e., ``[==]
+                 _t_i_m_e''), the _t_i_m_e is interpreted as an absolute time in sec-
+                 onds when the records will expire.  (NNOOTTEE:  All such times
+                 are interpreted as Universal Times.) With ``++'' specified
+                 (i.e., ``++_t_i_m_e''), the _t_i_m_e time is interpreted as an offset
+                 into the future.
+
+                 If not specified on the command line, the default eexxppiirraattiioonn--
+                 ttiimmee is 3600*24*30 sec (30 days).
+
+     sseeqq--nnoo _n_u_m_b_e_r
+                 Force the serial number in the SOA records to the specified
+                 value.  If this parameter is not set, the serial number will
+                 be set to a value based on the current time.
+
+     hhiiddee        This flag will cause NXT records in zones with wildcard
+                 records to point to *.<zone> as the next host. The purpose of
+                 this flag is to hide all information about valid names in a
+                 zone.
+
+     nnooaaxxffrr      Turn of generation of zone transfer signature records, which
+                 validate the transfer of an entire zone.
+
+     nnoossiiggnn      When this flag is specified, the boot files are read, NXT
+                 records are generated and zone file is written to the output
+                 directory. No SIG records are generated. This flag is useful
+                 for quickly checking the format of the data in the boot
+
+                 files, and to have boot files sorted into DNSSEC order.
+
+     vveerriiffyy      When this flag is present, ddnnssssiiggnneerr will verify all signed
+                 records and print out a confirmation message for each SIG
+                 verified. The main use of this flag is to see how long it
+                 takes to generate each signature.
+
+     uuppddaattee--zzoonneekkeeyy
+                 If this flag is specified, then the zonekeys used to sign
+                 files will be updated with new records.  Specify this flag if
+                 one or more of the keys have been updated.  If there are no
+                 zonekeys specified in the boot files, this flag will insert
+                 them. Omitting zonekeys will cause primary nameservers to re-
+                 ject the zone.
+
+     --dd_l_e_v_e_l     Debug level to use for running ddnnssssiiggnneerr; these levels are
+                 the same as those used by NAMED(8)
+
+   DDEETTAAIILLSS
+     DDnnssssiiggnneerr reads BIND-4 _n_a_m_e_d_._b_o_o_t and zone files, adds SIG and NXT
+     records and writes out the records (to one file per zone, regardless of
+     how many include files the original zone was in).  The files generated by
+     ddnnssssiiggnneerr are ordinary textual zone files and are then normally loaded by
+     NAMED(8) to serve the zone.  DDnnssssiiggnneerr rreeqquuiirreess tthhaatt tthhee PPRRIIVVAATTEE kkeeyy((ss))
+     rreessiiddee iinn tthhee iinnppuutt ddiirreeccttoorryy.
+
+     Making manual changes to the output files is hazardous, because most
+     changes will invalidate one or more signatures contained therein.  This
+     will cause the zone to fail to load into NAMED(8),  or will cause subse-
+     quent failures in retrieving records from the zone.  It is far better to
+     make changes in ddnnssssiiggnneerr''ss input files, and rerun ddnnssssiiggnneerr.
+
+     When ddnnssssiiggnneerr detects a delegation point, it creates a special file
+     _<_z_o_n_e___n_a_m_e_>_._P_A_R_E_N_T which contains the RR's the parent zone signs for the
+     child zone (NS, KEY, NXT). The intent is that the child will include this
+     file when loading primary nameservers.  Similarly, each zone file ends
+     with the ``#include <zone_name>.PARENT'' command.  The records in the
+     _._P_A_R_E_N_T files are omitted from the SIG(AXFR) calculations as these
+     records usualy are on a different signing cycle.
+
+     The ``$SIGNER [_k_e_y_n_a_m_e]'' directive can be used to change signers in a
+     zone.  If _k_e_y_n_a_m_e is omitted, signing is turned off.  Keys are loaded the
+     first time the keys are accessed.  Only records that are signed by the
+     zone signer (the key that signs the SOA) are included in the SIG(AXFR)
+     calculation.  It is not generally recommended that multiple keys sign
+     records in the same zone, unless this is useful for dynamic updates.
+
+EENNVVIIRROONNMMEENNTT
+     No environmental variables are used.
+
+SSEEEE AALLSSOO
+     NAMED(8),  RSAREF documentation, Internet-Draft _d_r_a_f_t_-_i_e_t_f_-_d_n_s_s_e_c_-
+     _s_e_c_e_x_t_-_1_0_._t_x_t on Secure DNS, or its successor.
+
+AAUUTTHHOORR
+     Olafur Gudmundsson (ogud@tis.com)
+
+AACCKKNNOOWWLLEEDDGGMMEENNTTSS
+     The underlying crypto math is done by the RSAREF or BSAFE libraries.
+
+4th Berkeley Distribution      October 25, 1996                              2

@@ -1,0 +1,11 @@
+IRIX port by David Lindes, based on the solaris port:
+
+Current status for various versions of IRIX:
+
+	builds without any warnings on IRIX 5.3
+	builds with ld warnings only on IRIX 6.2
+	builds with numerous warnings on IRIX 6.4
+
+If you find bugs with, or improvements that can be made to, this
+portion of the software, please copy bind-irix-port-bugs@daveltd.com
+on your mail to the standard address for reporting bugs in bind.

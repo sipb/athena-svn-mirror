@@ -1,0 +1,97 @@
+This is the source portion of BIND version 8.1.1.  Its companions are
+"doc" and "contrib" so you are probably not missing anything.
+
+Changes from BIND 8.1-REL include:
+
+	-> Improved security.
+	-> libbind.a and .h files are installed under /usr/local/bind instead
+	   of under /usr/local.
+	-> Bug fixes.
+	-> Additional recipients of DNS Change Notification messages may
+	   be specified with the also-notify zone option.
+	-> Added periodic interface scanning.
+	-> New configuration options: dump-file, statistics-file,
+	   clean-interval, interface-interval, and statistics-interval.
+	-> Ports to OpenBSD 2.1, SCO UnixWare 2.1.2, AIX 4.
+
+See the CHANGES file for a detailed listing of all changes.  See the INSTALL
+file for information on building and installing BIND 8.1.1.
+
+
+BIND 8 Features
+
+	-> DNS Dynamic Updates (RFC 2136)
+
+	-> DNS Change Notification (RFC 1996)
+
+	-> Completely new configuration syntax
+
+	-> Flexible, categorized logging system
+
+	-> IP-address-based access control for queries, zone transfers, and
+	   updates that may be specified on a zone-by-zone basis
+
+	-> More efficient zone transfers
+
+	-> Improved performance for servers with thousands of zones
+
+	-> The server no longer forks for outbound zone transfers
+
+	-> Many bug fixes
+
+
+File and Directory Overview
+
+	CHANGES				history of added features and
+					fixed bugs
+
+	INSTALL				how to build and install
+
+	README				this file
+						
+	TODO				features planned but not yet written
+
+	Version				the version number of this release
+
+	bin/*				source for executables, including
+					the nameserver
+
+	include/*			public .h files
+
+	lib/*				the resolver and various BIND
+					support libraries
+
+	port/*				ports to various operating systems
+	
+
+Kits, Questions, Comments, and Bug Reports
+
+    <URL:ftp://ftp.isc.org/isc/bind/src/cur>        current non-test release
+    <URL:ftp://ftp.isc.org/isc/bind/src/testing>    latest public test kit
+
+    <URL:usenet:comp.protocols.dns.bind>            using BIND
+    <URL:usenet:comp.protocols.dns.ops>             DNS operations in general
+    <URL:usenet:comp.protocols.dns.std>             DNS standards in general
+
+    <URL:mailto:bind-users-request@vix.com>         gw'd to u:c.p.d.bind
+    <URL:mailto:namedroppers-request@internic.net>  gw'd to u:c.p.d.std
+    <URL:mailto:bind-workers-request@vix.com>       code warriors only please
+
+    <URL:http://www.isc.org/bind.html>		    the BIND home page
+    <URL:mailto:bind-bugs@isc.org>		    bug reports
+
+
+To Support the Effort
+
+	Note that BIND is supported by the Internet Software Consortium, and
+	although it is free for use and redistribution and incorporation into
+	vendor products and export and anything else you can think of, it
+	costs money to produce.  That money comes from ISPs, hardware and
+	software vendors, companies who make extensive use of the software,
+	and generally kind hearted folk such as yourself.
+
+	The Internet Software Consortium has also commissioned a DHCP server
+	implementation, has taken over official support/release of the INN
+	system, and supports the Kerberos Version 5 effort at MIT.  You can
+	learn more about the ISC's goals and accomplishments from the web page
+	at <URL:http://www.isc.org/>.

@@ -1,0 +1,14 @@
+Preliminary port of BIND 8.1 to SCO OSE 5.0.0 / 5.0.2
+
+Modification history:
+
+Date	  Who	What
+====	  ===	====
+
+01-Apr-97 E.V.	Eduard Vopicka, <eda@vse.cz>
+		Initial work.
+		Good date to start with any port, isn't it?
+
+23-Apr-97 E.V.	Some fixes for forthcoming T4B.
+01-May-97 E.V.	Added libbind.sh. Added BIND_4_COMPAT.
+
