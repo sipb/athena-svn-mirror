@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: miki $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.18 1995-07-11 20:59:33 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.19 1995-11-30 19:42:37 miki Exp $
  */
 
 /*
@@ -17,7 +17,7 @@ char copyright[] =
  All rights reserved.\n";
 
 static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
-static char *rcsid_lpd_c = "$Id: lpd.c,v 1.18 1995-07-11 20:59:33 miki Exp $";
+static char *rcsid_lpd_c = "$Id: lpd.c,v 1.19 1995-11-30 19:42:37 miki Exp $";
 #endif
 
 /*
@@ -719,7 +719,7 @@ perr(msg)
 	putchar('\n');
 }
 
-#if defined(_AUX_SOURCE)
+#if defined(_AUX_SOURCE) || defined(SOLARIS)
 _validuser(hostf, rhost, luser, ruser, baselen)
 char *rhost, *luser, *ruser;
 FILE *hostf;
