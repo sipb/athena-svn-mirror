@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.24 1995-02-24 06:31:47 cfields Exp $
+# $Id: add.csh,v 1.25 1995-05-16 23:30:03 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -109,7 +109,7 @@ if ( $?add_oldverbose && ! $?add_new ) set add_debug
 #
 
 if ( ! $?ATHENA_SYS ) then
-  setenv ATHENA_SYS `machtype -S`
+  setenv ATHENA_SYS `/srvd/bin/athena/machtype -S`
   if ( $ATHENA_SYS == "" ) then
     setenv ATHENA_SYS `fs sysname | awk -F\' '{ print $2 }'`
   endif
