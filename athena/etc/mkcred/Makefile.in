@@ -1,0 +1,43 @@
+# $Id: Makefile.in,v 1.1 1999-03-18 22:59:50 danw Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+mandir=@mandir@
+sbindir=@sbindir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
+
+all: mkcred
+
+mkcred: mkcred.o
+	$(CC) ${LDFLAGS} -o $@ mkcred.o ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${sbindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man5
+	${INSTALL_PROGRAM} mkcred ${DESTDIR}${sbindir}
+	${INSTALL} -m 444 mkcred.8 ${DESTDIR}${mandir}/man8/
+	${INSTALL} -m 444 credentials.5 ${DESTDIR}${mandir}/man5/
+
+clean:
+	rm -f mkcred.o mkcred
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
