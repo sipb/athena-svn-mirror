@@ -1,6 +1,6 @@
 /* main.c -- Entry point for Jade
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: main.c,v 1.1.1.1 2000-11-12 06:11:29 ghudson Exp $
+   $Id: main.c,v 1.1.1.2 2001-03-13 16:43:13 ghudson Exp $
 
    This file is part of Jade.
 
@@ -23,10 +23,6 @@
 #include "repint.h"
 #include <string.h>
 #include <limits.h>
-
-#ifdef HAVE_LOCALE_H
-# include <locale.h>
-#endif
 
 void *rep_common_db;
 
@@ -214,12 +210,6 @@ rep_init_from_dump(char *prog_name, int *argc, char ***argv,
 
     if(!sys_memory_init())
 	exit(10);
-
-#ifdef HAVE_SETLOCALE
-    /* XXX numbers.c uses scanf/printf to do number I/O. It's pretty
-       XXX disastrous if the decimal point goes missing.. */
-    setlocale (LC_NUMERIC, "C");
-#endif
 
     rep_common_db = rep_db_alloc("common", 4096);
 

@@ -1,6 +1,6 @@
 /* timers.c -- call a function after a period of time has passed
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
-   $Id: timers.c,v 1.1.1.1 2000-11-12 06:10:59 ghudson Exp $
+   $Id: timers.c,v 1.1.1.2 2001-03-13 16:43:28 ghudson Exp $
 
    This file is part of librep.
 
@@ -63,8 +63,8 @@ typedef struct lisp_timer {
     repv function;
     long secs, msecs;
     long rel_secs, rel_msecs;
-    int fired : 1;
-    int deleted : 1;
+    u_int fired : 1;
+    u_int deleted : 1;
 } Lisp_Timer;
 
 /* List of all allocated timer objects, linked through next_alloc field */

@@ -1,6 +1,6 @@
 /* symbols.c -- Lisp symbol handling
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: symbols.c,v 1.1.1.1 2000-11-12 06:11:39 ghudson Exp $
+   $Id: symbols.c,v 1.1.1.2 2001-03-13 16:43:29 ghudson Exp $
 
    This file is part of Jade.
 
@@ -332,7 +332,7 @@ Removes SYMBOL from OBARRAY (or the default). Use this with caution.
 	return rep_NULL;
     hashid = hash(rep_STR(rep_SYM(sym)->name)) % vsize;
     list = rep_VECT(ob)->array[hashid];
-    rep_VECT(ob)->array[hashid] = rep_NULL;
+    rep_VECT(ob)->array[hashid] = OB_NIL;
     while(rep_SYMBOLP(list))
     {
 	repv nxt = rep_SYM(list)->next;

@@ -30,7 +30,7 @@ typedef struct rep_regexp {
 	rep_regtype lasttype;
 	rep_regsubs matches;
 
-	char regstart;		/* Internal use only. */
+	u_char regstart;	/* Internal use only. */
 	char reganch;		/* Internal use only. */
 	char *regmust;		/* Internal use only. */
 	int regmlen;		/* Internal use only. */
@@ -58,6 +58,8 @@ struct rep_saved_regexp_data {
 extern rep_regexp *rep_regcomp(char *);
 extern int rep_regexec2(rep_regexp *, char *, int);
 extern int rep_regmatch_string(rep_regexp *, char *, int);
+
+extern int rep_regexp_max_depth;
 
 
 /* Only include the internal stuff if it's explicitly requested, since

@@ -1,3 +1,42 @@
+2000-12-29  John Harper  <jsh@eazel.com>
+
+	* rep/threads/condition-variable.jl: new file, implemented
+	the usual condition variable interface (but not quite strong
+	enough for SRFI-18 compatibility, condition-variable-wait would
+	need a TIMEOUT parameter)
+
+2000-12-20  John Harper  <jsh@eazel.com>
+
+	* rep/util/gaol.jl (gaol-safe-functions): added string-split
+	and string-replace
+
+2000-12-03  John Harper  <jsh@eazel.com>
+
+	* version 0.13.3
+
+2000-11-27  John Harper  <jsh@eazel.com>
+
+	* scheme/data.jl: when defining `>' and similar predicates, use
+	`rep#FOO' to get the rep versions, instead of just relying on
+	the fact that their local bindings haven't been created yet
+
+2000-11-26  John Harper  <jsh@eazel.com>
+
+	* rep/lang/define.jl (define-scan-form): don't expand (i.e.
+	delete) declaration forms
+
+2000-11-21  John Harper  <jsh@eazel.com>
+
+	* rep/vm/peephole.jl (peephole-optimizer): added transformation
+	`{jpt,jpn,jtp,jnp} X; jmp Y; X: --> {jnp,jtp,jpn.jpt} Y; X:',
+	can help some `do' loops e.g.
+
+2000-11-12  John Harper  <jsh@eazel.com>
+
+	* rep/util/repl.jl (completion-generator): pass this function
+	as an argument to `readline' (i.e. don't call it
+	rl-completion-generator)
+
 2000-10-23  John Harper  <jsh@eazel.com>
 
 	* version 0.13.2

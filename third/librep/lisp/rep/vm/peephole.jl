@@ -1,6 +1,6 @@
 #| peephole.jl -- peephole optimizer for rep assembly code
 
-   $Id: peephole.jl,v 1.1.1.1 2000-11-12 06:11:19 ghudson Exp $
+   $Id: peephole.jl,v 1.1.1.2 2001-03-13 16:43:24 ghudson Exp $
 
    Copyright (C) 1999, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -488,6 +488,19 @@
 		  (rplaca (cdr insn0) (car label))
 		  (rplacd tem label)))
 	      (setq keep-going t)))
+
+	   ;; {jpt,jpn} X; jmp Y; X: --> {jnp,jtp} Y; X:
+	   ;; {jtp,jnp} X; jmp Y; X: --> {jpn,jpt} Y; X:
+	   ((and (eq (car insn1) 'jmp)
+		 (memq (car insn0) '(jpt jpn jtp jnp))
+		 (eq (cadr insn0) insn2))
+	    (rplaca insn1 (case (car insn0)
+			    ((jpt) 'jnp)
+			    ((jpn) 'jtp)
+			    ((jtp) 'jpn)
+			    ((jnp) 'jpt)))
+	    (del-0)
+	    (setq keep-going t))
 
 	   ;; <const>; jmp X; ... X: <cond. jmp> Y --> whatever
 	   ;;

@@ -1,6 +1,6 @@
 #| repl.jl -- rep input loop
 
-   $Id: repl.jl,v 1.1.1.1 2000-11-12 06:11:26 ghudson Exp $
+   $Id: repl.jl,v 1.1.1.2 2001-03-13 16:43:16 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -88,7 +88,8 @@
       (let ((input (readline
 		    (format nil (if (repl-pending (fluid current-repl))
 				    "" "%s> ")
-			    (repl-struct (fluid current-repl))))))
+			    (repl-struct (fluid current-repl)))
+		    completion-generator)))
 	(and input (repl-iterate (fluid current-repl) input))))
     (define (interrupt-handler data)
       (if (eq (car data) 'user-interrupt)
@@ -117,7 +118,7 @@
 	    (format standard-output " %s" (map (car right))))
 	  (write standard-output #\newline)))))
 
-  (define (rl-completion-generator w)
+  (define (completion-generator w)
     (apropos (concat #\^ (quote-regexp w))
 	     (lambda (x)
 	       (condition-case nil
@@ -128,7 +129,7 @@
 
   (define (repl-completions repl word)
     (let-fluids ((current-repl repl))
-      (rl-completion-generator word)))
+      (completion-generator word)))
 
   (define (error-handler err data)
     (write standard-error

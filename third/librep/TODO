@@ -13,6 +13,9 @@ Outstanding bugs
  ! uses setlocale("LC_NUMERIC", "C") to make floating point I/O work,
    need to reimplement this locally
 
+   [ this is only done temporarily now, but rep-gtk still has some
+     instances that can't be removed until librep 0.14 I guess.. ]
+
  ! modules with `(set-binds)' config shouldn't inline constants?
 
  ! #!key params can't be inlined by the compiler
@@ -49,10 +52,6 @@ Outstanding bugs
  ! Putting a breakpoint in a .jaderc file doesn't work correctly; the
    debugger is entered, but the commands don't work
 
- ! It's relatively easy to blow the stack when regexp matching. Try
-   searching for `/\*(.|\n)*\*/' in a C file with reasonable large
-   comments.
-
  ! if load can't find the file, its error message is confusing
    (especially if the named file does exist, but no suffixed file
    exists)
@@ -60,6 +59,8 @@ Outstanding bugs
  ! non-fixnum numbers can't be dumped / dump totally broken re: modules
 
  ! `random' only accepts its range as a fixnum
+
+   GMP 3 has suitable functions, but need to support GMP 2 (e.g. RH 6)
 
  ! it's legal to do (set foo 42) where the contents of foo has a
    lexical binding
@@ -80,6 +81,20 @@ Outstanding bugs
 
 General programming tasks:
 ==========================
+
+ + comparison of datums currently compares type id and contents
+
+   should be defined by programmer, e.g.:
+
+	(define-datum-comparer ID FUN)
+
+   by analogy with define-datum-discloser
+
+   (but do callers of rep_value_cmp () assume that it may GC?)
+
+ + avoid spurious init-bind and unbind instructions
+
+   (generated when lexical bindings aren't heap allocated)
 
  + rename backquote* as quasiquote* -- helps scheme, doesn't affect rep
 
@@ -188,7 +203,8 @@ General programming tasks:
 
    Only do this for _heavily_ used bytecode subrs. Measure this by
    adding an extra vector slot, and counting the number of vm
-   iterations
+   instructions executed (and dividing by the length of the
+   code-string?)
 
    Another option is to generate direct-threaded code from the bytecode
    (and cache it). I have an attempt at this but it needs either (1) an
