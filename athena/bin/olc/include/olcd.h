@@ -17,7 +17,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.20 1990-07-24 14:12:27 lwvanels Exp $
+ *	$Id: olcd.h,v 1.21 1990-08-26 16:08:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -232,12 +232,15 @@ extern ERRCODE olc_get_accesses(int fd, REQUEST *request, int auth);
 /* Other external declarations. */
 
 extern void backup_data(void);	/* Backup the current state. */
+extern void log_long_description(const KNUCKLE *owner, const KNUCKLE
+				 *sender,const char *message);
 
 KNUCKLE *create_user(PERSON *person);
 KNUCKLE *create_knuckle(USER *user);
 
 void delete_user(USER *user);
 void delete_knuckle(KNUCKLE *knuckle, int cont);
+void disconnect_knucles(KNUCKLE *, KNUCKLE *);
 void init_user(KNUCKLE *knuckle, PERSON *person);
 QUEUE_STATUS *get_status_info(void);
 
@@ -282,17 +285,19 @@ extern olc_get_dbinfo();
 extern olc_list_acl();
 extern olc_change_dbinfo();
 extern olc_get_accesses();
-
 /* Other external declarations. */
 
 extern void backup_data();	/* Backup the current stats. */
-
-KNUCKLE *create_user();
-KNUCKLE *create_knuckle();
+extern void log_long_description(); /* change long description */
 
 void delete_user();
 void delete_knuckle();
 void init_user();
+void disconnect_knuckles();
+
+KNUCKLE *create_user();
+KNUCKLE *create_knuckle();
+
 QUEUE_STATUS *get_status_info();
 
 extern char *fmt ();
