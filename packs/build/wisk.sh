@@ -1,6 +1,6 @@
 #!/bin/athena/tcsh -x
 
-# $Revision: 1.32 $
+# $Revision: 1.33 $
 
 umask 2
 
@@ -10,7 +10,7 @@ set machine=`machtype`
 if ($machine == "sun4") then
 	set comp=compiler-80
 	set AFS="sun4m_53"
-	attach -n $comp
+	attach -n $comp sunsoft
 	setenv GCC_EXEC_PREFIX /mit/$comp/${machine}/lib/gcc-lib/
 else if ($machine == "decmips") then
 	set AFS="pmax_ul4"
@@ -34,7 +34,7 @@ echo $path
 #this script assumes that a dependency list has been generated from somewhere.
 #At the moment that just might be a hard coded list.
 
-set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod third/supported/kerberos5 athena/lib/kerberos1 "
+set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod athena/lib/kerberos1 third/supported/kerberos5 "
 
 set tools="athena/etc/synctree"
 
@@ -57,7 +57,7 @@ switch ( $machine )
     set machthird="athena/ucb/look"
 endsw
 
-set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr.p4 athena/lib/moira.dev athena/lib/neos"
+set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr athena/lib/moira.dev athena/lib/neos"
 
 set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd"
 
@@ -193,11 +193,23 @@ switch ($package)
 			echo "We bombed in imake" >>& $outfile
 			exit -1
 		endif
-	if ($machine == "sun4" ) then
-		(cd /build/sun4/include; make install DESTDIR=$SRVD >>& $outfile)
-	endif
 
 	rehash
+
+	(((cd /build/setup; xmkmf . ) >>& $outfile) && \
+	((cd /build/setup; make install DESTDIR=$SRVD ) >>& $outfile) )
+	if ($status == 1 ) then
+	        echo "We bombed in install" >>& $outfile
+		exit -1
+	endif
+
+	if ($machine == "sun4" ) then
+		(cd /build/sun4/include; make install DESTDIR=$SRVD >>& $outfile)
+	if ($status == 1 ) then
+	        echo "We bombed in sun4/include" >>& $outfile
+		exit -1
+	endif
+	endif
 
 	if ($machine == "sun4" ) then
 	cd /build/sun4/libresolv
@@ -238,23 +250,24 @@ switch ($package)
 
 	cp -p /afs/athena/system/@sys/srvd.76/usr/athena/bin/makedepend /build/bin
 
-# following used to be below...
+	rehash
 
 	# Probably want this in build/bin... change Imake.tmpl...
-	mkdir -p $SRVD/usr/athena/bin
-	cp -p /source/third/supported/X11R5/mit/util/scripts/mkdirhier.sh $SRVD/usr/athena/bin/mkdirhier
+#	mkdir -p $SRVD/usr/athena/bin
+#	cp -p /source/third/supported/X11R5/mit/util/scripts/mkdirhier.sh $SRVD/usr/athena/bin/mkdirhier
 	# Hack...
 	if ($machine == "decmips") then
 		(cp -p /source/decmips/etc/named/bin/mkdep.ultrix /build/bin/mkdep >>& $outfile)
 	endif
-	rehash
 
-	(((cd /build/setup; xmkmf . ) >>& $outfile) && \
-	((cd /build/setup; make install DESTDIR=$SRVD ) >>& $outfile) )
-	if ($status == 1 ) then
-	        echo "We bombed in install" >>& $outfile
-		exit -1
+	if ($machine == "sun4") then
+		cd /build/bin
+		rm -f cc
+		ln -s /mit/compiler-80/sun4bin/gcc cc
+		rm -f suncc
+		cp -p /source/sun4/suncc .
 	endif
+
 	breaksw
 
 	case decmips/kits/install_srvd
@@ -320,17 +333,26 @@ endif # installonly
 		exit -1
 	endif
 	breaksw
-		
+
 	case third/supported/kerberos5
-	((echo In $package: configure >>& $outfile) && \
-	((cd /build/$package; ./configure --with-krb4=/usr/athena --enable-athena) >>& $outfile) && \
+	((echo In $package : configure >>& $outfile) && \
+	((cd /build/$package/src; ./configure --with-krb4=/usr/athena --enable-athena) >>& $outfile) && \
 	(echo In $package : make clean >>& $outfile ) && \
-	((cd /build/$package;make clean) >>& $outfile ) && \
+	((cd /build/$package/src;make clean) >>& $outfile ) && \
 	(echo In $package : make all >>& $outfile ) && \
-	((cd /build/$package;make all) >> & $outfile ))
+	((cd /build/$package/src;make all) >> & $outfile ))
+
+# At the moment, we only care that we've got libraries.
 	if ($status == 1 ) then
-		echo "We bombed in $package"  >>& $outfile
-		exit -1
+		echo "K5 did not build to completion."  >>& $outfile
+	endif
+
+	if ( (! -r /build/$package/src/lib/libkrb5.a) ||
+	     (! -r /build/$package/src/lib/libcrypto.a) ) then
+			echo "We bombed in $package"  >>& $outfile
+			exit -1
+	else
+		echo "K5 libraries exist." >>& $outfile
 	endif
 	breaksw
 
@@ -533,7 +555,11 @@ endif # installonly
 	case third/supported/X11R4
 	(echo In $package >> & $outfile) 
 if ( $installonly == "0" ) then
+	if ($machine == "sun4") then
+	(cd /build/$package ; make -k World BOOTSTRAPCFLAGS=-DSYSV >>& $outfile)
+	else
 	(cd /build/$package ; make -k World >>& $outfile)
+	endif
 endif # installonly
 	(cd /build/$package ; make -k install SUBDIRS="include lib extensions" DESTDIR=$SRVD >>& $outfile)
 	breaksw
