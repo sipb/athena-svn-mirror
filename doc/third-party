@@ -149,6 +149,7 @@ Distribution sites for software under third
 	nmh		ftp.math.gatech.edu:pub/nmh
 	nvi		http://www.bostic.com/vi/
 	oaf		ftp.gnome.org:pub/GNOME/stable/sources/oaf
+	openafs		http://www.openafs.org/release
 	openssh		ftp.openbsd.org:pub/OpenBSD/OpenSSH
 	openssl		ftp.openssl.org:source
 	ORBit		ftp.gnome.org:pub/GNOME/stable/sources/ORBit
@@ -176,6 +177,7 @@ Distribution sites for software under third
 	tcp_wrappers*	ftp.porcupine.org:/pub/security
 	tcsh		ftp.astron.com:pub/tcsh
 	tetex		ctan.tug.org:tex-archive/systems/unix/teTeX
+	texinfo		ftp.gnu.org:pub/gnu/texinfo
 	top		ftp.groupsys.com:pub/top
 	traceroute	ftp.ee.lbl.gov (top level)
 	transcript	From Adobe
