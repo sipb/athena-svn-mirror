@@ -1,0 +1,286 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AR = @AR@
+AS = @AS@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
+DATADIRNAME = @DATADIRNAME@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EGREP = @EGREP@
+EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOMEMEETING_CFLAGS = @GNOMEMEETING_CFLAGS@
+GNOMEMEETING_LDADD = @GNOMEMEETING_LDADD@
+GNOMEMEETING_LIB_CFLAGS = @GNOMEMEETING_LIB_CFLAGS@
+HAVE_LIB = @HAVE_LIB@
+INSTOBJEXT = @INSTOBJEXT@
+INTLLIBS = @INTLLIBS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIB = @LIB@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LTLIB = @LTLIB@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
+PTLIB_CONFIG = @PTLIB_CONFIG@
+RANLIB = @RANLIB@
+RC = @RC@
+SCHEMA_AGE = @SCHEMA_AGE@
+SDL_CFLAGS = @SDL_CFLAGS@
+SDL_CONFIG = @SDL_CONFIG@
+SDL_LIBS = @SDL_LIBS@
+SK_CONFIG = @SK_CONFIG@
+STRIP = @STRIP@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+gnomeconfdir = @gnomeconfdir@
+gnomedatadir = @gnomedatadir@
+
+pixmapdir = $(datadir)/pixmaps
+
+pixmap_DATA = gnomemeeting-logo-icon.png gnomemeeting-logo.png gnomemeeting-splash.png 
+
+EMOTICONS_FILES =  	emoticon-face1.png 	emoticon-face2.png 	emoticon-face3.png 	emoticon-face4.png 	emoticon-face5.png 	emoticon-face6.png 	emoticon-face7.png 	emoticon-face8.png 	emoticon-face9.png 	emoticon-face10.png 	emoticon-face11.png 	emoticon-face12.png 	emoticon-face13.png 	emoticon-face14.png 	emoticon-face15.png 	emoticon-face16.png 	emoticon-face17.png 	emoticon-face18.png 	emoticon-face19.png 	emoticon-dead-happy.png 	emoticon-dead.png 	emoticon-dead-sad.png 	emoticon-happy-devil.png 	emoticon-happy-nose-glasses.png 	emoticon-sad-devil.png 	emoticon-sad-glasses.png 	emoticon-sad-nose-glasses.png 
+
+
+IMAGES_FILES =  	addressbook-24.png 	addressbook-16.png 	text-chat.png 	control-panel.png 	connect.png 	disconnect.png 	volume.png 	microphone.png 	video-preview.png 	audio-mute.png 	speaker-phone.png 	video-mute.png 	status-available-16.png 	status-in-a-call-16.png 	status-free-for-chat-16.png 	status-ringing-16.png 	status-busy-16.png 	status-forward-16.png 	druid_audio.png 	druid_video.png 	druid_ixj.png 	druid_personal.png 	druid_connection.png 	local_contact.png 	remote_contact.png 	whiteness.png 	brightness.png 	colourness.png 	contrast.png 	connect-16.png 	disconnect-16.png 	calls-history.png
+
+
+IMAGES =  	gm_addressbook_24_stock_data addressbook-24.png 	gm_addressbook_16_stock_data addressbook-16.png 	gm_text_chat_stock_data text-chat.png 	gm_control_panel_stock_data control-panel.png 	gm_connect_stock_data connect.png 	gm_disconnect_stock_data disconnect.png 	gm_volume_stock_data volume.png 	gm_microphone_stock_data microphone.png 	gm_video_preview_stock_data video-preview.png 	gm_audio_mute_stock_data audio-mute.png 	gm_speaker_phone_stock_data speaker-phone.png 	gm_video_mute_stock_data video-mute.png 	gm_status_available_stock_data status-available-16.png 	gm_status_ringing_stock_data status-ringing-16.png 	gm_status_in_a_call_stock_data status-in-a-call-16.png 	gm_status_forward_stock_data status-forward-16.png 	gm_status_busy_stock_data status-busy-16.png 	gm_status_free_for_chat_stock_data status-free-for-chat-16.png 	gm_druid_audio_stock_data druid_audio.png 	gm_druid_video_stock_data druid_video.png 	gm_druid_ixj_stock_data druid_ixj.png 	gm_druid_personal_stock_data druid_personal.png 	gm_druid_connection_stock_data druid_connection.png 	gm_remote_contact_stock_data remote_contact.png 	gm_local_contact_stock_data local_contact.png 	gm_whiteness_stock_data whiteness.png 	gm_brightness_stock_data brightness.png 	gm_colourness_stock_data colourness.png 	gm_contrast_stock_data contrast.png 	gm_connect_16_stock_data connect-16.png 	gm_disconnect_16_stock_data disconnect-16.png 	gm_calls_history_stock_data calls-history.png
+
+
+EMOTICONS =  	gm_emoticon_face1 emoticon-face1.png 	gm_emoticon_face2 emoticon-face2.png 	gm_emoticon_face3 emoticon-face3.png 	gm_emoticon_face4 emoticon-face4.png 	gm_emoticon_face5 emoticon-face5.png 	gm_emoticon_face6 emoticon-face6.png 	gm_emoticon_face7 emoticon-face7.png 	gm_emoticon_face8 emoticon-face8.png 	gm_emoticon_face9 emoticon-face9.png 	gm_emoticon_face10 emoticon-face10.png 	gm_emoticon_face11 emoticon-face11.png 	gm_emoticon_face12 emoticon-face12.png 	gm_emoticon_face13 emoticon-face13.png 	gm_emoticon_face14 emoticon-face14.png 	gm_emoticon_face15 emoticon-face15.png 	gm_emoticon_face16 emoticon-face16.png 	gm_emoticon_face17 emoticon-face17.png 	gm_emoticon_face18 emoticon-face18.png 	gm_emoticon_face19 emoticon-face19.png 	gm_emoticon_dead_happy emoticon-dead-happy.png 	gm_emoticon_dead emoticon-dead.png 	gm_emoticon_dead_sad emoticon-dead-sad.png 	gm_emoticon_happy_devil emoticon-happy-devil.png 	gm_emoticon_nose_glasses emoticon-happy-nose-glasses.png 	gm_emoticon_sad_devil emoticon-sad-devil.png 	gm_emoticon_sad_glasses emoticon-sad-glasses.png 	gm_emoticon_sad_nose_glasses emoticon-sad-nose-glasses.png 	gm_emoticon_happy_nose_glasses emoticon-happy-nose-glasses.png 
+
+
+noinst_DATA = inlines.h inline_emoticons.h
+
+EXTRA_DIST = $(pixmap_DATA) $(EMOTICONS_FILES) $(IMAGES_FILES) text_logo.xpm
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+DATA =  $(noinst_DATA) $(pixmap_DATA)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP_ENV = --best
+all: all-redirect
+.SUFFIXES:
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps pixmaps/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+install-pixmapDATA: $(pixmap_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pixmapdir)
+	@list='$(pixmap_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pixmapdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pixmapdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pixmapdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pixmapdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pixmapDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(pixmap_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pixmapdir)/$$p; \
+	done
+tags: TAGS
+TAGS:
+
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = pixmaps
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am:
+install-exec: install-exec-am
+
+install-data-am: install-pixmapDATA
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-pixmapDATA
+uninstall: uninstall-am
+all-am: Makefile $(DATA)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(pixmapdir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: uninstall-pixmapDATA install-pixmapDATA tags distdir info-am \
+info dvi-am dvi check check-am installcheck-am installcheck \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+inlines.h: $(IMAGE_FILES) Makefile.am
+	gdk-pixbuf-csource --raw --build-list $(IMAGES) > inlines.h
+
+inline_emoticons.h: $(EMOTICONS_FILES) Makefile.am
+	gdk-pixbuf-csource --raw --build-list $(EMOTICONS) > inline_emoticons.h
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

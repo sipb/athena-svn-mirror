@@ -1,0 +1,30 @@
+# List of source files containing translatable strings.
+# Please keep this file in alphabetical order.
+gnomemeeting.desktop.in
+gnomemeeting.schemas.in.in
+lib/dialog.c
+src/callbacks.cpp
+src/chat_window.cpp
+src/codec_info.cpp
+src/codec_info.h
+src/config-tool-i18n.h
+src/config.cpp
+src/connection.cpp
+src/druid.cpp
+src/endpoint.cpp
+src/gatekeeper.cpp
+src/gdkvideoio.cpp
+src/gnomemeeting.cpp
+src/ils.cpp
+src/ldap_window.cpp
+src/lid.cpp
+src/main_window.cpp
+src/menu.cpp
+src/misc.cpp
+src/pref_window.cpp
+src/sound_handling.cpp
+src/toolbar.cpp
+src/tools.cpp
+src/tray.cpp
+src/urlhandler.cpp
+src/videograbber.cpp

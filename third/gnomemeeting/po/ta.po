@@ -1,0 +1,4734 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+#
+# Encoding is TSCII, but in some environments msgfmt/msgmerge segfault
+# with unknown encodings; so "cp1252" is used instead
+#
+# prabu <prabu_anand2000@yahoo.com>, 2002
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gnomemeeting 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-03-29 22:41+0200\n"
+"PO-Revision-Date: 2002-10-09 10:46+0600\n"
+"Last-Translator: prabu <prabu_anand2000@yahoo.com>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Add the window icon and title
+#: gnomemeeting.desktop.in.h:1 src/main_window.cpp:1179
+msgid "GnomeMeeting"
+msgstr "gமாநாடு"
+
+#: gnomemeeting.desktop.in.h:2
+#, fuzzy
+msgid "Talk to people over the Internet"
+msgstr "இணையம் வழியாக நன்பருடன் பேசுங்கள்"
+
+#: gnomemeeting.desktop.in.h:3
+#, fuzzy
+msgid "Videoconferencing"
+msgstr "ஒளித்தோற்ற  மாநாடு"
+
+#: gnomemeeting.schemas.in.in.h:1
+msgid "1: 56Kbps, 2: ISDN, 3:DSL, 4: LAN, 5: Custom"
+msgstr "1: 56Kbps, 2: ISDN, 3:DSL, 4: LAN, 5: தனிப்பயன்"
+
+#: gnomemeeting.schemas.in.in.h:2
+msgid "Address of public IP detector"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:3
+msgid "Always forward calls to the given host"
+msgstr "எப்போதும் அழைப்புகளை கொடுக்கப்பட்டுள்ள கணிணிக்கு முன்னோக்கஞ் செய்"
+
+#: gnomemeeting.schemas.in.in.h:4
+#, fuzzy
+msgid "Audio input device"
+msgstr "ஒலிக்கருவிகள்"
+
+#: gnomemeeting.schemas.in.in.h:5
+#, fuzzy
+msgid "Audio output device"
+msgstr "ஒலிக்கருவிகள்"
+
+#: gnomemeeting.schemas.in.in.h:6
+#, fuzzy
+msgid "Audio plugin"
+msgstr "ஒலி இயக்கி"
+
+#: gnomemeeting.schemas.in.in.h:7
+#, fuzzy
+msgid "Automatic echo cancellation"
+msgstr "தானியங்கி எதிரொலியை நீக்கி"
+
+#: gnomemeeting.schemas.in.in.h:8 src/pref_window.cpp:946
+msgid "Automatically clear the text chat at the end of calls"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:9 src/pref_window.cpp:1030
+msgid ""
+"Automatically reject or forward incoming calls if no answer is given after "
+"the specified amount of time (in seconds)"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:10
+msgid ""
+"Automatically switch to fullscreen for images displayed in the main GUI at "
+"the beginning of the call"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:11
+msgid "Change the control panel section"
+msgstr "கட்டுப்பாட்டுப் பிரிவில் மாற்றம் செய்"
+
+#: gnomemeeting.schemas.in.in.h:12
+#, fuzzy
+msgid ""
+"Change the control panel section (4 means that the control panel is off)"
+msgstr "கட்டுப்பாட்டுப் பிரிவில் மாற்றம் செய்(3 என்றால் இந்த பிரிவு தெரியாது)"
+
+#: gnomemeeting.schemas.in.in.h:13 src/pref_window.cpp:1669
+#, fuzzy
+msgid ""
+"Choose the number of blocks (that have not changed) transmitted with each "
+"frame. These blocks fill in the background"
+msgstr "இங்கு நீங்கள் தேர்வு செய்யும் தொகுப்புகள் அனுப்பப்படும்"
+
+#: gnomemeeting.schemas.in.in.h:14
+msgid "Clear inactive calls"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:15 src/ldap_window.cpp:2916
+msgid "Comment"
+msgstr "விவரம்"
+
+#: gnomemeeting.schemas.in.in.h:16
+#, fuzzy
+msgid ""
+"Connection will be established in Fast Start mode. Fast Start is a new way "
+"to start calls faster that was introduced in H.323v2. It is not supported by "
+"Netmeeting and using both Fast Start and H.245 Tunnelling can crash some "
+"versions of Netmeeting"
+msgstr "வேகதுவக்கத்தை செயல்படுத்து. இதை நெட்மீட்டிங்கோடு பயன்படுத்த கூடாது"
+
+#: gnomemeeting.schemas.in.in.h:17
+msgid "Country code"
+msgstr "நாட்டின் அடையாள எண்"
+
+#: gnomemeeting.schemas.in.in.h:18
+msgid "DTMF sending"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:19
+#, fuzzy
+msgid "Display a popup window when receiving a call"
+msgstr "அழைப்பு வரும்போது மேல்மீட்பு தெரிய வேண்டும்"
+
+#: gnomemeeting.schemas.in.in.h:20
+#, fuzzy
+msgid "E-mail address"
+msgstr "மின்னஞ்சல் முகவரி"
+
+#: gnomemeeting.schemas.in.in.h:21
+#, fuzzy
+msgid "Enable 'Fast Start'"
+msgstr "வேகதுவக்கத்தை செயல்படுத்து"
+
+#: gnomemeeting.schemas.in.in.h:22
+#, fuzzy
+msgid "Enable H.245 tunnelling"
+msgstr "H.245 சுரங்கத்தை செயல்படுத்து"
+
+#: gnomemeeting.schemas.in.in.h:23
+#, fuzzy
+msgid "Enable IP checking"
+msgstr "பதவு செய்து கொள்வதை தேர்ந்தெடு"
+
+#: gnomemeeting.schemas.in.in.h:24
+#, fuzzy
+msgid "Enable IP translation"
+msgstr " FPS  கட்டுப்பாட்டை தேர்வுச் செய்"
+
+#: gnomemeeting.schemas.in.in.h:25
+#, fuzzy
+msgid "Enable bilinear filtering on displayed video"
+msgstr "வடிப்பியை செயல்படுத்து"
+
+#: gnomemeeting.schemas.in.in.h:26
+msgid "Enable early H.245"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:27
+#, fuzzy
+msgid ""
+"Enable or disable bilinear interpolation when rendering video images (this "
+"has no effect in fullscreen mode)"
+msgstr "ஒளித்தோற்றத்தை bilinear interpolation செயல்படுத்து/முடமாக்கு"
+
+#: gnomemeeting.schemas.in.in.h:28
+#, fuzzy
+msgid "Enable registering"
+msgstr "பதவு செய்து கொள்வதை தேர்ந்தெடு"
+
+#: gnomemeeting.schemas.in.in.h:29
+#, fuzzy
+msgid "Enable silence detection"
+msgstr "நிசப்த அறிவிப்பை செயல்படுத்து"
+
+#: gnomemeeting.schemas.in.in.h:30
+#, fuzzy
+msgid "Enable video reception"
+msgstr "நிசப்த அறிவிப்பை செயல்படுத்து"
+
+#: gnomemeeting.schemas.in.in.h:31
+#, fuzzy
+msgid "Enable video transmission"
+msgstr "ஒளித்தோற்ற பரிமாற்றத்தை செயல்படுத்து"
+
+#: gnomemeeting.schemas.in.in.h:32
+#, fuzzy
+msgid "Enter a comment about yourself for the user directory"
+msgstr "நீங்கள் இங்கு உங்களை பற்றிய விவரங்களை மற்றவருக்கு தரலாம்"
+
+#: gnomemeeting.schemas.in.in.h:33
+msgid ""
+"Enter a valid URL to connect to a web application that outputs the public IP "
+"of your host"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:34
+msgid ""
+"Enter the public IP of your NAT/PAT router if you want to use IP "
+"translation. If you are registered to ils.seconix.com, GnomeMeeting will "
+"automatically fetch the public IP using the ILS service"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:35 src/pref_window.cpp:885
+#, fuzzy
+msgid "Enter your e-mail address"
+msgstr "உங்கள் மின்னஞ்சல் முகவரி"
+
+#: gnomemeeting.schemas.in.in.h:36 src/pref_window.cpp:871
+#, fuzzy
+msgid "Enter your first name"
+msgstr "உங்கள் முதல் பெயரை பொறிக்கவும்"
+
+#: gnomemeeting.schemas.in.in.h:37
+#, fuzzy
+msgid "Enter your last name"
+msgstr "உங்கள் கடைசிப் பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:38
+msgid "Enter your location (country or city) for the user directory"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:39
+#, fuzzy
+msgid "First name"
+msgstr "முதல் பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:40
+#, fuzzy
+msgid "Forward calls to host"
+msgstr "அழைப்புகளை  முன்னோக்க வேண்டிய கணிணியின்பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:41
+msgid "Forward calls to the given host if busy"
+msgstr "கணிணி பயன்பாட்டிவ் இருந்தால் அழைப்புகளை முன்னோக்கு"
+
+#: gnomemeeting.schemas.in.in.h:42
+msgid "Forward calls to the given host if no answer"
+msgstr "கணிணி பதிலலிக்க மறுத்தால் அழைப்புகளை முன்னோக்கு"
+
+#: gnomemeeting.schemas.in.in.h:43
+#, fuzzy
+msgid "Fullscreen height"
+msgstr "முழுத்திரையின் உயரம்"
+
+#: gnomemeeting.schemas.in.in.h:44
+#, fuzzy
+msgid "Fullscreen width"
+msgstr "முழுத்திரையின் அகலம்"
+
+#: gnomemeeting.schemas.in.in.h:45 src/pref_window.cpp:1232
+msgid "Gatekeeper ID"
+msgstr "நுழைவுக்காப்பாளனின் அடையாள எண்"
+
+#: gnomemeeting.schemas.in.in.h:46
+#, fuzzy
+msgid "Gatekeeper alias"
+msgstr "நுழைவுக்காப்பாளனின் மாற்றுப் பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:47
+#, fuzzy
+msgid "Gatekeeper alias as primary alias"
+msgstr "நுழைவுக்காப்பாளனின் மாற்றுப் பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:48 src/pref_window.cpp:1231
+msgid "Gatekeeper host"
+msgstr "நுழைவுக்காப்பாளனின் பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:49
+#, fuzzy
+msgid "Gatekeeper password"
+msgstr "நுழைவுக்காப்பாளனின் பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:50
+#, fuzzy
+msgid "Gateway/proxy host"
+msgstr "நுழைவுக்காப்பாளனின் பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:51 src/pref_window.cpp:927
+#, fuzzy
+msgid ""
+"If enabled, GnomeMeeting will start hidden provided that the notification "
+"area is present in the GNOME panel"
+msgstr "தேர்வு செய்யப்பட்டிருந்தால் துவங்கும்போது படத்திரை காட்டப்பட மாட்டாது"
+
+#: gnomemeeting.schemas.in.in.h:52
+#, fuzzy
+msgid ""
+"If enabled, a popup window will be displayed when receiving an incoming call"
+msgstr "தேர்வு செய்யப்பட்டிருந்தால் அழைப்பு வரும்போது மேல்மீட்பு தெரியும்"
+
+#: gnomemeeting.schemas.in.in.h:53
+#, fuzzy
+msgid ""
+"If enabled, all incoming calls will be forwarded to the host that is "
+"specified in the field below"
+msgstr ""
+"தேர்வு செய்யப்பட்டிருந்தால் அழைப்புகளை  முன்னோக்க  கணிணிக்கு அனைத்து அழைப்புகளும் செல்லும்"
+
+#: gnomemeeting.schemas.in.in.h:54
+#, fuzzy
+msgid ""
+"If enabled, all incoming calls will be forwarded to the host that is "
+"specified in the field below if you already are in a call or if you are in "
+"Do Not Disturb mode"
+msgstr ""
+"தேர்வு செய்யப்பட்டிருந்தால், நீங்கள் பேசவில்லையென்றால் அழைப்புகளை முன்னோக்க கணிணிக்கு அனைத்து "
+"அழைப்புகளும் செல்லும்"
+
+#: gnomemeeting.schemas.in.in.h:55
+#, fuzzy
+msgid ""
+"If enabled, all incoming calls will be forwarded to the host that is "
+"specified in the field below if you do not answer the call"
+msgstr ""
+"தேர்வு செய்யப்பட்டிருந்தால், நீங்கள் பேசவில்லையென்றால் அழைப்புகளை முன்னோக்க கணிணிக்கு அனைத்து "
+"அழைப்புகளும் செல்லும்"
+
+#: gnomemeeting.schemas.in.in.h:56
+#, fuzzy
+msgid "If enabled, allows video to be received during a call"
+msgstr "தேர்வு செய்யப்பட்டிருந்தால் அழைப்பு வரும்போது மேல்மீட்பு தெரியும்"
+
+#: gnomemeeting.schemas.in.in.h:57 src/pref_window.cpp:1026
+msgid ""
+"If enabled, calls for which no audio and video has been received in the last "
+"30 seconds are automatically cleared"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:58 src/pref_window.cpp:970
+#, fuzzy
+msgid "If enabled, register with the selected user directory"
+msgstr "தேர்வு செய்யப்பட்டிருந்தால் தானாக தேர்வாகியுள்ள LDAP அடைவில் பதிந்துவிடு"
+
+#: gnomemeeting.schemas.in.in.h:59 src/pref_window.cpp:925
+#, fuzzy
+msgid ""
+"If enabled, the splash screen will be displayed when GnomeMeeting starts"
+msgstr "தேர்வு செய்யப்பட்டிருந்தால் துவங்கும்போது படத்திரையைக் காட்டு"
+
+#: gnomemeeting.schemas.in.in.h:60 src/pref_window.cpp:946
+msgid ""
+"If enabled, the text chat will automatically be cleared at the end of calls"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:61
+#, fuzzy
+msgid "If enabled, use silence detection with the GSM and G.711 codecs"
+msgstr "நிசப்த அறிவிப்பை செயல்படுத்து"
+
+#: gnomemeeting.schemas.in.in.h:62
+#, fuzzy
+msgid "If enabled, video is transmitted during a call"
+msgstr "அழைப்புகளின் போது ஒளித்தோற்ற பரிமாற்றத்தை செயல்படுத்து "
+
+#: gnomemeeting.schemas.in.in.h:63
+msgid ""
+"If enabled, your details are shown to people browsing the user directory. If "
+"disabled, you are not visible to users browsing the user directory, but they "
+"can still use the callto URL to call you"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:64
+#, fuzzy
+msgid "Incoming call mode"
+msgstr "அழைப்பு வருவதற்கான ஒலி"
+
+#: gnomemeeting.schemas.in.in.h:65
+msgid "Kind of network selected in the druid"
+msgstr "உங்கள் வலையமைப்பக வகை"
+
+#: gnomemeeting.schemas.in.in.h:66
+#, fuzzy
+msgid "Last name"
+msgstr "கடைசிப் பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:67
+#, fuzzy
+msgid "Listen port"
+msgstr "கேட்குந்துறை"
+
+#: gnomemeeting.schemas.in.in.h:68
+#, fuzzy
+msgid "Local video window size"
+msgstr "இரண்டும்(உங்கள் படம் புதிய சாளரத்தில்)"
+
+#: gnomemeeting.schemas.in.in.h:69 src/ldap_window.cpp:2929
+msgid "Location"
+msgstr "இடம்"
+
+#: gnomemeeting.schemas.in.in.h:70
+#, fuzzy
+msgid "Maximum jitter buffer"
+msgstr "ஒலிச்சிதறல் இடையகம்"
+
+#: gnomemeeting.schemas.in.in.h:71
+msgid "Maximum video bandwidth"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:72
+#, fuzzy
+msgid "Minimum jitter buffer"
+msgstr "ஒலிச்சிதறல் இடையகம்"
+
+#: gnomemeeting.schemas.in.in.h:73
+#, fuzzy
+msgid "Minimum transmitted FPS"
+msgstr "அதிகபட்ச சட்டங்கள் FPS  அனுப்பும் வேகம்"
+
+#: gnomemeeting.schemas.in.in.h:74
+#, fuzzy
+msgid "Minimum transmitted video quality"
+msgstr "அனுப்பப்படும் ஒளித்தோற்றத்தின் தரம்"
+
+#: gnomemeeting.schemas.in.in.h:75
+#, fuzzy
+msgid "Missed calls history"
+msgstr "அழைப்பு வரலாற்றைப் பார்"
+
+#: gnomemeeting.schemas.in.in.h:76
+msgid "No answer timeout"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:77
+msgid "Number of frames for G.711"
+msgstr "G.711  சட்டங்களின்  எண்ணிக்கை"
+
+#: gnomemeeting.schemas.in.in.h:78
+msgid "Number of frames for GSM"
+msgstr "GSM சட்டங்களின்  எண்ணிக்கை"
+
+#: gnomemeeting.schemas.in.in.h:79
+msgid "Number of frames transmitted in each packet for the G.711 codec"
+msgstr "G.711  சட்டங்களின்  எண்ணிக்கை"
+
+#: gnomemeeting.schemas.in.in.h:80
+msgid "Number of frames transmitted in each packet for the GSM codec"
+msgstr "GSM சட்டங்களின்  எண்ணிக்கை"
+
+#: gnomemeeting.schemas.in.in.h:81
+msgid "Output device type"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:82 src/pref_window.cpp:940
+msgid "Place windows displaying video above other windows during calls"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:83
+#, fuzzy
+msgid "Placed calls history"
+msgstr "அழைப்பு வரலாற்றைப் பார்"
+
+#: gnomemeeting.schemas.in.in.h:84 src/pref_window.cpp:722
+msgid "Play busy tone"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:85 src/pref_window.cpp:713
+msgid "Play ring tone"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:86 src/pref_window.cpp:704
+#, fuzzy
+msgid "Play sound on incoming calls"
+msgstr "அழைப்பு வரும்போது மேல்மீட்பு சாளரம் "
+
+#: gnomemeeting.schemas.in.in.h:87
+#, fuzzy
+msgid "Position of the local video window"
+msgstr "உங்கள் ஒளித்தோற்ற சாளர அகலம்"
+
+#: gnomemeeting.schemas.in.in.h:88
+msgid "Position on the screen of the PC-To-Phone window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:89
+msgid "Position on the screen of the address book window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:90
+msgid "Position on the screen of the calls history window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:91
+msgid "Position on the screen of the druid window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:92
+msgid "Position on the screen of the log window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:93
+#, fuzzy
+msgid "Position on the screen of the main window"
+msgstr "கருவிப்பட்டை இடபுறத்தில் தெரியவேண்டும்"
+
+#: gnomemeeting.schemas.in.in.h:94
+msgid "Position on the screen of the preferences window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:95
+msgid "Public IP of the NAT/PAT router"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:96
+#, fuzzy
+msgid "Received calls history"
+msgstr "அழைப்பு வரலாற்றைப் பார்"
+
+#: gnomemeeting.schemas.in.in.h:97
+#, fuzzy
+msgid "Registering method"
+msgstr "பதிவு செய்யும் முறை"
+
+#: gnomemeeting.schemas.in.in.h:98
+#, fuzzy
+msgid "Remote video window position"
+msgstr "தொலை ஒளித்தோற்ற  சாளர அகலம்"
+
+#: gnomemeeting.schemas.in.in.h:99
+#, fuzzy
+msgid "Remote video window size"
+msgstr "தொலை ஒளித்தோற்ற  சாளர அகலம்"
+
+#: gnomemeeting.schemas.in.in.h:100
+msgid "Revision of the schema file"
+msgstr "அமைப்புக் கோப்புகளை மாற்று"
+
+#: gnomemeeting.schemas.in.in.h:101 src/pref_window.cpp:1358
+#, fuzzy
+msgid "Select the audio input device to use"
+msgstr "பயன்படுத்த வேண்டிய ஒலி இயக்கியை தேர்வுச் செய்"
+
+#: gnomemeeting.schemas.in.in.h:102 src/pref_window.cpp:1352
+#, fuzzy
+msgid "Select the audio output device to use"
+msgstr "பயன்படுத்த வேண்டிய ஒலி இயக்கியை தேர்வுச் செய்"
+
+#: gnomemeeting.schemas.in.in.h:103 src/pref_window.cpp:1437
+msgid ""
+"Select the format for video cameras (does not apply to most USB cameras)"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:104 src/pref_window.cpp:1435
+#, fuzzy
+msgid ""
+"Select the transmitted video size: Small (QCIF 176x144) or Large (CIF "
+"352x288)"
+msgstr "ஒளித்தோற்ற அளவு"
+
+#: gnomemeeting.schemas.in.in.h:105 src/pref_window.cpp:1429
+msgid ""
+"Select the video input device to use. If an error occurs when using this "
+"device a test picture will be transmitted."
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:106
+msgid "Show a status bar at the bottom of the main window"
+msgstr "நிலைப்பட்டை சாளரத்தின் அடிபுறத்தில் தெரியவேண்டும்"
+
+#: gnomemeeting.schemas.in.in.h:107
+msgid "Show chat window"
+msgstr "இபேச்சு சாளரம் தெரியவேண்டும்"
+
+#: gnomemeeting.schemas.in.in.h:108
+msgid "Show my details to other registered users"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:109
+msgid "Show splash screen at startup"
+msgstr "துவங்கும்போது துவக்கப்படம் தெரியவேண்டும்"
+
+#: gnomemeeting.schemas.in.in.h:110
+msgid "Show status bar"
+msgstr "நிலைப்பட்டை  தெரியவேண்டும்"
+
+#: gnomemeeting.schemas.in.in.h:111
+msgid "Show the chat window in the main window"
+msgstr "இபேச்சு சாளரம் முக்கியசாளரத்தில்  தெரியவேண்டும்"
+
+#: gnomemeeting.schemas.in.in.h:112
+msgid "Size of the PC-To-Phone window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:113
+msgid "Size of the address book window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:114
+#, fuzzy
+msgid "Size of the calls history window"
+msgstr "அழைப்பு வரலாற்றைப் பார்"
+
+#: gnomemeeting.schemas.in.in.h:115
+msgid "Size of the druid window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:116
+msgid "Size of the log window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:117
+msgid "Size of the preferences window"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:118
+#, fuzzy
+msgid "Start hidden"
+msgstr "துவங்கும்போது மறைவாக துவக்கு"
+
+#: gnomemeeting.schemas.in.in.h:119 src/menu.cpp:448 src/menu.cpp:576
+#, fuzzy
+msgid "Switch to fullscreen"
+msgstr "முழுத்திரையின்போது படத்தின் அகலம்"
+
+#: gnomemeeting.schemas.in.in.h:120
+msgid "TCP port range"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:121
+msgid "The Audio Codecs List"
+msgstr "ஒலிக் குறிமுறைகள் பட்டியல்"
+
+#: gnomemeeting.schemas.in.in.h:122 src/pref_window.cpp:1366
+msgid ""
+"The Automatic Echo Cancellation level: Off, Low, Medium, High, Automatic "
+"Gain Compensation. Choosing Automatic Gain Compensation modulates the volume "
+"for best quality."
+msgstr ""
+"தானியங்கி எதிரொலி முடமாக்கி நிலை:வேண்டாம், சாதரன, அதிக, தானியங்கியாக அமைத்துகொள். "
+"தானியங்கி மிக நல்ல ஒலியை உங்களுக்கு கொடுக்கும்"
+
+#: gnomemeeting.schemas.in.in.h:123 src/pref_window.cpp:1245
+#, fuzzy
+msgid ""
+"The Gatekeeper alias to use when registering (string, or E164 ID if only "
+"0123456789#)"
+msgstr "பதிவு செய்துகொள்ள வேண்டிய நுழைவுக்காப்பாளனின் மாற்றுப் பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:124 src/pref_window.cpp:1243
+#, fuzzy
+msgid "The Gatekeeper host to register with"
+msgstr "பதிவு செய்துகொள்ள வேண்டிய நுழைவுக்காப்பாளனின் பெயர்"
+
+#: gnomemeeting.schemas.in.in.h:125 src/pref_window.cpp:1241
+#, fuzzy
+msgid "The Gatekeeper identifier to register with"
+msgstr "பதிவு செய்துகொள்ள வேண்டிய நுழைவுக்காப்பாளனின் அடையாள எண்"
+
+#: gnomemeeting.schemas.in.in.h:126 src/pref_window.cpp:1248
+#, fuzzy
+msgid ""
+"The Gatekeeper password to use for H.235 authentication to the Gatekeeper"
+msgstr "நுழைவுக்காப்பாளனோடு பதிவுசெய்துகொள்ள வேண்டிய  முறை"
+
+#: gnomemeeting.schemas.in.in.h:127 src/pref_window.cpp:1274
+msgid ""
+"The Gateway host is the host to use to do H.323 calls through a gateway that "
+"will relay calls"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:128
+msgid ""
+"The audio plugin that will be used to detect the devices and manage them"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:129
+msgid "The busy tone sound"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:130
+msgid ""
+"The chosen sound will be played at the end of calls or calling somebody who "
+"is busy, if enabled"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:131
+#, fuzzy
+msgid "The chosen sound will be played on incoming calls, if enabled"
+msgstr "இதை தேர்வுச் செய்தால், அழைப்பு வந்தால் ஒலியெழுப்பப்படும்"
+
+#: gnomemeeting.schemas.in.in.h:132
+msgid "The chosen sound will be played when calling somebody, if enabled"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:133
+msgid "The default video view"
+msgstr "கொடாநிலை ஒளித்தோற்ற பார்வை"
+
+#: gnomemeeting.schemas.in.in.h:134
+#, fuzzy
+msgid ""
+"The default video view (0: Local, 1: Remote, 2: Both incrusted, 3: Both with "
+"local video in a separate window, 4: Both)"
+msgstr ""
+"கொடாநிலை ஒளித்தோற்ற பார்வை(0: உங்கள், 1: தொலைவு, 2: இரண்டும் ஓரே சாளரத்தில், 3: "
+"இரண்டும் தனித்தனி சாளரத்தில், 4: இரண்டும்)"
+
+#: gnomemeeting.schemas.in.in.h:135
+msgid "The history of the last 100 missed calls"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:136
+msgid "The history of the last 100 placed calls"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:137
+msgid "The history of the last 100 received calls"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:138 src/pref_window.cpp:994
+#, fuzzy
+msgid "The host where calls should be forwarded to in the cases selected above"
+msgstr "அழைப்புகளை  முன்னோக்க வேண்டிய கணிணியின்பெயரை இங்கு உள்ளீடு செய்யவும்"
+
+#: gnomemeeting.schemas.in.in.h:139
+#, fuzzy
+msgid "The image height for fullscreen"
+msgstr "முழுத்திரையின்போது படத்தின் உயரம்"
+
+#: gnomemeeting.schemas.in.in.h:140 src/pref_window.cpp:1440
+#, fuzzy
+msgid ""
+"The image to transmit if \"Picture\" is selected as video plugin or if the "
+"opening of the device fails. Leave blank to use the default GnomeMeeting "
+"logo."
+msgstr ""
+"ஒளித்தோற்றத்திற்கு பதிலாக அனுப்பபப்பட வேண்டிய படத்தை இங்கு தேர்வு செய்யுங்கள். (ஏதும் "
+"தேர்வு செய்யப்படவில்லையெனில்= gமாநாடு கொடாநிலை படம் பயன்படுத்தப்படும்)."
+
+#: gnomemeeting.schemas.in.in.h:141
+#, fuzzy
+msgid "The image width for fullscreen"
+msgstr "முழுத்திரையின்போது படத்தின் அகலம்"
+
+#: gnomemeeting.schemas.in.in.h:142
+#, fuzzy
+msgid "The incoming call sound"
+msgstr "அழைப்பு வருவதற்கான ஒலி"
+
+#: gnomemeeting.schemas.in.in.h:143
+msgid "The list of called URLs"
+msgstr "இதுவரை அழைத்த URL முகவரிகள்"
+
+#: gnomemeeting.schemas.in.in.h:144
+#, fuzzy
+msgid "The list of groups"
+msgstr "ILS சேவையகங்களின் பட்டியல்"
+
+#: gnomemeeting.schemas.in.in.h:145
+#, fuzzy
+msgid "The maximum jitter buffer size for audio reception (in ms)"
+msgstr "ஒலிச்சிதறல் இடையகம் மில்லிவிநாடிகளில்"
+
+#: gnomemeeting.schemas.in.in.h:146
+msgid ""
+"The maximum video bandwidth in kbytes/s. The video quality and the number of "
+"transmitted frames per second will be dynamically adjusted above their "
+"minimum during calls to try to minimize the bandwidth to the given value"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:147
+#, fuzzy
+msgid "The minimum jitter buffer size for audio reception (in ms)"
+msgstr "ஒலிச்சிதறல் இடையகம் மில்லிவிநாடிகளில்"
+
+#: gnomemeeting.schemas.in.in.h:148 src/pref_window.cpp:1665
+#, fuzzy
+msgid ""
+"The minimum number of video frames to transmit each second when trying to "
+"minimize the bandwidth"
+msgstr "நிமிடத்திற்கு அதிகபட்ச சட்டங்கள் FPS  அனுப்பும் வேகம்"
+
+#: gnomemeeting.schemas.in.in.h:150
+#, fuzzy, no-c-format
+msgid ""
+"The minimum transmitted video quality to keep when trying to minimize the "
+"used bandwidth: choose 100% on a LAN for the best quality, 1% being the "
+"worst quality"
+msgstr "அனுப்பப்படும் ஒளித்தோற்றத்தின் தரம் 100% LAN 1% குறைந்தபட்ச தரம்"
+
+#: gnomemeeting.schemas.in.in.h:151 src/pref_window.cpp:1368
+msgid ""
+"The output device type is the type of device connected to your Quicknet "
+"card. It can be either a POTS (Plain Old Telephone System) or a headset."
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:152
+msgid ""
+"The port to listen to for incoming connections. GnomeMeeting needs to be "
+"restarted for the new value to take effect."
+msgstr "உள்வருந்துறை மாற்று. பின் gமாநாட்டை மறுதொடக்கம் செய்யுங்கள்"
+
+#: gnomemeeting.schemas.in.in.h:153
+#, fuzzy
+msgid "The position of the local video window"
+msgstr "உங்கள் ஒளித்தோற்ற சாளர அகலம்"
+
+#: gnomemeeting.schemas.in.in.h:154
+#, fuzzy
+msgid "The position of the remote video window"
+msgstr "தொலைவு ஒளித்தோற்ற சாளர அகலம்"
+
+#: gnomemeeting.schemas.in.in.h:155
+msgid ""
+"The prefix that will be used to save pictures of the conversation. That "
+"prefix is followed by the snapshot number."
+msgstr "இந்த முன்னொட்டு படங்களை சேமிக்க பயன்படும். முன்னொட்டை தொடர்ந்து திரைவேட்டு எண் வரும்"
+
+#: gnomemeeting.schemas.in.in.h:156
+msgid ""
+"The range of TCP ports beside the listen_port that GnomeMeeting will use for "
+"the H.245 channel. You can change the TCP port range if you are using IP "
+"translation and if you need to have several GnomeMeeting running behind your "
+"NAT/PAT router. GnomeMeeting needs to be restarted for the new values to "
+"take effect. This port range has no effect if both participants to the "
+"conference are using H.245 Tunneling."
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:157
+msgid ""
+"The range of UDP ports that GnomeMeeting will use for RTP (audio and video "
+"communication channels). You can change the UDP port range if you are using "
+"IP translation and if you need to have several GnomeMeeting running behind "
+"your NAT/PAT router. GnomeMeeting needs to be restarted for the new values "
+"to take effect."
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:158
+msgid ""
+"The range of UDP ports that GnomeMeeting will use when registering to "
+"gatekeepers. You can change the UDP port range if you are using IP "
+"translation and if you need to have several GnomeMeeting running behind your "
+"NAT/PAT router. GnomeMeeting needs to be restarted for the new values to "
+"take effect. This port range has no effect if you are not registering to a "
+"gatekeeper."
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:159 src/pref_window.cpp:1253
+#, fuzzy
+msgid "The registering method to use"
+msgstr "பயன்படுத்த வேண்டிய பதிவு செய்யும் முறை"
+
+#: gnomemeeting.schemas.in.in.h:160
+msgid "The ring tone sound"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:161
+msgid "The save prefix"
+msgstr "சேமிப்பு முன்னொட்டு"
+
+#: gnomemeeting.schemas.in.in.h:162
+#, fuzzy
+msgid "The size of the local video window"
+msgstr "உங்கள் ஒளித்தோற்ற சாளர அகலம்"
+
+#: gnomemeeting.schemas.in.in.h:163
+#, fuzzy
+msgid "The size of the remote video window"
+msgstr "தொலைவு ஒளித்தோற்ற சாளர அகலம்"
+
+#: gnomemeeting.schemas.in.in.h:164
+msgid ""
+"The sound that will be played at the end of calls or when calling somebody "
+"who is busy, if enabled"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:165
+#, fuzzy
+msgid "The sound that will be played on incoming calls, if enabled"
+msgstr "இதை தேர்வுச் செய்தால், அழைப்பு வந்தால் ஒலியெழுப்பப்படும்"
+
+#: gnomemeeting.schemas.in.in.h:166
+msgid "The sound that will be played when calling somebody, if enabled"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:167
+#, fuzzy
+msgid "The two-letter country code of your country (e.g.: BE, UK, FR, DE, ...)"
+msgstr "நாட்டின் அடையாள எண்"
+
+#: gnomemeeting.schemas.in.in.h:168 src/pref_window.cpp:968
+#, fuzzy
+msgid "The user directory server to register with"
+msgstr "பதவு செய்து கொள்ள வேண்டிய XDAP சேவையகம்"
+
+#: gnomemeeting.schemas.in.in.h:169 src/pref_window.cpp:1433
+#, fuzzy
+msgid "The video channel number to use (to select camera, tv or other sources)"
+msgstr "ஒளித்தோற்ற தடம்"
+
+#: gnomemeeting.schemas.in.in.h:170 src/pref_window.cpp:1418
+msgid ""
+"The video plugin that will be used to detect the devices and manage them"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:171
+msgid ""
+"The way to react to incoming calls: 0 displays a popup, 1 automatically "
+"answers the call, 2 automatically rejects the call and 3 forwards the call "
+"to the given URL, if any"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:172
+msgid "The zoom value"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:173
+msgid ""
+"The zoom value to apply to images displayed in the main GUI (can be 0.50, "
+"1.00, or 2.00)"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:174
+#, fuzzy
+msgid ""
+"This enables H.245 Tunnelling mode. In H.245 Tunnelling mode H.245 messages "
+"are encapsulated into the the H.225 channel (port 1720). This saves one TCP "
+"connection during calls. H.245 Tunnelling was introduced in H.323v2 and "
+"Netmeeting does not support it. Using both Fast Start and H.245 Tunnelling "
+"can crash some versions of Netmeeting."
+msgstr "H.245 சுரங்கத்தை செயல்படுத்து. இதை நெட்மீட்டிங்கோடு பயன்படுத்த கூடாது"
+
+#: gnomemeeting.schemas.in.in.h:175 src/pref_window.cpp:1205
+msgid "This enables H.245 early in the setup"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:176
+msgid ""
+"This enables IP checking from seconix.com and fills the IP in the public IP "
+"of the NAT/PAT gateway field of GnomeMeeting. The returned IP is only used "
+"when IP Translation is enabled. If you disable IP checking, you will have to "
+"manually enter the IP of your gateway in the GnomeMeeting preferences"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:177
+msgid ""
+"This enables IP translation. IP translation is useful if GnomeMeeting is "
+"running behind a NAT/PAT router. You have to put the public IP of the router "
+"in the field below. If you are registered to ils.seconix.com, GnomeMeeting "
+"will automatically fetch the public IP using the ILS service. If your router "
+"natively supports H.323, you can disable this"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:178
+msgid ""
+"This permits to set the mode for DTMFs sending. The values can be \"All"
+"\" (0), \"None\" (1), \"rfc2833\" (2), \"Signal\" (3) or \"String\" (4) "
+"(default is \"All\"). Choosing other values than \"All\", \"String\" or "
+"\"rfc2833\" disables the Text Chat"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:179
+#, fuzzy
+msgid "Transmitted background blocks"
+msgstr "அனுப்பப்படும் ஒளித்தோற்றத்தின் தொகுதிகள்"
+
+#: gnomemeeting.schemas.in.in.h:180
+msgid "UDP port range"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:181
+msgid "Use the gateway"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:182 src/pref_window.cpp:1276
+msgid "Use the specified gateway to do calls"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:183
+msgid ""
+"Use this option to ensure the above alias is used as the primary alias when "
+"registering with a gatekeeper. This may be required if your gatekeeper can "
+"only perform authentication using the first alias in the list"
+msgstr ""
+
+#: gnomemeeting.schemas.in.in.h:184
+#, fuzzy
+msgid "User directory"
+msgstr "அடைவு ஏதுமில்லை"
+
+#: gnomemeeting.schemas.in.in.h:185 src/ldap_window.cpp:2953
+msgid "Version"
+msgstr "வெளியீடு"
+
+#: gnomemeeting.schemas.in.in.h:186
+#, fuzzy
+msgid "Video channel"
+msgstr "ஒளித்தோற்றத தடம்"
+
+#: gnomemeeting.schemas.in.in.h:187
+#, fuzzy
+msgid "Video format"
+msgstr "ஒளித்தோற்ற வடிவம்"
+
+#: gnomemeeting.schemas.in.in.h:188
+#, fuzzy
+msgid "Video image"
+msgstr "விடியோ உரு:"
+
+#: gnomemeeting.schemas.in.in.h:189
+#, fuzzy
+msgid "Video input device"
+msgstr "ஒளித்தோற்றச் சாதனம்"
+
+#: gnomemeeting.schemas.in.in.h:190
+#, fuzzy
+msgid "Video plugin"
+msgstr "ஒளித்தோற்றத் தரம்"
+
+#: gnomemeeting.schemas.in.in.h:191
+#, fuzzy
+msgid "Video preview"
+msgstr "ஒளித்தோற்ற முன்னோட்டம்"
+
+#: gnomemeeting.schemas.in.in.h:192
+#, fuzzy
+msgid "Video size"
+msgstr "ஒளித்தோற்ற அளவு"
+
+#: lib/dialog.c:193
+msgid "Do not show this dialog again"
+msgstr "இந்த உரையாடலை மீண்டும் காட்டாதே"
+
+#: src/callbacks.cpp:86
+msgid "_Retrieve Call"
+msgstr ""
+
+#: src/callbacks.cpp:99 src/menu.cpp:280
+msgid "_Hold Call"
+msgstr ""
+
+#: src/callbacks.cpp:128
+#, fuzzy
+msgid "Transfer call to:"
+msgstr "அழைப்புகளை  முன்னோக்க வேண்டிய கணிணியின்பெயர்"
+
+#: src/callbacks.cpp:129
+msgid "Transfer"
+msgstr ""
+
+#: src/callbacks.cpp:231 src/menu.cpp:290
+msgid "Suspend _Audio"
+msgstr ""
+
+#: src/callbacks.cpp:232
+msgid "Resume _Audio"
+msgstr ""
+
+#: src/callbacks.cpp:233
+#, fuzzy
+msgid "Audio transmission: suspended"
+msgstr "ஒலி அனுப்புதலை முடமாக்கு"
+
+#: src/callbacks.cpp:234
+#, fuzzy
+msgid "Audio transmission: resumed"
+msgstr "ஒலி அனுப்புதலை முடமாக்கு"
+
+#: src/callbacks.cpp:245 src/menu.cpp:295
+msgid "Suspend _Video"
+msgstr ""
+
+#: src/callbacks.cpp:246
+#, fuzzy
+msgid "Resume _Video"
+msgstr "தோலை ஒளித்தோற்றம் "
+
+#: src/callbacks.cpp:247
+#, fuzzy
+msgid "Video transmission: suspended"
+msgstr "ஒளித்தோற்ற பரிமாற்றத்தை செயல்படுத்து"
+
+#: src/callbacks.cpp:248
+#, fuzzy
+msgid "Video transmission: resumed"
+msgstr "ஒளித்தோற்ற பரிமாற்றத்தை செயல்படுத்து"
+
+#: src/callbacks.cpp:383
+#, fuzzy
+msgid "Code contributors:"
+msgstr "நிரல் எழுதியவர்கள்"
+
+#: src/callbacks.cpp:393
+msgid "Artwork:"
+msgstr ""
+
+#: src/callbacks.cpp:397
+msgid "Contributors:"
+msgstr "எழுதியவர்கள்"
+
+#. Translators: Please write translator credits here, and
+#. * seperate names with \n
+#: src/callbacks.cpp:433
+msgid "translator_credits"
+msgstr "மொழிபெயர்த்தவர்"
+
+#. Translators: Please test to see if your translation
+#. * looks OK and fits within the box
+#: src/callbacks.cpp:444
+msgid ""
+"GnomeMeeting is full-featured H.323 compatible videoconferencing, VoIP and "
+"IP-Telephony application that allows you to make audio and video calls to "
+"remote users with H.323 hardware or software."
+msgstr ""
+
+#: src/chat_window.cpp:380
+msgid "Open URI"
+msgstr ""
+
+#: src/chat_window.cpp:383 src/chat_window.cpp:399
+#, fuzzy
+msgid "Copy Link Location"
+msgstr "இடம்"
+
+#: src/chat_window.cpp:395
+#, fuzzy
+msgid "Connect to"
+msgstr "இணைக்கவும்"
+
+#: src/chat_window.cpp:397
+msgid "Add to Address Book"
+msgstr ""
+
+#: src/chat_window.cpp:417
+msgid "Copy Equation"
+msgstr ""
+
+#: src/chat_window.cpp:432
+#, fuzzy
+msgid "Send message:"
+msgstr "அனுப்பு"
+
+#: src/codec_info.h:53
+msgid ""
+"iLBC-13k3 (internet Low Bitrate Codec) is a free speech codec suitable for "
+"robust voice communication over IP. The codec is designed for narrow band "
+"speech and results in a payload bit rate of 13.33 kbit/s with an encoding "
+"frame length of 30 ms. The iLBC codec enables graceful speech quality "
+"degradation in the case of lost frames, which occurs in connection with lost "
+"or delayed IP packets."
+msgstr ""
+
+#: src/codec_info.h:53 src/codec_info.h:55 src/codec_info.h:57
+#: src/codec_info.h:63 src/codec_info.h:65 src/codec_info.h:69
+#: src/codec_info.h:71
+msgid "Excellent"
+msgstr "அற்புதம்"
+
+#: src/codec_info.h:53
+msgid "13.33 Kbps"
+msgstr ""
+
+#: src/codec_info.h:55
+msgid ""
+"iLBC-15k2 (internet Low Bitrate Codec) is a free speech codec suitable for "
+"robust voice communication over IP. The codec is designed for narrow band "
+"speech and results in a payload bitrate of 15.20 kbps with an encoding "
+"length of 20 ms. The iLBC codec enables graceful speech quality degradation "
+"in the case of lost frames, which occurs in connection with lost or delayed "
+"IP packets."
+msgstr ""
+
+#: src/codec_info.h:55
+msgid "15.2 Kbps"
+msgstr ""
+
+#: src/codec_info.h:57
+msgid ""
+"Speex is an Open Source/Free Software patent-free audio compression format "
+"designed for speech. The Speex Project aims to lower the barrier of entry "
+"for voice applications by providing a free alternative to expensive "
+"proprietary speech codecs. Moreover, Speex is well-adapted to Internet "
+"applications and provides useful features that are not present in most other "
+"codecs. Finally, Speex is part of the GNU Project and is available under the "
+"Xiph.org variant of the BSD license. SpeexNarrow-15k is based on CELP and is "
+"designed to compress voice at a payload bitrate of 15 kbps."
+msgstr ""
+
+#: src/codec_info.h:57
+msgid "15 Kbps"
+msgstr ""
+
+#: src/codec_info.h:59
+msgid ""
+"Speex is an Open Source/Free Software patent-free audio compression format "
+"designed for speech. The Speex Project aims to lower the barrier of entry "
+"for voice applications by providing a free alternative to expensive "
+"proprietary speech codecs. Moreover, Speex is well-adapted to Internet "
+"applications and provides useful features that are not present in most other "
+"codecs. Finally, Speex is part of the GNU Project and is available under the "
+"Xiph.org variant of the BSD license. SpeexNarrow-8k is based on CELP and is "
+"designed to compress voice at a payload bitrate of 8 kbps."
+msgstr ""
+
+#: src/codec_info.h:59 src/codec_info.h:61 src/codec_info.h:67
+msgid "Good"
+msgstr ""
+
+#: src/codec_info.h:59
+msgid "8 Kbps"
+msgstr ""
+
+#: src/codec_info.h:61
+msgid ""
+"MS-GSM is the Microsoft version of GSM 06.10. GSM 06.10 is a standardized "
+"lossy speech compression employed by most European wireless telephones. It "
+"uses RPE/LTP (residual pulse excitation/long term prediction) coding to "
+"compress frames of 160 13-bit samples with a frame rate of 50 Hz into 260 "
+"bits.  Microsoft's GSM 06.10 codec is not compatible with the standard frame "
+"format, they use 65-byte-frames (2 x 32 1/2) rather than rounding to 33, and "
+"they number the bits in their bytes from the other end."
+msgstr ""
+
+#: src/codec_info.h:61
+msgid "13 Kbps"
+msgstr ""
+
+#: src/codec_info.h:63
+msgid ""
+"G.711 is the international standard for encoding telephone audio on 64 kbps "
+"channel. It is a pulse code modulation (PCM) scheme operating at 8 kHz "
+"sample rate, with 8 bits per sample, fully meeting ITU-T recommendations. "
+"This standard has two forms, A-Law and u-Law. A-Law G.711 PCM encoder "
+"converts 13 bit linear PCM samples into 8 bit compressed PCM (logarithmic "
+"form) samples, and the decoder does the conversion vice versa."
+msgstr ""
+
+#: src/codec_info.h:63 src/codec_info.h:65
+msgid "64 Kbps"
+msgstr ""
+
+#: src/codec_info.h:65
+msgid ""
+"G.711 is the international standard for encoding telephone audio on 64 kbps "
+"channel. It is a pulse code modulation (PCM) scheme operating at 8 kHz "
+"sample rate, with 8 bits per sample, fully meeting ITU-T recommendations. "
+"This standard has two forms, A-Law and u-Law. u-Law G.711 PCM encoder "
+"converts 14 bit linear PCM samples into 8 bit compressed PCM (logarithmic "
+"form) samples, and the decoder does the conversion vice versa."
+msgstr ""
+
+#: src/codec_info.h:67
+msgid ""
+"GSM 06.10 is a standardized lossy speech compression employed by first "
+"generation of digital mobile phones in Europe. It uses RPE/LTP (residual "
+"pulse excitation/long term prediction) coding to compress frames of 20 ms, "
+"achieving a bitrate of 13kbps."
+msgstr ""
+
+#: src/codec_info.h:67
+msgid "16.5 Kbps"
+msgstr ""
+
+#: src/codec_info.h:69
+msgid ""
+"G.726 conforms to ITU-T G.726 recommendation that specifies speech "
+"compression and decompression at rates of 16, 24, 32 and 40 Kbps based on "
+"Adaptive Differential Pulse Code Modulation (ADPCM)."
+msgstr ""
+
+#: src/codec_info.h:69
+msgid "32 Kbps"
+msgstr ""
+
+#: src/codec_info.h:71
+msgid ""
+"G.723.1 conforms to ITU-T G.723.1 recommendation. It was designed for "
+"videoconferencing / telephony over standard phone lines, and is optimized "
+"for realtime encode and decode. That codec is only available in GnomeMeeting "
+"when using Quicknet cards due to patents restrictions."
+msgstr ""
+
+#: src/codec_info.h:71
+msgid "6.3 or 5.7 Kbps"
+msgstr ""
+
+#: src/config-tool-i18n.h:1
+msgid "YES"
+msgstr "ஆம்"
+
+#: src/config-tool-i18n.h:2
+msgid "Sorry, this script won't work while GnomeMeeting is running"
+msgstr "பிழை நேர்ந்துள்ளது. இது வேலைச் செய்யாது"
+
+#: src/config-tool-i18n.h:3
+msgid "  WARNING!!!"
+msgstr "எச்சரிக்கை"
+
+#: src/config-tool-i18n.h:4
+msgid ""
+"  This script will delete all user GnomeMeeting configuration,\n"
+"  including preferences that may be important! \n"
+"  The GConf daemon will be shut down, so make sure you have no\n"
+"  applications depending on it running.\n"
+"\n"
+"  Do you really want to do this?\n"
+"\n"
+"  If so, say \"YES\".\n"
+"\n"
+msgstr ""
+"தயவுசெய்து உங்களுக்கு தேவையான அனைத்தையும் \n"
+" காப்பெடுத்துக்கொள்ளவும்,\n"
+"அமைப்புகள் மாற்றப்படும்GConf செயலி முடமாக்கப்படும்\n"
+"\n"
+"நீங்கள் நிச்சயம் இதைச் செய்ய விரும்புகிறீர்களா? \n"
+"\n"
+"சரியென்றால் \"ஆம்\" எனவும்.\n"
+"\n"
+
+#: src/config-tool-i18n.h:5
+msgid "Removing $HOME/.gconf/apps/gnomemeeting"
+msgstr " $HOME/.gconf/apps/gnomemeeting நீக்கப்படுகிறது"
+
+#: src/config-tool-i18n.h:6 src/config-tool-i18n.h:11
+#: src/config-tool-i18n.h:13
+msgid "Shutting down GConf daemon"
+msgstr "GConf செயலி முடமாக்கப்படுகிறது"
+
+#: src/config-tool-i18n.h:7
+msgid "...Done."
+msgstr "முடிந்தது"
+
+#: src/config-tool-i18n.h:8
+msgid "Leaving configuration alone."
+msgstr "அமைப்புகள் மாற்றப்படவில்லை"
+
+#: src/config-tool-i18n.h:9
+msgid "Have a nice day."
+msgstr "வாழ்த்துக்கள்"
+
+#: src/config-tool-i18n.h:10
+msgid ""
+"  The GConf daemon will be shut down, so make sure you have no\n"
+"  applications depending on it running.\n"
+"\n"
+"  Do you really want to do this?\n"
+"\n"
+"  If so, say \"YES\".\n"
+"\n"
+msgstr ""
+"GConf செயலி முடமாக்கப்படுகிறது \n"
+"\n"
+"நீங்கள் நிச்சயம் இதைச் செய்ய விரும்புகிறீர்களா? \n"
+"\n"
+"சரியென்றால் \"ஆம்\" எனவும்.\n"
+"\n"
+
+#: src/config-tool-i18n.h:12
+msgid "Removing schemas"
+msgstr "அமைப்புகள் நீக்கப்படுகிறது"
+
+#: src/config-tool-i18n.h:14
+msgid "Installing schemas"
+msgstr "அமைப்புகள் நிறுவப்படுகிறது"
+
+#: src/config-tool-i18n.h:15
+msgid ""
+"CRITICAL ERROR -- Schema installation failed.\n"
+"Most probably you have the GConf daemon running as root.\n"
+"\n"
+"Run \"gnomemeeting-config-tool --install-schemas\" as root.\n"
+msgstr ""
+"பிழை நேர்ந்துள்ளது இதை நீங்கள் பார்த்தால் நீங்கள் மிகப் தவறான \n"
+"தேர்வு செய்து இருக்கிறீர்கள் என \n"
+"அர்த்தம். உடனடியாக கணிணியில் நல்ல தேர்ச்சியுள்ளவர் \n"
+"உதவியுடன மாண்டிரேக் லினக்ைஸ நிறுவுங்கள். அல்லது ஆரம்பத்தலிருந்து\n"
+"பொறுமையாக தேர்வுச் செய்து வாருங்கள். வாழ்த்துக்கள்\n"
+
+#: src/config-tool-i18n.h:16
+msgid "Usage:  gnomemeeting-config-tool OPTION"
+msgstr "Usage:  gnomemeeting-config-tool OPTION"
+
+#: src/config-tool-i18n.h:17
+msgid "Fixes problems with the GnomeMeeting settings"
+msgstr "Fixes problems with the GnomeMeeting settings"
+
+#: src/config-tool-i18n.h:18
+msgid "  --clean                remove all user settings"
+msgstr "  --clean                remove all user settings"
+
+#: src/config-tool-i18n.h:19
+msgid ""
+"  --install-schemas      install schemas with default settings (run as root)"
+msgstr ""
+"  --install-schemas      install schemas with default settings (run as root)"
+
+#: src/config-tool-i18n.h:20
+msgid ""
+"  --clean-schemas        remove schemas with default settings (run as root)"
+msgstr ""
+"--clean-schemas        remove schemas with default settings (run as root)"
+
+#: src/config-tool-i18n.h:21
+msgid ""
+"  --fix-permissions      fix permissions of GConf repository (run as root)"
+msgstr ""
+"  --fix-permissions      fix permissions of GConf repository (run as root)"
+
+#: src/config.cpp:347 src/config.cpp:592
+msgid "Changing this setting will only affect new calls"
+msgstr "மாற்றங்கள் புதிய அழைப்புகளுக்கு மட்டும பொருந்தும்"
+
+#: src/config.cpp:347 src/config.cpp:592
+msgid ""
+"You have changed a setting that doesn't permit to GnomeMeeting to apply the "
+"new change to the current call. Your new setting will only take effect for "
+"the next call."
+msgstr ""
+
+#: src/config.cpp:410
+#, fuzzy
+msgid "H.245 Tunneling disabled"
+msgstr "H.245 சுரங்கத்தை முடமாக்கு"
+
+#: src/config.cpp:411
+#, fuzzy
+msgid "H.245 Tunneling enabled"
+msgstr "H.245 சுரங்கத்தை பயன்படுத்து"
+
+#: src/config.cpp:440
+#, fuzzy
+msgid "Early H.245 disabled"
+msgstr "H.245 சுரங்கத்தை முடமாக்கு"
+
+#: src/config.cpp:441
+#, fuzzy
+msgid "Early H.245 enabled"
+msgstr "H.245 சுரங்கத்தை பயன்படுத்து"
+
+#: src/config.cpp:470
+#, fuzzy
+msgid "Fast Start disabled"
+msgstr "வேகதுவக்கத்தை முடமாக்கு"
+
+#: src/config.cpp:471
+#, fuzzy
+msgid "Fast Start enabled"
+msgstr "வேகதுவக்கத்தை பயன்படுத்து"
+
+#: src/config.cpp:503
+msgid "No gateway or proxy specified"
+msgstr ""
+
+#: src/config.cpp:503
+#, fuzzy
+msgid "You need to specify a host to use as gateway or proxy."
+msgstr "கணிணியின் தரப்படாதலால் முன்கேனாக்கம் முடமாக்கப் படுகிறது"
+
+#: src/config.cpp:650
+#, fuzzy
+msgid "Disabled silence detection"
+msgstr "நிசப்த அறிதலை முடமாக்கு"
+
+#: src/config.cpp:655
+#, fuzzy
+msgid "Enabled silence detection"
+msgstr "நிசப்த அறிதலை பயன்படுத்து"
+
+#: src/config.cpp:1375
+msgid "Forward URL not specified"
+msgstr ""
+
+#: src/config.cpp:1376
+#, fuzzy
+msgid ""
+"You need to specify an URL where to forward calls in the call forwarding "
+"section of the preferences!\n"
+"\n"
+"Disabling forwarding."
+msgstr "கணிணியின் தரப்படாதலால் முன்கேனாக்கம் முடமாக்கப் படுகிறது"
+
+#: src/config.cpp:1660
+msgid ""
+"An error has happened in the configuration backend.\n"
+"Maybe some of your settings won't be saved."
+msgstr ""
+"வடிவமைப்பில் பிழை நேர்ந்துள்ளது\n"
+"நீங்கள் செய்த சில மாற்றங்கள் சேமிக்கப்படவில்லை போலும்"
+
+#: src/config.cpp:1911 src/ldap_window.cpp:2540
+msgid "Friends"
+msgstr ""
+
+#: src/config.cpp:1912 src/ldap_window.cpp:2544
+msgid "Work"
+msgstr ""
+
+#: src/config.cpp:1913 src/ldap_window.cpp:2542
+msgid "Family"
+msgstr ""
+
+#: src/connection.cpp:153
+#, fuzzy, c-format
+msgid "Opened codec %s for transmission"
+msgstr "ஒளித்தோற்ற அனுப்புதலை முடமாக்கு"
+
+#: src/connection.cpp:156
+#, c-format
+msgid "Closed codec %s which was opened for transmission"
+msgstr ""
+
+#: src/connection.cpp:160
+#, c-format
+msgid "Opened codec %s for reception"
+msgstr ""
+
+#: src/connection.cpp:163
+#, c-format
+msgid "Closed codec %s which was opened for reception"
+msgstr ""
+
+#: src/connection.cpp:200
+#, c-format
+msgid "Failure opening %s for transmission, will try with next common codec"
+msgstr ""
+
+#: src/connection.cpp:201
+#, c-format
+msgid "Failure opening %s for reception, will try with next common codec"
+msgstr ""
+
+#: src/connection.cpp:314 src/connection.cpp:315 src/urlhandler.cpp:77
+#: src/urlhandler.cpp:78
+msgid "Call transfer failed"
+msgstr ""
+
+#: src/connection.cpp:314
+#, fuzzy
+msgid ""
+"The remote user tried to transfer your call to another user, but it failed."
+msgstr "தொலைவில் உள்ளவர் குறித்த நேரத்தில் உங்கள் அழைப்பை ஒப்புக்கொள்ளவில்லை"
+
+#: src/druid.cpp:266 src/druid.cpp:668 src/druid.cpp:685 src/druid.cpp:723
+#: src/endpoint.cpp:1701 src/gnomemeeting.cpp:316 src/gnomemeeting.cpp:318
+#: src/gnomemeeting.cpp:320 src/sound_handling.cpp:561
+#: src/sound_handling.cpp:562 src/videograbber.cpp:309
+#: src/videograbber.cpp:564
+#, fuzzy
+msgid "No device found"
+msgstr "நுழைவுக்காப்பாளன் காணப்படவில்லை"
+
+#: src/druid.cpp:331
+#, fuzzy
+msgid "Welcome to GnomeMeeting 1.00!"
+msgstr "_gமாநாடு பற்றி"
+
+#: src/druid.cpp:331
+msgid ""
+"Congratulations, you have just successfully launched GnomeMeeting 1.00 for "
+"the first time.\n"
+"GnomeMeeting is the leading VoIP, videoconferencing and telephony software "
+"for Unix.\n"
+"\n"
+"Thanks to all of you who have helped us along the road to our golden 1.00 "
+"release!\n"
+"\n"
+"The GnomeMeeting Team."
+msgstr ""
+
+#: src/druid.cpp:562
+#, fuzzy
+msgid "56k Modem"
+msgstr "56K மோடம்"
+
+#: src/druid.cpp:563
+msgid "ISDN"
+msgstr "ISDN"
+
+#: src/druid.cpp:564
+#, fuzzy
+msgid "xDSL/Cable"
+msgstr "DSL/கேபிள்"
+
+#: src/druid.cpp:565
+msgid "T1/LAN"
+msgstr "T1/LAN"
+
+#: src/druid.cpp:566
+msgid "Keep current settings"
+msgstr ""
+
+#: src/druid.cpp:748
+#, c-format
+msgid ""
+"You have now finished the GnomeMeeting configuration. All the settings can "
+"be changed in the GnomeMeeting preferences. Enjoy!\n"
+"\n"
+"\n"
+"Configuration summary:\n"
+"\n"
+"Username:  %s\n"
+"Connection type:  %s\n"
+"Audio manager: %s\n"
+"Audio player:  %s\n"
+"Audio recorder:  %s\n"
+"Video manager: %s\n"
+"Video player: %s\n"
+"Callto URL: %s\n"
+msgstr ""
+
+#: src/druid.cpp:748 src/pref_window.cpp:1188
+msgid "None"
+msgstr ""
+
+#: src/druid.cpp:777
+#, fuzzy, c-format
+msgid "Personal Information - page %d/%d"
+msgstr "உங்கள் விவரங்கள்"
+
+#. The user fields
+#: src/druid.cpp:790
+msgid "Please enter your first name and your surname:"
+msgstr ""
+
+#: src/druid.cpp:798
+msgid ""
+"Your first name and surname will be used when connecting to other VoIP and "
+"videoconferencing software."
+msgstr ""
+
+#: src/druid.cpp:841
+#, c-format
+msgid "Callto URL - page %d/%d"
+msgstr ""
+
+#: src/druid.cpp:852
+#, fuzzy
+msgid "Please enter your e-mail address:"
+msgstr "உங்கள் மின்னஞ்சல் முகவரி"
+
+#: src/druid.cpp:860
+msgid ""
+"Your e-mail address is used when registering to the GnomeMeeting users "
+"directory. It is used to create a callto address permitting your contacts to "
+"easily call you wherever you are."
+msgstr ""
+
+#: src/druid.cpp:869
+#, fuzzy
+msgid ""
+"I don't want to register to the GnomeMeeting users directory and get a "
+"callto address"
+msgstr "ILS அடைவில் பதிய வேண்டாம்"
+
+#: src/druid.cpp:919
+#, fuzzy, c-format
+msgid "Connection Type - page %d/%d"
+msgstr "இணைப்பு வகை -  3/4 பக்கம்"
+
+#. The connection type
+#: src/druid.cpp:931
+#, fuzzy
+msgid "Please choose your connection type:"
+msgstr "தற்போதைய இணைப்பை துண்டிக்கவும் "
+
+#: src/druid.cpp:939
+msgid ""
+"The connection type will permit determining the best quality settings that "
+"GnomeMeeting will use during calls. You can later change the settings "
+"individually in the preferences window."
+msgstr ""
+
+#: src/druid.cpp:978
+#, c-format
+msgid "Audio Manager - page %d/%d"
+msgstr ""
+
+#. The Audio devices
+#: src/druid.cpp:990
+#, fuzzy
+msgid "Please choose your audio manager:"
+msgstr "ஒளித்தோற்ற "
+
+#: src/druid.cpp:998
+msgid ""
+"The audio manager is the plugin that will manage your audio devices, ALSA is "
+"probably the best choice when available."
+msgstr ""
+
+#: src/druid.cpp:1039
+#, fuzzy, c-format
+msgid "Audio Devices - page %d/%d"
+msgstr "ஒலிக்கருவிகள்"
+
+#. The Audio devices
+#: src/druid.cpp:1051
+#, fuzzy
+msgid "Please choose the audio output device:"
+msgstr "ஒளித்தோற்ற "
+
+#: src/druid.cpp:1059
+msgid ""
+"The audio output device is the device managed by the audio manager that will "
+"be used to play audio."
+msgstr ""
+
+#: src/druid.cpp:1069
+#, fuzzy
+msgid "Please choose the audio input device:"
+msgstr "ஒளித்தோற்ற "
+
+#: src/druid.cpp:1077
+msgid ""
+"The audio input device is the device managed by the audio manager that will "
+"be used to record your voice."
+msgstr ""
+
+#: src/druid.cpp:1090 src/druid.cpp:1228
+#, fuzzy
+msgid "Test Settings"
+msgstr "ஒளித்தோற்ற அமைப்புகள்"
+
+#: src/druid.cpp:1136
+#, c-format
+msgid "Video Manager - page %d/%d"
+msgstr ""
+
+#. The Audio devices
+#: src/druid.cpp:1148
+#, fuzzy
+msgid "Please choose your video manager:"
+msgstr "ஒளித்தோற்ற "
+
+#: src/druid.cpp:1156
+msgid ""
+"The video manager is the plugin that will manage your video devices, "
+"Video4Linux is the most common choice if you own a webcam."
+msgstr ""
+
+#: src/druid.cpp:1196
+#, fuzzy, c-format
+msgid "Video Devices - page %d/%d"
+msgstr "ஒளிச்சாதனம் துவக்கப்பட்டது"
+
+#. The Video devices
+#: src/druid.cpp:1208
+#, fuzzy
+msgid "Please choose the video input device:"
+msgstr "ஒளித்தோற்ற "
+
+#: src/druid.cpp:1216
+msgid ""
+"The video input device is the device managed by the video manager that will "
+"be used to capture video."
+msgstr ""
+
+#: src/druid.cpp:1263
+msgid "First Time Configuration Druid"
+msgstr "வடிவமைப்பு மாயாவி"
+
+#: src/druid.cpp:1270
+#, fuzzy, c-format
+msgid "Configuration Druid - page %d/%d"
+msgstr "வடிவமைப்பு மாயாவி"
+
+#: src/druid.cpp:1273
+#, fuzzy
+msgid ""
+"This is the GnomeMeeting general configuration druid. The following steps "
+"will set up GnomeMeeting by asking a few simple questions.\n"
+"\n"
+"Once you have completed these steps, you can always change them later by "
+"selecting Preferences in the Edit menu."
+msgstr ""
+"வடிவமைப்பு மாயாவிக்கு வாருங்கள். இது உங்களிடம் சில எளிய கேள்விகளை கேட்டு gமாநாட்டை "
+"சரியாக வடிவமைத்துக்கொள்ளும் இதை நீங்கள் எப்போது வேண்டுமானாலும் மாற்றிக் கொள்ளலாம்"
+
+#: src/druid.cpp:1313
+#, c-format
+msgid "Configuration complete - page %d/%d"
+msgstr ""
+
+#. Update the log and status bar
+#: src/endpoint.cpp:748
+#, fuzzy, c-format
+msgid "Call from %s"
+msgstr "%s என்ற இடத்திலிருந்து %s மூலம் அழைப்பு"
+
+#: src/endpoint.cpp:760
+#, fuzzy, c-format
+msgid "Forwarding call from %s to %s (Forward all calls)"
+msgstr "%s இருந்து  %s க்கு  அழைப்புகள் முன்னோக்கப்படும்(அனைத்து அழைப்புகளும்)"
+
+#. there is no forwarding, so reject the call
+#: src/endpoint.cpp:767 src/endpoint.cpp:788
+#, fuzzy, c-format
+msgid "Rejecting call from %s (Busy)"
+msgstr " %s இங்கிருந்து வரும் அழைப்புகளை கண்டுக்கொள்ளாதே(பயன்பாட்டில் இருக்கும்போது மட்டும்)"
+
+#: src/endpoint.cpp:779
+#, fuzzy, c-format
+msgid "Forwarding call from %s to %s (Busy)"
+msgstr "%s இருந்து  %s க்கு  அழைப்புகள் முன்னோக்கப்படும்(பயன்பாட்டில் இருக்கும்போது மட்டும்)"
+
+#: src/endpoint.cpp:797
+#, c-format
+msgid "Accepting call from %s (Free For Chat)"
+msgstr ""
+
+#: src/endpoint.cpp:822
+#, fuzzy
+msgid "Call rejected"
+msgstr "அழைப்பு முடிந்தது"
+
+#: src/endpoint.cpp:831 src/endpoint.cpp:1210 src/endpoint.cpp:2144
+msgid "Call forwarded"
+msgstr "அழைப்பு முன்னோக்கப்பட்டது"
+
+#: src/endpoint.cpp:843
+#, fuzzy
+msgid "Call automatically answered"
+msgstr "துானியங்கியாக அழைப்பை ஒப்புக்கொள்"
+
+#: src/endpoint.cpp:913
+#, fuzzy, c-format
+msgid "Forwarding call to %s"
+msgstr " %s க்கு அழைப்புகள் முன்னோக்கப்படும்"
+
+#: src/endpoint.cpp:924
+#, fuzzy, c-format
+msgid "Error while forwarding call to %s"
+msgstr "%s அழைப்புகள் முன்னோக்கப்படுவதில் பிழை"
+
+#: src/endpoint.cpp:927
+#, fuzzy
+msgid "There was an error when forwarding the call to the given host."
+msgstr "எப்போதும் அழைப்புகளை கொடுக்கப்பட்டுள்ள கணிணிக்கு முன்னோக்கஞ் செய்"
+
+#: src/endpoint.cpp:978
+msgid "Connected"
+msgstr "இணைக்கப்பட்டுள்ளது"
+
+#: src/endpoint.cpp:979
+#, c-format
+msgid "Connected with %s using %s"
+msgstr "%s உடன் %s பயன்படுத்தி இணைக்கப்பட்டுள்ளது"
+
+#: src/endpoint.cpp:1174
+#, fuzzy
+msgid "Local user cleared the call"
+msgstr "தொலைவில் உள்ளவர் அழைப்பை நீக்கி விட்டார்"
+
+#: src/endpoint.cpp:1177
+#, fuzzy
+msgid "Remote user cleared the call"
+msgstr "தொலைவில் உள்ளவர் அழைப்பை நீக்கி விட்டார்"
+
+#: src/endpoint.cpp:1180
+#, fuzzy
+msgid "Remote user did not accept the call"
+msgstr "தொலைவில் உள்ளவர் உங்கள் அழைப்பை ஒப்புக்கொள்ளவில்லை"
+
+#: src/endpoint.cpp:1183 src/endpoint.cpp:1186
+#, fuzzy
+msgid "Local user did not accept the call"
+msgstr "தொலைவில் உள்ளவர் உங்கள் அழைப்பை ஒப்புக்கொள்ளவில்லை"
+
+#: src/endpoint.cpp:1189
+#, fuzzy
+msgid "The Gatekeeper cleared the call"
+msgstr "தொலைவில் உள்ளவர் அழைப்பை நீக்கி விட்டார்"
+
+#: src/endpoint.cpp:1192
+#, fuzzy
+msgid "Call not answered in the required time"
+msgstr "தொலைவில் உள்ளவர் குறித்த நேரத்தில் உங்கள் அழைப்பை ஒப்புக்கொள்ளவில்லை"
+
+#: src/endpoint.cpp:1195
+#, fuzzy
+msgid "Remote user has stopped calling"
+msgstr "தொலைவில் உள்ளவர் அழைப்பதை நிறுத்தி விட்டார்"
+
+#: src/endpoint.cpp:1198
+msgid "Abnormal call termination"
+msgstr ""
+
+#: src/endpoint.cpp:1201
+#, fuzzy
+msgid "Could not connect to remote host"
+msgstr "தொலைவில் உள்ளவரிடம் உங்கள் குறிமுறை ஏதுமில்லை"
+
+#: src/endpoint.cpp:1204
+#, fuzzy
+msgid "Insufficient bandwidth"
+msgstr "போதிய  பட்டையகலம் இல்லை"
+
+#: src/endpoint.cpp:1207
+msgid "No common codec"
+msgstr ""
+
+#: src/endpoint.cpp:1213
+msgid "Security check Failed"
+msgstr ""
+
+#: src/endpoint.cpp:1216
+msgid "Local user is busy"
+msgstr ""
+
+#: src/endpoint.cpp:1219
+#, fuzzy
+msgid "Remote user is busy"
+msgstr "தொலைவில் உள்ளவர்  ஏற்கனவே பயன்படுத்திக் கொண்டு உள்ளார்"
+
+#: src/endpoint.cpp:1222 src/endpoint.cpp:1225
+msgid "Congested link to remote party"
+msgstr "தொலைவில் உள்ளவர் இணைப்பு கிடைக்கவில்லை"
+
+#: src/endpoint.cpp:1228 src/endpoint.cpp:1231
+msgid "Remote user is unreachable"
+msgstr ""
+
+#: src/endpoint.cpp:1234
+#, fuzzy
+msgid "Remote host is offline"
+msgstr "தொலைவில் உள்ளவர் இணையத்தில் இப்போது இல்லை"
+
+#: src/endpoint.cpp:1237
+msgid "Temporary failure"
+msgstr ""
+
+#: src/endpoint.cpp:1240 src/urlhandler.cpp:373 src/urlhandler.cpp:379
+msgid "User not found"
+msgstr "பயனர் இல்லை"
+
+#: src/endpoint.cpp:1244
+msgid "Call completed"
+msgstr "அழைப்பு முடிந்தது"
+
+#: src/endpoint.cpp:1336 src/main_window.cpp:1266
+#, fuzzy
+msgid ""
+"Lost packets:\n"
+"Late packets:\n"
+"Round-trip delay:\n"
+"Jitter buffer:"
+msgstr ""
+"அனுப்பியவை/பெற்றவை:\n"
+"தொலைந்தவை/தாமாதமானவை:\n"
+"ஒட்டுமொத்த தாமதம்:"
+
+#: src/endpoint.cpp:1560
+#, fuzzy
+msgid "Error while starting the listener"
+msgstr "நுழைவுக்காப்பாளனில் பதியும்போது பிழை"
+
+#: src/endpoint.cpp:1560
+msgid ""
+"You will not be able to receive incoming calls. Please check that no other "
+"program is already running on the port used by GnomeMeeting."
+msgstr ""
+
+#: src/endpoint.cpp:1687
+msgid "Attaching lid hardware to codec"
+msgstr "வன்பொருளோடு குறிமுறை இணைக்கப்பட்டது"
+
+#: src/endpoint.cpp:1721
+#, c-format
+msgid "Opened %s for recording with plugin %s"
+msgstr ""
+
+#: src/endpoint.cpp:1722
+#, c-format
+msgid "Opened %s for playing with plugin %s"
+msgstr ""
+
+#: src/endpoint.cpp:1760
+#, fuzzy
+msgid "Could not open audio channel for audio transmission"
+msgstr ""
+"ஒலியலையை அனுப்ப  முடியவில்லை. வேறு ஏதேனும், பயன்பாடு இசை கேட்க பயன்படுகிறதா என "
+"பார்க்கவும்.\n"
+"தற்போதைக்கு ஒலி அனுப்புதல் நிறுத்தப்படுகிறது"
+
+#: src/endpoint.cpp:1760
+msgid ""
+"An error occured while trying to record from the soundcard for the audio "
+"transmission. Please check that your soundcard is not busy and that your "
+"driver supports full-duplex.\n"
+"The audio transmission has been disabled."
+msgstr ""
+
+#: src/endpoint.cpp:1765
+#, fuzzy
+msgid "Could not open audio channel for audio reception"
+msgstr ""
+"ஒலியலையை பெற முடியவில்லை. வேறு ஏதேனும், பயன்பாடு இசை கேட்க பயன்படுகிறதா என "
+"பார்க்கவும்.\n"
+"தற்போதைக்கு ஒலி பெறுதல் நிறுத்தப்படுகிறது"
+
+#: src/endpoint.cpp:1765
+msgid ""
+"An error occured while trying to play audio to the soundcard for the audio "
+"reception. Please check that your soundcard is not busy and that your driver "
+"supports full-duplex.\n"
+"The audio reception has been disabled."
+msgstr ""
+
+#: src/endpoint.cpp:1977
+#, c-format
+msgid "%.2ld:%.2ld:%.2ld  A:%.2f/%.2f   V:%.2f/%.2f"
+msgstr "%.2ld:%.2ld:%.2ld  A:%.2f/%.2f   V:%.2f/%.2f"
+
+#: src/endpoint.cpp:2019
+#, c-format
+msgid ""
+"Lost packets: %.1f %%\n"
+"Late packets: %.1f %%\n"
+"Round-trip delay: %d ms\n"
+"Jitter buffer: %d ms"
+msgstr ""
+
+#: src/endpoint.cpp:2141
+#, c-format
+msgid "Forwarding Call to %s (No Answer)"
+msgstr " %s க்கு அழைப்புகள் முன்னோக்கப்படும்(பதில் இல்லாதபோது மட்டும்)"
+
+#: src/gatekeeper.cpp:131
+#, c-format
+msgid "Unregistered from gatekeeper %s"
+msgstr ""
+
+#: src/gatekeeper.cpp:146
+#, fuzzy
+msgid "Invalid gatekeeper hostname"
+msgstr "நுழைவுக்காப்பாளனின் பெயர்"
+
+#: src/gatekeeper.cpp:146
+#, fuzzy
+msgid "Please provide a hostname to use for the gatekeeper."
+msgstr ""
+"நுழைவுக்காப்பாளன் கணிணியின் பெயரை கொடுக்கவும்.\n"
+"பதிவுச் செய்தலை தவிர்க்கவும்"
+
+#: src/gatekeeper.cpp:154
+#, fuzzy
+msgid "Invalid gatekeeper ID"
+msgstr "நுழைவுக்காப்பாளனின் அடையாள எண்"
+
+#: src/gatekeeper.cpp:154
+#, fuzzy
+msgid "Please provide a valid ID for the gatekeeper."
+msgstr ""
+"நுழைவுக்காப்பாளன் கணிணியின் அடையாள எண்ணை சரியாக கொடுக்கவும்.\n"
+"பதிவுச் செய்தலை தவிர்க்கவும்"
+
+#: src/gatekeeper.cpp:201
+msgid ""
+"Another user already exists with the same alias, please use another alias."
+msgstr ""
+
+#: src/gatekeeper.cpp:204
+msgid ""
+"You are not allowed to register to the gatekeeper. Please check your login, "
+"password and firewall."
+msgstr ""
+
+#: src/gatekeeper.cpp:207
+msgid "There was a transport error."
+msgstr ""
+
+#: src/gatekeeper.cpp:210 src/gatekeeper.cpp:215
+msgid "No gatekeeper corresponding to your options has been found."
+msgstr ""
+
+#: src/gatekeeper.cpp:217
+#, fuzzy
+msgid "Error while registering with gatekeeper"
+msgstr "நுழைவுக்காப்பாளனில் பதியும்போது பிழை"
+
+#: src/gatekeeper.cpp:232
+#, c-format
+msgid "Gatekeeper set to %s"
+msgstr "%s நுழைவுக்காப்பாளன்"
+
+#: src/gnomemeeting.cpp:86
+msgid "Notification area not detected"
+msgstr ""
+
+#: src/gnomemeeting.cpp:86
+msgid ""
+"You have chosen to start GnomeMeeting hidden, however the notification area "
+"is not present in your panel, GnomeMeeting can thus not start hidden."
+msgstr ""
+
+#: src/gnomemeeting.cpp:186
+msgid "Answering incoming call"
+msgstr "உள்ளே வரும் அழைப்புகள் பதிலளிக்கப்படுகிறது"
+
+#: src/gnomemeeting.cpp:235
+msgid "Trying to stop calling"
+msgstr "அழைப்பது நிறுத்தப்படுகிறது"
+
+#: src/gnomemeeting.cpp:246
+msgid "Stopping current call"
+msgstr "தற்போதைய அழைப்பை நிறுத்து"
+
+#: src/gnomemeeting.cpp:256
+msgid "Refusing Incoming call"
+msgstr "தற்போதைய அழைப்பை மறுத்து விடு"
+
+#. GM is started
+#: src/gnomemeeting.cpp:482
+#, fuzzy, c-format
+msgid "Started GnomeMeeting V%d.%d.%d for %s\n"
+msgstr "gமாநாடு V%d.%d for %s ஆரம்பித்தது\n"
+
+#: src/ils.cpp:103
+msgid "Invalid parameters"
+msgstr ""
+
+#: src/ils.cpp:103
+#, fuzzy
+msgid ""
+"Please provide your first name and e-mail in the Personal Data section in "
+"order to be able to register to the user directory."
+msgstr ""
+"தயவுசெய்து அனைத்து தகவல்களையும் தாருங்கள் , தகவல் முழுதாக இல்லாமையால் பதிவு "
+"செய்யப்படவில்லை"
+
+#: src/ils.cpp:137
+msgid "Invalid user directory"
+msgstr ""
+
+#: src/ils.cpp:137
+#, fuzzy
+msgid "Operation impossible since there is no user directory specified."
+msgstr "XDAP  சேவையகம் தரப்படாதலால் பதிவு செய்யப்படவில்லை"
+
+#: src/ils.cpp:216
+#, fuzzy
+msgid "Failed to parse XML file"
+msgstr "XML கோப்பை படிப்பதில் தவறு"
+
+#: src/ils.cpp:216
+msgid ""
+"There was an error while parsing the XML file. Please make sure that it is "
+"correctly installed in your system."
+msgstr ""
+
+#: src/ils.cpp:227
+#, fuzzy
+msgid "Bad information"
+msgstr "உங்கள் விவரங்கள்"
+
+#: src/ils.cpp:227
+#, fuzzy, c-format
+msgid "Bad LDAP information from XML file: %s."
+msgstr "%s : XML கோப்பில் தவறான ldap  விவரம் உள்ளது"
+
+#: src/ils.cpp:236
+msgid "Cannot contact the users directory"
+msgstr ""
+
+#: src/ils.cpp:236
+#, c-format
+msgid ""
+"Failed to contact the users directory %s:%d. The directory is probably "
+"currently overloaded, please try again later."
+msgstr ""
+
+#: src/ils.cpp:246 src/ils.cpp:255
+msgid "Cannot contact the user directory"
+msgstr ""
+
+#: src/ils.cpp:246
+#, fuzzy
+msgid "Failed to set a time limit on operations."
+msgstr "ldap இயக்கங்களில் உச்ச எல்லையை அமைக்க முடியவில்லை"
+
+#: src/ils.cpp:255
+#, fuzzy, c-format
+msgid "Failed to bind to user directory: %s."
+msgstr "ldap சேவையகத்தோடு இணைவதில் பிழை: %s."
+
+#: src/ils.cpp:279
+#, fuzzy, c-format
+msgid "Updated information on the users directory %s."
+msgstr "%s உள்ள தகவல் நிகழ்நிலைப்படுத்தப்பட்டது"
+
+#: src/ils.cpp:283
+#, fuzzy, c-format
+msgid "Unregistered from the users directory %s."
+msgstr "ILS அடைவில் பதிய வேண்டாம்"
+
+#: src/ils.cpp:305
+#, fuzzy, c-format
+msgid "Error while registering to %s"
+msgstr "%s பதியும்போது பிழை"
+
+#: src/ils.cpp:642
+#, fuzzy, c-format
+msgid "Failed to contact LDAP server %s:%d"
+msgstr "ldap சேவையகத்தை துவக்குவதில் தவறு  %s:%d"
+
+#: src/ils.cpp:655
+#, fuzzy
+msgid "Failed to set time limit on LDAP operations"
+msgstr "ldap இயக்கங்களில் உச்ச எல்லையை அமைக்க முடியவில்லை"
+
+#: src/ils.cpp:665
+#, fuzzy, c-format
+msgid "Failed to contact to LDAP server %s: %s"
+msgstr "%s ldap சேவையகத்தோடு இணைவதில் பிழை: %s."
+
+#: src/ils.cpp:675
+#, fuzzy, c-format
+msgid "Fetching online users list from %s"
+msgstr "%s லிருந்து பயனர் விவரம் பெறப்படுகிறது"
+
+#: src/ils.cpp:693
+msgid "Could not fetch online users list"
+msgstr ""
+
+#: src/ils.cpp:709
+#, c-format
+msgid "Connection to %s lost"
+msgstr ""
+
+#: src/ils.cpp:926
+#, fuzzy, c-format
+msgid "Search completed: %d user(s) listed on a total of %d user(s) from %s"
+msgstr "தேடுதல் முடிந்தது: %d பயனர்க(ள்) உள்ளனர், %s ல்."
+
+#: src/ils.cpp:931
+#, fuzzy, c-format
+msgid "Search completed: %d user(s) found on %s"
+msgstr "தேடுதல் முடிந்தது: %d பயனர்க(ள்) உள்ளனர், %s ல்."
+
+#: src/ldap_window.cpp:737
+#, fuzzy
+msgid "Edit the Contact Information"
+msgstr "உங்கள் விவரங்கள்"
+
+#: src/ldap_window.cpp:754
+#, fuzzy
+msgid "Name:"
+msgstr "பெயர்"
+
+#: src/ldap_window.cpp:774
+msgid "URL:"
+msgstr ""
+
+#: src/ldap_window.cpp:801
+msgid "Speed Dial:"
+msgstr ""
+
+#: src/ldap_window.cpp:825
+msgid "Groups:"
+msgstr ""
+
+#: src/ldap_window.cpp:937
+msgid "Invalid user name or URL"
+msgstr ""
+
+#: src/ldap_window.cpp:937
+msgid ""
+"Please provide a valid name and URL for the contact you want to add to the "
+"address book."
+msgstr ""
+
+#: src/ldap_window.cpp:945
+msgid "Invalid group"
+msgstr ""
+
+#: src/ldap_window.cpp:945
+msgid "You have to select a group to which you want to add your contact."
+msgstr ""
+
+#: src/ldap_window.cpp:959
+msgid "Invalid speed dial"
+msgstr ""
+
+#: src/ldap_window.cpp:959
+msgid ""
+"Another contact with the same speed dial already exists in the address book."
+msgstr ""
+
+#: src/ldap_window.cpp:971
+msgid "Invalid URL"
+msgstr ""
+
+#: src/ldap_window.cpp:971
+msgid "Another contact with the same URL already exists in the address book."
+msgstr ""
+
+#: src/ldap_window.cpp:1008
+#, c-format
+msgid "Are you sure you want to remove %s [%s] from this group?"
+msgstr ""
+
+#: src/ldap_window.cpp:1114
+#, c-format
+msgid "Add %s to Address Book"
+msgstr ""
+
+#: src/ldap_window.cpp:1140 src/ldap_window.cpp:2604
+msgid "C_all Contact"
+msgstr ""
+
+#: src/ldap_window.cpp:1146 src/ldap_window.cpp:2607
+msgid "_Tranfer Call to Contact"
+msgstr ""
+
+#: src/ldap_window.cpp:1158 src/ldap_window.cpp:2624
+msgid "Contact _Properties"
+msgstr ""
+
+#: src/ldap_window.cpp:1164
+msgid "Copy URL to the Clipboard"
+msgstr ""
+
+#: src/ldap_window.cpp:1170 src/ldap_window.cpp:1610 src/ldap_window.cpp:2586
+msgid "_Delete"
+msgstr ""
+
+#: src/ldap_window.cpp:1270
+msgid "Add a New Server"
+msgstr ""
+
+#: src/ldap_window.cpp:1271
+#, fuzzy
+msgid "Enter the server name:"
+msgstr "உங்கள் கடைசிப் பெயர்"
+
+#: src/ldap_window.cpp:1272 src/ldap_window.cpp:1382
+msgid ""
+"Sorry but there is already a server with the same name in the address book."
+msgstr ""
+
+#: src/ldap_window.cpp:1276
+msgid "Add a New Group"
+msgstr ""
+
+#: src/ldap_window.cpp:1277
+#, fuzzy
+msgid "Enter the group name:"
+msgstr "உங்கள் கடைசிப் பெயர்"
+
+#: src/ldap_window.cpp:1278 src/ldap_window.cpp:1393
+msgid ""
+"Sorry but there is already a group with the same name in the address book."
+msgstr ""
+
+#: src/ldap_window.cpp:1312 src/ldap_window.cpp:1442
+msgid "Invalid server or group name"
+msgstr ""
+
+#: src/ldap_window.cpp:1378
+#, c-format
+msgid "Please enter a new name for server %s:"
+msgstr ""
+
+#: src/ldap_window.cpp:1380
+#, c-format
+msgid "Are you sure you want to delete server %s?"
+msgstr ""
+
+#: src/ldap_window.cpp:1389
+#, c-format
+msgid "Please enter a new name for group %s:"
+msgstr ""
+
+#: src/ldap_window.cpp:1391
+#, c-format
+msgid "Are you sure you want to delete group %s and all its contacts?"
+msgstr ""
+
+#: src/ldap_window.cpp:1578
+#, fuzzy
+msgid "New Server"
+msgstr "LDAP சேவையகம்"
+
+#: src/ldap_window.cpp:1588
+msgid "New Group"
+msgstr ""
+
+#: src/ldap_window.cpp:1598
+#, fuzzy
+msgid "_Find"
+msgstr "_கோப்பு"
+
+#: src/ldap_window.cpp:1605 src/ldap_window.cpp:1627 src/ldap_window.cpp:2590
+msgid "_Rename"
+msgstr ""
+
+#: src/ldap_window.cpp:1620
+msgid "New Contact"
+msgstr ""
+
+#: src/ldap_window.cpp:1632
+msgid "Delete"
+msgstr ""
+
+#: src/ldap_window.cpp:2555
+msgid "Address Book"
+msgstr ""
+
+#: src/ldap_window.cpp:2573
+msgid "_File"
+msgstr "_கோப்பு"
+
+#: src/ldap_window.cpp:2575
+#, fuzzy
+msgid "New _Server"
+msgstr "LDAP சேவையகம்"
+
+#: src/ldap_window.cpp:2579
+msgid "New _Group"
+msgstr ""
+
+#: src/ldap_window.cpp:2597 src/menu.cpp:310
+msgid "_Close"
+msgstr ""
+
+#: src/ldap_window.cpp:2602
+#, fuzzy
+msgid "C_ontact"
+msgstr "இணைக்கவும்"
+
+#: src/ldap_window.cpp:2613
+#, fuzzy
+msgid "New _Contact"
+msgstr "_இணை"
+
+#: src/ldap_window.cpp:2617
+msgid "Add Contact to _Address Book"
+msgstr ""
+
+#. Translators: This is "S" as in "Status"
+#: src/ldap_window.cpp:2874
+msgid "S"
+msgstr "S"
+
+#. Translators: This is "A" as in "Audio"
+#: src/ldap_window.cpp:2884 src/pref_window.cpp:1099 src/pref_window.cpp:1526
+msgid "A"
+msgstr "A"
+
+#. Translators: This is "V" as in "Video"
+#: src/ldap_window.cpp:2894
+msgid "V"
+msgstr "V"
+
+#: src/ldap_window.cpp:2903 src/ldap_window.cpp:2977 src/pref_window.cpp:1540
+msgid "Name"
+msgstr "பெயர்"
+
+#: src/ldap_window.cpp:2941 src/ldap_window.cpp:2989 src/tools.cpp:548
+msgid "URL"
+msgstr ""
+
+#: src/ldap_window.cpp:2964
+msgid "IP"
+msgstr "IP"
+
+#: src/ldap_window.cpp:3002
+msgid "Speed Dial"
+msgstr ""
+
+#: src/ldap_window.cpp:3055
+#, fuzzy
+msgid "Find all contacts"
+msgstr "%s இணைக்க முடியவில்லை"
+
+#: src/ldap_window.cpp:3060
+#, fuzzy
+msgid "First name contains"
+msgstr "இதைப்போன்ற முதல் பெயர்"
+
+#: src/ldap_window.cpp:3064
+#, fuzzy
+msgid "Last name contains"
+msgstr "இதைப்போன்ற  கடைசிப் பெயர்"
+
+#: src/ldap_window.cpp:3068
+#, fuzzy
+msgid "E-mail contains"
+msgstr "இதைப்போன்ற மின்னஞ்சல் முகவரி"
+
+#: src/ldap_window.cpp:3247
+#, fuzzy
+msgid "Servers"
+msgstr "LDAP சேவையகம்"
+
+#: src/ldap_window.cpp:3290
+msgid "Groups"
+msgstr ""
+
+#: src/lid.cpp:134
+#, fuzzy, c-format
+msgid "Opened Quicknet device %s"
+msgstr "%s Quicknet சாதனம் பயன்படுத்தப்படுகிறது"
+
+#: src/lid.cpp:157
+#, fuzzy
+msgid "Error while opening the Quicknet device."
+msgstr "சாதனம் துவக்கப்படுவதில் பிழை"
+
+#: src/lid.cpp:157
+msgid ""
+"Please check that your driver is correctly installed and that the device is "
+"working correctly."
+msgstr ""
+
+#: src/lid.cpp:184
+#, fuzzy, c-format
+msgid "Closed Quicknet device %s"
+msgstr "%s Quicknet சாதனம் பயன்படுத்தப்படுகிறது"
+
+#: src/lid.cpp:272 src/lid.cpp:273
+msgid "Phone is off hook"
+msgstr ""
+
+#: src/lid.cpp:308 src/lid.cpp:309
+msgid "Phone is on hook"
+msgstr ""
+
+#: src/main_window.cpp:336
+#, c-format
+msgid "Total: %.2f MB"
+msgstr ""
+
+#: src/main_window.cpp:460
+#, fuzzy
+msgid "Cannot run GnomeMeeting"
+msgstr "_gமாநாடு பற்றி"
+
+#: src/main_window.cpp:460
+msgid ""
+"GnomeMeeting is already running, if you want it to call a given callto or "
+"h323 URL, please use \"gnomemeeting -c URL\"."
+msgstr ""
+
+#: src/main_window.cpp:513
+msgid ""
+"It appears that you do not have gnomemeeting.server installed in a valid "
+"location. Factory mode disabled.\n"
+msgstr ""
+"இதை நீங்கள் பார்த்தால் நீங்கள் மிகப் தவறான தேர்வு செய்து இருக்கிறீர்கள் என அர்த்தம். உடனடியாக "
+"கணிணியில் நல்ல தேர்ச்சியுள்ளவர் உதவியுடன நிறுவுங்கள். அல்லது ஆரம்பத்தலிருந்து பொறுமையாக "
+"தேர்வுச் செய்து வாருங்கள். வாழ்த்துக்கள்\n"
+
+#: src/main_window.cpp:517
+#, fuzzy
+msgid ""
+"Error registering GnomeMeeting with the activation service; factory mode "
+"disabled.\n"
+msgstr ""
+"gமாநாடு கொடாநிலை சேவையோடு பதிவதில் பிழை. அதனால் கொடாநிலை முடமாக்கப்படுகிறது.\n"
+
+#: src/main_window.cpp:557
+msgid "Failed to retrieve gnomemeeting server from activation server\n"
+msgstr "பிழை நேர்ந்துள்ளது.\n"
+
+#: src/main_window.cpp:864
+#, c-format
+msgid "Sent dtmf %c"
+msgstr ""
+
+#: src/main_window.cpp:1134 src/menu.cpp:400 src/menu.cpp:528
+msgid "Local Video"
+msgstr "உங்கள் ஒளித்தோற்றம் "
+
+#: src/main_window.cpp:1138 src/menu.cpp:406 src/menu.cpp:534
+msgid "Remote Video"
+msgstr "தோலை ஒளித்தோற்றம் "
+
+#: src/main_window.cpp:1271 src/menu.cpp:361
+msgid "Statistics"
+msgstr "விவரங்கள்"
+
+#: src/main_window.cpp:1327
+msgid "Dialpad"
+msgstr ""
+
+#: src/main_window.cpp:1382
+msgid "Adjust brightness"
+msgstr "பொலிவை மாற்று"
+
+#: src/main_window.cpp:1404
+msgid "Adjust whiteness"
+msgstr "வென்மையை மாற்று"
+
+#: src/main_window.cpp:1426
+msgid "Adjust color"
+msgstr "வண்ணங்களை மாற்று"
+
+#: src/main_window.cpp:1448
+msgid "Adjust contrast"
+msgstr "வேறுபாட்டை மாற்று"
+
+#: src/main_window.cpp:1456
+msgid "Video"
+msgstr "ஒளித்தோற்றம்"
+
+#: src/main_window.cpp:1532
+msgid "Audio"
+msgstr "ஒலி"
+
+#: src/main_window.cpp:1578
+msgid "Prints debug messages in the console (level between 1 and 6)"
+msgstr "பிழைநீக்க தகவல்களை முனையத்தில் தரவும் ( 1 லிருந்து 6 நிலை உள்ளது)"
+
+#: src/main_window.cpp:1581
+#, fuzzy
+msgid "Makes GnomeMeeting call the given URL"
+msgstr "callto:// URL என்ற முறையில் அழைக்கும் வகையில் அமைக்கப்படுகிறது."
+
+#: src/main_window.cpp:1646
+msgid "No usable audio manager detected"
+msgstr ""
+
+#: src/main_window.cpp:1646
+msgid ""
+"GnomeMeeting didn't find any usable sound manager. Make sure that your "
+"installation is correct."
+msgstr ""
+
+#: src/main_window.cpp:1666
+#, fuzzy, c-format
+msgid ""
+"GnomeMeeting got an invalid value for the GConf key %s.\n"
+"\n"
+"It probably means that your GConf schemas have not been correctly installed "
+"or the that permissions are not correct.\n"
+"\n"
+"Please check the FAQ (http://www.gnomemeeting.org/faq.php), the "
+"throubleshoot section of the GConf site (http://www.gnome.org/projects/"
+"gconf/) or the mailing list archives for more information (http://mail.gnome."
+"org) about this problem."
+msgstr ""
+"%d என்ற பதில் கிடைத்தது \"/apps/gnomemeeting/gconf_test_age\", ஆனால் %d என்பது "
+"எதிர்பார்க்கப்பட்டது. தயவு செய்து (http://www.gnomemeeting.org/faq.php) சென்று FAQ "
+"பார்க்கவும். இதை சரிசெய்ய 'gnomemeeting-config-tool' என்ற தேர்வுடன் முனையத்தில் "
+"துவக்கவும்"
+
+#: src/main_window.cpp:1669
+msgid "Gconf key error"
+msgstr ""
+
+#: src/menu.cpp:239
+msgid "C_all"
+msgstr "_கூப்பிடு"
+
+#: src/menu.cpp:241
+#, fuzzy
+msgid "C_onnect"
+msgstr "இணைக்கவும்"
+
+#: src/menu.cpp:241 src/menu.cpp:603
+#, fuzzy
+msgid "Create a new connection"
+msgstr "புதிய இணைப்புடன் இணைக்கவும்"
+
+#: src/menu.cpp:244 src/menu.cpp:606
+msgid "_Disconnect"
+msgstr "_துண்டித்துவிடு"
+
+#: src/menu.cpp:245 src/menu.cpp:607
+#, fuzzy
+msgid "Close the current connection"
+msgstr "தற்போதைய இணைப்பை துண்டிக்கவும் "
+
+#: src/menu.cpp:251 src/menu.cpp:613
+msgid "_Available"
+msgstr ""
+
+#: src/menu.cpp:252 src/menu.cpp:614
+#, fuzzy
+msgid "Display a popup to accept the call"
+msgstr "அழைப்பு வரும்போது மேல்மீட்பு தெரிய வேண்டும்"
+
+#: src/menu.cpp:257 src/menu.cpp:619
+msgid "Free for Cha_t"
+msgstr ""
+
+#: src/menu.cpp:258 src/menu.cpp:620
+#, fuzzy
+msgid "Auto answer calls"
+msgstr "தானியங்கி பதில்"
+
+#: src/menu.cpp:263 src/menu.cpp:625
+msgid "_Busy"
+msgstr ""
+
+#: src/menu.cpp:263 src/menu.cpp:625
+msgid "Reject calls"
+msgstr ""
+
+#: src/menu.cpp:268 src/menu.cpp:630
+msgid "_Forward"
+msgstr ""
+
+#: src/menu.cpp:268 src/menu.cpp:630
+#, fuzzy
+msgid "Forward calls"
+msgstr "அழைப்புகளை  முன்னோக்க வேண்டிய கணிணியின்பெயர்"
+
+#: src/menu.cpp:276
+msgid "Speed dials"
+msgstr ""
+
+#: src/menu.cpp:280
+#, fuzzy
+msgid "Hold the current call"
+msgstr "தற்போதைய அழைப்பை நிறுத்து"
+
+#: src/menu.cpp:283
+msgid "_Transfer Call"
+msgstr ""
+
+#: src/menu.cpp:284
+#, fuzzy
+msgid "Transfer the current call"
+msgstr "வதியில் பிழை உள்ளது"
+
+#: src/menu.cpp:291
+#, fuzzy
+msgid "Suspend or resume the audio transmission"
+msgstr "ஒலி அனுப்புதலை முடமாக்கு"
+
+#: src/menu.cpp:296
+#, fuzzy
+msgid "Suspend or resume the video transmission"
+msgstr "ஒளித்தோற்ற அனுப்புதலை முடமாக்கு"
+
+#: src/menu.cpp:303
+msgid "_Save Current Picture"
+msgstr ""
+
+#: src/menu.cpp:304
+#, fuzzy
+msgid "Save a snapshot of the current video"
+msgstr "தற்போதைய ஒளித்தோற்றத்தை படமாக சேமிக்கவும்"
+
+#: src/menu.cpp:310
+#, fuzzy
+msgid "Close the GnomeMeeting window"
+msgstr "_gமாநாடு பற்றி"
+
+#: src/menu.cpp:317 src/menu.cpp:676
+msgid "_Quit"
+msgstr "_வெளிச்செல்"
+
+#: src/menu.cpp:317 src/menu.cpp:676
+msgid "Quit GnomeMeeting"
+msgstr "வெளிச்செல்"
+
+#: src/menu.cpp:321
+msgid "_Edit"
+msgstr "_தொகு"
+
+#: src/menu.cpp:324 src/menu.cpp:330
+#, fuzzy
+msgid "Configuration Druid"
+msgstr "வடிவமைப்பு மாயாவி"
+
+#: src/menu.cpp:325 src/menu.cpp:331
+#, fuzzy
+msgid "Run the configuration druid"
+msgstr "வடிவமைப்பு மாயாவி"
+
+#: src/menu.cpp:338 src/menu.cpp:654
+#, fuzzy
+msgid "_Preferences"
+msgstr "_தேர்வுகளை"
+
+#: src/menu.cpp:339 src/menu.cpp:655
+#, fuzzy
+msgid "Change your preferences"
+msgstr "தேர்வுகளை மாற்றுங்கள்"
+
+#: src/menu.cpp:344
+msgid "_View"
+msgstr "_பார்"
+
+#: src/menu.cpp:346 src/pref_window.cpp:944
+msgid "Text Chat"
+msgstr "இபேச்சு"
+
+#: src/menu.cpp:347
+#, fuzzy
+msgid "View/Hide the text chat window"
+msgstr "இபேச்சுக்கான சாளரத்தை மறைக்க/காட்ட"
+
+#: src/menu.cpp:352
+msgid "Status Bar"
+msgstr "நிலைப்பட்டை"
+
+#: src/menu.cpp:353
+#, fuzzy
+msgid "View/Hide the status bar"
+msgstr "நிலைப்பட்டையை மறைக்க/காட்ட"
+
+#: src/menu.cpp:359
+msgid "Control Panel"
+msgstr "கட்டுப்பாட்டு மையம்"
+
+#: src/menu.cpp:362
+#, fuzzy
+msgid "View audio/video transmission and reception statistics"
+msgstr "ஒலி/ஒளி அனுப்புதல்/பெறுதல் பற்றிய விவரங்கள்"
+
+#: src/menu.cpp:367
+msgid "_Dialpad"
+msgstr ""
+
+#: src/menu.cpp:367
+msgid "View the dialpad"
+msgstr ""
+
+#: src/menu.cpp:372
+msgid "_Audio Settings"
+msgstr "ஒ_லி அமைப்புகள்"
+
+#: src/menu.cpp:373
+#, fuzzy
+msgid "View audio settings"
+msgstr "ஒலி அமைப்புகளை பார் "
+
+#: src/menu.cpp:378
+msgid "_Video Settings"
+msgstr "ஒ_ளித்தோற்ற அமைப்புகள்"
+
+#: src/menu.cpp:379
+#, fuzzy
+msgid "View video settings"
+msgstr "ஒளித்தோற்ற அமைப்புகளை பார் "
+
+#: src/menu.cpp:384 src/pref_window.cpp:1319
+msgid "Off"
+msgstr "நிறுத்து"
+
+#: src/menu.cpp:384
+msgid "Hide the control panel"
+msgstr "கட்டுப்பாட்டு மையத்தை மறைக்கவும்"
+
+#: src/menu.cpp:392
+#, fuzzy
+msgid "_Clear Text Chat"
+msgstr "இபேச்சு"
+
+#: src/menu.cpp:393
+msgid "Clear the text chat"
+msgstr ""
+
+#: src/menu.cpp:401 src/menu.cpp:529
+#, fuzzy
+msgid "Local video image"
+msgstr "உங்கள் ஒளித்தோற்ற படம்"
+
+#: src/menu.cpp:407 src/menu.cpp:535
+#, fuzzy
+msgid "Remote video image"
+msgstr "தோலை ஒளித்தோற்ற படம் "
+
+#: src/menu.cpp:412 src/menu.cpp:540
+msgid "Both (Local Video Incrusted)"
+msgstr "இரண்டும்(உங்கள் படம் இதே சாளரத்தில்)"
+
+#: src/menu.cpp:413 src/menu.cpp:420 src/menu.cpp:427 src/menu.cpp:541
+#: src/menu.cpp:548 src/menu.cpp:555
+#, fuzzy
+msgid "Both video images"
+msgstr "இரண்டு ஒளித்தோற்ற படங்களும்"
+
+#: src/menu.cpp:419 src/menu.cpp:547
+msgid "Both (Local Video in New Window)"
+msgstr "இரண்டும்(உங்கள் படம் புதிய சாளரத்தில்)"
+
+#: src/menu.cpp:426 src/menu.cpp:554
+#, fuzzy
+msgid "Both (Both in New Windows)"
+msgstr "இரண்டும்(உங்கள் படம் புதிய சாளரத்தில்)"
+
+#: src/menu.cpp:435 src/menu.cpp:563
+msgid "Zoom In"
+msgstr "சிறிதாக்கு"
+
+#: src/menu.cpp:435 src/menu.cpp:563
+#, fuzzy
+msgid "Zoom in"
+msgstr "சிறிதாக்கு"
+
+#: src/menu.cpp:439 src/menu.cpp:567
+msgid "Zoom Out"
+msgstr "பெரிதாக்கு"
+
+#: src/menu.cpp:439 src/menu.cpp:567
+#, fuzzy
+msgid "Zoom out"
+msgstr "பெரிதாக்கு"
+
+#: src/menu.cpp:443 src/menu.cpp:571
+msgid "Normal Size"
+msgstr "சாதரன அளவு"
+
+#: src/menu.cpp:443 src/menu.cpp:571
+#, fuzzy
+msgid "Normal size"
+msgstr "சாதரன அளவு"
+
+#: src/menu.cpp:448 src/menu.cpp:576
+#, fuzzy
+msgid "Fullscreen"
+msgstr "முழுத்திரையின் அகலம்"
+
+#: src/menu.cpp:453
+msgid "_Tools"
+msgstr "கருவிகள்"
+
+#: src/menu.cpp:455 src/menu.cpp:638
+msgid "Address _Book"
+msgstr ""
+
+#: src/menu.cpp:456 src/menu.cpp:639
+msgid "Open the address book"
+msgstr ""
+
+#: src/menu.cpp:463 src/tools.cpp:759
+msgid "General History"
+msgstr "பொது வரலாறு"
+
+#: src/menu.cpp:464
+msgid "View the operations history"
+msgstr "இயக்க வரலாற்றைப் பார்"
+
+#: src/menu.cpp:468 src/menu.cpp:646 src/tools.cpp:491
+msgid "Calls History"
+msgstr "அழைப்பு  வரலாறு"
+
+#: src/menu.cpp:469 src/menu.cpp:647
+msgid "View the calls history"
+msgstr "அழைப்பு வரலாற்றைப் பார்"
+
+#: src/menu.cpp:476
+msgid "PC-To-Phone Account"
+msgstr ""
+
+#: src/menu.cpp:477
+msgid "Manage your PC-To-Phone account"
+msgstr ""
+
+#: src/menu.cpp:482
+msgid "_Help"
+msgstr "_உதவி"
+
+#: src/menu.cpp:485 src/menu.cpp:490
+#, fuzzy
+msgid "_Contents"
+msgstr "_இணை"
+
+#: src/menu.cpp:486 src/menu.cpp:491
+msgid "Get help by reading the GnomeMeeting manual"
+msgstr ""
+
+#: src/menu.cpp:497 src/menu.cpp:503
+msgid "_About"
+msgstr ""
+
+#: src/menu.cpp:498 src/menu.cpp:504 src/menu.cpp:664 src/menu.cpp:670
+msgid "View information about GnomeMeeting"
+msgstr "gமாநாடு பற்றிய தகவல்கள் பார்க்க"
+
+#: src/menu.cpp:603
+msgid "_Connect"
+msgstr "_இணை"
+
+#: src/menu.cpp:663 src/menu.cpp:669
+msgid "_About GnomeMeeting"
+msgstr "_gமாநாடு பற்றி"
+
+#: src/misc.cpp:140
+#, fuzzy
+msgid "Generic error"
+msgstr "பொதுவான வரலாறு"
+
+#: src/misc.cpp:186
+#, fuzzy
+msgid "Reject"
+msgstr "தானியங்கி மறுப்பு"
+
+#: src/misc.cpp:188
+msgid "Accept"
+msgstr ""
+
+#: src/misc.cpp:195
+#, fuzzy
+msgid "Incoming call from"
+msgstr "உள்வரும் அழைப்பு"
+
+#: src/misc.cpp:208
+#, fuzzy
+msgid "Remote URL:"
+msgstr "தோலை ஒளித்தோற்றம் "
+
+#: src/misc.cpp:220
+#, fuzzy
+msgid "Remote Application:"
+msgstr "தொலைவில் உள்ளவர் இணையத்தில் இப்போது இல்லை"
+
+#: src/pref_window.cpp:370
+#, fuzzy
+msgid "Codec Information"
+msgstr "உங்கள் விவரங்கள்"
+
+#: src/pref_window.cpp:410
+#, fuzzy
+msgid "Choose a Picture"
+msgstr "படம்"
+
+#: src/pref_window.cpp:865
+msgid "Personal Information"
+msgstr "உங்கள் விவரங்கள்"
+
+#: src/pref_window.cpp:869
+#, fuzzy
+msgid "_First name:"
+msgstr "முதல் பெயர்:"
+
+#: src/pref_window.cpp:876
+msgid "Sur_name:"
+msgstr ""
+
+#: src/pref_window.cpp:878
+#, fuzzy
+msgid "Enter your surname"
+msgstr "உங்கள் கடைசிப் பெயர்"
+
+#: src/pref_window.cpp:883
+#, fuzzy
+msgid "E-_mail address:"
+msgstr "மின்னஞ்சல் முகவரி"
+
+#: src/pref_window.cpp:890
+#, fuzzy
+msgid "_Comment:"
+msgstr "குறிப்பு"
+
+#: src/pref_window.cpp:892
+msgid "Enter a comment about yourself"
+msgstr ""
+
+#: src/pref_window.cpp:897
+#, fuzzy
+msgid "_Location:"
+msgstr "இடம்"
+
+#: src/pref_window.cpp:899
+msgid "Enter your country or city"
+msgstr ""
+
+#. Add the update button
+#: src/pref_window.cpp:905 src/pref_window.cpp:1255
+msgid "_Apply"
+msgstr ""
+
+#: src/pref_window.cpp:905
+#, fuzzy
+msgid ""
+"Click here to update the user directory you are registered to with the new "
+"First Name, Last Name, E-Mail, Comment and Location or to update your alias "
+"on the Gatekeeper"
+msgstr "உங்கள் விவரங்களை  LDAP சேவையகத்தில் பதிவுச் செய்ய இங்கு கிளிக் செய்யவும்"
+
+#: src/pref_window.cpp:923
+msgid "GnomeMeeting GUI"
+msgstr "gமாநாடு வரைவியல்வழி"
+
+#: src/pref_window.cpp:925
+#, fuzzy
+msgid "_Show splash screen"
+msgstr "தொடங்கும்போது படத்திரையைக் காட்டு"
+
+#: src/pref_window.cpp:927
+#, fuzzy
+msgid "Start _hidden"
+msgstr "துவங்கும்போது மறைவாக துவக்கு"
+
+#: src/pref_window.cpp:932
+msgid "Video Display"
+msgstr "விடியோ திரை"
+
+#. Translators: the full sentence is Use a fullscreen size
+#. of X by Y pixels
+#: src/pref_window.cpp:937
+msgid "Use a fullscreen size of"
+msgstr ""
+
+#: src/pref_window.cpp:937
+msgid "by"
+msgstr ""
+
+#: src/pref_window.cpp:937
+msgid "pixels"
+msgstr ""
+
+#: src/pref_window.cpp:937
+#, fuzzy
+msgid "The image width for fullscreen."
+msgstr "முழுத்திரையின்போது படத்தின் அகலம்"
+
+#: src/pref_window.cpp:937
+#, fuzzy
+msgid "The image height for fullscreen."
+msgstr "முழுத்திரையின்போது படத்தின் உயரம்"
+
+#: src/pref_window.cpp:940
+msgid "Place windows displaying video _above other windows"
+msgstr ""
+
+#: src/pref_window.cpp:964
+#, fuzzy
+msgid "User Directory"
+msgstr "ILS அடைவு"
+
+#. Add all the fields
+#: src/pref_window.cpp:968
+#, fuzzy
+msgid "User directory:"
+msgstr "அடைவு ஏதுமில்லை"
+
+#: src/pref_window.cpp:970
+#, fuzzy
+msgid "Enable _registering"
+msgstr "பதவு செய்து கொள்வதை தேர்ந்தெடு"
+
+#: src/pref_window.cpp:972
+#, fuzzy
+msgid "_Publish my details in the users directory when registering"
+msgstr "பதிவு செய்யும்போது பயன்படுத்தும் மாற்றப் பெயர்"
+
+#: src/pref_window.cpp:972
+msgid ""
+"If enabled, your details are shown to people browsing the user directory. If "
+"disabled, you are not visible to users browsing the user directory, but they "
+"can still use the callto URL to call you."
+msgstr ""
+
+#: src/pref_window.cpp:989 src/pref_window.cpp:1755
+#, fuzzy
+msgid "Call Forwarding"
+msgstr "H.323 அழைப்பு முன்னோக்கி"
+
+#: src/pref_window.cpp:994
+#, fuzzy
+msgid "Forward calls to _host:"
+msgstr "அழைப்புகளை  முன்னோக்க வேண்டிய கணிணியின்பெயர்"
+
+#: src/pref_window.cpp:999
+#, fuzzy
+msgid "_Always forward calls to the given host"
+msgstr "எப்போதும் அழைப்புகளை கொடுக்கப்பட்டுள்ள கணிணிக்கு முன்னோக்கஞ் செய்"
+
+#: src/pref_window.cpp:999
+#, fuzzy
+msgid ""
+"If enabled, all incoming calls will be forwarded to the host that is "
+"specified in the field above"
+msgstr ""
+"தேர்வு செய்யப்பட்டிருந்தால் அழைப்புகளை  முன்னோக்க  கணிணிக்கு அனைத்து அழைப்புகளும் செல்லும்"
+
+#: src/pref_window.cpp:1001
+#, fuzzy
+msgid "Forward calls to the given host if _no answer"
+msgstr "கணிணி பதிலலிக்க மறுத்தால் அழைப்புகளை முன்னோக்கு"
+
+#: src/pref_window.cpp:1001
+#, fuzzy
+msgid ""
+"If enabled, all incoming calls will be forwarded to the host that is "
+"specified in the field above if you do not answer the call"
+msgstr ""
+"தேர்வு செய்யப்பட்டிருந்தால், நீங்கள் பேசவில்லையென்றால் அழைப்புகளை முன்னோக்க கணிணிக்கு அனைத்து "
+"அழைப்புகளும் செல்லும்"
+
+#: src/pref_window.cpp:1003
+#, fuzzy
+msgid "Forward calls to the given host if _busy"
+msgstr "கணிணி பயன்பாட்டிவ் இருந்தால் அழைப்புகளை முன்னோக்கு"
+
+#: src/pref_window.cpp:1003
+#, fuzzy
+msgid ""
+"If enabled, all incoming calls will be forwarded to the host that is "
+"specified in the field above if you already are in a call or if you are in "
+"Do Not Disturb mode"
+msgstr ""
+"தேர்வு செய்யப்பட்டிருந்தால், நீங்கள் பேசவில்லையென்றால் அழைப்புகளை முன்னோக்க கணிணிக்கு அனைத்து "
+"அழைப்புகளும் செல்லும்"
+
+#: src/pref_window.cpp:1022 src/pref_window.cpp:1736
+#, fuzzy
+msgid "Call Options"
+msgstr "%s அழைக்கப்படுகிறார்"
+
+#. Add all the fields
+#: src/pref_window.cpp:1026
+msgid "Automatically _clear calls after 30 seconds of inactivity"
+msgstr ""
+
+#. Translators: the full sentence is Reject or forward
+#. unanswered incoming calls after X s (seconds)
+#: src/pref_window.cpp:1030
+msgid "Reject or forward unanswered incoming calls after "
+msgstr ""
+
+#: src/pref_window.cpp:1030
+msgid "seconds"
+msgstr ""
+
+#: src/pref_window.cpp:1062
+#, fuzzy
+msgid "GnomeMeeting Sound Events"
+msgstr "gமாநாட்டு அமைப்புகள்"
+
+#: src/pref_window.cpp:1111 src/pref_window.cpp:1120 src/pref_window.cpp:1129
+msgid "Event"
+msgstr ""
+
+#: src/pref_window.cpp:1140
+#, fuzzy
+msgid "Sound to play:"
+msgstr "ஒலி இயக்கி"
+
+#: src/pref_window.cpp:1153
+msgid "Play"
+msgstr ""
+
+#: src/pref_window.cpp:1187
+msgid "All"
+msgstr ""
+
+#: src/pref_window.cpp:1189
+msgid "rfc2833"
+msgstr ""
+
+#: src/pref_window.cpp:1190
+msgid "Signal"
+msgstr ""
+
+#: src/pref_window.cpp:1191
+#, fuzzy
+msgid "String"
+msgstr "பிரிவு"
+
+#: src/pref_window.cpp:1200
+#, fuzzy
+msgid "H.323 Version 2 Settings"
+msgstr "H.323 V2 அமைப்புகள்"
+
+#. The toggles
+#: src/pref_window.cpp:1203
+#, fuzzy
+msgid "Enable H.245 _tunneling"
+msgstr "H.245 சுரங்கத்தை செயல்படுத்து"
+
+#: src/pref_window.cpp:1203
+#, fuzzy
+msgid ""
+"This enables H.245 Tunneling mode. In H.245 Tunneling mode H.245 messages "
+"are encapsulated into the the H.225 channel (port 1720). This saves one TCP "
+"connection during calls. H.245 Tunneling was introduced in H.323v2 and "
+"Netmeeting does not support it. Using both Fast Start and H.245 Tunneling "
+"can crash some versions of Netmeeting."
+msgstr "H.245 சுரங்கத்தை செயல்படுத்து. இதை நெட்மீட்டிங்கோடு பயன்படுத்த கூடாது"
+
+#: src/pref_window.cpp:1205
+msgid "Enable _early H.245"
+msgstr ""
+
+#: src/pref_window.cpp:1207
+#, fuzzy
+msgid "Enable fast _start procedure"
+msgstr "வேகதுவக்கத்தை செயல்படுத்து"
+
+#: src/pref_window.cpp:1207
+#, fuzzy
+msgid ""
+"Connection will be established in Fast Start mode. Fast Start is a new way "
+"to start calls faster that was introduced in H.323v2. It is not supported by "
+"Netmeeting and using both Fast Start and H.245 Tunneling can crash some "
+"versions of Netmeeting."
+msgstr "வேகதுவக்கத்தை செயல்படுத்து. இதை நெட்மீட்டிங்கோடு பயன்படுத்த கூடாது"
+
+#: src/pref_window.cpp:1213
+#, fuzzy
+msgid "DTMF Sending"
+msgstr "%s அனுப்பப்படுகிறது"
+
+#: src/pref_window.cpp:1215
+msgid "_Send DTMF as:"
+msgstr ""
+
+#: src/pref_window.cpp:1215
+msgid ""
+"This permits to set the mode for DTMFs sending. The values can be \"All\", "
+"\"None\", \"rfc2833\", \"Signal\" or \"String\" (default is \"All\"). "
+"Choosing other values than \"All\", \"String\" or \"rfc2833\" disables the "
+"Text Chat."
+msgstr ""
+
+#: src/pref_window.cpp:1230
+msgid "Do not register"
+msgstr "பதிவு செய்யாதே"
+
+#: src/pref_window.cpp:1233
+#, fuzzy
+msgid "Automatically discover"
+msgstr "தானாக கண்டுபிடி"
+
+#: src/pref_window.cpp:1239
+msgid "Gatekeeper"
+msgstr "நுழைவுக்காப்பாளன்"
+
+#: src/pref_window.cpp:1241
+#, fuzzy
+msgid "Gatekeeper _ID:"
+msgstr "நுழைவுக்காப்பாளனின் அடையாள எண்"
+
+#: src/pref_window.cpp:1243
+#, fuzzy
+msgid "Gatekeeper _host:"
+msgstr "நுழைவுக்காப்பாளனின் பெயர்"
+
+#: src/pref_window.cpp:1245
+#, fuzzy
+msgid "Gatekeeper _alias:"
+msgstr "நுழைவுக்காப்பாளனின் மாற்றுப் பெயர்"
+
+#: src/pref_window.cpp:1248
+#, fuzzy
+msgid "Gatekeeper _password:"
+msgstr "நுழைவுக்காப்பாளனின் மாற்றுப் பெயர்"
+
+#: src/pref_window.cpp:1251
+msgid "Register this alias as the primary alias with the gatekeeper"
+msgstr ""
+
+#: src/pref_window.cpp:1251
+msgid ""
+"Use this option to ensure the above alias is used as the primary alias when "
+"registering with a gatekeeper. This may be required if your gatekeeper can "
+"only perform authentication using the first alias in the list."
+msgstr ""
+
+#: src/pref_window.cpp:1253
+msgid "Registering method:"
+msgstr "பதிவு செய்யும் முறை"
+
+#: src/pref_window.cpp:1255
+msgid "Click here to update your Gatekeeper settings"
+msgstr ""
+
+#: src/pref_window.cpp:1272
+msgid "Gateway/Proxy"
+msgstr ""
+
+#: src/pref_window.cpp:1274
+msgid "Gateway / Proxy host:"
+msgstr ""
+
+#: src/pref_window.cpp:1276
+msgid "Use gateway or proxy"
+msgstr ""
+
+#: src/pref_window.cpp:1294
+msgid "NAT/PAT Router Support"
+msgstr ""
+
+#: src/pref_window.cpp:1296
+#, fuzzy
+msgid "Enable IP _translation"
+msgstr " FPS  கட்டுப்பாட்டை தேர்வுச் செய்"
+
+#: src/pref_window.cpp:1296
+msgid ""
+"This enables IP translation. IP translation is useful if GnomeMeeting is "
+"running behind a NAT/PAT router. You have to put the public IP of the router "
+"in the field below. If you are registered to ils.seconix.com, GnomeMeeting "
+"will automatically fetch the public IP using the ILS service. If your router "
+"natively supports H.323, you can disable this."
+msgstr ""
+
+#: src/pref_window.cpp:1298
+msgid "Enable _automatic IP checking"
+msgstr ""
+
+#: src/pref_window.cpp:1298
+msgid ""
+"This enables IP checking from seconix.com and fills the IP in the public IP "
+"of the NAT/PAT gateway field of GnomeMeeting. The returned IP is only used "
+"when IP Translation is enabled. If you disable IP checking, you will have to "
+"manually enter the IP of your gateway in the GnomeMeeting preferences."
+msgstr ""
+
+#: src/pref_window.cpp:1300
+msgid "Public _IP of the NAT/PAT router:"
+msgstr ""
+
+#: src/pref_window.cpp:1300
+msgid ""
+"Enter the public IP of your NAT/PAT router if you want to use IP "
+"translation. If you are registered to ils.seconix.com, GnomeMeeting will "
+"automatically fetch the public IP using the ILS service."
+msgstr ""
+
+#: src/pref_window.cpp:1320
+msgid "Low"
+msgstr "குறைந்த"
+
+#: src/pref_window.cpp:1321
+msgid "Medium"
+msgstr "மத்தியம்"
+
+#: src/pref_window.cpp:1322
+msgid "High"
+msgstr "அதிகம்"
+
+#: src/pref_window.cpp:1323
+msgid "AGC"
+msgstr ""
+
+#: src/pref_window.cpp:1326
+msgid "POTS"
+msgstr ""
+
+#: src/pref_window.cpp:1327
+msgid "Headset"
+msgstr ""
+
+#: src/pref_window.cpp:1336
+#, fuzzy
+msgid "Audio Plugin"
+msgstr "ஒலி இயக்கி"
+
+#: src/pref_window.cpp:1340
+#, fuzzy
+msgid "Audio plugin:"
+msgstr "ஒலி இயக்கி"
+
+#: src/pref_window.cpp:1340
+msgid ""
+"The audio plugin that will be used to detect the devices and manage them."
+msgstr ""
+
+#: src/pref_window.cpp:1346 src/pref_window.cpp:1780
+msgid "Audio Devices"
+msgstr "ஒலிக்கருவிகள்"
+
+#: src/pref_window.cpp:1352
+msgid "Output device:"
+msgstr ""
+
+#: src/pref_window.cpp:1358 src/pref_window.cpp:1429
+msgid "Input device:"
+msgstr ""
+
+#: src/pref_window.cpp:1364
+#, fuzzy
+msgid "Quicknet Hardware"
+msgstr "Quicknet சாதனங்கள்"
+
+#: src/pref_window.cpp:1366
+#, fuzzy
+msgid "Echo _cancellation:"
+msgstr "தானியங்கி எதிரொலி நீக்கி"
+
+#: src/pref_window.cpp:1368
+msgid "Output device type:"
+msgstr ""
+
+#: src/pref_window.cpp:1371
+#, fuzzy
+msgid "Country _code:"
+msgstr "நாட்டின் அடையாள எண்"
+
+#: src/pref_window.cpp:1371
+msgid ""
+"The two-letter country code of your country (e.g.: BE, UK, FR, DE, ...)."
+msgstr "நாட்டின் அடையாள எண்"
+
+#. That button will refresh the devices list
+#: src/pref_window.cpp:1378 src/pref_window.cpp:1454
+#, fuzzy
+msgid "_Detect devices"
+msgstr "சாதனங்கள்"
+
+#: src/pref_window.cpp:1378
+msgid "Click here to refresh the devices list"
+msgstr ""
+
+#: src/pref_window.cpp:1399
+msgid "Small"
+msgstr "சிறியது"
+
+#: src/pref_window.cpp:1400
+msgid "Large"
+msgstr "பெரியது"
+
+#: src/pref_window.cpp:1402
+msgid "PAL (Europe)"
+msgstr ""
+
+#: src/pref_window.cpp:1403
+msgid "NTSC (America)"
+msgstr ""
+
+#: src/pref_window.cpp:1404
+msgid "SECAM (France)"
+msgstr ""
+
+#: src/pref_window.cpp:1405
+#, fuzzy
+msgid "Auto"
+msgstr "தானியங்கி"
+
+#: src/pref_window.cpp:1415
+#, fuzzy
+msgid "Video Plugin"
+msgstr "ஒளித்தோற்ற முன்னோட்டம்"
+
+#: src/pref_window.cpp:1418
+#, fuzzy
+msgid "Video plugin:"
+msgstr "ஒளித்தோற்ற அளவு"
+
+#: src/pref_window.cpp:1424 src/pref_window.cpp:1784
+msgid "Video Devices"
+msgstr "ஒளித்தோற்றச் சாதனங்கள்"
+
+#. Video Channel
+#: src/pref_window.cpp:1433
+#, fuzzy
+msgid "Channel:"
+msgstr "ஒளித்தோற்ற தடம்"
+
+#: src/pref_window.cpp:1435
+#, fuzzy
+msgid "Size:"
+msgstr "ஒளித்தோற்ற அளவு"
+
+#: src/pref_window.cpp:1437
+#, fuzzy
+msgid "Format:"
+msgstr "ஒளித்தோற்ற வடிவம்"
+
+#: src/pref_window.cpp:1440
+#, fuzzy
+msgid "Image:"
+msgstr "உருவம்"
+
+#: src/pref_window.cpp:1454
+msgid "Click here to refresh the devices list."
+msgstr ""
+
+#: src/pref_window.cpp:1494
+msgid "Available Audio Codecs"
+msgstr "தற்போதுள்ள ஒலிக்குறிமுறைகள்"
+
+#: src/pref_window.cpp:1551
+msgid "Info"
+msgstr "தகவல்"
+
+#: src/pref_window.cpp:1563
+msgid "Bandwidth"
+msgstr "பட்டையகலம்"
+
+#: src/pref_window.cpp:1615
+msgid "Audio Codecs Settings"
+msgstr "தற்போதுள்ள ஒலிக்குறிமுறைகளின் அமைப்புகள்"
+
+#. Translators: the full sentence is Automatically adjust jitter buffer
+#. between X and Y ms
+#: src/pref_window.cpp:1619
+msgid "Automatically adjust _jitter buffer between"
+msgstr ""
+
+#: src/pref_window.cpp:1619
+msgid "and"
+msgstr ""
+
+#: src/pref_window.cpp:1619
+msgid "ms"
+msgstr ""
+
+#: src/pref_window.cpp:1619
+#, fuzzy
+msgid "The minimum jitter buffer size for audio reception (in ms)."
+msgstr "ஒலிச்சிதறல் இடையகம் மில்லிவிநாடிகளில்"
+
+#: src/pref_window.cpp:1619
+#, fuzzy
+msgid "The maximum jitter buffer size for audio reception (in ms)."
+msgstr "ஒலிச்சிதறல் இடையகம் மில்லிவிநாடிகளில்"
+
+#: src/pref_window.cpp:1621
+#, fuzzy
+msgid "Enable silence _detection"
+msgstr "நிசப்த அறிவிப்பை செயல்படுத்து"
+
+#: src/pref_window.cpp:1621
+#, fuzzy
+msgid "If enabled, use silence detection with the GSM and G.711 codecs."
+msgstr "நிசப்த அறிவிப்பை செயல்படுத்து"
+
+#: src/pref_window.cpp:1639 src/pref_window.cpp:1727
+msgid "General Settings"
+msgstr "பொது அமைப்புகள்"
+
+#. Add fields
+#: src/pref_window.cpp:1643
+#, fuzzy
+msgid "Enable video _transmission"
+msgstr "ஒளித்தோற்ற பரிமாற்றத்தை செயல்படுத்து"
+
+#: src/pref_window.cpp:1643
+#, fuzzy
+msgid "If enabled, video is transmitted during a call."
+msgstr "இதை தேர்வுச் செய்தால், அழைப்பு வந்தால் ஒலியெழுப்பப்படும்"
+
+#: src/pref_window.cpp:1645
+#, fuzzy
+msgid "Enable video _reception"
+msgstr "நிசப்த அறிவிப்பை செயல்படுத்து"
+
+#: src/pref_window.cpp:1645
+#, fuzzy
+msgid "If enabled, allows video to be received during a call."
+msgstr "இதை தேர்வுச் செய்தால், அழைப்பு வந்தால் வேகத்துவக்கடததோடு தொடங்கும்"
+
+#: src/pref_window.cpp:1650
+#, fuzzy
+msgid "Bandwidth Control"
+msgstr "பட்டையகலம்"
+
+#. Translators: the full sentence is Maximum video bandwidth of X kB/s
+#: src/pref_window.cpp:1653
+msgid "Maximum video _bandwidth of"
+msgstr ""
+
+#: src/pref_window.cpp:1653
+msgid ""
+"The maximum video bandwidth in kbytes/s. The video quality and the number of "
+"transmitted frames per second will be dynamically adjusted above their "
+"minimum during calls to try to minimize the bandwidth to the given value."
+msgstr ""
+
+#: src/pref_window.cpp:1653
+msgid "kB/s"
+msgstr ""
+
+#: src/pref_window.cpp:1659
+#, fuzzy
+msgid "Advanced Quality Settings"
+msgstr "பொது அமைப்புகள்"
+
+#. Translators: the full sentence is Keep a minimum video quality of X %
+#: src/pref_window.cpp:1662
+#, fuzzy
+msgid "Keep a minimum video _quality of"
+msgstr "அனுப்பப்படும் ஒளித்தோற்றத்தின் தரம்"
+
+#: src/pref_window.cpp:1662
+#, fuzzy
+msgid ""
+"The minimum transmitted video quality to keep when trying to minimize the "
+"used bandwidth:  choose 100% on a LAN for the best quality, 1% being the "
+"worst quality"
+msgstr "அனுப்பப்படும் ஒளித்தோற்றத்தின் தரம் 100% LAN 1% குறைந்தபட்ச தரம்"
+
+#: src/pref_window.cpp:1662
+msgid "%"
+msgstr ""
+
+#. Translators: the full sentence is Transmit at least X frames per second
+#: src/pref_window.cpp:1665
+#, fuzzy
+msgid "Transmit at least"
+msgstr "அனுப்பப்படும் ஒளித்தோற்றத்தின் தரம்"
+
+#: src/pref_window.cpp:1665
+#, fuzzy
+msgid "_frames per second"
+msgstr "அனுப்பப்படும் ஒளித்தோற்றத்தின் வேகம்"
+
+#. Translators: the full sentence is Transmit X background blocks with each
+#. frame
+#: src/pref_window.cpp:1669
+msgid "Transmit"
+msgstr ""
+
+#: src/pref_window.cpp:1669
+#, fuzzy
+msgid "background _blocks with each frame"
+msgstr "தொகுதிகள் அனுப்பப்டும் வேகம்"
+
+#: src/pref_window.cpp:1721
+msgid "General"
+msgstr "பொதுவானவை"
+
+#: src/pref_window.cpp:1722
+msgid "Personal Data"
+msgstr "உங்கள் விவரங்கள்"
+
+#: src/pref_window.cpp:1732
+msgid "Directory Settings"
+msgstr "அடைவு அமைப்புகள்"
+
+#: src/pref_window.cpp:1740
+#, fuzzy
+msgid "NAT Settings"
+msgstr "ஒலி அமைப்புகள்"
+
+#: src/pref_window.cpp:1745
+msgid "Sound Events"
+msgstr ""
+
+#: src/pref_window.cpp:1749
+#, fuzzy
+msgid "H.323 Settings"
+msgstr "H.323 V2 அமைப்புகள்"
+
+#: src/pref_window.cpp:1751
+#, fuzzy
+msgid "Advanced Settings"
+msgstr "ஒளித்தோற்ற அமைப்புகள்"
+
+#: src/pref_window.cpp:1760
+#, fuzzy
+msgid "Gatekeeper Settings"
+msgstr "%s நுழைவுக்காப்பாளன்"
+
+#: src/pref_window.cpp:1765
+#, fuzzy
+msgid "Gateway / Proxy Settings"
+msgstr "ஒளித்தோற்ற அமைப்புகளை பார் "
+
+#: src/pref_window.cpp:1769
+msgid "Codecs"
+msgstr "குறிமுறைகள்"
+
+#: src/pref_window.cpp:1771
+msgid "Audio Codecs"
+msgstr "ஒலிக்குறிமுறைகள்"
+
+#: src/pref_window.cpp:1775
+msgid "Video Codecs"
+msgstr "ஒளிக்குறிமுறைகள்"
+
+#: src/pref_window.cpp:1779
+msgid "Devices"
+msgstr "சாதனங்கள்"
+
+#: src/sound_handling.cpp:322
+#, fuzzy
+msgid "Opening device for playing"
+msgstr "ஒளிச்சாதனம் துவக்கப்படுகிறது"
+
+#: src/sound_handling.cpp:324
+#, fuzzy
+msgid "Opening device for recording"
+msgstr "பதிவுக்கான ஒளித்தோற்ற  சாதனம்"
+
+#: src/sound_handling.cpp:336 src/sound_handling.cpp:338
+#: src/videograbber.cpp:686
+#, fuzzy
+msgid "Failed to open the device"
+msgstr "ஒளிச்சாதனம் துவக்கப்படுவதில் பிழை"
+
+#: src/sound_handling.cpp:336
+#, c-format
+msgid ""
+"Impossible to open the selected audio device (%s) for recording. Please "
+"check your audio setup, the permissions and that the device is not busy."
+msgstr ""
+
+#: src/sound_handling.cpp:338
+#, c-format
+msgid ""
+"Impossible to open the selected audio device (%s) for playing. Please check "
+"your audio setup, the permissions and that the device is not busy."
+msgstr ""
+
+#: src/sound_handling.cpp:377 src/sound_handling.cpp:453
+#, fuzzy
+msgid "Cannot use the audio device"
+msgstr "ஒளிச்சாதனம் துவக்கப்படுவதில் பிழை"
+
+#: src/sound_handling.cpp:377
+#, c-format
+msgid ""
+"The selected audio device (%s) was successfully opened but it is impossible "
+"to read data from this device. Please check your audio setup."
+msgstr ""
+
+#: src/sound_handling.cpp:386
+msgid "Recording your voice"
+msgstr ""
+
+#: src/sound_handling.cpp:428
+msgid "Recording and playing back"
+msgstr ""
+
+#: src/sound_handling.cpp:453
+#, c-format
+msgid ""
+"The selected audio device (%s) was successfully opened but it is impossible "
+"to write data to this device. Please check your audio setup."
+msgstr ""
+
+#: src/sound_handling.cpp:580
+#, c-format
+msgid ""
+"GnomeMeeting is now recording from %s and playing back to %s. Please say \"1 "
+"2 3\" in your microphone, you should hear yourself back into the speakers "
+"with a 4 seconds delay."
+msgstr ""
+
+#: src/toolbar.cpp:168
+msgid ""
+"Enter an URL to call on the left, and click on this button to connect to the "
+"given URL"
+msgstr ""
+
+#: src/toolbar.cpp:214
+#, fuzzy
+msgid "Open text chat"
+msgstr "இபேச்சு"
+
+#: src/toolbar.cpp:225
+#, fuzzy
+msgid "Open control panel"
+msgstr "கட்டுப்பாட்டு மையத்தை மறைக்கவும்"
+
+#: src/toolbar.cpp:237
+msgid "Open address book"
+msgstr ""
+
+#: src/toolbar.cpp:261
+#, fuzzy
+msgid "Display images from your camera device"
+msgstr "இங்கு கிளிக் செய்தால் உங்கள் வலைபடக் கருவியிலிருந்து படத்தை பார்க்கலாம்"
+
+#: src/toolbar.cpp:283
+#, fuzzy
+msgid ""
+"Audio transmission status. During a call, click here to suspend or resume "
+"the audio transmission."
+msgstr "ஒலி அனுப்புதல் நிலை -  பேசும்போது இங்கு கிளிக் செய்தால் உங்கள் ஒலி முடமாக்கப்படும்"
+
+#: src/toolbar.cpp:303
+#, fuzzy
+msgid ""
+"Video transmission status. During a call, click here to suspend or resume "
+"the video transmission."
+msgstr ""
+"ஒளித்தோற்ற அனுப்புதல் நிலை -  பேசும்போது இங்கு கிளிக் செய்தால் உங்கள் ஒளி முடமாக்கப்படும்"
+
+#: src/tools.cpp:474
+#, fuzzy
+msgid "Received Calls"
+msgstr "%s பெறப்பட்டது"
+
+#: src/tools.cpp:474
+msgid "Placed Calls"
+msgstr ""
+
+#: src/tools.cpp:474
+msgid "Unanswered Calls"
+msgstr ""
+
+#: src/tools.cpp:531
+msgid "Date"
+msgstr ""
+
+#: src/tools.cpp:539
+#, fuzzy
+msgid "Remote User"
+msgstr "தோலை ஒளித்தோற்றம் "
+
+#: src/tools.cpp:557
+msgid "Call Duration"
+msgstr ""
+
+#: src/tools.cpp:567
+msgid "Call End Reason"
+msgstr ""
+
+#: src/tools.cpp:576
+msgid "Software"
+msgstr ""
+
+#: src/tools.cpp:680 src/tools.cpp:694
+#, fuzzy
+msgid "PC-To-Phone Settings"
+msgstr "பொது அமைப்புகள்"
+
+#: src/tools.cpp:683
+msgid ""
+"You can make calls to regular phones and cell numbers worldwide using "
+"GnomeMeeting and the MicroTelco service from Quicknet Technologies. To "
+"enable this you need to enter your MicroTelco Account number and PIN below, "
+"then enable registering to the MicroTelco service. Please visit the "
+"GnomeMeeting website for more information."
+msgstr ""
+
+#: src/tools.cpp:696
+msgid "Account _number:"
+msgstr ""
+
+#: src/tools.cpp:696
+msgid "Use your MicroTelco account number"
+msgstr ""
+
+#: src/tools.cpp:699
+msgid "_Pin:"
+msgstr ""
+
+#: src/tools.cpp:699
+msgid "Use your MicroTelco PIN"
+msgstr ""
+
+#: src/tools.cpp:703
+msgid "Use PC-To-Phone service"
+msgstr ""
+
+#: src/tools.cpp:708
+msgid ""
+"Click on one of the following links to get more information about your "
+"existing MicroTelco account, or to create a new account."
+msgstr ""
+
+#: src/tools.cpp:712
+msgid "Get an account"
+msgstr ""
+
+#: src/tools.cpp:714
+msgid "Buy a card"
+msgstr ""
+
+#: src/tools.cpp:719
+msgid "Consult my account details"
+msgstr ""
+
+#. Start building the GMObject and associate the structure
+#. * to the object so that it is deleted when the object is
+#. * destroyed
+#.
+#: src/tray.cpp:186
+msgid "GnomeMeeting Tray Icon"
+msgstr "gமாநாட்டில் குறும்படம்"
+
+#: src/urlhandler.cpp:77
+msgid ""
+"The call transfer failed, the user was either unreachable, or simply busy "
+"when he received the call transfer request."
+msgstr ""
+
+#: src/urlhandler.cpp:289
+#, c-format
+msgid "No contact with speed dial %s# found, will call number %s instead"
+msgstr ""
+
+#: src/urlhandler.cpp:304
+msgid "Invalid URL handler"
+msgstr ""
+
+#: src/urlhandler.cpp:304
+msgid ""
+"Please specify a valid URL handler. Currently both h323: and callto: are "
+"supported."
+msgstr ""
+
+#: src/urlhandler.cpp:324
+#, c-format
+msgid "Calling %s"
+msgstr "%s அழைக்கப்படுகிறார்"
+
+#: src/urlhandler.cpp:328
+#, fuzzy, c-format
+msgid "Transferring call to %s"
+msgstr " %s க்கு அழைப்புகள் முன்னோக்கப்படும்"
+
+#: src/videograbber.cpp:317
+#, fuzzy, c-format
+msgid "Opening video device %s with plugin %s"
+msgstr "ஒளிச்சாதனம் துவக்கப்படுகிறது"
+
+#: src/videograbber.cpp:342
+#, c-format
+msgid "Successfully opened video device %s, channel %d"
+msgstr "%sஒளிச்சாதனம் %d தடத்தில் துவக்கப்பட்டது"
+
+#: src/videograbber.cpp:351
+#, fuzzy, c-format
+msgid "Error while opening video device %s"
+msgstr "சாதனம் துவக்கப்படுவதில் பிழை"
+
+#. Translators: Do not translate MovingLogo and Picture
+#: src/videograbber.cpp:355
+#, fuzzy
+msgid ""
+"A moving GnomeMeeting logo will be transmitted during calls. Notice that you "
+"can always transmit a given image or the moving GnomeMeeting logo by "
+"choosing \"Picture\" as video plugin and \"MovingLogo\" or \"StaticPicture\" "
+"as device."
+msgstr ""
+" %s என்ற சாதனத்தின் %d அலைவரிசையை துவக்குவதில் பிழை நேர்ந்துள்ளது\n"
+"நீங்கள் எந்த படத்தை வேண்டுமானாலும் கொடாநிலையாக அனுப்பலாம். நீங்கள் எந்த  படத்தையும் தேர்வு "
+"செய்யவில்லை என்றால் gமாநாடு தன்னுடைய சோதனைபடத்தை அனுப்பும். நீங்கள் விரும்பும் படத்தை "
+"அனுப்ப ஒளித்தோற்ற சாதனத்தை \"படம்\" என்று தேர்வு செய்ய வேண்டும்."
+
+#: src/videograbber.cpp:356
+#, fuzzy
+msgid "Couldn't open the video device"
+msgstr "ஒளிச்சாதனம் துவக்கப்படுவதில் பிழை"
+
+#: src/videograbber.cpp:360
+msgid ""
+"There was an error while opening the device. Please check your permissions "
+"and make sure that the appropriate driver is loaded."
+msgstr ""
+
+#: src/videograbber.cpp:364 src/videograbber.cpp:664
+msgid "Your video driver doesn't support the requested video format."
+msgstr "உங்கள் சாதனம் இந்த முறையை துவக்க முடியவில்லை"
+
+#: src/videograbber.cpp:368
+#, fuzzy
+msgid "Could not open the chosen channel."
+msgstr "ஒளிச்சாதனத்தை தடத்தில் துவக்கப்படுவதில் பிழை உள்ளது"
+
+#: src/videograbber.cpp:372
+#, fuzzy
+msgid ""
+"Your driver doesn't seem to support any of the colour formats supported by "
+"GnomeMeeting.\n"
+" Please check your kernel driver documentation in order to determine which "
+"Palette is supported."
+msgstr ""
+"உங்கள் இயக்க நிரலில் பிழை நேர்ந்துள்ளது %s என்ற \n"
+"முறை வேலைச் செய்யாது:\n"
+" gconftool --set \"/apps/gnomemeeting/devices/color_format\" YOURPALETTE --"
+"type string"
+
+#: src/videograbber.cpp:376
+#, fuzzy
+msgid "Error while setting the frame rate."
+msgstr "தரவுச்சட்ட வேகத்தில் பிழை"
+
+#: src/videograbber.cpp:380
+#, fuzzy
+msgid "Error while setting the frame size."
+msgstr "தரவுச்சட்ட அளவில் பிழை"
+
+#: src/videograbber.cpp:419
+msgid "Opened the video device using the \"Picture\" video plugin"
+msgstr ""
+
+#: src/videograbber.cpp:565
+msgid "Picture"
+msgstr "படம்"
+
+#: src/videograbber.cpp:577
+#, c-format
+msgid ""
+"GnomeMeeting is now testing the %s video device. If you experience machine "
+"crashes, then report a bug to the video driver author."
+msgstr ""
+
+#: src/videograbber.cpp:638
+#, c-format
+msgid "Test %d done"
+msgstr ""
+
+#: src/videograbber.cpp:640
+#, c-format
+msgid "Test %d failed"
+msgstr ""
+
+#: src/videograbber.cpp:659
+#, fuzzy, c-format
+msgid "Error while opening %s."
+msgstr "சாதனம் துவக்கப்படுவதில் பிழை"
+
+#: src/videograbber.cpp:668
+msgid "Could not open the chosen channel with the chosen video format."
+msgstr "ஒளிச்சாதனத்தை தடத்தில் துவக்கப்படுவதில் பிழை உள்ளது"
+
+#: src/videograbber.cpp:672
+#, fuzzy
+msgid ""
+"Your driver doesn't support any of the color formats tried by GnomeMeeting"
+msgstr "உங்கள் சாதனம் இந்த முறையை துவக்க முடியவில்லை"
+
+#: src/videograbber.cpp:676
+msgid "Error with the frame rate."
+msgstr "தரவுச்சட்ட வேகத்தில் பிழை"
+
+#: src/videograbber.cpp:680
+msgid "Error with the frame size."
+msgstr "தரவுச்சட்ட அளவில் பிழை"
+
+#~ msgid "A comment that will be listed in LDAP directories"
+#~ msgstr "LDAP அடைவுகளில் பதிவுச் செய்யப்படும் விவரம்"
+
+#~ msgid "Audio player Mixer"
+#~ msgstr "ஒலி இயக்கி ஒலிக்கட்டுப்பாடு"
+
+#~ msgid "Audio recorder"
+#~ msgstr "ஒலி பதிப்பான்"
+
+#~ msgid "Color Format"
+#~ msgstr "வண்ணங்களின் வடிவம்"
+
+#~ msgid "Color Format for the video palette"
+#~ msgstr "ஒளித்தோற்ற பட்டையில் வண்ணங்களின் வடிவம்"
+
+#~ msgid "Do not disturb"
+#~ msgstr "தொந்தரவு செய்யாதே"
+
+#~ msgid "Enable FPS"
+#~ msgstr "FPS செயல்படுத்து"
+
+#~ msgid "Enable Silence Detection for G.711 and GSM"
+#~ msgstr "G.711 மற்றும் GSM ஆகியவற்றில் நிசப்தத்தை கண்டுபிடி"
+
+#~ msgid "Enable or disable bilinear filtering"
+#~ msgstr "bilinear வடிப்பியை செயல்படுத்து/முடமாக்கு"
+
+#~ msgid "Enable registering to the LDAP server"
+#~ msgstr "LDAP சேவையகத்தில் பதிவுச் செய்தலை  செயல்படுத்து"
+
+#~ msgid "Enable the limit on the number of frames per second"
+#~ msgstr "ஒளிச்சட்டங்களின் கட்டுப்பாட்டை செயல்படுத்து"
+
+#~ msgid "Fast Start"
+#~ msgstr "வேகத்துவக்கம்"
+
+#~ msgid "Forward calls to this host"
+#~ msgstr "இந்த கணிணிக்கு அழைப்புகளை முன்னோக்கு"
+
+#~ msgid "H.245 Tunnelling"
+#~ msgstr "H.245 சுரங்கம்"
+
+#~ msgid ""
+#~ "If enabled, GnomeMeeting will use the Quicknet device instead of the "
+#~ "regular soundcard during calls."
+#~ msgstr "இதை தேர்வுச் செய்தால் Quicknet அட்டைகள் இருந்தால் அது பயன்படுத்தப்படும்"
+
+#~ msgid "If enabled, calls will be established with H.245 Tunnelling."
+#~ msgstr "இதை தேர்வுச் செய்தால், அழைப்பு வந்தால் H.245 சுரங்கத்தோடு தொடங்கும்"
+
+#~ msgid "If enabled, incoming calls will be automatically answered."
+#~ msgstr "இதை தேர்வுச் செய்தால், அழைப்பு வந்தால் தானாக பதிலலிக்கப்படும்"
+
+#~ msgid "If enabled, incoming calls will be automatically refused."
+#~ msgstr "இதை தேர்வுச் செய்தால், அழைப்பு வந்தால் தானாக மறுக்கப்படும்"
+
+#~ msgid ""
+#~ "Limitation on the number of transmitted frames grabbed by the grabber"
+#~ msgstr "அனுப்பபடும் சட்டங்களின் உச்சத்தை எட்டி விட்டோம்"
+
+#~ msgid "Local Video Popup Height"
+#~ msgstr "உங்கள் ஒளித்தோற்ற சாளர உயரம்"
+
+#~ msgid "Local Video Popup Width"
+#~ msgstr "உங்கள் ஒளித்தோற்ற சாளர அகலம்"
+
+#~ msgid "Number of entries to store in history boxes"
+#~ msgstr "வரலாற்றில் வைக்கப்படும் விவரங்களின் எண்ணிக்கை"
+
+#~ msgid "Received Video Quality Hint"
+#~ msgstr "பெறப்படும் ஒளித்தோற்ற தரம்"
+
+#~ msgid "Register"
+#~ msgstr "பதிந்துக்கொள்"
+
+#~ msgid "Remote Video Popup Height"
+#~ msgstr "தொலை ஒளித்தோற்ற சாளர உயரம்"
+
+#~ msgid "Show a docklet in the gnome-panel or KDE systray"
+#~ msgstr "gசாளரம் அல்லது Kசாளரத்தின் பலகத்தில் ஒட்டி தெரியவேண்டும்"
+
+#~ msgid "Show a nice window every time GnomeMeeting starts"
+#~ msgstr "துவங்கும்போது அழகியப்படம்  தெரியவேண்டும்"
+
+#~ msgid "Show docklet"
+#~ msgstr "ஒட்டி  தெரியவேண்டும்"
+
+#~ msgid "Show left toolbar"
+#~ msgstr "இடது கருவிப்பட்டை தெரியவேண்டும்"
+
+#~ msgid "Show only the docklet window at startup"
+#~ msgstr "ஒட்டிச் சாளரம் துவங்கும்போது மட்டும் தெரியவேண்டும்"
+
+#~ msgid "The E-Mail address that will be listed in the directories"
+#~ msgstr "உங்கள் மின்னஞ்சல் முகவரி"
+
+#~ msgid "The Gatekeeper to register to"
+#~ msgstr "பதிவுசெய்துகொள்ள வேண்டிய நுழைவுக்காப்பாளன்"
+
+#~ msgid "The ID of the Gatekeeper to register to"
+#~ msgstr "பதிவுசெய்துகொள்ள வேண்டிய நுழைவுக்காப்பாளனின் அடையாள எண்"
+
+#~ msgid "The LDAP Server to register to"
+#~ msgstr "பதிவுசெய்துகொள்ள வேண்டிய LDAP சேவையகம்"
+
+#~ msgid "The Location that will be published in the LDAP directories"
+#~ msgstr "இடம்"
+
+#~ msgid "The Quicknet Device to use during calls."
+#~ msgstr "அழைக்கவேண்டிய Quicknet சாதனம்"
+
+#~ msgid "The Video Channel"
+#~ msgstr "ஒளித்தோற்ற   தடம்"
+
+#~ msgid "The Video Format: PAL, NTSC, SECAM, Auto"
+#~ msgstr "ஒளித்தோற்ற வடிவம்;PAL, NTSC, SECAM, Auto"
+
+#~ msgid "The Video Quality to request to the remote"
+#~ msgstr "தொலைவில் உள்ளவரின் ஒளித்தோற்ற தரம்"
+
+#~ msgid "The Video Size: QCIF (0) or CIF (1)"
+#~ msgstr "ஒளித்தோற்ற அளவு: QCIF (0) or CIF (1)"
+
+#~ msgid ""
+#~ "The alias to use when registering. People will use this alias when "
+#~ "calling you."
+#~ msgstr "பதிவு செய்யும்போது பயன்படுத்தும் மாற்றப் பெயர்"
+
+#~ msgid "The device to use to play audio"
+#~ msgstr "ஒலி இயக்கச் சாதனம்"
+
+#~ msgid "The device to use to record audio"
+#~ msgstr "ஒலிப்பதிவு சாதனம்"
+
+#~ msgid "The height of the local video popup"
+#~ msgstr "உங்கள் ஒளித்தோற்ற சாளர உயரம்"
+
+#~ msgid ""
+#~ "The height of the picture displayed when being in fullscreen (using SDL)"
+#~ msgstr "முழுத்திரையின் போது படத்தின் உயரம் (SDL)"
+
+#~ msgid "The height of the remote video popup"
+#~ msgstr "தொலைவு ஒளித்தோற்ற சாளர உயரம்"
+
+#~ msgid "The host to forward calls to"
+#~ msgstr "அழைப்புகளை ஏற்கப்போகும் முன்னோக்க கணிணி"
+
+#~ msgid "The hostname of the Gatekeeper to register to"
+#~ msgstr "நுழைவுக்காப்பாளனின் பெயர்"
+
+#~ msgid "The list of used ILS servers"
+#~ msgstr "பயன்பாட்டில் உள்ள ILS சேவையகங்களின் பட்டியல்"
+
+#~ msgid "The mixer to use for the device that is used to play audio"
+#~ msgstr "ஒலியிக்கத்திற்கான ஒலிக்கட்டுப்பாடு"
+
+#~ msgid "The mixer to use for the device that is used to record audio"
+#~ msgstr "ஒலிப்பதிவிற்கான ஒலிக்கட்டுப்பாடு"
+
+#~ msgid "The user's first name that will be used in the directories"
+#~ msgstr "அடைவுகளிவ் பயன்படுத்தப்படும் முதல் பெயர்"
+
+#~ msgid ""
+#~ "The width of the picture displayed when being in fullscreen (using SDL)"
+#~ msgstr "பெறப்படும் படத்தின் முழுத்திரை அகலம்(SDL)"
+
+#~ msgid "This need the show_docklet option set to true to have effect"
+#~ msgstr "ஒட்டியைக் காட்டு தேர்வுச் செய்ய வேண்டும்"
+
+#~ msgid "Use Quicknet Device"
+#~ msgstr "Quicknet சாதனத்தை பயன்படுத்து"
+
+#~ msgid "gnomemeeting"
+#~ msgstr "gமாநாடு"
+
+#~ msgid "Internationalisation Maintainer:"
+#~ msgstr "சர்வதேசமாக்கல்"
+
+#~ msgid ""
+#~ "GnomeMeeting is a full-featured H.323\n"
+#~ "video conferencing application."
+#~ msgstr "gமாநாடு ஒரு முழுமையான இணையமாநாட்டுக் கருவி"
+
+#~ msgid "Quit in progress..."
+#~ msgstr "வெளியேறுகிறது"
+
+#~ msgid ""
+#~ "Warning! GnomeMeeting can't disconnect from the remote party due to a bug "
+#~ "in OpenH323.\n"
+#~ "Forcing the exit in 3 seconds!\n"
+#~ msgstr ""
+#~ "பிழை நேர்ந்துள்ளது. !\n"
+#~ " இன்னும் 3 நொடியில் வெளியேறுகிறது!\n"
+
+#~ msgid "Set Audio Mixer for player to %s"
+#~ msgstr "இயக்கியின் ஒலிக்கட்டுப்பாடு %s"
+
+#~ msgid "Set Audio Mixer for recorder to %s"
+#~ msgstr "ஒலிப்பதிவின் ஒலிக்கட்டுப்பாடு %s"
+
+#~ msgid "Started New Logical Channel..."
+#~ msgstr "புதிய தடம் துவக்கப்படுகிறது"
+
+#~ msgid "Enabled silence detection for %s"
+#~ msgstr "%s க்கு நிசப்த அறிவிப்பு செயல்படுத்தப்படுகிறது"
+
+#~ msgid "Disabled silence detection for %s"
+#~ msgstr "%s க்கு நிசப்த அறிவிப்பு முடமாக்கப்படுகிறது"
+
+#~ msgid "Requesting remote to send video quality: %d%%"
+#~ msgstr " %d%% தொலைவில் உள்ளவரின் ஒளித்தோற்ற தரம் பெறப்படுகிறது"
+
+#~ msgid "Request ok"
+#~ msgstr "பெறப்பட்டுவிட்டது"
+
+#~ msgid "Audio Channel:  Sending"
+#~ msgstr "ஒலித்தடம்:  அனுப்பப்படுகிறது"
+
+#~ msgid "Audio Channel:  Paused"
+#~ msgstr "ஒலித்தடம்:  நிறுத்தப்பட்டுள்ளது"
+
+#~ msgid "Video Channel:  Sending"
+#~ msgstr "ஒளித்தடம்:  அனுப்பப்படுகிறது"
+
+#~ msgid "Video Channel:  Paused"
+#~ msgstr "ஒளித்தடம்:  நிறுத்தப்பட்டுள்ளது"
+
+#~ msgid "Auto Rejecting Incoming Call"
+#~ msgstr "அழைப்புகளை தானாக மறுத்து விடு"
+
+#~ msgid "Auto Answering Incoming Call"
+#~ msgstr "அழைப்புகளை தானாக பதிலளித்து விடு"
+
+#~ msgid ""
+#~ "You chose to NOT use the GnomeMeeting ILS directory. Other users will not "
+#~ "be able to contact you if you don't register to a directory service."
+#~ msgstr "நீங்கள் பதிவுச் செய்யவல்லை.அதனால் மற்றவர்கள் உங்களை தேடிக் கண்டுபிடிக்க முடியாது"
+
+#~ msgid "Personal Data - Page 2/4"
+#~ msgstr "உங்கள் விவரம்-2/4 பக்கம்"
+
+#~ msgid ""
+#~ "Please enter information about yourself. This information will be used "
+#~ "when connecting to remote H.323 software, and to register in the "
+#~ "directory of GnomeMeeting users. The directory is used to register users "
+#~ "when they are using GnomeMeeting so that you can call them, and they can "
+#~ "call you."
+#~ msgstr ""
+#~ "உங்கள் விவரங்களைத் தரவும். இது பதிவு செய்வதற்கு கட்டாயம் தேவை. இதன் மூலம் மற்றவர்கள் "
+#~ "உங்களை எளிதாக அழைக்கலாம். அதனால் இதை முழுதாக செய்யவும்"
+
+#~ msgid "Last Name:"
+#~ msgstr "கடைசிப் பெயர்:"
+
+#~ msgid ""
+#~ "Please enter your connection type. This setting is used to set default "
+#~ "settings following your bandwidth. It will set good global settings but "
+#~ "it is however possible to tweak and change some of them to obtain a "
+#~ "better result in each particular case."
+#~ msgstr "உங்கள் இணைப்பு வகையைத் தெரிவிக்கவும். "
+
+#~ msgid "Custom"
+#~ msgstr "தனிப்பயன்"
+
+#~ msgid "GnomeMeeting Configuration Assistant - Page 1/4"
+#~ msgstr "வடிவமைப்பு மாயாவி  - 1/4 பக்கம்"
+
+#~ msgid ""
+#~ "You have successfully set up GnomeMeeting. Enjoy!\n"
+#~ "   -- The GnomeMeeting development team"
+#~ msgstr ""
+#~ "நீங்கள் வெற்றிகரமாக வடிவமைப்பு மாயாவியை பயன்படுத்தியதற்கு வாழ்த்துகள்\n"
+#~ "gமாநாட்டு உருவாக்கிகள்"
+
+#~ msgid "Done! - Page 4/4"
+#~ msgstr "முடிந்தது  -  4/4 பக்கம்"
+
+#~ msgid "Set Audio player device to %s"
+#~ msgstr "%s இதனை ஒலி இயக்கியாக பயன்படுத்து"
+
+#~ msgid "Set Audio recorder device to %s"
+#~ msgstr "%s இதனை ஒலிப்பதிவுச் சாதனமாக பயன்படுத்து"
+
+#~ msgid "Disabling H.245 Tunnelling"
+#~ msgstr "H.245 சுரங்கமைப்பு முடமாக்கப்படுகிறது"
+
+#~ msgid "Enabling H.245 Tunnelling"
+#~ msgstr "H.245 சுரங்கமைப்பு பயன்படுத்தப்படுகிறது"
+
+#~ msgid "Disabling Fast Start"
+#~ msgstr "வேகதுவக்கம்  முடமாக்கப்படுகிறது"
+
+#~ msgid "Enabling Fast Start"
+#~ msgstr "வேகதுவக்கம் பயன்படுத்தப்படுகிறது"
+
+#~ msgid "Error while opening the Quicknet device. Disabling Quicknet device."
+#~ msgstr "Quicknet சாதனம் பயன்படுத்தப்படுவதில் பிழை. அது முடமாக்கப்படுகிறது"
+
+#~ msgid "This call ended abnormally"
+#~ msgstr "உங்கள் அழைப்பை சரியாக முடியவில்லை"
+
+#~ msgid "Refused incoming call"
+#~ msgstr "உங்களுக்கு வரும் அழைப்புகள் ஒப்புக்கொள்ளப்படவில்லை"
+
+#~ msgid "Remote party could not be reached"
+#~ msgstr "தொலைவில் உள்ளவரை அழைக்க முடியவில்லை"
+
+#~ msgid "Call duration: %.2ld:%.2ld:%.2ld"
+#~ msgstr "அழைப்பின் நேரம்: %.2ld:%.2ld:%.2ld"
+
+#~ msgid "Error while registering with Gatekeeper at %s."
+#~ msgstr "%s. நுழைவுக்காப்பாளனில் பதியும்போது பிழை"
+
+#~ msgid "Parse error: %d %s."
+#~ msgstr "தவறு நேர்ந்துள்ளது: %d %s."
+
+#~ msgid "Contacting %s..."
+#~ msgstr "%s அழைக்கப்படுகிறார்"
+
+#~ msgid "Successfully registered to %s."
+#~ msgstr " %s அடைவைில் வெற்றிகரமாக பதிந்து கொள்ளப்பட்டது"
+
+#~ msgid "Successfully unregistered from %s."
+#~ msgstr "%s அடைவைில் இருந்து துண்டிக்கப்பட்டது"
+
+#~ msgid "Error while unregistering from %s."
+#~ msgstr "%s. நுழைவுக்காப்பாளனில் துண்டிக்கும்போது பிழை"
+
+#~ msgid "XDAP Server Browser"
+#~ msgstr "XDAP சேவையக மேலோடி"
+
+#~ msgid "Find users on"
+#~ msgstr "நன்பர்களை தேடு"
+
+#~ msgid "  whose  "
+#~ msgstr "யாருடைய"
+
+#~ msgid "ILS Users List"
+#~ msgstr "ILS பயனர் பட்டியல்"
+
+#~ msgid "E-Mail"
+#~ msgstr "மின்னஞ்சல்"
+
+#~ msgid ""
+#~ "Sent/Received: %.3f Mb/%.3f Mb\n"
+#~ "Lost/Late Packets: %d/%d\n"
+#~ "Round trip delay: %d ms"
+#~ msgstr ""
+#~ "அனுப்பியவை/பெற்றவை:%.3f மெகாபைட்/%.3f மெகாபைட்\n"
+#~ "தொலைந்தவை/தாமாதமானவை:%d/%d\n"
+#~ "ஒட்டுமொத்த தாமதம்:%d மில்லிவிநாடி"
+
+#~ msgid "Tr. Aud."
+#~ msgstr "ஒலியை அனுப்புதல்"
+
+#~ msgid "Re. Aud."
+#~ msgstr "ஒலியை பெறுதல்"
+
+#~ msgid "Tr. Vid."
+#~ msgstr "ஒளியை அனுப்புதல்"
+
+#~ msgid "Re. Vid."
+#~ msgstr "ஓளி பெறுதல்"
+
+#~ msgid ""
+#~ "GnomeMeeting just set the new Speex audio codec as default. Speex is a "
+#~ "high quality, GPL audio codec introduced in GnomeMeeting 0.94."
+#~ msgstr "ஸ்பிஷ் என்ற புதிய உயர்தர ஒலிக் குறிமுறை கொடாநிலையாக நிறுவப்பட்டது."
+
+#~ msgid ""
+#~ "GnomeMeeting just installed an URL handler for callto:// URLs. callto "
+#~ "URLs are an easy way to call people on the internet using GnomeMeeting. "
+#~ "They are now available to all Gnome programs able to cope with URLs. You "
+#~ "can for example create an URL launcher on the Gnome panel of the form "
+#~ "\"callto://ils.seconix.com/me@foo.com\" to call the person registered on "
+#~ "the ILS server ils.seconix.com with the me@foo.com e-mail address."
+#~ msgstr ""
+#~ "callto:// URLs என்ற அழைப்பு முறை உங்கள் வசதிக்காக உள்ளது. இதன் மூலம் நீங்கள் அழைக்க "
+#~ "விரும்பும் நபர் ils.seconix.com என்ற அடைவில் பதிந்திருந்தால் நீங்கள் அவரை எளிதாக "
+#~ "\"callto://ils.seconix.com/raman@mail.com\" என்று அழைக்கலாம். அதற்கு அவர் ils."
+#~ "seconix.com அடைவில் raman@mail.com என்ற மின்னஞ்சல் முகவரியுடன் பதிந்து இருக்க "
+#~ "வேண்டும்"
+
+#~ msgid ""
+#~ "Could not start the listener thread. You will not be able to receive "
+#~ "incoming calls."
+#~ msgstr "பிழை நேர்ந்துள்ளது மன்னிக்கவும். உங்களுக்கு அழைப்புகள் வராது"
+
+#~ msgid "_Save"
+#~ msgstr "_சேமி"
+
+#~ msgid "Both (Local and Remote Video in New Windows)"
+#~ msgstr "இரண்டும்(உங்களுடைய மற்றும் தொலைவிலிருப்பவர் படமும் புதிய சாளரத்தில்)"
+
+#~ msgid "Toolbar"
+#~ msgstr "கருவிப்பட்டை"
+
+#~ msgid "View/Hide the Toolbar"
+#~ msgstr "இபேச்சுக்கான சாளரத்தில் கருவிப்பட்டையை மறைக்க/காட்ட"
+
+#~ msgid "Tray Icon"
+#~ msgstr "குறும்படம்"
+
+#~ msgid "View/Hide the Tray Icon"
+#~ msgstr "குறும்படத்தை மறைக்க/காட்ட"
+
+#~ msgid "Toggle Fullscreen"
+#~ msgstr "முழுத்திரை மாற்றி"
+
+#~ msgid "Configuration Assistant"
+#~ msgstr "வடிவமைப்பு மாயாவி"
+
+#~ msgid "Start The Configuration Assistant"
+#~ msgstr "வடிவமைப்பு மாயாவியை துவக்கு"
+
+#~ msgid "Do _Not Disturb"
+#~ msgstr "தோந்தரவுச் _செய்யாதே"
+
+#~ msgid "Do Not Disturb"
+#~ msgstr "தோந்தரவுச் செய்யாதே"
+
+#~ msgid "Aut_o Answer"
+#~ msgstr "தானியங்கி _பதில்"
+
+#~ msgid "_Audio Mute"
+#~ msgstr "_ஒலி முடமாக்கு"
+
+#~ msgid "_Video Mute"
+#~ msgstr "_ஒளித்தோற்ற முடமாக்கு"
+
+#~ msgid "XDAP Browser"
+#~ msgstr "XDAP மேலோடி"
+
+#~ msgid "Error: %s\n"
+#~ msgstr "பிழை: %s\n"
+
+#~ msgid "GnomeMeeting Error"
+#~ msgstr "gமாநாட்டில் பிழை"
+
+#~ msgid "Ignore"
+#~ msgstr "விலக்கு"
+
+#~ msgid ""
+#~ "Call from %s\n"
+#~ "using %s"
+#~ msgstr ""
+#~ "%s என்ற இடத்திலிருந்து கூப்பிடு\n"
+#~ "கூப்பிடுவதற்கு %s இதனை பயன்படுத்து"
+
+#~ msgid "Disconnect"
+#~ msgstr "துண்டிக்கவும்"
+
+#~ msgid "Okay"
+#~ msgstr "சரி"
+
+#~ msgid "Good Quality"
+#~ msgstr "நல்ல தரம்"
+
+#~ msgid "Where do you call from?"
+#~ msgstr "எங்கிருந்து அழைக்கிறீர்கள்?"
+
+#~ msgid "Behavior"
+#~ msgstr "வழக்கங்கள்"
+
+#~ msgid "Popup window"
+#~ msgstr "மேல்மீட்பு சாளரம்"
+
+#~ msgid "Fullscreen Width:"
+#~ msgstr "முழுத்திரை அகலம்"
+
+#~ msgid "Fullscreen Height:"
+#~ msgstr "முழுத்திரை உயரம்"
+
+#~ msgid "Sound"
+#~ msgstr "ஒலி"
+
+#~ msgid ""
+#~ "If enabled, GnomeMeeting will play a sound when receiving an incoming "
+#~ "call (the sound to play is chosen in the Gnome Control Center)."
+#~ msgstr "தேர்வு செய்யப்பட்டிருந்தால் அழைப்பு வரும்போது ஒலி எழுப்பும்"
+
+#~ msgid "XDAP Directory"
+#~ msgstr "XDAP அடைவுகள்"
+
+#~ msgid "XDAP Directory:"
+#~ msgstr "XDAP அடைவுகள்"
+
+#~ msgid "Automatic Gain Compensation"
+#~ msgstr "தானியங்கி ஒலிக்கட்டுப்பாடு"
+
+#~ msgid "Player Mixer:"
+#~ msgstr "ஒலிக்கட்டுப்பாடு"
+
+#~ msgid ""
+#~ "The audio mixer to use to setup the volume of the audio player device."
+#~ msgstr "ஒலி இயக்கியின் ஒலியளவை கட்டுப்படுத்தும் ஒலிக்கட்டுப்பாடு"
+
+#~ msgid "Audio Recorder:"
+#~ msgstr "ஒலி பதிப்பான்"
+
+#~ msgid "Enter the audio recorder device to use."
+#~ msgstr "ஒலி பதிப்பான்"
+
+#~ msgid "Recorder Mixer:"
+#~ msgstr "ஒலி பதிப்பானின் ஒலிக்கட்டுப்பாடு"
+
+#~ msgid ""
+#~ "The audio mixer to use to setup the volume of the audio recorder device."
+#~ msgstr "ஒலி பதிப்பானின் ஒலியளவை கட்டுப்படுத்தும் ஒலிக்கட்டுப்பாடு"
+
+#~ msgid "Country Code:"
+#~ msgstr "நாட்டின் அடையாள எண்"
+
+#~ msgid "Use the Quicknet Device"
+#~ msgstr "Quicknet அட்டைகளை பயன்படுத்து"
+
+#~ msgid "PAL"
+#~ msgstr "PAL"
+
+#~ msgid "NTSC"
+#~ msgstr "NTSC"
+
+#~ msgid "SECAM"
+#~ msgstr "SECAM"
+
+#~ msgid "Video Device:"
+#~ msgstr "ஒளித்தோற்றச் சாதனங்கள்"
+
+#~ msgid ""
+#~ "Enter the video device to use. Using an invalid video device for video "
+#~ "transmission will transmit a test picture."
+#~ msgstr "ஒளித்தோற்றச் சாதனங்கள்- சாதனம் ஏதுமில்லையென்றால் சோதனைப்படம் அனுப்பப்படும்"
+
+#~ msgid "Here you can choose the transmitted video format."
+#~ msgstr "ஒளித்தோற்ற வடிவம்"
+
+#~ msgid ""
+#~ "If enabled, the video preview mode will be set activated and you will be "
+#~ "able to see yourself without being in a call."
+#~ msgstr ""
+#~ "தேர்வுச் செய்திருந்தால் நீங்கள் உங்கள் ஒளித்தோற்றத்தை அழைப்பில் இல்லாதபோதும் பார்க்கமுடியும்"
+
+#~ msgid "Browse"
+#~ msgstr "மேலோடு"
+
+#~ msgid "Jitter Buffer:"
+#~ msgstr "ஒலிச்சிதறல் இடையகம்"
+
+#~ msgid "The jitter buffer delay to buffer audio calls (in ms)."
+#~ msgstr "ஒலிச்சிதறல் இடையகம் மில்லிவிநாடிகளில்"
+
+#~ msgid "GSM Frames per packet:"
+#~ msgstr "GSM பொதியில் உள்ள சட்டங்கள்"
+
+#~ msgid "The number of frames in each transmitted GSM packet."
+#~ msgstr "GSM பொதியில் உள்ள சட்டங்கள்"
+
+#~ msgid "G.711 Frames per packet:"
+#~ msgstr "G.711 பொதியில் உள்ள சட்டங்கள்"
+
+#~ msgid "The number of frames in each transmitted G.711 packet."
+#~ msgstr "G.711 பொதியில் உள்ள சட்டங்கள்"
+
+#~ msgid "Enable/disable the limit on the transmitted FPS."
+#~ msgstr " FPS  கட்டுப்பாட்டை தேர்வுச் செய்"
+
+#~ msgid "Enable/disable the video transmission."
+#~ msgstr "ஒளித்தோற்ற அனுப்புதலை  தேர்வுச் செய்"
+
+#~ msgid "H.261 Settings"
+#~ msgstr "H.261 அமைப்புகள்"
+
+#~ msgid "Received Video Quality:"
+#~ msgstr "பெறப்படும் ஒளித்தோற்றத்தின் தரம்"
+
+#~ msgid ""
+#~ "The received video quality:  choose 100% on a LAN for the best quality, "
+#~ "1% being the worst quality."
+#~ msgstr "பெறப்படும் ஒளித்தோற்றத்தின் தரம்  100% LAN 1% குறைந்தபட்ச தரம்"
+
+#~ msgid "H.323 Advanced"
+#~ msgstr "H.323 அறிய"
+
+#~ msgid "Speakerphone enabled"
+#~ msgstr "ஒலிபெருக்கியை தேர்வுச் செய்"
+
+#~ msgid "Speakerphone disabled"
+#~ msgstr "ஒலிபெருக்கியை முடமாக்கு"
+
+#~ msgid "Find friends on ILS"
+#~ msgstr "ILS அடைவுகளில் நன்பர்களை தேடு"
+
+#~ msgid "Chat"
+#~ msgstr "இபேச்சு"
+
+#~ msgid "Make a text chat with your friend"
+#~ msgstr "இபேச்சு"
+
+#~ msgid "Display the control panel"
+#~ msgstr "கட்டுப்பாட்டு மையத்தைக் காட்டு"
+
+#~ msgid ""
+#~ "Click here to activate the speaker phone device of your Quicknet card."
+#~ msgstr ""
+#~ "இங்கு கிளிக் செய்தால் உங்கள் ஒலிபெருக்கிக்கு Quicknet  அட்டையிலிருந்து ஒலியைக் "
+#~ "கேட்கலாம்"
+
+#~ msgid "Do Not Accept Calls"
+#~ msgstr "அழைப்பை ஒப்புக்கொள்ளாதே"
+
+#~ msgid "Show Main Window"
+#~ msgstr "முக்கிய சாளரத்ததைக் காட்டு"
+
+#~ msgid "Show The Main Window"
+#~ msgstr "முக்கிய சாளரத்தை காட்டு"
+
+#~ msgid "Searching for user"
+#~ msgstr "பயனரைத் தேடுங்கள்"
+
+#~ msgid "Error while connecting to ILS directory"
+#~ msgstr "ILS அடைவையோடு இணைப்பு ஏற்படுத்தப்படுத்துவதில் பிழை"
+
+#~ msgid "Video Device Closed"
+#~ msgstr "ஒளித்தோற்றச் சாதனம் மூடப்பட்டது"
