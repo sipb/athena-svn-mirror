@@ -1,0 +1,17 @@
+# $Id: Makefile.athena,v 1.1 2004-10-10 15:48:31 ghudson Exp $
+
+dist:
+
+prepare:
+	perl Makefile.PL INSTALLDIRS=perl
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install DESTDIR="$$SRVD"
