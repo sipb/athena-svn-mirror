@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_driver.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.4 1989-11-15 23:48:25 marc Exp $";
+static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.5 1989-11-20 14:48:53 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -63,7 +63,7 @@ Display *dpy = NULL;
  */
 
 #ifndef  APPNAME
-#define  APPNAME        "zwgc2"
+#define  APPNAME        "zwgc"
 #endif
 
 /*
