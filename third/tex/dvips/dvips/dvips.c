@@ -865,11 +865,14 @@ default:
    p = strstr(oname, "%P");
    if (p) {
       strncpy(newoname, oname, p - oname);
-      oname[p - oname] = 0;
-      if (printer && strlen(oname) + strlen(printer) - 1 <= sizeof(newoname))
+      newoname[p - oname] = 0;
+      if (printer && strlen(oname) + strlen(printer) + 1 <= sizeof(newoname)) {
+	 strcat(newoname, "-P");
 	 strcat(newoname, printer);
+      }
       strcat(newoname, p + 2);
    }
+   oname = newstring(newoname);
    checkenv(1) ;
 /*
  *   The logic here is a bit convoluted.  Since all `additional'
