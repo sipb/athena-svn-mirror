@@ -15,11 +15,14 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.2  90/04/26  18:14:39  tom
+ * *** empty log message ***
+ * 
  *
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.2 1990-04-26 18:14:39 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.3 1990-05-26 13:41:00 tom Exp $";
 #endif
 
 
@@ -32,12 +35,15 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 static int stattime();
 static int get_load();
 static int get_time();
+char lbuf[BUFSIZ];
 
 #ifdef ATHENA
 static int get_ws_version();
 
 #define MAX_REPLY_SIZE 256
 #define VERSION_FILE "/etc/version"
+
+
 
 /*
  * Function:    lu_relvers()
@@ -232,7 +238,6 @@ get_ws_version(string, size)
      int size;
 {
   FILE *fp;
-  char buf[BUFSIZ];
 
   fp = fopen(VERSION_FILE, "r");
   if(fp == NULL)
@@ -241,8 +246,8 @@ get_ws_version(string, size)
       return(BUILD_ERR);
     }
 
-  while(fgets(buf, size, fp) != NULL)
-    strncpy(string, buf, size);
+  while(fgets(lbuf, sizeof(lbuf), fp) != NULL)
+    strncpy(string, lbuf, size);
 
   string[strlen(string)-1] = '\0';
   (void) fclose(fp);
@@ -346,18 +351,17 @@ get_inuse(ret)
 {
   struct utmp *uptr;
   int fd;
-  char buf[BUFSIZ];
   long lseek();
   int usize,ucount,loop;
 
   usize = sizeof(struct utmp);
-  uptr = (struct utmp *) & buf[0];
+  uptr = (struct utmp *) & lbuf[0];
 
   fd = open(LOGIN_FILE, O_RDONLY);
   if(fd == NULL)
           return(4);
   ucount = loop = 0;
-  while(read(fd,buf,usize) > 0) {
+  while(read(fd,lbuf,usize) > 0) {
         ++loop;
         if(uptr->ut_name[0] != 0)
                 ++ucount;
