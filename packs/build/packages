@@ -1,4 +1,4 @@
-# $Id: packages,v 1.134 2001-05-05 18:06:50 ghudson Exp $
+# $Id: packages,v 1.135 2001-05-06 15:55:51 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -61,6 +61,7 @@ athena/bin/discuss		requires krb5,zephyr,ss,et
 athena/bin/dustbuster
 athena/bin/finger		requires hesiod,zephyr
 athena/bin/from			requires hesiod,krb5
+athena/bin/gathrun
 athena/bin/get_message		requires gms,hesiod
 athena/bin/getcluster		requires hesiod
 athena/bin/hesinfo		requires hesiod
@@ -74,6 +75,7 @@ athena/bin/olc			requires krb5,hesiod,zephyr,et,motif,Mu,wcl
 athena/bin/panel-wrapper	requires gnome-libs
 athena/bin/passwd		requires krb5,al
 athena/bin/quota		requires locker,afsbin
+athena/bin/revert-to-dash
 athena/bin/rkinit		requires krb5,athena/lib/rkinit
 athena/bin/saferm
 athena/bin/sendbug
