@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.9 1995-05-26 03:43:13 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.10 1995-08-14 21:30:28 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -80,6 +80,8 @@ static XrmOptionDescRec opTable[] = {
 {"-hideproc",	"*hideButton.activateProc", XrmoptionSepArg, (caddr_t) NULL},
 {"-cc",		"*textDisplay.charClass", XrmoptionSepArg, (caddr_t) NULL},
 {"-titlebar",	"*window.title",XrmoptionSepArg,	(caddr_t) NULL},
+{"-nosession",	"*showCommand",	XrmoptionNoArg,		(caddr_t) "false"},
+{"-global",	"*global",	XrmoptionNoArg,		(caddr_t) "true"},
 {"-autoscroll",	".autoscroll",	XrmoptionNoArg,		(caddr_t) "True"},
 {"-noautoscroll",".autoscroll",	XrmoptionNoArg,		(caddr_t) "False"},
 {"-file",	".file",	XrmoptionSepArg,	(caddr_t) ""},
