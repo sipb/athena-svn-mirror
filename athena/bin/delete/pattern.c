@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.13 1989-11-22 21:27:27 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.14 1989-11-27 03:36:37 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -177,8 +177,16 @@ int options;
                 num_recurs_files = 0;
      int	retval;
      int	i;
+#ifdef DEBUG
+     int	j;
+#endif
      int	match_options = 0;
 
+#ifdef DEBUG
+     fprintf(stderr, "Entering find_matches, name = %s, options = %d.\n",
+	     name, options);
+#endif
+     
      match_options = options & (FIND_DELETED | FIND_UNDELETED);
      if (options & (RECURS_FIND_DELETED | RECURS_FIND_UNDELETED |
 		    FIND_CONTENTS))
@@ -200,9 +208,18 @@ int options;
      if (num_matched_files == 0) {
 	  *num_found = num_matched_files;
 	  *found = matched_files;
+#ifdef DEBUG
+	  fprintf(stderr, "No matches found, returning.\n");
+#endif
 	  return 0;
      }
 
+#ifdef DEBUG
+     fprintf(stderr, "The following matches were found:\n");
+     for (i = 0; i < num_matched_files; i++)
+	  fprintf(stderr, "  %s\n", matched_files[i]);
+#endif
+     
      if (options & RECURS) {
 	  return_files = (char **) Malloc(0);
 	  if (! return_files) {
@@ -228,9 +245,16 @@ int options;
 			 error("add_arrays");
 			 return retval;
 		    }
+#ifdef DEBUG
+		    fprintf(stderr,
+			    "Just added the following to return_files:\n");
+		    for (j = num_return_files - num_recurs_files;
+			 j < num_return_files; j++)
+			 fprintf(stderr, "  %s\n", return_files[j]);
+#endif
 	       }
 	       
-	       if (is_deleted(matched_files[i])) {
+	       if (is_deleted(lastpart(matched_files[i]))) {
 		    if (options & FIND_DELETED) {
 			 retval = add_str(&return_files, num_return_files,
 					  matched_files[i]);
@@ -239,6 +263,10 @@ int options;
 			      return retval;
 			 }
 			 num_return_files++;
+#ifdef DEBUG
+			 fprintf(stderr, "Just added %s to return_files.\n",
+				 return_files[num_return_files-1]);
+#endif
 		    }
 	       }
 	       else if (options & FIND_UNDELETED) {
@@ -249,6 +277,10 @@ int options;
 			 return retval;
 		    }
 		    num_return_files++;
+#ifdef DEBUG
+		    fprintf(stderr, "Just added %s to return_files.\n",
+			    return_files[num_return_files-1]);
+#endif
 	       }
 	  }
 	  free_list(matched_files, num_matched_files);
@@ -627,7 +659,7 @@ int options;
      int use_stat;
      
 #ifdef DEBUG
-     printf("de_recurs: opening %s\n", name);
+     fprintf(stderr, "do_recurs: opening %s\n", name);
 #endif
 
      /* start: */
@@ -653,6 +685,9 @@ int options;
 	  /* recursively searched.  Otherwise, actually signal an     */
 	  /* error. 						      */
 	  if (errno != ENOTDIR) {
+#ifdef DEBUG
+	       fprintf(stderr, "Couldn't open %s.\n", base);
+#endif
 	       set_error(errno);
 	       error(base);
 	       return error_code;
