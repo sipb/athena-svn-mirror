@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.11 1990-02-08 13:44:13 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.12 1990-02-14 15:40:09 vanharen Exp $";
 #endif
 
 
@@ -480,11 +480,13 @@ olc_who(fd,request,auth)
 		  free_new_messages(requester->connected);
 		  deactivate(requester->connected);
 		  disconnect_knuckles(requester, requester->connected);
+		  set_status(requester, PENDING);
 		  olc_broadcast_message("resurrection",message, 
 					requester->question->topic);
 		}
 	    }
 	  else
+	    set_status(requester, PENDING);
 	    olc_broadcast_message("resurrection",message, 
 				  requester->question->topic);
 	}
@@ -657,9 +659,14 @@ olc_done(fd, request, auth)
   target->question = (QUESTION *) NULL;
   free_new_messages(target);
   deactivate(target);
+  deactivate(target->connected);
   disconnect_knuckles(target, target->connected);
 
+  send_response(fd, SIGNED_OFF);
+
 /*  sub_status(target->connected,BUSY);*/
+
+/****  Quick hack to get around problem....  just sign everybody off.
   
   if(is_connected(target))
     if (is_signed_on(target->connected))
@@ -675,6 +682,7 @@ olc_done(fd, request, auth)
 	send_response(fd, SIGNED_OFF);
 	deactivate(target->connected);
       }
+****/
 
   needs_backup = TRUE;
   return(SUCCESS);
@@ -757,7 +765,7 @@ olc_cancel(fd, request, auth)
 	  set_status(target,CANCEL);
 	  log_daemon(target,msgbuf);
 	  sprintf(msgbuf,"Question cancelled by %s %s.\n",
-		  cap(target->title),target->user->username);
+		  target->title, target->user->username);
 	  if (write_message_to_user(target->connected,msgbuf, NULL_FLAG)
 	      != SUCCESS)
 	    {
@@ -817,9 +825,14 @@ olc_cancel(fd, request, auth)
   target->question = (QUESTION *) NULL;
   free_new_messages(target);
   deactivate(target);
+  deactivate(target->connected);
   disconnect_knuckles(target, target->connected);
+
+  send_response(fd, SIGNED_OFF);
   
 /*  sub_status(target->connected,BUSY);*/
+
+/****  Quick hack -- just sign everybody off.
 
   if(is_connected(target))
     if (is_signed_on(target->connected))
@@ -835,6 +848,7 @@ olc_cancel(fd, request, auth)
 	send_response(fd, SIGNED_OFF);
 	deactivate(target->connected);
       }
+****/
 
   needs_backup = TRUE;
   return(SUCCESS);
@@ -1109,6 +1123,7 @@ olc_forward(fd, request,auth)
   if(is_connected(target))
     {
       free_new_messages(target->connected);
+      deactivate(target->connected);
       disconnect_knuckles(target, target->connected);
     }
   set_status(target, PENDING);
@@ -1119,6 +1134,9 @@ olc_forward(fd, request,auth)
   if(is_option(request->options,STATUS_PICKUP))
     set_status(target,PICKUP);
     
+  send_response(fd, SIGNED_OFF);
+
+/****  Quick hack -- just sign everybody off...
   if (is_option(request->options,OFF_OPT))
     {
 #if 0
@@ -1141,6 +1159,7 @@ olc_forward(fd, request,auth)
 	}	
     else
       send_response(fd,SUCCESS);
+****/
 
   return(SUCCESS);
 }
@@ -1338,6 +1357,7 @@ olc_send(fd, request, auth)
       if (owns_question(requester))
 	{
 	  free_new_messages(requester->connected);
+	  set_status(requester, PENDING);
 	  disconnect_knuckles(requester, requester->connected);
 /***********  Something else should go here....  Like match_maker on this
 newly disconnected knuckle (sounds gruesome, doesn't it?).
