@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.10 1997-03-11 18:52:03 ghudson Exp $
+# $Id: Makefile,v 1.11 1997-03-31 03:37:37 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -39,16 +39,12 @@ SYMLINKS=	/mit/sipb			/usr/sipb \
 		${MOIRA}/man/cat1/listmaint.1	${ATHMANDIR}/cat1/listmaint.1 \
 		${MOIRA}/man/man1/mailmaint.1	${ATHMANDIR}/man1/mailmaint.1 \
 		${MOIRA}/man/cat1/mailmaint.1	${ATHMANDIR}/cat1/mailmaint.1 \
-		${MKSERV}/man/man1/mkserv.1	${ATHMANDIR}/man1/mkserv.1 \
-		${MKSERV}/man/cat1/mkserv.1	${ATHMANDIR}/cat1/mkserv.1 \
 		${MODEM}/man/man1/kermit.1	${ATHMANDIR}/man1/kermit.1 \
 		${MODEM}/man/cat1/kermit.1	${ATHMANDIR}/cat1/kermit.1 \
 		${MOIRA}/man/man1/moira.1	${ATHMANDIR}/man1/moira.1 \
 		${MOIRA}/man/cat1/moira.1	${ATHMANDIR}/cat1/moira.1 \
 		${MOIRA}/man/man1/mrcheck.1	${ATHMANDIR}/man1/mrcheck.1 \
 		${MOIRA}/man/cat1/mrcheck.1	${ATHMANDIR}/cat1/mrcheck.1 \
-		${MOIRA}/man/man1/namespace.1	${ATHMANDIR}/man1/namespace.1 \
-		${MOIRA}/man/cat1/namespace.1	${ATHMANDIR}/cat1/namespace.1 \
 		${HELP}/man/man1/olh.1		${ATHMANDIR}/man1/olh.1 \
 		${HELP}/man/cat1/olh.1		${ATHMANDIR}/cat1/olh.1 \
 		${MOIRA}/man/man1/usermaint.1	${ATHMANDIR}/man1/usermaint.1 \
