@@ -10,7 +10,7 @@ man8dir = $(mandir)/man8
 
 SCRIPTS= dvi2fax ps2frag texconfig dvired pslatex texi2html allcm allneeded fontexport fontimport kpsetool mkfontdesc MakeTeXPK fontinst rubibtex rumakeindex fmtutil texdoc texlinks texexec texdoctk updmap
 PDFSCRIPTS=e2pall epstopdf texi2pdf thumbpdf
-manpgs= allcm allec allneeded dvi2fax dvired e2pall epstopdf fontexport fontimport fontinst kpsepath kpsetool kpsexpand ps2frag pslatex rubibtex rumakeindex texconfig texdoc texexec texi2html texi2pdf texshow texutil thumbpdf texdoctk updmap
+manpgs= allcm allec allneeded dvi2fax dvired e2pall epstopdf fontexport fontimport fontinst kpsetool ps2frag pslatex rubibtex rumakeindex texconfig texdoc texexec texi2html texi2pdf texshow texutil thumbpdf texdoctk updmap
 
 INFOFILES= latex.info latex.info-1 latex.info-2 latex.info-3
 POOLFILES = etex-pl.pool pdfetex-pl.pool pdftex-pl.pool tex-pl.pool
@@ -31,14 +31,13 @@ install-data:: $(INFOFILES)
 	$(INSTALL_DATA) $(srcdir)/texlinks.8 $(man8dir)/texlinks.8
 	$(INSTALL_DATA) $(srcdir)/fmtutil.cnf.5 $(man5dir)/fmtutil.cnf.5
 	cd $(man1dir); rm -f allec.$(manext) einitex.$(manext) \
-	  elatex.$(manext) evirtex.$(manext) \
-	  inimf.$(manext) inimpost.$(manext) iniomega.$(manext) \
-	  initex.$(manext) kpsepath.$(manext) kpsexpand.$(manext) \
+	  elatex.$(manext) evirtex.$(manext) inimf.$(manext) \
+	  inimpost.$(manext) iniomega.$(manext) initex.$(manext) \
 	  lambda.$(manext) pdfinitex.$(manext) pdfvirtex.$(manext) \
 	  texhash.$(manext) virmf.$(manext) virmpost.$(manext) \
 	  viromega.$(manext) virtex.$(manext) pdflatex.$(manext) \
-	  MakeTeXPK.$(manext) \
-	  cont-de.$(manext) cont-nl.$(manext) cont-en.$(manext)
+	  MakeTeXPK.$(manext) cont-de.$(manext) cont-nl.$(manext) \
+	  cont-en.$(manext) kpsepath.$(manext) kpsexpand.$(manext)
 	ln -s allcm.$(manext) $(man1dir)/allec.$(manext)
 	ln -s mktexlsr.$(manext) $(man1dir)/texhash.$(manext)
 	ln -s tex.$(manext) $(man1dir)/initex.$(manext)
@@ -60,6 +59,8 @@ install-data:: $(INFOFILES)
 	ln -s pdftex.$(manext) $(man1dir)/cont-nl.$(manext)
 	ln -s pdftex.$(manext) $(man1dir)/cont-en.$(manext)
 	ln -s mktexpk.$(manext) $(man1dir)/MakeTeXPK.$(manext)
+	ln -s kpsetool.$(manext) $(man1dir)/kpsepath.$(manext)
+	ln -s kpsetool.$(manext) $(man1dir)/kpsexpand.$(manext)
 	test -r ./latex.info || cd $(srcdir) && for i in latex.info*; do \
 	  $(INSTALL_DATA) $$i $(infodir)/$$i; done
 	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \

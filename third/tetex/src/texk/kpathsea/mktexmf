@@ -7,7 +7,7 @@
 # te@dbs.uni-hannover.de, kb@mail.tug.org, and infovore@xs4all.nl.
 # Public domain.
 
-version='$Id: mktexmf,v 1.1.1.2 2003-02-25 22:10:54 amb Exp $'
+version='$Id: mktexmf,v 1.1.1.3 2003-03-03 17:31:52 amb Exp $'
 progname=`echo $0 | sed 's%.*/%%'`
 usage="Usage: $progname FONT.
 
@@ -37,6 +37,9 @@ if test -n "$sauterroot"; then
   rootname=b-$rootname
 else
   case $rootname in
+    # csso12[0-5][0-9] from CJK package; unsupported by mktexmf
+    csso12[0-5][0-9])
+       rootfile=;;
     cs*|lcsss*|icscsc*|icstt*|ilcsss*)
        rootfile=`kpsewhich cscode.mf`;;
     wn[bcdfirstuv]*|rx[bcdfiorstuvx][bcfhilmostx]|l[abcdhl][bcdfiorstuvx]*)

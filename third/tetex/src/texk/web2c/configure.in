@@ -188,7 +188,7 @@ if test "x$with_cxx_runtime_hack" = xyes &&
   old_ac_ext=$ac_ext
   old_ac_link=$ac_link
 
-  flags='-nodefaultlibs -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lgcc -lc'
+  flags='-nodefaultlibs -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lm -lgcc -lc -lgcc'
   ac_ext=C
   ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS $flags 1>&5'
   cat > conftest.$ac_ext << EOF

@@ -1,3 +1,26 @@
+Fri Feb 28 20:53:26 CET 2003
+	* portability fix for texk/kpathsea/cnf.c
+	* pdftex version 1.10b
+	* add eomega support to fmtutil
+	* ttf2afm: FontFamily patch by Siep Kroonenberg
+
+Thu Feb 27 21:08:10 CET 2003
+	* update config.guess / config.sub
+
+Thu Feb 27 06:49:21 CET 2003
+	* handle manpages for kpsepath / kpsexpand properly
+
+Fri Feb 21 10:42:43 CET 2003
+	* fix two bugs in texdoctk
+	* mktexmf fix for CJK fonts
+	* adjust cxx-runtime-hack a little
+	* add search paths for non"k"-xdvi to texmf.in
+
+Tue Feb 18 05:11:38 CET 2003
+	* fix bug in texk/etc/autoconf/acspecific.m4
+
+========================= teTeX-2.0.1 =================================
+
 Sun Feb 16 00:00:20 CET 2003
 	* fix a bug that I introduced in dvipdfm (in my attempt to
 	stop using the return value of sprintf)

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with pdfTeX; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-$Id: config.c,v 1.1.1.2 2003-02-25 22:12:53 amb Exp $
+$Id: config.c,v 1.1.1.3 2003-03-03 17:31:17 amb Exp $
 */
 
 #include "ptexlib.h"
@@ -47,7 +47,7 @@ cfg_entry cfg_tab[] = {
     {cfgoutputcode,          "output_format",        0, false},
     {cfgadjustspacingcode,   "adjust_spacing"      , 0, false},
     {cfgcompresslevelcode,   "compress_level",       0, false},
-    {cfgdecimaldigitscode,   "decimal_digits",       0, false},
+    {cfgdecimaldigitscode,   "decimal_digits",       4, false},
     {cfgmovecharscode,       "move_chars",           0, false},
     {cfgimageresolutioncode, "image_resolution",     0, false},
     {cfgpkresolutioncode,    "pk_resolution",        0, false},
