@@ -1,4 +1,4 @@
-#ident "@(#)devlink.tab	1.39	94/02/23 SMI"
+#ident "@(#)devlink.tab	1.54	95/07/10 SMI"
 #
 # Copyright (c) 1991 by Sun Microsystems, Inc.
 #
@@ -60,7 +60,6 @@
 #
 # devfs-spec	Dev-Namespec	Extra-Link
 #
-type=ddi_pseudo;name=win	win\M0
 type=ddi_pseudo;name=winlock	\D
 type=ddi_pseudo;name=mm	\M0
 type=ddi_pseudo;name=conskbd	kbd
@@ -76,9 +75,7 @@ type=ddi_pseudo;name=ptsl	\M0
 type=ddi_pseudo;name=log	\M0
 type=ddi_pseudo;name=sad	sad/\M0
 type=ddi_pseudo;name=sy	\M0
-type=ddi_pseudo;name=sw	\M0
 type=ddi_pseudo;name=clone	\M0
-type=ddi_pseudo;name=app	\M0
 type=ddi_network	\M0
 type=ddi_pseudo;name=openeepr	\M0
 type=ddi_pseudo;name=kstat	\M0
@@ -103,27 +100,18 @@ type=ddi_pseudo;name=tl;minor=ticlts	ticlts
 type=ddi_pseudo;name=md;minor=admin	md/admin
 type=ddi_pseudo;name=md;minor2=blk	md/dsk/d\M1
 type=ddi_pseudo;name=md;minor2=raw	md/rdsk/d\M1
+type=ddi_pseudo;name=tnf	\M0
 type=ddi_block:diskette;minor=c	diskette
 type=ddi_block:diskette;minor=c,raw	rdiskette
 type=ddi_block:diskette;minor=c	diskette0
 type=ddi_block:diskette;minor=c,raw	rdiskette0
-type=ddi_pseudo;name=consfb;minor=consfb	fb
+type=pcmcia:event;name=pem	pem
+type=ddi_pseudo;name=ecpp	ecpp\N0
+type=ddi_pseudo;name=se	se_hdlc\N0
 type=ddi_pseudo;name=SUNW,rtvc;minor=ctl	rtvc\M0
 type=ddi_pseudo;name=SUNW,rtvc	\M0
-type=ddi_display;name=SUNW,tcx	fbs/\M0	tcx\N0
+type=ddi_display;name=PFU,aga	fbs/\M0	PFUaga\N0
+type=ddi_pseudo;name=PFU,aga	fbs/\M0	PFUagaspt\N0
 type=ddi_display;name=SUNW,leo	fbs/\M0	leo\N0
-type=ddi_display;name=gt;minor=gt1	fbs/\M0	gt\N0
-type=ddi_display;name=gt;minor=gt2	fbs/\M0	gt\N0
-type=ddi_display;name=gt;minor=gt3	fbs/\M0	gt\N0
-type=ddi_display;name=gt;minor=gt4	fbs/\M0	gt\N0
-type=ddi_display;name=gt;minor=gt5	fbs/\M0	gt\N0
-type=ddi_display;name=gt;minor=gta0	fbs/\M0	gta\N0
-type=ddi_display;name=gt;minor=gta1	fbs/\M0	gta\N0
-type=ddi_display;name=gt;minor=gta2	fbs/\M0	gta\N0
-type=ddi_display;name=gt;minor=gta3	fbs/\M0	gta\N0
-type=ddi_display;name=gt;minor=gta4	fbs/\M0	gta\N0
-type=ddi_display;name=gt;minor=gta5	fbs/\M0	gta\N0
-type=ddi_display;name=gt;minor=gt0	fbs/\M0	gt\N0
-type=ddi_display;name=cgtwelve	fbs/\M0	cgtwelve\N0
 type=ddi_pseudo;name=atalk;minor=elap	appletalk/lap/ethertalk0/control
 type=ddi_pseudo;name=atalk;minor=ddp	appletalk/ddp/socket
