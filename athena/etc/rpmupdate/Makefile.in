@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.4 2001-03-26 20:16:10 ghudson Exp $
+# $Id: Makefile.in,v 1.5 2001-03-30 16:08:05 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -24,7 +24,7 @@ all: rpmupdate
 
 rpmupdate: rpmupdate.o
 	${CC} -static ${LDFLAGS} -o rpmupdate rpmupdate.o ${LIBS} \
-		-lrpm -lrpmio -lpopt -ldb-3.1 -ldb1 -lz -lbz2
+		-lrpm -lpopt -ldb1 -lz -lbz2
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
