@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 2002-02-03 03:37:55 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2002-02-03 04:32:44 ghudson Exp $
 
 dist:
 	cp "$$CONFIG_SITE" config.site.athena
@@ -17,4 +17,4 @@ check:
 
 install:
 	install -c ld/ld-new \
-	  `$$COMPILER -v 2| sed -ne 's|.* \(.*\)/specs|\1|p'`
+	  `$$COMPILER -v 2| sed -ne 's|.* \(.*\)/specs|\1|p'`/ld
