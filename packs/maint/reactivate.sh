@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.74 2003-06-19 19:53:51 zacheiss Exp $
+# $Id: reactivate.sh,v 1.75 2003-08-13 17:28:13 rbasch Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -26,9 +26,6 @@ if [ -f /var/athena/update.running ]; then
 fi
 
 if [ "$1" = -prelogin ]; then
-	if [ "$PUBLIC" = "false" ]; then
-		exit 0;
-	fi
 	echo "Cleaning up..." >> /dev/console
 	full=false
 else
@@ -149,6 +146,24 @@ nuke()
 		fi
 	)
 }
+
+# Begin section for actions to be performed in all cases, including
+# for a private machine during prelogin.
+
+# Remove any mozilla component and chrome registries, created if
+# mozilla is run as root.  The resulting component registry may
+# be corrupted, preventing mozilla from starting subsequently.
+# See http://bugzilla.mozilla.org/show_bug.cgi?id=197516
+rm -rf /usr/athena/lib/mozilla/components/compreg.dat
+rm -rf /usr/athena/lib/mozilla/components/xpti.dat
+rm -rf /usr/athena/lib/mozilla/chrome/chrome.rdf
+rm -rf /usr/athena/lib/mozilla/chrome/overlayinfo
+
+# End section for actions to be performed in all cases.
+
+if [ "$PUBLIC" = false -a "$full" = false ]; then
+	exit 0
+fi
 
 if [ -f /var/athena/clusterinfo.bsh ] ; then
 	. /var/athena/clusterinfo.bsh
