@@ -1,4 +1,4 @@
-# $Id: packages,v 1.279 2004-09-07 13:27:32 rbasch Exp $
+# $Id: packages,v 1.280 2004-09-24 20:07:03 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -142,15 +142,15 @@ third/acme			except solaris requires gettext,intltool,libgnomeui,libglade,libwnc
 third/afs-krb5			requires krb5,openafs,et
 third/aspell
 third/aspell-dict		requires aspell
-third/at-spi			except linux requires gettext,intltool,libbonobo,atk,gtk2,gail,libbonobo,bonobo-activation,popt
-third/atk			except linux requires glib2,gettext
-third/audiofile			except linux
+third/at-spi			requires gettext,intltool,libbonobo,atk,gtk2,gail,libbonobo,bonobo-activation,popt
+third/atk			requires glib2,gettext
+third/audiofile
 third/bash
 third/bind
 third/bonobo			requires gnome-libs,libxml,gnome-print,gdk-pixbuf,oaf
 third/bonobo-activation		requires gettext,glib2,ORBit2,linc,libxml2
 third/bonobo-conf		requires bonobo
-third/bug-buddy			except linux requires gettext,intltool,gtk2,glib2,gnome-vfs2,libgnome,libgnomecanvas,libgnomeui,libglade2,libxml2,gnome-desktop
+third/bug-buddy			requires gettext,intltool,gtk2,glib2,gnome-vfs2,libgnome,libgnomecanvas,libgnomeui,libglade2,libxml2,gnome-desktop
 third/bzip2			except linux
 third/cyrus-imapd		requires cyrus-sasl,perl package cyrus-imap-client
 third/cyrus-sasl		requires krb5
@@ -160,25 +160,25 @@ third/diffutils			on solaris
 third/eel			requires gettext,GConf2,gtk2,glib2,gnome-vfs2,gail,libart_lgpl,libgnome,libgnomeui,libxml2,libglade2,Xrender
 third/emacs			requires hesiod,krb5,texinfo
 third/enscript			except linux
-third/eog			except linux requires gettext,intltool,gnome-vfs2,libgnomeprint,libgnomeui,libbonoboui,bonobo-activation,librsvg,ORBit2,GConf2,jpeg,libpng,popt
+third/eog			requires gettext,intltool,gnome-vfs2,libgnomeprint,libgnomeui,libbonoboui,bonobo-activation,librsvg,ORBit2,GConf2,jpeg,libpng,popt
 third/esound			requires audiofile
 third/evolution			requires bonobo,libglade,gtkhtml3,gnome-vfs,scrollkeeper,libsoup,openssl
 third/expat			except linux
 third/fcpackage/fontconfig	except linux requires expat,freetype
 third/fcpackage/Xft		except linux requires fontconfig,freetype,Xrender
 third/fcpackage/Xrender		except linux
-third/file-roller		except linux requires gettext,intltool,glib2,gtk2,libgnome,libgnomeui,gnome-vfs2,libglade2,bonobo-activation,libbonobo,libbonoboui,scrollkeeper
+third/file-roller		requires gettext,intltool,glib2,gtk2,libgnome,libgnomeui,gnome-vfs2,libglade2,bonobo-activation,libbonobo,libbonoboui,scrollkeeper
 third/findutils			on solaris
 third/freetype			except linux
-third/gail			except linux requires atk,gtk2,libgnomecanvas
+third/gail			requires atk,gtk2,libgnomecanvas
 third/gal			requires gnome-vfs,libglade,gdk-pixbuf
 third/gal2			requires gettext,libiconv,libgnomeprint,libgnomeprintui,libglade2,libgnomeui,libgnomecanvas,libxml2
 third/GConf			requires gtk,oaf,ORBit,libxml,libxml2
 third/GConf2			requires gettext,glib2,libxml2,gtk2,ORBit2,linc
-third/gconf-editor		except linux requires gettext,intltool,GConf2,gtk2
+third/gconf-editor		requires gettext,intltool,GConf2,gtk2
 third/gdbm			except linux
 third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk,gnome-libs
-third/gedit			except linux requires gettext,intltool,GConf2,libgnomeui,libglade2,libgnomeprintui,eel,popt,glib2,ORBit2,libbonobo,bonobo-activation,scrollkeeper
+third/gedit			requires gettext,intltool,GConf2,libgnomeui,libglade2,libgnomeprintui,eel,popt,glib2,ORBit2,libbonobo,bonobo-activation,scrollkeeper
 third/gettext			except linux requires libiconv
 third/glib
 third/glib2			requires libiconv,gettext
@@ -189,7 +189,7 @@ third/gnome-audio
 third/gnome-desktop		requires gettext,gtk2,libgnomecanvas,libgnomeui,gnome-vfs2,startup-notification
 third/gnome-icon-theme		requires gettext,intltool
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm,esound
-third/gnome-media		except linux requires gettext,intltool,glib2,libgnomeui,esound,scrollkeeper,gail,gstreamer
+third/gnome-media		requires gettext,intltool,glib2,libgnomeui,esound,scrollkeeper,gail,gstreamer
 third/gnome-mime-data		requires gettext
 third/gnome-panel		requires gettext,intltool,glib2,GConf2,gnome-desktop,gtk2,libglade2,libgnome,libgnomeui,ORBit2,gnome-vfs2,libwnck,libbonoboui,pango,libpng
 third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf,freetype,tetex
@@ -211,7 +211,7 @@ third/ifplugd			on linux requires libdaemon
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
 third/intlfonts			requires emacs
-third/intltool			except linux requires perl
+third/intltool			requires perl
 third/ispell
 third/jot
 third/jpeg			except linux
@@ -219,23 +219,23 @@ third/kermit
 third/krb5			requires et,ss package krb5-prep
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
 third/lam
-third/libart_lgpl		except linux
+third/libart_lgpl
 third/libbonobo			requires gettext,ORBit2,glib2,bonobo-activation
 third/libbonoboui		requires gettext,libgnomecanvas,libbonobo,libgnome,bonobo-activation,libxml2,GConf2,gtk2,libglade2,glib2
 third/libdaemon			on linux
-third/libgail-gnome		except linux requires atk,gtk2,libbonobo,libbonoboui,libgnomeui,at-spi
+third/libgail-gnome		requires atk,gtk2,libbonobo,libbonoboui,libgnomeui,at-spi
 third/libghttp			except linux
 third/libglade			requires gtk,gnome-libs,libxml
-third/libglade2			except linux requires gtk2,libxml2,atk,gettext
+third/libglade2			requires gtk2,libxml2,atk,gettext
 third/libgnome			requires gettext,audiofile,esound,GConf2,glib2,gnome-vfs2,libbonobo,libxml2,libxslt,popt,bzip2
 third/libgnomecanvas		requires gettext,gtk2,libart_lgpl,pango,libglade2,glib2
-third/libgnomeprint		except linux requires gettext,glib2,libart_lgpl,pango,libxml2,libbonobo,freetype
-third/libgnomeprintui		except linux requires gettext,libgnomeprint,libgnomecanvas,libglade2
+third/libgnomeprint		requires gettext,glib2,libart_lgpl,pango,libxml2,libbonobo,freetype
+third/libgnomeprintui		requires gettext,libgnomeprint,libgnomecanvas,libglade2
 third/libgnomeui		requires gettext,audiofile,esound,jpeg,libgnome,libgnomecanvas,libbonoboui,GConf2,pango,libglade2,popt,gtk2
 third/libgsf
-third/libgtkhtml		except linux requires gtk2,libxml2,gnome-vfs2,gail
+third/libgtkhtml		requires gtk2,libxml2,gnome-vfs2,gail
 third/libiconv			except linux
-third/libIDL			except linux requires glib2
+third/libIDL			requires glib2
 third/libole2			except linux
 third/libpng			except linux
 third/librep			requires gettext,gmp,gdbm,readline,texinfo
@@ -244,8 +244,8 @@ third/libsoup			requires glib2,openssl
 third/libungif			except linux
 third/libwnck			requires gettext,startup-notification,gtk2,glib2
 third/libxml
-third/libxml2			except linux
-third/libxslt			except linux requires libxml2
+third/libxml2
+third/libxslt			requires libxml2
 third/linc			except linux requires glib2,openssl
 third/lprng/athena		package lprng-misc
 third/lprng/ifhp		requires athena/lib/zephyr
@@ -266,7 +266,7 @@ third/openssh			requires krb5,tcp_wrappers,openssl,al,hesiod
 third/openssl			requires perl
 third/ORBit			requires glib,gettext
 third/ORBit2			requires glib2,linc,libIDL,popt
-third/pango			except linux requires freetype,glib2,Xft
+third/pango			requires freetype,glib2,Xft
 third/patch			on solaris
 third/pcre			on solaris
 third/perl			requires db,gdbm,libiconv
@@ -281,10 +281,10 @@ third/rep-gtk			requires librep,glib2,gtk2,libgnome,libgnomeui,libgnomecanvas,li
 third/rs
 third/samba			requires krb5,openldap
 third/sawfish			requires librep,rep-gtk,gtk2,audiofile,esound,control-center,Xft
-third/scrollkeeper		except linux requires intltool,libxml2,libxslt
+third/scrollkeeper		requires intltool,libxml2,libxslt
 third/sendmail			requires hesiod,tcp_wrappers,db,cyrus-sasl,openssl
 third/soup			except linux requires glib,libxml,popt,openssl
-third/startup-notification	except linux
+third/startup-notification
 third/sysinfo
 third/talk			on solaris
 third/tcp_wrappers		except linux
@@ -294,7 +294,7 @@ third/texinfo
 third/tiff			except linux requires jpeg
 third/top			except linux
 third/traceroute		on solaris
-third/vte			except linux requires gettext,glib2,pango,Xft,pcre
+third/vte			requires gettext,glib2,pango,Xft,pcre
 third/wcl
 third/x11-ssh-askpass
 third/x3270
