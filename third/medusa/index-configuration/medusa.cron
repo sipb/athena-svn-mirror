@@ -1,0 +1,8 @@
+#!/bin/sh
+
+killall medusa-indexd
+killall medusa-searchd
+/usr/bin/medusa-searchd
+/usr/bin/medusa-indexd
+
+

@@ -1,0 +1,185 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(medusa-config.in)
+
+MEDUSA_MAJOR_VERSION=0
+MEDUSA_MINOR_VERSION=2
+MEDUSA_MICRO_VERSION=2
+MEDUSA_VERSION="$MEDUSA_MAJOR_VERSION.$MEDUSA_MINOR_VERSION.$MEDUSA_MICRO_VERSION"
+AM_INIT_AUTOMAKE(medusa, $MEDUSA_VERSION)
+AC_SUBST(MEDUSA_MAJOR_VERSION)
+AC_SUBST(MEDUSA_MINOR_VERSION)
+AC_SUBST(MEDUSA_MICRO_VERSION)
+dnl <= needed for the medusa-config script
+AC_SUBST(MEDUSA_VERSION)
+dnl =>
+
+dnl Specify a header configuration file
+AM_CONFIG_HEADER(config.h)
+
+dnl Initialize maintainer mode
+AM_MAINTAINER_MODE
+
+dnl Initialize libtool
+AM_DISABLE_STATIC
+AM_PROG_LIBTOOL
+
+dnl Build time sanity check
+AM_SANITY_CHECK
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_ISC_POSIX
+
+dnl Checks for fucntions
+AC_CHECK_FUNCS(getmntinfo getmntent setmntent endmntent)
+
+dnl Checks for headers
+AC_CHECK_HEADERS(sys/mnttab.h sys/vfs.h)
+
+dnl ====================================
+dnl =
+dnl = Profiling support
+dnl =
+dnl ====================================
+ENABLE_PROFILER=
+AC_ARG_ENABLE(profiler,
+[  --enable-profiler		Enable profiler],
+ENABLE_PROFILER=1
+AC_DEFINE(ENABLE_PROFILER))
+
+if test "x$ENABLE_PROFILER" = "x1"
+then
+	CFLAGS="-g -O -gdwarf-2 -finstrument-functions -D__NO_STRING_INLINES"
+	LDFLAGS="/gnome/PROFILE/lib/libprofiler.so -lpthread"
+fi
+
+AC_SUBST(ENABLE_PROFILER)
+AM_CONDITIONAL(ENABLE_PROFILER, test "x$ENABLE_PROFILER" = "x1")
+dnl ====================================
+dnl = Profiling support
+dnl ====================================
+
+dnl Prefix so medusa can find its installed files
+if test "x$prefix" = "xNONE"; then
+ 	medusa_prefix=${ac_default_prefix}
+else
+ 	medusa_prefix=${prefix}
+fi 
+AC_DEFINE_UNQUOTED(MEDUSA_PREFIX, "${medusa_prefix}")
+
+dnl <= get the prefix for the medusa-config script
+MEDUSA_PREFIX="${medusa_prefix}"
+AC_SUBST(MEDUSA_PREFIX)
+dnl =>
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+
+dnl glib
+AM_PATH_GLIB(1.2.0,,
+AC_MSG_ERROR([
+*** GLIB 1.2.0 or better is required. The latest version of GLIB
+*** is always available from ftp://ftp.gtk.org/.]), gmodule)
+
+dnl gtk, so we can test gnome vfs async crap with medusa
+AM_PATH_GTK(1.2.0,,
+AC_MSG_ERROR([
+*** Gtk+ 1.2.0 or better is required. The latest version of GTK
+*** is always available from ftp://ftp.gtk.org/.]))
+
+
+dnl gnome, including gnome-vfs
+AM_PATH_GNOME(1.0.0,,AC_MSG_ERROR([*** GNOME 1.0.0 or better is
+required.]), vfs)
+AC_SUBST(VFS_CFLAGS)
+AC_SUBST(VFS_LIBS)
+
+dnl gnome-xml
+AC_PATH_PROG(XML_CONFIG,xml-config,no)
+if test x$XML_CONFIG = xno; then
+  AC_MSG_ERROR(Couldn't find xml-config please install the gnome-xml package)
+fi
+XML_LIBS=`$XML_CONFIG --libs`
+XML_CFLAGS=`$XML_CONFIG --cflags`
+AC_SUBST(XML_LIBS)
+AC_SUBST(XML_CFLAGS)
+
+APP_LIBS=""
+AC_SUBST(APP_LIBS)
+
+dnl Turn on more warnings and make them errors for cvs version
+dnl to force contributors to pay attention to warnings.
+AC_ARG_ENABLE(more-warnings,
+[  --enable-more-warnings  Maximum compiler warnings],
+set_more_warnings="$enableval",[
+if test -f $srcdir/CVSVERSION; then
+	set_more_warnings=yes
+else
+	set_more_warnings=no
+fi
+])
+if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
+	echo "enable compile warnings = $set_more_warnings"
+	CFLAGS="$CFLAGS \
+	-Wall \
+	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
+	-Wnested-externs -Wpointer-arith \
+	-Werror"
+
+	for option in -Wsign-promo -Wno-sign-compare; do
+		SAVE_CFLAGS="$CFLAGS"
+		CFLAGS="$CFLAGS $VFS_CFLAGS $option"
+		AC_MSG_CHECKING([whether gcc understands $option])
+		AC_TRY_COMPILE([], [],
+			has_option=yes,
+			has_option=no,)
+		CFLAGS="$SAVE_CFLAGS"
+		if test $has_option = yes; then
+		  VFS_CFLAGS="$VFS_CFLAGS $option"
+		fi
+		AC_MSG_RESULT($has_option)
+		unset has_option
+		unset SAVE_CFLAGS
+	done
+	unset option
+fi
+
+AC_OUTPUT([
+medusa.spec
+medusa-config
+Makefile
+libmedusa/Makefile
+libmedusa-internal/Makefile
+indexer/Makefile
+search-service/Makefile
+msearch/Makefile
+tests/Makefile
+doc/Makefile
+index-configuration/Makefile
+gnome-vfs-module/Makefile
+])
+
+dnl <= Configuration summary =>
+
+echo "<= medusa configuration summary :"
+dnl <= Profile support? =>
+case "X$ENABLE_PROFILER" in
+X1)
+echo "
+Enable profiler         : YES"
+;;
+*)
+echo "
+Enable profiler         : NO"
+echo
+;;
+esac
+
+dnl <= CFLAGS and LDFLAGS =>
+echo "
+CFLAGS                  : $CFLAGS
+LDFLAGS                 : $LDFLAGS"
+echo
