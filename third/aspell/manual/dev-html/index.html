@@ -1,0 +1,1903 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with jLaTeX2HTML 2002 (1.62) JA patch-1.4
+patched version by:  Kenshi Muto, Debian Project.
+LaTeX2HTML 2002 (1.62),
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Aspell Devel Docs</TITLE>
+<META NAME="description" CONTENT="Aspell Devel Docs">
+<META NAME="keywords" CONTENT="devel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="jLaTeX2HTML v2002 JA patch-1.4">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="devel.css">
+
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive" SRC="nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev_g.png">   
+<BR>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<P>
+
+<P>
+
+<P>
+<H1 ALIGN="CENTER">Aspell Devel Docs</H1>
+<P ALIGN="CENTER"><STRONG>Copyright (c) 2002
+<BR>
+Kevin Atkinson
+<BR>
+kevina@gnu.org</STRONG></P>
+<BR>
+
+<H2><A NAME="SECTION00010000000000000000">
+Contents</A>
+</H2>
+<!--Table of Contents-->
+
+<UL>
+<LI><A NAME="tex2html73"
+  HREF="devel.html">Notes</A>
+<LI><A NAME="tex2html74"
+  HREF="devel.html#SECTION00030000000000000000">Copyright</A>
+<LI><A NAME="tex2html75"
+  HREF="devel.html#SECTION00040000000000000000">1 Style Guidelines</A>
+<LI><A NAME="tex2html76"
+  HREF="devel.html#SECTION00050000000000000000">2 C++ Standard Library</A>
+<LI><A NAME="tex2html77"
+  HREF="devel.html#SECTION00060000000000000000">3 Templates</A>
+<LI><A NAME="tex2html78"
+  HREF="devel.html#SECTION00070000000000000000">4 Error Handling</A>
+<LI><A NAME="tex2html79"
+  HREF="devel.html#SECTION00080000000000000000">5 Source Code Layout </A>
+<LI><A NAME="tex2html80"
+  HREF="devel.html#SECTION00090000000000000000">6 Strings</A>
+<LI><A NAME="tex2html81"
+  HREF="devel.html#SECTION000100000000000000000">7 Smart Pointers</A>
+<LI><A NAME="tex2html82"
+  HREF="devel.html#SECTION000110000000000000000">8 I/O</A>
+<LI><A NAME="tex2html83"
+  HREF="devel.html#SECTION000120000000000000000">9 Config Class</A>
+<LI><A NAME="tex2html84"
+  HREF="devel.html#SECTION000130000000000000000">10 Filter Interface</A>
+<LI><A NAME="tex2html85"
+  HREF="devel.html#SECTION000140000000000000000">11 Data Structures</A>
+<LI><A NAME="tex2html86"
+  HREF="devel.html#SECTION000150000000000000000">12 Mk-Src Script</A>
+<LI><A NAME="tex2html87"
+  HREF="devel.html#SECTION000160000000000000000">13 GNU Free Documentation License</A>
+<LI><A NAME="tex2html88"
+  HREF="devel.html#SECTION000170000000000000000">About this document ...</A>
+</UL>
+<!--End of Table of Contents-->
+
+<P>
+
+<H1><A NAME="SECTION00020000000000000000">
+Notes</A>
+</H1>
+
+<P>
+This manual is designed for those who which to developer Aspell. It
+is currently very sketchy. However, it should improve over time. The
+latest version of this document can be found at <TT><A NAME="tex2html1"
+  HREF="http://savannah.gnu.org/download/aspell/manual/devel/devel.html">http://savannah.gnu.org/download/aspell/manual/devel/devel.html</A></TT>.
+
+<P>
+The eventual goal is to convert this manual into Texinfo. However,
+since I do not have the time to learn Texinfo right now, I decided
+to use something I am already conferable with. Once someone goes through
+the trouble of converting it into Texinfo I will maintain the Texinfo
+version.
+
+<P>
+
+<H1><A NAME="SECTION00030000000000000000">
+Copyright</A>
+</H1>
+
+<P>
+Copyright (c) 2002 Kevin Atkinson. Permission is granted to copy,
+distribute and/or modify this document under the terms of the GNU
+Free Documentation License, Version 1.1 or any later version published
+by the Free Software Foundation; with no Invariant Sections, no Front-Cover
+Texts. and no Back-Cover Texts. A copy of the license is included
+in the section entitled &#34;GNU Free Documentation License&#34;.
+
+<P>
+
+<H1><A NAME="SECTION00040000000000000000">
+1 Style Guidelines</A>
+</H1>
+
+<P>
+As far as coding styles go I am really not that picky. The important
+thing is to stay consistent. However, please what ever you do, do
+not indent with more than 4 characters as I find indenting with more
+than that extremely difficult to read as most of the code ends up
+on the right side of the window.
+
+<P>
+
+<H1><A NAME="SECTION00050000000000000000">
+2 C++ Standard Library</A>
+</H1>
+
+<P>
+The C++ Standard library is not used directly except under very specific
+circumstances. The string class and the STL is used indirectly though
+wrapper classes and all I/O is done using the standard C library with
+light right helper classes to make using C I/O a bit more C++ like.
+
+<P>
+However the new, new[], delete and delete[] operates are used
+to allocated memory when appropriate.
+
+<P>
+
+<H1><A NAME="SECTION00060000000000000000">
+3 Templates</A>
+</H1>
+
+<P>
+Templates are used in Aspell when there is a clear advantage to doing
+so. When ever you use templates please use them carefully and try
+very hard not to create code bloat by generating a lot of unnecessary,
+and duplicate code.
+
+<P>
+
+<H1><A NAME="SECTION00070000000000000000">
+4 Error Handling</A>
+</H1>
+
+<P>
+Exceptions are not used in Aspell as I find them more trouble than
+they are worth. Instead an alternate method of error handling is used
+which is based around the PosibErr class. PosibErr is a special Error
+handling device that will make sure that an error is properly handled.
+It is defined in ``posib_err.hpp''. PosibErr is expected to be
+used as the return type of the function It will automatically convert
+to the &#34;normal&#34; return type however if the normal
+returned type is accessed and there is an &#34;unhandled&#34;
+error condition it will abort It will also abort if the object is
+destroyed with an &#34;unhandled&#34; error condition. This
+includes ignoring the return type of a function returning an error
+condition. An error condition is handled by simply checking for the
+presence of an error, calling ignore, or taking ownership of the error.
+
+<P>
+The PosibErr class is used extensively though out Aspell. Please refer
+to the Aspell source for examples of using PosibErr until better documentation
+is written.
+
+<P>
+
+<H1><A NAME="SECTION00080000000000000000">
+5 Source Code Layout </A>
+</H1>
+
+<P>
+<DL>
+<DT><STRONG>common/</STRONG></DT>
+<DD>Common code used by all parts of Aspell
+</DD>
+<DT><STRONG>lib/</STRONG></DT>
+<DD>Library code used only by the actual Aspell library
+</DD>
+<DT><STRONG>data/</STRONG></DT>
+<DD>Data files used by Aspell
+</DD>
+<DT><STRONG>modules/</STRONG></DT>
+<DD>Aspell modules which are eventually meant to be pluggable
+
+<P>
+<DL>
+<DT><STRONG>speller/</STRONG></DT>
+<DD>&nbsp;
+
+<P>
+<DL>
+<DT><STRONG>default/</STRONG></DT>
+<DD>Main speller Module.
+</DD>
+</DL>
+</DD>
+<DT><STRONG>filter/</STRONG></DT>
+<DD>&nbsp;
+</DD>
+<DT><STRONG>tokenizer/</STRONG></DT>
+<DD>&nbsp;
+</DD>
+</DL>
+</DD>
+<DT><STRONG>auto/</STRONG></DT>
+<DD>Scripts and data files to automatically generate code used
+by Aspell
+</DD>
+<DT><STRONG>interface/</STRONG></DT>
+<DD>Header files and such that external programs should use
+when in order to use the Aspell library.
+
+<P>
+<DL>
+<DT><STRONG>cc/</STRONG></DT>
+<DD>The external ``C'' interface that programs should be using
+when they wish to use Aspell.
+</DD>
+</DL>
+</DD>
+<DT><STRONG>prog/</STRONG></DT>
+<DD>Actual programs based on the Aspell library. The main ``aspell''
+utility is included here.
+</DD>
+<DT><STRONG>scripts/</STRONG></DT>
+<DD>Misc. scripts used by Aspell
+</DD>
+<DT><STRONG>manual/</STRONG></DT>
+<DD>&nbsp;
+</DD>
+<DT><STRONG>examples/</STRONG></DT>
+<DD>Example programs demonstrating the use of the Aspell library
+</DD>
+</DL>
+
+<P>
+
+<H1><A NAME="SECTION00090000000000000000">
+6 Strings</A>
+</H1>
+
+<P>
+
+<H2><A NAME="SECTION00091000000000000000">
+6.1 String</A>
+</H2>
+
+<P>
+The String class provided the same functionally of the C++ string
+except for fewer constructors. It also inherits OStream so that you
+can write to it with the ``<&lt;'' operator. It is defined in ``string.hpp''.
+
+<P>
+
+<H2><A NAME="SECTION00092000000000000000">
+6.2 ParmString</A>
+</H2>
+
+<P>
+ParmString is a special string class that is designed to be used as
+a parameter for a function that is expecting a string. It is defined
+in ``parm_sting.hpp''. It will allow either a &#34;const
+char *&#34; or &#34;String&#34; class to be passed
+in. It will automatically convert to a &#34;const char *&#34;.
+The string can also be accesses via the &#34;str&#34; method.
+Usage example:
+
+<P>
+
+<DL COMPACT>
+<DT>
+<DD><TT>void&nbsp;foo(ParmString&nbsp;s1,&nbsp;ParmString&nbsp;s2)&nbsp;{&nbsp;
+<BR>&nbsp;&nbsp;&nbsp;const&nbsp;char&nbsp;*&nbsp;str0&nbsp;=&nbsp;s1;&nbsp;
+<BR>&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;size0&nbsp;=&nbsp;s2.size()&nbsp;
+<BR>&nbsp;&nbsp;&nbsp;if&nbsp;(s1&nbsp;==&nbsp;s2&nbsp;||&nbsp;s2&nbsp;==&nbsp;&#34;bar&#34;)&nbsp;{&nbsp;
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...&nbsp;
+<BR>&nbsp;&nbsp;&nbsp;}&nbsp;
+<BR>}&nbsp;
+<BR>...&nbsp;
+<BR>
+String&nbsp;s1&nbsp;=&nbsp;&#34;...&#34;;&nbsp;
+<BR>
+foo(s1);&nbsp;
+<BR>
+const&nbsp;char&nbsp;*&nbsp;s2&nbsp;=&nbsp;&#34;...&#34;;&nbsp;
+<BR>
+foo(s2);</TT>
+</DD>
+</DL> This class should be used when a string is being passed in as a parameter.
+It is faster than using ``const String SPMamp;'' (as that will create
+an unnecessary temporary when a const char * is passed in), and
+is less annoying than using ``const char *'' (as it doesn't
+require the c_str() method to be used when a String is passed in).
+
+<P>
+
+<H2><A NAME="SECTION00093000000000000000">
+6.3 CharVector</A>
+</H2>
+
+<P>
+A character vector is basically a Vector&lt;char&gt; but it has a few additional
+methods for dealing with strings which Vector does not provide. It,
+like String, is also inherits OStream so that you can write to it
+with the ``<&lt;'' operator. It is defined in ``char_vector.hpp''.
+Use it when ever you need a string which is guaranteed to be in a
+continuous block of memory which you can write to.
+
+<P>
+
+<H1><A NAME="SECTION000100000000000000000">
+7 Smart Pointers</A>
+</H1>
+
+<P>
+Smart pointers are used extensively in Aspell to avoid simplify memory
+management tasks and to avoid memory leaks.
+
+<P>
+
+<H2><A NAME="SECTION000101000000000000000">
+7.1 CopyPtr</A>
+</H2>
+
+<P>
+The CopyPtr class makes a deep copy of an object when ever it is copied.
+The CopyPtr class is defined in ``copy_ptr.hpp''. This header
+should be included where ever CopyPtr is used. The complete definition
+of the object CopyPtr is pointing to does not need to be defined at
+this point. The implementation is defined in ``copy_ptr-t.hpp''.
+The implementation header file should be included at a point in your
+code where the class CopyPtr is pointing to is completely defined.
+
+<P>
+
+<H2><A NAME="SECTION000102000000000000000">
+7.2 ClonePtr</A>
+</H2>
+
+<P>
+ClonePtr is like copy pointer except the clone() method is used instead
+of the copy constructor to make copies of an object. If is defined
+in ``clone_ptr.hpp'' and implemented in ``clone_ptr-t.hpp''.
+
+<P>
+
+<H2><A NAME="SECTION000103000000000000000">
+7.3 StackPtr</A>
+</H2>
+
+<P>
+A StackPtr is designed to be used when ever the only pointer to a
+new object allocated with <B>new</B> is on the stack. It is similar
+to the standard C++ auto_ptr but the semantics are a bit different.
+It is defined in ``stack_ptr.hpp'' unlike CopyPtr of ClonePtr
+it is defined and implemented in this header file.
+
+<P>
+
+<H2><A NAME="SECTION000104000000000000000">
+7.4 GenericCopyPtr</A>
+</H2>
+
+<P>
+A generalized version of CopyPtr and ClonePtr which the two are based
+on. It is defined in ``generic_copy_ptr.hpp'' and implemented
+in ``generic_copy_ptr-t.hpp''.
+
+<P>
+
+<H1><A NAME="SECTION000110000000000000000">
+8 I/O</A>
+</H1>
+
+<P>
+Aspell does not use C++ I/O classes and function in any way since
+they do not provide a way to get at the underlying file number and
+can often be slower than the highly tuned C I/O functions found in
+the standard C library. However, some light weight wrapper classes
+are provided so that standard C I/O can be used in a more C++ like
+way.
+
+<P>
+
+<H2><A NAME="SECTION000111000000000000000">
+8.1 IStream/OStream</A>
+</H2>
+
+<P>
+These two base classes mimic some of the functionally of the C++ functionally
+of the corresponding classes. They are defined in ``istream.hpp''
+and ``ostream.hpp'' respectfully. They are however based on standard
+C I/O and are not proper C++ streams.
+
+<P>
+
+<H2><A NAME="SECTION000112000000000000000">
+8.2 FStream</A>
+</H2>
+
+<P>
+Defined in ``fstream.hpp''
+
+<P>
+
+<H2><A NAME="SECTION000113000000000000000">
+8.3 Standard Streams</A>
+</H2>
+
+<P>
+CIN/COUT/CERR. Defined in ``iostream.hpp''.
+
+<P>
+
+<H1><A NAME="SECTION000120000000000000000">
+9 Config Class</A>
+</H1>
+
+<P>
+The Config class is used to hold configuration information. It has
+a set of keys which it will except. Inserting or even trying to look
+at a key that it does not know will produce an error. It is defined
+in ``common/config.hpp''
+
+<P>
+
+<H1><A NAME="SECTION000130000000000000000">
+10 Filter Interface</A>
+</H1>
+
+<P>
+
+<H2><A NAME="SECTION000131000000000000000">
+10.1 Overview</A>
+</H2>
+
+<P>
+In Aspell there are 5 types of filters:
+
+<P>
+
+<OL>
+<LI><B>Decoders</B> which take input in some standard format such as
+iso8859-1 or UTF-8 and convert it into a string of FilterChars.
+</LI>
+<LI><B>Decoding filters</B> which manipulates a string of FilterChars
+by decoding the text is some way such as converting SGML character
+into its Unicode value. 
+</LI>
+<LI><B>True filters</B> which manipulates a string of FilterChars to
+make it more suitable for spell checking. These filers generally blank
+out text which should not be spell checked
+</LI>
+<LI><B>Encoding filters</B> which manipulates a string of FilterChars
+by encoding the text is some way such as converting certain Unicode
+characters to SGML characters.
+</LI>
+<LI><B>Encoders</B> which take a string of FilterChars and convert into
+a standard format such as iso8859-1 or UTF-8
+</LI>
+</OL>
+Which types of filters are used depends on the situation
+
+<P>
+
+<OL>
+<LI>When <B>decoding words</B> for spell checking:
+
+<P>
+
+<UL>
+<LI>The <B>decoder</B> to convert from a standard format
+</LI>
+<LI>The <B>decoding filter</B> to perform high level decoding if necessary
+</LI>
+<LI>The <B>encoder</B> to convert into an internal format used by the
+speller module
+</LI>
+</UL>
+</LI>
+</OL>
+
+<UL>
+<LI>When <B>checking a document</B>
+
+<P>
+
+<UL>
+<LI>The <B>decoder</B> to convert from a standard format
+</LI>
+<LI>The <B>decoding filter</B> to perform high level decoding if necessary
+</LI>
+<LI>A <B>true filter</B> to filter out parts of the document which should
+not be spell checked
+</LI>
+<LI>The <B>encoder</B> to convert into an internal format used by the
+speller module
+</LI>
+</UL>
+</LI>
+</UL>
+
+<OL>
+<LI>When <B>encoding words</B> such as those returned for suggestions:
+
+<P>
+
+<UL>
+<LI>The <B>decoder</B> to convert from the internal format used by the
+speller module
+</LI>
+<LI>The <B>encoding filter</B> to perform high level encodings if necessary
+</LI>
+<LI>The <B>encoder</B> to convert into a standard format
+</LI>
+</UL>
+</LI>
+</OL>
+A FilterChar is a struct defined in ``common/filter_char.hpp''
+which contains two members, a character, and a width. Its purpose
+is to keep track of the width of the character in the original format.
+This is important because when a misspelled word is found the exact
+location of the word needs to be returned to the application so that
+it can highlight it for the user. For example if the filters translated
+this:
+
+<P>
+
+<DL COMPACT>
+<DT>
+<DD><TT>Mr.&nbsp;foo&nbsp;said&nbsp;&amp;quot;I&nbsp;hate&nbsp;my&nbsp;namme&amp;quot;.</TT>
+</DD>
+</DL> to this
+
+<P>
+
+<DL COMPACT>
+<DT>
+<DD><TT>Mr.&nbsp;foo&nbsp;said&nbsp;&#34;I&nbsp;hate&nbsp;my&nbsp;namme&#34;.</TT>
+</DD>
+</DL> without keeping track of the original width of the characters the
+application will likely highlight ``e my '' as the misspelling
+because the spell checker will return 25 as the offset instead of
+30. However with keeping track of the width using FilterChar the spell
+checker will now that the real position it 30 since the quote is really
+6 characters wide. In particular the text will be annotated something
+like the following:
+
+<P>
+
+<DL COMPACT>
+<DT>
+<DD><TT>1111111111111611111111111111161&nbsp;
+<BR>
+Mr.&nbsp;foo&nbsp;said&nbsp;&#34;I&nbsp;hate&nbsp;my&nbsp;namme&#34;.</TT>
+</DD>
+</DL> The standard <B>encoder</B> and <B>decoder</B> filters are defined
+in ``common/convert.cpp''. There should generally not be any need
+to deal with them so they will not be discussed here. The other three
+filters, the <B>encoding filter</B>, the <B>true filter</B>, and
+the <B>decoding filter</B>, are all defined the exact same way;
+they are inherited from the IndividualFilter class.
+
+<P>
+
+<H2><A NAME="SECTION000132000000000000000">
+10.2 Adding a New Filter</A>
+</H2>
+
+<P>
+To add a new filter create a new file in the modules/filter directory,
+the file should be a C++ file and end in ``.cpp''. The file should
+contain a new filter class inherited from IndividualFilter, a function
+to return a new filter, and an optional KeyInfo array for adding options
+to control the behavior of the filter. The file then needs to be added
+to Makefile.am so that the build system knows about the filter and
+lib/new_filter.cpp must be modified so that Aspell knows about the
+filter.
+
+<P>
+
+<H2><A NAME="SECTION000133000000000000000">
+10.3 IndividualFilter class</A>
+</H2>
+
+<P>
+All filters are required to inherit from the IndividualFilter class
+found in ``indiv_filter.hpp''. See that file for more details
+and the other filter modules for examples of how it is used.
+
+<P>
+
+<H2><A NAME="SECTION000134000000000000000">
+10.4 Constructor Function</A>
+</H2>
+
+<P>
+After the class is created a function must to created which will return
+a new filter allocated with <B>new</B>. The function must have the
+following prototype:
+
+<P>
+
+<DL COMPACT>
+<DT>
+<DD><TT>IndividualFilter&nbsp;*&nbsp;new_&#171;filter_name&#187;</TT>
+</DD>
+</DL> Filters are defined in groups where each group contains an <B>encoding
+filter</B>, a <B>true filter</B>, and a <B>decoding filter</B>. Only
+one of them is required to be defined, however they all need a separate
+constructor function.
+
+<P>
+
+<H2><A NAME="SECTION000135000000000000000">
+10.5 Config Options</A>
+</H2>
+
+<P>
+A filter group may have any number of options associated with it as
+long as they all start with the filter name. See the T<SMALL>E</SMALL>X and SGML
+filter for examples of what to do and ``config.hpp'' for the definition
+of the KeyInfo struct.
+
+<P>
+
+<H2><A NAME="SECTION000136000000000000000">
+10.6 Makefile Modifications</A>
+</H2>
+
+<P>
+After the new file is created simply add the file to the ``libaspell_filter_standard_la_SOURCES''
+line in ``modules/filter/Makefile.am'' so that the build system
+knows about it.
+
+<P>
+
+<H2><A NAME="SECTION000137000000000000000">
+10.7 New_filter Modifications</A>
+</H2>
+
+<P>
+Finally modify ``lib/new_filter.cpp'' so that Aspell knows about
+the new filter. Follow the example there for the other filter modules.
+The filter_modules array should only be modified if there your filter
+has config options.
+
+<P>
+
+<H1><A NAME="SECTION000140000000000000000">
+11 Data Structures</A>
+</H1>
+
+<P>
+When ever possible you should try to use on of the data structures
+available. If the data structures do not provide enough functionally
+for your needs you should consider enhancing them rather than written
+something from scratch.
+
+<P>
+
+<H2><A NAME="SECTION000141000000000000000">
+11.1 Vector</A>
+</H2>
+
+<P>
+The vector class is defined in ``vector.hpp'' and works the same
+way as the standard STL vector does except that it doesn't have as
+many constructors.
+
+<P>
+
+<H2><A NAME="SECTION000142000000000000000">
+11.2 BasicList</A>
+</H2>
+
+<P>
+BasicList is a simple list structure which can either be implemented
+as a singly or doubly linked list. It is defined in ``basic_list.hpp''.
+
+<P>
+
+<H2><A NAME="SECTION000143000000000000000">
+11.3 StringMap</A>
+</H2>
+
+<P>
+StringMap is a associative array for strings. You should try to use
+this when ever possible to avoid code bloat. It is defined in ``string_map.hpp''
+
+<P>
+
+<H2><A NAME="SECTION000144000000000000000">
+11.4 Hash Tables</A>
+</H2>
+
+<P>
+Several hash tables are provided when StringMap is not appropriate.
+These hash tables provide a hash_set, hash_multiset, hash_map and
+hash_multimap which are very similar to SGI STL's implementation
+with a few exceptions. It is defined in ``hash.hpp''
+
+<P>
+
+<H2><A NAME="SECTION000145000000000000000">
+11.5 BlockSList</A>
+</H2>
+
+<P>
+BlockSList provided a pool of nodes which can be used for singly linked
+lists. It is defined in ``block_slist.hpp''.
+
+<P>
+
+<H1><A NAME="SECTION000150000000000000000">
+12 Mk-Src Script</A>
+</H1>
+
+<P>
+A good deal of interface code is automatically generated by the ``mk-src.pl''
+Perl script. I am doing it this way to avoid having to write a lot
+of relative code for the C++ interface. This should also make adding
+interface for other languages a lot less tedious and will allow the
+interface to automatically take advantage of new Aspell functionality
+as it is made available. The ``mk-src.pl'' script uses ``mk-src.in''
+as its input.
+
+<P>
+
+<H2><A NAME="SECTION000151000000000000000"></A><A NAME="mk-src_in"></A><A NAME="245"></A>
+<BR>
+12.1 mk-src.in
+</H2>
+
+<P>
+The format of mk-src.in is as follows:
+
+<P>
+<PRE>
+  The following charaters are literals: { } / '\ ' \n = &gt;
+</PRE>
+<PRE>
+  &lt;items&gt;
+  &lt;items&gt; := (&lt;item&gt;\n)+
+  &lt;items&gt; := &lt;category&gt;:\ &lt;name&gt; {\n&lt;details&gt;\n} | &lt;&lt;tab&gt;&gt;&lt;details&gt;
+  &lt;details&gt; := &lt;options&gt;\n /\n &lt;items&gt;
+  &lt;options&gt; := (&lt;option&gt;\n)*
+  &lt;option&gt; := &lt;key&gt; [=&gt; &lt;value&gt;]
+</PRE>
+<PRE>
+  &lt;&lt;tab&gt;&gt; means everything should be indented by one tab
+</PRE>
+
+<P>
+See MkSrc::Info for a description of the categorys and options
+
+<P>
+
+<H2><A NAME="SECTION000152000000000000000"></A><A NAME="MkSrc::Info"></A><A NAME="253"></A>
+<BR>
+12.2 MkSrc::Info
+</H2>
+
+<H3><A NAME="SECTION000152100000000000000"></A><A NAME="_info"></A><A NAME="255"></A>
+<BR>
+%info
+</H3>
+
+<P>
+The info array contains information on how to process the info in 
+mk-src.pl.  It has the following layout
+
+<P>
+<PRE>
+   &lt;catagory&gt; =&gt; options =&gt; [] 
+                 groups =&gt; [] # if undef than anything is accepted
+                 creates_type =&gt; "" # the object will create a new type
+                                    # as specified
+                 proc =&gt; &lt;impl type&gt; =&gt; sub {}
+</PRE>
+
+<P>
+where <IMG
+ WIDTH="18" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$&lt;$">impl type<IMG
+ WIDTH="18" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$&gt;$"> is one of:
+
+<P>
+<PRE>
+  cc: for "aspell.h" header file
+  cxx: for C++ interface implemented on top of cc interface
+  native: for creation of header files used internally by aspell
+  impl: for defination of functions declared in cc interface.
+        the definations use the native hedaer files
+  native_impl: for implementations of stuff declared in the native
+                header files
+</PRE>
+
+<P>
+each proc sub should take the following argv
+
+<P>
+<PRE>
+   $data: a subtree of $master_data
+   $accum:
+</PRE>
+
+<P>
+<IMG
+ WIDTH="18" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$&lt;$">options<IMG
+ WIDTH="18" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$&gt;$"> is one of:
+
+<P>
+<PRE>
+  desc: description of the object
+  prefix:
+  posib err: the method may return an error condition
+  c func:
+  const: the method is a const member
+  c only: only include in the external interface
+  c impl headers: extra headers that need to be included in the C impl
+  c impl: use this as the c impl instead of the default
+  cxx impl: use this as the cxx impl instead of the default
+  returns alt type: the constructor returns some type other than
+    the object from which it is a member of
+  no native: do not attemt to create a native implementation
+  treat as object: treat as a object rather than a pointer
+</PRE>
+
+<P>
+The %info structure is initialized as follows:
+
+<P>
+<PRE>
+ our %info =
+ (
+  root =&gt; { 
+    options =&gt; [],
+    groups =&gt; ['methods', 'group']},
+  methods =&gt; {
+    # methods is a collection of methods which will be inserted into
+    # a class after some simple substation rules.  A $ will be
+    # replaced with name of the class.
+    options =&gt; ['strip', 'prefix', 'c impl headers'],
+    groups =&gt; undef},
+  group =&gt; {
+    # a group is a colection of objects which should be grouped together
+    # this generally means they will be in the same source file
+    options =&gt; ['no native'],
+    groups =&gt; ['enum', 'struct', 'union', 'func', 'class', 'errors']},
+  enum =&gt; {
+    # basic C enum
+    options =&gt; ['desc', 'prefix'],
+    creates_type =&gt; 'enum'},
+  struct =&gt; {
+    # basic c struct
+    options =&gt; ['desc', 'treat as object'],
+    groups =&gt; undef,
+    creates_type =&gt; 'struct',},
+  union =&gt; {
+    # basic C union
+    options =&gt; ['desc', 'treat as object'],
+    groups =&gt; undef,
+    creates_type =&gt; 'union'},
+  class =&gt; {
+    # C++ class
+    options =&gt; ['c impl headers'],
+    groups =&gt; undef,
+    creates_type =&gt; 'class'},
+  errors =&gt; {}, # possible errors
+  method =&gt; {
+    # A class method
+    options =&gt; ['desc', 'posib err', 'c func', 'const',
+                'c only', 'c impl', 'cxx impl'],
+    groups =&gt; undef},
+  constructor =&gt; {
+    # A class constructor
+    options =&gt; ['returns alt type', 'c impl', 'desc'],
+    groups =&gt; 'types'},
+  destructor =&gt; {
+    # A class destructor
+    options =&gt; [],
+    groups =&gt; undef},
+  );
+</PRE>
+
+<P>
+In addition to the categories listed above a "methods" catagory by
+be specified in under the class category.  A "methods" catagory is
+created for each methods group under the name "<IMG
+ WIDTH="18" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$&lt;$">methods name<IMG
+ WIDTH="18" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$&gt;$"> methods"
+When groups is undefined a type name may be specified in place of
+a category
+
+<P>
+
+<H3><A NAME="SECTION000152200000000000000"></A><A NAME="_types"></A><A NAME="267"></A>
+<BR>
+%types
+</H3>
+
+<P>
+types contains a master list of all types.  This includes basic types
+and ones created in mk-src.in. The basic types include:
+
+<P>
+<PRE>
+     'void', 'bool', 'pointer', 'double',
+     'string', 'encoded string', 'string obj',
+     'char', 'unsigned char',
+     'short', 'unsigned short',
+     'int', 'unsigned int',
+     'long', 'unsigned long'
+</PRE>
+<H3><A NAME="SECTION000152300000000000000"></A><A NAME="_methods"></A><A NAME="271"></A>
+<BR>
+%methods
+</H3>
+
+<P>
+%methods is used for holding the "methods" information
+
+<P>
+
+<H2><A NAME="SECTION000153000000000000000"></A><A NAME="MkSrc::Util"></A><A NAME="273"></A>
+<BR>
+12.3 MkSrc::Util
+</H2>
+
+<P>
+This module contains various useful utility functions:
+
+<P>
+<DL>
+<DT><STRONG>false</STRONG></DT>
+<DD>
+
+<P>
+Returns 0.
+
+<P>
+</DD>
+<DT><STRONG>true</STRONG></DT>
+<DD>
+
+<P>
+Returns 1.
+
+<P>
+</DD>
+<DT><STRONG>cmap EXPR LIST</STRONG></DT>
+<DD>
+
+<P>
+Apply EXPR to each item in LIST and than concatenate the result into
+a string
+
+<P>
+</DD>
+<DT><STRONG>one_of STR LIST</STRONG></DT>
+<DD>
+
+<P>
+Returns true if LIST contains at least one of STR.
+
+<P>
+</DD>
+<DT><STRONG>to_upper STR</STRONG></DT>
+<DD>
+
+<P>
+Convert STR to all uppercase and substitute spaces with underscores.
+
+<P>
+</DD>
+<DT><STRONG>to_lower STR</STRONG></DT>
+<DD>
+
+<P>
+Convert STR to all lowercase and substitute spaces with underscores.
+
+<P>
+</DD>
+<DT><STRONG>to_mixed STR</STRONG></DT>
+<DD>
+
+<P>
+Convert STR to mixed case where each new word startes with a
+uppercase letter.  For example "feed me" would become "FeedMe".
+
+<P>
+</DD>
+</DL>
+<H2><A NAME="SECTION000154000000000000000"></A><A NAME="MkSrc::Read"></A><A NAME="284"></A>
+<BR>
+12.4 MkSrc::Read
+</H2>
+<DL>
+<DT><STRONG>read</STRONG></DT>
+<DD>
+
+<P>
+Read in "mk-src.in" and returns a data structure which has the
+following format:
+
+<P>
+<PRE>
+    &lt;tree&gt;
+    &lt;tree&gt; := &lt;options&gt;
+              data =&gt; &lt;tree&gt;
+  where each tree represents an entry in mk-src.in.  
+  The following two options are always provided:
+    name: the name of the entry
+    type: the catagory or type name
+  Additional options are the same as specified in %info
+</PRE>
+</DD>
+</DL>
+<H2><A NAME="SECTION000155000000000000000"></A><A NAME="MKSrc::Create"></A><A NAME="291"></A>
+<BR>
+12.5 MKSrc::Create
+</H2>
+<DL>
+<DT><STRONG>create_cc_file PARMS</STRONG></DT>
+<DD>
+
+<P>
+Create a source file.
+
+<P>
+<PRE>
+  Required Parms: type, dir, name, data
+   Boolean Parms: header, cxx
+  Optional Parms: namespace (required if cxx), pre_ext, accum
+</PRE>
+
+<P>
+</DD>
+<DT><STRONG>create_file FILENAME DATA</STRONG></DT>
+<DD>
+
+<P>
+Writes DATA to FILENAME but only if DATA differs from the content of
+the file and the string:
+
+<P>
+<PRE>
+    Automatically generated file.
+</PRE>
+
+<P>
+is present in the existing file if it already exists.
+
+<P>
+</DD>
+</DL>
+<H2><A NAME="SECTION000156000000000000000"></A><A NAME="Code_Generation_Modes"></A><A NAME="301"></A>
+<BR>
+12.6 Code Generation Modes
+</H2>
+
+<P>
+The code generation modes are currently one of the following:
+
+<P>
+<PRE>
+  cc: Mode used to create types suitable for C interface
+  cc_cxx: Like cc but typenames don't have a leading Aspell prefix
+  cxx: Mode used to create types suitable for CXX interface
+  native: Mode in which types are suitable for the internal implementation
+  native_no_err: Like Native but with out PosibErr return types
+</PRE>
+<H2><A NAME="SECTION000157000000000000000"></A><A NAME="MkSrc::CcHelper"></A><A NAME="305"></A>
+<BR>
+12.7 MkSrc::CcHelper
+</H2>
+
+<P>
+Helper functions used by interface generation code:
+
+<P>
+<DL>
+<DT><STRONG>to_c_return_type ITEM</STRONG></DT>
+<DD>
+
+<P>
+.
+
+<P>
+</DD>
+<DT><STRONG>c_error_cond ITEM</STRONG></DT>
+<DD>
+
+<P>
+.
+
+<P>
+</DD>
+<DT><STRONG>make_func NAME @TYPES PARMS ; %ACCUM</STRONG></DT>
+<DD>
+
+<P>
+Creates a function prototype
+
+<P>
+Parms can be any of:
+
+<P>
+<PRE>
+  mode: code generation mode
+</PRE>
+
+<P>
+</DD>
+<DT><STRONG>call_func NAME @TYPES PARMS ; %ACCUM</STRONG></DT>
+<DD>
+
+<P>
+Return a string to call a func.  Will prefix the function with return
+if the functions returns a non-void type;
+
+<P>
+Parms can be any of:
+
+<P>
+<PRE>
+  mode: code generation mode
+</PRE>
+
+<P>
+</DD>
+<DT><STRONG>to_type_name ITEM PARMS ; %ACCUM</STRONG></DT>
+<DD>
+
+<P>
+Converts item into a type name.
+
+<P>
+Parms can be any of:
+
+<P>
+<PRE>
+  mode: code generation mode
+  use_type: include the actual type
+  use_name: include the name on the type
+  pos: either "return" or "other"
+</PRE>
+
+<P>
+</DD>
+<DT><STRONG>make_desc DESC ; LEVEL</STRONG></DT>
+<DD>
+
+<P>
+Make a C comment out of DESC optionally indenting it LEVEL spaces.
+
+<P>
+</DD>
+<DT><STRONG>make_c_method CLASS ITEM PARMS ; %ACCUM</STRONG></DT>
+<DD>
+
+<P>
+Create the phototype for a C method which is really a function.
+
+<P>
+Parms is any of:
+
+<P>
+<PRE>
+  mode: code generation mode
+  no_aspell: if true do not include aspell in the name
+  this_name: name for the paramater representing the current object
+</PRE>
+
+<P>
+</DD>
+<DT><STRONG>call_c_method CLASS ITEM PARMS ; %ACCUM</STRONG></DT>
+<DD>
+
+<P>
+Like make_c_method but instead returns the appropriate string to call
+the function.  If the function returns a non-void type the string will
+be prefixed with a return statement.
+
+<P>
+</DD>
+<DT><STRONG>form_c_method CLASS ITEM PARMS ; %ACCUM</STRONG></DT>
+<DD>
+
+<P>
+Like make_c_method except that it returns the array:
+
+<P>
+<PRE>
+  ($func, $data, $parms, $accum)
+</PRE>
+
+<P>
+which is suitable for passing into make_func.  It will return an 
+empty array if it can not make a method from ITEM.
+
+<P>
+</DD>
+<DT><STRONG>make_cxx_method ITEM PARMS ; %ACCUM</STRONG></DT>
+<DD>
+
+<P>
+Create the phototype for a C++ method.
+
+<P>
+Parms is one of:
+
+<P>
+<PRE>
+  mode: code generation mode
+</PRE>
+</DD>
+</DL>
+
+<P>
+
+<H1><A NAME="SECTION000160000000000000000">
+13 GNU Free Documentation License</A>
+</H1>
+
+<P>
+Version 1.1, March 2000
+<BR>
+<P>
+Copyright &#169; 2000  Free Software Foundation, Inc.
+<BR>
+59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+<BR>
+Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+<P>
+
+<H2><A NAME="SECTION000161000000000000000">
+Preamble</A>
+</H2>
+
+<P>
+The purpose of this License is to make a manual, textbook, or other
+written document ``free'' in the sense of freedom: to assure everyone
+the effective freedom to copy and redistribute it, with or without
+modifying it, either commercially or noncommercially.  Secondarily,
+this License preserves for the author and publisher a way to get
+credit for their work, while not being considered responsible for
+modifications made by others.
+
+<P>
+This License is a kind of ``copyleft'', which means that derivative
+works of the document must themselves be free in the same sense.  It
+complements the GNU General Public License, which is a copyleft
+license designed for free software.
+
+<P>
+We have designed this License in order to use it for manuals for free
+software, because free software needs free documentation: a free
+program should come with manuals providing the same freedoms that the
+software does.  But this License is not limited to software manuals;
+it can be used for any textual work, regardless of subject matter or
+whether it is published as a printed book.  We recommend this License
+principally for works whose purpose is instruction or reference.
+
+<P>
+
+<H2><A NAME="SECTION000162000000000000000">
+13.1 Applicability and Definitions</A>
+</H2>
+
+<P>
+This License applies to any manual or other work that contains a
+notice placed by the copyright holder saying it can be distributed
+under the terms of this License.  The ``Document'', below, refers to any
+such manual or work.  Any member of the public is a licensee, and is
+addressed as ``you''.
+
+<P>
+A ``Modified Version'' of the Document means any work containing the
+Document or a portion of it, either copied verbatim, or with
+modifications and/or translated into another language.
+
+<P>
+A ``Secondary Section'' is a named appendix or a front-matter section of
+the Document that deals exclusively with the relationship of the
+publishers or authors of the Document to the Document's overall subject
+(or to related matters) and contains nothing that could fall directly
+within that overall subject.  (For example, if the Document is in part a
+textbook of mathematics, a Secondary Section may not explain any
+mathematics.)  The relationship could be a matter of historical
+connection with the subject or with related matters, or of legal,
+commercial, philosophical, ethical or political position regarding
+them.
+
+<P>
+The ``Invariant Sections'' are certain Secondary Sections whose titles
+are designated, as being those of Invariant Sections, in the notice
+that says that the Document is released under this License.
+
+<P>
+The ``Cover Texts'' are certain short passages of text that are listed,
+as Front-Cover Texts or Back-Cover Texts, in the notice that says that
+the Document is released under this License.
+
+<P>
+A ``Transparent'' copy of the Document means a machine-readable copy,
+represented in a format whose specification is available to the
+general public, whose contents can be viewed and edited directly and
+straightforwardly with generic text editors or (for images composed of
+pixels) generic paint programs or (for drawings) some widely available
+drawing editor, and that is suitable for input to text formatters or
+for automatic translation to a variety of formats suitable for input
+to text formatters.  A copy made in an otherwise Transparent file
+format whose markup has been designed to thwart or discourage
+subsequent modification by readers is not Transparent.  A copy that is
+not ``Transparent'' is called ``Opaque''.
+
+<P>
+Examples of suitable formats for Transparent copies include plain
+ASCII without markup, Texinfo input format, L<SUP><SMALL>A</SMALL></SUP>T<SMALL>E</SMALL>X&nbsp;input format, SGML
+or XML using a publicly available DTD, and standard-conforming simple
+HTML designed for human modification.  Opaque formats include
+PostScript, PDF, proprietary formats that can be read and edited only
+by proprietary word processors, SGML or XML for which the DTD and/or
+processing tools are not generally available, and the
+machine-generated HTML produced by some word processors for output
+purposes only.
+
+<P>
+The ``Title Page'' means, for a printed book, the title page itself,
+plus such following pages as are needed to hold, legibly, the material
+this License requires to appear in the title page.  For works in
+formats which do not have any title page as such, ``Title Page'' means
+the text near the most prominent appearance of the work's title,
+preceding the beginning of the body of the text.
+
+<P>
+
+<H2><A NAME="SECTION000163000000000000000">
+13.2 Verbatim Copying</A>
+</H2>
+
+<P>
+You may copy and distribute the Document in any medium, either
+commercially or noncommercially, provided that this License, the
+copyright notices, and the license notice saying this License applies
+to the Document are reproduced in all copies, and that you add no other
+conditions whatsoever to those of this License.  You may not use
+technical measures to obstruct or control the reading or further
+copying of the copies you make or distribute.  However, you may accept
+compensation in exchange for copies.  If you distribute a large enough
+number of copies you must also follow the conditions in section 3.
+
+<P>
+You may also lend copies, under the same conditions stated above, and
+you may publicly display copies.
+
+<P>
+
+<H2><A NAME="SECTION000164000000000000000">
+13.3 Copying in Quantity</A>
+</H2>
+
+<P>
+If you publish printed copies of the Document numbering more than 100,
+and the Document's license notice requires Cover Texts, you must enclose
+the copies in covers that carry, clearly and legibly, all these Cover
+Texts: Front-Cover Texts on the front cover, and Back-Cover Texts on
+the back cover.  Both covers must also clearly and legibly identify
+you as the publisher of these copies.  The front cover must present
+the full title with all words of the title equally prominent and
+visible.  You may add other material on the covers in addition.
+Copying with changes limited to the covers, as long as they preserve
+the title of the Document and satisfy these conditions, can be treated
+as verbatim copying in other respects.
+
+<P>
+If the required texts for either cover are too voluminous to fit
+legibly, you should put the first ones listed (as many as fit
+reasonably) on the actual cover, and continue the rest onto adjacent
+pages.
+
+<P>
+If you publish or distribute Opaque copies of the Document numbering
+more than 100, you must either include a machine-readable Transparent
+copy along with each Opaque copy, or state in or with each Opaque copy
+a publicly-accessible computer-network location containing a complete
+Transparent copy of the Document, free of added material, which the
+general network-using public has access to download anonymously at no
+charge using public-standard network protocols.  If you use the latter
+option, you must take reasonably prudent steps, when you begin
+distribution of Opaque copies in quantity, to ensure that this
+Transparent copy will remain thus accessible at the stated location
+until at least one year after the last time you distribute an Opaque
+copy (directly or through your agents or retailers) of that edition to
+the public.
+
+<P>
+It is requested, but not required, that you contact the authors of the
+Document well before redistributing any large number of copies, to give
+them a chance to provide you with an updated version of the Document.
+
+<P>
+
+<H2><A NAME="SECTION000165000000000000000">
+13.4 Modifications</A>
+</H2>
+
+<P>
+You may copy and distribute a Modified Version of the Document under
+the conditions of sections 2 and 3 above, provided that you release
+the Modified Version under precisely this License, with the Modified
+Version filling the role of the Document, thus licensing distribution
+and modification of the Modified Version to whoever possesses a copy
+of it.  In addition, you must do these things in the Modified Version:
+
+<P>
+
+<UL>
+<LI>Use in the Title Page (and on the covers, if any) a title distinct
+   from that of the Document, and from those of previous versions
+   (which should, if there were any, be listed in the History section
+   of the Document).  You may use the same title as a previous version
+   if the original publisher of that version gives permission.
+</LI>
+<LI>List on the Title Page, as authors, one or more persons or entities
+   responsible for authorship of the modifications in the Modified
+   Version, together with at least five of the principal authors of the
+   Document (all of its principal authors, if it has less than five).
+</LI>
+<LI>State on the Title page the name of the publisher of the
+   Modified Version, as the publisher.
+</LI>
+<LI>Preserve all the copyright notices of the Document.
+</LI>
+<LI>Add an appropriate copyright notice for your modifications
+   adjacent to the other copyright notices.
+</LI>
+<LI>Include, immediately after the copyright notices, a license notice
+   giving the public permission to use the Modified Version under the
+   terms of this License, in the form shown in the Addendum below.
+</LI>
+<LI>Preserve in that license notice the full lists of Invariant Sections
+   and required Cover Texts given in the Document's license notice.
+</LI>
+<LI>Include an unaltered copy of this License.
+</LI>
+<LI>Preserve the section entitled ``History'', and its title, and add to
+   it an item stating at least the title, year, new authors, and
+   publisher of the Modified Version as given on the Title Page.  If
+   there is no section entitled ``History'' in the Document, create one
+   stating the title, year, authors, and publisher of the Document as
+   given on its Title Page, then add an item describing the Modified
+   Version as stated in the previous sentence.
+</LI>
+<LI>Preserve the network location, if any, given in the Document for
+   public access to a Transparent copy of the Document, and likewise
+   the network locations given in the Document for previous versions
+   it was based on.  These may be placed in the ``History'' section.
+   You may omit a network location for a work that was published at
+   least four years before the Document itself, or if the original
+   publisher of the version it refers to gives permission.
+</LI>
+<LI>In any section entitled ``Acknowledgements'' or ``Dedications'',
+   preserve the section's title, and preserve in the section all the
+   substance and tone of each of the contributor acknowledgements
+   and/or dedications given therein.
+</LI>
+<LI>Preserve all the Invariant Sections of the Document,
+   unaltered in their text and in their titles.  Section numbers
+   or the equivalent are not considered part of the section titles.
+</LI>
+<LI>Delete any section entitled ``Endorsements''.  Such a section
+   may not be included in the Modified Version.
+</LI>
+<LI>Do not retitle any existing section as ``Endorsements''
+   or to conflict in title with any Invariant Section.
+
+<P>
+</LI>
+</UL>
+
+<P>
+If the Modified Version includes new front-matter sections or
+appendices that qualify as Secondary Sections and contain no material
+copied from the Document, you may at your option designate some or all
+of these sections as invariant.  To do this, add their titles to the
+list of Invariant Sections in the Modified Version's license notice.
+These titles must be distinct from any other section titles.
+
+<P>
+You may add a section entitled ``Endorsements'', provided it contains
+nothing but endorsements of your Modified Version by various
+parties - for example, statements of peer review or that the text has
+been approved by an organization as the authoritative definition of a
+standard.
+
+<P>
+You may add a passage of up to five words as a Front-Cover Text, and a
+passage of up to 25 words as a Back-Cover Text, to the end of the list
+of Cover Texts in the Modified Version.  Only one passage of
+Front-Cover Text and one of Back-Cover Text may be added by (or
+through arrangements made by) any one entity.  If the Document already
+includes a cover text for the same cover, previously added by you or
+by arrangement made by the same entity you are acting on behalf of,
+you may not add another; but you may replace the old one, on explicit
+permission from the previous publisher that added the old one.
+
+<P>
+The author(s) and publisher(s) of the Document do not by this License
+give permission to use their names for publicity for or to assert or
+imply endorsement of any Modified Version.
+
+<P>
+
+<H2><A NAME="SECTION000166000000000000000">
+13.5 Combining Documents</A>
+</H2>
+
+<P>
+You may combine the Document with other documents released under this
+License, under the terms defined in section 4 above for modified
+versions, provided that you include in the combination all of the
+Invariant Sections of all of the original documents, unmodified, and
+list them all as Invariant Sections of your combined work in its
+license notice.
+
+<P>
+The combined work need only contain one copy of this License, and
+multiple identical Invariant Sections may be replaced with a single
+copy.  If there are multiple Invariant Sections with the same name but
+different contents, make the title of each such section unique by
+adding at the end of it, in parentheses, the name of the original
+author or publisher of that section if known, or else a unique number.
+Make the same adjustment to the section titles in the list of
+Invariant Sections in the license notice of the combined work.
+
+<P>
+In the combination, you must combine any sections entitled ``History''
+in the various original documents, forming one section entitled
+``History''; likewise combine any sections entitled ``Acknowledgements'',
+and any sections entitled ``Dedications''.  You must delete all sections
+entitled ``Endorsements.''
+
+<P>
+
+<H2><A NAME="SECTION000167000000000000000">
+13.6 Collections of Documents</A>
+</H2>
+
+<P>
+You may make a collection consisting of the Document and other documents
+released under this License, and replace the individual copies of this
+License in the various documents with a single copy that is included in
+the collection, provided that you follow the rules of this License for
+verbatim copying of each of the documents in all other respects.
+
+<P>
+You may extract a single document from such a collection, and distribute
+it individually under this License, provided you insert a copy of this
+License into the extracted document, and follow this License in all
+other respects regarding verbatim copying of that document.
+
+<P>
+
+<H2><A NAME="SECTION000168000000000000000">
+13.7 Aggregation With Independent Works</A>
+</H2>
+
+<P>
+A compilation of the Document or its derivatives with other separate
+and independent documents or works, in or on a volume of a storage or
+distribution medium, does not as a whole count as a Modified Version
+of the Document, provided no compilation copyright is claimed for the
+compilation.  Such a compilation is called an ``aggregate'', and this
+License does not apply to the other self-contained works thus compiled
+with the Document, on account of their being thus compiled, if they
+are not themselves derivative works of the Document.
+
+<P>
+If the Cover Text requirement of section 3 is applicable to these
+copies of the Document, then if the Document is less than one quarter
+of the entire aggregate, the Document's Cover Texts may be placed on
+covers that surround only the Document within the aggregate.
+Otherwise they must appear on covers around the whole aggregate.
+
+<P>
+
+<H2><A NAME="SECTION000169000000000000000">
+13.8 Translation</A>
+</H2>
+
+<P>
+Translation is considered a kind of modification, so you may
+distribute translations of the Document under the terms of section 4.
+Replacing Invariant Sections with translations requires special
+permission from their copyright holders, but you may include
+translations of some or all Invariant Sections in addition to the
+original versions of these Invariant Sections.  You may include a
+translation of this License provided that you also include the
+original English version of this License.  In case of a disagreement
+between the translation and the original English version of this
+License, the original English version will prevail.
+
+<P>
+
+<H2><A NAME="SECTION0001610000000000000000">
+13.9 Termination</A>
+</H2>
+
+<P>
+You may not copy, modify, sublicense, or distribute the Document except
+as expressly provided for under this License.  Any other attempt to
+copy, modify, sublicense or distribute the Document is void, and will
+automatically terminate your rights under this License.  However,
+parties who have received copies, or rights, from you under this
+License will not have their licenses terminated so long as such
+parties remain in full compliance.
+
+<P>
+
+<H2><A NAME="SECTION0001611000000000000000">
+13.10 Future Revisions of This License</A>
+</H2>
+
+<P>
+The Free Software Foundation may publish new, revised versions
+of the GNU Free Documentation License from time to time.  Such new
+versions will be similar in spirit to the present version, but may
+differ in detail to address new problems or concerns. See
+http://www.gnu.org/copyleft/.
+
+<P>
+Each version of the License is given a distinguishing version number.
+If the Document specifies that a particular numbered version of this
+License "or any later version" applies to it, you have the option of
+following the terms and conditions either of that specified version or
+of any later version that has been published (not as a draft) by the
+Free Software Foundation.  If the Document does not specify a version
+number of this License, you may choose any version ever published (not
+as a draft) by the Free Software Foundation.
+
+<P>
+
+<H2><A NAME="SECTION0001612000000000000000">
+ADDENDUM: How to use this License for your documents</A>
+</H2>
+
+<P>
+To use this License in a document you have written, include a copy of
+the License in the document and put the following copyright and
+license notices just after the title page:
+
+<P>
+<P>
+<BLOCKQUOTE>Copyright &#169; YEAR  YOUR NAME.
+      Permission is granted to copy, distribute and/or modify this document
+      under the terms of the GNU Free Documentation License, Version 1.1
+      or any later version published by the Free Software Foundation;
+      with the Invariant Sections being LIST THEIR TITLES, with the
+      Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.
+      A copy of the license is included in the section entitled ``GNU
+      Free Documentation License''.
+</BLOCKQUOTE>
+<P>
+
+<P>
+If you have no Invariant Sections, write ``with no Invariant Sections''
+instead of saying which ones are invariant.  If you have no
+Front-Cover Texts, write ``no Front-Cover Texts'' instead of
+``Front-Cover Texts being LIST''; likewise for Back-Cover Texts.
+
+<P>
+If your document contains nontrivial examples of program code, we
+recommend releasing these examples in parallel under your choice of
+free software license, such as the GNU General Public License,
+to permit their use in free software.
+
+<P>
+
+<H1><A NAME="SECTION000170000000000000000">
+About this document ...</A>
+</H1>
+ <STRONG>Aspell Devel Docs</STRONG><P>
+This document was generated using the
+<A HREF="http://www.latex2html.org/"><STRONG>LaTeX</STRONG>2<tt>HTML</tt></A> translator Version 2002 (1.62)
+<P>
+Copyright &#169; 1993, 1994, 1995, 1996,
+<A HREF="http://cbl.leeds.ac.uk/nikos/personal.html">Nikos Drakos</A>, 
+Computer Based Learning Unit, University of Leeds.
+<BR>
+Copyright &#169; 1997, 1998, 1999,
+<A HREF="http://www.maths.mq.edu.au/~ross/">Ross Moore</A>, 
+Mathematics Department, Macquarie University, Sydney.
+<P>
+The command line arguments were: <BR>
+ <STRONG>latex2html</STRONG> <TT>-split 3 -toc_depth 3 -dir dev-html -long_titles 2 -local_icons -show_section_numbers devel.tex</TT>
+<P>
+The translation was initiated by Kevin Atkinson on 2002-11-04
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"></A>
+
+<UL>
+<LI><A NAME="tex2html12"
+  HREF="devel.html#SECTION00010000000000000000">Contents</A>
+<LI><A NAME="tex2html13"
+  HREF="devel.html#SECTION00020000000000000000">Notes</A>
+<LI><A NAME="tex2html14"
+  HREF="devel.html#SECTION00030000000000000000">Copyright</A>
+<LI><A NAME="tex2html15"
+  HREF="devel.html#SECTION00040000000000000000">1 Style Guidelines</A>
+<LI><A NAME="tex2html16"
+  HREF="devel.html#SECTION00050000000000000000">2 C++ Standard Library</A>
+<LI><A NAME="tex2html17"
+  HREF="devel.html#SECTION00060000000000000000">3 Templates</A>
+<LI><A NAME="tex2html18"
+  HREF="devel.html#SECTION00070000000000000000">4 Error Handling</A>
+<LI><A NAME="tex2html19"
+  HREF="devel.html#SECTION00080000000000000000">5 Source Code Layout </A>
+<LI><A NAME="tex2html20"
+  HREF="devel.html#SECTION00090000000000000000">6 Strings</A>
+<UL>
+<LI><A NAME="tex2html21"
+  HREF="devel.html#SECTION00091000000000000000">6.1 String</A>
+<LI><A NAME="tex2html22"
+  HREF="devel.html#SECTION00092000000000000000">6.2 ParmString</A>
+<LI><A NAME="tex2html23"
+  HREF="devel.html#SECTION00093000000000000000">6.3 CharVector</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html24"
+  HREF="devel.html#SECTION000100000000000000000">7 Smart Pointers</A>
+<UL>
+<LI><A NAME="tex2html25"
+  HREF="devel.html#SECTION000101000000000000000">7.1 CopyPtr</A>
+<LI><A NAME="tex2html26"
+  HREF="devel.html#SECTION000102000000000000000">7.2 ClonePtr</A>
+<LI><A NAME="tex2html27"
+  HREF="devel.html#SECTION000103000000000000000">7.3 StackPtr</A>
+<LI><A NAME="tex2html28"
+  HREF="devel.html#SECTION000104000000000000000">7.4 GenericCopyPtr</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html29"
+  HREF="devel.html#SECTION000110000000000000000">8 I/O</A>
+<UL>
+<LI><A NAME="tex2html30"
+  HREF="devel.html#SECTION000111000000000000000">8.1 IStream/OStream</A>
+<LI><A NAME="tex2html31"
+  HREF="devel.html#SECTION000112000000000000000">8.2 FStream</A>
+<LI><A NAME="tex2html32"
+  HREF="devel.html#SECTION000113000000000000000">8.3 Standard Streams</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html33"
+  HREF="devel.html#SECTION000120000000000000000">9 Config Class</A>
+<LI><A NAME="tex2html34"
+  HREF="devel.html#SECTION000130000000000000000">10 Filter Interface</A>
+<UL>
+<LI><A NAME="tex2html35"
+  HREF="devel.html#SECTION000131000000000000000">10.1 Overview</A>
+<LI><A NAME="tex2html36"
+  HREF="devel.html#SECTION000132000000000000000">10.2 Adding a New Filter</A>
+<LI><A NAME="tex2html37"
+  HREF="devel.html#SECTION000133000000000000000">10.3 IndividualFilter class</A>
+<LI><A NAME="tex2html38"
+  HREF="devel.html#SECTION000134000000000000000">10.4 Constructor Function</A>
+<LI><A NAME="tex2html39"
+  HREF="devel.html#SECTION000135000000000000000">10.5 Config Options</A>
+<LI><A NAME="tex2html40"
+  HREF="devel.html#SECTION000136000000000000000">10.6 Makefile Modifications</A>
+<LI><A NAME="tex2html41"
+  HREF="devel.html#SECTION000137000000000000000">10.7 New_filter Modifications</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html42"
+  HREF="devel.html#SECTION000140000000000000000">11 Data Structures</A>
+<UL>
+<LI><A NAME="tex2html43"
+  HREF="devel.html#SECTION000141000000000000000">11.1 Vector</A>
+<LI><A NAME="tex2html44"
+  HREF="devel.html#SECTION000142000000000000000">11.2 BasicList</A>
+<LI><A NAME="tex2html45"
+  HREF="devel.html#SECTION000143000000000000000">11.3 StringMap</A>
+<LI><A NAME="tex2html46"
+  HREF="devel.html#SECTION000144000000000000000">11.4 Hash Tables</A>
+<LI><A NAME="tex2html47"
+  HREF="devel.html#SECTION000145000000000000000">11.5 BlockSList</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html48"
+  HREF="devel.html#SECTION000150000000000000000">12 Mk-Src Script</A>
+<UL>
+<LI><A NAME="tex2html49"
+  HREF="devel.html#SECTION000151000000000000000">12.1 mk-src.in</A>
+<LI><A NAME="tex2html50"
+  HREF="devel.html#SECTION000152000000000000000">12.2 MkSrc::Info</A>
+<UL>
+<LI><A NAME="tex2html51"
+  HREF="devel.html#SECTION000152100000000000000">%info</A>
+<LI><A NAME="tex2html52"
+  HREF="devel.html#SECTION000152200000000000000">%types</A>
+<LI><A NAME="tex2html53"
+  HREF="devel.html#SECTION000152300000000000000">%methods</A>
+</UL>
+<LI><A NAME="tex2html54"
+  HREF="devel.html#SECTION000153000000000000000">12.3 MkSrc::Util</A>
+<LI><A NAME="tex2html55"
+  HREF="devel.html#SECTION000154000000000000000">12.4 MkSrc::Read</A>
+<LI><A NAME="tex2html56"
+  HREF="devel.html#SECTION000155000000000000000">12.5 MKSrc::Create</A>
+<LI><A NAME="tex2html57"
+  HREF="devel.html#SECTION000156000000000000000">12.6 Code Generation Modes</A>
+<LI><A NAME="tex2html58"
+  HREF="devel.html#SECTION000157000000000000000">12.7 MkSrc::CcHelper</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html59"
+  HREF="devel.html#SECTION000160000000000000000">13 GNU Free Documentation License</A>
+<UL>
+<LI><A NAME="tex2html60"
+  HREF="devel.html#SECTION000161000000000000000">Preamble</A>
+<LI><A NAME="tex2html61"
+  HREF="devel.html#SECTION000162000000000000000">13.1 Applicability and Definitions</A>
+<LI><A NAME="tex2html62"
+  HREF="devel.html#SECTION000163000000000000000">13.2 Verbatim Copying</A>
+<LI><A NAME="tex2html63"
+  HREF="devel.html#SECTION000164000000000000000">13.3 Copying in Quantity</A>
+<LI><A NAME="tex2html64"
+  HREF="devel.html#SECTION000165000000000000000">13.4 Modifications</A>
+<LI><A NAME="tex2html65"
+  HREF="devel.html#SECTION000166000000000000000">13.5 Combining Documents</A>
+<LI><A NAME="tex2html66"
+  HREF="devel.html#SECTION000167000000000000000">13.6 Collections of Documents</A>
+<LI><A NAME="tex2html67"
+  HREF="devel.html#SECTION000168000000000000000">13.7 Aggregation With Independent Works</A>
+<LI><A NAME="tex2html68"
+  HREF="devel.html#SECTION000169000000000000000">13.8 Translation</A>
+<LI><A NAME="tex2html69"
+  HREF="devel.html#SECTION0001610000000000000000">13.9 Termination</A>
+<LI><A NAME="tex2html70"
+  HREF="devel.html#SECTION0001611000000000000000">13.10 Future Revisions of This License</A>
+<LI><A NAME="tex2html71"
+  HREF="devel.html#SECTION0001612000000000000000">ADDENDUM: How to use this License for your documents</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html72"
+  HREF="devel.html#SECTION000170000000000000000">About this document ...</A>
+</UL>
+<!--End of Table of Child-Links-->
+<HR>
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive" SRC="nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev_g.png">   
+<BR>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Kevin Atkinson
+2002-11-04
+</ADDRESS>
+</BODY>
+</HTML>

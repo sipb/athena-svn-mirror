@@ -1,0 +1,334 @@
+2002-09-25 22:45  kevina
+
+	* prog/checker_string.cpp: 
+	Fixed part one of bug #613714 and a hack to sort of fix part two.
+
+2002-09-23 21:38  kevina
+
+	* configure.ac, modules/speller/default/speller_impl.cpp,
+	prog/aspell.cpp, prog/checker_string.cpp: 
+	Incremented version number Fixed bugs in pipe mode include
+	get_word_pair Store replasment in check mode Eliminated useless use
+	of get_word in checker_string.cpp
+
+2002-09-18 09:33  kevina
+
+	* common/: fstream.cpp, fstream.hpp, iostream.cpp: 
+	Avoided closing standard streams when FStream is destroyed to allow
+	the aspell library to be dlopened.
+
+2002-09-09 15:27  kevina
+
+	* prog/: aspell.cpp, compress.c: 
+	compress.c: WIN32 Bug Fix aspell.cpp: Bug fix when '^' starts a
+	line.
+
+2002-09-09 01:57  kevina
+
+	* common/gettext.h, examples/po-filter.c,
+	modules/filter/loadable.cpp: 
+	Sergey Poznyakoff  <gray@Noldor.runasimi.org>:
+	
+		(Loadable Filter Support)
+	
+		* configure.ac: Check for the presence of libdl.
+	
+		* lib/new_filter.cpp: Added support for loadable filters.
+		  New configuratin options:
+		     --[add|rem]-filter=loadable   Require/disable use of
+	loadable
+						   filters.
+		     --loadable-name		   Full path of the
+	loadable
+						   filter to use.
+	
+		* modules/filter/loadable.cpp: New file. Support for
+	loadable
+		  filters.
+		* modules/filter/Makefile.am: Added loadable.cpp
+		* common/indiv_filter.hpp: Typo
+	
+		* examples/po-filter.c: New file. An example of loadable
+	filters.
+		  Implements filter for *.po localization files.
+		* examples/Makefile.am: Added po-filter.c and rules to
+	generate
+		  po-filter.so
+	
+	Sergey Poznyakoff  <gray@Noldor.runasimi.org>:
+	
+		(Gettext support)
+	
+		* Makefile.am (ACLOCAL_AMFLAGS): New variable.
+		  Added intl and po.
+		  Added maintainer-clean-local hook.
+		* configure.ac: Added NLS support.
+		* autogen: pass -Im4 to aclocal
+	
+		* auto/MkSrc/Info.pm: Fixed typos in comment.
+		* auto/MkSrc/ProcNativeImpl.pm: output $mesg in surrounded
+	by
+		  N_().
+	
+		* common/gettext.h: New file. A wrapper around intl.h.
+		* common/Makefile.am: Add gettext.h to EXTRA_DIST
+	
+		* common/config.cpp: Added NLS support.
+		* common/posib_err.cpp: Likewise.
+		* modules/filter/email.cpp: Likewise.
+		* modules/filter/sgml.cpp: Likewise.
+		* modules/filter/tex.cpp: Likewise.
+		* prog/aspell.cpp: Likewise.
+		* common/error.hpp: Provide a definition of N_().
+	
+		* prog/Makefile.am: Define LOCALEDIR
+	
+		* examples/Makefile.am: Override CCLD.
+	
+	Kevin Atkinson:
+	
+	  Fixes to make the NLS Work Properly
+
+2002-08-31 15:10  kevina
+
+	* examples/example-c.c: 
+	Bug fixes in example-c
+
+2002-08-30 16:02  kevina
+
+	* prog/aspell.cpp: 
+	Fixed a bug in which the last line without newline will be ignored.
+
+2002-08-30 15:11  kevina
+
+	* examples/example-c.c, scripts/run-with-aspell.create,
+	scripts/spell: 
+	Updated example to include dumping a configuration option as a
+	list.
+	
+	Added missing files.
+
+2002-08-25 21:03  kevina
+
+	* README: 
+	Removed generated file.
+
+2002-08-24 19:38  kevina
+
+	* common/settings.h.in: 
+	Used build in types instead of u_int{16,32} to avoid compile
+	problems on non-linux systems.
+	
+	Removed generated file that should not have been there.
+
+2002-08-24 02:27  kevina
+
+	* README, common/settings.h.in: 
+	Final changes before release.
+
+2002-08-17 18:02  kevina
+
+	* README, modules/speller/default/aspell-util.cpp: 
+	Merged speller-util into aspell.
+
+2002-08-12 19:10  kevina
+
+	* common/string_list_impl.hpp: 
+	
+	Removed useless interface classes for StringList and StringMap and
+	replaced it by the actual implementation.
+	
+	Truly fixed locale dependent bug with strtod by proving a locale
+	independent implementation thanks to Melvin Hadasht
+	
+	Added support for changing mode based on the file extension.
+	
+	Manual fixups.
+
+2002-08-08 22:55  kevina
+
+	* data/: cp1252.map, iso8859-1.map, iso8859-10.map, iso8859-13.map,
+	iso8859-14.map, iso8859-15.map, iso8859-2.map, iso8859-3.map,
+	iso8859-4.map, iso8859-5.map, iso8859-6.map, iso8859-7.map,
+	iso8859-8.map, iso8859-9.map, koi8-r.map, viscii.map: 
+	Avoid need for *.map data files.
+
+2002-08-08 10:23  kevina
+
+	* common/errors.cpp: 
+	Removed generated file which should't have been there.
+
+2002-07-31 22:03  kevina
+
+	* README: 
+	Minor manual fixes
+
+2002-07-26 06:16  kevina
+
+	* modules/speller/default/aspell-util.cpp: 
+	Fixed some fixmes, espacally with the formating of the help string
+
+2002-07-25 17:05  kevina
+
+	* README: 
+	README update
+
+2002-07-25 14:08  kevina
+
+	* examples/aspell0.c: 
+	Renamed aspell0 back to example-c.
+
+2002-07-24 03:02  kevina
+
+	* common/errors.cpp: 
+	Bug fixes with error language related error message reporting.
+
+2002-07-22 09:20  kevina
+
+	* README, common/errors.cpp,
+	modules/speller/default/aspell-util.cpp: 
+	Final changes before snapshot 200020722
+
+2002-07-22 03:07  kevina
+
+	* common/settings.h.in, common/string_list_impl.hpp,
+	examples/aspell0.c, modules/speller/default/aspell-util.cpp: 
+	Aspell can now be used as an independent utility!
+
+2002-07-17 00:09  kevina
+
+	* examples/aspell0.c: 
+	Added needed file and other minor fixes.
+
+2002-07-16 23:50  kevina
+
+	* examples/aspell0.c, modules/speller/default/aspell-util.cpp: 
+	Added support for filters.
+
+2002-07-15 03:39  kevina
+
+	* common/errors.cpp, examples/aspell0.c: 
+	Added support for checking complete documents.
+
+2002-07-10 21:02  kevina
+
+	* common/encoded.hpp: 
+	Finished adding support for converting between different encodings.
+
+2002-07-09 23:35  kevina
+
+	* common/settings.h.in: 
+	Fixed convert.cpp so it would compile
+
+2002-01-06 18:45  kevina
+
+	* data.tar.bz2, en.cwl.bz2, mk-dict, data/cp1252.map,
+	data/iso8859-1.map, data/iso8859-10.map, data/iso8859-13.map,
+	data/iso8859-14.map, data/iso8859-15.map, data/iso8859-2.map,
+	data/iso8859-3.map, data/iso8859-4.map, data/iso8859-5.map,
+	data/iso8859-6.map, data/iso8859-7.map, data/iso8859-8.map,
+	data/iso8859-9.map, data/koi8-r.map, data/viscii.map,
+	examples/aspell0.c: 
+	Made it possable to install aspell normally.  Added pspell.h
+	compatibility header.  Added back support for master_word_list (now
+	main_word_list).
+
+2001-12-30 06:28  kevina
+
+	* data.tar.bz2: 
+	
+	Changed .pwli extenstion to .awli.  Clean up and simplifiaction of
+	info.* files.
+
+2001-12-29 01:42  kevina
+
+	* modules/speller/default/aspell-util.cpp: 
+	
+	Reworked last remaing bit of code that used FILE directly to use
+	the wrapper classes instead.
+
+2001-12-29 01:26  kevina
+
+	* data.tar.bz2: 
+	
+	Removed the need for the .pmi files for compiled in modules. 
+	Renamed the extension from .pmi to .ami.  Other minor interface
+	changes in info.cpp.
+
+2001-12-24 06:21  kevina
+
+	* data.tar.bz2: 
+	Fixed data.tar to reflect name change in module.
+
+2001-12-01 04:38  kevina
+
+	* COPYINGS: 
+	Rename of COPYINGS -> COPYING
+
+2001-11-29 23:34  kevina
+
+	* en.cwl.bz2: 
+	More name change cleanups.
+
+2001-11-29 23:26  kevina
+
+	* mk-dict: 
+	
+	Cleanups after pspell->aspell renaming
+
+2001-11-29 22:55  kevina
+
+	* COPYINGS, data.tar.bz2, en.cwl.bz2, mk-dict, common/encoded.hpp,
+	common/manager.hpp, common/string_list_impl.hpp,
+	examples/aspell0.c, examples/pspell.c, lib/find_manager.cpp,
+	modules/speller/default/aspell-util.cpp: 
+	
+	Changed name from pspell to aspell changed aspell module to
+	speller-default.  Still need to change the actual module name from
+	aspell.
+
+2001-11-08 08:05  kevina
+
+	* examples/pspell.c: 
+	Fixed bug when making suggestions when typo analysis is not used.
+
+2001-11-07 23:49  kevina
+
+	* examples/pspell.c, lib/find_manager.cpp: 
+	Renamed emulation to enumeration like it should of been in the
+	first place.  Also involved renaming some files.
+
+2001-11-07 23:24  kevina
+
+	* common/: emulation.hpp, manager.hpp, string_emulation.hpp,
+	string_list_impl.hpp: 
+	Renamed emulation to enumeration like it should of been in the
+	first place.  Also involved renaming some files.
+
+2001-09-15 16:42  kevina
+
+	* common/word_list.hpp: 
+	Improved mk-src script to allow two additional header files to be
+	automatically generated.
+
+2001-09-08 18:59  kevina
+
+	* data.tar.bz2, en.cwl.bz2: 
+	Added binary files.
+
+2001-09-08 18:56  kevina
+
+	* mk-dict, common/emulation.hpp, common/encoded.hpp,
+	common/manager.hpp, common/settings.h.in,
+	common/string_emulation.hpp, common/string_list_impl.hpp,
+	common/word_list.hpp, examples/pspell.c, lib/find_manager.cpp:
+	Initial revision
+
+2001-09-08 18:56  kevina
+
+	* mk-dict, common/emulation.hpp, common/encoded.hpp,
+	common/manager.hpp, common/settings.h.in,
+	common/string_emulation.hpp, common/string_list_impl.hpp,
+	common/word_list.hpp, examples/pspell.c, lib/find_manager.cpp: 
+	Initial Checkin
+
