@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.5  90/06/05  16:08:14  tom
+ * deleted srvtab code
+ * 
  * Revision 1.4  90/05/26  13:38:18  tom
  * athena release 7.0e
  *    madethis code functional
@@ -29,7 +32,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/krb_grp.c,v 1.5 1990-06-05 16:08:14 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/krb_grp.c,v 2.0 1992-04-22 02:02:40 tom Exp $";
 #endif
 
 #include "include.h"
@@ -39,8 +42,6 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #ifdef KERBEROS
 
 #include <krb.h>
-
-static char lbuf[BUFSIZ];
 
 /*
  * Function:    lu_kerberos()
@@ -86,12 +87,7 @@ lu_kerberos(varnode, repl, instptr, reqflg)
 	return(BUILD_ERR);
       repl->name.cmp[repl->name.ncmp] = num;
       repl->name.ncmp++;
-      repl->val.type = STR;  
-      repl->val.value.str.len = strlen(lbuf);
-      repl->val.value.str.str = (char *) malloc(sizeof(char) * 
-				repl->val.value.str.len);
-      strcpy(repl->val.value.str.str, lbuf);
-      return(BUILD_SUCCESS);
+      return(make_str(&(repl->val), lbuf));
 
     default:
       syslog (LOG_WARNING, "lu_kerberos: bad offset: %d", varnode->offset);
