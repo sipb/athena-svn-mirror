@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1996-11-14 22:33:16 ghudson Exp $
+# $Id: Makefile,v 1.6 1997-02-28 18:27:43 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -8,7 +8,7 @@ MF=${MFVARS} ./mf
 CMMF=${MFVARS} ./cmmf
 MODE=ljfour
 
-NORMALTFMS=	logo8.tfm logo9.tfm logo10.tfm \
+NORMALTFMS=	dummy.tfm logo8.tfm logo9.tfm logo10.tfm \
 		logobf10.tfm logosl10.tfm manfnt.tfm icmcsc10.tfm icmex10.tfm \
 		icmmi8.tfm icmsy8.tfm icmtt8.tfm ilasy8.tfm ilcmss8.tfm \
 		ilcmssb8.tfm ilcmssi8.tfm lasy10.tfm lasy5.tfm lasy6.tfm \
