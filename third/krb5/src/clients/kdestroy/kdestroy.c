@@ -28,6 +28,9 @@
 #include "com_err.h"
 #include <string.h>
 #include <stdio.h>
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+#endif
 
 extern int optind;
 extern char *optarg;
@@ -108,7 +111,13 @@ main(argc, argv)
 	    fprintf(stderr, "Ticket cache \007NOT\007 destroyed!\n");
 #endif
 	}
-	exit (1);
+	errflg = 1;
     }
-    exit (0);
+#ifdef KRB5_KRB4_COMPAT
+    if (dest_tkt() != KSUCCESS) {
+	fprintf(stderr, "Kerberos 4 ticket file \007NOT\007 destroyed!\n");
+	errflg = 1;
+    }
+#endif
+    exit (errflg);
 }
