@@ -7,7 +7,7 @@
 #endif
 XCOMM -------------------------------------------------------------------------
 XCOMM Makefile generated from IMAKE_TEMPLATE and INCLUDE_IMAKEFILE
-XCOMM $XConsortium: Imake.tmpl,v 1.139 91/09/16 08:52:48 rws Exp $
+XCOMM $XConsortium: Imake.tmpl,v 1.143 92/01/02 15:35:08 rws Exp $
 XCOMM
 XCOMM Platform-specific parameters may be set in the appropriate <vendor>.cf
 XCOMM configuration files.  Site-specific parameters should be set in the file
@@ -243,6 +243,17 @@ XCOMM
 #  undef convex
 # endif
 # define ConvexArchitecture
+#endif
+
+#ifdef __OSF1__
+#define MacroIncludeFile <osf1.cf>
+#define MacroFile osf1.cf
+#define OSF1Architecture
+#undef __OSF1__
+#ifdef __mips__
+#undef __mips__
+#define MipsArchitecture
+#endif
 #endif
 
 #ifndef MacroIncludeFile
@@ -486,7 +497,7 @@ XCOMM the platform-specific parameters - edit site.def to change
 #define InstKmemFlags InstUidFlags    /* put -g kmem -m 2755 in site.def... */
 #endif
 #ifndef ArCmd
-#if HasLargeTmp | SystemV4
+#if HasLargeTmp || SystemV4
 #define ArCmd ar cq	/* do nothing special */
 #else
 #define ArCmd ar clq	/* use local dir for temp files */
@@ -529,7 +540,7 @@ XCOMM the platform-specific parameters - edit site.def to change
 #define PreProcessCmd CcCmd -E
 #endif
 #ifndef InstallCmd
-#if SystemV | SystemV4
+#if SystemV || SystemV4
 #ifdef UseInstalled
 #define InstallCmd $(BINDIR)/bsdinst		/* hack should be in project */
 #else
@@ -672,6 +683,9 @@ XCOMM the platform-specific parameters - edit site.def to change
 #endif
 #ifndef CURDIR
 #define CURDIR .
+#endif
+#ifndef SiteIConfigFiles
+#define SiteIConfigFiles /**/
 #endif
 #ifndef ExtraFilesToClean
 #define ExtraFilesToClean /**/
@@ -834,7 +848,8 @@ XCOMM the platform-specific parameters - edit site.def to change
 #endif
      ICONFIGFILES = $(IRULESRC)/Imake.tmpl $(IRULESRC)/Imake.rules \
 			$(IRULESRC)/Project.tmpl $(IRULESRC)/site.def \
-			$(IRULESRC)/$(MACROFILE) $(EXTRA_ICONFIGFILES)
+			$(IRULESRC)/$(MACROFILE) SiteIConfigFiles \
+			$(EXTRA_ICONFIGFILES)
 
 /*
  * get project-specific configuration and rules

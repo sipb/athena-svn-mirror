@@ -1,0 +1,21 @@
+XCOMM platform:  $XConsortium: osf1.cf,v 1.6 92/04/07 10:08:10 rws Exp $
+
+#define OSName			OSF1
+XCOMM operating system:  OSName
+#define OSMajorVersion		1
+#define OSMinorVersion		0
+
+#define HasPutenv		YES
+#define Malloc0ReturnsNull	YES
+#define HasNdbm			YES
+#define HasShm			YES
+#define AvoidNullMakeCommand	YES
+#define InstPgmFlags -S
+#define InstallCmd installbsd
+
+#ifdef MipsArchitecture
+#define DefaultCCOptions	-Xc
+#define StandardDefines -D__OSF1__
+#define XdecServer YES
+#define PexCCOptions -Xc -Wf,-XNp15000,-XNd15000
+#endif
