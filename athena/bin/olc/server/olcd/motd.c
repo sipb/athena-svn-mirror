@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.7 1991-03-28 15:02:46 lwvanels Exp $
+ *	$Id: motd.c,v 1.8 1991-03-28 23:48:58 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.7 1991-03-28 15:02:46 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.8 1991-03-28 23:48:58 lwvanels Exp $";
 #endif
 #endif
 
@@ -158,12 +158,12 @@ KNUCKLE *requester;
 /* Search for timeout and timein strings */
   while (fgets(line,BUF_SIZE,f) != NULL) {
     line[BUF_SIZE-1] = '\0';
-    if (strncasecmp(line,"timeout:",8) == 0) {
+    if (strncmp(line,"timeout:",8) == 0) {
       time = &line[8];
       expire_time = parse_time(time);
       continue;
     }
-    else if (strncasecmp(line,"timein:",7) == 0) {
+    else if (strncmp(line,"timein:",7) == 0) {
       time = &line[7];
       in_time = parse_time(time);
       continue;
