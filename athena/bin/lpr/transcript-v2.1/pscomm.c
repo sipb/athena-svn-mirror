@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.19 1998-07-06 16:57:15 danw Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.20 1998-10-02 16:22:50 danw Exp $";
 #endif
 /* pscomm.c
  *
@@ -85,6 +85,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  1998/07/06 16:57:15  danw
+ * Accept Windows-generated PS files with PJL headers
+ *
  * Revision 1.18  1997/12/03 22:00:36  ghudson
  * NetBSD's stdio is a bit different.
  *
@@ -319,7 +322,11 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  */
 
 private char *getpages =
-"\n(%%%%[ pagecount: )print statusdict/pagecount get exec(                )cvs \
+"%%!\n%% It seems that if you put an HP printer into PS/PCL autodetect\n\
+%% mode, it requires that a document be a certain minimum length before\n\
+%% it decides if it's PS or PCL. This comment makes this postscript\n\
+%% program long enough so that it will work.\n\
+(%%%%[ pagecount: )print statusdict/pagecount get exec(                )cvs \
 print(, %d %d ]%%%%)= flush\n%s";
 
 private sigjmp_buf initlabel, synclabel, sendlabel, croaklabel, snmplabel;
