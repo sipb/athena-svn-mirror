@@ -91,18 +91,18 @@ clean::									@@\
 
 #if defined(sun) && defined(sparc)
 #define NOLINT
-#define LintFlags  -DSOLARIS -DSYSV -DPOSIX -DPOSIX_FLOCK
+#define LintFlags -DSOLARIS -DSYSV -DPOSIX -DPOSIX_FLOCK
 #define ProfCcFlags -pg
 #define CDebugFlags -O2
 #define CcFlags LintFlags -I/usr/openwin/include
-#define LdPath -L/usr/gcc/lib -L/usr/ccs/lib -L/usr/openwin/lib -L$(ATHLIBDIR)
-#define LdLibs /usr/athena/lib/libresolv.a -lsocket -lnsl  -lelf -ldl
-#define CcCmd cc
-#define LdCmd cc
-#define AnsiCcCmd cc
-#define AnsiLdCmd cc
+#define LdPath -L/usr/openwin/lib -L$(ATHLIBDIR)
+#define LdLibs /usr/athena/lib/libresolv.a -lsocket -lnsl -lelf -ldl
+#define CcCmd gcc -traditional
+#define LdCmd gcc
+#define AnsiCcCmd gcc
+#define AnsiLdCmd gcc
 #define RanLibCmd \:
-#define AfsDir /usr/transarc
+#define AfsDir /build/transarc
 #endif
 
 #if defined(mips) && defined(sgi)
@@ -110,7 +110,7 @@ clean::									@@\
 #define LintFlags  -DSYSV -DPOSIX -DPOSIX_FLOCK
 #define ProfCcFlags -p1
 #define CDebugFlags -O2
-#define CcFlags LintFlags -I/usr/include
+#define CcFlags LintFlags
 #define LdPath  -L/usr/X11/lib -L$(ATHLIBDIR)
 #define LdLibs  
 #define CcCmd cc
@@ -118,7 +118,7 @@ clean::									@@\
 #define AnsiCcCmd cc
 #define AnsiLdCmd cc
 #define RanLibCmd \:
-#define AfsDir /usr/transarc
+#define AfsDir /build/transarc
 #define AthXIncDir /usr/include
 #define AthXLibDir /usr/lib
 #endif
@@ -128,11 +128,7 @@ clean::									@@\
  * AFS configuration
  */
 #if !defined(AfsDir) && !defined(NoAFS)
-#ifdef UseInstalled
-#define AfsDir /usr/transarc
-#else
-#define AfsDir /usr/transarc
-#endif
+#define AfsDir /build/transarc
 #endif
 
 #define Krb5Dir /build/third/supported/kerberos5/src
