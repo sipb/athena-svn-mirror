@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.8 1994-08-24 03:40:04 cfields Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.9 1995-08-17 17:09:09 cfields Exp $
 ### $Locker:  $
 
 
@@ -46,6 +46,10 @@ SUN0424)
 SUN0535)
          echo "formatting SUN0535"
          cat /util/format.input.SUN0535 | /usr/sbin/format >/dev/null 2>&1
+	 ;;
+SUN1.05)
+         echo "formatting SUN1.05"
+         cat /util/format.input.SUN1.05 | /usr/sbin/format >/dev/null 2>&1
 	 ;;
 *)
          echo "can't format the disks - type unknown"
@@ -169,6 +173,8 @@ cp -p /srvd/etc/inetd.conf etc/
 cp -p /srvd/etc/services etc/
 cp -p /srvd/etc/athena/inetd.conf etc/athena/
 cp -p /srvd/etc/minor_perm etc/minor_perm
+cp -p /srvd/etc/system etc/system
+chmod 644 etc/system
 
 hostname=`echo $hostname | awk -F. '{print $1}' | /usr/bin/tr "[A-Z]" "[a-z]"`
 echo "Host name is $hostname"
@@ -213,9 +219,11 @@ cpio -idm </srvd/install/var.cpio
 ln -s /srvd/var/sadm sadm
 mkdir tmp 2>/dev/null
 chmod 1777 tmp
-#cd /root/var/usr/vice
-#mkdir cache
-#mkdir etc
+
+cd /var/usr/vice
+for i in  CellServDB SuidCells 
+        do cp -p /afs/athena/service/$i etc/ ; done
+echo "Copied afs service files into var/usr/vice/etc"
 
 echo "Initializing var/adm and spool files "
 cp /dev/null /root/var/adm/lastlog
