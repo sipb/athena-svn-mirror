@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.30 1997-05-08 07:31:17 ghudson Exp $
+# $Id: reactivate.sh,v 1.31 1997-10-31 00:49:03 jweiss Exp $
 
 trap "" 1 15
 
@@ -158,6 +158,22 @@ fi
 # Perform an update if appropriate
 /srvd/auto_update reactivate
 
+if [ "${PUBLIC}" = "true" -a -f /srvd/.rvdinfo ]; then
+	NEWVERS=`awk '{a=$5} END{print a}' /srvd/.rvdinfo`
+	THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
+	if [ "${NEWVERS}" = "${THISVERS}" ]; then
+		/usr/athena/etc/track
+		for i in `cat /srvd/usr/athena/lib/update/configfiles`; do
+			if [ -f /srvd$i ]; then
+				cp -p /srvd$i $i
+			else
+				cp -p /os$i $i
+			fi
+		done
+		kill -HUP `cat /var/athena/inetd.pid`
+	fi
+	rm -f /etc/athena/reactivate.local
+fi
 fi				# END time-consuming stuff
 
 if [ -f /usr/athena/bin/access_off ]; then /usr/athena/bin/access_off; fi
