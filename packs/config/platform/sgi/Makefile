@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 1997-03-25 11:40:33 ghudson Exp $
+# $Id: Makefile,v 1.8 1997-03-28 10:35:04 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -31,6 +31,7 @@ install:
 	-mkdir -p ${DESTDIR}${FLEXLM}
 	-mkdir -p ${DESTDIR}${NCS}
 	-mkdir -p ${DESTDIR}${NETLS}
+	install -c -m 0644 ../../aliases ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${X11LIB}
 	install -c -m 0644 4DWm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
