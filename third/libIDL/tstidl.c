@@ -17,11 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#ifdef IDL_LIBRARY
-#  include "IDL.h"
-#else
-#  include <libIDL/IDL.h>
-#endif
+#include <libIDL/IDL.h>
 
 #define IDLFP_IDENT_VISITED	(1UL << 0)
 
@@ -134,7 +130,7 @@ print_const_dcls (IDL_tree_func_data *tfd, WalkData *data)
 
 /* #define TEST_INPUT_CB */
 
-#ifdef _WIN32
+#ifdef G_OS_WIN32
 #  ifndef TEST_INPUT_CB
 #    define TEST_INPUT_CB
 #  endif
@@ -197,7 +193,7 @@ main (int argc, char *argv[])
 	WalkData data;
 	unsigned long parse_flags = 0;
 
-#ifndef _WIN32
+#ifndef G_PLATFORM_WIN32
 	{ extern int __IDL_debug;
 	__IDL_debug = argc >= 4 ? TRUE : FALSE; }
 #endif

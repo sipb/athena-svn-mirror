@@ -1,3 +1,118 @@
+2004-08-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.8.4.
+
+2004-02-02 Tomasz K³oczko <kloczek@pld.org.pl>
+
+	* libIDL.m4.in: added missing [] quotation first parameter of
+	AC_DEFUN(). This is neccessary for aclocal from automake 1.8.x
+	and is backward compatible fix with older auto tools.
+
+==================== 0.8.3 ====================
+
+2004-01-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* configiure.in: Version 0.8.3.
+	
+2004-01-21  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Laszlo Peter <laca@sun.com>
+
+	* libIDL-2.0-uninstalled.pc.in: add -uninstalled pkg-config
+	file to allow building against an uninstalled libIDL.
+
+	* include/libIDL/IDL.h.in: move the header here.
+
+	* IDL.h.new.in: kill this.
+
+	* Makefile.am: don't install the header from here.
+	
+	* tstidl.c, util.h: update for new header location.
+	
+2003-06-12  Fernando Herrera de las Heras  <fherrera@onirica.com>
+
+       * util.c (IDL_parse_filename): clobber LC_ALL
+
+2003-05-26  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.8.2.
+
+2003-05-08  Jody Goldberg <jody@gnome.org>
+
+	* lexer.l (__IDL_lex_cleanup) : newer versions of flex do not require
+	  YY_NEW_FILE.
+
+2003-05-03  Michael Meeks  <michael@ximian.com>
+
+	* Version 0.8.1
+
+2003-04-28  Nick Lewycky  <nicholas@metrix.on.ca>
+
+	* lexer.l (escaped_ident): add '_' escaped keyword
+	identifier support.
+
+	* BUGS: upd.
+	* util.c: add TODO
+
+2003-04-12  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* Makefile.am: add -no-undefined to libIDL_2_la_LDFLAGS.
+	
+	* IDL.h.new.in, tstidl.c: use G_PLATFORM_WIN32 and G_OS_WIN32
+	instead of _WIN32.
+
+	* configure.in: add AC_LIBTOOL_WIN32_DLL call and check for
+	unistd.h, popen(), symlink() and access().
+
+	* util.c, util.h: use HAVE_UNISTD_H, HAVE_POPEN, HAVE_SYMLINK and
+	HAVE_ACCESS instead of _WIN32, NO_POPEN, NO_SYMLINK and NO_ACCESS.
+
+2002-10-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: don't distribute built sources.
+	Hopefully this fixes #88977, there's no point
+	in distributing these anymore since we now
+	require flex.
+
+	* configure.in: remove warning about not having
+	flex. We error out earlier if we don't have flex.
+
+	* libIDL-config.in: rename to libIDL-config-2.in
+	and only distribute libIDL-config-2.
+
+	* libIDLConf.sh.in: kill this cruft.
+
+2002-09-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* libIDL-config.in: use pkg-config --(libs|cflags) glib-2.0.
+	instead of glib-config. The script is still going to go
+	away at soe stage though :-)
+	Patch from john.sun@sun.com and Jay Yan <jay.yan@sun.com>,
+	Fixes #93496.
+
+2002-09-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* libIDL-config.in: s/-lIDL/-lIDL-2/. This script
+	should be removed by rights.
+
+2002-08-27  Thomas Vander Stichele <thomas@apestaart.org>
+
+  	* configure.in: make failures to find a usable flex and yacc
+          critical 
+
+2002-08-18  Havoc Pennington  <hp@pobox.com>
+
+	* autogen.sh: hardcode aclocal-1.4/automake-1.4 so that users with
+	both automake 1.6 and 1.4 installed get the right automake. Means
+	compilation from CVS will now require the latest automake 1.4
+	release, or manually creating symlinks called "automake-1.4" and
+	"aclocal-1.4"
+
+2002-06-06  jacob berkman  <jacob@ximian.com>
+
+	* IDL.h.new.in: 
+	* configure.in: use %q rather than %ll on bsd (fixes bug #80439)
+
 2002-06-03  Mark McLoughlin  <mark@skynet.ie>
 
 	* configure.in: Version 0.8.0.

@@ -1,11 +1,11 @@
 dnl -*- mode: shell-script -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(IDL.h.new.in)
+AC_INIT(include/libIDL/IDL.h.in)
 
 LIBIDL_MAJOR_VERSION=0
 LIBIDL_MINOR_VERSION=8
-LIBIDL_MICRO_VERSION=0
+LIBIDL_MICRO_VERSION=4
 LIBIDL_VERSION=$LIBIDL_MAJOR_VERSION.$LIBIDL_MINOR_VERSION.$LIBIDL_MICRO_VERSION
 AC_SUBST(LIBIDL_MAJOR_VERSION)
 AC_SUBST(LIBIDL_MINOR_VERSION)
@@ -55,11 +55,19 @@ AC_DEFINE_UNQUOTED(CPP_PROGRAM, "$CPP")
 
 AM_PROG_LEX
 if [[ "$LEX" != "flex" ]]; then
-	AC_MSG_WARN(flex is required to create the libIDL scanner)
+	AC_MSG_ERROR(flex is required to create the libIDL scanner)
 fi
 LFLAGS="-8"
 AC_SUBST(LFLAGS)
+
 AC_PROG_YACC
+dnl determine if a usable yacc is available on this system
+AC_CHECK_PROG(HAVE_YACC, $YACC, yes, no)
+if [[ "$HAVE_YACC" = "no" ]]; then
+	AC_MSG_ERROR($YACC is not usable as yacc - consider using bison)
+fi
+
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 AM_MAINTAINER_MODE
 
@@ -70,6 +78,7 @@ AC_SUBST(LIBIDL_CFLAGS)
 
 AC_STDC_HEADERS
 AC_CHECK_HEADERS(stddef.h)
+AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADERS(wchar.h, HAVE_WCHAR_H=1)
 AC_CHECK_HEADERS(wcstr.h, HAVE_WCSTR_H=1)
 if test -z "$HAVE_WCHAR_H"; then 
@@ -80,6 +89,39 @@ if test -z "$HAVE_WCSTR_H"; then
 fi
 AC_SUBST(HAVE_WCHAR_H)
 AC_SUBST(HAVE_WCSTR_H)
+AC_CHECK_FUNCS(popen symlink access)
+
+dnl glib requires a 64-bit type
+dnl to support win32 add __int64
+AC_CHECK_SIZEOF(long long)
+
+AC_MSG_CHECKING(for format to printf and scanf a guint64)
+AC_CACHE_VAL(libIDL_cv_long_long_format,[
+    for format in ll q I64; do
+	AC_TRY_RUN([#include <stdio.h>  
+	    int main()
+	    {
+		long long b, a = -0x3AFAFAFAFAFAFAFALL;
+		char buffer[1000];
+		sprintf (buffer, "%${format}u", a);
+  		sscanf (buffer, "%${format}u", &b);
+		exit (b!=a);
+	    }
+	    ],
+	    libIDL_cv_long_long_format=${format}
+	    break)
+	done])
+if test -n "$libIDL_cv_long_long_format"; then
+    AC_MSG_RESULT(%${libIDL_cv_long_long_format}u)
+    IDL_LL="\"${libIDL_cv_long_long_format}\""
+    AC_SUBST(IDL_LL)
+else
+    AC_MSG_RESULT(none)
+    AC_MSG_ERROR([
+*** libIDL requires a 64 bit format type.
+])
+fi
+
 
 if test "x$GCC" = "xyes" -a "x$enable_compile_warnings" != "xno"; then
         WARN_CFLAGS="-Wall -Wunused -Wmissing-prototypes -Wmissing-declarations"
@@ -94,30 +136,19 @@ AC_SUBST(WARN_CFLAGS)
 AC_OUTPUT([
 Makefile
 Makefile.msc
-libIDL-config
+include/Makefile
+include/libIDL/Makefile
+include/libIDL/IDL.h
+libIDL-config-2
 libIDL.m4
 libIDL.spec
 libIDL-2.0.pc
-IDL.h.new
-],[
-AC_UPDATE_IF_CHANGED(IDL.h, IDL.h.new)
+libIDL-2.0-uninstalled.pc
 ])
 
 echo
 echo libIDL $LIBIDL_VERSION configuration complete
 echo
-if [[ "$LEX" != "flex" ]]; then
-	echo "  Flex installed: no"
-	echo
-	echo " -----------------------------------------------------------"
-	echo "    WARNING: flex was not found.  Either use the lexer.c"
-	echo "    that comes with the official distribution or install"
-	echo "    flex if you want to regenerate lexer.c from lexer.l."
-	echo " -----------------------------------------------------------"
-	echo
-else
-	echo "  Flex installed: yes"
-fi
 echo "  C Preprocessor: \"$CPP_PROGRAM\""
 if [[ "$ac_cv_cpp_pipe_stdin" = "yes" ]]; then
 	echo "  Standard input supported."

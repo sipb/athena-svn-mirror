@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: lexer.l,v 1.1.1.1 2002-12-26 17:10:39 ghudson Exp $
+    $Id: lexer.l,v 1.1.1.2 2004-09-22 23:38:49 ghudson Exp $
 
 ***************************************************************************/
 %{
@@ -105,7 +105,7 @@ float_lit		[0-9]*\.[0-9]+([eE]-?[0-9]+)?|[0-9]+\.?([eE]-?[0-9]+)?
 fixed_lit		([0-9]*\.[0-9]+|-?[0-9]+\.?[0-9]*)[dD]
 declspec		__declspec{whitespacenl}\({whitespacenl}[A-Za-z]*{whitespacenl}\)
 happy_ident		[A-Za-z][A-Za-z0-9]*
-err1_ident		_[A-Za-z0-9_]+
+escaped_ident		_[A-Za-z0-9_]+
 warn1_ident		[A-Za-z][A-Za-z0-9_]*
 prop_key		[A-Za-z][A-Za-z0-9_]*
 prop_value		\([^\)]+\)
@@ -309,10 +309,8 @@ wstring			tokreturn (TOK_WSTRING);
 	yylval.str = g_strdup (yytext);
 	tokreturn (TOK_IDENT);
 }
-{err1_ident}						{
-	yyerrorv ("`%s' is not a valid identifier in IDL", yytext);
-	yyerror ("(Identifiers cannot start with an underscore)");
-	yylval.str = g_strdup (yytext);
+{escaped_ident}						{
+	yylval.str = g_strdup (&yytext[1]);
 	tokreturn (TOK_IDENT);
 }
 {warn1_ident}						{
@@ -392,7 +390,9 @@ void __IDL_lex_init (void)
 void __IDL_lex_cleanup (void)
 {
 	__IDL_cur_filename = NULL;
-	YY_NEW_FILE;
+#ifdef YY_NEW_FILE
+	YY_NEW_FILE; /* obsolete with newer versions of flex */
+#endif
 }
 
 int yywrap (void)
