@@ -92,13 +92,16 @@ Distribution sites for software under third
 -------------------------------------------
 
 	afsbin		See below.
+	ammonite	ftp.gnome.org:pub/GNOME/unstable/sources/ammonite
 	audiofile	ftp.gnome.org:pub/GNOME/stable/sources/audiofile
 	bind		ftp.isc.org:isc/bind/src
+	bonobo		ftp.gnome.org:pub/GNOME/unstable/sources/bonobo
 	control-center	ftp.gnome.org:pub/GNOME/unstable/sources/control-center
 	db		http://www.sleepycat.com/download.html
 	emacs		ftp.gnu.org:pub/gnu/emacs; see also "leim"
 	esound		ftp.gnome.org:pub/GNOME/stable/sources/esound
 	gcc		ftp.gnu.org:pub/gnu/gcc
+	GConf		ftp.gnome.org:pub/GNOME/unstable/sources/GConf
 	gdbm		ftp.gnu.org:pub/gnu/gdbm
 	gdk-pixbuf	ftp.gnome.org:pub/GNOME/unstable/sources/gdk-pixbuf
 	gettext		ftp.gnu.org:pub/gnu/gettext
@@ -108,6 +111,7 @@ Distribution sites for software under third
 	gmp		ftp.gnu.org:pub/gnu/gmp
 	gnome-core	ftp.gnome.org:pub/GNOME/stable/sources/gnome-core
 	gnome-libs	ftp.gnome.org:pub/GNOME/stable/sources/gnome-libs
+	gnome-vfs	ftp.gnome.org:pub/GNOME/unstable/sources/gnome-vfs
 	imlib		(Formerly www.rasterman.com; imlib 1 is dead now)
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
 	intlfonts	ftp.gnu.org:pub/gnu/intlfonts
@@ -124,9 +128,12 @@ Distribution sites for software under third
 	libxml		ftp.gnome.org:pub/GNOME/stable/sources/libxml
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
 	lprng		ftp.astart.com:pub/LPRng; see below
+	medusa		ftp.gnome.org:pub/GNOME/unstable/sources/medusa
 	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
+	nautilus	ftp.gnome.org:pub/GNOME/unstable/sources/nautilus
 	nmh		ftp.math.gatech.edu:pub/nmh
 	nvi		http://www.bostic.com/vi/
+	oaf		ftp.gnome.org:pub/GNOME/unstable/sources/oaf
 	ORBit		ftp.gnome.org:pub/GNOME/stable/sources/ORBit
 	patch		ftp.gnu.org:pub/gnu/patch
 	perl		ftp.cpan.org:pub/CPAN/src
