@@ -15,7 +15,7 @@
 . /etc/rc.d/init.d/functions
 
 . /etc/sysconfig/network
-. /etc/sysconfig/athena-inetd
+. /etc/athena/rc.conf
 
 PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
 
