@@ -1,4 +1,4 @@
-# $Id: packages,v 1.88 1999-10-05 17:10:49 danw Exp $
+# $Id: packages,v 1.89 1999-10-10 17:39:08 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -116,7 +116,7 @@ third/ispell			except linux
 third/jot
 third/kermit
 third/kpasswd			requires krb5
-third/krb5
+third/krb5			requires hesiod
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod
 third/ksrvutil			requires krb5
 third/lam
