@@ -25,7 +25,6 @@
 
 #include "zenity.h"
 #include <stdlib.h>
-#include <locale.h>
 #include <popt.h>
 #include <langinfo.h>
 #ifdef HAVE_LOCALE_H
@@ -96,6 +95,7 @@ enum {
   OPTION_FILENAME,
   OPTION_MULTIFILE,
   OPTION_TEXTFILENAME,
+  OPTION_LISTTEXT,
   OPTION_COLUMN,
   OPTION_SEPERATOR,
   OPTION_LISTEDIT,
@@ -105,6 +105,7 @@ enum {
   OPTION_PERCENTAGE,
   OPTION_PULSATE,
   OPTION_AUTOCLOSE,
+  OPTION_PRINTCOLUMN,
   OPTION_QUESTIONTEXT,
   OPTION_WARNINGTEXT,
   OPTION_ABOUT,
@@ -113,10 +114,10 @@ enum {
 };
 
 static void zenity_parse_options_callback (poptContext              ctx,
-    enum poptCallbackReason  reason,
-    const struct poptOption *opt,
-    const char              *arg,
-    void                    *data);
+					   enum poptCallbackReason  reason,
+					   const struct poptOption *opt,
+					   const char              *arg,
+					   void                    *data);
 
 struct poptOption options[] = {
   {
@@ -462,6 +463,15 @@ struct poptOption list_options[] = {
     NULL
   },
   {
+    "text",
+    '\0',
+    POPT_ARG_STRING,
+    NULL,
+    OPTION_LISTTEXT,
+    N_("Set the dialog text"),
+    NULL
+  },
+  {
     "column",
     '\0',
     POPT_ARG_STRING,
@@ -504,6 +514,15 @@ struct poptOption list_options[] = {
     NULL,
     OPTION_LISTEDIT,
     N_("Allow changes to text"),
+    NULL
+  },
+  {
+    "print-column",
+    '\0',
+    POPT_ARG_STRING,
+    NULL,
+    OPTION_PRINTCOLUMN,
+    N_("Print a specific column (Default is 1. 'ALL' can be used to print all columns)"),
     NULL
   },
   POPT_TABLEEND
@@ -959,9 +978,11 @@ zenity_init_parsing_options (void) {
   results->progress_data->pulsate = FALSE;
   results->progress_data->autoclose = FALSE;
   results->entry_data->visible = TRUE;
+  results->tree_data->dialog_text = NULL;
   results->tree_data->checkbox = FALSE;
   results->tree_data->radiobox = FALSE;
   results->tree_data->editable = FALSE;
+  results->tree_data->print_column = NULL;
 }
 
 static void
@@ -1004,10 +1025,14 @@ zenity_free_parsing_options (void) {
         g_free (results->text_data->uri);
       break;
     case MODE_LIST:
+      if (results->tree_data->dialog_text)
+        g_free (results->tree_data->dialog_text);
       if (results->tree_data->columns)
         g_slist_foreach (results->tree_data->columns, (GFunc) g_free, NULL);
       if (results->tree_data->separator)
         g_free (results->tree_data->separator);
+      if (results->tree_data->print_column)
+        g_free (results->tree_data->print_column);
       break;
     default:
       break;
@@ -1237,6 +1262,7 @@ zenity_parse_options_callback (poptContext              ctx,
     case OPTION_ERRORTEXT: 
     case OPTION_QUESTIONTEXT: 
     case OPTION_PROGRESSTEXT: 
+    case OPTION_LISTTEXT: 
     case OPTION_WARNINGTEXT: 
       
       /* FIXME: This is an ugly hack because of the way the poptOptions are 
@@ -1244,7 +1270,7 @@ zenity_parse_options_callback (poptContext              ctx,
        * parse_options_callback gets called for each option. Suckage 
        */
 
-      if (parse_option_text > 6) 
+      if (parse_option_text > 7) 
         zenity_error ("--text", ERROR_DUPLICATE); 
      
       switch (results->mode) { 
@@ -1266,6 +1292,10 @@ zenity_parse_options_callback (poptContext              ctx,
         case MODE_PROGRESS: 
           results->progress_data->dialog_text = g_locale_to_utf8 (g_strcompress (arg),
 								  -1, NULL, NULL, NULL);
+          break; 
+        case MODE_LIST: 
+          results->tree_data->dialog_text = g_locale_to_utf8 (g_strcompress (arg),
+						              -1, NULL, NULL, NULL);
           break; 
         default: 
           zenity_error ("--text", ERROR_SUPPORT); 
@@ -1335,7 +1365,7 @@ zenity_parse_options_callback (poptContext              ctx,
        * parse_options_callback gets called for each option. Suckage 
        */ 
       
-      if (parse_option_file > 2) 
+      if (parse_option_editable > 2) 
         zenity_error ("--editable", ERROR_DUPLICATE); 
       
       switch (results->mode) { 
@@ -1387,18 +1417,18 @@ zenity_parse_options_callback (poptContext              ctx,
       break; 
     case OPTION_CHECKLIST: 
       if (results->mode != MODE_LIST) 
-        zenity_error ("--checkbox", ERROR_SUPPORT); 
+        zenity_error ("--checklist", ERROR_SUPPORT); 
       
       if (results->tree_data->checkbox) 
-        zenity_error ("--checkbox", ERROR_DUPLICATE); 
+        zenity_error ("--checklist", ERROR_DUPLICATE); 
       
       results->tree_data->checkbox = TRUE; 
       break; 
     case OPTION_RADIOLIST: 
       if (results->mode != MODE_LIST) 
-        zenity_error ("--radiobox", ERROR_SUPPORT); 
+        zenity_error ("--radiolist", ERROR_SUPPORT); 
       if (results->tree_data->radiobox) 
-        zenity_error ("--radiobox", ERROR_DUPLICATE); 
+        zenity_error ("--radiolist", ERROR_DUPLICATE); 
       
       results->tree_data->radiobox = TRUE; 
       break; 
@@ -1438,6 +1468,12 @@ zenity_parse_options_callback (poptContext              ctx,
         zenity_error ("--auto-close", ERROR_SUPPORT);
 
       results->progress_data->autoclose = TRUE;
+      break;
+    case OPTION_PRINTCOLUMN:
+      if (results->mode != MODE_LIST)
+        zenity_error ("--print-column", ERROR_SUPPORT);
+
+      results->tree_data->print_column = g_strdup (arg);
       break;
     case OPTION_ABOUT: 
       if (results->mode != MODE_LAST) 

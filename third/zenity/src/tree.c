@@ -33,6 +33,8 @@
 static GladeXML *glade_dialog;
 static GSList *selected;
 static gchar *separator;
+static gboolean print_all_columns = FALSE;
+static gint print_column_n = 1;
 
 static void zenity_tree_dialog_response (GtkWidget *widget, int response, gpointer data);
 
@@ -139,7 +141,7 @@ zenity_tree_handle_stdin (GIOChannel  *channel,
       }
 
       if (toggles && column_count == 0) {
-        if (strcmp (zenity_util_strip_newline (string->str), "TRUE") == 0)
+        if (strcmp (g_strdown (zenity_util_strip_newline (string->str)), "true") == 0)
           gtk_list_store_set (GTK_LIST_STORE (model), &iter, column_count, TRUE, -1);
 	else
           gtk_list_store_set (GTK_LIST_STORE (model), &iter, column_count, FALSE, -1);
@@ -207,6 +209,8 @@ zenity_tree_fill_entries (GtkTreeView  *tree_view,
 
   model = gtk_tree_view_get_model (tree_view);
 
+  g_object_set_data (G_OBJECT (tree_view), "n_columns", (gint *) n_columns);
+
   while (args[i] != NULL) {
     gint j;
 
@@ -215,7 +219,7 @@ zenity_tree_fill_entries (GtkTreeView  *tree_view,
     for (j = 0; j < n_columns; j++) {
 	
       if (toggles && j == 0) {
-        if (strcmp (args[i+j], "TRUE") == 0)
+        if (strcmp (g_strdown ((gchar *) args[i+j]), "true") == 0)
           gtk_list_store_set (GTK_LIST_STORE (model), &iter, j, TRUE, -1);
 	else 
           gtk_list_store_set (GTK_LIST_STORE (model), &iter, j, FALSE, -1);
@@ -269,6 +273,7 @@ zenity_tree (ZenityData *data, ZenityTreeData *tree_data)
 {
   GtkWidget *dialog;
   GtkWidget *tree_view;
+  GtkWidget *text;
   GtkTreeViewColumn *column;
   GtkListStore *model;
   GType *column_types;
@@ -287,6 +292,13 @@ zenity_tree (ZenityData *data, ZenityTreeData *tree_data)
 
   n_columns = g_slist_length (tree_data->columns);
 
+  if (tree_data->print_column) {
+    if (strcmp (g_strdown (tree_data->print_column), "all") == 0)
+      print_all_columns = TRUE;
+    else
+      print_column_n = atoi (tree_data->print_column);
+  }
+
   if (n_columns == 0) {
     g_printerr (_("No column titles specified for List dialog.\n")); 
     data->exit_code = zenity_util_return_exit_code (ZENITY_ERROR);
@@ -303,12 +315,18 @@ zenity_tree (ZenityData *data, ZenityTreeData *tree_data)
   if (data->dialog_title)
     gtk_window_set_title (GTK_WINDOW (dialog), data->dialog_title);
 
+  text = glade_xml_get_widget (glade_dialog, "zenity_tree_text");
+                                                                                
+  if (tree_data->dialog_text)
+  gtk_label_set_text (GTK_LABEL (text), tree_data->dialog_text);
+
   if (data->window_icon)
     zenity_util_set_window_icon (dialog, data->window_icon);
   else
     zenity_util_set_window_icon (dialog, ZENITY_IMAGE_FULLPATH ("zenity-list.png"));
 
-  gtk_window_set_default_size (GTK_WINDOW (dialog), data->width, data->height);
+  if (data->width > -1 || data->height > -1)
+    gtk_window_set_default_size (GTK_WINDOW (dialog), data->width, data->height);
 
   tree_view = glade_xml_get_widget (glade_dialog, "zenity_tree_view");
 
@@ -436,7 +454,7 @@ zenity_tree (ZenityData *data, ZenityTreeData *tree_data)
       zenity_tree_fill_entries_from_stdin (GTK_TREE_VIEW (tree_view), n_columns, FALSE, tree_data->editable);
   }
 
-  gtk_widget_show (dialog);
+  zenity_util_show_dialog (dialog);
   gtk_main ();
 
   if (glade_dialog)
@@ -447,25 +465,58 @@ static void
 zenity_tree_dialog_get_selected (GtkTreeModel *model, GtkTreePath *path_buf, GtkTreeIter *iter, GtkTreeView *tree_view)
 {
   GValue value = {0, };
+  gint n_columns, i;
 
-  gtk_tree_model_get_value (model, iter, 0, &value);
+  n_columns = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (tree_view), "n_columns"));
 
-  selected = g_slist_append (selected, g_strdup (g_value_get_string (&value)));
-  g_value_unset (&value);
+  if (print_all_columns) {
+    for (i = 0; i < n_columns; i++) {
+      gtk_tree_model_get_value (model, iter, i, &value);
+
+      selected = g_slist_append (selected, g_strdup (g_value_get_string (&value)));
+      g_value_unset (&value);
+    }
+    return;
+  }
+
+  if (print_column_n > 0 && print_column_n <= n_columns) {
+    gtk_tree_model_get_value  (model, iter, print_column_n - 1, &value);
+
+    selected = g_slist_append (selected, g_strdup (g_value_get_string (&value)));
+    g_value_unset (&value);
+  }
 }
 
 static gboolean
-zenity_tree_dialog_toggle_get_selected (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+zenity_tree_dialog_toggle_get_selected (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, GtkTreeView *tree_view)
 {
   GValue toggle_value = {0, };
+  gint n_columns, i;
+
+  n_columns = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (tree_view), "n_columns"));
 
   gtk_tree_model_get_value (model, iter, 0, &toggle_value);
 
   if (g_value_get_boolean (&toggle_value)) {
     GValue value = {0, };
-    gtk_tree_model_get_value (model, iter, 1, &value);
-    selected = g_slist_append (selected, g_strdup (g_value_get_string (&value)));
-    g_value_unset (&value);
+
+    if (print_all_columns) {
+      for (i = 1; i < n_columns; i++) {
+        gtk_tree_model_get_value (model, iter, i, &value);
+        
+        selected = g_slist_append (selected, g_strdup (g_value_get_string (&value)));
+        g_value_unset (&value);
+      }
+      g_value_unset (&toggle_value);
+      return FALSE;
+    }
+
+    if (print_column_n > 0 && print_column_n <= n_columns) {
+      gtk_tree_model_get_value (model, iter, print_column_n, &value);
+
+      selected = g_slist_append (selected, g_strdup (g_value_get_string (&value)));
+      g_value_unset (&value);
+    }
   }
   g_value_unset (&toggle_value);
   return FALSE;
@@ -503,7 +554,8 @@ zenity_tree_dialog_response (GtkWidget *widget, int response, gpointer data)
       model = gtk_tree_view_get_model (GTK_TREE_VIEW (tree_view));
 
       if (gtk_tree_model_get_column_type (model, 0) == G_TYPE_BOOLEAN)
-        gtk_tree_model_foreach (model, (GtkTreeModelForeachFunc) zenity_tree_dialog_toggle_get_selected, NULL);
+        gtk_tree_model_foreach (model, (GtkTreeModelForeachFunc) zenity_tree_dialog_toggle_get_selected,
+                                GTK_TREE_VIEW (tree_view));
       else {
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
         gtk_tree_selection_selected_foreach (selection, 
@@ -512,12 +564,10 @@ zenity_tree_dialog_response (GtkWidget *widget, int response, gpointer data)
       }
       zenity_tree_dialog_output ();
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_OK);
-      gtk_main_quit ();
       break;
 
     case GTK_RESPONSE_CANCEL:
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_CANCEL);
-      gtk_main_quit ();
       break;
 
     default:
@@ -525,4 +575,5 @@ zenity_tree_dialog_response (GtkWidget *widget, int response, gpointer data)
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_ESC);
       break;
   }
+  gtk_main_quit ();
 }
