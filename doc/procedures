@@ -6,6 +6,7 @@ to CVS.  Areas covered in this file are:
 
 	Checking out a working directory
 	Preparing changes for review, and reviewing changes
+	Updating third-party sources
 	When to update the doc/news file
 	When to update the doc/third-party file
 
@@ -84,6 +85,24 @@ try out changes (by checking out your own working directory and
 applying the patch) before signing onto them, but for small, obvious
 changes to big modules the inconvenience outweights the benefit of
 this consideration.
+
+Updating third-party sources
+----------------------------
+
+For modules in the third hierarchy, we generally use the "cvs import"
+command to track development from outside.  (To find out if this
+applies to a given module, to a "cvs log" of a file in the tree; if
+you see a revision 1.1.1.1, then we're using cvs import.)  Under no
+circumstances should you ever check a new version of a third-party
+package onto the mainline if it was originally imported with cvs
+import; it's very difficult to recover from that particular mistake.
+Always refer to doc/third-party before doing an import to see if there
+are any special notes on the module you are importing.
+
+Generally, you should only import "clean" third-party source trees
+with no modifications.  If for some reason you need to modify a tree
+before importing it, make a note in the doc/third-party file so that
+people doing future imports will know about it.
 
 When to update the doc/news file
 --------------------------------
