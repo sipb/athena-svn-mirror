@@ -35,6 +35,8 @@ void        <link linkend="AccessibleEventListener-unref">AccessibleEventListene
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -62,20 +64,16 @@ void        <link linkend="AccessibleEventListener-unref">AccessibleEventListene
                                              void *user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>event</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="SPI-createAccessibleEventListener">SPI_createAccessibleEventListener ()</title>
 <programlisting><link linkend="AccessibleEventListener">AccessibleEventListener</link>* SPI_createAccessibleEventListener
@@ -85,21 +83,17 @@ void        <link linkend="AccessibleEventListener-unref">AccessibleEventListene
 Create a new <link linkend="AccessibleEventListener">AccessibleEventListener</link> with a specified (in-process) callback function.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
-<entry> an <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> callback function, or NULL.
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry> a pointer to data which will be passed to the callback when invoked.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a pointer to a newly-created <link linkend="AccessibleEventListener">AccessibleEventListener</link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> callback function, or NULL.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to data which will be passed to the callback when invoked.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a pointer to a newly-created <link linkend="AccessibleEventListener">AccessibleEventListener</link>.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEventListener-unref">AccessibleEventListener_unref ()</title>
 <programlisting>void        AccessibleEventListener_unref   (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener);</programlisting>
@@ -107,15 +101,11 @@ Create a new <link linkend="AccessibleEventListener">AccessibleEventListener</li
 Decrements an <link linkend="AccessibleEventListener">AccessibleEventListener</link>'s reference count.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleEventListener">AccessibleEventListener</link> being operated on.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEventListener">AccessibleEventListener</link> being operated on.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEventListener-addCallback">AccessibleEventListener_addCallback ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEventListener_addCallback
@@ -131,24 +121,20 @@ use this function to attach callbacks to a 'remote' event listener
 <link linkend="createAccessibleEventListener">createAccessibleEventListener</link>();</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
-<entry> the <link linkend="AccessibleEventListener">AccessibleEventListener</link> instance to modify.
-</entry></row>
-<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
-<entry> an <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> function pointer.
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry> a pointer to data which will be passed to the callback when invoked.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="AccessibleEventListener">AccessibleEventListener</link> instance to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> function pointer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to data which will be passed to the callback when invoked.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEventListener-removeCallback">AccessibleEventListener_removeCallback ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEventListener_removeCallback
@@ -158,21 +144,17 @@ use this function to attach callbacks to a 'remote' event listener
 Remove an in-process callback function from an existing AccessibleEventListener.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
-<entry> the <link linkend="AccessibleEventListener">AccessibleEventListener</link> instance to modify.
-</entry></row>
-<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
-<entry> an <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> function pointer.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="AccessibleEventListener">AccessibleEventListener</link> instance to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> function pointer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

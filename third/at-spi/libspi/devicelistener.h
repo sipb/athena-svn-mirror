@@ -21,33 +21,39 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef SPI_LISTENER_H_
-#define SPI_LISTENER_H_
+#ifndef SPI_DEVICE_LISTENER_H_
+#define SPI_DEVICE_LISTENER_H_
 
 #include <bonobo/bonobo-object.h>
 #include <atk/atkobject.h>
 #include <libspi/Accessibility.h>
+#include <libspi/keymasks.h>
 
 G_BEGIN_DECLS
 
-#define SPI_LISTENER_TYPE        (spi_listener_get_type ())
-#define SPI_LISTENER(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), SPI_LISTENER_TYPE, SpiListener))
-#define SPI_LISTENER_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), SPI_LISTENER_TYPE, SpiListenerClass))
-#define SPI_IS_LISTENER(o)       (G_TYPE_CHECK__INSTANCE_TYPE ((o), SPI_LISTENER_TYPE))
-#define SPI_IS_LISTENER_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), SPI_LISTENER_TYPE))
+#define SPI_DEVICE_LISTENER_TYPE        (spi_device_listener_get_type ())
+#define SPI_DEVICE_LISTENER(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), SPI_DEVICE_LISTENER_TYPE, SpiDeviceListener))
+#define SPI_DEVICE_LISTENER_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), SPI_DEVICE_LISTENER_TYPE, SpiDeviceListenerClass))
+#define SPI_IS_DEVICE_LISTENER(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), SPI_DEVICE_LISTENER_TYPE))
+#define SPI_IS_DEVICE_LISTENER_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), SPI_DEVICE_LISTENER_TYPE))
 
-typedef struct {
+typedef struct _SpiDeviceListener SpiDeviceListener;
+
+struct _SpiDeviceListener {
         BonoboObject parent;
-} SpiListener;
+};
 
 typedef struct {
         BonoboObjectClass parent_class;
-        POA_Accessibility_EventListener__epv epv;
-} SpiListenerClass;
+        POA_Accessibility_DeviceEventListener__epv epv;
 
-GType        spi_listener_get_type (void);
-SpiListener *spi_listener_new      (void);
+	gboolean (*device_event) (SpiDeviceListener *listener,
+				  const Accessibility_DeviceEvent *key);
+} SpiDeviceListenerClass;
+
+GType                  spi_device_listener_get_type        (void);
+SpiDeviceListener     *spi_device_listener_new             (void);
 
 G_END_DECLS
 
-#endif /* SPI_LISTENER_H_ */
+#endif /* DEVICE_SPI_LISTENER_H_ */

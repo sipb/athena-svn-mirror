@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -130,6 +131,13 @@ extern "C" {
  * @SPI_ROLE_WINDOW: A top level window with no title or border.
  * @SPI_ROLE_EXTENDED: This object's role is not included in the standard role list and
  *                     should be queried by name.
+ * @SPI_ROLE_HEADER: An object that serves as a document header.
+ * @SPI_ROLE_FOOTER: An object that serves as a document footer.
+ * @SPI_ROLE_PARAGRAPH: An object which is contains a paragraph of text content.
+ * @SPI_ROLE_RULER: An object which describes margins and tab stops, etc.  for text objects 
+ *                  which it controls (should have CONTROLLER_FOR relation to such). 
+ * @SPI_ROLE_APPLICATION: An object which corresponds to a desktop application,
+ *                  which may have children of @SPI_ROLE_FRAME or other type.
  * @SPI_ROLE_LAST_DEFINED: Used to determine the end of the role enumeration.
  **/
 typedef enum
@@ -204,6 +212,11 @@ typedef enum
   SPI_ROLE_VIEWPORT,
   SPI_ROLE_WINDOW,
   SPI_ROLE_EXTENDED,
+  SPI_ROLE_HEADER,
+  SPI_ROLE_FOOTER,
+  SPI_ROLE_PARAGRAPH,
+  SPI_ROLE_RULER,
+  SPI_ROLE_APPLICATION,
   SPI_ROLE_LAST_DEFINED
 } AccessibleRole;
 

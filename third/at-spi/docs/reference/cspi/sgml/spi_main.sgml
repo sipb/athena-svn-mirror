@@ -29,6 +29,8 @@ void        <link linkend="SPI-freeString">SPI_freeString</link>                
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -45,14 +47,10 @@ void        <link linkend="SPI-freeString">SPI_freeString</link>                
 Connects to the accessibility registry and initializes the SPI.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 0 on success, otherwise an integer error code.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 0 on success, otherwise an integer error code.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="SPI-event-main">SPI_event_main ()</title>
 <programlisting>void        SPI_event_main                  (void);</programlisting>
@@ -85,15 +83,11 @@ Used by clients that don't wish to use <link linkend="SPI-event-main">SPI_event_
 Not Yet Implemented.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if an event is waiting, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if an event is waiting, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="SPI-nextEvent">SPI_nextEvent ()</title>
 <programlisting><link linkend="AccessibleEvent">AccessibleEvent</link>* SPI_nextEvent              (<link linkend="SPIBoolean">SPIBoolean</link> waitForEvent);</programlisting>
@@ -106,17 +100,13 @@ Used by clients that don't wish to use <link linkend="SPI-event-main">SPI_event_
 Not Yet Implemented.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>waitForEvent</parameter>&nbsp;:</entry>
-<entry> a <link linkend="SPIBoolean">SPIBoolean</link> indicating whether to block or not.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the next <link linkend="AccessibleEvent">AccessibleEvent</link> in the SPI event queue.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>waitForEvent</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SPIBoolean">SPIBoolean</link> indicating whether to block or not.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the next <link linkend="AccessibleEvent">AccessibleEvent</link> in the SPI event queue.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="SPI-exit">SPI_exit ()</title>
 <programlisting>int         SPI_exit                        (void);</programlisting>
@@ -125,14 +115,10 @@ Disconnects from the Accessibility Registry and releases
 any floating resources. Call only once at exit.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 0 if there were no leaks, otherwise non zero.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 0 if there were no leaks, otherwise non zero.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="SPI-freeString">SPI_freeString ()</title>
 <programlisting>void        SPI_freeString                  (char *s);</programlisting>
@@ -144,15 +130,11 @@ This API should not be used to free strings
 from other libraries or allocated by the client.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
-<entry> a character string returned from another at-spi call.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>s</parameter>&nbsp;:</term>
+<listitem><simpara> a character string returned from another at-spi call.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

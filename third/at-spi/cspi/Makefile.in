@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -93,6 +93,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -117,6 +118,7 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POPT_LIBS = @POPT_LIBS@
 RANLIB = @RANLIB@
+REBUILD = @REBUILD@
 REGISTRYD_CFLAGS = @REGISTRYD_CFLAGS@
 REGISTRYD_LIBS = @REGISTRYD_LIBS@
 STRIP = @STRIP@
@@ -124,6 +126,7 @@ TESTS_CFLAGS = @TESTS_CFLAGS@
 TESTS_LIBS = @TESTS_LIBS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+XINPUT_LIBS = @XINPUT_LIBS@
 XTST_LIBS = @XTST_LIBS@
 X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
@@ -134,22 +137,50 @@ NULL =
 
 lib_LTLIBRARIES = libcspi.la
 
-INCLUDES = -I $(top_srcdir)                      -I $(top_builddir)                    $(X_CFLAGS)                           $(LIBCSPI_CFLAGS)
+INCLUDES = -I $(top_srcdir)           \
+           -I $(top_builddir)         \
+           $(X_CFLAGS)                \
+           $(LIBCSPI_CFLAGS)
 
 
 LDFLAGS = @LDFLAGS@ $(LIBCSPI_LIBS) @LT_VERSION_INFO@
 
-LDADD =  	../libspi/libspi.la		$(LIBCSPI_LIBS) $(X_LIBS)
+LDADD = \
+	../libspi/libspi.la	\
+	$(LIBCSPI_LIBS) $(X_LIBS)
 
 
 libcspidir = $(includedir)/at-spi-1.0/cspi
-libcspi_HEADERS =  	spi.h				spi-impl.h			spi-listener.h			spi-roletypes.h			spi-statetypes.h
+libcspi_HEADERS = \
+	spi.h			\
+	spi-impl.h		\
+	spi-listener.h		\
+	spi-roletypes.h		\
+	spi-statetypes.h
 
 
-libcspi_la_SOURCES =  	cspi-lowlevel.h			spi_accessible.c		spi_action.c			spi_application.c		spi_component.c			spi_editabletext.c		spi_event.c			spi_hyperlink.c			spi_hypertext.c			spi_image.c			spi_main.c			spi-private.h			spi_registry.c			spi_selection.c			spi_table.c			spi_text.c			spi_value.c
+libcspi_la_SOURCES = \
+	cspi-lowlevel.h		\
+	spi_accessible.c	\
+	spi_action.c		\
+	spi_application.c	\
+	spi_component.c		\
+	spi_editabletext.c	\
+	spi_event.c		\
+	spi_hyperlink.c		\
+	spi_hypertext.c		\
+	spi_image.c		\
+	spi_main.c		\
+	spi-private.h		\
+	spi_registry.c		\
+	spi_selection.c		\
+	spi_table.c		\
+	spi_text.c		\
+	spi_value.c
 
 
-libcspi_la_LIBADD =  	bonobo/libcspi-bonobo.la
+libcspi_la_LIBADD = \
+	bonobo/libcspi-bonobo.la
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -396,10 +427,10 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-spi_accessible.lo spi_accessible.o : spi_accessible.c spi-private.h \
-	../libspi/Accessibility.h spi.h spi-impl.h spi-roletypes.h \
-	spi-statetypes.h spi-listener.h ../libspi/keymasks.h \
-	cspi-lowlevel.h
+spi_accessible.lo spi_accessible.o : spi_accessible.c \
+	../libspi/stateset.h ../libspi/base.h ../libspi/Accessibility.h \
+	spi-private.h spi.h spi-impl.h spi-roletypes.h spi-statetypes.h \
+	spi-listener.h ../libspi/keymasks.h cspi-lowlevel.h
 spi_action.lo spi_action.o : spi_action.c spi-private.h \
 	../libspi/Accessibility.h spi.h spi-impl.h spi-roletypes.h \
 	spi-statetypes.h spi-listener.h ../libspi/keymasks.h \
@@ -419,7 +450,9 @@ spi_editabletext.lo spi_editabletext.o : spi_editabletext.c \
 spi_event.lo spi_event.o : spi_event.c spi-private.h \
 	../libspi/Accessibility.h spi.h spi-impl.h spi-roletypes.h \
 	spi-statetypes.h spi-listener.h ../libspi/keymasks.h \
-	cspi-lowlevel.h
+	cspi-lowlevel.h bonobo/cspi-bonobo-listener.h \
+	../libspi/eventlistener.h ../libspi/listener.h \
+	../libspi/devicelistener.h
 spi_hyperlink.lo spi_hyperlink.o : spi_hyperlink.c spi-private.h \
 	../libspi/Accessibility.h spi.h spi-impl.h spi-roletypes.h \
 	spi-statetypes.h spi-listener.h ../libspi/keymasks.h \

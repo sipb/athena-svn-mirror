@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -34,6 +35,13 @@ typedef unsigned long SpiKeyMaskType;
 #define SPI_KEYMASK_MOD1      Mod1Mask
 #define SPI_KEYMASK_MOD2      Mod2Mask
 #define SPI_KEYMASK_MOD3      Mod3Mask
+#define SPI_KEYMASK_MOD4      Mod4Mask
+#define SPI_KEYMASK_MOD5      Mod5Mask
+#define SPI_KEYMASK_BUTTON1   Button1Mask
+#define SPI_KEYMASK_BUTTON2   Button2Mask
+#define SPI_KEYMASK_BUTTON3   Button3Mask
+#define SPI_KEYMASK_BUTTON4   Button4Mask
+#define SPI_KEYMASK_BUTTON5   Button5Mask
 #define SPI_KEYMASK_CONTROL   ControlMask
 #define SPI_KEYMASK_SHIFT     ShiftMask
 #define SPI_KEYMASK_SHIFTLOCK LockMask

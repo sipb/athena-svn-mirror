@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,6 +27,7 @@
 #include <config.h>
 #include <atk/atkutil.h>
 #include <libspi/application.h>
+#include "spi-private.h"
 
 /* Our parent Gtk object type */
 #define PARENT_TYPE SPI_ACCESSIBLE_TYPE
@@ -181,7 +183,7 @@ spi_application_object_event_listener (GSignalInvocationHint *signal_hint,
   e.source = CORBA_OBJECT_NIL;
   e.detail1 = 0;
   e.detail2 = 0;
-
+  spi_init_any_nil (&e.any_data);
   notify_listeners (the_app->toolkit_listeners, source, &e);
 
   bonobo_object_unref (BONOBO_OBJECT (source));
@@ -223,6 +225,7 @@ spi_application_toolkit_event_listener (GSignalInvocationHint *signal_hint,
   e.source = CORBA_OBJECT_NIL;
   e.detail1 = 0;
   e.detail2 = 0;
+  spi_init_any_nil (&e.any_data);
   notify_listeners (the_app->toolkit_listeners, source, &e);
 
   bonobo_object_unref (BONOBO_OBJECT (source));

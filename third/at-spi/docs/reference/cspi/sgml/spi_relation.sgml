@@ -29,6 +29,8 @@ int         <link linkend="AccessibleRelation-getNTargets">AccessibleRelation_ge
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -50,6 +52,11 @@ int         <link linkend="AccessibleRelation-getNTargets">AccessibleRelation_ge
   SPI_RELATION_MEMBER_OF,
   SPI_RELATION_NODE_CHILD_OF,
   SPI_RELATION_EXTENDED,
+  SPI_RELATION_FLOWS_TO,
+  SPI_RELATION_FLOWS_FROM,
+  SPI_RELATION_SUBWINDOW_OF,
+  SPI_RELATION_EMBEDS,
+  SPI_RELATION_EMBEDDED_BY,
   SPI_RELATION_LAST_DEFINED
 } AccessibleRelationType;
 </programlisting>
@@ -63,15 +70,11 @@ int         <link linkend="AccessibleRelation-getNTargets">AccessibleRelation_ge
 Increment the reference count for an <link linkend="AccessibleRelation">AccessibleRelation</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleRelation">AccessibleRelation</link> object on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleRelation">AccessibleRelation</link> object on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleRelation-unref">AccessibleRelation_unref ()</title>
 <programlisting>void        AccessibleRelation_unref        (<link linkend="AccessibleRelation">AccessibleRelation</link> *obj);</programlisting>
@@ -79,15 +82,11 @@ Increment the reference count for an <link linkend="AccessibleRelation">Accessib
 Decrement the reference count for an <link linkend="AccessibleRelation">AccessibleRelation</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleRelation">AccessibleRelation</link> object on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleRelation">AccessibleRelation</link> object on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleRelation-getNTargets">AccessibleRelation_getNTargets ()</title>
 <programlisting>int         AccessibleRelation_getNTargets  (<link linkend="AccessibleRelation">AccessibleRelation</link> *obj);</programlisting>
@@ -97,19 +96,15 @@ Get the number of objects which this relationship has as its
       <link linkend="AccessibleRelation">AccessibleRelation</link> originated).</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleRelation">AccessibleRelation</link> object to query.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a short integer indicating how many target objects which the
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleRelation">AccessibleRelation</link> object to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a short integer indicating how many target objects which the
       originating <link linkend="Accessible">Accessible</link> object has the <link linkend="AccessibleRelation">AccessibleRelation</link>
       relationship with.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleRelation-getTarget">AccessibleRelation_getTarget ()</title>
 <programlisting><link linkend="Accessible">Accessible</link>* AccessibleRelation_getTarget    (<link linkend="AccessibleRelation">AccessibleRelation</link> *obj,
@@ -118,23 +113,19 @@ Get the number of objects which this relationship has as its
 Get the <parameter>i</parameter>-th target of a specified <link linkend="AccessibleRelation">AccessibleRelation</link> relationship.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleRelation">AccessibleRelation</link> object to query.
-</entry></row>
-<row><entry align="right"><parameter>i</parameter>&nbsp;:</entry>
-<entry> a (zero-index) integer indicating which (of possibly several) target is requested.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> an <link linkend="Accessible">Accessible</link> which is the <parameter>i</parameter>-th object with which the
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleRelation">AccessibleRelation</link> object to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>i</parameter>&nbsp;:</term>
+<listitem><simpara> a (zero-index) integer indicating which (of possibly several) target is requested.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="Accessible">Accessible</link> which is the <parameter>i</parameter>-th object with which the
      originating <link linkend="Accessible">Accessible</link> has relationship specified in the
      <link linkend="AccessibleRelation">AccessibleRelation</link> object.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleRelation-getRelationType">AccessibleRelation_getRelationType ()</title>
 <programlisting><link linkend="AccessibleRelationType">AccessibleRelationType</link> AccessibleRelation_getRelationType
@@ -143,19 +134,15 @@ Get the <parameter>i</parameter>-th target of a specified <link linkend="Accessi
 Get the type of relationship represented by an <link linkend="AccessibleRelation">AccessibleRelation</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleRelation">AccessibleRelation</link> object to query.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> an <link linkend="AccessibleRelationType">AccessibleRelationType</link> indicating the type of relation
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleRelation">AccessibleRelation</link> object to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="AccessibleRelationType">AccessibleRelationType</link> indicating the type of relation
         encapsulated in this <link linkend="AccessibleRelation">AccessibleRelation</link> object.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

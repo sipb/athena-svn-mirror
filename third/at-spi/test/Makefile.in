@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -92,6 +92,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -117,6 +118,7 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POPT_LIBS = @POPT_LIBS@
 RANLIB = @RANLIB@
+REBUILD = @REBUILD@
 REGISTRYD_CFLAGS = @REGISTRYD_CFLAGS@
 REGISTRYD_LIBS = @REGISTRYD_LIBS@
 STRIP = @STRIP@
@@ -124,17 +126,20 @@ TESTS_CFLAGS = @TESTS_CFLAGS@
 TESTS_LIBS = @TESTS_LIBS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+XINPUT_LIBS = @XINPUT_LIBS@
 XTST_LIBS = @XTST_LIBS@
 X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 
 NULL = 
 
-noinst_PROGRAMS = test-simple at app simple-at stress-test keysynth-demo accessx-gui key-listener-test event-listener-test screen-review-test
+noinst_PROGRAMS = test-simple at app simple-at stress-test keysynth-demo key-listener-test event-listener-test screen-review-test visual-bell 
+
+stress_test_SOURCES = stress-test.c
 
 key_listener_test_SOURCES = key-listener-test.c
 
-stress_test_SOURCES = stress-test.c
+visual_bell_SOURCES = visual-bell.c
 
 event_listener_test_SOURCES = event-listener-test.c
 
@@ -148,18 +153,22 @@ simple_at_SOURCES = simple-at.c
 
 keysynth_demo_SOURCES = keysynth-demo.c 
 
-accessx_gui_SOURCES = accessx-gui.c 
-
 test_simple_SOURCES = test-simple.c 
 
-INCLUDES = -I$(top_srcdir)                      -I$(top_builddir)                    -I$(top_srcdir)/libspi               -I$(top_builddir)/libspi  	   -I$(top_srcdir)/cspi	     	   -I$(top_builddir)/cspi    	   $(TESTS_CFLAGS)
+INCLUDES = -I$(top_srcdir)           \
+           -I$(top_builddir)         \
+           -I$(top_srcdir)/libspi    \
+           -I$(top_builddir)/libspi  \
+	   -I$(top_srcdir)/cspi	     \
+	   -I$(top_builddir)/cspi    \
+	   $(TESTS_CFLAGS)
 
 
 DEBUG_CFLAGS = -DSPI_DEBUG
 
 CFLAGS = @CFLAGS@ $(TESTS_CFLAGS) $(DEBUG_CFLAGS)
 
-LDADD = ../libspi/libspi.la ../cspi/libcspi.la $(TESTS_LIBS) $(X_LIBS)
+LDADD = ../libspi/libspi.la ../cspi/libcspi.la $(TESTS_LIBS) $(X_LIBS) $(XINPUT_LIBS)
 
 TESTS = test-simple
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -167,8 +176,8 @@ CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
 noinst_PROGRAMS =  test-simple$(EXEEXT) at$(EXEEXT) app$(EXEEXT) \
 simple-at$(EXEEXT) stress-test$(EXEEXT) keysynth-demo$(EXEEXT) \
-accessx-gui$(EXEEXT) key-listener-test$(EXEEXT) \
-event-listener-test$(EXEEXT) screen-review-test$(EXEEXT)
+key-listener-test$(EXEEXT) event-listener-test$(EXEEXT) \
+screen-review-test$(EXEEXT) visual-bell$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
@@ -201,10 +210,6 @@ keysynth_demo_OBJECTS =  keysynth-demo.$(OBJEXT)
 keysynth_demo_LDADD = $(LDADD)
 keysynth_demo_DEPENDENCIES =  ../libspi/libspi.la ../cspi/libcspi.la
 keysynth_demo_LDFLAGS = 
-accessx_gui_OBJECTS =  accessx-gui.$(OBJEXT)
-accessx_gui_LDADD = $(LDADD)
-accessx_gui_DEPENDENCIES =  ../libspi/libspi.la ../cspi/libcspi.la
-accessx_gui_LDFLAGS = 
 key_listener_test_OBJECTS =  key-listener-test.$(OBJEXT)
 key_listener_test_LDADD = $(LDADD)
 key_listener_test_DEPENDENCIES =  ../libspi/libspi.la ../cspi/libcspi.la
@@ -219,6 +224,10 @@ screen_review_test_LDADD = $(LDADD)
 screen_review_test_DEPENDENCIES =  ../libspi/libspi.la \
 ../cspi/libcspi.la
 screen_review_test_LDFLAGS = 
+visual_bell_OBJECTS =  visual-bell.$(OBJEXT)
+visual_bell_LDADD = $(LDADD)
+visual_bell_DEPENDENCIES =  ../libspi/libspi.la ../cspi/libcspi.la
+visual_bell_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -230,8 +239,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(test_simple_SOURCES) $(at_SOURCES) $(app_SOURCES) $(simple_at_SOURCES) $(stress_test_SOURCES) $(keysynth_demo_SOURCES) $(accessx_gui_SOURCES) $(key_listener_test_SOURCES) $(event_listener_test_SOURCES) $(screen_review_test_SOURCES)
-OBJECTS = $(test_simple_OBJECTS) $(at_OBJECTS) $(app_OBJECTS) $(simple_at_OBJECTS) $(stress_test_OBJECTS) $(keysynth_demo_OBJECTS) $(accessx_gui_OBJECTS) $(key_listener_test_OBJECTS) $(event_listener_test_OBJECTS) $(screen_review_test_OBJECTS)
+SOURCES = $(test_simple_SOURCES) $(at_SOURCES) $(app_SOURCES) $(simple_at_SOURCES) $(stress_test_SOURCES) $(keysynth_demo_SOURCES) $(key_listener_test_SOURCES) $(event_listener_test_SOURCES) $(screen_review_test_SOURCES) $(visual_bell_SOURCES)
+OBJECTS = $(test_simple_OBJECTS) $(at_OBJECTS) $(app_OBJECTS) $(simple_at_OBJECTS) $(stress_test_OBJECTS) $(keysynth_demo_OBJECTS) $(key_listener_test_OBJECTS) $(event_listener_test_OBJECTS) $(screen_review_test_OBJECTS) $(visual_bell_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -321,10 +330,6 @@ keysynth-demo$(EXEEXT): $(keysynth_demo_OBJECTS) $(keysynth_demo_DEPENDENCIES)
 	@rm -f keysynth-demo$(EXEEXT)
 	$(LINK) $(keysynth_demo_LDFLAGS) $(keysynth_demo_OBJECTS) $(keysynth_demo_LDADD) $(LIBS)
 
-accessx-gui$(EXEEXT): $(accessx_gui_OBJECTS) $(accessx_gui_DEPENDENCIES)
-	@rm -f accessx-gui$(EXEEXT)
-	$(LINK) $(accessx_gui_LDFLAGS) $(accessx_gui_OBJECTS) $(accessx_gui_LDADD) $(LIBS)
-
 key-listener-test$(EXEEXT): $(key_listener_test_OBJECTS) $(key_listener_test_DEPENDENCIES)
 	@rm -f key-listener-test$(EXEEXT)
 	$(LINK) $(key_listener_test_LDFLAGS) $(key_listener_test_OBJECTS) $(key_listener_test_LDADD) $(LIBS)
@@ -336,6 +341,10 @@ event-listener-test$(EXEEXT): $(event_listener_test_OBJECTS) $(event_listener_te
 screen-review-test$(EXEEXT): $(screen_review_test_OBJECTS) $(screen_review_test_DEPENDENCIES)
 	@rm -f screen-review-test$(EXEEXT)
 	$(LINK) $(screen_review_test_LDFLAGS) $(screen_review_test_OBJECTS) $(screen_review_test_LDADD) $(LIBS)
+
+visual-bell$(EXEEXT): $(visual_bell_OBJECTS) $(visual_bell_DEPENDENCIES)
+	@rm -f visual-bell$(EXEEXT)
+	$(LINK) $(visual_bell_LDFLAGS) $(visual_bell_OBJECTS) $(visual_bell_LDADD) $(LIBS)
 
 tags: TAGS
 
@@ -381,9 +390,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-accessx-gui.o: accessx-gui.c ../cspi/spi.h ../cspi/spi-impl.h \
-	../cspi/spi-roletypes.h ../cspi/spi-statetypes.h \
-	../cspi/spi-listener.h ../libspi/keymasks.h
 app.o: app.c ../libspi/Accessibility.h ../libspi/accessible.h \
 	../libspi/base.h ../libspi/application.h
 at.o: at.c ../libspi/Accessibility.h ../libspi/accessible.h \
@@ -420,11 +426,12 @@ stress-test.o: stress-test.c ../cspi/spi-private.h \
 	../libspi/hypertext.h ../libspi/image.h ../libspi/relation.h \
 	../libspi/selection.h ../libspi/stateset.h ../libspi/table.h \
 	../libspi/value.h ../libspi/listener.h \
-	../libspi/eventlistener.h ../libspi/keystrokelistener.h \
+	../libspi/eventlistener.h ../libspi/devicelistener.h \
 	../libspi/remoteobject.h
 test-simple.o: test-simple.c ../cspi/spi.h ../cspi/spi-impl.h \
 	../cspi/spi-roletypes.h ../cspi/spi-statetypes.h \
 	../cspi/spi-listener.h ../libspi/keymasks.h
+visual-bell.o: visual-bell.c
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \

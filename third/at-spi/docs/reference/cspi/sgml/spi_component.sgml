@@ -52,6 +52,8 @@ void        <link linkend="AccessibleComponent-getSize">AccessibleComponent_getS
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -81,6 +83,7 @@ void        <link linkend="AccessibleComponent-getSize">AccessibleComponent_getS
     SPI_LAYER_MDI,
     SPI_LAYER_POPUP,
     SPI_LAYER_OVERLAY,
+    SPI_LAYER_WINDOW,
     SPI_LAYER_LAST_DEFINED	
 } AccessibleComponentLayer;
 </programlisting>
@@ -88,56 +91,58 @@ void        <link linkend="AccessibleComponent-getSize">AccessibleComponent_getS
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="enum">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry><literal>SPI_LAYER_INVALID</literal></entry>
-<entry> The layer cannot be determined or is somehow undefined.
-</entry>
-</row>
-<row>
-<entry><literal>SPI_LAYER_BACKGROUND</literal></entry>
-<entry> Component belongs to the destop background.
-</entry>
-</row>
-<row>
-<entry><literal>SPI_LAYER_CANVAS</literal></entry>
-<entry> Component is a canvas backdrop or drawing area.
-</entry>
-</row>
-<row>
-<entry><literal>SPI_LAYER_WIDGET</literal></entry>
-<entry> Component is a 'normal' widget.
-</entry>
-</row>
-<row>
-<entry><literal>SPI_LAYER_MDI</literal></entry>
-<entry> Component is drawn in the MDI layer and may have valid
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>SPI_LAYER_INVALID</literal></term>
+<listitem><simpara> The layer cannot be determined or is somehow undefined.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SPI_LAYER_BACKGROUND</literal></term>
+<listitem><simpara> Component belongs to the destop background.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SPI_LAYER_CANVAS</literal></term>
+<listitem><simpara> Component is a canvas backdrop or drawing area.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SPI_LAYER_WIDGET</literal></term>
+<listitem><simpara> Component is a 'normal' widget.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SPI_LAYER_MDI</literal></term>
+<listitem><simpara> Component is drawn in the MDI layer and may have valid
                          Z-information relative to other MDI-layer components.
-</entry>
-</row>
-<row>
-<entry><literal>SPI_LAYER_POPUP</literal></entry>
-<entry> Component is in the popup layer, above other widgets and
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SPI_LAYER_POPUP</literal></term>
+<listitem><simpara> Component is in the popup layer, above other widgets and
                          MDI components.
-</entry>
-</row>
-<row>
-<entry><literal>SPI_LAYER_OVERLAY</literal></entry>
-<entry> Component is in the overlay plane - this value is reserved
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SPI_LAYER_OVERLAY</literal></term>
+<listitem><simpara> Component is in the overlay plane - this value is reserved
                          for future use.
-</entry>
-</row>
-<row>
-<entry><literal>SPI_LAYER_LAST_DEFINED</literal></entry>
-<entry> Used to determine the last valid value in the enum,
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SPI_LAYER_WINDOW</literal></term>
+<listitem><simpara> Component is in the window layer and have valid Z-information
+                   relative to other window-layer components.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SPI_LAYER_LAST_DEFINED</literal></term>
+<listitem><simpara> Used to determine the last valid value in the enum,
                          should not be encountered.	
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleComponent-ref">AccessibleComponent_ref ()</title>
 <programlisting>void        AccessibleComponent_ref         (<link linkend="AccessibleComponent">AccessibleComponent</link> *obj);</programlisting>
@@ -145,15 +150,11 @@ void        <link linkend="AccessibleComponent-getSize">AccessibleComponent_getS
 Increment the reference count for an <link linkend="AccessibleComponent">AccessibleComponent</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to an object implementing <link linkend="AccessibleComponent">AccessibleComponent</link> on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to an object implementing <link linkend="AccessibleComponent">AccessibleComponent</link> on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleComponent-unref">AccessibleComponent_unref ()</title>
 <programlisting>void        AccessibleComponent_unref       (<link linkend="AccessibleComponent">AccessibleComponent</link> *obj);</programlisting>
@@ -161,15 +162,11 @@ Increment the reference count for an <link linkend="AccessibleComponent">Accessi
 Decrement the reference count for an <link linkend="AccessibleComponent">AccessibleComponent</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the object implementing <link linkend="AccessibleComponent">AccessibleComponent</link> on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the object implementing <link linkend="AccessibleComponent">AccessibleComponent</link> on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleComponent-contains">AccessibleComponent_contains ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleComponent_contains    (<link linkend="AccessibleComponent">AccessibleComponent</link> *obj,
@@ -180,28 +177,24 @@ Decrement the reference count for an <link linkend="AccessibleComponent">Accessi
 Query whether a given <link linkend="AccessibleComponent">AccessibleComponent</link> contains a particular point.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> specifying the x coordinate in question.
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> specifying the y coordinate in question.
-</entry></row>
-<row><entry align="right"><parameter>ctype</parameter>&nbsp;:</entry>
-<entry> the desired coordinate system of the point (<parameter>x</parameter>, <parameter>y</parameter>)
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> specifying the x coordinate in question.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> specifying the y coordinate in question.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctype</parameter>&nbsp;:</term>
+<listitem><simpara> the desired coordinate system of the point (<parameter>x</parameter>, <parameter>y</parameter>)
         (e.g. CSPI_COORD_TYPE_WINDOW, CSPI_COORD_TYPE_SCREEN).
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a <link linkend="TRUE-CAPS">TRUE</link> if the specified component contains the point (<parameter>x</parameter>, <parameter>y</parameter>),
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="TRUE-CAPS">TRUE</link> if the specified component contains the point (<parameter>x</parameter>, <parameter>y</parameter>),
          otherwise <link linkend="FALSE-CAPS">FALSE</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleComponent-getAccessibleAtPoint">AccessibleComponent_getAccessibleAtPoint ()</title>
 <programlisting><link linkend="Accessible">Accessible</link>* AccessibleComponent_getAccessibleAtPoint
@@ -213,28 +206,24 @@ Query whether a given <link linkend="AccessibleComponent">AccessibleComponent</l
 Get the accessible child at a given coordinate within an <link linkend="AccessibleComponent">AccessibleComponent</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> specifying the x coordinate of the point in question.
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> specifying the y coordinate of the point in question.
-</entry></row>
-<row><entry align="right"><parameter>ctype</parameter>&nbsp;:</entry>
-<entry> the coordinate system of the point (<parameter>x</parameter>, <parameter>y</parameter>)
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> specifying the x coordinate of the point in question.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> specifying the y coordinate of the point in question.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctype</parameter>&nbsp;:</term>
+<listitem><simpara> the coordinate system of the point (<parameter>x</parameter>, <parameter>y</parameter>)
         (e.g. CSPI_COORD_TYPE_WINDOW, CSPI_COORD_TYPE_SCREEN).
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a pointer to an <link linkend="Accessible">Accessible</link> child of the specified component which
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a pointer to an <link linkend="Accessible">Accessible</link> child of the specified component which
          contains the point (<parameter>x</parameter>, <parameter>y</parameter>), or NULL of no child contains the point.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleComponent-getExtents">AccessibleComponent_getExtents ()</title>
 <programlisting>void        AccessibleComponent_getExtents  (<link linkend="AccessibleComponent">AccessibleComponent</link> *obj,
@@ -247,31 +236,27 @@ Get the accessible child at a given coordinate within an <link linkend="Accessib
 Get the bounding box of the specified <link linkend="AccessibleComponent">AccessibleComponent</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the minimum x coordinate will be returned.
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the minimum y coordinate will be returned.
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the x extents (width) will be returned.
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the y extents (height) will be returned.
-</entry></row>
-<row><entry align="right"><parameter>ctype</parameter>&nbsp;:</entry>
-<entry> the desired coordinate system into which to return the results,
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the minimum x coordinate will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the minimum y coordinate will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the x extents (width) will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the y extents (height) will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctype</parameter>&nbsp;:</term>
+<listitem><simpara> the desired coordinate system into which to return the results,
         (e.g. CSPI_COORD_TYPE_WINDOW, CSPI_COORD_TYPE_SCREEN).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleComponent-getPosition">AccessibleComponent_getPosition ()</title>
 <programlisting>void        AccessibleComponent_getPosition (<link linkend="AccessibleComponent">AccessibleComponent</link> *obj,
@@ -282,25 +267,21 @@ Get the bounding box of the specified <link linkend="AccessibleComponent">Access
 Get the minimum x and y coordinates of the specified <link linkend="AccessibleComponent">AccessibleComponent</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the minimum x coordinate will be returned.
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the minimum y coordinate will be returned.
-</entry></row>
-<row><entry align="right"><parameter>ctype</parameter>&nbsp;:</entry>
-<entry> the desired coordinate system into which to return the results,
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the minimum x coordinate will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the minimum y coordinate will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctype</parameter>&nbsp;:</term>
+<listitem><simpara> the desired coordinate system into which to return the results,
         (e.g. CSPI_COORD_TYPE_WINDOW, CSPI_COORD_TYPE_SCREEN).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleComponent-getSize">AccessibleComponent_getSize ()</title>
 <programlisting>void        AccessibleComponent_getSize     (<link linkend="AccessibleComponent">AccessibleComponent</link> *obj,
@@ -310,21 +291,17 @@ Get the minimum x and y coordinates of the specified <link linkend="AccessibleCo
 Get the size of the specified <link linkend="AccessibleComponent">AccessibleComponent</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the x extents (width) will be returned.
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the y extents (height) will be returned.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the x extents (width) will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the y extents (height) will be returned.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleComponent-getLayer">AccessibleComponent_getLayer ()</title>
 <programlisting><link linkend="AccessibleComponentLayer">AccessibleComponentLayer</link> AccessibleComponent_getLayer
@@ -334,38 +311,30 @@ Query which layer the component is painted into, to help determine its
      visibility in terms of stacking order.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the <link linkend="AccessibleComponentLayer">AccessibleComponentLayer</link> into which this component is painted.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="AccessibleComponentLayer">AccessibleComponentLayer</link> into which this component is painted.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleComponent-getMDIZOrder">AccessibleComponent_getMDIZOrder ()</title>
 <programlisting><link linkend="short">short</link>       AccessibleComponent_getMDIZOrder
                                             (<link linkend="AccessibleComponent">AccessibleComponent</link> *obj);</programlisting>
 <para>
-Query the z stacking order of a component which is in the MDI layer.
-      (Bigger z-order numbers mean nearer the top)</para>
+Query the z stacking order of a component which is in the MDI or window
+      layer. (Bigger z-order numbers mean nearer the top)</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a short integer indicating the stacking order of the component 
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a short integer indicating the stacking order of the component 
       in the MDI layer, or -1 if the component is not in the MDI layer.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleComponent-grabFocus">AccessibleComponent_grabFocus ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleComponent_grabFocus   (<link linkend="AccessibleComponent">AccessibleComponent</link> *obj);</programlisting>
@@ -374,18 +343,14 @@ Attempt to set the keyboard input focus to the specified
         <link linkend="AccessibleComponent">AccessibleComponent</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> on which to operate.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleComponent">AccessibleComponent</link> on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

@@ -1,10 +1,12 @@
 NULL=
 
-noinst_PROGRAMS = test-simple at app simple-at stress-test keysynth-demo accessx-gui key-listener-test event-listener-test screen-review-test
+noinst_PROGRAMS = test-simple at app simple-at stress-test keysynth-demo key-listener-test event-listener-test screen-review-test visual-bell 
+
+stress_test_SOURCES = stress-test.c
 
 key_listener_test_SOURCES = key-listener-test.c
 
-stress_test_SOURCES = stress-test.c
+visual_bell_SOURCES = visual-bell.c
 
 event_listener_test_SOURCES = event-listener-test.c
 
@@ -17,8 +19,6 @@ app_SOURCES = app.c
 simple_at_SOURCES = simple-at.c 
 
 keysynth_demo_SOURCES = keysynth-demo.c 
-
-accessx_gui_SOURCES = accessx-gui.c 
 
 test_simple_SOURCES = test-simple.c 
 
@@ -34,6 +34,6 @@ DEBUG_CFLAGS=-DSPI_DEBUG
 
 CFLAGS += $(TESTS_CFLAGS) $(DEBUG_CFLAGS)
 
-LDADD = ../libspi/libspi.la ../cspi/libcspi.la $(TESTS_LIBS) $(X_LIBS)
+LDADD = ../libspi/libspi.la ../cspi/libcspi.la $(TESTS_LIBS) $(X_LIBS) $(XINPUT_LIBS)
 
 TESTS = test-simple

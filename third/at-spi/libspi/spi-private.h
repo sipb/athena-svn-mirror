@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,8 +25,13 @@
 #define SPI_PRIVATE_H_
 
 #include <glib/glist.h>
+#include <orbit/orbit.h>
 
 G_BEGIN_DECLS
+
+#define DBG(a,b) if(_dbg>=(a))b
+
+extern int _dbg;
 
 typedef enum {
 	SPI_RE_ENTRANT_CONTINUE = 0,
@@ -39,6 +45,9 @@ void spi_re_entrant_list_delete_link (GList * const  *element_ptr);
 void spi_re_entrant_list_foreach     (GList         **list,
 				      SpiReEntrantFn  func,
 				      gpointer        user_data);
+void spi_init_any_nil                (CORBA_any *any);
+void spi_init_any_string             (CORBA_any *any, char **string);
+void spi_init_any_object             (CORBA_any *any, CORBA_Object *o);
 
 G_END_DECLS
 

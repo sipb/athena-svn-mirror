@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc, Ximian Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc. Ximian Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -78,7 +79,7 @@ impl_getLink (PortableServer_Servant servant,
   link = atk_hypertext_get_link (hypertext, linkIndex);
   g_return_val_if_fail (link != NULL, CORBA_OBJECT_NIL);
 
-  rv = BONOBO_OBJREF (spi_hyperlink_new (ATK_OBJECT (link)));
+  rv = BONOBO_OBJREF (spi_hyperlink_new (link));
 
   return CORBA_Object_duplicate (rv, ev);
 }

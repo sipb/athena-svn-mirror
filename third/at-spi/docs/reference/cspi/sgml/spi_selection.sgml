@@ -39,6 +39,8 @@ void        <link linkend="AccessibleSelection-unref">AccessibleSelection_unref<
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -55,15 +57,11 @@ void        <link linkend="AccessibleSelection-unref">AccessibleSelection_unref<
 Increment the reference count for an <link linkend="AccessibleSelection">AccessibleSelection</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleSelection-unref">AccessibleSelection_unref ()</title>
 <programlisting>void        AccessibleSelection_unref       (<link linkend="AccessibleSelection">AccessibleSelection</link> *obj);</programlisting>
@@ -71,15 +69,11 @@ Increment the reference count for an <link linkend="AccessibleSelection">Accessi
 Decrement the reference count for an <link linkend="Accessible">Accessible</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate. 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleSelection-getNSelectedChildren">AccessibleSelection_getNSelectedChildren ()</title>
 <programlisting><link linkend="long">long</link>        AccessibleSelection_getNSelectedChildren
@@ -89,19 +83,15 @@ Get the number of children of an <link linkend="AccessibleSelection">AccessibleS
        currently selected.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a <link linkend="long">long</link> indicating the number of <link linkend="Accessible">Accessible</link> children
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="long">long</link> indicating the number of <link linkend="Accessible">Accessible</link> children
        of the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor which are currently selected.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleSelection-getSelectedChild">AccessibleSelection_getSelectedChild ()</title>
 <programlisting><link linkend="Accessible">Accessible</link>* AccessibleSelection_getSelectedChild
@@ -116,23 +106,19 @@ Get the i-th selected <link linkend="Accessible">Accessible</link> child of an <
      and #<link linkend="AccessibleSelection-getNSelectedChildren">AccessibleSelection_getNSelectedChildren</link>()-1, inclusive.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>selectedChildIndex</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> indicating which of the selected
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>selectedChildIndex</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> indicating which of the selected
      children is specified.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a pointer to a selected <link linkend="Accessible">Accessible</link> child object,
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a pointer to a selected <link linkend="Accessible">Accessible</link> child object,
          specified by <parameter>childIndex</parameter>.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleSelection-selectChild">AccessibleSelection_selectChild ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleSelection_selectChild (<link linkend="AccessibleSelection">AccessibleSelection</link> *obj,
@@ -144,21 +130,17 @@ Add a child to the selected children list of an <link linkend="AccessibleSelecti
         selection.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>childIndex</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> indicating which child of the <link linkend="Accessible">Accessible</link>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>childIndex</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> indicating which child of the <link linkend="Accessible">Accessible</link>
              is to be selected.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the child was successfully selected, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if the child was successfully selected, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleSelection-isChildSelected">AccessibleSelection_isChildSelected ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleSelection_isChildSelected
@@ -170,21 +152,17 @@ Determine whether a particular child of an <link linkend="AccessibleSelection">A
        standard <link linkend="Accessible">Accessible</link> container's list of children.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>childIndex</parameter>&nbsp;:</entry>
-<entry> an index into the <link linkend="AccessibleSelection">AccessibleSelection</link>'s list of children.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the specified child is currently selected,
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>childIndex</parameter>&nbsp;:</term>
+<listitem><simpara> an index into the <link linkend="AccessibleSelection">AccessibleSelection</link>'s list of children.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if the specified child is currently selected,
          <link linkend="FALSE-CAPS">FALSE</link> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleSelection-deselectSelectedChild">AccessibleSelection_deselectSelectedChild ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleSelection_deselectSelectedChild
@@ -198,21 +176,17 @@ Remove a child to the selected children list of an <link linkend="AccessibleSele
          are asymmettric.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>selectedChildIndex</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> indicating which of the selected children
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>selectedChildIndex</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> indicating which of the selected children
              of the <link linkend="Accessible">Accessible</link> is to be selected.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the child was successfully deselected, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if the child was successfully deselected, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleSelection-clearSelection">AccessibleSelection_clearSelection ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleSelection_clearSelection
@@ -222,18 +196,14 @@ Clear the current selection, removing all selected children from the
       specified <link linkend="AccessibleSelection">AccessibleSelection</link> implementor's selection list.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleSelection-selectAll">AccessibleSelection_selectAll ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleSelection_selectAll   (<link linkend="AccessibleSelection">AccessibleSelection</link> *obj);</programlisting>
@@ -242,18 +212,14 @@ Attempt to select all of the children of an <link linkend="AccessibleSelection">
 Not all <link linkend="AccessibleSelection">AccessibleSelection</link> implementors support this operation.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleSelection">AccessibleSelection</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

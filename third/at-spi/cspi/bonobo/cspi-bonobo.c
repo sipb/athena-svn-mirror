@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *           2002 Ximian Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -28,7 +29,7 @@
 CORBA_Object
 cspi_dup_ref (CORBA_Object object)
 {
-  return bonobo_object_dup_ref (object, NULL);
+  return bonobo_object_dup_ref (object, cspi_ev ());
 }
 
 void

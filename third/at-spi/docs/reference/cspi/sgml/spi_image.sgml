@@ -39,6 +39,8 @@ void        <link linkend="AccessibleImage-getImageExtents">AccessibleImage_getI
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -55,15 +57,11 @@ void        <link linkend="AccessibleImage-getImageExtents">AccessibleImage_getI
 Increment the reference count for an <link linkend="AccessibleImage">AccessibleImage</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> implementor on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleImage-unref">AccessibleImage_unref ()</title>
 <programlisting>void        AccessibleImage_unref           (<link linkend="AccessibleImage">AccessibleImage</link> *obj);</programlisting>
@@ -71,15 +69,11 @@ Increment the reference count for an <link linkend="AccessibleImage">AccessibleI
 Decrement the reference count for an <link linkend="AccessibleImage">AccessibleImage</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> implementor on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleImage-getImageDescription">AccessibleImage_getImageDescription ()</title>
 <programlisting>char*       AccessibleImage_getImageDescription
@@ -88,17 +82,13 @@ Decrement the reference count for an <link linkend="AccessibleImage">AccessibleI
 Get the description of the image displayed in an <link linkend="AccessibleImage">AccessibleImage</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> implementor on which to operate.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a UTF-8 string describing the image.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 string describing the image.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleImage-getImageSize">AccessibleImage_getImageSize ()</title>
 <programlisting>void        AccessibleImage_getImageSize    (<link linkend="AccessibleImage">AccessibleImage</link> *obj,
@@ -108,21 +98,17 @@ Get the description of the image displayed in an <link linkend="AccessibleImage"
 Get the size of the image displayed in a specified <link linkend="AccessibleImage">AccessibleImage</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> to query.
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the x extents (width) will be returned.
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the y extents (height) will be returned.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the x extents (width) will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the y extents (height) will be returned.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleImage-getImagePosition">AccessibleImage_getImagePosition ()</title>
 <programlisting>void        AccessibleImage_getImagePosition
@@ -135,25 +121,21 @@ Get the minimum x and y coordinates of the image displayed in a
         specified <link linkend="AccessibleImage">AccessibleImage</link> implementor.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> implementor to query.
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the minimum x coordinate will be returned.
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the minimum y coordinate will be returned.
-</entry></row>
-<row><entry align="right"><parameter>ctype</parameter>&nbsp;:</entry>
-<entry> the desired coordinate system into which to return the results,
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> implementor to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the minimum x coordinate will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the minimum y coordinate will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctype</parameter>&nbsp;:</term>
+<listitem><simpara> the desired coordinate system into which to return the results,
         (e.g. SPI_COORD_TYPE_WINDOW, SPI_COORD_TYPE_SCREEN).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleImage-getImageExtents">AccessibleImage_getImageExtents ()</title>
 <programlisting>void        AccessibleImage_getImageExtents (<link linkend="AccessibleImage">AccessibleImage</link> *obj,
@@ -167,31 +149,27 @@ Get the bounding box of the image displayed in a
         specified <link linkend="AccessibleImage">AccessibleImage</link> implementor.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> implementor to query.
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the minimum x coordinate will be returned.
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the minimum y coordinate will be returned.
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the image x extent will be returned.
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry> a pointer to a <link linkend="long">long</link> into which the image y extent will be returned.
-</entry></row>
-<row><entry align="right"><parameter>ctype</parameter>&nbsp;:</entry>
-<entry> the desired coordinate system into which to return the results,
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleImage">AccessibleImage</link> implementor to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the minimum x coordinate will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the minimum y coordinate will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the image x extent will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a <link linkend="long">long</link> into which the image y extent will be returned.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctype</parameter>&nbsp;:</term>
+<listitem><simpara> the desired coordinate system into which to return the results,
         (e.g. SPI_COORD_TYPE_WINDOW, SPI_COORD_TYPE_SCREEN).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

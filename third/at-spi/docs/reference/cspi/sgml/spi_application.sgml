@@ -30,6 +30,8 @@ char*       <link linkend="AccessibleApplication-getVersion">AccessibleApplicati
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -46,15 +48,11 @@ char*       <link linkend="AccessibleApplication-getVersion">AccessibleApplicati
 Increment the reference count for an <link linkend="AccessibleApplication">AccessibleApplication</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleApplication">AccessibleApplication</link> on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleApplication">AccessibleApplication</link> on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleApplication-unref">AccessibleApplication_unref ()</title>
 <programlisting>void        AccessibleApplication_unref     (<link linkend="AccessibleApplication">AccessibleApplication</link> *obj);</programlisting>
@@ -62,15 +60,11 @@ Increment the reference count for an <link linkend="AccessibleApplication">Acces
 Decrement the reference count for an <link linkend="AccessibleApplication">AccessibleApplication</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleApplication">AccessibleApplication</link> object on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleApplication">AccessibleApplication</link> object on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleApplication-getToolkitName">AccessibleApplication_getToolkitName ()</title>
 <programlisting>char*       AccessibleApplication_getToolkitName
@@ -79,18 +73,14 @@ Decrement the reference count for an <link linkend="AccessibleApplication">Acces
 Get the name of the UI toolkit used by an <link linkend="AccessibleApplication">AccessibleApplication</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleApplication">AccessibleApplication</link> to query.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a UTF-8 string indicating which UI toolkit is
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleApplication">AccessibleApplication</link> to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 string indicating which UI toolkit is
          used by an application.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleApplication-getVersion">AccessibleApplication_getVersion ()</title>
 <programlisting>char*       AccessibleApplication_getVersion
@@ -100,18 +90,14 @@ Get the version of the at-spi bridge exported by an
      <link linkend="AccessibleApplication">AccessibleApplication</link> instance.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleApplication">AccessibleApplication</link> being queried.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a UTF-8 string indicating the application's
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleApplication">AccessibleApplication</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 string indicating the application's
          at-spi version.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleApplication-getID">AccessibleApplication_getID ()</title>
 <programlisting><link linkend="long">long</link>        AccessibleApplication_getID     (<link linkend="AccessibleApplication">AccessibleApplication</link> *obj);</programlisting>
@@ -121,18 +107,14 @@ Get the unique ID assigned by the Registry to an
 (Not Yet Implemented by the registry).</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleApplication">AccessibleApplication</link> being queried.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a unique <link linkend="long">long</link> integer associated with the application
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleApplication">AccessibleApplication</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a unique <link linkend="long">long</link> integer associated with the application
          by the Registry, or 0 if the application is not registered.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleApplication-pause">AccessibleApplication_pause ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleApplication_pause     (<link linkend="AccessibleApplication">AccessibleApplication</link> *obj);</programlisting>
@@ -142,18 +124,14 @@ Attempt to pause the application (used when client event queue is
 Not Yet Implemented.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="Accessible">Accessible</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the application was paused successfully, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="Accessible">Accessible</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if the application was paused successfully, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleApplication-resume">AccessibleApplication_resume ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleApplication_resume    (<link linkend="AccessibleApplication">AccessibleApplication</link> *obj);</programlisting>
@@ -162,18 +140,14 @@ Attempt to resume the application (used after <link linkend="AccessibleApplicati
 Not Yet Implemented.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="Accessible">Accessible</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if application processing resumed successfully, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="Accessible">Accessible</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if application processing resumed successfully, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

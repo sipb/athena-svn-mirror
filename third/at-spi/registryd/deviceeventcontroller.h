@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -25,7 +26,7 @@
 
 #include <bonobo/bonobo-object.h>
 #include <libspi/Accessibility.h>
-#include <libspi/keystrokelistener.h>
+#include <libspi/devicelistener.h>
 
 typedef struct _SpiDEController SpiDEController;
 
@@ -41,12 +42,12 @@ G_BEGIN_DECLS
 #define SPI_DEVICE_EVENT_CONTROLLER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), SPI_DEVICE_EVENT_CONTROLLER_TYPE, SpiDEControllerClass))
 
 struct _SpiDEController {
-  BonoboObject parent;
-
-  SpiRegistry *registry;
-  GList       *key_listeners;
-  GList       *mouse_listeners;
-  GList       *keygrabs_list;
+	BonoboObject parent;
+	
+	SpiRegistry *registry;
+	GList       *key_listeners;
+	GList       *mouse_listeners;
+	GList       *keygrabs_list;
 };
 
 typedef struct {

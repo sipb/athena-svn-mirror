@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -63,10 +64,8 @@ impl_notify_event (PortableServer_Servant     servant,
   fprintf (stderr, "source name: '%s'\n",
            Accessibility_Accessible__get_name(e->source, ev));
   if (ev->_major != CORBA_NO_EXCEPTION) {
-    fprintf(stderr,
-            ("Accessibility app error: exception during event notification: %s\n"),
-            CORBA_exception_id(ev));
-    exit(-1);
+           DBG (2, g_warning ("Accessibility app error: exception during event notification: %s\n"),
+		CORBA_exception_id(ev)));
   }
   /*
   fprintf (stderr, "source is component ? : %s\n",

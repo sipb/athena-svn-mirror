@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -48,7 +49,7 @@ static AccessibleKeySet            *tab_keyset;
 int
 main (int argc, char **argv)
 {
-  char *tab_strings[1];
+  const char *tab_strings[1] = {"Tab"};
   short keycodes[] = {65, 64, 23};
   SPIBoolean retval = FALSE;
 	
@@ -64,7 +65,6 @@ main (int argc, char **argv)
   command_keyset = SPI_createAccessibleKeySet (1, "q", NULL, NULL);
   async_keyset = SPI_createAccessibleKeySet (3, NULL, keycodes, NULL);
   sync_keyset = SPI_createAccessibleKeySet (3, "def", NULL, NULL);
-  tab_strings[0] = "Tab";
   tab_keyset = SPI_createAccessibleKeySet (1,  NULL, NULL, tab_strings);
   retval = SPI_registerAccessibleKeystrokeListener(command_key_listener,
 			       		  command_keyset,
@@ -102,9 +102,9 @@ main (int argc, char **argv)
 
   SPI_registerAccessibleKeystrokeListener(all_key_listener,
 					 SPI_KEYSET_ALL_KEYS,
-					 SPI_KEYMASK_UNMODIFIED,
-					 (unsigned long) ( SPI_KEY_PRESSED | SPI_KEY_RELEASED ),
-					 SPI_KEYLISTENER_NOSYNC);
+					 SPI_KEYMASK_SHIFT,
+					 (unsigned long) ( SPI_KEY_PRESSED ),
+					 SPI_KEYLISTENER_NOSYNC | SPI_KEYLISTENER_CANCONSUME);
 
   SPI_event_main ();
 

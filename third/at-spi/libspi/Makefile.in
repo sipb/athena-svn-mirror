@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -92,6 +92,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -116,6 +117,7 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POPT_LIBS = @POPT_LIBS@
 RANLIB = @RANLIB@
+REBUILD = @REBUILD@
 REGISTRYD_CFLAGS = @REGISTRYD_CFLAGS@
 REGISTRYD_LIBS = @REGISTRYD_LIBS@
 STRIP = @STRIP@
@@ -123,13 +125,16 @@ TESTS_CFLAGS = @TESTS_CFLAGS@
 TESTS_LIBS = @TESTS_LIBS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+XINPUT_LIBS = @XINPUT_LIBS@
 XTST_LIBS = @XTST_LIBS@
 X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 
 lib_LTLIBRARIES = libspi.la
 
-INCLUDES = -I$(top_srcdir)	           -I$(top_builddir)	           $(LIBSPI_CFLAGS)
+INCLUDES = -I$(top_srcdir)	\
+           -I$(top_builddir)	\
+           $(LIBSPI_CFLAGS)
 
 
 LDFLAGS = @LDFLAGS@ $(LIBSPI_LIBS) $(XTST_LIBS) @LT_VERSION_INFO@
@@ -140,29 +145,99 @@ CFLAGS = @CFLAGS@ $(DEBUG_CFLAGS)
 
 libspiincludedir = $(includedir)/at-spi-1.0/libspi
 
-libspiinclude_HEADERS =  	Accessibility.h			accessible.h			eventlistener.h			action.h			application.h			base.h				component.h			editabletext.h			hyperlink.h			hypertext.h			image.h				keystrokelistener.h		keymasks.h			libspi.h			listener.h			relation.h			remoteobject.h			selection.h			stateset.h			table.h				text.h				value.h
+libspiinclude_HEADERS = \
+	Accessibility.h		\
+	accessible.h		\
+	eventlistener.h		\
+	action.h		\
+	application.h		\
+	base.h			\
+	component.h		\
+	editabletext.h		\
+	hyperlink.h		\
+	hypertext.h		\
+	image.h			\
+	devicelistener.h	\
+	keystrokelistener.h	\
+	keymasks.h		\
+	libspi.h		\
+	listener.h		\
+	relation.h		\
+	remoteobject.h		\
+	selection.h		\
+	stateset.h		\
+	table.h			\
+	text.h			\
+	value.h
 
 
 IDL_OUT = Accessibility.h Accessibility-stubs.c Accessibility-skels.c Accessibility-common.c
 
-IDL_DEPS =  	$(top_srcdir)/idl/Accessibility.idl				$(top_srcdir)/idl/Accessibility_Accessible.idl			$(top_srcdir)/idl/Accessibility_Action.idl			$(top_srcdir)/idl/Accessibility_Application.idl			$(top_srcdir)/idl/Accessibility_Component.idl			$(top_srcdir)/idl/Accessibility_Desktop.idl			$(top_srcdir)/idl/Accessibility_EditableText.idl		$(top_srcdir)/idl/Accessibility_Event.idl			$(top_srcdir)/idl/Accessibility_Hyperlink.idl			$(top_srcdir)/idl/Accessibility_Hypertext.idl			$(top_srcdir)/idl/Accessibility_Image.idl			$(top_srcdir)/idl/Accessibility_Registry.idl			$(top_srcdir)/idl/Accessibility_Relation.idl			$(top_srcdir)/idl/Accessibility_Role.idl			$(top_srcdir)/idl/Accessibility_Selection.idl			$(top_srcdir)/idl/Accessibility_State.idl			$(top_srcdir)/idl/Accessibility_StreamableContent.idl		$(top_srcdir)/idl/Accessibility_Table.idl			$(top_srcdir)/idl/Accessibility_Text.idl			$(top_srcdir)/idl/Accessibility_Value.idl
+IDL_DEPS = \
+	$(top_srcdir)/idl/Accessibility.idl			\
+	$(top_srcdir)/idl/Accessibility_Accessible.idl		\
+	$(top_srcdir)/idl/Accessibility_Action.idl		\
+	$(top_srcdir)/idl/Accessibility_Application.idl		\
+	$(top_srcdir)/idl/Accessibility_Component.idl		\
+	$(top_srcdir)/idl/Accessibility_Desktop.idl		\
+	$(top_srcdir)/idl/Accessibility_EditableText.idl	\
+	$(top_srcdir)/idl/Accessibility_Event.idl		\
+	$(top_srcdir)/idl/Accessibility_Hyperlink.idl		\
+	$(top_srcdir)/idl/Accessibility_Hypertext.idl		\
+	$(top_srcdir)/idl/Accessibility_Image.idl		\
+	$(top_srcdir)/idl/Accessibility_Registry.idl		\
+	$(top_srcdir)/idl/Accessibility_Relation.idl		\
+	$(top_srcdir)/idl/Accessibility_Role.idl		\
+	$(top_srcdir)/idl/Accessibility_Selection.idl		\
+	$(top_srcdir)/idl/Accessibility_State.idl		\
+	$(top_srcdir)/idl/Accessibility_StreamableContent.idl	\
+	$(top_srcdir)/idl/Accessibility_Table.idl		\
+	$(top_srcdir)/idl/Accessibility_Text.idl		\
+	$(top_srcdir)/idl/Accessibility_Value.idl
 
 
 BUILT_SOURCES = $(IDL_OUT) Accessibility-imodule.c
 CLEANFILES =  $(IDL_OUT) Accessibility-imodule.c
 
-libspi_la_SOURCES =  	accessible.c			action.c			application.c			base.c				component.c			editabletext.c			hyperlink.c			hypertext.c			image.c				keystrokelistener.c		relation.c			remoteobject.c			selection.c			spi-private.h			stateset.c			table.c				text.c				util.c				value.c				listener.c			eventlistener.c			$(IDL_OUT)
+libspi_la_SOURCES = \
+	accessible.c		\
+	action.c		\
+	application.c		\
+	base.c			\
+	component.c		\
+	editabletext.c		\
+	hyperlink.c		\
+	hypertext.c		\
+	image.c			\
+	devicelistener.c	\
+	relation.c		\
+	remoteobject.c		\
+	selection.c		\
+	spi-private.h		\
+	stateset.c		\
+	table.c			\
+	text.c			\
+	util.c			\
+	value.c			\
+	listener.c		\
+	eventlistener.c		\
+	$(IDL_OUT)
 
 
-IDLFLAGS = -I$(BONOBO_ACTIVATION_IDL_DIR) 	   -I$(LIBBONOBO_IDL_DIR)         	   -I$(top_srcdir)/idl            	   --add-imodule
+IDLFLAGS = -I$(BONOBO_ACTIVATION_IDL_DIR) \
+	   -I$(LIBBONOBO_IDL_DIR)         \
+	   -I$(top_srcdir)/idl            \
+	   --add-imodule
 
 
 orbittypelibdir = $(libdir)/orbit-2.0
 orbittypelib_LTLIBRARIES = Accessibility_module.la
 
-Accessibility_module_la_LDFLAGS =  	-export-dynamic -module -avoid-version
+Accessibility_module_la_LDFLAGS = \
+	-export-dynamic -module -avoid-version
 
-Accessibility_module_la_SOURCES =  	Accessibility-imodule.c
+Accessibility_module_la_SOURCES = \
+	Accessibility-imodule.c
 
 
 DONT_DIST_SOURCE = $(IDL_OUT) Accessibility-imodule.c
@@ -181,10 +256,9 @@ libspi_la_LDFLAGS =
 libspi_la_LIBADD = 
 libspi_la_OBJECTS =  accessible.lo action.lo application.lo base.lo \
 component.lo editabletext.lo hyperlink.lo hypertext.lo image.lo \
-keystrokelistener.lo relation.lo remoteobject.lo selection.lo \
-stateset.lo table.lo text.lo util.lo value.lo listener.lo \
-eventlistener.lo Accessibility-stubs.lo Accessibility-skels.lo \
-Accessibility-common.lo
+devicelistener.lo relation.lo remoteobject.lo selection.lo stateset.lo \
+table.lo text.lo util.lo value.lo listener.lo eventlistener.lo \
+Accessibility-stubs.lo Accessibility-skels.lo Accessibility-common.lo
 Accessibility_module_la_LIBADD = 
 Accessibility_module_la_OBJECTS =  Accessibility-imodule.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -386,19 +460,21 @@ accessible.lo accessible.o : accessible.c ../config.h libspi.h \
 	Accessibility.h accessible.h base.h action.h application.h \
 	component.h editabletext.h text.h hyperlink.h hypertext.h \
 	image.h relation.h selection.h stateset.h table.h value.h \
-	listener.h eventlistener.h keystrokelistener.h keymasks.h \
+	listener.h eventlistener.h devicelistener.h keymasks.h \
 	remoteobject.h
 action.lo action.o : action.c ../config.h action.h base.h \
 	Accessibility.h
 application.lo application.o : application.c ../config.h application.h \
-	accessible.h base.h Accessibility.h
+	accessible.h base.h Accessibility.h spi-private.h
 base.lo base.o : base.c ../config.h libspi.h Accessibility.h \
 	accessible.h base.h action.h application.h component.h \
 	editabletext.h text.h hyperlink.h hypertext.h image.h \
 	relation.h selection.h stateset.h table.h value.h listener.h \
-	eventlistener.h keystrokelistener.h keymasks.h remoteobject.h
+	eventlistener.h devicelistener.h keymasks.h remoteobject.h
 component.lo component.o : component.c ../config.h accessible.h base.h \
 	Accessibility.h component.h
+devicelistener.lo devicelistener.o : devicelistener.c ../config.h \
+	listener.h Accessibility.h devicelistener.h keymasks.h
 editabletext.lo editabletext.o : editabletext.c ../config.h \
 	editabletext.h text.h base.h Accessibility.h
 eventlistener.lo eventlistener.o : eventlistener.c ../config.h \
@@ -408,9 +484,6 @@ hyperlink.lo hyperlink.o : hyperlink.c ../config.h hyperlink.h base.h \
 hypertext.lo hypertext.o : hypertext.c ../config.h hyperlink.h base.h \
 	Accessibility.h hypertext.h text.h
 image.lo image.o : image.c ../config.h image.h base.h Accessibility.h
-keystrokelistener.lo keystrokelistener.o : keystrokelistener.c \
-	../config.h listener.h Accessibility.h keystrokelistener.h \
-	keymasks.h
 listener.lo listener.o : listener.c ../config.h listener.h \
 	Accessibility.h
 relation.lo relation.o : relation.c ../config.h accessible.h base.h \

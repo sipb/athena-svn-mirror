@@ -37,8 +37,10 @@ module Accessibility {
 	   *
 	   * placeholders for future expansion.
 	   */
-	  void unImplemented ();
-	  void unImplemented2 ();
+	  void unImplemented_ ();
+	  void unImplemented2_ ();
+	  void unImplemented3_ ();
+	  void unImplemented4_ ();
   };
 };
 

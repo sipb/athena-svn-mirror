@@ -79,6 +79,8 @@ char*       <link linkend="AccessibleText-getTextAtOffset">AccessibleText_getTex
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -113,15 +115,11 @@ char*       <link linkend="AccessibleText-getTextAtOffset">AccessibleText_getTex
 Increment the reference count for an <link linkend="AccessibleText">AccessibleText</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-unref">AccessibleText_unref ()</title>
 <programlisting>void        AccessibleText_unref            (<link linkend="AccessibleText">AccessibleText</link> *obj);</programlisting>
@@ -129,15 +127,11 @@ Increment the reference count for an <link linkend="AccessibleText">AccessibleTe
 Decrement the reference count for an <link linkend="AccessibleText">AccessibleText</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="Accessible">Accessible</link> object on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="Accessible">Accessible</link> object on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-addSelection">AccessibleText_addSelection ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleText_addSelection     (<link linkend="AccessibleText">AccessibleText</link> *obj,
@@ -147,23 +141,19 @@ Decrement the reference count for an <link linkend="AccessibleText">AccessibleTe
 Select some text (add a text selection) in an <link linkend="AccessibleText">AccessibleText</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>startOffset</parameter>&nbsp;:</entry>
-<entry> the starting offset of the desired new selection.
-</entry></row>
-<row><entry align="right"><parameter>endOffset</parameter>&nbsp;:</entry>
-<entry> the offset of the first character after the new selection.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startOffset</parameter>&nbsp;:</term>
+<listitem><simpara> the starting offset of the desired new selection.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endOffset</parameter>&nbsp;:</term>
+<listitem><simpara> the offset of the first character after the new selection.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getAttributes">AccessibleText_getAttributes ()</title>
 <programlisting>char*       AccessibleText_getAttributes    (<link linkend="AccessibleText">AccessibleText</link> *obj,
@@ -172,32 +162,32 @@ Select some text (add a text selection) in an <link linkend="AccessibleText">Acc
                                              <link linkend="long-int">long int</link> *endOffset);</programlisting>
 <para>
 Get the attributes applied to a range of text from an <link linkend="AccessibleText">AccessibleText</link>
-         object, and the bounds of the range.</para>
+         object, and the bounds of the range.
+         The text attributes correspond to CSS attributes where possible,
+         keys and values are delimited from one another via ":", and
+         the delimiter between key/value pairs is ";". Thus 
+         "font-size:10;foreground-color:0,0,0" would be a valid
+         return string.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object to query.
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> a long integer indicating the offset from which the attribute
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><simpara> a long integer indicating the offset from which the attribute
        search is based.
-</entry></row>
-<row><entry align="right"><parameter>startOffset</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> indicating the start of the desired text range.
-</entry></row>
-<row><entry align="right"><parameter>endOffset</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> indicating the first character past the desired range.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a text string describing the attributes occurring within the
-         attribute run containing <parameter>offset</parameter>, encoded as UTF-8 and
-         delimited by ':'
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> indicating the start of the desired text range.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> indicating the first character past the desired range.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a text string describing the attributes occurring within the
+         attribute run containing <parameter>offset</parameter>, encoded as UTF-8.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getCaretOffset">AccessibleText_getCaretOffset ()</title>
 <programlisting><link linkend="long">long</link>        AccessibleText_getCaretOffset   (<link linkend="AccessibleText">AccessibleText</link> *obj);</programlisting>
@@ -205,17 +195,13 @@ Get the attributes applied to a range of text from an <link linkend="AccessibleT
 Get the current offset of the text caret in an <link linkend="AccessibleText">AccessibleText</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object to query.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a long integer indicating the current position of the text caret.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a long integer indicating the current position of the text caret.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getCharacterCount">AccessibleText_getCharacterCount ()</title>
 <programlisting><link linkend="long">long</link>        AccessibleText_getCharacterCount
@@ -224,18 +210,14 @@ Get the current offset of the text caret in an <link linkend="AccessibleText">Ac
 Get the character count of an <link linkend="AccessibleText">AccessibleText</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object to query.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a long integer indicating the total number of
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a long integer indicating the total number of
              characters in the <link linkend="AccessibleText">AccessibleText</link> object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getCharacterExtents">AccessibleText_getCharacterExtents ()</title>
 <programlisting>void        AccessibleText_getCharacterExtents
@@ -251,39 +233,35 @@ Get the bounding box containing the glyph representing
        the character at a particular text offset.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> an integer indicating the offset of the text character for
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating the offset of the text character for
        whom boundary information is requested.
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer into which the nominal x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer into which the nominal x coordinate
     of the corresponding glyph will be returned.
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry>a pointer to a long integer into which the nominal y coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara>a pointer to a long integer into which the nominal y coordinate
     of the corresponding glyph will be returned.
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry>a pointer to a long integer into which the width
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara>a pointer to a long integer into which the width
     of the corresponding glyph will be returned.
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer into which the height
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer into which the height
     of the corresponding glyph will be returned.
-</entry></row>
-<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
-<entry> an <link linkend="AccessibleCoordType">AccessibleCoordType</link> indicating the coordinate system to use
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleCoordType">AccessibleCoordType</link> indicating the coordinate system to use
        for the returned values.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getNSelections">AccessibleText_getNSelections ()</title>
 <programlisting><link linkend="long">long</link>        AccessibleText_getNSelections   (<link linkend="AccessibleText">AccessibleText</link> *obj);</programlisting>
@@ -292,19 +270,15 @@ Get the number of active non-contiguous selections for an
          <link linkend="AccessibleText">AccessibleText</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a long integer indicating the current
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a long integer indicating the current
          number of non-contiguous text selections active
          within an <link linkend="AccessibleText">AccessibleText</link> object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getOffsetAtPoint">AccessibleText_getOffsetAtPoint ()</title>
 <programlisting><link linkend="long">long</link>        AccessibleText_getOffsetAtPoint (<link linkend="AccessibleText">AccessibleText</link> *obj,
@@ -315,29 +289,25 @@ Get the number of active non-contiguous selections for an
 Get the bounding box for a glyph at a certain <link linkend="AccessibleText">AccessibleText</link> offset.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> the x coordinate of the point to be queried.
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> the y coordinate of the point to be queried.
-</entry></row>
-<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
-<entry> an <link linkend="AccessibleCoordType">AccessibleCoordType</link> indicating the coordinate system in which
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> the x coordinate of the point to be queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> the y coordinate of the point to be queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleCoordType">AccessibleCoordType</link> indicating the coordinate system in which
       the values should be returned.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the offset (as a long integer) at the point (<parameter>x</parameter>, <parameter>y</parameter>)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the offset (as a long integer) at the point (<parameter>x</parameter>, <parameter>y</parameter>)
       in the specified coordinate system.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getSelection">AccessibleText_getSelection ()</title>
 <programlisting>void        AccessibleText_getSelection     (<link linkend="AccessibleText">AccessibleText</link> *obj,
@@ -349,26 +319,22 @@ Get the bounds of the <parameter>selectionNum</parameter>-th active text selecti
         <link linkend="AccessibleText">AccessibleText</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>selectionNum</parameter>&nbsp;:</entry>
-<entry> an integer indicating which selection to query.
-</entry></row>
-<row><entry align="right"><parameter>startOffset</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer into which the start offset
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>selectionNum</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating which selection to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer into which the start offset
           of the selection will be returned.
-</entry></row>
-<row><entry align="right"><parameter>endOffset</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer into which the start offset
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer into which the start offset
           of the selection will be returned.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getText">AccessibleText_getText ()</title>
 <programlisting>char*       AccessibleText_getText          (<link linkend="AccessibleText">AccessibleText</link> *obj,
@@ -380,24 +346,20 @@ Get a range of text from an <link linkend="AccessibleText">AccessibleText</link>
          UTF-8 is a variable-width encoding.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object to query.
-</entry></row>
-<row><entry align="right"><parameter>startOffset</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> indicating the start of the desired text range.
-</entry></row>
-<row><entry align="right"><parameter>endOffset</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> indicating the first character past the desired range.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a text string containing characters from <parameter>startOffset</parameter>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> indicating the start of the desired text range.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> indicating the first character past the desired range.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a text string containing characters from <parameter>startOffset</parameter>
          to <parameter>endOffset</parameter>-1, inclusive, encoded as UTF-8.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getTextBeforeOffset">AccessibleText_getTextBeforeOffset ()</title>
 <programlisting>char*       AccessibleText_getTextBeforeOffset
@@ -411,37 +373,33 @@ Get delimited text from an <link linkend="AccessibleText">AccessibleText</link> 
          text offset.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> a long integer indicating the offset from which the delimiter
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><simpara> a long integer indicating the offset from which the delimiter
        search is based.
-</entry></row>
-<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
-<entry> an <link linkend="AccessibleTextBoundaryType">AccessibleTextBoundaryType</link> indicating whether the desired
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleTextBoundaryType">AccessibleTextBoundaryType</link> indicating whether the desired
       text string is a word, sentence, line, or attribute run.
-</entry></row>
-<row><entry align="right"><parameter>startOffset</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer which is assigned the
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer which is assigned the
       starting offset of the returned string, relative to the
       original <link linkend="AccessibleText">AccessibleText</link>.
-</entry></row>
-<row><entry align="right"><parameter>endOffset</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer which is assigned the
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer which is assigned the
       ending offset of the returned string, relative to the original
       <link linkend="AccessibleText">AccessibleText</link>.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a UTF-8 string representing the delimited text, both of whose
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 string representing the delimited text, both of whose
          delimiting boundaries are before the current offset, or
          an empty string if no such text exists.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getTextAfterOffset">AccessibleText_getTextAfterOffset ()</title>
 <programlisting>char*       AccessibleText_getTextAfterOffset
@@ -455,37 +413,33 @@ Get delimited text from an <link linkend="AccessibleText">AccessibleText</link> 
          text offset.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> a long integer indicating the offset from which the delimiter
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><simpara> a long integer indicating the offset from which the delimiter
        search is based.
-</entry></row>
-<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
-<entry> an <link linkend="AccessibleTextBoundaryType">AccessibleTextBoundaryType</link> indicating whether the desired
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleTextBoundaryType">AccessibleTextBoundaryType</link> indicating whether the desired
       text string is a word, sentence, line, or attribute run.
-</entry></row>
-<row><entry align="right"><parameter>startOffset</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer which is assigned the
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer which is assigned the
       starting offset of the returned string, relative to the
       original <link linkend="AccessibleText">AccessibleText</link>.
-</entry></row>
-<row><entry align="right"><parameter>endOffset</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer which is assigned the
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer which is assigned the
       ending offset of the returned string, relative to the original
       <link linkend="AccessibleText">AccessibleText</link>.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a UTF-8 string representing the delimited text, both of whose
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 string representing the delimited text, both of whose
          delimiting boundaries are after or inclusive of the current
          offset, or an empty string if no such text exists.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-getTextAtOffset">AccessibleText_getTextAtOffset ()</title>
 <programlisting>char*       AccessibleText_getTextAtOffset  (<link linkend="AccessibleText">AccessibleText</link> *obj,
@@ -498,37 +452,33 @@ Get delimited text from an <link linkend="AccessibleText">AccessibleText</link> 
          text offset.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> a long integer indicating the offset from which the delimiter
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><simpara> a long integer indicating the offset from which the delimiter
        search is based.
-</entry></row>
-<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
-<entry> an <link linkend="AccessibleTextBoundaryType">AccessibleTextBoundaryType</link> indicating whether the desired
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleTextBoundaryType">AccessibleTextBoundaryType</link> indicating whether the desired
       text string is a word, sentence, line, or attribute run.
-</entry></row>
-<row><entry align="right"><parameter>startOffset</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer which is assigned the
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer which is assigned the
       starting offset of the returned string, relative to the
       original <link linkend="AccessibleText">AccessibleText</link>.
-</entry></row>
-<row><entry align="right"><parameter>endOffset</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer which is assigned the
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer which is assigned the
       ending offset of the returned string, relative to the original
       <link linkend="AccessibleText">AccessibleText</link>.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a UTF-8 string representing the delimited text, whose
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 string representing the delimited text, whose
          delimiting boundaries bracket the current offset, or
          an empty string if no such text exists.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-removeSelection">AccessibleText_removeSelection ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleText_removeSelection  (<link linkend="AccessibleText">AccessibleText</link> *obj,
@@ -537,21 +487,17 @@ Get delimited text from an <link linkend="AccessibleText">AccessibleText</link> 
 De-select a text selection.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>selectionNum</parameter>&nbsp;:</entry>
-<entry> an integer indicating which (possibly of several)
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>selectionNum</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating which (possibly of several)
         text selection to remove.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-setCaretOffset">AccessibleText_setCaretOffset ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleText_setCaretOffset   (<link linkend="AccessibleText">AccessibleText</link> *obj,
@@ -560,20 +506,16 @@ De-select a text selection.</para>
 Set the text caret position for an <link linkend="AccessibleText">AccessibleText</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>newOffset</parameter>&nbsp;:</entry>
-<entry> the offset to which the text caret is to be moved.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>newOffset</parameter>&nbsp;:</term>
+<listitem><simpara> the offset to which the text caret is to be moved.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleText-setSelection">AccessibleText_setSelection ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleText_setSelection     (<link linkend="AccessibleText">AccessibleText</link> *obj,
@@ -584,27 +526,23 @@ Set the text caret position for an <link linkend="AccessibleText">AccessibleText
 Change the bounds of an existing <link linkend="AccessibleText">AccessibleText</link> text selection.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>selectionNum</parameter>&nbsp;:</entry>
-<entry> a zero-offset index indicating which text selection to modify.
-</entry></row>
-<row><entry align="right"><parameter>startOffset</parameter>&nbsp;:</entry>
-<entry> a long int, the new starting offset for the selection.
-</entry></row>
-<row><entry align="right"><parameter>endOffset</parameter>&nbsp;:</entry>
-<entry> a long int, the desired new offset of the first character
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleText">AccessibleText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>selectionNum</parameter>&nbsp;:</term>
+<listitem><simpara> a zero-offset index indicating which text selection to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a long int, the new starting offset for the selection.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a long int, the desired new offset of the first character
             after the selection.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
