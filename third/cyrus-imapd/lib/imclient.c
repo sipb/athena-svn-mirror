@@ -1,6 +1,6 @@
 /* imclient.c -- Streaming IMxP client library
  *
- * $Id: imclient.c,v 1.2 2003-05-06 22:49:23 rbasch Exp $
+ * $Id: imclient.c,v 1.3 2003-06-24 13:55:45 rbasch Exp $
  *
  * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
  *
@@ -1389,8 +1389,9 @@ static int imclient_authenticate_sub(struct imclient *imclient,
             imclient_writebase64(imclient, out, outlen);
         }
     } else {
+	/* Failed; cancel the authentication exchange.  Wait for
+	 * the server's BAD response before we return. */
 	imclient_write(imclient,"*\r\n", 3);
-	return saslresult;
     }
 
     outlen = 0;
