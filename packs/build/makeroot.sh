@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.2 2001-09-12 22:31:45 rbasch Exp $
+# $Id: makeroot.sh,v 1.3 2002-02-18 15:43:33 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -121,6 +121,7 @@ sgi)
 
   # Make links into destination area.
   ln -s ../.srvd/usr/athena "$root/usr/athena"
+  ln -s ../.srvd/usr/gcc "$root/usr/gcc"
   ln -s ../.srvd/usr/afsws "$root/usr/afsws"
   ;;
 
