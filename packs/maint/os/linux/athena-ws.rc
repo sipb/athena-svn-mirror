@@ -265,6 +265,7 @@ EOF
 	find /usr/athena/share/pixmaps -type d -depth -print | \
 	  xargs rmdir 2>/dev/null
 	success pixmaps
+	echo
 
 	;;
   stop)

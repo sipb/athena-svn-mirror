@@ -19,6 +19,7 @@ case "$1" in
 	echo -n "Preconfiguring system: "
 	/usr/sbin/kudzu -q && success "sysconfig" || failure "sysconfig"
 	RETVAL=$?
+	echo
 	;;
   stop)
 	;;
