@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.25 1998-04-14 17:51:15 ghudson Exp $
+# $Id: Makefile,v 1.26 1998-05-08 15:55:23 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -16,9 +16,7 @@ TELLME=/afs/athena.mit.edu/system/config/tellme
 
 # We make a lot of symlinks here, so we're going to make a hack to make it
 # a little more readable.
-SYMLINKS=	kpasswd				${ATHBINDIR}/passwd \
-		/usr/bin/passwd			${ATHBINDIR}/passwd.real \
-		${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
+SYMLINKS=	${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
 		${MOIRA}/man/cat1/addusr.1	${ATHMANDIR}/cat1/addusr.1 \
 		${MOIRA}/man/man1/blanche.1	${ATHMANDIR}/man1/blanche.1 \
 		${MOIRA}/man/cat1/blanche.1	${ATHMANDIR}/cat1/blanche.1 \
