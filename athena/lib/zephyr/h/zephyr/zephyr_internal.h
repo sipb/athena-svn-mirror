@@ -4,30 +4,24 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.21 1991-12-05 15:33:28 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.22 1993-09-24 16:11:02 probe Exp $ */
 
 #ifndef __ZINTERNAL_H__
 #define __ZINTERNAL_H__
 
 #include <zephyr/zephyr.h>
-#if defined(_POSIX_SOURCE) || defined(SYSV)
 #include <string.h>
-#define	index	strchr
-#define	rindex	strrchr
-#else
-#include <strings.h>			/* for strcpy, etc. */
-#endif
 #include <sys/types.h>			/* for time_t, uid_t, etc */
+
 #ifdef lint
-#include <sys/uio.h>			/* to make lint shut up about
-					   struct/union iovec */
-#endif /* lint */
+#include <sys/uio.h>	/* to make lint shut up about struct/union iovec */
+#endif
 
 struct _Z_Hole {
     struct _Z_Hole	*next;
