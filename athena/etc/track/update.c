@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.1 1988-05-25 21:42:09 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.2 1988-05-27 20:15:21 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.1  88/05/25  21:42:09  don
+ * added -I option. needs compatible track.h & track.c.
+ * 
  * Revision 4.0  88/04/14  16:43:30  don
  * this version is not compatible with prior versions.
  * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
@@ -49,7 +52,7 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.1 1988-05-25 21:42:09 don Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.2 1988-05-27 20:15:21 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -130,7 +133,7 @@ struct currentness *r, *l;
 {
 	char *remotename = rpath[ ROOT], *localname = lpath[ ROOT];
 	struct currentness *diff;
-	struct stat lstat;
+	struct stat lstat, *local_statp;
 	struct timeval *timevec;
 	static List_element *missing_dirs;
 	List_element *p;
@@ -155,10 +158,10 @@ struct currentness *r, *l;
 	/* either: cmpfile != tofile, and cmpfile exists,
 	 *     or: cmpfile == tofile, & the file might exist or not.
 	 */
-	local_type = same_name ? TYPE( l->sbuf) :
-		     (*statf)( lpath[ ROOT], &lstat) ? S_IFMT : TYPE( lstat);
-
-	exists = S_IFMT != local_type;
+	local_statp = same_name ? &l->sbuf :
+		     (*statf)( lpath[ ROOT], &lstat) ? NULL : &lstat;
+	local_type = local_statp ? TYPE( *local_statp) : S_IFMT;
+	exists = local_type != S_IFMT;
 
 	/* that diff == NULL doesn't mean localname exists,
 	 * since l may represent a different file.
@@ -277,7 +280,13 @@ struct currentness *r, *l;
 		if ( !( diff->cksum || TIME( diff->sbuf)));
 		else if ( copy_file( remotename, localname)) return( -1);
 		else      utimes(    localname, timevec);
-		return( exists && ignore_prots ? 0 :
+
+		/* if we're ignoring protections (-I option),
+		 * restore the old local file-protections,
+		 * unless this update created the file.
+		 */
+		return( exists && ignore_prots ?
+			set_prots( localname, local_statp) :
 			set_prots( localname, &r->sbuf));
 
 	case S_IFLNK:
@@ -296,6 +305,10 @@ struct currentness *r, *l;
 		return( 0);
 
 	case S_IFDIR:
+		/* if we're ignoring protections (-I option),
+		 * keep the old local file-protections,
+		 * unless this update creates the dir.
+		 */
 		return(   ! exists ?	   makepath(  localname, &r->sbuf)
 			: ! ignore_prots ? set_prots( localname, &r->sbuf)
 			: 0 );
@@ -306,7 +319,12 @@ struct currentness *r, *l;
 			do_gripe();
 			return(-1);
 		}
-		return( ignore_prots ? 0 : set_prots( localname, &r->sbuf));
+		/* if we're ignoring protections (-I option),
+		 * keep the old local file-protections,
+		 * unless this update creates the device.
+		 */
+		return( exists && ignore_prots ?
+			0 : set_prots( localname, &r->sbuf));
 
 	case S_IFMT: /* should have been caught already. */
 		sprintf( errmsg, "fromfile %s doesn't exist.\n", remotename);
@@ -348,7 +366,7 @@ updated( cmp, fr) struct currentness *cmp, *fr; {
 		 * this an efficiency hack; dec_entry() will seldom
 		 * see this mark, because most cmpfiles aren't at top-level.
 		 */
-		cmp->sbuf.st_mode = 0;
+		cmp->sbuf.st_mode &= ~S_IFMT;
 
 	return( 0);
 }
