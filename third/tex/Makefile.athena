@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.4 1997-01-30 22:27:53 ghudson Exp $
+# $Id: Makefile.athena,v 1.5 1997-02-25 07:23:46 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -39,6 +39,7 @@ install:
 	-mkdir -p "$$SRVD"${ATHLIBDIR}/tex/macros
 	-mkdir -p "$$SRVD"${ATHLIBDIR}/tex/fonts/tfm
 	-mkdir -p "$$SRVD"${ATHLIBDIR}/tex/fonts/vf
-	install -c -m 444 dvips/PSlatex/*.sty "$$SRVD"${ATHLIBDIR}/tex/macros
+	install -c -m 444 dvips/PSlatex/*.sty \
+		"$$SRVD"${ATHLIBDIR}/tex/macros/latex
 	install -c -m 444 dvips/PStfms/*.tfm "$$SRVD"${ATHLIBDIR}/tex/fonts/tfm
 	install -c -m 444 dvips/PSvfs/*.vf "$$SRVD"${ATHLIBDIR}/tex/fonts/vf
