@@ -7,7 +7,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
- *	$Id: os.h,v 1.3 1990-11-15 09:10:25 lwvanels Exp $
+ *	$Id: os.h,v 1.4 1990-12-09 23:37:54 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -50,6 +50,7 @@ char *ttyname P((int filedes ));
 char *getenv P((char *name ));
 void *malloc P((unsigned int));
 void *realloc P((void *, unsigned int));
+void *calloc P((unsigned int, unsigned int));
 int socket P((int, int, int));
 
 #ifdef SOCK_STREAM
