@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.36 1992-11-30 19:04:04 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.37 1993-02-08 13:56:34 probe Exp $
  */
 
 #include <stdio.h>
@@ -368,18 +368,6 @@ char *display;
     mktemp(wgfile);
     sprintf(errbuf, "WGFILE=%s", wgfile);
     environment[i++] = strsave(errbuf);
-#if defined(_AIX) && defined(i386)
-    environment[i++] = "hosttype=ps2";
-#endif
-#if defined(_AIX) && defined(_IBMR2)
-    environment[i++] = "hosttype=rsaix";
-#endif
-#if defined(ultrix) && defined(mips)
-    environment[i++] = "hosttype=decmips";
-#endif
-#if defined(sun) 
-    environment[i++] = "hosttype=sun4";
-#endif
     msg = getenv("TZ");
     if (msg) {                /* Pass along timezone */
 	sprintf(errbuf, "TZ=%s", msg);

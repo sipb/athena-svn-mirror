@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.30 1992-11-07 03:48:24 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.31 1993-02-08 13:55:56 probe Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -972,18 +972,6 @@ Cardinal *n;
     setenv("USER", "daemon", 1);
     setenv("SHELL", "/bin/sh", 1);
     setenv("DISPLAY", ":0", 1);
-#if defined(_AIX) && defined(i386)
-    setenv("hosttype", "ps2", 1);
-#endif
-#if defined(_AIX) && defined(_IBMR2)
-    setenv("hosttype", "rsaix", 1);
-#endif
-#if defined(ultrix) && defined(mips)
-    setenv("hosttype", "decmips", 1);
-#endif
-#if defined(sun)
-    setenv("hosttype", "sun4", 1);
-#endif
     setgroups(sizeof(def_grplist)/sizeof(gid_t), def_grplist);
 
 #if defined(_AIX) && defined(_IBMR2)
