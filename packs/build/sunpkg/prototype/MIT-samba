@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Change /etc/athena/smb.conf to class config.
+sed -e 's|^f none \(etc/athena/smb\.conf\) |e config \1 |'
