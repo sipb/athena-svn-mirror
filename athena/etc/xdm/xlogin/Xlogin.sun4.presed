@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.sun4.presed,v 1.3 1994-06-23 15:59:27 cfields Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.sun4.presed,v 1.4 1996-08-10 21:43:36 cfields Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -133,7 +133,7 @@ xlogin.Geometry: 		580x325+288+180
 *host.font:			-adobe-new century schoolbook-bold-r-*-180-*
 *host.resize:			False
 
-*clock.wcClassName:		Clock
+*clock.wcClassName:		ClockWidget
 *clock.update:			1
 *clock.analog:			False
 *clock*font:			-adobe-new century schoolbook-medium-r-*-120-*
