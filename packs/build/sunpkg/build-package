@@ -96,13 +96,11 @@ echo "==== build package objects from source"
 rm -rf $destdir/INSTALL/$source_name
 mkdir $destdir/INSTALL/$source_name
 
-# Hack: create /bin and /usr/vice symlinks in the target, so that
+# Hack: create any needed directory symlinks in the target, so that
 # package files that are installed under those directories end up
 # living in the right place.
 mkdir -p $destdir/INSTALL/$source_name/usr/bin
 ln -s ./usr/bin $destdir/INSTALL/$source_name/bin
-mkdir -p $destdir/INSTALL/$source_name/var/usr/vice
-ln -s ../var/usr/vice $destdir/INSTALL/$source_name/usr/vice
 
 for op in dist prepare all install ; do
   (cd $source_name && \
@@ -118,12 +116,10 @@ if [ -f $sourcedir/packs/build/sunpkg/extra/$package_name ]; then
        $sourcedir $destdir/INSTALL/$source_name) || exit 1
 fi
 
-# Hack: clean up the symlinks created above in the target, and the
+# Hack: clean up any symlinks created above in the target, and the
 # directories they link to (if empty).
 rmdir -p $destdir/INSTALL/$source_name/usr/bin > /dev/null 2>&1
 rm $destdir/INSTALL/$source_name/bin
-rmdir -p $destdir/INSTALL/$source_name/var/usr/vice > /dev/null 2>&1
-rm $destdir/INSTALL/$source_name/usr/vice
 
 # Copy the built package into athtools now.
 echo "==== save tools"
@@ -145,7 +141,7 @@ rm -f $prototype
                       $3 !~ "^usr/afsws(/|$)" &&
                       $3 !~ "^usr/gcc(/|$)" &&
                       $3 !~ "^usr/prototype_user(/|$)" &&
-                      $3 !~ "^var/usr/vice(/|$)"))
+                      $3 !~ "^usr/vice(/|$)"))
       print $1, $2, $3, "?", "?", "?";
     else
       print $0;
