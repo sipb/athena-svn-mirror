@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.1 1996-12-27 22:03:48 ghudson Exp $
+# $Id: finish-update.sh,v 1.2 1997-01-11 19:27:01 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -31,9 +31,11 @@ sgi)
 	;;
 esac
 
+method=`awk '{a=$6}; END{print a}' $CONFDIR/version`
+newvers=`awk '{a=$7}; END{print a}' $CONFDIR/version`
+
 echo "Updating version"
-NEWVERS=`awk '{a=$6}; END{print a}' $CONFDIR/version`
-echo "Athena Workstation ($HOSTTYPE) Version $NEWVERS `date`" >> \
+echo "Athena Workstation ($HOSTTYPE) Version $newvers `date`" >> \
 	${CONFDIR}/version
 
 # Re-customize the workstation
@@ -44,4 +46,14 @@ fi
 if [ -d "$SERVERDIR" ]; then
 	echo "Running mkserv."
 	/srvd/usr/athena/bin/mkserv -v update
+fi
+
+if [ "$method" = "Manual" ]; then
+	echo "The update to version $newvers is complete.  You may now examine"
+	echo "the system before rebooting it under $newvers.  When you are"
+	echo "finished, type 'exit' and the system will reboot.  The shell"
+	echo "prompt below is for a /bin/athena/tcsh process, regardless of"
+	echo "what root's shell normally is."
+	echo ""
+	/bin/athena/tcsh
 fi

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.2 1997-01-02 09:54:00 ghudson Exp $
+# $Id: do-update.sh,v 1.3 1997-01-11 19:27:00 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -215,7 +215,7 @@ if [ -s "$AUXDEVS" ]; then
 	done
 fi
 
-if [ "$NEWBOOT" = true ] ; then
+if [ "$NEWBOOT" = true ]; then
 	echo "Copying new bootstraps"
 	case "$HOSTTYPE" in
 	sun4)
@@ -232,8 +232,14 @@ sgi)
 	;;
 esac
 
+if [ "$AUTO" = true ]; then
+	method=Auto
+else
+	method=Manual
+fi
+
 echo "Updating version for reboot"
-echo "Athena Workstation ($HOSTTYPE) Version Reboot $NEWVERS `date`" \
+echo "Athena Workstation ($HOSTTYPE) Version Reboot $method $NEWVERS `date`" \
 	>> ${CONFDIR}/version
 
 sync

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.10 1996-12-27 22:09:21 ghudson Exp $
+# $Id: update_ws.sh,v 1.11 1997-01-11 19:27:01 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -23,11 +23,16 @@
 
 trap "" 1 15
 
-export CONFDIR LIBDIR PATH HOSTTYPE
+export CONFDIR LIBDIR PATH HOSTTYPE AUTO
 CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
 PATH=/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR:/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd
 HOSTTYPE=`/srvd/bin/athena/machtype`
+if [ `expr $0 : '.*auto_update'` != "0" ]; then
+	AUTO=true
+else
+	AUTO=false
+fi
 
 if [ "`whoami`" != "root" ];  then
 	echo "You are not root.  This update script must be run as root."
@@ -65,11 +70,6 @@ else
 	export PUBLIC AUTOUPDATE
 	PUBLIC=true
 	AUTOUPDATE=true
-fi
-
-AUTO=false
-if [ `expr $0 : '.*auto_update'` != "0" ]; then
-	AUTO=true;
 fi
 
 # Get clusterinfo for the version in /srvd/.rvdinfo to determine what
@@ -222,21 +222,18 @@ if [ "$AUTO" = true -a "$1" = reactivate ]; then
 	fi
 fi
 
-# Everything is all set; do the actual update.
 if [ "$AUTO" = true ]; then
 	echo
 	echo THIS WORKSTATION IS ABOUT TO UNDERGO AN AUTOMATIC SOFTWARE UPDATE.
 	echo THIS PROCEDURE MAY TAKE SOME TIME.
 	echo
 	echo PLEASE DO NOT DISTURB IT WHILE THIS IS IN PROGRESS.
-	echo 
-	sh "$LIBDIR/do-update" < /dev/null
-	echo "Update partially completed, system will reboot in 15 seconds."
-	sync
-	sleep 15
-	exec reboot
-else
-	sh "$LIBDIR/do-update"
-	echo "Update partially completed; please reboot your machine with the"
-	echo "'reboot' command to complete the update."
+	echo
 fi
+
+# Everything is all set; do the actual update.
+sh "$LIBDIR/do-update" "$AUTO" < /dev/null
+echo "Update partially completed, system will reboot in 15 seconds."
+sync
+sleep 15
+exec reboot
