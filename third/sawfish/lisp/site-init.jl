@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.20 2003-05-29 16:33:17 ghudson Exp $
+;; $Id: site-init.jl,v 1.21 2003-07-16 02:51:27 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -41,14 +41,14 @@
 (bind-keys global-keymap "W-Esc" 'cycle-windows-backwards
 			 "W-Space" 'popup-window-menu)
 
-;; Special treatment for zwgc windows
+;; Special treatment for zwgc and console windows
 (require 'sawfish.wm.ext.match-window)
-(add-window-matcher 'WM_NAME "zwgc" '(never-focus . t)
-				    '(window-list-skip . t)
-				    '(task-list-skip . t)
-				    '(sticky-viewport . t)
-				    '(frame-type . border-only))
-(add-window-matcher 'WM_NAME "Console" '(never-focus . t))
+(add-window-matcher 'WM_CLASS "^Zwgc/" '(never-focus . t)
+				     '(window-list-skip . t)
+				     '(task-list-skip . t)
+				     '(sticky-viewport . t)
+				     '(frame-type . border-only))
+(add-window-matcher 'WM_CLASS "^Console/" '(never-focus . t))
 
 ;; Workaround for Maple, which otherwise comes up with no border
 ;; for some reason.
