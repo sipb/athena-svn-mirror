@@ -24,9 +24,7 @@
 #include "krb.h"
 #include <string.h>
 
-#include <krb5/krb5.h>
-#include <krb5/ext-proto.h>
-#include <krb5/los-proto.h>
+#include <krb5.h>
 
 #define	LIFE	DEFAULT_TKT_LIFE   /* lifetime of ticket in 5-minute units */
 
@@ -115,58 +113,64 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
 	char	**ret_cache_name;
 	char	**etext;
 {
+	krb5_context context;
 	krb5_error_code retval;
 	krb5_principal	me = 0, server = 0;
 	krb5_ccache	ccache = NULL;
 	krb5_creds my_creds;
 	krb5_timestamp now;
 	krb5_address **my_addresses = 0;
-	char		*cache_name = krb5_cc_default_name();
+	char *cache_name;
 
 	*etext = 0;
 	if (ret_cache_name)
 		*ret_cache_name = 0;
 	memset((char *)&my_creds, 0, sizeof(my_creds));
 
-	krb5_init_ets();
+	krb5_init_context(&context);
+	cache_name = krb5_cc_default_name(context);
+
+	krb5_init_ets(context);
 	
-	retval = krb5_425_conv_principal(name, instance, realm, &me);
+	retval = krb5_425_conv_principal(context, name, instance, realm, &me);
 	if (retval) {
 		*etext = "while converting V4 principal";
 		goto cleanup;
 	}
     
-	retval = krb5_cc_resolve (cache_name, &ccache);
+	retval = krb5_cc_resolve (context, cache_name, &ccache);
 	if (retval) {
 		*etext = "while resolving ccache";
 		goto cleanup;
 	}
 
-	retval = krb5_cc_initialize (ccache, me);
+	retval = krb5_cc_initialize (context, ccache, me);
 	if (retval) {
 		*etext = "while initializing cache";
 		goto cleanup;
 	}
 
-	retval = krb5_build_principal_ext(&server,
-					  krb5_princ_realm(me)->length,
-					  krb5_princ_realm(me)->data,
+	retval = krb5_build_principal_ext(context, &server,
+					  krb5_princ_realm(context,
+							   me)->length,
+					  krb5_princ_realm(context, me)->data,
 					  KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME,
-					  krb5_princ_realm(me)->length,
-					  krb5_princ_realm(me)->data,
+					  krb5_princ_realm(context,
+							   me)->length,
+					  krb5_princ_realm(context, me)->data,
 					  0);
 	if (retval)  {
 		*etext = "while building server name";
 		goto cleanup;
 	}
 
-	retval = krb5_os_localaddr(&my_addresses);
+	retval = krb5_os_localaddr(context, &my_addresses);
 	if (retval) {
 		*etext = "when getting my address";
 		goto cleanup;
 	}
 
-	retval = krb5_timeofday(&now);
+	retval = krb5_timeofday(context, &now);
 	if (retval) {
 		*etext = "while getting time of day";
 		goto cleanup;
@@ -178,11 +182,8 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
 	my_creds.times.endtime = now + lifetime*5*60;
 	my_creds.times.renew_till = 0;
 	
-	retval = krb5_get_in_tkt_with_password(0, my_addresses, 0,
-					       ETYPE_DES_CBC_CRC,
-					       KEYTYPE_DES,
-					       password,
-					       ccache,
+	retval = krb5_get_in_tkt_with_password(context, 0, my_addresses,
+					       NULL, NULL, password, ccache,
 					       &my_creds, 0);
 	if (retval) {
 		*etext = "while calling krb5_get_in_tkt_with_password";
@@ -190,7 +191,7 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
 	}
 
 	if (ret_cache_name) {
-		*ret_cache_name = malloc(strlen(cache_name)+1);
+		*ret_cache_name = (char *) malloc(strlen(cache_name)+1);
 		if (!*ret_cache_name) {
 			retval = ENOMEM;
 			goto cleanup;
@@ -200,16 +201,17 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
 
 cleanup:
 	if (me)
-		krb5_free_principal(me);
+		krb5_free_principal(context, me);
 	if (server)
-		krb5_free_principal(server);
+		krb5_free_principal(context, server);
 	if (my_addresses)
-		krb5_free_addresses(my_addresses);
+		krb5_free_addresses(context, my_addresses);
 	if (ccache)
-		krb5_cc_close(ccache);
+		krb5_cc_close(context, ccache);
 	my_creds.client = 0;
 	my_creds.server = 0;
-	krb5_free_cred_contents(&my_creds);
+	krb5_free_cred_contents(context, &my_creds);
+	krb5_free_context(context);
 	return retval;
 }
 

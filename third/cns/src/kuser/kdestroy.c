@@ -19,7 +19,7 @@
 #include "krb.h"
 #include <string.h>
 
-#include <krb5/krb5.h>
+#include <krb5.h>
 
 static char *pname;
 
@@ -32,20 +32,26 @@ static usage()
 krb5_error_code do_v5_kdestroy(cachename)
 	char	*cachename;
 {
+	krb5_context context;
 	krb5_error_code retval;
 	krb5_ccache cache;
-	
+
+	krb5_init_context(&context);
+
 	if (!cachename)
-		cachename = krb5_cc_default_name();
+		cachename = krb5_cc_default_name(context);
 
-	krb5_init_ets();
+	krb5_init_ets(context);
 
-	retval = krb5_cc_resolve (cachename, &cache);
-	if (retval)
+	retval = krb5_cc_resolve (context, cachename, &cache);
+	if (retval) {
+		krb5_free_context(context);
 		return retval;
+	}
 
-	retval = krb5_cc_destroy(cache);
+	retval = krb5_cc_destroy(context, cache);
 
+	krb5_free_context(context);
 	return retval;
 }
 
