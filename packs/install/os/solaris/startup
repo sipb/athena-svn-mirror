@@ -8,6 +8,19 @@
 # it sets up the env & runs athenainstall
 #
 
+case "$1" in
+start)
+    # Fall through to start the install.
+    ;;
+stop)
+    exit 0
+    ;;
+*)
+    echo "Usage: $0 {start|stop}" 1>&2
+    exit 1
+    ;;
+esac
+
 # first thing, source /etc/TIMEZONE, so TZ (and maybe others) set
 . /etc/TIMEZONE
 
@@ -21,12 +34,6 @@ export PATH
 HOME=/tmp
 export HOME
 
-trap /sbin/sh 1  2 15  # ignore traps
+trap /sbin/sh 1 2 15  # ignore traps
 
-if [ ! "$TERM" ]; then
-        TERM=sun
-        export TERM
-fi
-
-
-/sbin/athenainstall
+sh /util/athenainstall >>/dev/console 2<>/dev/console </dev/console
