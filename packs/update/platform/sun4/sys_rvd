@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.25 1996-12-27 22:12:19 ghudson Exp $
+## $Id: sys_rvd,v 1.26 1997-03-26 21:04:22 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -42,3 +42,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> afsws
 		:
 	/sbin::::
+	/var:::
+		spool
+		:
