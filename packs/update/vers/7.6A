@@ -1,0 +1,8 @@
+#!/bin/sh -
+# Version-specific update script for 7.5B
+
+echo "NEWTTYS=true"			>> ${CONFVARS}
+
+case ${MACH} in
+VS2*)	;;
+esac
