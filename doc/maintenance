@@ -13,6 +13,7 @@ The areas covered in this file are:
 	Imake templates
 	Release notes
 	Release cycles
+	Patch releases
 	Rel-eng machines
 	Cluster information
 
@@ -370,6 +371,73 @@ list of popular lockers to get in addition to the glue ones:
 
 In addition, the third-party software lockers need to be updated; the
 third-party software group keeps their own list.
+
+Patch releases
+--------------
+
+Once a release has hit beta test, all changes to the release must be
+propagated through patch releases.  The steps to performing a patch
+release are:
+
+	* Check in the changes on the mainline (if they apply) and on
+	  the release branch and update the relevant sections of the
+	  source tree in /afs/dev.mit.edu/source.
+
+	* If the update needs to do anything other than track against
+	  the system packs, you must prepare a version script which
+	  deals with any transition issues, specifies whether to track
+	  the OS volume, specifies whether to deal with a kernel
+	  update, and specifies which if any configuration files need
+	  to be updated.  See the update script
+	  (packs/update/do-update.sh) for details.  See
+	  packs/build/update/platform/*/configfiles for a list of
+	  configuration files for a given platform.  The version
+	  script should be checked in on the mainline and on the
+	  release branch.
+
+	* Make sure to add symlinks in the build tree for any files
+	  you have added.  Note that you probably added a build script
+	  if the update needs to do anything other than track against
+	  the system packs.
+
+	* In the build tree, bump the version number in
+	  packs/build/version (the symlink should be broken for this
+	  file to avoid having to change it in the source tree).
+
+	* If you are going to need to update binaries that users run
+	  from the packs, go into the packs and move (don't copy) them
+	  into a .deleted directory at the root of the packs.  This is
+	  especially important for binaries like emacs and dash which
+	  people run for long periods of time, to avoid making the
+	  running processes dump core when the packs are released.
+
+	* Update the read-write volume of the packs to reflect the
+	  changes you've made.  You can use the build.sh script to
+	  build and install specific packages, or you can use the
+	  do.sh script to build the package and then install specific
+	  files (cutting and pasting from the output of "make -n
+	  install DESTDIR=/srvd" is the safest way); updating the
+	  fewest number of files is preferrable.  Remember to install
+	  the version script.
+
+	* Use the build.sh script to build and install
+	  packs/build/finish.  This will fix ownerships and update the
+	  track lists and the like.
+
+	* It's a good idea to test the update from the read-write
+	  packs by symlinking the read-write packs to /srvd on a test
+	  machine and taking the update.  Note that when the machine
+	  comes back up with the new version, it will probably
+	  re-attach the read-write packs, so you may have to re-make
+	  the symlink if you want to test stuff that's on the packs.
+
+	* At some non-offensive time, release the packs in the dev
+	  cell.
+
+	* Send mail to rel-eng saying that the patch release went out,
+	  and what was in it.  (You can find many example pieces of
+	  mail in the discuss archive.)  Include instructions
+	  explaining how to propagate the release to the athena cell.
 
 Rel-eng machines
 ----------------
