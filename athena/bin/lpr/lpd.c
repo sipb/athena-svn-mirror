@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.11 1991-01-23 13:20:54 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.12 1991-06-28 13:35:07 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.11 1991-01-23 13:20:54 epeisach Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.12 1991-06-28 13:35:07 epeisach Exp $";
 #endif lint
 
 /*
@@ -685,7 +685,7 @@ perr(msg)
 	putchar('\n');
 }
 
-#if defined(_AUX_SOURCE) || (defined(ultrix) && defined(ULTRIX40))
+#if defined(_AUX_SOURCE)
 _validuser(hostf, rhost, luser, ruser, baselen)
 char *rhost, *luser, *ruser;
 FILE *hostf;
