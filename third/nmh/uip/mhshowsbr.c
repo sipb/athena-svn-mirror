@@ -2,7 +2,7 @@
 /*
  * mhshowsbr.c -- routines to display the contents of MIME messages
  *
- * $Id: mhshowsbr.c,v 1.1.1.1 1999-02-07 18:14:15 danw Exp $
+ * $Id: mhshowsbr.c,v 1.2 1999-04-26 19:18:24 danw Exp $
  */
 
 #include <h/mh.h>
@@ -44,7 +44,7 @@ char *progsw = NULL;
 int nomore   = 0;
 char *formsw = NULL;
 
-pid_t xpid = 0;
+pid_t xpid = 0, intrpid = 0;
 
 static sigjmp_buf intrenv;
 
@@ -87,6 +87,7 @@ static int show_message_rfc822 (CT, int, int);
 static int show_partial (CT, int, int);
 static int show_external (CT, int, int);
 static RETSIGTYPE intrser (int);
+static RETSIGTYPE intrser2 (int);
 
 
 /*
@@ -466,6 +467,8 @@ show_content_aux2 (CT ct, int serial, int alternate, char *cracked, char *buffer
     pid_t child_id;
     int i;
     char *vec[4], exec[BUFSIZ + sizeof "exec "];
+    int	intr;
+    SIGNAL_HANDLER istat;
     
     if (debugsw || cracked) {
 	fflush (stdout);
@@ -499,9 +502,6 @@ show_content_aux2 (CT ct, int serial, int alternate, char *cracked, char *buffer
 	    printf ("Press <return> to show content...");
 
 	if (xpause) {
-	    int	intr;
-	    SIGNAL_HANDLER istat;
-
 	    istat = SIGNAL (SIGINT, intrser);
 	    if ((intr = sigsetjmp (intrenv, 1)) == OK) {
 		fflush (stdout);
@@ -525,10 +525,12 @@ show_content_aux2 (CT ct, int serial, int alternate, char *cracked, char *buffer
 
     fflush (stdout);
 
-    for (i = 0; (child_id = vfork ()) == NOTOK && i < 5; i++)
+    istat = SIGNAL (SIGINT, intrser2);
+    for (i = 0; (intrpid = child_id = vfork ()) == NOTOK && i < 5; i++)
 	sleep (5);
     switch (child_id) {
 	case NOTOK:
+	    SIGNAL (SIGINT, istat);
 	    advise ("fork", "unable to");
 	    (*ct->c_ceclosefnx) (ct);
 	    return NOTOK;
@@ -556,6 +558,7 @@ show_content_aux2 (CT ct, int serial, int alternate, char *cracked, char *buffer
 
 	    if (fd != NOTOK)
 		(*ct->c_ceclosefnx) (ct);
+	    SIGNAL (SIGINT, istat);
 	    return (alternate ? DONE : OK);
     }
 }
@@ -1011,4 +1014,13 @@ intrser (int i)
 
     putchar ('\n');
     siglongjmp (intrenv, DONE);
+}
+
+static RETSIGTYPE
+intrser2 (int i)
+{
+#ifndef RELIABLE_SIGNALS
+    SIGNAL (SIGINT, intrser2);
+#endif
+    kill (intrpid, SIGKILL);
 }
