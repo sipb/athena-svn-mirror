@@ -3,7 +3,7 @@
  *
  *      Created by:     David Jedlinsky
  *
- *      $Id: zleave.c,v 1.24 1999-01-22 23:18:34 ghudson Exp $
+ *      $Id: zleave.c,v 1.25 1999-08-13 00:19:39 danw Exp $
  *
  *      Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,8 +14,10 @@
 #include <zephyr/mit-copyright.h>
 #include <zephyr/zephyr.h>
 
+#include <com_err.h>
+
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Id: zleave.c,v 1.24 1999-01-22 23:18:34 ghudson Exp $";
+static char rcsid_zlocate_c[] = "$Id: zleave.c,v 1.25 1999-08-13 00:19:39 danw Exp $";
 #endif /* lint */
 
 /*
@@ -55,6 +57,8 @@ char *whenleave;
 char *reminder_message = NULL;
 char buff[100];
 int use_zephyr=1, oldpid;
+
+void usage(), doalarm(), bother(), delay();
 
 main(argc, argv)
 char **argv;
@@ -175,6 +179,7 @@ char **argv;
 	exit(0);
 }
 
+void
 usage()
 {
 	fprintf(stderr, "usage: zleave [[+]hhmm [-m \"Reminder Message\"]]\n\
@@ -201,6 +206,7 @@ int *hp, *mp;
 	return(1);
 }
 
+void
 doalarm(nmins)
 long nmins;
 {
@@ -302,6 +308,7 @@ long nmins;
 	exit(0);
 }
 
+void
 bother(slp, msg)
 long slp;
 char *msg;
@@ -376,6 +383,7 @@ char *msg;
  * delay is like sleep but does it in 100 sec pieces and
  * knows what zero means.
  */
+void
 delay(secs)
 long secs;
 {

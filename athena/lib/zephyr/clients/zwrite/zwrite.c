@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zwrite.c,v 1.48 1999-03-22 21:07:33 danw Exp $
+ *	$Id: zwrite.c,v 1.49 1999-08-13 00:19:42 danw Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #include <pwd.h>
 
 #ifndef lint
-static const char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.48 1999-03-22 21:07:33 danw Exp $";
+static const char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.49 1999-08-13 00:19:42 danw Exp $";
 #endif /* lint */
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -34,6 +34,7 @@ Z_AuthProc auth;
 void un_tabify();
 
 char *fix_filsrv_inst();
+void usage(), send_off();
 
 main(argc, argv)
     int argc;
@@ -336,6 +337,7 @@ main(argc, argv)
     exit(0);
 }
 
+void
 send_off(notice, real)
     ZNotice_t *notice;
     int real;
@@ -444,6 +446,7 @@ send_off(notice, real)
 	exit(1);
 } 
 
+void
 usage(s)
     char *s;
 {

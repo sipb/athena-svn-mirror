@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: zephyr.c,v 1.9 1999-01-22 23:20:49 ghudson Exp $
+ *      $Id: zephyr.c,v 1.10 1999-08-13 00:19:52 danw Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.9 1999-01-22 23:20:49 ghudson Exp $";
+static const char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.10 1999-08-13 00:19:52 danw Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -187,7 +187,7 @@ void zephyr_init(notice_handler)
      * <<<>>>
      */
     mux_add_input_source(ZGetFD(), (void (*)())handle_zephyr_input,
-			 (pointer)notice_handler);
+			 notice_handler);
     zephyr_inited = 1;
     return;
 }

@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zpopnotify.c,v 1.12 1999-01-22 23:18:44 ghudson Exp $
+ *	$Id: zpopnotify.c,v 1.13 1999-08-13 00:19:41 danw Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -22,11 +22,13 @@
 #include <errno.h>
 
 #ifndef lint
-static char rcsid_zpopnotify_c[] = "$Id: zpopnotify.c,v 1.12 1999-01-22 23:18:44 ghudson Exp $";
+static char rcsid_zpopnotify_c[] = "$Id: zpopnotify.c,v 1.13 1999-08-13 00:19:41 danw Exp $";
 #endif /* lint */
 
 #define MAIL_CLASS "MAIL"
 #define MAIL_INSTANCE "POP"
+
+void usage();
 
 main(argc,argv)
 	int argc;
@@ -94,6 +96,7 @@ main(argc,argv)
 	}
 }
 
+void
 usage(whoami)
 	char *whoami;
 {

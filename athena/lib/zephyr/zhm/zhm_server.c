@@ -3,7 +3,7 @@
  *
  *      Created by:     David C. Jedlinsky
  *
- *      $Id: zhm_server.c,v 1.15 1999-01-22 23:20:04 ghudson Exp $
+ *      $Id: zhm_server.c,v 1.16 1999-08-13 00:19:49 danw Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_server_c[] = "$Id: zhm_server.c,v 1.15 1999-01-22 23:20:04 ghudson Exp $";
+static char rcsid_hm_server_c[] = "$Id: zhm_server.c,v 1.16 1999-08-13 00:19:49 danw Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -33,8 +33,11 @@ extern char cur_serv[], prim_serv[];
 extern void die_gracefully();
 extern unsigned long inet_addr();
 
+void hm_control(), send_back(), new_server();
+
 /* Argument is whether we are actually booting, or just attaching
  * after a server switch */
+void
 send_boot_notice(op)
 char *op;
 {
@@ -66,6 +69,7 @@ char *op;
 }
 
 /* Argument is whether we are detaching or really going down */
+void
 send_flush_notice(op)
 char *op;
 {
@@ -95,6 +99,7 @@ char *op;
      }
 }
 
+void
 find_next_server(sugg_serv)
 char *sugg_serv;
 {
@@ -168,6 +173,7 @@ char *sugg_serv;
      nservchang++;
 }
 
+void
 server_manager(notice)
 ZNotice_t *notice;
 {
@@ -198,6 +204,7 @@ ZNotice_t *notice;
     }
 }
 
+void
 hm_control(notice)
 ZNotice_t *notice;
 {
@@ -240,6 +247,7 @@ ZNotice_t *notice;
     }
 }
 
+void
 send_back(notice)
 ZNotice_t *notice;
 {
@@ -278,6 +286,7 @@ ZNotice_t *notice;
     }
 }
 
+void
 new_server(sugg_serv)
 char *sugg_serv;
 {

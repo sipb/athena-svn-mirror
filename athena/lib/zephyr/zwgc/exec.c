@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: exec.c,v 1.9 1999-01-22 23:20:17 ghudson Exp $
+ *      $Id: exec.c,v 1.10 1999-08-13 00:19:51 danw Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_exec_c[] = "$Id: exec.c,v 1.9 1999-01-22 23:20:17 ghudson Exp $";
+static const char rcsid_exec_c[] = "$Id: exec.c,v 1.10 1999-08-13 00:19:51 danw Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -429,8 +429,8 @@ static int exec_subtree(node)
 /***************************************************************************/
 
 static char *notice_fields;
-static notice_fields_length = 0;
-static number_of_fields = 0;
+static int notice_fields_length = 0;
+static int number_of_fields = 0;
 
 static int exec_fields(node)
      Node *node;

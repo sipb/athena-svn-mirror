@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: ZParseNot.c,v 1.28 1999-01-22 23:19:18 ghudson Exp $
+ *	$Id: ZParseNot.c,v 1.29 1999-08-13 00:19:44 danw Exp $
  *
  *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -142,7 +142,7 @@ Code_t ZParseNotice(buffer, len, notice)
     if (numfields) {
 	if (ZReadAscii32(ptr, end-ptr, &temp) == ZERR_BADFIELD)
 	    BAD_PACKET;
-	notice->z_kind = temp;
+	notice->z_kind = (ZNotice_Kind_t)temp;
 	numfields--;
 	next_field (ptr);
     }

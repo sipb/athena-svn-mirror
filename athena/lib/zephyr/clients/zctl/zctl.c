@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zctl.c,v 1.30 1999-06-03 14:52:13 danw Exp $
+ *	$Id: zctl.c,v 1.31 1999-08-13 00:19:38 danw Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #include <pwd.h>
 #include <netdb.h>
 #ifndef lint
-static const char *rcsid_zctl_c = "$Id: zctl.c,v 1.30 1999-06-03 14:52:13 danw Exp $";
+static const char *rcsid_zctl_c = "$Id: zctl.c,v 1.31 1999-08-13 00:19:38 danw Exp $";
 #endif
 
 #define SUBSATONCE 7
@@ -47,6 +47,8 @@ char subsname[BUFSIZ];
 char ourhost[MAXHOSTNAMELEN],ourhostcanon[MAXHOSTNAMELEN];
 
 extern ss_request_table zctl_cmds;
+
+void add_file(), del_file(), fix_macros(), fix_macros2();
 
 main(argc,argv)
 	int argc;
@@ -135,7 +137,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.30 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.31 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
@@ -143,6 +145,7 @@ main(argc,argv)
 	exit(0);
 }
 
+void
 set_file(argc,argv)
 	int argc;
 	char *argv[];
@@ -158,6 +161,7 @@ set_file(argc,argv)
 		(void) strcpy(subsname,argv[1]);
 }
 
+void
 flush_locations(argc,argv)
 	int argc;
 	char *argv[];
@@ -173,6 +177,7 @@ flush_locations(argc,argv)
 		ss_perror(sci_idx,retval,"while flushing locations");
 }
 
+void
 wgc_control(argc,argv)
 	int argc;
 	register char **argv;
@@ -233,6 +238,7 @@ wgc_control(argc,argv)
 			  "while reinitializing");
 } 
 
+void
 hm_control(argc,argv)
 	int argc;
 	char *argv[];
@@ -269,6 +275,7 @@ hm_control(argc,argv)
 		ss_perror(sci_idx,retval,"while sending notice");
 } 
 
+void
 show_var(argc,argv)
 	int argc;
 	char *argv[];
@@ -290,6 +297,7 @@ show_var(argc,argv)
 	}
 }
 
+void
 set_var(argc,argv)
 	int argc;
 	register char **argv;
@@ -369,6 +377,7 @@ set_var(argc,argv)
 	} 
 }
 
+void
 do_hide(argc,argv)
 	int argc;
 	char *argv[];
@@ -389,6 +398,7 @@ do_hide(argc,argv)
 	return;
 }
 
+void
 unset_var(argc,argv)
 	int argc;
 	char *argv[];
@@ -406,7 +416,8 @@ unset_var(argc,argv)
 			ss_perror(sci_idx,retval,
 				  "while unsetting variable value");
 }
-	
+
+void
 cancel_subs(argc,argv)
 	int argc;
 	char *argv[];
@@ -427,6 +438,7 @@ cancel_subs(argc,argv)
 		ss_perror(sci_idx,retval,"while cancelling subscriptions");
 }
 
+void
 subscribe(argc,argv)
 	int argc;
 	char *argv[];
@@ -458,6 +470,7 @@ subscribe(argc,argv)
 		ss_perror(sci_idx,retval,"while subscribing");
 } 
 
+void
 sub_file(argc,argv)
 	int argc;
 	char *argv[];
@@ -508,6 +521,7 @@ sub_file(argc,argv)
 	return;
 }
 
+void
 add_file(wgport,subs,unsub)
 short wgport;
 ZSubscription_t *subs;
@@ -541,6 +555,7 @@ int unsub;
 	return;
 }
 
+void
 del_file(wgport,subs,unsub)
 short wgport;
 register ZSubscription_t *subs;
@@ -648,6 +663,7 @@ int which;
 	return(delflag);
 }
 
+void
 load_subs(argc,argv)
 	int argc;
 	char *argv[];
@@ -825,6 +841,7 @@ cleanup:
 	return;
 }
 
+void
 current(argc,argv)
 	int argc;
 	char *argv[];
@@ -921,6 +938,7 @@ current(argc,argv)
 	}
 }
 
+int
 make_exist(filename)
 	char *filename;
 {
@@ -944,6 +962,7 @@ make_exist(filename)
 	return (0);
 }
 
+void
 fix_macros(subs,subs2,num)
 	ZSubscription_t *subs,*subs2;
 	int num;
@@ -958,6 +977,7 @@ fix_macros(subs,subs2,num)
 	}
 }
 
+void
 fix_macros2(src,dest)
 	register char *src;
 	char **dest;
