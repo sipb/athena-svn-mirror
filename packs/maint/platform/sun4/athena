@@ -210,6 +210,11 @@ if [ "${ZCLIENT}" = "true" ]; then
 	/etc/athena/zhm &
 fi
 
+if [ "${LPD}" = "true" ]; then
+	echo  "lpd... \c"					>/dev/console
+	/usr/athena/etc/lpd &
+fi
+
 if [ "${MRUPDATE}" = "true" ]; then
 	echo  "update_server... \c"				>/dev/console
 	/usr/athena/etc/update_server &
