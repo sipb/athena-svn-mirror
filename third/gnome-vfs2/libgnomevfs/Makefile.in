@@ -1,0 +1,540 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+AWK = @AWK@
+BONOBO_ACTIVATION_REQUIRED = @BONOBO_ACTIVATION_REQUIRED@
+BONOBO_IDLDIR = @BONOBO_IDLDIR@
+BONOBO_REQUIRED = @BONOBO_REQUIRED@
+BZ2_LIBS = @BZ2_LIBS@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CFLAGS = @CFLAGS@
+CPP = @CPP@
+CPPFLAGS = @CPPFLAGS@
+DATADIRNAME = @DATADIRNAME@
+DB2HTML = @DB2HTML@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+ENABLE_PROFILER = @ENABLE_PROFILER@
+EXEEXT = @EXEEXT@
+FAM_LIBS = @FAM_LIBS@
+GCONFTOOL = @GCONFTOOL@
+GCONF_REQUIRED = @GCONF_REQUIRED@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_REQUIRED = @GLIB_REQUIRED@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOME_ACLOCAL_DIR = @GNOME_ACLOCAL_DIR@
+GNOME_ACLOCAL_FLAGS = @GNOME_ACLOCAL_FLAGS@
+GNOME_INTERFACE_VERSION = @GNOME_INTERFACE_VERSION@
+GNOME_VFS_DIR = @GNOME_VFS_DIR@
+GTKDOC = @GTKDOC@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
+INSTOBJEXT = @INSTOBJEXT@
+INTLDEPS = @INTLDEPS@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LDFLAGS = @LDFLAGS@
+LIBEFS_CFLAGS = @LIBEFS_CFLAGS@
+LIBEFS_LIBS = @LIBEFS_LIBS@
+LIBGNOMEVFS_CFLAGS = @LIBGNOMEVFS_CFLAGS@
+LIBGNOMEVFS_LIBS = @LIBGNOMEVFS_LIBS@
+LIBIDL_REQUIRED = @LIBIDL_REQUIRED@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+MODULES_CFLAGS = @MODULES_CFLAGS@
+MODULES_FILE_CFLAGS = @MODULES_FILE_CFLAGS@
+MODULES_FILE_LIBS = @MODULES_FILE_LIBS@
+MODULES_GCONF_CFLAGS = @MODULES_GCONF_CFLAGS@
+MODULES_GCONF_LIBS = @MODULES_GCONF_LIBS@
+MODULES_LIBS = @MODULES_LIBS@
+MODULES_XML_CFLAGS = @MODULES_XML_CFLAGS@
+MODULES_XML_GCONF_CFLAGS = @MODULES_XML_GCONF_CFLAGS@
+MODULES_XML_GCONF_LIBS = @MODULES_XML_GCONF_LIBS@
+MODULES_XML_LIBS = @MODULES_XML_LIBS@
+MONIKERS_CFLAGS = @MONIKERS_CFLAGS@
+MONIKERS_LIBS = @MONIKERS_LIBS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+ORBIT_IDL = @ORBIT_IDL@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POPT_LIBS = @POPT_LIBS@
+POSUB = @POSUB@
+PTHREAD_LIB = @PTHREAD_LIB@
+RANLIB = @RANLIB@
+STRIP = @STRIP@
+TEST_CFLAGS = @TEST_CFLAGS@
+TEST_LIBS = @TEST_LIBS@
+TOP_BUILDDIR = @TOP_BUILDDIR@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+VFS_CFLAGS = @VFS_CFLAGS@
+VFS_INCLUDEDIR = @VFS_INCLUDEDIR@
+VFS_LIBDIR = @VFS_LIBDIR@
+VFS_LIBS = @VFS_LIBS@
+VFS_OFFSET = @VFS_OFFSET@
+VFS_OFFSET_IS = @VFS_OFFSET_IS@
+VFS_OFFSET_PRINTF = @VFS_OFFSET_PRINTF@
+VFS_SIZE = @VFS_SIZE@
+VFS_SIZE_IS = @VFS_SIZE_IS@
+VFS_SIZE_PRINTF = @VFS_SIZE_PRINTF@
+WARN_CFLAGS = @WARN_CFLAGS@
+XML_REQUIRED = @XML_REQUIRED@
+cxxflags_set = @cxxflags_set@
+
+NULL = 
+
+INCLUDES =  	-I$(top_srcdir)					-I$(top_builddir)				$(LIBGNOMEVFS_CFLAGS)				$(VFS_CFLAGS)					-D_FILE_OFFSET_BITS=64				-D_BSD_SOURCE					-D_GNU_SOURCE					-D_LARGEFILE64_SOURCE                   	-D_POSIX_PTHREAD_SEMANTICS			-D_REENTRANT					-DG_DISABLE_DEPRECATED				-DDATADIR=\"$(datadir)\"			-DLIBDIR=\"$(libdir)\"				-DPREFIX=\"$(prefix)\"				-DSYSCONFDIR=\"$(sysconfdir)\"			-DG_LOG_DOMAIN=\"libgnomevfs\"			$(NULL)
+
+
+lib_LTLIBRARIES = libgnomevfs-2.la
+
+libgnomevfs_2_la_LIBADD =  	$(LIBGNOMEVFS_LIBS)				$(NULL)
+
+
+libgnomevfsincludedir = $(includedir)/gnome-vfs-2.0/libgnomevfs
+
+libgnomevfsmoduleincludedir = $(includedir)/gnome-vfs-module-2.0/libgnomevfs
+
+libgnomevfsmoduleinclude_HEADERS =  	gnome-vfs-cancellable-ops.h			gnome-vfs-inet-connection.h			gnome-vfs-iobuf.h				gnome-vfs-method.h				gnome-vfs-mime.h				gnome-vfs-mime-info.h				gnome-vfs-mime-magic.h				gnome-vfs-mime-sniff-buffer.h			gnome-vfs-module-callback-module-api.h		gnome-vfs-module-shared.h			gnome-vfs-module.h				gnome-vfs-parse-ls.h				gnome-vfs-ssl.h					gnome-vfs-transform.h				gnome-vfs-socket-buffer.h			gnome-vfs-socket.h				$(NULL)
+
+
+libgnomevfsinclude_HEADERS =  	gnome-vfs-application-registry.h		gnome-vfs-async-ops.h				gnome-vfs-cancellation.h			gnome-vfs-context.h				gnome-vfs-directory.h				gnome-vfs-file-info.h				gnome-vfs-file-size.h				gnome-vfs-find-directory.h			gnome-vfs-handle.h				gnome-vfs-init.h				gnome-vfs-job-limit.h				gnome-vfs-mime-utils.h				gnome-vfs-mime-handlers.h			gnome-vfs-mime-monitor.h			gnome-vfs-module-callback.h			gnome-vfs-monitor.h				gnome-vfs-ops.h					gnome-vfs-result.h				gnome-vfs-standard-callbacks.h			gnome-vfs-types.h				gnome-vfs-uri.h					gnome-vfs-utils.h				gnome-vfs-xfer.h				gnome-vfs.h					$(NULL)
+
+
+libgnomevfs_2_la_SOURCES =  	gnome-vfs-application-registry.c		gnome-vfs-async-job-map.c			gnome-vfs-async-ops.c				gnome-vfs-backend.h				gnome-vfs-cancellable-ops.c	 		gnome-vfs-cancellable-ops.h			gnome-vfs-cancellation.c			gnome-vfs-configuration.c			gnome-vfs-configuration.h			gnome-vfs-context.c				gnome-vfs-directory.c				gnome-vfs-file-info.c				gnome-vfs-find-directory.c			gnome-vfs-handle.c				gnome-vfs-i18n.c				gnome-vfs-i18n.h				gnome-vfs-inet-connection.c			gnome-vfs-init.c				gnome-vfs-iobuf.c				gnome-vfs-job-queue.c				gnome-vfs-job-slave.c				gnome-vfs-job.c					gnome-vfs-method.c				gnome-vfs-mime-handlers.c			gnome-vfs-mime-info.c				gnome-vfs-mime-magic.c				gnome-vfs-mime-monitor.c			gnome-vfs-mime-private.h			gnome-vfs-mime-sniff-buffer.c			gnome-vfs-mime-sniff-buffer-private.h		gnome-vfs-mime.c				gnome-vfs-module-callback-module-api.c		gnome-vfs-module-callback-private.c		gnome-vfs-module-callback-private.h		gnome-vfs-module-callback.c			gnome-vfs-module-shared.c			gnome-vfs-module.c				gnome-vfs-monitor.c				gnome-vfs-monitor-private.h			gnome-vfs-ops.c					gnome-vfs-parse-ls.c				gnome-vfs-private-utils.c			gnome-vfs-private-utils.h			gnome-vfs-private.c				gnome-vfs-private.h				gnome-vfs-process.c				gnome-vfs-process.h				gnome-vfs-result.c				gnome-vfs-socket-buffer.c			gnome-vfs-socket.c				gnome-vfs-ssl.c					gnome-vfs-ssl-private.h				gnome-vfs-thread-pool.c				gnome-vfs-transform.c				gnome-vfs-uri.c					gnome-vfs-utils.c				gnome-vfs-xfer.c				gnome-vfs-async-job-map.h			gnome-vfs-backend.h				gnome-vfs-i18n.h				gnome-vfs-job-queue.h				gnome-vfs-job-slave.h				gnome-vfs-job.h					gnome-vfs-mime-private.h			gnome-vfs-mime-sniff-buffer-private.h		gnome-vfs-module-callback-private.h		gnome-vfs-process.h				gnome-vfs-thread-pool.h				$(NULL)
+
+
+# Platform specific includes
+libgnomevfsplatformincludedir = $(libdir)/gnome-vfs-2.0/include
+libgnomevfsplatforminclude_HEADERS =  	gnome-vfs-file-size.h
+
+
+TESTS = check-headers.pl
+EXTRA_DIST = check-headers.pl getdelim.c
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES =  gnome-vfs-file-size.h
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+LIBS = @LIBS@
+libgnomevfs_2_la_LDFLAGS = 
+libgnomevfs_2_la_DEPENDENCIES = 
+libgnomevfs_2_la_OBJECTS =  gnome-vfs-application-registry.lo \
+gnome-vfs-async-job-map.lo gnome-vfs-async-ops.lo \
+gnome-vfs-cancellable-ops.lo gnome-vfs-cancellation.lo \
+gnome-vfs-configuration.lo gnome-vfs-context.lo gnome-vfs-directory.lo \
+gnome-vfs-file-info.lo gnome-vfs-find-directory.lo gnome-vfs-handle.lo \
+gnome-vfs-i18n.lo gnome-vfs-inet-connection.lo gnome-vfs-init.lo \
+gnome-vfs-iobuf.lo gnome-vfs-job-queue.lo gnome-vfs-job-slave.lo \
+gnome-vfs-job.lo gnome-vfs-method.lo gnome-vfs-mime-handlers.lo \
+gnome-vfs-mime-info.lo gnome-vfs-mime-magic.lo \
+gnome-vfs-mime-monitor.lo gnome-vfs-mime-sniff-buffer.lo \
+gnome-vfs-mime.lo gnome-vfs-module-callback-module-api.lo \
+gnome-vfs-module-callback-private.lo gnome-vfs-module-callback.lo \
+gnome-vfs-module-shared.lo gnome-vfs-module.lo gnome-vfs-monitor.lo \
+gnome-vfs-ops.lo gnome-vfs-parse-ls.lo gnome-vfs-private-utils.lo \
+gnome-vfs-private.lo gnome-vfs-process.lo gnome-vfs-result.lo \
+gnome-vfs-socket-buffer.lo gnome-vfs-socket.lo gnome-vfs-ssl.lo \
+gnome-vfs-thread-pool.lo gnome-vfs-transform.lo gnome-vfs-uri.lo \
+gnome-vfs-utils.lo gnome-vfs-xfer.lo
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(libgnomevfsinclude_HEADERS) \
+$(libgnomevfsmoduleinclude_HEADERS) \
+$(libgnomevfsplatforminclude_HEADERS)
+
+DIST_COMMON =  Makefile.am Makefile.in gnome-vfs-file-size.h.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP_ENV = --best
+SOURCES = $(libgnomevfs_2_la_SOURCES)
+OBJECTS = $(libgnomevfs_2_la_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps libgnomevfs/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+gnome-vfs-file-size.h: $(top_builddir)/config.status gnome-vfs-file-size.h.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libgnomevfs-2.la: $(libgnomevfs_2_la_OBJECTS) $(libgnomevfs_2_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libgnomevfs_2_la_LDFLAGS) $(libgnomevfs_2_la_OBJECTS) $(libgnomevfs_2_la_LIBADD) $(LIBS)
+
+install-libgnomevfsincludeHEADERS: $(libgnomevfsinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libgnomevfsincludedir)
+	@list='$(libgnomevfsinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libgnomevfsincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libgnomevfsincludedir)/$$p; \
+	done
+
+uninstall-libgnomevfsincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libgnomevfsinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libgnomevfsincludedir)/$$p; \
+	done
+
+install-libgnomevfsmoduleincludeHEADERS: $(libgnomevfsmoduleinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libgnomevfsmoduleincludedir)
+	@list='$(libgnomevfsmoduleinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libgnomevfsmoduleincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libgnomevfsmoduleincludedir)/$$p; \
+	done
+
+uninstall-libgnomevfsmoduleincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libgnomevfsmoduleinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libgnomevfsmoduleincludedir)/$$p; \
+	done
+
+install-libgnomevfsplatformincludeHEADERS: $(libgnomevfsplatforminclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libgnomevfsplatformincludedir)
+	@list='$(libgnomevfsplatforminclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libgnomevfsplatformincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libgnomevfsplatformincludedir)/$$p; \
+	done
+
+uninstall-libgnomevfsplatformincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libgnomevfsplatforminclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libgnomevfsplatformincludedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = libgnomevfs
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES
+install-exec: install-exec-am
+
+install-data-am: install-libgnomevfsincludeHEADERS \
+		install-libgnomevfsmoduleincludeHEADERS \
+		install-libgnomevfsplatformincludeHEADERS
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES \
+		uninstall-libgnomevfsincludeHEADERS \
+		uninstall-libgnomevfsmoduleincludeHEADERS \
+		uninstall-libgnomevfsplatformincludeHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) \
+		$(DESTDIR)$(libgnomevfsincludedir) \
+		$(DESTDIR)$(libgnomevfsmoduleincludedir) \
+		$(DESTDIR)$(libgnomevfsplatformincludedir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool uninstall-libgnomevfsincludeHEADERS \
+install-libgnomevfsincludeHEADERS \
+uninstall-libgnomevfsmoduleincludeHEADERS \
+install-libgnomevfsmoduleincludeHEADERS \
+uninstall-libgnomevfsplatformincludeHEADERS \
+install-libgnomevfsplatformincludeHEADERS tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir check-TESTS \
+info-am info dvi-am dvi check check-am installcheck-am installcheck \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

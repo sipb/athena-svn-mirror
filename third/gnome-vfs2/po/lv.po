@@ -1,0 +1,328 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-vfs\n"
+"POT-Creation-Date: 2002-11-13 12:11-0500\n"
+"PO-Revision-Date: 2002-07-13 14:33GMT+0200\n"
+"Last-Translator: Peteris Krisjanis <pecisk@inbox.lv>\n"
+"Language-Team: Latvian <ll10nt@inbox.lv>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
+
+#: libgnomevfs/gnome-vfs-configuration.c:223
+#, c-format
+msgid "%s:%d contains NUL characters."
+msgstr "%s:%d satur NUL rakstzīmes."
+
+#: libgnomevfs/gnome-vfs-configuration.c:240
+#, c-format
+msgid "%s:%d contains no method name."
+msgstr "%s:%d nesatur metodes nosaukumu."
+
+#: libgnomevfs/gnome-vfs-configuration.c:269
+#, c-format
+msgid "%s:%d contains no module name."
+msgstr "%s:%d nesatur moduļa nosaukumu."
+
+#: libgnomevfs/gnome-vfs-configuration.c:322
+#, c-format
+msgid "Configuration file `%s' was not found: %s"
+msgstr "Konfigurācijas fails `%s' netika atrasts: %s"
+
+#: libgnomevfs/gnome-vfs-job.c:707
+#, c-format
+msgid "Unknown op type %u"
+msgstr "Nezināms op tips %u"
+
+#: libgnomevfs/gnome-vfs-job.c:996 libgnomevfs/gnome-vfs-job.c:1141
+#, c-format
+msgid "Cannot create pipe for open GIOChannel: %s"
+msgstr "Nevar izveidot kanālu lai atvērtu GIOChannel: %s"
+
+#: libgnomevfs/gnome-vfs-job.c:1601
+#, c-format
+msgid "Unknown job kind %u"
+msgstr "Nezināms darba tips %u"
+
+#: libgnomevfs/gnome-vfs-job.c:1634
+msgid "Operation stopped"
+msgstr "Operācija apturēta"
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:652
+#, c-format
+msgid "Could not parse: %s"
+msgstr "Nevarēju noparsēt: %s"
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:654
+msgid "More parsing errors will be ignored."
+msgstr "Pārējās parsēšanas kļūdas tiks ignorētas."
+
+#. GNOME_VFS_OK
+#: libgnomevfs/gnome-vfs-result.c:35
+msgid "No error"
+msgstr "Nav kļūdu"
+
+#. GNOME_VFS_ERROR_NOT_FOUND
+#: libgnomevfs/gnome-vfs-result.c:36
+msgid "File not found"
+msgstr "Fails nav atrasts"
+
+#. GNOME_VFS_ERROR_GENERIC
+#: libgnomevfs/gnome-vfs-result.c:37
+msgid "Generic error"
+msgstr "Parastā kļūda"
+
+#. GNOME_VFS_ERROR_INTERNAL
+#: libgnomevfs/gnome-vfs-result.c:38
+msgid "Internal error"
+msgstr "Iekšējā kļūda"
+
+#. GNOME_VFS_ERROR_BAD_PARAMETERS
+#: libgnomevfs/gnome-vfs-result.c:39
+msgid "Invalid parameters"
+msgstr "Nepareizi parametri"
+
+#. GNOME_VFS_ERROR_NOT_SUPPORTED
+#: libgnomevfs/gnome-vfs-result.c:40
+msgid "Unsupported operation"
+msgstr "Neatbalstīta operācija"
+
+#. GNOME_VFS_ERROR_IO
+#: libgnomevfs/gnome-vfs-result.c:41
+msgid "I/O error"
+msgstr "I/O kļūda"
+
+#. GNOME_VFS_ERROR_CORRUPTED_DATA
+#: libgnomevfs/gnome-vfs-result.c:42
+msgid "Data corrupted"
+msgstr "Dati bojāti"
+
+#. GNOME_VFS_ERROR_WRONG_FORMAT
+#: libgnomevfs/gnome-vfs-result.c:43
+msgid "Format not valid"
+msgstr "Neatļauts formāts"
+
+#. GNOME_VFS_ERROR_BAD_FILE
+#: libgnomevfs/gnome-vfs-result.c:44
+msgid "Bad file handle"
+msgstr "Slikts faila handle"
+
+#. GNOME_VFS_ERROR_TOO_BIG
+#: libgnomevfs/gnome-vfs-result.c:45
+msgid "File too big"
+msgstr "Fails par lielu"
+
+#. GNOME_VFS_ERROR_NO_SPACE
+#: libgnomevfs/gnome-vfs-result.c:46
+msgid "No space left on device"
+msgstr "Nav vietas uz iekārtas"
+
+#. GNOME_VFS_ERROR_READ_ONLY
+#: libgnomevfs/gnome-vfs-result.c:47
+msgid "Read-only file system"
+msgstr "Lasāmā failu sistēma"
+
+#. GNOME_VFS_ERROR_INVALID_URI
+#: libgnomevfs/gnome-vfs-result.c:48
+msgid "Invalid URI"
+msgstr "Nepareizs URI"
+
+#. GNOME_VFS_ERROR_NOT_OPEN
+#: libgnomevfs/gnome-vfs-result.c:49
+msgid "File not open"
+msgstr "Fails nav atvērts"
+
+#. GNOME_VFS_ERROR_INVALID_OPEN_MODE
+#: libgnomevfs/gnome-vfs-result.c:50
+msgid "Open mode not valid"
+msgstr "Neatļauts atvērtais režīms"
+
+#. GNOME_VFS_ERROR_ACCESS_DENIED
+#: libgnomevfs/gnome-vfs-result.c:51
+msgid "Access denied"
+msgstr "Pieeja liegta"
+
+#. GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES
+#: libgnomevfs/gnome-vfs-result.c:52
+msgid "Too many open files"
+msgstr "Par daudz atvērtu failu"
+
+#. GNOME_VFS_ERROR_EOF
+#: libgnomevfs/gnome-vfs-result.c:53
+msgid "End of file"
+msgstr "Faila Beigas (eof)"
+
+#. GNOME_VFS_ERROR_NOT_A_DIRECTORY
+#: libgnomevfs/gnome-vfs-result.c:54
+msgid "Not a directory"
+msgstr "Nav direktorija"
+
+#. GNOME_VFS_ERROR_IN_PROGRESS
+#: libgnomevfs/gnome-vfs-result.c:55
+msgid "Operation in progress"
+msgstr "Operācija progresā"
+
+#. GNOME_VFS_ERROR_INTERRUPTED
+#: libgnomevfs/gnome-vfs-result.c:56
+msgid "Operation interrupted"
+msgstr "Operācija pātraukta"
+
+#. GNOME_VFS_ERROR_FILE_EXISTS
+#: libgnomevfs/gnome-vfs-result.c:57
+msgid "File exists"
+msgstr "Fails eksistē"
+
+#. GNOME_VFS_ERROR_LOOP
+#: libgnomevfs/gnome-vfs-result.c:58
+msgid "Looping links encountered"
+msgstr "Rinķojošās saites parādījušās"
+
+#. GNOME_VFS_ERROR_NOT_PERMITTED
+#: libgnomevfs/gnome-vfs-result.c:59
+msgid "Operation not permitted"
+msgstr "Operācija nav atļauta"
+
+#. GNOME_VFS_ERROR_IS_DIRECTORY
+#: libgnomevfs/gnome-vfs-result.c:60
+msgid "Is a directory"
+msgstr "Ir direktorija"
+
+#. GNOME_VFS_ERROR_NO_MEMMORY
+#: libgnomevfs/gnome-vfs-result.c:61
+msgid "Not enough memory"
+msgstr "Nepietiekami atmiņas"
+
+#. GNOME_VFS_ERROR_HOST_NOT_FOUND
+#: libgnomevfs/gnome-vfs-result.c:62
+msgid "Host not found"
+msgstr "Resursdators nav atrasts"
+
+#. GNOME_VFS_ERROR_INVALID_HOST_NAME
+#: libgnomevfs/gnome-vfs-result.c:63
+msgid "Host name not valid"
+msgstr "Resursdatora nosaukums nav pareizs"
+
+#. GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS
+#: libgnomevfs/gnome-vfs-result.c:64
+msgid "Host has no address"
+msgstr "Resursdatoram nav adreses"
+
+#. GNOME_VFS_ERROR_LOGIN_FAILED
+#: libgnomevfs/gnome-vfs-result.c:65
+msgid "Login failed"
+msgstr "Pieteikšanās neveiksmīga"
+
+#. GNOME_VFS_ERROR_CANCELLED
+#: libgnomevfs/gnome-vfs-result.c:66
+msgid "Operation cancelled"
+msgstr "Operācija atsaukta"
+
+#. GNOME_VFS_ERROR_DIRECTORY_BUSY
+#: libgnomevfs/gnome-vfs-result.c:67
+msgid "Directory busy"
+msgstr "Direktorija aizņemta"
+
+#. GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
+#: libgnomevfs/gnome-vfs-result.c:68
+msgid "Directory not empty"
+msgstr "Direktorija nav tukša"
+
+#. GNOME_VFS_ERROR_TOO_MANY_LINKS
+#: libgnomevfs/gnome-vfs-result.c:69
+msgid "Too many links"
+msgstr "Par daudz saišu"
+
+#. GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
+#: libgnomevfs/gnome-vfs-result.c:70
+msgid "Read only file system"
+msgstr "Lasāmā failu sistēma"
+
+#. GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM
+#: libgnomevfs/gnome-vfs-result.c:71
+msgid "Not on the same file system"
+msgstr "Ne tā pati failu sistēma"
+
+#. GNOME_VFS_ERROR_NAME_TOO_LONG
+#: libgnomevfs/gnome-vfs-result.c:72
+msgid "Name too long"
+msgstr "Nosaukums par garu"
+
+#. GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE
+#: libgnomevfs/gnome-vfs-result.c:73
+msgid "Service not available"
+msgstr "Serviss nav pieejams"
+
+#. GNOME_VFS_ERROR_SERVICE_OBSOLETE
+#: libgnomevfs/gnome-vfs-result.c:74
+msgid "Request obsoletes service's data"
+msgstr "Pieprasījums atsauc servisa datus"
+
+#. GNOME_VFS_ERROR_PROTOCOL_ERROR
+#: libgnomevfs/gnome-vfs-result.c:75
+msgid "Protocol error"
+msgstr "Protokola kļūda"
+
+#: libgnomevfs/gnome-vfs-result.c:137
+msgid "Unknown error"
+msgstr "Nezināma kļūda"
+
+#: libgnomevfs/gnome-vfs-utils.c:65
+msgid "1 byte"
+msgstr "1 baits"
+
+#: libgnomevfs/gnome-vfs-utils.c:67
+#, c-format
+msgid "%u bytes"
+msgstr "%u baiti"
+
+#: libgnomevfs/gnome-vfs-utils.c:74
+#, c-format
+msgid "%.1f K"
+msgstr "%.1f K"
+
+#: libgnomevfs/gnome-vfs-utils.c:78
+#, c-format
+msgid "%.1f MB"
+msgstr "%.1f MB"
+
+#: libgnomevfs/gnome-vfs-utils.c:82
+#, c-format
+msgid "%.1f GB"
+msgstr "%.1f GB"
+
+#: modules/file-method.c:382
+#, c-format
+msgid "Unknown GnomeVFSSeekPosition %d"
+msgstr "Nezināms GnomeVFSSeekPosition %d"
+
+#. FIXME: we probably shouldn't use printf to output the message
+#: modules/test-method.c:590
+#, c-format
+msgid "Didn't find a valid settings file at %s\n"
+msgstr "Nevarēju atrast pareizu uzstādijumu failu %s\n"
+
+#: modules/test-method.c:592
+#, c-format
+msgid "Use the %s environment variable to specify a different location.\n"
+msgstr "Lieto %s vides mainīgo lai norādītu citu atrašanās vietu.\n"
+
+#: monikers/GNOME_VFS_Moniker_std.server.in.in.h:1
+msgid "Standard Moniker factory"
+msgstr "Standarta Moniker ražotne"
+
+#: monikers/GNOME_VFS_Moniker_std.server.in.in.h:2
+msgid "file MonikerExtender"
+msgstr "fails MonikerExtender"
+
+#: monikers/GNOME_VFS_Moniker_std.server.in.in.h:3
+msgid "generic Gnome VFS moniker"
+msgstr "parasts Gnome VFS moniker"
+
+#: monikers/GNOME_VFS_Moniker_std.server.in.in.h:4
+msgid "generic file moniker"
+msgstr "parasts faila moniker"
