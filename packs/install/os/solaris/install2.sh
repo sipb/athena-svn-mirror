@@ -77,8 +77,7 @@ rm -f /root/etc/rc2.d/S70finish-update
 ln -s ../init.d/finish-update /root/etc/rc2.d/S70finish-update
 
 echo "Create devices and dev"
-cd /root
-/usr/sbin/devfsadm -r /root -t /root/etc/devlink.tab -p /root/etc/path_to_inst
+/usr/sbin/devfsadm -R /root
 
 chmod 755 /root/dev
 chmod 755 /root/devices
