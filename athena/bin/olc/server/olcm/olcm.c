@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.10 1992-01-07 18:58:03 lwvanels Exp $
+ *      $Id: olcm.c,v 1.11 1992-05-26 18:20:22 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.10 1992-01-07 18:58:03 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.11 1992-05-26 18:20:22 lwvanels Exp $";
 #endif
 #endif
 
@@ -81,7 +81,7 @@ get_krb_tkt(ident)
 
   dest_tkt();
   ret = krb_get_svc_in_tkt(serv, inst, realm, "krbtgt", realm, 1,
-			   NULL);
+			   SRVTAB_LOC);
   if (ret != KSUCCESS) {
     syslog(LOG_ERR,"get_krb_tkt: %s",krb_err_txt[ret]);
     fprintf(stderr,"Could not get tickets for operation: %s\n",
@@ -262,9 +262,13 @@ main(argc,argv)
   mail = popen("/usr/lib/sendmail -t", "w");
   if (mail) {
     fprintf(mail, "To: %s\n",orig_address);
-    fprintf(mail, "From: \"OLC Server\" <olc-test@matisse.local>\n");
-    fprintf(mail, "Subject: Your OLC question\n");
-
+    if ((f = fopen(STOCK_HEADER,"r")) != NULL) {
+      while(fgets(buf,BUFSIZ,f) != NULL) {
+	/* Output stock header */
+	fputs(buf,mail);
+      }
+      fclose(f);
+    }
   } else {
     syslog(LOG_ERR,"popen: /usr/lib/sendmail failed: %m");
     mail = stderr;
