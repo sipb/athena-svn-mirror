@@ -1,4 +1,4 @@
-; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.mit,v 1.2 1989-11-16 06:46:34 probe Exp $
+; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.mit,v 1.3 1990-04-05 18:12:48 probe Exp $
 
 ; Hardwire the local domain so we can find it even if we can't talk to
 ; the root.  We use a small TTL in case this info ever accidentally
@@ -6,10 +6,10 @@
 
 @               IN      SOA     localhost.mit.edu. hostmaster.mit.edu. (
                                 1.1     ; Serial
-                                60	; Refresh 3 hours
-                                60      ; Retry   1 hour
-                                60	; Expire  1000 hours
-                                60    ) ; Minimum 24 hours
+                                60	; Refresh 1 minute
+                                60      ; Retry   1 minute
+                                60	; Expire  1 minute
+                                60    ) ; Minimum 1 minute
 		IN	NS	localhost.mit.edu.
 
 LOCALHOST.MIT.EDU. IN	A	127.0.0.1	; I know, it's a crock...
