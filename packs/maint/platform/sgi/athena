@@ -107,9 +107,13 @@ if [ "${PUBLIC}" = "true" ]; then
 	$ECHO "Public workstation cleanup... \c"
 	rm -rf /.hushlogin /etc/X0.hosts /usr/local/
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
-	cp -p /srvd/etc/athena/attach.conf /etc/athena/attach.conf
-	cp -p /srvd/etc/inetd.conf /etc/inetd.conf
-	cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
+	for i in `cat /srvd/usr/athena/lib/update/configfiles`
+		if [ -f /srvd$i ]; then
+			cp -p /srvd$i $i
+		else
+			cp -p /os$i $i
+		fi
+	done
 	if [ -r /srvd/etc/passwd ]; then
 	    cp -p /srvd/etc/passwd /etc/passwd.local
 	    chmod 644 /etc/passwd.local
@@ -119,7 +123,6 @@ if [ "${PUBLIC}" = "true" ]; then
 	rm -f /etc/shadow
 	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
-	cp -p /srvd/etc/syslog.conf /etc/syslog.conf
 
 	cp /dev/null /etc/named.local
 	cp /dev/null /etc/X0.hosts
@@ -139,13 +142,6 @@ if [ "${PUBLIC}" = "true" ]; then
 	    fi
 	fi
         $ECHO "done."
-fi
-
-if [ "${NEWMAILCF}" = "true" ];then
-	$ECHO "Updating sendmail.cf... \c"
-	cp -p /srvd/etc/sendmail.cf /etc/sendmail.cf
-#	cp -p /srvd/etc/aliases /etc/aliases
-	$ECHO "done."
 fi
 
 if [ -f /etc/sendmail.cf ]; then
