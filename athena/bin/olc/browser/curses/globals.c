@@ -24,7 +24,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 2.5 1991-09-10 15:13:20 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 2.6 1992-02-04 22:06:08 lwvanels Exp $
  */
 
 #ifndef lint
@@ -89,19 +89,19 @@ COMMAND Command_Table[] = {
 
 /* State Variables. */
 
-char Current_Dir[FILENAME_SIZE];	/* Current CREF directory. */
-char Root_Dir[FILENAME_SIZE];		/* CREF root directory. */
+char Current_Dir[MAXPATHLEN];	/* Current CREF directory. */
+char Root_Dir[MAXPATHLEN];		/* CREF root directory. */
 int Current_Ind;			/* Current CREF entry. */
 int Previous_Ind;			/* Upper level CREF entry. */
 ENTRY Entry_Table[MAX_ENTRIES];		/* Table of CREF entries. */
 int Entry_Count;			/* Number of entries. */
 int Ind_Start;			/* Current top of index. */
 int Command_Count;			/* Number of CREF commands. */
-char Save_File[FILENAME_SIZE];		/* Default save file. */
-char Abbrev_File[FILENAME_SIZE];	/* Abbreviation filename. */
+char Save_File[MAXPATHLEN];		/* Default save file. */
+char Abbrev_File[MAXPATHLEN];	/* Abbreviation filename. */
 ABBREV Abbrev_Table[MAX_ABBREVS];	/* Abbreviation table. */
 int Abbrev_Count;			/* Number of abbreviations. */
-char Log_File[FILENAME_SIZE];           /* Administrative log file. */
+char Log_File[MAXPATHLEN];           /* Administrative log file. */
 
 /* Function:	init_globals() initializes the global state variables.
  * Arguments:	None.

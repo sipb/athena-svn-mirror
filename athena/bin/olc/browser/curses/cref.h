@@ -27,7 +27,9 @@
  */
 
 
+
 #include <mit-copyright.h>
+#include <sys/param.h>
 
 /* General type definitions. */
 
@@ -37,7 +39,6 @@ typedef int ERRCODE;				/* An error code. */
 /* Size variables. */
 
 #define TITLE_SIZE	128		/* Size of a section title. */
-#define	FILENAME_SIZE	120		/* Size of a filename. */
 #define	MAX_ENTRIES	100		/* Maximum number of entries.*/
 #define	MAX_ABBREVS	100		/* Maximum number of abbreviations. */
 #define LINE_LENGTH	200		/* Length of a line of text. */
@@ -50,9 +51,9 @@ typedef int ERRCODE;				/* An error code. */
 typedef struct tENTRY {
 	int type;			/* Type of entry. */
 	char title[TITLE_SIZE];		/* Title of entry. */
-	char filename[FILENAME_SIZE];	/* Filename for entry. */
+	char filename[MAXPATHLEN];	/* Filename for entry. */
 	char formatter[LINE_LENGTH];	/* Text formatter to use. */
-	char maintainer[FILENAME_SIZE];	/* Maintainer of file. */
+	char maintainer[MAXPATHLEN];	/* Maintainer of file. */
 	} ENTRY;
 
 /* Structure describing a CREF command. */
@@ -67,7 +68,7 @@ typedef struct tCOMMAND {
 
 typedef struct tABBREV {
 	char abbrev[LINE_LENGTH];	/* Abbrev. for a particular place. */
-	char filename[FILENAME_SIZE];	/* Filename belonging to abbrev. */
+	char filename[MAXPATHLEN];	/* Filename belonging to abbrev. */
 	} ABBREV;
 
 /* Where things are. */

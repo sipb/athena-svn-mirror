@@ -28,7 +28,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v $
  *	$Author: lwvanels $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.11 1991-09-10 15:13:57 lwvanels Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.12 1992-02-04 22:06:47 lwvanels Exp $
  */
 
 #ifndef lint
@@ -61,7 +61,7 @@ ERRCODE
 set_current_dir(dir)
 char *dir;
 {
-  char temp[FILENAME_SIZE];		/* Temporary space. */
+  char temp[MAXPATHLEN];		/* Temporary space. */
 
   strcpy(temp, dir);
   strcpy(Current_Dir, temp);
@@ -78,7 +78,7 @@ char *dir;
 ERRCODE
 parse_contents()
 {
-  char contents_name[FILENAME_SIZE];	/* Name of contents file. */
+  char contents_name[MAXPATHLEN];	/* Name of contents file. */
   FILE *infile;				/* File ptr. for contents. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
   char *ptr;				/* Ptr. into input buffer. */
@@ -93,7 +93,7 @@ parse_contents()
   char *preserve_dir;                   /* Ptr. to Current_Dir string*/
   char *reset_dir;                      /* Ptr. to Current_Dir string
 					      minus trailing directory*/
-  char old_dir[FILENAME_SIZE];          /* Current_Dir string minus
+  char old_dir[MAXPATHLEN];          /* Current_Dir string minus
 					      trailing directory*/
   reset_dir=old_dir;
   preserve_dir = Current_Dir;
@@ -230,7 +230,7 @@ get_entry(ind)
 make_abbrev_table()
 {
   FILE *fp;				/* Input FILE pointer. */
-  char global_file[FILENAME_SIZE];	/* Global abbrev. file. */
+  char global_file[MAXPATHLEN];	/* Global abbrev. file. */
 
   if ( (fp = fopen(Abbrev_File, "r")) != (FILE *) NULL)
     {
@@ -311,7 +311,7 @@ char *tail;
   register char *p;
 
   p = rindex(dir_path,'/');
-  copyn(tail, ++p, FILENAME_SIZE);
+  copyn(tail, ++p, MAXPATHLEN);
     
   return(*tail);
 }    

@@ -24,7 +24,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.6 1991-09-10 15:12:30 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.7 1992-02-04 22:07:10 lwvanels Exp $
  */
 
 #ifndef lint
@@ -246,7 +246,7 @@ get_input(buffer)
 check_cref_dir(dir)
      char *dir;
 {
-  char contents[FILENAME_SIZE];		/* Pathname of contents file. */
+  char contents[MAXPATHLEN];		/* Pathname of contents file. */
   int fd;				/* File descriptor. */
   
   make_path(dir, CONTENTS, contents);
@@ -340,7 +340,7 @@ create_cref_dir(dir)
      char *dir;
 {
   FILE *fp;				/* FILE pointer. */
-  char contents[FILENAME_SIZE];		/* Name of contents file. */
+  char contents[MAXPATHLEN];		/* Name of contents file. */
       
   make_path(dir, CONTENTS, contents);
   if (mkdir(dir, CLOSED_DIR) < 0)

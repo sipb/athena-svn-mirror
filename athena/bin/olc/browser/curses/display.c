@@ -23,7 +23,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.7 1991-09-22 12:53:45 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.8 1992-02-04 22:06:59 lwvanels Exp $
  */
 
 
@@ -153,7 +153,7 @@ messages(first_line,second_line)
 make_display()
 {
   ENTRY *curr_entry;			/* Current index entry. */
-  char current_dir[FILENAME_SIZE];	/* Current directory. */
+  char current_dir[MAXPATHLEN];	/* Current directory. */
   char display_line[LINE_LENGTH];	/* Line to display. */
   int curr_line;			/* Current screen line. */
   int curr_ind;			/* Current index. */

@@ -184,7 +184,7 @@ parse_args(argc, argv)
   extern int optind;			/* getopt() option index. */
   extern char *optarg;			/* getopt() argument pointer. */
   int c;				/* Option character. */
-  char filename[FILENAME_SIZE];		/* Option filename directory. */
+  char filename[MAXPATHLEN];		/* Option filename directory. */
 
   while ( (c = getopt(argc, argv, "r:s:f:a:c:")) != EOF)
     switch (c)
