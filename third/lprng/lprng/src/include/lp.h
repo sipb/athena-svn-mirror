@@ -171,6 +171,13 @@ EXTERN char* Reverse_lpq_status;	/* change lpq format when from host */
 EXTERN char* Return_short_status;	/* return short status */
 EXTERN int Short_status_length;	/* short status length */
 
+#include <krb.h>
+#define KLPR_SERVICE "rcmd"
+
+EXTERN char k4name[ANAME_SZ + INST_SZ + REALM_SZ + 3];
+EXTERN int k4flag;
+
+
 /*****************************************************************
  * Command line options and Debugging information
  * Getopt is a modified version of the standard getopt(3) command
@@ -520,6 +527,7 @@ struct destination {
 #define REQ_BLOCK   7   /* transfer a block format print job */
 #define REQ_SECURE  8   /* secure command transfer */
 #define REQ_VERBOSE 9   /* verbose status information */
+#define REQ_K4AUTH  'k' /* krb4 authentication xfer */
 
 
 #define ABORT_XFER   1       /* \1\n - abort transfer */
