@@ -1,0 +1,42 @@
+#!/bin/csh -f
+
+#
+# script for creating spooling directories
+#
+
+if ($?DEBUG) set verbose
+
+set destdir=""
+set prot=775
+set owner=daemon
+set group=daemon
+
+if ($1 != "") set destdir = $1
+if ($2 != "") set prot = $2
+if ($3 != "") set owner = $3
+if ($4 != "") set group = $4
+
+echo "# $0  $destdir  $prot  $owner  $group"
+
+set f=/etc/printcap
+set a=(`egrep sd= $f|egrep -v '^#'|sed 's/^[ 	]*:sd=//'|sed 's/:\\//'`)
+foreach j (${a})
+	set i = "${destdir}/${j}"
+	set sdd = ${i:h}
+	if (! -d $sdd) then
+		echo "# Creating enclosing directory $sdd"
+		mkdir $sdd
+		chown $owner $sdd
+		chgrp $group $sdd
+		chmod $prot $sdd
+		echo "# `ls -ldg $sdd`"
+		endif
+	if (! -d $i) then
+		echo "# Creating $i"
+		mkdir $i
+		chown $owner $i
+		chgrp $group $i
+		chmod $prot $i
+		echo "# `ls -lgd $i`"
+		endif
+	end
