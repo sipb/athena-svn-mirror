@@ -5,10 +5,10 @@
 #define LdPath -L/usr/openwin/lib -Xlinker -R/usr/openwin/lib \
 	-L$(ATHTOOLROOT)$(ATHLIBDIR)
 #define LdLibs -lresolv -lsocket -lnsl -lelf -ldl
-#define CcCmd /usr/gcc/bin/gcc
-#define LdCmd /usr/gcc/bin/gcc
-#define AnsiCcCmd /usr/gcc/bin/gcc
-#define AnsiLdCmd /usr/gcc/bin/gcc
+#define CcCmd gcc
+#define LdCmd gcc
+#define AnsiCcCmd gcc
+#define AnsiLdCmd gcc
 #define RanLibCmd \:
 #endif
 

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.11 2002-06-01 20:11:52 rbasch Exp $
+# $Id: makeroot.sh,v 1.12 2003-01-24 19:45:03 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -85,60 +85,13 @@ sun4)
 
   # Make links into destination area.
   ln -s ../.srvd/usr/athena "$root/usr/athena"
-  ln -s ../.srvd/usr/gcc "$root/usr/gcc"
-  ln -s ../.srvd/usr/afsws "$root/usr/afsws"
-  ;;
-
-sgi)
-  seldir=/install/selections
-  dists="foundation applications dev dwb patches"
-  instopts="-r $root -a -N -Vinstmode:normal -Vstartup_script:ignore"
-  instopts="$instopts -Vdelay_idb_read:on -Voverlay_mode:silent"
-  instopts="$instopts -Vskip_rqs:true -Vverbosity:0"
-  pwconv=/sbin/pwconv
-
-  # Install local packages.
-  for dist in $dists ; do
-    selfile=$seldir/default.$dist.local
-    if [ -f $selfile ]; then
-      inst $instopts -F $selfile
-    fi
-  done
-
-  # Hack to skip the repeated rebuilding of the file type database.
-  ftmakefile="$root/usr/lib/filetype/Makefile"
-  mv "$ftmakefile" "$ftmakefile.hold"
-
-  # Copy the /os symlink.
-  (cd / && tar cf - os) | (cd "$root" && tar xf -)
-
-  # Install symlink packages, skipping all man and relnotes packages.
-  for dist in $dists ; do
-    selfile=$seldir/default.$dist.link
-    echo "di *.man.*\ndi *.*.relnotes" | cat $selfile - > /tmp/selections
-    inst $instopts -F /tmp/selections -T/os
-  done
-
-  # Copy the flexlm license file, so we can run the compilers.
-  (cd / && tar cf - var/flexlm/license.dat) | (cd "$root" && tar xf -)
-
-  # Copy the compiler default options file.
-  cp /etc/compiler.defaults "$root/etc"
-
-  # The write build needs the tty group, which is not in the stock
-  # IRIX group file.
-  grep '^tty:' /etc/group >> "$root/etc/group"
-
-  # Make links into destination area.
-  ln -s ../.srvd/usr/athena "$root/usr/athena"
-  ln -s ../.srvd/usr/gcc "$root/usr/gcc"
   ln -s ../.srvd/usr/afsws "$root/usr/afsws"
   ;;
 
 esac
 
 # It's really convenient to have a nice shell in the build root area,
-# at least on Solaris and IRIX.
+# at least on Solaris.
 mkdir -p "$root/bin/athena"
 cp /bin/athena/tcsh "$root/bin/athena/tcsh"
 

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.75 2003-01-24 00:53:19 ghudson Exp $
+# $Id: do.sh,v 1.76 2003-01-24 19:45:01 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -72,22 +72,6 @@ case `uname -srm` in
   ATHENA_SYS=sun4m_54
   ATHENA_SYS_COMPAT=sun4m_53:sun4m_412
   ;;
-"IRIX 5.3 "*)
-  ATHENA_SYS=sgi_53
-  ATHENA_SYS_COMPAT=sgi_52
-  ;;
-"IRIX 6.2 "*)
-  ATHENA_SYS=sgi_62
-  ATHENA_SYS_COMPAT=sgi_53:sgi_52
-  ;;
-"IRIX 6.3 "*)
-  ATHENA_SYS=sgi_63
-  ATHENA_SYS_COMPAT=sgi_62:sgi_53:sgi_52
-  ;;
-"IRIX 6.5 "*)
-  ATHENA_SYS=sgi_65
-  ATHENA_SYS_COMPAT=sgi_63:sgi_62:sgi_53:sgi_52
-  ;;
 Linux\ 2.2.*\ i?86)
   ATHENA_SYS=i386_linux22
   ATHENA_SYS_COMPAT=i386_linux3:i386_linux2:i386_linux1
@@ -107,9 +91,6 @@ case `uname -sm` in
 "SunOS sun4"*)
   ATHENA_HOSTTYPE=sun4
   ;;
-"IRIX "*)
-  ATHENA_HOSTTYPE=sgi
-  ;;
 "Linux "i?86)
   ATHENA_HOSTTYPE=linux
   ;;
@@ -124,11 +105,7 @@ SunOS)
   OS=solaris
   LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
   LD_RUN_PATH=/usr/athena/lib:/usr/openwin/lib export LD_RUN_PATH
-  PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin:/usr/gcc/bin
-  ;;
-IRIX)
-  OS=irix
-  PATH=/usr/bsd:/usr/bin:/usr/bin/X11:/usr/gcc/bin
+  PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
   ;;
 Linux)
   OS=linux

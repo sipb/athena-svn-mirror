@@ -59,7 +59,6 @@ Linux)
 SunOS)
   OS=solaris
   PATH=/usr/xpg4/bin:/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
-  PATH=${PATH}:/usr/gcc/bin
   target=sun4u-athena-solaris
   rpmlib=/usr/athena/lib/rpm
   ;;
