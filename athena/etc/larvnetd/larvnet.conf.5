@@ -1,0 +1,129 @@
+.\" $Id: larvnet.conf.5,v 1.1 1998-09-01 20:57:43 ghudson Exp $
+.\"
+.\" Copyright 1998 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH LARVNET.CONF 5 "23 Aug 1998"
+.SH NAME
+/etc/athena/larvnet.conf \- larvnetd configuration file
+.SH DESCRIPTION
+The file
+.B /etc/athena/larvnet.conf
+configures what cluster machines and printers are to be monitored by
+the
+.BR larvnetd (8)
+daemon.
+.PP
+The file is divided into two sections, separated by a line beginning
+with '-'.  The first section gives the architecture names, one per
+line; empty lines or lines beginning with '#' are ignored.  Each line
+consists of one or two fields.  The first gives the architecture name
+the server expects to see in workstation status packets; the second
+gives the architecture name to be used in the report file if it is
+different.  The order of the architecture names gives the order of the
+output columns in the cluster report file (see
+.BR larvnet.clusters (5)).
+.PP
+The second section gives the actual cluster machines as well as
+printers.  Leading and trailing whitespace are ignored, as well as any
+text after the first '#' character; empty lines or lines containing
+only whitespace and comments are ignored entirely.  Lines in this
+section may have one of the following formats:
+.TP 8
+\fBcluster\fP \fIname\fP \fIphone\fP
+Introduces a new cluster.  The first field should not exceed seven
+letters in the current cview output format.  The second argument
+should give the cluster phone number or "(none)".
+.TP 8
+\fBws\fP \fIname\fP
+Lists a machine name within a cluster.  This line must appear after a
+.B cluster
+line.  The workstation name may include a numeric range in square
+brackets.  For example, "w20-575-[1-50]" would expand to fifty
+workstations.
+.TP 8
+\fBprinter\fP \fIname\fP
+Lists a printer within a cluster.  This line must appear after a
+.B cluster
+line.  The printer name's
+.B pcap
+entry will be looked up in Hesiod to find the print server name, which
+will in turn be looked up in the DNS.  If either lookup fails, the
+printer entry will be ignored.
+.TP 8
+\fBcgroup\fP \fIname\fP \fIx\fP \fIy\fP \fIcluster\fP ...
+Specifies a group of public clusters.  The
+.I x
+and
+.I y
+numbers give the position of the cluster group on the cluster map
+(see
+.BR xcluster (1)).
+The
+.I cluster
+parameters must be clusters which have already been specified in the
+configuration file and which have not already been assigned to a
+cluster group.
+.TP 8
+\fBoption report-other\fP \fIcolname\fP In the report file, generate
+statistics for workstations reporting an architecture which does not
+match any line in the first section of the file.  Use the parameter
+.I colname
+as the architecture name.
+.TP 8
+\fBoption report-unknown\fP \fIcolname\fP
+In the report file, generate statistics for workstations which have
+not yet sent a status packet to the server and are thus of unknown
+architecture.  Use the parameter
+.I colname
+as the architecture name.
+.SH EXAMPLE
+The following example tells larvnetd to monitor 126 machines and five
+printers in two clusters, one of which is in a cluster group named
+"W20" and located at X coordinate 30828 and Y coordinate 18254.
+.PP
+.RS
+.nf
+SPARC/4
+SPARC/5
+Ultra-5_10 SUN/ULTRA
+IP32 SGI/O2
+IP22 SGI/INDY
+---
+option report-other OTHER
+cluster SIPB 3-7788
+	ws x15-cruise-basselope.mit.edu
+	ws steve-dallas.mit.edu
+	ws opus.mit.edu
+	ws reaper-man.mit.edu
+	# Don't list printer meadow since there is no support for
+	# private printers currently.
+cluster W20-575 3-0103
+	ws w20-575-[1-120].mit.edu
+	ws test-sgi.mit.edu
+	ws test-sparc4.mit.edu
+	printer ajax
+	printer ceres
+	printer python
+	printer fiber
+	printer pulp
+cgroup W20 30828 18254 W20-575
+.fi
+.RE
+.SH SEE ALSO
+.BR larvnetd (8)
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.
