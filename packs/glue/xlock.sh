@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: xlock.sh,v 1.3 1998-07-31 19:38:43 ghudson Exp $
+# $Id: xlock.sh,v 1.4 1998-07-31 20:48:17 ghudson Exp $
 
 if [ -r /etc/athena/rc.conf ]; then
 	. /etc/athena/rc.conf
@@ -8,7 +8,7 @@ if [ -r /etc/athena/rc.conf ]; then
 	fi
 fi
 
-echo "xlock is not appropriate for cluster workstations, because"
+echo "xlock is not appropriate for cluster workstations because"
 echo "it does not display an elapsed time or put up a button to"
 echo "allow others to log you out after a set time."
 echo ""
