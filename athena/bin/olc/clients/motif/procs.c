@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.13 1991-04-18 21:51:35 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.14 1991-06-27 13:46:44 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -39,7 +39,12 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 
 char current_topic[TOPIC_SIZE] = "unknown";
 int sa_pid = 0;
-extern char *sys_errlist[];
+
+#ifdef NEEDS_ERRNO_DEFS
+extern int      errno;
+extern char     *sys_errlist[];
+extern int      sys_nerr;
+#endif
 
 #if defined(__STDC__)
 # define P_(s) s
