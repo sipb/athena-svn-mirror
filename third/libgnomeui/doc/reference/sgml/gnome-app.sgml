@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -83,10 +84,18 @@ void        <link linkend="gnome-app-enable-layout-config">gnome_app_enable_layo
 </refsect1>
 
 <refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeApp implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
+<refsect1>
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GnomeApp--app-id">app-id</link>&quot;               <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeApp--app-id">app-id</link>&quot;               <link linkend="gchararray">gchararray</link>           : Read / Write / Construct
 </synopsis>
 </refsect1>
 
@@ -138,20 +147,16 @@ internally as an identifier).  The <parameter>title</parameter> param can be lef
 which case the window's title will not be set.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appname</parameter>&nbsp;:</entry>
-<entry> Name of program, used in file names and paths.
-</entry></row>
-<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry> Window title for application.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Pointer to new <link linkend="GnomeApp">GnomeApp</link> object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appname</parameter>&nbsp;:</term>
+<listitem><simpara> Name of program, used in file names and paths.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> Window title for application.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Pointer to new <link linkend="GnomeApp">GnomeApp</link> object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-construct">gnome_app_construct ()</title>
 <programlisting>void        gnome_app_construct             (<link linkend="GnomeApp">GnomeApp</link> *app,
@@ -161,21 +166,17 @@ which case the window's title will not be set.</para>
 Constructor for language bindings; you don't normally need this.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A newly created <link linkend="GnomeApp">GnomeApp</link> object.
-</entry></row>
-<row><entry align="right"><parameter>appname</parameter>&nbsp;:</entry>
-<entry> Name of program, using in file names and paths.
-</entry></row>
-<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry> Window title for application.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A newly created <link linkend="GnomeApp">GnomeApp</link> object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>appname</parameter>&nbsp;:</term>
+<listitem><simpara> Name of program, using in file names and paths.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> Window title for application.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-set-menus">gnome_app_set_menus ()</title>
 <programlisting>void        gnome_app_set_menus             (<link linkend="GnomeApp">GnomeApp</link> *app,
@@ -184,18 +185,14 @@ Constructor for language bindings; you don't normally need this.</para>
 Sets the menu bar of the application window.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeApp">GnomeApp</link> instance.
-</entry></row>
-<row><entry align="right"><parameter>menubar</parameter>&nbsp;:</entry>
-<entry> Menu bar widget for main application window.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>menubar</parameter>&nbsp;:</term>
+<listitem><simpara> Menu bar widget for main application window.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-set-toolbar">gnome_app_set_toolbar ()</title>
 <programlisting>void        gnome_app_set_toolbar           (<link linkend="GnomeApp">GnomeApp</link> *app,
@@ -204,18 +201,14 @@ Sets the menu bar of the application window.</para>
 Sets the main toolbar of the application window.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeApp">GnomeApp</link> instance.
-</entry></row>
-<row><entry align="right"><parameter>toolbar</parameter>&nbsp;:</entry>
-<entry> Toolbar widget for main app window.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>toolbar</parameter>&nbsp;:</term>
+<listitem><simpara> Toolbar widget for main app window.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-set-statusbar">gnome_app_set_statusbar ()</title>
 <programlisting>void        gnome_app_set_statusbar         (<link linkend="GnomeApp">GnomeApp</link> *app,
@@ -224,18 +217,14 @@ Sets the main toolbar of the application window.</para>
 Sets the status bar of the application window.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeApp">GnomeApp</link> instance
-</entry></row>
-<row><entry align="right"><parameter>statusbar</parameter>&nbsp;:</entry>
-<entry> Statusbar widget for main app window
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> instance
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>statusbar</parameter>&nbsp;:</term>
+<listitem><simpara> Statusbar widget for main app window
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-set-statusbar-custom">gnome_app_set_statusbar_custom ()</title>
 <programlisting>void        gnome_app_set_statusbar_custom  (<link linkend="GnomeApp">GnomeApp</link> *app,
@@ -246,21 +235,17 @@ Sets the status bar of the application window, but use <parameter>container</par
 as its container.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeApp">GnomeApp</link> instance
-</entry></row>
-<row><entry align="right"><parameter>container</parameter>&nbsp;:</entry>
-<entry> container widget containing the statusbar
-</entry></row>
-<row><entry align="right"><parameter>statusbar</parameter>&nbsp;:</entry>
-<entry> Statusbar widget for main app window
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> instance
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>container</parameter>&nbsp;:</term>
+<listitem><simpara> container widget containing the statusbar
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>statusbar</parameter>&nbsp;:</term>
+<listitem><simpara> Statusbar widget for main app window
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-set-contents">gnome_app_set_contents ()</title>
 <programlisting>void        gnome_app_set_contents          (<link linkend="GnomeApp">GnomeApp</link> *app,
@@ -269,18 +254,14 @@ as its container.</para>
 Sets the content area of the main window of <parameter>app</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeApp">GnomeApp</link> instance.
-</entry></row>
-<row><entry align="right"><parameter>contents</parameter>&nbsp;:</entry>
-<entry> Widget to be application content area.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>contents</parameter>&nbsp;:</term>
+<listitem><simpara> Widget to be application content area.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-add-toolbar">gnome_app_add_toolbar ()</title>
 <programlisting>void        gnome_app_add_toolbar           (<link linkend="GnomeApp">GnomeApp</link> *app,
@@ -298,37 +279,33 @@ if automatic layout configuration is enabled, the layout is
 overridden by the saved configuration, if any.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeApp">GnomeApp</link> widget
-</entry></row>
-<row><entry align="right"><parameter>toolbar</parameter>&nbsp;:</entry>
-<entry> Toolbar to be added to <parameter>app</parameter>'s dock
-</entry></row>
-<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
-<entry> Name for the dock item that will contain <parameter>toolbar</parameter>
-</entry></row>
-<row><entry align="right"><parameter>behavior</parameter>&nbsp;:</entry>
-<entry> Behavior for the new dock item
-</entry></row>
-<row><entry align="right"><parameter>placement</parameter>&nbsp;:</entry>
-<entry> Placement for the new dock item
-</entry></row>
-<row><entry align="right"><parameter>band_num</parameter>&nbsp;:</entry>
-<entry> Number of the band where the dock item should be placed
-</entry></row>
-<row><entry align="right"><parameter>band_position</parameter>&nbsp;:</entry>
-<entry> Position of the new dock item in band <parameter>band_num</parameter>
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> Offset from the previous dock item in the band; if there is
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>toolbar</parameter>&nbsp;:</term>
+<listitem><simpara> Toolbar to be added to <parameter>app</parameter>'s dock
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> Name for the dock item that will contain <parameter>toolbar</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>behavior</parameter>&nbsp;:</term>
+<listitem><simpara> Behavior for the new dock item
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>placement</parameter>&nbsp;:</term>
+<listitem><simpara> Placement for the new dock item
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>band_num</parameter>&nbsp;:</term>
+<listitem><simpara> Number of the band where the dock item should be placed
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>band_position</parameter>&nbsp;:</term>
+<listitem><simpara> Position of the new dock item in band <parameter>band_num</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><simpara> Offset from the previous dock item in the band; if there is
 no previous item, offset from the beginning of the band.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-add-docked">gnome_app_add_docked ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_app_add_docked            (<link linkend="GnomeApp">GnomeApp</link> *app,
@@ -346,39 +323,35 @@ enabled, the layout is overridden by the saved configuration, if
 any.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeApp">GnomeApp</link> widget.
-</entry></row>
-<row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
-<entry> Widget to be added to the <link linkend="GnomeApp">GnomeApp</link>.
-</entry></row>
-<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
-<entry> Name for the new dock item.
-</entry></row>
-<row><entry align="right"><parameter>behavior</parameter>&nbsp;:</entry>
-<entry> Behavior for the new dock item.
-</entry></row>
-<row><entry align="right"><parameter>placement</parameter>&nbsp;:</entry>
-<entry> Placement for the new dock item.
-</entry></row>
-<row><entry align="right"><parameter>band_num</parameter>&nbsp;:</entry>
-<entry> Number of the band where the dock item should be placed.
-</entry></row>
-<row><entry align="right"><parameter>band_position</parameter>&nbsp;:</entry>
-<entry> Position of the new dock item in band <parameter>band_num</parameter>.
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> Offset from the previous dock item in the band; if there is
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><simpara> Widget to be added to the <link linkend="GnomeApp">GnomeApp</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> Name for the new dock item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>behavior</parameter>&nbsp;:</term>
+<listitem><simpara> Behavior for the new dock item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>placement</parameter>&nbsp;:</term>
+<listitem><simpara> Placement for the new dock item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>band_num</parameter>&nbsp;:</term>
+<listitem><simpara> Number of the band where the dock item should be placed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>band_position</parameter>&nbsp;:</term>
+<listitem><simpara> Position of the new dock item in band <parameter>band_num</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><simpara> Offset from the previous dock item in the band; if there is
 no previous item, offset from the beginning of the band.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The dock item used to contain the widget.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The dock item used to contain the widget.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-add-dock-item">gnome_app_add_dock_item ()</title>
 <programlisting>void        gnome_app_add_dock_item         (<link linkend="GnomeApp">GnomeApp</link> *app,
@@ -393,31 +366,27 @@ that, if automatic layout configuration is enabled, the layout is
 overridden by the saved configuration, if any.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A &amp;GnomeApp widget.
-</entry></row>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry> Dock item to be added to <parameter>app</parameter>'s dock.
-</entry></row>
-<row><entry align="right"><parameter>placement</parameter>&nbsp;:</entry>
-<entry> Placement for the dock item.
-</entry></row>
-<row><entry align="right"><parameter>band_num</parameter>&nbsp;:</entry>
-<entry> Number of the band where the dock item should be placed.
-</entry></row>
-<row><entry align="right"><parameter>band_position</parameter>&nbsp;:</entry>
-<entry> Position of the dock item in band <parameter>band_num</parameter>.
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> Offset from the previous dock item in the band; if there is
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara> Dock item to be added to <parameter>app</parameter>'s dock.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>placement</parameter>&nbsp;:</term>
+<listitem><simpara> Placement for the dock item.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>band_num</parameter>&nbsp;:</term>
+<listitem><simpara> Number of the band where the dock item should be placed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>band_position</parameter>&nbsp;:</term>
+<listitem><simpara> Position of the dock item in band <parameter>band_num</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><simpara> Offset from the previous dock item in the band; if there is
 no previous item, offset from the beginning of the band.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-enable-layout-config">gnome_app_enable_layout_config ()</title>
 <programlisting>void        gnome_app_enable_layout_config  (<link linkend="GnomeApp">GnomeApp</link> *app,
@@ -427,19 +396,15 @@ Specify whether <parameter>app</parameter> should automatically save the dock's
 layout configuration via gnome-config whenever it changes or not.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeApp">GnomeApp</link> widget.
-</entry></row>
-<row><entry align="right"><parameter>enable</parameter>&nbsp;:</entry>
-<entry> Boolean specifying whether automatic configuration saving
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>enable</parameter>&nbsp;:</term>
+<listitem><simpara> Boolean specifying whether automatic configuration saving
 is enabled.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-get-dock">gnome_app_get_dock ()</title>
 <programlisting><link linkend="BonoboDock">BonoboDock</link>* gnome_app_get_dock              (<link linkend="GnomeApp">GnomeApp</link> *app);</programlisting>
@@ -447,17 +412,13 @@ is enabled.
 Retrieves the <link linkend="BonoboDock">BonoboDock</link> widget contained in <parameter>app</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeApp">GnomeApp</link> widget
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The relevant <link linkend="BonoboDock">BonoboDock</link> widget.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The relevant <link linkend="BonoboDock">BonoboDock</link> widget.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-app-get-dock-item-by-name">gnome_app_get_dock_item_by_name ()</title>
 <programlisting><link linkend="BonoboDockItem">BonoboDockItem</link>* gnome_app_get_dock_item_by_name
@@ -467,28 +428,26 @@ Retrieves the <link linkend="BonoboDock">BonoboDock</link> widget contained in <
 Retrieve the dock item whose name matches <parameter>name</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeApp">GnomeApp</link> widget.
-</entry></row>
-<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
-<entry> Name of the dock item to retrieve.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The retrieved dock item.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeApp">GnomeApp</link> widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the dock item to retrieve.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The retrieved dock item.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
 <title>Properties</title>
 <variablelist>
-<varlistentry><term><anchor id="GnomeApp--app-id">&quot;<literal>app-id</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<varlistentry><term><anchor id="GnomeApp--app-id">&quot;<literal>app-id</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write / Construct)</term>
 <listitem>
-<para>The application ID string.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 
 </variablelist>

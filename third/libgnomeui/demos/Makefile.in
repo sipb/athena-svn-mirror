@@ -84,19 +84,21 @@ HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
 INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
 LIBGLADE_CONVERT = @LIBGLADE_CONVERT@
+LIBGNOMEUI_AGE = @LIBGNOMEUI_AGE@
 LIBGNOMEUI_CFLAGS = @LIBGNOMEUI_CFLAGS@
 LIBGNOMEUI_COMPONENTS_CFLAGS = @LIBGNOMEUI_COMPONENTS_CFLAGS@
 LIBGNOMEUI_COMPONENTS_LIBS = @LIBGNOMEUI_COMPONENTS_LIBS@
+LIBGNOMEUI_CURRENT = @LIBGNOMEUI_CURRENT@
 LIBGNOMEUI_DEMOS_CFLAGS = @LIBGNOMEUI_DEMOS_CFLAGS@
 LIBGNOMEUI_DEMOS_LIBS = @LIBGNOMEUI_DEMOS_LIBS@
 LIBGNOMEUI_GLADE_CFLAGS = @LIBGNOMEUI_GLADE_CFLAGS@
 LIBGNOMEUI_GLADE_LIBS = @LIBGNOMEUI_GLADE_LIBS@
 LIBGNOMEUI_LIBS = @LIBGNOMEUI_LIBS@
+LIBGNOMEUI_REVISION = @LIBGNOMEUI_REVISION@
+LIBJPEG = @LIBJPEG@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -110,6 +112,8 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 SM_LIBS = @SM_LIBS@
@@ -121,13 +125,29 @@ YACC = @YACC@
 cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
-INCLUDES =  	-I$(top_builddir)					-I$(top_srcdir)						-I$(top_srcdir)/libgnomeui				$(WARN_CFLAGS)						$(LIBGNOMEUI_DEMOS_CFLAGS)			        -DGNOMEUILIBDIR=\""$(libdir)"\" 		        -DGNOMEUIDATADIR=\""$(datadir)"\" 		        -DGNOMEUIPIXMAPDIR=\""$(datadir)/pixmaps"\"	        -DGNOMEUIBINDIR=\""$(bindir)"\" 		        -DGNOMEUILOCALSTATEDIR=\""$(localstatedir)"\" 	        -DGNOMEUILOCALEDIR=\""$(gnomelocaledir)"\" 		-DG_LOG_DOMAIN=\"GnomeUI\"
+INCLUDES = \
+	-I$(top_builddir)				\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/libgnomeui			\
+	$(WARN_CFLAGS)					\
+	$(LIBGNOMEUI_DEMOS_CFLAGS)			\
+        -DGNOMEUILIBDIR=\""$(libdir)"\" 		\
+        -DGNOMEUIDATADIR=\""$(datadir)"\" 		\
+        -DGNOMEUIPIXMAPDIR=\""$(datadir)/pixmaps"\"	\
+        -DGNOMEUIBINDIR=\""$(bindir)"\" 		\
+        -DGNOMEUILOCALSTATEDIR=\""$(localstatedir)"\" 	\
+        -DGNOMEUILOCALEDIR=\""$(gnomelocaledir)"\" 	\
+	-DG_LOG_DOMAIN=\"GnomeUI\"
 
 
-LDADD =  	$(top_builddir)/libgnomeui/libgnomeui-2.la 	$(LIBGNOMEUI_DEMOS_LIBS)
+LDADD = \
+	$(top_builddir)/libgnomeui/libgnomeui-2.la \
+	$(LIBGNOMEUI_DEMOS_LIBS)
 
 
-EXTRA_PROGRAMS =  	mdi_demo			animator_demo
+EXTRA_PROGRAMS = \
+	mdi_demo		\
+	animator_demo
 
 
 animator_demo_SOURCES = animator_demo.c
@@ -160,7 +180,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(mdi_demo_SOURCES) $(animator_demo_SOURCES)
 OBJECTS = $(mdi_demo_OBJECTS) $(animator_demo_OBJECTS)

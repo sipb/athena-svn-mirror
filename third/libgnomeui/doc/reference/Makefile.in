@@ -86,19 +86,21 @@ HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
 INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
 LIBGLADE_CONVERT = @LIBGLADE_CONVERT@
+LIBGNOMEUI_AGE = @LIBGNOMEUI_AGE@
 LIBGNOMEUI_CFLAGS = @LIBGNOMEUI_CFLAGS@
 LIBGNOMEUI_COMPONENTS_CFLAGS = @LIBGNOMEUI_COMPONENTS_CFLAGS@
 LIBGNOMEUI_COMPONENTS_LIBS = @LIBGNOMEUI_COMPONENTS_LIBS@
+LIBGNOMEUI_CURRENT = @LIBGNOMEUI_CURRENT@
 LIBGNOMEUI_DEMOS_CFLAGS = @LIBGNOMEUI_DEMOS_CFLAGS@
 LIBGNOMEUI_DEMOS_LIBS = @LIBGNOMEUI_DEMOS_LIBS@
 LIBGNOMEUI_GLADE_CFLAGS = @LIBGNOMEUI_GLADE_CFLAGS@
 LIBGNOMEUI_GLADE_LIBS = @LIBGNOMEUI_GLADE_LIBS@
 LIBGNOMEUI_LIBS = @LIBGNOMEUI_LIBS@
+LIBGNOMEUI_REVISION = @LIBGNOMEUI_REVISION@
+LIBJPEG = @LIBJPEG@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -112,6 +114,8 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 SM_LIBS = @SM_LIBS@
@@ -147,11 +151,47 @@ HFILE_GLOB = $(top_srcdir)/libgnomeui/*.h
 CFILE_GLOB = $(top_srcdir)/libgnomeui/*.c
 
 # Header files to ignore when scanning.
-IGNORE_HFILES =  	gnome-i18nP.h				libgnomeuiP.h				gnome-gconf-ui.h
+IGNORE_HFILES = \
+	gnome-i18nP.h			\
+	libgnomeuiP.h			\
+	gnome-gconf-ui.h		\
+	libgnomeui-access.h
 
 
 # Images to copy into HTML directory.
-HTML_IMAGES = 
+HTML_IMAGES = \
+	$(top_srcdir)/libgnomeui/pixmaps/stock_attach.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_book_blue.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_book_green.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_book_open.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_book_red.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_book_yellow.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_line_in.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_mail_compose.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_mail_forward.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_mail.png			\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_mail_receive.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_mail_reply.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_mail_send.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_menu_about.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_menu_blank.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_mic.png			\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_midi.png			\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_multiple_file.png	\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_not.png			\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_scores.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_table_borders.png	\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_table_fill.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_text_bulleted_list.png	\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_text_indent.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_text_numbered_list.png	\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_text_unindent.png	\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_timer.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_timer_stopped.png	\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_trash_full.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_trash.png		\
+	$(top_srcdir)/libgnomeui/pixmaps/stock_volume.png
+
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
 content_files = 
@@ -178,13 +218,24 @@ DOC_OVERRIDES =
 
 TARGET_DIR = $(HTML_DIR)/$(DOC_MODULE)
 
-EXTRA_DIST =  	$(content_files)			$(extra_files)				$(HTML_IMAGES)				$(DOC_MAIN_SGML_FILE)			$(DOC_MODULE).types			$(DOC_MODULE)-sections.txt		$(DOC_OVERRIDES)
+EXTRA_DIST = \
+	$(content_files)		\
+	$(extra_files)			\
+	$(HTML_IMAGES)			\
+	$(DOC_MAIN_SGML_FILE)		\
+	$(DOC_MODULE).types		\
+	$(DOC_MODULE)-sections.txt	\
+	$(DOC_OVERRIDES)
 
 
-DOC_STAMPS = scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp 	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
+DOC_STAMPS = scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp \
+	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
 
 
-SCANOBJ_FILES =  	$(DOC_MODULE).args 		$(DOC_MODULE).hierarchy 	$(DOC_MODULE).signals
+SCANOBJ_FILES = \
+	$(DOC_MODULE).args 	\
+	$(DOC_MODULE).hierarchy \
+	$(DOC_MODULE).signals
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -194,7 +245,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -214,6 +265,7 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = doc/reference
 
 distdir: $(DISTFILES)
+	$(mkinstalldirs) $(distdir)/$(top_srcdir)/libgnomeui/pixmaps
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \

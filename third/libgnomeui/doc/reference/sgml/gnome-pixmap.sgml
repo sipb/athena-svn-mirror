@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -59,6 +60,14 @@ void        <link linkend="gnome-pixmap-load-xpm-d-at-size">gnome_pixmap_load_xp
 
 </refsect1>
 
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomePixmap implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
 
 
 
@@ -74,33 +83,21 @@ void        <link linkend="gnome-pixmap-load-xpm-d-at-size">gnome_pixmap_load_xp
 <refsect2>
 <title><anchor id="GnomePixmapPrivate">struct GnomePixmapPrivate</title>
 <programlisting>struct GnomePixmapPrivate;</programlisting>
-<warning>
-<para>
-<literal>GnomePixmapPrivate</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>GnomePixmapPrivate</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomePixmap-struct">struct GnomePixmap</title>
 <programlisting>struct GnomePixmap;</programlisting>
-<warning>
-<para>
-<literal>GnomePixmap</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>GnomePixmap</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-new-from-file">gnome_pixmap_new_from_file ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_new_from_file      (const <link linkend="gchar">gchar</link> *filename);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_new_from_file</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_new_from_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Note that the new_from_file functions give you no way to detect errors;
 if the file isn't found/loaded, you get an empty widget.
@@ -117,28 +114,20 @@ if (pixbuf != NULL) {
 &lt;/programlisting&gt;</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry> The filename of the file to be loaded.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A newly allocated <parameter>GnomePixmap</parameter> with the file at <parameter>filename</parameter> loaded.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> The filename of the file to be loaded.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly allocated <parameter>GnomePixmap</parameter> with the file at <parameter>filename</parameter> loaded.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-new-from-file-at-size">gnome_pixmap_new_from_file_at_size ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_new_from_file_at_size
                                             (const <link linkend="gchar">gchar</link> *filename,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_new_from_file_at_size</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_new_from_file_at_size</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Loads a new <parameter>GnomePixmap</parameter> from a file, and scales it (if necessary) to the
 size indicated by <parameter>height</parameter> and <parameter>width</parameter>.  If either are set to -1, then the
@@ -146,222 +135,162 @@ size indicated by <parameter>height</parameter> and <parameter>width</parameter>
 <parameter>gnome_pixmap_new_from_file</parameter> for information on error handling.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry> The filename of the file to be loaded.
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry> The width to scale the image to.
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry> The height to scale the image to.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> value: A newly allocated <parameter>GnomePixmap</parameter> with the file at <parameter>filename</parameter> loaded.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> The filename of the file to be loaded.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> The width to scale the image to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> The height to scale the image to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> value: A newly allocated <parameter>GnomePixmap</parameter> with the file at <parameter>filename</parameter> loaded.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-new-from-xpm-d">gnome_pixmap_new_from_xpm_d ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_new_from_xpm_d     (const <link linkend="gchar">gchar</link> **xpm_data);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_new_from_xpm_d</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_new_from_xpm_d</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Loads a new <parameter>GnomePixmap</parameter> from the <parameter>xpm_data</parameter>, and scales it (if necessary) to
 the size indicated by <parameter>height</parameter> and <parameter>width</parameter>.  If either are set to -1, then the
 "natural" dimension of the image is used in place.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>xpm_data</parameter>&nbsp;:</entry>
-<entry> The xpm data to be loaded.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> value: A newly allocated <parameter>GnomePixmap</parameter> with the image from <parameter>xpm_data</parameter> loaded.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>xpm_data</parameter>&nbsp;:</term>
+<listitem><simpara> The xpm data to be loaded.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> value: A newly allocated <parameter>GnomePixmap</parameter> with the image from <parameter>xpm_data</parameter> loaded.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-new-from-xpm-d-at-size">gnome_pixmap_new_from_xpm_d_at_size ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_new_from_xpm_d_at_size
                                             (const <link linkend="gchar">gchar</link> **xpm_data,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_new_from_xpm_d_at_size</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_new_from_xpm_d_at_size</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Loads a new <parameter>GnomePixmap</parameter> from the <parameter>xpm_data</parameter>, and scales it (if necessary) to
 the size indicated by <parameter>height</parameter> and <parameter>width</parameter>.  If either are set to -1, then the
 "natural" dimension of the image is used in place.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>xpm_data</parameter>&nbsp;:</entry>
-<entry> The xpm data to be loaded.
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry> The width to scale the image to.
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry> The height to scale the image to.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> value: A newly allocated <parameter>GnomePixmap</parameter> with the image from <parameter>xpm_data</parameter> loaded.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>xpm_data</parameter>&nbsp;:</term>
+<listitem><simpara> The xpm data to be loaded.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> The width to scale the image to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> The height to scale the image to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> value: A newly allocated <parameter>GnomePixmap</parameter> with the image from <parameter>xpm_data</parameter> loaded.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-new-from-gnome-pixmap">gnome_pixmap_new_from_gnome_pixmap ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_new_from_gnome_pixmap
                                             (<link linkend="GnomePixmap">GnomePixmap</link> *gpixmap);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_new_from_gnome_pixmap</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_new_from_gnome_pixmap</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gpixmap</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpixmap</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-load-file">gnome_pixmap_load_file ()</title>
 <programlisting>void        gnome_pixmap_load_file          (<link linkend="GnomePixmap">GnomePixmap</link> *gpixmap,
                                              const char *filename);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_load_file</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_load_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gpixmap</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpixmap</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-load-file-at-size">gnome_pixmap_load_file_at_size ()</title>
 <programlisting>void        gnome_pixmap_load_file_at_size  (<link linkend="GnomePixmap">GnomePixmap</link> *gpixmap,
                                              const char *filename,
                                              int width,
                                              int height);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_load_file_at_size</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_load_file_at_size</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gpixmap</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpixmap</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-load-xpm-d">gnome_pixmap_load_xpm_d ()</title>
 <programlisting>void        gnome_pixmap_load_xpm_d         (<link linkend="GnomePixmap">GnomePixmap</link> *gpixmap,
                                              const char **xpm_data);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_load_xpm_d</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_load_xpm_d</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gpixmap</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>xpm_data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpixmap</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>xpm_data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-load-xpm-d-at-size">gnome_pixmap_load_xpm_d_at_size ()</title>
 <programlisting>void        gnome_pixmap_load_xpm_d_at_size (<link linkend="GnomePixmap">GnomePixmap</link> *gpixmap,
                                              const char **xpm_data,
                                              int width,
                                              int height);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_load_xpm_d_at_size</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_load_xpm_d_at_size</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gpixmap</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>xpm_data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpixmap</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>xpm_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

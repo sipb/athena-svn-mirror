@@ -1,17 +1,18 @@
 # Greek translation of libgnomeui.
 # Copyright (C) 2002 Free Software Foundation.
-# Simos Xenitellis <simos74@gmx.net>, 2002.
-# Kostas Papadimas <pkst@gmx.net>, 2002.
+# Simos Xenitellis <simos74@gmx.net>, 2002,2003.
+# Kostas Papadimas <pkst@gmx.net>, 2002,2003.
 #
 # simos: 159 messages, 22Apr2002, initial translation.
 # kostas: 298 messages, 22Apr2002, initial translation.
+# kostas: 298 messages, 05Jan2003, reviewed and updated translation for Gnome 2.1x.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui 2.0.4\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-11-04 17:37+0000\n"
-"Last-Translator: Simos Xenitellis <simos74@gmx.net>\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2003-01-05 12:19+0200\n"
+"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,16 +26,16 @@ msgid "Credits"
 msgstr "Μνεία"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_Γράφτηκε από"
+msgid "Written by"
+msgstr "Γράφτηκε από"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_Τεκμηριώθηκε από"
+msgid "Documented by"
+msgstr "Τεκμηριώθηκε από"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "_Μεταφράστηκε από"
+msgid "Translated by"
+msgstr "Μεταφράστηκε από"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -489,11 +490,11 @@ msgstr "Το κουμπί που θα σας πάει στο URI που προβ
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"Σφάλμα κατά την προσπάθεια εκκίνησης του χειριστή URL.\n"
-"Ελέξτε αν είναι σωστές οι ρυθμίσεις στο Κέντρο Ελέγχου."
+"Σφάλμα κατά την προσπάθεια εκκίνησης του προεπιλεγμένου φυλλομετρητή.\n"
+"Ελέγξτε τις ρυθμίσεις σας στο εργαλείο προτιμήσεων 'Προτιμώμενες Εφαρμογές'."
 
 #
 #: libgnomeui/gnome-ui-init.c:113
@@ -503,7 +504,7 @@ msgstr "Επιλογή οθόνης X προς χρήση"
 #
 #: libgnomeui/gnome-ui-init.c:113
 msgid "DISPLAY"
-msgstr "ΟΘΌΝΗ"
+msgstr "ΟΘΟΝΗ"
 
 #: libgnomeui/gnome-ui-init.c:121
 msgid "GNOME GUI Library"
@@ -511,13 +512,13 @@ msgstr "Βιβλιοθήκη GNOME GUI"
 
 #
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Πολλαπλά σφάλματα κατάτμησης· είναι αδύνατη η εμφάνιση διαλόγου σφάλματος\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"
@@ -1314,12 +1315,12 @@ msgstr "Αναίρεση της τελευταίας κίνησης"
 #
 #: libgnomeui/gnome-app-helper.c:268
 msgid "_Redo move"
-msgstr "_Επανάληψη κίνησης"
+msgstr "_Ακύρωση αναίρεσης κίνησης"
 
 #
 #: libgnomeui/gnome-app-helper.c:269
 msgid "Redo the undone move"
-msgstr "Επανάληψη της αναιρεμένης κίνησης"
+msgstr "Ακύρωση της αναιρεμένης κίνησης"
 
 #
 #: libgnomeui/gnome-app-helper.c:273

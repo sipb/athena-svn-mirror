@@ -84,19 +84,21 @@ HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
 INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
 LIBGLADE_CONVERT = @LIBGLADE_CONVERT@
+LIBGNOMEUI_AGE = @LIBGNOMEUI_AGE@
 LIBGNOMEUI_CFLAGS = @LIBGNOMEUI_CFLAGS@
 LIBGNOMEUI_COMPONENTS_CFLAGS = @LIBGNOMEUI_COMPONENTS_CFLAGS@
 LIBGNOMEUI_COMPONENTS_LIBS = @LIBGNOMEUI_COMPONENTS_LIBS@
+LIBGNOMEUI_CURRENT = @LIBGNOMEUI_CURRENT@
 LIBGNOMEUI_DEMOS_CFLAGS = @LIBGNOMEUI_DEMOS_CFLAGS@
 LIBGNOMEUI_DEMOS_LIBS = @LIBGNOMEUI_DEMOS_LIBS@
 LIBGNOMEUI_GLADE_CFLAGS = @LIBGNOMEUI_GLADE_CFLAGS@
 LIBGNOMEUI_GLADE_LIBS = @LIBGNOMEUI_GLADE_LIBS@
 LIBGNOMEUI_LIBS = @LIBGNOMEUI_LIBS@
+LIBGNOMEUI_REVISION = @LIBGNOMEUI_REVISION@
+LIBJPEG = @LIBJPEG@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -110,6 +112,8 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 SM_LIBS = @SM_LIBS@
@@ -121,31 +125,54 @@ YACC = @YACC@
 cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
-INCLUDES =  	-I$(top_builddir)					-I$(top_srcdir)						-I$(top_srcdir)/libgnomeui				$(WARN_CFLAGS)						$(LIBGNOMEUI_CFLAGS)					-DGNOMEUILIBDIR=\""$(libdir)"\"				-DGNOMEUIDATADIR=\""$(datadir)"\"			-DGNOMEUIUIDIR=\""$(datadir)/ui"\"			-DGNOMEUIPIXMAPDIR=\""$(datadir)/pixmaps"\"		-DGNOMEUIBINDIR=\""$(bindir)"\"				-DGNOMEUILOCALSTATEDIR=\""$(localstatedir)"\"		-DGNOMEUISRCDIR=\""$(srcdir)"\"				-DG_LOG_DOMAIN=\"GnomeUI\"
+INCLUDES = \
+	-I$(top_builddir)				\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/libgnomeui			\
+	$(WARN_CFLAGS)					\
+	$(LIBGNOMEUI_CFLAGS)				\
+	-DGNOMEUILIBDIR=\""$(libdir)"\"			\
+	-DGNOMEUIDATADIR=\""$(datadir)"\"		\
+	-DGNOMEUIUIDIR=\""$(datadir)/ui"\"		\
+	-DGNOMEUIPIXMAPDIR=\""$(datadir)/pixmaps"\"	\
+	-DGNOMEUIBINDIR=\""$(bindir)"\"			\
+	-DGNOMEUILOCALSTATEDIR=\""$(localstatedir)"\"	\
+	-DGNOMEUISRCDIR=\""$(srcdir)"\"			\
+	-DG_LOG_DOMAIN=\"GnomeUI\"
 
 
-LDADD =  	$(top_builddir)/libgnomeui/libgnomeui-2.la 
+LDADD = \
+	$(top_builddir)/libgnomeui/libgnomeui-2.la 
 
 
-noinst_HEADERS =  	testgnome.h
+noinst_HEADERS = \
+	testgnome.h
 
 
-noinst_PROGRAMS =  	test-gnome test-druid test-entry test-iconlist
+noinst_PROGRAMS = \
+	test-gnome test-druid test-entry test-iconlist
 
 
-test_gnome_SOURCES =  	testgnome.c			$(noinst_HEADERS)
+test_gnome_SOURCES = \
+	testgnome.c		\
+	$(noinst_HEADERS)
 
 
-test_druid_SOURCES =  	testdruid.c
+test_druid_SOURCES = \
+	testdruid.c
 
 
-test_entry_SOURCES =  	testentry.c
+test_entry_SOURCES = \
+	testentry.c
 
 
-test_iconlist_SOURCES =  	testiconlist.c
+test_iconlist_SOURCES = \
+	testiconlist.c
 
 
-EXTRA_DIST =  	bomb.xpm		testgnome.xml
+EXTRA_DIST = \
+	bomb.xpm	\
+	testgnome.xml
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -188,7 +215,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(test_gnome_SOURCES) $(test_druid_SOURCES) $(test_entry_SOURCES) $(test_iconlist_SOURCES)
 OBJECTS = $(test_gnome_OBJECTS) $(test_druid_OBJECTS) $(test_entry_OBJECTS) $(test_iconlist_OBJECTS)
@@ -328,6 +355,9 @@ testdruid.o: testdruid.c ../config.h ../libgnomeui/libgnomeui.h \
 	../libgnomeui/gnome-icon-entry.h \
 	../libgnomeui/gnome-icon-item.h ../libgnomeui/gnome-icon-list.h \
 	../libgnomeui/gnome-icon-sel.h ../libgnomeui/gnome-ui-init.h \
+	../libgnomeui/gnome-icon-theme.h \
+	../libgnomeui/gnome-thumbnail.h \
+	../libgnomeui/gnome-icon-lookup.h \
 	../libgnomeui/gnome-stock-icons.h ../libgnomeui/gnome-scores.h \
 	../libgnomeui/gnome-client.h ../libgnomeui/gnome-dateedit.h \
 	../libgnomeui/gnometypebuiltins.h ../libgnomeui/gnome-href.h \
@@ -355,6 +385,9 @@ testentry.o: testentry.c ../config.h ../libgnomeui/libgnomeui.h \
 	../libgnomeui/gnome-icon-entry.h \
 	../libgnomeui/gnome-icon-item.h ../libgnomeui/gnome-icon-list.h \
 	../libgnomeui/gnome-icon-sel.h ../libgnomeui/gnome-ui-init.h \
+	../libgnomeui/gnome-icon-theme.h \
+	../libgnomeui/gnome-thumbnail.h \
+	../libgnomeui/gnome-icon-lookup.h \
 	../libgnomeui/gnome-stock-icons.h ../libgnomeui/gnome-scores.h \
 	../libgnomeui/gnome-client.h ../libgnomeui/gnome-dateedit.h \
 	../libgnomeui/gnometypebuiltins.h ../libgnomeui/gnome-href.h \
@@ -382,6 +415,9 @@ testgnome.o: testgnome.c ../config.h ../libgnomeui/libgnomeui.h \
 	../libgnomeui/gnome-icon-entry.h \
 	../libgnomeui/gnome-icon-item.h ../libgnomeui/gnome-icon-list.h \
 	../libgnomeui/gnome-icon-sel.h ../libgnomeui/gnome-ui-init.h \
+	../libgnomeui/gnome-icon-theme.h \
+	../libgnomeui/gnome-thumbnail.h \
+	../libgnomeui/gnome-icon-lookup.h \
 	../libgnomeui/gnome-stock-icons.h ../libgnomeui/gnome-scores.h \
 	../libgnomeui/gnome-client.h ../libgnomeui/gnome-dateedit.h \
 	../libgnomeui/gnometypebuiltins.h ../libgnomeui/gnome-href.h \
@@ -410,6 +446,9 @@ testiconlist.o: testiconlist.c ../libgnomeui/libgnomeui.h \
 	../libgnomeui/gnome-icon-entry.h \
 	../libgnomeui/gnome-icon-item.h ../libgnomeui/gnome-icon-list.h \
 	../libgnomeui/gnome-icon-sel.h ../libgnomeui/gnome-ui-init.h \
+	../libgnomeui/gnome-icon-theme.h \
+	../libgnomeui/gnome-thumbnail.h \
+	../libgnomeui/gnome-icon-lookup.h \
 	../libgnomeui/gnome-stock-icons.h ../libgnomeui/gnome-scores.h \
 	../libgnomeui/gnome-client.h ../libgnomeui/gnome-dateedit.h \
 	../libgnomeui/gnometypebuiltins.h ../libgnomeui/gnome-href.h \

@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -55,17 +56,25 @@ void        <link linkend="gnome-about-construct">gnome_about_construct</link>  
 </refsect1>
 
 <refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeAbout implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
+<refsect1>
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GnomeAbout--name">name</link>&quot;                 <link linkend="gchararray">gchararray</link>           : Read / Write
-  &quot;<link linkend="GnomeAbout--version">version</link>&quot;              <link linkend="gchararray">gchararray</link>           : Read / Write
-  &quot;<link linkend="GnomeAbout--copyright">copyright</link>&quot;            <link linkend="gchararray">gchararray</link>           : Read / Write
-  &quot;<link linkend="GnomeAbout--comments">comments</link>&quot;             <link linkend="gchararray">gchararray</link>           : Read / Write
   &quot;<link linkend="GnomeAbout--authors">authors</link>&quot;              <link linkend="GValueArray">GValueArray</link>          : Write
+  &quot;<link linkend="GnomeAbout--comments">comments</link>&quot;             <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeAbout--copyright">copyright</link>&quot;            <link linkend="gchararray">gchararray</link>           : Read / Write
   &quot;<link linkend="GnomeAbout--documenters">documenters</link>&quot;          <link linkend="GValueArray">GValueArray</link>          : Write
-  &quot;<link linkend="GnomeAbout--translator-credits">translator-credits</link>&quot;   <link linkend="gchararray">gchararray</link>           : Read / Write
   &quot;<link linkend="GnomeAbout--logo">logo</link>&quot;                 <link linkend="GdkPixbuf">GdkPixbuf</link>            : Write
+  &quot;<link linkend="GnomeAbout--name">name</link>&quot;                 <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeAbout--translator-credits">translator-credits</link>&quot;   <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeAbout--version">version</link>&quot;              <link linkend="gchararray">gchararray</link>           : Read / Write
 </synopsis>
 </refsect1>
 
@@ -102,43 +111,39 @@ displaying as three notebook pages.
                                              const <link linkend="gchar">gchar</link> *translator_credits,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *logo_pixbuf);</programlisting>
 <para>
-Construct an application's credits box. The <parameter>authors</parameter> array canot be empty
+Construct an application's credits box. The <parameter>authors</parameter> array cannot be empty
 and the <parameter>translator_credits</parameter> should be marked as a translatable string (so
 that only the translator for the currently active locale is displayed).</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
-<entry> The name of the application.
-</entry></row>
-<row><entry align="right"><parameter>version</parameter>&nbsp;:</entry>
-<entry> The version string of the application.
-</entry></row>
-<row><entry align="right"><parameter>copyright</parameter>&nbsp;:</entry>
-<entry> The application's copyright statement.
-</entry></row>
-<row><entry align="right"><parameter>comments</parameter>&nbsp;:</entry>
-<entry> A short miscellaneous string.
-</entry></row>
-<row><entry align="right"><parameter>authors</parameter>&nbsp;:</entry>
-<entry> An <literal>NULL</literal> terminated array of the application authors.
-</entry></row>
-<row><entry align="right"><parameter>documenters</parameter>&nbsp;:</entry>
-<entry> An array of the application documenters.
-</entry></row>
-<row><entry align="right"><parameter>translator_credits</parameter>&nbsp;:</entry>
-<entry> The translator for the current locale.
-</entry></row>
-<row><entry align="right"><parameter>logo_pixbuf</parameter>&nbsp;:</entry>
-<entry> The application's logo.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A new "About" dialog.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the application.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>version</parameter>&nbsp;:</term>
+<listitem><simpara> The version string of the application.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>copyright</parameter>&nbsp;:</term>
+<listitem><simpara> The application's copyright statement.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>comments</parameter>&nbsp;:</term>
+<listitem><simpara> A short miscellaneous string.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>authors</parameter>&nbsp;:</term>
+<listitem><simpara> An <literal>NULL</literal> terminated array of the application authors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>documenters</parameter>&nbsp;:</term>
+<listitem><simpara> An array of the application documenters.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>translator_credits</parameter>&nbsp;:</term>
+<listitem><simpara> The translator for the current locale.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>logo_pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> The application's logo.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new "About" dialog.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-about-construct">gnome_about_construct ()</title>
 <programlisting>void        gnome_about_construct           (<link linkend="GnomeAbout">GnomeAbout</link> *about,
@@ -157,75 +162,87 @@ be non-<literal>NULL</literal>, so callers must be careful, since bad things wil
 this condition is not met.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>about</parameter>&nbsp;:</entry>
-<entry> An existing <link linkend="GnomeAbout">GnomeAbout</link> instance.
-</entry></row>
-<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
-<entry> The name of the application.
-</entry></row>
-<row><entry align="right"><parameter>version</parameter>&nbsp;:</entry>
-<entry> The version string of the application.
-</entry></row>
-<row><entry align="right"><parameter>copyright</parameter>&nbsp;:</entry>
-<entry> The application's copyright statement.
-</entry></row>
-<row><entry align="right"><parameter>comments</parameter>&nbsp;:</entry>
-<entry> A short miscellaneous string.
-</entry></row>
-<row><entry align="right"><parameter>authors</parameter>&nbsp;:</entry>
-<entry> An <literal>NULL</literal> terminated array of the application authors.
-</entry></row>
-<row><entry align="right"><parameter>documenters</parameter>&nbsp;:</entry>
-<entry> An array of the application documenters.
-</entry></row>
-<row><entry align="right"><parameter>translator_credits</parameter>&nbsp;:</entry>
-<entry> The translator for the current locale.
-</entry></row>
-<row><entry align="right"><parameter>logo_pixbuf</parameter>&nbsp;:</entry>
-<entry> The application's logo.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>about</parameter>&nbsp;:</term>
+<listitem><simpara> An existing <link linkend="GnomeAbout">GnomeAbout</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the application.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>version</parameter>&nbsp;:</term>
+<listitem><simpara> The version string of the application.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>copyright</parameter>&nbsp;:</term>
+<listitem><simpara> The application's copyright statement.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>comments</parameter>&nbsp;:</term>
+<listitem><simpara> A short miscellaneous string.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>authors</parameter>&nbsp;:</term>
+<listitem><simpara> An <literal>NULL</literal> terminated array of the application authors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>documenters</parameter>&nbsp;:</term>
+<listitem><simpara> An array of the application documenters.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>translator_credits</parameter>&nbsp;:</term>
+<listitem><simpara> The translator for the current locale.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>logo_pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> The application's logo.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
 <title>Properties</title>
 <variablelist>
-<varlistentry><term><anchor id="GnomeAbout--name">&quot;<literal>name</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<varlistentry><term><anchor id="GnomeAbout--authors">&quot;<literal>authors</literal>&quot; (<link linkend="GValueArray">GValueArray</link> : Write)</term>
 <listitem>
-<para>The name of the program.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeAbout--version">&quot;<literal>version</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
-<para>The version of the program.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeAbout--copyright">&quot;<literal>copyright</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
-<para>Copyright information for the program.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="GnomeAbout--comments">&quot;<literal>comments</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
 <listitem>
-<para>Comments about the program.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeAbout--authors">&quot;<literal>authors</literal>&quot; (<link linkend="GValueArray">GValueArray</link> : Write)</term>
+<varlistentry><term><anchor id="GnomeAbout--copyright">&quot;<literal>copyright</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
 <listitem>
-<para>List of authors of the programs.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="GnomeAbout--documenters">&quot;<literal>documenters</literal>&quot; (<link linkend="GValueArray">GValueArray</link> : Write)</term>
 <listitem>
-<para>List of people documenting the program.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeAbout--translator-credits">&quot;<literal>translator-credits</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
-<para>Credits to the translators. This string should be marked as translatable.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="GnomeAbout--logo">&quot;<literal>logo</literal>&quot; (<link linkend="GdkPixbuf">GdkPixbuf</link> : Write)</term>
 <listitem>
-<para>A logo for the about box.</para>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeAbout--name">&quot;<literal>name</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeAbout--translator-credits">&quot;<literal>translator-credits</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeAbout--version">&quot;<literal>version</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
 </listitem></varlistentry>
 
 </variablelist>

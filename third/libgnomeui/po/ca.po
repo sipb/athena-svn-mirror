@@ -5,11 +5,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeui 2.0.1\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-07-22 13:09+0200\n"
+"Project-Id-Version: libgnomeui 2.1.5\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2002-12-21 00:35+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
-"Language-Team:  Catalan <gnome@softcatala.net>\n"
+"Language-Team:  Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,16 +19,16 @@ msgid "Credits"
 msgstr "Crèdits"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_Escrit per"
+msgid "Written by"
+msgstr "Escrit per"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_Documentat per"
+msgid "Documented by"
+msgstr "Documentat per"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "_Traduït per"
+msgid "Translated by"
+msgstr "Traduït per"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -398,11 +398,12 @@ msgstr "Aquest botó vos durà a la URI que mostra."
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"S'ha produït un error en probar d'executar el manejador d'URL.\n"
-"Comprova si són correctes els paràmetres en el Centre de Control."
+"S'ha produït un error en probar d'executar el navegador per defecte.\n"
+"Comproveu la vostra configuració en l'eina de preferències «Aplicacions "
+"preferides»."
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -417,14 +418,14 @@ msgid "GNOME GUI Library"
 msgstr "Biblioteca GNOME GUI"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Han ocorregut múltiples violacions de segment; no es pot mostrar el diàleg "
 "d'error\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"

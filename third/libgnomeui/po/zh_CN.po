@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-08-19 21:01+0800\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2003-01-22 21:37+0800\n"
 "Last-Translator: Wang Li <charles@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -20,18 +20,18 @@ msgstr "感谢"
 
 # SUN CHANGED MESSAGE
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "作者(_W)"
+msgid "Written by"
+msgstr "作者"
 
 # SUN CHANGED MESSAGE
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "文档编写者(_D)"
+msgid "Documented by"
+msgstr "文档"
 
 # SUN CHANGED MESSAGE
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "翻译(_T)"
+msgid "Translated by"
+msgstr "翻译"
 
 # SUN CHANGED MESSAGE
 #. Add the credits button
@@ -415,15 +415,15 @@ msgstr "此按钮将把您定向到它显示的 URI。"
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"在试图应用 URL 处理器时出现错误。\n"
-"请在控制中心中检查设置是否正确。"
+"试图打开默认 Web 浏览器时出错。\n"
+"请在检查“首选应用程序”中的设置是否正确。"
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
-msgstr "使用的X显示接口"
+msgstr "使用的 X 显示接口"
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "DISPLAY"
@@ -434,12 +434,12 @@ msgid "GNOME GUI Library"
 msgstr "GNOME GUI 库"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "发生了多个段错误； 无法显示错误对话框\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"

@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -65,6 +66,14 @@ void        <link linkend="gnome-druid-construct-with-window">gnome_druid_constr
 </refsect1>
 
 <refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeDruid implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
+<refsect1>
 <title>Properties</title>
 <synopsis>
 
@@ -110,14 +119,10 @@ Creates a new <link linkend="GnomeDruid">GnomeDruid</link> widget.  You need to 
 to a dialog yourself, it is not a dialog.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  A new <link linkend="GnomeDruid">GnomeDruid</link> widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  A new <link linkend="GnomeDruid">GnomeDruid</link> widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-druid-set-buttons-sensitive">gnome_druid_set_buttons_sensitive ()</title>
 <programlisting>void        gnome_druid_set_buttons_sensitive
@@ -132,27 +137,23 @@ variables are <literal>TRUE</literal>, then they will be clickable. This functio
 primarily by the actual GnomeDruidPage widgets.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>druid</parameter>&nbsp;:</entry>
-<entry> A Druid.
-</entry></row>
-<row><entry align="right"><parameter>back_sensitive</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if the back button is sensitive.
-</entry></row>
-<row><entry align="right"><parameter>next_sensitive</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if the next button is sensitive.
-</entry></row>
-<row><entry align="right"><parameter>cancel_sensitive</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if the cancel button is sensitive.
-</entry></row>
-<row><entry align="right"><parameter>help_sensitive</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if the help button is sensitive.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>druid</parameter>&nbsp;:</term>
+<listitem><simpara> A Druid.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>back_sensitive</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if the back button is sensitive.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>next_sensitive</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if the next button is sensitive.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancel_sensitive</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if the cancel button is sensitive.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>help_sensitive</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if the help button is sensitive.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-druid-set-show-finish">gnome_druid_set_show_finish ()</title>
 <programlisting>void        gnome_druid_set_show_finish     (<link linkend="GnomeDruid">GnomeDruid</link> *druid,
@@ -162,18 +163,14 @@ Used to specify if <parameter>druid</parameter> is currently showing the last pa
 (and hence should display "Finish", rather than "Next").</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>druid</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeDruid">GnomeDruid</link> widget.
-</entry></row>
-<row><entry align="right"><parameter>show_finish</parameter>&nbsp;:</entry>
-<entry> If <literal>TRUE</literal>, then the "Next" button is changed to be "Finish"
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>druid</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeDruid">GnomeDruid</link> widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>show_finish</parameter>&nbsp;:</term>
+<listitem><simpara> If <literal>TRUE</literal>, then the "Next" button is changed to be "Finish"
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-druid-set-show-help">gnome_druid_set_show_help ()</title>
 <programlisting>void        gnome_druid_set_show_help       (<link linkend="GnomeDruid">GnomeDruid</link> *druid,
@@ -183,18 +180,14 @@ Sets the "Help" button on the druid to be visible in the lower left corner of
 the widget, if <parameter>show_help</parameter> is <literal>TRUE</literal>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>druid</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeDruid">GnomeDruid</link>.
-</entry></row>
-<row><entry align="right"><parameter>show_help</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal>, if the "Help" button is to be shown, <literal>FALSE</literal> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>druid</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeDruid">GnomeDruid</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>show_help</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal>, if the "Help" button is to be shown, <literal>FALSE</literal> otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-druid-prepend-page">gnome_druid_prepend_page ()</title>
 <programlisting>void        gnome_druid_prepend_page        (<link linkend="GnomeDruid">GnomeDruid</link> *druid,
@@ -206,18 +199,14 @@ need to also call <link linkend="gtk-widget-show">gtk_widget_show</link>() on th
 be shown.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>druid</parameter>&nbsp;:</entry>
-<entry> A Druid widget.
-</entry></row>
-<row><entry align="right"><parameter>page</parameter>&nbsp;:</entry>
-<entry> The page to be inserted.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>druid</parameter>&nbsp;:</term>
+<listitem><simpara> A Druid widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> The page to be inserted.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-druid-insert-page">gnome_druid_insert_page ()</title>
 <programlisting>void        gnome_druid_insert_page         (<link linkend="GnomeDruid">GnomeDruid</link> *druid,
@@ -231,21 +220,17 @@ just a container, you will need to also call <link linkend="gtk-widget-show">gtk
 otherwise the page will not be shown.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>druid</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeDruid">GnomeDruid</link> widget.
-</entry></row>
-<row><entry align="right"><parameter>back_page</parameter>&nbsp;:</entry>
-<entry> The page prior to the page to be inserted.
-</entry></row>
-<row><entry align="right"><parameter>page</parameter>&nbsp;:</entry>
-<entry> The page to insert.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>druid</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeDruid">GnomeDruid</link> widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>back_page</parameter>&nbsp;:</term>
+<listitem><simpara> The page prior to the page to be inserted.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> The page to insert.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-druid-append-page">gnome_druid_append_page ()</title>
 <programlisting>void        gnome_druid_append_page         (<link linkend="GnomeDruid">GnomeDruid</link> *druid,
@@ -256,18 +241,14 @@ Since <link linkend="GnomeDruid">GnomeDruid</link> is just a container, you will
 <link linkend="gtk-widget-show">gtk_widget_show</link>() on the page, otherwise the page will not be shown.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>druid</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeDruid">GnomeDruid</link> widget.
-</entry></row>
-<row><entry align="right"><parameter>page</parameter>&nbsp;:</entry>
-<entry> The <link linkend="GnomeDruidPage">GnomeDruidPage</link> to be appended.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>druid</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeDruid">GnomeDruid</link> widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> The <link linkend="GnomeDruidPage">GnomeDruidPage</link> to be appended.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-druid-set-page">gnome_druid_set_page ()</title>
 <programlisting>void        gnome_druid_set_page            (<link linkend="GnomeDruid">GnomeDruid</link> *druid,
@@ -277,18 +258,14 @@ This will make <parameter>page</parameter> the currently showing page in the dru
 <parameter>page</parameter> must already be in the druid.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>druid</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeDruid">GnomeDruid</link> widget.
-</entry></row>
-<row><entry align="right"><parameter>page</parameter>&nbsp;:</entry>
-<entry> The <link linkend="GnomeDruidPage">GnomeDruidPage</link> to be brought to the foreground.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>druid</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeDruid">GnomeDruid</link> widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> The <link linkend="GnomeDruidPage">GnomeDruidPage</link> to be brought to the foreground.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-druid-new-with-window">gnome_druid_new_with_window ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_druid_new_with_window     (const char *title,
@@ -304,27 +281,23 @@ through the last argument.  When the druid gets destroyed, so will the
 window that is created here.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry> A title of the window.
-</entry></row>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry> The parent of this window (transient_for).
-</entry></row>
-<row><entry align="right"><parameter>close_on_cancel</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if the window should be closed when cancel is
+</para><variablelist role="params">
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> A title of the window.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> The parent of this window (transient_for).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>close_on_cancel</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if the window should be closed when cancel is
 pressed.
-</entry></row>
-<row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry> Optional return of the <link linkend="GtkWindow">GtkWindow</link> created.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  A new <link linkend="GnomeDruid">GnomeDruid</link> widget.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>window</parameter>&nbsp;:</term>
+<listitem><simpara> Optional return of the <link linkend="GtkWindow">GtkWindow</link> created.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  A new <link linkend="GnomeDruid">GnomeDruid</link> widget.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-druid-construct-with-window">gnome_druid_construct_with_window ()</title>
 <programlisting>void        gnome_druid_construct_with_window
@@ -345,28 +318,24 @@ window that is created here.
 See also <link linkend="gnome-druid-new-with-window">gnome_druid_new_with_window</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>druid</parameter>&nbsp;:</entry>
-<entry> The <link linkend="GnomeDruid">GnomeDruid</link>.
-</entry></row>
-<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry> A title of the window.
-</entry></row>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry> The parent of this window (transient_for).
-</entry></row>
-<row><entry align="right"><parameter>close_on_cancel</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if the window should be closed when cancel is
+</para><variablelist role="params">
+<varlistentry><term><parameter>druid</parameter>&nbsp;:</term>
+<listitem><simpara> The <link linkend="GnomeDruid">GnomeDruid</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> A title of the window.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> The parent of this window (transient_for).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>close_on_cancel</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if the window should be closed when cancel is
 pressed.
-</entry></row>
-<row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry> Optional return of the <link linkend="GtkWindow">GtkWindow</link> created.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>window</parameter>&nbsp;:</term>
+<listitem><simpara> Optional return of the <link linkend="GtkWindow">GtkWindow</link> created.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
@@ -374,11 +343,15 @@ pressed.
 <variablelist>
 <varlistentry><term><anchor id="GnomeDruid--show-finish">&quot;<literal>show-finish</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>Show the 'Finish' button instead of the 'Next' button.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="GnomeDruid--show-help">&quot;<literal>show-help</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>Show the 'Help' button.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 
 </variablelist>
@@ -391,34 +364,26 @@ pressed.
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>druid</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>druid</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeDruid-help">The &quot;help&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeDruid-help">The &quot;help&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeDruid">GnomeDruid</link> *druid,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>druid</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>druid</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -54,6 +55,14 @@ void        <link linkend="gnome-icon-selection-stop-loading">gnome_icon_selecti
 
 </refsect1>
 
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeIconSelection implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
 
 
 
@@ -80,14 +89,10 @@ Creates a new icon selection widget, it uses GnomeIconList
 for the listing of icons</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Returns the new object
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Returns the new object
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-selection-add-defaults">gnome_icon_selection_add_defaults ()</title>
 <programlisting>void        gnome_icon_selection_add_defaults
@@ -98,15 +103,11 @@ widget. It doesn't show the icons in the selection until you
 do <link linkend="gnome-icon-selection-show-icons">gnome_icon_selection_show_icons</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gis</parameter>&nbsp;:</entry>
-<entry> GnomeIconSelection to work with
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gis</parameter>&nbsp;:</term>
+<listitem><simpara> GnomeIconSelection to work with
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-selection-add-directory">gnome_icon_selection_add_directory ()</title>
 <programlisting>void        gnome_icon_selection_add_directory
@@ -118,18 +119,14 @@ selection widget. It doesn't show the icons in the selection
 until you do <link linkend="gnome-icon-selection-show-icons">gnome_icon_selection_show_icons</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gis</parameter>&nbsp;:</entry>
-<entry> GnomeIconSelection to work with
-</entry></row>
-<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
-<entry> directory with pixmaps
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gis</parameter>&nbsp;:</term>
+<listitem><simpara> GnomeIconSelection to work with
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> directory with pixmaps
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-selection-show-icons">gnome_icon_selection_show_icons ()</title>
 <programlisting>void        gnome_icon_selection_show_icons (<link linkend="GnomeIconSelection">GnomeIconSelection</link> *gis);</programlisting>
@@ -141,15 +138,11 @@ is called the icons aren't actually added to the listing
 and can't be picked by the user.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gis</parameter>&nbsp;:</entry>
-<entry> GnomeIconSelection to work with
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gis</parameter>&nbsp;:</term>
+<listitem><simpara> GnomeIconSelection to work with
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-selection-clear">gnome_icon_selection_clear ()</title>
 <programlisting>void        gnome_icon_selection_clear      (<link linkend="GnomeIconSelection">GnomeIconSelection</link> *gis,
@@ -160,18 +153,14 @@ that weren't shown yet are not cleared unless the not_shown
 parameter is given, in which case even those are cleared.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gis</parameter>&nbsp;:</entry>
-<entry> GnomeIconSelection to work with
-</entry></row>
-<row><entry align="right"><parameter>not_shown</parameter>&nbsp;:</entry>
-<entry> boolean
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gis</parameter>&nbsp;:</term>
+<listitem><simpara> GnomeIconSelection to work with
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>not_shown</parameter>&nbsp;:</term>
+<listitem><simpara> boolean
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-selection-get-icon">gnome_icon_selection_get_icon ()</title>
 <programlisting><link linkend="gchar">gchar</link>*      gnome_icon_selection_get_icon   (<link linkend="GnomeIconSelection">GnomeIconSelection</link> *gis,
@@ -182,21 +171,17 @@ full_path is true, it returns the full path to the icon,
 if none is selected it returns NULL</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gis</parameter>&nbsp;:</entry>
-<entry> GnomeIconSelection to work with
-</entry></row>
-<row><entry align="right"><parameter>full_path</parameter>&nbsp;:</entry>
-<entry> boolean
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> internal string, it must not be changed or freed
+</para><variablelist role="params">
+<varlistentry><term><parameter>gis</parameter>&nbsp;:</term>
+<listitem><simpara> GnomeIconSelection to work with
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>full_path</parameter>&nbsp;:</term>
+<listitem><simpara> boolean
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> internal string, it must not be changed or freed
 or NULL
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-selection-select-icon">gnome_icon_selection_select_icon ()</title>
 <programlisting>void        gnome_icon_selection_select_icon
@@ -207,18 +192,14 @@ Selects the icon <parameter>filename</parameter>. This icon must have
 already been added and shown * (see <parameter>gnome_icon_selection_show_icons</parameter>)</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gis</parameter>&nbsp;:</entry>
-<entry> GnomeIconSelection to work with
-</entry></row>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry> icon filename
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gis</parameter>&nbsp;:</term>
+<listitem><simpara> GnomeIconSelection to work with
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> icon filename
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-selection-stop-loading">gnome_icon_selection_stop_loading ()</title>
 <programlisting>void        gnome_icon_selection_stop_loading
@@ -233,15 +214,11 @@ The remaining icons can be shown by
 <link linkend="gnome-icon-selection-show-icons">gnome_icon_selection_show_icons</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gis</parameter>&nbsp;:</entry>
-<entry> GnomeIconSelection to work with
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gis</parameter>&nbsp;:</term>
+<listitem><simpara> GnomeIconSelection to work with
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-selection-get-gil">gnome_icon_selection_get_gil ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_icon_selection_get_gil    (<link linkend="GnomeIconSelection">GnomeIconSelection</link> *gis);</programlisting>
@@ -250,17 +227,13 @@ Gets the <link linkend="GnomeIconList">GnomeIconList</link> widget that is
 used for the display of icons</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gis</parameter>&nbsp;:</entry>
-<entry> GnomeIconSelection to work with
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a <link linkend="GtkWidget">GtkWidget</link> pointer to the interal widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gis</parameter>&nbsp;:</term>
+<listitem><simpara> GnomeIconSelection to work with
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GtkWidget">GtkWidget</link> pointer to the interal widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-selection-get-box">gnome_icon_selection_get_box ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_icon_selection_get_box    (<link linkend="GnomeIconSelection">GnomeIconSelection</link> *gis);</programlisting>
@@ -270,17 +243,13 @@ used to pack the different elements of the selection
 into.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gis</parameter>&nbsp;:</entry>
-<entry> GnomeIconSelection to work with
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a <link linkend="GtkWidget">GtkWidget</link> pointer to the interal widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gis</parameter>&nbsp;:</term>
+<listitem><simpara> GnomeIconSelection to work with
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GtkWidget">GtkWidget</link> pointer to the interal widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

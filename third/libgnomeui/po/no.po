@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.107.0\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-08-06 11:09+0200\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2002-12-02 21:48+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,16 +18,16 @@ msgid "Credits"
 msgstr "Bidragsytere"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_Skrevet av"
+msgid "Written by"
+msgstr "Skrevet av"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_Dokumentert av"
+msgid "Documented by"
+msgstr "Dokumentert av"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "Oversa_tt av"
+msgid "Translated by"
+msgstr "Oversatt av"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -394,11 +394,11 @@ msgstr "Denne knappen vil ta deg til URIen som vises."
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"En feil oppsto under forsøk på å starte opp URL-håndtereren.\n"
-"Vennligst sjekk om innstillingene i kontrollsenteret er korrekt."
+"En feil oppsto under forsøk på å starte opp forvalgt nettleser.\n"
+"Vennligst sjekk om innstillingene i «Foretrukne applikasjoner» er riktige."
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -413,12 +413,12 @@ msgid "GNOME GUI Library"
 msgstr "GNOME GUI-bibliotek"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Flere segmenteringsfeil oppstod; kan ikke vise feildialogen\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"

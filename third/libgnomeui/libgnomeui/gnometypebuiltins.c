@@ -310,6 +310,45 @@ gnome_icon_list_mode_get_type (void)
 
 
 
+/* enumerations from "gnome-icon-lookup.h" */
+static const GFlagsValue _gnome_icon_lookup_flags_values[] = {
+  { GNOME_ICON_LOOKUP_FLAGS_NONE, "GNOME_ICON_LOOKUP_FLAGS_NONE", "none" },
+  { GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT, "GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT", "embedding-text" },
+  { GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES, "GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES", "show-small-images-as-themselves" },
+  { 0, NULL, NULL }
+};
+
+GType
+gnome_icon_lookup_flags_get_type (void)
+{
+  static GType type = 0;
+
+  if (!type)
+    type = g_flags_register_static ("GnomeIconLookupFlags", _gnome_icon_lookup_flags_values);
+
+  return type;
+}
+
+
+static const GFlagsValue _gnome_icon_lookup_result_flags_values[] = {
+  { GNOME_ICON_LOOKUP_RESULT_FLAGS_NONE, "GNOME_ICON_LOOKUP_RESULT_FLAGS_NONE", "none" },
+  { GNOME_ICON_LOOKUP_RESULT_FLAGS_THUMBNAIL, "GNOME_ICON_LOOKUP_RESULT_FLAGS_THUMBNAIL", "thumbnail" },
+  { 0, NULL, NULL }
+};
+
+GType
+gnome_icon_lookup_result_flags_get_type (void)
+{
+  static GType type = 0;
+
+  if (!type)
+    type = g_flags_register_static ("GnomeIconLookupResultFlags", _gnome_icon_lookup_result_flags_values);
+
+  return type;
+}
+
+
+
 /* enumerations from "gnome-mdi.h" */
 static const GEnumValue _gnome_mdi_mode_values[] = {
   { GNOME_MDI_NOTEBOOK, "GNOME_MDI_NOTEBOOK", "notebook" },
@@ -326,6 +365,26 @@ gnome_mdi_mode_get_type (void)
 
   if (!type)
     type = g_enum_register_static ("GnomeMDIMode", _gnome_mdi_mode_values);
+
+  return type;
+}
+
+
+
+/* enumerations from "gnome-thumbnail.h" */
+static const GEnumValue _gnome_thumbnail_size_values[] = {
+  { GNOME_THUMBNAIL_SIZE_NORMAL, "GNOME_THUMBNAIL_SIZE_NORMAL", "normal" },
+  { GNOME_THUMBNAIL_SIZE_LARGE, "GNOME_THUMBNAIL_SIZE_LARGE", "large" },
+  { 0, NULL, NULL }
+};
+
+GType
+gnome_thumbnail_size_get_type (void)
+{
+  static GType type = 0;
+
+  if (!type)
+    type = g_enum_register_static ("GnomeThumbnailSize", _gnome_thumbnail_size_values);
 
   return type;
 }

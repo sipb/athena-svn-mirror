@@ -1,12 +1,12 @@
 # libgnomeui eesti tõlge.
 # Copyright (C) 2002 Free Software Foundation, Inc.
-# Tõivo Leedjärv <toivo@linux.ee>, 2002.
+# Tõivo Leedjärv <toivo@linux.ee>, 2002, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-08-14 23:11+0300\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2003-01-20 09:49+0200\n"
 "Last-Translator: Tõivo Leedjärv <toivo@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -18,16 +18,16 @@ msgid "Credits"
 msgstr "Autorid"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_Programmeerimine"
+msgid "Written by"
+msgstr "Programmeerimine"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_Dokumentatsioon"
+msgid "Documented by"
+msgstr "Dokumentatsioon"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "_Tõlge"
+msgid "Translated by"
+msgstr "Tõlge"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -394,8 +394,8 @@ msgstr ""
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
 
 #: libgnomeui/gnome-ui-init.c:113
@@ -411,12 +411,12 @@ msgid "GNOME GUI Library"
 msgstr ""
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"

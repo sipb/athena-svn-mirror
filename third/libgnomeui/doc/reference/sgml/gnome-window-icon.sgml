@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -34,6 +35,8 @@ void        <link linkend="gnome-window-icon-init">gnome_window_icon_init</link>
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -51,15 +54,11 @@ void        <link linkend="gnome-window-icon-init">gnome_window_icon_init</link>
 Makes the <link linkend="GtkWindow">GtkWindow</link> <parameter>w</parameter> use the default icon.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>w</parameter>&nbsp;:</entry>
-<entry> the <link linkend="GtkWidget">GtkWidget</link> to set the icon on
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>w</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to set the icon on
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-window-icon-set-from-file">gnome_window_icon_set_from_file ()</title>
 <programlisting>void        gnome_window_icon_set_from_file (<link linkend="GtkWindow">GtkWindow</link> *w,
@@ -68,18 +67,14 @@ Makes the <link linkend="GtkWindow">GtkWindow</link> <parameter>w</parameter> us
 Makes the <link linkend="GtkWindow">GtkWindow</link> <parameter>w</parameter> use the icon in <parameter>filename</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>w</parameter>&nbsp;:</entry>
-<entry> the <link linkend="GtkWidget">GtkWidget</link> to set the icon on
-</entry></row>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry> the name of the file to load
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>w</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to set the icon on
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> the name of the file to load
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-window-icon-set-from-file-list">gnome_window_icon_set_from_file_list ()</title>
 <programlisting>void        gnome_window_icon_set_from_file_list
@@ -90,18 +85,14 @@ Convenience wrapper around <link linkend="gtk-window-set-icon-list">gtk_window_s
 which loads the icons in <parameter>filenames</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>w</parameter>&nbsp;:</entry>
-<entry> window to set icons on
-</entry></row>
-<row><entry align="right"><parameter>filenames</parameter>&nbsp;:</entry>
-<entry> NULL terminated string array
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>w</parameter>&nbsp;:</term>
+<listitem><simpara> window to set icons on
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filenames</parameter>&nbsp;:</term>
+<listitem><simpara> NULL terminated string array
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-window-icon-set-default-from-file">gnome_window_icon_set_default_from_file ()</title>
 <programlisting>void        gnome_window_icon_set_default_from_file
@@ -112,15 +103,11 @@ of the gnome_window_icon_set_default_from* functions have not already
 been called.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry> filename for the default window icon
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> filename for the default window icon
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-window-icon-set-default-from-file-list">gnome_window_icon_set_default_from_file_list ()</title>
 <programlisting>void        gnome_window_icon_set_default_from_file_list
@@ -130,15 +117,11 @@ Wrapper around <link linkend="gtk-window-set-default-icon-list">gtk_window_set_d
 which loads the icons in <parameter>filenames</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>filenames</parameter>&nbsp;:</entry>
-<entry> NULL terminated string array
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>filenames</parameter>&nbsp;:</term>
+<listitem><simpara> NULL terminated string array
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-window-icon-init">gnome_window_icon_init ()</title>
 <programlisting>void        gnome_window_icon_init          (void);</programlisting>

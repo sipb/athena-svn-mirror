@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Aktualną wersję tego pliku możesz odnaleźć w repozytorium cvs.gnome.pl
 # (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste hasło)
@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-08-05 14:11+0200\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2003-01-02 02:11+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,16 +22,16 @@ msgid "Credits"
 msgstr "Zasługi"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_Program"
+msgid "Written by"
+msgstr "Program"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_Dokumentacja"
+msgid "Documented by"
+msgstr "Dokumentacja"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "_Lokalizacja"
+msgid "Translated by"
+msgstr "Lokalizacja"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -402,11 +402,12 @@ msgstr "Przycisk ten otwiera dokument spod URI, które opisuje."
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"Przy próbie uruchomienia programu obsługującego URL wystąpił błąd.\n"
-"Sprawdź, czy ustawienia w Centrum Sterowania są poprawne."
+"Przy uruchamianiu domyślnej przeglądarki WWW wystąpił błąd.\n"
+"Sprawdź poprawność ustawień w narzędziu konfiguracyjnym \"Preferowane "
+"aplikacje\"."
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -421,14 +422,14 @@ msgid "GNOME GUI Library"
 msgstr "Biblioteka GNOME GUI"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Kilkakrotnie wystąpiło niepoprawne odwołanie do pamięci; nie można "
 "wyświetlić okna z informacją o błędzie\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"

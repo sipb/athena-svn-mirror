@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -21,6 +22,8 @@ void        <link linkend="gnome-window-toplevel-set-title">gnome_window_topleve
                                              const <link linkend="gchar">gchar</link> *extension);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -55,25 +58,21 @@ application windows as containing certain files that are being worked on at
 the time (for example, a word processor file, a spreadsheet or an image).</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry> A pointer to the toplevel window.
-</entry></row>
-<row><entry align="right"><parameter>doc_name</parameter>&nbsp;:</entry>
-<entry> The window-specific name.
-</entry></row>
-<row><entry align="right"><parameter>app_name</parameter>&nbsp;:</entry>
-<entry> The application name.
-</entry></row>
-<row><entry align="right"><parameter>extension</parameter>&nbsp;:</entry>
-<entry> The default extension that the application uses. <literal>NULL</literal> if there
+</para><variablelist role="params">
+<varlistentry><term><parameter>window</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to the toplevel window.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>doc_name</parameter>&nbsp;:</term>
+<listitem><simpara> The window-specific name.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>app_name</parameter>&nbsp;:</term>
+<listitem><simpara> The application name.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>extension</parameter>&nbsp;:</term>
+<listitem><simpara> The default extension that the application uses. <literal>NULL</literal> if there
 is not a default extension.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

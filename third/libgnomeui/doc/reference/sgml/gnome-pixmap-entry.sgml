@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -63,6 +64,14 @@ void        <link linkend="gnome-pixmap-entry-set-preview-size">gnome_pixmap_ent
 </refsect1>
 
 <refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomePixmapEntry implements <link linkend="AtkImplementorIface">AtkImplementorIface</link> and <link linkend="GtkEditable">GtkEditable</link>.
+</para>
+</refsect1>
+
+
+<refsect1>
 <title>Properties</title>
 <synopsis>
 
@@ -98,23 +107,19 @@ there is no preview, the files are not loaded and thus are not
 checked to be real image files.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>history_id</parameter>&nbsp;:</entry>
-<entry> The id given to <link linkend="gnome-entry-new">gnome_entry_new</link>
-</entry></row>
-<row><entry align="right"><parameter>browse_dialog_title</parameter>&nbsp;:</entry>
-<entry> Title of the browse dialog
-</entry></row>
-<row><entry align="right"><parameter>do_preview</parameter>&nbsp;:</entry>
-<entry> boolean
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> New GnomePixmapEntry object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>history_id</parameter>&nbsp;:</term>
+<listitem><simpara> The id given to <link linkend="gnome-entry-new">gnome_entry_new</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>browse_dialog_title</parameter>&nbsp;:</term>
+<listitem><simpara> Title of the browse dialog
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>do_preview</parameter>&nbsp;:</term>
+<listitem><simpara> boolean
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> New GnomePixmapEntry object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-entry-construct">gnome_pixmap_entry_construct ()</title>
 <programlisting>void        gnome_pixmap_entry_construct    (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry,
@@ -127,24 +132,20 @@ there is no preview, the files are not loaded and thus are not
 checked to be real image files.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pentry</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomePixmapEntry">GnomePixmapEntry</link> object to construct
-</entry></row>
-<row><entry align="right"><parameter>history_id</parameter>&nbsp;:</entry>
-<entry> The id given to <link linkend="gnome-entry-new">gnome_entry_new</link>
-</entry></row>
-<row><entry align="right"><parameter>browse_dialog_title</parameter>&nbsp;:</entry>
-<entry> Title of the browse dialog
-</entry></row>
-<row><entry align="right"><parameter>do_preview</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if preview is desired, <literal>FALSE</literal> if not.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomePixmapEntry">GnomePixmapEntry</link> object to construct
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>history_id</parameter>&nbsp;:</term>
+<listitem><simpara> The id given to <link linkend="gnome-entry-new">gnome_entry_new</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>browse_dialog_title</parameter>&nbsp;:</term>
+<listitem><simpara> Title of the browse dialog
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>do_preview</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if preview is desired, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-entry-set-pixmap-subdir">gnome_pixmap_entry_set_pixmap_subdir ()</title>
 <programlisting>void        gnome_pixmap_entry_set_pixmap_subdir
@@ -156,91 +157,63 @@ subdirectory should be specified relative to the default GNOME
 pixmap directory.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pentry</parameter>&nbsp;:</entry>
-<entry> Pointer to GnomePixmapEntry widget
-</entry></row>
-<row><entry align="right"><parameter>subdir</parameter>&nbsp;:</entry>
-<entry> Subdirectory
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>subdir</parameter>&nbsp;:</term>
+<listitem><simpara> Subdirectory
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-entry-gnome-file-entry">gnome_pixmap_entry_gnome_file_entry ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_gnome_file_entry
                                             (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_entry_gnome_file_entry</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_entry_gnome_file_entry</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Get the <link linkend="GnomeFileEntry">GnomeFileEntry</link> component of the
 GnomePixmapEntry widget for lower-level manipulation.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pentry</parameter>&nbsp;:</entry>
-<entry> Pointer to GnomePixmapEntry widget
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GnomeFileEntry">GnomeFileEntry</link> widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GnomeFileEntry">GnomeFileEntry</link> widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-entry-gnome-entry">gnome_pixmap_entry_gnome_entry ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_gnome_entry  (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_entry_gnome_entry</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_entry_gnome_entry</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Get the <link linkend="GnomeEntry">GnomeEntry</link> component of the
 GnomePixmapEntry widget for lower-level manipulation.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pentry</parameter>&nbsp;:</entry>
-<entry> Pointer to GnomePixmapEntry widget
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GnomeEntry">GnomeEntry</link> widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GnomeEntry">GnomeEntry</link> widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-entry-gtk-entry">gnome_pixmap_entry_gtk_entry ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_gtk_entry    (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);</programlisting>
-<warning>
-<para>
-<literal>gnome_pixmap_entry_gtk_entry</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_pixmap_entry_gtk_entry</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Get the <link linkend="GtkEntry">GtkEntry</link> component of the
 GnomePixmapEntry for Gtk+-level manipulation.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pentry</parameter>&nbsp;:</entry>
-<entry> Pointer to GnomePixmapEntry widget
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GtkEntry">GtkEntry</link> widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GtkEntry">GtkEntry</link> widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-entry-scrolled-window">gnome_pixmap_entry_scrolled_window ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_scrolled_window
@@ -250,17 +223,13 @@ Get the <link linkend="GtkScrolledWindow">GtkScrolledWindow</link> widget that t
 is contained in.  Could be <literal>NULL</literal></para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pentry</parameter>&nbsp;:</entry>
-<entry> Pointer to GnomePixmapEntry widget
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GtkScrolledWindow">GtkScrolledWindow</link> widget or <literal>NULL</literal>
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GtkScrolledWindow">GtkScrolledWindow</link> widget or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-entry-preview-widget">gnome_pixmap_entry_preview_widget ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_preview_widget
@@ -271,17 +240,13 @@ type of widget.  Currently either <link linkend="GnomePixmap">GnomePixmap</link>
 could change in the future. Could be <literal>NULL</literal></para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pentry</parameter>&nbsp;:</entry>
-<entry> Pointer to GnomePixmapEntry widget
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the preview widget pointer or <literal>NULL</literal>
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the preview widget pointer or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-entry-set-preview">gnome_pixmap_entry_set_preview ()</title>
 <programlisting>void        gnome_pixmap_entry_set_preview  (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry,
@@ -293,18 +258,14 @@ for them being real images.  If it is off, we don't check files
 to be real image files.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pentry</parameter>&nbsp;:</entry>
-<entry> Pointer to GnomePixmapEntry widget
-</entry></row>
-<row><entry align="right"><parameter>do_preview</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> to show previews, <literal>FALSE</literal> to not show them.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>do_preview</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> to show previews, <literal>FALSE</literal> to not show them.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-entry-set-preview-size">gnome_pixmap_entry_set_preview_size ()</title>
 <programlisting>void        gnome_pixmap_entry_set_preview_size
@@ -316,21 +277,17 @@ Sets the minimum size of the preview frame in pixels.
 This works only if the preview is enabled.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pentry</parameter>&nbsp;:</entry>
-<entry> Pointer to GnomePixmapEntry widget
-</entry></row>
-<row><entry align="right"><parameter>preview_w</parameter>&nbsp;:</entry>
-<entry> Preview width in pixels
-</entry></row>
-<row><entry align="right"><parameter>preview_h</parameter>&nbsp;:</entry>
-<entry> Preview height in pixels
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>preview_w</parameter>&nbsp;:</term>
+<listitem><simpara> Preview width in pixels
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>preview_h</parameter>&nbsp;:</term>
+<listitem><simpara> Preview height in pixels
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-entry-get-filename">gnome_pixmap_entry_get_filename ()</title>
 <programlisting><link linkend="gchar">gchar</link>*      gnome_pixmap_entry_get_filename (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);</programlisting>
@@ -340,17 +297,13 @@ successfully loaded if preview is disabled.  If the preview is
 disabled, the file is only checked if it exists or not.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pentry</parameter>&nbsp;:</entry>
-<entry> Pointer to GnomePixmapEntry widget
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Newly allocated string containing path, or <literal>NULL</literal> on error.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Newly allocated string containing path, or <literal>NULL</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
@@ -358,7 +311,9 @@ disabled, the file is only checked if it exists or not.</para>
 <variablelist>
 <varlistentry><term><anchor id="GnomePixmapEntry--do-preview">&quot;<literal>do-preview</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>Whether the pixmap entry should have a preview.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 
 </variablelist>

@@ -6,10 +6,11 @@
 </refmeta>
 
 <refnamediv>
-<refname>gnome-popup-menu</refname><refpurpose></refpurpose>
+<refname>gnome-popup-menu</refname><refpurpose>Create and display popup and context menus.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -49,6 +50,8 @@ void        <link linkend="gnome-gtk-widget-add-popup-items">gnome_gtk_widget_ad
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -69,65 +72,52 @@ accelgroup for you and attaches it to the menu object.  Use
 created.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>uiinfo</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a menu widget
+</para><variablelist role="params">
+<varlistentry><term><parameter>uiinfo</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeUIInfo">GnomeUIInfo</link> array describing the new menu.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A menu widget.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-popup-menu-new-with-accelgroup">gnome_popup_menu_new_with_accelgroup ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_popup_menu_new_with_accelgroup
                                             (<link linkend="GnomeUIInfo">GnomeUIInfo</link> *uiinfo,
                                              <link linkend="GtkAccelGroup">GtkAccelGroup</link> *accelgroup);</programlisting>
 <para>
-Creates a popup menu out of the specified uiinfo array.  Use
+Creates a popup menu out of the specified <parameter>uiinfo</parameter> array.  Use
 <link linkend="gnome-popup-menu-do-popup">gnome_popup_menu_do_popup</link>() to pop the menu up, or attach it to a
 window with <link linkend="gnome-popup-menu-attach">gnome_popup_menu_attach</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>uiinfo</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>accelgroup</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a menu widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>uiinfo</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeUIInfo">GnomeUIInfo</link> array describing the new menu.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>accelgroup</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GtkAccelGroup">GtkAccelGroup</link> describing the accelerator key structure.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A menu widget.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-popup-menu-get-accel-group">gnome_popup_menu_get_accel_group ()</title>
 <programlisting><link linkend="GtkAccelGroup">GtkAccelGroup</link>* gnome_popup_menu_get_accel_group
                                             (<link linkend="GtkMenu">GtkMenu</link> *menu);</programlisting>
 <para>
-</para>
+This function is used to retrieve the accelgroup that was created by
+<link linkend="gnome-popup-menu-new">gnome_popup_menu_new</link>(). If you want to specify the accelgroup that the popup
+menu accelerators use, then use <link linkend="gnome-popup-menu-new-with-accelgroup">gnome_popup_menu_new_with_accelgroup</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>menu</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>the accelgroup associated with the specified GtkMenu.  This
-is the accelgroup that was created by <link linkend="gnome-popup-menu-new">gnome_popup_menu_new</link>().  If
-you want to specify the accelgroup that the popup menu accelerators
-use, then use <link linkend="gnome-popup-menu-new-with-accelgroup">gnome_popup_menu_new_with_accelgroup</link>().
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>menu</parameter>&nbsp;:</term>
+<listitem><simpara> A menu widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The accelgroup associated with the specified <link linkend="GtkMenu">GtkMenu</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-popup-menu-attach">gnome_popup_menu_attach ()</title>
 <programlisting>void        gnome_popup_menu_attach         (<link linkend="GtkWidget">GtkWidget</link> *popup,
@@ -153,25 +143,21 @@ widgets it is attached to are destroyed, the popup menu will be
 destroyed as well.
 </para>
 <para>
-Under the current implementation, setting a popup menu for a NO_WINDOW widget and then reparenting
-that widget will cause Bad Things to happen.</para>
+Under the current implementation, setting a popup menu for a NO_WINDOW
+widget and then reparenting that widget will cause Bad Things to happen.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>popup</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>popup</parameter>&nbsp;:</term>
+<listitem><simpara> A menu widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><simpara> The widget to attach the popup menu to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> Application specific data passed to the callback.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-popup-menu-do-popup">gnome_popup_menu_do_popup ()</title>
 <programlisting>void        gnome_popup_menu_do_popup       (<link linkend="GtkWidget">GtkWidget</link> *popup,
@@ -181,7 +167,7 @@ that widget will cause Bad Things to happen.</para>
                                              <link linkend="gpointer">gpointer</link> user_data,
                                              <link linkend="GtkWidget">GtkWidget</link> *for_widget);</programlisting>
 <para>
-You can use this function to pop up a menu.  When a menu item *
+You can use this function to pop up a menu.  When a menu item
 callback is invoked, the specified user_data will be passed to it.
 </para>
 <para>
@@ -197,30 +183,27 @@ pass in NULL, then no button and the current time will be used as
 defaults.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>popup</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>pos_func</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>pos_data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>event</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>for_widget</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>popup</parameter>&nbsp;:</term>
+<listitem><simpara> A menu widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos_func</parameter>&nbsp;:</term>
+<listitem><simpara> A user supplied function to position the menu or <literal>NULL</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos_data</parameter>&nbsp;:</term>
+<listitem><simpara> User supplied data to pass to <parameter>pos_func</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GdkEventButton">GdkEventButton</link> structure containing the event that triggered the
+menu (or <literal>NULL</literal>).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> Application specific data passed to the menu callback.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>for_widget</parameter>&nbsp;:</term>
+<listitem><simpara> The widget for which the popup was triggered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-popup-menu-do-popup-modal">gnome_popup_menu_do_popup_modal ()</title>
 <programlisting>int         gnome_popup_menu_do_popup_modal (<link linkend="GtkWidget">GtkWidget</link> *popup,
@@ -230,56 +213,48 @@ defaults.</para>
                                              <link linkend="gpointer">gpointer</link> user_data,
                                              <link linkend="GtkWidget">GtkWidget</link> *for_widget);</programlisting>
 <para>
-Same as above, but runs the popup menu modally and returns the
-index of the selected item, or -1 if none.</para>
+Same as <link linkend="gnome-popup-do-modal">gnome_popup_do_modal</link>(), but runs the popup menu modally.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>popup</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>pos_func</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>pos_data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>event</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>for_widget</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>popup</parameter>&nbsp;:</term>
+<listitem><simpara> A menu widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos_func</parameter>&nbsp;:</term>
+<listitem><simpara> A user supplied function to position the menu or <literal>NULL</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos_data</parameter>&nbsp;:</term>
+<listitem><simpara> User supplied data to pass to <parameter>pos_func</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GdkEventButton">GdkEventButton</link> structure containing the event that triggered the
+menu (or <literal>NULL</literal>).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> Application specific data passed to the menu callback.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>for_widget</parameter>&nbsp;:</term>
+<listitem><simpara> The widget for which the popup was triggered.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The index of the selected item or -1 if no item selected.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-popup-menu-append">gnome_popup_menu_append ()</title>
 <programlisting>void        gnome_popup_menu_append         (<link linkend="GtkWidget">GtkWidget</link> *popup,
                                              <link linkend="GnomeUIInfo">GnomeUIInfo</link> *uiinfo);</programlisting>
 <para>
+Appends the menu items in <parameter>uiinfo</parameter> the <parameter>popup</parameter> menu.</para>
+<para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>popup</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>uiinfo</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>popup</parameter>&nbsp;:</term>
+<listitem><simpara> An existing popup menu.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uiinfo</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeUIInfo">GnomeUIInfo</link> array describing new menu elements.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-gtk-widget-add-popup-items">gnome_gtk_widget_add_popup_items ()</title>
 <programlisting>void        gnome_gtk_widget_add_popup_items
@@ -287,25 +262,21 @@ index of the selected item, or -1 if none.</para>
                                              <link linkend="GnomeUIInfo">GnomeUIInfo</link> *uiinfo,
                                              <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
-This creates a new popup menu for the widget if none exists, and
-then adds the items in 'uiinfo' to the widget's popup menu.</para>
+This creates a new popup menu for <parameter>widget</parameter> if none exists, and then adds the
+items in <parameter>uiinfo</parameter> to the popup menu of <parameter>widget</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
-<entry> The widget to append popup menu items for
-</entry></row>
-<row><entry align="right"><parameter>uiinfo</parameter>&nbsp;:</entry>
-<entry> The array holding information on the menu items
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry> The user_data to pass to the callbacks for the menu items
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><simpara> The widget to append popup menu items for.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uiinfo</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeUIInfo">GnomeUIInfo</link> array describing new menu elements.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> The user_data to pass to the callbacks for the menu items.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

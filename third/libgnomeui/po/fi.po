@@ -9,10 +9,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui 1.112.0\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-07-22 20:10+0200\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2002-12-05 22:25+0200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
-"Language-Team: Finnish <fi@li.org>\n"
+"Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
+"sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,16 +23,16 @@ msgid "Credits"
 msgstr "Tekijät"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_Tekijät:"
+msgid "Written by"
+msgstr "Tekijät"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_Dokumentoijat:"
+msgid "Documented by"
+msgstr "Dokumentoijat"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "_Kääntäjät:"
+msgid "Translated by"
+msgstr "Kääntäjät"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -210,19 +211,19 @@ msgstr "Liput, jotka säätävät DateEditin toimintaa"
 
 #: libgnomeui/gnome-dateedit.c:502
 msgid "Lower Hour"
-msgstr ""
+msgstr "Ensimmäinen tunti"
 
 #: libgnomeui/gnome-dateedit.c:503
 msgid "Lower hour in the time popup selector"
-msgstr ""
+msgstr "Ensimmäinen valittava tunti ajan valitsimessa"
 
 #: libgnomeui/gnome-dateedit.c:513
 msgid "Upper Hour"
-msgstr ""
+msgstr "Viimeinen tunti"
 
 #: libgnomeui/gnome-dateedit.c:514
 msgid "Upper hour in the time popup selector"
-msgstr ""
+msgstr "Viimeinen valittava tunti ajan valitsimessa"
 
 #: libgnomeui/gnome-dateedit.c:524
 msgid "Initial Time"
@@ -278,11 +279,11 @@ msgstr "Logo"
 
 #: libgnomeui/gnome-druid-page-standard.c:137
 msgid "Top Watermark"
-msgstr ""
+msgstr "Yläreunan kuva"
 
 #: libgnomeui/gnome-druid-page-standard.c:138
 msgid "Watermark image for the top"
-msgstr ""
+msgstr "Kuva yläreunaa varten"
 
 #: libgnomeui/gnome-druid-page-standard.c:145
 msgid "Title Foreground"
@@ -400,11 +401,11 @@ msgstr "Tämä painike vie näyttämälleen URI:lle."
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"Virhe tapahtui yrittäessä käynnistää URL-käsittelintä.\n"
-"Tarkista, että Hallintakeskuksen asetukset ovat oikein."
+"Oletusarvoisen WWW-selaimen käynnistyksessä tapahtui virhe.\n"
+"Tarkista, että suosittujen sovellusten asetukset ovat oikein."
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -419,18 +420,18 @@ msgid "GNOME GUI Library"
 msgstr "GNOMEn GUI-asetukset"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Monia muistialueen ylityksiä tapahtui: virheikkunaa ei voi näyttää\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"
 msgstr ""
 "Muistinkäsittelyvirhe!\n"
-"Ei voi näyttää kaatumisikkunaa\n"
+"Kaatumisikkunaa ei voi näyttää\n"
 
 #: libgnomeui/gnome_segv.c:100
 #, c-format
@@ -876,7 +877,7 @@ msgstr "Lopeta nykyinen peli"
 
 #: libgnomeui/gnome-app-helper.c:1143
 msgid "_Contents"
-msgstr ""
+msgstr "_Sisältö"
 
 #: libgnomeui/gnome-app-helper.c:1146
 msgid "View help for this application"
@@ -972,6 +973,8 @@ msgid ""
 "Unique identifier for the file entry.  This will be used to save the history "
 "list."
 msgstr ""
+"Yksilöllinen tiedostokentän tunniste. Tätä tarvitaan historiikkiluettelon "
+"tallentamiseen."
 
 #: libgnomeui/gnome-file-entry.c:229 libgnomeui/gnome-icon-entry.c:185
 msgid "Browse Dialog Title"
@@ -983,13 +986,13 @@ msgstr "Selausikkunan otsikko."
 
 #: libgnomeui/gnome-file-entry.c:237
 msgid "Directory Entry"
-msgstr ""
+msgstr "Hakemistokenttä"
 
 #: libgnomeui/gnome-file-entry.c:238
 msgid ""
 "Whether the file entry is being used to enter directory names or complete "
 "filenames."
-msgstr ""
+msgstr "Onko hakemistokenttä hakemistojen vai tiedostojen nimiä varten."
 
 #: libgnomeui/gnome-file-entry.c:246
 msgid "Modal"
@@ -1025,6 +1028,9 @@ msgid ""
 "this property to get the GnomeEntry if you need to modify or query any of "
 "its parameters."
 msgstr ""
+"GnomeEntry, joka on tiedostonimien syöttämistä varten. Tämän ominaisuuden "
+"kautta voi saada GnomeEntryn, kun sen parametreja tarvitsee muuttaa tai "
+"käyttää."
 
 #: libgnomeui/gnome-file-entry.c:282
 msgid "GtkEntry"
@@ -1036,6 +1042,9 @@ msgid ""
 "property to get the GtkEntry if you need to modify or query any of its "
 "parameters."
 msgstr ""
+"GtkEntry, joka on tiedostonimien kenttään syöttämistä varten. Tämän "
+"ominaisuuden kautta voi saada GtkEntryn, kun sen parametreja tarvitsee "
+"muuttaa tai käyttää."
 
 #: libgnomeui/gnome-file-entry.c:527
 msgid "Select file"
@@ -1156,8 +1165,8 @@ msgid ""
 "An error occurred while loading or saving configuration information for %s. "
 "Some of your configuration settings may not work properly."
 msgstr ""
-"Virhe tapahtui ladatessa tai tallentaessa ohjelman %s asetustietoja. Jotkin "
-"asetuksistasi eivät välttämättä toimi kunnolla."
+"Ohjelman %s asetustietojen lataamisessa tai tallentamisessa tapahtui virhe. "
+"Jotkin asetuksistasi eivät välttämättä toimi kunnolla."
 
 #: libgnomeui/gnome-icon-entry.c:177
 msgid ""
@@ -1192,6 +1201,8 @@ msgid ""
 "Icon picker dialog.  You can use this property to get the GtkDialog if you "
 "need to modify or query any of its properties."
 msgstr ""
+"Kuvakevalintaikkuna. Tämän ominaisuuden kautta voi saada GtkDialogin, jos "
+"sen ominaisuuksia tarvitsee muuttaa tai käyttää."
 
 #: libgnomeui/gnome-icon-entry.c:320 libgnomeui/gnome-icon-entry.c:979
 msgid "No Icon"
@@ -1251,7 +1262,7 @@ msgstr "GnomeIconSelection: \"%s\" ei ole olemassa tai se ei ole hakemisto"
 #: libgnomeui/gnome-icon-sel.c:301
 #, c-format
 msgid "GnomeIconSelection: couldn't open directory '%s'"
-msgstr "GnomeIconSelection: ei voinut avata hakemistoa \"%s\""
+msgstr "GnomeIconSelection: hakemisto \"%s\" ei avautunut"
 
 #: libgnomeui/gnome-icon-sel.c:401
 msgid "Loading Icons..."
@@ -1283,7 +1294,7 @@ msgstr "Esikatselu"
 
 #: libgnomeui/gnome-pixmap-entry.c:114
 msgid "Whether the pixmap entry should have a preview."
-msgstr ""
+msgstr "Onko kuvakentällä esikatselutoiminto."
 
 #: libgnomeui/gnome-pixmap-entry.c:188 libgnomeui/gnome-pixmap-entry.c:450
 msgid "No Image"

@@ -23,6 +23,8 @@ void        (<link linkend="AccessibilityClassInitFn">*_AccessibilityClassInitFn
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -37,17 +39,13 @@ void        (<link linkend="AccessibilityClassInitFn">*_AccessibilityClassInitFn
 <programlisting>void        (*_AccessibilityClassInitFn)    (<link linkend="AtkObjectClass">AtkObjectClass</link> *klass);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>klass</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>klass</parameter>&nbsp;:</term>
+<listitem><para>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

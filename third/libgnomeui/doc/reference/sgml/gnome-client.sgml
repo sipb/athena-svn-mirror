@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -125,6 +126,8 @@ void        <link linkend="gnome-interaction-key-return">gnome_interaction_key_r
 </refsect1>
 
 
+
+
 <refsect1>
 <title>Signal Prototypes</title>
 <synopsis>
@@ -171,19 +174,15 @@ void        <link linkend="gnome-interaction-key-return">gnome_interaction_key_r
 <para>
 Determine if the <link linkend="GnomeClient">GnomeClient</link> instance has connected to the session manager
 already.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry>A <link linkend="GnomeClient">GnomeClient</link> instance.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry><literal>TRUE</literal> if already connected to the session manager, <literal>FALSE</literal> otherwise.
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara>A <link linkend="GnomeClient">GnomeClient</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>TRUE</literal> if already connected to the session manager, <literal>FALSE</literal> otherwise.
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeDialogType">enum GnomeDialogType</title>
 <programlisting>typedef enum
@@ -194,23 +193,19 @@ already.
 </programlisting>
 <para>
 The dialogs used by the session manager to handler user interactions.
-</para><informaltable pgwide="1" frame="none" role="enum">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry><literal>GNOME_DIALOG_ERROR</literal></entry>
-<entry>Used when an error has occurred.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_DIALOG_NORMAL</literal></entry>
-<entry>Used for all other (non-error) interactions.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_DIALOG_ERROR</literal></term>
+<listitem><simpara>Used when an error has occurred.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_DIALOG_NORMAL</literal></term>
+<listitem><simpara>Used for all other (non-error) interactions.
 
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeRestartStyle">enum GnomeRestartStyle</title>
 <programlisting>typedef enum
@@ -225,36 +220,32 @@ The dialogs used by the session manager to handler user interactions.
 <para>
 The various ways in which the session manager can restart a client. Set by
 calling <link linkend="gnome-client-set-restart-style">gnome_client_set_restart_style</link>().
-</para><informaltable pgwide="1" frame="none" role="enum">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry><literal>GNOME_RESTART_IF_RUNNING</literal></entry>
-<entry>Restart if the client was running when the previous
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_RESTART_IF_RUNNING</literal></term>
+<listitem><simpara>Restart if the client was running when the previous
 session exited.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_RESTART_ANYWAY</literal></entry>
-<entry>Restart even if the client was exited before the user
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_RESTART_ANYWAY</literal></term>
+<listitem><simpara>Restart even if the client was exited before the user
 logged out of the previous session.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_RESTART_IMMEDIATELY</literal></entry>
-<entry>Restart the client immediately whenever it crashes
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_RESTART_IMMEDIATELY</literal></term>
+<listitem><simpara>Restart the client immediately whenever it crashes
 or exits.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_RESTART_NEVER</literal></entry>
-<entry>Do not restart the client.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_RESTART_NEVER</literal></term>
+<listitem><simpara>Do not restart the client.
 
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeClientFlags">enum GnomeClientFlags</title>
 <programlisting>typedef enum
@@ -267,30 +258,26 @@ or exits.
 <para>
 Flags indicating the status of a client (as seen by the session manager). Used
 as return values by <link linkend="gnome-client-get-flags">gnome_client_get_flags</link>().
-</para><informaltable pgwide="1" frame="none" role="enum">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry><literal>GNOME_CLIENT_IS_CONNECTED</literal></entry>
-<entry>The client is connected to the session manager.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_CLIENT_RESTARTED</literal></entry>
-<entry>The client has been restarted (i.e. it has been
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_CLIENT_IS_CONNECTED</literal></term>
+<listitem><simpara>The client is connected to the session manager.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_CLIENT_RESTARTED</literal></term>
+<listitem><simpara>The client has been restarted (i.e. it has been
 running with the same client id previously).
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_CLIENT_RESTORED</literal></entry>
-<entry>There may be a configuration file from which the
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_CLIENT_RESTORED</literal></term>
+<listitem><simpara>There may be a configuration file from which the
 client's state should be restored (applies only to the master client).
 
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeSaveStyle">enum GnomeSaveStyle</title>
 <programlisting>typedef enum
@@ -304,30 +291,26 @@ client's state should be restored (applies only to the master client).
 <para>
 Which pieces of data a client should save when receiving a "SaveYourself" call
 from the session manager.
-</para><informaltable pgwide="1" frame="none" role="enum">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry><literal>GNOME_SAVE_GLOBAL</literal></entry>
-<entry>Save data (to somewhere persistent) that affects and is
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_SAVE_GLOBAL</literal></term>
+<listitem><simpara>Save data (to somewhere persistent) that affects and is
 visible to all users of this application.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_SAVE_LOCAL</literal></entry>
-<entry>Save data that only applies to this instance of the
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_SAVE_LOCAL</literal></term>
+<listitem><simpara>Save data that only applies to this instance of the
 application.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_SAVE_BOTH</literal></entry>
-<entry>Save both global and local data.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_SAVE_BOTH</literal></term>
+<listitem><simpara>Save both global and local data.
 
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeInteractStyle">enum GnomeInteractStyle</title>
 <programlisting>typedef enum
@@ -339,28 +322,24 @@ application.
 </programlisting>
 <para>
 Indicates how a "SaveYourself" command should interact with the user.
-</para><informaltable pgwide="1" frame="none" role="enum">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row>
-<entry><literal>GNOME_INTERACT_NONE</literal></entry>
-<entry>The client should never interact with the user.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_INTERACT_ERRORS</literal></entry>
-<entry>The client should only interact when there are errors.
-</entry>
-</row>
-<row>
-<entry><literal>GNOME_INTERACT_ANY</literal></entry>
-<entry>The client cna interact with the user for any reason.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_INTERACT_NONE</literal></term>
+<listitem><simpara>The client should never interact with the user.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_INTERACT_ERRORS</literal></term>
+<listitem><simpara>The client should only interact when there are errors.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_INTERACT_ANY</literal></term>
+<listitem><simpara>The client cna interact with the user for any reason.
 
-</entry>
-</row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeInteractFunction">GnomeInteractFunction ()</title>
 <programlisting>void        (*GnomeInteractFunction)        (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -376,27 +355,23 @@ via a call to <link linkend="gnome-interaction-key-return">gnome_interaction_key
 <para>
 Although the function is not obliged to respect the passed in <parameter>dialog_type</parameter>, it
 is bad form not to do so.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry>The <link linkend="GnomeClient">GnomeClient</link> instance doing the interaction.
-</entry></row>
-<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry>A unique key.
-</entry></row>
-<row><entry align="right"><parameter>dialog_type</parameter>&nbsp;:</entry>
-<entry>The <link linkend="GnomeDialogType">GnomeDialogType</link> that should be used to do the interaction.
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>Application specific data that was specified at the time the callback
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="GnomeClient">GnomeClient</link> instance doing the interaction.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>A unique key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dialog_type</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="GnomeDialogType">GnomeDialogType</link> that should be used to do the interaction.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>Application specific data that was specified at the time the callback
 was set up.
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeClient-struct">struct GnomeClient</title>
 <programlisting>struct GnomeClient;</programlisting>
@@ -433,14 +408,10 @@ Additionally, the master client gets some static arguments set automatically
 recognised by gtk as static arguments to the master client.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  Pointer to the master client
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to the master client
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-get-config-prefix">gnome_client_get_config_prefix ()</title>
 <programlisting>const <link linkend="gchar">gchar</link>* gnome_client_get_config_prefix (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
@@ -453,18 +424,14 @@ returned value using <link linkend="gnome-config-push-prefix">gnome_config_push_
 any values you require.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Config prefix. The returned string belongs to libgnomeui library
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Config prefix. The returned string belongs to libgnomeui library
 and should NOT be freed by the caller.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-get-global-config-prefix">gnome_client_get_global_config_prefix ()</title>
 <programlisting>const <link linkend="gchar">gchar</link>* gnome_client_get_global_config_prefix
@@ -483,17 +450,13 @@ practice limits the users freedom to configure each instance in a different
 way so it should be used with caution.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  The config prefix as a newly allocated string.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  The config prefix as a newly allocated string.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-global-config-prefix">gnome_client_set_global_config_prefix ()</title>
 <programlisting>void        gnome_client_set_global_config_prefix
@@ -516,18 +479,14 @@ would ensure that all your session save files or directories would
 be gathered together into the app.d directory.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>prefix</parameter>&nbsp;:</entry>
-<entry> Prefix for saving the global configuration.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&nbsp;:</term>
+<listitem><simpara> Prefix for saving the global configuration.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-get-flags">gnome_client_get_flags ()</title>
 <programlisting><link linkend="GnomeClientFlags">GnomeClientFlags</link> gnome_client_get_flags     (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
@@ -535,17 +494,13 @@ be gathered together into the app.d directory.</para>
 Determine the client's status with the session manager.,</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Various <link linkend="GnomeClientFlag">GnomeClientFlag</link> flags which have been or'd together.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Various <link linkend="GnomeClientFlag">GnomeClientFlag</link> flags which have been or'd together.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-restart-style">gnome_client_set_restart_style ()</title>
 <programlisting>void        gnome_client_set_restart_style  (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -555,18 +510,14 @@ Tells the session manager how the client should be restarted in future
 session. The options are given by the <link linkend="GnomeRestartStyle">GnomeRestartStyle</link> enum.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>style</parameter>&nbsp;:</entry>
-<entry> When to restart the client.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>style</parameter>&nbsp;:</term>
+<listitem><simpara> When to restart the client.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-priority">gnome_client_set_priority ()</title>
 <programlisting>void        gnome_client_set_priority       (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -580,18 +531,14 @@ value of 50 is assigned to apps that do not provide a value.
 The user may assign a different priority.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>priority</parameter>&nbsp;:</entry>
-<entry> Position of client in session start up ordering.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>priority</parameter>&nbsp;:</term>
+<listitem><simpara> Position of client in session start up ordering.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-restart-command">gnome_client_set_restart_command ()</title>
 <programlisting>void        gnome_client_set_restart_command
@@ -606,21 +553,17 @@ time of the session save as closely as possible. Saving config info under
 the <link linkend="gnome-client-get-config-prefix">gnome_client_get_config_prefix</link>() is generally useful.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> Number of strings in argv.
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> Argument vector to an <link linkend="execv">execv</link>() to restart the client.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of strings in argv.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument vector to an <link linkend="execv">execv</link>() to restart the client.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-add-static-arg">gnome_client_add_static_arg ()</title>
 <programlisting>void        gnome_client_add_static_arg     (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -634,18 +577,14 @@ recognised by GTK+ that are specified by the user on the original command
 line.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
-<entry> <literal>NULL</literal>-terminated list of arguments to add to the restart command.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>NULL</literal>-terminated list of arguments to add to the restart command.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-discard-command">gnome_client_set_discard_command ()</title>
 <programlisting>void        gnome_client_set_discard_command
@@ -670,21 +609,17 @@ argv[2] = gnome_config_get_real_path (prefix);
 gnome_client_set_discard_command (client, 3, argv);
     </programlisting>
   </example>
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> Number of strings in argv.
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> Vector of strings such as those passed to <link linkend="execv">execv</link>().
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of strings in argv.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Vector of strings such as those passed to <link linkend="execv">execv</link>().
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-resign-command">gnome_client_set_resign_command ()</title>
 <programlisting>void        gnome_client_set_resign_command (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -703,21 +638,17 @@ effects of a shutdown command and a discard command. It is executed when the
 user decides that the client should cease to be restarted.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> Number of strings in <parameter>argv</parameter>.
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> <link linkend="execv">execv</link>()-style command to undo the effects of the client.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of strings in <parameter>argv</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="execv">execv</link>()-style command to undo the effects of the client.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-shutdown-command">gnome_client_set_shutdown_command ()</title>
 <programlisting>void        gnome_client_set_shutdown_command
@@ -736,21 +667,17 @@ command simply undoes the effects of the client. It is executed
 during a normal logout.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> Number of strings in argv.
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> Command to shutdown the client if the client isn't running.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of strings in argv.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Command to shutdown the client if the client isn't running.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-current-directory">gnome_client_set_current_directory ()</title>
 <programlisting>void        gnome_client_set_current_directory
@@ -761,18 +688,14 @@ Set the directory to be in when running shutdown, discard,
 restart, etc. commands.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
-<entry> Directory path.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory path.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-environment">gnome_client_set_environment ()</title>
 <programlisting>void        gnome_client_set_environment    (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -783,21 +706,17 @@ Set an environment variable to be placed in the
 client's environment prior to running restart, shutdown, discard, etc. commands.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
-<entry> Name of the environment variable
-</entry></row>
-<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
-<entry> Value of the environment variable
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the environment variable
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara> Value of the environment variable
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-clone-command">gnome_client_set_clone_command ()</title>
 <programlisting>void        gnome_client_set_clone_command  (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -808,21 +727,17 @@ Set a command the session manager can use to create a new
 instance of the application.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> Number of strings in the <parameter>argv</parameter> vector.
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> Argument strings, suitable for use with <link linkend="execv">execv</link>().
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of strings in the <parameter>argv</parameter> vector.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument strings, suitable for use with <link linkend="execv">execv</link>().
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-process-id">gnome_client_set_process_id ()</title>
 <programlisting>void        gnome_client_set_process_id     (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -833,18 +748,14 @@ The client should tell the session manager the result of
 function.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>pid</parameter>&nbsp;:</entry>
-<entry> PID to set as the client's PID.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pid</parameter>&nbsp;:</term>
+<listitem><simpara> PID to set as the client's PID.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-program">gnome_client_set_program ()</title>
 <programlisting>void        gnome_client_set_program        (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -854,18 +765,14 @@ Used to tell the session manager the name of your program. Set
 automatically; this function isn't needed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> Name of the program.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the program.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-user-id">gnome_client_set_user_id ()</title>
 <programlisting>void        gnome_client_set_user_id        (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -875,18 +782,14 @@ Tell the session manager the user's login name. GNOME
 does this automatically; no need to call the function.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry> Username.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara> Username.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-save-any-dialog">gnome_client_save_any_dialog ()</title>
 <programlisting>void        gnome_client_save_any_dialog    (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -899,18 +802,14 @@ session manager is sending an interaction style of <link linkend="GNOME-INTERACT
 "Cancel" and "Log out" buttons will be added during a shutdown.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to <link linkend="GnomeClient">GnomeClient</link> object.
-</entry></row>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME dialog widget (a <link linkend="GtkDialog">GtkDialog</link> widget).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to <link linkend="GnomeClient">GnomeClient</link> object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME dialog widget (a <link linkend="GtkDialog">GtkDialog</link> widget).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-save-error-dialog">gnome_client_save_error_dialog ()</title>
 <programlisting>void        gnome_client_save_error_dialog  (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -923,18 +822,14 @@ style of <link linkend="GNOME-INTERACT-ANY-CAPS">GNOME_INTERACT_ANY</link>. "Can
 during a shutdown.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to <link linkend="GnomeClient">GnomeClient</link> object.
-</entry></row>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME dialog widget (a <link linkend="GtkDialog">GtkDialog</link> widget).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to <link linkend="GnomeClient">GnomeClient</link> object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME dialog widget (a <link linkend="GtkDialog">GtkDialog</link> widget).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-request-phase-2">gnome_client_request_phase_2 ()</title>
 <programlisting>void        gnome_client_request_phase_2    (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
@@ -946,15 +841,11 @@ your app manages other apps and requires that they are in an idle state
 before saving its final data.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeClient">GnomeClient</link> object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient">GnomeClient</link> object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-request-save">gnome_client_request_save ()</title>
 <programlisting>void        gnome_client_request_save       (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -980,30 +871,26 @@ properties plus any essential data.  Setting the value of global to
 as well. A global save is mandatory when doing a shutdown.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>save_style</parameter>&nbsp;:</entry>
-<entry> Save style to request.
-</entry></row>
-<row><entry align="right"><parameter>shutdown</parameter>&nbsp;:</entry>
-<entry> Whether to log out of the session.
-</entry></row>
-<row><entry align="right"><parameter>interact_style</parameter>&nbsp;:</entry>
-<entry> Whether to allow user interaction.
-</entry></row>
-<row><entry align="right"><parameter>fast</parameter>&nbsp;:</entry>
-<entry> Minimize activity to save as soon as possible.
-</entry></row>
-<row><entry align="right"><parameter>global</parameter>&nbsp;:</entry>
-<entry> Request that all other apps in the session also save their state.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>save_style</parameter>&nbsp;:</term>
+<listitem><simpara> Save style to request.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>shutdown</parameter>&nbsp;:</term>
+<listitem><simpara> Whether to log out of the session.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>interact_style</parameter>&nbsp;:</term>
+<listitem><simpara> Whether to allow user interaction.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>fast</parameter>&nbsp;:</term>
+<listitem><simpara> Minimize activity to save as soon as possible.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>global</parameter>&nbsp;:</term>
+<listitem><simpara> Request that all other apps in the session also save their state.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-flush">gnome_client_flush ()</title>
 <programlisting>void        gnome_client_flush              (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
@@ -1013,24 +900,16 @@ flushed. This is useful if you have some pending changes that you want to
 make sure get committed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeClient">GnomeClient</link> instance.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient">GnomeClient</link> instance.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-disable-master-connection">gnome_client_disable_master_connection ()</title>
 <programlisting>void        gnome_client_disable_master_connection
                                             (void);</programlisting>
-<warning>
-<para>
-<literal>gnome_client_disable_master_connection</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_client_disable_master_connection</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Don't connect the master client to the session manager. Usually
 invoked by users when they pass the --sm-disable argument to a Gnome application.</para>
@@ -1046,14 +925,10 @@ object. After allocating, the client tries to connect to a session manager.
 You probably want to use <link linkend="gnome-master-client">gnome_master_client</link>() instead.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Pointer to a newly allocated GNOME session management client object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Pointer to a newly allocated GNOME session management client object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-new-without-connection">gnome_client_new_without_connection ()</title>
 <programlisting><link linkend="GnomeClient">GnomeClient</link>* gnome_client_new_without_connection
@@ -1063,14 +938,10 @@ Allocates memory for a new GNOME session management client
 object. You probably want to use <link linkend="gnome-master-client">gnome_master_client</link>() instead.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Pointer to a newly allocated GNOME session management client object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Pointer to a newly allocated GNOME session management client object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-connect">gnome_client_connect ()</title>
 <programlisting>void        gnome_client_connect            (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
@@ -1079,15 +950,11 @@ Causes the client to connect to the session manager.
 Usually happens automatically; no need to call this function.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeClient">GnomeClient</link> instance.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient">GnomeClient</link> instance.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-disconnect">gnome_client_disconnect ()</title>
 <programlisting>void        gnome_client_disconnect         (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
@@ -1095,15 +962,11 @@ Usually happens automatically; no need to call this function.</para>
 Disconnect the client from the session manager.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeClient">GnomeClient</link> instance.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient">GnomeClient</link> instance.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-set-id">gnome_client_set_id ()</title>
 <programlisting>void        gnome_client_set_id             (<link linkend="GnomeClient">GnomeClient</link> *client,
@@ -1114,18 +977,14 @@ before connecting to the session manager. There is usually no reason to call
 this function.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeClient">GnomeClient</link> instance.
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry> Session management ID.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient">GnomeClient</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara> Session management ID.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-get-id">gnome_client_get_id ()</title>
 <programlisting>const <link linkend="gchar">gchar</link>* gnome_client_get_id            (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
@@ -1133,18 +992,14 @@ this function.</para>
 Returns session management ID</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeClient">GnomeClient</link> instance.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  Session management ID for this client; <literal>NULL</literal> if not connected to a
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient">GnomeClient</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Session management ID for this client; <literal>NULL</literal> if not connected to a
 session manager.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-get-previous-id">gnome_client_get_previous_id ()</title>
 <programlisting>const <link linkend="gchar">gchar</link>* gnome_client_get_previous_id   (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
@@ -1152,18 +1007,14 @@ session manager.
 Get the session management ID from the previous session.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeClient">GnomeClient</link> instance.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Pointer to the session management ID the client had in the last
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient">GnomeClient</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Pointer to the session management ID the client had in the last
 session, or <literal>NULL</literal> if it was not in a previous session.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-get-desktop-id">gnome_client_get_desktop_id ()</title>
 <programlisting>const <link linkend="gchar">gchar</link>* gnome_client_get_desktop_id    (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
@@ -1175,17 +1026,13 @@ management. May return <literal>NULL</literal> for apps not running under a rece
 version of gnome-session; apps should handle that case.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeClient">GnomeClient</link> instance.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Session ID of GNOME desktop instance, or <literal>NULL</literal> if none.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient">GnomeClient</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Session ID of GNOME desktop instance, or <literal>NULL</literal> if none.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-request-interaction">gnome_client_request_interaction ()</title>
 <programlisting>void        gnome_client_request_interaction
@@ -1209,24 +1056,20 @@ clients from interacting until this key is returned with
 <link linkend="gnome-interaction-key-return">gnome_interaction_key_return</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeClient">GnomeClient</link> object.
-</entry></row>
-<row><entry align="right"><parameter>dialog_type</parameter>&nbsp;:</entry>
-<entry> The type of dialog to create.
-</entry></row>
-<row><entry align="right"><parameter>function</parameter>&nbsp;:</entry>
-<entry> Callback to invoke to perform the interaction.
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry> Callback data.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient">GnomeClient</link> object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dialog_type</parameter>&nbsp;:</term>
+<listitem><simpara> The type of dialog to create.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>function</parameter>&nbsp;:</term>
+<listitem><simpara> Callback to invoke to perform the interaction.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Callback data.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-client-request-interaction-interp">gnome_client_request_interaction_interp ()</title>
 <programlisting>void        gnome_client_request_interaction_interp
@@ -1240,27 +1083,23 @@ Similar to <link linkend="gnome-client-request-interaction">gnome_client_request
 you need to destroy the callback data after the interaction.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME session client object.
-</entry></row>
-<row><entry align="right"><parameter>dialog_type</parameter>&nbsp;:</entry>
-<entry> Type of dialog to show.
-</entry></row>
-<row><entry align="right"><parameter>function</parameter>&nbsp;:</entry>
-<entry> Callback to perform the interaction (a <link linkend="GnomeInteractFunction">GnomeInteractFunction</link>).
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry> Callback data.
-</entry></row>
-<row><entry align="right"><parameter>destroy</parameter>&nbsp;:</entry>
-<entry> Function to destroy callback data.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dialog_type</parameter>&nbsp;:</term>
+<listitem><simpara> Type of dialog to show.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>function</parameter>&nbsp;:</term>
+<listitem><simpara> Callback to perform the interaction (a <link linkend="GnomeInteractFunction">GnomeInteractFunction</link>).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Callback data.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy</parameter>&nbsp;:</term>
+<listitem><simpara> Function to destroy callback data.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-interaction-key-return">gnome_interaction_key_return ()</title>
 <programlisting>void        gnome_interaction_key_return    (<link linkend="gint">gint</link> key,
@@ -1270,18 +1109,14 @@ Used in interaction callback to tell the session manager
 you are done interacting.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry> Key passed to interaction callback
-</entry></row>
-<row><entry align="right"><parameter>cancel_shutdown</parameter>&nbsp;:</entry>
-<entry> If <literal>TRUE</literal>, cancel the shutdown
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara> Key passed to interaction callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancel_shutdown</parameter>&nbsp;:</term>
+<listitem><simpara> If <literal>TRUE</literal>, cancel the shutdown
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
@@ -1293,70 +1128,54 @@ you are done interacting.</para>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 Called once the client has been connected to the signal manager.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry><literal>TRUE</literal> if the application has been restarted.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara><literal>TRUE</literal> if the application has been restarted.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeClient-die">The &quot;die&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeClient-die">The &quot;die&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 Called when the session manager wants the client to shut down.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeClient-disconnect">The &quot;disconnect&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeClient-disconnect">The &quot;disconnect&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 Called when the client is disconnected from the session manager.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeClient-save-complete">The &quot;save-complete&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeClient-save-complete">The &quot;save-complete&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 Called when the session manager has finished checkpointing all of the clients.
 Clients are then free to change their state.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeClient-save-yourself">The &quot;save-yourself&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeClient-save-yourself">The &quot;save-yourself&quot; signal</title>
 <programlisting><link linkend="gboolean">gboolean</link>    user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="GnomeSaveStyle">GnomeSaveStyle</link> arg2,
@@ -1367,54 +1186,46 @@ Clients are then free to change their state.
 <para>
 Called when either a "SaveYourself" or a "SaveYourselfPhase2" call is made by
 the session manager.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>The phase of the "SaveYourself" command ('1' or '2').
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>The data which should be saved by the client (local, global or both).
-</entry></row>
-<row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
-<entry><literal>TRUE</literal> if the session manager is shutting down.
-</entry></row>
-<row><entry align="right"><parameter>arg4</parameter>&nbsp;:</entry>
-<entry>How the client is allowed to interact with the user while saving.
-</entry></row>
-<row><entry align="right"><parameter>arg5</parameter>&nbsp;:</entry>
-<entry><literal>TRUE</literal> if this is to be a "fast" shutdown (saving minimal data).
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry><literal>TRUE</literal> if the "SaveYourself" was completed succesfully, <literal>FALSE</literal>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>The phase of the "SaveYourself" command ('1' or '2').
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>The data which should be saved by the client (local, global or both).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara><literal>TRUE</literal> if the session manager is shutting down.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg4</parameter>&nbsp;:</term>
+<listitem><simpara>How the client is allowed to interact with the user while saving.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg5</parameter>&nbsp;:</term>
+<listitem><simpara><literal>TRUE</literal> if this is to be a "fast" shutdown (saving minimal data).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>TRUE</literal> if the "SaveYourself" was completed succesfully, <literal>FALSE</literal>
 otherwise.
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeClient-shutdown-cancelled">The &quot;shutdown-cancelled&quot; signal</title>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeClient-shutdown-cancelled">The &quot;shutdown-cancelled&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 Called if the session manager had sent a "SaveYourself" to all clients in
 preparation for shutting down and the shutdown was then cancelled. A client can
 then continue running and change its state.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

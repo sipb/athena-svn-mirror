@@ -47,9 +47,14 @@
             <link linkend="GtkAdjustment">GtkAdjustment</link>
         <link linkend="GtkStyle">GtkStyle</link>
         <link linkend="GdkDragContext">GdkDragContext</link>
+        <link linkend="GdkScreen">GdkScreen</link>
         <link linkend="GdkPixbuf">GdkPixbuf</link>
         <link linkend="GdkDrawable">GdkDrawable</link>
             <link linkend="GdkPixmap">GdkPixmap</link>
         <link linkend="GdkImage">GdkImage</link>
         <link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>
+    <link linkend="GInterface">GInterface</link>
+        <link linkend="AtkImplementorIface">AtkImplementorIface</link>
+        <link linkend="GtkEditable">GtkEditable</link>
+        <link linkend="GtkCellEditable">GtkCellEditable</link>
 </screen>

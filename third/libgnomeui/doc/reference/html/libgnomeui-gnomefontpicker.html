@@ -1,0 +1,1731 @@
+<HTML
+><HEAD
+><TITLE
+>GnomeFontPicker</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GNOME UI Library Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="GNOME UI Library (libgnomeui)"
+HREF="c4.html"><LINK
+REL="PREVIOUS"
+TITLE="GnomeEntry"
+HREF="libgnomeui-gnomeentry.html"><LINK
+REL="NEXT"
+TITLE="GnomeHRef"
+HREF="libgnomeui-gnomehref.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME UI Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="libgnomeui-gnomeentry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c4.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="libgnomeui-gnomehref.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="LIBGNOMEUI-GNOMEFONTPICKER"
+>GnomeFontPicker</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4011"
+></A
+><H2
+>Name</H2
+>GnomeFontPicker&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4014"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+enum        <A
+HREF="libgnomeui-gnomefontpicker.html#GNOMEFONTPICKERMODE"
+>GnomeFontPickerMode</A
+>;
+struct      <A
+HREF="libgnomeui-gnomefontpicker.html#GNOMEFONTPICKERPRIVATE"
+>GnomeFontPickerPrivate</A
+>;
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-NEW"
+>gnome_font_picker_new</A
+>           (void);
+void        <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-SET-TITLE"
+>gnome_font_picker_set_title</A
+>     (GnomeFontPicker *gfp,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *title);
+const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-GET-TITLE"
+>gnome_font_picker_get_title</A
+>    (GnomeFontPicker *gfp);
+<A
+HREF="libgnomeui-gnomefontpicker.html#GNOMEFONTPICKERMODE"
+>GnomeFontPickerMode</A
+> <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-GET-MODE"
+>gnome_font_picker_get_mode</A
+>
+                                            (GnomeFontPicker *gfp);
+void        <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-SET-MODE"
+>gnome_font_picker_set_mode</A
+>      (GnomeFontPicker *gfp,
+                                             <A
+HREF="libgnomeui-gnomefontpicker.html#GNOMEFONTPICKERMODE"
+>GnomeFontPickerMode</A
+> mode);
+void        <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-FI-SET-USE-FONT-IN-LABEL"
+>gnome_font_picker_fi_set_use_font_in_label</A
+>
+                                            (GnomeFontPicker *gfp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> use_font_in_label,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> size);
+void        <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-FI-SET-SHOW-SIZE"
+>gnome_font_picker_fi_set_show_size</A
+>
+                                            (GnomeFontPicker *gfp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> show_size);
+void        <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-UW-SET-WIDGET"
+>gnome_font_picker_uw_set_widget</A
+> (GnomeFontPicker *gfp,
+                                             <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *widget);
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-UW-GET-WIDGET"
+>gnome_font_picker_uw_get_widget</A
+> (GnomeFontPicker *gfp);
+const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-GET-FONT-NAME"
+>gnome_font_picker_get_font_name</A
+>
+                                            (GnomeFontPicker *gfp);
+<A
+HREF=../gdk/gdk-fonts.html#GDKFONT
+>GdkFont</A>*    <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-GET-FONT"
+>gnome_font_picker_get_font</A
+>      (GnomeFontPicker *gfp);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-SET-FONT-NAME"
+>gnome_font_picker_set_font_name</A
+> (GnomeFontPicker *gfp,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *fontname);
+const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-GET-PREVIEW-TEXT"
+>gnome_font_picker_get_preview_text</A
+>
+                                            (GnomeFontPicker *gfp);
+void        <A
+HREF="libgnomeui-gnomefontpicker.html#GNOME-FONT-PICKER-SET-PREVIEW-TEXT"
+>gnome_font_picker_set_preview_text</A
+>
+                                            (GnomeFontPicker *gfp,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4062"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4065"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4067"
+></A
+><H3
+><A
+NAME="GNOMEFONTPICKERMODE"
+></A
+>enum GnomeFontPickerMode</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+    GNOME_FONT_PICKER_MODE_PIXMAP,
+    GNOME_FONT_PICKER_MODE_FONT_INFO,
+    GNOME_FONT_PICKER_MODE_USER_WIDGET,
+    GNOME_FONT_PICKER_MODE_UNKNOWN
+} GnomeFontPickerMode;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4072"
+></A
+><H3
+><A
+NAME="GNOMEFONTPICKERPRIVATE"
+></A
+>struct GnomeFontPickerPrivate</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomeFontPickerPrivate;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4077"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-NEW"
+></A
+>gnome_font_picker_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_font_picker_new           (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create new font picker widget.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4084"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Pointer to new font picker widget.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4093"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-SET-TITLE"
+></A
+>gnome_font_picker_set_title ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_font_picker_set_title     (GnomeFontPicker *gfp,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *title);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the title for the font selection dialog.  If <TT
+CLASS="PARAMETER"
+><I
+>title</I
+></TT
+> is <TT
+CLASS="LITERAL"
+>NULL</TT
+>,
+then the default is used.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4103"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>title</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> String containing font selection dialog title.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4116"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-GET-TITLE"
+></A
+>gnome_font_picker_get_title ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* gnome_font_picker_get_title    (GnomeFontPicker *gfp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve name of the font selection dialog title</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4124"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Pointer to an internal copy of the title string</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4137"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-GET-MODE"
+></A
+>gnome_font_picker_get_mode ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libgnomeui-gnomefontpicker.html#GNOMEFONTPICKERMODE"
+>GnomeFontPickerMode</A
+> gnome_font_picker_get_mode
+                                            (GnomeFontPicker *gfp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns current font picker button mode (or what to show).  Possible
+values include <TT
+CLASS="LITERAL"
+>GNOME_FONT_PICKER_MODE_PIXMAP</TT
+>,
+<TT
+CLASS="LITERAL"
+>GNOME_FONT_PICKER_MODE_FONT_INFO</TT
+>, and 
+<TT
+CLASS="LITERAL"
+>GNOME_FONT_PICKER_MODE_USER_WIDGET</TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4148"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Button mode currently set in font picker widget, or 
+<TT
+CLASS="LITERAL"
+>GNOME_FONT_PICKER_MODE_UNKNOWN</TT
+> on error.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4162"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-SET-MODE"
+></A
+>gnome_font_picker_set_mode ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_font_picker_set_mode      (GnomeFontPicker *gfp,
+                                             <A
+HREF="libgnomeui-gnomefontpicker.html#GNOMEFONTPICKERMODE"
+>GnomeFontPickerMode</A
+> mode);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set value of subsequent font picker button mode (or what to show).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4170"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mode</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Value of subsequent font picker button mode (or what to show)</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4183"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-FI-SET-USE-FONT-IN-LABEL"
+></A
+>gnome_font_picker_fi_set_use_font_in_label ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_font_picker_fi_set_use_font_in_label
+                                            (GnomeFontPicker *gfp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> use_font_in_label,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> size);</PRE
+></TD
+></TR
+></TABLE
+><P
+>If <TT
+CLASS="PARAMETER"
+><I
+>use_font_in_label</I
+></TT
+> is <TT
+CLASS="LITERAL"
+>TRUE</TT
+>, font name will be written using font chosen
+by user and using <TT
+CLASS="PARAMETER"
+><I
+>size</I
+></TT
+> passed to this function.  This only applies if
+current button mode is <TT
+CLASS="LITERAL"
+>GNOME_FONT_PICKER_MODE_FONT_INFO</TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4196"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>use_font_in_label</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> If <TT
+CLASS="LITERAL"
+>TRUE</TT
+>, font name will be written using font chosen.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>size</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Display font using this point size.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4214"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-FI-SET-SHOW-SIZE"
+></A
+>gnome_font_picker_fi_set_show_size ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_font_picker_fi_set_show_size
+                                            (GnomeFontPicker *gfp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> show_size);</PRE
+></TD
+></TR
+></TABLE
+><P
+>If <TT
+CLASS="PARAMETER"
+><I
+>show_size</I
+></TT
+> is <TT
+CLASS="LITERAL"
+>TRUE</TT
+>, font size will be displayed along with font chosen
+by user.  This only applies if current button mode is
+<TT
+CLASS="LITERAL"
+>GNOME_FONT_PICKER_MODE_FONT_INFO</TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4225"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>show_size</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if font size should be displayed in dialog.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4239"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-UW-SET-WIDGET"
+></A
+>gnome_font_picker_uw_set_widget ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_font_picker_uw_set_widget (GnomeFontPicker *gfp,
+                                             <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *widget);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the user-supplied <TT
+CLASS="PARAMETER"
+><I
+>widget</I
+></TT
+> as the inside of the font picker.
+This only applies with GNOME_FONT_PICKER_MODE_USER_WIDGET.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4248"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>widget</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> User widget to display for inside of font picker.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4261"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-UW-GET-WIDGET"
+></A
+>gnome_font_picker_uw_get_widget ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_font_picker_uw_get_widget (GnomeFontPicker *gfp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the user-supplied widget inside of the font picker.
+This only applies with GNOME_FONT_PICKER_MODE_USER_WIDGET.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4269"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>, or <TT
+CLASS="LITERAL"
+>NULL</TT
+> if
+not in GNOME_FONT_PICKER_MODE_USER_WIDGET mode</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4284"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-GET-FONT-NAME"
+></A
+>gnome_font_picker_get_font_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* gnome_font_picker_get_font_name
+                                            (GnomeFontPicker *gfp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve name of font from font selection dialog.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4292"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Pointer to an internal copy of the font name.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4305"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-GET-FONT"
+></A
+>gnome_font_picker_get_font ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gdk/gdk-fonts.html#GDKFONT
+>GdkFont</A>*    gnome_font_picker_get_font      (GnomeFontPicker *gfp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve font info from font selection dialog.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4313"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Return value of gtk_font_selection_dialog_get_font, or <TT
+CLASS="LITERAL"
+>NULL</TT
+> if
+font dialog is not being displayed.  The value is not a copy but
+an internal value and should not be modified.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4327"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-SET-FONT-NAME"
+></A
+>gnome_font_picker_set_font_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_font_picker_set_font_name (GnomeFontPicker *gfp,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *fontname);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set or update currently-displayed font in font picker dialog.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4336"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>fontname</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Name of font to display in font selection dialog</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Return value of gtk_font_selection_dialog_set_font_name if the
+font selection dialog exists, otherwise <TT
+CLASS="LITERAL"
+>FALSE</TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4354"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-GET-PREVIEW-TEXT"
+></A
+>gnome_font_picker_get_preview_text ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* gnome_font_picker_get_preview_text
+                                            (GnomeFontPicker *gfp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve preview text from font selection dialog if available.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4362"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Reference to internal copy of preview text string, or <TT
+CLASS="LITERAL"
+>NULL</TT
+> if no
+font dialog is being displayed.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4376"
+></A
+><H3
+><A
+NAME="GNOME-FONT-PICKER-SET-PREVIEW-TEXT"
+></A
+>gnome_font_picker_set_preview_text ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_font_picker_set_preview_text
+                                            (GnomeFontPicker *gfp,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set preview text in font picker, and in font selection dialog if one
+is being displayed.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4384"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gfp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME font picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> New preview text</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="libgnomeui-gnomeentry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c4.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="libgnomeui-gnomehref.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeEntry</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeHRef</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

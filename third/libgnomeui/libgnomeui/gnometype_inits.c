@@ -40,8 +40,18 @@
     (void) gnome_icon_list_mode_get_type ();
 
 
+/* enumerations from "gnome-icon-lookup.h" */
+    (void) gnome_icon_lookup_flags_get_type ();
+
+    (void) gnome_icon_lookup_result_flags_get_type ();
+
+
 /* enumerations from "gnome-mdi.h" */
     (void) gnome_mdi_mode_get_type ();
+
+
+/* enumerations from "gnome-thumbnail.h" */
+    (void) gnome_thumbnail_size_get_type ();
 
 
 /* enumerations from "gnome-types.h" */

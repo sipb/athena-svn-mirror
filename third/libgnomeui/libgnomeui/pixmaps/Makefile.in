@@ -86,19 +86,21 @@ HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
 INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
 LIBGLADE_CONVERT = @LIBGLADE_CONVERT@
+LIBGNOMEUI_AGE = @LIBGNOMEUI_AGE@
 LIBGNOMEUI_CFLAGS = @LIBGNOMEUI_CFLAGS@
 LIBGNOMEUI_COMPONENTS_CFLAGS = @LIBGNOMEUI_COMPONENTS_CFLAGS@
 LIBGNOMEUI_COMPONENTS_LIBS = @LIBGNOMEUI_COMPONENTS_LIBS@
+LIBGNOMEUI_CURRENT = @LIBGNOMEUI_CURRENT@
 LIBGNOMEUI_DEMOS_CFLAGS = @LIBGNOMEUI_DEMOS_CFLAGS@
 LIBGNOMEUI_DEMOS_LIBS = @LIBGNOMEUI_DEMOS_LIBS@
 LIBGNOMEUI_GLADE_CFLAGS = @LIBGNOMEUI_GLADE_CFLAGS@
 LIBGNOMEUI_GLADE_LIBS = @LIBGNOMEUI_GLADE_LIBS@
 LIBGNOMEUI_LIBS = @LIBGNOMEUI_LIBS@
+LIBGNOMEUI_REVISION = @LIBGNOMEUI_REVISION@
+LIBJPEG = @LIBJPEG@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -112,6 +114,8 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 SM_LIBS = @SM_LIBS@
@@ -123,10 +127,43 @@ YACC = @YACC@
 cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
-stock_images =  	stock_attach.png 	stock_book_blue.png 	stock_book_green.png 	stock_book_open.png 	stock_book_red.png 	stock_book_yellow.png 	stock_line_in.png 	stock_mail.png 	stock_mail_compose.png 	stock_mail_forward.png 	stock_mail_receive.png 	stock_mail_reply.png 	stock_mail_send.png 	stock_menu_about.png 	stock_menu_blank.png 	stock_scores.png 	stock_mic.png 	stock_multiple_file.png 	stock_not.png 	stock_table_borders.png 	stock_table_fill.png 	stock_text_bulleted_list.png 	stock_text_indent.png 	stock_text_numbered_list.png 	stock_text_unindent.png 	stock_timer.png 	stock_timer_stopped.png 	stock_trash.png 	stock_trash_full.png 	stock_volume.png 	stock_midi.png
+stock_images = \
+	stock_attach.png \
+	stock_book_blue.png \
+	stock_book_green.png \
+	stock_book_open.png \
+	stock_book_red.png \
+	stock_book_yellow.png \
+	stock_line_in.png \
+	stock_mail.png \
+	stock_mail_compose.png \
+	stock_mail_forward.png \
+	stock_mail_receive.png \
+	stock_mail_reply.png \
+	stock_mail_send.png \
+	stock_menu_about.png \
+	stock_menu_blank.png \
+	stock_scores.png \
+	stock_mic.png \
+	stock_multiple_file.png \
+	stock_not.png \
+	stock_table_borders.png \
+	stock_table_fill.png \
+	stock_text_bulleted_list.png \
+	stock_text_indent.png \
+	stock_text_numbered_list.png \
+	stock_text_unindent.png \
+	stock_timer.png \
+	stock_timer_stopped.png \
+	stock_trash.png \
+	stock_trash_full.png \
+	stock_volume.png \
+	stock_midi.png
 
 
-EXTRA_DIST =  	$(stock_images)		copyright.txt
+EXTRA_DIST = \
+	$(stock_images)	\
+	copyright.txt
 
 
 noinst_HEADERS = gnome-stock-pixbufs.h
@@ -147,7 +184,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:

@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui 2.0.0cvs\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-10-24 12:17+EDT\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2003-01-14 11:02+EDT\n"
 "Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
 "Language-Team: Amharic <locales@geez.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,16 +19,16 @@ msgid "Credits"
 msgstr "ተሳታፊዎች"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_ፀሐፊው"
+msgid "Written by"
+msgstr "ፀሐፊው"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_ሰነዱን ያዘጋጀው"
+msgid "Documented by"
+msgstr "ሰነዱን ያዘጋጀው"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "ተ_ርጓሚ"
+msgid "Translated by"
+msgstr "ተርጓሚ"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -397,11 +397,9 @@ msgstr "ይህ ቁልፍ እራሱ ወደሚያሳየው ወደ URI  ይወስ�
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"የURLን መያዣ ለማስጀመር በሚሞክርበት ጊዜ ስህተት ተከስቷል።\n"
-"እባክዎ አካባቢው ያለውን የመቆጣጠሪያ ማዕከል ትክክል እንደሆነ ይፈትሹ።"
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -416,12 +414,12 @@ msgid "GNOME GUI Library"
 msgstr "የGNOME GUI ስብስብ"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "የተለያዩ ክፍሎች ላይ ስህተት ተከስቷል፥ ስሕተቱን ማሳየት አልተቻለም\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"
@@ -545,11 +543,11 @@ msgstr "_ተመልከት/"
 
 #: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:560
 msgid "_Settings"
-msgstr "_ይዞታዎች"
+msgstr "_ምርጫዎች"
 
 #: libgnomeui/gnome-app-helper.c:89
 msgid "_Settings/"
-msgstr "_ይዞታዎች/"
+msgstr "_ምርጫዎች/"
 
 #. If you have more then one New type, use this tree
 #: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:326
@@ -744,7 +742,7 @@ msgstr "ሐረጉን ተካ"
 #. Properties
 #: libgnomeui/gnome-app-helper.c:202
 msgid "_Properties"
-msgstr "_ሁኔታዎች"
+msgstr "_ምርጫዎች"
 
 #: libgnomeui/gnome-app-helper.c:203
 msgid "Modify the file's properties"
@@ -760,7 +758,7 @@ msgstr "_ምርጫዎች"
 
 #: libgnomeui/gnome-app-helper.c:212
 msgid "Configure the application"
-msgstr "ፕሮግራሙን አስተካክል"
+msgstr "ፕሮግራሙን ልወጡ"
 
 #. 20
 #.
@@ -888,7 +886,7 @@ msgstr "ከምልክቶቹ ጐን ቀዳሚ ጽሑፍ"
 
 #: libgnomeui/gnome-app-helper.c:2568
 msgid "Icons Only"
-msgstr "ምልክቶቸን ብቻ"
+msgstr "ምልክቶችን ብቻ"
 
 #: libgnomeui/gnome-app-helper.c:2569
 msgid "Text Only"
@@ -897,7 +895,7 @@ msgstr "ጽሑፉን ብቻ"
 #: libgnomeui/gnome-app-helper.c:2630
 #, c-format
 msgid "Use desktop default (%s)"
-msgstr "ነባሩን ዴስክቶፕ ይጠቀሙ (%s)"
+msgstr "ነባሩን ሠሌዳ ይጠቀሙ (%s)"
 
 #: libgnomeui/gnome-app-util.c:99
 msgid " (press return)"
@@ -1055,7 +1053,7 @@ msgstr "_ቃኝ..."
 
 #: libgnomeui/gnome-file-entry.c:673
 msgid "Pop up a file selector to choose a file"
-msgstr ""
+msgstr "የፋይል መምረጫ ፋይል ለመምረጥ አሳይ"
 
 #: libgnomeui/gnome-font-picker.c:66
 msgid "sans 12"
@@ -1099,11 +1097,11 @@ msgstr "የተመረጠው GtkFont"
 
 #: libgnomeui/gnome-font-picker.c:192
 msgid "Preview text"
-msgstr "የጽሑፉ ቅድመ እይታ"
+msgstr "የጽሑፉ ቅድመ ዕይታ"
 
 #: libgnomeui/gnome-font-picker.c:193
 msgid "Preview text shown in the dialog"
-msgstr "በመምረጭው ውስጥ የጽሑፉ ቅድመ እይታው ይታያል"
+msgstr "በመምረጭው ውስጥ የጽሑፉ ቅድመ ዕይታው ይታያል"
 
 #: libgnomeui/gnome-font-picker.c:201
 msgid "Use font in label"
@@ -1278,11 +1276,11 @@ msgstr "መልእክት"
 
 #: libgnomeui/gnome-pixmap-entry.c:113
 msgid "Do Preview"
-msgstr "ቅድመ እይታውን ተጠቀም"
+msgstr "ቅድመ ዕይታውን ተጠቀም"
 
 #: libgnomeui/gnome-pixmap-entry.c:114
 msgid "Whether the pixmap entry should have a preview."
-msgstr "የቆሻብቀሮቆ መግቢያ ቅድመ እይታ ሊኖረው ይገባው እንደሆነ"
+msgstr "የቆሻብቀሮቆ መግቢያ ቅድመ ዕይታ ሊኖረው ይገባው እንደሆነ"
 
 #: libgnomeui/gnome-pixmap-entry.c:188 libgnomeui/gnome-pixmap-entry.c:450
 msgid "No Image"
@@ -1290,11 +1288,11 @@ msgstr "ምስል የለም"
 
 #: libgnomeui/gnome-pixmap-entry.c:205
 msgid "Image Preview"
-msgstr "የምስሉ ቅድመ እይታ"
+msgstr "የምስሉ ቅድመ ዕይታ"
 
 #: libgnomeui/gnome-pixmap-entry.c:206
 msgid "A preview of the image currently specified"
-msgstr "አሁን ለተጠቀሰው ምስል ቅድመ እይታ"
+msgstr "አሁን ለተጠቀሰው ምስል ቅድመ ዕይታ"
 
 #: libgnomeui/gnome-scores.c:78
 msgid "Top Ten"
