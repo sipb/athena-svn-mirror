@@ -42,7 +42,7 @@ eog_LDADD = 				\
 	$(jpeg_LIB)			\
 	$(POPT_LIBS)			\
 	$(X_LIBS)			\
-	$(EOG_LIBS)
+	$(EOG_LIBS) $(LIBJPEG)
 
 uidir = $(datadir)/gnome-2.0/ui
 UI_FILES = eog-gtk-ui.xml 

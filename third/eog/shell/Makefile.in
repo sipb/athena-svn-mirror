@@ -130,7 +130,7 @@ eog_SOURCES =  	eog-window.h			eog-window.c			eog-preferences.h		eog-preferences
 eog_DEPENDENCIES =  	$(top_builddir)/libeog/libeog.a 		$(top_builddir)/shell/recent-files/librecent.a 	$(jpeg_DEPS)
 
 
-eog_LDADD =  	-L$(top_builddir)/libeog 		-L$(top_builddir)/shell/recent-files 	-leog					-lrecent				$(jpeg_LIB)				$(POPT_LIBS)				$(X_LIBS)				$(EOG_LIBS)
+eog_LDADD =  	-L$(top_builddir)/libeog 		-L$(top_builddir)/shell/recent-files 	-leog					-lrecent				$(jpeg_LIB)				$(POPT_LIBS)				$(X_LIBS)				$(EOG_LIBS) $(LIBJPEG)
 
 
 uidir = $(datadir)/gnome-2.0/ui
