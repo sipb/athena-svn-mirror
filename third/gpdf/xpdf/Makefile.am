@@ -187,7 +187,7 @@ gnome_pdf_viewer_LDADD =					\
 	$(top_builddir)/fofi/libfofi.a				\
 	$(top_builddir)/lib/ggv-sidebar/libggv-sidebar.a	\
 	$(EXTRA_GNOME_LIBS)					\
-	$(libpaper_LIBS)
+	$(libpaper_LIBS) -lfreetype
 
 gpdf-marshal.h: gpdf-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=gpdf_marshal > $@
