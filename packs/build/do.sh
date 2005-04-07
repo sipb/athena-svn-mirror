@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.85 2005-04-06 19:20:24 ghudson Exp $
+# $Id: do.sh,v 1.86 2005-04-07 17:19:07 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -156,6 +156,7 @@ CXX=g++
 WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
 ERROR_CFLAGS=-Werror
 PATH=/usr/athena/bin:$PATH
+MAKE=gmake
 
 if [ false = "$mungepath" ]; then
   PATH=$savepath
@@ -179,14 +180,6 @@ if [ -z "$ATHENA_PATCH_VERSION" ]; then
   ATHENA_PATCH_VERSION=$patch
 fi
 export ATHENA_MAJOR_VERSION ATHENA_MINOR_VERSION ATHENA_PATCH_VERSION
-
-# Determine if gmake is available. (It should be, unless this is a
-# full build and we haven't built it yet.)
-if [ -x /usr/athena/bin/gmake ]; then
-  MAKE=gmake
-else
-  MAKE=make
-fi
 
 export WARN_CFLAGS ERROR_CFLAGS CC CXX MAKE
 
