@@ -238,7 +238,7 @@ extern "C" {
  * config to #define Py_HUGE_VAL to something that works on your platform.
  */
 #ifndef Py_HUGE_VAL
-#define Py_HUGE_VAL HUGE_VAL
+#define Py_HUGE_VAL __builtin_huge_val()
 #endif
 
 /* Py_OVERFLOWED(X)
