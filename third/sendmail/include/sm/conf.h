@@ -10,7 +10,7 @@
  * the sendmail distribution.
  *
  *
- *	$Id: conf.h,v 1.1.1.1 2003-04-08 15:09:03 zacheiss Exp $
+ *	$Id: conf.h,v 1.2 2005-04-07 17:25:58 ghudson Exp $
  */
 
 /*
@@ -366,6 +366,7 @@ typedef int		pid_t;
 #   define USE_SA_SIGACTION	1	/* use sa_sigaction field */
 #   define BROKEN_PTHREAD_SLEEP	1	/* sleep after pthread_create() fails */
 #   define HASSTRERROR	1	/* has strerror(3) */
+#   define HASUNSETENV	1	/* has unsetenv(3) */
 #   ifndef _PATH_UNIX
 #    define _PATH_UNIX		"/dev/ksyms"
 #   endif /* ! _PATH_UNIX */
