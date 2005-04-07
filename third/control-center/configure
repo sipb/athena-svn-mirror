@@ -7897,7 +7897,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       case $host_os in
       solaris2.[0-5] | solaris2.[0-5].*) ;;
       *) # Supported since Solaris 2.6 (maybe 2.5.1?)
-	whole_archive_flag_spec='-z allextract$convenience -z defaultextract' ;;
+	whole_archive_flag_spec='-Wl,-z -Wl,allextract$convenience -Wl,-z -Wl,defaultextract' ;;
       esac
       link_all_deplibs=yes
       ;;
@@ -14786,7 +14786,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       case $host_os in
       solaris2.[0-5] | solaris2.[0-5].*) ;;
       *) # Supported since Solaris 2.6 (maybe 2.5.1?)
-	whole_archive_flag_spec_F77='-z allextract$convenience -z defaultextract' ;;
+	whole_archive_flag_spec_F77='-Wl,-z -Wl,allextract$convenience -Wl,-z -Wl,defaultextract' ;;
       esac
       link_all_deplibs_F77=yes
       ;;
@@ -17154,7 +17154,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       case $host_os in
       solaris2.[0-5] | solaris2.[0-5].*) ;;
       *) # Supported since Solaris 2.6 (maybe 2.5.1?)
-	whole_archive_flag_spec_GCJ='-z allextract$convenience -z defaultextract' ;;
+	whole_archive_flag_spec_GCJ='-Wl,-z -Wl,allextract$convenience -Wl,-z -Wl,defaultextract' ;;
       esac
       link_all_deplibs_GCJ=yes
       ;;
