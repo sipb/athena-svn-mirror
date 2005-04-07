@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.25 2005-03-31 16:08:21 rbasch Exp $
+# $Id: makeroot.sh,v 1.26 2005-04-07 13:54:59 rbasch Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -79,6 +79,12 @@ EOF
     yes | patchadd -d -R "$root" -u -M /install/patches \
       `cat /install/patches/current-patches`
   fi
+
+  # The SUNWgccruntime package installs these libtool library files
+  # as zero-length, which breaks libtool.  Remove them, so that
+  # libtool falls back to using the actual library.
+  rm -f "$root/usr/sfw/lib/libstdc++.la"
+  rm -f "$root/usr/sfw/lib/libsupc++.la"
 
   # Set up mount points for various special file systems and directories
   # which will be looped back through the real file system.
