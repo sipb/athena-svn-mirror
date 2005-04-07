@@ -105,7 +105,7 @@
 #include <alloc.h>
 #endif /* __MSDOS__ */
 
-#ifdef HAVE_VARARGS_H
+#if 0
     #include <varargs.h>
 #elif defined(STDC_HEADERS)
     #include <stdarg.h>
@@ -160,7 +160,7 @@ static char *MyMalloc(unsigned size);
 * Routine to access the	command	line argument and interpret them:	   *
 * Return ARG_OK (0) is case of succesfull parsing, error code else...	   *
 ***************************************************************************/
-#ifdef HAVE_VARARGS_H
+#if 0
 int GAGetArgs(int va_alist, ...)
 {
     va_list ap;

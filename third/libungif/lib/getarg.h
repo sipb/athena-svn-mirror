@@ -16,7 +16,7 @@
 #define	CMD_ERR_NumRead	   4			/* Failed on reading number. */
 #define	CMD_ERR_AllSatis   5	       /* Fail to satisfy (must-'!') option. */
 
-#ifdef HAVE_VARARGS_H
+#if 0
 int GAGetArgs(int va_alist, ...);
 #else
 int GAGetArgs(int argc, char **argv, char *CtrlStr, ...);
