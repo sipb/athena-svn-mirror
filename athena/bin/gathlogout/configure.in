@@ -3,5 +3,6 @@ AC_INIT(gathlogout.c)
 
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PATH_XTRA
 
 AC_OUTPUT(Makefile)
