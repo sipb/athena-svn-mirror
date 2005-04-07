@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(afs2k5db.c)
-AC_REVISION([$Id: configure.in,v 1.4 2004-02-29 06:40:04 zacheiss Exp $])
+AC_REVISION([$Id: configure.in,v 1.5 2005-04-07 17:38:45 ghudson Exp $])
 dnl
 dnl Allow the user to specify the compiler and/or linker
 dnl
@@ -130,10 +130,6 @@ changequote(<<, >>)dnl
 case "$target" in
 	*-sun-solaris*|i386-unknown-solaris*)
 		LDPATH_FLAGS=`echo $LIBS | sed -e 's/-l[^ ]* *//g' -e 's/-L/-R/g'`
-		if test $with_afs != no; then
-			AFSLIBS="$AFSLIBS -lc -L/usr/ucblib -lucb -R/usr/ucblib"
-		fi
-
 		if test "$target" = "sparc-sun-solaris2.4" ; then
 			# Solaris 2.4 needs libucb.a for bcopy() and friends.
 			SYSLIBS="$SYSLIBS -L/usr/ucblib -lucb"

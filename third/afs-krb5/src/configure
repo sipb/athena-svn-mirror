@@ -1620,10 +1620,6 @@ test "$host_alias" != "$target_alias" &&
 case "$target" in
 	*-sun-solaris*|i386-unknown-solaris*)
 		LDPATH_FLAGS=`echo $LIBS | sed -e 's/-l[^ ]* *//g' -e 's/-L/-R/g'`
-		if test $with_afs != no; then
-			AFSLIBS="$AFSLIBS -lc -L/usr/ucblib -lucb -R/usr/ucblib"
-		fi
-
 		if test "$target" = "sparc-sun-solaris2.4" ; then
 			# Solaris 2.4 needs libucb.a for bcopy() and friends.
 			SYSLIBS="$SYSLIBS -L/usr/ucblib -lucb"
