@@ -33,14 +33,14 @@ AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
 AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
 AC_MSG_CHECKING(for libwrap)
 save_LIBS="$LIBS"
-LIBS="-L$ATHTOOLROOT/usr/athena/lib -lwrap $LIBS"
+LIBS="-L/usr/athena/lib -lwrap $LIBS"
 AC_TRY_LINK(
     [int allow_severity, deny_severity;],
     [hosts_access();],
     [AC_MSG_RESULT(yes)
      AC_DEFINE(LIBWRAP)
-     WRAP_LIB="-L$ATHTOOLROOT/usr/athena/lib -lwrap"
-     WRAP_INCLUDES=-I$ATHTOOLROOT/usr/athena/include],
+     WRAP_LIB="-L/usr/athena/lib -lwrap"
+     WRAP_INCLUDES=-I/usr/athena/include],
     AC_MSG_RESULT(no))
 LIBS="$save_LIBS"
 AC_SUBST(WRAP_LIB)
