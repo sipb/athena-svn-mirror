@@ -14,7 +14,7 @@ LDADD = \
 	$(top_builddir)/fofi/libfofi.a				\
 	$(top_builddir)/goo/libGoo.a				\
 	$(top_builddir)/lib/ggv-sidebar/libggv-sidebar.a	\
-	$(libpaper_LIBS)
+	$(libpaper_LIBS) -lfreetype
 
 if HAVE_PDFTEX
 TESTS_NEEDING_PDFTEX =					\

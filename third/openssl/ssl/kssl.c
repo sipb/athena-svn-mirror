@@ -68,9 +68,7 @@
 
 #include <openssl/opensslconf.h>
 
-#define _XOPEN_SOURCE /* glibc2 needs this to declare strptime() */
 #include <time.h>
-#undef _XOPEN_SOURCE /* To avoid clashes with anything else... */
 #include <string.h>
 
 #include <openssl/ssl.h>
