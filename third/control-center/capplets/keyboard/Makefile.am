@@ -11,7 +11,7 @@ gnome_keyboard_properties_LDADD =				\
 	../accessibility/keyboard/libaccessibility-keyboard.a 	\
 	$(GNOMECC_CAPPLETS_LIBS) $(LIBXKLAVIER_LIBS) \
 	../../libgswitchit/libgswitchit.a \
-	../../libkbdraw/libkbdraw.a
+	../../libkbdraw/libkbdraw.a $(FONT_VIEW_LIBS)
 
 @INTLTOOL_DESKTOP_RULE@
 
