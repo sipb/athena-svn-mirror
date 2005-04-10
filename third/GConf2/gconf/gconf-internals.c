@@ -2979,7 +2979,7 @@ gconf_activate_server (gboolean  start_if_not_found,
           goto out;
         }
 
-      argv[0] = "dustbuster";
+      argv[0] = "/usr/athena/bin/dustbuster";
       argv[1] = "-s";
       argv[2] = "TERM";
       argv[3] = g_strconcat (GCONF_SERVERDIR, "/" GCONFD, NULL);
@@ -2990,7 +2990,7 @@ gconf_activate_server (gboolean  start_if_not_found,
       if (!g_spawn_async (NULL,
                           argv,
                           NULL,
-                          G_SPAWN_LEAVE_DESCRIPTORS_OPEN | G_SPAWN_SEARCH_PATH,
+                          G_SPAWN_LEAVE_DESCRIPTORS_OPEN,
                           close_fd_func,
                           p,
                           NULL,
