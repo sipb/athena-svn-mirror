@@ -1,10 +1,10 @@
-# $Id: Makefile.athena,v 1.7 2005-03-24 14:40:33 rbasch Exp $
+# $Id: Makefile.athena,v 1.8 2005-04-10 19:48:49 rbasch Exp $
 
 SHELL=/bin/sh
 ATHINCDIR=/usr/athena/include
 NSSINCDIR=${ATHINCDIR}/mozilla/nss
 common_options=--enable-crypto --disable-debug --disable-tests --enable-xft \
-	       --with-gssapi=/usr/athena
+	       --enable-default-toolkit=gtk2 --with-gssapi=/usr/athena
 
 dist:
 	cp "$$CONFIG_SITE" config.site.athena
@@ -25,10 +25,7 @@ prepare:
 	    CFLAGS="-xlibmil" \
 	    CXXFLAGS="-xlibmil -xlibmopt" \
 	    CPPFLAGS=-D_REENTRANT \
-	    LDFLAGS= \
-	    ./configure --with-gtk-prefix=/usr/sfw \
-	      --with-glib-prefix=/usr/sfw \
-	      --enable-optimize=-xO2 ${common_options} \
+	    ./configure --enable-optimize=-xO2 ${common_options} \
 	    ;; \
 	esac
 
@@ -46,7 +43,14 @@ all:
 	esac
 
 install:
-	${MAKE} install DESTDIR="$$SRVD"
+	case $$ATHENA_HOSTTYPE in \
+	linux) \
+	    ${MAKE} install DESTDIR="$$SRVD" \
+	    ;; \
+	sun4) \
+	    ${MAKE} install DESTDIR="$$SRVD" PATH=${sprobin}:${PATH} \
+	    ;; \
+	esac
 	mkdir -p "$$SRVD${NSSINCDIR}"
 	find security/nss/lib/ -name '*.h' -type f -exec install -m 644 {} \
 	  "$$SRVD${NSSINCDIR}" \;
