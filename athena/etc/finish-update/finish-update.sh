@@ -9,9 +9,6 @@ start_services() {
   if [ -f /etc/init.d/afs ]; then
     sh /etc/init.d/afs start
   fi
-  if [ -x /etc/athena/named ]; then
-    /etc/athena/named
-  fi
   if [ -f /etc/athena/config_afs ]; then
     sh /etc/athena/config_afs
   fi
