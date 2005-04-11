@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 <!--
-	$Id: finish-update.xml,v 1.1 2005-03-31 15:52:49 rbasch Exp $
+	$Id: finish-update.xml,v 1.2 2005-04-11 14:21:42 rbasch Exp $
 -->
 
 <service_bundle type='manifest' name='athena:finish-update'>
@@ -30,6 +30,17 @@
 		restart_on='none'
 		type='service'>
 		<service_fmri value='svc:/system/filesystem/local' />
+	</dependency>
+
+	<!--
+	  Make sure the Athena BIND daemon is started before us.
+	-->
+	<dependency
+		name='finish_update_bind'
+		grouping='require_all'
+		restart_on='none'
+		type='service'>
+		<service_fmri value='svc:/site/athena/dns-server' />
 	</dependency>
 
 	<!--
