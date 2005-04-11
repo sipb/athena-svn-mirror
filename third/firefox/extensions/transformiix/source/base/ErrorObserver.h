@@ -28,7 +28,8 @@
 
 #include "baseutils.h"
 #include "txError.h"
-#include <iostream.h>
+#include <iostream>
+using namespace std;
 class nsAString;
 
 /**

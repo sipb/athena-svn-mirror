@@ -177,7 +177,7 @@ nsFreeTypeFont::getFTFace()
   FTC_Manager mgr;
   nsresult rv;
   mFt2->GetFTCacheManager(&mgr);
-  rv = mFt2->ManagerLookupSize(mgr, &mImageDesc.font, &face, nsnull);
+  rv = mFt2->ManagerLookupFace(mgr, mImageDesc->face_id, &face);
   NS_ASSERTION(NS_SUCCEEDED(rv), "failed to get face/size");
   if (NS_FAILED(rv))
     return nsnull;
@@ -191,21 +191,14 @@ nsFreeTypeFont::nsFreeTypeFont(nsITrueTypeFontCatalogEntry *aFaceID,
   PRBool embedded_bimap = PR_FALSE;
   mFaceID = aFaceID;
   mPixelSize = aPixelSize;
-  mImageDesc.font.face_id    = (void*)mFaceID;
-  mImageDesc.font.pix_width  = aPixelSize;
-  mImageDesc.font.pix_height = aPixelSize;
-  mImageDesc.image_type = 0;
+  mImageDesc->face_id = (FTC_FaceID)&mFaceID;
+  mImageDesc->width  = aPixelSize;
+  mImageDesc->height = aPixelSize;
+  mImageDesc->flags = 0;
 
   if (aPixelSize < nsFreeType2::gAntiAliasMinimum) {
-    mImageDesc.image_type |= ftc_image_mono;
     anti_alias = PR_FALSE;
   }
-
-  if (nsFreeType2::gFreeType2Autohinted)
-    mImageDesc.image_type |= ftc_image_flag_autohinted;
-
-  if (nsFreeType2::gFreeType2Unhinted)
-    mImageDesc.image_type |= ftc_image_flag_unhinted;
 
   PRUint32  num_embedded_bitmaps, i;
   PRInt32*  embedded_bitmapheights;
@@ -218,7 +211,6 @@ nsFreeTypeFont::nsFreeTypeFont(nsITrueTypeFontCatalogEntry *aFaceID,
         if (embedded_bitmapheights[i] == aPixelSize) {
           embedded_bimap = PR_TRUE;
           // unhinted must be set for embedded bitmaps to be used
-          mImageDesc.image_type |= ftc_image_flag_unhinted;
           break;
         }
       }
@@ -312,7 +304,7 @@ nsFreeTypeFont::doGetBoundingMetrics(const PRUnichar* aString, PRUint32 aLength,
   if (!face)
     return NS_ERROR_FAILURE;
 
-  FTC_Image_Cache icache;
+  FTC_ImageCache icache;
   mFt2->GetImageCache(&icache);
   if (!icache)
     return NS_ERROR_FAILURE;
@@ -401,7 +393,7 @@ nsFreeTypeFont::GetWidth(const PRUnichar* aString, PRUint32 aLength)
   if (!face)
     return 0;
 
-  FTC_Image_Cache icache;
+  FTC_ImageCache icache;
   mFt2->GetImageCache(&icache);
   if (!icache)
     return 0;
@@ -723,7 +715,7 @@ nsFreeTypeXImage::DrawString(nsRenderingContextGTK* aContext,
     if (y%4==0) (*blendPixelFunc)(sub_image, y, ascent-1, black, 255/2);
 #endif
 
-  FTC_Image_Cache icache;
+  FTC_ImageCache icache;
   mFt2->GetImageCache(&icache);
   if (!icache)
     return 0;
