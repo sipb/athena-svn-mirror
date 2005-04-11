@@ -83,7 +83,9 @@ EOF
 %ifos linux
 chkconfig --add athena-sendmail
 %endif
-cp /dev/null /etc/sendmail.st && chmod 644 /etc/sendmail.st
+if [ ! -f /etc/sendmail.st ]; then
+  cp /dev/null /etc/sendmail.st && chmod 644 /etc/sendmail.st
+fi
 
 %ifos linux
 %preun
