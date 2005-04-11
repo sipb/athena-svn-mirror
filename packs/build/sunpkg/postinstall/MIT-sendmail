@@ -6,8 +6,11 @@ SENDMAIL=false;		export SENDMAIL		#  Sendmail daemon?
 EOF
 
 # Initialize the status file.
-cp /dev/null $PKG_INSTALL_ROOT/etc/sendmail.st && \
-  chmod 644 $PKG_INSTALL_ROOT/etc/sendmail.st
+rm -f $PKG_INSTALL_ROOT/etc/sendmail.st
+if [ ! -f  $PKG_INSTALL_ROOT/etc/mail/sendmail.st ]; then
+  cp /dev/null $PKG_INSTALL_ROOT/etc/mail/sendmail.st && \
+    chmod 644 $PKG_INSTALL_ROOT/etc/mail/sendmail.st
+fi
 
 # Initialize the alias database.
 chroot ${PKG_INSTALL_ROOT:-/} /usr/lib/sendmail -bi
