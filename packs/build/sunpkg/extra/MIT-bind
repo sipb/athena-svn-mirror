@@ -1,12 +1,12 @@
 #!/bin/sh
 
 etcdir=/etc
-initd=/etc/init.d
-rc2=/etc/rc2.d
+athretcdir=/etc/athena
+athmanifest=/var/svc/manifest/site/athena
 
 mkdir -p $2$etcdir
-mkdir -p $2$initd
-mkdir -p $2$rc2
+mkdir -p $2$athretcdir
+mkdir -p $2$athmanifest
 
 cp $1/packs/config/named.conf $2$etcdir
 chmod 644 $2$etcdir/named.conf
@@ -18,7 +18,7 @@ cp $1/packs/config/named.root $2$etcdir
 chmod 644 $2$etcdir/named.root
 cp $1/packs/config/resolv.conf $2$etcdir
 chmod 644 $2$etcdir/resolv.conf
-cp $1/packs/maint/os/$OS/athena-bind.rc $2$initd/athena-bind
-chmod 755 $2$initd/athena-bind
-rm -f $2$rc2/S72athena-bind
-ln -s ../init.d/athena-bind $2$rc2/S72athena-bind
+cp $1/packs/config/os/$OS/dns-server.xml $2$athmanifest
+chmod 644 $2$athmanifest/dns-server.xml
+cp $1/packs/maint/os/$OS/svc-named.sh $2$athretcdir/svc-named
+chmod 755 $2$athretcdir/svc-named
