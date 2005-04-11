@@ -1,9 +1,10 @@
-# $Id: Makefile,v 1.18 2005-03-30 16:45:51 rbasch Exp $
+# $Id: Makefile,v 1.19 2005-04-11 14:05:20 rbasch Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
 ATHLOGINDIR=${ATHRETCDIR}/login
 ATHX11LIB=/usr/athena/lib/X11
+ATHMANIFEST=/var/svc/manifest/site/athena
 KEYMAPS=${ATHX11LIB}/keymaps
 APPDEFS=${ATHX11LIB}/app-defaults
 OWAPPDEFS=/usr/openwin/lib/app-defaults
@@ -28,6 +29,7 @@ install:
 	mkdir -p ${DESTDIR}${ETCDIR}
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${ATHX11LIB}
+	mkdir -p ${DESTDIR}${ATHMANIFEST}
 	mkdir -p ${DESTDIR}${KEYMAPS}
 	mkdir -p ${DESTDIR}${APPDEFS}
 	mkdir -p ${DESTDIR}${OWAPPDEFS}
@@ -58,6 +60,7 @@ install:
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 cron ${DESTDIR}${DEFAULT}
 	install -c -m 0644 crontab.root ${DESTDIR}${CRONTABS}/root
+	install -c -m 0644 dns-server.xml ${DESTDIR}${ATHMANIFEST}
 	install -c -m 0644 group ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf ${DESTDIR}${INET}
 	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
