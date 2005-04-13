@@ -201,7 +201,7 @@ meta_bell_init (MetaDisplay *display)
 			  NULL, NULL))
     {
       display->xkb_base_event_type = -1;
-      g_message ("could not find XKB extension.");
+      meta_verbose ("could not find XKB extension.");
       return FALSE;
     }
   else 
