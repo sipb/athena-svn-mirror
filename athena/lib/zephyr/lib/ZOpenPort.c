@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: ZOpenPort.c,v 1.15 1999-01-22 23:19:17 ghudson Exp $
+ *	$Id: ZOpenPort.c,v 1.16 2005-04-14 21:37:52 zacheiss Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -11,7 +11,7 @@
  */
 
 #ifndef lint
-static char rcsid_ZOpenPort_c[] = "$Id: ZOpenPort.c,v 1.15 1999-01-22 23:19:17 ghudson Exp $";
+static char rcsid_ZOpenPort_c[] = "$Id: ZOpenPort.c,v 1.16 2005-04-14 21:37:52 zacheiss Exp $";
 #endif
 
 #include <internal.h>
@@ -22,9 +22,6 @@ Code_t ZOpenPort(port)
 {
     struct sockaddr_in bindin;
     int len;
-#ifdef SO_BSDCOMPAT
-    int on = 1;
-#endif
     
     (void) ZClosePort();
 
@@ -32,11 +29,6 @@ Code_t ZOpenPort(port)
 	__Zephyr_fd = -1;
 	return (errno);
     }
-
-#ifdef SO_BSDCOMPAT
-    /* Prevent Linux from giving us socket errors we don't care about. */
-    setsockopt(__Zephyr_fd, SOL_SOCKET, SO_BSDCOMPAT, &on, sizeof(on));
-#endif
 
     bindin.sin_family = AF_INET;
 
