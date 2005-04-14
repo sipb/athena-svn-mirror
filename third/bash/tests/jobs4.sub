@@ -18,5 +18,5 @@ echo $?
 
 wait
 
-cat &
+sleep 100 &
 kill -1 %% && echo i killed it || echo could not kill it
