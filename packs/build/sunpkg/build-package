@@ -127,7 +127,7 @@ rm $destdir/INSTALL/$source_name/bin
 rm -f $destdir/INSTALL/$source_name/usr/athena/info/dir
 
 # Don't try to install scrollkeeper output files.
-rm -rf $destdir/INSTALL/usr/athena/var/scrollkeeper
+rm -rf $destdir/INSTALL/$source_name/usr/athena/var/scrollkeeper
 
 # Hack: only install the charset.alias file belonging to the libiconv
 # package; otherwise, the last package installed which generated the
