@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Xreset,v 1.4 2003-08-05 17:15:28 zacheiss Exp $
+# $Id: Xreset,v 1.5 2005-04-15 16:23:06 ghudson Exp $
 
 # Xreset
 #
@@ -9,8 +9,8 @@
 cd /dev
 
 # Reclaim the audio devices.
-chown root:sys dsp* audio* midi* mixer* sequencer
-chmod      640 dsp* audio* midi* mixer* sequencer
+chown root:sys dsp* audio* mixer*
+chmod      640 dsp* audio* mixer*
 
 # Reclaim cdrom and floppy devices.
 chown --dereference root:disk cdrom
