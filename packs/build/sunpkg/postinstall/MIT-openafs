@@ -17,4 +17,19 @@ EOF
 
 [ -d $PKG_INSTALL_ROOT/afs ] || mkdir -p $PKG_INSTALL_ROOT/afs
 
+# Package version 9.3.0, which was installed in Athena 9.3 releases prior
+# to 9.3.5, installed paths under /var/usr/vice instead of /usr/vice
+# (machines installed before 9.3 mount /var/usr/vice instead of
+# /usr/vice/cache, and link /usr/vice to /var/usr/vice).  So we need
+# to clean up any such old paths from the pkg database.
+if [ -n "`pkgchk -R $PKG_INSTALL_ROOT -l -p /var/usr/vice $PKGINST`" ]; then
+  removef -R $PKG_INSTALL_ROOT $PKGINST /var > /dev/null
+  removef -R $PKG_INSTALL_ROOT $PKGINST /var/usr > /dev/null
+  removef -R $PKG_INSTALL_ROOT $PKGINST /var/usr/vice > /dev/null
+  removef -R $PKG_INSTALL_ROOT $PKGINST /var/usr/vice/cache > /dev/null
+  removef -R $PKG_INSTALL_ROOT $PKGINST /var/usr/vice/etc > /dev/null
+  removef -R $PKG_INSTALL_ROOT $PKGINST /var/usr/vice/etc/afsd > /dev/null
+  removef -R $PKG_INSTALL_ROOT -f $PKGINST > /dev/null
+fi
+
 exit 0
