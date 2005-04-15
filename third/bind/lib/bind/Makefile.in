@@ -1,25 +1,31 @@
-# Copyright (C) 2001  Internet Software Consortium.
+# Copyright (C) 2004  Internet Systems Consortium, Inc. ("ISC")
+# Copyright (C) 2001-2003  Internet Software Consortium.
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM
-# DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
-# INTERNET SOFTWARE CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT,
-# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING
-# FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
-# NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
-# WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS.  IN NO EVENT SHALL ISC BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+# OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: Makefile.in,v 1.1.1.1 2002-02-03 04:23:54 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2005-04-15 15:36:58 ghudson Exp $
 
 srcdir =        @srcdir@
 VPATH =         @srcdir@
 top_srcdir =    @top_srcdir@
 
+# Attempt to disable parallel processing.
+.NOTPARALLEL:
+.NO_PARALLEL:
+
 @LIBBIND_API@
+
+LIBS =		@LIBS@
 
 DAEMON_OBJS=bsd/daemon.@O@
 STRSEP_OBJS=bsd/strsep.@O@
@@ -38,8 +44,8 @@ INETOBJS= inet/inet_addr.@O@ inet/inet_cidr_ntop.@O@ inet/inet_cidr_pton.@O@ \
 	inet/inet_netof.@O@ inet/inet_network.@O@ inet/inet_ntoa.@O@ \
 	inet/inet_ntop.@O@ inet/inet_pton.@O@ inet/nsap_addr.@O@
 
-WANT_IRS_THREADS_OBJS=	irs/gethostent_r.@O@ irs/getnetgrent_r.@O@ \
-	irs/getprotoent_r.@O@ irs/getservent_r.@O@
+WANT_IRS_THREADS_OBJS=	irs/gethostent_r.@O@ irs/getnetent_r.@O@ \
+	irs/getnetgrent_r.@O@ irs/getprotoent_r.@O@ irs/getservent_r.@O@
 
 WANT_IRS_NISGR_OBJS= irs/nis_gr.@O@ 
 WANT_IRS_GR_OBJS= irs/dns_gr.@O@ irs/irp_gr.@O@ irs/lcl_gr.@O@ irs/gen_gr.@O@ \
@@ -60,7 +66,7 @@ IRSOBJS= @WANT_IRS_GR_OBJS@ @WANT_IRS_NIS_OBJS@ @WANT_IRS_THREADS_OBJS@ \
 	irs/dns_sv.@O@ irs/gai_strerror.@O@ irs/gen.@O@ irs/gen_ho.@O@ \
 	irs/gen_ng.@O@ irs/gen_nw.@O@ irs/gen_pr.@O@ irs/gen_sv.@O@ \
 	irs/getaddrinfo.@O@ irs/gethostent.@O@  irs/getnameinfo.@O@ \
-	irs/getnetent.@O@ irs/getnetent_r.@O@ irs/getnetgrent.@O@ \
+	irs/getnetent.@O@ irs/getnetgrent.@O@ \
 	irs/getprotoent.@O@ irs/getservent.@O@ irs/hesiod.@O@ \
 	irs/irp.@O@ irs/irp_ho.@O@ irs/irp_ng.@O@ irs/irp_nw.@O@ \
 	irs/irp_pr.@O@ irs/irp_sv.@O@ irs/irpmarshall.@O@ irs/irs_data.@O@ \
@@ -97,8 +103,8 @@ libbind.@SA@: ${OBJS}
 	${RANLIB} $@
 
 libbind.la: ${OBJS}
-	${LIBTOOL} --mode=link \
-	${CC} ${ALL_CFLAGS} -o libbind.la -rpath ${libdir} \
+	${LIBTOOL_MODE_LINK} \
+	${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libbind.la -rpath ${libdir} \
 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
 		${OBJS} ${LIBS}
 
@@ -109,11 +115,17 @@ installdirs:
 	$(SHELL) ${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
 
 install:: timestamp installdirs
-	${LIBTOOL} ${INSTALL_DATA} libbind.@A@ ${DESTDIR}${libdir}
-
+	${LIBTOOL_MODE_INSTALL} ${INSTALL_DATA} libbind.@A@ ${DESTDIR}${libdir}
 
 clean distclean::
 	rm -f libbind.@SA@ libbind.la
+
+distclean::
+	rm -f make/rules make/includes make/mkdep
+
 distclean::
 	rm -f config.cache config.h config.log config.status libtool
-	rm -f port_before.h port_after.h
+	rm -f port_before.h port_after.h configure.lineno
+	rm -f port/Makefile @PORT_DIR@/Makefile
+
+man:

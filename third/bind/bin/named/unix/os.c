@@ -1,26 +1,26 @@
 /*
- * Copyright (C) 1999-2001  Internet Software Consortium.
+ * Copyright (C) 2004  Internet Systems Consortium, Inc. ("ISC")
+ * Copyright (C) 1999-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
  *
- * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM
- * DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
- * INTERNET SOFTWARE CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT,
- * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING
- * FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
- * NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
- * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES WITH
+ * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS.  IN NO EVENT SHALL ISC BE LIABLE FOR ANY SPECIAL, DIRECT,
+ * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+ * LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+ * OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ * PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: os.c,v 1.1.1.2 2002-02-03 04:22:52 ghudson Exp $ */
+/* $Id: os.c,v 1.1.1.3 2005-04-15 15:36:10 ghudson Exp $ */
 
 #include <config.h>
 #include <stdarg.h>
 
-#include <sys/types.h>  /* dev_t FreeBSD 2.1 */
+#include <sys/types.h>	/* dev_t FreeBSD 2.1 */
 #include <sys/stat.h>
 
 #include <ctype.h>
@@ -30,9 +30,14 @@
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <syslog.h>
+#ifdef HAVE_TZSET
+#include <time.h>
+#endif
 #include <unistd.h>
 
+#include <isc/buffer.h>
 #include <isc/file.h>
 #include <isc/print.h>
 #include <isc/result.h>
@@ -43,6 +48,11 @@
 #include <named/os.h>
 
 static char *pidfile = NULL;
+static int devnullfd = -1;
+
+#ifndef ISC_FACILITY
+#define ISC_FACILITY LOG_DAEMON
+#endif
 
 /*
  * If there's no <linux/capability.h>, we don't care about <sys/prctl.h>
@@ -53,36 +63,36 @@ static char *pidfile = NULL;
 
 /*
  * Linux defines:
- * 	(T) HAVE_LINUXTHREADS
- * 	(C) HAVE_LINUX_CAPABILITY_H
- * 	(P) HAVE_SYS_PRCTL_H
+ *	(T) HAVE_LINUXTHREADS
+ *	(C) HAVE_LINUX_CAPABILITY_H
+ *	(P) HAVE_SYS_PRCTL_H
  * The possible cases are:
- * 	none:	setuid() normally
- * 	T:	no setuid()
- * 	C:	setuid() normally, drop caps (keep CAP_SETUID)
- * 	T+C:	no setuid(), drop caps (don't keep CAP_SETUID)
- * 	T+C+P:	setuid() early, drop caps (keep CAP_SETUID)
- * 	C+P:	setuid() normally, drop caps (keep CAP_SETUID)
+ *	none:	setuid() normally
+ *	T:	no setuid()
+ *	C:	setuid() normally, drop caps (keep CAP_SETUID)
+ *	T+C:	no setuid(), drop caps (don't keep CAP_SETUID)
+ *	T+C+P:	setuid() early, drop caps (keep CAP_SETUID)
+ *	C+P:	setuid() normally, drop caps (keep CAP_SETUID)
  *	P:	not possible
  *	T+P:	not possible
  *
  * if (C)
- * 	caps = BIND_SERVICE + CHROOT + SETGID
- * 	if ((T && C && P) || !T)
- * 		caps += SETUID
- * 	endif
- * 	capset(caps)
+ *	caps = BIND_SERVICE + CHROOT + SETGID
+ *	if ((T && C && P) || !T)
+ *		caps += SETUID
+ *	endif
+ *	capset(caps)
  * endif
  * if (T && C && P && -u)
- * 	setuid()
+ *	setuid()
  * else if (T && -u)
- * 	fail
+ *	fail
  * --> start threads
  * if (!T && -u)
- * 	setuid()
+ *	setuid()
  * if (C && (P || !-u))
- * 	caps = BIND_SERVICE
- * 	capset(caps)
+ *	caps = BIND_SERVICE
+ *	capset(caps)
  * endif
  *
  * It will be nice when Linux threads work properly with setuid().
@@ -94,6 +104,7 @@ static pid_t mainpid = 0;
 
 static struct passwd *runas_pw = NULL;
 static isc_boolean_t done_setuid = ISC_FALSE;
+static int dfd[2] = { -1, -1 };
 
 #ifdef HAVE_LINUX_CAPABILITY_H
 
@@ -127,6 +138,9 @@ static isc_boolean_t non_root_caps = ISC_FALSE;
 #endif /* HAVE_SYS_PRCTL_H */
 
 #ifndef SYS_capset
+#ifndef __NR_capset
+#include <asm/unistd.h> /* Slackware 4.0 needs this. */
+#endif
 #define SYS_capset __NR_capset
 #endif
 
@@ -139,16 +153,19 @@ linux_setcaps(unsigned int caps) {
 	if ((getuid() != 0 && !non_root_caps) || non_root)
 		return;
 
-	memset(&caphead, 0, sizeof caphead);
+	memset(&caphead, 0, sizeof(caphead));
 	caphead.version = _LINUX_CAPABILITY_VERSION;
 	caphead.pid = 0;
-	memset(&cap, 0, sizeof cap);
+	memset(&cap, 0, sizeof(cap));
 	cap.effective = caps;
 	cap.permitted = caps;
 	cap.inheritable = caps;
 	if (syscall(SYS_capset, &caphead, &cap) < 0) {
 		isc__strerror(errno, strbuf, sizeof(strbuf));
-		ns_main_earlyfatal("capset failed: %s", strbuf);
+		ns_main_earlyfatal("capset failed: %s:"
+				   " please ensure that the capset kernel"
+				   " module is loaded.  see insmod(8)",
+				   strbuf);
 	}
 }
 
@@ -267,8 +284,7 @@ setup_syslog(const char *progname) {
 #ifdef LOG_NDELAY
 	options |= LOG_NDELAY;
 #endif
-
-	openlog(isc_file_basename(progname), options, LOG_DAEMON);
+	openlog(isc_file_basename(progname), options, ISC_FACILITY);
 }
 
 void
@@ -280,21 +296,43 @@ ns_os_init(const char *progname) {
 #ifdef HAVE_LINUXTHREADS
 	mainpid = getpid();
 #endif
+#ifdef SIGXFSZ
+	signal(SIGXFSZ, SIG_IGN);
+#endif
 }
 
 void
 ns_os_daemonize(void) {
 	pid_t pid;
-	int fd;
 	char strbuf[ISC_STRERRORSIZE];
+
+	if (pipe(dfd) == -1) {
+		isc__strerror(errno, strbuf, sizeof(strbuf));
+		ns_main_earlyfatal("pipe(): %s", strbuf);
+	}
 
 	pid = fork();
 	if (pid == -1) {
 		isc__strerror(errno, strbuf, sizeof(strbuf));
 		ns_main_earlyfatal("fork(): %s", strbuf);
 	}
-	if (pid != 0)
-		_exit(0);
+	if (pid != 0) {
+		int n;
+		/*
+		 * Wait for the child to finish loading for the first time.
+		 * This would be so much simpler if fork() worked once we
+	         * were multi-threaded.
+		 */
+		(void)close(dfd[1]);
+		do {
+			char buf;
+			n = read(dfd[0], &buf, 1);
+			if (n == 1)
+				_exit(0);
+		} while (n == -1 && errno == EINTR);
+		_exit(1);
+	}
+	(void)close(dfd[0]);
 
 	/*
 	 * We're the child.
@@ -304,7 +342,7 @@ ns_os_daemonize(void) {
 	mainpid = getpid();
 #endif
 
-        if (setsid() == -1) {
+	if (setsid() == -1) {
 		isc__strerror(errno, strbuf, sizeof(strbuf));
 		ns_main_earlyfatal("setsid(): %s", strbuf);
 	}
@@ -319,18 +357,48 @@ ns_os_daemonize(void) {
 	 * and will end up closing the wrong FD.  This will be fixed eventually,
 	 * and these calls will be removed.
 	 */
-	fd = open("/dev/null", O_RDWR, 0);
-	if (fd != -1) {
-		close(STDIN_FILENO);
-		(void)dup2(fd, STDIN_FILENO);
-		close(STDOUT_FILENO);
-		(void)dup2(fd, STDOUT_FILENO);
-		close(STDERR_FILENO);
-		(void)dup2(fd, STDERR_FILENO);
-		if (fd != STDIN_FILENO &&
-		    fd != STDOUT_FILENO &&
-		    fd != STDERR_FILENO)
-			(void)close(fd);
+	if (devnullfd != -1) {
+		if (devnullfd != STDIN_FILENO) {
+			(void)close(STDIN_FILENO);
+			(void)dup2(devnullfd, STDIN_FILENO);
+		}
+		if (devnullfd != STDOUT_FILENO) {
+			(void)close(STDOUT_FILENO);
+			(void)dup2(devnullfd, STDOUT_FILENO);
+		}
+		if (devnullfd != STDERR_FILENO) {
+			(void)close(STDERR_FILENO);
+			(void)dup2(devnullfd, STDERR_FILENO);
+		}
+	}
+}
+
+void
+ns_os_started(void) {
+	char buf = 0;
+
+	/*
+	 * Signal to the parent that we stated successfully.
+	 */
+	if (dfd[0] != -1 && dfd[1] != -1) {
+		write(dfd[1], &buf, 1);
+		close(dfd[1]);
+		dfd[0] = dfd[1] = -1;
+	}
+}
+
+void
+ns_os_opendevnull(void) {
+	devnullfd = open("/dev/null", O_RDWR, 0);
+}
+
+void
+ns_os_closedevnull(void) {
+	if (devnullfd != STDIN_FILENO &&
+	    devnullfd != STDOUT_FILENO &&
+	    devnullfd != STDERR_FILENO) {
+		close(devnullfd);
+		devnullfd = -1;
 	}
 }
 
@@ -396,10 +464,14 @@ ns_os_changeuser(void) {
 #ifdef HAVE_LINUXTHREADS
 #ifdef HAVE_LINUX_CAPABILITY_H
 	if (!non_root_caps)
+		ns_main_earlyfatal("-u with Linux threads not supported: "
+				   "requires kernel support for "
+				   "prctl(PR_SET_KEEPCAPS)");
+#else
+	ns_main_earlyfatal("-u with Linux threads not supported: "
+			   "no capabilities support or capabilities "
+			   "disabled at build time");
 #endif
-		ns_main_earlyfatal(
-		   "-u not supported on Linux kernels older than "
-		   "2.3.99-pre3 or 2.2.18 when using threads");
 #endif
 
 	if (setgid(runas_pw->pw_gid) < 0) {
@@ -435,23 +507,23 @@ ns_os_minprivs(void) {
 static int
 safe_open(const char *filename, isc_boolean_t append) {
 	int fd;
-        struct stat sb;
+	struct stat sb;
 
-        if (stat(filename, &sb) == -1) {
-                if (errno != ENOENT)
+	if (stat(filename, &sb) == -1) {
+		if (errno != ENOENT)
 			return (-1);
-        } else if ((sb.st_mode & S_IFREG) == 0) {
+	} else if ((sb.st_mode & S_IFREG) == 0) {
 		errno = EOPNOTSUPP;
 		return (-1);
 	}
 
 	if (append)
 		fd = open(filename, O_WRONLY|O_CREAT|O_APPEND,
-		     S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+			  S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 	else {
 		(void)unlink(filename);
 		fd = open(filename, O_WRONLY|O_CREAT|O_EXCL,
-		     S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+			  S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 	}
 	return (fd);
 }
@@ -466,52 +538,69 @@ cleanup_pidfile(void) {
 }
 
 void
-ns_os_writepidfile(const char *filename) {
-        int fd;
+ns_os_writepidfile(const char *filename, isc_boolean_t first_time) {
+	int fd;
 	FILE *lockfile;
 	size_t len;
 	pid_t pid;
 	char strbuf[ISC_STRERRORSIZE];
+	void (*report)(const char *, ...);
 
 	/*
 	 * The caller must ensure any required synchronization.
 	 */
 
+	report = first_time ? ns_main_earlyfatal : ns_main_earlywarning;
+
 	cleanup_pidfile();
+
+	if (filename == NULL)
+		return;
 
 	len = strlen(filename);
 	pidfile = malloc(len + 1);
 	if (pidfile == NULL) {
 		isc__strerror(errno, strbuf, sizeof(strbuf));
-                ns_main_earlyfatal("couldn't malloc '%s': %s",
-				   filename, strbuf);
+		(*report)("couldn't malloc '%s': %s", filename, strbuf);
+		return;
 	}
 	/* This is safe. */
 	strcpy(pidfile, filename);
 
-        fd = safe_open(filename, ISC_FALSE);
-        if (fd < 0) {
+	fd = safe_open(filename, ISC_FALSE);
+	if (fd < 0) {
 		isc__strerror(errno, strbuf, sizeof(strbuf));
-                ns_main_earlyfatal("couldn't open pid file '%s': %s",
-				   filename, strbuf);
+		(*report)("couldn't open pid file '%s': %s", filename, strbuf);
+		free(pidfile);
+		pidfile = NULL;
+		return;
 	}
-        lockfile = fdopen(fd, "w");
-        if (lockfile == NULL) {
+	lockfile = fdopen(fd, "w");
+	if (lockfile == NULL) {
 		isc__strerror(errno, strbuf, sizeof(strbuf));
-		ns_main_earlyfatal("could not fdopen() pid file '%s': %s",
-				   filename, strbuf);
+		(*report)("could not fdopen() pid file '%s': %s",
+			  filename, strbuf);
+		(void)close(fd);
+		cleanup_pidfile();
+		return;
 	}
 #ifdef HAVE_LINUXTHREADS
 	pid = mainpid;
 #else
 	pid = getpid();
 #endif
-        if (fprintf(lockfile, "%ld\n", (long)pid) < 0)
-                ns_main_earlyfatal("fprintf() to pid file '%s' failed",
-				   filename);
-        if (fflush(lockfile) == EOF)
-                ns_main_earlyfatal("fflush() to pid file '%s' failed",
-				   filename);
+	if (fprintf(lockfile, "%ld\n", (long)pid) < 0) {
+		(*report)("fprintf() to pid file '%s' failed", filename);
+		(void)fclose(lockfile);
+		cleanup_pidfile();
+		return;
+	}
+	if (fflush(lockfile) == EOF) {
+		(*report)("fflush() to pid file '%s' failed", filename);
+		(void)fclose(lockfile);
+		cleanup_pidfile();
+		return;
+	}
 	(void)fclose(lockfile);
 }
 
@@ -519,4 +608,65 @@ void
 ns_os_shutdown(void) {
 	closelog();
 	cleanup_pidfile();
+}
+
+isc_result_t
+ns_os_gethostname(char *buf, size_t len) {
+	int n;
+
+	n = gethostname(buf, len);
+	return ((n == 0) ? ISC_R_SUCCESS : ISC_R_FAILURE);
+}
+
+static char *
+next_token(char **stringp, const char *delim) {
+	char *res;
+
+	do {
+		res = strsep(stringp, delim);
+		if (res == NULL)
+			break;
+	} while (*res == '\0');
+	return (res);
+}
+
+void
+ns_os_shutdownmsg(char *command, isc_buffer_t *text) {
+	char *input, *ptr;
+	unsigned int n;
+	pid_t pid;
+
+	input = command;
+
+	/* Skip the command name. */
+	ptr = next_token(&input, " \t");
+	if (ptr == NULL)
+		return;
+
+	ptr = next_token(&input, " \t");
+	if (ptr == NULL)
+		return;
+	
+	if (strcmp(ptr, "-p") != 0)
+		return;
+
+#ifdef HAVE_LINUXTHREADS
+	pid = mainpid;
+#else
+	pid = getpid();
+#endif
+
+	n = snprintf((char *)isc_buffer_used(text),
+		     isc_buffer_availablelength(text),
+		     "pid: %ld", (long)pid);
+	/* Only send a message if it is complete. */
+	if (n < isc_buffer_availablelength(text))
+		isc_buffer_add(text, n);
+}
+
+void
+ns_os_tzset(void) {
+#ifdef HAVE_TZSET
+	tzset();
+#endif
 }

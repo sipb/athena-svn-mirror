@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 1997-2001  Internet Software Consortium.
+ * Copyright (C) 2004  Internet Systems Consortium, Inc. ("ISC")
+ * Copyright (C) 1997-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
  *
- * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM
- * DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
- * INTERNET SOFTWARE CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT,
- * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING
- * FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
- * NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
- * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES WITH
+ * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS.  IN NO EVENT SHALL ISC BE LIABLE FOR ANY SPECIAL, DIRECT,
+ * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+ * LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+ * OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ * PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: list.h,v 1.1.1.2 2002-02-03 04:25:38 ghudson Exp $ */
+/* $Id: list.h,v 1.1.1.3 2005-04-15 15:26:43 ghudson Exp $ */
 
 #ifndef ISC_LIST_H
 #define ISC_LIST_H 1
@@ -33,11 +33,13 @@
 	do { (list).head = NULL; (list).tail = NULL; } while (0)
 
 #define ISC_LINK(type) struct { type *prev, *next; }
-#define ISC_LINK_INIT(elt, link) \
+#define ISC_LINK_INIT_TYPE(elt, link, type) \
 	do { \
-		(elt)->link.prev = (void *)(-1); \
-		(elt)->link.next = (void *)(-1); \
+		(elt)->link.prev = (type *)(-1); \
+		(elt)->link.next = (type *)(-1); \
 	} while (0)
+#define ISC_LINK_INIT(elt, link) \
+	ISC_LINK_INIT_TYPE(elt, link, void)
 #define ISC_LINK_LINKED(elt, link) ((void *)((elt)->link.prev) != (void *)(-1))
 
 #define ISC_LIST_HEAD(list) ((list).head)
@@ -84,7 +86,7 @@
 #define ISC_LIST_INITANDAPPEND(list, elt, link) \
 		__ISC_LIST_APPENDUNSAFE(list, elt, link)
 
-#define __ISC_LIST_UNLINKUNSAFE(list, elt, link) \
+#define __ISC_LIST_UNLINKUNSAFE_TYPE(list, elt, link, type) \
 	do { \
 		if ((elt)->link.next != NULL) \
 			(elt)->link.next->link.prev = (elt)->link.prev; \
@@ -94,15 +96,20 @@
 			(elt)->link.prev->link.next = (elt)->link.next; \
 		else \
 			(list).head = (elt)->link.next; \
-		(elt)->link.prev = (void *)(-1); \
-		(elt)->link.next = (void *)(-1); \
+		(elt)->link.prev = (type *)(-1); \
+		(elt)->link.next = (type *)(-1); \
 	} while (0)
 
-#define ISC_LIST_UNLINK(list, elt, link) \
+#define __ISC_LIST_UNLINKUNSAFE(list, elt, link) \
+	__ISC_LIST_UNLINKUNSAFE_TYPE(list, elt, link, void)
+
+#define ISC_LIST_UNLINK_TYPE(list, elt, link, type) \
 	do { \
 		ISC_LINK_INSIST(ISC_LINK_LINKED(elt, link)); \
-		__ISC_LIST_UNLINKUNSAFE(list, elt, link); \
+		__ISC_LIST_UNLINKUNSAFE_TYPE(list, elt, link, type); \
 	} while (0)
+#define ISC_LIST_UNLINK(list, elt, link) \
+	ISC_LIST_UNLINK_TYPE(list, elt, link, void)
 
 #define ISC_LIST_PREV(elt, link) ((elt)->link.prev)
 #define ISC_LIST_NEXT(elt, link) ((elt)->link.next)
@@ -161,8 +168,13 @@
 #define ISC_LIST_ENQUEUE(list, elt, link) ISC_LIST_APPEND(list, elt, link)
 #define __ISC_LIST_ENQUEUEUNSAFE(list, elt, link) \
 	__ISC_LIST_APPENDUNSAFE(list, elt, link)
-#define ISC_LIST_DEQUEUE(list, elt, link) ISC_LIST_UNLINK(list, elt, link)
+#define ISC_LIST_DEQUEUE(list, elt, link) \
+	 ISC_LIST_UNLINK_TYPE(list, elt, link, void)
+#define ISC_LIST_DEQUEUE_TYPE(list, elt, link, type) \
+	 ISC_LIST_UNLINK_TYPE(list, elt, link, type)
 #define __ISC_LIST_DEQUEUEUNSAFE(list, elt, link) \
-	__ISC_LIST_UNLINKUNSAFE(list, elt, link)
+	__ISC_LIST_UNLINKUNSAFE_TYPE(list, elt, link, void)
+#define __ISC_LIST_DEQUEUEUNSAFE_TYPE(list, elt, link, type) \
+	__ISC_LIST_UNLINKUNSAFE_TYPE(list, elt, link, type)
 
 #endif /* ISC_LIST_H */

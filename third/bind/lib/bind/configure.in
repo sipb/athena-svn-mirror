@@ -1,24 +1,19 @@
-# Copyright (C) 1998-2001  Internet Software Consortium.
+# Copyright (C) 2004  Internet Systems Consortium, Inc. ("ISC")
+# Copyright (C) 2001  Internet Software Consortium.
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM
-# DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
-# INTERNET SOFTWARE CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT,
-# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING
-# FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
-# NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
-# WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS.  IN NO EVENT SHALL ISC BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+# OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
 
-dnl
-AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
-esyscmd([sed "s/^/# /" COPYRIGHT])dnl
-AC_DIVERT_POP()dnl
-
-AC_REVISION($Revision: 1.1.1.1 $)
+AC_REVISION($Revision: 1.1.1.2 $)
 
 AC_INIT(resolv/herror.c)
 AC_PREREQ(2.13)
@@ -513,6 +508,7 @@ then
 	WANT_IRS_THREADSGR_OBJS="\${WANT_IRS_THREADSGR_OBJS}"
 	WANT_IRS_THREADSPW_OBJS="\${WANT_IRS_THREADSPW_OBJS}"
 	WANT_IRS_THREADS_OBJS="\${WANT_IRS_THREADS_OBJS}"
+	WANT_THREADS_OBJS="\${WANT_THREADS_OBJS}"
 	thread_dir=pthreads
 else
 	ALWAYS_DEFINES=""
@@ -520,14 +516,23 @@ else
 	WANT_IRS_THREADSGR_OBJS=""
 	WANT_IRS_THREADSPW_OBJS=""
 	WANT_IRS_THREADS_OBJS=""
+	WANT_THREADS_OBJS=""
 	thread_dir=nothreads
 fi
+
+AC_CHECK_FUNC(strlcat, AC_DEFINE(HAVE_STRLCAT))
 
 AC_SUBST(ALWAYS_DEFINES)
 AC_SUBST(DO_PTHREADS)
 AC_SUBST(WANT_IRS_THREADSGR_OBJS)
 AC_SUBST(WANT_IRS_THREADSPW_OBJS)
 AC_SUBST(WANT_IRS_THREADS_OBJS)
+AC_SUBST(WANT_THREADS_OBJS)
+
+AC_CHECK_FUNC(if_nametoindex,
+	[USE_IFNAMELINKID="#define USE_IFNAMELINKID 1"],
+	[USE_IFNAMELINKID="#undef USE_IFNAMELINKID"])
+AC_SUBST(USE_IFNAMELINKID)
 
 ISC_THREAD_DIR=$thread_dir
 AC_SUBST(ISC_THREAD_DIR)
@@ -723,6 +728,9 @@ case $use_libtool in
 		O=lo
 		A=la
 		LIBTOOL_MKDEP_SED='s;\.o;\.lo;'
+		LIBTOOL_MODE_COMPILE='--mode=compile'
+		LIBTOOL_MODE_INSTALL='--mode=install'
+		LIBTOOL_MODE_LINK='--mode=link'
 		;;
 	*)
 		O=o
@@ -730,6 +738,9 @@ case $use_libtool in
 		LIBTOOL=
 		AC_SUBST(LIBTOOL)
 		LIBTOOL_MKDEP_SED=
+		LIBTOOL_MODE_COMPILE=
+		LIBTOOL_MODE_INSTALL=
+		LIBTOOL_MODE_LINK=
 		;;
 esac
 
@@ -743,6 +754,9 @@ AC_SUBST(O)
 AC_SUBST(A)
 AC_SUBST(SA)
 AC_SUBST(LIBTOOL_MKDEP_SED)
+AC_SUBST(LIBTOOL_MODE_COMPILE)
+AC_SUBST(LIBTOOL_MODE_INSTALL)
+AC_SUBST(LIBTOOL_MODE_LINK)
 
 #
 # Here begins a very long section to determine the system's networking
@@ -1036,9 +1050,7 @@ AC_SUBST(HAVE_SA_LEN)
 # HAVE_MINIMUM_IFREQ
 
 case "$host" in
-	*-bsdi4*)	have_minimum_ifreq=yes;;
-	*-bsdi3*)	have_minimum_ifreq=yes;;
-	*-bsdi2*)	have_minimum_ifreq=yes;;
+	*-bsdi[2345]*)	have_minimum_ifreq=yes;;
 	*-darwin*)	have_minimum_ifreq=yes;;
 	*-freebsd*)	have_minimum_ifreq=yes;;
 	*-lynxos*)	have_minimum_ifreq=yes;;
@@ -1066,6 +1078,7 @@ USE_FIONBIO_IOCTL="#undef USE_FIONBIO_IOCTL"
 case "$host" in
 	*aix3.2*)	PORT_DIR="port/aix32";;
 	*aix4*)		PORT_DIR="port/aix4";;
+	*aix5*)		PORT_DIR="port/aix5";;
 	*aux3*)		PORT_DIR="port/aux3";;
 	*-bsdi2*)	PORT_DIR="port/bsdos2";;
 	*-bsdi*)	PORT_DIR="port/bsdos";;
@@ -1358,6 +1371,8 @@ AC_TRY_COMPILE(
 #undef _REENTRANT
 #define _REENTRANT
 #define _OSF_SOURCE
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 struct netent *
 getnetbyaddr_r(long net, int type, struct netent *result, char *buffer,
@@ -1380,6 +1395,8 @@ AC_TRY_COMPILE(
 #undef _REENTRANT
 #define _REENTRANT
 #define _OSF_SOURCE
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 int getnetbyaddr_r (unsigned long int, int, struct netent *,
                     char *, size_t, struct netent **, int *);
@@ -1401,6 +1418,8 @@ AC_TRY_COMPILE(
 #undef _REENTRANT
 #define _REENTRANT
 #define _OSF_SOURCE
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 extern int getnetbyaddr_r(int, int, struct netent *, struct netent_data *);
 ],
@@ -1417,6 +1436,8 @@ GETNETBYADDR_ADDR_T="#define GETNETBYADDR_ADDR_T int"
 NETENT_DATA="#define NETENT_DATA 1"
 ],
 AC_TRY_COMPILE(
+#undef __USE_MISC
+#define __USE_MISC
 [#include <netdb.h>
 int getnetbyaddr_r (long, int, struct netent *, struct netent_data *);
 ],
@@ -1463,6 +1484,8 @@ AC_SUBST(NETENT_DATA)
 AC_CHECK_FUNC(setnetent_r,
 AC_TRY_COMPILE(
 [
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 void  setnetent_r (int);
 ] ,[return (0);],[
@@ -1473,6 +1496,8 @@ NET_R_SET_RETURN="#define NET_R_SET_RETURN void"
 AC_TRY_COMPILE(
 [
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 extern int setnetent_r(int, struct netent_data *);
 ] ,[return (0);],[
@@ -1496,6 +1521,8 @@ AC_TRY_COMPILE(
 [
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 void  endnetent_r (void);
 ] ,[return (0);],[
@@ -1506,6 +1533,8 @@ AC_TRY_COMPILE(
 [
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 extern int endnetent_r(struct netent_data *);
 ] ,[return (0);],[
@@ -1516,6 +1545,8 @@ AC_TRY_COMPILE(
 [
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 extern void endnetent_r(struct netent_data *);
 ] ,[return (0);],[
@@ -1584,6 +1615,8 @@ AC_SUBST(GROUP_R_SET_RETURN)
 AC_CHECK_FUNC(gethostbyname_r,
 AC_TRY_COMPILE(
 [
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 struct hostent  *gethostbyname_r
 (const char *name, struct hostent *hp, char *buf, int len, int *h_errnop) {}
@@ -1602,6 +1635,8 @@ HOSTENT_DATA="#undef HOSTENT_DATA"
 ]
 ,
 AC_TRY_COMPILE([
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 int gethostbyname_r(const char *name,
                           struct hostent *result,
@@ -1618,6 +1653,7 @@ HOST_R_SETANSWER="#undef HOST_R_SETANSWER"
 HOSTENT_DATA="#define HOSTENT_DATA 1"
 ],
 AC_TRY_COMPILE([
+#undef __USE_MISC
 #define __USE_MISC
 #include <netdb.h>
 extern int gethostbyname_r (const char *,
@@ -1662,6 +1698,8 @@ AC_CHECK_FUNC(endhostent_r,
 AC_TRY_COMPILE([
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 int endhostent_r(struct hostent_data *buffer);
 ], ,
@@ -1672,6 +1710,8 @@ HOST_R_ENT_ARGS="#define HOST_R_ENT_ARGS struct hostent_data *hdptr"
 AC_TRY_COMPILE([
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 extern void endhostent_r(struct hostent_data *ht_data);
 ],[],[
@@ -1682,6 +1722,8 @@ HOST_R_ENT_ARGS="#define HOST_R_ENT_ARGS struct hostent_data *hdptr"
 AC_TRY_COMPILE([
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 extern void endhostent_r(void);
 ],[],[
@@ -1705,6 +1747,8 @@ AC_CHECK_FUNC(sethostent_r,
 AC_TRY_COMPILE([
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 extern void sethostent_r(int flag, struct hostent_data *ht_data);],[],
 [HOST_R_SET_RESULT="#undef HOST_R_SET_RESULT /*empty*/"
@@ -1712,6 +1756,8 @@ HOST_R_SET_RETURN="#define HOST_R_SET_RETURN void"],
 AC_TRY_COMPILE([
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 extern int sethostent_r(int flag, struct hostent_data *ht_data);],[],
 [HOST_R_SET_RESULT="#define HOST_R_SET_RESULT 0"
@@ -1719,6 +1765,8 @@ HOST_R_SET_RETURN="#define HOST_R_SET_RETURN int"],
 AC_TRY_COMPILE([
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 void            sethostent_r (int);],[],
 [HOST_R_SET_RESULT="#undef HOST_R_SET_RESULT"
@@ -1774,6 +1822,8 @@ AC_SUBST(SETGRENT_VOID)
 AC_CHECK_FUNC(getnetgrent_r,
 AC_TRY_COMPILE(
 [
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 int getnetgrent_r(char **m, char **u, char **d, char *b, int l) {}
 ]
@@ -1790,6 +1840,8 @@ NGR_R_RETURN="#define NGR_R_RETURN int"
 ,
 AC_TRY_COMPILE(
 [
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 int getnetgrent_r(char **m, char **u, char **d, char *b, size_t l) {}
 ]
@@ -1806,6 +1858,8 @@ NGR_R_RETURN="#define NGR_R_RETURN int"
 ,
 AC_TRY_COMPILE(
 [
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 extern int getnetgrent_r( char **, char **, char **, void **);
 ]
@@ -1879,6 +1933,8 @@ AC_CHECK_FUNC(innetgr_r,,AC_DEFINE(NEED_INNETGR_R))
 AC_CHECK_FUNC(getprotoent_r,
 AC_TRY_COMPILE(
 [
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 struct protoent *getprotoent_r(struct protoent *result,
 		 char *buffer, int buflen) {}
@@ -1898,6 +1954,8 @@ PROTO_R_RETURN="#define PROTO_R_RETURN struct protoent *"
 ,
 AC_TRY_COMPILE(
 [
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 int getprotoent_r (struct protoent *, char *, size_t, struct protoent **);
 
@@ -1939,6 +1997,8 @@ AC_TRY_COMPILE(
 [
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 void endprotoent_r(void);
 ]
@@ -1964,6 +2024,8 @@ AC_TRY_COMPILE(
 [
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 void               setprotoent_r __P((int));
 ],[],
@@ -2066,6 +2128,8 @@ AC_CHECK_FUNC(getpwuid_r,,AC_DEFINE(NEED_GETPWUID_R))
 
 AC_CHECK_FUNC(getservent_r,
 AC_TRY_COMPILE([
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 struct servent *
 getservent_r(struct servent *result, char *buffer, int buflen) {}
@@ -2081,6 +2145,8 @@ SERV_R_RETURN="#define SERV_R_RETURN struct servent *"
 ]
 ,
 AC_TRY_COMPILE([
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 int
 getservent_r (struct servent *, char *, size_t, struct servent **);
@@ -2119,6 +2185,8 @@ AC_TRY_COMPILE(
 [
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 void endservent_r(void);
 ]
@@ -2145,6 +2213,8 @@ AC_TRY_COMPILE(
 [
 #undef _REENTRANT
 #define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
 #include <netdb.h>
 void            setservent_r(int);
 ]
@@ -2162,15 +2232,83 @@ SERV_R_SET_RETURN="#define SERV_R_SET_RETURN void"
 AC_SUBST(SERV_R_SET_RESULT)
 AC_SUBST(SERV_R_SET_RETURN)
 
+AC_TRY_COMPILE(
+[
+#undef _REENTRANT
+#define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
+#include <unistd.h>
+#include <netdb.h>
+int innetgr(const char *netgroup, const char *host, const char *user, const char *domain);
+]
+,,
+[
+INNETGR_ARGS="#undef INNETGR_ARGS"
+]
+,
+AC_TRY_COMPILE(
+[
+#undef _REENTRANT
+#define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
+#include <unistd.h>
+#include <netdb.h>
+int innetgr(char *netgroup, char *host, char *user, char *domain);
+]
+,,
+[
+INNETGR_ARGS="#define INNETGR_ARGS char *netgroup, char *host, char *user, char *domain"
+]
+,
+))
+
+AC_TRY_COMPILE(
+[
+#undef _REENTRANT
+#define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
+#include <unistd.h>
+#include <netdb.h>
+void setnetgrent(const char *);
+]
+,,
+[
+SETNETGRENT_ARGS="#undef SETNETGRENT_ARGS"
+]
+,
+AC_TRY_COMPILE(
+[
+#undef _REENTRANT
+#define _REENTRANT
+#undef __USE_MISC
+#define __USE_MISC
+#include <unistd.h>
+#include <netdb.h>
+void setnetgrent(char *);
+]
+,,
+[
+SETNETGRENT_ARGS="#define SETNETGRENT_ARGS char *netgroup"
+]
+,
+))
+AC_SUBST(SETNETGRENT_ARGS)
+AC_SUBST(INNETGR_ARGS)
+
 #
 # Random remaining OS-specific issues involving compiler warnings.
 # XXXDCL print messages to indicate some compensation is being done?
 #
-AC_SUBST(ISC_PLATFORM_BRACEPTHREADONCEINIT)
-ISC_PLATFORM_BRACEPTHREADONCEINIT="#undef ISC_PLATFORM_BRACEPTHREADONCEINIT"
 BROKEN_IN6ADDR_INIT_MACROS="#undef BROKEN_IN6ADDR_INIT_MACROS"
 
 case "$host" in
+	*-aix5.1.*)
+		hack_shutup_pthreadmutexinit=yes
+		hack_shutup_in6addr_init_macros=yes
+		;;
 	*-bsdi3.1*)
 		hack_shutup_sputaux=yes
 		;;
@@ -2182,18 +2320,28 @@ case "$host" in
 	*-bsdi4.1*)
 		hack_shutup_stdargcast=yes
 		;;
+	*-hpux11.11)
+		hack_shutup_in6addr_init_macros=yes
+		;;
+	*-osf5.1|*-osf5.1b)
+		hack_shutup_in6addr_init_macros=yes
+		;;
 	*-solaris2.8)
-		hack_shutup_pthreadonceinit=yes
+		hack_shutup_pthreadmutexinit=yes
+		hack_shutup_in6addr_init_macros=yes
+		;;
+	*-solaris2.9)
 		hack_shutup_in6addr_init_macros=yes
 		;;
 esac
 
-case "$hack_shutup_pthreadonceinit" in
+case "$hack_shutup_pthreadmutexinit" in
 	yes)
 		#
-		# Shut up PTHREAD_ONCE_INIT unbraced initializer warnings.
+		# Shut up PTHREAD_MUTEX_INITIALIZER unbraced
+		# initializer warnings.
 		#
-		ISC_PLATFORM_BRACEPTHREADONCEINIT="#define ISC_PLATFORM_BRACEPTHREADONCEINIT 1"
+		AC_DEFINE(SHUTUP_MUTEX_INITIALIZER)
 		;;
 esac
 

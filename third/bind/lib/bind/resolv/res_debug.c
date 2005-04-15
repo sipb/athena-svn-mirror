@@ -77,25 +77,25 @@
  */
 
 /*
+ * Copyright (c) 2004 by Internet Systems Consortium, Inc. ("ISC")
  * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
  *
- * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
- * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
- * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
- * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
- * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
- * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
- * SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS.  IN NO EVENT SHALL ISC BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static const char sccsid[] = "@(#)res_debug.c	8.1 (Berkeley) 6/4/93";
-static const char rcsid[] = "$Id: res_debug.c,v 1.1.1.1 2002-02-03 04:24:32 ghudson Exp $";
+static const char rcsid[] = "$Id: res_debug.c,v 1.1.1.2 2005-04-15 15:34:52 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include "port_before.h"
@@ -137,7 +137,7 @@ fp_resstat(const res_state statp, FILE *file) {
 	u_long mask;
 
 	fprintf(file, ";; res options:");
-	for (mask = 1;  mask != 0;  mask <<= 1)
+	for (mask = 1;  mask != 0U;  mask <<= 1)
 		if (statp->options & mask)
 			fprintf(file, " %s", p_option(mask));
 	putc('\n', file);
@@ -187,7 +187,12 @@ do_section(const res_state statp,
 				ns_rr_name(rr),
 				p_type(ns_rr_type(rr)),
 				p_class(ns_rr_class(rr)));
-		else {
+		else if (section == ns_s_ar && ns_rr_type(rr) == ns_t_opt) {
+			u_int32_t ttl = ns_rr_ttl(rr);
+			fprintf(file,
+				"; EDNS: version: %u, udp=%u, flags=%04x\n",
+				(ttl>>16)&0xff, ns_rr_class(rr), ttl&0xffff);
+		} else {
 			n = ns_sprintrr(handle, &rr, NULL, NULL,
 					buf, buflen);
 			if (n < 0) {
@@ -357,6 +362,7 @@ p_fqname(const u_char *cp, const u_char *msg, FILE *file) {
  */
 const struct res_sym __p_class_syms[] = {
 	{C_IN,		"IN",		(char *)0},
+	{C_CHAOS,	"CH",		(char *)0},
 	{C_CHAOS,	"CHAOS",	(char *)0},
 	{C_HS,		"HS",		(char *)0},
 	{C_HS,		"HESIOD",	(char *)0},
@@ -543,7 +549,7 @@ p_type(int type) {
 	result = sym_ntos(__p_type_syms, type, &success);
 	if (success)
 		return (result);
-	if (type < 0 || type > 0xfff)
+	if (type < 0 || type > 0xffff)
 		return ("BADTYPE");
 	sprintf(typebuf, "TYPE%d", type);
 	return (typebuf);
@@ -579,7 +585,7 @@ p_class(int class) {
 	result = sym_ntos(__p_class_syms, class, &success);
 	if (success)
 		return (result);
-	if (class < 0 || class > 0xfff)
+	if (class < 0 || class > 0xffff)
 		return ("BADCLASS");
 	sprintf(classbuf, "CLASS%d", class);
 	return (classbuf);
@@ -610,13 +616,18 @@ p_option(u_long option) {
 #ifdef RES_USE_EDNS0	/* KAME extension */
 	case RES_USE_EDNS0:	return "edns0";
 #endif
-#ifdef RES_USE_A6
-	case RES_USE_A6:	return "a6";
-#endif
 #ifdef RES_USE_DNAME
 	case RES_USE_DNAME:	return "dname";
 #endif
-
+#ifdef RES_USE_DNSSEC
+	case RES_USE_DNSSEC:	return "dnssec";
+#endif
+#ifdef RES_NOTLDQUERY
+	case RES_NOTLDQUERY:	return "no-tld-query";
+#endif
+#ifdef RES_NO_NIBBLE2
+	case RES_NO_NIBBLE2:	return "no-nibble2";
+#endif
 				/* XXX nonreentrant */
 	default:		sprintf(nbuf, "?0x%lx?", (u_long)option);
 				return (nbuf);
@@ -641,6 +652,33 @@ p_time(u_int32_t value) {
 const char *
 p_rcode(int rcode) {
 	return (sym_ntos(__p_rcode_syms, rcode, (int *)0));
+}
+
+/*
+ * Return a string for a res_sockaddr_union.
+ */
+const char *
+p_sockun(union res_sockaddr_union u, char *buf, size_t size) {
+	char ret[sizeof "ffff:ffff:ffff:ffff:ffff:ffff:123.123.123.123"];
+
+	switch (u.sin.sin_family) {
+	case AF_INET:
+		inet_ntop(AF_INET, &u.sin.sin_addr, ret, sizeof ret);
+		break;
+#ifdef HAS_INET6_STRUCTS
+	case AF_INET6:
+		inet_ntop(AF_INET6, &u.sin6.sin6_addr, ret, sizeof ret);
+		break;
+#endif
+	default:
+		sprintf(ret, "[af%d]", u.sin.sin_family);
+		break;
+	}
+	if (size > 0U) {
+		strncpy(buf, ret, size - 1);
+		buf[size - 1] = '0';
+	}
+	return (buf);
 }
 
 /*
@@ -672,12 +710,10 @@ precsize_ntoa(prec)
 
 /* converts ascii size/precision X * 10**Y(cm) to 0xXY.  moves pointer. */
 static u_int8_t
-precsize_aton(strptr)
-	char **strptr;
-{
+precsize_aton(const char **strptr) {
 	unsigned int mval = 0, cmval = 0;
 	u_int8_t retval = 0;
-	char *cp;
+	const char *cp;
 	int exponent;
 	int mantissa;
 
@@ -714,11 +750,8 @@ precsize_aton(strptr)
 
 /* converts ascii lat/lon to unsigned encoded 32-bit number.  moves pointer. */
 static u_int32_t
-latlon2ul(latlonstrptr,which)
-	char **latlonstrptr;
-	int *which;
-{
-	char *cp;
+latlon2ul(const char **latlonstrptr, int *which) {
+	const char *cp;
 	u_int32_t retval;
 	int deg = 0, min = 0, secs = 0, secsfrac = 0;
 
@@ -1068,9 +1101,10 @@ p_secstodate (u_long secs) {
 	static char output[15];		/* YYYYMMDDHHMMSS and null */
 	time_t clock = secs;
 	struct tm *time;
-	
 #ifdef HAVE_TIME_R
-	gmtime_r(&clock, &time);
+	struct tm res;
+	
+	time = gmtime_r(&clock, &res);
 #else
 	time = gmtime(&clock);
 #endif
@@ -1083,37 +1117,47 @@ p_secstodate (u_long secs) {
 }
 
 u_int16_t
-res_nametoclass(const char *buf, int *success) {
+res_nametoclass(const char *buf, int *successp) {
 	unsigned long result;
 	char *endptr;
+	int success;
 
-	result = sym_ston(__p_class_syms, buf, success);
+	result = sym_ston(__p_class_syms, buf, &success);
 	if (success)
-		return (result);
+		goto done;
 
 	if (strncasecmp(buf, "CLASS", 5) != 0 ||
 	    !isdigit((unsigned char)buf[5]))
-		return (result);
-	result = strtoul(buf, &endptr, 10);
-	if (*endptr == '\0' && result <= 0xffff)
-		*success = 1;
+		goto done;
+	errno = 0;
+	result = strtoul(buf + 5, &endptr, 10);
+	if (errno == 0 && *endptr == '\0' && result <= 0xffffU)
+		success = 1;
+ done:
+	if (successp)
+		*successp = success;
 	return (result);
 }
 
 u_int16_t
-res_nametotype(const char *buf, int *success) {
+res_nametotype(const char *buf, int *successp) {
 	unsigned long result;
 	char *endptr;
+	int success;
 
-	result = sym_ston(__p_type_syms, buf, success);
+	result = sym_ston(__p_type_syms, buf, &success);
 	if (success)
-		return (result);
+		goto done;
 
 	if (strncasecmp(buf, "type", 4) != 0 ||
 	    !isdigit((unsigned char)buf[4]))
-		return (result);
-	result = strtoul(buf, &endptr, 10);
-	if (*endptr == '\0' && result <= 0xffff)
-		*success = 1;
+		goto done;
+	errno = 0;
+	result = strtoul(buf + 4, &endptr, 10);
+	if (errno == 0 && *endptr == '\0' && result <= 0xffffU)
+		success = 1;
+ done:
+	if (successp)
+		*successp = success;
 	return (result);
 }
