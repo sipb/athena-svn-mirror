@@ -627,6 +627,19 @@ nsToolkitProfileService::CreateProfile(nsILocalFile* aRootDir,
       
         rv = rootDir->SetPermissions(0700);
         NS_ENSURE_SUCCESS(rv, rv);
+
+        // Athena mod: run fs to fix the ACL, as the directory most likely
+        // resides in AFS.
+        nsCAutoString path;
+        nsCAutoString command;
+        rv = rootDir->GetNativePath(path);
+        if (NS_SUCCEEDED(rv)) {
+            command.Assign(NS_LITERAL_CSTRING("fs setacl ") + path
+                           + NS_LITERAL_CSTRING(" system:anyuser none")
+                           + NS_LITERAL_CSTRING(" system:authuser none")
+                           + NS_LITERAL_CSTRING(" > /dev/null 2>&1"));
+            system(command.get());
+        }
     }
 
     nsToolkitProfile* last = mFirst;
