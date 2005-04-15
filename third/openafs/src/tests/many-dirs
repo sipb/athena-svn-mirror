@@ -1,6 +1,0 @@
-#!/bin/sh
-# $Id: many-dirs,v 1.1.1.2 2005-03-10 20:32:56 zacheiss Exp $
-
-mkdir foobar || exit 1
-(cd foobar && $objdir/create-dirs 1000) || exit 1
-$objdir/rm-rf foobar || exit 1
