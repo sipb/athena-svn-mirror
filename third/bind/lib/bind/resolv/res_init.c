@@ -52,25 +52,25 @@
  */
 
 /*
+ * Copyright (c) 2004 by Internet Systems Consortium, Inc. ("ISC")
  * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
  *
- * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
- * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
- * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
- * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
- * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
- * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
- * SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS.  IN NO EVENT SHALL ISC BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static const char sccsid[] = "@(#)res_init.c	8.1 (Berkeley) 6/7/93";
-static const char rcsid[] = "$Id: res_init.c,v 1.1.1.2 2002-06-07 05:25:12 ghudson Exp $";
+static const char rcsid[] = "$Id: res_init.c,v 1.1.1.3 2005-04-15 15:32:31 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include "port_before.h"
@@ -161,6 +161,7 @@ __res_vinit(res_state statp, int preinit) {
 	char *net;
 #endif
 	int dots;
+	union res_sockaddr_union u[2];
 
 	if (!preinit) {
 		statp->retrans = RES_TIMEOUT;
@@ -169,20 +170,35 @@ __res_vinit(res_state statp, int preinit) {
 		statp->id = res_randomid();
 	}
 
-	if ((statp->options & RES_INIT) != 0)
+	if ((statp->options & RES_INIT) != 0U)
 		res_ndestroy(statp);
 
+	memset(u, 0, sizeof(u));
 #ifdef USELOOPBACK
-	statp->nsaddr.sin_addr = inet_makeaddr(IN_LOOPBACKNET, 1);
+	u[nserv].sin.sin_addr = inet_makeaddr(IN_LOOPBACKNET, 1);
 #else
-	statp->nsaddr.sin_addr.s_addr = INADDR_ANY;
+	u[nserv].sin.sin_addr.s_addr = INADDR_ANY;
 #endif
-	statp->nsaddr.sin_family = AF_INET;
-	statp->nsaddr.sin_port = htons(NAMESERVER_PORT);
+	u[nserv].sin.sin_family = AF_INET;
+	u[nserv].sin.sin_port = htons(NAMESERVER_PORT);
 #ifdef HAVE_SA_LEN
-	statp->nsaddr.sin_len = sizeof(struct sockaddr_in);
+	u[nserv].sin.sin_len = sizeof(struct sockaddr_in);
 #endif
-	statp->nscount = 1;
+	nserv++;
+#ifdef HAS_INET6_STRUCTS
+#ifdef USELOOPBACK
+	u[nserv].sin6.sin6_addr = in6addr_loopback;
+#else
+	u[nserv].sin6.sin6_addr = in6addr_any;
+#endif
+	u[nserv].sin6.sin6_family = AF_INET6;
+	u[nserv].sin6.sin6_port = htons(NAMESERVER_PORT);
+#ifdef HAVE_SA_LEN
+	u[nserv].sin6.sin6_len = sizeof(struct sockaddr_in6);
+#endif
+	nserv++;
+#endif
+	statp->nscount = 0;
 	statp->ndots = 1;
 	statp->pfcode = 0;
 	statp->_vcsock = -1;
@@ -194,12 +210,13 @@ __res_vinit(res_state statp, int preinit) {
 	if (statp->_u._ext.ext != NULL) {
 	        memset(statp->_u._ext.ext, 0, sizeof(*statp->_u._ext.ext));
 		statp->_u._ext.ext->nsaddrs[0].sin = statp->nsaddr;
-		strcpy(statp->_u._ext.ext->nsuffix, "ip6.int");
-		strcpy(statp->_u._ext.ext->bsuffix, "ip6.arpa");
+		strcpy(statp->_u._ext.ext->nsuffix, "ip6.arpa");
+		strcpy(statp->_u._ext.ext->nsuffix2, "ip6.int");
 	}
 #ifdef RESOLVSORT
 	statp->nsort = 0;
 #endif
+	res_setservers(statp, u, nserv);
 
 	/* Allow user to override the local domain definition */
 	if ((cp = getenv("LOCALDOMAIN")) != NULL) {
@@ -241,6 +258,7 @@ __res_vinit(res_state statp, int preinit) {
 	(line[sizeof(name) - 1] == ' ' || \
 	 line[sizeof(name) - 1] == '\t'))
 
+	nserv = 0;
 	if ((fp = fopen(_PATH_RESCONF, "r")) != NULL) {
 	    /* read the config file */
 	    while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -384,7 +402,7 @@ __res_vinit(res_state statp, int preinit) {
 		    continue;
 		}
 	    }
-	    if (nserv > 1) 
+	    if (nserv > 0) 
 		statp->nscount = nserv;
 #ifdef RESOLVSORT
 	    statp->nsort = nsort;
@@ -473,12 +491,20 @@ res_setoptions(res_state statp, const char *options, const char *source)
 				statp->retrans = i;
 			else
 				statp->retrans = RES_MAXRETRANS;
+#ifdef DEBUG
+			if (statp->options & RES_DEBUG)
+				printf(";;\ttimeout=%d\n", statp->retrans);
+#endif
 		} else if (!strncmp(cp, "attempts:", sizeof("attempts:") - 1)){
 			i = atoi(cp + sizeof("attempts:") - 1);
 			if (i <= RES_MAXRETRY)
 				statp->retry = i;
 			else
 				statp->retry = RES_MAXRETRY;
+#ifdef DEBUG
+			if (statp->options & RES_DEBUG)
+				printf(";;\tattempts=%d\n", statp->retry);
+#endif
 		} else if (!strncmp(cp, "debug", sizeof("debug") - 1)) {
 #ifdef DEBUG
 			if (!(statp->options & RES_DEBUG)) {
@@ -488,9 +514,13 @@ res_setoptions(res_state statp, const char *options, const char *source)
 			}
 			printf(";;\tdebug\n");
 #endif
+		} else if (!strncmp(cp, "no_tld_query",
+				    sizeof("no_tld_query") - 1) ||
+			   !strncmp(cp, "no-tld-query",
+				    sizeof("no-tld-query") - 1)) {
+			statp->options |= RES_NOTLDQUERY;
 		} else if (!strncmp(cp, "inet6", sizeof("inet6") - 1)) {
 			statp->options |= RES_USE_INET6;
-			
 		} else if (!strncmp(cp, "rotate", sizeof("rotate") - 1)) {
 			statp->options |= RES_ROTATE;
 		} else if (!strncmp(cp, "no-check-names",
@@ -502,9 +532,6 @@ res_setoptions(res_state statp, const char *options, const char *source)
 			statp->options |= RES_USE_EDNS0;
 		}
 #endif
-		else if (!strncmp(cp, "a6", sizeof("a6") - 1)) {
-			statp->options |= RES_USE_A6;
-		}
 		else if (!strncmp(cp, "dname", sizeof("dname") - 1)) {
 			statp->options |= RES_USE_DNAME;
 		}
@@ -516,26 +543,22 @@ res_setoptions(res_state statp, const char *options, const char *source)
 			strncpy(ext->nsuffix, cp, i);
 			ext->nsuffix[i] = '\0';
 		}
-		else if (!strncmp(cp, "bitstring:", sizeof("bitstring:") - 1)) {
+		else if (!strncmp(cp, "nibble2:", sizeof("nibble2:") - 1)) {
 			if (ext == NULL)
 				goto skip;
-			cp += sizeof("bitstring:") - 1;
-			i = MIN(strcspn(cp, " \t"), sizeof(ext->bsuffix) - 1);
-			strncpy(ext->bsuffix, cp, i);
-			ext->bsuffix[i] = '\0';
+			cp += sizeof("nibble2:") - 1;
+			i = MIN(strcspn(cp, " \t"), sizeof(ext->nsuffix2) - 1);
+			strncpy(ext->nsuffix2, cp, i);
+			ext->nsuffix2[i] = '\0';
 		}
 		else if (!strncmp(cp, "v6revmode:", sizeof("v6revmode:") - 1)) {
 			cp += sizeof("v6revmode:") - 1;
-			if (!strncmp(cp, "nibble", sizeof("nibble") - 1)) {
-				statp->options &= ~RES_NO_NIBBLE;
-				statp->options |= RES_NO_BITSTRING;
-			} else if (!strncmp(cp, "bitstring",
-				    sizeof("bitstring") - 1)) {
-				statp->options |= RES_NO_NIBBLE;
-				statp->options &= ~RES_NO_BITSTRING;
+			/* "nibble" and "bitstring" used to be valid */
+			if (!strncmp(cp, "single", sizeof("single") - 1)) {
+				statp->options |= RES_NO_NIBBLE2;
 			} else if (!strncmp(cp, "both", sizeof("both") - 1)) {
 				statp->options &=
-					 ~(RES_NO_NIBBLE|RES_NO_BITSTRING);
+					 ~RES_NO_NIBBLE2;
 			}
 		}
 		else {
@@ -609,14 +632,14 @@ const char *
 res_get_nibblesuffix(res_state statp) {
 	if (statp->_u._ext.ext)
 		return (statp->_u._ext.ext->nsuffix);
-	return ("ip6.int");
+	return ("ip6.arpa");
 }
 
 const char *
-res_get_bitstringsuffix(res_state statp) {
+res_get_nibblesuffix2(res_state statp) {
 	if (statp->_u._ext.ext)
-		return (statp->_u._ext.ext->bsuffix);
-	return ("ip6.arpa");
+		return (statp->_u._ext.ext->nsuffix2);
+	return ("ip6.int");
 }
 
 void
@@ -646,6 +669,7 @@ res_setservers(res_state statp, const union res_sockaddr_union *set, int cnt) {
 			nserv++;
 			break;
 
+#ifdef HAS_INET6_STRUCTS
 		case AF_INET6:
 			size = sizeof(set->sin6);
 			if (statp->_u._ext.ext)
@@ -658,6 +682,7 @@ res_setservers(res_state statp, const union res_sockaddr_union *set, int cnt) {
 				statp->nsaddr_list[nserv].sin_family = 0;
 			nserv++;
 			break;
+#endif
 
 		default:
 			break;
@@ -692,6 +717,7 @@ res_getservers(res_state statp, union res_sockaddr_union *set, int cnt) {
 				       size);
 			break;
 
+#ifdef HAS_INET6_STRUCTS
 		case AF_INET6:
 			size = sizeof(set->sin6);
 			if (statp->_u._ext.ext)
@@ -702,6 +728,7 @@ res_getservers(res_state statp, union res_sockaddr_union *set, int cnt) {
 				memcpy(&set->sin6, &statp->nsaddr_list[i],
 				       size);
 			break;
+#endif
 
 		default:
 			set->sin.sin_family = 0;

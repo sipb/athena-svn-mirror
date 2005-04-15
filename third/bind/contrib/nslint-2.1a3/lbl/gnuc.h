@@ -1,4 +1,4 @@
-/* @(#) $Header: /afs/dev.mit.edu/source/repository/third/bind/contrib/nslint-2.1a3/lbl/gnuc.h,v 1.1.1.1 2002-06-07 05:25:05 ghudson Exp $ (LBL) */
+/* @(#) $Header: /afs/dev.mit.edu/source/repository/third/bind/contrib/nslint-2.1a3/lbl/gnuc.h,v 1.1.1.2 2005-04-15 15:23:22 ghudson Exp $ (LBL) */
 
 /* Define __P() macro, if necessary */
 #ifndef __P

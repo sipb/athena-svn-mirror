@@ -1,4 +1,4 @@
-dnl @(#) $Header: /afs/dev.mit.edu/source/repository/third/bind/contrib/nslint-2.1a3/configure.in,v 1.1.1.1 2002-06-07 05:25:03 ghudson Exp $ (LBL)
+dnl @(#) $Header: /afs/dev.mit.edu/source/repository/third/bind/contrib/nslint-2.1a3/configure.in,v 1.1.1.2 2005-04-15 15:23:20 ghudson Exp $ (LBL)
 dnl
 dnl Copyright (c) 1995, 1996, 1997
 dnl	The Regents of the University of California.  All rights reserved.

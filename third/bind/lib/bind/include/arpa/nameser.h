@@ -32,24 +32,24 @@
  */
 
 /*
+ * Copyright (c) 2004 by Internet Systems Consortium, Inc. ("ISC")
  * Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
  *
- * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
- * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
- * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
- * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
- * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
- * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
- * SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS.  IN NO EVENT SHALL ISC BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /*
- *	$Id: nameser.h,v 1.1.1.1 2002-02-03 04:23:56 ghudson Exp $
+ *	$Id: nameser.h,v 1.1.1.2 2005-04-15 15:31:06 ghudson Exp $
  */
 
 #ifndef _ARPA_NAMESER_H_
@@ -78,8 +78,9 @@
 /*
  * Define constants based on RFC 883, RFC 1034, RFC 1035
  */
-#define NS_PACKETSZ	512	/* maximum packet size */
+#define NS_PACKETSZ	512	/* default UDP packet size */
 #define NS_MAXDNAME	1025	/* maximum domain name */
+#define NS_MAXMSG	65535	/* maximum message size */
 #define NS_MAXCDNAME	255	/* maximum compressed domain name */
 #define NS_MAXLABEL	63	/* maximum length of domain label */
 #define NS_HFIXEDSZ	12	/* #/bytes of fixed data in header */
@@ -203,7 +204,9 @@ typedef	enum __ns_rcode {
 	ns_r_notauth = 9,	/* Not authoritative for zone */
 	ns_r_notzone = 10,	/* Zone of record different from zone section */
 	ns_r_max = 11,
-	/* The following are TSIG extended errors */
+	/* The following are EDNS extended rcodes */
+	ns_r_badvers = 16,
+	/* The following are TSIG errors */
 	ns_r_badsig = 16,
 	ns_r_badkey = 17,
 	ns_r_badtime = 18
@@ -292,6 +295,7 @@ typedef enum __ns_type {
 	ns_t_dname = 39,	/* Non-terminal DNAME (for IPv6) */
 	ns_t_sink = 40,		/* Kitchen sink (experimentatl) */
 	ns_t_opt = 41,		/* EDNS0 option (meta-RR) */
+	ns_t_apl = 42,		/* Address prefix list (RFC 3123) */
 	ns_t_tkey = 249,	/* Transaction key */
 	ns_t_tsig = 250,	/* Transaction signature. */
 	ns_t_ixfr = 251,	/* Incremental zone transfer. */
@@ -396,7 +400,7 @@ typedef enum __ns_cert_types {
 
 /* Signatures */
 #define	NS_MD5RSA_MIN_BITS	 512	/* Size of a mod or exp in bits */
-#define	NS_MD5RSA_MAX_BITS	2552
+#define	NS_MD5RSA_MAX_BITS	4096
 	/* Total of binary mod and exp */
 #define	NS_MD5RSA_MAX_BYTES	((NS_MD5RSA_MAX_BITS+7/8)*2+3)
 	/* Max length of text sig block */
@@ -424,6 +428,11 @@ typedef enum __ns_cert_types {
 #define	NS_NXT_BIT_CLEAR(n,p) (p[(n)/NS_NXT_BITS] &= ~(0x80>>((n)%NS_NXT_BITS)))
 #define	NS_NXT_BIT_ISSET(n,p) (p[(n)/NS_NXT_BITS] &   (0x80>>((n)%NS_NXT_BITS)))
 #define NS_NXT_MAX 127
+
+/*
+ * EDNS0 extended flags, host order.
+ */
+#define NS_OPT_DNSSEC_OK	0x8000U
 
 /*
  * Inline versions of get/put short/long.  Pointer is advanced.
@@ -490,7 +499,9 @@ typedef enum __ns_cert_types {
 #define	ns_name_skip		__ns_name_skip
 #define	ns_name_rollback	__ns_name_rollback
 #define	ns_sign			__ns_sign
+#define	ns_sign2		__ns_sign2
 #define	ns_sign_tcp		__ns_sign_tcp
+#define	ns_sign_tcp2		__ns_sign_tcp2
 #define	ns_sign_tcp_init	__ns_sign_tcp_init
 #define ns_find_tsig		__ns_find_tsig
 #define	ns_verify		__ns_verify
@@ -535,8 +546,14 @@ void		ns_name_rollback __P((const u_char *, const u_char **,
 				      const u_char **));
 int		ns_sign __P((u_char *, int *, int, int, void *,
 			     const u_char *, int, u_char *, int *, time_t));
+int		ns_sign2 __P((u_char *, int *, int, int, void *,
+			      const u_char *, int, u_char *, int *, time_t,
+			      u_char **, u_char **));
 int		ns_sign_tcp __P((u_char *, int *, int, int,
 				 ns_tcp_tsig_state *, int));
+int		ns_sign_tcp2 __P((u_char *, int *, int, int,
+				  ns_tcp_tsig_state *, int,
+				  u_char **, u_char **));
 int		ns_sign_tcp_init __P((void *, const u_char *, int,
 					ns_tcp_tsig_state *));
 u_char		*ns_find_tsig __P((u_char *, u_char *));

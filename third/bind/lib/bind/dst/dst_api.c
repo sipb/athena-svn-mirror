@@ -1,5 +1,5 @@
 #ifndef LINT
-static const char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/third/bind/lib/bind/dst/dst_api.c,v 1.1.1.1 2002-02-03 04:23:53 ghudson Exp $";
+static const char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/third/bind/lib/bind/dst/dst_api.c,v 1.1.1.2 2005-04-15 15:35:47 ghudson Exp $";
 #endif
 
 /*
@@ -452,7 +452,7 @@ dst_s_write_private_key(const DST_KEY *key)
  *		      filename of the key file to be read.
  *  Returns
  *	NULL	    If the key does not exist or no name is supplied.
- *	NON-NULL	Initalized key structure if the key exists.
+ *	NON-NULL	Initialized key structure if the key exists.
  */
 
 static DST_KEY *
@@ -861,7 +861,8 @@ dst_s_read_private_key_file(char *name, DST_KEY *pk_key, u_int16_t in_id,
 	len = cnt;
 	p = in_buff;
 
-	if (!dst_s_verify_str((const char **) &p, "Private-key-format: v")) {
+	if (!dst_s_verify_str((const char **) (void *)&p,
+			       "Private-key-format: v")) {
 		EREPORT(("dst_s_read_private_key_file(): Not a Key file/Decrypt failed %s\n", name));
 		goto fail;
 	}
@@ -879,7 +880,7 @@ dst_s_read_private_key_file(char *name, DST_KEY *pk_key, u_int16_t in_id,
 
 	while (*p++ != '\n') ;	/* skip to end of line */
 
-	if (!dst_s_verify_str((const char **) &p, "Algorithm: "))
+	if (!dst_s_verify_str((const char **) (void *)&p, "Algorithm: "))
 		goto fail;
 
 	if (sscanf((char *)p, "%d", &alg) != 1)

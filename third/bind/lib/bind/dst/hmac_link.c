@@ -1,6 +1,6 @@
 #ifdef HMAC_MD5
 #ifndef LINT
-static const char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/third/bind/lib/bind/dst/hmac_link.c,v 1.1.1.1 2002-02-03 04:23:53 ghudson Exp $";
+static const char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/third/bind/lib/bind/dst/hmac_link.c,v 1.1.1.2 2005-04-15 15:25:16 ghudson Exp $";
 #endif
 /*
  * Portions Copyright (c) 1995-1998 by Trusted Information Systems, Inc.
@@ -459,15 +459,10 @@ dst_hmac_md5_init()
 }
 
 #else 
+#define	dst_hmac_md5_init	__dst_hmac_md5_init
+
 int
 dst_hmac_md5_init(){
 	return (0);
 }
 #endif
-
-
-
-
-
-
-

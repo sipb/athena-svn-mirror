@@ -1,7 +1,8 @@
-Copyright (C) 2001  Internet Software Consortium.
+Copyright (C) 2004  Internet Systems Consortium, Inc. ("ISC")
+Copyright (C) 2001, 2002  Internet Software Consortium.
 See COPYRIGHT in the source root or http://isc.org/copyright.html for terms.
 
-$Id: win32-build.txt,v 1.1.1.1 2002-02-03 04:37:20 ghudson Exp $
+$Id: win32-build.txt,v 1.1.1.2 2005-04-15 15:30:49 ghudson Exp $
 
        BIND 9.2.0 Beta for Win32 Source Build Instructions.  28-Jul-2001
 

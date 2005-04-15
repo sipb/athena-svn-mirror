@@ -1,18 +1,18 @@
 /*
+ * Copyright (c) 2004 by Internet Systems Consortium, Inc. ("ISC")
  * Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
  *
- * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
- * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
- * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
- * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
- * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
- * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
- * SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS.  IN NO EVENT SHALL ISC BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /*
@@ -21,7 +21,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static const char rcsid[] = "$Id: res_mkupdate.c,v 1.1.1.1 2002-02-03 04:24:34 ghudson Exp $";
+static const char rcsid[] = "$Id: res_mkupdate.c,v 1.1.1.2 2005-04-15 15:33:45 ghudson Exp $";
 #endif /* not lint */
 
 #include "port_before.h"
@@ -219,6 +219,7 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 		case T_MR:
 		case T_NS:
 		case T_PTR:
+		case ns_t_dname:
 			if (!getword_str(buf2, sizeof buf2, &startp, endp))
 				return (-1);
 			n = dn_comp(buf2, cp, buflen, dnptrs, lastdnptr);
@@ -302,7 +303,7 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 
 			if (!getword_str(buf2, sizeof buf2, &startp, endp))
 				return (-1);
-			n = dn_comp(buf2, cp, buflen, dnptrs, lastdnptr);
+			n = dn_comp(buf2, cp, buflen, NULL, NULL);
 			if (n < 0)
 				return (-1);
 			cp += n;
@@ -349,13 +350,13 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 				bm[i] = 0;
 
 			while (getword_str(buf2, sizeof buf2, &startp, endp)) {
-				if ((n1 = res_servicenumber(buf2)) <= 0)
+				if ((n = res_servicenumber(buf2)) <= 0)
 					return (-1);
 
-				if (n1 < MAXPORT) {
-					bm[n1/8] |= (0x80>>(n1%8));
-					if (n1 > maxbm)
-						maxbm = n1;
+				if (n < MAXPORT) {
+					bm[n/8] |= (0x80>>(n%8));
+					if ((unsigned)n > maxbm)
+						maxbm = n;
 				} else
 					return (-1);
 			}
@@ -379,7 +380,7 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 			}
 			break;
 		case T_TXT:
-			while (1) {
+			for (;;) {
 				if ((n = getstr_str(buf2, sizeof buf2,
 						&startp, endp)) < 0) {
 					if (cp != (sp2 + INT16SZ))
@@ -482,8 +483,10 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 				char *ulendp;
 				u_int32_t ottl;
 
+				errno = 0;
 				ottl = strtoul(buf2, &ulendp, 10);
-				if (ulendp != NULL && *ulendp != '\0')
+				if (errno != 0 ||
+				    (ulendp != NULL && *ulendp != '\0'))
 					return (-1);
 				ShrinkBuffer(INT32SZ);
 				PUTLONG(ottl, cp);
@@ -572,14 +575,14 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 			/* next name */
 			if (!getword_str(buf2, sizeof buf2, &startp, endp))
 				return (-1);
-			n = dn_comp(buf2, cp, buflen, dnptrs, lastdnptr);
+			n = dn_comp(buf2, cp, buflen, NULL, NULL);
 			if (n < 0)
 				return (-1);
 			cp += n;
 			ShrinkBuffer(n);
 			maxtype = 0;
 			memset(data, 0, sizeof data);
-			while (1) {
+			for (;;) {
 				if (!getword_str(buf2, sizeof buf2, &startp,
 						 endp))
 					break;
@@ -635,6 +638,62 @@ res_nmkupdate(res_state statp, ns_updrec *rrecp_in, u_char *buf, int buflen) {
 			ShrinkBuffer(NS_IN6ADDRSZ);
 			memcpy(cp, &in6a, NS_IN6ADDRSZ);
 			cp += NS_IN6ADDRSZ;
+			break;
+		case ns_t_naptr:
+			/* Order Preference Flags Service Replacement Regexp */
+			/* Order */
+			n = getnum_str(&startp, endp);
+			if (n < 0 || n > 65535)
+				return (-1);
+			ShrinkBuffer(INT16SZ);
+			PUTSHORT(n, cp);
+			/* Preference */
+			n = getnum_str(&startp, endp);
+			if (n < 0 || n > 65535)
+				return (-1);
+			ShrinkBuffer(INT16SZ);
+			PUTSHORT(n, cp);
+			/* Flags */
+			if ((n = getstr_str(buf2, sizeof buf2,
+					&startp, endp)) < 0) {
+				return (-1);
+			}
+			if (n > 255)
+				return (-1);
+			ShrinkBuffer(n+1);
+			*cp++ = n;
+			memcpy(cp, buf2, n);
+			cp += n;
+			/* Service Classes */
+			if ((n = getstr_str(buf2, sizeof buf2,
+					&startp, endp)) < 0) {
+				return (-1);
+			}
+			if (n > 255)
+				return (-1);
+			ShrinkBuffer(n+1);
+			*cp++ = n;
+			memcpy(cp, buf2, n);
+			cp += n;
+			/* Pattern */
+			if ((n = getstr_str(buf2, sizeof buf2,
+					&startp, endp)) < 0) {
+				return (-1);
+			}
+			if (n > 255)
+				return (-1);
+			ShrinkBuffer(n+1);
+			*cp++ = n;
+			memcpy(cp, buf2, n);
+			cp += n;
+			/* Replacement */
+			if (!getword_str(buf2, sizeof buf2, &startp, endp))
+				return (-1);
+			n = dn_comp(buf2, cp, buflen, NULL, NULL);
+			if (n < 0)
+				return (-1);
+			cp += n;
+			ShrinkBuffer(n);
 			break;
 		default:
 			return (-1);
@@ -807,7 +866,7 @@ gethexnum_str(u_char **startpp, u_char *endp) {
 }
 
 /*
- * Get a whitespace delimited base 16 number from a string (not file) into buf
+ * Get a whitespace delimited base 10 number from a string (not file) into buf
  * update the start pointer to point after the number in the string.
  */
 static int

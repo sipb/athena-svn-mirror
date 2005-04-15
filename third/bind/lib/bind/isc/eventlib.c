@@ -1,18 +1,18 @@
 /*
+ * Copyright (c) 2004 by Internet Systems Consortium, Inc. ("ISC")
  * Copyright (c) 1995-1999 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
  *
- * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
- * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
- * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
- * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
- * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
- * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
- * SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS.  IN NO EVENT SHALL ISC BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /* eventlib.c - implement glue for the eventlib
@@ -20,7 +20,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static const char rcsid[] = "$Id: eventlib.c,v 1.1.1.1 2002-02-03 04:24:21 ghudson Exp $";
+static const char rcsid[] = "$Id: eventlib.c,v 1.1.1.2 2005-04-15 15:36:59 ghudson Exp $";
 #endif
 
 #include "port_before.h"
@@ -42,6 +42,8 @@ static const char rcsid[] = "$Id: eventlib.c,v 1.1.1.1 2002-02-03 04:24:21 ghuds
 
 #include "port_after.h"
 
+int      __evOptMonoTime;
+
 /* Forward. */
 
 #ifdef NEED_PSELECT
@@ -49,6 +51,8 @@ static int		pselect(int, void *, void *, void *,
 				struct timespec *,
 				const sigset_t *);
 #endif
+
+int    __evOptMonoTime;
 
 /* Public. */
 
@@ -272,7 +276,7 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 		if (ctx->debug > 0) {
 			interval = evSubTime(ctx->lastEventTime,
 					     ctx->lastSelectTime);
-			if (interval.tv_sec > 0)
+			if (interval.tv_sec > 0 || interval.tv_nsec > 0)
 				evPrintf(ctx, 1,
 				   "time between pselect() %u.%09u count %d\n",
 					 interval.tv_sec, interval.tv_nsec,
@@ -291,12 +295,12 @@ evGetNext(evContext opaqueCtx, evEvent *opaqueEv, int options) {
 			}
 
 			evPrintf(ctx, 4,
-				"pselect(%d, 0x%lx, 0x%lx, 0x%lx, %d.%09ld)\n",
+				"pselect(%d, 0x%lx, 0x%lx, 0x%lx, %ld.%09ld)\n",
 				 ctx->fdMax+1,
 				 (u_long)ctx->rdLast.fds_bits[0],
 				 (u_long)ctx->wrLast.fds_bits[0],
 				 (u_long)ctx->exLast.fds_bits[0],
-				 tp ? tp->tv_sec : -1,
+				 tp ? (long)tp->tv_sec : -1L,
 				 tp ? tp->tv_nsec : -1);
 
 			/* XXX should predict system's earliness and adjust. */
@@ -463,7 +467,7 @@ evDispatch(evContext opaqueCtx, evEvent opaqueEv) {
 		evAccept *this = ev->u.accept.this;
 
 		evPrintf(ctx, 5,
-			"Dispatch.Accept: fd %d -> %d, func %#x, uap %#x\n",
+			"Dispatch.Accept: fd %d -> %d, func %p, uap %p\n",
 			 this->conn->fd, this->fd,
 			 this->conn->func, this->conn->uap);
 		errno = this->ioErrno;
@@ -480,7 +484,7 @@ evDispatch(evContext opaqueCtx, evEvent opaqueEv) {
 		int eventmask = ev->u.file.eventmask;
 
 		evPrintf(ctx, 5,
-			"Dispatch.File: fd %d, mask 0x%x, func %#x, uap %#x\n",
+			"Dispatch.File: fd %d, mask 0x%x, func %p, uap %p\n",
 			 this->fd, this->eventmask, this->func, this->uap);
 		(this->func)(opaqueCtx, this->uap, this->fd, eventmask);
 #ifdef EVENTLIB_TIME_CHECKS
@@ -492,7 +496,7 @@ evDispatch(evContext opaqueCtx, evEvent opaqueEv) {
 		evStream *this = ev->u.stream.this;
 
 		evPrintf(ctx, 5,
-			 "Dispatch.Stream: fd %d, func %#x, uap %#x\n",
+			 "Dispatch.Stream: fd %d, func %p, uap %p\n",
 			 this->fd, this->func, this->uap);
 		errno = this->ioErrno;
 		(this->func)(opaqueCtx, this->uap, this->fd, this->ioDone);
@@ -504,7 +508,7 @@ evDispatch(evContext opaqueCtx, evEvent opaqueEv) {
 	    case Timer: {
 		evTimer *this = ev->u.timer.this;
 
-		evPrintf(ctx, 5, "Dispatch.Timer: func %#x, uap %#x\n",
+		evPrintf(ctx, 5, "Dispatch.Timer: func %p, uap %p\n",
 			 this->func, this->uap);
 		(this->func)(opaqueCtx, this->uap, this->due, this->inter);
 #ifdef EVENTLIB_TIME_CHECKS
@@ -516,7 +520,7 @@ evDispatch(evContext opaqueCtx, evEvent opaqueEv) {
 		evWait *this = ev->u.wait.this;
 
 		evPrintf(ctx, 5,
-			 "Dispatch.Wait: tag %#x, func %#x, uap %#x\n",
+			 "Dispatch.Wait: tag %p, func %p, uap %p\n",
 			 this->tag, this->func, this->uap);
 		(this->func)(opaqueCtx, this->uap, this->tag);
 #ifdef EVENTLIB_TIME_CHECKS
@@ -590,14 +594,17 @@ evDrop(evContext opaqueCtx, evEvent opaqueEv) {
 		 * Timer is still there.  Delete it if it has expired,
 		 * otherwise set it according to its next interval.
 		 */
-		if (this->inter.tv_sec == 0 && this->inter.tv_nsec == 0L) {
+		if (this->inter.tv_sec == (time_t)0 &&
+		    this->inter.tv_nsec == 0L) {
 			opaque.opaque = this;			
 			(void) evClearTimer(opaqueCtx, opaque);
 		} else {
 			opaque.opaque = this;
 			(void) evResetTimer(opaqueCtx, opaque, this->func,
 					    this->uap,
-					    evAddTime(ctx->lastEventTime,
+					    evAddTime((this->mode & EV_TMR_RATE) ?
+						      this->due :
+						      ctx->lastEventTime,
 						      this->inter),
 					    this->inter);
 		}
@@ -646,6 +653,55 @@ evPrintf(const evContext_p *ctx, int level, const char *fmt, ...) {
 		fflush(ctx->output);
 	}
 	va_end(ap);
+}
+
+int
+evSetOption(evContext *opaqueCtx, const char *option, int value) {
+	/* evContext_p *ctx = opaqueCtx->opaque; */
+
+	UNUSED(opaqueCtx);
+	UNUSED(value);
+#ifndef CLOCK_MONOTONIC
+	UNUSED(option);
+#endif 
+
+#ifdef CLOCK_MONOTONIC
+	if (strcmp(option, "monotime") == 0) {
+		if (opaqueCtx  != NULL)
+			errno = EINVAL;
+		if (value == 0 || value == 1) {
+			__evOptMonoTime = value;
+			return (0);
+		} else {
+			errno = EINVAL;
+			return (-1);
+		}
+	} 
+#endif
+	errno = ENOENT;
+	return (-1);
+}
+
+int
+evGetOption(evContext *opaqueCtx, const char *option, int *value) {
+	/* evContext_p *ctx = opaqueCtx->opaque; */
+
+	UNUSED(opaqueCtx);
+#ifndef CLOCK_MONOTONIC
+	UNUSED(value);
+	UNUSED(option);
+#endif 
+
+#ifdef CLOCK_MONOTONIC
+	if (strcmp(option, "monotime") == 0) {
+		if (opaqueCtx  != NULL)
+			errno = EINVAL;
+		*value = __evOptMonoTime;
+		return (0);
+	}
+#endif
+	errno = ENOENT;
+	return (-1);
 }
 
 #ifdef NEED_PSELECT
