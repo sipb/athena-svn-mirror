@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.7 2004-10-28 16:17:28 ghudson Exp $
+# $Id: Makefile.athena,v 1.8 2005-04-15 16:26:15 ghudson Exp $
 
 dist:
 
@@ -15,4 +15,4 @@ check:
 	${MAKE} test
 
 install:
-	${MAKE} install INSTALL_PREFIX="$$SRVD"
+	${MAKE} install INSTALL_PREFIX="$$SRVD" PATH=${sprobin}:${PATH}
