@@ -1,0 +1,19 @@
+# $Id: Makefile.athena,v 1.1 2005-04-15 16:24:03 ghudson Exp $
+
+dist:
+	cp "$$CONFIG_SITE" config.site.athena
+
+prepare:
+	rm -f config.cache
+	./configure --without-saslauthd --with-plugindir=/usr/athena/lib/sasl2
+
+clean:
+	${MAKE} clean
+
+all:
+	LD_RUN_PATH=/usr/athena/lib ${MAKE} all
+
+check:
+
+install:
+	LD_RUN_PATH=/usr/athena/lib ${MAKE} install DESTDIR="$$SRVD"
