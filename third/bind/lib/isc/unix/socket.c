@@ -15,7 +15,7 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: socket.c,v 1.3 2005-04-15 16:16:50 ghudson Exp $ */
+/* $Id: socket.c,v 1.4 2005-04-15 21:15:23 zacheiss Exp $ */
 
 #include <config.h>
 
@@ -1429,7 +1429,7 @@ isc_socket_create(isc_socketmgr_t *manager, int pf, isc_sockettype_t type,
 		return (ISC_R_UNEXPECTED);
 	}
 
-#ifdef SO_BSDCOMPAT
+#if 0
 	if (setsockopt(sock->fd, SOL_SOCKET, SO_BSDCOMPAT,
 		       (void *)&on, sizeof(on)) < 0) {
 		isc__strerror(errno, strbuf, sizeof(strbuf));
