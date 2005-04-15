@@ -28,11 +28,21 @@ function Startup()
   {
     try
     {
-      // no disk cache folder found; default to profile directory
-      var dirSvc = Components.classes["@mozilla.org/file/directory_service;1"]
-        .getService(nsIProperties);
-      var ifile = dirSvc.get("ProfD", nsIFile);
-      path = ifile.QueryInterface(nsILocalFile);
+      // No disk cache folder found.
+      // Athena mod: Instead of defaulting to the profile directory,
+      // which is likely to reside in the user's AFS home directory,
+      // construct a path under /var/tmp with the user and profile
+      // names.  Also see nsCacheProfilePrefObserver::ReadPrefs()
+      // in netwerk/cache/src/nsCacheService.cpp.
+      path = Components.classes["@mozilla.org/file/local;1"]
+        .createInstance(nsILocalFile); 
+      var userinfo = Components.classes["@mozilla.org/userinfo;1"]
+        .getService(Components.interfaces.nsIUserInfo);
+      var profile = Components.classes["@mozilla.org/profile/manager;1"]
+        .getService(Components.interfaces.nsIProfile);
+      path.initWithPath("/var/tmp/Mozilla-Firefox-" + userinfo.username);
+      if (profile)
+        path.appendRelativePath(profile.currentProfile);
 
       // now remember the new assumption
       if (pref)

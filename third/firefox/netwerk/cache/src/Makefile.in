@@ -33,6 +33,8 @@ REQUIRES	= xpcom \
 		  string \
 		  necko \
 		  pref \
+		  appshell \
+		  profile \
 		  $(NULL)
 
 EXPORTS		= \

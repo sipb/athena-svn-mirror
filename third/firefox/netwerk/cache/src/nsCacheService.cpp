@@ -45,6 +45,8 @@
 #include "nsAppDirectoryServiceDefs.h"
 #include "nsVoidArray.h"
 
+#include "nsIProfile.h"
+#include "nsIUserInfo.h"
 
 
 /******************************************************************************
@@ -320,17 +322,33 @@ nsCacheProfilePrefObserver::ReadPrefs(nsIPrefBranch* branch)
         rv = NS_GetSpecialDirectory(NS_APP_CACHE_PARENT_DIR,
                                     getter_AddRefs(directory));
         if (NS_FAILED(rv)) {
-            // try to get the profile directory (there may not be a profile yet)
-            rv = NS_GetSpecialDirectory(NS_APP_USER_PROFILE_50_DIR,
-                                        getter_AddRefs(directory));
-#if DEBUG
-        } else if (NS_FAILED(rv)) {
-            // use current process directory during development
-            rv = NS_GetSpecialDirectory(NS_XPCOM_CURRENT_PROCESS_DIR,
-                                        getter_AddRefs(directory));
-#endif
+            // Athena mod: Instead of defaulting to the profile directory,
+            // which is likely to reside in the user's AFS home directory,
+            // construct a path under /var/tmp with the user and profile
+            // names.  Also see:
+            // xpfe/components/prefwindow/resources/content/pref-cache.js
+            nsXPIDLCString userName;
+            nsCOMPtr<nsIUserInfo> userInfo = do_GetService(NS_USERINFO_CONTRACTID,
+                                                           &rv);
+            if (NS_SUCCEEDED(rv))
+                userInfo->GetUsername(getter_Copies(userName));
+            rv = NS_NewLocalFile(NS_LITERAL_STRING("/var/tmp/Mozilla-Firefox-")
+                                 + NS_ConvertASCIItoUCS2(userName),
+                                 PR_FALSE,
+                                 getter_AddRefs(mDiskCacheParentDirectory));
+
+            if (NS_SUCCEEDED(rv)) {
+                nsCOMPtr<nsIProfile> profileMgr = do_GetService(NS_PROFILE_CONTRACTID,
+                                                                &rv);
+                if (NS_SUCCEEDED(rv)) {
+                    nsXPIDLString profileName;
+                    profileMgr->GetCurrentProfile(getter_Copies(profileName));
+                    if (!profileName.IsEmpty())
+                        mDiskCacheParentDirectory->AppendRelativePath(profileName);
+                }
+            }
         }
-        if (directory)
+        else if (directory)
             mDiskCacheParentDirectory = do_QueryInterface(directory, &rv);
     }
 #endif // !NECKO_DISK_CACHE
