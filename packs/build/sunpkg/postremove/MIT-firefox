@@ -1,0 +1,11 @@
+#!/bin/sh
+
+MOZILLA_FIVE_HOME=$PKG_INSTALL_ROOT/usr/athena/lib/firefox
+
+rm -rf $MOZILLA_FIVE_HOME/chrome/overlayinfo
+rm -rf $MOZILLA_FIVE_HOME/components
+rm -f  $MOZILLA_FIVE_HOME/chrome/*.rdf
+rm -rf $MOZILLA_FIVE_HOME/extensions
+rm -f $MOZILLA_FIVE_HOME/components.ini
+
+exit 0
