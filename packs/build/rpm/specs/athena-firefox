@@ -1,0 +1,30 @@
+Name: athena-firefox
+Summary: Mozilla Firefox Web browser, for Athena.
+License: MPL
+Group: Applications/Internet
+
+Requires: athena-krb5
+
+%description
+Mozilla Firefox is an open-source web browser, designed for standards
+compliance, performance and portability.
+
+%post
+umask 022
+# Rebuild the registries.
+HOME=/root /usr/athena/lib/firefox/build-registries
+# Register components and extensions.
+HOME=/root /usr/athena/bin/firefox -register
+
+%postun
+umask 022
+# Remove registries, if no version of the package remains.
+if [ $1 -eq 0 ]; then
+  # Removing package; clean up.
+  MOZILLA_FIVE_HOME=/usr/athena/lib/firefox
+  rm -rf $MOZILLA_FIVE_HOME/chrome/overlayinfo
+  rm -rf $MOZILLA_FIVE_HOME/components
+  rm -f  $MOZILLA_FIVE_HOME/chrome/*.rdf
+  rm -rf $MOZILLA_FIVE_HOME/extensions
+  rm -f $MOZILLA_FIVE_HOME/components.ini
+fi
