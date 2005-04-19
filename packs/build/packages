@@ -1,4 +1,4 @@
-# $Id: packages,v 1.308 2005-04-07 17:48:34 ghudson Exp $
+# $Id: packages,v 1.309 2005-04-19 19:12:28 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -159,6 +159,7 @@ third/evolution-data-server	requires gettext,intltool,openldap,libbonobo,ORBit2,
 third/expat			except linux
 third/file-roller		requires gettext,intltool,glib2,gtk2,libgnome,libgnomeui,gnome-vfs2,libglade2,libbonobo,libbonoboui,scrollkeeper
 third/findutils			on solaris
+third/firefox			requires libIDL,krb5
 third/gail			requires atk,gtk2,libgnomecanvas
 third/gal			requires gnome-vfs,libglade,gdk-pixbuf
 third/gal2			requires gettext,intltool,libiconv,libgnomeprint,libgnomeprintui,libglade2,libgnomeui,libgnomecanvas,libxml2
