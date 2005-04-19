@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.26 2005-04-07 13:54:59 rbasch Exp $
+# $Id: makeroot.sh,v 1.27 2005-04-19 18:58:52 rbasch Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -47,11 +47,11 @@ sun4)
   rm -rf "$admin"
   cat > "$admin" << 'EOF'
 mail=
-instance=unique
+instance=overwrite
 partial=nocheck
 runlevel=nocheck
-idepend=quit
-rdepend=quit
+idepend=nocheck
+rdepend=nocheck
 space=nocheck
 setuid=nocheck
 conflict=nocheck
