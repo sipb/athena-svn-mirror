@@ -1,0 +1,57 @@
+# $Id: Makefile.athena,v 1.1 2005-04-19 18:38:00 rbasch Exp $
+
+SHELL=/bin/sh
+FFLIB=/usr/athena/lib/firefox
+common_options=--enable-crypto --disable-debug --disable-tests --enable-xft \
+	       --enable-default-toolkit=gtk2 --disable-installer \
+	       --with-gssapi=/usr/athena
+
+dist:
+	mkdir -p obj
+	cp "$$CONFIG_SITE" obj/config.site.athena
+
+prepare:
+	cd obj && rm -f config.cache && \
+	case $$ATHENA_HOSTTYPE in \
+	linux) \
+	    CONFIG_SITE=`pwd`/config.site.athena \
+	    CPPFLAGS=-D_REENTRANT \
+	    ../configure --enable-optimize=-O2 ${common_options} \
+	    ;; \
+	sun4) \
+	    CONFIG_SITE=`pwd`/config.site.athena \
+	    PATH=${sprobin}:${PATH} \
+	    CC=cc \
+	    CXX=CC \
+	    CFLAGS="-xlibmil" \
+	    CXXFLAGS="-xlibmil -xlibmopt" \
+	    CPPFLAGS=-D_REENTRANT \
+	    /bin/bash ../configure --enable-optimize=-xO2 ${common_options} \
+	    ;; \
+	esac
+
+clean:
+	cd obj && ${MAKE} clean
+
+all:
+	cd obj && \
+	case $$ATHENA_HOSTTYPE in \
+	linux) \
+	    ${MAKE} \
+	    ;; \
+	sun4) \
+	    ${MAKE} PATH=${sprobin}:${PATH} \
+	    ;; \
+	esac
+
+install:
+	cd obj && \
+	case $$ATHENA_HOSTTYPE in \
+	linux) \
+	    ${MAKE} install DESTDIR="$$SRVD" \
+	    ;; \
+	sun4) \
+	    ${MAKE} install DESTDIR="$$SRVD" PATH=${sprobin}:${PATH} \
+	    ;; \
+	esac && \
+	install -m 755 ../build-registries.sh $$SRVD${FFLIB}/build-registries
