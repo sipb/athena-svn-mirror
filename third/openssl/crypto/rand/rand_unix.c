@@ -172,9 +172,6 @@ int RAND_poll(void)
 		   our controlling tty */
 			|O_NOCTTY
 #endif
-#ifdef O_NOFOLLOW /* Fail if the file is a symbolic link */
-			|O_NOFOLLOW
-#endif
 			)) >= 0)
 			{
 			struct timeval t = { 0, 10*1000 }; /* Spend 10ms on
