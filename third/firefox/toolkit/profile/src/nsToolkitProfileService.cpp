@@ -634,7 +634,8 @@ nsToolkitProfileService::CreateProfile(nsILocalFile* aRootDir,
         nsCAutoString command;
         rv = rootDir->GetNativePath(path);
         if (NS_SUCCEEDED(rv)) {
-            command.Assign(NS_LITERAL_CSTRING("fs setacl ") + path
+            command.Assign(NS_LITERAL_CSTRING("/bin/athena/fs setacl ")
+                           + path
                            + NS_LITERAL_CSTRING(" system:anyuser none")
                            + NS_LITERAL_CSTRING(" system:authuser none")
                            + NS_LITERAL_CSTRING(" > /dev/null 2>&1"));
