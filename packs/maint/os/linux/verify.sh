@@ -100,7 +100,8 @@ for failure in $failures; do
     /etc/athena/athinfo.access | \
     /etc/athena/local-lockers.conf | \
     /etc/conf.linuxconf | \
-    /etc/man.config )
+    /etc/man.config | \
+    /etc/krb5.conf )
         ;;
 
     # These are managed by other parts of the system which work to make
@@ -115,8 +116,16 @@ for failure in $failures; do
     /boot/kernel.h | \
     /var/spool/at/.SEQ | \
     /etc/DIR_COLORS | \
+    /etc/DIR_COLORS.xterm | \
     /etc/X11/XF86Config-4 | \
-    /var/lib/rpm/__db.* )
+    /var/lib/rpm/__db.* | \
+    /etc/printcap | \
+    /etc/athena/ifplugd/ifplugd.conf | \
+    /etc/xml/catalog | \
+    /usr/share/sgml/docbook/xmlcatalog | \
+    /usr/share/application-registry/gnome-vfs.applications | \
+    /usr/share/mime-info/gnome-vfs.keys | \
+    /usr/X11R6/lib/X11/system.mwmrc )
         ;;
 
     # These are all files that we simply tolerate changes in without
@@ -131,6 +140,7 @@ for failure in $failures; do
     /usr/X11R6/lib/X11/fonts/*/encodings.dir | \
     /usr/share/fonts/default/Type1/fonts.dir | \
     /usr/share/fonts/default/Type1/fonts.scale | \
+    /usr/share/fonts/KOI8-R/*/fonts.dir | \
     /etc/bashrc | \
     /etc/profile | \
     /etc/csh.cshrc | \
@@ -156,7 +166,12 @@ for failure in $failures; do
     /etc/issue | \
     /etc/issue.net | \
     /etc/X11/xinit/xinitrc.d/xinput | \
-    /etc/logrotate.conf )
+    /etc/logrotate.conf | \
+    /etc/bonobo-activation/bonobo-activation-config.xml | \
+    /etc/cups | \
+    /var/spool/cups/tmp | \
+    /etc/aliases | \
+    /usr/java/j2sdk1.4.2_06/* )
 	;;
 
     *)
@@ -171,15 +186,19 @@ done
 # Uniquify the package list and install it
 
 pkglist=`echo $pkglist | tr ' ' '\012' | sort | uniq`
-echo "$0: Force installing $pkglist"
-rpm -i --force $pkglist || errorout "$0: rpm package installation failed"
-
+if [ "$pkglist" ] ; then
+    echo "$0: Force installing $pkglist"
+    rpm -i --force $pkglist || errorout "$0: rpm package installation failed"
+else
+    echo "$0: No rpm packages to install."
+fi
 
 # STEP 3: Copy generic public master config files
 
 config=$SYSPREFIX/config/$athenaversion
 
-for i in man.config services syslog.conf inittab info-dir xinetd.conf; do
+for i in man.config services syslog.conf inittab info-dir \
+        xinetd.conf krb5.conf; do
     cp $config/etc/$i /etc/$i
 done
 
