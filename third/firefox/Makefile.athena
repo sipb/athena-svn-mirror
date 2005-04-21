@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 2005-04-19 18:38:00 rbasch Exp $
+# $Id: Makefile.athena,v 1.2 2005-04-21 15:32:46 rbasch Exp $
 
 SHELL=/bin/sh
 FFLIB=/usr/athena/lib/firefox
@@ -26,6 +26,7 @@ prepare:
 	    CFLAGS="-xlibmil" \
 	    CXXFLAGS="-xlibmil -xlibmopt" \
 	    CPPFLAGS=-D_REENTRANT \
+	    LDFLAGS="-L/usr/athena/lib -R/usr/athena/lib" \
 	    /bin/bash ../configure --enable-optimize=-xO2 ${common_options} \
 	    ;; \
 	esac
