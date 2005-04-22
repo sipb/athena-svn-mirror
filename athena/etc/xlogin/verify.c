@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.18 2005-03-17 22:21:13 ghudson Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.19 2005-04-22 18:04:37 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -205,6 +205,10 @@ char *dologin(char *user, char *passwd, int option, char *script,
 	case AL_ENOLOGIN:
 	  strcpy(errbuf,
 		 "Logins are currently disabled on this workstation.  ");
+	  break;
+	case AL_ENOROOT:
+	  strcpy(errbuf,
+		 "Root logins are not allowed on this workstation.  ");
 	  break;
 	case AL_ENOCREATE:
 	  strcpy(errbuf,
