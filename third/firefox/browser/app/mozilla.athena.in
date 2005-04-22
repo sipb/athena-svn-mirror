@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.1 2005-04-15 21:38:50 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.2 2005-04-22 19:15:13 rbasch Exp $
 # Firefox wrapper script for Athena.
 
 # Set up the environment.
@@ -137,16 +137,17 @@ dispose_lock () {
   Or, you can simply exit, leaving the lock file in place.  
 "
 
-  tag=`gdialog --title "Firefox profile locked" --radiolist "$dialog_text" \
-         60 60 3 \
-         Exit,     "leaving lock file in place"           on  \
-         Continue, "and invoke Firefox's Profile Manager" off \
-         Delete    "lock file and proceed"                off 2>&1`
+  tag=`zenity --title "Firefox profile locked" --list --radiolist \
+         --height 480 --text "$dialog_text" \
+         --column "" --column "Select one of the following actions" \
+         TRUE   "Exit, leaving lock file in place"               \
+         FALSE  "Continue, and invoke Firefox's Profile Manager" \
+         FALSE  "Delete lock file and proceed"                   2>&1`
 
   case "$tag" in
-  *Continue*)
+  Continue*)
     ;;
-  *Delete*)
+  Delete*)
     rm -f $lock
     ;;
   *)
