@@ -18,3 +18,11 @@ find $RPM_BUILD_ROOT -type f -or -type l |
       -e "s|^/root/.profile$|%config \0|" \
       -e "s|^/root/.xsession$|%config \0|" | 
   sort > rpm.filelist
+
+%post
+mkdir -p -m 755 /var/athena
+if [ ! -f /var/athena/root.bashhist ]; then
+  touch /var/athena/root.bashhist
+  chmod 600 /var/athena/root.bashhist
+fi
+chattr +a /var/athena/root.bashhist
