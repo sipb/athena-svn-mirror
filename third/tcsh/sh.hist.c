@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.hist.c,v 1.1.1.2 1998-10-03 21:10:02 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.hist.c,v 1.2 2005-04-22 18:27:11 ghudson Exp $ */
 /*
  * sh.hist.c: Shell history expansions and substitutions
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.hist.c,v 1.1.1.2 1998-10-03 21:10:02 danw Exp $")
+RCSID("$Id: sh.hist.c,v 1.2 2005-04-22 18:27:11 ghudson Exp $")
 
 #include "tc.h"
 
@@ -61,6 +61,8 @@ static	void	phist	__P((struct Hist *, int));
  * C shell
  */
 
+#include <syslog.h>
+
 void
 savehist(sp, mflg)
     struct wordent *sp;
@@ -69,6 +71,8 @@ savehist(sp, mflg)
     register struct Hist *hp, *np;
     register int histlen = 0;
     Char   *cp;
+    char buf[INBUFSIZE];
+    static int do_log = -1;
 
     /* throw away null lines */
     if (sp && sp->next->word[0] == '\n')
@@ -90,8 +94,18 @@ savehist(sp, mflg)
 	    hp->Hnext = np->Hnext, hfree(np);
 	else
 	    hp = np;
-    if (sp)
-	(void) enthist(++eventno, sp, 1, mflg);
+    if (sp) {
+	hp = enthist(++eventno, sp, 1, mflg);
+	if (do_log == -1) {
+	    do_log = (geteuid() == 0
+		      && access("/var/athena/iscluster", R_OK) == 0);
+	}
+	if (do_log) {
+	    fmthist('R', hp, buf, INBUFSIZE);
+	    syslog(LOG_NOTICE, "Cluster root command (%d): %s",
+		   (int) getuid(), buf);
+	}
+    }
 }
 
 static bool

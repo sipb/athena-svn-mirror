@@ -693,10 +693,20 @@ bash_add_history (line)
   using_history ();
 }
 
+#include <syslog.h>
+
 static void
 really_add_history (line)
      char *line;
 {
+  static int do_log = -1;
+
+  if (do_log == -1)
+    do_log = (geteuid () == 0 && access ("/var/athena/iscluster", R_OK) == 0);
+  if (do_log)
+    syslog (LOG_NOTICE, "Cluster root command (%d): %s",
+	    (int) getuid (), line);
+
   hist_last_line_added = 1;
   add_history (line);
   history_lines_this_session++;
