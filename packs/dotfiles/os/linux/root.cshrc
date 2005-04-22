@@ -1,4 +1,4 @@
-# $Id: root.cshrc,v 1.6 2004-09-14 22:28:54 rbasch Exp $
+# $Id: root.cshrc,v 1.7 2005-04-22 18:25:01 ghudson Exp $
 
 set path=( /srvd/patch /usr/athena/bin /usr/athena/etc /etc/athena /usr/sbin \
 	   /sbin /bin/athena /bin /usr/bin /etc /usr/X11R6/bin )
@@ -7,6 +7,10 @@ if ($?prompt) then
 	set nostat = (/afs/)
 	set autolist
 endif
+
+set savehist=1000
+set histfile=/var/athena/root.tcshhist
+set history=1000
 
 set add_flags="-a -h -n"
 alias add 'eval `/bin/athena/attach -Padd $add_flags \!:*`'
