@@ -27,6 +27,7 @@ echo "/etc/default/cron"				>> $OSCONFCHG
 echo "/etc/default/init"				>> $OSCONFCHG
 echo "/etc/default/su"					>> $OSCONFCHG
 echo "/etc/default/syslogd"				>> $OSCONFCHG
+echo "/var/spool/cron/crontabs/root"			>> $OSCONFCHG
 
 # Prevent the old finish-update from running.
 echo "/etc/rc2.d/S70finish-update"			>> $DEADFILES
