@@ -17,7 +17,7 @@
  * miscellaneous functions.
  */
 
-static const char rcsid[] = "$Id: util.c,v 1.9 1999-09-22 22:10:28 danw Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.10 2005-04-22 18:03:43 ghudson Exp $";
 
 #include <sys/param.h>
 #include <assert.h>
@@ -47,6 +47,7 @@ const char *al_strerror(int code, char **mem)
     "Unknown username",
     "You are not allowed to log into this machine",
     "Logins currently disabled",
+    "Root logins are not allowed on this machine",
     "You are not allowed to log into this machine remotely",
     "Could not add user to passwd file",
     "Could not modify user's session record",

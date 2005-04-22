@@ -1,4 +1,4 @@
-/* $Id: al_private.h,v 1.7 2003-10-03 18:36:33 ghudson Exp $ */
+/* $Id: al_private.h,v 1.8 2005-04-22 18:03:33 ghudson Exp $ */
 
 /* Copyright 1997, 1998 by the Massachusetts Institute of Technology.
  *
@@ -29,6 +29,7 @@
 #define PATH_DETACH		"/bin/athena/detach"
 #define PATH_ACCESS		"/etc/athena/access"
 #define PATH_NOLOGIN		"/etc/nologin"
+#define PATH_NOROOT		"/etc/noroot"
 #define PATH_NOREMOTE		"/etc/noremote"
 #define PATH_NOCREATE		"/etc/nocreate"
 #define PATH_NOATTACH		"/etc/noattach"

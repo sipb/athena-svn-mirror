@@ -1,4 +1,4 @@
-/* $Id: al.h,v 1.6 2004-05-16 21:29:54 ghudson Exp $ */
+/* $Id: al.h,v 1.7 2005-04-22 18:03:23 ghudson Exp $ */
 
 /* Copyright 1997, 1998 by the Massachusetts Institute of Technology.
  *
@@ -31,20 +31,21 @@
 #define AL_ENOCREATE		4
 #define AL_ENOLOGIN		5
 #define AL_ENOREMOTE		6
-#define AL_EPASSWD		7
-#define AL_ESESSION		8
-#define AL_EPERM		9
-#define AL_ENOENT		10
-#define AL_ENOMEM		11
+#define AL_ENOROOT		7
+#define AL_EPASSWD		8
+#define AL_ESESSION		9
+#define AL_EPERM		10
+#define AL_ENOENT		11
+#define AL_ENOMEM		12
 
 /* Warning values */
 #define AL_ISWARNING(n) 	(AL_WBADSESSION <= (n) && (n) <= AL_WNOATTACH)
-#define AL_WBADSESSION		12
-#define AL_WGROUP		13
-#define AL_WXTMPDIR		14
-#define AL_WTMPDIR		15
-#define AL_WNOHOMEDIR		16
-#define AL_WNOATTACH		17
+#define AL_WBADSESSION		13
+#define AL_WGROUP		14
+#define AL_WXTMPDIR		15
+#define AL_WTMPDIR		16
+#define AL_WNOHOMEDIR		17
+#define AL_WNOATTACH		18
 
 /* Public functions */
 int al_login_allowed(const char *username, int isremote, int *local_acct,

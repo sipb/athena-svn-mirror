@@ -1,4 +1,4 @@
-.\" $Id: al_login_allowed.3,v 1.5 1998-11-19 22:06:22 ghudson Exp $
+.\" $Id: al_login_allowed.3,v 1.6 2005-04-22 18:03:28 ghudson Exp $
 .\"
 .\" Copyright 1997, 1998 by the Massachusetts Institute of
 .\" Technology.
@@ -38,6 +38,12 @@ may be denied access if:
 exists and
 .I username
 is not listed as having uid 0 in the local passwd file.
+.TP 2
+*
+.I /etc/noroot
+exists and
+.I username
+is listed as having uid 0 in the local passwd file.
 .TP 2
 *
 .I username
@@ -153,6 +159,10 @@ conflicts with a local passwd entry.
 The user may not log in because of
 .IR /etc/nologin .
 .TP 15
+.I AL_ENOROOT
+The user may not log in because of
+.IR /etc/noroot .
+.TP 15
 .I AL_ENOREMOTE
 The user may not log in because of
 .I /etc/athena/access
@@ -169,7 +179,7 @@ or because of
 .I AL_ENOMEM
 Memory was exhausted.
 .SH FILES
-/etc/athena/access, /etc/nocreate, /etc/noremote, /etc/nologin
+/etc/athena/access, /etc/nocreate, /etc/noremote, /etc/nologin, /etc/noroot
 .SH SEE ALSO
 al_acct_create(3), al_strerror(3)
 .SH AUTHOR

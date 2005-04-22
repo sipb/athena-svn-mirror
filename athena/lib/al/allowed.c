@@ -17,7 +17,7 @@
  * function to check if a user is allowed to log in.
  */
 
-static const char rcsid[] = "$Id: allowed.c,v 1.9 1999-03-02 19:07:43 danw Exp $";
+static const char rcsid[] = "$Id: allowed.c,v 1.10 2005-04-22 18:03:37 ghudson Exp $";
 
 #include <errno.h>
 #include <hesiod.h>
@@ -77,10 +77,17 @@ int al_login_allowed(const char *username, int isremote, int *local_acct,
   if (!al__username_valid(username))
     return AL_ENOUSER;
 
-  /* root is always authorized to log in and is always a local account. */
+  /* root is always a local account and is always allowed to log in,
+     barring /etc/noroot. */
   local_pwd = al__getpwnam(username);
   if (local_pwd && local_pwd->pw_uid == 0)
     {
+      if (!access(PATH_NOROOT, F_OK))
+	{
+	  retval = AL_ENOROOT;
+	  retfname = PATH_NOROOT;
+	  goto cleanup;
+	}
       *local_acct = 1;
       goto cleanup;
     }
