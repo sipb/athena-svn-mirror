@@ -136,7 +136,7 @@ pref("general.autoScroll", true);
 
 // Whether or not the application should check at startup each time if it 
 // is the default browser.
-pref("browser.shell.checkDefaultBrowser", true);
+pref("browser.shell.checkDefaultBrowser", false);
 
 // 0 = blank, 1 = home (browser.startup.homepage), 2 = last
 // XXXBlake Remove this stupid pref
