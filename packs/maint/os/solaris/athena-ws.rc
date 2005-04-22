@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athena-ws.rc,v 1.11 2004-04-20 15:24:34 rbasch Exp $
+# $Id: athena-ws.rc,v 1.12 2005-04-22 18:05:46 ghudson Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -126,6 +126,15 @@ start)
       . /var/athena/clusterinfo.bsh
       echo "Attaching system libraries"
       attach -h -n -o hard -O $SYSLIB
+
+      if [ -n "$CLUSTER" ]; then
+	touch /var/athena/iscluster
+	echo "Use su to gain root access to cluster machines or" \
+	  "quickstations." > /etc/noroot
+	chmod 644 /var/athena/iscluster /etc/noroot
+      else
+	rm -f /var/athena/iscluster /etc/noroot
+      fi
     fi
   fi
 

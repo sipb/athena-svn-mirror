@@ -149,6 +149,18 @@ case "$1" in
 	save_cluster_info
 	echo
 
+	if [ -s /var/athena/clusterinfo.bsh ]; then
+		. /var/athena/clusterinfo.bsh
+		if [ -n "$CLUSTER" ]; then
+			touch /var/athena/iscluster
+			echo "Use su to gain root access to cluster machines" \
+				"or quickstations." > /etc/noroot
+			chmod 644 /var/athena/iscluster /etc/noroot
+		else
+			rm -f /var/athena/iscluster /etc/noroot
+		fi
+	fi
+
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
 
