@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2003-01-09 21:44:53 mwhitson Exp $
+# $Id: Makefile,v 1.8 2005-04-22 18:25:04 ghudson Exp $
 
 ETCDIR=/etc
 
@@ -13,6 +13,7 @@ install:
 	install -c -m 0644 root.login ${DESTDIR}/.login
 	install -c -m 0644 root.profile ${DESTDIR}/.profile
 	install -c -m 0755 root.xsession ${DESTDIR}/.xsession
+	install -c -m 0644 system.cshrc ${DESTDIR}${ETCDIR}/.cshrc
 	install -c -m 0644 system.login ${DESTDIR}${ETCDIR}/.login
 	install -c -m 0644 system.profile ${DESTDIR}${ETCDIR}/profile
 
