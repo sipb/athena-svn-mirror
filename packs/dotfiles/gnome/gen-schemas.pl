@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl
 
-# gen-schema: A tool for generating the per-panel config schema from a
+# gen-schema: A tool for generating GNOME config schema from a
 # readable file format.  This isn't a very generic tool; it only handles
 # strings (with no special characters in them), integers, booleans,
 # and lists of strings.
@@ -49,7 +49,7 @@ while (<>) {
 	print "  <schema>\n";
 	print "   <key>/schemas$key</key>\n";
 	print "   <applyto>$key</applyto>\n";
-	print "   <owner>gnome-panel</owner>\n";
+	print "   <owner>gnome</owner>\n";
 	print "   <type>$type</type>\n";
 	if ($type eq "list") {
 	    print "   <list_type>string</list_type>\n";
