@@ -196,3 +196,14 @@
   panel_id = "athena-edge"
   position = 73
   panel_right_stick = true
+
+# url handlers
+[desktop/gnome/url-handlers/http]
+ command = "firefox %s"
+ enabled = true
+ needs_terminal = false
+
+[desktop/gnome/url-handlers/https]
+ command = "firefox %s"
+ enabled = true
+ needs_terminal = false
