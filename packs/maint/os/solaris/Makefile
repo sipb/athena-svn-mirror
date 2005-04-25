@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.21 2005-04-11 14:11:13 rbasch Exp $
+# $Id: Makefile,v 1.22 2005-04-25 16:29:16 rbasch Exp $
 
 ATHRETCDIR=/etc/athena
 ATHETCDIR=/usr/athena/etc
@@ -33,7 +33,6 @@ install:
 		${DESTDIR}${SVCMETHOD}/console-login
 	install -c -m 0755 dhcp.rename ${DESTDIR}${INITD}
 	install -c -m 0755 oscheck.sh ${DESTDIR}${ATHETCDIR}/oscheck
-	install -c -m 0755 svc-named.sh ${DESTDIR}${ATHRETCDIR}/svc-named
 	install -c -m 0755 syncconf.rc ${DESTDIR}${INITD}/syncconf
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	install -c -m 0755 verify.sh ${DESTDIR}${ATHRETCDIR}/verify
