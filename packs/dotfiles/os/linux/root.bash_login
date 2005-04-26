@@ -1,0 +1,4 @@
+# $Id: root.bash_login,v 1.1 2005-04-26 20:28:21 ghudson Exp $
+
+# bash does not run .bashrc in login shells, so run it explicitly.
+. ~/.bashrc
