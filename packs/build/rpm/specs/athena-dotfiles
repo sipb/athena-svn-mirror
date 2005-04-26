@@ -13,6 +13,8 @@ mkdir $RPM_BUILD_ROOT
 
 find $RPM_BUILD_ROOT -type f -or -type l | 
   sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/root/.bashrc$|%config \0|" \
+      -e "s|^/root/.bash_login$|%config \0|" \
       -e "s|^/root/.cshrc$|%config \0|" \
       -e "s|^/root/.login$|%config \0|" \
       -e "s|^/root/.profile$|%config \0|" \
