@@ -1,8 +1,10 @@
-# $Id: Makefile.athena,v 1.9 2005-04-22 13:50:32 rbasch Exp $
+# $Id: Makefile.athena,v 1.10 2005-04-26 13:37:16 rbasch Exp $
 
 SHELL=/bin/sh
 ATHINCDIR=/usr/athena/include
 NSSINCDIR=${ATHINCDIR}/mozilla/nss
+ATHSHAREDIR=/usr/athena/share
+ACLOCALDIR=${ATHSHAREDIR}/aclocal
 common_options=--enable-crypto --disable-debug --disable-tests --enable-xft \
 	       --enable-default-toolkit=gtk2 --with-gssapi=/usr/athena
 
@@ -55,3 +57,5 @@ install:
 	mkdir -p "$$SRVD${NSSINCDIR}"
 	find security/nss/lib/ -name '*.h' -type f -exec install -m 644 {} \
 	  "$$SRVD${NSSINCDIR}" \;
+	rm -f "$$SRVD${ACLOCALDIR}/nspr.m4"
+	-rmdir "$$SRVD${ACLOCALDIR}" 2>/dev/null
