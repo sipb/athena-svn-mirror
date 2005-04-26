@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.48 2005-04-02 18:45:43 rbasch Exp $
+# $Id: do-update.sh,v 1.49 2005-04-26 20:10:33 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -84,22 +84,6 @@ echo "Shutting down running services"
 if [ -f /var/athena/inetd.pid ]; then
 	kill `cat /var/athena/inetd.pid` > /dev/null 2>&1
 fi
-if [ -f /var/athena/named.pid ]; then
-	kill `cat /var/athena/named.pid` > /dev/null 2>&1
-fi
-case "$HOSTTYPE" in
-sgi)
-	killall inetd snmpd syslogd
-	;;
-*)
-	if [ -f /etc/syslog.pid ]; then
-		kill `cat /etc/syslog.pid` > /dev/null 2>&1
-	fi
-	if [ -f /var/athena/snmpd.pid ]; then
-		kill `cat /var/athena/snmpd.pid` > /dev/null 2>&1
-	fi
-	;;
-esac
 sleep 10
 
 echo "Athena Workstation ($HOSTTYPE) Version Update `date`" >> \
@@ -395,9 +379,7 @@ if [ "$NEWOS" = true ]; then
 	exec reboot
 fi
 
-# Not an OS update; run finish-update here.  Restart named first, since
-# mkserv has to resolve names.
-/etc/athena/named
+# Not an OS update; run finish-update here.
 sh /srvd/usr/athena/lib/update/finish-update "$newvers"
 if [ "$method" = Auto ]; then
 	echo "Automatic update done; system will reboot in 15 seconds."
