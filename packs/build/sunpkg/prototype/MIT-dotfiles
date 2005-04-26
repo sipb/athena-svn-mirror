@@ -2,6 +2,7 @@
 
 # Change various dotfiles to class config.
 sed -e 's|^f none \(\.bashrc\) |e config \1 |' \
+    -e 's|^f none \(\.bash_login\) |e config \1 |' \
     -e 's|^f none \(\.cshrc\) |e config \1 |' \
     -e 's|^f none \(\.login\) |e config \1 |' \
     -e 's|^f none \(\.profile\) |e config \1 |' \
