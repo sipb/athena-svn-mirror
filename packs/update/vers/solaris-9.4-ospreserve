@@ -67,6 +67,7 @@
 /etc/gtk/gtkrc.zh_TW
 /etc/gtk/gtkrc.zh_TW.big5
 /etc/inet/hosts
+/etc/inet/inetd.conf
 /etc/inet/ipnodes
 /etc/inet/netmasks
 /etc/inet/networks
