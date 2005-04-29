@@ -57,8 +57,6 @@ cp $1/packs/config/os/$OS/cron $2$default
 chmod 644 $2$default/cron
 cp $1/packs/config/os/$OS/crontab.root $2$crontabs/root
 chmod 644 $2$crontabs/root
-cp $1/packs/config/os/$OS/inetd.conf $2$inet
-chmod 644 $2$inet/inetd.conf
 cp $1/packs/config/os/$OS/init $2$default
 chmod 644 $2$default/init
 cp $1/packs/config/os/$OS/keytable.map $2$keytables
