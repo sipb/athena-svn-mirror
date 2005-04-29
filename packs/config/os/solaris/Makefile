@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.19 2005-04-11 14:05:20 rbasch Exp $
+# $Id: Makefile,v 1.20 2005-04-29 14:43:32 rbasch Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -62,7 +62,6 @@ install:
 	install -c -m 0644 crontab.root ${DESTDIR}${CRONTABS}/root
 	install -c -m 0644 dns-server.xml ${DESTDIR}${ATHMANIFEST}
 	install -c -m 0644 group ${DESTDIR}${ETCDIR}
-	install -c -m 0644 inetd.conf ${DESTDIR}${INET}
 	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
 	install -c -m 0644 init ${DESTDIR}${DEFAULT}
 	install -c -m 0644 keytable.map ${DESTDIR}${KEYTABLES}
