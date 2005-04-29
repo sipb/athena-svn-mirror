@@ -15,7 +15,7 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: main.c,v 1.1.1.3 2005-04-15 15:36:22 ghudson Exp $ */
+/* $Id: main.c,v 1.2 2005-04-29 15:10:45 rbasch Exp $ */
 
 #include <config.h>
 
@@ -765,7 +765,8 @@ scf_cleanup(void) {
 		if ((s = smf_get_state(ins_name)) != NULL) {
 			if ((strcmp(SCF_STATE_STRING_ONLINE, s) == 0) ||
 			    (strcmp(SCF_STATE_STRING_DEGRADED, s) == 0)) {
-				if (smf_disable_instance(ins_name, 0) != 0) {
+				if (smf_disable_instance(ins_name,
+							 SMF_TEMPORARY) != 0) {
 				    UNEXPECTED_ERROR(__FILE__, __LINE__,
 					"smf_disable_instance() failed: %s",
 					scf_strerror(scf_error()));
