@@ -37,7 +37,7 @@ if [ "$NEWOS" = "true" ]; then
   pkgs="`cat $OLDPKGS`"
   for i in $pkgs; do
     echo "$i"
-    pkgrm -a "$LIBDIR/admin-update" -n -R "$UPDATE_ROOT" "$i"
+    pkgrm -a "$LIBDIR/admin-update" -n -R "$UPDATE_ROOT" "$i.*"
   done 2>>$pkglog
 
   # We can't use patchrm on patches, because we don't back up
