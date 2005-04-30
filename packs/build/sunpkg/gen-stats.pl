@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# $Id: gen-stats.pl,v 1.1 2004-04-15 18:00:52 rbasch Exp $
+# $Id: gen-stats.pl,v 1.2 2005-04-30 15:57:54 rbasch Exp $
 
 # This script generates the stats file used by the os-checkfiles program
 # from the pkgmaps for a set of packages.
@@ -24,6 +24,7 @@ Usage: $prog [<options>] [<package> ...]
   Options:
     -a <arch>        process only ARCH=<arch> packages
     -d <directory>   specify package directory, default is .
+    -e <file>        output a list of editable files to <file>
     -v               be verbose (writes to standard error)
 EOF
     exit 1;
@@ -31,10 +32,11 @@ EOF
 
 # Parse the command line arguments.
 my %opts;
-getopts('a:d:v', \%opts) || usage;
+getopts('a:d:e:v', \%opts) || usage;
 
 my $arch = $opts{'a'};
 my $pkgdir = $opts{'d'} || '.';
+my $editfile = $opts{'e'};
 my $verbose = $opts{'v'};
 
 # If package name arguments are given, we will process only those.
@@ -54,6 +56,10 @@ if (@ARGV) {
 my %uids = ();
 my %gids = ();
 my %paths = ();
+
+if ($editfile) {
+    open EDITFILE, ">$editfile" or die "Cannot open $editfile";
+}
 
 # Process each package.
 foreach my $pkg (@pkgs) {
@@ -86,7 +92,7 @@ foreach my $pkg (@pkgs) {
 	my ($part, $type, $class, $path, $mode, $owner, $group, $size,
 	    $cksum, $mtime) = split;
 	# Only look at regular files, directories, and links.
-	next if (index('dfls', $type) == -1);
+	next if (index('defls', $type) == -1);
 	next unless $path;
 	next if ($type eq 'd' && ($mode eq '?' || $owner eq '?' ||
 				  $group eq '?'));
@@ -156,8 +162,12 @@ for my $path (sort keys %paths) {
 	# path is a symbolic or hard link.
 	print ($paths{$path}{type} eq 'l' ? "h" : "l");
 	print " $paths{$path}{linktarget} $path\n";
+    } elsif ($editfile && $paths{$path}{type} eq 'e') {
+	print EDITFILE (($path !~ m|^/|o) ? '/' : '') . "$path\n";
     }
 }
+
+close EDITFILE if $editfile;
 
 # Look up the uid for the given user name.  We cache results in the %uids
 # hash for speed.
