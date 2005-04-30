@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: install-srvd.sh,v 1.6 2005-03-06 21:18:22 rbasch Exp $
+# $Id: install-srvd.sh,v 1.7 2005-04-30 16:00:22 rbasch Exp $
 
 # This script installs packages for a new release into the srvd,
 # running pkgadd with the srvd as the target root, and copying
@@ -226,12 +226,23 @@ if [ -z "$maybe" ]; then
   cp $tmporder "$pkgdest/.order-version"
   rm -f $tmporder
 
-  # Generate a new stats file.
-  echo "Generating the stats file ..."
+  # Generate a new stats file, and configfiles.
+  echo "Generating the stats file and configfiles ..."
+  tmpconfigfiles=/tmp/configfiles$$
+  rm -f $tmpconfigfiles
   rm -f "$pkgdest/.stats"
   pkgs=`awk '{ print $1; }' "$pkgdest/.order-version"`
-  perl $source/packs/build/sunpkg/gen-stats.pl -d "$pkgdest" $pkgs \
+  perl $source/packs/build/sunpkg/gen-stats.pl -d "$pkgdest" \
+    -e $tmpconfigfiles $pkgs \
     > "$pkgdest/.stats" || exit 1
+  mkdir -p "$srvd/usr/athena/lib/update"
+  rm -f "$srvd/usr/athena/lib/update/configfiles"
+  # We cannot simply copy /etc/athena/rc.conf from /srvd, so exclude it
+  # from configfiles.
+  sed -e '\|^/etc/athena/rc.conf$|d' $tmpconfigfiles \
+    > "$srvd/usr/athena/lib/update/configfiles" || exit 1
+  chmod 444 "$srvd/usr/athena/lib/update/configfiles"
+  rm -f $tmpconfigfiles
 
   # Create .rvdinfo.
   rm -f "$srvd/.rvdinfo"
