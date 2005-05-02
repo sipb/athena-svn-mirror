@@ -32,7 +32,7 @@
  * GPL.
  */
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: oiddata.c,v $ $Revision: 1.1.1.1 $ $Date: 2005-04-01 12:30:37 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: oiddata.c,v $ $Revision: 1.1.1.1 $ $Date: 2005-04-01 12:30:37 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: oiddata.c,v $ $Revision: 1.1.1.2 $ $Date: 2005-05-02 16:41:37 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: oiddata.c,v $ $Revision: 1.1.1.2 $ $Date: 2005-05-02 16:41:37 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef PKI1T_H
