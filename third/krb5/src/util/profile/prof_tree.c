@@ -527,6 +527,7 @@ get_new_file:
 		 * or find the containing section if not.
 		 */
 		section = iter->file->data->root;
+		assert(section != NULL);
 		for (cpp = iter->names; cpp[iter->done_idx]; cpp++) {
 			for (p=section->first_child; p; p = p->next) {
 				if (!strcmp(p->name, *cpp) && !p->value)
@@ -573,6 +574,8 @@ get_new_file:
 			skip_num--;
 			continue;
 		}
+		if (p->deleted)
+			continue;
 		break;
 	}
 	iter->num++;

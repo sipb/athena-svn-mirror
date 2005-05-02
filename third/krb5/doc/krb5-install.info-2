@@ -1,4 +1,4 @@
-This is krb5-install.info, produced by makeinfo version 4.0 from
+This is krb5-install.info, produced by makeinfo version 4.5 from
 install.texinfo.
 
 
@@ -166,6 +166,7 @@ program.
      Berkeley DB library version to be used, override it with this
      option.  For example, `DB_LIB=-ldb-3.3'.
 
+
 For example, in order to configure Kerberos on a Solaris machine using
 the `suncc' compiler with the optimizer turned on, run the configure
 script with the following options:
@@ -229,6 +230,7 @@ process. *Note Options to Configure::.
 `DEFAULT_KDB_FILE'
      The location of the default database.  The default value is
      /usr/local/var/krb5kdc/principal.
+
 
 
 File: krb5-install.info,  Node: Shared Library Support,  Next: OS Incompatibilities,  Prev: osconf.h,  Up: Building Kerberos V5
@@ -683,6 +685,7 @@ capaths
      realms which may be used in cross-realm authentication.  It is
      also used by the end-service when checking the transited field for
      trusted intermediate realms.
+
 
 If you are not using DNS TXT records, you must specify the
 `default_realm' in the `libdefaults' section.  If you are not using DNS

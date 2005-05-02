@@ -1,4 +1,4 @@
-This is krb5-install.info, produced by makeinfo version 4.0 from
+This is krb5-install.info, produced by makeinfo version 4.5 from
 install.texinfo.
 
 
@@ -154,6 +154,7 @@ met:
 
   3. All advertising materials mentioning features or use of this
      software must display the following acknowledgement:
+
           This product includes software developed by the University of
           California, Berkeley and its contributors.
 
@@ -491,6 +492,7 @@ well.)  Several different Kerberos-related service names are used:
 `_kerberos-iv._udp'
      This should refer to your KDCs that serve Kerberos version 4
      requests, if you have Kerberos v4 enabled.
+
 
 Be aware, however, that the DNS SRV specification requires that the
 hostnames listed be the canonical names, not aliases.  So, for example,

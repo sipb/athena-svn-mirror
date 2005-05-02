@@ -1,4 +1,4 @@
-This is krb5-admin.info, produced by makeinfo version 4.0 from
+This is krb5-admin.info, produced by makeinfo version 4.5 from
 admin.texinfo.
 
 
@@ -157,6 +157,7 @@ met:
 
   3. All advertising materials mentioning features or use of this
      software must display the following acknowledgement:
+
           This product includes software developed by the University of
           California, Berkeley and its contributors.
 
@@ -714,6 +715,7 @@ capaths
      also used by the end-service when checking the transited field for
      trusted intermediate realms.
 
+
 * Menu:
 
 * libdefaults::
@@ -915,6 +917,7 @@ proxiable
      If this flag is set, initial tickets by default will be proxiable.
      The default value for this flag is not set.
 
+
 
 File: krb5-admin.info,  Node: appdefaults,  Next: login,  Prev: libdefaults,  Up: krb5.conf
 
@@ -1106,6 +1109,7 @@ auth_to_local
           default realm, this rule is not applicable and the conversion
           will fail.
 
+
      For example:
 
           [realms]
@@ -1125,6 +1129,7 @@ auth_to_local
      principal with a second component of `root'.  The exception to
      these two rules are any principals johndoe/*, which will always
      get the local name `guest'.
+
 
 
 File: krb5-admin.info,  Node: domain_realm,  Next: logging,  Prev: realms (krb5.conf),  Up: krb5.conf

@@ -1,4 +1,4 @@
-This is krb5-admin.info, produced by makeinfo version 4.0 from
+This is krb5-admin.info, produced by makeinfo version 4.5 from
 admin.texinfo.
 
 
@@ -307,6 +307,7 @@ default_principal_flags
           through the normal password authentication in order to be
           able to change the password.
 
+
 dict_file
      (String.)  Location of the dictionary file containing strings that
      are not allowed as passwords.  If none is specified or if there is
@@ -397,6 +398,7 @@ reject_bad_transit
      has not.
 
      This option defaults to `true'.
+
 
 
 File: krb5-admin.info,  Node: Sample kdc.conf File,  Prev: realms (kdc.conf),  Up: kdc.conf
@@ -541,6 +543,7 @@ well.)  Several different Kerberos-related service names are used:
      This should refer to your KDCs that serve Kerberos version 4
      requests, if you have Kerberos v4 enabled.
 
+
 Be aware, however, that the DNS SRV specification requires that the
 hostnames listed be the canonical names, not aliases.  So, for example,
 you might include the following records in your (BIND-style) zone file:
@@ -679,6 +682,7 @@ options:
 -m
      Do not authenticate using a keytab.  This option will cause kadmin
      to prompt for the master database password.
+
 
 
 File: krb5-admin.info,  Node: Date Format,  Next: Principals,  Prev: Kadmin Options,  Up: Administrating the Kerberos Database
@@ -1214,6 +1218,7 @@ takes the following options:
      delete the old keys, and this flag is usually not necessary except
      perhaps for TGS keys.  Don't use this flag unless you know what
      you're doing.
+
 
 For example:
 
