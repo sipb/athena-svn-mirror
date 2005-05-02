@@ -1,4 +1,4 @@
-# $Id: packages,v 1.309 2005-04-19 19:12:28 rbasch Exp $
+# $Id: packages,v 1.310 2005-05-02 19:17:25 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -154,7 +154,7 @@ third/emacs			requires hesiod,krb5,texinfo
 third/enscript			except linux
 third/eog			requires gettext,intltool,gnome-vfs2,libgnomeprint,libgnomeui,libbonoboui,librsvg,ORBit2,GConf2,jpeg,libpng,popt
 third/esound			requires audiofile
-third/evolution			requires intltool,bonobo,libglade,gtkhtml3,gnome-vfs,scrollkeeper,libsoup,openssl,evolution-data-server
+third/evolution			requires intltool,bonobo,libglade,gtkhtml3,gnome-vfs,scrollkeeper,libsoup,openssl,evolution-data-server,mozilla
 third/evolution-data-server	requires gettext,intltool,openldap,libbonobo,ORBit2,glib2,bonobo,libgnomeui,gnome-vfs2,libgnome,libxml2,GConf2,libsoup
 third/expat			except linux
 third/file-roller		requires gettext,intltool,glib2,gtk2,libgnome,libgnomeui,gnome-vfs2,libglade2,libbonobo,libbonoboui,scrollkeeper
