@@ -4034,7 +4034,7 @@ nsContextMenu.prototype = {
         // when there is one
         var reference = null;
         if (context == "selection")
-          reference = focusedWindow.__proto__.getSelection.call(focusedWindow);
+          reference = focusedWindow.getSelection();
         else if (context == "mathml")
           reference = this.target;
         else
@@ -4286,7 +4286,7 @@ nsContextMenu.prototype = {
     
     searchSelected : function( charlen ) {
         var focusedWindow = document.commandDispatcher.focusedWindow;
-        var searchStr = focusedWindow.__proto__.getSelection.call(focusedWindow);
+        var searchStr = focusedWindow.getSelection();
         searchStr = searchStr.toString();
         // searching for more than 150 chars makes no sense
         if (!charlen)
@@ -4482,6 +4482,8 @@ function asyncOpenWebPanel(event)
        // The only reason we field _main and _content here is for the markLinkVisited
        // hack.
        target = wrapper.getAttribute("target");
+       var docWrapper = new XPCNativeWrapper(wrapper.ownerDocument, "location");
+       var locWrapper = new XPCNativeWrapper(docWrapper.location, "href");
        if (fieldNormalClicks && 
            (!target || target == "_content" || target  == "_main")) 
          // IE uses _main, SeaMonkey uses _content, we support both
@@ -4494,8 +4496,6 @@ function asyncOpenWebPanel(event)
          if (wrapper.href.substr(0, 11) === "javascript:")
            return true;
 
-         var docWrapper = new XPCNativeWrapper(wrapper.ownerDocument, "location");
-         var locWrapper = new XPCNativeWrapper(docWrapper.location, "href");
          if (!webPanelSecurityCheck(locWrapper.href, wrapper.href))
            return false;
 
@@ -4522,6 +4522,19 @@ function asyncOpenWebPanel(event)
        else if (target == "_search") {
          // Used in WinIE as a way of transiently loading pages in a sidebar.  We
          // mimic that WinIE functionality here and also load the page transiently.
+
+         // javascript links targeting the sidebar shouldn't be allowed
+         // we copied this from IE, and IE blocks this completely
+         if (wrapper.href.substr(0, 11) === "javascript:")
+           return false;
+
+         // data: URIs are just as dangerous
+         if (wrapper.href.substr(0, 5) === "data:")
+           return false;
+
+         if (!webPanelSecurityCheck(locWrapper.href, wrapper.href))
+           return false;
+
          openWebPanel(gNavigatorBundle.getString("webPanels"), wrapper.href);
          event.preventDefault();
          return false;
@@ -5383,6 +5396,9 @@ function AddKeywordForSearchField()
 // the actual event.
 function livemarkOnLinkAdded(event)
 {
+  if (!event.isTrusted)
+    return;
+
   if (!gLivemarksButton)
     gLivemarksButton = document.getElementById("livemark-button");
 
