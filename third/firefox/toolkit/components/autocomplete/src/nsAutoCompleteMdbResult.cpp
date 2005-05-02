@@ -51,7 +51,8 @@ NS_IMPL_RELEASE(nsAutoCompleteMdbResult)
 
 nsAutoCompleteMdbResult::nsAutoCompleteMdbResult() :
   mDefaultIndex(-1),
-  mSearchResult(nsIAutoCompleteResult::RESULT_IGNORED)
+  mSearchResult(nsIAutoCompleteResult::RESULT_IGNORED),
+  mReverseByteOrder(PR_FALSE)
 {
 }
 
@@ -193,6 +194,21 @@ nsAutoCompleteMdbResult::Init(nsIMdbEnv *aEnv, nsIMdbTable *aTable)
 }
 
 NS_IMETHODIMP
+nsAutoCompleteMdbResult::GetReverseByteOrder(PRBool *aReverse)
+{
+  NS_ENSURE_ARG_POINTER(aReverse);
+  *aReverse = mReverseByteOrder;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsAutoCompleteMdbResult::SetReverseByteOrder(PRBool aReverse)
+{
+  mReverseByteOrder = aReverse;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 nsAutoCompleteMdbResult::SetTokens(mdb_scope aValueToken, PRInt16 aValueType, mdb_scope aCommentToken, PRInt16 aCommentType)
 {
   mValueToken = aValueToken;
@@ -246,7 +262,19 @@ nsAutoCompleteMdbResult::GetRowValue(nsIMdbRow *aRow, mdb_column aCol, nsAString
   
   switch (yarn.mYarn_Form) {
     case 0: // unicode
-      aValue.Assign((const PRUnichar *)yarn.mYarn_Buf, yarn.mYarn_Fill/sizeof(PRUnichar));
+      if (mReverseByteOrder) {
+        // The data is in reverse byte order; we must byte-swap the result.
+        PRUnichar *swapval;
+        int len = yarn.mYarn_Fill / sizeof(PRUnichar);
+        swapval = (PRUnichar *)malloc(yarn.mYarn_Fill);
+        if (!swapval)
+          return NS_ERROR_OUT_OF_MEMORY;
+        SwapBytes((const PRUnichar *)yarn.mYarn_Buf, swapval, len);
+        aValue.Assign(swapval, len);
+        free(swapval);
+      }
+      else
+        aValue.Assign((const PRUnichar *)yarn.mYarn_Buf, yarn.mYarn_Fill/sizeof(PRUnichar));
       break;
     case 1: // utf 8
       aValue.Assign(NS_ConvertUTF8toUCS2((const char*)yarn.mYarn_Buf, yarn.mYarn_Fill));
@@ -258,6 +286,25 @@ nsAutoCompleteMdbResult::GetRowValue(nsIMdbRow *aRow, mdb_column aCol, nsAString
   return NS_OK;
 }
 
+// Copy an array of 16-bit values, reversing the byte order.
+void
+nsAutoCompleteMdbResult::SwapBytes(const PRUnichar *source, PRUnichar *dest,
+                                   PRInt32 aLen)
+{
+  PRUint16 c;
+  const PRUnichar *inp;
+  PRUnichar *outp;
+  PRInt32 i;
+
+  inp = source;
+  outp = dest;
+  for (i = 0; i < aLen; i++) {
+    c = *inp++;
+    *outp++ = (((c >> 8) & 0xff) | (c << 8));
+  }
+  return;
+}
+      
 
 nsresult
 nsAutoCompleteMdbResult::GetUTF8RowValue(nsIMdbRow *aRow, mdb_column aCol,

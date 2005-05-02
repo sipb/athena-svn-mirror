@@ -67,6 +67,9 @@ protected:
   nsIMdbEnv *mEnv;
   nsIMdbTable *mTable;
   
+  void SwapBytes(const PRUnichar *source, PRUnichar *dest, PRInt32 aLen);
+  PRBool    mReverseByteOrder;
+
   mdb_scope mValueToken;
   PRInt16   mValueType;
   mdb_scope mCommentToken;

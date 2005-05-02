@@ -59,12 +59,14 @@ interface nsIAutoCompleteBaseResult : nsIAutoCompleteResult
 };
 
 /* noscript */
-[uuid(f7e7b341-2d5c-4d04-9f51-496cb2ce178c)]
+[uuid(1856cd64-6a0a-4eb1-b44e-bdd1823c8a93)]
 interface nsIAutoCompleteMdbResult : nsIAutoCompleteBaseResult
 {
   const short kUnicharType = 0;
   const short kCharType    = 1;
   const short kIntType     = 2;
+
+  attribute boolean reverseByteOrder;
 
   void init(in nsIMdbEnv env, in nsIMdbTable table);
 
