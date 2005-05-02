@@ -1,39 +1,42 @@
 This directory contains fonts pulled from Red Hat, so that we may use
 them on Solaris to give users a consistent fontconfig experience.
 
-We maintain this directory by preparing a tarfile on a Red Hat machine
-and then importing it.  To prepare the tarfile, first look at
-/etc/fonts/fonts.conf; near the top, it should say something like:
+We used to maintain this directory by preparing a tarfile with a flat
+namespace on a Red Hat machine and then importing it, but that scheme
+collapsed when Red Hat introduced multiple fonts with the same
+filename.  So now we prepare a tarfile on a Red Hat machine and just
+check it in.
 
-	<dir>/usr/share/fonts</dir>
-	<dir>/usr/X11R6/lib/X11/fonts/Type1</dir>
-	<dir>/usr/X11R6/lib/X11/fonts/OTF</dir>
-	<dir>~/.fonts</dir>
+To prepare the tarfile, first look at /etc/fonts/fonts.conf.  Near the
+top, it should say something like:
 
-These tell us the directories we need to tar up.  ~/.fonts is not a
-system font directory, of course, and /usr/X11R6/lib/X11/fonts/OTF
-happens to be empty, so for Red Hat 9 we only care about the first
-two.  Now prepare the tarfile like so:
+  <dir>/usr/share/fonts</dir>
+  <dir>/usr/X11R6/lib/X11/fonts/Type1</dir>
+  <dir>/usr/X11R6/lib/X11/fonts/OTF</dir>
+  <dir>~/.fonts</dir>
+
+These tell us the directories we need to tar up.  We can non-system
+directories like ~/.fonts as well as any empty directories.  Now
+prepare the tarfile like so:
 
   cd /tmp
-  mkdir redhat-fonts-9
-  cd redhat-fonts-9
-  find /usr/X11R6/lib/X11/fonts/Type1 /usr/share/fonts \
-    \( -name "*.pcf" -o -name "*.pf[ab]" \) -exec cp {} . \;
-  cd ..
-  tar czf redhat-fonts-9.tar.gz redhat-fonts-9
+  mkdir rhfonts
+  cd rhfonts
+  cp -r /usr/share/fonts usr-share-fonts
+  cp -r /usr/X11R6/lib/X11/fonts/Type1 usr-X11R6-lib-X11-fonts-Type1
+  cp -r /usr/X11R6/lib/X11/fonts/OTF usr-X11R6-lib-X11-fonts-OTF
+  rm -rf usr-share-fonts/zh_CN
+  rm -rf usr-share-fonts/monotype
+  find . -name "fonts.cache-*" | xargs rm
+  pax -x ustar -w * | gzip -c > ../redhat-fonts-el4.tar.gz
 
-Replace the Red Hat version and the directory list as appropriate, and
-be on the alert for new types of font files as well.  Note that
-currently we are not including True Type ("*.ttf") font files, due
-to licensing issues with some of them.
+(Using "tar" on Linux with long pathnames can result in a tarfile
+which can't be extracted on Solaris, so we use pax instead.  The
+removed font directories have licenses which do not allow
+redistribution outside of Red Hat.)
 
-Then use the import script to import the tarfile as documented in
-/mit/source/doc/procedures.  The command will look something like:
+Replace the Red Hat version and the font directories as appropriate.
 
-  $CVSROOT/CVSROOT/import.sh /tmp/redhat-fonts-9.tar.gz OLDVERS
-
-where OLDVERS is the last Red Hat version this was done for.
-
-If new types of font files have been added, edit Makefile.athena
-accordingly.
+Check in the new tarfile (add it with "cvs add -kb" so it's treated as
+a binary file) and cvs remove the old tarfile.  Adjust Makefile.athena
+for the new filename.

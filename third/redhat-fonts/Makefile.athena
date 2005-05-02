@@ -1,6 +1,7 @@
-# $Id: Makefile.athena,v 1.1 2003-07-02 19:45:57 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2005-05-02 19:22:35 ghudson Exp $
 
 FONTDIR=/usr/athena/share/fonts/redhat
+CONFIGDIR=/etc/fonts/fonts.conf
 
 dist:
 
@@ -14,4 +15,7 @@ check:
 
 install:
 	mkdir -p "$$SRVD${FONTDIR}"
-	install *.pcf *.pf[ab] "$$SRVD${FONTDIR}"
+	mkdir -p "$$SRVD${CONFIGDIR}"
+	gzip -cd redhat-fonts-el4.tar.gz | (cd "$$SRVD${FONTDIR}" && tar xf -)
+	chown -R root "$$SRVD${FONTDIR}"
+	install -c -m 644 fonts.conf "$$SRVD${CONFIGDIR}"
