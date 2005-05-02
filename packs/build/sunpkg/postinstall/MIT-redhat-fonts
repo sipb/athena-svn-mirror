@@ -1,0 +1,6 @@
+#!/bin/sh
+
+umask 022
+HOME=/ chroot ${PKG_INSTALL_ROOT:-/} /usr/bin/fc-cache -f 2>/dev/null
+
+exit 0
