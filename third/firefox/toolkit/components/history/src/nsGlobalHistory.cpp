@@ -4256,6 +4256,7 @@ nsGlobalHistory::AutoCompleteTypedSearch(nsIAutoCompleteMdbResult **aResult)
   nsCOMPtr<nsIAutoCompleteMdbResult> result = do_CreateInstance("@mozilla.org/autocomplete/mdb-result;1", &rv);
   NS_ENSURE_SUCCESS(rv, rv);
   result->Init(mEnv, mTable);
+  result->SetReverseByteOrder(mReverseByteOrder);
   result->SetTokens(kToken_URLColumn, nsIAutoCompleteMdbResult::kCharType, kToken_NameColumn, nsIAutoCompleteMdbResult::kUnicharType);
 
   nsIMdbRow *row = nsnull;
@@ -4324,6 +4325,7 @@ nsGlobalHistory::AutoCompleteSearch(const nsAString &aSearchString,
     nsCOMPtr<nsIAutoCompleteMdbResult> result = do_CreateInstance("@mozilla.org/autocomplete/mdb-result;1", &rv);
     NS_ENSURE_SUCCESS(rv, rv);
     result->Init(mEnv, mTable);
+    result->SetReverseByteOrder(mReverseByteOrder);
     result->SetTokens(kToken_URLColumn, nsIAutoCompleteMdbResult::kCharType, kToken_NameColumn, nsIAutoCompleteMdbResult::kUnicharType);
     result->SetSearchString(aSearchString);
 
