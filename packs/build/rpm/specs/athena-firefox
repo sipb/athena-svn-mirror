@@ -3,7 +3,10 @@ Summary: Mozilla Firefox Web browser, for Athena.
 License: MPL
 Group: Applications/Internet
 
-Requires: athena-krb5
+Requires: athena-GConf2 athena-gtk2 athena-glib2 athena-gnome-vfs2
+Requires: athena-ORBit2 athena-libbonobo athena-libxml2 athena-atk
+Requires: athena-pango athena-esound athena-audiofile
+Requires: athena-openssl athena-krb5
 
 %description
 Mozilla Firefox is an open-source web browser, designed for standards

@@ -1,1 +1,16 @@
+P MIT-GConf2  The GNOME configuration database system, for Athena
+P MIT-gtk2    The Gimp Toolkit, version2, for Athena
+P MIT-glib2   The glib utility library (version 2), for Athena
+P MIT-gnome-vfs2 The GNOME virtual file-system libraries, for Athena
+P MIT-ORBit2  A CORBA Object Request Broker, for Athena
+P MIT-libbonobo Bonobo component system, for Athena
+P MIT-libxml2 An XML library used by GNOME, for Athena
+P MIT-atk     Accessibility Toolkit, for Athena
+P MIT-pango   System for layout and rendering of internationalized text, for Athena
+P MIT-gettext GNU library for producing multi-lingual messages, for Athena
+P MIT-libiconv GNU libiconv character set conversion library, for Athena
+P MIT-popt    A C library for parsing command line parameters, for Athena
+P MIT-esound  The Enlightened Sound Daemon, for Athena
+P MIT-audiofile A library for accessing various audio file formats, for Athena
+P MIT-openssl Secure Sockets Layer and cryptography libraries and tools, for Athena
 P MIT-krb5    Version 5 of the Kerberos system
