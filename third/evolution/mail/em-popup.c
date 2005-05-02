@@ -903,6 +903,16 @@ emp_apps_open_in(GtkWidget *w, struct _open_in_item *item)
 			command = g_strdup_printf ("%s %s%s &", item->app->command, douri ? "file://" : "", path);
 		}
 		
+		/* Athena hack: chmod the file read-only as a hint to editing-
+		   capable viewers that they should not allow editing before
+		   the file is saved under a different name. */
+		{
+			struct stat st;
+
+			if (stat (path, &st) == 0)
+				chmod (path, st.st_mode & 0444);
+		}
+
 		/* FIXME: Do not use system here */
 		system(command);
 		g_free(command);
