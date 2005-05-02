@@ -674,6 +674,9 @@
         <parameter name="event"/>
         <body>
           <![CDATA[
+            if (!event.isTrusted)
+              return;
+
             // mechanism for reading properties of the underlying XPCOM object
             // (ignoring potential getters/setters added by malicious content)
             var safeGetProperty = function(obj, propname) {
@@ -719,6 +722,9 @@
 
             var origURIStr = safeGetProperty(targetDoc, "documentURI");
             var origURI = ioService.newURI(origURIStr, docCharset, null);
+
+            if (uri.schemeIs("javascript"))
+              return;
 
             const nsIScriptSecMan =
               Components.interfaces.nsIScriptSecurityManager;
@@ -795,7 +801,7 @@
           <![CDATA[
             var browser = this.getBrowserForTab(aTab);
             var crop = "end";
-            var title = browser.contentDocument.__proto__.__lookupGetter__('title').call(browser.contentDocument);
+            var title = browser.contentTitle;
             
             if (!title) {
               if (browser.currentURI.spec) {
