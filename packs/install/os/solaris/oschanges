@@ -1,6 +1,6 @@
 #!/sbin/sh
 # Undo any undesired changes resulting from the installation of OS pkgs.
-# $Id: oschanges,v 1.23 2005-04-07 13:53:57 rbasch Exp $
+# $Id: oschanges,v 1.24 2005-05-02 19:28:06 ghudson Exp $
 
 # Restore various files which belong to the OS, but which are replaced
 # in the Athena release.
@@ -17,6 +17,7 @@ copy_from_srvd /lib/svc/method/console-login
 copy_from_srvd /etc/logindevperm
 copy_from_srvd /etc/name_to_sysnum
 copy_from_srvd /etc/nsswitch.conf
+copy_from_srvd /etc/fonts/fonts.conf
 copy_from_srvd /usr/bin/login
 copy_from_srvd /usr/openwin/lib/app-defaults/XTerm
 copy_from_srvd /usr/openwin/share/etc/keytables/keytable.map
