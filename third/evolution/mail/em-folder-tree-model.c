@@ -193,10 +193,11 @@ sort_cb (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer user_data
 	
 	if (is_store) {
 		/* On This Computer is always first and VFolders is always last */
+		/* Athena hack: actually, put both of them last. */
 		if (!strcmp (aname, _("On This Computer")))
-			rv = -1;
-		else if (!strcmp (bname, _("On This Computer")))
 			rv = 1;
+		else if (!strcmp (bname, _("On This Computer")))
+			rv = -1;
 		else if (!strcmp (aname, _("VFolders")))
 			rv = 1;
 		else if (!strcmp (bname, _("VFolders")))
