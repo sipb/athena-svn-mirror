@@ -62,8 +62,6 @@ if [ -s "$DEADFILES" ]; then
   sed -e "s|^|$UPDATE_ROOT|" "$DEADFILES" | xargs rm -rf
 fi
 
-yes="y\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny"
-
 if [ -s "$PACKAGES" ]; then
   pkglog=$UPDATE_ROOT/var/athena/update.pkglog
   rm -f "$pkglog"
@@ -104,8 +102,7 @@ if [ -s "$PATCHES" ]; then
   # patchadd is stupid and elides blank arguments, so we have to be careful
   # specifying the update root.
   ur="${UPDATE_ROOT:+-R $UPDATE_ROOT}"
-  echo "$yes" | patchadd -d $ur -u -M /install/patches/patches.link \
-    `cat $PATCHES`
+  yes | patchadd $ur -u -M /install/patches `cat $PATCHES`
 fi
 
 if [ "$OSCHANGES" = true ]; then
