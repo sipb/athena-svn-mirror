@@ -37,7 +37,7 @@
  * will be incremented, and KRB5_RELTAIL will revert to "prerelease".
  *
  * KRB5_RELTAG contains the CVS tag name corresponding to the release.
-#define KRB5_RELDATE "20050127"
+#define KRB5_RELDATE "20050422"
  * normally be undefined for checked-in code.
  */
 
@@ -52,7 +52,7 @@
  */
 #define KRB5_MAJOR_RELEASE 1
 #define KRB5_MINOR_RELEASE 4
-#define KRB5_PATCHLEVEL 0
+#define KRB5_PATCHLEVEL 1
 /* #undef KRB5_RELTAIL */
-#define KRB5_RELDATE "20050127"
+#define KRB5_RELDATE "20050422"
 #define KRB5_RELTAG "krb5-1-4-final"

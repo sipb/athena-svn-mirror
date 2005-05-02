@@ -1,4 +1,4 @@
-This is krb5-user.info, produced by makeinfo version 4.0 from
+This is krb5-user.info, produced by makeinfo version 4.5 from
 user-guide.texinfo.
 
 
@@ -152,6 +152,7 @@ met:
 
   3. All advertising materials mentioning features or use of this
      software must display the following acknowledgement:
+
           This product includes software developed by the University of
           California, Berkeley and its contributors.
 
@@ -919,6 +920,7 @@ telnet program, with the following Kerberos options added:
 `-x'
      turns on encryption.
 
+
 For example, if `david' wanted to use the standard UNIX telnet to
 connect to the machine `daffodil.mit.edu', he would type:
 
@@ -995,6 +997,7 @@ rlogin program, with the following Kerberos options added:
 `-x'
      encrypts the input and output data streams (the username is sent
      unencrypted)
+
 
 For example, if `david' wanted to use the standard UNIX rlogin to
 connect to the machine `daffodil.example.com', he would type:
@@ -1114,6 +1117,7 @@ rlogin program, with the following Kerberos features added:
 `-x'
      encrypts the input and output data streams (the command line is
      not encrypted)
+
 
 For example, if your Kerberos tickets allowed you to run programs on the
 host
@@ -1500,41 +1504,41 @@ TGT
 Tag Table:
 Node: Top83
 Node: Copyright342
-Node: Introduction7845
-Node: What is a Ticket?9704
-Node: What is a Kerberos Principal?10955
-Node: Kerberos V5 Tutorial12802
-Node: Setting Up to Use Kerberos V513592
-Node: Ticket Management14484
-Node: Kerberos Ticket Properties15572
-Node: Obtaining Tickets with kinit19470
-Ref: Obtaining Tickets with kinit-Footnote-122568
-Node: Viewing Your Tickets with klist22683
-Node: Destroying Your Tickets with kdestroy26971
-Node: Password Management27834
-Node: Changing Your Password28862
-Node: Password Advice30614
-Node: Granting Access to Your Account33209
-Node: Kerberos V5 Applications35118
-Node: Overview of Additional Features36125
-Node: telnet37391
-Node: rlogin40320
-Node: FTP42701
-Node: rsh44720
-Node: rcp45896
-Node: ksu46697
-Node: Kerberos V5 Reference52238
-Ref: Kerberos V5 Reference-Footnote-153687
-Node: kinit Reference53913
-Node: klist Reference54133
-Node: ksu Reference54345
-Node: kdestroy Reference54554
-Node: kpasswd Reference54780
-Node: telnet Reference55006
-Node: FTP Reference55224
-Node: rlogin Reference55432
-Node: rsh Reference55646
-Node: rcp Reference55851
-Node: Kerberos Glossary56031
+Node: Introduction7846
+Node: What is a Ticket?9705
+Node: What is a Kerberos Principal?10956
+Node: Kerberos V5 Tutorial12803
+Node: Setting Up to Use Kerberos V513593
+Node: Ticket Management14485
+Node: Kerberos Ticket Properties15573
+Node: Obtaining Tickets with kinit19471
+Ref: Obtaining Tickets with kinit-Footnote-122569
+Node: Viewing Your Tickets with klist22684
+Node: Destroying Your Tickets with kdestroy26972
+Node: Password Management27835
+Node: Changing Your Password28863
+Node: Password Advice30615
+Node: Granting Access to Your Account33210
+Node: Kerberos V5 Applications35119
+Node: Overview of Additional Features36126
+Node: telnet37392
+Node: rlogin40322
+Node: FTP42704
+Node: rsh44723
+Node: rcp45900
+Node: ksu46701
+Node: Kerberos V5 Reference52242
+Ref: Kerberos V5 Reference-Footnote-153691
+Node: kinit Reference53917
+Node: klist Reference54137
+Node: ksu Reference54349
+Node: kdestroy Reference54558
+Node: kpasswd Reference54784
+Node: telnet Reference55010
+Node: FTP Reference55228
+Node: rlogin Reference55436
+Node: rsh Reference55650
+Node: rcp Reference55855
+Node: Kerberos Glossary56035
 
 End Tag Table

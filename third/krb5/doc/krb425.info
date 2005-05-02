@@ -1,4 +1,4 @@
-This is krb425.info, produced by makeinfo version 4.0 from
+This is krb425.info, produced by makeinfo version 4.5 from
 krb425.texinfo.
 
 
@@ -154,6 +154,7 @@ met:
 
   3. All advertising materials mentioning features or use of this
      software must display the following acknowledgement:
+
           This product includes software developed by the University of
           California, Berkeley and its contributors.
 
@@ -273,6 +274,7 @@ v4_realm
      This should only be used when running separate V4 and V5 realms,
      with some external means of password sychronization between the
      realms.
+
 
 
 File: krb425.info,  Node: AFS and the Appdefaults Section,  Prev: realms (krb5.conf),  Up: krb5.conf
@@ -421,16 +423,16 @@ KDCs.
 Tag Table:
 Node: Top76
 Node: Copyright402
-Node: Introduction7902
-Node: Configuration Files8920
-Node: krb5.conf9219
-Node: libdefaults9662
-Node: realms (krb5.conf)10206
-Node: AFS and the Appdefaults Section11288
-Node: kdc.conf11959
-Node: Upgrading KDCs12339
-Node: Upgrading Application Servers14217
-Node: Upgrading Client machines15205
-Node: Firewall Considerations16088
+Node: Introduction7903
+Node: Configuration Files8921
+Node: krb5.conf9220
+Node: libdefaults9663
+Node: realms (krb5.conf)10207
+Node: AFS and the Appdefaults Section11290
+Node: kdc.conf11961
+Node: Upgrading KDCs12341
+Node: Upgrading Application Servers14219
+Node: Upgrading Client machines15207
+Node: Firewall Considerations16090
 
 End Tag Table
