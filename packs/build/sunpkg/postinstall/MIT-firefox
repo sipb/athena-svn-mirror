@@ -4,10 +4,17 @@ MOZILLA_FIVE_HOME=/usr/athena/lib/firefox
 
 umask 022
 
+# Set up a proper environment for the registration commands.
+PATH=/usr/athena/bin:/bin/athena:/etc/athena:$PATH
+USER=root
+HOME=/
+ATHENA_LOGIN_SESSION=$$
+export PATH USER HOME ATHENA_LOGIN_SESSION
+
 # Rebuild the registries.
-HOME=/ chroot ${PKG_INSTALL_ROOT:-/} $MOZILLA_FIVE_HOME/build-registries
+chroot ${PKG_INSTALL_ROOT:-/} $MOZILLA_FIVE_HOME/build-registries
 
 # Register components and extensions.
-HOME=/ chroot ${PKG_INSTALL_ROOT:-/} /usr/athena/bin/firefox -register
+chroot ${PKG_INSTALL_ROOT:-/} /usr/athena/bin/firefox -register
 
 exit 0
