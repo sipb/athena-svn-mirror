@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.29 2004-09-24 21:56:47 rbasch Exp $
+/* $Id: dm.c,v 1.30 2005-05-04 00:28:36 rbasch Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -68,7 +68,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.29 2004-09-24 21:56:47 rbasch Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.30 2005-05-04 00:28:36 rbasch Exp $";
 #endif
 
 /* Process states */
@@ -95,6 +95,7 @@ volatile int console_failed = FALSE;
 volatile int login_running = NONEXISTENT;
 char dpyname[10];
 int console_master_fd = -1;
+int console_slave_fd = -1;
 
 char *xpids = "/var/athena/X%d.pid";
 char *xhosts = "/etc/X%d.hosts";
@@ -166,7 +167,6 @@ int main(int argc, char **argv)
 #endif
   int fd;
   int conspipe[2];
-  int console_slave_fd;
   XIOErrorHandler xioerror_handler;
 
   sigemptyset(&sigact.sa_mask);
@@ -773,6 +773,10 @@ static void start_console(int master_fd, int aux_fd, char **argv)
 static void shutdown(int signo)
 {
   struct termios tc;
+#ifdef TIOCCONS
+  int console_fd;
+  int on = 1;
+#endif
 
   if (login_running == RUNNING)
     kill(loginpid, SIGHUP);
@@ -791,6 +795,16 @@ static void shutdown(int signo)
 
   (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *) 0);
 
+  /* Stop console redirection.  In the SRIOCSREDIR case, it is
+   * sufficient merely to close the slave side of the pty.
+   * In the TIOCCONS case, explicitly redirect to /dev/console.
+   */
+  close(console_slave_fd);
+#ifdef TIOCCONS
+  console_fd = open("/dev/console", O_RDWR);
+  if (console_fd >= 0)
+    ioctl(console_fd, TIOCCONS, &on);
+#endif
   close(console_master_fd);
   while (1)
     pause();
