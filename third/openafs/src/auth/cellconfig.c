@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/auth/cellconfig.c,v 1.1.1.4 2005-03-10 20:40:47 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/auth/cellconfig.c,v 1.1.1.5 2005-05-04 17:44:56 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <afs/pthread_glock.h>
@@ -122,7 +122,7 @@ afsconf_FindService(register const char *aname)
     struct servent *ts;
     register struct afsconf_servPair *tsp;
 
-#if     defined(AFS_OSF_ENV) || defined(AFS_DEC_ENV)
+#if     defined(AFS_OSF_ENV) 
     ts = getservbyname(aname, "");
 #else
     ts = getservbyname(aname, NULL);

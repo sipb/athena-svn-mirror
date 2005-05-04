@@ -37,7 +37,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxgen/rpc_main.c,v 1.1.1.3 2005-03-10 20:43:23 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxgen/rpc_main.c,v 1.1.1.4 2005-05-04 17:45:03 zacheiss Exp $");
 
 #include <limits.h>
 #include <stdio.h>
@@ -476,9 +476,6 @@ h_output(char *infile, char *define, int extend, char *outfile, int append)
     f_print(fout, "#include \"h/socket.h\"\n");
     f_print(fout, "#endif\n");
     f_print(fout, "#ifndef	DTYPE_SOCKET  /* XXXXX */\n");
-    f_print(fout, "#ifdef AFS_DEC_ENV\n");
-    f_print(fout, "#include \"h/smp_lock.h\"\n");
-    f_print(fout, "#endif\n");
     f_print(fout, "#ifndef AFS_LINUX22_ENV\n");
     f_print(fout, "#include \"h/file.h\"\n");
     f_print(fout, "#endif\n");

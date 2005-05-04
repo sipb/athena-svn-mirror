@@ -19,7 +19,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_read.c,v 1.1.1.3 2005-03-10 20:39:06 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_read.c,v 1.1.1.4 2005-05-04 17:46:27 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -782,15 +782,13 @@ afs_UFSRead(register struct vcache *avc, struct uio *auio,
 	    AFS_GUNLOCK();
 	    VOP_READ(tfile->vnode, &tuio, 0, afs_osi_credp, code);
 	    AFS_GLOCK();
-#elif defined(AFS_SUN_ENV)
-	    code = VOP_RDWR(tfile->vnode, &tuio, UIO_READ, 0, afs_osi_credp);
 #elif defined(AFS_HPUX100_ENV)
 	    AFS_GUNLOCK();
 	    code = VOP_RDWR(tfile->vnode, &tuio, UIO_READ, 0, afs_osi_credp);
 	    AFS_GLOCK();
 #elif defined(AFS_LINUX20_ENV)
 	    AFS_GUNLOCK();
-	    code = osi_file_uio_rdwr(tfile, &tuio, UIO_READ);
+	    code = osi_rdwr(tfile, &tuio, UIO_READ);
 	    AFS_GLOCK();
 #elif defined(AFS_DARWIN_ENV)
 	    AFS_GUNLOCK();

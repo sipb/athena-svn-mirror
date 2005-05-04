@@ -514,20 +514,13 @@ extern afs_int32 PagInCred(const struct AFS_UCRED *cred);
 
 /* afs_osi_alloc.c */
 #ifndef AFS_FBSD_ENV
-extern afs_int32 afs_preallocs;
 extern afs_lock_t osi_fsplock;
 extern afs_lock_t osi_flplock;
 #endif
 extern void osi_FreeLargeSpace(void *adata);
-extern void osi_FreeMediumSpace(void *adata);
 extern void osi_FreeSmallSpace(void *adata);
 extern void *osi_AllocLargeSpace(size_t size);
-extern void *osi_AllocMediumSpace(size_t size);
 extern void *osi_AllocSmallSpace(size_t size);
-#ifndef osi_AllocSmall
-extern char *osi_AllocSmall(register afs_int32 size,
-			    register afs_int32 morespace);
-#endif
 
 /* afs_osi_uio.c */
 extern int afsio_copy(struct uio *ainuio, struct uio *aoutuio,
@@ -545,11 +538,9 @@ extern void afs_osi_SetTime(osi_timeval_t * atv);
 #ifdef AFS_LINUX20_ENV
 #ifdef AFS_LINUX24_ENV
 extern int osi_lookupname(char *aname, uio_seg_t seg, int followlink,
-			  vnode_t ** dirvpp, struct dentry **dpp);
+			  struct dentry **dpp);
 extern int osi_InitCacheInfo(char *aname);
-extern int osi_rdwr(int rw, struct osi_file *file, caddr_t addrp,
-		    size_t asize, size_t * resid);
-extern int osi_file_uio_rdwr(struct osi_file *osifile, uio_t * uiop, int rw);
+extern int osi_rdwr(struct osi_file *osifile, uio_t * uiop, int rw);
 extern void setup_uio(uio_t * uiop, struct iovec *iovecp, const char *buf,
 		      afs_offs_t pos, int count, uio_flag_t flag,
 		      uio_seg_t seg);

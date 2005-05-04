@@ -17,13 +17,11 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_kmutex.c,v 1.1.1.1 2005-03-10 20:38:57 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_kmutex.c,v 1.1.1.2 2005-05-04 17:46:39 zacheiss Exp $");
 
 #include "rx/rx_kcommon.h"
 #include "rx_kmutex.h"
 #include "rx/rx_kernel.h"
-
-#ifdef CONFIG_SMP
 
 void
 afs_mutex_init(afs_kmutex_t * l)
@@ -139,5 +137,3 @@ afs_cv_timedwait(afs_kcondvar_t * cv, afs_kmutex_t * l, int waittime)
 	AFS_GLOCK();
     MUTEX_ENTER(l);
 }
-
-#endif

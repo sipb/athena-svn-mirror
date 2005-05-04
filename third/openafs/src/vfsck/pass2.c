@@ -19,7 +19,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vfsck/pass2.c,v 1.1.1.2 2005-03-10 20:39:42 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vfsck/pass2.c,v 1.1.1.3 2005-05-04 17:45:05 zacheiss Exp $");
 
 #define VICE
 #include <sys/time.h>
@@ -198,12 +198,12 @@ pass2check(idesc)
     if (dirp->d_ino != 0 && strcmp(dirp->d_name, "..") != 0) {
 	pfatal("CANNOT FIX, FIRST ENTRY IN DIRECTORY CONTAINS %s\n",
 	       dirp->d_name);
-#if	defined(AFS_SUN_ENV) || defined(AFS_DEC_ENV)
+#if	defined(AFS_SUN_ENV) 
 	iscorrupt = 1;
 #endif
     } else if (dirp->d_reclen < entrysize) {
 	pfatal("CANNOT FIX, INSUFFICIENT SPACE TO ADD '.'\n");
-#if	defined(AFS_SUN_ENV) || defined(AFS_DEC_ENV)
+#if	defined(AFS_SUN_ENV) 
 	iscorrupt = 1;
 #endif
     } else if (dirp->d_reclen < 2 * entrysize) {
@@ -255,12 +255,12 @@ pass2check(idesc)
     if (dirp->d_ino != 0 && strcmp(dirp->d_name, ".") != 0) {
 	pfatal("CANNOT FIX, SECOND ENTRY IN DIRECTORY CONTAINS %s\n",
 	       dirp->d_name);
-#if	defined(AFS_SUN_ENV) || defined(AFS_DEC_ENV)
+#if	defined(AFS_SUN_ENV) 
 	iscorrupt = 1;
 #endif
     } else if (dirp->d_reclen < entrysize) {
 	pfatal("CANNOT FIX, INSUFFICIENT SPACE TO ADD '..'\n");
-#if	defined(AFS_SUN_ENV) || defined(AFS_DEC_ENV)
+#if	defined(AFS_SUN_ENV) 
 	iscorrupt = 1;
 #endif
     } else {

@@ -22,7 +22,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/NBSD/osi_vm.c,v 1.1.1.1 2005-03-10 20:29:50 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/NBSD/osi_vm.c,v 1.1.1.2 2005-05-04 17:44:52 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -58,7 +58,7 @@ osi_VM_FlushVCache(struct vcache *avc, int *slept)
 	return EBUSY;
 
     /* if a lock is held, give up */
-    if (CheckLock(&avc->lock) || afs_CheckBozonLock(&avc->pvnLock))
+    if (CheckLock(&avc->lock))
 	return EBUSY;
 
     AFS_GUNLOCK();

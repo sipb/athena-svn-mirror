@@ -32,8 +32,6 @@
 extern void afsi_log(char *pattern, ...);
 #endif
 
-unsigned int cm_mountRootGen = 0;
-
 /*
  * Case-folding array.  This was constructed by inspecting of SMBtrace output.
  * I do not know anything more about it.
@@ -180,12 +178,14 @@ int cm_Is8Dot3(char *namep)
 
 /*
  * Number unparsing map for generating 8.3 names;
- * Taken from DFS.
+ * The version taken from DFS was on drugs.  
+ * You can't include '&' and '@' in a file name.
  */
-char cm_8Dot3Mapping[41] =
+char cm_8Dot3Mapping[42] =
 {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
- 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S',
- 'T', 'V', 'W', 'X', 'Y', 'Z', '_', '-', '$', '#', '@', '%', '!', '&', 'E', 'O'
+ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 
+ 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 
+ 'V', 'W', 'X', 'Y', 'Z', '_', '-', '$', '#', '!', '+', '='
 };
 int cm_8Dot3MapSize = sizeof(cm_8Dot3Mapping);
 
@@ -474,20 +474,20 @@ long cm_ApplyDir(cm_scache_t *scp, cm_DirFuncp_t funcp, void *parmp,
 	 * do not have an associated cm_server_t
 	 */
     if ( !(cm_freelanceEnabled &&
-			sp->fid.cell==AFS_FAKE_ROOT_CELL_ID &&
-			sp->fid.volume==AFS_FAKE_ROOT_VOL_ID ) )
+            sp->fid.cell==AFS_FAKE_ROOT_CELL_ID &&
+            sp->fid.volume==AFS_FAKE_ROOT_VOL_ID ) )
 #endif /* AFS_FREELANCE_CLIENT */
-		{
-	        int casefold = sp->caseFold;
-			sp->caseFold = 0; /* we have a strong preference for exact matches */
-			if ( *retscp = cm_dnlcLookup(scp, sp))	/* dnlc hit */
-			{
-				sp->caseFold = casefold;
-				lock_ReleaseMutex(&scp->mx);
-				return 0;
-			}
-	        sp->caseFold = casefold;
-		}
+    {
+        int casefold = sp->caseFold;
+        sp->caseFold = 0; /* we have a strong preference for exact matches */
+        if ( *retscp = cm_dnlcLookup(scp, sp))	/* dnlc hit */
+        {
+            sp->caseFold = casefold;
+            lock_ReleaseMutex(&scp->mx);
+            return 0;
+        }
+        sp->caseFold = casefold;
+    }
     }	
 
     /*
@@ -540,7 +540,7 @@ long cm_ApplyDir(cm_scache_t *scp, cm_DirFuncp_t funcp, void *parmp,
          * the offset of the buffer we have.  If not, get the buffer.
          */
         thyper.HighPart = curOffset.HighPart;
-        thyper.LowPart = curOffset.LowPart & ~(buf_bufferSize-1);
+        thyper.LowPart = curOffset.LowPart & ~(cm_data.buf_blockSize-1);
         if (!bufferp || !LargeIntegerEqualTo(thyper, bufferOffset)) {
             /* wrong buffer */
             if (bufferp) {
@@ -552,11 +552,11 @@ long cm_ApplyDir(cm_scache_t *scp, cm_DirFuncp_t funcp, void *parmp,
             lock_ObtainRead(&scp->bufCreateLock);
             code = buf_Get(scp, &thyper, &bufferp);
             lock_ReleaseRead(&scp->bufCreateLock);
-			if (code) {
-				/* if buf_Get() fails we do not have a buffer object to lock */
+            if (code) {
+                /* if buf_Get() fails we do not have a buffer object to lock */
                 bufferp = NULL;
                 break;
-			}
+            }
 
             lock_ObtainMutex(&bufferp->mx);
             bufferOffset = thyper;
@@ -595,12 +595,12 @@ long cm_ApplyDir(cm_scache_t *scp, cm_DirFuncp_t funcp, void *parmp,
                 break;
             }
         }	/* if (wrong buffer) ... */
-                
+           
         /* now we have the buffer containing the entry we're interested
          * in; copy it out if it represents a non-deleted entry.
          */
         entryInDir = curOffset.LowPart & (2048-1);
-        entryInBuffer = curOffset.LowPart & (buf_bufferSize - 1);
+        entryInBuffer = curOffset.LowPart & (cm_data.buf_blockSize - 1);
 
         /* page header will help tell us which entries are free.  Page
          * header can change more often than once per buffer, since
@@ -608,7 +608,7 @@ long cm_ApplyDir(cm_scache_t *scp, cm_DirFuncp_t funcp, void *parmp,
          * buffer package buffer.
          */
         /* only look intra-buffer */
-        temp = curOffset.LowPart & (buf_bufferSize - 1);
+        temp = curOffset.LowPart & (cm_data.buf_blockSize - 1);
         temp &= ~(2048 - 1);	/* turn off intra-page bits */
         pageHeaderp = (cm_pageHeader_t *) (bufferp->datap + temp);
 
@@ -770,7 +770,7 @@ long cm_ReadMountPoint(cm_scache_t *scp, cm_user_t *userp, cm_req_t *reqp)
     osi_hyper_t thyper;
     int tlen;
 
-    if (scp->mountPointStringp) 
+    if (scp->mountPointStringp[0]) 
         return 0;
         
     /* otherwise, we have to read it in */
@@ -810,13 +810,12 @@ long cm_ReadMountPoint(cm_scache_t *scp, cm_user_t *userp, cm_req_t *reqp)
     }
 
     /* someone else did the work while we were out */
-    if (scp->mountPointStringp) {
+    if (scp->mountPointStringp[0]) {
         code = 0;
         goto done;
     }
 
     /* otherwise, copy out the link */
-    scp->mountPointStringp = malloc(tlen);
     memcpy(scp->mountPointStringp, bufp->datap, tlen);
 
     /* now make it null-terminated.  Note that the original contents of a
@@ -838,7 +837,7 @@ long cm_ReadMountPoint(cm_scache_t *scp, cm_user_t *userp, cm_req_t *reqp)
  * scp remains locked, just for simplicity of describing the interface.
  */
 long cm_FollowMountPoint(cm_scache_t *scp, cm_scache_t *dscp, cm_user_t *userp,
-                          cm_req_t *reqp, cm_scache_t **outScpp)
+                         cm_req_t *reqp, cm_scache_t **outScpp)
 {
     char *cellNamep;
     char *volNamep;
@@ -853,8 +852,8 @@ long cm_FollowMountPoint(cm_scache_t *scp, cm_scache_t *dscp, cm_user_t *userp,
     size_t vnLength;
     int type;
 
-    if (scp->mountRootFidp && scp->mountRootGen >= cm_mountRootGen) {
-        tfid = *scp->mountRootFidp;
+    if (scp->mountRootFid.cell != 0 && scp->mountRootGen >= cm_data.mountRootGen) {
+        tfid = scp->mountRootFid;
         lock_ReleaseMutex(&scp->mx);
         code = cm_GetSCache(&tfid, outScpp, userp, reqp);
         lock_ObtainMutex(&scp->mx);
@@ -863,7 +862,7 @@ long cm_FollowMountPoint(cm_scache_t *scp, cm_scache_t *dscp, cm_user_t *userp,
 
     /* parse the volume name */
     mpNamep = scp->mountPointStringp;
-    osi_assert(mpNamep);
+    osi_assert(mpNamep[0]);
     tlen = strlen(scp->mountPointStringp);
     mtType = *scp->mountPointStringp;
     cellNamep = malloc(tlen);
@@ -920,15 +919,10 @@ long cm_FollowMountPoint(cm_scache_t *scp, cm_scache_t *dscp, cm_user_t *userp,
          * (defect 11489)
          */
         lock_ObtainMutex(&volp->mx);
-        if(volp->dotdotFidp == (cm_fid_t *) NULL) 
-            volp->dotdotFidp = (cm_fid_t *) malloc(sizeof(cm_fid_t));
-        *(volp->dotdotFidp) = dscp->fid;
+        volp->dotdotFid = dscp->fid;
         lock_ReleaseMutex(&volp->mx);
 
-        if (scp->mountRootFidp == 0) {
-            scp->mountRootFidp = malloc(sizeof(cm_fid_t));
-        }
-        scp->mountRootFidp->cell = cellp->cellID;
+        scp->mountRootFid.cell = cellp->cellID;
         /* if the mt pt is in a read-only volume (not just a
          * backup), and if there is a read-only volume for the
          * target, and if this is a type '#' mount point, use
@@ -938,18 +932,18 @@ long cm_FollowMountPoint(cm_scache_t *scp, cm_scache_t *dscp, cm_user_t *userp,
              && volp->roID != 0 && type == RWVOL)
             type = ROVOL;
         if (type == ROVOL)
-            scp->mountRootFidp->volume = volp->roID;
+            scp->mountRootFid.volume = volp->roID;
         else if (type == BACKVOL)
-            scp->mountRootFidp->volume = volp->bkID;
+            scp->mountRootFid.volume = volp->bkID;
         else
-            scp->mountRootFidp->volume = volp->rwID;
+            scp->mountRootFid.volume = volp->rwID;
 
         /* the rest of the fid is a magic number */
-        scp->mountRootFidp->vnode = 1;
-        scp->mountRootFidp->unique = 1;
-        scp->mountRootGen = cm_mountRootGen;
+        scp->mountRootFid.vnode = 1;
+        scp->mountRootFid.unique = 1;
+        scp->mountRootGen = cm_data.mountRootGen;
 
-        tfid = *scp->mountRootFidp;
+        tfid = scp->mountRootFid;
         lock_ReleaseMutex(&scp->mx);
         code = cm_GetSCache(&tfid, outScpp, userp, reqp);
         lock_ObtainMutex(&scp->mx);
@@ -973,10 +967,9 @@ long cm_LookupInternal(cm_scache_t *dscp, char *namep, long flags, cm_user_t *us
 
     if (dscp->fid.vnode == 1 && dscp->fid.unique == 1
          && strcmp(namep, "..") == 0) {
-        if (dscp->dotdotFidp == (cm_fid_t *)NULL
-             || dscp->dotdotFidp->volume == 0)
+        if (dscp->dotdotFid.volume == 0)
             return CM_ERROR_NOSUCHVOLUME;
-        rock.fid = *dscp->dotdotFidp;
+        rock.fid = dscp->dotdotFid;
         goto haveFid;
     }
 
@@ -995,7 +988,7 @@ long cm_LookupInternal(cm_scache_t *dscp, char *namep, long flags, cm_user_t *us
      * that we stopped early, probably because we found the entry we're
      * looking for.  Any other non-zero code is an error.
      */
-    if (code && code != CM_ERROR_STOPNOW) { 
+    if (code && code != CM_ERROR_STOPNOW) {
         /* if the cm_scache_t we are searching in is not a directory 
          * we must return path not found because the error 
          * is to describe the final component not an intermediary
@@ -1009,7 +1002,7 @@ long cm_LookupInternal(cm_scache_t *dscp, char *namep, long flags, cm_user_t *us
         return code;
     }
 
-    getroot = (dscp==cm_rootSCachep) ;
+    getroot = (dscp==cm_data.rootSCachep) ;
     if (!rock.found) {
         if (!cm_freelanceEnabled || !getroot) {
             if (flags & CM_FLAG_CHECKPATH)
@@ -1184,7 +1177,7 @@ long cm_Unlink(cm_scache_t *dscp, char *namep, cm_user_t *userp, cm_req_t *reqp)
     struct rx_connection * callp;
 
 #ifdef AFS_FREELANCE_CLIENT
-    if (cm_freelanceEnabled && dscp == cm_rootSCachep) {
+    if (cm_freelanceEnabled && dscp == cm_data.rootSCachep) {
         /* deleting a mount point from the root dir. */
         code = cm_FreelanceRemoveMount(namep);
         return code;
@@ -1203,6 +1196,8 @@ long cm_Unlink(cm_scache_t *dscp, char *namep, cm_user_t *userp, cm_req_t *reqp)
     afsFid.Volume = dscp->fid.volume;
     afsFid.Vnode = dscp->fid.vnode;
     afsFid.Unique = dscp->fid.unique;
+
+    osi_Log1(afsd_logp, "CALL RemoveFile scp 0x%x", (long) dscp);
     do {
         code = cm_Conn(&dscp->fid, userp, reqp, &connp);
         if (code) 
@@ -1215,6 +1210,11 @@ long cm_Unlink(cm_scache_t *dscp, char *namep, cm_user_t *userp, cm_req_t *reqp)
 
     } while (cm_Analyze(connp, userp, reqp, &dscp->fid, &volSync, NULL, NULL, code));
     code = cm_MapRPCError(code, reqp);
+
+    if (code)
+        osi_Log1(afsd_logp, "CALL RemoveFile FAILURE, code 0x%x", code);
+    else
+        osi_Log0(afsd_logp, "CALL RemoveFile SUCCESS");
 
     lock_ObtainMutex(&dscp->mx);
     cm_dnlcRemove(dscp, namep);
@@ -1237,7 +1237,7 @@ long cm_HandleLink(cm_scache_t *linkScp, cm_user_t *userp, cm_req_t *reqp)
     osi_hyper_t thyper;
 
     lock_AssertMutex(&linkScp->mx);
-    if (!linkScp->mountPointStringp) {
+    if (!linkScp->mountPointStringp[0]) {
         /* read the link data */
         lock_ReleaseMutex(&linkScp->mx);
         thyper.LowPart = thyper.HighPart = 0;
@@ -1264,7 +1264,7 @@ long cm_HandleLink(cm_scache_t *linkScp, cm_user_t *userp, cm_req_t *reqp)
                 
         /* now if we still have no link read in,
          * copy the data from the buffer */
-        if ((temp = linkScp->length.LowPart) >= 1024) {
+        if ((temp = linkScp->length.LowPart) >= MOUNTPOINTLEN) {
             buf_Release(bufp);
             return CM_ERROR_TOOBIG;
         }
@@ -1273,8 +1273,7 @@ long cm_HandleLink(cm_scache_t *linkScp, cm_user_t *userp, cm_req_t *reqp)
          * lost race with someone else referencing this link above),
          * and if so, copy in the data.
          */
-        if (linkScp->mountPointStringp == NULL) {
-            linkScp->mountPointStringp = malloc(temp+1);
+        if (!linkScp->mountPointStringp[0]) {
             strncpy(linkScp->mountPointStringp, bufp->datap, temp);
             linkScp->mountPointStringp[temp] = 0;	/* null terminate */
         }
@@ -1294,7 +1293,8 @@ long cm_AssembleLink(cm_scache_t *linkScp, char *pathSuffixp,
                       cm_scache_t **newRootScpp, cm_space_t **newSpaceBufferp,
                       cm_user_t *userp, cm_req_t *reqp)
 {
-    long code;
+    long code = 0;
+    long len;
     char *linkp;
     cm_space_t *tsp;
 
@@ -1318,22 +1318,51 @@ long cm_AssembleLink(cm_scache_t *linkScp, char *pathSuffixp,
             strcpy(tsp->data, linkp+cm_mountRootLen+1);
         else
             tsp->data[0] = 0;
-        *newRootScpp = cm_rootSCachep;
-        cm_HoldSCache(cm_rootSCachep);
+        *newRootScpp = cm_data.rootSCachep;
+        cm_HoldSCache(cm_data.rootSCachep);
+    } else if (linkp[0] == '\\' && linkp[1] == '\\') {
+        if (!strnicmp(&linkp[2], cm_NetbiosName, (len = strlen(cm_NetbiosName)))) 
+        {
+            char * p = &linkp[len + 3];
+            if (strnicmp(p, "all", 3) == 0)
+                p += 4;
+
+            strcpy(tsp->data, p);
+            for (p = tsp->data; *p; p++) {
+                if (*p == '\\')
+                    *p = '/';
+            }
+            *newRootScpp = cm_data.rootSCachep;
+            cm_HoldSCache(cm_data.rootSCachep);
+        } else {
+            linkScp->fileType = CM_SCACHETYPE_DFSLINK;
+            strcpy(tsp->data, linkp);
+            *newRootScpp = NULL;
+            code = CM_ERROR_PATH_NOT_COVERED;
+        }
+    } else if ( !strnicmp(linkp, "msdfs:", (len = strlen("msdfs:"))) ) {
+        linkScp->fileType = CM_SCACHETYPE_DFSLINK;
+        strcpy(tsp->data, linkp);
+        *newRootScpp = NULL;
+        code = CM_ERROR_PATH_NOT_COVERED;
     } else if (*linkp == '\\' || *linkp == '/') {
+#if 0   
         /* formerly, this was considered to be from the AFS root,
          * but this seems to create problems.  instead, we will just
          * reject the link */
-#if 0   
         strcpy(tsp->data, linkp+1);
-        *newRootScpp = cm_rootSCachep;
-        cm_HoldSCache(cm_rootSCachep);
+        *newRootScpp = cm_data.rootSCachep;
+        cm_HoldSCache(cm_data.rootSCachep);
 #else
+        /* we still copy the link data into the response so that 
+         * the user can see what the link points to
+         */
+        linkScp->fileType = CM_SCACHETYPE_INVALID;
+        strcpy(tsp->data, linkp);
+        *newRootScpp = NULL;
         code = CM_ERROR_NOSUCHPATH;
-        goto done;
 #endif  
-    }
-    else {
+    } else {
         /* a relative link */
         strcpy(tsp->data, linkp);
         *newRootScpp = NULL;
@@ -1343,7 +1372,6 @@ long cm_AssembleLink(cm_scache_t *linkScp, char *pathSuffixp,
         strcat(tsp->data, pathSuffixp);
     }
     *newSpaceBufferp = tsp;
-    code = 0;
 
   done:
     lock_ReleaseMutex(&linkScp->mx);
@@ -1357,20 +1385,20 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
     char *tp;			/* ptr moving through input buffer */
     char tc;			/* temp char */
     int haveComponent;		/* has new component started? */
-    char component[256];		/* this is the new component */
+    char component[256];	/* this is the new component */
     char *cp;			/* component name being assembled */
     cm_scache_t *tscp;		/* current location in the hierarchy */
     cm_scache_t *nscp;		/* next dude down */
-    cm_scache_t *dirScp;		/* last dir we searched */
-    cm_scache_t *linkScp;		/* new root for the symlink we just
+    cm_scache_t *dirScp;	/* last dir we searched */
+    cm_scache_t *linkScp;	/* new root for the symlink we just
     * looked up */
     cm_space_t *psp;		/* space for current path, if we've hit
     * any symlinks */
     cm_space_t *tempsp;		/* temp vbl */
-    char *restp;			/* rest of the pathname to interpret */
+    char *restp;		/* rest of the pathname to interpret */
     int symlinkCount;		/* count of # of symlinks traversed */
-    int extraFlag;			/* avoid chasing mt pts for dir cmd */
-    int phase = 1;			/* 1 = tidPathp, 2 = pathp */
+    int extraFlag;		/* avoid chasing mt pts for dir cmd */
+    int phase = 1;		/* 1 = tidPathp, 2 = pathp */
 
     tp = tidPathp;
     if (tp == NULL) {
@@ -1385,6 +1413,8 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
     tscp = rootSCachep;
     cm_HoldSCache(tscp);
     symlinkCount = 0;
+    dirScp = 0;
+
     while (1) {
         tc = *tp++;
 
@@ -1395,9 +1425,9 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
             tc = '\\';
 
         if (!haveComponent) {
-            if (tc == '\\') 
+            if (tc == '\\') {
                 continue;
-            else if (tc == 0) {
+            } else if (tc == 0) {
                 if (phase == 1) {
                     phase = 2;
                     tp = pathp;
@@ -1405,14 +1435,12 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
                 }
                 code = 0;
                 break;
-            }
-            else {
+            } else {
                 haveComponent = 1;
                 cp = component;
                 *cp++ = tc;
             }
-        }
-        else {
+        } else {
             /* we have a component here */
             if (tc == 0 || tc == '\\') {
                 /* end of the component; we're at the last
@@ -1426,9 +1454,10 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
                 code = cm_Lookup(tscp, component,
                                   flags | extraFlag,
                                   userp, reqp, &nscp);
-
                 if (code) {
                     cm_ReleaseSCache(tscp);
+                    if (dirScp)
+                        cm_ReleaseSCache(dirScp);
                     if (psp) 
                         cm_FreeSpace(psp);
                     if (code == CM_ERROR_NOSUCHFILE && tscp->fileType == CM_SCACHETYPE_SYMLINK)
@@ -1437,11 +1466,17 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
                         return code;
                 }
                 haveComponent = 0;	/* component done */
+                if (dirScp)
+                    cm_ReleaseSCache(dirScp);
                 dirScp = tscp;		/* for some symlinks */
-                tscp = nscp;	/* already held */
+                tscp = nscp;	        /* already held */
+                nscp = 0;
                 if (tc == 0 && !(flags & CM_FLAG_FOLLOW) && phase == 2) {
                     code = 0;
-                    cm_ReleaseSCache(dirScp);
+                    if (dirScp) {
+                        cm_ReleaseSCache(dirScp);
+                        dirScp = 0;
+                    }
                     break;
                 }
 
@@ -1455,7 +1490,11 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
                 if (code) {
                     lock_ReleaseMutex(&tscp->mx);
                     cm_ReleaseSCache(tscp);
-                    cm_ReleaseSCache(dirScp);
+                    tscp = 0;
+                    if (dirScp) {
+                        cm_ReleaseSCache(dirScp);
+                        dirScp = 0;
+                    }
                     break;
                 }
                 if (tscp->fileType == CM_SCACHETYPE_SYMLINK) {
@@ -1463,7 +1502,11 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
                     lock_ReleaseMutex(&tscp->mx);
                     if (symlinkCount++ >= MAX_SYMLINK_COUNT) {
                         cm_ReleaseSCache(tscp);
-                        cm_ReleaseSCache(dirScp);
+                        tscp = 0;
+                        if (dirScp) {
+                            cm_ReleaseSCache(dirScp);
+                            dirScp = 0;
+                        }
                         if (psp) 
                             cm_FreeSpace(psp);
                         return CM_ERROR_TOO_MANY_SYMLINKS;
@@ -1476,7 +1519,11 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
                     if (code) {
                         /* something went wrong */
                         cm_ReleaseSCache(tscp);
-                        cm_ReleaseSCache(dirScp);
+                        tscp = 0;
+                        if (dirScp) {
+                            cm_ReleaseSCache(dirScp);
+                            dirScp = 0;
+                        }
                         break;
                     }
 
@@ -1493,7 +1540,8 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
                     psp = tempsp;
                     tp = psp->data;
                     cm_ReleaseSCache(tscp);
-                    tscp = linkScp;	
+                    tscp = linkScp;
+                    linkScp = 0;
                     /* already held
                      * by AssembleLink
                      * now, if linkScp is null, that's
@@ -1505,11 +1553,10 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
                      * dir hierarchy.
                      */
                     if (tscp == NULL) {
-                        cm_HoldSCache(dirScp);
                         tscp = dirScp;
+                        dirScp = 0;
                     }
-                }	/* if we have a sym link */
-                else {
+                } else {
                     /* not a symlink, we may be done */
                     lock_ReleaseMutex(&tscp->mx);
                     if (tc == 0) {
@@ -1518,22 +1565,33 @@ long cm_NameI(cm_scache_t *rootSCachep, char *pathp, long flags,
                             tp = pathp;
                             continue;
                         }
-                        cm_ReleaseSCache(dirScp);
+                        if (dirScp) {
+                            cm_ReleaseSCache(dirScp);
+                            dirScp = 0;
+                        }
                         code = 0;
                         break;
                     }
                 }
-                cm_ReleaseSCache(dirScp);
+                if (dirScp) {
+                    cm_ReleaseSCache(dirScp);
+                    dirScp = 0;
+                }
             } /* end of a component */
-            else *cp++ = tc;
+            else 
+                *cp++ = tc;
         } /* we have a component */
     } /* big while loop over all components */
 
     /* already held */
+    if (dirScp)
+        cm_ReleaseSCache(dirScp);
     if (psp) 
         cm_FreeSpace(psp);
     if (code == 0) 
         *outScpp = tscp;
+    else if (tscp)
+        cm_ReleaseSCache(tscp);
     return code;
 }
 
@@ -1559,7 +1617,7 @@ long cm_EvaluateSymLink(cm_scache_t *dscp, cm_scache_t *linkScp,
     cm_space_t *spacep;
     cm_scache_t *newRootScp;
 
-    osi_Log1(afsd_logp, "Evaluating symlink vp %x", linkScp);
+    osi_Log1(afsd_logp, "Evaluating symlink scp 0x%x", linkScp);
 
     code = cm_AssembleLink(linkScp, "", &newRootScp, &spacep, userp, reqp);
     if (code) 
@@ -1576,6 +1634,9 @@ long cm_EvaluateSymLink(cm_scache_t *dscp, cm_scache_t *linkScp,
     code = cm_NameI(newRootScp, spacep->data,
                      CM_FLAG_CASEFOLD | CM_FLAG_FOLLOW | CM_FLAG_DIRSEARCH,
                      userp, NULL, reqp, outScpp);
+
+	if (code == CM_ERROR_NOSUCHFILE)
+		code = CM_ERROR_NOSUCHPATH;
 
     /* this stuff is allocated no matter what happened on the namei call,
      * so free it */
@@ -1624,7 +1685,7 @@ long cm_TryBulkProc(cm_scache_t *scp, cm_dirEntry_t *dep, void *rockp,
     if (bsp->counter >= CM_BULKMAX)
         return CM_ERROR_STOPNOW;
 
-    thyper.LowPart = buf_bufferSize;
+    thyper.LowPart = cm_data.buf_blockSize;
     thyper.HighPart = 0;
     thyper = LargeIntegerAdd(thyper, bsp->bufOffset);
 
@@ -1710,7 +1771,7 @@ void cm_TryBulkStat(cm_scache_t *dscp, osi_hyper_t *offsetp, cm_user_t *userp,
     osi_Log1(afsd_logp, "cm_TryBulkStat dir 0x%x", (long) dscp);
 
     /* should be on a buffer boundary */
-    osi_assert((offsetp->LowPart & (buf_bufferSize - 1)) == 0);
+    osi_assert((offsetp->LowPart & (cm_data.buf_blockSize - 1)) == 0);
 
     bb.counter = 0;
     bb.bufOffset = *offsetp;
@@ -1718,10 +1779,12 @@ void cm_TryBulkStat(cm_scache_t *dscp, osi_hyper_t *offsetp, cm_user_t *userp,
     lock_ReleaseMutex(&dscp->mx);
     /* first, assemble the file IDs we need to stat */
     code = cm_ApplyDir(dscp, cm_TryBulkProc, (void *) &bb, offsetp, userp, reqp, NULL);
-    lock_ObtainMutex(&dscp->mx);
 
     /* if we failed, bail out early */
-    if (code && code != CM_ERROR_STOPNOW) return;
+    if (code && code != CM_ERROR_STOPNOW) {
+        lock_ObtainMutex(&dscp->mx);
+        return;
+    }
 
     /* otherwise, we may have one or more bulk stat's worth of stuff in bb;
      * make the calls to create the entries.  Handle AFSCBMAX files at a
@@ -1730,7 +1793,8 @@ void cm_TryBulkStat(cm_scache_t *dscp, osi_hyper_t *offsetp, cm_user_t *userp,
     filex = 0;
     while (filex < bb.counter) {
         filesThisCall = bb.counter - filex;
-        if (filesThisCall > AFSCBMAX) filesThisCall = AFSCBMAX;
+        if (filesThisCall > AFSCBMAX) 
+            filesThisCall = AFSCBMAX;
 
         fidStruct.AFSCBFids_len = filesThisCall;
         fidStruct.AFSCBFids_val = &bb.fids[filex];
@@ -1754,16 +1818,21 @@ void cm_TryBulkStat(cm_scache_t *dscp, osi_hyper_t *offsetp, cm_user_t *userp,
                              &volSync, NULL, &cbReq, code));
         code = cm_MapRPCError(code, reqp);
 
-        osi_Log0(afsd_logp, "CALL BulkStatus DONE");
+        if (code)
+            osi_Log1(afsd_logp, "CALL BulkStatus FAILURE code 0x%x", code);
+        else
+            osi_Log0(afsd_logp, "CALL BulkStatus SUCCESS");
 
         /* may as well quit on an error, since we're not going to do
          * much better on the next immediate call, either.
          */
-        if (code) 
+        if (code) {
+            cm_EndCallbackGrantingCall(NULL, &cbReq, NULL, 0);
             break;
+        }
 
         /* otherwise, we should do the merges */
-        for(i = 0; i<filesThisCall; i++) {
+        for (i = 0; i<filesThisCall; i++) {
             j = filex + i;
             tfid.cell = dscp->fid.cell;
             tfid.volume = bb.fids[j].Volume;
@@ -1807,6 +1876,7 @@ void cm_TryBulkStat(cm_scache_t *dscp, osi_hyper_t *offsetp, cm_user_t *userp,
 
         filex += filesThisCall;
     }	/* while there are still more files to process */
+    lock_ObtainMutex(&dscp->mx);
     osi_Log0(afsd_logp, "END cm_TryBulkStat");
 }       
 
@@ -1960,15 +2030,16 @@ long cm_SetAttr(cm_scache_t *scp, cm_attr_t *attrp, cm_user_t *userp,
     /* make the attr structure */
     cm_StatusFromAttr(&afsInStatus, scp, attrp);
 
+    tfid.Volume = scp->fid.volume;
+    tfid.Vnode = scp->fid.vnode;
+    tfid.Unique = scp->fid.unique;
+
     lock_ReleaseMutex(&scp->mx);
     if (code) 
         return code;
 
     /* now make the RPC */
-    osi_Log1(afsd_logp, "CALL StoreStatus vp %x", (long) scp);
-    tfid.Volume = scp->fid.volume;
-    tfid.Vnode = scp->fid.vnode;
-    tfid.Unique = scp->fid.unique;
+    osi_Log1(afsd_logp, "CALL StoreStatus scp 0x%x", (long) scp);
     do {
         code = cm_Conn(&scp->fid, userp, reqp, &connp);
         if (code) 
@@ -1983,7 +2054,10 @@ long cm_SetAttr(cm_scache_t *scp, cm_attr_t *attrp, cm_user_t *userp,
                          &scp->fid, &volSync, NULL, NULL, code));
     code = cm_MapRPCError(code, reqp);
 
-    osi_Log1(afsd_logp, "CALL StoreStatus DONE, code %d", code);
+    if (code)
+        osi_Log1(afsd_logp, "CALL StoreStatus FAILURE, code 0x%x", code);
+    else
+        osi_Log0(afsd_logp, "CALL StoreStatus SUCCESS");
 
     lock_ObtainMutex(&scp->mx);
     cm_SyncOpDone(scp, NULL, CM_SCACHESYNC_STORESTATUS);
@@ -2042,6 +2116,7 @@ long cm_Create(cm_scache_t *dscp, char *namep, long flags, cm_attr_t *attrp,
     cm_StatusFromAttr(&inStatus, NULL, attrp);
 
     /* try the RPC now */
+    osi_Log1(afsd_logp, "CALL CreateFile scp 0x%x", (long) dscp);
     do {
         code = cm_Conn(&dscp->fid, userp, reqp, &connp);
         if (code) 
@@ -2062,6 +2137,11 @@ long cm_Create(cm_scache_t *dscp, char *namep, long flags, cm_attr_t *attrp,
                          &dscp->fid, &volSync, NULL, &cbReq, code));
     code = cm_MapRPCError(code, reqp);
         
+    if (code)
+        osi_Log1(afsd_logp, "CALL CreateFile FAILURE, code 0x%x", code);
+    else
+        osi_Log0(afsd_logp, "CALL CreateFile SUCCESS");
+
     lock_ObtainMutex(&dscp->mx);
     cm_SyncOpDone(dscp, NULL, CM_SCACHESYNC_STOREDATA);
     if (code == 0) {
@@ -2164,6 +2244,7 @@ long cm_MakeDir(cm_scache_t *dscp, char *namep, long flags, cm_attr_t *attrp,
     cm_StatusFromAttr(&inStatus, NULL, attrp);
 
     /* try the RPC now */
+    osi_Log1(afsd_logp, "CALL MakeDir scp 0x%x", (long) dscp);
     do {
         code = cm_Conn(&dscp->fid, userp, reqp, &connp);
         if (code) 
@@ -2184,6 +2265,11 @@ long cm_MakeDir(cm_scache_t *dscp, char *namep, long flags, cm_attr_t *attrp,
                          &dscp->fid, &volSync, NULL, &cbReq, code));
     code = cm_MapRPCError(code, reqp);
         
+    if (code)
+        osi_Log1(afsd_logp, "CALL MakeDir FAILURE, code 0x%x", code);
+    else
+        osi_Log0(afsd_logp, "CALL MakeDir SUCCESS");
+
     lock_ObtainMutex(&dscp->mx);
     cm_SyncOpDone(dscp, NULL, CM_SCACHESYNC_STOREDATA);
     if (code == 0) {
@@ -2248,6 +2334,8 @@ long cm_Link(cm_scache_t *dscp, char *namep, cm_scache_t *sscp, long flags,
     if (code)
         return code;
 
+    /* try the RPC now */
+    osi_Log1(afsd_logp, "CALL Link scp 0x%x", (long) dscp);
     do {
         code = cm_Conn(&dscp->fid, userp, reqp, &connp);
         if (code) continue;
@@ -2264,12 +2352,17 @@ long cm_Link(cm_scache_t *dscp, char *namep, cm_scache_t *sscp, long flags,
         code = RXAFS_Link(callp, &dirAFSFid, namep, &existingAFSFid,
             &newLinkStatus, &updatedDirStatus, &volSync);
         rx_PutConnection(callp);
-        osi_Log1(smb_logp,"  RXAFS_Link returns %d", code);
+        osi_Log1(smb_logp,"  RXAFS_Link returns 0x%x", code);
 
     } while (cm_Analyze(connp, userp, reqp,
         &dscp->fid, &volSync, NULL, NULL, code));
 
     code = cm_MapRPCError(code, reqp);
+
+    if (code)
+        osi_Log1(afsd_logp, "CALL Link FAILURE, code 0x%x", code);
+    else
+        osi_Log0(afsd_logp, "CALL Link SUCCESS");
 
     lock_ObtainMutex(&dscp->mx);
     cm_SyncOpDone(dscp, NULL, CM_SCACHESYNC_STOREDATA);
@@ -2310,6 +2403,7 @@ long cm_SymLink(cm_scache_t *dscp, char *namep, char *contentsp, long flags,
     cm_StatusFromAttr(&inStatus, NULL, attrp);
 
     /* try the RPC now */
+    osi_Log1(afsd_logp, "CALL Symlink scp 0x%x", (long) dscp);
     do {
         code = cm_Conn(&dscp->fid, userp, reqp, &connp);
         if (code) 
@@ -2329,6 +2423,11 @@ long cm_SymLink(cm_scache_t *dscp, char *namep, char *contentsp, long flags,
                          &dscp->fid, &volSync, NULL, NULL, code));
     code = cm_MapRPCError(code, reqp);
         
+    if (code)
+        osi_Log1(afsd_logp, "CALL Symlink FAILURE, code 0x%x", code);
+    else
+        osi_Log0(afsd_logp, "CALL Symlink SUCCESS");
+
     lock_ObtainMutex(&dscp->mx);
     cm_SyncOpDone(dscp, NULL, CM_SCACHESYNC_STOREDATA);
     if (code == 0) {
@@ -2386,6 +2485,7 @@ long cm_RemoveDir(cm_scache_t *dscp, char *namep, cm_user_t *userp,
     didEnd = 0;
 
     /* try the RPC now */
+    osi_Log1(afsd_logp, "CALL RemoveDir scp 0x%x", (long) dscp);
     do {
         code = cm_Conn(&dscp->fid, userp, reqp, &connp);
         if (code) 
@@ -2403,11 +2503,16 @@ long cm_RemoveDir(cm_scache_t *dscp, char *namep, cm_user_t *userp,
     } while (cm_Analyze(connp, userp, reqp,
                          &dscp->fid, &volSync, NULL, NULL, code));
     code = cm_MapRPCErrorRmdir(code, reqp);
-        
+
+    if (code)
+        osi_Log1(afsd_logp, "CALL RemoveDir FAILURE, code 0x%x", code);
+    else
+        osi_Log0(afsd_logp, "CALL RemoveDir SUCCESS");
+
     lock_ObtainMutex(&dscp->mx);
-    cm_dnlcRemove(dscp, namep); 
     cm_SyncOpDone(dscp, NULL, CM_SCACHESYNC_STOREDATA);
     if (code == 0) {
+        cm_dnlcRemove(dscp, namep); 
         cm_MergeStatus(dscp, &updatedDirStatus, &volSync, userp, 0);
     }
     lock_ReleaseMutex(&dscp->mx);
@@ -2527,6 +2632,8 @@ long cm_Rename(cm_scache_t *oldDscp, char *oldNamep, cm_scache_t *newDscp,
     didEnd = 0;
 
     /* try the RPC now */
+    osi_Log2(afsd_logp, "CALL Rename old scp 0x%x new scp 0x%x", 
+              (long) oldDscp, (long) newDscp);
     do {
         code = cm_Conn(&oldDscp->fid, userp, reqp, &connp);
         if (code) 
@@ -2550,6 +2657,11 @@ long cm_Rename(cm_scache_t *oldDscp, char *oldNamep, cm_scache_t *newDscp,
                          &volSync, NULL, NULL, code));
     code = cm_MapRPCError(code, reqp);
         
+    if (code)
+        osi_Log1(afsd_logp, "CALL Rename FAILURE, code 0x%x", code);
+    else
+        osi_Log0(afsd_logp, "CALL Rename SUCCESS");
+
     /* update the individual stat cache entries for the directories */
     lock_ObtainMutex(&oldDscp->mx);
     cm_SyncOpDone(oldDscp, NULL, CM_SCACHESYNC_STOREDATA);
@@ -2580,7 +2692,7 @@ long cm_Lock(cm_scache_t *scp, unsigned char LockType,
               void **lockpp)
 {
     long code;
-    int Which = ((LockType & 0x1) ? LockRead : LockWrite);
+    int Which = ((LockType & LOCKING_ANDX_SHARED_LOCK) ? LockRead : LockWrite);
     AFSFid tfid;
     AFSVolSync volSync;
     cm_conn_t *connp;
@@ -2594,13 +2706,10 @@ long cm_Lock(cm_scache_t *scp, unsigned char LockType,
      */
     q = scp->fileLocks;
     while (q) {
-        fileLock = (cm_file_lock_t *)
-            ((char *) q - offsetof(cm_file_lock_t, fileq));
-        if ((fileLock->flags &
-              (CM_FILELOCK_FLAG_INVALID | CM_FILELOCK_FLAG_WAITING))
-             == 0) {
-            if ((LockType & 0x1) == 0
-                 || (fileLock->LockType & 0x1) == 0)
+        fileLock = (cm_file_lock_t *)((char *) q - offsetof(cm_file_lock_t, fileq));
+        if ((fileLock->flags & (CM_FILELOCK_FLAG_INVALID | CM_FILELOCK_FLAG_WAITING)) == 0) {
+            if ((LockType & LOCKING_ANDX_SHARED_LOCK) == 0 ||
+                (fileLock->LockType & LOCKING_ANDX_SHARED_LOCK) == 0)
                 return CM_ERROR_WOULDBLOCK;
             found = 1;
         }
@@ -2654,7 +2763,7 @@ long cm_Unlock(cm_scache_t *scp, unsigned char LockType,
                 cm_user_t *userp, cm_req_t *reqp)
 {
     long code = 0;
-    int Which = ((LockType & 0x1) ? LockRead : LockWrite);
+    int Which = ((LockType & LOCKING_ANDX_SHARED_LOCK) ? LockRead : LockWrite);
     AFSFid tfid;
     AFSVolSync volSync;
     cm_conn_t *connp;
@@ -2683,7 +2792,7 @@ long cm_Unlock(cm_scache_t *scp, unsigned char LockType,
             ourLock = fileLock;
             qq = q;
         }
-        else if (fileLock->LockType & 0x1)
+        else if (fileLock->LockType & LOCKING_ANDX_SHARED_LOCK)
             anotherReader = 1;
         q = osi_QNext(q);
     }
@@ -2712,6 +2821,7 @@ long cm_Unlock(cm_scache_t *scp, unsigned char LockType,
         tfid.Vnode = scp->fid.vnode;
         tfid.Unique = scp->fid.unique;
         lock_ReleaseMutex(&scp->mx);
+        osi_Log1(afsd_logp, "CALL ReleaseLock scp 0x%x", (long) scp);
         do {
             code = cm_Conn(&scp->fid, userp, reqp, &connp);
             if (code) 
@@ -2724,6 +2834,12 @@ long cm_Unlock(cm_scache_t *scp, unsigned char LockType,
         } while (cm_Analyze(connp, userp, reqp, &scp->fid, &volSync,
                              NULL, NULL, code));
         code = cm_MapRPCError(code, reqp);
+
+        if (code)
+            osi_Log1(afsd_logp, "CALL ReleaseLock FAILURE, code 0x%x", code);
+        else
+            osi_Log0(afsd_logp, "CALL ReleaseLock SUCCESS");
+
         lock_ObtainMutex(&scp->mx);
     }
 
@@ -2757,6 +2873,7 @@ void cm_CheckLocks()
             tfid.Vnode = fileLock->fid.vnode;
             tfid.Unique = fileLock->fid.unique;
             lock_ReleaseWrite(&cm_scacheLock);
+            osi_Log1(afsd_logp, "CALL ExtendLock lock 0x%x", (long) fileLock);
             do {
                 code = cm_Conn(&fileLock->fid, fileLock->userp,
                                 &req, &connp);
@@ -2772,6 +2889,11 @@ void cm_CheckLocks()
                                  &fileLock->fid, &volSync, NULL, NULL,
                                  code));
             code = cm_MapRPCError(code, &req);
+            if (code)
+                osi_Log1(afsd_logp, "CALL ExtendLock FAILURE, code 0x%x", code);
+            else
+                osi_Log0(afsd_logp, "CALL ExtendLock SUCCESS");
+
             lock_ObtainWrite(&cm_scacheLock);
         }
         q = nq;
@@ -2782,7 +2904,7 @@ void cm_CheckLocks()
 long cm_RetryLock(cm_file_lock_t *oldFileLock, int vcp_is_dead)
 {
     long code;
-    int Which = ((oldFileLock->LockType & 0x1) ? LockRead : LockWrite);
+    int Which = ((oldFileLock->LockType & LOCKING_ANDX_SHARED_LOCK) ? LockRead : LockWrite);
     cm_scache_t *scp;
     AFSFid tfid;
     AFSVolSync volSync;
@@ -2814,8 +2936,8 @@ long cm_RetryLock(cm_file_lock_t *oldFileLock, int vcp_is_dead)
         if ((fileLock->flags &
               (CM_FILELOCK_FLAG_INVALID | CM_FILELOCK_FLAG_WAITING))
              == 0) {
-            if ((oldFileLock->LockType & 0x1) == 0
-                 || (fileLock->LockType & 0x1) == 0) {
+            if ((oldFileLock->LockType & LOCKING_ANDX_SHARED_LOCK) == 0
+                 || (fileLock->LockType & LOCKING_ANDX_SHARED_LOCK) == 0) {
                 cm_ReleaseSCache(scp);
                 return CM_ERROR_WOULDBLOCK;
             }
@@ -2830,6 +2952,7 @@ long cm_RetryLock(cm_file_lock_t *oldFileLock, int vcp_is_dead)
         tfid.Volume = oldFileLock->fid.volume;
         tfid.Vnode = oldFileLock->fid.vnode;
         tfid.Unique = oldFileLock->fid.unique;
+        osi_Log1(afsd_logp, "CALL SetLock lock 0x%x", (long) oldFileLock);
         do {
             code = cm_Conn(&oldFileLock->fid, oldFileLock->userp,
                             &req, &connp);
@@ -2845,6 +2968,11 @@ long cm_RetryLock(cm_file_lock_t *oldFileLock, int vcp_is_dead)
                              &oldFileLock->fid, &volSync,
                              NULL, NULL, code));
         code = cm_MapRPCError(code, &req);
+
+        if (code)
+            osi_Log1(afsd_logp, "CALL SetLock FAILURE, code 0x%x", code);
+        else
+            osi_Log0(afsd_logp, "CALL SetLock SUCCESS");
     }
 
   handleCode:

@@ -15,7 +15,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_afsuuid.c,v 1.1.1.2 2005-03-10 20:50:06 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_afsuuid.c,v 1.1.1.3 2005-05-04 17:45:03 zacheiss Exp $");
 
 #if defined(KERNEL) && !defined(UKERNEL)
 #ifdef AFS_LINUX20_ENV
@@ -31,11 +31,6 @@ RCSID
 #include <stdio.h>
 #endif
 #include "xdr.h"
-#if defined(KERNEL) && !defined(UKERNEL)
-#ifdef        AFS_DEC_ENV
-#include <afs/longc_procs.h>
-#endif
-#endif
 
 int
 xdr_afsUUID(XDR * xdrs, afsUUID * objp)

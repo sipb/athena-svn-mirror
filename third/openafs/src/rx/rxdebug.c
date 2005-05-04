@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rxdebug.c,v 1.1.1.3 2005-03-10 20:51:23 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rxdebug.c,v 1.1.1.4 2005-05-04 17:44:48 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <errno.h>
@@ -459,10 +459,10 @@ MainCommand(as, arock)
 				   ((afs_uint32) tconn.secStats.expires -
 				    time(0)) / 3600.0);
 			if (!(flags & 1)) {
-			    printf("\n  Received %d bytes in %d packets\n",
+			    printf("\n  Received %u bytes in %u packets\n",
 				   tconn.secStats.bytesReceived,
 				   tconn.secStats.packetsReceived);
-			    printf("  Sent %d bytes in %d packets\n",
+			    printf("  Sent %u bytes in %u packets\n",
 				   tconn.secStats.bytesSent,
 				   tconn.secStats.packetsSent);
 			} else
@@ -553,15 +553,15 @@ MainCommand(as, arock)
 		   ntohs(tpeer.port));
 	    printf("\tifMTU %hu\tnatMTU %hu\tmaxMTU %hu\n", tpeer.ifMTU,
 		   tpeer.natMTU, tpeer.maxMTU);
-	    printf("\tpackets sent %d\tpacket resends %d\n", tpeer.nSent,
+	    printf("\tpackets sent %u\tpacket resends %u\n", tpeer.nSent,
 		   tpeer.reSends);
-	    printf("\tbytes sent high %d low %d\n", tpeer.bytesSent.high,
+	    printf("\tbytes sent high %u low %u\n", tpeer.bytesSent.high,
 		   tpeer.bytesSent.low);
-	    printf("\tbytes received high %d low %d\n",
+	    printf("\tbytes received high %u low %u\n",
 		   tpeer.bytesReceived.high, tpeer.bytesReceived.low);
-	    printf("\trtt %d msec, rtt_dev %d msec\n", tpeer.rtt >> 3,
+	    printf("\trtt %u msec, rtt_dev %u msec\n", tpeer.rtt >> 3,
 		   tpeer.rtt_dev >> 2);
-	    printf("\ttimeout %d.%03d sec\n", tpeer.timeout.sec,
+	    printf("\ttimeout %u.%03u sec\n", tpeer.timeout.sec,
 		   tpeer.timeout.usec / 1000);
 	}
     }

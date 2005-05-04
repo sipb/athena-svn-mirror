@@ -30,10 +30,10 @@
 #define AFS_SUN58_ENV		1
 #define AFS_SUN59_ENV		1
 #define AFS_SUN510_ENV		1
+#define AFS_BOZONLOCK_ENV       1
 #define AFS_X86_ENV		1
 
 #define AFS_64BIT_ENV		1	/* Defines afs_int32 as int, not long. */
-#define AFS_64BIT_CLIENT	1	
 
 #define AFS_HAVE_FLOCK_SYSID    1
 
@@ -100,6 +100,7 @@
 #if defined(__amd64)
 #define	AFS_SUN57_64BIT_ENV	1
 #define AFS_64BIT_INO   	1
+#define AFS_64BIT_CLIENT	1	
 #endif
 
 /**

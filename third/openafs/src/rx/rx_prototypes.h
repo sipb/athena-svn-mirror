@@ -335,7 +335,7 @@ extern int rxi_GetIFInfo(void);
 extern int rxk_FreeSocket(register struct socket *asocket);
 #endif
 #ifndef AFS_NT40_ENV
-extern struct osi_socket *rxk_NewSocket(short aport);
+extern osi_socket *rxk_NewSocket(short aport);
 #endif
 #endif
 extern int rxk_ReadPacket(osi_socket so, struct rx_packet *p, int *host,
@@ -354,7 +354,7 @@ extern void osi_StopListener(void);
 
 
 /* ARCH/rx_kmutex.c */
-#ifdef CONFIG_SMP
+#if defined(KERNEL) && defined(AFS_LINUX20_ENV)
 extern void afs_mutex_init(afs_kmutex_t * l);
 extern void afs_mutex_enter(afs_kmutex_t * l);
 extern int afs_mutex_tryenter(afs_kmutex_t * l);
@@ -551,12 +551,12 @@ extern void osi_AssertFailU(const char *expr, const char *file, int line);
 extern int rx_getAllAddr(afs_int32 * buffer, int maxSize);
 extern void osi_Panic();	/* leave without args till stdarg rewrite */
 extern void rxi_InitPeerParams(struct rx_peer *pp);
-#ifdef  AFS_AIX32_ENV
-#ifndef osi_Alloc
-extern char *osi_Alloc(afs_int32 x);
-extern void osi_Free(char *x, afs_int32 size);
-#endif
-#endif /* AFS_AIX32_ENV */
+
+#if defined(AFS_AIX32_ENV) && !defined(KERNEL)
+extern void *osi_Alloc(afs_int32 x);
+extern void osi_Free(void *x, afs_int32 size);
+#endif /* defined(AFS_AIX32_ENV) && !defined(KERNEL) */
+
 extern void rx_GetIFInfo(void);
 extern void rx_SetNoJumbo(void);
 

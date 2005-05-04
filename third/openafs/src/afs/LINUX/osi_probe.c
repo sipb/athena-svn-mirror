@@ -52,6 +52,7 @@
 #include <afsconfig.h>
 #include "afs/param.h"
 #endif
+#ifdef AFS_LINUX24_ENV
 #include <linux/module.h> /* early to avoid printf->printk mapping */
 #ifndef OSI_PROBE_STANDALONE
 #include "afs/sysincludes.h"
@@ -63,6 +64,10 @@
 #include <linux/init.h>
 #include <linux/unistd.h>
 #include <linux/mm.h>
+
+#if defined(AFS_PPC64_LINUX26_ENV)
+#include <asm/abs_addr.h>
+#endif
 
 #ifdef AFS_AMD64_LINUX20_ENV
 #include <asm/ia32_unistd.h>
@@ -77,6 +82,8 @@
 /* lower bound of valid kernel text pointers */
 #ifdef AFS_IA64_LINUX20_ENV
 #define ktxt_lower_bound (((unsigned long)&kernel_thread )  & 0xfff00000L)
+#elif defined(AFS_PPC64_LINUX20_ENV)
+#define ktxt_lower_bound (KERNELBASE)
 #else
 #define ktxt_lower_bound (((unsigned long)&kernel_thread )  & ~0xfffffL)
 #endif
@@ -100,6 +107,10 @@
 #define _SX(x) (x)
 #endif
 
+/* Older Linux doesn't have __user. The sys_read prototype needs it. */
+#ifndef __user
+#define __user
+#endif
 
 /* Allow the user to specify sys_call_table addresses */
 static unsigned long sys_call_table_addr[4] = { 0,0,0,0 };
@@ -187,6 +198,7 @@ extern SYSCALLTYPE ia32_sys_call_table[] __attribute__((weak));
 extern SYSCALLTYPE sys_call_table32[] __attribute__((weak));
 extern SYSCALLTYPE sys_call_table_emu[] __attribute__((weak));
 
+extern asmlinkage ssize_t sys_read(unsigned int fd, char __user * buf, size_t count) __attribute__((weak));
 extern asmlinkage long sys_close(unsigned int) __attribute__((weak));
 extern asmlinkage long sys_chdir(const char *) __attribute__((weak));
 extern asmlinkage ssize_t sys_write(unsigned int, const char *, size_t) __attribute__((weak));
@@ -400,8 +412,8 @@ static int main_zapped_syscalls[] = {
  * mmap2 and fstat64 are implemented only for 32-bit calls
  */
 #ifdef AFS_PPC64_LINUX20_ENV
-    __NR_mmap2,
-    __NR_fstat64,
+    /* _mmap2, _fstat64 */
+    192, 197,
 #endif /* AFS_PPC64_LINUX20_ENV */
 
 /* Similarly for S390X, with lcown16 and fstat64 */
@@ -479,6 +491,10 @@ static probectl main_probe = {
     (unsigned long)(&tasklist_lock) - 0x30000,
     0,
     0x6000,
+#elif defined(AFS_PPC64_LINUX26_ENV)
+    (unsigned long)(&do_signal),
+    0xfff,
+    0x400,
 #elif defined(AFS_PPC_LINUX20_ENV) || defined(AFS_PPC_LINUX20_ENV)
     (unsigned long)&init_mm,
     0xffff,
@@ -616,6 +632,10 @@ static probectl *probe_list[] = {
 
 /********** Probing Configuration: ppc64, sparc64 sys_call_table32 **********/
 #elif defined(AFS_PPC64_LINUX20_ENV) || defined(AFS_SPARC64_LINUX20_ENV)
+struct fptr {
+    void *ip;
+    unsigned long gp;
+};
 
 /* 
  * syscall pairs/triplets to probe
@@ -644,7 +664,8 @@ static int sct32_zapped_syscalls[] = {
 /* mmap2 and fstat64 are implemented only for 32-bit calls */
 static int sct32_unique_syscalls[] = {
 #ifdef AFS_PPC64_LINUX20_ENV
-    __NR_mmap2, __NR_fstat64,
+    /* _mmap2, _fstat64 */
+    192, 197,
 #endif
 #ifdef AFS_SPARC64_LINUX24_ENV
     /* 
@@ -690,6 +711,10 @@ static probectl sct32_probe = {
     (unsigned long)(&sys_close),
     0xfffff,
     0x10000,
+#elif defined(AFS_PPC64_LINUX26_ENV)
+    (unsigned long)(&do_signal),
+    0xfff,
+    0x400,
 #else
     (unsigned long)&init_mm,
     0,
@@ -857,7 +882,7 @@ static int check_table(probectl *P, PROBETYPE *ptr)
     return -1;
 }
 
-static void *try(probectl *P, tryctl *T, PROBETYPE *ptr,
+static void *try(probectl *P, tryctl *T, PROBETYPE *aptr,
 		 unsigned long datalen)
 {
 #ifdef OSI_PROBE_KALLSYMS
@@ -868,8 +893,9 @@ static void *try(probectl *P, tryctl *T, PROBETYPE *ptr,
 #endif
     unsigned long offset, ip1, ip2, ip3;
     int ret;
+    PROBETYPE *ptr;
 
-#ifdef AFS_IA64_LINUX20_ENV
+#if defined(AFS_IA64_LINUX20_ENV) || defined(AFS_PPC64_LINUX20_ENV)
     ip1 = T->fn1 ? (unsigned long)((struct fptr *)T->fn1)->ip : 0;
     ip2 = T->fn2 ? (unsigned long)((struct fptr *)T->fn2)->ip : 0;
     ip3 = T->fn3 ? (unsigned long)((struct fptr *)T->fn3)->ip : 0;
@@ -888,11 +914,19 @@ static void *try(probectl *P, tryctl *T, PROBETYPE *ptr,
     if (!ip1 || !ip2 || (T->NR3 >= 0 && !ip3))
 	return 0;
 
-    for (offset = 0; offset < datalen; offset++, ptr++) {
+    for (offset = 0; offset < datalen; offset++, aptr++) {
+#if defined(AFS_PPC64_LINUX20_ENV)
+	ptr = (PROBETYPE*)(*aptr);
+	if ((unsigned long)ptr <= KERNELBASE) {
+		continue;
+	}
+#else
+	ptr = aptr;
+#endif
 	ret = check_table(P, ptr);
 	if (ret >= 0) {
 	    /* return value is number of entries to skip */
-	    ptr    += ret;
+	    aptr    += ret;
 	    offset += ret;
 	    continue;
 	}
@@ -955,7 +989,7 @@ static int check_harder(probectl *P, PROBETYPE *p)
 	}
     }
 
-#ifdef AFS_IA64_LINUX20_ENV
+#if defined(AFS_IA64_LINUX20_ENV) || defined(AFS_PPC64_LINUX20_ENV)
     ip1 = P->verify_fn ? (unsigned long)((struct fptr *)(P->verify_fn))->ip : 0;
 #else
     ip1 = (unsigned long)(P->verify_fn);
@@ -1222,4 +1256,5 @@ void osi_probe_exit(void) { }
 
 module_init(osi_probe_init);
 module_exit(osi_probe_exit);
+#endif
 #endif

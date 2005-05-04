@@ -16,6 +16,7 @@
 
 #include <winsock2.h>
 #include <lm.h>
+#include <nb30.h>
 
 #include <afs/param.h>
 #include <afs/stds.h>
@@ -26,6 +27,9 @@
 #include "cm_config.h"
 #include "krb.h"
 #include "afskfw.h"
+#include "lanahelper.h"
+
+#include <WINNT\afsreg.h>
 
 DWORD TraceOption = 0;
 
@@ -323,6 +327,8 @@ GetDomainLogonOptions( PLUID lpLogonId, char * username, char * domain, LogonOpt
     char computerName[MAX_COMPUTERNAME_LENGTH + 1];
     char *effDomain;
 
+    memset(opt, 0, sizeof(LogonOptions_t));
+
     DebugEvent("In GetDomainLogonOptions for user [%s] in domain [%s]", username, domain);
     /* If the domain is the same as the Netbios computer name, we use the LOCALHOST domain name*/
     opt->flags = LOGON_FLAG_REMOTE;
@@ -339,13 +345,13 @@ GetDomainLogonOptions( PLUID lpLogonId, char * username, char * domain, LogonOpt
     } else
         effDomain = NULL;
 
-    rv = RegOpenKeyEx( HKEY_LOCAL_MACHINE, REG_CLIENT_PARMS_KEY, 0, KEY_READ, &hkParm );
+    rv = RegOpenKeyEx( HKEY_LOCAL_MACHINE, AFSREG_CLT_SVC_PARAM_SUBKEY, 0, KEY_READ, &hkParm );
     if(rv != ERROR_SUCCESS) {
         hkParm = NULL;
         DebugEvent("GetDomainLogonOption: Can't open parms key [%d]", rv);
     }
 
-    rv = RegOpenKeyEx( HKEY_LOCAL_MACHINE, REG_CLIENT_PROVIDER_KEY, 0, KEY_READ, &hkNp );
+    rv = RegOpenKeyEx( HKEY_LOCAL_MACHINE, AFSREG_CLT_SVC_PROVIDER_SUBKEY, 0, KEY_READ, &hkNp );
     if(rv != ERROR_SUCCESS) {
         hkNp = NULL;
         DebugEvent("GetDomainLogonOptions: Can't open NP key [%d]", rv);
@@ -533,6 +539,46 @@ GetDomainLogonOptions( PLUID lpLogonId, char * username, char * domain, LogonOpt
         if(regexscript) free(regexscript);
     }
 
+    DebugEvent("Looking up TheseCells");
+    /* Logon script */
+    /* First find out where the key is */
+    hkTemp = NULL;
+    rv = ~ERROR_SUCCESS;
+    dwType = 0;
+    if (hkDom)
+        rv = RegQueryValueEx(hkDom, REG_CLIENT_THESE_CELLS_PARM, 0, &dwType, NULL, &dwSize);
+    if (rv == ERROR_SUCCESS && dwType == REG_MULTI_SZ) {
+        hkTemp = hkDom;
+        DebugEvent("Located TheseCells in hkDom");
+    } else if (hkDoms)
+        rv = RegQueryValueEx(hkDoms, REG_CLIENT_THESE_CELLS_PARM, 0, &dwType, NULL, &dwSize);
+    if (rv == ERROR_SUCCESS && !hkTemp && dwType == REG_MULTI_SZ) {
+        hkTemp = hkDoms;
+        DebugEvent("Located TheseCells in hkDoms");
+    } else if (hkNp)
+        rv = RegQueryValueEx(hkNp, REG_CLIENT_THESE_CELLS_PARM, 0, &dwType, NULL, &dwSize);
+    if (rv == ERROR_SUCCESS && !hkTemp && dwType == REG_MULTI_SZ) {
+        hkTemp = hkNp;
+        DebugEvent("Located TheseCells in hkNp");
+    }
+
+    if (hkTemp) {
+        CHAR * thesecells;
+
+        /* dwSize still has the size of the required buffer in bytes. */
+        thesecells = malloc(dwSize);
+        rv = RegQueryValueEx(hkTemp, REG_CLIENT_THESE_CELLS_PARM, 0, &dwType, (LPBYTE) thesecells, &dwSize);
+        if(rv != ERROR_SUCCESS) {/* what the ..? */
+            DebugEvent("Can't look up TheseCells [%d]",rv);
+            goto doneTheseCells;
+        }
+
+        DebugEvent("Found TheseCells [%s]", thesecells);
+        opt->theseCells = thesecells;
+
+      doneTheseCells:;
+    }
+
   cleanup:
     if(hkNp) RegCloseKey(hkNp);
     if(hkDom) RegCloseKey(hkDom);
@@ -611,7 +657,7 @@ DWORD APIENTRY NPLogonNotify(
     DWORD code;
 
     int pw_exp;
-    char *reason = 0;
+    char *reason;
     char *ctemp;
 
     BOOLEAN interactive;
@@ -662,7 +708,7 @@ DWORD APIENTRY NPLogonNotify(
         }
     }
 
-    (void) RegOpenKeyEx(HKEY_LOCAL_MACHINE, REG_CLIENT_PARMS_KEY,
+    (void) RegOpenKeyEx(HKEY_LOCAL_MACHINE, AFSREG_CLT_SVC_PARAM_SUBKEY,
                          0, KEY_QUERY_VALUE, &NPKey);
     LSPsize=sizeof(TraceOption);
     RegQueryValueEx(NPKey, REG_CLIENT_TRACE_OPTION_PARM, NULL,
@@ -739,27 +785,40 @@ DWORD APIENTRY NPLogonNotify(
 		
         /* if Integrated Logon  */
         if (ISLOGONINTEGRATED(opt.LogonOption))
-        {	
+        {			
             if ( KFW_is_available() ) {
                 code = KFW_AFS_get_cred(uname, cell, password, 0, opt.smbName, &reason);
-                DebugEvent("KFW_AFS_get_cred  uname=[%s] smbname=[%s] cell=[%s] code=[%d]",
-                           uname,opt.smbName,cell,code);
+                DebugEvent("KFW_AFS_get_cred  uname=[%s] smbname=[%s] cell=[%s] code=[%d]",uname,opt.smbName,cell,code);
+                if (code == 0 && opt.theseCells) { 
+                    char * principal, *p;
+
+                    principal = (char *)malloc(strlen(uname) + strlen(cell) + 2);
+                    if ( principal ) {
+                        strcpy(principal, uname);
+                        p = principal + strlen(uname);
+                        *p++ = '@';
+                        strcpy(p, cell);
+                        for ( ;*p; p++) {
+                            *p = toupper(*p);
+                        }
+
+                        p = opt.theseCells;
+                        while ( *p ) {
+                            code = KFW_AFS_get_cred(principal, p, 0, 0, opt.smbName, &reason);
+                            DebugEvent("KFW_AFS_get_cred  uname=[%s] smbname=[%s] cell=[%s] code=[%d]",
+                                        principal,opt.smbName,p,code);
+                            p += strlen(p) + 1;
+                        }
+                        
+                        free(principal);
+                    }
+                }
             } else {
                 code = ka_UserAuthenticateGeneral2(KA_USERAUTH_VERSION+KA_USERAUTH_AUTHENT_LOGON,
                                                     uname, "", cell, password, opt.smbName, 0, &pw_exp, 0,
                                                     &reason);
-
-                DebugEvent("AFS AfsLogon - ka_UserAuthenticateGeneral2","Code[%x] uname[%s] Cell[%s] Reason[%s]",
-                            code,uname,cell,reason ? reason : "<none>");
-                {
-                    char msg[2048];
-                    sprintf(msg, "Code[%x] uname[%s] Cell[%s] Reason[%s]",
-                            code,uname,cell,reason ? reason : "<none>");
-                    MessageBox(hwndOwner,
-                                msg,
-                                "AFS Logon",
-                                MB_ICONINFORMATION | MB_OK);
-                }
+                DebugEvent("AFS AfsLogon - (INTEGRATED only)ka_UserAuthenticateGeneral2","Code[%x] uname[%s] Cell[%s]",
+                            code,uname,cell);
             }       
             if ( code && code != KTC_NOCM && code != KTC_NOCMRPC && !lowercased_name ) {
                 for ( ctemp = uname; *ctemp ; ctemp++) {
@@ -770,13 +829,15 @@ DWORD APIENTRY NPLogonNotify(
             }
 
             /* is service started yet?*/
+
             /* If we've failed because the client isn't running yet and the
             * client is set to autostart (and therefore it makes sense for
             * us to wait for it to start) then sleep a while and try again. 
             * If the error was something else, then give up. */
             if (code != KTC_NOCM && code != KTC_NOCMRPC || !afsWillAutoStart)
                 break;
-        } else {  
+        }
+        else {  
             /*JUST check to see if its running*/
             if (IsServiceRunning())
                 break;
@@ -845,7 +906,8 @@ DWORD APIENTRY NPLogonNotify(
         }
     }
 
-    if(opt.smbName) free(opt.smbName);
+    if (opt.theseCells) free(opt.theseCells);
+    if (opt.smbName) free(opt.smbName);
 
     DebugEvent("AFS AfsLogon - Exit","Return Code[%x]",code);
     return code;
@@ -909,7 +971,7 @@ VOID AFS_Startup_Event( PWLX_NOTIFICATION_INFO pInfo )
     /* Make sure the AFS Libraries are initialized */
     AfsLogonInit();
 
-    (void) RegOpenKeyEx(HKEY_LOCAL_MACHINE, REG_CLIENT_PARMS_KEY,
+    (void) RegOpenKeyEx(HKEY_LOCAL_MACHINE, AFSREG_CLT_SVC_PARAM_SUBKEY,
                         0, KEY_QUERY_VALUE, &NPKey);
     LSPsize=sizeof(TraceOption);
     RegQueryValueEx(NPKey, REG_CLIENT_TRACE_OPTION_PARM, NULL,
@@ -926,12 +988,11 @@ VOID AFS_Logoff_Event( PWLX_NOTIFICATION_INFO pInfo )
     DWORD  len = 1024;
     PTOKEN_USER  tokenUser = NULL;
     DWORD  retLen;
-    HANDLE hToken;
 
     /* Make sure the AFS Libraries are initialized */
     AfsLogonInit();
 
-    DebugEvent0("AFS_Logoff_Event - Starting");
+    DebugEvent0("AFS_Logoff_Event - Start");
 
     if (!GetTokenInformation(pInfo->hToken, TokenUser, NULL, 0, &retLen))
     {
@@ -940,7 +1001,7 @@ VOID AFS_Logoff_Event( PWLX_NOTIFICATION_INFO pInfo )
 
             if (!GetTokenInformation(pInfo->hToken, TokenUser, tokenUser, retLen, &retLen))
             {
-                DebugEvent("GetTokenInformation failed: GLE = %lX", GetLastError());
+                DebugEvent("AFS_Logoff_Event - GetTokenInformation failed: GLE = %lX", GetLastError());
             }
         }
     }
@@ -958,7 +1019,7 @@ VOID AFS_Logoff_Event( PWLX_NOTIFICATION_INFO pInfo )
     }
     
     if (strlen(profileDir)) {
-        DebugEvent("Profile Directory: %s", profileDir);
+        DebugEvent("AFS_Logoff_Event - Profile Directory: %s", profileDir);
         if (!IsPathInAfs(profileDir)) {
             if (code = ktc_ForgetAllTokens())
                 DebugEvent("AFS_Logoff_Event - ForgetAllTokens failed [%lX]",code);
@@ -973,5 +1034,92 @@ VOID AFS_Logoff_Event( PWLX_NOTIFICATION_INFO pInfo )
 
     if ( tokenUser )
         LocalFree(tokenUser);
+
+    DebugEvent0("AFS_Logoff_Event - End");
 }   
+
+VOID AFS_Logon_Event( PWLX_NOTIFICATION_INFO pInfo )
+{
+    DWORD code;
+    TCHAR profileDir[1024] = TEXT("");
+    DWORD  len = 1024;
+    PTOKEN_USER  tokenUser = NULL;
+    DWORD  retLen;
+    HANDLE hToken;
+
+    WCHAR szUserW[128] = L"";
+    char  szUserA[128] = "";
+    char  szClient[MAX_PATH];
+    char szPath[MAX_PATH] = "";
+    NETRESOURCE nr;
+    DWORD res;
+    DWORD gle;
+    DWORD dwSize;
+
+    /* Make sure the AFS Libraries are initialized */
+    AfsLogonInit();
+
+    DebugEvent0("AFS_Logon_Event - Start");
+
+    if (!GetTokenInformation(pInfo->hToken, TokenUser, NULL, 0, &retLen))
+    {
+        if ( GetLastError() == ERROR_INSUFFICIENT_BUFFER ) {
+            tokenUser = (PTOKEN_USER) LocalAlloc(LPTR, retLen);
+
+            if (!GetTokenInformation(pInfo->hToken, TokenUser, tokenUser, retLen, &retLen))
+            {
+                DebugEvent("AFS_Logon_Event - GetTokenInformation failed: GLE = %lX", GetLastError());
+            }
+        }
+    }
+
+    /* We can't use pInfo->Domain for the domain since in the cross realm case 
+     * this is source domain and not the destination domain.
+     */
+    if (QueryAdHomePathFromSid( profileDir, sizeof(profileDir), tokenUser->User.Sid, pInfo->Domain)) {
+        WCHAR Domain[64]=L"";
+        GetLocalShortDomain(Domain, sizeof(Domain));
+        if (QueryAdHomePathFromSid( profileDir, sizeof(profileDir), tokenUser->User.Sid, Domain)) {
+            if (NetUserGetProfilePath(pInfo->Domain, pInfo->UserName, profileDir, len))
+                GetUserProfileDirectory(pInfo->hToken, profileDir, &len);
+        }
+    }
+    
+    if (strlen(profileDir)) {
+        DebugEvent("AFS_Logon_Event - Profile Directory: %s", profileDir);
+    } else {
+        DebugEvent0("AFS_Logon_Event - Unable to load profile");
+    }
+
+    dwSize = sizeof(szUserA);
+    if (!KFW_AFS_get_lsa_principal(szUserA, &dwSize)) {
+        StringCbPrintfW(szUserW, sizeof(szUserW), L"%s\\%s", pInfo->Domain, pInfo->UserName);
+        WideCharToMultiByte(CP_ACP, 0, szUserW, -1, szUserA, MAX_PATH, NULL, NULL);
+    }
+
+    if (szUserA[0])
+    {
+        lana_GetNetbiosName(szClient, LANA_NETBIOS_NAME_FULL);
+        StringCbPrintf(szPath, sizeof(szPath), "\\\\%s", szClient);
+
+        DebugEvent("AFS_Logon_Event - Logon Name: %s", szUserA);
+
+        memset (&nr, 0x00, sizeof(NETRESOURCE));
+        nr.dwType=RESOURCETYPE_DISK;
+        nr.lpLocalName=0;
+        nr.lpRemoteName=szPath;
+        res = WNetAddConnection2(&nr,NULL,szUserA,0);
+        if (res)
+            DebugEvent("AFS_Logon_Event - WNetAddConnection2(%s,%s) failed: 0x%X",
+                        szPath, szUserA,res);
+        else
+            DebugEvent0("AFS_Logon_Event - WNetAddConnection2() succeeded");
+    } else 
+        DebugEvent("AFS_Logon_Event - User name conversion failed: GLE = 0x%X",GetLastError());
+
+    if ( tokenUser )
+        LocalFree(tokenUser);
+
+    DebugEvent0("AFS_Logon_Event - End");
+}
 

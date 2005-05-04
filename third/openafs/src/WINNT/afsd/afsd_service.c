@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <winsock2.h>
+#include <WINNT\afsreg.h>
 
 #include <osi.h>
 
@@ -31,15 +32,7 @@
 #include <crtdbg.h>
 #endif
 
-/*
-// The following is defined if you want to receive Power notifications,
-// including Hibernation, and also subsequent flushing of AFS volumes
-//
-#define REGISTER_POWER_NOTIFICATIONS 1
-#define FLUSH_VOLUME                 1
-//
-// Check
-*/
+//#define REGISTER_POWER_NOTIFICATIONS 1
 #include "afsd_flushvol.h"
 
 extern void afsi_log(char *pattern, ...);
@@ -91,12 +84,12 @@ static void afsd_notifier(char *msgp, char *filep, long line)
     buf_ForceTrace(TRUE);
 
     afsi_log("--- begin dump ---");
-    cm_DumpSCache(afsi_file, "a");
+    cm_DumpSCache(afsi_file, "a", 0);
 #ifdef keisa
     cm_dnlcDump(afsi_file, "a");
 #endif
-    cm_DumpBufHashTable(afsi_file, "a");
-    smb_DumpVCP(afsi_file, "a");			
+    cm_DumpBufHashTable(afsi_file, "a", 0);
+    smb_DumpVCP(afsi_file, "a", 0);			
     afsi_log("--- end   dump ---");
     
 #ifdef DEBUG
@@ -180,12 +173,17 @@ afsd_ServiceControlHandler(DWORD ctrlCode)
         ServiceStatus.dwControlsAccepted = 0;
         SetServiceStatus(StatusHandle, &ServiceStatus);
 
-#ifdef	FLUSH_VOLUME
-        afsd_ServiceFlushVolume((DWORD) lpEventData);                         
-#endif                                                                                      
+        if (ctrlCode == SERVICE_CONTROL_STOP)
+            afsi_log("SERVICE_CONTROL_STOP");
+        else
+            afsi_log("SERVICE_CONTROL_SHUTDOWN");
+
+        /* Write all dirty buffers back to server */
+        buf_CleanAndReset();
+
         /* Force trace if requested */
         code = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                             AFSConfigKeyName,
+                             AFSREG_CLT_SVC_PARAM_SUBKEY,
                              0, KEY_QUERY_VALUE, &parmKey);
         if (code != ERROR_SUCCESS)
             goto doneTrace;
@@ -248,13 +246,12 @@ afsd_ServiceControlHandlerEx(
         ServiceStatus.dwControlsAccepted = 0;
         SetServiceStatus(StatusHandle, &ServiceStatus);
 
-#ifdef	FLUSH_VOLUME
-        afsd_ServiceFlushVolume((DWORD) lpEventData);                         
-#endif                                                                                      
+        /* Write all dirty buffers back to server */
+        buf_CleanAndReset();
 
         /* Force trace if requested */
         code = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                            AFSConfigKeyName,
+                            AFSREG_CLT_SVC_PARAM_SUBKEY,
                             0, KEY_QUERY_VALUE, &parmKey);
         if (code != ERROR_SUCCESS)
             goto doneTrace;
@@ -283,13 +280,15 @@ afsd_ServiceControlHandlerEx(
         ServiceStatus.dwWaitHint = 0;
         ServiceStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_POWEREVENT;
         SetServiceStatus(StatusHandle, &ServiceStatus);
+        afsi_log("SERVICE_CONTROL_INTERROGATE");
         dwRet = NO_ERROR;
         break;
 
         /* XXX handle system shutdown */
         /* XXX handle pause & continue */
     case SERVICE_CONTROL_POWEREVENT:                                              
-        {                                                                                     
+        { 
+            afsi_log("SERVICE_CONTROL_POWEREVENT");
             /*                                                                                
             **	dwEventType of this notification == WPARAM of WM_POWERBROADCAST               
             **	Return NO_ERROR == return TRUE for that message, i.e. accept request          
@@ -299,29 +298,59 @@ afsd_ServiceControlHandlerEx(
             if (powerEventsRegistered) {
                 switch((int) dwEventType)                                                         
                 {                                                                               
-                case PBT_APMQUERYSUSPEND:                                                         
+                case PBT_APMQUERYSUSPEND:       
+                    afsi_log("SERVICE_CONTROL_APMQUERYSUSPEND"); 
+                    /* Write all dirty buffers back to server */
+                    buf_CleanAndReset();
+                    dwRet = NO_ERROR;                       
+                    break;                                  
                 case PBT_APMQUERYSTANDBY:                                                         
-
-#ifdef	FLUSH_VOLUME
-                    /* handle event */                                                            
-                    dwRet = afsd_ServiceFlushVolume((DWORD) lpEventData);                         
-#else                                                                                       
+                    afsi_log("SERVICE_CONTROL_APMQUERYSTANDBY"); 
+                    /* Write all dirty buffers back to server */
+                    buf_CleanAndReset();
                     dwRet = NO_ERROR;                                                             
-#endif                                                                                      
                     break;                                                                        
 							                                                                  
                     /* allow remaining case PBT_WhatEver */                                           
-                case PBT_APMSUSPEND:                                                              
-                case PBT_APMSTANDBY:                                                              
-                case PBT_APMRESUMECRITICAL:                                                       
+                case PBT_APMSUSPEND:                         
+                    afsi_log("SERVICE_CONTROL_APMSUSPEND"); 
+                    dwRet = NO_ERROR;                       
+                    break;                                  
+                case PBT_APMSTANDBY:                  
+                    afsi_log("SERVICE_CONTROL_APMSTANDBY"); 
+                    dwRet = NO_ERROR;                       
+                    break;                                  
+                case PBT_APMRESUMECRITICAL:             
+                    afsi_log("SERVICE_CONTROL_APMRESUMECRITICAL"); 
+                    dwRet = NO_ERROR;                       
+                    break;                                  
                 case PBT_APMRESUMESUSPEND:                                                        
+                    afsi_log("SERVICE_CONTROL_APMRESUMESUSPEND"); 
+                    dwRet = NO_ERROR;                       
+                    break;                                  
                 case PBT_APMRESUMESTANDBY:                                                        
+                    afsi_log("SERVICE_CONTROL_APMRESUMESTANDBY"); 
+                    dwRet = NO_ERROR;                       
+                    break;                                  
                 case PBT_APMBATTERYLOW:                                                           
+                    afsi_log("SERVICE_CONTROL_APMBATTERYLOW"); 
+                    dwRet = NO_ERROR;                       
+                    break;                                  
                 case PBT_APMPOWERSTATUSCHANGE:                                                    
+                    afsi_log("SERVICE_CONTROL_APMPOWERSTATUSCHANGE"); 
+                    dwRet = NO_ERROR;                       
+                    break;                                  
                 case PBT_APMOEMEVENT:                                                             
+                    afsi_log("SERVICE_CONTROL_APMOEMEVENT"); 
+                    dwRet = NO_ERROR;                       
+                    break;                                  
                 case PBT_APMRESUMEAUTOMATIC:                                                      
+                    afsi_log("SERVICE_CONTROL_APMRESUMEAUTOMATIC"); 
+                    dwRet = NO_ERROR;                       
+                    break;                                  
                 default:                                                                          
-                    dwRet = NO_ERROR;                                                             
+                    afsi_log("SERVICE_CONTROL_unknown"); 
+                    dwRet = NO_ERROR;                       
                 }   
             }
         }
@@ -348,7 +377,7 @@ static void MountGlobalDrives(void)
     char szSubMount[256];
     DWORD dwType;
 
-    sprintf(szKeyName, "%s\\GlobalAutoMapper", AFSConfigKeyName);
+    sprintf(szKeyName, "%s\\GlobalAutoMapper", AFSREG_CLT_SVC_PARAM_SUBKEY);
 
     dwResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, szKeyName, 0, KEY_QUERY_VALUE, &hKey);
     if (dwResult != ERROR_SUCCESS)
@@ -410,7 +439,7 @@ static void DismountGlobalDrives()
     char szSubMount[256];
     DWORD dwType;
 
-    sprintf(szKeyName, "%s\\GlobalAutoMapper", AFSConfigKeyName);
+    sprintf(szKeyName, "%s\\GlobalAutoMapper", AFSREG_CLT_SVC_PARAM_SUBKEY);
 
     dwResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, szKeyName, 0, KEY_QUERY_VALUE, &hKey);
     if (dwResult != ERROR_SUCCESS)
@@ -853,7 +882,7 @@ BOOL AFSModulesVerify(void)
 
 
     code = RegOpenKeyEx(HKEY_LOCAL_MACHINE, 
-                        "SYSTEM\\CurrentControlSet\\Services\\TransarcAFSDaemon\\Parameters",
+                        AFSREG_CLT_SVC_PARAM_SUBKEY,
                         0, KEY_QUERY_VALUE, &parmKey);
     if (code == ERROR_SUCCESS) {
         dummyLen = sizeof(cacheSize);
@@ -862,7 +891,7 @@ BOOL AFSModulesVerify(void)
         RegCloseKey (parmKey);
     }
 
-    code = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\OpenAFS\\Client",
+    code = RegOpenKeyEx(HKEY_LOCAL_MACHINE, AFSREG_CLT_OPENAFS_SUBKEY,
                          0, KEY_QUERY_VALUE, &parmKey);
     if (code == ERROR_SUCCESS) {
         dummyLen = sizeof(verifyServiceSig);
@@ -958,10 +987,6 @@ BOOL AFSModulesVerify(void)
     return success;
 }
 
-typedef BOOL ( APIENTRY * AfsdInitHook )(void);
-#define AFSD_INIT_HOOK "AfsdInitHook"
-#define AFSD_HOOK_DLL  "afsdhook.dll"
-
 /*
 control serviceex exists only on 2000/xp. These functions will be loaded dynamically.
 */
@@ -972,16 +997,16 @@ typedef SERVICE_STATUS_HANDLE ( * RegisterServiceCtrlHandlerFunc   )(  LPCTSTR ,
 RegisterServiceCtrlHandlerExFunc pRegisterServiceCtrlHandlerEx = NULL;
 RegisterServiceCtrlHandlerFunc   pRegisterServiceCtrlHandler   = NULL; 
 
-VOID WINAPI afsd_Main(DWORD argc, LPTSTR *argv)
+VOID WINAPI
+afsd_Main(DWORD argc, LPTSTR *argv)
 {
     long code;
     char *reason;
 #ifdef JUMP
     int jmpret;
 #endif /* JUMP */
-    HANDLE hInitHookDll;
-    HANDLE hAdvApi32;
-    AfsdInitHook initHook;
+    HMODULE hHookDll;
+    HMODULE hAdvApi32;
 
 #ifdef _DEBUG
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF /*| _CRTDBG_CHECK_ALWAYS_DF*/ | 
@@ -1025,7 +1050,7 @@ VOID WINAPI afsd_Main(DWORD argc, LPTSTR *argv)
     ServiceStatus.dwCheckPoint = 1;
     ServiceStatus.dwWaitHint = 30000;
     /* accept Power Events */
-    ServiceStatus.dwControlsAccepted = SERVICE_ACCEPT_POWEREVENT;
+    ServiceStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_POWEREVENT;
     SetServiceStatus(StatusHandle, &ServiceStatus);
 #endif
 
@@ -1045,7 +1070,8 @@ VOID WINAPI afsd_Main(DWORD argc, LPTSTR *argv)
         int bpower = TRUE;
 
         /* see if we should handle power notifications */
-        code = RegOpenKeyEx(HKEY_LOCAL_MACHINE, AFSConfigKeyName, 0, KEY_QUERY_VALUE, &hkParm);
+        code = RegOpenKeyEx(HKEY_LOCAL_MACHINE, AFSREG_CLT_SVC_PARAM_SUBKEY, 
+                            0, KEY_QUERY_VALUE, &hkParm);
         if (code == ERROR_SUCCESS) {
             dummyLen = sizeof(bpower);
             code = RegQueryValueEx(hkParm, "FlushOnHibernate", NULL, NULL,
@@ -1078,17 +1104,17 @@ VOID WINAPI afsd_Main(DWORD argc, LPTSTR *argv)
     }
 
     /* allow an exit to be called prior to any initialization */
-    hInitHookDll = LoadLibrary(AFSD_HOOK_DLL);
-    if (hInitHookDll)
+    hHookDll = LoadLibrary(AFSD_HOOK_DLL);
+    if (hHookDll)
     {
-        BOOL hookRc = FALSE;
-        initHook = ( AfsdInitHook ) GetProcAddress(hInitHookDll, AFSD_INIT_HOOK);
+        BOOL hookRc = TRUE;
+        AfsdInitHook initHook = ( AfsdInitHook ) GetProcAddress(hHookDll, AFSD_INIT_HOOK);
         if (initHook)
         {
             hookRc = initHook();
         }
-        FreeLibrary(hInitHookDll);
-        hInitHookDll = NULL;
+        FreeLibrary(hHookDll);
+        hHookDll = NULL;
 
         if (hookRc == FALSE)
         {
@@ -1112,7 +1138,7 @@ VOID WINAPI afsd_Main(DWORD argc, LPTSTR *argv)
             ServiceStatus.dwCheckPoint = 2;
             ServiceStatus.dwWaitHint = 20000;
             /* accept Power Events */
-            ServiceStatus.dwControlsAccepted = SERVICE_ACCEPT_POWEREVENT;
+            ServiceStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_POWEREVENT;
             SetServiceStatus(StatusHandle, &ServiceStatus);
         }
     }
@@ -1141,6 +1167,33 @@ VOID WINAPI afsd_Main(DWORD argc, LPTSTR *argv)
 			osi_panic(reason, __FILE__, __LINE__);
         }
 
+        /* allow an exit to be called post rx initialization */
+        hHookDll = LoadLibrary(AFSD_HOOK_DLL);
+        if (hHookDll)
+        {
+            BOOL hookRc = TRUE;
+            AfsdRxStartedHook rxStartedHook = ( AfsdRxStartedHook ) GetProcAddress(hHookDll, AFSD_RX_STARTED_HOOK);
+            if (rxStartedHook)
+            {
+                hookRc = rxStartedHook();
+            }
+            FreeLibrary(hHookDll);
+            hHookDll = NULL;
+
+            if (hookRc == FALSE)
+            {
+                ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+                ServiceStatus.dwWin32ExitCode = NO_ERROR;
+                ServiceStatus.dwCheckPoint = 0;
+                ServiceStatus.dwWaitHint = 0;
+                ServiceStatus.dwControlsAccepted = 0;
+                SetServiceStatus(StatusHandle, &ServiceStatus);
+                       
+                /* exit if initialization failed */
+                return;
+            }
+        }
+
 #ifndef NOTSERVICE
         ServiceStatus.dwCheckPoint++;
         ServiceStatus.dwWaitHint -= 5000;
@@ -1150,6 +1203,33 @@ VOID WINAPI afsd_Main(DWORD argc, LPTSTR *argv)
         if (code != 0) {
             afsi_log("afsd_InitSMB failed: %s (code = %d)", reason, code);
             osi_panic(reason, __FILE__, __LINE__);
+        }
+
+        /* allow an exit to be called post smb initialization */
+        hHookDll = LoadLibrary(AFSD_HOOK_DLL);
+        if (hHookDll)
+        {
+            BOOL hookRc = TRUE;
+            AfsdSmbStartedHook smbStartedHook = ( AfsdSmbStartedHook ) GetProcAddress(hHookDll, AFSD_SMB_STARTED_HOOK);
+            if (smbStartedHook)
+            {
+                hookRc = smbStartedHook();
+            }
+            FreeLibrary(hHookDll);
+            hHookDll = NULL;
+
+            if (hookRc == FALSE)
+            {
+                ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+                ServiceStatus.dwWin32ExitCode = NO_ERROR;
+                ServiceStatus.dwCheckPoint = 0;
+                ServiceStatus.dwWaitHint = 0;
+                ServiceStatus.dwControlsAccepted = 0;
+                SetServiceStatus(StatusHandle, &ServiceStatus);
+                       
+                /* exit if initialization failed */
+                return;
+            }
         }
 
         MountGlobalDrives();
@@ -1173,7 +1253,36 @@ VOID WINAPI afsd_Main(DWORD argc, LPTSTR *argv)
         }
     }
 
+    /* allow an exit to be called when started */
+    hHookDll = LoadLibrary(AFSD_HOOK_DLL);
+    if (hHookDll)
+    {
+        BOOL hookRc = TRUE;
+        AfsdStartedHook startedHook = ( AfsdStartedHook ) GetProcAddress(hHookDll, AFSD_STARTED_HOOK);
+        if (startedHook)
+        {
+            hookRc = startedHook();
+        }
+        FreeLibrary(hHookDll);
+        hHookDll = NULL;
+
+        if (hookRc == FALSE)
+        {
+            ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+            ServiceStatus.dwWin32ExitCode = NO_ERROR;
+            ServiceStatus.dwCheckPoint = 0;
+            ServiceStatus.dwWaitHint = 0;
+            ServiceStatus.dwControlsAccepted = 0;
+            SetServiceStatus(StatusHandle, &ServiceStatus);
+                       
+            /* exit if initialization failed */
+            return;
+        }
+    }
+
     WaitForSingleObject(WaitToTerminate, INFINITE);
+
+    afsi_log("Received Termination Signal, Stopping Service");
 
     {   
         HANDLE h; char *ptbuf[1];
@@ -1184,17 +1293,77 @@ VOID WINAPI afsd_Main(DWORD argc, LPTSTR *argv)
         DeregisterEventSource(h);
     }
 
+    /* allow an exit to be called prior to stopping the service */
+    hHookDll = LoadLibrary(AFSD_HOOK_DLL);
+    if (hHookDll)
+    {
+        BOOL hookRc = TRUE;
+        AfsdStoppingHook stoppingHook = ( AfsdStoppingHook ) GetProcAddress(hHookDll, AFSD_STOPPING_HOOK);
+        if (stoppingHook)
+        {
+            hookRc = stoppingHook();
+        }
+        FreeLibrary(hHookDll);
+        hHookDll = NULL;
+
+        if (hookRc == FALSE)
+        {
+            ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+            ServiceStatus.dwWin32ExitCode = NO_ERROR;
+            ServiceStatus.dwCheckPoint = 0;
+            ServiceStatus.dwWaitHint = 0;
+            ServiceStatus.dwControlsAccepted = 0;
+            SetServiceStatus(StatusHandle, &ServiceStatus);
+                       
+            /* exit if initialization failed */
+            return;
+        }
+    }
+
+
+#ifdef AFS_FREELANCE_CLIENT
+    cm_FreelanceShutdown();
+    afsi_log("Freelance Shutdown complete");
+#endif
+
     DismountGlobalDrives();
-    smb_Shutdown();
-    rx_Finalize();
-    RpcShutdown();
-    buf_Shutdown();
+    afsi_log("Global Drives dismounted");
+                                         
+    cm_DaemonShutdown();                 
+    afsi_log("Daemon shutdown complete");
+                                         
+    buf_Shutdown();                      
+    afsi_log("Buffer shutdown complete");
+                                         
+    rx_Finalize();                       
+    afsi_log("rx finalization complete");
+                                         
+    smb_Shutdown();                      
+    afsi_log("smb shutdown complete");   
+                                         
+    RpcShutdown();                       
+
+    cm_ShutdownMappedMemory();           
 
 #ifdef	REGISTER_POWER_NOTIFICATIONS
     /* terminate thread used to flush cache */
     if (powerEventsRegistered)
         PowerNotificationThreadExit();
 #endif
+
+    /* allow an exit to be called after stopping the service */
+    hHookDll = LoadLibrary(AFSD_HOOK_DLL);
+    if (hHookDll)
+    {
+        BOOL hookRc = TRUE;
+        AfsdStoppedHook stoppedHook = ( AfsdStoppedHook ) GetProcAddress(hHookDll, AFSD_STOPPED_HOOK);
+        if (stoppedHook)
+        {
+            hookRc = stoppedHook();
+        }
+        FreeLibrary(hHookDll);
+        hHookDll = NULL;
+    }
 
     /* Remove the ExceptionFilter */
     SetUnhandledExceptionFilter(NULL);
@@ -1214,13 +1383,33 @@ DWORD __stdcall afsdMain_thread(void* notUsed)
     return(0);
 }
 
+void usage(void)
+{
+    fprintf(stderr, "afsd_service.exe [--validate-cache <cache-path>]");
+}
+
 int
-main(void)
+main(int argc, char * argv[])
 {
     static SERVICE_TABLE_ENTRY dispatchTable[] = {
         {AFS_DAEMON_SERVICE_NAME, (LPSERVICE_MAIN_FUNCTION) afsd_Main},
         {NULL, NULL}
     };
+    int i;
+
+    for (i = 1; i < argc; i++) {
+        if (!stricmp(argv[i],"--validate-cache")) {
+            if (++i != argc - 1) {
+                usage();
+                return(1);
+            }
+
+            return cm_ValidateMappedMemory(argv[i]);
+        } else {
+            usage();
+            return(1);
+        }
+    }
 
     if (!StartServiceCtrlDispatcher(dispatchTable))
     {

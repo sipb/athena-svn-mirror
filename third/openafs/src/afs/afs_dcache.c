@@ -14,7 +14,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_dcache.c,v 1.1.1.4 2005-03-10 20:44:11 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_dcache.c,v 1.1.1.5 2005-05-04 17:44:49 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/*Standard vendor system headers */
 #include "afsincludes.h"	/*AFS-based standard headers */
@@ -625,9 +625,7 @@ afs_GetDownD(int anumber, int *aneedSpace)
 			       ICL_TYPE_POINTER, tvc, ICL_TYPE_INT32, 3,
 			       ICL_TYPE_INT32, tdc->index, ICL_TYPE_OFFSET,
 			       ICL_HANDLE_OFFSET(tchunkoffset));
-#ifndef	AFS_DEC_ENV
 		    AFS_STATCNT(afs_gget);
-#endif
 		    afs_HashOutDCache(tdc);
 		    if (tdc->f.chunkBytes != 0) {
 			discard = 1;
@@ -682,9 +680,7 @@ afs_HashOutDCache(struct dcache *adc)
 {
     int i, us;
 
-#ifndef	AFS_DEC_ENV
     AFS_STATCNT(afs_glink);
-#endif
     /* we know this guy's in the LRUQ.  We'll move dude into DCQ below */
     DZap(adc);
     /* if this guy is in the hash table, pull him out */
@@ -1857,7 +1853,7 @@ afs_GetDCache(register struct vcache *avc, afs_size_t abyte,
 #endif /* AFS_SGI_ENV */
 	if (AFS_CHUNKTOBASE(chunk) + adjustsize >= avc->m.Length &&
 #else /* defined(AFS_AIX32_ENV) || defined(AFS_SGI_ENV) */
-#if	defined(AFS_SUN_ENV)  || defined(AFS_OSF_ENV)
+#if	defined(AFS_SUN5_ENV)  || defined(AFS_OSF_ENV)
 	if ((doAdjustSize || (AFS_CHUNKTOBASE(chunk) >= avc->m.Length)) &&
 #else
 	if (AFS_CHUNKTOBASE(chunk) >= avc->m.Length &&
@@ -3008,7 +3004,7 @@ afs_InitCacheFile(char *afile, ino_t ainode)
     ObtainWriteLock(&tdc->lock, 621);
     MObtainWriteLock(&afs_xdcache, 622);
     if (afile) {
-	code = gop_lookupname(afile, AFS_UIOSYS, 0, NULL, &filevp);
+	code = gop_lookupname(afile, AFS_UIOSYS, 0, &filevp);
 	if (code) {
 	    ReleaseWriteLock(&afs_xdcache);
 	    ReleaseWriteLock(&tdc->lock);
@@ -3025,11 +3021,7 @@ afs_InitCacheFile(char *afile, ino_t ainode)
 	dput(filevp);
 #else
 	tdc->f.inode = afs_vnodeToInumber(filevp);
-#ifdef AFS_DEC_ENV
-	grele(filevp);
-#else
 	AFS_RELE(filevp);
-#endif
 #endif /* AFS_LINUX22_ENV */
     } else {
 	tdc->f.inode = ainode;
@@ -3227,8 +3219,14 @@ afs_dcacheInit(int afiles, int ablocks, int aDentries, int achunk, int aflags)
     afs_freeDSList = &tdp[0];
     for (i = 0; i < aDentries - 1; i++) {
 	tdp[i].lruq.next = (struct afs_q *)(&tdp[i + 1]);
+        RWLOCK_INIT(&tdp[i].lock, "dcache lock");
+        RWLOCK_INIT(&tdp[i].tlock, "dcache tlock");
+        RWLOCK_INIT(&tdp[i].mflock, "dcache flock");
     }
     tdp[aDentries - 1].lruq.next = (struct afs_q *)0;
+    RWLOCK_INIT(&tdp[aDentries - 1].lock, "dcache lock");
+    RWLOCK_INIT(&tdp[aDentries - 1].tlock, "dcache tlock");
+    RWLOCK_INIT(&tdp[aDentries - 1].mflock, "dcache flock");
 
     afs_stats_cmperf.cacheBlocksOrig = afs_stats_cmperf.cacheBlocksTotal =
 	afs_cacheBlocks = ablocks;

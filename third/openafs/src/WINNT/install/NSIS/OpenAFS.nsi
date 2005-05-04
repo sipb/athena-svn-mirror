@@ -526,6 +526,8 @@ Section "AFS Client" secClient
   File "${AFS_CLIENT_BUILDDIR}\tokens.exe"
   File "${AFS_CLIENT_BUILDDIR}\unlog.exe"
   File "${AFS_CLIENT_BUILDDIR}\fs.exe"
+  File "${AFS_CLIENT_BUILDDIR}\afsdacl.exe"
+  File "${AFS_CLIENT_BUILDDIR}\cmdebug.exe"
   File "${AFS_CLIENT_BUILDDIR}\aklog.exe"
   File "${AFS_CLIENT_BUILDDIR}\afscreds.exe"
   !insertmacro ReplaceDLL "${AFS_CLIENT_BUILDDIR}\afs_shl_ext.dll" "$INSTDIR\Client\Program\afs_shl_ext.dll" "$INSTDIR"
@@ -720,12 +722,14 @@ skipremove:
   WriteRegDWORD HKLM "Software\Microsoft\Windows NT\CurrentVersion\WinLogon\Notify\AfsLogon" "Asynchronous" 0
   WriteRegDWORD HKLM "Software\Microsoft\Windows NT\CurrentVersion\WinLogon\Notify\AfsLogon" "Impersonate"  1
   WriteRegStr HKLM "Software\Microsoft\Windows NT\CurrentVersion\WinLogon\Notify\AfsLogon" "DLLName" "afslogon.dll"
+  WriteRegStr HKLM "Software\Microsoft\Windows NT\CurrentVersion\WinLogon\Notify\AfsLogon" "Logon" "AFS_Logon_Event"
   WriteRegStr HKLM "Software\Microsoft\Windows NT\CurrentVersion\WinLogon\Notify\AfsLogon" "Logoff" "AFS_Logoff_Event"
   WriteRegStr HKLM "Software\Microsoft\Windows NT\CurrentVersion\WinLogon\Notify\AfsLogon" "Startup" "AFS_Startup_Event"
 
   SetRebootFlag true
   
   WriteUninstaller "$INSTDIR\Uninstall.exe"
+  Call CreateDesktopIni
   
 SectionEnd
 
@@ -1115,6 +1119,8 @@ Section "Debug symbols" secDebug
   File "${AFS_CLIENT_BUILDDIR}\tokens.pdb"
   File "${AFS_CLIENT_BUILDDIR}\unlog.pdb"
   File "${AFS_CLIENT_BUILDDIR}\fs.pdb"
+  File "${AFS_CLIENT_BUILDDIR}\afsdacl.pdb"
+  File "${AFS_CLIENT_BUILDDIR}\cmdebug.pdb"
   File "${AFS_CLIENT_BUILDDIR}\aklog.pdb"
   File "${AFS_CLIENT_BUILDDIR}\afscreds.pdb"
   File "${AFS_CLIENT_BUILDDIR}\afs_shl_ext.pdb"
@@ -1728,7 +1734,7 @@ StartRemove:
    IfSilent SkipDel
 ;  IfFileExists "$INSTDIR\Client\CellServDB" CellExists SkipDelAsk
 ;  CellExists:
-  MessageBox MB_YESNO "Would you like to keep your configuration files?" IDYES SkipDel
+  MessageBox MB_YESNO "Would you like to keep your configuration information?" IDYES SkipDel
   Delete "$INSTDIR\Client\CellServDB"
 
 ; Only remove krb5.ini if KfW was installed
@@ -3783,4 +3789,11 @@ noClose:
   Pop $2
   Pop $1
   Exch $R0
+FunctionEnd
+
+Function CreateDesktopIni
+   WriteIniStr "$INSTDIR\Desktop.ini" ".ShellClassInfo" "IconFile" "client\program\afsd_service.exe"
+   WriteIniStr "$INSTDIR\Desktop.ini" ".ShellClassInfo" "IconIndex" "0"
+   SetFileAttributes "$INSTDIR\Desktop.ini" HIDDEN|SYSTEM
+   SetFileAttributes "$INSTDIR\" READONLY
 FunctionEnd

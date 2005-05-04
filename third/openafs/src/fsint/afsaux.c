@@ -15,7 +15,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/fsint/afsaux.c,v 1.1.1.3 2005-03-10 20:38:04 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/fsint/afsaux.c,v 1.1.1.4 2005-05-04 17:45:02 zacheiss Exp $");
 
 #ifdef KERNEL
 #if defined(UKERNEL)
@@ -23,7 +23,7 @@ RCSID
 #include "afsincludes.h"
 #include "rx/xdr.h"
 #else /* defined(UKERNEL) */
-#if defined(AFS_ALPHA_ENV) || defined(AFS_LINUX20_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_OSF_ENV) || defined(AFS_LINUX20_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
 #include "afs/sysincludes.h"
 #include "afsincludes.h"
 #else
@@ -63,7 +63,7 @@ static afs_int32 bslosers = 0;
 #ifdef	AFS_AIXNFS11
 #define	AUTH_DES 1
 #endif
-#if (defined(AFS_AIX_ENV) && !defined(AUTH_DES)) || (!defined(AFS_SUN_ENV)) && !defined(AFS_SGI_ENV) && !defined(AFS_ALPHA_ENV) && !defined(AFS_SUN5_ENV)
+#if (defined(AFS_AIX_ENV) && !defined(AUTH_DES)) || (!defined(AFS_SUN_ENV)) && !defined(AFS_SGI_ENV) && !defined(AFS_OSF_ENV) && !defined(AFS_SUN5_ENV)
 #ifndef	AFS_AIX32_ENV
 #if !defined(AFS_HPUX110_ENV) && !defined(AFS_LINUX20_ENV) && !defined(AFS_DARWIN_ENV) && !defined(AFS_XBSD_ENV)
 /*

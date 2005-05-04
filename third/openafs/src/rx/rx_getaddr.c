@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_getaddr.c,v 1.1.1.2 2005-03-10 20:49:40 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_getaddr.c,v 1.1.1.3 2005-05-04 17:44:42 zacheiss Exp $");
 
 #ifndef AFS_DJGPP_ENV
 #ifndef KERNEL
@@ -284,26 +284,28 @@ rxi_getAllAddrMaskMtu(afs_int32 addrBuffer[], afs_int32 maskBuffer[],
 		continue;
 	    a = info.rti_info[RTAX_IFA];
 
-	    if (count >= maxSize) {	/* no more space */
-		printf("Too many interfaces..ignoring 0x%x\n",
-		       a->sin_addr.s_addr);
-	    } else {
-		struct ifreq ifr;
-
-		addrBuffer[count] = a->sin_addr.s_addr;
-		a = info.rti_info[RTAX_NETMASK];
-		if (a)
-		    maskBuffer[count] = a->sin_addr.s_addr;
-		else
-		    maskBuffer[count] = htonl(0xffffffff);
-		memset(&ifr, sizeof(ifr), 0);
-		ifr.ifr_addr.sa_family = AF_INET;
-		strncpy(ifr.ifr_name, sdl->sdl_data, sdl->sdl_nlen);
-		if (ioctl(s, SIOCGIFMTU, (caddr_t) & ifr) < 0)
-		    mtuBuffer[count] = htonl(1500);
-		else
-		    mtuBuffer[count] = htonl(ifr.ifr_mtu);
-		count++;
+	    if (a->sin_addr.s_addr != htonl(0x7f000001) ) {
+		if (count >= maxSize) {	/* no more space */
+		    printf("Too many interfaces..ignoring 0x%x\n",
+			   a->sin_addr.s_addr);
+		} else {
+		    struct ifreq ifr;
+		    
+		    addrBuffer[count] = a->sin_addr.s_addr;
+		    a = info.rti_info[RTAX_NETMASK];
+		    if (a)
+			maskBuffer[count] = a->sin_addr.s_addr;
+		    else
+			maskBuffer[count] = htonl(0xffffffff);
+		    memset(&ifr, sizeof(ifr), 0);
+		    ifr.ifr_addr.sa_family = AF_INET;
+		    strncpy(ifr.ifr_name, sdl->sdl_data, sdl->sdl_nlen);
+		    if (ioctl(s, SIOCGIFMTU, (caddr_t) & ifr) < 0)
+			mtuBuffer[count] = htonl(1500);
+		    else
+			mtuBuffer[count] = htonl(ifr.ifr_mtu);
+		    count++;
+		}
 	    }
 	    addrcount--;
 	    ifam = (struct ifa_msghdr *)((char *)ifam + ifam->ifam_msglen);
