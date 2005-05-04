@@ -1,6 +1,6 @@
 #!/sbin/sh
 # Undo any undesired changes resulting from the installation of OS pkgs.
-# $Id: oschanges,v 1.24 2005-05-02 19:28:06 ghudson Exp $
+# $Id: oschanges,v 1.25 2005-05-04 01:42:51 zacheiss Exp $
 
 # Restore various files which belong to the OS, but which are replaced
 # in the Athena release.
@@ -45,6 +45,7 @@ rm -f $UPDATE_ROOT/etc/rc2.d/S99audit
 rm -f $UPDATE_ROOT/etc/rc2.d/S90wbem
 rm -f $UPDATE_ROOT/etc/rc3.d/S76snmpdx
 rm -f $UPDATE_ROOT/etc/rc3.d/S77dmi
+rm -f $UPDATE_ROOT/etc/rc3.d/S82initsma
 
 # The SUNWgccruntime package installs these libtool library files
 # as zero-length, which breaks libtool.  Remove them, so that
