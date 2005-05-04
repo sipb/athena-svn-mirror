@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_call.c,v 1.5 2005-03-10 22:16:43 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_call.c,v 1.6 2005-05-04 18:14:54 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -31,7 +31,7 @@ RCSID
 #endif
 
 
-#if	defined(AFS_AIX_ENV) || defined(AFS_SGI_ENV) || defined(AFS_SUN_ENV) || defined(AFS_HPUX_ENV)
+#if defined(AFS_SUN5_ENV) || defined(AFS_AIX_ENV) || defined(AFS_SGI_ENV) || defined(AFS_HPUX_ENV)
 #define	AFS_MINBUFFERS	100
 #else
 #define	AFS_MINBUFFERS	50
@@ -100,6 +100,8 @@ afs_int32 afs_rx_harddead = AFS_HARDDEADTIME;
 static int
   Afscall_icl(long opcode, long p1, long p2, long p3, long p4, long *retval);
 
+static int afscall_set_rxpck_received = 0;
+
 #if defined(AFS_HPUX_ENV)
 extern int afs_vfs_mount();
 #endif /* defined(AFS_HPUX_ENV) */
@@ -128,6 +130,7 @@ afs_InitSetup(int preallocs)
     memset(afs_zeros, 0, AFS_ZEROS);
 
     /* start RX */
+    if(!afscall_set_rxpck_received)
     rx_extraPackets = AFS_NRXPACKETS;	/* smaller # of packets */
     code = rx_InitHost(rx_bindhost, htons(7001));
     if (code) {
@@ -502,7 +505,7 @@ afs_syscall_call(parm, parm2, parm3, parm4, parm5, parm6)
 	while (!afs_InitSetup_done)
 	    afs_osi_Sleep(&afs_InitSetup_done);
 
-#if defined(AFS_SUN_ENV) || defined(AFS_SGI_ENV) || defined(AFS_HPUX_ENV) || defined(AFS_LINUX20_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_XBSD_ENV)
+#if defined(AFS_SGI_ENV) || defined(AFS_HPUX_ENV) || defined(AFS_LINUX20_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_XBSD_ENV) || defined(AFS_SUN5_ENV)
 	temp = AFS_MINBUFFERS;	/* Should fix this soon */
 #else
 	/* number of 2k buffers we could get from all of the buffer space */
@@ -691,7 +694,7 @@ afs_syscall_call(parm, parm2, parm3, parm4, parm5, parm6)
 	afs_initState = 101;
 	afs_setTime = parm2;
 	afs_osi_Wakeup(&afs_initState);
-#if	(!defined(AFS_NONFSTRANS) && !defined(AFS_DEC_ENV)) || defined(AFS_AIX_IAUTH_ENV)
+#if	(!defined(AFS_NONFSTRANS)) || defined(AFS_AIX_IAUTH_ENV)
 	afs_nfsclient_init();
 #endif
 	printf("found %d non-empty cache files (%d%%).\n",
@@ -901,6 +904,9 @@ afs_syscall_call(parm, parm2, parm3, parm4, parm5, parm6)
 	code = 0;
     } else if (parm == AFSOP_SET_BACKUPTREE) {
 	afs_bkvolpref = parm2;
+    } else if (parm == AFSOP_SET_RXPCK) {
+	rx_extraPackets = parm2;
+	afscall_set_rxpck_received = 1;
     } else
 	code = EINVAL;
 
@@ -1270,11 +1276,7 @@ Afs_syscall()
     } *uap = (struct a *)u.u_ap;
 #else /* UKERNEL */
 int
-#if defined(AFS_SUN_ENV) && !defined(AFS_SUN5_ENV)
-afs_syscall()
-#else
 Afs_syscall()
-#endif				/* SUN && !SUN5 */
 {
     register struct a {
 	long syscall;
@@ -1286,9 +1288,7 @@ Afs_syscall()
 	long parm6;
     } *uap = (struct a *)u.u_ap;
 #endif /* UKERNEL */
-#if  defined(AFS_DEC_ENV)
-    int *retval = &u.u_r.r_val1;
-#elif defined(AFS_HPUX_ENV)
+#if defined(AFS_HPUX_ENV)
     long *retval = &u.u_rval1;
 #else
     int *retval = &u.u_rval1;
@@ -1626,11 +1626,8 @@ afs_shutdown(void)
     shutdown_vfsops();
     shutdown_exporter();
     shutdown_memcache();
-#if !defined(AFS_NONFSTRANS) || defined(AFS_AIX_IAUTH_ENV)
-#if !defined(AFS_DEC_ENV) && !defined(AFS_OSF_ENV)
-    /* this routine does not exist in Ultrix systems... 93.01.19 */
+#if (!defined(AFS_NONFSTRANS) || defined(AFS_AIX_IAUTH_ENV)) && !defined(AFS_OSF_ENV)
     shutdown_nfsclnt();
-#endif /* AFS_DEC_ENV */
 #endif
     shutdown_afstest();
     /* The following hold the cm stats */
@@ -1665,7 +1662,7 @@ afs_shutdown_BKG(void)
 }
 
 
-#if defined(AFS_ALPHA_ENV) || defined(AFS_SGI61_ENV)
+#if defined(AFS_OSF_ENV) || defined(AFS_SGI61_ENV)
 /* For SGI 6.2, this can is changed to 1 if it's a 32 bit kernel. */
 #if defined(AFS_SGI62_ENV) && defined(KERNEL) && !defined(_K64U64)
 int afs_icl_sizeofLong = 1;
@@ -2100,16 +2097,16 @@ afs_icl_AppendString(struct afs_icl_log *logp, char *astr)
         (lp)->logElements++; \
     MACRO_END
 
-#if defined(AFS_ALPHA_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL))
+#if defined(AFS_OSF_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL))
 #define ICL_APPENDLONG(lp, x) \
     MACRO_BEGIN \
 	ICL_APPENDINT32((lp), ((x) >> 32) & 0xffffffffL); \
 	ICL_APPENDINT32((lp), (x) & 0xffffffffL); \
     MACRO_END
 
-#else /* AFS_ALPHA_ENV */
+#else /* AFS_OSF_ENV */
 #define ICL_APPENDLONG(lp, x) ICL_APPENDINT32((lp), (x))
-#endif /* AFS_ALPHA_ENV */
+#endif /* AFS_OSF_ENV */
 
 /* routine to tell whether we're dealing with the address or the
  * object itself
@@ -2254,10 +2251,10 @@ afs_icl_AppendRecord(register struct afs_icl_log *logp, afs_int32 op,
 	    ICL_APPENDINT32(logp, (afs_int32) ((afs_int32 *) p1)[2]);
 	    ICL_APPENDINT32(logp, (afs_int32) ((afs_int32 *) p1)[3]);
 	}
-#if defined(AFS_ALPHA_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL))
+#if defined(AFS_OSF_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL))
 	else if (t1 == ICL_TYPE_INT32)
 	    ICL_APPENDINT32(logp, (afs_int32) p1);
-#endif /* AFS_ALPHA_ENV */
+#endif /* AFS_OSF_ENV */
 	else
 	    ICL_APPENDLONG(logp, p1);
     }
@@ -2294,10 +2291,10 @@ afs_icl_AppendRecord(register struct afs_icl_log *logp, afs_int32 op,
 	    ICL_APPENDINT32(logp, (afs_int32) ((afs_int32 *) p2)[2]);
 	    ICL_APPENDINT32(logp, (afs_int32) ((afs_int32 *) p2)[3]);
 	}
-#if defined(AFS_ALPHA_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL))
+#if defined(AFS_OSF_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL))
 	else if (t2 == ICL_TYPE_INT32)
 	    ICL_APPENDINT32(logp, (afs_int32) p2);
-#endif /* AFS_ALPHA_ENV */
+#endif /* AFS_OSF_ENV */
 	else
 	    ICL_APPENDLONG(logp, p2);
     }
@@ -2334,10 +2331,10 @@ afs_icl_AppendRecord(register struct afs_icl_log *logp, afs_int32 op,
 	    ICL_APPENDINT32(logp, (afs_int32) ((afs_int32 *) p3)[2]);
 	    ICL_APPENDINT32(logp, (afs_int32) ((afs_int32 *) p3)[3]);
 	}
-#if defined(AFS_ALPHA_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL))
+#if defined(AFS_OSF_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL))
 	else if (t3 == ICL_TYPE_INT32)
 	    ICL_APPENDINT32(logp, (afs_int32) p3);
-#endif /* AFS_ALPHA_ENV */
+#endif /* AFS_OSF_ENV */
 	else
 	    ICL_APPENDLONG(logp, p3);
     }
@@ -2374,10 +2371,10 @@ afs_icl_AppendRecord(register struct afs_icl_log *logp, afs_int32 op,
 	    ICL_APPENDINT32(logp, (afs_int32) ((afs_int32 *) p4)[2]);
 	    ICL_APPENDINT32(logp, (afs_int32) ((afs_int32 *) p4)[3]);
 	}
-#if defined(AFS_ALPHA_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL))
+#if defined(AFS_OSF_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL))
 	else if (t4 == ICL_TYPE_INT32)
 	    ICL_APPENDINT32(logp, (afs_int32) p4);
-#endif /* AFS_ALPHA_ENV */
+#endif /* AFS_OSF_ENV */
 	else
 	    ICL_APPENDLONG(logp, p4);
     }

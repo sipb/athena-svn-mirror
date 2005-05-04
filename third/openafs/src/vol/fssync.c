@@ -50,7 +50,7 @@ static int newVLDB = 1;
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/fssync.c,v 1.4 2005-03-10 22:17:03 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/fssync.c,v 1.5 2005-05-04 18:15:04 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -169,18 +169,10 @@ FSYNC_clientInit(void)
 	FS_sd = getport(&addr);
 	if (connect(FS_sd, (struct sockaddr *)&addr, sizeof(addr)) >= 0)
 	    return 1;
-#if defined(AFS_SGI_ENV)
-	/* down with worthless error messages! */
-	if (!*timeout) {
-	    perror("FSYNC_clientInit failed (after many retries)");
-	    break;
-	}
-#else
 	if (!*timeout)
 	    break;
 	if (!(*timeout & 1))
-	    perror("FSYNC_clientInit temporary failure (will retry)");
-#endif
+	    Log(0, ("FSYNC_clientInit temporary failure (will retry)"));
 	FSYNC_clientFinis();
 	sleep(*timeout++);
     }
@@ -197,7 +189,6 @@ FSYNC_clientFinis(void)
     close(FS_sd);
 #endif
     FS_sd = -1;
-    Lock_Destroy(&FSYNC_handler_lock);
 }
 
 int

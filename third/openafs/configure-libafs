@@ -309,7 +309,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO SET_MAKE CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT build build_cpu build_vendor build_os host host_cpu host_vendor host_os CPP EGREP LN_S RANLIB ac_ct_RANLIB YACC LEX LEXLIB LEX_OUTPUT_ROOT HEADER_RT P5PLUS_KOPTS LINUX_GCC_KOPTS RHCONFIG_SP RHCONFIG_MP MPS PTHREAD_LIBS XBSA_CFLAGS HAVE_PAM BUILD_LOGIN afsconfdir viceetcdir afskerneldir afssrvbindir afssrvsbindir afssrvlibexecdir afsdbdir afslogsdir afslocaldir afsbackupdir afsbosconfigdir AFS_SYSNAME AFS_PARAM_COMMON ENABLE_KERNEL_MODULE LIB_AFSDB LINUX_KERNEL_PATH BSD_KERNEL_PATH BSD_KERNEL_BUILD LINUX_VERSION MKAFS_OSTYPE TOP_OBJDIR TOP_SRCDIR TOP_INCDIR TOP_LIBDIR DEST WITH_OBSOLETE WITH_INSECURE DARWIN_INFOFILE IRIX_BUILD_IP35 AS AR MV RM LD CP STRIP LORDER XFS_SIZE_CHECK install_XFS_SIZE_CHECK dest_XFS_SIZE_CHECK FS_CONV_SOL26 install_FS_CONV_SOL26 dest_FS_CONV_SOL26 FS_CONV_OSF40D install_FS_CONV_OSF40D dest_FS_CONV_OSF40D CCXPG2 CCOBJ AFSD_LIBS AFSD_LDFLAGS AIX64 DBG FSINCLUDES KERN_DBG KERN_OPTMZ LWP_DBG LWP_OPTMZ MT_CC MT_CFLAGS MT_LIBS OPTMZ PAM_CFLAGS PAM_LIBS PINSTALL_LIBS REGEX_OBJ SHLIB_CFLAGS SHLIB_LDFLAGS SHLIB_LINKER SHLIB_SUFFIX TXLIBS VFSCK_CFLAGS XCFLAGS XCFLAGS64 XLDFLAGS XLDFLAGS64 XLIBELFA XLIBKVM XLIBS HELPER_SPLINT HELPER_SPLINTCFG LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO SET_MAKE CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT build build_cpu build_vendor build_os host host_cpu host_vendor host_os CPP EGREP LN_S RANLIB ac_ct_RANLIB YACC LEX LEXLIB LEX_OUTPUT_ROOT HEADER_RT P5PLUS_KOPTS LINUX_GCC_KOPTS RHCONFIG_SP RHCONFIG_MP MPS PTHREAD_LIBS XBSA_CFLAGS HAVE_PAM BUILD_LOGIN afsconfdir viceetcdir afskerneldir afssrvbindir afssrvsbindir afssrvlibexecdir afsdbdir afslogsdir afslocaldir afsbackupdir afsbosconfigdir AFS_SYSNAME AFS_PARAM_COMMON ENABLE_KERNEL_MODULE LIB_AFSDB LINUX_KERNEL_PATH BSD_KERNEL_PATH BSD_KERNEL_BUILD LINUX_VERSION MKAFS_OSTYPE TOP_OBJDIR TOP_SRCDIR TOP_INCDIR TOP_LIBDIR DEST WITH_OBSOLETE DARWIN_INFOFILE IRIX_BUILD_IP35 AS AR MV RM LD CP STRIP LORDER XFS_SIZE_CHECK install_XFS_SIZE_CHECK dest_XFS_SIZE_CHECK FS_CONV_SOL26 install_FS_CONV_SOL26 dest_FS_CONV_SOL26 FS_CONV_OSF40D install_FS_CONV_OSF40D dest_FS_CONV_OSF40D CCXPG2 CCOBJ AFSD_LIBS AFSD_LDFLAGS AIX64 DBG FSINCLUDES KERN_DBG KERN_OPTMZ LWP_DBG LWP_OPTMZ MT_CC MT_CFLAGS MT_LIBS OPTMZ PAM_CFLAGS PAM_LIBS PINSTALL_LIBS REGEX_OBJ SHLIB_CFLAGS SHLIB_LDFLAGS SHLIB_LINKER SHLIB_SUFFIX TXLIBS VFSCK_CFLAGS XCFLAGS XCFLAGS64 XLDFLAGS XLDFLAGS64 XLIBELFA XLIBKVM XLIBS HELPER_SPLINT HELPER_SPLINTCFG LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -849,8 +849,7 @@ if test -n "$ac_init_help"; then
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-obsolete 			enable obsolete portions of AFS (mpp, ntp and package)
-  --enable-insecure 			enable insecure portions of AFS (ftpd, inetd, rcp, rlogind and rsh)
+  --enable-obsolete 			enable obsolete portions of AFS (mpp and package)
   --disable-afsdb 			disable AFSDB RR support
   --disable-pam 			disable PAM support
   --enable-bos-restricted-mode 	enable bosserver restricted mode which disables certain bosserver functionality
@@ -1529,7 +1528,7 @@ fi
 
 PACKAGE=openafs-libafs
 
-VERSION=1.3.79
+VERSION=1.3.82
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -3120,13 +3119,6 @@ if test "${enable_obsolete+set}" = set; then
 else
   enable_obsolete="no"
 fi;
-# Check whether --enable-insecure or --disable-insecure was given.
-if test "${enable_insecure+set}" = set; then
-  enableval="$enable_insecure"
-
-else
-  enable_insecure="no"
-fi;
 # Check whether --enable-afsdb or --disable-afsdb was given.
 if test "${enable_afsdb+set}" = set; then
   enableval="$enable_afsdb"
@@ -4625,7 +4617,10 @@ _ACEOF
 		 if test "x$with_linux_kernel_headers" != "x"; then
 		   LINUX_KERNEL_PATH="$with_linux_kernel_headers"
 		 else
-		   LINUX_KERNEL_PATH="/usr/src/linux-2.4"
+		   LINUX_KERNEL_PATH="/lib/modules/`uname -r`/build"
+		   if test ! -f "$LINUX_KERNEL_PATH/include/linux/version.h"; then
+		     LINUX_KERNEL_PATH="/usr/src/linux-2.4"
+		   fi
 		   if test ! -f "$LINUX_KERNEL_PATH/include/linux/version.h"; then
 		     LINUX_KERNEL_PATH="/usr/src/linux"
 		   fi
@@ -5181,7 +5176,7 @@ echo $ECHO_N "checking your AFS sysname... $ECHO_C" >&6
 			AFS_SYSNAME="ia64_linuxXX"
 			;;
 		powerpc-*-linux*)
-			AFS_SYSNAME="ppc_linuxXX"
+			AFS_SYSNAME="`/bin/arch`_linuxXX"
 			;;
 		powerpc64-*-linux*)
 			AFS_SYSNAME="ppc64_linuxXX"
@@ -5222,6 +5217,10 @@ echo $ECHO_N "checking your AFS sysname... $ECHO_C" >&6
 			;;
 		power*-ibm-aix5.2*)
 			AFS_SYSNAME="rs_aix52"
+			enable_pam="no"
+			;;
+		power*-ibm-aix5.3*)
+			AFS_SYSNAME="rs_aix53"
 			enable_pam="no"
 			;;
 		x86_64-*-linux-gnu)
@@ -6313,6 +6312,126 @@ echo "$as_me:$LINENO: result: $ac_cv_linux_fs_struct_inode_has_i_security" >&5
 echo "${ECHO_T}$ac_cv_linux_fs_struct_inode_has_i_security" >&6
 CPPFLAGS="$save_CPPFLAGS"
 
+echo "$as_me:$LINENO: checking for inotify_lock in struct inode" >&5
+echo $ECHO_N "checking for inotify_lock in struct inode... $ECHO_C" >&6
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+if test "${ac_cv_linux_fs_struct_inode_has_inotify_lock+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/fs.h>
+int
+main ()
+{
+struct inode _inode;
+printf("%d\n", _inode.inotify_lock);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_fs_struct_inode_has_inotify_lock=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_linux_fs_struct_inode_has_inotify_lock=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+
+echo "$as_me:$LINENO: result: $ac_cv_linux_fs_struct_inode_has_inotify_lock" >&5
+echo "${ECHO_T}$ac_cv_linux_fs_struct_inode_has_inotify_lock" >&6
+CPPFLAGS="$save_CPPFLAGS"
+
+echo "$as_me:$LINENO: checking for inotify_sem in struct inode" >&5
+echo $ECHO_N "checking for inotify_sem in struct inode... $ECHO_C" >&6
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+if test "${ac_cv_linux_fs_struct_inode_has_inotify_sem+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/fs.h>
+int
+main ()
+{
+struct inode _inode;
+printf("%x\n", _inode.inotify_sem);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_fs_struct_inode_has_inotify_sem=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_linux_fs_struct_inode_has_inotify_sem=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+
+echo "$as_me:$LINENO: result: $ac_cv_linux_fs_struct_inode_has_inotify_sem" >&5
+echo "${ECHO_T}$ac_cv_linux_fs_struct_inode_has_inotify_sem" >&6
+CPPFLAGS="$save_CPPFLAGS"
+
 echo "$as_me:$LINENO: checking for inode_setattr return type" >&5
 echo $ECHO_N "checking for inode_setattr return type... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
@@ -6913,7 +7032,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for page_follow_link_light vs page_follow_link" >&5
 echo $ECHO_N "checking for page_follow_link_light vs page_follow_link... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -Werror-implicit-function-declaration -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-default -Werror-implicit-function-declaration -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_kernel_page_follow_link+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -8348,6 +8467,20 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 		 fi
+		 if test "x$ac_cv_linux_fs_struct_inode_has_inotify_lock" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define STRUCT_INODE_HAS_INOTIFY_LOCK 1
+_ACEOF
+
+		 fi
+		 if test "x$ac_cv_linux_fs_struct_inode_has_inotify_sem" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define STRUCT_INODE_HAS_INOTIFY_SEM 1
+_ACEOF
+
+		 fi
 		 if test "x$ac_cv_linux_func_recalc_sigpending_takes_void" = "xyes"; then
 
 cat >>confdefs.h <<\_ACEOF
@@ -9682,11 +9815,6 @@ fi
 WITH_OBSOLETE=NO
 if test "$enable_obsolete" = "yes"; then
 	WITH_OBSOLETE=YES
-fi
-
-WITH_INSECURE=NO
-if test "$enable_insecure" = "yes"; then
-	WITH_INSECURE=YES
 fi
 
 if test "x$with_bsd_kernel_headers" != "x"; then
@@ -12238,6 +12366,108 @@ fi
 done
 
 
+for ac_func in daemon
+do
+as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $ac_func" >&5
+echo $ECHO_N "checking for $ac_func... $ECHO_C" >&6
+if eval "test \"\${$as_ac_var+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char $ac_func (); below.
+    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+
+#undef $ac_func
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char $ac_func ();
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+choke me
+#else
+char (*f) () = $ac_func;
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+int
+main ()
+{
+return f != $ac_func;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  eval "$as_ac_var=yes"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+eval "$as_ac_var=no"
+fi
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_var'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_var'}'`" >&6
+if test `eval echo '${'$as_ac_var'}'` = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+done
+
+
 if test "x$enable_transarc_paths" = "xyes"  ; then
     afsconfdir=${afsconfdir=/usr/afs/etc}
     viceetcdir=${viceetcdir=/usr/vice/etc}
@@ -12278,7 +12508,6 @@ fi
 if test "x$enable_kernel_module" = "xyes"; then
 ENABLE_KERNEL_MODULE=libafs
 fi
-
 
 
 
@@ -12765,6 +12994,7 @@ case $AFS_SYSNAME in
 		MT_CFLAGS='-DAFS_PTHREAD_ENV -pthread -D_REENTRANT ${XCFLAGS}'
 		MT_LIBS="-lpthread"
 		PAM_CFLAGS="-O2 -Dlinux -DLINUX_PAM -fPIC"
+		SHLIB_CFLAGS="-fPIC"
 		SHLIB_LDFLAGS="-shared -Xlinker -x"
 		TXLIBS="-lncurses"
 		XCFLAGS="-O2 -D_LARGEFILE64_SOURCE"
@@ -12773,11 +13003,28 @@ case $AFS_SYSNAME in
 		;;
 
 	alpha_linux_24)
+		CCOBJ="${CC} -fPIC"
 		KERN_OPTMZ=-O2
 		LEX="flex -l"
 		MT_CFLAGS='-DAFS_PTHREAD_ENV -pthread -D_REENTRANT ${XCFLAGS}'
 		MT_LIBS="-lpthread"
 		PAM_CFLAGS="-O2 -Dlinux -DLINUX_PAM -fPIC"
+		SHLIB_CFLAGS="-fPIC"
+		SHLIB_LDFLAGS="-shared -Xlinker -x"
+		TXLIBS="-lncurses"
+		XCFLAGS="-O2 -D_LARGEFILE64_SOURCE"
+		YACC="bison -y"
+		SHLIB_LINKER="${MT_CC} -shared"
+		;;
+
+	alpha_linux_26)
+		CCOBJ="${CC} -fPIC"
+		KERN_OPTMZ=-O2
+		LEX="flex -l"
+		MT_CFLAGS='-DAFS_PTHREAD_ENV -pthread -D_REENTRANT ${XCFLAGS}'
+		MT_LIBS="-lpthread"
+		PAM_CFLAGS="-O2 -Dlinux -DLINUX_PAM -fPIC"
+		SHLIB_CFLAGS="-fPIC"
 		SHLIB_LDFLAGS="-shared -Xlinker -x"
 		TXLIBS="-lncurses"
 		XCFLAGS="-O2 -D_LARGEFILE64_SOURCE"
@@ -12954,8 +13201,9 @@ case $AFS_SYSNAME in
 		MT_LIBS="-lpthread"
 		PAM_CFLAGS="-g -O2 -Dlinux -DLINUX_PAM -fPIC"
 		SHLIB_LDFLAGS="-shared -Xlinker -x"
+		SHLIB_CFLAGS="-fPIC"
 		TXLIBS="-lncurses"
-		XCFLAGS="-g -O2 -D_LARGEFILE64_SOURCE"
+		XCFLAGS="-g -O2 -D_LARGEFILE64_SOURCE -fPIC"
 		YACC="bison -y"
 		SHLIB_LINKER="${MT_CC} -shared"
 		;;
@@ -13106,6 +13354,19 @@ case $AFS_SYSNAME in
 		EXTRA_VLIBOBJS="fstab.o"
 		;;
 
+	ppc_darwin_80)
+		AFSD_LDFLAGS="-F/System/Library/PrivateFrameworks -framework DiskArbitration"
+		LEX="lex -l"
+		MT_CFLAGS='-DAFS_PTHREAD_ENV -D_REENTRANT ${XCFLAGS}'
+		KROOT=
+		KINCLUDES='-I$(KROOT)/System/Library/Frameworks/Kernel.framework/Headers'
+		LWP_OPTMZ="-O2"
+		REGEX_OBJ="regex.o"
+		XCFLAGS="-no-cpp-precomp"
+		TXLIBS="-lncurses"
+		EXTRA_VLIBOBJS="fstab.o"
+		;;
+
 	ppc_linux*)
 		KERN_OPTMZ=-O2
 		LEX="flex -l"
@@ -13164,6 +13425,22 @@ case $AFS_SYSNAME in
 		SHLIB_LINKER="${MT_CC} -bM:SRE -berok"
 		AIX64=""
 		;;
+
+	rs_aix53)
+		DBG="-g"
+		LEX="lex"
+		LIBSYS_AIX_EXP="afsl.exp"
+		MT_CC="xlc_r"
+		MT_CFLAGS='-DAFS_PTHREAD_ENV ${XCFLAGS}'
+		MT_LIBS="-lpthreads"
+		SHLIB_SUFFIX="o"
+		TXLIBS="-lcurses"
+		XCFLAGS="-K -D_NO_PROTO -D_NONSTD_TYPES -D_MBI=void"
+		XLIBS="${LIB_AFSDB} -ldl"
+		SHLIB_LINKER="${MT_CC} -bM:SRE -berok"
+		AIX64=""
+		;;
+
 	s390_linux22)
 		CC="gcc"
 		CCOBJ="gcc"
@@ -13208,7 +13485,7 @@ case $AFS_SYSNAME in
 		MT_CFLAGS='-DAFS_PTHREAD_ENV -pthread -D_REENTRANT ${XCFLAGS}'
 		MT_LIBS="-lpthread"
 		PAM_CFLAGS="-O -Dlinux -DLINUX_PAM -fPIC"
-		SHLIB_LDFLAGS="-shared -Xlinker -x"
+		SHLIB_LDFLAGS="-shared -Xlinker -x -Xlinker -Bsymbolic"
 		TXLIBS="-lncurses"
 		XCFLAGS="-O -g -D_LARGEFILE64_SOURCE -D__s390x__"
 		YACC="bison -y"
@@ -14420,7 +14697,6 @@ s,@TOP_INCDIR@,$TOP_INCDIR,;t t
 s,@TOP_LIBDIR@,$TOP_LIBDIR,;t t
 s,@DEST@,$DEST,;t t
 s,@WITH_OBSOLETE@,$WITH_OBSOLETE,;t t
-s,@WITH_INSECURE@,$WITH_INSECURE,;t t
 s,@DARWIN_INFOFILE@,$DARWIN_INFOFILE,;t t
 s,@IRIX_BUILD_IP35@,$IRIX_BUILD_IP35,;t t
 s,@AS@,$AS,;t t

@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/host.c,v 1.9 2005-03-10 22:17:01 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/host.c,v 1.10 2005-05-04 18:15:02 zacheiss Exp $");
 
 #include <stdio.h>
 #include <errno.h>
@@ -1328,7 +1328,7 @@ MapName_r(char *aname, char *acell, afs_int32 * aval)
 /*MapName*/
 
 
-/* NOTE: this returns the client with a Shared lock */
+/* NOTE: this returns the client with a Write lock */
 struct client *
 h_ID2Client(afs_int32 vid)
 {
@@ -1343,7 +1343,7 @@ h_ID2Client(afs_int32 vid)
 	    if (!client->deleted && client->ViceId == vid) {
 		client->refCount++;
 		H_UNLOCK;
-		ObtainSharedLock(&client->lock);
+		ObtainWriteLock(&client->lock);
 		H_LOCK;
 		client->refCount--;
 		H_UNLOCK;
@@ -1353,7 +1353,7 @@ h_ID2Client(afs_int32 vid)
     }
 
     H_UNLOCK;
-    return 0;
+    return NULL;
 }
 
 /*

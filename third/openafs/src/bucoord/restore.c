@@ -15,7 +15,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/restore.c,v 1.3 2005-03-10 22:16:49 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/restore.c,v 1.4 2005-05-04 18:14:58 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -44,11 +44,7 @@ extern char *whoami;
 #define	BC_MAXLEVELS	    20
 #define	MAXTAPESATONCE	    10
 
-#ifdef AFS_DEC_ENV
-#define HOSTADDR(sockaddr) (sockaddr)->sin_addr.S_un.S_addr
-#else
 #define HOSTADDR(sockaddr) (sockaddr)->sin_addr.s_addr
-#endif
 
 /* local structure to keep track of volumes and the dumps from which
  * they should be restored 

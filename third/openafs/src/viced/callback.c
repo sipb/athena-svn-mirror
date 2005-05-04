@@ -83,7 +83,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callback.c,v 1.10 2005-03-10 22:17:01 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callback.c,v 1.11 2005-05-04 18:15:02 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>		/* for malloc() */
@@ -328,7 +328,7 @@ FindFE(register AFSFid * fid)
     for (fei = HashTable[hash]; fei; fei = fe->fnext) {
 	fe = itofe(fei);
 	if (fe->volid == fid->Volume && fe->unique == fid->Unique
-	    && fe->vnode == fid->Vnode)
+	    && fe->vnode == fid->Vnode && (fe->status & FE_LATER) != FE_LATER)
 	    return fe;
     }
     return 0;
@@ -697,6 +697,7 @@ AddCallBack1_r(struct host *host, AFSFid * fid, afs_uint32 * thead, int type,
 	fe->vnode = fid->Vnode;
 	fe->unique = fid->Unique;
 	fe->ncbs = 0;
+	fe->status = 0;
 	hash = VHash(fid->Volume, fid->Unique);
 	fe->fnext = HashTable[hash];
 	HashTable[hash] = fetoi(fe);
@@ -720,6 +721,11 @@ AddCallBack1_r(struct host *host, AFSFid * fid, afs_uint32 * thead, int type,
 	    TDel(cb);
 	    TAdd(cb, Thead);
 	}
+	if (newfe == NULL) {    /* we are using the new FE */
+            fe->firstcb = cbtoi(cb);
+            fe->ncbs++;
+            cb->fhead = fetoi(fe);
+        }
     } else {
 	cb = newcb;
 	newcb = NULL;
@@ -1402,7 +1408,9 @@ BreakVolumeCallBacksLater(afs_uint32 volume)
 
     ViceLog(25, ("Fsync thread wakeup\n"));
 #ifdef AFS_PTHREAD_ENV
+    FSYNC_LOCK;
     assert(pthread_cond_broadcast(&fsync_cond) == 0);
+    FSYNC_UNLOCK;
 #else
     LWP_NoYieldSignal(fsync_wait);
 #endif
@@ -1421,6 +1429,7 @@ BreakLaterCallBacks(void)
     struct host *host;
     struct VCBParams henumParms;
     unsigned short tthead = 0;	/* zero is illegal value */
+    char hoststr[16];
 
     /* Unchain first */
     ViceLog(25, ("Looking for FileEntries to unchain\n"));
@@ -1460,16 +1469,23 @@ BreakLaterCallBacks(void)
     for (fe = myfe; fe;) {
 	register struct CallBack *cbnext;
 	for (cb = itocb(fe->firstcb); cb; cb = cbnext) {
-	    host = h_itoh(cb->hhead);
-	    h_Hold_r(host);
 	    cbnext = itocb(cb->cnext);
-	    if (!tthead || (TNorm(tthead) < TNorm(cb->thead))) {
-		tthead = cb->thead;
+	    host = h_itoh(cb->hhead);
+	    if (cb->status == CB_DELAYED) {
+		h_Hold_r(host);
+		if (!tthead || (TNorm(tthead) < TNorm(cb->thead))) {
+		    tthead = cb->thead;
+		}
+		TDel(cb);
+		HDel(cb);
+		CDel(cb, 0);	/* Don't let CDel clean up the fe */
+		/* leave hold for MultiBreakVolumeCallBack to clear */
+	    } else {
+		ViceLog(125,
+			("Found host %s:%d non-DELAYED cb for %u:%u:%u\n", 
+			 afs_inet_ntoa_r(host->host, hoststr),
+			 ntohs(host->port), fe->vnode, fe->unique, fe->volid));
 	    }
-	    TDel(cb);
-	    HDel(cb);
-	    CDel(cb, 0);	/* Don't let CDel clean up the fe */
-	    /* leave hold for MultiBreakVolumeCallBack to clear */
 	}
 	myfe = fe;
 	fe = (struct FileEntry *)((struct object *)fe)->next;

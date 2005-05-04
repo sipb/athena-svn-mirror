@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.7 2005-03-14 08:44:07 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.8 2005-05-04 18:15:01 zacheiss Exp $");
 
 #include <stdio.h>
 #include <errno.h>
@@ -232,11 +232,6 @@ typedef struct adaptive_mutex2 adaptive_mutex2_t;
 #include <sys/vnode.h>
 #endif /* AFS_SGI_ENV */
 #else
-#ifdef       AFS_MACH_ENV
-#include <vfs/vfs.h>
-#include <vfs/vnode.h>
-#include <sys/inode.h>
-#else /* AFS_MACH_ENV */
 #if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
 #include <sys/vnode.h>
 #include <sys/mount.h>
@@ -356,7 +351,6 @@ typedef enum _spustate {	/* FROM /etc/conf/h/_types.h */
 #endif
 #endif
 #endif
-#endif /* AFS_MACH_ENV */
 #include <signal.h>
 #endif
 

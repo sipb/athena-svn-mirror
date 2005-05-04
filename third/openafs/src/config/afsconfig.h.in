@@ -58,6 +58,9 @@
 /* define if you have connect */
 #undef HAVE_CONNECT
 
+/* Define to 1 if you have the `daemon' function. */
+#undef HAVE_DAEMON
+
 /* Define to 1 if you have the <direct.h> header file. */
 #undef HAVE_DIRECT_H
 
@@ -333,6 +336,12 @@
 
 /* define if struct fs has fs_rolled */
 #undef STRUCT_FS_HAS_FS_ROLLED
+
+/* define if your struct inode has inotify_lock */
+#undef STRUCT_INODE_HAS_INOTIFY_LOCK
+
+/* define if your struct inode has inotify_sem */
+#undef STRUCT_INODE_HAS_INOTIFY_SEM
 
 /* define if your struct inode has alloc_sem */
 #undef STRUCT_INODE_HAS_I_ALLOC_SEM

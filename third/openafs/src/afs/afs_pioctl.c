@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_pioctl.c,v 1.5 2005-03-10 22:16:43 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_pioctl.c,v 1.6 2005-05-04 18:14:54 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #ifdef AFS_OBSD_ENV
@@ -195,7 +195,7 @@ static int (*(CpioctlSw[])) () = {
 #define PSetClientContext 99	/*  Special pioctl to setup caller's creds  */
 int afs_nobody = NFS_NOBODY;
 
-#if (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL)) || defined(AFS_HPUX_64BIT_ENV) || defined(AFS_SUN57_64BIT_ENV) || (defined(AFS_SGI_ENV) && (_MIPS_SZLONG==64)) || (defined(AFS_LINUX_64BIT_KERNEL) && !defined(AFS_ALPHA_LINUX20_ENV) && !defined(AFS_IA64_LINUX20_ENV))
+#if (defined(AFS_AIX51_ENV) && defined(AFS_64BIT_KERNEL)) || defined(AFS_HPUX_64BIT_ENV) || defined(AFS_SUN57_64BIT_ENV) || (defined(AFS_SGI_ENV) && (_MIPS_SZLONG==64)) || defined(NEED_IOCTL32)
 static void
 afs_ioctl32_to_afs_ioctl(const struct afs_ioctl32 *src, struct afs_ioctl *dst)
 {
@@ -528,16 +528,16 @@ afs_xioctl(void)
     register int ioctlDone = 0, code = 0;
 
     AFS_STATCNT(afs_xioctl);
-#if defined(AFS_XBSD_ENV)
+#if defined(AFS_DARWIN_ENV)
+    if ((code = fdgetf(p, uap->fd, &fd)))
+	return code;
+#elif defined(AFS_XBSD_ENV)
     fdp = p->p_fd;
     if ((u_int) uap->fd >= fdp->fd_nfiles
 	|| (fd = fdp->fd_ofiles[uap->fd]) == NULL)
 	return EBADF;
     if ((fd->f_flag & (FREAD | FWRITE)) == 0)
 	return EBADF;
-#elif defined(AFS_DARWIN_ENV)
-    if ((code = fdgetf(p, uap->fd, &fd)))
-	return code;
 #elif defined(AFS_LINUX22_ENV)
     ua.com = com;
     ua.arg = arg;
@@ -597,21 +597,13 @@ afs_xioctl(void)
 #endif
 #endif /* AFS_LINUX22_ENV */
 	if (tvc && IsAfsVnode(AFSTOV(tvc))) {
-#ifdef AFS_DEC_ENV
-	    tvc = VTOAFS(afs_gntovn((struct gnode *)tvc));
-	    if (!tvc) {		/* shouldn't happen with held gnodes */
-		u.u_error = ENOENT;
-		return;
-	    }
-#endif
 	    /* This is an AFS vnode */
 	    if (((uap->com >> 8) & 0xff) == 'V') {
 		register struct afs_ioctl *datap;
 		AFS_GLOCK();
 		datap =
 		    (struct afs_ioctl *)osi_AllocSmallSpace(AFS_SMALLOCSIZ);
-		AFS_COPYIN((char *)uap->arg, (caddr_t) datap,
-			   sizeof(struct afs_ioctl), code);
+		code=copyin_afs_ioctl((char *)uap->arg, datap);
 		if (code) {
 		    osi_FreeSmallSpace(datap);
 		    AFS_GUNLOCK();
@@ -860,9 +852,6 @@ afs_syscall_pioctl(path, com, cmarg, follow)
     struct AFS_UCRED *foreigncreds = NULL;
     register afs_int32 code = 0;
     struct vnode *vp = NULL;
-#ifdef AFS_DEC_ENV
-    struct vnode *gp;
-#endif
 #ifdef	AFS_AIX41_ENV
     struct ucred *credp = crref();	/* don't free until done! */
 #endif
@@ -956,11 +945,11 @@ afs_syscall_pioctl(path, com, cmarg, follow)
 		       foreigncreds ? foreigncreds : credp);
 #else
 #ifdef AFS_LINUX22_ENV
-	code = gop_lookupname(path, AFS_UIOUSER, follow, NULL, &dp);
+	code = gop_lookupname(path, AFS_UIOUSER, follow, &dp);
 	if (!code)
 	    vp = (struct vnode *)dp->d_inode;
 #else
-	code = gop_lookupname(path, AFS_UIOUSER, follow, NULL, &vp);
+	code = gop_lookupname(path, AFS_UIOUSER, follow, &vp);
 #endif /* AFS_LINUX22_ENV */
 #endif /* AFS_AIX41_ENV */
 	AFS_GLOCK();
@@ -976,18 +965,7 @@ afs_syscall_pioctl(path, com, cmarg, follow)
 
     /* now make the call if we were passed no file, or were passed an AFS file */
     if (!vp || IsAfsVnode(vp)) {
-#if defined(AFS_DEC_ENV)
-	/* Ultrix 4.0: can't get vcache entry unless we've got an AFS gnode.
-	 * So, we must test in this part of the code.  Also, must arrange to
-	 * GRELE the original gnode pointer when we're done, since in Ultrix 4.0,
-	 * we hold gnodes, whose references hold our vcache entries.
-	 */
-	if (vp) {
-	    gp = vp;		/* remember for "put" */
-	    vp = (struct vnode *)afs_gntovn(vp);	/* get vcache from gp */
-	} else
-	    gp = NULL;
-#elif defined(AFS_SUN5_ENV)
+#if defined(AFS_SUN5_ENV)
 	code = afs_HandlePioctl(vp, com, &data, follow, &credp);
 #elif defined(AFS_AIX41_ENV)
 	{
@@ -1025,12 +1003,6 @@ afs_syscall_pioctl(path, com, cmarg, follow)
 	setuerror(EINVAL);
 #else
 	code = EINVAL;		/* not in /afs */
-#endif
-#ifdef AFS_DEC_ENV
-	if (vp) {
-	    GRELE(vp);
-	    vp = NULL;
-	}
 #endif
     }
 
@@ -1682,7 +1654,7 @@ DECL_PIOCTL(PFlush)
     AFS_STATCNT(PFlush);
     if (!avc)
 	return EINVAL;
-#if	defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_SUN5_ENV)
+#ifdef AFS_BOZONLOCK_ENV
     afs_BozonLock(&avc->pvnLock, avc);	/* Since afs_TryToSmush will do a pvn_vptrunc */
 #endif
     ObtainWriteLock(&avc->lock, 225);
@@ -1699,7 +1671,7 @@ DECL_PIOCTL(PFlush)
 	avc->linkData = NULL;
     }
     ReleaseWriteLock(&avc->lock);
-#if	defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_SUN5_ENV)
+#ifdef AFS_BOZONLOCK_ENV
     afs_BozonUnlock(&avc->pvnLock, avc);
 #endif
     return 0;
@@ -2570,17 +2542,17 @@ DECL_PIOCTL(PFlushVolumeData)
     for (i = 0; i < VCSIZE; i++) {
 	for (tvc = afs_vhashT[i]; tvc; tvc = tvc->hnext) {
 	    if (tvc->fid.Fid.Volume == volume && tvc->fid.Cell == cell) {
-#if	defined(AFS_SGI_ENV) || defined(AFS_ALPHA_ENV)  || defined(AFS_SUN5_ENV)  || defined(AFS_HPUX_ENV) || defined(AFS_LINUX20_ENV)
+#if	defined(AFS_SGI_ENV) || defined(AFS_OSF_ENV)  || defined(AFS_SUN5_ENV)  || defined(AFS_HPUX_ENV) || defined(AFS_LINUX20_ENV)
 		VN_HOLD(AFSTOV(tvc));
 #else
 #if defined(AFS_DARWIN_ENV) || defined(AFS_XBSD_ENV)
 		osi_vnhold(tvc, 0);
 #else
-		VREFCOUNT_INC(tvc);
+		VREFCOUNT_INC(tvc); /* AIX, apparently */
 #endif
 #endif
 		ReleaseReadLock(&afs_xvcache);
-#if	defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_SUN5_ENV)
+#ifdef AFS_BOZONLOCK_ENV
 		afs_BozonLock(&tvc->pvnLock, tvc);	/* Since afs_TryToSmush will do a pvn_vptrunc */
 #endif
 		ObtainWriteLock(&tvc->lock, 232);
@@ -2593,7 +2565,7 @@ DECL_PIOCTL(PFlushVolumeData)
 		    osi_dnlc_purgedp(tvc);
 		afs_TryToSmush(tvc, *acred, 1);
 		ReleaseWriteLock(&tvc->lock);
-#if	defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_SUN5_ENV)
+#ifdef AFS_BOZONLOCK_ENV
 		afs_BozonUnlock(&tvc->pvnLock, tvc);
 #endif
 		ObtainReadLock(&afs_xvcache);
@@ -3353,6 +3325,9 @@ HandleClientContext(struct afs_ioctl *ablob, int *com,
 	uid = afs_nobody;	/* NFS_NOBODY == -2 */
     }
     newcred = crget();
+#if defined(AFS_LINUX26_ENV)
+    newcred->cr_group_info = groups_alloc(0);
+#endif
 #ifdef	AFS_AIX41_ENV
     setuerror(0);
 #endif
@@ -3374,7 +3349,7 @@ HandleClientContext(struct afs_ioctl *ablob, int *com,
 	newcred->cr_groups[i] = NOGROUP;
 #endif
 #endif
-#if	!defined(AFS_OSF_ENV) && !defined(AFS_DEC_ENV)
+#if	!defined(AFS_OSF_ENV) 
     afs_nfsclient_init();	/* before looking for exporter, ensure one exists */
 #endif
     if (!(exporter = exporter_find(exporter_type))) {
@@ -3540,7 +3515,7 @@ DECL_PIOCTL(PFlushMount)
 	code = EINVAL;
 	goto out;
     }
-#if	defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_SUN5_ENV)
+#ifdef AFS_BOZONLOCK_ENV
     afs_BozonLock(&tvc->pvnLock, tvc);	/* Since afs_TryToSmush will do a pvn_vptrunc */
 #endif
     ObtainWriteLock(&tvc->lock, 649);
@@ -3557,7 +3532,7 @@ DECL_PIOCTL(PFlushMount)
 	tvc->linkData = NULL;
     }
     ReleaseWriteLock(&tvc->lock);
-#if	defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_SUN5_ENV)
+#ifdef AFS_BOZONLOCK_ENV
     afs_BozonUnlock(&tvc->pvnLock, tvc);
 #endif
     afs_PutVCache(tvc);
