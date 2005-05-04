@@ -237,6 +237,8 @@ const PRInt32 nsCSSProps::kAppearanceKTable[] = {
   eCSSKeyword_menubar,                NS_THEME_MENUBAR,
   eCSSKeyword_menupopup,              NS_THEME_MENUPOPUP,
   eCSSKeyword_menuitem,               NS_THEME_MENUITEM,
+  eCSSKeyword_checkmenuitem,          NS_THEME_CHECKMENUITEM,
+  eCSSKeyword_radiomenuitem,          NS_THEME_RADIOMENUITEM,
   -1,-1
 };
 
@@ -404,13 +406,16 @@ const PRInt32 nsCSSProps::kColorKTable[] = {
   eCSSKeyword_windowtext, nsILookAndFeel::eColor_windowtext,
   eCSSKeyword__moz_activehyperlinktext, NS_COLOR_MOZ_ACTIVEHYPERLINKTEXT,
   eCSSKeyword__moz_buttondefault, nsILookAndFeel::eColor__moz_buttondefault,
+  eCSSKeyword__moz_buttonhoverface, nsILookAndFeel::eColor__moz_buttonhoverface,
+  eCSSKeyword__moz_buttonhovertext, nsILookAndFeel::eColor__moz_buttonhovertext,
+  eCSSKeyword__moz_cellhighlight, nsILookAndFeel::eColor__moz_cellhighlight,
+  eCSSKeyword__moz_cellhighlighttext, nsILookAndFeel::eColor__moz_cellhighlighttext,
   eCSSKeyword__moz_field, nsILookAndFeel::eColor__moz_field,
   eCSSKeyword__moz_fieldtext, nsILookAndFeel::eColor__moz_fieldtext,
   eCSSKeyword__moz_dialog, nsILookAndFeel::eColor__moz_dialog,
   eCSSKeyword__moz_dialogtext, nsILookAndFeel::eColor__moz_dialogtext,
   eCSSKeyword__moz_dragtargetzone, nsILookAndFeel::eColor__moz_dragtargetzone,
   eCSSKeyword__moz_hyperlinktext, NS_COLOR_MOZ_HYPERLINKTEXT,
-  eCSSKeyword__moz_gtk2_hovertext, nsILookAndFeel::eColor__moz_gtk2_hovertext,
   eCSSKeyword__moz_mac_focusring, nsILookAndFeel::eColor__moz_mac_focusring,
   eCSSKeyword__moz_mac_menuselect, nsILookAndFeel::eColor__moz_mac_menuselect,
   eCSSKeyword__moz_mac_menushadow, nsILookAndFeel::eColor__moz_mac_menushadow,
@@ -422,6 +427,8 @@ const PRInt32 nsCSSProps::kColorKTable[] = {
   eCSSKeyword__moz_mac_accentregularshadow, nsILookAndFeel::eColor__moz_mac_accentregularshadow,
   eCSSKeyword__moz_mac_accentdarkshadow, nsILookAndFeel::eColor__moz_mac_accentdarkshadow,
   eCSSKeyword__moz_mac_accentdarkestshadow, nsILookAndFeel::eColor__moz_mac_accentdarkestshadow,
+  eCSSKeyword__moz_menuhover, nsILookAndFeel::eColor__moz_menuhover,
+  eCSSKeyword__moz_menuhovertext, nsILookAndFeel::eColor__moz_menuhovertext,
   eCSSKeyword__moz_visitedhyperlinktext, NS_COLOR_MOZ_VISITEDHYPERLINKTEXT,
   -1,-1
 };
