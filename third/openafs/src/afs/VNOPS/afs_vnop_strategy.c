@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_strategy.c,v 1.1.1.3 2005-03-10 20:32:42 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_strategy.c,v 1.1.1.4 2005-05-04 17:46:15 zacheiss Exp $");
 
 #if !defined(AFS_HPUX_ENV) && !defined(AFS_SGI_ENV) && !defined(AFS_LINUX20_ENV)
 
@@ -78,7 +78,7 @@ afs_ustrategy(abp)
 	 */
 	tuio.afsio_iov = tiovec;
 	tuio.afsio_iovcnt = 1;
-#if	defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_XBSD_ENV)
+#if	defined(AFS_OSF_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_XBSD_ENV)
 #ifdef AFS_64BIT_CLIENT
 	tuio.afsio_offset = (afs_offs_t) dbtob(abp->b_blkno);
 #else /* AFS_64BIT_CLIENT */
@@ -136,7 +136,7 @@ afs_ustrategy(abp)
     } else {
 	tuio.afsio_iov = tiovec;
 	tuio.afsio_iovcnt = 1;
-#if	defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_SUN5_ENV)
+#if	defined(AFS_OSF_ENV) || defined(AFS_SUN5_ENV)
 #ifdef AFS_64BIT_CLIENT
 	tuio.afsio_offset = (afs_offs_t) dbtob(abp->b_blkno);
 #else /* AFS_64BIT_CLIENT */
@@ -166,11 +166,11 @@ afs_ustrategy(abp)
 	 */
 	len = MIN(len, tvc->m.Length - dbtob(abp->b_blkno));
 #endif
-#ifdef AFS_ALPHA_ENV
+#ifdef AFS_OSF_ENV
 	len =
 	    MIN(abp->b_bcount,
 		(VTOAFS(abp->b_vp))->m.Length - dbtob(abp->b_blkno));
-#endif /* AFS_ALPHA_ENV */
+#endif /* AFS_OSF_ENV */
 	tuio.afsio_resid = len;
 #if defined(AFS_XBSD_ENV)
 	tiovec[0].iov_base = abp->b_saveaddr;
@@ -186,14 +186,20 @@ afs_ustrategy(abp)
 	code = afs_rdwr(VTOAFS(abp->b_vp), &tuio, UIO_WRITE, 0, credp);
 #endif
     }
-#if	!defined(AFS_AIX32_ENV) && !defined(AFS_SUN5_ENV)
-#if defined(AFS_DUX40_ENV) || (defined (AFS_XBSD_ENV) && !defined (AFS_FBSD50_ENV))
+
+#if defined(AFS_DUX40_ENV) || defined (AFS_XBSD_ENV)
     if (code) {
 	abp->b_error = code;
+#if !defined(AFS_FBSD50_ENV)
 	abp->b_flags |= B_ERROR;
+#endif
     }
+#endif
+
+#if defined(AFS_AIX32_ENV)
+    crfree(credp);
+#elif defined(AFS_DUX40_ENV)
     biodone(abp);
-#if defined(AFS_DUX40_ENV)
     if (code && !(abp->b_flags & B_READ)) {
 	/* prevent ubc from retrying writes */
 	AFS_GUNLOCK();
@@ -201,16 +207,16 @@ afs_ustrategy(abp)
 		       (vm_offset_t) dbtob(abp->b_blkno), PAGE_SIZE, B_INVAL);
 	AFS_GLOCK();
     }
-#endif
+#elif defined(AFS_FBSD60_ENV)
+    (*abp->b_iodone)(abp);
 #elif defined(AFS_FBSD50_ENV)
     biodone(&abp->b_io);
-#else /* AFS_DUX40_ENV */
+#elif defined(AFS_XBSD_ENV)
+    biodone(abp);
+#elif !defined(AFS_SUN5_ENV)
     iodone(abp);
-#endif /* AFS_DUX40_ENV */
 #endif
-#ifdef	AFS_AIX32_ENV
-    crfree(credp);
-#endif
+
     afs_Trace3(afs_iclSetp, CM_TRACE_STRATEGYDONE, ICL_TYPE_POINTER, tvc,
 	       ICL_TYPE_INT32, code, ICL_TYPE_LONG, tuio.afsio_resid);
     return code;

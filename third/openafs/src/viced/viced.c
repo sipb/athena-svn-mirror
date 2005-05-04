@@ -20,7 +20,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.1.1.4 2005-03-10 20:49:08 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.1.1.5 2005-05-04 17:45:47 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -88,6 +88,7 @@ RCSID
 #include "host.h"
 #ifdef AFS_PTHREAD_ENV
 #include "softsig.h"
+char *(*threadNameProgram) ();
 #endif
 #if defined(AFS_SGI_ENV)
 #include "sys/schedctl.h"
@@ -315,6 +316,18 @@ ResetCheckDescriptors(void)
 #endif
 }
 
+#if defined(AFS_PTHREAD_ENV)
+char *
+threadName(void)
+{
+    char threadid[16];
+    if (LogLevel > 999) {
+	afs_snprintf(threadid, 16, "%d", pthread_getspecific(rx_thread_id_key));
+	return threadid;
+    } else 
+	return NULL;
+}
+#endif
 
 /* proc called by rxkad module to get a key */
 static int
@@ -380,7 +393,6 @@ CheckAdminName()
 	close(fd);		/* close fd if it was opened */
 
 }				/*CheckAdminName */
-
 
 static void
 setThreadId(char *s)
@@ -1463,7 +1475,7 @@ Do_VLRegisterRPC()
     if (code) {
 	if (code == VL_MULTIPADDR) {
 	    ViceLog(0,
-		    ("VL_RegisterAddrs rpc failed; The ethernet address exist on a different server; repair it\n"));
+		    ("VL_RegisterAddrs rpc failed; The IP address exists on a different server; repair it\n"));
 	    ViceLog(0,
 		    ("VL_RegisterAddrs rpc failed; See VLLog for details\n"));
 	    return code;
@@ -1702,6 +1714,10 @@ main(int argc, char *argv[])
     if (!novbc) {
 	V_BreakVolumeCallbacks = BreakVolumeCallBacksLater;
     }
+
+#if defined(AFS_PTHREAD_ENV)
+    threadNameProgram = threadName;
+#endif
 
     /* initialize libacl routines */
     acl_Initialize(ACL_VERSION);

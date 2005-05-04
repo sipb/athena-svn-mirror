@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butm/file_tm.c,v 1.1.1.3 2005-03-10 20:35:19 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butm/file_tm.c,v 1.1.1.4 2005-05-04 17:44:59 zacheiss Exp $");
 
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
@@ -659,7 +659,7 @@ incPosition(info, fid, dataSize)
 
     if (info->posCount >= 2147467264) {	/* 2GB - 16K */
 	info->posCount = 0;
-#if (defined(AFS_SUN_ENV) || defined(AFS_DEC_ENV) || defined(AFS_LINUX24_ENV))
+#if (defined(AFS_SUN_ENV) || defined(AFS_LINUX24_ENV))
 	if (!isafile) {
         afs_hyper_t off;
 	    hset64(off, 0, 0);

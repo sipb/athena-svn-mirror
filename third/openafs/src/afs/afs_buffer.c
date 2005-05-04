@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_buffer.c,v 1.1.1.3 2005-03-10 20:43:40 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_buffer.c,v 1.1.1.4 2005-05-04 17:44:49 zacheiss Exp $");
 
 #include "afs/sysincludes.h"
 #include "afsincludes.h"
@@ -19,7 +19,7 @@ RCSID
 #include "h/param.h"
 #include "h/types.h"
 #include "h/time.h"
-#if	defined(AFS_AIX31_ENV) || defined(AFS_DEC_ENV)
+#if	defined(AFS_AIX31_ENV) 
 #include "h/limits.h"
 #endif
 #if	!defined(AFS_AIX_ENV) && !defined(AFS_SUN5_ENV) && !defined(AFS_SGI_ENV) && !defined(AFS_LINUX20_ENV)

@@ -14,9 +14,7 @@ AC_ARG_WITH(afs-sysname,
 [  --with-afs-sysname=sys    use sys for the afs sysname]
 )
 AC_ARG_ENABLE( obsolete,
-[  --enable-obsolete 			enable obsolete portions of AFS (mpp, ntp and package)],, enable_obsolete="no")
-AC_ARG_ENABLE( insecure,
-[  --enable-insecure 			enable insecure portions of AFS (ftpd, inetd, rcp, rlogind and rsh)],, enable_insecure="no")
+[  --enable-obsolete 			enable obsolete portions of AFS (mpp and package)],, enable_obsolete="no")
 AC_ARG_ENABLE( afsdb,
 [  --disable-afsdb 			disable AFSDB RR support],, enable_afsdb="yes")
 AC_ARG_ENABLE( pam,
@@ -115,7 +113,10 @@ case $system in
 		 if test "x$with_linux_kernel_headers" != "x"; then
 		   LINUX_KERNEL_PATH="$with_linux_kernel_headers"
 		 else
-		   LINUX_KERNEL_PATH="/usr/src/linux-2.4"
+		   LINUX_KERNEL_PATH="/lib/modules/`uname -r`/build"
+		   if test ! -f "$LINUX_KERNEL_PATH/include/linux/version.h"; then
+		     LINUX_KERNEL_PATH="/usr/src/linux-2.4"
+		   fi
 		   if test ! -f "$LINUX_KERNEL_PATH/include/linux/version.h"; then
 		     LINUX_KERNEL_PATH="/usr/src/linux"
 		   fi
@@ -454,7 +455,7 @@ else
 			AFS_SYSNAME="ia64_linuxXX"
 			;;
 		powerpc-*-linux*)
-			AFS_SYSNAME="ppc_linuxXX"
+			AFS_SYSNAME="`/bin/arch`_linuxXX"
 			;;
 		powerpc64-*-linux*)
 			AFS_SYSNAME="ppc64_linuxXX"
@@ -495,6 +496,10 @@ else
 			;;
 		power*-ibm-aix5.2*)
 			AFS_SYSNAME="rs_aix52"
+			enable_pam="no"
+			;;
+		power*-ibm-aix5.3*)
+			AFS_SYSNAME="rs_aix53"
 			enable_pam="no"
 			;;
 		x86_64-*-linux-gnu)
@@ -568,6 +573,8 @@ case $AFS_SYSNAME in *_linux* | *_umlinux*)
 		 LINUX_FS_STRUCT_INODE_HAS_I_DEVICES
 		 LINUX_FS_STRUCT_INODE_HAS_I_SB_LIST
 		 LINUX_FS_STRUCT_INODE_HAS_I_SECURITY
+		 LINUX_FS_STRUCT_INODE_HAS_INOTIFY_LOCK
+		 LINUX_FS_STRUCT_INODE_HAS_INOTIFY_SEM
 	  	 LINUX_INODE_SETATTR_RETURN_TYPE
 	  	 LINUX_WRITE_INODE_RETURN_TYPE
 	  	 LINUX_IOP_NAMEIDATA
@@ -686,6 +693,12 @@ case $AFS_SYSNAME in *_linux* | *_umlinux*)
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_dirty_data_buffers" = "xyes"; then 
 		  AC_DEFINE(STRUCT_INODE_HAS_I_DIRTY_DATA_BUFFERS, 1, [define if your struct inode has data_buffers])
+		 fi
+		 if test "x$ac_cv_linux_fs_struct_inode_has_inotify_lock" = "xyes"; then 
+		  AC_DEFINE(STRUCT_INODE_HAS_INOTIFY_LOCK, 1, [define if your struct inode has inotify_lock])
+		 fi
+		 if test "x$ac_cv_linux_fs_struct_inode_has_inotify_sem" = "xyes"; then 
+		  AC_DEFINE(STRUCT_INODE_HAS_INOTIFY_SEM, 1, [define if your struct inode has inotify_sem])
 		 fi
 		 if test "x$ac_cv_linux_func_recalc_sigpending_takes_void" = "xyes"; then 
 		  AC_DEFINE(RECALC_SIGPENDING_TAKES_VOID, 1, [define if your recalc_sigpending takes void])
@@ -876,11 +889,6 @@ if test "$enable_obsolete" = "yes"; then
 	WITH_OBSOLETE=YES
 fi
 
-WITH_INSECURE=NO
-if test "$enable_insecure" = "yes"; then
-	WITH_INSECURE=YES
-fi
-
 if test "x$with_bsd_kernel_headers" != "x"; then
 	BSD_KERNEL_PATH="$with_bsd_kernel_headers"
 else
@@ -1003,6 +1011,7 @@ AC_CHECK_TYPE(ssize_t, int)
 AC_SIZEOF_TYPE(long)
 
 AC_CHECK_FUNCS(timegm)
+AC_CHECK_FUNCS(daemon)
 
 dnl Directory PATH handling
 if test "x$enable_transarc_paths" = "xyes"  ; then 
@@ -1061,7 +1070,6 @@ AC_SUBST(TOP_INCDIR)
 AC_SUBST(TOP_LIBDIR)
 AC_SUBST(DEST)
 AC_SUBST(WITH_OBSOLETE)
-AC_SUBST(WITH_INSECURE)
 AC_SUBST(DARWIN_INFOFILE)
 AC_SUBST(IRIX_BUILD_IP35)
 

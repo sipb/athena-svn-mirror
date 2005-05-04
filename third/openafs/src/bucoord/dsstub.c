@@ -15,7 +15,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/dsstub.c,v 1.1.1.2 2005-03-10 20:30:10 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/dsstub.c,v 1.1.1.3 2005-05-04 17:45:09 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <afs/cmd.h>
@@ -53,7 +53,7 @@ RCSID
  * Note that dumpEndTime is stored and returned in the dump creation time field.
  */
 
-afs_int32 DeleteDump();
+static afs_int32 DeleteDump();
 afs_int32 ScanDumpHdr();
 
 /* return the tape file name corresponding to a particular tape */

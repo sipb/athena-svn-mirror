@@ -19,7 +19,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsmonitor/afsmonitor.c,v 1.1.1.4 2005-03-10 20:40:13 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsmonitor/afsmonitor.c,v 1.1.1.5 2005-05-04 17:44:55 zacheiss Exp $");
 
 #include <stdio.h>
 #include <math.h>
@@ -30,17 +30,12 @@ RCSID
 #undef IN
 #include <sys/types.h>
 #include <netinet/in.h>
-#ifndef AFS_DEC_ENV
 #include <sys/socket.h>
 #include <netdb.h>
-#endif
 #include <ctype.h>
 
 #include <gtxwindows.h>		/*Generic window package */
 #include <gtxobjects.h>		/*Object definitions */
-#if 0
-#include <gtxtextobj.h>		/*Text object interface */
-#endif
 #include <gtxlightobj.h>	/*Light object interface */
 #include <gtxcurseswin.h>	/*Curses window package */
 #include <gtxdumbwin.h>		/*Dumb terminal window package */

@@ -18,7 +18,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_fid.c,v 1.1.1.3 2005-03-10 20:43:10 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_fid.c,v 1.1.1.4 2005-05-04 17:44:53 zacheiss Exp $");
 
 #if !defined(AFS_DUX40_ENV) && !defined(AFS_LINUX20_ENV) && !defined(AFS_DARWIN_ENV) && !defined(AFS_OBSD_ENV)
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
@@ -67,7 +67,7 @@ int afs_iauth_initd = 0;
 
 extern int afs_NFSRootOnly;	/* 1 => only allow NFS mounts of /afs. */
 
-#if !defined(AFS_DEC_ENV) && !defined(AFS_ATHENA_ENV)
+#if !defined(AFS_ATHENA_ENV)
 int
 #ifdef AFS_AIX41_ENV
 afs_fid(OSI_VC_DECL(avc), struct fid *fidpp, struct ucred *credp)

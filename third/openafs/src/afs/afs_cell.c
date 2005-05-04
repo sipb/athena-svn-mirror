@@ -14,7 +14,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_cell.c,v 1.1.1.4 2005-03-10 20:38:21 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_cell.c,v 1.1.1.5 2005-05-04 17:45:28 zacheiss Exp $");
 
 #include "afs/stds.h"
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
@@ -819,6 +819,7 @@ afs_CellInit()
 {
     RWLOCK_INIT(&afs_xcell, "afs_xcell");
 #ifdef AFS_AFSDB_ENV
+    RWLOCK_INIT(&afsdb_client_lock, "afsdb_client_lock");
     RWLOCK_INIT(&afsdb_req.lock, "afsdb_req.lock");
 #endif
     QInit(&CellLRU);

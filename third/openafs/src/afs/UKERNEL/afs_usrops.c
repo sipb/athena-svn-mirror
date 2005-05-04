@@ -15,7 +15,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/UKERNEL/afs_usrops.c,v 1.1.1.4 2005-03-10 20:40:58 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/UKERNEL/afs_usrops.c,v 1.1.1.5 2005-05-04 17:45:41 zacheiss Exp $");
 
 
 #ifdef	UKERNEL
@@ -459,15 +459,11 @@ afs_osi_Sleep(void *x)
 {
     int index;
     osi_wait_t *waitp;
-    int rxGlockOwner = ISAFS_RXGLOCK();
     int glockOwner = ISAFS_GLOCK();
 
     usr_mutex_lock(&osi_waitq_lock);
     if (glockOwner) {
 	AFS_GUNLOCK();
-    }
-    if (rxGlockOwner) {
-	AFS_RXGUNLOCK();
     }
     index = WAITHASH(x);
     if (osi_waithash_avail == NULL) {
@@ -494,9 +490,6 @@ afs_osi_Sleep(void *x)
     usr_mutex_unlock(&osi_waitq_lock);
     if (glockOwner) {
 	AFS_GLOCK();
-    }
-    if (rxGlockOwner) {
-	AFS_RXGLOCK();
     }
 }
 
@@ -533,7 +526,6 @@ afs_osi_Wait(afs_int32 msec, struct afs_osi_WaitHandle *handle, int intok)
     osi_wait_t *waitp;
     struct timespec tv;
     int ret;
-    int rxGlockOwner = ISAFS_RXGLOCK();
     int glockOwner = ISAFS_GLOCK();
 
     tv.tv_sec = msec / 1000;
@@ -542,24 +534,15 @@ afs_osi_Wait(afs_int32 msec, struct afs_osi_WaitHandle *handle, int intok)
 	if (glockOwner) {
 	    AFS_GUNLOCK();
 	}
-	if (rxGlockOwner) {
-	    AFS_RXGUNLOCK();
-	}
 	usr_thread_sleep(&tv);
 	ret = 0;
 	if (glockOwner) {
 	    AFS_GLOCK();
 	}
-	if (rxGlockOwner) {
-	    AFS_RXGLOCK();
-	}
     } else {
 	usr_mutex_lock(&osi_waitq_lock);
 	if (glockOwner) {
 	    AFS_GUNLOCK();
-	}
-	if (rxGlockOwner) {
-	    AFS_RXGUNLOCK();
 	}
 	index = WAITHASH((caddr_t) handle);
 	if (osi_waithash_avail == NULL) {
@@ -592,9 +575,6 @@ afs_osi_Wait(afs_int32 msec, struct afs_osi_WaitHandle *handle, int intok)
 	usr_mutex_unlock(&osi_waitq_lock);
 	if (glockOwner) {
 	    AFS_GLOCK();
-	}
-	if (rxGlockOwner) {
-	    AFS_RXGLOCK();
 	}
     }
     return ret;
@@ -650,7 +630,7 @@ int max_osi_files = 0;
  */
 int
 lookupname(char *fnamep, int segflg, int followlink,
-	   struct usr_vnode **dirvpp, struct usr_vnode **compvpp)
+	   struct usr_vnode **compvpp)
 {
     int i;
     int code;
@@ -658,7 +638,6 @@ lookupname(char *fnamep, int segflg, int followlink,
     struct usr_vnode *vp;
 
     /*usr_assert(followlink == 0); */
-    usr_assert(dirvpp == NULL);
 
     /*
      * Assume relative pathnames refer to files in AFS

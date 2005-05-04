@@ -29,7 +29,8 @@
   *	-cachedir    The base directory for the workstation cache.
   *	-mountdir   The directory on which the AFS is to be mounted.
   *	-confdir    The configuration directory .
-  *	-nosettime  Don't keep checking the time to avoid drift.
+  *	-nosettime  Don't keep checking the time to avoid drift (default).
+  *     -settime    Keep checking the time to avoid drift.
   *	-verbose     Be chatty.
   *	-debug	   Print out additional debugging info.
   *	-kerndev    [OBSOLETE] The kernel device for AFS.
@@ -56,7 +57,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.1.1.4 2005-03-10 20:43:23 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.1.1.5 2005-05-04 17:46:20 zacheiss Exp $");
 
 #define VFS 1
 
@@ -77,6 +78,7 @@ RCSID
 #include <errno.h>
 #include <sys/time.h>
 #include <dirent.h>
+
 
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
@@ -176,8 +178,10 @@ kern_return_t DiskArbDiskAppearedWithMountpointPing_auto(char *, unsigned int,
 #endif
 #endif
 
+
 #undef	VIRTUE
 #undef	VICE
+
 
 #define CACHEINFOFILE   "cacheinfo"
 #define	AFSLOGFILE	"AFSLog"
@@ -190,6 +194,7 @@ kern_return_t DiskArbDiskAppearedWithMountpointPing_auto(char *, unsigned int,
 char LclCellName[64];
 
 #define MAX_CACHE_LOOPS 4
+
 
 /*
  * Internet address (old style... should be updated).  This was pulled out of the old 4.2
@@ -242,7 +247,7 @@ int sawDCacheSize = 0;
 int sawBiod = 0;
 char cacheMountDir[1024];	/*Mount directory for AFS */
 char rootVolume[64] = "root.afs";	/*AFS root volume name */
-afs_int32 cacheSetTime = 1;	/*Keep checking time to avoid drift? */
+afs_int32 cacheSetTime = FALSE;	/*Keep checking time to avoid drift? */
 afs_int32 isHomeCell;		/*Is current cell info for the home cell? */
 #ifdef AFS_XBSD_ENV
 int createAndTrunc = O_RDWR | O_CREAT | O_TRUNC;	/*Create & truncate on open */
@@ -328,8 +333,7 @@ static int HandleMTab();
   *	Sets globals.
   *---------------------------------------------------------------------------*/
 
-int
-ParseCacheInfoFile()
+int ParseCacheInfoFile(void)
 {
     static char rn[] = "ParseCacheInfoFile";	/*This routine's name */
     FILE *cachefd;		/*Descriptor for cache info file */
@@ -391,8 +395,9 @@ ParseCacheInfoFile()
 	    ("\tcacheMountDir: '%s'\n\tcacheBaseDir: '%s'\n\tcacheBlocks: %d\n",
 	     tmd, tbd, tCacheBlocks);
     }
-    if (!(cacheFlags & AFSCALL_INIT_MEMCACHE))
-	PartSizeOverflow(tbd, cacheBlocks);
+    if (!(cacheFlags & AFSCALL_INIT_MEMCACHE)) {
+	return(PartSizeOverflow(tbd, cacheBlocks));
+    }
 
     return (0);
 }
@@ -402,10 +407,12 @@ ParseCacheInfoFile()
  * isn't a mounted partition it's also ignored since we can't guarantee 
  * what will be stored afterwards. Too many if's. This is now purely
  * advisory. ODS with over 2G partition also gives warning message.
+ *
+ * Returns:
+ *	0 if everything went well,
+ *	1 otherwise.
  */
-PartSizeOverflow(path, cs)
-     char *path;
-     int cs;
+int PartSizeOverflow(char *path, int cs)
 {
     int bsize = -1, totalblks, mint;
 #if AFS_HAVE_STATVFS
@@ -420,7 +427,15 @@ PartSizeOverflow(path, cs)
     }
     totalblks = statbuf.f_blocks;
     bsize = statbuf.f_frsize;
-#else
+#if AFS_AIX51_ENV
+    if(strcmp(statbuf.f_basetype, "jfs")) {
+        fprintf(stderr, "Cache filesystem '%s' must be jfs (now %s)\n",
+                path, statbuf.f_basetype);
+        return 1;
+    }
+#endif /* AFS_AIX51_ENV */
+
+#else /* AFS_HAVE_STATVFS */
     struct statfs statbuf;
 
     if (statfs(path, &statbuf) < 0) {
@@ -448,7 +463,10 @@ PartSizeOverflow(path, cs)
 	printf
 	    ("Cache size (%d) must be less than 95%% of partition size (which is %d). Lower cache size\n",
 	     cs, mint);
+        return 1;
     }
+
+    return 0;
 }
 
 /*-----------------------------------------------------------------------------
@@ -1292,7 +1310,7 @@ AfsdbLookupHandler()
 #endif
 
 mainproc(as, arock)
-     register struct cmd_syndesc *as;
+     struct cmd_syndesc *as;
      char *arock;
 {
     static char rn[] = "afsd";	/*Name of this routine */
@@ -1501,7 +1519,22 @@ mainproc(as, arock)
 	/* -rxbind */
 	enable_rxbind = 1;
     }
+    if (as->parms[32].items) {
+       /* -settime */
+       cacheSetTime = TRUE;
+    }
 
+    /* set rx_extraPackets */
+    if (as->parms[33].items) {
+	/* -rxpck */
+	int rxpck = atoi(as->parms[33].items->data);
+	printf("afsd: set rxpck = %d\n",rxpck);
+	code = call_syscall(AFSOP_SET_RXPCK, rxpck);
+	if (code) {
+	printf("afsd: failed to set rxpck\n");
+	exit(1);
+	}
+    }
     
     /*
      * Pull out all the configuration info for the workstation's AFS cache and
@@ -1741,6 +1774,14 @@ mainproc(as, arock)
 	    printf("%s: Forking AFSDB lookup handler.\n", rn);
 	code = fork();
 	if (code == 0) {
+	    /* Since the AFSDB lookup handler runs as a user process, 
+	     * need to drop the controlling TTY, etc.
+	     */
+	    if (daemon(0, 0) == -1) {
+		printf("Error starting AFSDB lookup handler: %s\n",
+			strerror(errno));
+		exit(1);
+	    }
 	    AfsdbLookupHandler();
 	    exit(1);
 	}
@@ -2014,69 +2055,24 @@ mainproc(as, arock)
 	if (afsd_verbose)
 	    printf("%s: Mounting the AFS root on '%s', flags: %d.\n", rn,
 		   cacheMountDir, mountFlags);
-#ifdef AFS_DEC_ENV
-	if ((mount("AFS", cacheMountDir, mountFlags, GT_AFS, (caddr_t) 0)) <
-	    0) {
-#else
 #ifdef AFS_FBSD_ENV
 	if ((mount("AFS", cacheMountDir, mountFlags, (caddr_t) 0)) < 0) {
-#else
-#ifdef	AFS_AUX_ENV
-	if ((fsmount(MOUNT_AFS, cacheMountDir, mountFlags, (caddr_t) 0)) < 0) {
-#else
-#ifdef	AFS_AIX_ENV
+#elif defined(AFS_AIX_ENV)
 	if (aix_vmount()) {
-#else
-#if defined(AFS_HPUX100_ENV)
+#elif defined(AFS_HPUX100_ENV)
 	if ((mount("", cacheMountDir, mountFlags, "afs", NULL, 0)) < 0) {
-#else
-#ifdef	AFS_HPUX_ENV
-#if	defined(AFS_HPUX90_ENV)
-	{
-	    char buffer[80];
-	    int code;
-
-	    strcpy(buffer, "afs");
-	    code = vfsmount(-1, cacheMountDir, mountFlags, (caddr_t) buffer);
-	    sscanf(buffer, "%d", &vfs1_type);
-	    if (code < 0) {
-		printf
-		    ("Can't find 'afs' type in the registered filesystem table!\n");
-		exit(1);
-	    }
-	    sscanf(buffer, "%d", &vfs1_type);
-	    if (afsd_verbose)
-		printf("AFS vfs slot number is %d\n", vfs1_type);
-	}
-	if ((vfsmount(vfs1_type, cacheMountDir, mountFlags, (caddr_t) 0)) < 0) {
-#else
-	if (call_syscall
-	    (AFSOP_AFS_VFSMOUNT, MOUNT_AFS, cacheMountDir, mountFlags,
-	     (caddr_t) NULL) < 0) {
-#endif
-#else
-#ifdef	AFS_SUN5_ENV
+#elif defined(AFS_SUN5_ENV)
 	if ((mount("AFS", cacheMountDir, mountFlags, "afs", NULL, 0)) < 0) {
-#else
-#if defined(AFS_SGI_ENV)
+#elif defined(AFS_SGI_ENV)
 	mountFlags = MS_FSS;
 	if ((mount(MOUNT_AFS, cacheMountDir, mountFlags, (caddr_t) MOUNT_AFS))
 	    < 0) {
-#else
-#ifdef AFS_LINUX20_ENV
+#elif defined(AFS_LINUX20_ENV)
 	if ((mount("AFS", cacheMountDir, MOUNT_AFS, 0, NULL)) < 0) {
 #else
 /* This is the standard mount used by the suns and rts */
 	if ((mount(MOUNT_AFS, cacheMountDir, mountFlags, (caddr_t) 0)) < 0) {
-#endif /* AFS_LINUX20_ENV */
-#endif /* AFS_SGI_ENV */
-#endif /* AFS_SUN5_ENV */
-#endif /* AFS_HPUX100_ENV */
-#endif /* AFS_HPUX_ENV */
-#endif /* AFS_AIX_ENV */
-#endif /* AFS_AUX_ENV */
-#endif /* AFS_FBSD_ENV */
-#endif /* AFS_DEC_ENV */
+#endif
 	    printf("%s: Can't mount AFS on %s(%d)\n", rn, cacheMountDir,
 		   errno);
 	    exit(1);
@@ -2110,7 +2106,7 @@ main(argc, argv)
      int argc;
      char **argv;
 {
-    register struct cmd_syndesc *ts;
+    struct cmd_syndesc *ts;
 
     ts = cmd_CreateSyntax(NULL, mainproc, NULL, "start AFS");
     cmd_AddParm(ts, "-blocks", CMD_SINGLE, CMD_OPTIONAL,
@@ -2179,6 +2175,9 @@ main(argc, argv)
     cmd_AddParm(ts, "-backuptree", CMD_FLAG, CMD_OPTIONAL,
 		"Prefer backup volumes for mointpoints in backup volumes");
     cmd_AddParm(ts, "-rxbind", CMD_FLAG, CMD_OPTIONAL, "Bind the Rx socket (one interface only)");
+    cmd_AddParm(ts, "-settime", CMD_FLAG, CMD_OPTIONAL,
+               "don't set the time");
+    cmd_AddParm(ts, "-rxpck", CMD_SINGLE, CMD_OPTIONAL, "set rx_extraPackets to this value");
     return (cmd_Dispatch(argc, argv));
 }
 

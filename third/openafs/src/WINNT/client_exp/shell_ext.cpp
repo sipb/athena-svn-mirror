@@ -28,6 +28,7 @@ extern "C" {
 #include "auth_dlg.h"
 #include "submounts_dlg.h"
 #include "make_symbolic_link_dlg.h"
+#include <WINNT\afsreg.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,7 +76,7 @@ CShellExt::CShellExt()
 	m_bIsOverlayEnabled=FALSE;
 	if (FAILED(hr))
 		m_pAlloc = NULL;
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE, REG_CLIENT_PARMS_KEY,0, KEY_QUERY_VALUE, &NPKey);
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE, AFSREG_CLT_SVC_PARAM_SUBKEY,0, KEY_QUERY_VALUE, &NPKey);
 	LSPsize=sizeof(ShellOption);
 	code=RegQueryValueEx(NPKey, "ShellOption", NULL,
 			     &LSPtype, (LPBYTE)&ShellOption, &LSPsize);
@@ -223,9 +224,16 @@ STDMETHODIMP CShellExt::XMenuExt::QueryContextMenu(HMENU hMenu,UINT indexMenu,
 	// Mount Point submenu of the AFS submenu
 	HMENU hMountPointMenu = CreatePopupMenu();
 	int indexMountPointMenu = 0;
-	::InsertMenu(hMountPointMenu, indexMountPointMenu++, MF_STRING | MF_BYPOSITION, idCmdFirst + IDM_MOUNTPOINT_SHOW, GetMessageString(IDS_MP_SHOW_ITEM));
-	::InsertMenu(hMountPointMenu, indexMountPointMenu++, MF_STRING | MF_BYPOSITION, idCmdFirst + IDM_MOUNTPOINT_REMOVE, GetMessageString(IDS_MP_REMOVE_ITEM));
-	::InsertMenu(hMountPointMenu, indexMountPointMenu++, MF_STRING | MF_BYPOSITION, idCmdFirst + IDM_MOUNTPOINT_MAKE, GetMessageString(IDS_MP_MAKE_ITEM));
+        int nMountPointSelected = MF_GRAYED;
+        for (int n = pThis->m_astrFileNames.GetSize() - 1 ; n >= 0; n--) {
+            if ( IsMountPoint(pThis->m_astrFileNames[n]) ) {
+                nMountPointSelected = MF_ENABLED;
+                break;
+            }
+        }
+        ::InsertMenu(hMountPointMenu, indexMountPointMenu++, MF_STRING | MF_BYPOSITION, idCmdFirst + IDM_MOUNTPOINT_SHOW, GetMessageString(IDS_MP_SHOW_ITEM));
+	::InsertMenu(hMountPointMenu, indexMountPointMenu++, MF_STRING | MF_BYPOSITION | nMountPointSelected, idCmdFirst + IDM_MOUNTPOINT_REMOVE, GetMessageString(IDS_MP_REMOVE_ITEM));
+        ::InsertMenu(hMountPointMenu, indexMountPointMenu++, MF_STRING | MF_BYPOSITION, idCmdFirst + IDM_MOUNTPOINT_MAKE, GetMessageString(IDS_MP_MAKE_ITEM));
 	::InsertMenu(hAfsMenu, indexAfsMenu++, MF_STRING | MF_BYPOSITION | MF_POPUP, (UINT)hMountPointMenu, GetMessageString(IDS_MOUNT_POINT_ITEM));
 
 	::InsertMenu(hAfsMenu, indexAfsMenu++, MF_STRING | MF_BYPOSITION, idCmdFirst + IDM_FLUSH, GetMessageString(IDS_FLUSH_FILE_DIR_ITEM));	

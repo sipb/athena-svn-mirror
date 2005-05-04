@@ -11,14 +11,13 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_vm.c,v 1.1.1.3 2005-03-10 20:29:51 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_vm.c,v 1.1.1.4 2005-05-04 17:44:53 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
 #include "afs/afs_stats.h"	/* statistics */
 #include "afs/nfsclient.h"
 
-#if	defined(AFS_SUN5_ENV)
 /* This file contains Solaris VM-related code for the cache manager. */
 
 #include <sys/mman.h>
@@ -199,5 +198,3 @@ osi_VM_Truncate(struct vcache *avc, int alen, struct AFS_UCRED *acred)
     pvn_vplist_dirty(AFSTOV(avc), alen, afs_putapage, B_TRUNC | B_INVAL,
 		     acred);
 }
-
-#endif /* SUN5 && !NCR */

@@ -16,7 +16,7 @@
  * afs_osi.h.
  */
 
-/* $Id: osi_machdep.h,v 1.1.1.1 2005-03-10 20:39:49 zacheiss Exp $ */
+/* $Id: osi_machdep.h,v 1.1.1.2 2005-05-04 17:46:33 zacheiss Exp $ */
 
 #ifndef _OSI_MACHDEP_H_
 #define _OSI_MACHDEP_H_
@@ -40,16 +40,11 @@ extern struct simplelock afs_rxglobal_lock;
 #define v_vfsp		v_mount
 
 /* vnode */
-#define SetAfsVnode(vn)		/* nothing; done in getnewvnode() */
-#define IsAfsVnode(vn)	((vn)->v_op == afs_vnodeop_p)
 #define VN_HOLD(vp)	afs_vget((vp), 0)
 #define VN_RELE(vp)	vrele(vp)
 #define osi_vnhold(avc, r) afs_vget(AFSTOV(avc), 0)
 #define va_nodeid	va_fileid
 #define vnode_t		struct vnode
-#define vSetType(vc, type)	AFSTOV(vc)->v_type = (type)
-#define vSetVfsp(vc, vfsp)	AFSTOV(vc)->v_mount = (vfsp)
-#define vType(vc)		(vc)->v->v_type
 
 /* uio */
 #define afsio_iov	uio_iov
@@ -102,18 +97,17 @@ extern struct timeval time;
 struct vcache;
 
 extern int afs_nbsd_lookupname(char *fnamep, enum uio_seg segflg,
-			       int followlink, struct vnode **dirvpp,
-			       struct vnode **compvpp);
+			       int followlink, struct vnode **compvpp);
 extern void afs_nbsd_getnewvnode(struct vcache *tvc);
 extern void *afs_nbsd_Alloc(size_t asize);
 extern void afs_nbsd_Free(void *p, size_t asize);
 extern int afs_vget();
 
-#define	gop_lookupname(fnamep, segflg, followlink, dirvpp, compvpp) \
-	afs_nbsd_lookupname((fnamep), (segflg), (followlink), (dirvpp), (compvpp))
+#undef gop_lookupname
+#define	gop_lookupname(fnamep, segflg, followlink, compvpp) \
+	afs_nbsd_lookupname((fnamep), (segflg), (followlink), (compvpp))
 
 #ifdef KERNEL
-extern int (**afs_vnodeop_p) ();
 
 #ifdef AFS_GLOBAL_SUNLOCK
 extern struct proc *afs_global_owner;
@@ -140,9 +134,6 @@ extern struct simplelock afs_global_lock;
 #define AFS_ASSERT_GLOCK()
 #define ISAFS_GLOCK() 1
 #endif
-#define AFS_RXGLOCK()
-#define AFS_RXGUNLOCK()
-#define ISAFS_RXGLOCK() 1
 
 #undef SPLVAR
 #define SPLVAR int splvar

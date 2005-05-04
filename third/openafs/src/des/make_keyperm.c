@@ -16,7 +16,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/make_keyperm.c,v 1.1.1.2 2005-03-10 20:35:33 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/make_keyperm.c,v 1.1.1.3 2005-05-04 17:45:10 zacheiss Exp $");
 
 #include <mit-cpyright.h>
 #include <stdio.h>
@@ -81,7 +81,7 @@ static int const pc_2[48 + 1] = { 0,
 
 static int ks_perm[16 + 1][48 + 1];
 
-static int des_debug;
+int des_debug;
 
 void
 gen(FILE * stream)

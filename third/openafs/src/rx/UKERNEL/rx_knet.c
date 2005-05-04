@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/UKERNEL/rx_knet.c,v 1.1.1.2 2005-03-10 20:47:21 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/UKERNEL/rx_knet.c,v 1.1.1.3 2005-05-04 17:45:53 zacheiss Exp $");
 
 #include "rx/rx_kcommon.h"
 
@@ -169,7 +169,7 @@ rx_ServerProc(void)
  * routines. Allocate the socket buffer here, but don't open it until
  * we start the receiver threads.
  */
-struct osi_socket *
+osi_socket *
 rxk_NewSocketHost(afs_uint32 ahost, short aport)
 {
     struct usr_socket *usockp;
@@ -179,10 +179,10 @@ rxk_NewSocketHost(afs_uint32 ahost, short aport)
 
     usockp->sock = -1;
 
-    return (struct osi_socket *)usockp;
+    return (osi_socket *)usockp;
 }
 
-struct osi_socket *
+osi_socket *
 rxk_NewSocket(short aport)
 {
     return rxk_NewSocketHost(htonl(INADDR_ANY), aport);

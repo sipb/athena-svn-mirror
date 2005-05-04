@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dir/dir.c,v 1.1.1.4 2005-03-10 20:36:53 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dir/dir.c,v 1.1.1.5 2005-05-04 17:45:01 zacheiss Exp $");
 
 #ifdef KERNEL
 #if !defined(UKERNEL)
@@ -47,33 +47,10 @@ RCSID
 #include "h/user.h"
 #endif /* AFS_SGI64_ENV */
 #include "h/uio.h"
-#ifdef	AFS_DEC_ENV
-#include "afs/gfs_vfs.h"
-#include "afs/gfs_vnode.h"
-#else
-#ifdef	AFS_MACH_ENV
-#ifdef  NeXT
-#include <sys/vfs.h>
-#include <sys/vnode.h>
-#include <ufs/inode.h>
-#else
-#include <vfs/vfs.h>
-#include <vfs/vnode.h>
-#include <sys/inode.h>
-#endif /* NeXT */
-#else /* AFS_MACH_ENV */
 #ifdef	AFS_OSF_ENV
 #include <sys/mount.h>
 #include <sys/vnode.h>
 #include <ufs/inode.h>
-#else /* AFS_OSF_ENV */
-#ifdef	AFS_SUN5_ENV
-#else
-#if !defined(AFS_SGI_ENV)
-#endif
-#endif /* AFS_OSF_ENV */
-#endif /* AFS_MACH_ENV */
-#endif
 #endif
 #if !defined(AFS_SUN5_ENV) && !defined(AFS_LINUX20_ENV) && !defined(AFS_HPUX110_ENV)
 #include "h/mbuf.h"

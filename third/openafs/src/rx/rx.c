@@ -17,7 +17,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.1.1.4 2005-03-10 20:51:10 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.1.1.5 2005-05-04 17:46:11 zacheiss Exp $");
 
 #ifdef KERNEL
 #include "afs/sysincludes.h"
@@ -48,13 +48,13 @@ RCSID
 #include "sys/debug.h"
 #endif
 #include "afsint.h"
-#ifdef	AFS_ALPHA_ENV
+#ifdef	AFS_OSF_ENV
 #undef kmem_alloc
 #undef kmem_free
 #undef mem_alloc
 #undef mem_free
 #undef register
-#endif /* AFS_ALPHA_ENV */
+#endif /* AFS_OSF_ENV */
 #else /* !UKERNEL */
 #include "afs/sysincludes.h"
 #include "afsincludes.h"
@@ -217,6 +217,7 @@ rxi_InitPthread(void)
     assert(pthread_cond_init(&rx_listener_cond, (const pthread_condattr_t *)0)
 	   == 0);
     assert(pthread_key_create(&rx_thread_id_key, NULL) == 0);
+    assert(pthread_key_create(&rx_ts_info_key, NULL) == 0);
 }
 
 pthread_once_t rx_once_init = PTHREAD_ONCE_INIT;
@@ -461,14 +462,18 @@ rx_InitHost(u_int host, u_int port)
 
     /* Malloc up a bunch of packets & buffers */
     rx_nFreePackets = 0;
-    rx_nPackets = rx_extraPackets + RX_MAX_QUOTA + 2;	/* fudge */
     queue_Init(&rx_freePacketQueue);
     rxi_NeedMorePackets = FALSE;
+#ifdef RX_ENABLE_TSFPQ
+    rx_nPackets = 0;	/* in TSFPQ version, rx_nPackets is managed by rxi_MorePackets* */
+    rxi_MorePacketsTSFPQ(rx_extraPackets + RX_MAX_QUOTA + 2, RX_TS_FPQ_FLUSH_GLOBAL, 0);
+#else /* RX_ENABLE_TSFPQ */
+    rx_nPackets = rx_extraPackets + RX_MAX_QUOTA + 2;	/* fudge */
     rxi_MorePackets(rx_nPackets);
+#endif /* RX_ENABLE_TSFPQ */
     rx_CheckPackets();
 
     NETPRI;
-    AFS_RXGLOCK();
 
     clock_Init();
 
@@ -534,7 +539,6 @@ rx_InitHost(u_int host, u_int port)
      * implementation environment--kernel or user space) */
     rxi_StartListener();
 
-    AFS_RXGUNLOCK();
     USERPRI;
     tmp_status = rxinit_status = 0;
     UNLOCK_RX_INIT;
@@ -655,6 +659,18 @@ rxi_StartServerProcs(int nExistingProcs)
 }
 #endif /* KERNEL */
 
+#ifdef AFS_NT40_ENV
+/* This routine is only required on Windows */
+void
+rx_StartClientThread(void)
+{
+#ifdef AFS_PTHREAD_ENV
+    int pid;
+    pid = (int) pthread_self();
+#endif /* AFS_PTHREAD_ENV */
+}
+#endif /* AFS_NT40_ENV */
+
 /* This routine must be called if any services are exported.  If the
  * donateMe flag is set, the calling process is donated to the server
  * process pool */
@@ -667,7 +683,6 @@ rx_StartServer(int donateMe)
     clock_NewTime();
 
     NETPRI;
-    AFS_RXGLOCK();
     /* Start server processes, if necessary (exact function is dependent
      * on the implementation environment--kernel or user space).  DonateMe
      * will be 1 if there is 1 pre-existing proc, i.e. this one.  In this
@@ -694,7 +709,6 @@ rx_StartServer(int donateMe)
     /* Turn on reaping of idle server connections */
     rxi_ReapConnections();
 
-    AFS_RXGUNLOCK();
     USERPRI;
 
     if (donateMe) {
@@ -717,6 +731,12 @@ rx_StartServer(int donateMe)
 #endif /* AFS_NT40_ENV */
 	rx_ServerProc();	/* Never returns */
     }
+#ifdef RX_ENABLE_TSFPQ
+    /* no use leaving packets around in this thread's local queue if
+     * it isn't getting donated to the server thread pool. 
+     */
+    rxi_FlushLocalPacketsTSFPQ();
+#endif /* RX_ENABLE_TSFPQ */
     return;
 }
 
@@ -746,7 +766,6 @@ rx_NewConnection(register afs_uint32 shost, u_short sport, u_short sservice,
     CV_INIT(&conn->conn_call_cv, "conn call cv", CV_DEFAULT, 0);
 #endif
     NETPRI;
-    AFS_RXGLOCK();
     MUTEX_ENTER(&rx_connHashTable_lock);
     cid = (rx_nextCid += RX_MAXCALLS);
     conn->type = RX_CLIENT_CONNECTION;
@@ -780,7 +799,6 @@ rx_NewConnection(register afs_uint32 shost, u_short sport, u_short sservice,
     MUTEX_EXIT(&rx_stats_mutex);
 
     MUTEX_EXIT(&rx_connHashTable_lock);
-    AFS_RXGUNLOCK();
     USERPRI;
     return conn;
 }
@@ -1010,9 +1028,7 @@ rx_DestroyConnection(register struct rx_connection *conn)
     SPLVAR;
 
     NETPRI;
-    AFS_RXGLOCK();
     rxi_DestroyConnection(conn);
-    AFS_RXGUNLOCK();
     USERPRI;
 }
 
@@ -1022,11 +1038,9 @@ rx_GetConnection(register struct rx_connection *conn)
     SPLVAR;
 
     NETPRI;
-    AFS_RXGLOCK();
     MUTEX_ENTER(&conn->conn_data_lock);
     conn->refCount++;
     MUTEX_EXIT(&conn->conn_data_lock);
-    AFS_RXGUNLOCK();
     USERPRI;
 }
 
@@ -1052,7 +1066,6 @@ rx_NewCall(register struct rx_connection *conn)
 
     NETPRI;
     clock_GetTime(&queueTime);
-    AFS_RXGLOCK();
     MUTEX_ENTER(&conn->conn_call_lock);
 
     /*
@@ -1127,12 +1140,10 @@ rx_NewCall(register struct rx_connection *conn)
 
     MUTEX_EXIT(&call->lock);
     MUTEX_EXIT(&conn->conn_call_lock);
-    AFS_RXGUNLOCK();
     USERPRI;
 
 #ifdef	AFS_GLOBAL_RXLOCK_KERNEL
     /* Now, if TQ wasn't cleared earlier, do it now. */
-    AFS_RXGLOCK();
     MUTEX_ENTER(&call->lock);
     while (call->flags & RX_CALL_TQ_BUSY) {
 	call->flags |= RX_CALL_TQ_WAIT;
@@ -1147,7 +1158,6 @@ rx_NewCall(register struct rx_connection *conn)
 	queue_Init(&call->tq);
     }
     MUTEX_EXIT(&call->lock);
-    AFS_RXGUNLOCK();
 #endif /* AFS_GLOBAL_RXLOCK_KERNEL */
 
     return call;
@@ -1250,7 +1260,6 @@ rx_NewService(u_short port, u_short serviceId, char *serviceName,
 
     tservice = rxi_AllocService();
     NETPRI;
-    AFS_RXGLOCK();
     for (i = 0; i < RX_MAX_SERVICES; i++) {
 	register struct rx_service *service = rx_services[i];
 	if (service) {
@@ -1263,7 +1272,6 @@ rx_NewService(u_short port, u_short serviceId, char *serviceName,
 		    (osi_Msg
 		     "rx_NewService: tried to install service %s with service id %d, which is already in use for service %s\n",
 		     serviceName, serviceId, service->serviceName);
-		    AFS_RXGUNLOCK();
 		    USERPRI;
 		    rxi_FreeService(tservice);
 		    return service;
@@ -1278,7 +1286,6 @@ rx_NewService(u_short port, u_short serviceId, char *serviceName,
 		 * service on same port) get a new one */
 		socket = rxi_GetHostUDPSocket(htonl(INADDR_ANY), port);
 		if (socket == OSI_NULLSOCKET) {
-		    AFS_RXGUNLOCK();
 		    USERPRI;
 		    rxi_FreeService(tservice);
 		    return 0;
@@ -1298,12 +1305,10 @@ rx_NewService(u_short port, u_short serviceId, char *serviceName,
 	    service->executeRequestProc = serviceProc;
 	    service->checkReach = 0;
 	    rx_services[i] = service;	/* not visible until now */
-	    AFS_RXGUNLOCK();
 	    USERPRI;
 	    return service;
 	}
     }
-    AFS_RXGUNLOCK();
     USERPRI;
     rxi_FreeService(tservice);
     (osi_Msg "rx_NewService: cannot support > %d services\n",
@@ -1343,14 +1348,12 @@ rxi_ServerProc(int threadID, struct rx_call *newcall, osi_socket * socketp)
 	    SPLVAR;
 
 	    NETPRI;
-	    AFS_RXGLOCK();
 	    MUTEX_ENTER(&call->lock);
 
 	    rxi_CallError(call, RX_RESTARTING);
 	    rxi_SendCallAbort(call, (struct rx_packet *)0, 0, 0);
 
 	    MUTEX_EXIT(&call->lock);
-	    AFS_RXGUNLOCK();
 	    USERPRI;
 	}
 #ifdef	KERNEL
@@ -1392,7 +1395,6 @@ rx_WakeupServerProcs(void)
     SPLVAR;
 
     NETPRI;
-    AFS_RXGLOCK();
     MUTEX_ENTER(&rx_serverPool_lock);
 
 #ifdef RX_ENABLE_LOCKS
@@ -1420,7 +1422,6 @@ rx_WakeupServerProcs(void)
 #endif /* RX_ENABLE_LOCKS */
     }
     MUTEX_EXIT(&rx_serverPool_lock);
-    AFS_RXGUNLOCK();
     USERPRI;
 }
 
@@ -1631,7 +1632,6 @@ rx_GetCall(int tno, struct rx_service *cur_service, osi_socket * socketp)
     SPLVAR;
 
     NETPRI;
-    AFS_RXGLOCK();
     MUTEX_ENTER(&freeSQEList_lock);
 
     if ((sq = rx_FreeSQEList)) {
@@ -1726,7 +1726,6 @@ rx_GetCall(int tno, struct rx_service *cur_service, osi_socket * socketp)
 	    osi_rxSleep(sq);
 #ifdef	KERNEL
 	    if (afs_termState == AFSOP_STOP_RXCALLBACK) {
-		AFS_RXGUNLOCK();
 		USERPRI;
 		rxi_Free(sq, sizeof(struct rx_serverQueueEntry));
 		return (struct rx_call *)0;
@@ -1767,7 +1766,6 @@ rx_GetCall(int tno, struct rx_service *cur_service, osi_socket * socketp)
 	dpf(("rx_GetCall(socketp=0x%x, *socketp=0x%x)\n", socketp, *socketp));
     }
 
-    AFS_RXGUNLOCK();
     USERPRI;
 
     return call;
@@ -1815,7 +1813,6 @@ rx_EndCall(register struct rx_call *call, afs_int32 rc)
     dpf(("rx_EndCall(call %x)\n", call));
 
     NETPRI;
-    AFS_RXGLOCK();
     MUTEX_ENTER(&call->lock);
 
     if (rc == 0 && call->error == 0) {
@@ -1926,7 +1923,6 @@ rx_EndCall(register struct rx_call *call, afs_int32 rc)
 	MUTEX_EXIT(&conn->conn_call_lock);
 	conn->flags &= ~RX_CONN_BUSY;
     }
-    AFS_RXGUNLOCK();
     USERPRI;
     /*
      * Map errors to the local host's errno.h format.
@@ -2194,30 +2190,13 @@ rxi_Alloc(register size_t size)
 {
     register char *p;
 
-#if defined(AFS_AIX41_ENV) && defined(KERNEL)
-    /* Grab the AFS filesystem lock. See afs/osi.h for the lock
-     * implementation.
-     */
-    int glockOwner = ISAFS_GLOCK();
-    if (!glockOwner)
-	AFS_GLOCK();
-#endif
     MUTEX_ENTER(&rx_stats_mutex);
     rxi_Alloccnt++;
     rxi_Allocsize += size;
     MUTEX_EXIT(&rx_stats_mutex);
-#if	(defined(AFS_AIX32_ENV) || defined(AFS_HPUX_ENV)) && !defined(AFS_HPUX100_ENV) && defined(KERNEL)
-    if (size > AFS_SMALLOCSIZ) {
-	p = (char *)osi_AllocMediumSpace(size);
-    } else
-	p = (char *)osi_AllocSmall(size, 1);
-#if defined(AFS_AIX41_ENV) && defined(KERNEL)
-    if (!glockOwner)
-	AFS_GUNLOCK();
-#endif
-#else
+
     p = (char *)osi_Alloc(size);
-#endif
+
     if (!p)
 	osi_Panic("rxi_Alloc error");
     memset(p, 0, size);
@@ -2227,30 +2206,12 @@ rxi_Alloc(register size_t size)
 void
 rxi_Free(void *addr, register size_t size)
 {
-#if defined(AFS_AIX41_ENV) && defined(KERNEL)
-    /* Grab the AFS filesystem lock. See afs/osi.h for the lock
-     * implementation.
-     */
-    int glockOwner = ISAFS_GLOCK();
-    if (!glockOwner)
-	AFS_GLOCK();
-#endif
     MUTEX_ENTER(&rx_stats_mutex);
     rxi_Alloccnt--;
     rxi_Allocsize -= size;
     MUTEX_EXIT(&rx_stats_mutex);
-#if	(defined(AFS_AIX32_ENV) || defined(AFS_HPUX_ENV)) && !defined(AFS_HPUX100_ENV) && defined(KERNEL)
-    if (size > AFS_SMALLOCSIZ)
-	osi_FreeMediumSpace(addr);
-    else
-	osi_FreeSmall(addr);
-#if defined(AFS_AIX41_ENV) && defined(KERNEL)
-    if (!glockOwner)
-	AFS_GUNLOCK();
-#endif
-#else
+
     osi_Free(addr, size);
-#endif
 }
 
 /* Find the peer process represented by the supplied (host,port)
@@ -5558,20 +5519,10 @@ rxi_ComputeRoundTripTime(register struct rx_packet *p,
 {
     struct clock thisRtt, *rttp = &thisRtt;
 
-#if defined(AFS_ALPHA_LINUX22_ENV) && defined(AFS_PTHREAD_ENV) && !defined(KERNEL)
-    /* making year 2038 bugs to get this running now - stroucki */
-    struct timeval temptime;
-#endif
     register int rtt_timeout;
 
-#if defined(AFS_ALPHA_LINUX20_ENV) && defined(AFS_PTHREAD_ENV) && !defined(KERNEL)
-    /* yet again. This was the worst Heisenbug of the port - stroucki */
-    clock_GetTime(&temptime);
-    rttp->sec = (afs_int32) temptime.tv_sec;
-    rttp->usec = (afs_int32) temptime.tv_usec;
-#else
     clock_GetTime(rttp);
-#endif
+
     if (clock_Lt(rttp, sentp)) {
 	clock_Zero(rttp);
 	return;			/* somebody set the clock back, don't count this time. */

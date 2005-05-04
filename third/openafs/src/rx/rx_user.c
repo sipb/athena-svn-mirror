@@ -13,7 +13,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_user.c,v 1.1.1.3 2005-03-10 20:49:16 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_user.c,v 1.1.1.4 2005-05-04 17:45:08 zacheiss Exp $");
 
 # include <sys/types.h>
 # include <errno.h>
@@ -233,46 +233,53 @@ osi_AssertFailU(const char *expr, const char *file, int line)
 	      (int)file, line);
 }
 
-#ifdef	AFS_AIX32_ENV
+#if defined(AFS_AIX32_ENV) && !defined(KERNEL)
 #ifndef osi_Alloc
 static const char memZero;
-char *
+void *
 osi_Alloc(afs_int32 x)
 {
     /* 
-     * 0-length allocs may return NULL ptr from osi_kalloc, so we special-case
+     * 0-length allocs may return NULL ptr from malloc, so we special-case
      * things so that NULL returned iff an error occurred 
      */
     if (x == 0)
-	return &memZero;
-    return ((char *)malloc(x));
+	return (void *)&memZero;
+    return(malloc(x));
 }
 
 void
-osi_Free(char *x, afs_int32 size)
+osi_Free(void *x, afs_int32 size)
 {
     if (x == &memZero)
 	return;
-    free((char *)x);
+    free(x);
 }
 #endif
-#endif /* AFS_AIX32_ENV */
+#endif /* defined(AFS_AIX32_ENV) && !defined(KERNEL) */
 
 #define	ADDRSPERSITE	16
 
 
-afs_uint32 rxi_NetAddrs[ADDRSPERSITE];	/* host order */
+static afs_uint32 rxi_NetAddrs[ADDRSPERSITE];	/* host order */
 static int myNetMTUs[ADDRSPERSITE];
 static int myNetMasks[ADDRSPERSITE];
 static int myNetFlags[ADDRSPERSITE];
-u_int rxi_numNetAddrs;
+static u_int rxi_numNetAddrs;
 static int Inited = 0;
 
 #if defined(AFS_NT40_ENV) || defined(AFS_DJGPP_ENV)
 int
 rxi_getaddr(void)
 {
-    if (rxi_numNetAddrs > 0)
+    /* The IP address list can change so we must query for it */
+    rx_GetIFInfo();
+
+    /* we don't want to use the loopback adapter which is first */
+    /* this is a bad bad hack */
+    if (rxi_numNetAddrs > 1)
+	return htonl(rxi_NetAddrs[1]);  
+    else if (rxi_numNetAddrs > 0)
 	return htonl(rxi_NetAddrs[0]);
     else
 	return 0;
@@ -286,61 +293,62 @@ rxi_getaddr(void)
 int
 rx_getAllAddr(afs_int32 * buffer, int maxSize)
 {
-    int count = 0;
-    for (count = 0; count < rxi_numNetAddrs && maxSize > 0;
-	 count++, maxSize--)
-	buffer[count] = htonl(rxi_NetAddrs[count]);
+    int count = 0, offset = 0;
+
+    /* The IP address list can change so we must query for it */
+    rx_GetIFInfo();
+
+    /* we don't want to use the loopback adapter which is first */
+    /* this is a bad bad hack */
+    if ( rxi_numNetAddrs > 1 )
+        offset = 1;
+
+    for (count = 0; offset < rxi_numNetAddrs && maxSize > 0;
+	 count++, offset++, maxSize--)
+	buffer[count] = htonl(rxi_NetAddrs[offset]);
 
     return count;
 }
-
 #endif
 
 #ifdef AFS_NT40_ENV
-
 void
 rx_GetIFInfo(void)
 {
+    u_int maxsize;
+    u_int rxsize;
+    int npackets, ncbufs;
+    afs_uint32 i;
+
     LOCK_IF_INIT;
-    if (Inited) {
-	UNLOCK_IF_INIT;
-	return;
-    } else {
-	u_int maxsize;
-	u_int rxsize;
-	int npackets, ncbufs;
-	afs_uint32 i;
+    Inited = 1;
+    UNLOCK_IF_INIT;
 
-	Inited = 1;
-	UNLOCK_IF_INIT;
-	rxi_numNetAddrs = ADDRSPERSITE;
+    LOCK_IF;
+    rxi_numNetAddrs = ADDRSPERSITE;
+    (void)syscfg_GetIFInfo(&rxi_numNetAddrs, rxi_NetAddrs,
+                           myNetMasks, myNetMTUs, myNetFlags);
 
-	LOCK_IF;
-	(void)syscfg_GetIFInfo(&rxi_numNetAddrs, rxi_NetAddrs,
-			       myNetMasks, myNetMTUs, myNetFlags);
+    for (i = 0; i < rxi_numNetAddrs; i++) {
+        rxsize = rxi_AdjustIfMTU(myNetMTUs[i] - RX_IPUDP_SIZE);
+        maxsize =
+            rxi_nRecvFrags * rxsize + (rxi_nRecvFrags - 1) * UDP_HDR_SIZE;
+        maxsize = rxi_AdjustMaxMTU(rxsize, maxsize);
+        if (rx_maxReceiveSize < maxsize) {
+            rx_maxReceiveSize = MIN(RX_MAX_PACKET_SIZE, maxsize);
+            rx_maxReceiveSize =
+                MIN(rx_maxReceiveSize, rx_maxReceiveSizeUser);
+        }
 
-	for (i = 0; i < rxi_numNetAddrs; i++) {
-	    rxsize = rxi_AdjustIfMTU(myNetMTUs[i] - RX_IPUDP_SIZE);
-	    maxsize =
-		rxi_nRecvFrags * rxsize + (rxi_nRecvFrags - 1) * UDP_HDR_SIZE;
-	    maxsize = rxi_AdjustMaxMTU(rxsize, maxsize);
-	    if (rx_maxReceiveSize < maxsize) {
-		rx_maxReceiveSize = MIN(RX_MAX_PACKET_SIZE, maxsize);
-		rx_maxReceiveSize =
-		    MIN(rx_maxReceiveSize, rx_maxReceiveSizeUser);
-	    }
-
-	}
-	UNLOCK_IF;
-	ncbufs = (rx_maxJumboRecvSize - RX_FIRSTBUFFERSIZE);
-	if (ncbufs > 0) {
-	    ncbufs = ncbufs / RX_CBUFFERSIZE;
-	    npackets = rx_initSendWindow - 1;
-	    rxi_MorePackets(npackets * (ncbufs + 1));
-	}
+    }
+    UNLOCK_IF;
+    ncbufs = (rx_maxJumboRecvSize - RX_FIRSTBUFFERSIZE);
+    if (ncbufs > 0) {
+        ncbufs = ncbufs / RX_CBUFFERSIZE;
+        npackets = rx_initSendWindow - 1;
+        rxi_MorePackets(npackets * (ncbufs + 1));
     }
 }
-
 #endif
 
 static afs_uint32

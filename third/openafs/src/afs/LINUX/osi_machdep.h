@@ -62,10 +62,10 @@
 #ifdef AFS_LINUX_64BIT_KERNEL
 #define osi_GetTime(V)                                 \
     do {                                               \
-       struct timeval tv;                              \
-       do_gettimeofday(&tv);                           \
-       (V)->tv_sec = (afs_int32)tv.tv_sec;             \
-       (V)->tv_usec = (afs_int32)tv.tv_usec;           \
+       struct timeval __afs_tv;                              \
+       do_gettimeofday(&__afs_tv);                           \
+       (V)->tv_sec = (afs_int32)__afs_tv.tv_sec;             \
+       (V)->tv_usec = (afs_int32)__afs_tv.tv_usec;           \
     } while (0)
 #else
 #define osi_GetTime(V) do_gettimeofday((V))
@@ -141,11 +141,7 @@ extern struct vnodeops afs_file_iops, afs_dir_iops, afs_symlink_iops;
 
 /* cred struct */
 typedef struct cred {		/* maps to task field: */
-#if (CPU == sparc64)
-    long cr_ref;
-#else
     int cr_ref;
-#endif
     uid_t cr_uid;		/* euid */
     uid_t cr_ruid;		/* uid */
     gid_t cr_gid;		/* egid */
@@ -156,6 +152,7 @@ typedef struct cred {		/* maps to task field: */
     gid_t cr_groups[NGROUPS];	/* 32 groups - empty set to NOGROUP */
     int cr_ngroups;
 #endif
+    struct cred *cr_next;
 } cred_t;
 #define AFS_UCRED cred
 #define AFS_PROC struct task_struct
@@ -182,6 +179,15 @@ typedef struct uio {
 /* Get/set the inode in the osifile struct. */
 #define FILE_INODE(F) (F)->f_dentry->d_inode
 
+#ifdef AFS_LINUX24_ENV
+#define OSIFILE_INODE(a) FILE_INODE((a)->filp)
+#else
+#define OSIFILE_INODE(a) FILE_INODE(&(a)->file)
+#endif
+
+#if defined(AFS_LINUX_64BIT_KERNEL) && !defined(AFS_ALPHA_LINUX20_ENV) && !defined(AFS_IA64_LINUX20_ENV)
+#define NEED_IOCTL32
+#endif
 
 /* page offset is obtained and stored here during module initialization 
  * We need a variable to do this because, the PAGE_OFFSET macro defined in
@@ -193,7 +199,7 @@ extern unsigned long afs_linux_page_offset;
 /* function to help with the page offset stuff */
 #define afs_linux_page_address(page) (afs_linux_page_offset + PAGE_SIZE * (page - mem_map))
 
-#if defined(__KERNEL__) && defined(CONFIG_SMP)
+#if defined(__KERNEL__)
 #include "../h/sched.h"
 #include "linux/wait.h"
 
@@ -225,10 +231,6 @@ do { \
 #define AFS_GUNLOCK()
 #define ISAFS_GLOCK() 1
 #define AFS_ASSERT_GLOCK()
-#define AFS_ASSERT_RXGLOCK()
 #endif
 
-#define AFS_RXGLOCK()
-#define AFS_RXGUNLOCK()
-#define ISAFS_RXGLOCK() 1
 #endif /* OSI_MACHDEP_H_ */

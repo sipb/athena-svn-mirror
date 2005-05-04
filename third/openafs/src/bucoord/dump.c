@@ -15,7 +15,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/dump.c,v 1.1.1.2 2005-03-10 20:35:56 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/dump.c,v 1.1.1.3 2005-05-04 17:44:56 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <afs/cmd.h>
@@ -52,11 +52,7 @@ extern afs_int32 bc_jobNumber();
 
 extern afs_int32 lastTaskCode;
 
-#ifdef AFS_DEC_ENV
-#define HOSTADDR(sockaddr) (sockaddr)->sin_addr.S_un.S_addr
-#else
 #define HOSTADDR(sockaddr) (sockaddr)->sin_addr.s_addr
-#endif
 
 /* bc_Dumper
  *	called (indirectly) to make a dump

@@ -18,7 +18,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_open.c,v 1.1.1.3 2005-03-10 20:29:54 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_open.c,v 1.1.1.4 2005-05-04 17:44:53 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -123,11 +123,11 @@ afs_open(struct vcache **avcp, afs_int32 aflags, struct AFS_UCRED *acred)
 #endif
 	/* normal file or symlink */
 	osi_FlushText(tvc);	/* only needed to flush text if text locked last time */
-#if defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_SUN5_ENV)
+#ifdef AFS_BOZONLOCK_ENV
 	afs_BozonLock(&tvc->pvnLock, tvc);
 #endif
 	osi_FlushPages(tvc, acred);
-#if defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_SUN5_ENV)
+#ifdef AFS_BOZONLOCK_ENV
 	afs_BozonUnlock(&tvc->pvnLock, tvc);
 #endif
     }

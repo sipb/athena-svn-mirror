@@ -29,7 +29,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.1.1.4 2005-03-10 20:51:12 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.1.1.5 2005-05-04 17:45:19 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1255,11 +1255,7 @@ DeleteTarget(Vnode * parentptr, Volume * volptr, Vnode ** targetptr,
 			("DT: inode=%s, name=%s, errno=%d\n",
 			 PrintInode(NULL, VN_GET_INO(*targetptr)), Name,
 			 errno));
-#ifdef	AFS_DEC_ENV
-		if ((errno != ENOENT) && (errno != EIO) && (errno != ENXIO))
-#else
 		if (errno != ENOENT)
-#endif
 		{
 		    ViceLog(0,
 			    ("Volume %u now offline, must be salvaged.\n",
@@ -3638,8 +3634,8 @@ SAFSS_CreateFile(struct rx_call *acall, struct AFSFid *DirFid, char *Name,
     Update_TargetVnodeStatus(targetptr, TVS_CFILE, client, InStatus,
 			     parentptr, volptr, 0);
 
-    /* set up the return status for the parent dir and the newly created file */
-    GetStatus(targetptr, OutFidStatus, rights, anyrights, parentptr);
+    /* set up the return status for the parent dir and the newly created file, and since the newly created file is owned by the creator, give it PRSFS_ADMINISTER to tell the client its the owner of the file */
+    GetStatus(targetptr, OutFidStatus, rights | PRSFS_ADMINISTER, anyrights, parentptr);
     GetStatus(parentptr, OutDirStatus, rights, anyrights, 0);
 
     /* convert the write lock to a read lock before breaking callbacks */
@@ -6008,11 +6004,10 @@ SRXAFS_FlushCPS(struct rx_call * acall, struct ViceIds * vids,
     for (i = 0; i < nids; i++, vd++) {
 	if (!*vd)
 	    continue;
-	client = h_ID2Client(*vd);	/* returns client locked, or NULL */
+	client = h_ID2Client(*vd);	/* returns client write locked, or NULL */
 	if (!client)
 	    continue;
 
-	BoostSharedLock(&client->lock);
 	client->prfail = 2;	/* Means re-eval client's cps */
 #ifdef	notdef
 	if (client->tcon) {

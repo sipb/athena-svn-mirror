@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/DUX/rx_knet.c,v 1.1.1.2 2005-03-10 20:47:58 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/DUX/rx_knet.c,v 1.1.1.3 2005-05-04 17:45:43 zacheiss Exp $");
 
 #ifdef AFS_DUX40_ENV
 #include "rx/rx_kcommon.h"
@@ -144,7 +144,6 @@ rxk_input(struct mbuf *am, int iphlen)
 		 */
 		data_len = ntohs(tu->uh_ulen);
 		data_len -= 8;
-		AFS_RXGLOCK();
 		if (!(*rxk_GetPacketProc) (&phandle, data_len)) {
 		    if (rx_mb_to_packet(am, m_freem, 28, data_len, phandle)) {
 			/* XXX should just increment counter here.. */
@@ -155,7 +154,6 @@ rxk_input(struct mbuf *am, int iphlen)
 						  rxk_portRocks[i], data_len);
 		} else
 		    m_freem(am);
-		AFS_RXGUNLOCK();
 		USERPRI;
 		return;
 	    }
