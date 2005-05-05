@@ -60,6 +60,13 @@ find $RPM_BUILD_ROOT -type f -or -type l |
       -e "s|^/etc/dhclient-enter-hooks$|%config \0|" |
   sort > rpm.filelist
 
+# We can't avoid installing cups in RHEL 4, but we don't want to run a
+# cups daemon, particularly because the cups service writes stuff to
+# /etc/printcap which confuses lprng.
+%triggerin -- cups
+/sbin/chkconfig --del cups
+exit 0
+
 %triggerin -- man
 cp /etc/man.config.athena /etc/man.config
 
