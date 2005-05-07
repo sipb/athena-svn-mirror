@@ -22,6 +22,7 @@ EOF
 # (machines installed before 9.3 mount /var/usr/vice instead of
 # /usr/vice/cache, and link /usr/vice to /var/usr/vice).  So we need
 # to clean up any such old paths from the pkg database.
+: ${PKG_INSTALL_ROOT:=/}
 if [ -n "`pkgchk -R $PKG_INSTALL_ROOT -l -p /var/usr/vice $PKGINST`" ]; then
   removef -R $PKG_INSTALL_ROOT $PKGINST /var > /dev/null
   removef -R $PKG_INSTALL_ROOT $PKGINST /var/usr > /dev/null
