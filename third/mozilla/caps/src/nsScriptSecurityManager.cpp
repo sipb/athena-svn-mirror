@@ -1127,46 +1127,41 @@ nsScriptSecurityManager::GetBaseURIScheme(nsIURI* aURI, char** aScheme)
        return NS_ERROR_FAILURE;
 
     nsresult rv;
-    nsCOMPtr<nsIURI> uri(aURI);
 
     //-- get the source scheme
     nsCAutoString scheme;
-    rv = uri->GetScheme(scheme);
+    rv = aURI->GetScheme(scheme);
     if (NS_FAILED(rv)) return rv;
 
-    //-- If uri is a view-source URI, drill down to the base URI
+    //-- If aURI is a view-source URI, drill down to the base URI
     nsCAutoString path;
-    while(PL_strcmp(scheme.get(), "view-source") == 0)
+    if (PL_strcmp(scheme.get(), "view-source") == 0)
     {
-        rv = uri->GetPath(path);
+        rv = aURI->GetPath(path);
         if (NS_FAILED(rv)) return rv;
-        rv = NS_NewURI(getter_AddRefs(uri), path, nsnull, nsnull, sIOService);
+        nsCOMPtr<nsIURI> innerURI;
+        rv = NS_NewURI(getter_AddRefs(innerURI), path, nsnull, nsnull,
+                       sIOService);
         if (NS_FAILED(rv)) return rv;
-        rv = uri->GetScheme(scheme);
-        if (NS_FAILED(rv)) return rv;
+        return nsScriptSecurityManager::GetBaseURIScheme(innerURI, aScheme);
     }
 
-    //-- If uri is a jar URI, drill down again
-    nsCOMPtr<nsIJARURI> jarURI;
-    PRBool isJAR = PR_FALSE;
-    while((jarURI = do_QueryInterface(uri)))
+    //-- If aURI is a jar URI, drill down again
+    nsCOMPtr<nsIJARURI> jarURI = do_QueryInterface(aURI);
+    if (jarURI)
     {
-        jarURI->GetJARFile(getter_AddRefs(uri));
-        isJAR = PR_TRUE;
-    }
-    if (!uri) return NS_ERROR_FAILURE;
-    if (isJAR)
-    {
-        rv = uri->GetScheme(scheme);
-        if (NS_FAILED(rv)) return rv;
+        nsCOMPtr<nsIURI> innerURI;
+        jarURI->GetJARFile(getter_AddRefs(innerURI));
+        if (!innerURI) return NS_ERROR_FAILURE;
+        return nsScriptSecurityManager::GetBaseURIScheme(innerURI, aScheme);
     }
 
-    //-- if uri is an about uri, distinguish 'safe' and 'unsafe' about URIs
+    //-- if aURI is an about uri, distinguish 'safe' and 'unsafe' about URIs
     static const char aboutScheme[] = "about";
     if(nsCRT::strcasecmp(scheme.get(), aboutScheme) == 0)
     {
         nsCAutoString spec;
-        if(NS_FAILED(uri->GetAsciiSpec(spec)))
+        if(NS_FAILED(aURI->GetAsciiSpec(spec)))
             return NS_ERROR_FAILURE;
         const char* page = spec.get() + sizeof(aboutScheme);
         if ((strcmp(page, "blank") == 0)   ||
@@ -1188,6 +1183,15 @@ NS_IMETHODIMP
 nsScriptSecurityManager::CheckLoadURI(nsIURI *aSourceURI, nsIURI *aTargetURI,
                                       PRUint32 aFlags)
 {
+    // If someone passes a flag that we don't understand, we should
+    // fail, because they may need a security check that we don't
+    // provide.
+    NS_ENSURE_FALSE(aFlags & ~(nsIScriptSecurityManager::DISALLOW_FROM_MAIL |
+                               nsIScriptSecurityManager::ALLOW_CHROME |
+                               nsIScriptSecurityManager::DISALLOW_SCRIPT |
+                               nsIScriptSecurityManager::DISALLOW_SCRIPT_OR_DATA),
+                    NS_ERROR_UNEXPECTED);
+
     nsresult rv;
     //-- get the source scheme
     nsXPIDLCString sourceScheme;
@@ -1215,8 +1219,11 @@ nsScriptSecurityManager::CheckLoadURI(nsIURI *aSourceURI, nsIURI *aTargetURI,
     }
 
     //-- Some callers do not allow loading javascript: or data: URLs
-    if ((aFlags & nsIScriptSecurityManager::DISALLOW_SCRIPT_OR_DATA) &&
-        (targetScheme.Equals("javascript") || targetScheme.Equals("data")))
+    if (((aFlags & (nsIScriptSecurityManager::DISALLOW_SCRIPT |
+                    nsIScriptSecurityManager::DISALLOW_SCRIPT_OR_DATA)) &&
+         targetScheme.Equals("javascript")) ||
+        ((aFlags & nsIScriptSecurityManager::DISALLOW_SCRIPT_OR_DATA) &&
+         targetScheme.Equals("data")))
     {
        return NS_ERROR_DOM_BAD_URI;
     }
