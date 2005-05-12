@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: certdecode.c,v $ $Revision: 1.1.1.10 $ $Date: 2005-05-02 15:54:09 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: certdecode.c,v $ $Revision: 1.1.1.11 $ $Date: 2005-05-12 21:08:44 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef PKIT_H
