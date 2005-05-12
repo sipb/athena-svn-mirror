@@ -35,7 +35,7 @@
 #define BASE_H
 
 #ifdef DEBUG
-static const char BASE_CVS_ID[] = "@(#) $RCSfile: base.h,v $ $Revision: 1.1.1.10 $ $Date: 2005-05-02 14:24:22 $ $Name: not supported by cvs2svn $";
+static const char BASE_CVS_ID[] = "@(#) $RCSfile: base.h,v $ $Revision: 1.1.1.11 $ $Date: 2005-05-12 19:38:58 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*

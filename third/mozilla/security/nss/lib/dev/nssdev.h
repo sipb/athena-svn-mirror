@@ -35,7 +35,7 @@
 #define NSSDEV_H
 
 #ifdef DEBUG
-static const char NSSDEV_CVS_ID[] = "@(#) $RCSfile: nssdev.h,v $ $Revision: 1.1.1.10 $ $Date: 2005-05-02 14:24:23 $ $Name: not supported by cvs2svn $";
+static const char NSSDEV_CVS_ID[] = "@(#) $RCSfile: nssdev.h,v $ $Revision: 1.1.1.11 $ $Date: 2005-05-12 19:38:59 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 /*
  * nssdev.h
