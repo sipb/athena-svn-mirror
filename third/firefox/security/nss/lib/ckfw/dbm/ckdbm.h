@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CKDBM_CVS_ID[] = "@(#) $RCSfile: ckdbm.h,v $ $Revision: 1.1.1.2 $ $Date: 2005-05-02 19:47:28 $ $Name: not supported by cvs2svn $";
+static const char CKDBM_CVS_ID[] = "@(#) $RCSfile: ckdbm.h,v $ $Revision: 1.1.1.3 $ $Date: 2005-05-12 20:10:57 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef CKDBM_H
