@@ -180,6 +180,10 @@ case "$1" in
 		echo
 	fi
 
+	echo -n Checking X mouse configuration
+	fix-mouse
+	echo
+
 	echo -n Editing /etc/motd:
 	awk '{ prev = $0; } END { print prev; }' /etc/athena/version >/tmp/t1\
 		&& if [ "$PUBLIC" != true ]; then  \

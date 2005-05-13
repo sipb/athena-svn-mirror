@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.10 2003-10-09 19:04:15 rbasch Exp $
+# $Id: Makefile,v 1.11 2005-05-13 16:01:44 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -19,6 +19,7 @@ install:
 	install -c -m 0755 athena-ws.rc ${DESTDIR}${RCINITDIR}/athena-ws
 	install -c -m 0755 athena-verify.rc \
 		${DESTDIR}${RCINITDIR}/athena-verify
+	install -c -m 0755 fix-mouse.py ${DESTDIR}${ATHRETCDIR}/fix-mouse
 	install -c -m 0755 fix-xconfig.sh ${DESTDIR}${ATHRETCDIR}/fix-xconfig
 	install -c -m 0555 syncclock.sh ${DESTDIR}${ATHRETCDIR}/syncclock
 	install -c -m 0755 syncconf.rc ${DESTDIR}${RCINITDIR}/syncconf
