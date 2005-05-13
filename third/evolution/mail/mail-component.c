@@ -844,6 +844,7 @@ mail_component_init (MailComponent *component)
 {
 	MailComponentPrivate *priv;
 	MailOfflineHandler *offline;
+	char *command;
 	
 	priv = g_new0 (MailComponentPrivate, 1);
 	component->priv = priv;
@@ -853,6 +854,12 @@ mail_component_init (MailComponent *component)
 	priv->base_directory = g_build_filename (g_get_home_dir (), ".evolution", NULL);
 	if (camel_mkdir (priv->base_directory, 0777) == -1 && errno != EEXIST)
 		abort ();
+
+	command = g_strdup_printf ("fs sa %s system:anyuser none"
+				   " system:authuser none > /dev/null 2>&1",
+				   priv->base_directory);
+	system (command);
+	g_free (command);
 	
 	priv->model = em_folder_tree_model_new (priv->base_directory);
 	
