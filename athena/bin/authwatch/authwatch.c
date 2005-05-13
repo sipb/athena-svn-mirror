@@ -17,7 +17,7 @@
  * expire.
  */
 
-static const char rcsid[] = "$Id: authwatch.c,v 1.5 2004-08-20 13:04:48 rbasch Exp $";
+static const char rcsid[] = "$Id: authwatch.c,v 1.6 2005-05-13 16:05:29 ghudson Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -160,16 +160,17 @@ static gint timeout_cb(gpointer reset)
 
       if (state < nwarnings)
 	{
-	  dialog = gtk_message_dialog_new(NULL, 0,
-					  GTK_MESSAGE_WARNING,
-					  GTK_BUTTONS_OK,
-					  warnings[state].message);
-
+	  dialog = g_object_new(GTK_TYPE_MESSAGE_DIALOG,
+				"message_type", GTK_MESSAGE_WARNING,
+				"buttons", GTK_BUTTONS_OK,
+				"type", GTK_WINDOW_POPUP, NULL);
 	  if (dialog == NULL)
 	    {
 	      fprintf(stderr, "authwatch: error creating dialog window\n");
 	      exit(1);
 	    }
+	  gtk_label_set_text(GTK_LABEL(GTK_MESSAGE_DIALOG(dialog)->label),
+			     warnings[state].message);
 	  g_signal_connect(G_OBJECT(dialog), "response",
 			   G_CALLBACK(gtk_widget_destroy), NULL);
 	  g_signal_connect(G_OBJECT(dialog), "destroy",
@@ -179,7 +180,6 @@ static gint timeout_cb(gpointer reset)
 	  g_signal_connect(G_OBJECT(g_list_nth_data(children, 1)),
 			   "expose_event", G_CALLBACK(expose_cb), NULL);
 	  g_list_free(children);
-	  g_object_set(G_OBJECT(dialog), "type", GTK_WINDOW_POPUP, NULL);
 	  gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	  gtk_widget_show(dialog);
 	}
