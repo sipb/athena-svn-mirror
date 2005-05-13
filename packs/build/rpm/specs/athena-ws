@@ -104,6 +104,26 @@ fi
 # Make sure the permissions on the sound devices are appropriate
 chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
 
+%triggerun -- dev
+[ $2 = 0 ] || exit 0
+
+# The upgrade from RHEL 3 to RHEL 4 removes the dev package, which
+# mostly empties out the /dev directory.  On the next reboot, udev
+# will take over, but meanwhile we need lilo and
+# /usr/sbin/fix-mouse-psaux to work properly.  So, save the contents
+# of /dev before the files are removed and put them back later.
+(cd /dev && tar czf /var/athena/dev.tar.gz .)
+
+%triggerpostun -- dev
+[ $2 = 0 ] || exit 0
+
+# Now restore the contents of /dev which we saved above.  Some entries
+# will still exist, causing errors, so we have to ignore those.  Don't
+# assume we have a /dev/null.
+(cd /dev && tar xzkf /var/athena/dev.tar.gz) > /var/athena/dev.out 2>&1
+rm -f /var/athena/dev.tar.gz /var/athena/dev.out
+exit 0
+
 %triggerin -- finger-server
 if [ -f /etc/xinetd.d/finger ]; then
   sed -e '/disable/s/yes/no/' /etc/xinetd.d/finger > /etc/xinetd.d/finger.new
