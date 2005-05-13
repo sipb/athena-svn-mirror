@@ -1,11 +1,146 @@
 <?xml version="1.0"?>  
 
-<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:NC="http://home.netscape.com/NC-rdf#">
+<RDF:RDF xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 
-  <Description about="urn:mimetypes"> 
-    <NC:MIME-types> 
-	    <Seq about="urn:mimetypes:root"> 
-	    </Seq> 
-    </NC:MIME-types> 
-  </Description> 
-</RDF>
+  <RDF:Description RDF:about="urn:mimetypes">
+    <NC:MIME-types RDF:resource="urn:mimetypes:root"/>
+  </RDF:Description>
+
+  <RDF:Seq RDF:about="urn:mimetypes:root">
+    <RDF:li RDF:resource="urn:mimetype:application/pdf"/>
+    <RDF:li RDF:resource="urn:mimetype:application/x-java-jnlp-file"/>
+    <RDF:li RDF:resource="urn:mimetype:audio/x-pn-realaudio"/>
+    <RDF:li RDF:resource="urn:mimetype:audio/vnd.rn-realaudio"/>
+    <RDF:li RDF:resource="urn:mimetype:video/vnd.rn-realvideo"/>
+    <RDF:li RDF:resource="urn:mimetype:application/vnd.rn-realmedia"/>
+    <RDF:li RDF:resource="urn:mimetype:application/x-inventor"/>
+  </RDF:Seq>
+
+  <RDF:Description RDF:about="urn:mimetype:application/pdf"
+                   NC:value="application/pdf"
+                   NC:editable="true"
+                   NC:fileExtensions="pdf"
+                   NC:description="Portable Document Format">
+    <NC:handlerProp RDF:resource="urn:mimetype:handler:application/pdf"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:handler:application/pdf"
+                   NC:alwaysAsk="false"
+                   NC:saveToDisk="false"
+                   NC:useSystemDefault="false"
+                   NC:handleInternal="false">
+    <NC:externalApplication RDF:resource="urn:mimetype:externalApplication:application/pdf"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:externalApplication:application/pdf"
+                   NC:path="/mit/acro/arch/@sys/bin/acroread"
+                   NC:prettyName="acroread" />
+
+  <RDF:Description RDF:about="urn:mimetype:application/x-java-jnlp-file"
+                   NC:value="application/x-java-jnlp-file"
+                   NC:editable="true"
+                   NC:fileExtensions="jnlpn"
+                   NC:description="Java Web Start Document">
+    <NC:handlerProp RDF:resource="urn:mimetype:handler:application/x-java-jnlp-file"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:handler:application/x-java-jnlp-file"
+                   NC:alwaysAsk="false"
+                   NC:saveToDisk="false"
+                   NC:useSystemDefault="false"
+                   NC:handleInternal="false">
+    <NC:externalApplication RDF:resource="urn:mimetype:externalApplication:application/x-java-jnlp-file"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:externalApplication:application/x-java-jnlp-file"
+                   NC:path="/usr/bin/javaws"
+                   NC:prettyName="javaws" />
+
+  <RDF:Description RDF:about="urn:mimetype:audio/x-pn-realaudio"
+                   NC:value="audio/x-pn-realaudio"
+                   NC:editable="true"
+                   NC:fileExtensions="ra"
+                   NC:description="RealAudio File">
+    <NC:handlerProp RDF:resource="urn:mimetype:handler:audio/x-pn-realaudio"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:handler:audio/x-pn-realaudio"
+                   NC:alwaysAsk="false"
+                   NC:saveToDisk="false"
+                   NC:useSystemDefault="false"
+                   NC:handleInternal="false">
+    <NC:externalApplication RDF:resource="urn:mimetype:externalApplication:audio/x-pn-realaudio"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:externalApplication:audio/x-pn-realaudio"
+                   NC:path="/mit/infoagents/arch/@sys/bin/realplay"
+                   NC:prettyName="realplay" />
+
+  <RDF:Description RDF:about="urn:mimetype:audio/vnd.rn-realaudio"
+                   NC:value="audio/vnd.rn-realaudio"
+                   NC:editable="true"
+                   NC:fileExtensions="ra"
+                   NC:description="RealAudio File">
+    <NC:handlerProp RDF:resource="urn:mimetype:handler:audio/vnd.rn-realaudio"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:handler:audio/vnd.rn-realaudio"
+                   NC:alwaysAsk="false"
+                   NC:saveToDisk="false"
+                   NC:useSystemDefault="false"
+                   NC:handleInternal="false">
+    <NC:externalApplication RDF:resource="urn:mimetype:externalApplication:audio/vnd.rn-realaudio"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:externalApplication:audio/vnd.rn-realaudio"
+                   NC:path="/mit/infoagents/arch/@sys/bin/realplay"
+                   NC:prettyName="realplay" />
+
+  <RDF:Description RDF:about="urn:mimetype:video/vnd.rn-realvideo"
+                   NC:value="video/vnd.rn-realvideo"
+                   NC:editable="true"
+                   NC:fileExtensions="rv"
+                   NC:description="RealVideo File">
+    <NC:handlerProp RDF:resource="urn:mimetype:handler:video/vnd.rn-realvideo"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:handler:video/vnd.rn-realvideo"
+                   NC:alwaysAsk="false"
+                   NC:saveToDisk="false"
+                   NC:useSystemDefault="false"
+                   NC:handleInternal="false">
+    <NC:externalApplication RDF:resource="urn:mimetype:externalApplication:video/vnd.rn-realvideo"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:externalApplication:video/vnd.rn-realvideo"
+                   NC:path="/mit/infoagents/arch/@sys/bin/realplay"
+                   NC:prettyName="realplay" />
+
+  <RDF:Description RDF:about="urn:mimetype:application/vnd.rn-realmedia"
+                   NC:value="application/vnd.rn-realmedia"
+                   NC:editable="true"
+                   NC:fileExtensions="rm"
+                   NC:description="RealMedia File">
+    <NC:handlerProp RDF:resource="urn:mimetype:handler:application/vnd.rn-realmedia"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:handler:application/vnd.rn-realmedia"
+                   NC:alwaysAsk="false"
+                   NC:saveToDisk="false"
+                   NC:useSystemDefault="false"
+                   NC:handleInternal="false">
+    <NC:externalApplication RDF:resource="urn:mimetype:externalApplication:application/vnd.rn-realmedia"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:externalApplication:application/vnd.rn-realmedia"
+                   NC:path="/mit/infoagents/arch/@sys/bin/realplay"
+                   NC:prettyName="realplay" />
+
+  <RDF:Description RDF:about="urn:mimetype:application/x-inventor"
+                   NC:value="application/x-inventor"
+                   NC:editable="true"
+                   NC:fileExtensions="iv"
+                   NC:description="VRML1/Open Inventor">
+    <NC:handlerProp RDF:resource="urn:mimetype:handler:application/x-inventor"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:handler:application/x-inventor"
+                   NC:alwaysAsk="false"
+                   NC:saveToDisk="false"
+                   NC:useSystemDefault="false"
+                   NC:handleInternal="false">
+    <NC:externalApplication RDF:resource="urn:mimetype:externalApplication:application/x-inventor"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mimetype:externalApplication:application/x-inventor"
+                   NC:path="/afs/athena.mit.edu/software/inventor/arch/@sys/bin/ivview"
+                   NC:prettyName="ivview" />
+
+</RDF:RDF>
