@@ -3,11 +3,12 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.22 2005-03-08 17:40:33 ghudson Exp $
+# $Id: xsession,v 1.23 2005-05-13 16:03:17 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
 set initdir=/usr/athena/lib/init
+set gconftool=/usr/athena/bin/gconftool-2
 
 # Determine whether to use user customizations:  use no customization files
 # ONLY if the single argument "nocalls" was provided to xsession (e.g., if
@@ -102,6 +103,10 @@ if ($?ATHENA_DASH_INTERFACE) then
 else
   set default_windowmanager=metacity
   set terminal='gnome-terminal --geometry=80x40-0-52'
+
+  # GNOME processes can apparently collide trying to start gconfd, so
+  # spawn one before we start any in the background.
+  $gconftool --spawn
 endif
 
 
@@ -129,14 +134,12 @@ endif
 if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 
 if ($?NOCALLS) then
-  (metacity &)
+  (metacity >& /dev/null &)
 else
-  ($WINDOW_MANAGER &)
+  ($WINDOW_MANAGER >& /dev/null &)
 endif
 
 # Run standard system/user startup activities
-
-set gconftool=/usr/athena/bin/gconftool-2
 
 if ( -r ~/.athena_gnome_convert_failure ) then
   # A previous attempt at converting GNOME preferences failed.  Remove
@@ -167,10 +170,6 @@ else if ($?offer_gnome_upgrade) then
 endif
 
 if ( ! $?ATHENA_DASH_INTERFACE) then
-  # GNOME processes can apparently collide trying to start gconfd, so
-  # spawn one before we start any in the background.
-  $gconftool --spawn
-
   # Run gnome-settings-daemon unless the user has chosen to skip it.
   # (We used to run a series of capplets with an init flag; thus the
   # skip variable is named skip_capplets.)
