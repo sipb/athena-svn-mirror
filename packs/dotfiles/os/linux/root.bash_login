@@ -1,4 +1,6 @@
-# $Id: root.bash_login,v 1.1 2005-04-26 20:28:21 ghudson Exp $
+# $Id: root.bash_login,v 1.2 2005-05-17 16:38:23 ghudson Exp $
 
 # bash does not run .bashrc in login shells, so run it explicitly.
-. ~/.bashrc
+# Also run .profile, since the presence of a .bash_login overrides it.
+[ -r ~/.profile ] && . ~/.profile
+[ -r ~/.bashrc ] && . ~/.bashrc
