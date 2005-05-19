@@ -2,7 +2,7 @@
 /*
  * gsf-output-gzip.c: wrapper to compress to gzipped output. See rfc1952.
  *
- * Copyright (C) 2002-2003 Jon K Hellan (hellan@acm.org)
+ * Copyright (C) 2002-2004 Jon K Hellan (hellan@acm.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -31,6 +31,8 @@
 #include <string.h>
 
 #define Z_BUFSIZE 0x100
+
+static GObjectClass *parent_class;
 
 struct _GsfOutputGZip {
 	GsfOutput output;
@@ -110,7 +112,7 @@ gzip_output_header (GsfOutputGZip *gzip)
  *
  * Returns a new file or NULL.
  **/
-GsfOutputGZip *
+GsfOutput *
 gsf_output_gzip_new (GsfOutput *sink, GError **err)
 {
 	GsfOutputGZip *gzip;
@@ -131,13 +133,12 @@ gsf_output_gzip_new (GsfOutput *sink, GError **err)
 		return NULL;
 	}
 
-	return gzip;
+	return GSF_OUTPUT (gzip);
 }
 
 static void
 gsf_output_gzip_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
 	GsfOutputGZip *gzip = (GsfOutputGZip *)obj;
 
 	if (gzip->sink != NULL) {
@@ -147,11 +148,10 @@ gsf_output_gzip_finalize (GObject *obj)
 
 	g_free (gzip->buf);
 
+	/* FIXME: check for error?  */
 	deflateEnd (&gzip->stream);
 
-	parent_class = g_type_class_peek (GSF_OUTPUT_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static gboolean
@@ -182,8 +182,11 @@ gzip_flush (GsfOutputGZip *gzip)
 				return FALSE;
 		}
 	} while (zret == Z_OK);
-	if (zret != Z_STREAM_END)
+	if (zret != Z_STREAM_END) {
+		g_warning ("Unexpected error code %d from zlib during compression.",
+			   zret);
 		return FALSE;
+	}
 	if (!gzip_output_block (gzip))
 		return FALSE;
 
@@ -202,16 +205,27 @@ gsf_output_gzip_write (GsfOutput *output,
 	gzip->stream.avail_in = num_bytes;
 	
 	while (gzip->stream.avail_in > 0) {
+		int zret;
 		if (gzip->stream.avail_out == 0) {
 			if (!gzip_output_block (gzip))
 				return FALSE;
 		}
-		if (deflate (&gzip->stream, Z_NO_FLUSH) != Z_OK)
+
+		zret = deflate (&gzip->stream, Z_NO_FLUSH);
+		if (zret != Z_OK) {
+			g_warning ("Unexpected error code %d from zlib during compression.",
+				   zret);
 			return FALSE;
+		}
 	}
 
 	gzip->crc = crc32 (gzip->crc, data, num_bytes);
 	gzip->isize += num_bytes;
+
+	if (gzip->stream.avail_out == 0) {
+		if (!gzip_output_block (gzip))
+			return FALSE;
+	}
 
 	return TRUE;
 }
@@ -269,6 +283,8 @@ gsf_output_gzip_class_init (GObjectClass *gobject_class)
 	output_class->Write	= gsf_output_gzip_write;
 	output_class->Seek	= gsf_output_gzip_seek;
 	output_class->Close	= gsf_output_gzip_close;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfOutputGZip, gsf_output_gzip,

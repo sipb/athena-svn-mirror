@@ -2,7 +2,7 @@
 /*
  * gsf-infile-impl.h: 
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -35,7 +35,7 @@ struct _GsfInfile {
 typedef struct {
 	GsfInputClass input_class;
 	int	    (*num_children)   (GsfInfile *infile);
-	char const *(*name_by_index)  (GsfInfile *infile, int i);
+	const char *(*name_by_index)  (GsfInfile *infile, int i);
 	GsfInput   *(*child_by_index) (GsfInfile *infile,
 				       int i, GError **err);
 	GsfInput   *(*child_by_name)  (GsfInfile *infile,

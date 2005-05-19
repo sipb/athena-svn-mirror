@@ -2,7 +2,7 @@
 /*
  * gsf-outfile-msole.h: interface for creating OLE files
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -23,6 +23,7 @@
 #define GSF_OUTFILE_MSOLE_H
 
 #include <gsf/gsf.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -35,10 +36,12 @@ typedef struct _GsfOutfileMSOle GsfOutfileMSOle;
 #define OLE_DEFAULT_SB_SHIFT	 6
 #define OLE_DEFAULT_BB_SHIFT	 9
 
-GType		 gsf_outfile_msole_get_type (void);
-GsfOutfileMSOle *gsf_outfile_msole_new (GsfOutput *sink);
-gboolean	 gsf_outfile_msole_set_class_id (GsfOutfileMSOle *ole,
-						 guint8 const *clsid);
+GType	    gsf_outfile_msole_get_type (void);
+GsfOutfile *gsf_outfile_msole_new	   (GsfOutput *sink);
+GsfOutfile *gsf_outfile_msole_new_full	   (GsfOutput *sink,
+					    unsigned bb_size, unsigned sb_size);
+gboolean    gsf_outfile_msole_set_class_id (GsfOutfileMSOle *ole,
+					    guint8 const *clsid);
 
 G_END_DECLS
 

@@ -2,7 +2,7 @@
 /*
  * gsf-infile.h: 
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -37,7 +37,7 @@ int	    gsf_infile_num_children   (GsfInfile *infile);
 char const *gsf_infile_name_by_index  (GsfInfile *infile, int i);
 GsfInput   *gsf_infile_child_by_index (GsfInfile *infile, int i);
 GsfInput   *gsf_infile_child_by_name  (GsfInfile *infile, char const *name);
-GsfInput   *gsf_infile_child_by_vname  (GsfInfile *infile, char const *name, ...);
+GsfInput   *gsf_infile_child_by_vname (GsfInfile *infile, char const *name, ...);
 
 G_END_DECLS
 

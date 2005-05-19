@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+Outfile writing structed files
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GsfOutfile ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gsf_outfile_new_child ##### -->
+<para>
+
+</para>
+
+@outfile: 
+@name: 
+@is_dir: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gsf_outfile_error ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

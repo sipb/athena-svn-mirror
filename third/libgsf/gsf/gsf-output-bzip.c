@@ -2,8 +2,8 @@
 /*
  * gsf-output-bzip.c: wrapper to compress to bzipped output
  *
- * Copyright (C) 2003 Dom Lachowicz (cinamod@hotmail.com)
- *               2002 Jon K Hellan (hellan@acm.org)
+ * Copyright (C) 2003-2004 Dom Lachowicz (cinamod@hotmail.com)
+ *               2002-2004 Jon K Hellan (hellan@acm.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -34,6 +34,8 @@
 #define BZ_BUFSIZE 1024
 #endif
 
+static GObjectClass *parent_class;
+
 struct _GsfOutputBzip {
 	GsfOutput  output;
 
@@ -52,8 +54,6 @@ typedef struct {
 static void
 gsf_output_bzip_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
-
 #ifdef HAVE_BZ2
 	GsfOutputBzip *bzip = (GsfOutputBzip *)obj;
 
@@ -61,13 +61,9 @@ gsf_output_bzip_finalize (GObject *obj)
 		g_object_unref (G_OBJECT (bzip->sink));
 		bzip->sink = NULL;
 	}
-
 	g_free (bzip->buf);
 #endif
-
-	parent_class = g_type_class_peek (GSF_OUTPUT_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 #ifdef HAVE_BZ2
@@ -122,8 +118,11 @@ bzip_flush (GsfOutputBzip *bzip)
 				return FALSE;
 		}
 	} while (zret == BZ_FINISH_OK);
-	if (zret != BZ_STREAM_END)
+	if (zret != BZ_STREAM_END) {
+		g_warning ("Unexpected error code %d from bzlib during compression.",
+			   zret);
 		return FALSE;
+	}
 	if (!bzip_output_block (bzip))
 		return FALSE;
 
@@ -144,11 +143,23 @@ gsf_output_bzip_write (GsfOutput *output,
 	bzip->stream.avail_in = num_bytes;
 	
 	while (bzip->stream.avail_in > 0) {
+		int zret;
+
 		if (bzip->stream.avail_out == 0) {
 			if (!bzip_output_block (bzip))
 				return FALSE;
 		}
-		if (BZ2_bzCompress (&bzip->stream, BZ_RUN) != BZ_RUN_OK)
+
+		zret = BZ2_bzCompress (&bzip->stream, BZ_RUN);
+		if (zret != BZ_RUN_OK) {
+			g_warning ("Unexpected error code %d from bzlib during compression.",
+				   zret);
+			return FALSE;
+		}
+	}
+
+	if (bzip->stream.avail_out == 0) {
+		if (!bzip_output_block (bzip))
 			return FALSE;
 	}
 
@@ -209,6 +220,8 @@ gsf_output_bzip_class_init (GObjectClass *gobject_class)
 	output_class->Write	= gsf_output_bzip_write;
 	output_class->Seek	= gsf_output_bzip_seek;
 	output_class->Close	= gsf_output_bzip_close;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfOutputBzip, gsf_output_bzip,
@@ -224,7 +237,7 @@ GSF_CLASS (GsfOutputBzip, gsf_output_bzip,
  *
  * Returns a new file or NULL.
  **/
-GsfOutputBzip *
+GsfOutput *
 gsf_output_bzip_new (GsfOutput *sink, GError **err)
 {
 #ifdef HAVE_BZ2
@@ -241,11 +254,13 @@ gsf_output_bzip_new (GsfOutput *sink, GError **err)
 		return NULL;
 	}
 
-	return bzip;
+	return GSF_OUTPUT (bzip);
 #else
+#ifdef __GNUC__
 #warning Building without BZ2 support
+#endif
 	if (err)
-		*err = g_error_new (gsf_input_error (), 0,
+		*err = g_error_new (gsf_output_error_id (), 0,
 				    "BZ2 support not enabled");
 	return NULL;
 #endif

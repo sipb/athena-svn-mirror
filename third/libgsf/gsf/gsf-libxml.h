@@ -2,7 +2,7 @@
 /*
  * gsf-libxml.h: Utility wrappers for using gsf with libxml
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -31,6 +31,10 @@ G_BEGIN_DECLS
 /****************************************************************************/
 /* GSF wrappers for libxml2 */
 xmlParserCtxt *gsf_xml_parser_context (GsfInput   *input);
+#if 0
+				       /* this is cleaner, tack it on for 2.0 */
+					xmlSAXHandlerPtr sax, gpointer user);
+#endif
 int	       gsf_xmlDocFormatDump   (GsfOutput  *output,
 				       xmlDoc	  *cur,
 				       char const *encoding,
@@ -44,6 +48,12 @@ typedef struct _GsfXMLIn	GsfXMLIn;
 typedef struct _GsfXMLInDoc	GsfXMLInDoc;
 typedef struct _GsfXMLInNode	GsfXMLInNode;
 typedef struct _GsfXMLInNS	GsfXMLInNS;
+
+typedef enum {
+	GSF_XML_NO_CONTENT,
+	GSF_XML_CONTENT,
+	GSF_XML_SHARED_CONTENT
+} GsfXMLContent;
 
 struct _GsfXMLIn {
 	GsfXMLInDoc  const *doc;	/* init before parsing */
@@ -69,8 +79,8 @@ struct _GsfXMLInNode {
 	gboolean parent_initialized;
 	GSList *groups;
 
-	gboolean	has_content;
-	gboolean	allow_unknown;
+	unsigned	has_content;
+	gboolean	deprecated_unused_allow_unknown; /* remains here for binary compat */
 	gboolean	check_children_for_ns;
 
 	void (*start) (GsfXMLIn *state, xmlChar const **attrs);
@@ -93,10 +103,10 @@ struct _GsfXMLInNS {
 { uri, id}
 
 #define GSF_XML_IN_NODE_FULL(parent_id, id, ns, name, has_content, 	\
-			     allow_unknown, check_ns, start, end, user)	\
+			     deprecated_unused_allow_unknown, check_ns, start, end, user)	\
 {									\
 	#id, ns, name, #parent_id, FALSE, NULL,				\
-	has_content, allow_unknown, check_ns, start, end, { user } 	\
+	has_content, deprecated_unused_allow_unknown, check_ns, start, end, { user } 	\
 }
 
 #define GSF_XML_IN_NODE(parent_id, id, ns, name, has_content, start, end) \
@@ -108,9 +118,9 @@ void	     gsf_xml_in_doc_free (GsfXMLInDoc *doc);
 
 gboolean    gsf_xml_in_parse	 (GsfXMLIn *state, GsfInput *input);
 char const *gsf_xml_in_check_ns	 (GsfXMLIn const *state, char const *str,
-				  unsigned ns_id);
+				  unsigned int ns_id);
 gboolean    gsf_xml_in_namecmp	 (GsfXMLIn const *state, char const *str,
-				  unsigned ns_id, char const *name);
+				  unsigned int ns_id, char const *name);
 
 /****************************************************************************/
 /* Simplified GSF based xml export (does not use libxml) */
@@ -124,8 +134,9 @@ typedef struct _GsfXMLOut	GsfXMLOut;
 GType gsf_xml_out_get_type (void);
 GsfXMLOut *gsf_xml_out_new (GsfOutput *output);
 
+void	    gsf_xml_out_set_doc_type	(GsfXMLOut *xml, char const *type);
 void	    gsf_xml_out_start_element	(GsfXMLOut *xml, char const *id);
-char const *gsf_xml_out_end_element	(GsfXMLOut *xml);
+const char *gsf_xml_out_end_element	(GsfXMLOut *xml);
 
 void gsf_xml_out_simple_element		(GsfXMLOut *xml, char const *id,
 					 char const *content);
@@ -143,13 +154,13 @@ void gsf_xml_out_add_bool		(GsfXMLOut *xml, char const *id,
 void gsf_xml_out_add_int		(GsfXMLOut *xml, char const *id,
 					 int val);
 void gsf_xml_out_add_uint		(GsfXMLOut *xml, char const *id,
-					 unsigned val);
+					 unsigned int val);
 void gsf_xml_out_add_float		(GsfXMLOut *xml, char const *id,
 					 double val, int precision);
 void gsf_xml_out_add_color		(GsfXMLOut *xml, char const *id,
-					 unsigned r, unsigned g, unsigned b);
+					 unsigned int r, unsigned int g, unsigned int b);
 void gsf_xml_out_add_base64		(GsfXMLOut *xml, char const *id,
-					 guint8 const *data, unsigned len);
+					 guint8 const *data, unsigned int len);
 
 /* TODO : something for enums ? */
 

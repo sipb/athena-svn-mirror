@@ -2,7 +2,7 @@
 /*
  * gsf-input-textline.c: textline based input
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -25,6 +25,8 @@
 #include <gsf/gsf-impl-utils.h>
 
 #include <string.h>
+
+static GObjectClass *parent_class;
 
 struct _GsfInputTextline {
 	GsfInput input;
@@ -52,7 +54,7 @@ typedef struct {
  *
  * Returns a new file or NULL.
  **/
-GsfInputTextline *
+GsfInput *
 gsf_input_textline_new (GsfInput *source)
 {
 	GsfInputTextline *input;
@@ -66,13 +68,12 @@ gsf_input_textline_new (GsfInput *source)
 	input->buf_size = 0;
 	gsf_input_set_size (GSF_INPUT (source), gsf_input_size (source));
 
-	return input;
+	return GSF_INPUT (input);
 }
 
 static void
 gsf_input_textline_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
 	GsfInputTextline *input = (GsfInputTextline *)obj;
 
 	if (input->source != NULL) {
@@ -85,9 +86,7 @@ gsf_input_textline_finalize (GObject *obj)
 	}
 	input->buf_size = 0;
 
-	parent_class = g_type_class_peek (GSF_INPUT_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static GsfInput *
@@ -141,6 +140,8 @@ gsf_input_textline_class_init (GObjectClass *gobject_class)
 	input_class->Dup	= gsf_input_textline_dup;
 	input_class->Read	= gsf_input_textline_read;
 	input_class->Seek	= gsf_input_textline_seek;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfInputTextline, gsf_input_textline,
@@ -185,8 +186,7 @@ gsf_input_textline_ascii_gets (GsfInputTextline *textline)
 
 		/* copy the remains into the buffer, grow it if necessary */
 		len = ptr - textline->remainder;
-		/* "+1", just in case len==0.  */
-		if (count + len + 1 > textline->buf_size) {
+		if (count + len >= textline->buf_size) {
 			textline->buf_size += len;
 			textline->buf = g_renew (guint8, textline->buf,
 						 textline->buf_size + 1);
@@ -234,6 +234,16 @@ gsf_input_textline_ascii_gets (GsfInputTextline *textline)
 	return textline->buf;
 }
 
+/**
+ * gsf_input_textline_utf8_gets :
+ * @input :
+ *
+ * A utility routine to read things line by line from the underlying source.
+ * Trailing newlines and carriage returns are stipped, and the resultant buffer
+ * can be edited.
+ *
+ * returns the string read, or NULL on eof.
+ **/
 guint8 *
 gsf_input_textline_utf8_gets (GsfInputTextline *textline)
 {
@@ -263,7 +273,7 @@ gsf_input_textline_utf8_gets (GsfInputTextline *textline)
 
 		/* copy the remains into the buffer, grow it if necessary */
 		len = ptr - textline->remainder;
-		if ((count + len) > textline->buf_size) {
+		if (count + len >= textline->buf_size) {
 			textline->buf_size += len;
 			textline->buf = g_renew (guint8, textline->buf,
 						 textline->buf_size + 1);

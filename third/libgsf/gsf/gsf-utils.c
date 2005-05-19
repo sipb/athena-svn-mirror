@@ -2,7 +2,7 @@
 /*
  * gsf-utils.c: 
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -27,8 +27,25 @@
 #include <stdio.h>
 #include <string.h>
 
+/*
+ * Glib gets this wrong, really.  ARM's floating point format is a weird
+ * mixture.
+ */
+#define G_ARMFLOAT_ENDIAN 56781234
+#if defined(__arm__) && !defined(__vfp__) && (G_BYTE_ORDER == G_LITTLE_ENDIAN)
+#define G_FLOAT_BYTE_ORDER G_ARMFLOAT_ENDIAN
+#else
+#define G_FLOAT_BYTE_ORDER G_BYTE_ORDER
+#endif
+
+
 static void base64_init (void);
 
+/**
+ * gsf_init :
+ *
+ * Initializes the GSF library
+ */
 void
 gsf_init (void)
 {
@@ -36,9 +53,34 @@ gsf_init (void)
 	base64_init ();
 }
 
+/**
+ * gsf_shutdown:
+ * 
+ * De-intializes the GSF library
+ */
 void
 gsf_shutdown (void)
 {
+}
+
+static void
+gsf_mem_dump_full (guint8 const *ptr, size_t len, unsigned offset)
+{
+	size_t i, j, off;
+
+	for (i = 0 ; i < (len+15)/16 ; i++) {
+		g_print ("%8x | ", i*16 + offset);
+		for (j = 0;j < 16; j++) {
+			off = j + (i << 4);
+			off<len ? g_print("%2x ", ptr[off]) : g_print("XX ");
+		}
+		g_print ("| ");
+		for (j = 0 ; j < 16 ; j++) {
+			off = j + (i<<4);
+			g_print ("%c", off < len ? (ptr[off] >= '!' && ptr[off] < 127 ? ptr[off] : '.') : '*');
+		}
+		g_print ("\n");
+	}
 }
 
 /**
@@ -51,28 +93,20 @@ gsf_shutdown (void)
 void
 gsf_mem_dump (guint8 const *ptr, size_t len)
 {
-	size_t lp, lp2, off;
-
-	for (lp = 0;lp<(len+15)/16;lp++)
-	{
-		g_print ("%8x | ", lp*16);
-		for (lp2 = 0;lp2<16;lp2++) {
-			off = lp2 + (lp<<4);
-			off<len?g_print("%2x ", ptr[off]):g_print("XX ");
-		}
-		g_print ("| ");
-		for (lp2 = 0;lp2<16;lp2++) {
-			off = lp2 + (lp<<4);
-			g_print ("%c", off < len ? (ptr[off] >= '!' && ptr[off] < 127 ? ptr[off] : '.') : '*');
-		}
-		g_print ("\n");
-	}
+	gsf_mem_dump_full (ptr, len, 0);
 }
 
+/**
+ * gsf_input_dump :
+ * @input: a #GsfInput
+ * @dump_as_hex: If TRUE, dump in hexidecmal format
+ *
+ * Dumps @input's contents to STDOUT, optionally in hex format.
+ */
 void
-gsf_input_dump (GsfInput *input)
+gsf_input_dump (GsfInput *input, gboolean dump_as_hex)
 {
-	size_t size, count;
+	size_t size, count, offset = 0;
 	guint8 const *data;
 
 	/* read in small blocks to excercise things */
@@ -83,9 +117,15 @@ gsf_input_dump (GsfInput *input)
 			count = 0x100;
 		data = gsf_input_read (GSF_INPUT (input), count, NULL);
 		g_return_if_fail (data != NULL);
-		fwrite (data, 1, count, stdout);
+		if (dump_as_hex)
+			gsf_mem_dump_full (data, count, offset);
+		else
+			fwrite (data, 1, count, stdout);
 		size -= count;
+		offset += count;
 	}
+	if (!dump_as_hex)
+		fflush (stdout);
 }
 
 guint64
@@ -104,7 +144,7 @@ gsf_le_get_guint64 (void const *p)
 
 		return li;
 	} else {
-		g_error ("Big endian machine, but weird size of float");
+		g_error ("Big endian machine, but weird size of guint64");
 	}
 #elif G_BYTE_ORDER == G_LITTLE_ENDIAN
 	if (sizeof (guint64) == 8) {
@@ -116,7 +156,7 @@ gsf_le_get_guint64 (void const *p)
 		memcpy (&data, p, sizeof (data));
 		return data;
 	} else {
-		g_error ("Little endian machine, but weird size of doubles");
+		g_error ("Little endian machine, but weird size of guint64");
 	}
 #else
 #error "Byte order not recognised -- out of luck"
@@ -126,7 +166,7 @@ gsf_le_get_guint64 (void const *p)
 float
 gsf_le_get_float (void const *p)
 {
-#if G_BYTE_ORDER == G_BIG_ENDIAN
+#if G_FLOAT_BYTE_ORDER == G_BIG_ENDIAN
 	if (sizeof (float) == 4) {
 		float   f;
 		int     i;
@@ -139,9 +179,9 @@ gsf_le_get_float (void const *p)
 
 		return f;
 	} else {
-		g_error ("Big endian machine, but weird size of float");
+		g_error ("Big endian machine, but weird size of floats");
 	}
-#elif G_BYTE_ORDER == G_LITTLE_ENDIAN
+#elif (G_FLOAT_BYTE_ORDER == G_LITTLE_ENDIAN) || (G_FLOAT_BYTE_ORDER == G_ARMFLOAT_ENDIAN)
 	if (sizeof (float) == 4) {
 		/*
 		 * On i86, we could access directly, but Alphas require
@@ -151,17 +191,17 @@ gsf_le_get_float (void const *p)
 		memcpy (&data, p, sizeof (data));
 		return data;
 	} else {
-		g_error ("Little endian machine, but weird size of doubles");
+		g_error ("Little endian machine, but weird size of floats");
 	}
 #else
-#error "Byte order not recognised -- out of luck"
+#error "Floating-point byte order not recognised -- out of luck"
 #endif
 }
 
 void
 gsf_le_set_float (void *p, float d)
 {
-#if G_BYTE_ORDER == G_BIG_ENDIAN
+#if G_FLOAT_BYTE_ORDER == G_BIG_ENDIAN
 	if (sizeof (float) == 4) {
 		int     i;
 		guint8 *t  = (guint8 *)&d;
@@ -171,9 +211,9 @@ gsf_le_set_float (void *p, float d)
 		for (i = 0; i < sd; i++)
 			p2[sd - 1 - i] = t[i];
 	} else {
-		g_error ("Big endian machine, but weird size of doubles");
+		g_error ("Big endian machine, but weird size of floats");
 	}
-#elif G_BYTE_ORDER == G_LITTLE_ENDIAN
+#elif (G_FLOAT_BYTE_ORDER == G_LITTLE_ENDIAN) || (G_FLOAT_BYTE_ORDER == G_ARMFLOAT_ENDIAN)
 	if (sizeof (float) == 4) {
 		/*
 		 * On i86, we could access directly, but Alphas require
@@ -181,17 +221,22 @@ gsf_le_set_float (void *p, float d)
 		 */
 		memcpy (p, &d, sizeof (d));
 	} else {
-		g_error ("Little endian machine, but weird size of doubles");
+		g_error ("Little endian machine, but weird size of floats");
 	}
 #else
-#error "Byte order not recognised -- out of luck"
+#error "Floating-point byte order not recognised -- out of luck"
 #endif
 }
 
 double
 gsf_le_get_double (void const *p)
 {
-#if G_BYTE_ORDER == G_BIG_ENDIAN
+#if G_FLOAT_BYTE_ORDER == G_ARMFLOAT_ENDIAN
+	double data;
+	memcpy ((char *)&data + 4, p, 4);
+	memcpy ((char *)&data, (const char *)p + 4, 4);
+	return data;
+#elif G_FLOAT_BYTE_ORDER == G_BIG_ENDIAN
 	if (sizeof (double) == 8) {
 		double  d;
 		int     i;
@@ -206,7 +251,7 @@ gsf_le_get_double (void const *p)
 	} else {
 		g_error ("Big endian machine, but weird size of doubles");
 	}
-#elif G_BYTE_ORDER == G_LITTLE_ENDIAN
+#elif G_FLOAT_BYTE_ORDER == G_LITTLE_ENDIAN
 	if (sizeof (double) == 8) {
 		/*
 		 * On i86, we could access directly, but Alphas require
@@ -219,14 +264,17 @@ gsf_le_get_double (void const *p)
 		g_error ("Little endian machine, but weird size of doubles");
 	}
 #else
-#error "Byte order not recognised -- out of luck"
+#error "Floating-point byte order not recognised -- out of luck"
 #endif
 }
 
 void
 gsf_le_set_double (void *p, double d)
 {
-#if G_BYTE_ORDER == G_BIG_ENDIAN
+#if G_FLOAT_BYTE_ORDER == G_ARMFLOAT_ENDIAN
+	memcpy (p, (const char *)&d + 4, 4);
+	memcpy ((char *)p + 4, &d, 4);
+#elif G_FLOAT_BYTE_ORDER == G_BIG_ENDIAN
 	if (sizeof (double) == 8) {
 		int     i;
 		guint8 *t  = (guint8 *)&d;
@@ -238,7 +286,7 @@ gsf_le_set_double (void *p, double d)
 	} else {
 		g_error ("Big endian machine, but weird size of doubles");
 	}
-#elif G_BYTE_ORDER == G_LITTLE_ENDIAN
+#elif G_FLOAT_BYTE_ORDER == G_LITTLE_ENDIAN
 	if (sizeof (double) == 8) {
 		/*
 		 * On i86, we could access directly, but Alphas require
@@ -249,7 +297,7 @@ gsf_le_set_double (void *p, double d)
 		g_error ("Little endian machine, but weird size of doubles");
 	}
 #else
-#error "Byte order not recognised -- out of luck"
+#error "Floating-point byte order not recognised -- out of luck"
 #endif
 }
 
@@ -296,13 +344,14 @@ gsf_iconv_close (GIConv handle)
 
 /**
  * gsf_filename_to_utf8:
- *
  * @filename: file name suitable for open(2).
  * @quoted: if TRUE, the resulting utf8 file name will be quoted
  *    (unless it is invalid).
  *
  * A utility wrapper to make sure filenames are valid utf8.
  * Caller must g_free the result.
+ *
+ * Returns @filename using utf-8 encoding for display
  **/
 char *
 gsf_filename_to_utf8 (char const *filename, gboolean quoted)
@@ -513,6 +562,8 @@ gsf_base64_encode_step (guint8 const *in, size_t len,
  * @save: leftover bits that have not yet been decoded
  *
  * Decodes a chunk of base64 encoded data
+ *
+ * Returns the number of bytes converted
  **/
 size_t
 gsf_base64_decode_step (guint8 const *in, size_t len, guint8 *out,
@@ -570,9 +621,13 @@ gsf_base64_encode_simple (guint8 const *data, size_t len)
 	guint8 *out;
 	int state = 0, outlen;
 	unsigned int save = 0;
-	
-	out = g_new (guint8, len * 4 / 3 + 5);
-	outlen = gsf_base64_encode_close (data, len, FALSE, out, &state, &save);
+	gboolean break_lines = TRUE;
+
+	outlen = len * 4 / 3 + 5;
+	if (break_lines) outlen += outlen / 50;
+	out = g_new (guint8, outlen);
+	outlen = gsf_base64_encode_close (data, len, break_lines,
+					  out, &state, &save);
 	out [outlen] = '\0';
 	return out;
 }

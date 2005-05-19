@@ -2,7 +2,7 @@
 /*
  * gsf-structured-blob.h:  Utility storage to blob in/out a tree of data
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -38,7 +38,7 @@ GType gsf_structured_blob_get_type (void);
 
 GsfStructuredBlob *gsf_structured_blob_read  (GsfInput *input);
 gboolean	   gsf_structured_blob_write (GsfStructuredBlob *blob,
-					      GsfOutfile *outfile);
+					      GsfOutfile *container);
 
 G_END_DECLS
 

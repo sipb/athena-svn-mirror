@@ -2,7 +2,7 @@
 /*
  * gsf-output.c: interface for storing data
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -24,10 +24,12 @@
 #include <gsf/gsf-impl-utils.h>
 #include <string.h>
 
-static gboolean
-gsf_output_vprintf (GsfOutput *output, char const* format, va_list args);
+static gsf_off_t
+gsf_output_real_vprintf (GsfOutput *output, char const* format, va_list args);
 
 #define GET_CLASS(instance) G_TYPE_INSTANCE_GET_CLASS (instance, GSF_OUTPUT_TYPE, GsfOutputClass)
+
+static GObjectClass *parent_class;
 
 enum {
 	PROP_0,
@@ -99,6 +101,8 @@ gsf_output_finalize (GObject *obj)
 		output->container = NULL;
 	}
 	g_clear_error (&output->err);
+
+	G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 static void
@@ -125,27 +129,33 @@ gsf_output_class_init (GObjectClass *gobject_class)
 	gobject_class->finalize     = gsf_output_finalize;
 	gobject_class->set_property = gsf_output_set_property;
 	gobject_class->get_property = gsf_output_get_property;
-	output_class->Vprintf       = gsf_output_vprintf;
+	output_class->Vprintf       = gsf_output_real_vprintf;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 
 	g_object_class_install_property (gobject_class,
 					 PROP_NAME,
-					 g_param_spec_pointer ("name", "Name",
-							       "The Output's Name",
-							       G_PARAM_READABLE));
+					 g_param_spec_string ("name", "Name",
+							      "The Output's Name",
+							      NULL,
+							      G_PARAM_READABLE));
 	g_object_class_install_property (gobject_class,
 					 PROP_SIZE,
-					 g_param_spec_pointer ("size", "Size",
-							       "The Output's Size",
-							       G_PARAM_READABLE));
+					 g_param_spec_int64 ("size", "Size",
+							     "The Output's Size",
+							     0, G_MAXINT64, 0,
+							     G_PARAM_READABLE));
 	g_object_class_install_property (gobject_class,
 					 PROP_POS,
-					 g_param_spec_pointer ("position", "Position",
-							       "The Output's Current Position",
-							       G_PARAM_READABLE));
+					 g_param_spec_int64 ("position", "Position",
+							     "The Output's Current Position",
+							     0, G_MAXINT64, 0,
+							     G_PARAM_READABLE));
 	g_object_class_install_property (gobject_class,
 					 PROP_CLOSED,
-					 g_param_spec_pointer ("is_closed", "Is Closed",
+					 g_param_spec_boolean ("is_closed", "Is Closed",
 							       "Whether the Output is Closed",
+							       FALSE,
 							       G_PARAM_READABLE));
 }
 
@@ -294,6 +304,17 @@ gsf_output_seek	(GsfOutput *output, gsf_off_t offset, GSeekType whence)
 	return FALSE;
 }
 
+static inline gboolean
+gsf_output_inc_cur_offset (GsfOutput *output, gsf_off_t num_bytes)
+{
+	output->cur_offset += num_bytes;
+	if (output->cur_offset < num_bytes)
+		return gsf_output_set_error (output, 0, "Output size overflow.");
+	if (output->cur_size < output->cur_offset)
+		output->cur_size = output->cur_offset;
+	return TRUE;
+}
+
 /**
  * gsf_output_write :
  * @output :
@@ -310,12 +331,8 @@ gsf_output_write (GsfOutput *output,
 
 	if (num_bytes == 0)
 		return TRUE;
-	if (GET_CLASS (output)->Write (output, num_bytes, data)) {
-		output->cur_offset += num_bytes;
-		if (output->cur_size < output->cur_offset)
-			output->cur_size = output->cur_offset;
-		return TRUE;
-	}
+	if (GET_CLASS (output)->Write (output, num_bytes, data))
+		return gsf_output_inc_cur_offset (output, num_bytes);
 
 	/* the implementation should have assigned whatever errors are necessary */
 	return FALSE;
@@ -339,8 +356,8 @@ gsf_output_error (GsfOutput const *output)
  * @output :
  * @name :
  *
- * <protected> This is a utility routine that should only be used by derived
- * outputs.
+ * <note>This is a utility routine that should only be used by derived
+ * outputs.</note>
  *
  * Returns : TRUE if the assignment was ok.
  **/
@@ -363,11 +380,11 @@ gsf_output_set_name (GsfOutput *output, char const *name)
  * @output :
  * @container :
  *
- * <protected> This is a utility routine that should only be used by derived
- * outputs.
+ * <note>This is a utility routine that should only be used by derived
+ * outputs.</note>
  *
  * Returns : TRUE if the assignment was ok.
- */
+ **/
 gboolean
 gsf_output_set_container (GsfOutput *output, GsfOutfile *container)
 {
@@ -384,13 +401,15 @@ gsf_output_set_container (GsfOutput *output, GsfOutfile *container)
 /**
  * gsf_output_set_error :
  * @output :
- * @container :
+ * @code :
+ * @format :
+ * @Varargs :
  *
- * <protected> This is a utility routine that should only be used by derived
- * outputs.
+ * <note>This is a utility routine that should only be used by derived
+ * outputs.</note>
  *
- * Returns : Always returns FALSE to facilitate its use.
- */
+ * Returns Always returns FALSE to facilitate its use.
+ **/
 gboolean
 gsf_output_set_error (GsfOutput  *output,
 		      gint        code,
@@ -449,7 +468,7 @@ gsf_output_wrap (GObject *wrapper, GsfOutput *wrapee)
  * @wrapper :
  * @wrapee :
  *
- * Returns TRUE if the wrapping succeeded.
+ * Returns TRUE if the unwrapping succeeded.
  **/
 gboolean
 gsf_output_unwrap (GObject *wrapper, GsfOutput *wrapee)
@@ -472,10 +491,55 @@ gsf_output_error_id (void)
 	return quark;
 }
 
-static gboolean
-gsf_output_vprintf (GsfOutput *output, char const *fmt, va_list args)
+/**
+ * gsf_output_printf:
+ * @output: A #GsfOutput
+ * @format: The printf-style format string
+ * @Varargs: the arguments for @format
+ *
+ * Returns: TRUE if successful, FALSE if not
+ **/
+gboolean
+gsf_output_printf (GsfOutput *output, char const *format, ...)
 {
-	int reslen;
+	va_list args;
+	gboolean res;
+
+	va_start (args, format);
+	res = (gsf_output_vprintf (output, format, args) >= 0);
+	va_end (args);
+	return res;
+}
+
+/**
+ * gsf_output_vprintf:
+ * @output: A #GsfOutput
+ * @format: The printf-style format string
+ * @args: the arguments for @format
+ *
+ * Returns: number of bytes printed, a negative value if not successful
+ **/
+gsf_off_t
+gsf_output_vprintf (GsfOutput *output, char const *format, va_list args)
+{
+	gsf_off_t num_bytes;
+
+	g_return_val_if_fail (output != NULL, -1);
+	g_return_val_if_fail (format != NULL, -1);
+	/* g_return_val_if_fail (strlen (format) > 0, -1); -- Why? */
+
+	num_bytes = GET_CLASS (output)->Vprintf (output, format, args);
+
+	if (num_bytes >= 0)
+		if (!gsf_output_inc_cur_offset (output, num_bytes))
+			return -1;
+	return num_bytes;
+}
+
+static gsf_off_t
+gsf_output_real_vprintf (GsfOutput *output, char const *fmt, va_list args)
+{
+	gsf_off_t reslen;
 
 	if (NULL == output->printf_buf) {
 		output->printf_buf_size = 128;
@@ -490,29 +554,24 @@ gsf_output_vprintf (GsfOutput *output, char const *fmt, va_list args)
 		reslen = output->printf_buf_size = strlen (output->printf_buf);
 	}
 
-	return gsf_output_write (output, reslen, output->printf_buf);
+	if (reslen == 0 ||
+	    GET_CLASS (output)->Write (output, reslen, output->printf_buf))
+		return reslen;
+
+	return -1;
 }
 
+/**
+ * gsf_output_puts:
+ * @output: A #GsfOutput
+ * @line: %null terminated string to write
+ *
+ * Like fputs, this assumes that the line already ends with a newline 
+ *
+ * Returns: TRUE if successful, FALSE if not
+ **/
 gboolean
-gsf_output_printf (GsfOutput *output, char const* format, ...)
-{
-	va_list args;
-	gboolean ret;
-
-	g_return_val_if_fail (output != NULL, FALSE);
-	g_return_val_if_fail (format != NULL, FALSE);
-	g_return_val_if_fail (strlen (format) > 0, FALSE);
-
-	va_start (args, format);
-	ret = GET_CLASS (output)->Vprintf (output, format, args);
-	va_end (args);
-
-	return ret;
-}
-
-/* Like fputs, this assumes that the line already ends with a newline */
-gboolean
-gsf_output_puts (GsfOutput *output, char const* line)
+gsf_output_puts (GsfOutput *output, char const *line)
 {
 	size_t nbytes = 0;
 
@@ -521,47 +580,3 @@ gsf_output_puts (GsfOutput *output, char const* line)
 	nbytes = strlen (line);
 	return gsf_output_write (output, nbytes, line);
 }
-
-#if 0
-
-#include <gsf/gsf-output-stdio.h>
-#include <gsf/gsf-output-memory.h>
-
-#ifdef HAVE_GNOME
-#include <gsf-gnome/gsf-output-gnomevfs.h>
-#endif
-
-GsfOutput*
-gsf_output_new_for_uri (char const * uri, GError ** err)
-{
-	GsfOutput * output = NULL;
-	size_t len;
-
-	g_return_val_if_fail (uri, NULL);
-
-	len = strlen (uri);
-	g_return_val_if_fail (len, NULL);
-
-	if (len > 3 && !strstr (uri, ":/")) {
-		/* assume plain file */
-		output = GSF_OUTPUT (gsf_output_stdio_new (uri, err));
-	} else if (len >= 6 && !strncmp (uri, "mem://", 6)) {
-		output = GSF_OUTPUT (gsf_output_memory_new ());
-		gsf_output_set_name (output, uri);
-	} else {
-#if HAVE_GNOME
-		/* have gnome, let GnomeVFS deal with this */
-		output = GSF_OUTPUT (gsf_output_gnomevfs_new (uri, err));
-#else
-		if (len > 7 && !strncmp (uri, "file:/", 6)) {
-			/* dumb attempt to translate this into a local path */
-			output = GSF_OUTPUT (gsf_output_stdio_new (uri+7, err));			
-		} 
-		/* else: unknown or unhandled protocol - bail */
-#endif
-	}
-
-	return output;
-}
-
-#endif

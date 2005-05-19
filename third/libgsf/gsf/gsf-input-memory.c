@@ -2,7 +2,7 @@
 /*
  * gsf-input-memory.c: 
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -35,6 +35,8 @@
 #endif
 #endif
 
+static GObjectClass *parent_class;
+
 struct _GsfInputMemory {
 	GsfInput parent;
 	GsfSharedMemory *shared;
@@ -42,20 +44,33 @@ struct _GsfInputMemory {
 	int fd;
 #endif
 };
-typedef struct {
-	GsfInputClass input_class;
-} GsfInputMemoryClass;
+typedef GsfInputClass GsfInputMemoryClass;
 
-GsfInputMemory *
+/**
+ * gsf_input_memory_new:
+ * @buf: The input bytes
+ * @length: The length of @buf
+ * @needs_free: Whether you want this memory to be free'd at object destruction
+ *
+ * Returns: A new #GsfInputMemory
+ */
+GsfInput *
 gsf_input_memory_new (guint8 const *buf, gsf_off_t length, gboolean needs_free)
 {
 	GsfInputMemory *mem = g_object_new (GSF_INPUT_MEMORY_TYPE, NULL);
 	mem->shared = gsf_shared_memory_new ((void *)buf, length, needs_free);
 	gsf_input_set_size (GSF_INPUT (mem), length);
-	return mem;
+	return GSF_INPUT (mem);
 }
 
-GsfInputMemory *
+/**
+ * gsf_input_memory_new_clone:
+ * @buf: The input bytes
+ * @length: The length of @buf
+ *
+ * Returns: A new #GsfInputMemory
+ */
+GsfInput *
 gsf_input_memory_new_clone (guint8 const *buf, gsf_off_t length)
 {	
 	GsfInputMemory *mem = NULL;
@@ -67,13 +82,12 @@ gsf_input_memory_new_clone (guint8 const *buf, gsf_off_t length)
 	mem = g_object_new (GSF_INPUT_MEMORY_TYPE, NULL);
 	mem->shared = gsf_shared_memory_new ((void *)cpy, length, TRUE);
 	gsf_input_set_size (GSF_INPUT (mem), length);
-	return mem;
+	return GSF_INPUT (mem);
 }
 
 static void
 gsf_input_memory_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
 	GsfInputMemory *mem = (GsfInputMemory *) (obj);
 
 	if (mem->shared)
@@ -84,9 +98,7 @@ gsf_input_memory_finalize (GObject *obj)
 		close (mem->fd);
 #endif
 
-	parent_class = g_type_class_peek (GSF_INPUT_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static GsfInput *
@@ -124,11 +136,10 @@ gsf_input_memory_read (GsfInput *input, size_t num_bytes, guint8 *optional_buffe
 }
 
 static gboolean
-gsf_input_memory_seek (GsfInput *input, gsf_off_t offset, GSeekType whence)
+gsf_input_memory_seek (G_GNUC_UNUSED GsfInput *input,
+		       G_GNUC_UNUSED gsf_off_t offset,
+		       G_GNUC_UNUSED GSeekType whence)
 {
-	(void)input;
-	(void)offset;
-	(void)whence;
 	return FALSE;
 }
 
@@ -151,6 +162,8 @@ gsf_input_memory_class_init (GObjectClass *gobject_class)
 	input_class->Dup	= gsf_input_memory_dup;
 	input_class->Read	= gsf_input_memory_read;
 	input_class->Seek	= gsf_input_memory_seek;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfInputMemory, gsf_input_memory,
@@ -177,8 +190,15 @@ GSF_CLASS (GsfInputMemory, gsf_input_memory,
 #	define MAP_FAILED ((void *)-1)
 #endif
 #endif
-
-GsfInputMemory *
+     
+/**
+ * gsf_input_mmap_new:
+ * @filename: The file on disk that you want to mmap
+ * @err: A #GError, or optionally %null
+ *
+ * Returns: A new #GsfInputMemory
+ */
+GsfInput *
 gsf_input_mmap_new (char const *filename, GError **err)
 {
 #ifdef HAVE_MMAP
@@ -223,7 +243,7 @@ gsf_input_mmap_new (char const *filename, GError **err)
 		close (fd);
 		return NULL;
 	}
-	buf = mmap (0, size, PROT_READ, MAP_SHARED, fd, (off_t) 0);
+	buf = mmap (NULL, size, PROT_READ, MAP_SHARED, fd, (off_t) 0);
 	if (buf == MAP_FAILED) {
 		if (err != NULL) {
 			char *utf8name = gsf_filename_to_utf8 (filename, FALSE);
@@ -246,7 +266,7 @@ gsf_input_mmap_new (char const *filename, GError **err)
 	close (fd);
 #endif
 
-	return mem;
+	return GSF_INPUT (mem);
 #else
 #ifdef __GNUC__
 #warning MMAP Unsupported

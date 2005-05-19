@@ -2,7 +2,7 @@
 /*
  * gsf-utils.h: 
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -69,7 +69,7 @@ void gsf_shutdown (void);
 
 /* Debugging utilities */
 void gsf_mem_dump   (guint8 const *ptr, size_t len);
-void gsf_input_dump (GsfInput *input);
+void gsf_input_dump (GsfInput *input, gboolean dump_as_hex);
 
 /* base64 encoding utilities */
 guint8 *gsf_base64_encode_simple (guint8 const *data, size_t len);

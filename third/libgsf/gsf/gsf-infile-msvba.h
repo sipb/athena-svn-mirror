@@ -2,7 +2,7 @@
 /*
  * gsf-infile-msvba.h: 
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -23,6 +23,7 @@
 #define GSF_INFILE_MSVBA_H
 
 #include <gsf/gsf.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -34,7 +35,7 @@ typedef struct _GsfInfileMSVBA GsfInfileMSVBA;
 
 GType gsf_infile_msvba_get_type (void);
 
-GsfInfileMSVBA *gsf_infile_msvba_new (GsfInfile *source, GError **err);
+GsfInfile *gsf_infile_msvba_new (GsfInfile *source, GError **err);
 
 G_END_DECLS
 

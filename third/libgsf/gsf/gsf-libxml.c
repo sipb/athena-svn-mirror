@@ -2,7 +2,7 @@
 /*
  * gsf-libxml.c :
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -29,6 +29,8 @@
 
 #include <math.h>
 #include <string.h>
+
+static GObjectClass *parent_class;
 
 /* Note: libxml erroneously declares the length argument as int.  */
 static int
@@ -61,6 +63,26 @@ gsf_libxml_close (void *context)
 	return TRUE;
 }
 
+static xmlParserCtxtPtr
+gsf_xml_parser_context_full (GsfInput *input, xmlSAXHandlerPtr sax, gpointer user)
+{
+	GsfInput *gzip;
+
+	g_return_val_if_fail (GSF_IS_INPUT (input), NULL);
+
+	gzip = gsf_input_gzip_new (input, NULL);
+	if (gzip != NULL)
+		input = gzip;
+	else
+		g_object_ref (G_OBJECT (input));
+
+	return xmlCreateIOParserCtxt (
+		sax, user,
+		(xmlInputReadCallback) gsf_libxml_read, 
+		(xmlInputCloseCallback) gsf_libxml_close,
+		input, XML_CHAR_ENCODING_NONE);
+}
+
 /**
  * gsf_xml_parser_context :
  * @input :
@@ -69,27 +91,15 @@ gsf_libxml_close (void *context)
  * This signature will probably change to supply a SAX structure.
  *
  * NOTE : adds a reference to @input
+ * NOTE : a simple wrapper around a cleaner implementation that will fold in
+ *	 when we add other api changes.  Its not worth bumping just for this
  *
  * Returns : A parser context or NULL
  **/
 xmlParserCtxtPtr
 gsf_xml_parser_context (GsfInput *input)
 {
-	GsfInputGZip *gzip;
-
-	g_return_val_if_fail (GSF_IS_INPUT (input), NULL);
-
-	gzip = gsf_input_gzip_new (input, NULL);
-	if (gzip != NULL)
-		input = GSF_INPUT (gzip);
-	else
-		g_object_ref (G_OBJECT (input));
-
-	return xmlCreateIOParserCtxt (
-		NULL, NULL,
-		(xmlInputReadCallback) gsf_libxml_read, 
-		(xmlInputCloseCallback) gsf_libxml_close,
-		input, XML_CHAR_ENCODING_NONE);
+	return gsf_xml_parser_context_full (input, NULL, NULL);
 }
 
 /**
@@ -171,6 +181,12 @@ typedef struct {
 	GSList *elem;
 } GsfXMLInNodeGroup;
 
+static char const *
+node_name (GsfXMLInNode const *node)
+{
+	return (node->name != NULL) ? node->name : "{catch all)}";
+}
+
 static void
 gsf_xml_in_start_element (GsfXMLIn *state, xmlChar const *name, xmlChar const **attrs)
 {
@@ -188,7 +204,7 @@ gsf_xml_in_start_element (GsfXMLIn *state, xmlChar const *name, xmlChar const **
 	 * we need to know which namespace we are in before we can recognize
 	 * the current node there is no choice.
 	 * eg <gnm:Workbook xmlns:gnm="www.gnumeric.org"/> we can not know
-	 * that we are in node WORKSPACE without recognizing ns=gnm, which we
+	 * that we are in node 'Workbook' without recognizing ns=gnm, which we
 	 * would not do unless we checked for a namespace */
 	ns = state->doc->ns;
 	if (ns != NULL && state->node->check_children_for_ns) {
@@ -231,11 +247,21 @@ gsf_xml_in_start_element (GsfXMLIn *state, xmlChar const *name, xmlChar const **
 			if (0 != strncmp (name, inst->tag, inst->taglen))
 				continue;
 			tmp = name + inst->taglen;
-		} else
+		} else {
+#if 0
+			g_return_if_fail (state->ns_by_id->len > group->ns->ns_id);
+			inst = g_ptr_array_index (state->ns_by_id, group->ns->ns_id);
+			g_warning ("accepted ns = '%s' looking for '%s'", inst->tag, name);
+#endif
 			tmp = name;
+		}
 		for (elem = group->elem ; elem != NULL ; elem = elem->next) {
 			node = elem->data;
-			if (node->name != NULL && !strcmp (tmp, node->name)) {
+			if (node->name == NULL || !strcmp (tmp, node->name)) {
+				if (node->has_content == GSF_XML_CONTENT &&
+				    state->content->len > 0) {
+					g_warning ("too lazy to support nested unshared content for now.  We'll add it for 2.0");
+				}
 				state->state_stack = g_slist_prepend (state->state_stack,
 								      (gpointer)state->node);
 				state->ns_stack = g_slist_prepend (state->ns_stack,
@@ -251,19 +277,23 @@ gsf_xml_in_start_element (GsfXMLIn *state, xmlChar const *name, xmlChar const **
 
 	if (state->unknown_depth++)
 		return;
-	g_warning ("Unexpected element '%s' in state %s.", name, state->node->name);
+	g_warning ("Unexpected element '%s' in state %s.", name, node_name (state->node));
 	{
-		GSList *ptr = state->state_stack;
+		GSList *ptr;
 		GsfXMLInNode *node;
+		ptr = state->state_stack = g_slist_reverse (state->state_stack);
 		for (;ptr != NULL && ptr->next != NULL; ptr = ptr->next) {
 			node = ptr->data;
 			if (node != NULL) {
+#ifdef __GNUC__
 #warning if we really want this do we also want namespaces ?
-				g_print ("%s", node->name);
+#endif
+				g_print ("%s", node_name (node));
 				if (ptr->next != NULL && ptr->next->data != NULL)
 					g_print (" -> ");
 			}
 		}
+		state->state_stack = g_slist_reverse (state->state_stack);
 	}
 }
 
@@ -281,7 +311,7 @@ gsf_xml_in_end_element (GsfXMLIn *state,
 
 	if (state->node->end)
 		state->node->end (state, NULL);
-	if (state->node->has_content)
+	if (state->node->has_content == GSF_XML_CONTENT)
 		g_string_truncate (state->content, 0);
 
 	/* pop the state stack */
@@ -294,14 +324,13 @@ gsf_xml_in_end_element (GsfXMLIn *state,
 static void
 gsf_xml_in_characters (GsfXMLIn *state, const xmlChar *chars, int len)
 {
-	if (state->node->has_content)
+	if (state->node->has_content != GSF_XML_NO_CONTENT)
 		g_string_append_len (state->content, chars, len);
 }
 
 static xmlEntityPtr
-gsf_xml_in_get_entity (GsfXMLIn *state, const xmlChar *name)
+gsf_xml_in_get_entity (G_GNUC_UNUSED GsfXMLIn *state, const xmlChar *name)
 {
-	(void)state;
 	return xmlGetPredefinedEntity (name);
 }
 
@@ -335,79 +364,85 @@ gsf_xml_in_end_document (GsfXMLIn *state)
 }
 
 static void
-gsf_xml_in_warning (GsfXMLIn *state, const char *msg, ...)
+gsf_xml_in_warning (G_GNUC_UNUSED GsfXMLIn *state, const char *msg, ...)
 {
 	va_list args;
 
-	(void)state;
 	va_start (args, msg);
 	g_logv ("XML", G_LOG_LEVEL_WARNING, msg, args);
 	va_end (args);
 }
 
 static void
-gsf_xml_in_error (GsfXMLIn *state, const char *msg, ...)
+gsf_xml_in_error (G_GNUC_UNUSED GsfXMLIn *state, const char *msg, ...)
 {
 	va_list args;
 
-	(void)state;
 	va_start (args, msg);
 	g_logv ("XML", G_LOG_LEVEL_CRITICAL, msg, args);
 	va_end (args);
 }
 
 static void
-gsf_xml_in_fatal_error (GsfXMLIn *state, const char *msg, ...)
+gsf_xml_in_fatal_error (G_GNUC_UNUSED GsfXMLIn *state, const char *msg, ...)
 {
 	va_list args;
 
-	(void)state;
 	va_start (args, msg);
 	g_logv ("XML", G_LOG_LEVEL_ERROR, msg, args);
 	va_end (args);
 }
 
 static xmlSAXHandler gsfXMLInParser = {
-	0, /* internalSubset */
-	0, /* isStandalone */
-	0, /* hasInternalSubset */
-	0, /* hasExternalSubset */
-	0, /* resolveEntity */
+	NULL, /* internalSubset */
+	NULL, /* isStandalone */
+	NULL, /* hasInternalSubset */
+	NULL, /* hasExternalSubset */
+	NULL, /* resolveEntity */
 	(getEntitySAXFunc)gsf_xml_in_get_entity, /* getEntity */
-	0, /* entityDecl */
-	0, /* notationDecl */
-	0, /* attributeDecl */
-	0, /* elementDecl */
-	0, /* unparsedEntityDecl */
-	0, /* setDocumentLocator */
+	NULL, /* entityDecl */
+	NULL, /* notationDecl */
+	NULL, /* attributeDecl */
+	NULL, /* elementDecl */
+	NULL, /* unparsedEntityDecl */
+	NULL, /* setDocumentLocator */
 	(startDocumentSAXFunc)gsf_xml_in_start_document, /* startDocument */
 	(endDocumentSAXFunc)gsf_xml_in_end_document, /* endDocument */
 	(startElementSAXFunc)gsf_xml_in_start_element, /* startElement */
 	(endElementSAXFunc)gsf_xml_in_end_element, /* endElement */
-	0, /* reference */
+	NULL, /* reference */
 	(charactersSAXFunc)gsf_xml_in_characters, /* characters */
-	0, /* ignorableWhitespace */
-	0, /* processingInstruction */
-	0, /* comment */
+	NULL, /* ignorableWhitespace */
+	NULL, /* processingInstruction */
+	NULL, /* comment */
 	(warningSAXFunc)gsf_xml_in_warning, /* warning */
 	(errorSAXFunc)gsf_xml_in_error, /* error */
 	(fatalErrorSAXFunc)gsf_xml_in_fatal_error, /* fatalError */
-	0, /* getParameterEntity */
-	0, /* cdataBlock */
-	0, /* externalSubset */
+	NULL, /* getParameterEntity */
+	NULL, /* cdataBlock */
+	NULL, /* externalSubset */
 	0
+#if LIBXML_VERSION >= 20600
+	,
+	NULL, NULL, NULL
+#if LIBXML_VERSION >= 20602
+	,
+	NULL /* serror */
+#endif
+#endif
 };
 
 /**
  * gsf_xml_in_doc_new :
- * @doc :
+ * @root : an array of node descriptors
+ * @ns : an array of namespace identifiers
  *
  * Put the nodes in the NULL terminated array starting at @root and the name
  * spaces in the NULL terminated array starting at @ns together.  Link them up
  * and prepare the static data structures necessary to validate a doument based
  * on that description.
  *
- * Returns : NULL on error
+ * Returns NULL on error
  **/
 GsfXMLInDoc *
 gsf_xml_in_doc_new (GsfXMLInNode *root, GsfXMLInNS *ns)
@@ -442,8 +477,9 @@ gsf_xml_in_doc_new (GsfXMLInNode *root, GsfXMLInNS *ns)
 		if (tmp != NULL) {
 			/* if its empty then this is just a recusion */
 			if (node->start != NULL || node->end != NULL ||
-			    node->has_content != FALSE || node->user_data.v_int != 0) {
-				g_warning ("ID '%s' has already been registered", node->id);
+			    node->has_content != GSF_XML_NO_CONTENT || node->user_data.v_int != 0) {
+				g_warning ("ID '%s' has already been registered.\n"
+					   "The additional decls should not specify start,end,content,data", node->id);
 				return NULL;
 			}
 			real_node = tmp;
@@ -478,6 +514,16 @@ gsf_xml_in_doc_new (GsfXMLInNode *root, GsfXMLInNS *ns)
 			g_warning ("Parent ID '%s' unknown", node->parent_id);
 			return NULL;
 		}
+
+		/* WARNING VILE HACK :
+		 * The api in 1.8.2 passed has_content as a boolean.  It's too
+		 * late to change it but we need more contol.  We edit the bool
+		 * here to be GSF_CONTENT_NONE, GSF_CONTENT_ROOT and add a
+		 * mechanism to edit the flag later */
+		if (node->has_content != 0 &&
+		    node->has_content != GSF_XML_SHARED_CONTENT)
+			node->has_content = GSF_XML_CONTENT;
+
 		node->parent_initialized = TRUE;
 	}
 
@@ -536,15 +582,12 @@ gsf_xml_in_parse (GsfXMLIn *state, GsfInput *input)
 	g_return_val_if_fail (state != NULL, FALSE);
 	g_return_val_if_fail (GSF_IS_INPUT (input), FALSE);
 
-	ctxt = gsf_xml_parser_context (input);
+	ctxt = gsf_xml_parser_context_full (input, &gsfXMLInParser, state);
 
 	g_return_val_if_fail (ctxt != NULL, FALSE);
 
-	ctxt->userData = state;
 	state->content = g_string_sized_new (128);
-	ctxt->sax = &gsfXMLInParser;
 	xmlParseDocument (ctxt);
-	ctxt->sax = NULL;
 	res = ctxt->wellFormed;
 	xmlFreeParserCtxt (ctxt);
 
@@ -563,7 +606,7 @@ gsf_xml_in_parse (GsfXMLIn *state, GsfInput *input)
  * otherwise NULL.
  **/
 char const *
-gsf_xml_in_check_ns (GsfXMLIn const *state, char const *str, unsigned ns_id)
+gsf_xml_in_check_ns (GsfXMLIn const *state, char const *str, unsigned int ns_id)
 {
 	GsfXMLInNSInstance *inst = g_ptr_array_index (state->ns_by_id, ns_id);
 
@@ -574,17 +617,16 @@ gsf_xml_in_check_ns (GsfXMLIn const *state, char const *str, unsigned ns_id)
 
 /**
  * gsf_xml_in_namecmp :
- *
- * @state :
- * @str   :
- * @ns_id :
- * @name  :
+ * @state : The #GsfXMLIn we are reading from.
+ * @str   : The potentially namespace qualified node name.
+ * @ns_id : The name space id to check
+ * @name  : The target node name
  *
  * Returns TRUE if @str == @ns_id:@name according to @state.
  **/
 gboolean
 gsf_xml_in_namecmp (GsfXMLIn const *state, char const *str,
-		    unsigned ns_id, char const *name)
+		    unsigned int ns_id, char const *name)
 {
 	GsfXMLInNSInstance *inst = g_ptr_array_index (state->ns_by_id, ns_id);
 
@@ -605,6 +647,7 @@ struct _GsfXMLOut {
 	GObject	   base;
 
 	GsfOutput	 *output;
+	char		 *doc_type;
 	GSList		 *stack;
 	GsfXMLOutState state;
 	unsigned   	  indent;
@@ -618,13 +661,11 @@ typedef struct {
 static void
 gsf_xml_out_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
+	GsfXMLOut *xml = GSF_XML_OUT (obj);
 
-	/* already unwrapped */
+	g_free (xml->doc_type);
 
-	parent_class = g_type_class_peek (G_TYPE_OBJECT);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static void
@@ -636,12 +677,14 @@ gsf_xml_out_init (GObject *obj)
 	xml->state  = GSF_XML_OUT_CHILD;
 	xml->indent = 0;
 	xml->needs_header = TRUE;
+	xml->doc_type = NULL;
 }
 
 static void
 gsf_xml_out_class_init (GObjectClass *gobject_class)
 {
 	gobject_class->finalize = gsf_xml_out_finalize;
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfXMLOut, gsf_xml_out,
@@ -656,6 +699,20 @@ gsf_xml_out_new (GsfOutput *output)
 		return NULL;
 	xml->output = output;
 	return xml;
+}
+
+/**
+ * gsf_xml_out_set_doc_type :
+ * @xml : #GsfXMLOut
+ * @type :
+ * 
+ * Store some optional some &lt;!DOCTYPE .. &gt; content
+ **/
+void
+gsf_xml_out_set_doc_type (GsfXMLOut *xml, char const *type)
+{
+	g_free (xml->doc_type);
+	xml->doc_type = g_strdup (type);
 }
 
 static inline void
@@ -687,9 +744,11 @@ gsf_xml_out_start_element (GsfXMLOut *xml, char const *id)
 	g_return_if_fail (xml->state != GSF_XML_OUT_CONTENT);
 
 	if (xml->needs_header) {
-		static char const header[] =
+		static char const header0[] =
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-		gsf_output_write (xml->output, sizeof (header) - 1, header);
+		gsf_output_write (xml->output, sizeof (header0) - 1, header0);
+		if (xml->doc_type != NULL)
+			gsf_output_puts (xml->output, xml->doc_type);
 		xml->needs_header = FALSE;
 	}
 	if (xml->state == GSF_XML_OUT_NOCONTENT)
@@ -746,7 +805,8 @@ gsf_xml_out_simple_element (GsfXMLOut *xml, char const *id,
 			    char const *content)
 {
 	gsf_xml_out_start_element (xml, id);
-	gsf_xml_out_add_cstr (xml, NULL, content);
+	if (content != NULL)
+		gsf_xml_out_add_cstr (xml, NULL, content);
 	gsf_xml_out_end_element (xml);
 }
 
@@ -788,10 +848,15 @@ gsf_xml_out_simple_float_element (GsfXMLOut *xml, char const *id,
  * gsf_xml_out_add_cstr_unchecked :
  * @xml :
  * @id : optionally NULL for content
- */
+ * @val_utf8 : a utf8 encoded string to export
+ *
+ * dump @val_utf8 to an attribute named @id without checking to see if the
+ * content needs escaping.  A useful performance enhancement when the
+ * application knows that structure of the content well.
+ **/
 void
 gsf_xml_out_add_cstr_unchecked (GsfXMLOut *xml, char const *id,
-				   char const *val_utf8)
+				char const *val_utf8)
 {
 	g_return_if_fail (xml != NULL);
 	g_return_if_fail (xml->state == GSF_XML_OUT_NOCONTENT);
@@ -812,10 +877,10 @@ gsf_xml_out_add_cstr_unchecked (GsfXMLOut *xml, char const *id,
  *
  * dump @val_utf8 to an attribute named @id or as the nodes content escaping
  * characters as necessary.
- */
+ **/
 void
 gsf_xml_out_add_cstr (GsfXMLOut *xml, char const *id,
-			 char const *val_utf8)
+		      char const *val_utf8)
 {
 	guint8 const *cur   = val_utf8;
 	guint8 const *start = val_utf8;
@@ -861,26 +926,33 @@ gsf_xml_out_add_cstr (GsfXMLOut *xml, char const *id,
 }
 
 /**
- * gsf_xml_out_add_int :
+ * gsf_xml_out_add_bool :
  * @xml :
  * @id  : optionally NULL for content
- */
+ * @val : a boolean
+ *
+ * dump boolean value @val to an attribute named @id or as the nodes content
+ * Use '1' or '0' to simplify import
+ **/
 void
 gsf_xml_out_add_bool (GsfXMLOut *xml, char const *id,
-			 gboolean val)
+		      gboolean val)
 {
 	gsf_xml_out_add_cstr_unchecked (xml, id,
-					   val ? "1" : "0");
+					val ? "1" : "0");
 }
 
 /**
  * gsf_xml_out_add_int :
  * @xml :
  * @id  : optionally NULL for content
- */
+ * @val : the value
+ *
+ * dump integer value @val to an attribute named @id or as the nodes content
+ **/
 void
 gsf_xml_out_add_int (GsfXMLOut *xml, char const *id,
-			int val)
+		     int val)
 {
 	char buf [4 * sizeof (int)];
 	sprintf (buf, "%d", val);
@@ -891,12 +963,16 @@ gsf_xml_out_add_int (GsfXMLOut *xml, char const *id,
  * gsf_xml_out_add_uint :
  * @xml :
  * @id  : optionally NULL for content
- */
+ * @val : the value
+ *
+ * dump unsigned integer value @val to an attribute named @id or as the nodes
+ * content
+ **/
 void
 gsf_xml_out_add_uint (GsfXMLOut *xml, char const *id,
-			 unsigned val)
+		      unsigned int val)
 {
-	char buf [4 * sizeof (int)];
+	char buf [4 * sizeof (unsigned int)];
 	sprintf (buf, "%u", val);
 	gsf_xml_out_add_cstr_unchecked (xml, id, buf);
 }
@@ -905,10 +981,15 @@ gsf_xml_out_add_uint (GsfXMLOut *xml, char const *id,
  * gsf_xml_out_add_float :
  * @xml :
  * @id  : optionally NULL for content
- */
+ * @val : the value
+ * @precision : the number of decimal points to display
+ *
+ * dump float value @val to an attribute named @id or as the nodes
+ * content with precision @precision.
+ **/
 void
 gsf_xml_out_add_float (GsfXMLOut *xml, char const *id,
-			  double val, int precision)
+		       double val, int precision)
 {
 	char buf [101 + DBL_DIG];
 
@@ -926,12 +1007,17 @@ gsf_xml_out_add_float (GsfXMLOut *xml, char const *id,
  * gsf_xml_out_add_color :
  * @xml :
  * @id  : optionally NULL for content
- */
+ * @r :
+ * @g :
+ * @b :
+ *
+ * dump Color @r.@g.@b to an attribute named @id or as the nodes content
+ **/
 void
 gsf_xml_out_add_color (GsfXMLOut *xml, char const *id,
-			  unsigned r, unsigned g, unsigned b)
+		       unsigned int r, unsigned int g, unsigned int b)
 {
-	char buf [4 * sizeof (unsigned)];
+	char buf [3 * 4 * sizeof (unsigned int) + 1];
 	sprintf (buf, "%X:%X:%X", r, g, b);
 	gsf_xml_out_add_cstr_unchecked (xml, id, buf);
 }
@@ -940,10 +1026,14 @@ gsf_xml_out_add_color (GsfXMLOut *xml, char const *id,
  * gsf_xml_out_add_base64 :
  * @xml :
  * @id  : optionally NULL for content
- */
+ * @data :
+ * @len :
+ *
+ * dump @len bytes in @data into the content of node @id using base64
+ **/
 void
 gsf_xml_out_add_base64 (GsfXMLOut *xml, char const *id,
-			   guint8 const *data, unsigned len)
+			guint8 const *data, unsigned int len)
 {
 	/* We could optimize and stream right to the output,
 	 * or even just keep the buffer around
@@ -956,4 +1046,3 @@ gsf_xml_out_add_base64 (GsfXMLOut *xml, char const *id,
 	gsf_xml_out_add_cstr_unchecked (xml, id, tmp);
 	g_free (tmp);
 }
-

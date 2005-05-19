@@ -2,7 +2,7 @@
 /*
  * gsf-zip-utils.c: tools for zip archive output.
  *
- * Copyright (C) 2002-2003 Jon K Hellan (hellan@acm.org)
+ * Copyright (C) 2002-2004 Jon K Hellan (hellan@acm.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -26,14 +26,14 @@
 #include "gsf-zip-impl.h"
 
 /* Doesn't do much, but include for symmetry */
-ZipDirent*
-zip_dirent_new (void)
+GsfZipDirent*
+gsf_zip_dirent_new (void)
 {
-	return g_new0 (ZipDirent, 1);
+	return g_new0 (GsfZipDirent, 1);
 }
 
 void
-zip_dirent_free (ZipDirent *dirent)
+gsf_zip_dirent_free (GsfZipDirent *dirent)
 {
 	g_return_if_fail (dirent != NULL);
 
@@ -44,10 +44,10 @@ zip_dirent_free (ZipDirent *dirent)
 	g_free (dirent);
 }
 
-ZipVDir *
-vdir_new (char const *name, gboolean is_directory, ZipDirent *dirent)
+GsfZipVDir *
+gsf_vdir_new (char const *name, gboolean is_directory, GsfZipDirent *dirent)
 {
-	ZipVDir *vdir = g_new (ZipVDir, 1);
+	GsfZipVDir *vdir = g_new (GsfZipVDir, 1);
 
 	vdir->name = g_strdup (name);
 	vdir->is_directory = is_directory;
@@ -57,7 +57,7 @@ vdir_new (char const *name, gboolean is_directory, ZipDirent *dirent)
 }
 
 void
-vdir_free (ZipVDir *vdir, gboolean free_dirent)
+gsf_vdir_free (GsfZipVDir *vdir, gboolean free_dirent)
 {
 	GSList *l;
 
@@ -65,21 +65,21 @@ vdir_free (ZipVDir *vdir, gboolean free_dirent)
 		return;
 
 	for (l = vdir->children; l; l = l->next)
-		vdir_free ((ZipVDir *)l->data, free_dirent);
+		gsf_vdir_free ((GsfZipVDir *)l->data, free_dirent);
 
 	g_slist_free (vdir->children);
 	g_free (vdir->name);
 	if (free_dirent && vdir->dirent)
-		zip_dirent_free (vdir->dirent);
+		gsf_zip_dirent_free (vdir->dirent);
 	g_free (vdir);
 }
 
 /* Comparison doesn't have to be UTF-8 safe, as long as it is consistent */
 static gint
-vdir_compare (gconstpointer ap, gconstpointer bp)
+gsf_vdir_compare (gconstpointer ap, gconstpointer bp)
 {
-	ZipVDir *a = (ZipVDir *) ap;
-	ZipVDir *b = (ZipVDir *) bp;
+	GsfZipVDir *a = (GsfZipVDir *) ap;
+	GsfZipVDir *b = (GsfZipVDir *) bp;
 
 	if (!a || !b) {
 		if (!a && !b)
@@ -91,10 +91,10 @@ vdir_compare (gconstpointer ap, gconstpointer bp)
 }
 
 void
-vdir_add_child (ZipVDir *vdir, ZipVDir *child)
+gsf_vdir_add_child (GsfZipVDir *vdir, GsfZipVDir *child)
 {
 	vdir->children = g_slist_insert_sorted (vdir->children,
 						(gpointer) child,
-						vdir_compare);
+						gsf_vdir_compare);
 }
 

@@ -2,7 +2,7 @@
 /*
  * gsf-output-iochannel.c
  *
- * Copyright (C) 2002-2003 Dom Lachowicz (cinamod@hotmail.com)
+ * Copyright (C) 2002-2004 Dom Lachowicz (cinamod@hotmail.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -23,6 +23,8 @@
 #include <gsf/gsf-output-impl.h>
 #include <gsf/gsf-impl-utils.h>
 
+static GsfOutputClass *parent_class;
+
 struct _GsfOutputIOChannel {
 	GsfOutput output;
 	GIOChannel * channel;
@@ -34,11 +36,12 @@ typedef struct {
 
 /**
  * gsf_output_iochannel_new :
+ * @channel: A #GIOChannel
  *
  * Returns a new file or NULL.
  **/
-GsfOutputIOChannel *
-gsf_output_iochannel_new  (GIOChannel * channel)
+GsfOutput *
+gsf_output_iochannel_new (GIOChannel *channel)
 {
 	GsfOutputIOChannel *output = NULL;
 
@@ -46,19 +49,15 @@ gsf_output_iochannel_new  (GIOChannel * channel)
 
 	output = g_object_new (GSF_OUTPUT_IOCHANNEL_TYPE, NULL);	
 	output->channel = channel;
-	return output;
+	return GSF_OUTPUT (output);
 }
 
 static gboolean
 gsf_output_iochannel_close (GsfOutput *output)
 {
-	GsfOutputClass *parent_class;
-	GsfOutputIOChannel *io = GSF_OUTPUT_IOCHANNEL (output);	
+	g_io_channel_shutdown (GSF_OUTPUT_IOCHANNEL (output)->channel, TRUE, NULL);
 
-	g_io_channel_shutdown (io->channel, TRUE, NULL);
-
-	parent_class = g_type_class_peek (GSF_OUTPUT_TYPE);
-	if (parent_class && parent_class->Close)
+	if (parent_class->Close)
 		parent_class->Close (output);
 	
 	return TRUE;
@@ -67,15 +66,8 @@ gsf_output_iochannel_close (GsfOutput *output)
 static void
 gsf_output_iochannel_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
-	GsfOutput *output = (GsfOutput *)obj;
-	GsfOutputIOChannel *io = GSF_OUTPUT_IOCHANNEL (output);
-	
-	g_io_channel_unref (io->channel);
-
-	parent_class = g_type_class_peek (GSF_OUTPUT_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	g_io_channel_unref (GSF_OUTPUT_IOCHANNEL (obj)->channel);
+	G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 static gboolean
@@ -113,9 +105,6 @@ gsf_output_iochannel_write (GsfOutput *output,
 	return (status == G_IO_STATUS_NORMAL && total_written == num_bytes);
 }
 
-#define GET_OUTPUT_CLASS(instance) \
-         G_TYPE_INSTANCE_GET_CLASS (instance, GSF_OUTPUT_TYPE, GsfOutputClass)
-
 static void
 gsf_output_iochannel_init (GObject *obj)
 {
@@ -133,6 +122,8 @@ gsf_output_iochannel_class_init (GObjectClass *gobject_class)
 	output_class->Close     = gsf_output_iochannel_close;
 	output_class->Seek      = gsf_output_iochannel_seek;
 	output_class->Write     = gsf_output_iochannel_write;
+
+	parent_class = GSF_OUTPUT_CLASS (g_type_class_peek_parent (gobject_class));
 }
 
 GSF_CLASS (GsfOutputIOChannel, gsf_output_iochannel,

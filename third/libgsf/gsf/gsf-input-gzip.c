@@ -2,7 +2,7 @@
 /*
  * gsf-input-gzip.c: wrapper to uncompress gzipped input
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -30,6 +30,8 @@
 #include <string.h>
 
 #define Z_BUFSIZE 0x100
+
+static GObjectClass *parent_class;
 
 struct _GsfInputGZip {
 	GsfInput input;
@@ -161,7 +163,7 @@ init_zip (GsfInputGZip *gzip, GError **err)
  *
  * Returns a new file or NULL.
  **/
-GsfInputGZip *
+GsfInput *
 gsf_input_gzip_new (GsfInput *source, GError **err)
 {
 	GsfInputGZip *gzip;
@@ -178,13 +180,12 @@ gsf_input_gzip_new (GsfInput *source, GError **err)
 		return NULL;
 	}
 
-	return gzip;
+	return GSF_INPUT (gzip);
 }
 
 static void
 gsf_input_gzip_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
 	GsfInputGZip *gzip = (GsfInputGZip *)obj;
 
 	if (gzip->source != NULL) {
@@ -197,9 +198,7 @@ gsf_input_gzip_finalize (GObject *obj)
 	if (gzip->stream.state != NULL)
 		inflateEnd (&(gzip->stream));
 
-	parent_class = g_type_class_peek (GSF_INPUT_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static GsfInput *
@@ -334,6 +333,8 @@ gsf_input_gzip_class_init (GObjectClass *gobject_class)
 	input_class->Dup	= gsf_input_gzip_dup;
 	input_class->Read	= gsf_input_gzip_read;
 	input_class->Seek	= gsf_input_gzip_seek;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfInputGZip, gsf_input_gzip,

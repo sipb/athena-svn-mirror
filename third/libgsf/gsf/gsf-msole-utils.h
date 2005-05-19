@@ -2,7 +2,7 @@
 /*
  * gsf-msole-utils.h: various tools for handling MS OLE files
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -31,18 +31,20 @@ gboolean gsf_msole_metadata_write (GsfOutput *out, gboolean doc_not_component,
 				   GError **err);
 
 guint   gsf_msole_lid_for_language	(char const *lang);
-guint   gsf_msole_codepage_to_lid	(guint codepage);
+guint   gsf_msole_codepage_to_lid	(int codepage);
 guint   gsf_msole_lid_to_codepage	(guint lid);
 gchar * gsf_msole_lid_to_codepage_str	(guint lid);
 char const* gsf_msole_language_for_lid	(guint lid);
 
 guint	gsf_msole_iconv_win_codepage    (void) ;
-GIConv	gsf_msole_iconv_open_for_import (guint codepage) ;
+GIConv	gsf_msole_iconv_open_for_import (int codepage) ;
 GIConv	gsf_msole_iconv_open_for_export (void) ;
 
-GIConv gsf_msole_iconv_open_codepage_for_import  (char const *to, guint codepage) ;
+GIConv gsf_msole_iconv_open_codepage_for_import  (char const *to, int codepage);
 GIConv gsf_msole_iconv_open_codepages_for_export (guint codepage_to, char const *from);
 GIConv gsf_msole_iconv_open_codepage_for_export  (guint codepage_to);
+
+GByteArray *gsf_msole_inflate (GsfInput *input, gsf_off_t offset);
 
 G_END_DECLS
 

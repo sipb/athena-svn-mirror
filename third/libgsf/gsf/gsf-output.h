@@ -2,7 +2,7 @@
 /*
  * gsf-output.h: interface for storing data
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -52,9 +52,11 @@ gboolean gsf_output_unwrap (GObject *wrapper, GsfOutput *wrapee);
 
 GQuark gsf_output_error_id (void);
 
-gboolean gsf_output_printf (GsfOutput *output, char const* format,
+gboolean gsf_output_printf (GsfOutput *output, char const *format,
 			    ...) G_GNUC_PRINTF (2, 3);
-gboolean gsf_output_puts (GsfOutput *output, char const* line);
+gsf_off_t gsf_output_vprintf (GsfOutput *output, char const* format,
+			      va_list args);
+gboolean gsf_output_puts (GsfOutput *output, char const *line);
 
 G_END_DECLS
 

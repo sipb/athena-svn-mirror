@@ -2,7 +2,7 @@
 /*
  * gsf-output-stdio.c: stdio based output
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -58,6 +58,8 @@ typedef int mode_t;
 
 #endif /* G_OS_WIN32 */
 
+static GObjectClass *parent_class;
+
 struct _GsfOutputStdio {
 	GsfOutput output;
 
@@ -107,8 +109,9 @@ follow_symlinks (char const *filename, GError **error)
 
 			default:
 				if (error)
-					*error = g_error_new (gsf_output_error_id (), errno,
-							      g_strerror (errno));
+					*error = g_error_new_literal 
+						(gsf_output_error_id (), errno,
+						 g_strerror (errno));
 				g_free (followed_filename);
 				return NULL;
 			}
@@ -137,8 +140,8 @@ follow_symlinks (char const *filename, GError **error)
 
 	/* Too many symlinks */
 	if (error)
-		*error = g_error_new (gsf_output_error_id (), ELOOP,
-				      g_strerror (ELOOP));
+		*error = g_error_new_literal (gsf_output_error_id (), ELOOP,
+					      g_strerror (ELOOP));
 
 	return NULL;
 #else  /* !HAVE_READLINK */
@@ -155,19 +158,20 @@ follow_symlinks (char const *filename, GError **error)
  *
  * Returns a new file or NULL.
  **/
-GsfOutputStdio *
+GsfOutput *
 gsf_output_stdio_new (char const *filename, GError **err)
 {
 	GsfOutputStdio *stdio;
 	FILE *file = NULL;
-	char *dirname, *temp_filename = NULL;
+	char *dirname = NULL;
+	char *temp_filename = NULL;
 	char *real_filename = follow_symlinks (filename, err);
 	int fd;
 	mode_t saved_umask;
 	struct stat st;
-	
+
 	if (real_filename == NULL)
-		return NULL;
+		goto failure;
 
 	/* Get the directory in which the real filename lives */
 	dirname = g_path_get_dirname (real_filename);
@@ -177,8 +181,9 @@ gsf_output_stdio_new (char const *filename, GError **err)
 		/* FIXME? Race conditions en masse.  */
 		if (access (real_filename, W_OK) != 0) {
 			if (err != NULL)
-				*err = g_error_new (gsf_output_error_id (), errno,
-						    g_strerror (errno));
+				*err = g_error_new_literal
+					(gsf_output_error_id (), errno,
+					 g_strerror (errno));
 			goto failure;
 		}
 	} else {
@@ -210,7 +215,6 @@ gsf_output_stdio_new (char const *filename, GError **err)
 	 * implementations of mkstemp() use permissions 0666 and we want 0600.
 	 */
 	temp_filename = g_build_filename (dirname, ".gsf-save-XXXXXX", NULL);
-	g_free (dirname);
 	/* Oh, joy.  What about threads?  --MW */
 	saved_umask = umask (0077);
 	fd = g_mkstemp (temp_filename); /* this modifies temp_filename to the used name */
@@ -218,8 +222,9 @@ gsf_output_stdio_new (char const *filename, GError **err)
 
 	if (fd < 0 || NULL == (file = fdopen (fd, "wb"))) {
 		if (err != NULL)
-			*err = g_error_new (gsf_output_error_id (), errno,
-					    g_strerror (errno));
+			*err = g_error_new_literal
+				(gsf_output_error_id (), errno,
+				 g_strerror (errno));
 		goto failure;
 	}
 
@@ -231,11 +236,14 @@ gsf_output_stdio_new (char const *filename, GError **err)
 	stdio->temp_filename = temp_filename;
 	gsf_output_set_name (GSF_OUTPUT (stdio), filename);
 
-	return stdio;
+	g_free (dirname);
+
+	return GSF_OUTPUT (stdio);
 
 failure :
 	g_free (temp_filename);
 	g_free (real_filename);
+	g_free (dirname);
 	return NULL;
 }
 
@@ -252,7 +260,8 @@ gsf_output_stdio_close (GsfOutput *output)
 	res = (0 == fclose (stdio->file));
 	stdio->file = NULL;
 	if (!res) {
-		gsf_output_set_error (output, errno, " ");
+		gsf_output_set_error (output, errno,
+				      "Failed to close temporary file.");
 		unlink (stdio->temp_filename);
 		return FALSE;
 	}
@@ -305,7 +314,6 @@ gsf_output_stdio_close (GsfOutput *output)
 static void
 gsf_output_stdio_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
 	GsfOutput	*output = (GsfOutput *)obj;
 	GsfOutputStdio	*stdio = GSF_OUTPUT_STDIO (output);
 
@@ -317,9 +325,7 @@ gsf_output_stdio_finalize (GObject *obj)
 	g_free (stdio->temp_filename);
 	stdio->temp_filename = NULL;
 
-	parent_class = g_type_class_peek (GSF_OUTPUT_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static gboolean
@@ -327,15 +333,25 @@ gsf_output_stdio_seek (GsfOutput *output, gsf_off_t offset, GSeekType whence)
 {
 	GsfOutputStdio const *stdio = GSF_OUTPUT_STDIO (output);
 	int stdio_whence = 0;	/* make compiler shut up */
-	gsf_off_t loffset;
+
+#ifndef HAVE_FSEEKO
+	long loffset;
+#else
+	off_t loffset;
+#endif
 
 	g_return_val_if_fail (stdio->file != NULL, 
-		gsf_output_set_error (output, 0, "missing file"));
+			      gsf_output_set_error (output, 0, "missing file"));
 
 	loffset = offset;
 	if ((gsf_off_t) loffset != offset) { /* Check for overflow */
+#ifdef HAVE_FSEEKO
+		g_warning ("offset too large for fseeko");
+		return gsf_output_set_error (output, 0, "offset too large for fseeko");
+#else
 		g_warning ("offset too large for fseek");
 		return gsf_output_set_error (output, 0, "offset too large for fseek");
+#endif
 	}
 	switch (whence) {
 	case G_SEEK_SET : stdio_whence = SEEK_SET;	break;
@@ -345,8 +361,14 @@ gsf_output_stdio_seek (GsfOutput *output, gsf_off_t offset, GSeekType whence)
 		break; /*checked in GsfOutput wrapper */
 	}
 
+	errno = 0;
+#ifdef HAVE_FSEEKO
+	if (0 == fseeko (stdio->file, loffset, stdio_whence))
+		return TRUE;
+#else
 	if (0 == fseek (stdio->file, loffset, stdio_whence))
 		return TRUE;
+#endif
 	return gsf_output_set_error (output, errno,
 		g_strerror (errno));
 }
@@ -367,21 +389,18 @@ gsf_output_stdio_write (GsfOutput *output,
 	while (remaining > 0) {
 		written = fwrite (buffer + (num_bytes - remaining), 1, 
 				  remaining, stdio->file);
-		if ((written < remaining) && ferror (stdio->file) != 0) {
+		if ((written < remaining) && ferror (stdio->file) != 0)
 			return gsf_output_set_error (output, errno, g_strerror (errno));
-		}
+
 		remaining -= written;
 	}
 	return TRUE;
 }
 
-static gboolean
+static gsf_off_t
 gsf_output_stdio_vprintf (GsfOutput *output, char const *fmt, va_list args)
 {
-	GsfOutputStdio *stdio = (GsfOutputStdio *)output;
-	int res = vfprintf (stdio->file, fmt, args);
-
-	return (res >= 0);
+	return vfprintf (((GsfOutputStdio *)output)->file, fmt, args);
 }
 
 static void
@@ -403,6 +422,8 @@ gsf_output_stdio_class_init (GObjectClass *gobject_class)
 	output_class->Seek	= gsf_output_stdio_seek;
 	output_class->Write	= gsf_output_stdio_write;
 	output_class->Vprintf	= gsf_output_stdio_vprintf;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfOutputStdio, gsf_output_stdio,

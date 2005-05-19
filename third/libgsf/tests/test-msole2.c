@@ -25,8 +25,11 @@
 #include <gsf/gsf-infile-msole.h>
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+
+static gboolean dump_as_hex = FALSE;
 
 static void
 ls_R (GsfInput *input)
@@ -59,7 +62,7 @@ test (int argc, char *argv[])
 	GError    *err;
 
 	fprintf (stderr, "%s\n", argv [1]);
-	input = GSF_INPUT (gsf_input_stdio_new (argv[1], &err));
+	input = gsf_input_stdio_new (argv[1], &err);
 	if (input == NULL) {
 
 		g_return_val_if_fail (err != NULL, 1);
@@ -70,7 +73,7 @@ test (int argc, char *argv[])
 	}
 
 	input = gsf_input_uncompress (input);
-	infile = GSF_INFILE (gsf_infile_msole_new (input, &err));
+	infile = gsf_infile_msole_new (input, &err);
 	g_object_unref (G_OBJECT (input));
 
 	if (infile == NULL) {
@@ -107,7 +110,7 @@ test (int argc, char *argv[])
 			    gsf_infile_num_children (GSF_INFILE (ptr)) >= 0)
 				ls_R (ptr); /* unrefs infile */
 			else {
-				gsf_input_dump (GSF_INPUT (ptr));
+				gsf_input_dump (GSF_INPUT (ptr), dump_as_hex);
 				g_object_unref (G_OBJECT (ptr));
 			}
 		}
@@ -123,8 +126,14 @@ main (int argc, char *argv[])
 	int res;
 
 	if (argc < 2) {
-		fprintf (stderr, "%s : file stream stream ...\n", argv [0]);
+		fprintf (stderr, "%s : file [--hex] stream stream ...\n", argv [0]);
 		return 1;
+	}
+
+	if (argv[1] != NULL && 0 == strcmp (argv[1], "--hex")) {
+		dump_as_hex = TRUE;
+		argv++;
+		argc--;
 	}
 
 	gsf_init ();

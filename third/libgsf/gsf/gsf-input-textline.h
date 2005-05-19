@@ -2,7 +2,7 @@
 /*
  * gsf-input-textline.h: a utility wrapper to pull in text, line by line.
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -34,9 +34,9 @@ typedef struct _GsfInputTextline GsfInputTextline;
 
 GType gsf_input_textline_get_type (void);
 
-GsfInputTextline *gsf_input_textline_new	(GsfInput *source);
-unsigned char	 *gsf_input_textline_ascii_gets	(GsfInputTextline *input);
-guint8 		 *gsf_input_textline_utf8_gets	(GsfInputTextline *input);
+GsfInput      *gsf_input_textline_new		(GsfInput *source);
+unsigned char *gsf_input_textline_ascii_gets	(GsfInputTextline *input);
+guint8	      *gsf_input_textline_utf8_gets	(GsfInputTextline *input);
 
 G_END_DECLS
 

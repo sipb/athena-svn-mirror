@@ -41,7 +41,7 @@ dump_child (GsfInfile *infile, const char * childname)
 		return;
 	}
 
-	textinput = gsf_input_textline_new (child);
+	textinput = (GsfInputTextline *)gsf_input_textline_new (child);
 	if (textinput == NULL) {
 		printf ("Could not read lines from %s",
 			gsf_input_name (child));
@@ -70,7 +70,7 @@ test (int argc, char *argv[])
 	int i;
 
 	puts (argv[1]);
-	input = GSF_INPUT (gsf_input_stdio_new (argv[1], &err));
+	input = gsf_input_stdio_new (argv[1], &err);
 	if (input == NULL) {
 
 		g_return_val_if_fail (err != NULL, 1);
@@ -80,7 +80,7 @@ test (int argc, char *argv[])
 		return -1;
 	}
 
-	infile = GSF_INFILE (gsf_infile_zip_new (input, &err));
+	infile = gsf_infile_zip_new (input, &err);
 	if (infile == NULL) {
 
 		g_return_val_if_fail (err != NULL, 1);

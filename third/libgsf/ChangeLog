@@ -1,3 +1,585 @@
+2004-08-20  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.10.1
+
+2004-08-17  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-utils.c (gsf_base64_decode_simple): Revert base64
+	initialization change.
+
+2004-08-16  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-utils.c (gsf_base64_encode_simple): Request line
+	breaking.
+
+2004-08-13  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-utils.c (gsf_base64_decode_simple): Initialize during
+	first use.
+
+2004-08-10  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-input-textline.c (gsf_input_textline_utf8_gets): Fix
+	off-by-one in buffer length check.
+
+2004-08-08  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-output-stdio.c (follow_symlinks, gsf_output_stdio_new): 
+	Use g_error_new_literal, not g_error_new on strings which we do
+	not control.
+
+2004-07-30  Christopher James Lahey  <clahey@ximian.com>
+
+	* gsf/gsf-input.c (gsf_input_class_init), gsf/gsf-output.c
+	(gsf_output_class_init): Use correct types for properties here.
+
+2004-07-30  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_xml_out_class_init) : Init the parent_class
+	  here.
+	(gsf_xml_out_init) : not here.
+
+2004-07-27  Stepan Kasal  <kasal@ucw.cz>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_new_full):
+	  Fix a race condition with a static buffer.
+	  Write correct sb.shift to the header, even if it differs
+	  from the default.
+
+2004-07-29  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (ole_bytes_left_in_block) : sigh.
+	  Pull my head out of my rearend.  a one line function with two
+	  errors.  I really shouldn't code when tired.
+	(ole_pad_zero) : remove residual parm rename ole_ from bb_
+	(ole_pad_bat_unused) : add a residual parm.
+	(gsf_outfile_msole_close_root) : pad metabat with BAT_UNUSED
+
+2004-07-29  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-input-memory.c (gsf_input_mmap_new): Use NULL, not 0 for
+	pointer.
+	(gsf_input_memory_seek): Use G_GNUC_UNUSED instead of
+	void-casting.
+
+	* gsf/gsf-libxml.c (gsfXMLInParser): Ditto.
+	(gsf_xml_in_get_entity, gsf_xml_in_warning, gsf_xml_in_error,
+	gsf_xml_in_fatal_error): Use G_GNUC_UNUSED instead of
+	void-casting.
+	(gsf_xml_out_add_color): Make buffer size overflow safe.
+
+	* gsf/gsf-utils.c: Always #define G_ARMFLOAT_ENDIAN.
+
+2004-07-28  Stepan Kasal  <kasal@ucw.cz>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close_root):
+	  Check for overflow of the size field of a regular file entry.
+
+2004-07-28  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (bb_pad_zero) : add a residual param to not
+	  fill the entire block if desired and clarify that the current block
+	  is cur_size - HEADER not block_size.
+	(gsf_outfile_msole_close_root) : Clarify the metabat writing logic a
+	  bit and just in case add a CHAIN_END to the last incomplete metabat
+	(ole_bytes_left_in_block) : similar to Kasal's suggestion without the
+	  -1 % size + 1 
+	(bb_pad_zero) : use it here to make this safe to use when not at the
+	  end of the file.
+	(ole_pad_bat_unused) : and here to fix the mystery corruption when XL
+	  reads the file.
+
+2004-07-27  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close_root) : the last
+	  xbat does not require a forwarding link
+
+2004-07-27  Stepan Kasal  <kasal@ucw.cz>
+
+	* gsf/gsf-outfile-msole.c (metabat_size): Nuke; doesn't have to
+	  be an instance variable, it can be local ...
+	(gsf_outfile_msole_close_root): ... here.
+	(gsf_outfile_msole_set_block_shift): Don't set metabat_size.
+
+2004-07-26  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (OLE_DEFAULT_METABAT_SIZE): delete
+	(gsf_outfile_msole_close_root) : pull out of
+	(gsf_outfile_msole_close) : here as a cleanup gesture.
+
+	Per : Stepan Kasal  <kasal@ucw.cz>
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_set_block_shift) : Use
+	  BAT_INDEX_SIZE, not hardwired shift of 2.
+	(gsf_outfile_msole_close): Use the current sb.shift, not
+	  OLE_DEFAULT_SB_SHIFT.
+
+2004-07-23  Stepan Kasal  <kasal@ucw.cz>
+
+	Replace various instances of local parent_class variables by
+	a static ones, initialized by class_init.
+	* gsf/gsf-*.c: (20 files touched)
+	* gsf/gsf-output-transaction.c: A general cleanup.
+
+2004-07-21  Stepan Kasal  <kasal@ucw.cz>
+
+	The gsf_ouput_printf method didn't correctly update cur_offset.
+
+	The implementations of vprintf virtual method shouldn't touch
+	cur_offset but they should return the number of bytes written;
+	the dispatcher updates cur_offset accordingly.
+
+	* gsf/gsf-output-impl.h (Vprintf): The virtual private method now
+	  returns number of bytes printed.
+	* gsf/gsf-output.c (gsf_output_vprintf): Renamed to ...
+	  (gsf_output_ireal_vprintf): ... this.
+	  (gsf_output_printf): Collect the va_list and call ...
+	  (gsf_output_vprintf): ... this new function, which dispatches
+	  the Vprintf virtual method and takes care of updating cur_offset
+	  and cur_size, via ...
+	  (gsf_output_inc_cur_offset): ... a new static function, extracted
+	  from ...
+	  (gsf_output_write): ... there.
+	  (gsf_output_real_vprintf): In this fallback code, don't call
+	  gsf_output_write, but only dispatch to the Write virual method,
+	  so that gsf_output_inc_cur_offset is not called twice.
+	* gsf/gsf-output.h (gsf_output_vprintf): New public method.
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_vprintf): Adapt.
+	* gsf/gsf-output-transaction.c (gsf_output_trans_vprintf): Likewise.
+	* gsf/gsf-outfile-msole.c (gsf_output_class): New static variable,
+	  which is set to point to GsfOutput class structure.
+	  (gsf_outfile_msole_vprintf): Adapt. If it's a MSOLE_BIG_FILE,
+	  call vprintf method of the underlaying file, else fall back to
+	  gsf_output_class->Vprintf.
+	* gsf/gsf-output-memory.c (parent_class): New static variable.
+	  (gsf_output_memory_vprintf): Use it too. Adapt to the new prototype.
+	
+2004-07-21  Stepan Kasal  <kasal@ucw.cz>
+
+	Make the two fseek() wrappers more consistent.
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_seek): Fix the overflow
+	  checking.
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_seek): Set errno=0
+	  before calling fseek().
+
+2004-07-21  Stepan Kasal  <kasal@ucw.cz>
+	
+	Gnomish autogen.sh uses ACLOCAL_FLAGS, if some of the macros are
+	in nonstandard places.  If you touch configure.in then, aclocal.m4
+	is regenerated, but without ACLOCAL_FLAGS.  This change ensures
+	that ACLOCAL_FLAGS is propagated to the Makefile.
+
+	* configure.in: AC_SUBST(ACLOCAL_FLAGS)
+	* Makefile.am: ACLOCAL_AMFLAGS = @ACLOCAL_FLAGS@
+	
+2004-07-20  Stepan Kasal  <kasal@ucw.cz>
+
+	* gsf/gsf-output-stdio.c: Check for overflow
+	
+2004-07-09  Stepan Kasal  <kasal@ucw.cz>
+
+	* gsf/gsf-infile-zip.c (zip_find_trailer): Remove the
+	  "overflow check"; it can never catch anything.
+
+	* gsf/gsf-output-memory.c (MAX_STEP): Parenthesize.
+	(gsf_output_memory_expand): Fix the overflow checking.
+	(gsf_output_memory_seek): make use of G_GNUC_UNUSED, instead of void
+	 reference.
+
+2004-07-12  Stepan Kasal  <kasal@ucw.cz>
+
+	* gsf/gsf-output-iochannel.c (GET_OUTPUT_CLASS): Remove unused macro.
+	* gsf/gsf-structured-blob.c (GET_CLASS): Likewise.
+
+2004-06-15  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-utils.c (gsf_input_dump) : flush the stream when we're just
+	  using stdio.
+
+2004-07-04  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* configure.in: recheck all PKG_CHECK_MODULES for libgsf for
+	libgsf-gnome as well, so as not to trip on unresolved symbols with a
+	-Wl,-z,defs build.
+
+2004-07-03  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-07-03  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.10.0
+
+2004-07-01  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_vprintf) : premature
+	  optimization is the root of all evil.  We can not directly write
+	  small block data because it will be in the wrong place and will miss
+	  the transition to large block.  This is not a hugely common case and
+	  does not need such special attention.
+
+2004-06-25  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_seek) : conditionalize the
+	  use of fseeko.
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_seek) : ditto.
+	* gsf/gsf-outfile-msole.c : Extend Stuart's work to use the internal
+	  block sizes rather than keeping them global.
+
+2004-06-25  Jody Goldberg <jody@gnome.org>
+	For : Stuart Cunningham <stuartc@rd.bbc.co.uk>
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_seek) : use fseeko
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_seek) : ditto.
+	* gsf/gsf-outfile-msole.c : rework to honor the requested block sizes
+
+2004-06-15  Morten Welinder  <terra@gnome.org>
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_new_uri):
+	Don't leak info components.  Handle lack of get_file_info
+	supports.  Rework make_local_copy case.  Work around gnomevfs
+	get_file_info bogosity.
+
+2004-06-13  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : bump to 1.10.0 to handle all the signature changes in
+	  return values.
+	* *.[ch] : return the interesting base type rather than the derived
+	  type for *_new.
+
+2004-06-11  Morten Welinder  <terra@gnome.org>
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_new): Change
+	return type to plain GsfInput*.
+	(gsf_input_gnomevfs_new_uri): Change return type to plain
+	GsfInput*.  If seek is not supported, snarf a local copy.
+
+2004-06-06  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_new): Better
+	solution for Morten's problem.
+	
+2004-05-26  Morten Welinder  <terra@gnome.org>
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_new): Handle
+	failure to parse URI.
+
+2004-05-20  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-outfile-stdio.c: mkdir() has a different prototype on win32
+
+2004-05-17  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (ole_dirent_new) : work around odd files from
+	  softmaker, seems like they consider dirs to be rootdirs ??
+
+2004-05-17  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-utils.c (gsf_le_get_double, gsf_le_set_double): Attempt
+	ARM fix.  Fix various #error messages.
+
+2004-05-15  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-05-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.9.1
+
+2004-05-11  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_xml_out_set_doc_type) : new.
+
+	* doc/gsf-sections.txt : more cleanup, still ugly but at least it's
+	  somewhat better.
+	* doc/gsf-docs.sgml : drop the useless Gsf section
+
+2004-05-09  Jody Goldberg <jody@gnome.org>
+
+	* s/ZipDirent/GsfZipDirent
+	* s/ZipVDir/GsfZipVDir
+
+2004-05-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-infile-zip.c: Don't pollute the global namespace
+	* gsf/gsf-outfile-zip.c: Ditto
+	* gsf/gsf-zip-impl.h: Ditto
+	* gsf/gsf-zip-utils.c: Ditto
+
+2004-05-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-infile-stdio.c: Fix non-static definition of 'parent_class'
+	* gsf/gsf-outfile-stdio.c: Ditto
+	
+2004-05-07  James M. Cape <jcape@ignore-your.tv>
+
+	* doc/gsf-sections.txt: Hide type macros.
+	* gsf/gsf-output.c: s/<protected>/<note>/.
+
+2004-05-06  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=141899
+	* doc/Makefile.am : Apply patch from James Cape
+
+2004-05-05  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* doc/Makefile.am: Install docs in the $(DOC_MODULE) subdir of
+	$(HTML_DIR) rather than in $(HTML_DIR) itself.
+
+2004-05-05  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-05-04  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.9.0
+
+2004-05-04  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_xml_in_start_element) : support merging of
+	  content from a node and some of it's children
+	(gsf_xml_in_end_element) : ditto.
+	(gsf_xml_in_characters) : ditto.
+	(sf_xml_in_doc_new) : kludge to support the old interface but still
+	  allow new semantics.
+
+2004-05-01  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_new_uri) : Don't
+	require gnome-vfs-method.h
+
+	* gsf-gnome/gsf-output-gnomevfs.c (gsf_output_gnomevfs_new_uri): we
+	require random access.
+
+	* gsf-win32/gsf-input-win32.c: fix seek's return value in the win32 
+	IStream input.
+	
+2004-04-28  Jody Goldberg <jody@gnome.org>
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_new_uri) : we
+	  require random access.
+
+2004-04-26  Jody Goldberg <jody@gnome.org>
+
+	* doc/Makefile.am : steal a few things from gtk-doc.make to get things
+	  building.  A full jump to gtk-doc.make directly is failing, dunno
+	  why
+
+	* Makefile.am : Remove the AUTOMAKE_OPTIONS = 1.4 that disabled the
+	  DISTCHECK_CONFIGURE_FLAGS
+
+2004-04-24  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (ole_dirent_new) : placate the bogus
+	  -fstrict-aliasing gods.  gcc is being stupid.
+
+	* configure.in : call this 1.9.0
+
+2004-04-27  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-output-bzip.c (gsf_output_bzip_write): If the output
+	buffer turns full on the last deflate, empty the buffer.
+	
+2004-04-24  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-output-gzip.c (gsf_output_gzip_write): If the output
+	buffer turns full on the last deflate, empty the buffer.
+
+2004-04-05  Jody Goldberg <jody@gnome.org>
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_seek) : fix sense
+	  of return.  This code is clearly not being used.  A year and a half
+	  and no one noticed ???
+
+2004-03-31  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_new): Plug leak.
+
+2004-03-31  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-msvba-zip.c (find_match):
+	size limit the matches to the available bits for
+	storing the match length (doh). & make debug nicer.
+
+2004-03-16  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-output.c (gsf_output_finalize): Chain up.
+	* gsf/gsf-shared-memory.c (gsf_shared_memory_finalize): Chain up.
+	* gsf-gnome/gsf-shared-bonobo-stream.c
+	(gsf_shared_bonobo_stream_finalize): Chain up.
+
+2004-03-12  Michael Meeks  <michael@ximian.com>
+
+	* gsf/gsf-infile-msvba.c (vba_dir_read),
+	* tests/test-msvba-zip.c (decode_dir):
+	simplify / treat op 9 as the quirk-meister.
+
+2004-03-11  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-msvba-zip.c (decode_dir): better
+	quirk understanding.
+	(find_match): remove unnecessary hacks.
+
+2004-03-10  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-msvba-zip.c (decode_dir): impl.
+	a good run at enterpreting 'dir'.
+	
+	* tests/test-msvba-zip.c (do_compress): bin nasty
+	3 byte header store / restore and generate header
+	on the fly.
+
+2004-03-09  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-msvba-zip.c (find_match): shrink dodgy
+	looking matches.
+
+2004-03-08  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-msvba-zip.c (output_match): add a
+	small/stupid LZSS compressor.
+
+2004-03-08  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-msvba-zip.c: add for compressing/decompressing
+	'dir' (or other pure compressed) streams.
+
+	* gsf/gsf-msole-utils.c (gsf_msole_inflate): move from
+	* gsf/gsf-infile-msvba.c (gsf_vba_inflate): here.
+
+2004-03-01  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : drop -Wmissing-format-attribute because it was
+	  irritating me.
+
+2004-03-01  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-stdio.c :
+	* gsf/gsf-infile-stdio.c : Some utility wrappers to pull or push from
+	  a directory tree.
+	* tests/test-dump-msole.c :
+	* tests/test-restore-msole.c : tests for it.
+
+2004-02-24  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Add Win32 stuff
+	* libgsf-win32-1.pc.in: Ditto
+	* Makefile.am: Ditto
+	* gsf-win32/Makefile.am: Win32 build system
+	
+2004-02-05  Jon K Hellan  <hellan@acm.org>
+
+	* configure.in: Fix typo.
+
+2004-02-05  Tomasz K³oczko <kloczek@pld.org.pl>
+
+	* Makefile.am: Added "DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc"
+	  for force correct pass build documentation during "make dist"
+	  (like in many other GNOME projects).
+	  Added gtk-doc.make to EXTRA_DIST for generate correct tar ball on 
+	  "make dist".
+	* configure.in: Removed old on place defined gtk-doc suport and added use
+	  GTK_DOC_CHECK([1.0]).
+
+2004-01-30  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_xml_in_fatal_error) : Looks like Daniel has
+	  added another field
+
+2004-01-30  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=130596
+	* configure.in : apply the patch
+
+Wed Jan 28 00:43:36 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* doc/Makefile.am (EXTRA_HFILES): Add ../gsf-gnome/*.h to give
+	gtk-doc a chance to pick up declarations from there.  (Partial fix
+	for bug #132661.
+
+2004-01-20  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_xml_in_start_element) : minor portability fix.
+
+2004-01-18  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-msole-utils.c: Country code for Albania is sq_AL not al_AL
+	* gsf-win32/*.c: Some work on the IStream input and output
+	
+2003-12-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/*.c: Documentation
+	
+2003-12-06  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msvba.c : Major work.
+	  We can now extract the compressed source for all of our sample
+	  files.  There's still lots of unknowns, but at least the code
+	  is visible now.  The next step will be looking at the p-code
+
+2003-11-28  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-utils.c (gsf_input_hex_dump) : new.
+	(gsf_mem_dump_full) : expand the interface a bit.
+
+2003-11-03  Jody Goldberg <jody@gnome.org>
+
+	* gsf/Makefile.am (uninstall) : make the impl headers for the base
+	  interfaces public.
+
+2003-10-29  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c (msole_prop_parse) : The anal check should
+	  take the prevailing char width also as noted by Xavier Roche.
+
+	* gsf/gsf-infile-msole.c (ole_init_info) : Doh!  do not double convert
+	  to native endianness.  Fixes error reading files > 13.6 Meg on sparc
+	  and alpha as noted by Xavier Roche.
+
+2003-10-21  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c : Make the codepage arguments int to allow
+	  smooth handling of bogus files that encode the codepage as an int
+	  and break the utf-8 page '65001' because it looks like -535
+
+2003-10-09  Jody Goldberg <jody@gnome.org>
+
+	* libgsf-gnome-1.spec.in : An old patch from Joseph Frazee
+
+2003-09-29  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (gsf_infile_msole_new) : as noted by Nick
+	  Lamb a failure should not change the file pos of @input.
+
+2003-09-23  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : downgrade.  No need to force a version bump yet.
+	* gsf/gsf-libxml.c (gsf_xml_parser_context_full) : use a _full version
+	  internally because that seems cleaner than manually tweaking pointers.
+	  However, its a cosmetic change and not worth a version bump.
+
+2003-09-22  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : jump to 1.9.0 for api change.
+
+	* gsf/gsf-libxml.c :  Initialize sax handler correctly to make sure
+	  they work with libxml2 2.6.0.
+	(gsf_xml_parser_context) : take a sax handler and user data so taht we
+	  can initialize it on creation.
+
+2003-09-21  Tor Lillqvist  <tml@iki.fi>
+
+	* libgsf-zip.in: New file.
+	
+	* configure.in: Expand it.
+
+	* Makefile.am (EXTRA_DIST): Distribute it.
+	
+2003-09-13  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump to 1.8.3 for now.
+	  If this becomes the basis for the interleaved write support it will
+	  jump to 1.9 without a release.
+
 2003-09-12  Jody Goldberg <jody@gnome.org>
 
 	* Release 1.8.2
@@ -308,7 +890,7 @@
 
 2003-02-07  Dom Lachowicz <cinamod@hotmail.com>
 
-	* gsf/gsf-doc-metadata.[ch]: Clean API a bit to include consts, gsize
+	* gsf/gsf-doc-meta-data.[ch]: Clean API a bit to include consts, gsize
 	
 2003-02-05  Jody Goldberg <jody@gnome.org>
 

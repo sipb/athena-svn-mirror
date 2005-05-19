@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Text</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="GSF Reference Manual"><link rel="up" href="parsers.html" title="Stream Parsers"><link rel="previous" href="parsers.html" title="Stream Parsers"><link rel="next" href="gsf-XML-and-libxml.html" title="XML and libxml"><link rel="part" href="into.html" title="Part I. GSF Overview"><link rel="part" href="api.html" title="Part II. API Reference"><link rel="chapter" href="io.html" title="Basic Input/Output"><link rel="refentry" href="gsf-Input-from-unstructured-files.html" title="Input from unstructured files"><link rel="refentry" href="gsf-Output-to-unstructured-files.html" title="Output to unstructured files"><link rel="chapter" href="sources.html" title="Stream Sources"><link rel="refentry" href="gsf-Infile-reading-structed-files.html" title="Infile reading structed files"><link rel="refentry" href="gsf-Outfile-writing-structed-files.html" title="Outfile writing structed files"><link rel="refentry" href="gsf-Reading-and-Writing-from-local-files-and-directories.html" title="Reading and Writing from local files and directories"><link rel="refentry" href="gsf-memory.html" title="memory"><link rel="refentry" href="gsf-GIOChannel.html" title="GIOChannel"><link rel="refentry" href="gsf-GnomeVFS.html" title="GnomeVFS"><link rel="refentry" href="gsf-Bononbo.html" title="Bononbo"><link rel="chapter" href="parsers.html" title="Stream Parsers"><link rel="refentry" href="gsf-Text.html" title="Text"><link rel="refentry" href="gsf-XML-and-libxml.html" title="XML and libxml"><link rel="refentry" href="gsf-Zip.html" title="Zip"><link rel="refentry" href="gsf-Compression.html" title="Compression"><link rel="refentry" href="gsf-MS-OLE2.html" title="MS OLE2"><link rel="refentry" href="gsf-metadata.html" title="metadata"><link rel="refentry" href="gsf-Structured-Blobs.html" title="Structured Blobs"><link rel="chapter" href="misc.html" title="Miscellaneous"><link rel="refentry" href="gsf-utils.html" title="utils"><link rel="index" href="ix01.html" title="Index"><link rel="section" href="gsf-Text.html#id2524037" title="Object Hierarchy"><link rel="section" href="gsf-Text.html#id2524064" title="Description"><link rel="section" href="gsf-Text.html#id2524074" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="parsers.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="parsers.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GSF Reference Manual</th><td><a accesskey="n" href="gsf-XML-and-libxml.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gsf-Text"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Text</span></h2><p>Text &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="GsfInputTextline"></a><pre class="synopsis">
+
+
+
+struct      <a href="gsf-Text.html#GsfInputTextline-struct">GsfInputTextline</a>;
+<a href="gsf-Input-from-unstructured-files.html#GsfInput">GsfInput</a>*   <a href="gsf-Text.html#gsf-input-textline-new">gsf_input_textline_new</a>          (<a href="gsf-Input-from-unstructured-files.html#GsfInput">GsfInput</a> *source);
+unsigned char* <a href="gsf-Text.html#gsf-input-textline-ascii-gets">gsf_input_textline_ascii_gets</a>
+                                            (<a href="gsf-Text.html#GsfInputTextline">GsfInputTextline</a> *input);
+guint8*     <a href="gsf-Text.html#gsf-input-textline-utf8-gets">gsf_input_textline_utf8_gets</a>    (<a href="gsf-Text.html#GsfInputTextline">GsfInputTextline</a> *input);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2524037"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----<a href="gsf-Input-from-unstructured-files.html#GsfInput">GsfInput</a>
+         +----GsfInputTextline
+</pre></div><div class="refsect1" lang="en"><a name="id2524064"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2524074"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2524079"></a><h3><a name="GsfInputTextline-struct"></a>struct GsfInputTextline</h3><a class="indexterm" name="id2524091"></a><pre class="programlisting">struct GsfInputTextline;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2524106"></a><h3><a name="gsf-input-textline-new"></a>gsf_input_textline_new ()</h3><a class="indexterm" name="id2524117"></a><pre class="programlisting"><a href="gsf-Input-from-unstructured-files.html#GsfInput">GsfInput</a>*   gsf_input_textline_new          (<a href="gsf-Input-from-unstructured-files.html#GsfInput">GsfInput</a> *source);</pre><p>
+NOTE : adds a reference to <i class="parameter"><tt>source</tt></i></p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>source</tt></i> :</span></td><td> in some combination of ascii and utf8
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a new file or NULL.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2524183"></a><h3><a name="gsf-input-textline-ascii-gets"></a>gsf_input_textline_ascii_gets ()</h3><a class="indexterm" name="id2524194"></a><pre class="programlisting">unsigned char* gsf_input_textline_ascii_gets
+                                            (<a href="gsf-Text.html#GsfInputTextline">GsfInputTextline</a> *input);</pre><p>
+A utility routine to read things line by line from the underlying source.
+Trailing newlines and carriage returns are stipped, and the resultant buffer
+can be edited.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>input</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the string read, or NULL on eof.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2524260"></a><h3><a name="gsf-input-textline-utf8-gets"></a>gsf_input_textline_utf8_gets ()</h3><a class="indexterm" name="id2524271"></a><pre class="programlisting">guint8*     gsf_input_textline_utf8_gets    (<a href="gsf-Text.html#GsfInputTextline">GsfInputTextline</a> *input);</pre><p>
+A utility routine to read things line by line from the underlying source.
+Trailing newlines and carriage returns are stipped, and the resultant buffer
+can be edited.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>input</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the string read, or NULL on eof.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="parsers.html"><b>&lt;&lt; Stream Parsers</b></a></td><td align="right"><a accesskey="n" href="gsf-XML-and-libxml.html"><b>XML and libxml &gt;&gt;</b></a></td></tr></table></body></html>

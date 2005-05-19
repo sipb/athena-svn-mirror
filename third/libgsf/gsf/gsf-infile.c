@@ -2,7 +2,7 @@
 /*
  * gsf-infile.c :
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -118,9 +118,10 @@ gsf_infile_child_by_name (GsfInfile *infile, char const *name)
 /**
  * gsf_infile_child_by_vname :
  * @infile :
- * @name : A NULL terminated list of names
+ * @name : A %null terminated list of names
+ * @Varargs : the rest of the names
  *
- * A returns a newly created child which must be unrefed.
+ * Returns a newly created child which must be unrefed.
  **/
 GsfInput *
 gsf_infile_child_by_vname (GsfInfile *infile, char const *name, ...)
