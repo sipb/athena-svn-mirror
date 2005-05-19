@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.5 2003-02-15 04:52:22 ghudson Exp $
+# $Id: Makefile.athena,v 1.6 2005-05-19 20:39:38 ghudson Exp $
 
 dist:
 
@@ -10,7 +10,7 @@ clean:
 	./build clean
 
 all:
-	. ./platform && ./build CC="$$COMPILER" EXTRAAUTHENTICATORS="gss krb" EXTRACFLAGS="-DHESIOD -DKERBEROS -I/usr/athena/include" EXTRALDFLAGS="-L/usr/athena/lib -lhesiod $$platformlibs" SSLDIR=/usr/athena "$$platform"
+	. ./platform && ./build CC="$$COMPILER" EXTRAAUTHENTICATORS="gss krb" EXTRACFLAGS="-DHESIOD -DKERBEROS -I/usr/athena/include" EXTRALDFLAGS="-L/usr/athena/lib -Wl,-R/usr/athena/lib -lhesiod $$platformlibs" SSLDIR=/usr/athena "$$platform"
 
 check:
 
