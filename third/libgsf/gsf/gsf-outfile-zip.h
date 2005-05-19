@@ -2,7 +2,7 @@
 /*
  * gsf-outfile-zip.h: interface for zip archive output.
  *
- * Copyright (C) 2002-2003 Jon K Hellan (hellan@acm.org)
+ * Copyright (C) 2002-2004 Jon K Hellan (hellan@acm.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -23,12 +23,22 @@
 #define GSF_OUTFILE_ZIP_H
 
 #include <gsf/gsf.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
 typedef enum {
-	GSF_ZIP_STORED = 0,
-	GSF_ZIP_DEFLATED = 8
+	GSF_ZIP_STORED =          0,		/* supported for export */
+	GSF_ZIP_SHRUNK =          1,
+	GSF_ZIP_REDUCEDx1 =       2,
+	GSF_ZIP_REDUCEDx2 =       3,
+	GSF_ZIP_REDUCEDx3 =       4,
+	GSF_ZIP_REDUCEDx4 =       5,
+	GSF_ZIP_IMPLODED  =       6,
+	GSF_ZIP_TOKENIZED =       7,
+	GSF_ZIP_DEFLATED =        8,		/* supported for export */
+	GSF_ZIP_DEFLATED_BETTER = 9,
+	GSF_ZIP_IMPLODED_BETTER = 10
 } GsfZipCompressionMethod;
 
 typedef struct _GsfOutfileZip GsfOutfileZip;
@@ -37,10 +47,10 @@ typedef struct _GsfOutfileZip GsfOutfileZip;
 #define GSF_OUTFILE_ZIP(o)	(G_TYPE_CHECK_INSTANCE_CAST ((o), GSF_OUTFILE_ZIP_TYPE, GsfOutfileZip))
 #define GSF_IS_OUTFILE_ZIP(o)	(G_TYPE_CHECK_INSTANCE_TYPE ((o), GSF_OUTFILE_ZIP_TYPE))
 
-GType gsf_outfile_zip_get_type (void);
-GsfOutfileZip *gsf_outfile_zip_new (GsfOutput *sink, GError **err);
-gboolean gsf_outfile_zip_set_compression_method (GsfOutfileZip *zip,
-						 GsfZipCompressionMethod method);
+GType	    gsf_outfile_zip_get_type	(void);
+GsfOutfile *gsf_outfile_zip_new		(GsfOutput *sink, GError **err);
+gboolean    gsf_outfile_zip_set_compression_method (GsfOutfileZip *zip,
+						    GsfZipCompressionMethod method);
 
 G_END_DECLS
 

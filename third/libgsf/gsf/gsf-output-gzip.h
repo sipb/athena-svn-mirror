@@ -2,7 +2,7 @@
 /*
  * gsf-output-gzip.h: wrapper to compress to gzipped output
  *
- * Copyright (C) 2002-2003 Jon K Hellan (hellan@acm.org)
+ * Copyright (C) 2002-2004 Jon K Hellan (hellan@acm.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -32,9 +32,8 @@ G_BEGIN_DECLS
 
 typedef struct _GsfOutputGZip GsfOutputGZip;
 
-GType gsf_output_gzip_get_type (void);
-
-GsfOutputGZip *gsf_output_gzip_new (GsfOutput *source, GError **err);
+GType	   gsf_output_gzip_get_type (void);
+GsfOutput *gsf_output_gzip_new	    (GsfOutput *sink, GError **err);
 
 G_END_DECLS
 

@@ -2,7 +2,7 @@
 /*
  * gsf-output-memory.c:
  *
- * Copyright (C) 2002-2003 Dom Lachowicz (cinamod@hotmail.com)
+ * Copyright (C) 2002-2004 Dom Lachowicz (cinamod@hotmail.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -25,7 +25,9 @@
 #include <string.h>
 
 #define MIN_BLOCK 512
-#define MAX_STEP  MIN_BLOCK * 128
+#define MAX_STEP  (MIN_BLOCK * 128)
+
+static GsfOutputClass *parent_class;
 
 struct _GsfOutputMemory {
 	GsfOutput output;
@@ -42,7 +44,7 @@ typedef struct {
  *
  * Returns a new file or NULL.
  **/
-GsfOutputMemory *
+GsfOutput *
 gsf_output_memory_new (void)
 {
 	return g_object_new (GSF_OUTPUT_MEMORY_TYPE, NULL);	
@@ -51,63 +53,55 @@ gsf_output_memory_new (void)
 static gboolean
 gsf_output_memory_close (GsfOutput *output)
 {
-	GsfOutputClass *parent_class;
-	
-	parent_class = g_type_class_peek (GSF_OUTPUT_TYPE);
-	if (parent_class && parent_class->Close)
+	return (parent_class->Close == NULL) ||
 		parent_class->Close (output);
-	
-	return TRUE;
 }
 
 static void
 gsf_output_memory_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
-	GsfOutput *output = (GsfOutput *)obj;
-	GsfOutputMemory *mem = GSF_OUTPUT_MEMORY (output);
+	GsfOutputMemory *mem = GSF_OUTPUT_MEMORY (obj);
 	
 	if (mem->buffer != NULL) {
 		g_free (mem->buffer);
 		mem->buffer = NULL;
 	}
-	
-	parent_class = g_type_class_peek (GSF_OUTPUT_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 static gboolean
-gsf_output_memory_seek (GsfOutput *output, gsf_off_t offset,
-			GSeekType whence)
+gsf_output_memory_seek (G_GNUC_UNUSED GsfOutput *output,
+			G_GNUC_UNUSED gsf_off_t offset,
+			G_GNUC_UNUSED GSeekType whence)
 {
 	/* let parent implementation handle maneuvering cur_offset */
-	(void)output;
-	(void)offset;
-	(void)whence;
-
 	return TRUE;
 }
 
 static gboolean
-gsf_output_memory_expand (GsfOutputMemory *mem, gsf_off_t min_capacity)
+gsf_output_memory_expand (GsfOutputMemory *mem, gsf_off_t needed)
 {
 	gsf_off_t capacity = MAX (mem->capacity, MIN_BLOCK);
-	gsf_off_t needed   = min_capacity;
+	gsize lcapacity;
 	
-	if ((gsf_off_t) min_capacity != needed) { /* Checking for overflow */
+	/* If we need >= MAX_STEP, align to a next multiple of MAX_STEP.
+	 * Since MAX_STEP is probably a power of two, this computation
+	 * should reduce to "dec, shr, inc, shl", which is probably
+	 * quicker then branching.
+	 */
+	if (needed < MAX_STEP)
+		while (capacity < needed)
+			capacity *= 2;
+	else
+		capacity = ((needed - 1) / MAX_STEP + 1) * MAX_STEP;
+
+	/* Check for overflow: g_renew() casts its parameters to gsize. */
+	lcapacity = capacity;
+	if ((gsf_off_t) lcapacity != capacity || capacity < 0) {
 		g_warning ("overflow in gsf_output_memory_expand");
 		return FALSE;
 	}
-	
-	while (capacity < needed) {
-		if (capacity <= MAX_STEP)
-			capacity *= 2;
-		else
-			capacity += MAX_STEP;
-	}
-	
-	mem->buffer   = g_renew (guint8, mem->buffer, capacity);
+	mem->buffer   = g_renew (guint8, mem->buffer, lcapacity);
 	mem->capacity = capacity;
 	
 	return TRUE;
@@ -135,29 +129,21 @@ gsf_output_memory_write (GsfOutput *output,
 	return TRUE;
 }
 
-#define GET_OUTPUT_CLASS(instance) \
-         G_TYPE_INSTANCE_GET_CLASS (instance, GSF_OUTPUT_TYPE, GsfOutputClass)
-
-static gboolean
+static gsf_off_t
 gsf_output_memory_vprintf (GsfOutput *output, char const *format, va_list args)
 {
 	GsfOutputMemory *mem = (GsfOutputMemory *)output;
-	GsfOutputClass *klass;
-	gulong len;
-	
+
 	if (mem->buffer) {
-		len = g_vsnprintf (mem->buffer + output->cur_offset,
-				   mem->capacity - output->cur_offset,
-				   format, args);
-		if (len < mem->capacity - output->cur_offset) {
-			/* There was sufficient space */
-			output->cur_offset += len;
-			return TRUE;
-		}
+		gsf_off_t len =
+			g_vsnprintf (mem->buffer + output->cur_offset,
+				     mem->capacity - output->cur_offset,
+				     format, args);
+
+		if (len < mem->capacity - output->cur_offset)
+			return len; /* There was sufficient space */
 	}
-	klass = (GsfOutputClass *) (g_type_class_peek_parent
-				    (GET_OUTPUT_CLASS (output)));
-	return klass->Vprintf (output, format, args);
+	return parent_class->Vprintf (output, format, args);
 }
 
 static void
@@ -179,11 +165,15 @@ gsf_output_memory_class_init (GObjectClass *gobject_class)
 	output_class->Seek      = gsf_output_memory_seek;
 	output_class->Write     = gsf_output_memory_write;
 	output_class->Vprintf   = gsf_output_memory_vprintf;
+
+	parent_class = GSF_OUTPUT_CLASS (g_type_class_peek_parent (gobject_class));
 }
 
 /**
  * gsf_output_memory_get_bytes :
- * @output : the output device.
+ * @mem : the output device.
+ * 
+ * Returns: The data that has been written to @mem, or %null
  **/
 const guint8 *
 gsf_output_memory_get_bytes (GsfOutputMemory * mem)

@@ -8,11 +8,11 @@ dnl     4a) Increment when removing or changing interfaces.
 LIBGSF_MAJOR_VERSION=1
 dnl     4a) 5) Increment when adding interfaces.
 dnl     6) Set to zero when removing or changing interfaces.
-LIBGSF_MINOR_VERSION=8
+LIBGSF_MINOR_VERSION=10
 dnl     3) Increment when interfaces not changed at all,
 dnl               only bug fixes or internal changes made.
 dnl     4b) Set to zero when adding, removing or changing interfaces.
-LIBGSF_MICRO_VERSION=2
+LIBGSF_MICRO_VERSION=1
 dnl
 dnl     Set this too
 MAJOR_VERSION_PLUS_MINOR_VERSION=`expr $LIBGSF_MAJOR_VERSION + $LIBGSF_MINOR_VERSION`
@@ -36,21 +36,22 @@ AC_PROG_MAKE_SET
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
+AC_FUNC_FSEEKO
 AC_SYS_LARGEFILE
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 
 dnl Checks for libraries.
-PKG_CHECK_MODULES(LIBGSF,[
-gobject-2.0 >= 2.0.0
-glib-2.0 >= 2.0.0
-libxml-2.0 >= 2.4.16
-])
+dnl Modules common to libgsf and libgsf-gnome
+m4_define(LIBGSF_MODULES,[gobject-2.0 >= 2.0.0
+    glib-2.0 >= 2.0.0
+    libxml-2.0 >= 2.4.16])
+PKG_CHECK_MODULES(LIBGSF,LIBGSF_MODULES)
 
 ## this should come after `AC_PROG_CC'
 ifdef([GNOME_COMPILE_WARNINGS],[GNOME_COMPILE_WARNINGS],)
 CFLAGS="$CFLAGS $WARN_CFLAGS -DG_DISABLE_DEPRECATED"
 if test "$GCC" = "yes"; then
-	for option in -Wno-system-headers -W -Wfloat-equal -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wsign-compare -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wformat -Wmissing-format-attribute -Wnested-externs -Winline; do
+	for option in -Wno-system-headers -Wfloat-equal -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wsign-compare -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wformat -Wnested-externs -Winline; do
 		SAVE_CFLAGS="$CFLAGS"
 		CFLAGS="$CFLAGS $option"
 		AC_MSG_CHECKING([whether gcc understands $option])
@@ -67,26 +68,29 @@ if test "$GCC" = "yes"; then
 	unset option
 fi
 
-AC_MSG_CHECKING([whether to -D_POSIX_SOURCE for the fdopen prototype])
-need_posix=no
-echo '#include <stdio.h>' > conftest.h
-if ! $CPP $CFLAGS conftest.h | grep '\<fdopen\>' > /dev/null ; then
-	if $CPP $CFLAGS -D_POSIX_SOURCE conftest.h | grep '\<fdopen\>' > /dev/null ; then
-		need_posix=yes
+AC_CHECK_DECL(fdopen, fdopen_works=yes, fdopen_works=no)
+if test $fdopen_works = no ; then
+	unset ac_cv_have_decl_fdopen
+	CFLAGS="$CFLAGS -D_POSIX_SOURCE"
+	AC_MSG_NOTICE([adding -D_POSIX_SOURCE to CFLAGS])
+	AC_CHECK_DECL(fdopen, fdopen_works=yes, fdopen_works=no)
+	if test $fdopen_works = no ; then
+		AC_MSG_ERROR([fdopen is not available])
 	fi
 fi
-AC_MSG_RESULT($need_posix)
-rm -f conftest.h
 
-if test $need_posix = yes ; then
-	CFLAGS="$CFLAGS -D_POSIX_SOURCE"
+# Unfortunately, -D_POSIX_SOURCE turns off struct timeval on Solaris
+AC_MSG_CHECKING([whether struct timeval is available])
+AC_TRY_COMPILE([#include <sys/time.h>], [struct timeval tv;], struct_timeval_works=yes, struct_timeval_works=no)
+AC_MSG_RESULT($struct_timeval_works)
 
-	# That, unfortunately, turns off struct timeval on Solaris...
-	AC_MSG_CHECKING([whether -D__EXTENSIONS__ is needed for struct timeval])
-	AC_TRY_COMPILE([#include <sys/time.h>], [struct timeval tv;], need_ext=no, need_ext=yes)
-	AC_MSG_RESULT($need_posix)
-	if test $need_posix = yes ; then
-		CFLAGS="$CFLAGS -D__EXTENSIONS__"
+if test $struct_timeval_works = no ; then
+	CFLAGS="$CFLAGS -D__EXTENSIONS__"
+	AC_MSG_CHECKING([whether struct timeval is available with -D__EXTENSIONS__])
+	AC_TRY_COMPILE([#include <sys/time.h>], [struct timeval tv;], struct_timeval_works=yes, struct_timeval_works=no)
+	AC_MSG_RESULT($struct_timeval_works)
+	if test $struct_timeval_works = no ; then
+		AC_MSG_ERROR([struct timeval is not available])
 	fi
 fi
 
@@ -136,57 +140,7 @@ AM_CONDITIONAL(PLATFORM_WIN32, test "$platform_win32" = yes)
 ##################################################
 # Checks for gtk-doc and docbook-tools
 ##################################################
-
-AC_ARG_WITH(html-dir, [  --with-html-dir=PATH    path to installed docs ])
-
-if test "x$with_html_dir" = "x" ; then
-  HTML_DIR='${datadir}/doc/libgsf/html'
-else
-  HTML_DIR=$with_html_dir
-fi
-
-AC_SUBST(HTML_DIR)
-
-AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
-
-gtk_doc_min_version=0.9
-if $GTKDOC ; then 
-    gtk_doc_version=`gtkdoc-mkdb --version`
-    AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
-
-    IFS="${IFS= 	}"; gtk_save_IFS="$IFS"; IFS="."
-    set $gtk_doc_version
-    for min in $gtk_doc_min_version ; do
-        cur=$1; shift
-        if test -z $min ; then break; fi
-        if test -z $cur ; then GTKDOC=false; break; fi
-        if test $cur -gt $min ; then break ; fi
-        if test $cur -lt $min ; then GTKDOC=false; break ; fi
-    done
-    IFS="$gtk_save_IFS"
-
-    if $GTKDOC ; then
-      AC_MSG_RESULT(yes)
-   else
-      AC_MSG_RESULT(no)
-   fi
-fi
-
-AC_CHECK_PROG(DB2HTML, db2html, true, false)
-AM_CONDITIONAL(HAVE_DOCBOOK, $DB2HTML)
-
-dnl Make people enable the gtk-doc stuff explicitely.
-AC_ARG_ENABLE(gtk-doc, [  --disable-gtk-doc        use gtk-doc to build documentation [default=yes]], enable_gtk_doc="$enableval", enable_gtk_doc=yes)
-
-if test x$enable_gtk_doc = xyes ; then
-  if test x$GTKDOC != xtrue ; then
-    enable_gtk_doc=no 
-  fi
-fi
-
-dnl NOTE: We need to use a separate automake conditional for this
-dnl       to make this work with the tarballs.
-AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
+GTK_DOC_CHECK([1.0])
 
 dnl ***********************************************************************************
 dnl libxml
@@ -276,8 +230,10 @@ AC_ARG_WITH(gnome,
 with_gnome=false
 if  test "x$test_gnome" = xtrue ; then 
     PKG_CHECK_MODULES(LIBGSF_GNOME,[
+    LIBGSF_MODULES
     libbonobo-2.0 >= 2.0.0
     gnome-vfs-2.0 >= 1.9.16
+    gnome-vfs-module-2.0 >= 1.9.16
     ],[with_gnome=true], [AC_MSG_WARN([GNOME support disabled, unable to find required version of VFS and/or Bonobo])])
 else
     AC_MSG_WARN([GNOME support disabled, as requested (Use --with-gnome to enable)])
@@ -290,11 +246,14 @@ AM_CONDITIONAL(WITH_LIBGSF_GNOME, $with_gnome)
 AC_SUBST(LIBGSF_CFLAGS)
 AC_SUBST(LIBGSF_LIBS)
 
+AC_SUBST(ACLOCAL_FLAGS)
+
 AC_OUTPUT([
 Makefile
 doc/Makefile
 gsf/Makefile
 gsf-gnome/Makefile
+gsf-win32/Makefile
 tests/Makefile
 python/Makefile
 gsf/version.c
@@ -302,6 +261,9 @@ libgsf-1.pc
 libgsf-1.spec
 libgsf-gnome-1.pc
 libgsf-gnome-1.spec
+libgsf-win32-1.pc
+libgsf-zip
+doc/version.xml
 ])
 
 AC_MSG_RESULT([Configured $PACKAGE $VERSION])

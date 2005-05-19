@@ -2,7 +2,7 @@
 /*
  * gsf-outfile.c :
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -27,8 +27,9 @@
 
 /**
  * gsf_outfile_new_child :
- * @outfile :
- * @name :
+ * @outfile : A #GsfOutfile
+ * @name : The name of the new child to create
+ * @is_dir : TRUE to create a directory, FALSE to create a plain file
  *
  * Returns a newly created child
  **/

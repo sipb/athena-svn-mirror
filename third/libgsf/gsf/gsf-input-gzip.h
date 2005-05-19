@@ -2,7 +2,7 @@
 /*
  * gsf-input-gzip.h: wrapper to uncompress gzipped input
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -32,9 +32,8 @@ G_BEGIN_DECLS
 
 typedef struct _GsfInputGZip GsfInputGZip;
 
-GType gsf_input_gzip_get_type (void);
-
-GsfInputGZip *gsf_input_gzip_new (GsfInput *source, GError **err);
+GType	  gsf_input_gzip_get_type (void);
+GsfInput *gsf_input_gzip_new	  (GsfInput *source, GError **err);
 
 G_END_DECLS
 

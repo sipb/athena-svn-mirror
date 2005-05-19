@@ -2,7 +2,7 @@
 /*
  * gsf-output-impl.h: interface for storing data
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -50,7 +50,7 @@ typedef struct {
 			     gsf_off_t offset, GSeekType whence);
 	gboolean (*Write)   (GsfOutput *output,
 			     size_t num_bytes, guint8 const *data);
-	gboolean (*Vprintf) (GsfOutput *output,
+	gsf_off_t (*Vprintf) (GsfOutput *output,
 			     char const *format, va_list args);
 } GsfOutputClass;
 

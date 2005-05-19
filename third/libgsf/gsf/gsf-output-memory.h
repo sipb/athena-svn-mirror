@@ -2,7 +2,7 @@
 /*
  * gsf-output-memory.h
  *
- * Copyright (C) 2002-2003 Dom Lachowicz (cinamod@hotmail.com)
+ * Copyright (C) 2002-2004 Dom Lachowicz (cinamod@hotmail.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -32,8 +32,8 @@ G_BEGIN_DECLS
 
 typedef struct _GsfOutputMemory GsfOutputMemory;
 
-GType     gsf_output_memory_get_type (void);
-GsfOutputMemory *gsf_output_memory_new      (void);
+GType      gsf_output_memory_get_type (void);
+GsfOutput *gsf_output_memory_new      (void);
 const guint8* gsf_output_memory_get_bytes (GsfOutputMemory * mem);
 
 G_END_DECLS

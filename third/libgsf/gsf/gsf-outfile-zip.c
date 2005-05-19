@@ -2,7 +2,7 @@
 /*
  * gsf-outfile-zip.c: zip archive output.
  *
- * Copyright (C) 2002-2003 Jon K Hellan (hellan@acm.org)
+ * Copyright (C) 2002-2004 Jon K Hellan (hellan@acm.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -33,13 +33,15 @@
 #undef G_LOG_DOMAIN
 #define G_LOG_DOMAIN "libgsf:zip"
 
+static GObjectClass *parent_class;
+
 struct _GsfOutfileZip {
 	GsfOutfile parent;
 
 	GsfOutput     *sink;
 	GsfOutfileZip *root;
 
-	ZipVDir       *vdir;
+	GsfZipVDir    *vdir;
 	GPtrArray     *root_order;	/* only valid for the root */
 
 	z_stream  *stream;
@@ -57,7 +59,6 @@ typedef struct {
 
 #define GSF_OUTFILE_ZIP_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), GSF_OUTFILE_ZIP_TYPE, GsfOutfileZipClass))
 #define GSF_IS_OUTFILE_ZIP_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), GSF_OUTFILE_ZIP_TYPE))
-
 
 static void
 disconnect_children (GsfOutfileZip *zip)
@@ -80,7 +81,6 @@ disconnect_children (GsfOutfileZip *zip)
 static void
 gsf_outfile_zip_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
 	GsfOutfileZip *zip = GSF_OUTFILE_ZIP (obj);
 
 	GsfOutput *output = (GsfOutput *)obj;
@@ -103,11 +103,9 @@ gsf_outfile_zip_finalize (GObject *obj)
 	g_free (zip->buf);
 
 	if (zip == zip->root)
-		vdir_free (zip->vdir, TRUE); /* Frees vdirs recursively */
+		gsf_vdir_free (zip->vdir, TRUE); /* Frees vdirs recursively */
 
-	parent_class = g_type_class_peek (GSF_OUTFILE_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static gboolean
@@ -121,7 +119,7 @@ gsf_outfile_zip_seek (GsfOutput *output, gsf_off_t offset, GSeekType whence)
 }
 
 static gboolean
-zip_dirent_write (GsfOutput *sink, ZipDirent *dirent)
+zip_dirent_write (GsfOutput *sink, GsfZipDirent *dirent)
 {
 	static guint8 const dirent_signature[] =
 		{ 'P', 'K', 0x01, 0x02 };
@@ -287,17 +285,17 @@ zip_time_make (time_t *t)
 	return ztime;
 }
 
-static ZipDirent*
+static GsfZipDirent*
 zip_dirent_new_out (GsfOutfileZip *zip)
 {
-	ZipDirent *dirent;
+	GsfZipDirent *dirent;
 	time_t t = time (NULL);
 	char *name = stream_name_build (zip);
 
 	if (!name)
 		return NULL;
 
-	dirent = zip_dirent_new ();
+	dirent = gsf_zip_dirent_new ();
 	if (!dirent)
 		return NULL;
 
@@ -313,7 +311,7 @@ zip_header_write (GsfOutfileZip *zip)
 	static guint8 const header_signature[] =
 		{ 'P', 'K', 0x03, 0x04 };
 	guint8 hbuf[ZIP_HEADER_SIZE];
-	ZipDirent *dirent = zip->vdir->dirent;
+	GsfZipDirent *dirent = zip->vdir->dirent;
 	guint16 flags = 0;
 	char *name = dirent->name;
 	int   nlen = strlen (name);
@@ -322,7 +320,7 @@ zip_header_write (GsfOutfileZip *zip)
 	memset (hbuf, 0, sizeof hbuf);
 	memcpy (hbuf, header_signature, sizeof header_signature);
 	GSF_LE_SET_GUINT16 (hbuf + ZIP_HEADER_VERSION, 0x14);
-	if (dirent->compr_method == ZIP_DEFLATED)
+	if (dirent->compr_method == GSF_ZIP_DEFLATED)
 		flags = 0x08;
 	GSF_LE_SET_GUINT16 (hbuf + ZIP_HEADER_FLAGS, flags);
 	GSF_LE_SET_GUINT16 (hbuf + ZIP_HEADER_COMP_METHOD,
@@ -340,7 +338,7 @@ static gboolean
 zip_init_write (GsfOutput *output)
 {
 	GsfOutfileZip *zip = GSF_OUTFILE_ZIP (output);
-	ZipDirent *dirent;
+	GsfZipDirent *dirent;
 	int      ret;
 
 	if (zip->root->writing) {
@@ -385,7 +383,7 @@ static gboolean
 zip_output_block (GsfOutfileZip *zip)
 {
 	size_t num_bytes = zip->buf_size - zip->stream->avail_out;
-	ZipDirent *dirent = zip->vdir->dirent;
+	GsfZipDirent *dirent = zip->vdir->dirent;
 
 	if (!gsf_output_write (zip->sink, num_bytes, zip->buf)) {
 		return FALSE;
@@ -426,7 +424,7 @@ zip_ddesc_write (GsfOutfileZip *zip)
 	static guint8 const ddesc_signature[] =
 		{ 'P', 'K', 0x07, 0x08 };
 	guint8 buf[16];
-	ZipDirent *dirent = zip->vdir->dirent;
+	GsfZipDirent *dirent = zip->vdir->dirent;
 
 	memcpy (buf, ddesc_signature, sizeof ddesc_signature);
 	GSF_LE_SET_GUINT32 (buf + 4, dirent->crc32);
@@ -443,7 +441,7 @@ static gboolean
 zip_header_write_sizes (GsfOutfileZip *zip)
 {
 	guint8 hbuf[ZIP_HEADER_SIZE];
-	ZipDirent *dirent = zip->vdir->dirent;
+	GsfZipDirent *dirent = zip->vdir->dirent;
 	gsf_off_t pos = gsf_output_tell (zip->sink);
 
 	if (!gsf_output_seek (zip->sink, dirent->offset + ZIP_HEADER_CRC,
@@ -509,7 +507,7 @@ gsf_outfile_zip_write (GsfOutput *output,
 		       size_t num_bytes, guint8 const *data)
 {
 	GsfOutfileZip *zip = GSF_OUTFILE_ZIP (output);
-	ZipDirent *dirent;
+	GsfZipDirent *dirent;
 	int ret;
 
 	g_return_val_if_fail (zip && zip->vdir, FALSE);
@@ -567,12 +565,12 @@ gsf_outfile_zip_new_child (GsfOutfile *parent, char const *name,
 	g_return_val_if_fail (zip_parent->vdir->is_directory, NULL);
 
 	child = g_object_new (GSF_OUTFILE_ZIP_TYPE, NULL);
-	child->vdir = vdir_new (name, is_dir, NULL);
+	child->vdir = gsf_vdir_new (name, is_dir, NULL);
 	g_object_ref (G_OBJECT (zip_parent->sink));
 	child->sink = zip_parent->sink;
 	gsf_output_set_name (GSF_OUTPUT (child), name);
 	gsf_output_set_container (GSF_OUTPUT (child), parent);
-	vdir_add_child (zip_parent->vdir, child->vdir);
+	gsf_vdir_add_child (zip_parent->vdir, child->vdir);
 	root_register_child (zip_parent->root, child);
 
 	return GSF_OUTPUT (child);
@@ -606,6 +604,8 @@ gsf_outfile_zip_class_init (GObjectClass *gobject_class)
 	input_class->Seek		= gsf_outfile_zip_seek;
 	input_class->Close		= gsf_outfile_zip_close;
 	outfile_class->new_child	= gsf_outfile_zip_new_child;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfOutfileZip, gsf_outfile_zip,
@@ -624,7 +624,7 @@ GSF_CLASS (GsfOutfileZip, gsf_outfile_zip,
  *
  * Returns : the new zip file handler
  **/
-GsfOutfileZip *
+GsfOutfile *
 gsf_outfile_zip_new (GsfOutput *sink, G_GNUC_UNUSED GError **err)
 {
 	GsfOutfileZip *zip;
@@ -635,7 +635,7 @@ gsf_outfile_zip_new (GsfOutput *sink, G_GNUC_UNUSED GError **err)
 	g_object_ref (G_OBJECT (sink));
 	zip->sink = sink;
 
-	zip->vdir = vdir_new ("", TRUE, NULL);
+	zip->vdir = gsf_vdir_new ("", TRUE, NULL);
 	zip->root_order = g_ptr_array_new ();
 	zip->root = zip;
 
@@ -643,7 +643,7 @@ gsf_outfile_zip_new (GsfOutput *sink, G_GNUC_UNUSED GError **err)
 	gsf_output_set_name (GSF_OUTPUT (zip), gsf_output_name (sink));
 	gsf_output_set_container (GSF_OUTPUT (zip), NULL);
 
-	return zip;
+	return GSF_OUTFILE (zip);
 }
 
 gboolean

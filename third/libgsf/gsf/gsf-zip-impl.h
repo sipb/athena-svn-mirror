@@ -2,7 +2,7 @@
 /*
  * gsf-zip-impl.h: 
  *
- * Copyright (C) 2002-2003 Tambet Ingo (tambet@ximian.com)
+ * Copyright (C) 2002-2004 Tambet Ingo (tambet@ximian.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -21,6 +21,8 @@
 
 #ifndef GSF_ZIP_IMPL_H
 #define GSF_ZIP_IMPL_H
+
+#include <gsf/gsf-outfile-zip.h> /* for GsfZipCompressionMethod */
 
 G_BEGIN_DECLS
 
@@ -84,44 +86,31 @@ G_BEGIN_DECLS
 #define ZZIP_IS_COMPRLEVEL(p)  (((*(unsigned char*)p)>>1)&3)
 #define ZZIP_IS_STREAMED(p)    (((*(unsigned char*)p)>>3)&1)
 
-typedef enum {
-	ZIP_STORED =          0,
-	ZIP_SHRUNK =          1,
-	ZIP_REDUCEDx1 =       2,
-	ZIP_REDUCEDx2 =       3,
-	ZIP_REDUCEDx3 =       4,
-	ZIP_REDUCEDx4 =       5,
-	ZIP_IMPLODED  =       6,
-	ZIP_TOKENIZED =       7,
-	ZIP_DEFLATED =        8,
-	ZIP_DEFLATED_BETTER = 9,
-	ZIP_IMPLODED_BETTER = 10
-} ZipCompressionMethod;
-
 typedef struct {	
 	char                 *name;
-	ZipCompressionMethod  compr_method;
+	GsfZipCompressionMethod  compr_method;
 	guint32               crc32;
 	size_t                csize;
 	size_t                usize;
 	gsf_off_t                 offset;
 	gsf_off_t                 data_offset;
 	guint32               dostime;
-} ZipDirent;
+} GsfZipDirent;
 
 typedef struct {
 	char *name;
 	gboolean is_directory;
-	ZipDirent *dirent;
+	GsfZipDirent *dirent;
 	GSList *children;
-} ZipVDir;
+} GsfZipVDir;
 
-ZipDirent* zip_dirent_new (void);
-void       zip_dirent_free (ZipDirent *dirent);
+GsfZipDirent *gsf_zip_dirent_new  (void);
+void          gsf_zip_dirent_free (GsfZipDirent *dirent);
 
-ZipVDir* vdir_new (char const *name, gboolean is_directory, ZipDirent *dirent);
-void     vdir_free (ZipVDir *vdir, gboolean free_dirent);
-void     vdir_add_child (ZipVDir *vdir, ZipVDir *child);
+GsfZipVDir *gsf_vdir_new	(char const *name, gboolean is_directory,
+				 GsfZipDirent *dirent);
+void	    gsf_vdir_free	(GsfZipVDir *vdir, gboolean free_dirent);
+void	    gsf_vdir_add_child	(GsfZipVDir *vdir, GsfZipVDir *child);
 
 G_END_DECLS
 

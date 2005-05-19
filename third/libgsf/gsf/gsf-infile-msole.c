@@ -2,7 +2,7 @@
 /*
  * gsf-infile-msole.c :
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -31,6 +31,8 @@
 
 #undef G_LOG_DOMAIN
 #define G_LOG_DOMAIN "libgsf:msole"
+
+static GObjectClass *parent_class;
 
 typedef struct {
 	guint32 *block;
@@ -300,9 +302,9 @@ ole_dirent_new (GsfInfileMSOle *ole, guint32 entry, MSOleDirent *parent)
 		return NULL;
 	}
 
-	/* It looks like directory sizes are sometimes bogus */
+	/* It looks like directory (and root directory) sizes are sometimes bogus */
 	size = GSF_LE_GET_GUINT32 (data + DIRENT_FILE_SIZE);
-	g_return_val_if_fail (type == DIRENT_TYPE_DIR ||
+	g_return_val_if_fail (type == DIRENT_TYPE_DIR || type == DIRENT_TYPE_ROOTDIR ||
 			      size <= (guint32)ole->input->size, NULL);
 
 	dirent = g_new0 (MSOleDirent, 1);
@@ -323,15 +325,15 @@ ole_dirent_new (GsfInfileMSOle *ole, guint32 entry, MSOleDirent *parent)
 	dirent->name = NULL;
 	if (0 < name_len && name_len <= DIRENT_MAX_NAME_SIZE) {
 		gunichar2 uni_name [DIRENT_MAX_NAME_SIZE+1];
-		guint8 const *end;
+		gchar const *end;
 		int i;
 
 		/* !#%!@$#^
 		 * Sometimes, rarely, people store the stream name as ascii
 		 * rather than utf16.  Do a validation first just in case.
 		 */
-		if (!g_utf8_validate ((gchar *)data, -1, (gchar const **)&end) ||
-		    (end - data + 1) != name_len) {
+		if (!g_utf8_validate (data, -1, &end) ||
+		    ((guint8 const *)end - data + 1) != name_len) {
 			/* be wary about endianness */
 			for (i = 0 ; i < name_len ; i += 2)
 				uni_name [i/2] = GSF_LE_GET_GUINT16 (data + i);
@@ -339,7 +341,7 @@ ole_dirent_new (GsfInfileMSOle *ole, guint32 entry, MSOleDirent *parent)
 
 			dirent->name = g_utf16_to_utf8 (uni_name, -1, NULL, NULL, NULL);
 		} else
-			dirent->name = g_strndup ((gchar *)data, (gsize)(end - data + 1));
+			dirent->name = g_strndup ((gchar *)data, (gsize)((guint8 const *)end - data + 1));
 	}
 	/* be really anal in the face of screwups */
 	if (dirent->name == NULL)
@@ -438,7 +440,7 @@ ole_dup (GsfInfileMSOle const *src, GError **err)
 	if (input == NULL)
 		return NULL;
 
-	dst = g_object_new (GSF_INFILE_MSOLE_TYPE, NULL);
+	dst = (GsfInfileMSOle *)g_object_new (GSF_INFILE_MSOLE_TYPE, NULL);
 	dst->input = input;
 	dst->info  = ole_info_ref (src->info);
 
@@ -557,7 +559,7 @@ ole_init_info (GsfInfileMSOle *ole, GError **err)
 			}
 			last = num_bat;
 		} else if (num_metabat > 0) {
-			metabat_block = GSF_LE_GET_GUINT32 (metabat + last);
+			metabat_block = metabat[last];
 			num_bat -= last;
 		}
 
@@ -595,7 +597,6 @@ ole_init_info (GsfInfileMSOle *ole, GError **err)
 static void
 gsf_infile_msole_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
 	GsfInfileMSOle *ole = GSF_INFILE_MSOLE (obj);
 
 	if (ole->input != NULL) {
@@ -611,9 +612,7 @@ gsf_infile_msole_finalize (GObject *obj)
 
 	g_free (ole->stream.buf);
 
-	parent_class = g_type_class_peek (GSF_INFILE_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static GsfInput *
@@ -794,7 +793,8 @@ gsf_infile_msole_child_by_index (GsfInfile *infile, int target, GError **err)
 
 	for (p = ole->dirent->children; p != NULL ; p = p->next)
 		if (target-- <= 0)
-			return gsf_infile_msole_new_child (ole, p->data, err);
+			return gsf_infile_msole_new_child (ole,
+				(MSOleDirent *)p->data, err);
 	return NULL;
 }
 
@@ -864,6 +864,8 @@ gsf_infile_msole_class_init (GObjectClass *gobject_class)
 	infile_class->name_by_index	= gsf_infile_msole_name_by_index;
 	infile_class->child_by_index	= gsf_infile_msole_child_by_index;
 	infile_class->child_by_name	= gsf_infile_msole_child_by_name;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfInfileMSOle, gsf_infile_msole,
@@ -880,24 +882,28 @@ GSF_CLASS (GsfInfileMSOle, gsf_infile_msole,
  *
  * Returns : the new ole file handler
  **/
-GsfInfileMSOle *
+GsfInfile *
 gsf_infile_msole_new (GsfInput *source, GError **err)
 {
 	GsfInfileMSOle *ole;
+	gsf_off_t calling_pos;
 
 	g_return_val_if_fail (GSF_IS_INPUT (source), NULL);
 
-	ole = g_object_new (GSF_INFILE_MSOLE_TYPE, NULL);
+	ole = (GsfInfileMSOle *)g_object_new (GSF_INFILE_MSOLE_TYPE, NULL);
 	g_object_ref (G_OBJECT (source));
 	ole->input = source;
 	gsf_input_set_size (GSF_INPUT (ole), (gsf_off_t) 0);
 
+	calling_pos = gsf_input_tell (source);
 	if (ole_init_info (ole, err)) {
+		gsf_input_seek (source, calling_pos, G_SEEK_SET);
+
 		g_object_unref (G_OBJECT (ole));
 		return NULL;
 	}
 
-	return ole;
+	return GSF_INFILE (ole);
 }
 
 /**

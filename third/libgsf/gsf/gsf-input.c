@@ -2,7 +2,7 @@
 /*
  * gsf-input.c: interface for used by the ole layer to read raw data
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -30,6 +30,8 @@
 #endif
 
 #define GET_CLASS(instance) G_TYPE_INSTANCE_GET_CLASS (instance, GSF_INPUT_TYPE, GsfInputClass)
+
+static GObjectClass *parent_class;
 
 enum {
 	PROP_0,
@@ -88,9 +90,8 @@ gsf_input_get_property (GObject     *object,
 static void
 gsf_input_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
-
 	GsfInput *input = GSF_INPUT (obj);
+
 	if (input->name != NULL) {
 		g_free (input->name);
 		input->name = NULL;
@@ -99,10 +100,7 @@ gsf_input_finalize (GObject *obj)
 		g_object_unref (G_OBJECT (input->container));
 		input->container = NULL;
 	}
-
-	parent_class = g_type_class_peek (G_TYPE_OBJECT);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static void
@@ -119,35 +117,42 @@ gsf_input_init (GObject *obj)
 static void
 gsf_input_class_init (GObjectClass *gobject_class)
 {
+	parent_class = g_type_class_peek_parent (gobject_class);
+
 	gobject_class->finalize     = gsf_input_finalize;
 	/* gobject_class->set_property = gsf_input_set_property; */
 	gobject_class->get_property = gsf_input_get_property;
 
 	g_object_class_install_property (gobject_class,
 					 PROP_NAME,
-					 g_param_spec_pointer ("name", "Name",
-							       "The Input's Name",
-							       G_PARAM_READABLE));
+					 g_param_spec_string ("name", "Name",
+							      "The Input's Name",
+							      NULL,
+							      G_PARAM_READABLE));
 	g_object_class_install_property (gobject_class,
 					 PROP_SIZE,
-					 g_param_spec_pointer ("size", "Size",
-							       "The Input's Size",
-							       G_PARAM_READABLE));
+					 g_param_spec_int64 ("size", "Size",
+							     "The Input's Size",
+							     0, G_MAXINT64, 0,
+							     G_PARAM_READABLE));
 	g_object_class_install_property (gobject_class,
 					 PROP_EOF,
-					 g_param_spec_pointer ("eof", "OEF",
+					 g_param_spec_boolean ("eof", "OEF",
 							       "End Of File",
+							       FALSE,
 							       G_PARAM_READABLE));
 	g_object_class_install_property (gobject_class,
 					 PROP_REMAINING,
-					 g_param_spec_pointer ("remaining", "Remaining",
-							       "Amount of Data Remaining",
-							       G_PARAM_READABLE));
+					 g_param_spec_int64 ("remaining", "Remaining",
+							     "Amount of Data Remaining",
+							     0, G_MAXINT64, 0,
+							     G_PARAM_READABLE));
 	g_object_class_install_property (gobject_class,
 					 PROP_POS,
-					 g_param_spec_pointer ("position", "Position",
-							       "The Output's Current Position",
-							       G_PARAM_READABLE));
+					 g_param_spec_int64 ("position", "Position",
+							     "The Output's Current Position",
+							     0, G_MAXINT64, 0,
+							     G_PARAM_READABLE));
 }
 
 GSF_CLASS_ABSTRACT (GsfInput, gsf_input,
@@ -183,7 +188,7 @@ gsf_input_container (GsfInput *input)
 
 /**
  * gsf_input_dup :
- * @src : The input to duplicate
+ * @input : The input to duplicate
  * @err : optionally NULL
  *
  * Duplicates input @src leaving the new one at the same offset.
@@ -191,21 +196,21 @@ gsf_input_container (GsfInput *input)
  * Returns : the duplicate, or NULL on error
  **/
 GsfInput *
-gsf_input_dup (GsfInput *src, GError **err)
+gsf_input_dup (GsfInput *input, GError **err)
 {
 	GsfInput *dst;
 
-	g_return_val_if_fail (src != NULL, NULL);
+	g_return_val_if_fail (input != NULL, NULL);
 
-	dst = GET_CLASS (src)->Dup (src, err);
+	dst = GET_CLASS (input)->Dup (input, err);
 	if (dst != NULL) {
-		dst->size = src->size;
-		if (src->name != NULL)
-			gsf_input_set_name (dst, src->name);
-		dst->container = src->container;
+		dst->size = input->size;
+		if (input->name != NULL)
+			gsf_input_set_name (dst, input->name);
+		dst->container = input->container;
 		if (dst->container != NULL)
 			g_object_ref (G_OBJECT (dst->container));
-		gsf_input_seek (dst, (gsf_off_t)src->cur_offset, G_SEEK_SET);
+		gsf_input_seek (dst, (gsf_off_t)input->cur_offset, G_SEEK_SET);
 	}
 	return dst;
 }
@@ -440,7 +445,6 @@ gsf_input_error (void)
 
 /**
  * gsf_input_copy :
- *
  * @input : a non-null #GsfInput
  * @output : a non-null #GsfOutput
  *
@@ -449,8 +453,8 @@ gsf_input_error (void)
  * make sure to call gsf_input_seek (input, 0, G_SEEK_SET) and
  * gsf_output_seek (output, 0, G_SEEK_SET) first, if applicable.
  *
- * Returns : Success
- */
+ * Returns : TRUE on Success
+ **/
 gboolean
 gsf_input_copy (GsfInput *input, GsfOutput *output)
 {
@@ -477,7 +481,6 @@ gsf_input_copy (GsfInput *input, GsfOutput *output)
 
 /**
  * gsf_input_uncompress: maybe uncompress stream.
- *
  * @src: stream to be uncompressed.
  *
  * Returns: A stream equivalent to the source stream, but uncompressed if
@@ -505,10 +508,10 @@ gsf_input_uncompress (GsfInput *src)
 		const unsigned char gzip_sig[2] = { 0x1f, 0x8b };
 
 		if (memcmp (gzip_sig, data, sizeof (gzip_sig)) == 0) {
-			GsfInputGZip *res = gsf_input_gzip_new (src, NULL);
+			GsfInput *res = gsf_input_gzip_new (src, NULL);
 			if (res) {
 				g_object_unref (G_OBJECT (src));
-				return gsf_input_uncompress (GSF_INPUT (res));
+				return gsf_input_uncompress (res);
 			} 
 		}
 	}
@@ -516,13 +519,13 @@ gsf_input_uncompress (GsfInput *src)
 #ifdef HAVE_BZIP
 	/* Let's try bzip.  */
 	{
-		const guint8 * bzip_sig = "BZh";
+		guint8 const *bzip_sig = "BZh";
 
 		if (memcmp (gzip_sig, data, strlen (bzip_sig)) == 0) {
-			GsfInputMemory *res = gsf_input_memory_new_from_bzip (src, NULL);
+			GsfInput *res = gsf_input_memory_new_from_bzip (src, NULL);
 			if (res) {
 				g_object_unref (G_OBJECT (src));
-				return gsf_input_uncompress (GSF_INPUT (res));
+				return gsf_input_uncompress (res);
 			}
 		}
 	}
@@ -543,7 +546,7 @@ gsf_input_uncompress (GsfInput *src)
 #include <gsf-gnome/gsf-input-gnomevfs.h>
 #endif
 
-GsfInput*
+GsfInput *
 gsf_input_new_for_uri (char const * uri, GError ** err)
 {
 	GsfInput * input = NULL;
@@ -556,15 +559,15 @@ gsf_input_new_for_uri (char const * uri, GError ** err)
 
 	if (len > 3 && !strstr (uri, ":/")) {
 		/* assume plain file */
-		input = GSF_INPUT (gsf_input_stdio_new (uri, err));
+		input = gsf_input_stdio_new (uri, err);
 	} else {
 #if HAVE_GNOME
 		/* have gnome, let GnomeVFS deal with this */
-		input = GSF_INPUT (gsf_input_gnomevfs_new (uri, err));
+		input = gsf_input_gnomevfs_new (uri, err);
 #else		
 		if (len > 7 && !strncmp (uri, "file:/", 6)) {
 			/* dumb attempt to translate this into a local path */
-			input = GSF_INPUT (gsf_input_stdio_new (uri+7, err));			
+			input = gsf_input_stdio_new (uri+7, err);
 		} 
 		/* else: unknown or unhandled protocol - bail */
 #endif

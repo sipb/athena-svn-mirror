@@ -1,5 +1,5 @@
 %define name libgsf
-%define version 1.8.2
+%define version 1.10.1
 %define release 1
 %define prefix /usr
 

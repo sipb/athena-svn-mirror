@@ -2,7 +2,7 @@
 /*
  * gsf-msole-impl.h: 
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -34,7 +34,8 @@ G_BEGIN_DECLS
 #define OLE_HEADER_BYTE_ORDER	 0x1c	/* 0xfe 0xff == Intel Little Endian */
 #define OLE_HEADER_BB_SHIFT      0x1e
 #define OLE_HEADER_SB_SHIFT      0x20
-/* 0x22..0x2b reserved == 0 */
+/* 0x22..0x27 reserved == 0 */
+#define OLE_HEADER_CSECTDIR	 0x28
 #define OLE_HEADER_NUM_BAT	 0x2c
 #define OLE_HEADER_DIRENT_START  0x30
 /* 0x34..0x37 transacting signature must be 0 */

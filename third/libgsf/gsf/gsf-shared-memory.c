@@ -1,7 +1,8 @@
+/* vim: set sw=8: -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  * gsf-shared-memory.c: 
  *
- * Copyright (C) 2002-2003 Morten Welinder (terra@diku.dk)
+ * Copyright (C) 2002-2004 Morten Welinder (terra@diku.dk)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -30,6 +31,8 @@
 typedef struct {
 	GObjectClass g_object_class;
 } GsfSharedMemoryClass;
+
+static GObjectClass *parent_class;
 
 GsfSharedMemory *
 gsf_shared_memory_new (void *buf, gsf_off_t size, gboolean needs_free)
@@ -74,6 +77,8 @@ gsf_shared_memory_finalize (GObject *obj)
 #endif
 		}
 	}
+
+	G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 static void
@@ -86,6 +91,8 @@ gsf_shared_memory_init (GObject *obj)
 static void
 gsf_shared_memory_class_init (GObjectClass *gobject_class)
 {
+	parent_class = g_type_class_peek_parent (gobject_class);
+
 	gobject_class->finalize = gsf_shared_memory_finalize;
 }
 

@@ -2,7 +2,7 @@
 /*
  * gsf-input-stdio.c: stdio based input
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser General Public
@@ -37,6 +37,8 @@
 #define S_ISREG(x) ((x) & _S_IFREG)
 #endif
 
+static GObjectClass *parent_class;
+
 struct _GsfInputStdio {
 	GsfInput input;
 
@@ -56,7 +58,7 @@ typedef struct {
  *
  * Returns a new file or NULL.
  **/
-GsfInputStdio *
+GsfInput *
 gsf_input_stdio_new (char const *filename, GError **err)
 {
 	GsfInputStdio *input;
@@ -88,20 +90,19 @@ gsf_input_stdio_new (char const *filename, GError **err)
 	}
 
 	size = st.st_size;
-	input = g_object_new (GSF_INPUT_STDIO_TYPE, NULL);
+	input = (GsfInputStdio *)g_object_new (GSF_INPUT_STDIO_TYPE, NULL);
 	input->file = file;
 	input->buf  = NULL;
 	input->buf_size = 0;
 	gsf_input_set_size (GSF_INPUT (input), size);
 	gsf_input_set_name (GSF_INPUT (input), filename);
 
-	return input;
+	return GSF_INPUT (input);
 }
 
 static void
 gsf_input_stdio_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
 	GsfInputStdio *input = (GsfInputStdio *)obj;
 
 	if (input->file != NULL) {
@@ -114,16 +115,14 @@ gsf_input_stdio_finalize (GObject *obj)
 		input->buf_size = 0;
 	}
 
-	parent_class = g_type_class_peek (GSF_INPUT_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static GsfInput *
 gsf_input_stdio_dup (GsfInput *src_input, GError **err)
 {
 	GsfInputStdio const *src = (GsfInputStdio *)src_input;
-	return GSF_INPUT (gsf_input_stdio_new (src->input.name, err));
+	return gsf_input_stdio_new (src->input.name, err);
 }
 
 static guint8 const *
@@ -162,15 +161,24 @@ static gboolean
 gsf_input_stdio_seek (GsfInput *input, gsf_off_t offset, GSeekType whence)
 {
 	GsfInputStdio const *stdio = GSF_INPUT_STDIO (input);
-	gsf_off_t loffset;
 	int stdio_whence = SEEK_SET;
+
+#ifndef HAVE_FSEEKO
+	long loffset;
+#else
+	off_t loffset;
+#endif
 
 	if (stdio->file == NULL)
 		return TRUE;
 
 	loffset = offset;
 	if ((gsf_off_t) loffset != offset) { /* Check for overflow */
+#ifdef HAVE_FSEEKO
+		g_warning ("offset too large for fseeko");
+#else
 		g_warning ("offset too large for fseek");
+#endif
 		return TRUE;
 	}
 	switch (whence) {
@@ -181,9 +189,15 @@ gsf_input_stdio_seek (GsfInput *input, gsf_off_t offset, GSeekType whence)
 		break;
 	}
 
-	if (0 == fseek (stdio->file, (unsigned long)loffset, stdio_whence))
+	errno = 0;
+#ifdef HAVE_FSEEKO
+	if (0 == fseeko (stdio->file, loffset, stdio_whence))
 		return FALSE;
-	
+#else
+	if (0 == fseek (stdio->file, loffset, stdio_whence))
+		return FALSE;
+#endif
+	perror ("\tERROR");
 	return TRUE;
 }
 
@@ -206,6 +220,8 @@ gsf_input_stdio_class_init (GObjectClass *gobject_class)
 	input_class->Dup	= gsf_input_stdio_dup;
 	input_class->Read	= gsf_input_stdio_read;
 	input_class->Seek	= gsf_input_stdio_seek;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfInputStdio, gsf_input_stdio,

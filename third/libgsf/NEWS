@@ -1,3 +1,77 @@
+libgsf 1.10.1
+
+Jon Kåre:
+	* Fix base64 decoding.
+
+Kasal:
+	* Lots of code auditing and cleanup.
+	* Identified the long standing source of the problem with XL corrupting
+	  large files
+
+------------------------------------------------------------------------------
+
+libgsf 1.10.0
+
+Jody:
+	* Patch to read slightly odd planmaker generated OLE2.
+	* Fix printf implementation in GsfOutfileMSOle
+	* Make the msole block sizes instance specific
+
+Morten:
+	* Attempt fix for ARM.
+	* Make gsf_input_gnomevfs_new_uri handle missing "seek" methods.
+
+Stuart Cunningham <stuartc@rd.bbc.co.uk>
+	* Enable OLE2 export for larger block sizes
+
+------------------------------------------------------------------------------
+libgsf 1.9.1
+
+J.H.M. Dassen (Ray):
+	* Corrected the location where the documentation gets installed.
+	*
+James Cape :
+	* Clean up the gtk-doc build
+
+Jody :
+	* Support DOCTYPE in the simplified xml generator
+	* More gtk-doc cleanup
+
+Morten, Dom:
+	* Avoid polluting global name space with symbols lacking gsf_ prefix.
+	  This only effects implementation utilites shared by the zip in/out
+	  code so hopefully the abi breakage will not hurt too many people.
+
+------------------------------------------------------------------------------
+libgsf 1.9.0
+
+Dom:
+	* Fix bzip output to flush if last deflate fills buffer
+
+Jody Goldberg:
+	* If the file is not an OLE2 file do not change the filepos.
+	* Handle broken ole files that specify codepage as signed short
+	* Fix reading ole files > 13.6 Meg on sparc/alpha (from Xavier Roche)
+	* Tune validation test for LPSTR properties to handle char width > 1
+	* Make the impl headers for the base interfaces public as requested
+	* Add some directory tree wrappers
+	* Work around a -fstrict-alias warning for SuSE
+	* Move to automake-1.7
+	* Fix gnome-vfs backend to open files with random access
+	* Support merging content from nested nodes for sax parsing
+	* Fix gtk-doc
+
+Joseph Frazee:
+	* patch the spec file.
+
+Morten Welinder:
+	* Properly chain finalizer.
+	* Fix gzip output to flush if last deflate fills buffer
+
+Tor Lillqvist:
+	* packaging tools for win32.
+
+------------------------------------------------------------------------------
 libgsf 1.8.2
 
 Jody:

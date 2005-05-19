@@ -2,7 +2,7 @@
 /*
  * gsf-msole-utils.c: 
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  * Copyright (C) 2002-2003 Dom Lachowicz (cinamod@hotmail.com)
  * excel_iconv* family of functions (C) 2001 by Vlad Harchev <hvv@hippo.ru>
  *
@@ -175,7 +175,7 @@ static GsfMSOleMetaDataPropMap const common_props[] = {
 static char const *
 msole_prop_id_to_gsf (GsfMSOleMetaDataSection *section, guint32 id)
 {
-	char const * res = NULL;
+	char const *res = NULL;
 	GsfMSOleMetaDataPropMap const *map = NULL;
 	unsigned i = 0;
 
@@ -359,7 +359,8 @@ msole_prop_parse (GsfMSOleMetaDataSection *section,
 
 		len = GSF_LE_GET_GUINT32 (*data);
 
-		g_return_val_if_fail (*data + 4 + len <= data_end, NULL);
+		g_return_val_if_fail (len < 0x10000, NULL);
+		g_return_val_if_fail (*data + 4 + len*section->char_size <= data_end, NULL);
 
 		gslen = 0;
 		str = g_convert_with_iconv (*data + 4,
@@ -379,6 +380,7 @@ msole_prop_parse (GsfMSOleMetaDataSection *section,
 
 		len = GSF_LE_GET_GUINT32 (*data);
 
+		g_return_val_if_fail (len < 0x10000, NULL);
 		g_return_val_if_fail (*data + 4 + len <= data_end, NULL);
 
 		str = g_convert (*data + 4, len*2,
@@ -535,7 +537,7 @@ msole_prop_read (GsfInput *in,
 	d (printf ("%u) ", i););
 	prop_name = msole_prop_id_to_gsf (section, props[i].id);
 
-	d (printf (" @ %x %x = ", (unsigned)props[i].offset, size););
+	d (printf (" @ %x %x = ", (unsigned)props[i].offset, (unsigned)size););
 	return msole_prop_parse (section, type, &data, data + size);
 }
 
@@ -652,7 +654,7 @@ gsf_msole_metadata_read (GsfInput *in, GError **err)
 				GValue *v = msole_prop_read (in, sections+i, props, j);
 				if (v != NULL) {
 					if (G_IS_VALUE (v)) {
-						if G_VALUE_HOLDS_INT (v) {
+						if (G_VALUE_HOLDS_INT (v)) {
 							int codepage = g_value_get_int (v);
 							sections[i].iconv_handle = gsf_msole_iconv_open_for_import (codepage);
 							if (codepage == 1200 || codepage == 1201)
@@ -747,7 +749,7 @@ static GsfLanguageMapping const gsf_msole_language_ids[] = {
 	{ "-none-", 0x0400 }, /* none */
 	{ "af_ZA",  0x0436 }, /* Afrikaans */
 	{ "am",     0x045e }, /* Amharic */
-	{ "al_AL",  0x041c }, /* Albanian */
+	{ "sq_AL",  0x041c }, /* Albanian */
 	{ "ar_SA",  0x0401 }, /* Arabic (Saudi) */
 	{ "ar_IQ",  0x0801 }, /* Arabic (Iraq) */
 	{ "ar_EG",  0x0c01 }, /* Arabic (Egypt) */		
@@ -925,10 +927,11 @@ static GsfLanguageMapping const gsf_msole_language_ids[] = {
 
 /**
  * gsf_msole_lid_for_language
+ * @lang :
  *
- * Return the LID (Language Identifier) for the input language.
+ * Returns the LID (Language Identifier) for the input language.
  * If lang is %null, return 0x0400 ("-none-"), and not 0x0000 ("no proofing")
- */
+ **/
 guint
 gsf_msole_lid_for_language (char const *lang)
 {
@@ -972,7 +975,7 @@ gsf_msole_language_for_lid (guint lid)
  * Covert the the codepage into an applicable LID
  */
 guint
-gsf_msole_codepage_to_lid (guint codepage)
+gsf_msole_codepage_to_lid (int codepage)
 {
 	switch (codepage) {
 	case 77:		/* MAC_CHARSET */
@@ -1013,9 +1016,10 @@ gsf_msole_codepage_to_lid (guint codepage)
 
 /**
  * gsf_msole_lid_to_codepage
+ * @lid :
  *
- * Our best guess at the codepage for the given language id
- */
+ * Returns our best guess at the codepage for the given language id
+ **/
 guint
 gsf_msole_lid_to_codepage (guint lid)
 {
@@ -1213,10 +1217,11 @@ gsf_msole_lid_to_codepage (guint lid)
 
 /**
  * gsf_msole_lid_to_codepage_str
+ * @lid :
  * 
  * Returns the Iconv codepage string for the given LID.
  * Return value must be g_free()'d
- */
+ **/
 gchar *
 gsf_msole_lid_to_codepage_str (guint lid)
 {
@@ -1232,8 +1237,8 @@ gsf_msole_lid_to_codepage_str (guint lid)
 /**
  * gsf_msole_iconv_win_codepage :
  *
- * Our best guess at the applicable windows code page based on an environment
- * variable or the current locale.
+ * Returns our best guess at the applicable windows code page based on an
+ * 	environment variable or the current locale.
  **/
 guint
 gsf_msole_iconv_win_codepage (void)
@@ -1264,22 +1269,27 @@ gsf_msole_iconv_win_codepage (void)
  * @to:
  * @codepage :
  *
- * Open an iconv converter for @codepage -> utf8.
+ * Returns an iconv converter for @codepage -> utf8.
  **/
 GIConv
-gsf_msole_iconv_open_codepage_for_import (char const *to, guint codepage)
+gsf_msole_iconv_open_codepage_for_import (char const *to, int codepage)
 {
 	GIConv iconv_handle;
 	g_return_val_if_fail (to != NULL, (GIConv)(-1));
 
-	if (codepage != 1200 && codepage != 1201) {
+	/* sometimes it is stored as signed short */
+	if (codepage == 65001 || codepage == -535) {
+		iconv_handle = g_iconv_open (to, "UTF-8");
+		if (iconv_handle != (GIConv)(-1))
+			return iconv_handle;
+	} else if (codepage != 1200 && codepage != 1201) {
 		char* src_charset = g_strdup_printf ("CP%d", codepage);
 		iconv_handle = g_iconv_open (to, src_charset);
 		g_free (src_charset);
 		if (iconv_handle != (GIConv)(-1))
 			return iconv_handle;
 	} else {
-		const char *from = (codepage == 1200) ? "UTF-16LE" : "UTF-16BE";
+		char const *from = (codepage == 1200) ? "UTF-16LE" : "UTF-16BE";
 		iconv_handle = g_iconv_open (to, from);
 		if (iconv_handle != (GIConv)(-1))
 			return iconv_handle;
@@ -1307,21 +1317,23 @@ gsf_msole_iconv_open_codepage_for_import (char const *to, guint codepage)
  * gsf_msole_iconv_open_for_import :
  * @codepage :
  *
- * Open an iconv converter for single byte encodings @codepage -> utf8.
- * Attempt to handle the semantics of a specification for multibyte encodings
- * since this is only supposed to be used for single bytes.
+ * Returns an iconv converter for single byte encodings @codepage -> utf8.
+ * 	Attempt to handle the semantics of a specification for multibyte encodings
+ * 	since this is only supposed to be used for single bytes.
  **/
 GIConv
-gsf_msole_iconv_open_for_import (guint codepage)
+gsf_msole_iconv_open_for_import (int codepage)
 {
 	return gsf_msole_iconv_open_codepage_for_import ("UTF-8", codepage);
 }
 
 /**
- * gsf_msole_iconv_open_for_export :
+ * gsf_msole_iconv_open_codepages_for_export :
+ * @codepage_to :
+ * @from :
  *
- * Open an iconv convert to go from utf8 -> to our best guess at a useful
- * windows codepage.
+ * Returns an iconv converter to go from utf8 -> to our best guess at a useful
+ * 	windows codepage.
  **/
 GIConv
 gsf_msole_iconv_open_codepages_for_export (guint codepage_to, char const *from)
@@ -1340,12 +1352,11 @@ gsf_msole_iconv_open_codepages_for_export (guint codepage_to, char const *from)
 }
 
 /**
- * gsf_msole_iconv_open_for_export :
- *
+ * gsf_msole_iconv_open_codepage_for_export :
  * @codepage_to:
  *
- * Open an iconv convert to go from utf8 -> to our best guess at a useful
- * windows codepage.
+ * Returns an iconv converter to go from utf8 -> to our best guess at a useful
+ * 	windows codepage.
  **/
 GIConv
 gsf_msole_iconv_open_codepage_for_export (guint codepage_to)
@@ -1356,11 +1367,95 @@ gsf_msole_iconv_open_codepage_for_export (guint codepage_to)
 /**
  * gsf_msole_iconv_open_for_export :
  *
- * Open an iconv convert to go from utf8 -> to our best guess at a useful
- * windows codepage.
+ * Returns an iconv convert to go from utf8 -> to our best guess at a useful
+ * 	windows codepage.
  **/
 GIConv
 gsf_msole_iconv_open_for_export (void)
 {
 	return gsf_msole_iconv_open_codepage_for_export (gsf_msole_iconv_win_codepage ());
+}
+
+#define VBA_COMPRESSION_WINDOW 4096
+
+/**
+ * gsf_msole_inflate:
+ * @input: stream to read from
+ * @offset: offset into it for start byte of compresse stream
+ * 
+ * Decompresses an LZ compressed stream.
+ * 
+ * Return value: A GByteArray that the caller is responsible for freeing
+ **/
+GByteArray *
+gsf_msole_inflate (GsfInput *input, gsf_off_t offset)
+{
+	GByteArray *res;
+	unsigned	i, win_pos, pos = 0;
+	unsigned	mask, shift, distance;
+	guint8		flag, buffer [VBA_COMPRESSION_WINDOW];
+	guint8 const   *tmp;
+	guint16		token, len;
+	gboolean	clean = TRUE;
+
+	if (gsf_input_seek (input, offset, G_SEEK_SET))
+		return NULL;
+
+	res = g_byte_array_new ();
+
+	/* explaination from libole2/ms-ole-vba.c */
+	/* The first byte is a flag byte.  Each bit in this byte
+	 * determines what the next byte is.  If the bit is zero,
+	 * the next byte is a character.  Otherwise the  next two
+	 * bytes contain the number of characters to copy from the
+	 * umcompresed buffer and where to copy them from (offset,
+	 * length).
+	 */
+	while (NULL != gsf_input_read (input, 1, &flag))
+		for (mask = 1; mask < 0x100 ; mask <<= 1)
+			if (flag & mask) {
+				if (NULL == (tmp = gsf_input_read (input, 2, NULL)))
+					break;
+				win_pos = pos % VBA_COMPRESSION_WINDOW;
+				if (win_pos <= 0x80) {
+					if (win_pos <= 0x20)
+						shift = (win_pos <= 0x10) ? 12 : 11;
+					else
+						shift = (win_pos <= 0x40) ? 10 : 9;
+				} else {
+					if (win_pos <= 0x200)
+						shift = (win_pos <= 0x100) ? 8 : 7;
+					else if (win_pos <= 0x800)
+						shift = (win_pos <= 0x400) ? 6 : 5;
+					else
+						shift = 4;
+				}
+
+				token = GSF_LE_GET_GUINT16 (tmp);
+				len = (token & ((1 << shift) - 1)) + 3;
+				distance = token >> shift;
+				clean = TRUE;
+/*				fprintf (stderr, "Shift %d, token len %d, distance %d bytes %.2x %.2x\n",
+				shift, len, distance, (token & 0xff), (token >> 8)); */
+
+				for (i = 0; i < len; i++) {
+					unsigned srcpos = (pos - distance - 1) % VBA_COMPRESSION_WINDOW;
+					guint8 c = buffer [srcpos];
+					buffer [pos++ % VBA_COMPRESSION_WINDOW] = c;
+				}
+			} else {
+				if ((pos != 0) && ((pos % VBA_COMPRESSION_WINDOW) == 0) && clean) {
+					(void) gsf_input_read (input, 2, NULL);
+					clean = FALSE;
+					g_byte_array_append (res, buffer, VBA_COMPRESSION_WINDOW);
+					break;
+				}
+				if (NULL != gsf_input_read (input, 1, buffer + (pos % VBA_COMPRESSION_WINDOW)))
+					pos++;
+				clean = TRUE;
+			}
+
+	if (pos % VBA_COMPRESSION_WINDOW)
+		g_byte_array_append (res, buffer, pos % VBA_COMPRESSION_WINDOW);
+	return res;
 }

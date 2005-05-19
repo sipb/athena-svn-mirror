@@ -2,7 +2,7 @@
 /*
  * gsf-infile-zip.c :
  *
- * Copyright (C) 2002-2003 Jody Goldberg (jody@gnome.org)
+ * Copyright (C) 2002-2004 Jody Goldberg (jody@gnome.org)
  *                    Tambet Ingo   (tambet@ximian.com)
  *
  * This program is free software; you can redistribute it and/or
@@ -33,11 +33,13 @@
 #undef G_LOG_DOMAIN
 #define G_LOG_DOMAIN "libgsf:zip"
 
+static GObjectClass *parent_class;
+
 typedef struct {
-	guint16   entries;
-	guint32   dir_pos;
-	GList     *dirent_list;
-	ZipVDir  *vdir;
+	guint16     entries;
+	guint32     dir_pos;
+	GList	   *dirent_list;
+	GsfZipVDir *vdir;
 
 	int ref_count;
 } ZipInfo;
@@ -48,7 +50,7 @@ struct _GsfInfileZip {
 	GsfInput  *input;
 	ZipInfo	  *info;
 
-	ZipVDir   *vdir;
+	GsfZipVDir   *vdir;
 
 	z_stream  *stream;
 	guint32   restlen;
@@ -66,45 +68,45 @@ typedef struct {
 #define GSF_INFILE_ZIP_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), GSF_INFILE_ZIP_TYPE, GsfInfileZipClass))
 #define GSF_IS_INFILE_ZIP_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), GSF_INFILE_ZIP_TYPE))
 
-static ZipVDir *
-vdir_child_by_name (ZipVDir *vdir, char const *name)
+static GsfZipVDir *
+vdir_child_by_name (GsfZipVDir *vdir, char const *name)
 {
 	GSList *l;
-	ZipVDir *child;
+	GsfZipVDir *child;
 	
 	for (l = vdir->children; l; l = l->next) {
-		child = (ZipVDir *) l->data;
+		child = (GsfZipVDir *) l->data;
 		if (strcmp (child->name, name) == 0)
 			return child;
 	}
 	return NULL;
 }
 
-static ZipVDir *
-vdir_child_by_index (ZipVDir *vdir, int target)
+static GsfZipVDir *
+vdir_child_by_index (GsfZipVDir *vdir, int target)
 {
 	GSList *l;
 	
 	for (l = vdir->children; l; l = l->next)
 		if (target-- <= 0)
-			return (ZipVDir *) l->data;
+			return (GsfZipVDir *) l->data;
 	return NULL;
 }
 
 static void
-vdir_insert (ZipVDir *vdir, char const * name, ZipDirent *dirent)
+vdir_insert (GsfZipVDir *vdir, char const * name, GsfZipDirent *dirent)
 {
 	const char *p;
 	char *dirname;
-	ZipVDir *child;
+	GsfZipVDir *child;
 	
 	p = strchr (name, ZIP_NAME_SEPARATOR);
 	if (p) {	/* A directory */
 		dirname = g_strndup (name, (gsize) (p - name));
 		child = vdir_child_by_name (vdir, dirname);
 		if (!child) {
-			child = vdir_new (dirname, TRUE, NULL);
-			vdir_add_child (vdir, child);
+			child = gsf_vdir_new (dirname, TRUE, NULL);
+			gsf_vdir_add_child (vdir, child);
 		}
 		g_free (dirname);
 		if (*(p+1) != '\0') {
@@ -112,8 +114,8 @@ vdir_insert (ZipVDir *vdir, char const * name, ZipDirent *dirent)
 			vdir_insert (child, name, dirent);
 		}
 	} else { /* A simple file name */
-		child = vdir_new (name, FALSE, dirent);
-		vdir_add_child (vdir, child);
+		child = gsf_vdir_new (name, FALSE, dirent);
+		gsf_vdir_add_child (vdir, child);
 	}
 }
 
@@ -131,12 +133,7 @@ zip_find_trailer (GsfInfileZip *zip)
 		return -1;
 
 	trailer_offset = filesize;
-	maplen = filesize;
-	if ((gsf_off_t) maplen != filesize) { /* Check for overflow */
-		g_warning ("File too large");
-		return -1;
-	}
-	maplen &= (ZIP_BUF_SIZE - 1);
+	maplen = filesize & (ZIP_BUF_SIZE - 1);
 	if (maplen == 0)
 		maplen = ZIP_BUF_SIZE;
 	offset = filesize - maplen; /* offset is now BUFSIZ aligned */
@@ -182,12 +179,12 @@ zip_find_trailer (GsfInfileZip *zip)
 	return -1;
 }
 
-static ZipDirent *
+static GsfZipDirent *
 zip_dirent_new_in (GsfInfileZip *zip, gsf_off_t *offset)
 {
 	static guint8 const dirent_signature[] =
 		{ 'P', 'K', 0x01, 0x02 };
-	ZipDirent *dirent;
+	GsfZipDirent *dirent;
 	guint8 const *data;
 	guint16 name_len, extras_len, comment_len, compr_method;
 	guint32 crc32, csize, usize, off;
@@ -217,7 +214,7 @@ zip_dirent_new_in (GsfInfileZip *zip, gsf_off_t *offset)
 	memcpy (name, data, name_len);
 	name[name_len] = '\0';
 
-	dirent = zip_dirent_new ();
+	dirent = gsf_zip_dirent_new ();
 	dirent->name = name;
 
 	dirent->compr_method =  compr_method;
@@ -247,9 +244,9 @@ zip_info_unref (ZipInfo *info)
 	if (info->ref_count-- != 1)
 		return;
 
-	vdir_free (info->vdir, FALSE);
+	gsf_vdir_free (info->vdir, FALSE);
 	for (p = info->dirent_list; p != NULL; p = p->next)
-		zip_dirent_free ((ZipDirent *) p->data);
+		gsf_zip_dirent_free ((GsfZipDirent *) p->data);
 
 	g_list_free (info->dirent_list);
 
@@ -329,7 +326,7 @@ zip_read_dirents (GsfInfileZip *zip, GError **err)
 
 	/* Read the directory */
 	for (i = 0, offset = dir_pos; i < entries; i++) {
-		ZipDirent *d;
+		GsfZipDirent *d;
 
 		d = zip_dirent_new_in (zip, &offset);
 		if (d == NULL) {
@@ -350,12 +347,12 @@ static void
 zip_build_vdirs (GsfInfileZip *zip)
 {
 	GList *l;
-	ZipDirent *dirent;
+	GsfZipDirent *dirent;
 	ZipInfo *info = zip->info;
 
-	info->vdir = vdir_new ("", TRUE, NULL);
+	info->vdir = gsf_vdir_new ("", TRUE, NULL);
 	for (l = info->dirent_list; l; l = l->next) {
-		dirent = (ZipDirent *) l->data;
+		dirent = (GsfZipDirent *) l->data;
 		vdir_insert (info->vdir, dirent->name, dirent);
 	}
 }
@@ -391,7 +388,7 @@ zip_child_init (GsfInfileZip *child, GError **errmsg)
 		{ 'P', 'K', 0x03, 0x04 };
 	guint8 const *data;
 	guint16 name_len, extras_len;
-	ZipDirent *dirent = child->vdir->dirent;
+	GsfZipDirent *dirent = child->vdir->dirent;
 
 	/* skip local header
 	 * should test tons of other info, but trust that those are correct
@@ -413,7 +410,7 @@ zip_child_init (GsfInfileZip *child, GError **errmsg)
 	child->restlen  = dirent->usize;
 	child->crestlen = dirent->csize;
 
-	if (dirent->compr_method != ZIP_STORED) {
+	if (dirent->compr_method != GSF_ZIP_STORED) {
 		int err;
 
 		if (!child->stream)
@@ -480,20 +477,20 @@ static guint8 const *
 gsf_infile_zip_read (GsfInput *input, size_t num_bytes, guint8 *buffer)
 {
 	GsfInfileZip *zip = GSF_INFILE_ZIP (input);
-	ZipVDir      *vdir = zip->vdir;
+	GsfZipVDir      *vdir = zip->vdir;
 	gsf_off_t pos;
 
 	if (zip->restlen < num_bytes)
 		return NULL;
 
 	switch (vdir->dirent->compr_method) {
-	case ZIP_STORED:
+	case GSF_ZIP_STORED:
 		zip->restlen -= num_bytes;
 		pos = zip->vdir->dirent->data_offset + input->cur_offset;
 		gsf_input_seek (zip->input, pos, G_SEEK_SET);
 		return gsf_input_read (zip->input, num_bytes, buffer);
 
-	case ZIP_DEFLATED:
+	case GSF_ZIP_DEFLATED:
 
 		if (buffer == NULL) {
 			if (zip->buf_size < num_bytes) {
@@ -585,10 +582,10 @@ gsf_infile_zip_seek (GsfInput *input, gsf_off_t offset, GSeekType whence)
 
 
 static GsfInput *
-gsf_infile_zip_new_child (GsfInfileZip *parent, ZipVDir *vdir, GError **err)
+gsf_infile_zip_new_child (GsfInfileZip *parent, GsfZipVDir *vdir, GError **err)
 {
 	GsfInfileZip *child;
-	ZipDirent *dirent = vdir->dirent;
+	GsfZipDirent *dirent = vdir->dirent;
 	child = zip_dup (parent, err);
 
 	if (child == NULL)
@@ -616,7 +613,7 @@ static GsfInput *
 gsf_infile_zip_child_by_index (GsfInfile *infile, int target, GError **err)
 {
 	GsfInfileZip *zip = GSF_INFILE_ZIP (infile);
-	ZipVDir *child_vdir = vdir_child_by_index (zip->vdir, target);
+	GsfZipVDir *child_vdir = vdir_child_by_index (zip->vdir, target);
 
 	if (child_vdir)
 		return gsf_infile_zip_new_child (zip, child_vdir, err);
@@ -628,7 +625,7 @@ static char const *
 gsf_infile_zip_name_by_index (GsfInfile *infile, int target)
 {
 	GsfInfileZip *zip = GSF_INFILE_ZIP (infile);
-	ZipVDir *child_vdir = vdir_child_by_index (zip->vdir, target);
+	GsfZipVDir *child_vdir = vdir_child_by_index (zip->vdir, target);
 
 	if (child_vdir)
 		return child_vdir->name;
@@ -640,7 +637,7 @@ static GsfInput *
 gsf_infile_zip_child_by_name (GsfInfile *infile, char const *name, GError **err)
 {
 	GsfInfileZip *zip = GSF_INFILE_ZIP (infile);
-	ZipVDir *child_vdir = vdir_child_by_name (zip->vdir, name);
+	GsfZipVDir *child_vdir = vdir_child_by_name (zip->vdir, name);
 
 	if (child_vdir)
 		return gsf_infile_zip_new_child (zip, child_vdir, err);
@@ -663,7 +660,6 @@ gsf_infile_zip_num_children (GsfInfile *infile)
 static void
 gsf_infile_zip_finalize (GObject *obj)
 {
-	GObjectClass *parent_class;
 	GsfInfileZip *zip = GSF_INFILE_ZIP (obj);
 
 	if (zip->input != NULL) {
@@ -680,9 +676,7 @@ gsf_infile_zip_finalize (GObject *obj)
 	
 	g_free (zip->buf);
 
-	parent_class = g_type_class_peek (GSF_INFILE_TYPE);
-	if (parent_class && parent_class->finalize)
-		parent_class->finalize (obj);
+	parent_class->finalize (obj);
 }
 
 static void
@@ -714,6 +708,8 @@ gsf_infile_zip_class_init (GObjectClass *gobject_class)
 	infile_class->name_by_index	= gsf_infile_zip_name_by_index;
 	infile_class->child_by_index	= gsf_infile_zip_child_by_index;
 	infile_class->child_by_name	= gsf_infile_zip_child_by_name;
+
+	parent_class = g_type_class_peek_parent (gobject_class);
 }
 
 GSF_CLASS (GsfInfileZip, gsf_infile_zip,
@@ -722,15 +718,15 @@ GSF_CLASS (GsfInfileZip, gsf_infile_zip,
 
 /**
  * gsf_infile_zip_new :
- * @source :
- * @err   :
+ * @source : A base #GsfInput
+ * @err   : A #GError, optionally %null
  *
  * Opens the root directory of a Zip file.
  * NOTE : adds a reference to @source
  *
  * Returns : the new zip file handler
  **/
-GsfInfileZip *
+GsfInfile *
 gsf_infile_zip_new (GsfInput *source, GError **err)
 {
 	GsfInfileZip *zip;
@@ -748,5 +744,5 @@ gsf_infile_zip_new (GsfInput *source, GError **err)
 	}
 	zip->vdir               = zip->info->vdir;
 
-	return zip;
+	return GSF_INFILE (zip);
 }
