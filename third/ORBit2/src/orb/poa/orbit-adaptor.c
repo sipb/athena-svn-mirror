@@ -161,9 +161,9 @@ ORBit_adaptor_find (CORBA_ORB orb, ORBit_ObjectKey *objkey)
 	{
 		adaptor = g_ptr_array_index (orb->adaptors, adaptorId);
 
-		if (memcmp (objkey->_buffer,
-			    adaptor->adaptor_key._buffer,
-			    ORBIT_ADAPTOR_PREFIX_LEN))
+		if (!adaptor || memcmp (objkey->_buffer,
+					adaptor->adaptor_key._buffer,
+					ORBIT_ADAPTOR_PREFIX_LEN))
 			adaptor = NULL;
 		else
 			ORBit_RootObject_duplicate_T (adaptor);
