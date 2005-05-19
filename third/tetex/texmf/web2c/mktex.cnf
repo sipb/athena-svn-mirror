@@ -1,5 +1,0 @@
-: ${MT_FEATURES=appendonlydir}
-: ${MODE=ljfour}
-: ${BDPI=600}
-# uncomment the following line to use ps2pk instead of gsftopk:
-# : ${ps_to_pk=ps2pk}
