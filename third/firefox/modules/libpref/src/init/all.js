@@ -1544,7 +1544,9 @@ pref("applications.rlogin_with_user", "xterm -e rlogin %h -l %u");
 pref("applications.tmp_dir", "/tmp");
 // On Solaris/IRIX, this should be "lp"
 pref("print.print_command", "lpr ${MOZ_PRINTER_NAME:+'-P'}${MOZ_PRINTER_NAME}");
-pref("print.printer_list", ""); // list of printers, separated by spaces
+pref("print.printer_PostScript/duplex.print_command", "lpr -Zduplex ");
+pref("print.printer_PostScript/2upduplex.print_command", "psnup -q -n 2 | lpr -Zduplex ");
+pref("print.printer_list", "default duplex 2upduplex"); // list of printers, separated by spaces
 pref("print.print_reversed", false);
 pref("print.print_color", true);
 pref("print.print_landscape", false);
