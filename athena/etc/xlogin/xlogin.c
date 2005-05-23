@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.32 2004-09-24 22:05:32 rbasch Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.33 2005-05-23 21:45:32 rbasch Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -143,6 +143,7 @@ typedef struct _XLoginResources {
   Boolean showMotd;
   String motdFile;
   String motd2File;
+  String utmp_line;
 } XLoginResources;
 
 /* Command line options table.  Only resources are entered here...there is a
@@ -166,6 +167,7 @@ static XrmOptionDescRec options[] = {
   {"-noblankall","*blankAll",		XrmoptionNoArg,   (caddr_t) "off"},
   {"-motdfile",	"*motdFile",		XrmoptionSepArg,	NULL},
   {"-motd2file","*motd2File",		XrmoptionSepArg,	NULL},
+  {"-line",	"*utmpLine",		XrmoptionSepArg,	NULL},
 };
 
 /* The structure containing the resource information for the
@@ -214,6 +216,8 @@ static XtResource my_resources[] = {
      Offset(motdFile), XtRImmediate, (caddr_t) MOTD_FILENAME },
   {"motd2File", XtCString, XtRString, sizeof(String),
      Offset(motd2File), XtRImmediate, (caddr_t) "" },
+  {"utmpLine", XtCString, XtRString, sizeof(String),
+     Offset(utmp_line), XtRImmediate, (caddr_t) ""},
 };
 
 #undef Offset
@@ -886,7 +890,8 @@ static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
       XFlush(dpy);
       larv_set_busy(1);
       tb.ptr = dologin(loginname, passwd, mode, script, resources.startup,
-		       resources.session, DisplayString(dpy));
+		       resources.session, DisplayString(dpy),
+		       resources.utmp_line);
       larv_set_busy(0);
       XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
 		   0, 0, 0, 0, WidthOfScreen(DefaultScreenOfDisplay(dpy))/2,

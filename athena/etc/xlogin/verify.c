@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.19 2005-04-22 18:04:37 ghudson Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.20 2005-05-23 21:45:32 rbasch Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -109,7 +109,7 @@ pid_t al_pid;
 
 static char *get_tickets(char *username, char *password);
 static void abort_verify(void *user);
-static void add_utmp(char *user, char *device);
+static void add_utmp(char *user, char *device, char *display);
 static char *strip_display(const char *display);
 
 #ifdef HAVE_KRB5
@@ -161,10 +161,10 @@ static struct passwd *get_pwnam(char *usr)
 #endif
 
 char *dologin(char *user, char *passwd, int option, char *script,
-	      char *startup, char *session, char *display)
+	      char *startup, char *session, char *display, char *utmp_line)
 {
   static char errbuf[5120];
-  char tkt_file[128], *msg, wgfile[16], *stripped_display;
+  char tkt_file[128], *msg, wgfile[16], *stripped_display = NULL;
 #ifdef HAVE_KRB5
   char tkt5_file[128];
 #endif
@@ -515,15 +515,18 @@ char *dologin(char *user, char *passwd, int option, char *script,
 
   environment[i++] = NULL;
 
-  /* Use the display string, stripped of the screen number,
-   * for the device name in the utmp record.
-   */
+  /* Get the display string, stripped of the screen number. */
   stripped_display = strip_display(display);
+
+  /* If not given a device name for the utmp record, default it to
+   * the stripped display string.
+   */
+  if (!utmp_line || !*utmp_line)
+      utmp_line = stripped_display;
+  if (utmp_line && *utmp_line)
+    add_utmp(user, utmp_line, stripped_display);
   if (stripped_display)
-    {
-      add_utmp(user, stripped_display);
-      free(stripped_display);
-    }
+    free(stripped_display);
 
   if (pwd->pw_uid == ROOT)
     syslog(LOG_CRIT, "ROOT LOGIN on display %s", display);
@@ -683,7 +686,7 @@ static void abort_verify(void *user)
 }
 
 #if HAVE_GETUTXENT && !HAVE_LOGIN
-static void add_utmp(char *user, char *device)
+static void add_utmp(char *user, char *device, char *display)
 {
   struct utmp ut_entry;
   struct utmp *ut_tmp;
@@ -694,6 +697,12 @@ static void add_utmp(char *user, char *device)
 
   strncpy(utx_entry.ut_line, device, sizeof(utx_entry.ut_line));
   strncpy(utx_entry.ut_name, user, sizeof(utx_entry.ut_name));
+
+#ifdef SOLARIS
+  /* Use the display name as the host. */
+  strncpy(utx_entry.ut_host, display, sizeof(utx_entry.ut_host));
+  utx_entry.ut_host[sizeof(utx_entry.ut_host) - 1] = '\0';
+#endif
 
   gettimeofday(&utx_entry.ut_tv, NULL);
   utx_entry.ut_pid = getppid();
@@ -717,7 +726,7 @@ static void add_utmp(char *user, char *device)
   updwtmpx(WTMPX, &utx_entry);
 }
 #else /* HAVE_GETUTXENT && !HAVE_LOGIN */
-static void add_utmp(char *user, char *device)
+static void add_utmp(char *user, char *device, char *display)
 {
   struct utmp ut_entry;
   struct utmp ut_tmp;
@@ -727,6 +736,12 @@ static void add_utmp(char *user, char *device)
 
   strncpy(ut_entry.ut_line, device, sizeof(ut_entry.ut_line));
   strncpy(ut_entry.ut_name, user, sizeof(ut_entry.ut_name));
+
+#ifdef SOLARIS
+  /* Use the display name as the host. */
+  strncpy(ut_entry.ut_host, display, sizeof(ut_entry.ut_host));
+  ut_entry.ut_host[sizeof(ut_entry.ut_host) - 1] = '\0';
+#endif
 
   time(&(ut_entry.ut_time));
 #ifdef USER_PROCESS
