@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.30 2005-05-04 00:28:36 rbasch Exp $
+/* $Id: dm.c,v 1.31 2005-05-23 21:39:42 rbasch Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -68,7 +68,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.30 2005-05-04 00:28:36 rbasch Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.31 2005-05-23 21:39:42 rbasch Exp $";
 #endif
 
 /* Process states */
@@ -94,6 +94,7 @@ volatile int console_running = NONEXISTENT;
 volatile int console_failed = FALSE;
 volatile int login_running = NONEXISTENT;
 char dpyname[10];
+char *utmp_line = NULL;
 int console_master_fd = -1;
 int console_slave_fd = -1;
 
@@ -113,7 +114,7 @@ static char *getconf(char *file, char *name);
 static char **parseargs(char *line, char *extra, char *extra1, char *extra2);
 static void console_login(char *conf, char *msg);
 static void start_console(int master_fd, int aux_fd, char **argv);
-static void cleanup(char *dpyname);
+static void cleanup(char *line);
 static pid_t fork_and_store(pid_t *var);
 static void x_stop_wait(void);
 static void writepid(char *file, pid_t pid);
@@ -250,6 +251,13 @@ int main(int argc, char **argv)
   /* parse argument lists */
   /* ignore argv[2] */
   consoletty = argv[argc - 1];
+#ifdef SOLARIS
+  /* On Solaris, use the console tty name for the utmp line field,
+   * as the Solaris finger requires an actual device name there.
+   * Elsewhere, we will use the display name (see below).
+   */
+  utmp_line = consoletty;
+#endif
 
   openlog("dm", 0, LOG_USER);
 
@@ -293,11 +301,6 @@ int main(int argc, char **argv)
    * on descriptor 3.
    */
   consoleargv = parseargs(p, "-inputfd", "3", NULL);
-
-  p = getconf(conf, "login");
-  if (p == NULL)
-    console_login(conf, "\ndm: Can't find login command line\n");
-  loginargv = parseargs(p, NULL, NULL, NULL);
 
   /* Signal Setup */
   sigact.sa_handler = SIG_IGN;
@@ -442,6 +445,11 @@ int main(int argc, char **argv)
   sprintf(dpyacl, xhosts, dpynum);
   sprintf(dpyname, ":%d", dpynum);
 
+#ifndef SOLARIS
+  /* Use the display name for the utmp line field, except on Solaris. */
+  utmp_line = dpyname;
+#endif
+
   /* Put in our own error handler, open the display, then reset the handler. */
   xioerror_handler = XSetIOErrorHandler(handle_xioerror);
   dpy = XOpenDisplay(dpyname);
@@ -493,6 +501,12 @@ int main(int argc, char **argv)
 
   /* start up console */
   start_console(console_master_fd, conspipe[0], consoleargv);
+
+  /* Set up to invoke xlogin. */
+  p = getconf(conf, "login");
+  if (p == NULL)
+    console_login(conf, "\ndm: Can't find login command line\n");
+  loginargv = parseargs(p, "-line", utmp_line, NULL);
 
   /* Fire up the X login */
   for (tries = 0; tries < 3; tries++)
@@ -639,7 +653,7 @@ int main(int argc, char **argv)
 	  syslog(LOG_DEBUG, "login_running=%d, x_running=%d, quitting",
 		 login_running, x_running);
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
-	  cleanup(dpyname);
+	  cleanup(utmp_line);
 	  _exit(0);
 	}
     }
@@ -813,7 +827,7 @@ static void shutdown(int signo)
 
 /* Kill children, remove password entry */
 
-static void cleanup(char *display)
+static void cleanup(char *line)
 {
   int ret;
 #ifdef HAVE_GETUTXENT
@@ -835,39 +849,42 @@ static void cleanup(char *display)
       x_stop_wait();
     }
 
-  /* Find out what the login name was, so we can feed it to libAL. */
+  if (line != NULL)
+    {
+      /* Find out what the login name was, so we can feed it to libAL. */
 #ifdef HAVE_GETUTXENT
-  while ((utx = getutxent()) != NULL)
-    {
-      if (utx->ut_type != USER_PROCESS || utx->ut_user[0] == 0)
-	continue;
-      if (!strncmp(utx->ut_line, display, sizeof(utx->ut_line)))
+      while ((utx = getutxent()) != NULL)
 	{
-	  login = malloc(sizeof(utx->ut_user) + 1);
-	  strncpy(login, utx->ut_user, sizeof(utx->ut_user));
-	  login[sizeof(utx->ut_user)] = '\0';
-	}
-    }
-  endutxent();
-
-#else /* HAVE_GETUTXENT */
-  if ((file = open(UTFILE, O_RDWR, 0)) >= 0)
-    {
-      while (read(file, (char *) &ut, sizeof(utmp)) > 0)
-	{
-	  if (!strncmp(ut.ut_line, display, sizeof(ut.ut_line)))
+	  if (utx->ut_type != USER_PROCESS || utx->ut_user[0] == 0)
+	    continue;
+	  if (!strncmp(utx->ut_line, line, sizeof(utx->ut_line)))
 	    {
-	      login = malloc(sizeof(ut.ut_name) + 1);
-	      strncpy(login, ut.ut_name, sizeof(ut.ut_name));
-	      login[sizeof(ut.ut_name)] = '\0';
+	      login = malloc(sizeof(utx->ut_user) + 1);
+	      strncpy(login, utx->ut_user, sizeof(utx->ut_user));
+	      login[sizeof(utx->ut_user)] = '\0';
 	    }
 	}
-      close(file);
-    }
-#endif
-  /* Update the utmp & wtmp. */
+      endutxent();
 
-  logout(display);
+#else /* HAVE_GETUTXENT */
+      if ((file = open(UTFILE, O_RDWR, 0)) >= 0)
+	{
+	  while (read(file, (char *) &ut, sizeof(utmp)) > 0)
+	    {
+	      if (!strncmp(ut.ut_line, line, sizeof(ut.ut_line)))
+		{
+		  login = malloc(sizeof(ut.ut_name) + 1);
+		  strncpy(login, ut.ut_name, sizeof(ut.ut_name));
+		  login[sizeof(ut.ut_name)] = '\0';
+		}
+	    }
+	  close(file);
+	}
+#endif
+      /* Update the utmp & wtmp. */
+
+      logout(line);
+    }
 
   if (login != NULL)
     {
@@ -953,7 +970,7 @@ static void catchalarm(int signo)
 
 static void die(int signo)
 {
-  cleanup(dpyname);
+  cleanup(utmp_line);
   _exit(0);
 }
 
