@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.2 2005-04-21 15:32:46 rbasch Exp $
+# $Id: Makefile.athena,v 1.3 2005-05-23 22:14:14 rbasch Exp $
 
 SHELL=/bin/sh
 FFLIB=/usr/athena/lib/firefox
@@ -41,7 +41,7 @@ all:
 	    ${MAKE} \
 	    ;; \
 	sun4) \
-	    ${MAKE} PATH=${sprobin}:${PATH} \
+	    LD_RUN_PATH=/usr/athena/lib ${MAKE} PATH=${sprobin}:${PATH} \
 	    ;; \
 	esac
 
@@ -52,7 +52,8 @@ install:
 	    ${MAKE} install DESTDIR="$$SRVD" \
 	    ;; \
 	sun4) \
-	    ${MAKE} install DESTDIR="$$SRVD" PATH=${sprobin}:${PATH} \
+	    LD_RUN_PATH=/usr/athena/lib \
+	      ${MAKE} install DESTDIR="$$SRVD" PATH=${sprobin}:${PATH} \
 	    ;; \
 	esac && \
 	install -m 755 ../build-registries.sh $$SRVD${FFLIB}/build-registries
