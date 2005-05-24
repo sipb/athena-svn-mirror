@@ -1,4 +1,4 @@
-# $Id: packages,v 1.310 2005-05-02 19:17:25 ghudson Exp $
+# $Id: packages,v 1.311 2005-05-24 13:37:15 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -294,7 +294,6 @@ third/tetex			requires texinfo
 third/texinfo
 third/tiff			except linux requires jpeg
 third/top			except linux
-third/traceroute		on solaris
 third/vte			requires gettext,glib2,pango,pcre
 third/wcl
 third/x11-ssh-askpass
