@@ -1,4 +1,4 @@
-# $Id: packages,v 1.311 2005-05-24 13:37:15 rbasch Exp $
+# $Id: packages,v 1.312 2005-05-27 06:40:56 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -286,7 +286,6 @@ third/scrollkeeper		requires gettext,intltool,libxml2,libxslt
 third/sendmail			requires hesiod,tcp_wrappers,db,cyrus-sasl,openssl
 third/soup			except linux requires glib,libxml,popt,openssl
 third/startup-notification
-third/sysinfo
 third/talk			on solaris
 third/tcp_wrappers		except linux
 third/tcsh			requires hesiod
