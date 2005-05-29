@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.16 2005-05-06 01:57:31 amb Exp $
+# $Id: Makefile.athena,v 1.17 2005-05-29 06:10:18 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -32,13 +32,21 @@ clean:
 all:
 	case $$ATHENA_HOSTTYPE in \
 	linux) \
+	   LINUX_VERS=`ls -tr /boot/vmlinuz*|tail -1 \
+		|sed -e 's/.*vmlinuz-//' -e 's/smp$$//'`; \
 	   ${MAKE} dest_nolibafs ; \
 	   ${MAKE} only_libafs_tree ; \
 	   for mp in SP MP; do \
-		for arch in BOOT i686 athlon; do \
+		for arch in i686 athlon; do \
 			./redhat-fix $$arch $$mp src/config/redhat-fix.h ; \
-			${MAKE} dest_only_libafs LOCAL_SMP_DEF=-DREDHAT_FIX \
-				LINUX_MODULE_NAME=".$$arch" MPS="$$mp" ; \
+			if [ "$$mp" = MP ]; then \
+				${MAKE} dest_only_libafs LOCAL_SMP_DEF=-DREDHAT_FIX \
+					LINUX_KERNEL_PATH=/lib/modules/$${LINUX_VERS}smp/build \
+					LINUX_MODULE_NAME=".$$arch" MPS="$$mp" ; \
+			else \
+				${MAKE} dest_only_libafs LOCAL_SMP_DEF=-DREDHAT_FIX \
+					LINUX_MODULE_NAME=".$$arch" MPS="$$mp" ; \
+			fi ; \
 		done ; \
 	   done \
 	   ;; \
