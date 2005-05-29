@@ -15,7 +15,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packet.c,v 1.1.1.5 2005-05-04 17:46:11 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packet.c,v 1.5 2005-05-04 18:15:00 zacheiss Exp $");
 
 #ifdef KERNEL
 #if defined(UKERNEL)

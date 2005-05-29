@@ -19,7 +19,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol.c,v 1.1.1.4 2005-03-10 20:39:32 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol.c,v 1.4 2005-03-10 22:16:58 zacheiss Exp $");
 
 #include "uss_vol.h"		/*Interface to this module */
 #include "uss_common.h"		/*Common definitions */

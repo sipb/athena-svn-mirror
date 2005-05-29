@@ -762,7 +762,7 @@ case $AFS_SYSNAME in
 		XLIBELFA="-lelf"
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
-		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
 		;;
 
 	sun4x_59)
@@ -783,7 +783,7 @@ case $AFS_SYSNAME in
 		XLIBELFA="-lelf"
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
-		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
 		;;
 
 	sun4x_510)
@@ -804,7 +804,7 @@ case $AFS_SYSNAME in
 		XLIBELFA="-lelf"
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
-		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
 		;;
 
 	sunx86_57)

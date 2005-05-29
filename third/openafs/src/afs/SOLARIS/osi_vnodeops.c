@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_vnodeops.c,v 1.1.1.4 2005-05-04 17:44:53 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_vnodeops.c,v 1.5 2005-05-04 18:14:56 zacheiss Exp $");
 
 /*
  * SOLARIS/osi_vnodeops.c

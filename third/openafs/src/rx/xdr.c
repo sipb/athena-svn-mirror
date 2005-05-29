@@ -35,7 +35,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr.c,v 1.1.1.3 2005-03-10 20:50:06 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr.c,v 1.4 2005-03-10 22:16:54 zacheiss Exp $");
 
 /*
  * xdr.c, Generic XDR routines implementation.

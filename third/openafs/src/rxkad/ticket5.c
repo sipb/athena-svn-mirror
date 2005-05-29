@@ -62,7 +62,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/ticket5.c,v 1.1.1.3 2005-03-10 20:48:31 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/ticket5.c,v 1.4 2005-03-10 22:16:55 zacheiss Exp $");
 
 #if defined(UKERNEL)
 #include "../afs/sysincludes.h"

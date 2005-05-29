@@ -30,7 +30,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_arrayn.c,v 1.1.1.4 2005-05-04 17:45:03 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_arrayn.c,v 1.5 2005-05-04 18:15:00 zacheiss Exp $");
 
 #if !defined(NeXT)
 

@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/fs_conv_411.c,v 1.1.1.3 2005-03-10 20:40:13 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/fs_conv_411.c,v 1.3 2005-03-10 22:17:03 zacheiss Exp $");
 
 #if	defined(AFS_DUX40_ENV) || (defined(AFS_SUN_ENV) && !defined(AFS_SUN5_ENV)) || defined(AFS_SUN54_ENV)
 #if defined AFS_DUX40_ENV

@@ -50,7 +50,7 @@ static int newVLDB = 1;
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/fssync.c,v 1.1.1.5 2005-05-04 17:46:44 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/fssync.c,v 1.5 2005-05-04 18:15:04 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <stdio.h>

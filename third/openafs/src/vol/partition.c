@@ -21,7 +21,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/partition.c,v 1.1.1.4 2005-03-10 20:48:35 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/partition.c,v 1.4 2005-03-10 22:17:03 zacheiss Exp $");
 
 #include <ctype.h>
 #ifdef AFS_NT40_ENV

@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.1.1.5 2005-05-04 17:45:24 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.8 2005-05-04 18:15:01 zacheiss Exp $");
 
 #include <stdio.h>
 #include <errno.h>
