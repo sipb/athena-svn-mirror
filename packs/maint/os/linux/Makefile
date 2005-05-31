@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.11 2005-05-13 16:01:44 ghudson Exp $
+# $Id: Makefile,v 1.12 2005-05-31 17:11:54 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -21,6 +21,7 @@ install:
 		${DESTDIR}${RCINITDIR}/athena-verify
 	install -c -m 0755 fix-mouse.py ${DESTDIR}${ATHRETCDIR}/fix-mouse
 	install -c -m 0755 fix-xconfig.sh ${DESTDIR}${ATHRETCDIR}/fix-xconfig
+	install -c -m 0755 migrate-lilo.sh ${DESTDIR}${ATHRETCDIR}/migrate-lilo
 	install -c -m 0555 syncclock.sh ${DESTDIR}${ATHRETCDIR}/syncclock
 	install -c -m 0755 syncconf.rc ${DESTDIR}${RCINITDIR}/syncconf
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
