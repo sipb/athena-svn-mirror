@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.10 2004-11-10 15:38:59 rbasch Exp $
+# $Id: cshrc,v 1.11 2005-05-31 14:13:14 rbasch Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -94,6 +94,8 @@ if (! $?ENV_SET) then
     setenv PRINTER `awk '/LPR/ { print $3 }' /var/athena/clusterinfo`
     if ( $PRINTER == "" ) unsetenv PRINTER
   endif
+
+  setenv XDG_DATA_DIRS /usr/athena/share:/usr/share
 
   # Reset the "home" and HOME variables to correspond to the actual
   # location of the user's home directory.  This will avoid having

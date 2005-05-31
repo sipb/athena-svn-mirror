@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.36 2005-04-15 16:54:58 ghudson Exp $
+# $Id: bashrc,v 1.37 2005-05-31 14:13:14 rbasch Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -111,6 +111,8 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 		PRINTER=`awk '/LPR/ { print $3 }' /var/athena/clusterinfo`
 		if [ -n "$PRINTER" ]; then export PRINTER; fi
 	fi
+
+	export XDG_DATA_DIRS=/usr/athena/share:/usr/share
 
 	# Reset the HOME variable to correspond to the actual location
 	# of the user's home directory.  This will avoid having long
