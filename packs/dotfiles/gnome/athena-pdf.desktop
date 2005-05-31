@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=acroread
+Comment=Adobe Acrobat Reader
+MimeType=application/pdf;
+Exec=acroread %F
+Type=Application
+Terminal=false
+NoDisplay=true

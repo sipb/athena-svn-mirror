@@ -1,9 +1,10 @@
-# $Id: Makefile,v 1.3 2003-05-03 15:23:03 ghudson Exp $
+# $Id: Makefile,v 1.4 2005-05-31 14:09:56 rbasch Exp $
 
 PIXMAPDIR=/usr/athena/share/pixmaps
 GNOMEATHDIR=/usr/athena/share/gnome/athena
 SCHEMASDIR=/etc/athena/gconf/schemas
 AFSMENUS=/afs/athena.mit.edu/system/config/panel/menus
+APPLICATIONS=/usr/athena/share/applications
 
 all: athena.schemas
 
@@ -17,6 +18,7 @@ install:
 	mkdir -p ${DESTDIR}${PIXMAPDIR}
 	mkdir -p ${DESTDIR}${GNOMEATHDIR}
 	mkdir -p ${DESTDIR}${SCHEMASDIR}
+	mkdir -p ${DESTDIR}${APPLICATIONS}
 	install -c -m 0644 browser.desktop ${DESTDIR}${GNOMEATHDIR}
 	install -c -m 0644 editor.desktop ${DESTDIR}${GNOMEATHDIR}
 	install -c -m 0644 logout.desktop ${DESTDIR}${GNOMEATHDIR}
@@ -42,6 +44,10 @@ install:
 	rm -f $(DESTDIR)$(GNOMEATHDIR)/menus.tar
 	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION).tar \
 		$(DESTDIR)$(GNOMEATHDIR)/menus.tar
+	install -c -m 0644 athena-office.desktop ${DESTDIR}${APPLICATIONS}
+	install -c -m 0644 athena-pdf.desktop ${DESTDIR}${APPLICATIONS}
+	install -c -m 0644 athena-web.desktop ${DESTDIR}${APPLICATIONS}
+	install -c -m 0644 defaults.list ${DESTDIR}${APPLICATIONS}
 
 clean:
 	rm -f athena-panel-config.schemas
