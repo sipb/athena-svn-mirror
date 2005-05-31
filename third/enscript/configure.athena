@@ -1,2 +1,2 @@
 #!/bin/sh
-exec ./configure --with-media=Letter
+exec ./configure --with-media=Letter --with-spooler=lpr
