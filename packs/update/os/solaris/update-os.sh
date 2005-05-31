@@ -38,7 +38,7 @@ if [ "$NEWOS" = "true" ]; then
   for i in $pkgs; do
     echo "$i"
     pkgrm -a "$LIBDIR/admin-update" -n -R "$UPDATE_ROOT" "$i.*"
-  done 2>>$pkglog
+  done
 
   # We can't use patchrm on patches, because we don't back up
   # files replaced by patchadd.  So just remove the patch directory.
