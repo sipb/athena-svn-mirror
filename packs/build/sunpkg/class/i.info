@@ -20,7 +20,7 @@ fi
 while read src dest ; do
   rm -f $dest
   cp -p $src $dest || exit 1
-  $install_info --info-dir="`dirname $dest`" $dest
+  $install_info --info-dir="`dirname $dest`" $dest 2>/dev/null
 done      
 
 exit 0

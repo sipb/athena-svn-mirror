@@ -17,7 +17,7 @@ fi
 
 # pkgrm supplies the path names on our standard input.
 while read dest ; do
-  $install_info --delete --info-dir=`dirname $dest` $dest
+  $install_info --delete --info-dir=`dirname $dest` $dest 2>/dev/null
   rm -f $dest
 done      
 
