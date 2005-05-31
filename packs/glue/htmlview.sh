@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: htmlview.sh,v 1.7 2005-04-23 20:38:40 rbasch Exp $
+# $Id: htmlview.sh,v 1.8 2005-05-31 14:02:09 rbasch Exp $
 
 # htmlview script adapted from the infoagents locker to take advantage
 # of the local netscape, if present.
@@ -77,14 +77,56 @@ case "$DISPLAY" in
     ;;
 esac
 
-# Try to display the URL with the user's preferred viewer.
-/usr/athena/bin/gnome-open "$url" && exit 0
+# Try to display the URL with the user's preferred http handler.
+gconftool=/usr/athena/bin/gconftool-2
+http_key=/desktop/gnome/url-handlers/http
+terminal_key=/desktop/gnome/applications/terminal
+if [ -x $gconftool ]; then
+  http_command=`$gconftool -g $http_key/command 2>/dev/null`
+  case $http_command in
+  "")
+    cmd=
+    ;;
+  *%s*)
+    cmd=`echo "$http_command" | sed -e "s|%s|$url|"`
+    ;;
+  *)
+    cmd="$http_command $url"    
+    ;;
+  esac
+  if [ -n "$cmd" ]; then
+    # Prevent infinite recursion, in case the user mistakenly sets
+    # the handler to htmlview or gnome-open.
+    if [ -n "$ATHENA_HTMLVIEW_RECURSION" ]; then
+      echo "Your preferred http URL handler \"$http_command\" is invalid." >&2
+      exit 1
+    fi
+    ATHENA_HTMLVIEW_RECURSION=$$ ; export ATHENA_HTMLVIEW_RECURSION
+
+    # Run the command in a terminal if necessary.
+    needs_terminal=`$gconftool -g $http_key/needs_terminal 2>/dev/null`
+    if [ "$needs_terminal" = true ]; then
+      terminal_cmd=`$gconftool -g $terminal_key/exec 2>/dev/null`
+      if [ -n "$terminal_cmd" ]; then
+	terminal_args=`$gconftool -g $terminal_key/exec_arg 2>/dev/null`
+      else
+	terminal_cmd=gnome-terminal
+	terminal_args="-x"
+      fi
+      cmd="$terminal_cmd $terminal_args $cmd"
+    fi
+
+    $cmd &
+    exit
+  fi
+fi
+
 if [ $cert_required = true ]; then
   echo "$0: Could not find or start any WWW browser that supports " \
     "personal certificates while opening $url" >&2
   exit 1
 else
-  echo "$0: Could not run gnome-open.  Will try Lynx." >&2
+  echo "$0: Could not run the preferred http handler.  Will try Lynx." >&2
 
   # Start Lynx
   /bin/athena/attachandrun infoagents lynx lynx $lynx_flags "$url" && exit 0
