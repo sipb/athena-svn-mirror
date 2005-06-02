@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_memcache.c,v 1.1.1.3 2005-05-04 17:44:50 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_memcache.c,v 1.1.1.4 2005-06-02 19:43:46 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #ifndef AFS_LINUX22_ENV
@@ -103,9 +103,8 @@ afs_MemCacheOpen(afs_int32 blkno)
 	osi_Panic("afs_MemCacheOpen: invalid block #");
     }
     mep = (memCache + blkno);
-    afs_Trace4(afs_iclSetp, CM_TRACE_MEMOPEN, ICL_TYPE_INT32, blkno,
-	       ICL_TYPE_POINTER, mep, ICL_TYPE_POINTER, mep->data,
-	       ICL_TYPE_STRING, mep->data);
+    afs_Trace3(afs_iclSetp, CM_TRACE_MEMOPEN, ICL_TYPE_INT32, blkno,
+	       ICL_TYPE_POINTER, mep, ICL_TYPE_POINTER, mep ? mep->data : 0);
     return (void *)mep;
 }
 

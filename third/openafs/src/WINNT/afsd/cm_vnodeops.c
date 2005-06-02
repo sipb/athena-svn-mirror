@@ -1635,8 +1635,8 @@ long cm_EvaluateSymLink(cm_scache_t *dscp, cm_scache_t *linkScp,
                      CM_FLAG_CASEFOLD | CM_FLAG_FOLLOW | CM_FLAG_DIRSEARCH,
                      userp, NULL, reqp, outScpp);
 
-	if (code == CM_ERROR_NOSUCHFILE)
-		code = CM_ERROR_NOSUCHPATH;
+    if (code == CM_ERROR_NOSUCHFILE)
+        code = CM_ERROR_NOSUCHPATH;
 
     /* this stuff is allocated no matter what happened on the namei call,
      * so free it */
@@ -2599,8 +2599,10 @@ long cm_Rename(cm_scache_t *oldDscp, char *oldNamep, cm_scache_t *newDscp,
                 lock_ReleaseMutex(&newDscp->mx);
                 if (code) {
                     /* cleanup first one */
+                    lock_ObtainMutex(&newDscp->mx);
                     cm_SyncOpDone(oldDscp, NULL,
                                    CM_SCACHESYNC_STOREDATA);
+                    lock_ReleaseMutex(&oldDscp->mx);
                 }       
             }
         }
@@ -2619,8 +2621,10 @@ long cm_Rename(cm_scache_t *oldDscp, char *oldNamep, cm_scache_t *newDscp,
                 lock_ReleaseMutex(&oldDscp->mx);
                 if (code) {
                     /* cleanup first one */
+                    lock_ObtainMutex(&newDscp->mx);
                     cm_SyncOpDone(newDscp, NULL,
                                    CM_SCACHESYNC_STOREDATA);
+                    lock_ReleaseMutex(&newDscp->mx);
                 }       
             }
         }

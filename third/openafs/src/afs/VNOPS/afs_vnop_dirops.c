@@ -21,7 +21,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_dirops.c,v 1.1.1.3 2005-03-10 20:43:10 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_dirops.c,v 1.1.1.4 2005-06-02 19:43:44 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -286,10 +286,9 @@ afs_rmdir(OSI_VC_DECL(adp), char *aname, struct AFS_UCRED *acred)
     }
 
 
-    if (tvc) {
+    if (tvc)
 	osi_dnlc_purgedp(tvc);	/* get rid of any entries for this directory */
-	afs_symhint_inval(tvc);
-    } else
+    else
 	osi_dnlc_remove(adp, aname, 0);
 
     if (tvc) {

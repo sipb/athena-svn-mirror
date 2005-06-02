@@ -263,6 +263,9 @@ else
 		i?86-*-openbsd3.6)
 			AFS_SYSNAME="i386_obsd36"
 			;;
+		i?86-*-openbsd3.7)
+			AFS_SYSNAME="i386_obsd37"
+			;;
 		i?86-*-freebsd4.2*)
 			AFS_SYSNAME="i386_fbsd_42"
 			;;
@@ -292,6 +295,12 @@ else
 			;;
 		i?86-*-freebsd5.3*)
 			AFS_SYSNAME="i386_fbsd_53"
+			;;
+		i?86-*-freebsd5.4*)
+			AFS_SYSNAME="i386_fbsd_54"
+			;;
+		i?86-*-freebsd6.0*)
+			AFS_SYSNAME="i386_fbsd_60"
 			;;
 		i?86-*-netbsd*1.5*)
 			AFS_PARAM_COMMON=param.nbsd15.h
@@ -592,6 +601,7 @@ case $AFS_SYSNAME in *_linux* | *_umlinux*)
 	  	 LINUX_IOP_NAMEIDATA
 	  	 LINUX_AOP_WRITEBACK_CONTROL
 		 LINUX_KERNEL_LINUX_SYSCALL_H
+		 LINUX_KERNEL_LINUX_SEQ_FILE_H
 		 LINUX_KERNEL_SELINUX
 		 LINUX_KERNEL_SOCK_CREATE
 		 LINUX_KERNEL_PAGE_FOLLOW_LINK
@@ -726,6 +736,9 @@ case $AFS_SYSNAME in *_linux* | *_umlinux*)
 		 fi
 		 if test "x$ac_linux_syscall" = "xyes" ; then
 		  AC_DEFINE(HAVE_KERNEL_LINUX_SYSCALL_H, 1, [define if your linux kernel has linux/syscall.h])
+		 fi
+		 if test "x$ac_linux_seq_file" = "xyes" ; then
+		  AC_DEFINE(HAVE_KERNEL_LINUX_SEQ_FILE_H, 1, [define if your linux kernel has linux/seq_file.h])
 		 fi
 		 if test "x$ac_cv_linux_sched_struct_task_struct_has_parent" = "xyes"; then 
 		  AC_DEFINE(STRUCT_TASK_STRUCT_HAS_PARENT, 1, [define if your struct task_struct has parent])
@@ -1140,7 +1153,7 @@ AC_PROG_LEX
 AC_DECL_YYTEXT])
 
 dnl
-dnl $Id: aclocal.m4,v 1.1.1.5 2005-05-04 17:47:02 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.1.1.6 2005-06-02 19:44:09 zacheiss Exp $
 dnl
 
 dnl check if this computer is little or big-endian
@@ -2146,6 +2159,17 @@ AC_TRY_COMPILE(
   ac_cv_linux_kernel_page_follow_link=no)])
 AC_MSG_RESULT($ac_cv_linux_kernel_page_follow_link)
 CPPFLAGS="$save_CPPFLAGS"])
+
+AC_DEFUN([LINUX_KERNEL_LINUX_SEQ_FILE_H],[
+  AC_MSG_CHECKING(for linux/seq_file.h in kernel)
+  if test -f "${LINUX_KERNEL_PATH}/include/linux/seq_file.h"; then
+    ac_linux_seq_file=yes
+    AC_MSG_RESULT($ac_linux_seq_file)
+  else
+    ac_linux_seq_file=no
+    AC_MSG_RESULT($ac_linux_seq_file)
+  fi
+])
 
 AC_DEFUN([AC_FUNC_RES_SEARCH], [
   ac_cv_func_res_search=no

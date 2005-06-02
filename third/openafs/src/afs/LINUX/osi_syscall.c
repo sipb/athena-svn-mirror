@@ -15,7 +15,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_syscall.c,v 1.1.1.2 2005-05-04 17:45:12 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_syscall.c,v 1.1.1.3 2005-06-02 19:43:27 zacheiss Exp $");
 
 #ifdef AFS_LINUX24_ENV
 #include <linux/module.h> /* early to avoid printf->printk mapping */
@@ -128,18 +128,32 @@ static void sys32_setgroups_stub()
 
 /***** SPARC64 *****/
 #ifdef AFS_SPARC64_LINUX20_ENV
+#ifdef AFS_SPARC64_LINUX26_ENV
+static SYSCALLTYPE *afs_sys_call_table32;
+#else
 extern SYSCALLTYPE *afs_sys_call_table32;
+#endif
 static SYSCALLTYPE afs_ni_syscall32 = 0;
 
 extern int afs32_xsetgroups();
+#ifdef AFS_SPARC64_LINUX26_ENV
+asmlinkage int (*sys32_setgroupsp) (int gidsetsize,
+				    __kernel_gid32_t * grouplist);
+#else
 asmlinkage int (*sys32_setgroupsp) (int gidsetsize,
 				    __kernel_gid_t32 * grouplist);
+#endif
 #ifdef AFS_LINUX24_ENV
 /* This number is not exported for some bizarre reason. */
 #define __NR_setgroups32      82
 extern int afs32_xsetgroups32();
+#ifdef AFS_SPARC64_LINUX26_ENV
+asmlinkage int (*sys32_setgroups32p) (int gidsetsize,
+				      __kernel_gid32_t * grouplist);
+#else
 asmlinkage int (*sys32_setgroups32p) (int gidsetsize,
 				      __kernel_gid_t32 * grouplist);
+#endif
 #endif
 
 asmlinkage int

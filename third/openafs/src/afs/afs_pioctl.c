@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_pioctl.c,v 1.1.1.5 2005-05-04 17:46:29 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_pioctl.c,v 1.1.1.6 2005-06-02 19:43:43 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #ifdef AFS_OBSD_ENV
@@ -71,6 +71,7 @@ DECL_PIOCTL(PGetCellStatus);
 DECL_PIOCTL(PSetCellStatus);
 DECL_PIOCTL(PFlushVolumeData);
 DECL_PIOCTL(PGetVnodeXStatus);
+DECL_PIOCTL(PGetVnodeXStatus2);
 DECL_PIOCTL(PSetSysName);
 DECL_PIOCTL(PSetSPrefs);
 DECL_PIOCTL(PSetSPrefs33);
@@ -183,6 +184,7 @@ static int (*(VpioctlSw[])) () = {
 	PPrefetchFromTape,	/* 66 -- MR-AFS: prefetch file from tape */
 	PResidencyCmd,		/* 67 -- MR-AFS: generic commnd interface */
 	PBogus,			/* 68 -- arla: fetch stats */
+	PGetVnodeXStatus2,	/* 69 - get caller access and some vcache status */
 };
 
 static int (*(CpioctlSw[])) () = {
@@ -263,7 +265,9 @@ copyin_afs_ioctl(caddr_t cmarg, struct afs_ioctl *dst)
 #if defined(AFS_LINUX_64BIT_KERNEL) && !defined(AFS_ALPHA_LINUX20_ENV) && !defined(AFS_IA64_LINUX20_ENV)
     struct afs_ioctl32 dst32;
 
-#ifdef AFS_SPARC64_LINUX24_ENV
+#ifdef AFS_SPARC64_LINUX26_ENV
+    if (test_thread_flag(TIF_32BIT))
+#elif AFS_SPARC64_LINUX24_ENV
     if (current->thread.flags & SPARC_FLAG_32BIT)
 #elif defined(AFS_SPARC64_LINUX20_ENV)
     if (current->tss.flags & SPARC_FLAG_32BIT)
@@ -1665,7 +1669,6 @@ DECL_PIOCTL(PFlush)
     /* now find the disk cache entries */
     afs_TryToSmush(avc, *acred, 1);
     osi_dnlc_purgedp(avc);
-    afs_symhint_inval(avc);
     if (avc->linkData && !(avc->states & CCore)) {
 	afs_osi_Free(avc->linkData, strlen(avc->linkData) + 1);
 	avc->linkData = NULL;
@@ -2539,8 +2542,8 @@ DECL_PIOCTL(PFlushVolumeData)
      * the vcaches associated with the volume.
      */
     ObtainReadLock(&afs_xvcache);
-    for (i = 0; i < VCSIZE; i++) {
-	for (tvc = afs_vhashT[i]; tvc; tvc = tvc->hnext) {
+    i = VCHashV(&avc->fid);
+    for (tvc = afs_vhashT[i]; tvc; tvc = tvc->vhnext) {
 	    if (tvc->fid.Fid.Volume == volume && tvc->fid.Cell == cell) {
 #if	defined(AFS_SGI_ENV) || defined(AFS_OSF_ENV)  || defined(AFS_SUN5_ENV)  || defined(AFS_HPUX_ENV) || defined(AFS_LINUX20_ENV)
 		VN_HOLD(AFSTOV(tvc));
@@ -2573,7 +2576,6 @@ DECL_PIOCTL(PFlushVolumeData)
 		AFS_FAST_RELE(tvc);
 	    }
 	}
-    }
     ReleaseReadLock(&afs_xvcache);
 
 
@@ -2640,6 +2642,8 @@ DECL_PIOCTL(PGetVnodeXStatus)
 	mode = PRSFS_READ;
     if (!afs_AccessOK(avc, mode, areq, CHECK_MODE_BITS))
 	return EACCES;
+
+    memset(&stat, 0, sizeof(struct vcxstat));
     stat.fid = avc->fid;
     hset32(stat.DataVersion, hgetlo(avc->m.DataVersion));
     stat.lock = avc->lock;
@@ -2669,6 +2673,36 @@ DECL_PIOCTL(PGetVnodeXStatus)
     return 0;
 }
 
+
+DECL_PIOCTL(PGetVnodeXStatus2)
+{
+    register afs_int32 code;
+    struct vcxstat2 stat;
+    afs_int32 mode;
+
+    if (!avc)
+        return EINVAL;
+    code = afs_VerifyVCache(avc, areq);
+    if (code)
+        return code;
+    if (vType(avc) == VDIR)
+        mode = PRSFS_LOOKUP;
+    else
+        mode = PRSFS_READ;
+    if (!afs_AccessOK(avc, mode, areq, CHECK_MODE_BITS))
+        return EACCES;
+
+    memset(&stat, 0, sizeof(struct vcxstat2));
+
+    stat.cbExpires = avc->cbExpires;
+    stat.anyAccess = avc->anyAccess;
+    stat.mvstat = avc->mvstat;
+    stat.callerAccess = afs_GetAccessBits(avc, ~0, areq);
+
+    memcpy(aout, (char *)&stat, sizeof(struct vcxstat2));
+    *aoutSize = sizeof(struct vcxstat2);
+    return 0;
+}
 
 /* We require root for local sysname changes, but not for remote */
 /* (since we don't really believe remote uids anyway) */
@@ -3526,7 +3560,6 @@ DECL_PIOCTL(PFlushMount)
     /* now find the disk cache entries */
     afs_TryToSmush(tvc, *acred, 1);
     osi_dnlc_purgedp(tvc);
-    afs_symhint_inval(tvc);
     if (tvc->linkData && !(tvc->states & CCore)) {
 	afs_osi_Free(tvc->linkData, strlen(tvc->linkData) + 1);
 	tvc->linkData = NULL;

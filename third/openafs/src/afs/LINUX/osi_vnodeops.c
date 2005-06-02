@@ -22,7 +22,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.1.1.5 2005-05-04 17:46:37 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.1.1.6 2005-06-02 19:44:08 zacheiss Exp $");
 
 #include "afs/sysincludes.h"
 #include "afsincludes.h"
@@ -864,10 +864,10 @@ static int
 afs_linux_dentry_revalidate(struct dentry *dp)
 #endif
 {
-    cred_t *credp = NULL;
     struct vrequest treq;
-    int code, bad_dentry;
-    struct vcache *vcp, *parentvcp;
+    cred_t *credp = NULL;
+    struct vcache *vcp, *pvcp, *tvc = NULL;
+    int valid;
 
 #ifdef AFS_LINUX24_ENV
     lock_kernel();
@@ -875,64 +875,79 @@ afs_linux_dentry_revalidate(struct dentry *dp)
     AFS_GLOCK();
 
     vcp = ITOAFS(dp->d_inode);
-    parentvcp = ITOAFS(dp->d_parent->d_inode);		/* dget_parent()? */
+    pvcp = ITOAFS(dp->d_parent->d_inode);		/* dget_parent()? */
 
-    /* If it's a negative dentry, it's never valid */
-    if (!vcp || !parentvcp) {
-	bad_dentry = 1;
-	goto done;
-    }
+    if (vcp) {
 
-    /* If it's @sys, perhaps it has been changed */
-    if (!afs_ENameOK(dp->d_name.name)) {
-	bad_dentry = 10;
-	goto done;
-    }
+	/* If it's the AFS root no chance it needs revalidating */
+	if (vcp == afs_globalVp)
+	    goto good_dentry;
 
-    /* If it's the AFS root no chance it needs revalidating */
-    if (vcp == afs_globalVp)
-	goto good_dentry;
+	/* check_bad_parent()? */
 
-    /* Get a validated vcache entry */
-    credp = crref();
-    code = afs_InitReq(&treq, credp);
-    if (code) {
-	bad_dentry = 2;
-	goto done;
-    }
-    code = afs_VerifyVCache(vcp, &treq);
-    if (code) {
-	bad_dentry = 3;
-	goto done;
-    }
+#ifdef notdef
+	/* If the last looker changes, we should make sure the current
+	 * looker still has permission to examine this file.  This would
+	 * always require a crref() which would be "slow".
+	 */
+	if (vcp->last_looker != treq.uid) {
+	    if (!afs_AccessOK(vcp, (vType(vcp) == VREG) ? PRSFS_READ : PRSFS_LOOKUP, &treq, CHECK_MODE_BITS))
+		goto bad_dentry;
 
-    /* If we aren't the last looker, verify access */
-    if (vcp->last_looker != treq.uid) {
-	if (!afs_AccessOK(vcp, (vType(vcp) == VREG) ? PRSFS_READ : PRSFS_LOOKUP, &treq, CHECK_MODE_BITS)) {
-	    bad_dentry = 5;
-	    goto done;
+	    vcp->last_looker = treq.uid;
+	}
+#endif
+
+	/* If the parent's DataVersion has changed or the vnode
+	 * is longer valid, we need to do a full lookup.  VerifyVCache
+	 * isn't enough since the vnode may have been renamed.
+	 */
+	if (hgetlo(pvcp->m.DataVersion) > dp->d_time || !(vcp->states & CStatd)) {
+
+	    credp = crref();
+	    if (afs_InitReq(&treq, credp))
+		goto bad_dentry;
+	    afs_lookup(pvcp, dp->d_name.name, &tvc, credp);
+	    if (!tvc || tvc != vcp)
+		goto bad_dentry;
+	    if (afs_VerifyVCache(vcp, &treq))	/* update inode attributes */
+		goto bad_dentry;
+
+	    dp->d_time = hgetlo(pvcp->m.DataVersion);
 	}
 
-	vcp->last_looker = treq.uid;
+    } else {
+	if (hgetlo(pvcp->m.DataVersion) > dp->d_time)
+	    goto bad_dentry;
+
+	/* No change in parent's DataVersion so this negative
+	 * lookup is still valid.
+	 */
     }
 
   good_dentry:
-    bad_dentry = 0;
+    valid = 1;
 
   done:
     /* Clean up */
+    if (tvc)
+	afs_PutVCache(tvc);
     AFS_GUNLOCK();
-    if (bad_dentry) {
+    if (credp)
+	crfree(credp);
+
+    if (!valid) {
 	shrink_dcache_parent(dp);
 	d_drop(dp);
     }
 #ifdef AFS_LINUX24_ENV
     unlock_kernel();
 #endif
-    if (credp)
-	crfree(credp);
+    return valid;
 
-    return !bad_dentry;
+  bad_dentry:
+    valid = 0;
+    goto done;
 }
 
 #if !defined(AFS_LINUX26_ENV)
@@ -1024,6 +1039,7 @@ afs_linux_create(struct inode *dip, struct dentry *dp, int mode)
 #endif
 
 	dp->d_op = &afs_dentry_operations;
+	dp->d_time = hgetlo(ITOAFS(dip)->m.DataVersion);
 	d_instantiate(dp, ip);
     }
 
@@ -1054,6 +1070,9 @@ afs_linux_lookup(struct inode *dip, struct dentry *dp)
     cred_t *credp = crref();
     struct vcache *vcp = NULL;
     const char *comp = dp->d_name.name;
+#if 1
+    struct dentry *res = 0;
+#endif
 
 #if defined(AFS_LINUX26_ENV)
     lock_kernel();
@@ -1073,6 +1092,8 @@ afs_linux_lookup(struct inode *dip, struct dentry *dp)
 	} else if (S_ISDIR(ip->i_mode)) {
 	    ip->i_op = &afs_dir_iops;
 	    ip->i_fop = &afs_dir_fops;
+            d_prune_aliases(ip);
+            res = d_find_alias(ip);
 	} else if (S_ISLNK(ip->i_mode)) {
 	    ip->i_op = &afs_symlink_iops;
 	    ip->i_data.a_ops = &afs_symlink_aops;
@@ -1095,6 +1116,13 @@ afs_linux_lookup(struct inode *dip, struct dentry *dp)
 #endif
     }
     dp->d_op = &afs_dentry_operations;
+    dp->d_time = hgetlo(ITOAFS(dip)->m.DataVersion);
+#if defined(AFS_LINUX24_ENV)
+    if (res) {
+	if (d_unhashed(res))
+	    d_rehash(res);
+    } else
+#endif
     d_add(dp, AFSTOI(vcp));
 
 #if defined(AFS_LINUX26_ENV)
@@ -1105,6 +1133,10 @@ afs_linux_lookup(struct inode *dip, struct dentry *dp)
     /* It's ok for the file to not be found. That's noted by the caller by
      * seeing that the dp->d_inode field is NULL.
      */
+#if defined(AFS_LINUX24_ENV)
+    if (code == 0)
+        return res;
+#endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,10)
     if (code == ENOENT)
 	return ERR_PTR(0);
@@ -1185,8 +1217,10 @@ afs_linux_unlink(struct inode *dip, struct dentry *dp)
 	}
 	AFS_GUNLOCK();
 
-	if (!code)
+	if (!code) {
+	    __dp->d_time = hgetlo(ITOAFS(dip)->m.DataVersion);
 	    d_move(dp, __dp);
+	}
 	dput(__dp);
 
 	goto out;
@@ -1252,6 +1286,7 @@ afs_linux_mkdir(struct inode *dip, struct dentry *dp, int mode)
 	tvcp->v.v_fop = &afs_dir_fops;
 #endif
 	dp->d_op = &afs_dentry_operations;
+	dp->d_time = hgetlo(ITOAFS(dip)->m.DataVersion);
 	d_instantiate(dp, AFSTOI(tvcp));
     }
 

@@ -332,6 +332,9 @@
 /* define if your linux kernel has linux/syscall.h */
 #undef HAVE_KERNEL_LINUX_SYSCALL_H
 
+/* define if your linux kernel has linux/seq_file.h */
+#undef HAVE_KERNEL_LINUX_SEQ_FILE_H
+
 /* define if your struct task_struct has parent */
 #undef STRUCT_TASK_STRUCT_HAS_PARENT
 
