@@ -13,7 +13,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/flipbase64.c,v 1.1.1.3 2005-03-10 20:41:31 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/flipbase64.c,v 1.1.1.4 2005-06-02 19:43:13 zacheiss Exp $");
 
 
 #if defined(AFS_NAMEI_ENV)
@@ -80,7 +80,7 @@ static char c_reverse[] = {
  */
 #ifdef AFS_64BIT_ENV
 char *
-int64_to_flipbase64(lb64_string_t s, afs_int64 a)
+int64_to_flipbase64(lb64_string_t s, afs_uint64 a)
 #else
 char *
 int64_to_flipbase64(lb64_string_t s, u_int64_t a)
@@ -88,7 +88,7 @@ int64_to_flipbase64(lb64_string_t s, u_int64_t a)
 {
     int i;
 #ifdef AFS_64BIT_ENV
-    afs_int64 n;
+    afs_uint64 n;
 #else
     u_int64_t n;
 #endif

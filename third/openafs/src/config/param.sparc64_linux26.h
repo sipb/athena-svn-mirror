@@ -1,7 +1,7 @@
 #ifndef UKERNEL
 /* This section for kernel libafs compiles only */
 
-/*
+/* 
  * Copyright 2000, International Business Machines Corporation and others.
  * All Rights Reserved.
  * 
@@ -11,38 +11,36 @@
  */
 
 
-#ifndef AFS_PARAM_H
-#define AFS_PARAM_H
+#ifndef _PARAM_SPARC64_LINUX26_H_
+#define _PARAM_SPARC64_LINUX26_H_
 
 /* In user space the AFS_LINUX20_ENV should be sufficient. In the kernel,
- * it's a judgment call. If something is obviously s390 specific, use that
+ * it's a judgment call. If something is obviously sparc64 specific, use that
  * #define instead. Note that "20" refers to the linux 2.0 kernel. The "2"
  * in the sysname is the current version of the client. This takes into
  * account the perferred OS user space configuration as well as the kernel.
  */
 
-#define AFS_LINUX20_ENV 1
+#define AFS_LINUX20_ENV	1
 #define AFS_LINUX22_ENV	1
 #define AFS_LINUX24_ENV	1
 #define AFS_LINUX26_ENV	1
-#define AFS_S390_LINUX20_ENV    1
-#define AFS_S390_LINUX22_ENV	1
-#define AFS_S390_LINUX24_ENV	1
-#define AFS_S390X_LINUX20_ENV    1
-#define AFS_S390X_LINUX22_ENV	1
-#define AFS_S390X_LINUX24_ENV	1
-#define AFS_S390X_LINUX26_ENV	1
+#define AFS_SPARC64_LINUX20_ENV	1
+#define AFS_SPARC64_LINUX22_ENV	1
+#define AFS_SPARC64_LINUX24_ENV	1
+#define AFS_SPARC64_LINUX26_ENV	1
+#define AFS_LINUX_64BIT_KERNEL 1
 #define AFS_NONFSTRANS 1
 
 #define AFS_MOUNT_AFS "afs"	/* The name of the filesystem type. */
-#define AFS_SYSCALL 137
-#define AFS_64BIT_ENV  1
-#define AFS_64BITPOINTER_ENV  1
-#define AFS_64BIT_CLIENT  1
-#define AFS_64BIT_KERNEL  1
-#define AFS_LINUX_64BIT_KERNEL  1
+#define AFS_SYSCALL 227
 #define AFS_64BIT_IOPS_ENV  1
 #define AFS_NAMEI_ENV     1	/* User space interface to file system */
+
+#define AFS_64BIT_ENV		1	/* Defines afs_int32 as int, not long. */
+#define AFS_64BIT_CLIENT	1
+#define AFS_32BIT_USR_ENV       1
+#define AFS_64BITPOINTER_ENV	1	/* pointers are 64 bits. */
 
 #if defined(__KERNEL__) && !defined(KDUMP_KERNEL)
 #include <linux/threads.h>
@@ -60,27 +58,25 @@
 #ifndef CONFIG_SMP
 #define CONFIG_SMP 1
 #endif
-#ifndef __SMP__
 #define __SMP__
-#endif
-#endif
 #define AFS_GLOBAL_SUNLOCK
-#endif /* __KERNEL__  && !DUMP_KERNEL */
+#endif
 
+#endif /* __KERNEL__  && !DUMP_KERNEL */
 #include <afs/afs_sysnames.h>
 
 #define AFS_USERSPACE_IP_ADDR 1
 #define RXK_LISTENER_ENV 1
-#define AFS_GCPAGS       2	/* Set to Userdisabled, allow sysctl to override */
+#define AFS_GCPAGS		0	/* if nonzero, garbage collect PAGs */
 
 /* Machine / Operating system information */
-#define SYS_NAME	"s390x_linux26"
-#define SYS_NAME_ID	SYS_NAME_ID_s390x_linux26
+#define SYS_NAME	"sparc64_linux26"
+#define SYS_NAME_ID	SYS_NAME_ID_sparc64_linux26
 #define AFSBIG_ENDIAN    1
 #define AFS_HAVE_FFS        1	/* Use system's ffs. */
 #define AFS_HAVE_STATVFS    0	/* System doesn't support statvfs */
 #define AFS_VM_RDWR_ENV	    1	/* read/write implemented via VM */
-#define AFS_USE_GETTIMEOFDAY       1	/* use gettimeofday to implement rx clock */
+
 
 #ifdef KERNEL
 #ifndef MIN
@@ -91,7 +87,17 @@
 #endif
 #endif /* KERNEL */
 
-#endif /* AFS_PARAM_H */
+/* on sparclinux is O_LARGEFILE defined but there is not off64_t,
+   so small hack to get usd_file.c work */
+#ifndef KERNEL
+#define __USE_FILE_OFFSET64 1
+#define __USE_LARGEFILE64 1
+#if !defined off64_t
+#define off64_t __off64_t
+#endif
+#endif
+
+#endif /* _PARAM_SPARC64_LINUX26_H_ */
 
 #else /* !defined(UKERNEL) */
 
@@ -106,11 +112,11 @@
  * directory or online at http://www.openafs.org/dl/license10.html
  */
 
-#ifndef AFS_PARAM_H
-#define AFS_PARAM_H
+#ifndef _PARAM_USR_SPARC64_LINUX26_H_
+#define _PARAM_USR_SPARC64_LINUX26_H_
 
 /* In user space the AFS_LINUX20_ENV should be sufficient. In the kernel,
- * it's a judgment call. If something is obviously s390 specific, use that
+ * it's a judgment call. If something is obviously sparc64 specific, use that
  * #define instead. Note that "20" refers to the linux 2.0 kernel. The "2"
  * in the sysname is the current version of the client. This takes into
  * account the perferred OS user space configuration as well as the kernel.
@@ -118,21 +124,14 @@
 
 #define UKERNEL			1	/* user space kernel */
 #define AFS_ENV			1
-#define AFS_USR_LINUX20_ENV     1
+#define AFS_USR_LINUX20_ENV	1
 #define AFS_USR_LINUX22_ENV	1
 #define AFS_USR_LINUX24_ENV	1
 #define AFS_USR_LINUX26_ENV	1
-#define AFS_S390X_LINUX20_ENV    1
-#define AFS_S390X_LINUX22_ENV	1
-#define AFS_S390X_LINUX24_ENV	1
-#define AFS_S390X_LINUX26_ENV	1
 #define AFS_NONFSTRANS 1
 
 #define AFS_MOUNT_AFS "afs"	/* The name of the filesystem type. */
-#define AFS_SYSCALL 137
-#define AFS_64BIT_ENV  1
-#define AFS_64BIT_CLIENT  1
-#define AFS_64BITPOINTER_ENV  1
+#define AFS_SYSCALL 227
 #define AFS_64BIT_IOPS_ENV  1
 #define AFS_NAMEI_ENV     1	/* User space interface to file system */
 #include <afs/afs_sysnames.h>
@@ -143,8 +142,8 @@
 
 
 /* Machine / Operating system information */
-#define SYS_NAME	"s390x_linux26"
-#define SYS_NAME_ID	SYS_NAME_ID_s390x_linux26
+#define SYS_NAME	"sparc64_linux26"
+#define SYS_NAME_ID	SYS_NAME_ID_sparc64_linux26
 #define AFSBIG_ENDIAN    1
 #define AFS_HAVE_FFS        1	/* Use system's ffs. */
 #define AFS_HAVE_STATVFS    0	/* System doesn't support statvfs */
@@ -167,6 +166,6 @@
 #define CMSERVERPREF
 #endif
 
-#endif /* AFS_PARAM_H */
+#endif /* _PARAM_USR_SPARC64_LINUX26_H_ */
 
 #endif /* !defined(UKERNEL) */

@@ -19,7 +19,7 @@
 #include <security/pam_modules.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/pam/afs_password.c,v 1.1.1.2 2005-03-10 20:38:38 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/pam/afs_password.c,v 1.1.1.3 2005-06-02 19:43:36 zacheiss Exp $");
 
 #include <sys/param.h>
 #include <afs/kautils.h>
@@ -134,7 +134,7 @@ pam_sm_chauthtok(pam_handle_t * pamh, int flags, int argc, const char **argv)
 	RET(PAM_AUTH_ERR);
     }
 #else
-#if     defined(AFS_LINUX20_ENV) || defined(AFS_FBSD_ENV)
+#if     defined(AFS_LINUX20_ENV) || defined(AFS_FBSD_ENV) || defined(AFS_NBSD_ENV)
     upwd = getpwnam(user);
 #else
     upwd = getpwnam_r(user, &unix_pwd, upwd_buf, sizeof(upwd_buf));

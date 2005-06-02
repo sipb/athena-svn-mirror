@@ -17,7 +17,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/xstat/xstat_cm_test.c,v 1.1.1.3 2005-03-10 20:39:57 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/xstat/xstat_cm_test.c,v 1.1.1.4 2005-06-02 19:43:08 zacheiss Exp $");
 
 #include "xstat_cm.h"		/*Interface for xstat_cm module */
 #include <cmd.h>		/*Command line interpreter */
@@ -754,6 +754,10 @@ PrintOverallPerfInfo(a_ovP)
     printf("\t%10d srvMaxChainLength\n", a_ovP->srvMaxChainLength);
     printf("\t%10d srvMaxChainLengthHWM\n", a_ovP->srvMaxChainLengthHWM);
     printf("\t%10d srvRecordsHWM\n", a_ovP->srvRecordsHWM);
+
+    printf("\t%10d cacheBucket0_Discarded\n",  a_ovP->cacheBucket0_Discarded);
+    printf("\t%10d cacheBucket1_Discarded\n",  a_ovP->cacheBucket1_Discarded);
+    printf("\t%10d cacheBucket2_Discarded\n",  a_ovP->cacheBucket2_Discarded);
 
     printf("\t%10d sysName_ID\n", a_ovP->sysName_ID);
 

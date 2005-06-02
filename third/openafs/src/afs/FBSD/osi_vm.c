@@ -22,7 +22,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/FBSD/osi_vm.c,v 1.1.1.4 2005-05-04 17:44:51 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/FBSD/osi_vm.c,v 1.1.1.5 2005-06-02 19:43:32 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -47,6 +47,10 @@ RCSID
  * progress, so some fields are (as of 5.1) still protected by Giant
  * rather than an explicit lock.
  */
+
+#ifdef AFS_FBSD60_ENV
+#define VOP_GETVOBJECT(vp, objp) (*(objp) = (vp)->v_object)
+#endif
 
 #ifdef AFS_FBSD50_ENV
 #define	lock_vnode(v)	vn_lock((v), LK_EXCLUSIVE | LK_RETRY, curthread)
