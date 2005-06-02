@@ -92,6 +92,9 @@
 /* Define to 1 if you have the <io.h> header file. */
 #undef HAVE_IO_H
 
+/* define if your linux kernel has linux/seq_file.h */
+#undef HAVE_KERNEL_LINUX_SEQ_FILE_H
+
 /* define if your linux kernel has linux/syscall.h */
 #undef HAVE_KERNEL_LINUX_SYSCALL_H
 

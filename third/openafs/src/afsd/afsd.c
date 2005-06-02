@@ -57,7 +57,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.6 2005-05-04 18:14:57 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.7 2005-06-02 20:07:57 zacheiss Exp $");
 
 #define VFS 1
 
@@ -230,6 +230,8 @@ afs_int32 enable_rxbind = 0;
 afs_int32 afs_shutdown = 0;
 afs_int32 cacheBlocks;		/*Num blocks in the cache */
 afs_int32 cacheFiles = 1000;	/*Optimal # of files in workstation cache */
+afs_int32 rwpct = 0;
+afs_int32 ropct = 0;
 afs_int32 cacheStatEntries = 300;	/*Number of stat cache entries */
 char cacheBaseDir[1024];	/*Where the workstation AFS cache lives */
 char confDir[1024];		/*Where the workstation AFS configuration lives */
@@ -275,6 +277,7 @@ static int enable_dynroot = 0;	/* enable dynroot support */
 static int enable_fakestat = 0;	/* enable fakestat support */
 static int enable_backuptree = 0;	/* enable backup tree support */
 static int enable_nomount = 0;	/* do not mount */
+static int enable_splitcache = 0;
 #ifdef notdef
 static int inodes = 60;		/* VERY conservative, but has to be */
 #endif
@@ -1535,7 +1538,21 @@ mainproc(as, arock)
 	exit(1);
 	}
     }
-    
+    if (as->parms[34].items) {
+	char *c;
+	if (!as->parms[34].items->data ||
+	    ((c = strchr(as->parms[34].items->data, '/')) == NULL)) 
+           printf("ignoring splitcache (specify as RW/RO percentages: 60/40)\n"); 
+       else {
+           ropct = atoi((char *)c+1);
+	   *c = '\0'; 
+           rwpct = atoi((char *)as->parms[30].items->data);
+           if ((rwpct != 0) && (ropct != 0) && (ropct+rwpct == 100)) {
+               /* -splitcache */
+               enable_splitcache = 1;
+	   }
+       }
+    }    
     /*
      * Pull out all the configuration info for the workstation's AFS cache and
      * the cellular community we're willing to let our users see.
@@ -1813,6 +1830,13 @@ mainproc(as, arock)
     cparams.inodes = inodes;
 #endif
     call_syscall(AFSOP_CACHEINIT, &cparams);
+
+    /* do it before we init the cache inodes */
+    if (enable_splitcache) {
+	call_syscall(AFSOP_BUCKETPCT, 1, rwpct);
+	call_syscall(AFSOP_BUCKETPCT, 2, ropct);
+    }
+
     if (afsd_CloseSynch)
 	call_syscall(AFSOP_CLOSEWAIT);
 
@@ -2055,7 +2079,10 @@ mainproc(as, arock)
 	if (afsd_verbose)
 	    printf("%s: Mounting the AFS root on '%s', flags: %d.\n", rn,
 		   cacheMountDir, mountFlags);
-#ifdef AFS_FBSD_ENV
+#if defined(AFS_FBSD60_ENV)
+	/* data must be non-NULL but is otherwise ignored */
+	if ((mount(MOUNT_AFS, cacheMountDir, mountFlags, rn)) < 0) {
+#elif defined(AFS_FBSD_ENV)
 	if ((mount("AFS", cacheMountDir, mountFlags, (caddr_t) 0)) < 0) {
 #elif defined(AFS_AIX_ENV)
 	if (aix_vmount()) {
@@ -2065,8 +2092,7 @@ mainproc(as, arock)
 	if ((mount("AFS", cacheMountDir, mountFlags, "afs", NULL, 0)) < 0) {
 #elif defined(AFS_SGI_ENV)
 	mountFlags = MS_FSS;
-	if ((mount(MOUNT_AFS, cacheMountDir, mountFlags, (caddr_t) MOUNT_AFS))
-	    < 0) {
+	if ((mount(MOUNT_AFS, cacheMountDir, mountFlags, (caddr_t) MOUNT_AFS)) < 0) {
 #elif defined(AFS_LINUX20_ENV)
 	if ((mount("AFS", cacheMountDir, MOUNT_AFS, 0, NULL)) < 0) {
 #else
@@ -2178,6 +2204,8 @@ main(argc, argv)
     cmd_AddParm(ts, "-settime", CMD_FLAG, CMD_OPTIONAL,
                "don't set the time");
     cmd_AddParm(ts, "-rxpck", CMD_SINGLE, CMD_OPTIONAL, "set rx_extraPackets to this value");
+    cmd_AddParm(ts, "-splitcache", CMD_SINGLE, CMD_OPTIONAL, "Percentage RW versus RO in cache (specify as 60/40)");
+
     return (cmd_Dispatch(argc, argv));
 }
 
