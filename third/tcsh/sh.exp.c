@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.exp.c,v 1.1.1.2 1998-10-03 21:09:59 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.exp.c,v 1.1.1.3 2005-06-03 14:35:17 ghudson Exp $ */
 /*
  * sh.exp.c: Expression evaluations
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,7 +32,9 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.exp.c,v 1.1.1.2 1998-10-03 21:09:59 danw Exp $")
+RCSID("$Id: sh.exp.c,v 1.1.1.3 2005-06-03 14:35:17 ghudson Exp $")
+
+#include "tw.h"
 
 /*
  * C shell
@@ -60,16 +58,16 @@ RCSID("$Id: sh.exp.c,v 1.1.1.2 1998-10-03 21:09:59 danw Exp $")
 #define NOTEQMATCH 8
 
 static	int	 sh_access	__P((Char *, int));
-static	int	 exp1		__P((Char ***, bool));
-static	int	 exp2		__P((Char ***, bool));
-static	int	 exp2a		__P((Char ***, bool));
-static	int	 exp2b		__P((Char ***, bool));
-static	int	 exp2c		__P((Char ***, bool));
-static	Char 	*exp3		__P((Char ***, bool));
-static	Char 	*exp3a		__P((Char ***, bool));
-static	Char 	*exp4		__P((Char ***, bool));
-static	Char 	*exp5		__P((Char ***, bool));
-static	Char 	*exp6		__P((Char ***, bool));
+static	int	 exp1		__P((Char ***, int));
+static	int	 exp2x		__P((Char ***, int));
+static	int	 exp2a		__P((Char ***, int));
+static	int	 exp2b		__P((Char ***, int));
+static	int	 exp2c		__P((Char ***, int));
+static	Char 	*exp3		__P((Char ***, int));
+static	Char 	*exp3a		__P((Char ***, int));
+static	Char 	*exp4		__P((Char ***, int));
+static	Char 	*exp5		__P((Char ***, int));
+static	Char 	*exp6		__P((Char ***, int));
 static	void	 evalav		__P((Char **));
 static	int	 isa		__P((Char *, int));
 static	int	 egetn		__P((Char *));
@@ -149,23 +147,9 @@ sh_access(fname, mode)
 
 # ifdef NGROUPS_MAX
     else {
-#  if defined(__386BSD__) || defined(BSD4_4)
-    /*
-     * These two decided that setgroup() should take an array of int's
-     * and they define _SC_NGROUPS_MAX without having sysconf
-     */
-#   undef _SC_NGROUPS_MAX	
-#   if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__bsdi__)
-#    define GID_T gid_t
-#   else
-#    define GID_T int
-#   endif
-#  else
-#   define GID_T gid_t
-#  endif /* __386BSD__ || BSD4_4 */
 	/* you can be in several groups */
 	long	n;
-	GID_T	*groups;
+	GETGROUPS_T *groups;
 
 	/*
 	 * Try these things to find a positive maximum groups value:
@@ -174,16 +158,16 @@ sh_access(fname, mode)
 	 *   3) getgroups(0, unused)
 	 * Then allocate and scan the groups array if one of these worked.
 	 */
-#  ifdef _SC_NGROUPS_MAX
+#  if defined (HAVE_SYSCONF) && defined (_SC_NGROUPS_MAX)
 	if ((n = sysconf(_SC_NGROUPS_MAX)) == -1)
 #  endif /* _SC_NGROUPS_MAX */
 	    n = NGROUPS_MAX;
 	if (n <= 0)
-	    n = getgroups(0, (GID_T *) NULL);
+	    n = getgroups(0, (GETGROUPS_T *) NULL);
 
 	if (n > 0) {
-	    groups = (GID_T *) xmalloc((size_t) (n * sizeof(GID_T)));
-	    n = getgroups(n, groups);
+	    groups = xmalloc((size_t) (n * sizeof(*groups)));
+	    n = getgroups((int) n, groups);
 	    while (--n >= 0)
 		if (groups[n] == statb.st_gid) {
 		    mode <<= 3;
@@ -202,23 +186,23 @@ sh_access(fname, mode)
 
 int
 expr(vp)
-    register Char ***vp;
+    Char ***vp;
 {
     return (exp0(vp, 0));
 }
 
 int
 exp0(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+    Char ***vp;
+    int    ignore;
 {
-    register int p1 = exp1(vp, ignore);
+    int p1 = exp1(vp, ignore);
 
 #ifdef EDEBUG
     etraci("exp0 p1", p1, vp);
 #endif /* EDEBUG */
     if (**vp && eq(**vp, STRor2)) {
-	register int p2;
+	int p2;
 
 	(*vp)++;
 	p2 = exp0(vp, (ignore & TEXP_IGNORE) || p1);
@@ -232,16 +216,16 @@ exp0(vp, ignore)
 
 static int
 exp1(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+    Char ***vp;
+    int    ignore;
 {
-    register int p1 = exp2(vp, ignore);
+    int p1 = exp2x(vp, ignore);
 
 #ifdef EDEBUG
     etraci("exp1 p1", p1, vp);
 #endif /* EDEBUG */
     if (**vp && eq(**vp, STRand2)) {
-	register int p2;
+	int p2;
 
 	(*vp)++;
 	p2 = exp1(vp, (ignore & TEXP_IGNORE) || !p1);
@@ -254,20 +238,20 @@ exp1(vp, ignore)
 }
 
 static int
-exp2(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+exp2x(vp, ignore)
+    Char ***vp;
+    int    ignore;
 {
-    register int p1 = exp2a(vp, ignore);
+    int p1 = exp2a(vp, ignore);
 
 #ifdef EDEBUG
     etraci("exp3 p1", p1, vp);
 #endif /* EDEBUG */
     if (**vp && eq(**vp, STRor)) {
-	register int p2;
+	int p2;
 
 	(*vp)++;
-	p2 = exp2(vp, ignore);
+	p2 = exp2x(vp, ignore);
 #ifdef EDEBUG
 	etraci("exp3 p2", p2, vp);
 #endif /* EDEBUG */
@@ -278,16 +262,16 @@ exp2(vp, ignore)
 
 static int
 exp2a(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+    Char ***vp;
+    int    ignore;
 {
-    register int p1 = exp2b(vp, ignore);
+    int p1 = exp2b(vp, ignore);
 
 #ifdef EDEBUG
     etraci("exp2a p1", p1, vp);
 #endif /* EDEBUG */
     if (**vp && eq(**vp, STRcaret)) {
-	register int p2;
+	int p2;
 
 	(*vp)++;
 	p2 = exp2a(vp, ignore);
@@ -301,16 +285,16 @@ exp2a(vp, ignore)
 
 static int
 exp2b(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+    Char ***vp;
+    int    ignore;
 {
-    register int p1 = exp2c(vp, ignore);
+    int p1 = exp2c(vp, ignore);
 
 #ifdef EDEBUG
     etraci("exp2b p1", p1, vp);
 #endif /* EDEBUG */
     if (**vp && eq(**vp, STRand)) {
-	register int p2;
+	int p2;
 
 	(*vp)++;
 	p2 = exp2b(vp, ignore);
@@ -324,12 +308,12 @@ exp2b(vp, ignore)
 
 static int
 exp2c(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+    Char ***vp;
+    int    ignore;
 {
-    register Char *p1 = exp3(vp, ignore);
-    register Char *p2;
-    register int i;
+    Char *p1 = exp3(vp, ignore);
+    Char *p2;
+    int i;
 
 #ifdef EDEBUG
     etracc("exp2c p1", p1, vp);
@@ -372,11 +356,11 @@ exp2c(vp, ignore)
 
 static Char *
 exp3(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+    Char ***vp;
+    int    ignore;
 {
-    register Char *p1, *p2;
-    register int i;
+    Char *p1, *p2;
+    int i;
 
     p1 = exp3a(vp, ignore);
 #ifdef EDEBUG
@@ -418,11 +402,11 @@ exp3(vp, ignore)
 
 static Char *
 exp3a(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+    Char ***vp;
+    int    ignore;
 {
-    register Char *p1, *p2, *op;
-    register int i;
+    Char *p1, *p2, *op;
+    int i;
 
     p1 = exp4(vp, ignore);
 #ifdef EDEBUG
@@ -448,18 +432,18 @@ exp3a(vp, ignore)
 
 static Char *
 exp4(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+    Char ***vp;
+    int    ignore;
 {
-    register Char *p1, *p2;
-    register int i = 0;
+    Char *p1, *p2;
+    int i = 0;
 
     p1 = exp5(vp, ignore);
 #ifdef EDEBUG
     etracc("exp4 p1", p1, vp);
 #endif /* EDEBUG */
     if (isa(**vp, ADDOP)) {
-	register Char *op = *(*vp)++;
+	Char *op = *(*vp)++;
 
 	p2 = exp4(vp, ignore);
 #ifdef EDEBUG
@@ -485,11 +469,11 @@ exp4(vp, ignore)
 
 static Char *
 exp5(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+    Char ***vp;
+    int    ignore;
 {
-    register Char *p1, *p2;
-    register int i = 0;
+    Char *p1, *p2;
+    int i = 0;
 
     p1 = exp6(vp, ignore);
 #ifdef EDEBUG
@@ -497,7 +481,7 @@ exp5(vp, ignore)
 #endif /* EDEBUG */
 
     if (isa(**vp, MULOP)) {
-	register Char *op = *(*vp)++;
+	Char *op = *(*vp)++;
 	if ((ignore & TEXP_NOGLOB) != 0) 
 	    /* 
 	     * We are just trying to get the right side of
@@ -539,11 +523,11 @@ exp5(vp, ignore)
 
 static Char *
 exp6(vp, ignore)
-    register Char ***vp;
-    bool    ignore;
+    Char ***vp;
+    int    ignore;
 {
     int     ccode, i = 0;
-    register Char *cp;
+    Char *cp;
 
     if (**vp == 0)
 	stderror(ERR_NAME | ERR_EXPRESSION);
@@ -579,7 +563,7 @@ exp6(vp, ignore)
 	return (putn(ccode));
     }
     if (eq(**vp, STRLbrace)) {
-	register Char **v;
+	Char **v;
 	struct command faket;
 	Char   *fakecom[2];
 
@@ -637,7 +621,7 @@ exp6(vp, ignore)
 Char *
 filetest(cp, vp, ignore)
     Char *cp, ***vp;
-    bool ignore;
+    int ignore;
 {
 #ifdef convex
     struct cvxstat stb, *st = NULL;
@@ -660,7 +644,7 @@ filetest(cp, vp, ignore)
 
     int i = 0;
     unsigned pmask = 0xffff;
-    bool altout = 0;
+    int altout = 0;
     Char *ft = cp, *dp, *ep, *strdev, *strino, *strF, *str, valtest = '\0',
     *errval = STR0;
     char *string, string0[8];
@@ -742,18 +726,30 @@ filetest(cp, vp, ignore)
 
 #ifdef S_IFLNK
 	    if (tolower(*ft) == 'l') {
-		if (!lst && TCSH_LSTAT(short2str(ep), lst = &lstb) == -1) {
-		    xfree((ptr_t) ep);
-		    return (Strsave(errval));
+		/* 
+		 * avoid convex compiler bug.
+		 */
+		if (!lst) {
+		    lst = &lstb;
+		    if (TCSH_LSTAT(short2str(ep), lst) == -1) {
+			xfree((ptr_t) ep);
+			return (Strsave(errval));
+		    }
 		}
 		if (*ft == 'L')
 		    st = lst;
 	    }
 	    else 
 #endif /* S_IFLNK */
-		if (!st && TCSH_STAT(short2str(ep), st = &stb) == -1) {
-		    xfree((ptr_t) ep);
-		    return (Strsave(errval));
+		/* 
+		 * avoid convex compiler bug.
+		 */
+		if (!st) {
+		    st = &stb;
+		    if (TCSH_STAT(short2str(ep), st) == -1) {
+			xfree((ptr_t) ep);
+			return (Strsave(errval));
+		    }
 		}
 
 	    switch (*ft) {
@@ -980,18 +976,18 @@ filetest(cp, vp, ignore)
 
 static void
 evalav(v)
-    register Char **v;
+    Char **v;
 {
     struct wordent paraml1;
-    register struct wordent *hp = &paraml1;
+    struct wordent *hp = &paraml1;
     struct command *t;
-    register struct wordent *wdp = hp;
+    struct wordent *wdp = hp;
 
     set(STRstatus, Strsave(STR0), VAR_READWRITE);
     hp->prev = hp->next = hp;
     hp->word = STRNULL;
     while (*v) {
-	register struct wordent *new =
+	struct wordent *new =
 	(struct wordent *) xcalloc(1, sizeof *wdp);
 
 	new->prev = wdp;
@@ -1005,14 +1001,14 @@ evalav(v)
     t = syntax(paraml1.next, &paraml1, 0);
     if (seterr)
 	stderror(ERR_OLD);
-    execute(t, -1, NULL, NULL);
+    execute(t, -1, NULL, NULL, TRUE);
     freelex(&paraml1), freesyn(t);
 }
 
 static int
 isa(cp, what)
-    register Char *cp;
-    register int what;
+    Char *cp;
+    int what;
 {
     if (cp == 0)
 	return ((what & RESTOP) != 0);
@@ -1062,7 +1058,7 @@ isa(cp, what)
 
 static int
 egetn(cp)
-    register Char *cp;
+    Char *cp;
 {
     if (*cp && *cp != '-' && !Isdigit(*cp))
 	stderror(ERR_NAME | ERR_EXPRESSION);

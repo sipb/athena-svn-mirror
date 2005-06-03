@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.printf.c,v 1.1.1.2 1998-10-03 21:10:14 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.printf.c,v 1.1.1.3 2005-06-03 14:35:13 ghudson Exp $ */
 /*
  * tc.printf.c: A public-domain, minimal printf/sprintf routine that prints
  *	       through the putchar() routine.  Feel free to use for
@@ -16,11 +16,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -38,7 +34,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.printf.c,v 1.1.1.2 1998-10-03 21:10:14 danw Exp $")
+RCSID("$Id: tc.printf.c,v 1.1.1.3 2005-06-03 14:35:13 ghudson Exp $")
 
 #ifdef lint
 #undef va_arg
@@ -48,6 +44,7 @@ RCSID("$Id: tc.printf.c,v 1.1.1.2 1998-10-03 21:10:14 danw Exp $")
 #define INF	32766		/* should be bigger than any field to print */
 
 static char buf[128];
+static char snil[] = "(nil)";
 
 static	void	xaddchar	__P((int));
 static	void	doprnt		__P((void (*) __P((int)), const char *, va_list));
@@ -58,16 +55,21 @@ doprnt(addchar, sfmt, ap)
     const char   *sfmt;
     va_list ap;
 {
-    register char *bp;
-    register const char *f;
+    char *bp;
+    const char *f;
 #ifdef SHORT_STRINGS
-    register Char *Bp;
+    Char *Bp;
 #endif /* SHORT_STRINGS */
-    register long l;
-    register unsigned long u;
-    register int i;
-    register int fmt;
-    register unsigned char pad = ' ';
+#ifdef HAVE_LONG_LONG
+    long long l;
+    unsigned long long u;
+#else
+    long l;
+    unsigned long u;
+#endif
+    int i;
+    int fmt;
+    unsigned char pad = ' ';
     int     flush_left = 0, f_width = 0, prec = INF, hash = 0, do_long = 0;
     int     sign = 0;
     int     attributes = 0;
@@ -95,9 +97,9 @@ doprnt(addchar, sfmt, ap)
 		f_width = va_arg(ap, int);
 		f++;
 	    }
-	    else if (Isdigit((unsigned char) *f)) {
+	    else if (isdigit((unsigned char) *f)) {
 		f_width = atoi(f);
-		while (Isdigit((unsigned char) *f))
+		while (isdigit((unsigned char) *f))
 		    f++;	/* skip the digits */
 	    }
 
@@ -107,9 +109,9 @@ doprnt(addchar, sfmt, ap)
 		    prec = va_arg(ap, int);
 		    f++;
 		}
-		else if (Isdigit((unsigned char) *f)) {
-		    prec = atoi((char *) f);
-		    while (Isdigit((unsigned char) *f))
+		else if (isdigit((unsigned char) *f)) {
+		    prec = atoi(f);
+		    while (isdigit((unsigned char) *f))
 			f++;	/* skip the digits */
 		}
 	    }
@@ -120,22 +122,39 @@ doprnt(addchar, sfmt, ap)
 	    }
 
 	    if (*f == 'l') {	/* long format */
-		do_long = 1;
+		do_long++;
 		f++;
+		if (*f == 'l') {
+		    do_long++;
+		    f++;
+		}
 	    }
 
 	    fmt = (unsigned char) *f;
-	    if (fmt != 'S' && fmt != 'Q' && Isupper(fmt)) {
+	    if (fmt != 'S' && fmt != 'Q' && isupper(fmt)) {
 		do_long = 1;
-		fmt = Tolower(fmt);
+		fmt = tolower(fmt);
 	    }
 	    bp = buf;
 	    switch (fmt) {	/* do the format */
 	    case 'd':
-		if (do_long)
-		    l = va_arg(ap, long);
-		else
+		switch (do_long) {
+		case 0:
 		    l = (long) (va_arg(ap, int));
+		    break;
+		case 1:
+#ifndef HAVE_LONG_LONG
+		default:
+#endif
+		    l = va_arg(ap, long);
+		    break;
+#ifdef HAVE_LONG_LONG
+		default:
+		    l = va_arg(ap, long long);
+		    break;
+#endif
+		}
+
 		if (l < 0) {
 		    sign = 1;
 		    l = -l;
@@ -145,7 +164,7 @@ doprnt(addchar, sfmt, ap)
 		} while ((l /= 10) > 0);
 		if (sign)
 		    *bp++ = '-';
-		f_width = f_width - (bp - buf);
+		f_width = f_width - (int) (bp - buf);
 		if (!flush_left)
 		    while (f_width-- > 0) 
 			(*addchar) ((int) (pad | attributes));
@@ -156,13 +175,30 @@ doprnt(addchar, sfmt, ap)
 			(*addchar) ((int) (' ' | attributes));
 		break;
 
+	    case 'p':
+		do_long = 1;
+		hash = 1;
+		fmt = 'x';
+		/*FALLTHROUGH*/
 	    case 'o':
 	    case 'x':
 	    case 'u':
-		if (do_long)
-		    u = va_arg(ap, unsigned long);
-		else
+		switch (do_long) {
+		case 0:
 		    u = (unsigned long) (va_arg(ap, unsigned int));
+		    break;
+		case 1:
+#ifndef HAVE_LONG_LONG
+		default:
+#endif
+		    u = va_arg(ap, unsigned long);
+		    break;
+#ifdef HAVE_LONG_LONG
+		default:
+		    u = va_arg(ap, unsigned long long);
+		    break;
+#endif
+		}
 		if (fmt == 'u') {	/* unsigned decimal */
 		    do {
 			*bp++ = (char) (u % 10) + '0';
@@ -177,7 +213,7 @@ doprnt(addchar, sfmt, ap)
 		}
 		else if (fmt == 'x') {	/* hex */
 		    do {
-			i = u % 16;
+			i = (int) (u % 16);
 			if (i < 10)
 			    *bp++ = i + '0';
 			else
@@ -188,7 +224,7 @@ doprnt(addchar, sfmt, ap)
 			*bp++ = '0';
 		    }
 		}
-		i = f_width - (bp - buf);
+		i = f_width - (int) (bp - buf);
 		if (!flush_left)
 		    while (i-- > 0)
 			(*addchar) ((int) (pad | attributes));
@@ -207,6 +243,7 @@ doprnt(addchar, sfmt, ap)
 
 	    case 'S':
 	    case 'Q':
+#ifdef SHORT_STRINGS
 		Bp = va_arg(ap, Char *);
 		if (!Bp) {
 		    bp = NULL;
@@ -217,22 +254,29 @@ doprnt(addchar, sfmt, ap)
 		    while (f_width-- > 0)
 			(*addchar) ((int) (pad | attributes));
 		for (i = 0; *Bp && i < prec; i++) {
+		    char cbuf[MB_LEN_MAX];
+		    size_t pos, len;
+
 		    if (fmt == 'Q' && *Bp & QUOTE)
 			(*addchar) ((int) ('\\' | attributes));
-		    (*addchar) ((int) ((*Bp & TRIM) | attributes));
+		    len = one_wctomb(cbuf, *Bp & CHAR);
+		    for (pos = 0; pos < len; pos++)
+			(*addchar) ((int) ((unsigned char)cbuf[pos]
+					   | attributes | (*Bp & ATTRIBUTES)));
 		    Bp++;
 		}
 		if (flush_left)
 		    while (f_width-- > 0)
 			(*addchar) ((int) (' ' | attributes));
 		break;
+#endif /* SHORT_STRINGS */
 
 	    case 's':
 	    case 'q':
 		bp = va_arg(ap, char *);
 lcase_s:
 		if (!bp)
-		    bp = "(nil)";
+		    bp = snil;
 		f_width = f_width - strlen((char *) bp);
 		if (!flush_left)
 		    while (f_width-- > 0)
@@ -282,7 +326,7 @@ xaddchar(c)
 
 pret_t
 /*VARARGS*/
-#ifdef FUNCPROTO
+#ifdef PROTOTYPES
 xsnprintf(char *str, size_t size, const char *fmt, ...)
 #else
 xsnprintf(va_alist)
@@ -290,7 +334,7 @@ xsnprintf(va_alist)
 #endif
 {
     va_list va;
-#ifdef FUNCPROTO
+#ifdef PROTOTYPES
     va_start(va, fmt);
 #else
     char *str, *fmt;
@@ -314,7 +358,7 @@ xsnprintf(va_alist)
 
 pret_t
 /*VARARGS*/
-#ifdef FUNCPROTO
+#ifdef PROTOTYPES
 xprintf(const char *fmt, ...)
 #else
 xprintf(va_alist)
@@ -322,7 +366,7 @@ xprintf(va_alist)
 #endif
 {
     va_list va;
-#ifdef FUNCPROTO
+#ifdef PROTOTYPES
     va_start(va, fmt);
 #else
     char   *fmt;
@@ -379,7 +423,7 @@ xvsnprintf(str, size, fmt, va)
 #define FILE int
 #endif
 int 
-#ifdef FUNCPROTO
+#ifdef PROTOTYPES
 fprintf(FILE *fp, const char* fmt, ...)
 #else
 fprintf(va_alist)
@@ -387,7 +431,7 @@ fprintf(va_alist)
 #endif
 {
     va_list va;
-#ifdef FUNCPROTO
+#ifdef PROTOTYPES
     va_start(va, fmt);
 #else
     FILE *fp;

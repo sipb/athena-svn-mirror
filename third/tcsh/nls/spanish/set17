@@ -1,4 +1,4 @@
-$ $Id: set17,v 1.1.1.1 1998-10-03 21:10:32 danw Exp $
+$ $Id: set17,v 1.1.1.2 2005-06-03 14:34:44 ghudson Exp $
 $ sh.proc.c
 $set 17 
 1 BUG: ¡en espera de un trabajo en segundo plano!\n
@@ -14,3 +14,4 @@ $set 17
 11 dt actual: 
 12 %S: Ya ha sido suspendido\n
 13 %S: Ya ha sido parado\n
+14 %S: Badly formed number\n

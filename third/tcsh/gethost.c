@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/gethost.c,v 1.1.1.1 1998-10-03 21:09:50 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/gethost.c,v 1.1.1.2 2005-06-03 14:35:11 ghudson Exp $ */
 /*
  * gethost.c: Create version file from prototype
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,7 +32,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: gethost.c,v 1.1.1.1 1998-10-03 21:09:50 danw Exp $")
+RCSID("$Id: gethost.c,v 1.1.1.2 2005-06-03 14:35:11 ghudson Exp $")
 
 #ifdef SCO
 # define perror __perror
@@ -53,12 +49,6 @@ RCSID("$Id: gethost.c,v 1.1.1.1 1998-10-03 21:09:50 danw Exp $")
 #endif
 
 #include <ctype.h>
-
-/* Some people don't bother to declare these */
-#if defined(SUNOS4) || defined(ibm032)
-extern int fprintf();
-extern int fclose();
-#endif /* SUNOS4 || ibm032 */
 
 #define ISSPACE(p)	(isspace((unsigned char) (p)) && (p) != '\n')
 
@@ -163,7 +153,7 @@ main(argc, argv)
 {
     char line[INBUFSIZE];
     char *pname;
-    char *fname = "stdin";
+    const char *fname = "stdin";
     char *ptr, *tok;
     char defs[INBUFSIZE];
     char stmt[INBUFSIZE];

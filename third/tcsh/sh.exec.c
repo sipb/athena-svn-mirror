@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.exec.c,v 1.1.1.2 1998-10-03 21:09:59 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.exec.c,v 1.1.1.3 2005-06-03 14:35:03 ghudson Exp $ */
 /*
  * sh.exec.c: Search, find, and execute a command!
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,10 +32,13 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.exec.c,v 1.1.1.2 1998-10-03 21:09:59 danw Exp $")
+RCSID("$Id: sh.exec.c,v 1.1.1.3 2005-06-03 14:35:03 ghudson Exp $")
 
 #include "tc.h"
 #include "tw.h"
+#ifdef WINNT_NATIVE
+#include <nt.const.h>
+#endif /*WINNT_NATIVE*/
 
 /*
  * C shell
@@ -94,9 +93,9 @@ static int hashdebug = 0;
 # define hash(a, b)	(((a) * HSHMUL + (b)) % (hashlength))
 # define widthof(t)	(sizeof(t) * BITS_PER_BYTE)
 # define tbit(f, i, t)	(((t *) xhash)[(f)] &  \
-			 (1L << (i & (widthof(t) - 1))))
+			 (1UL << (i & (widthof(t) - 1))))
 # define tbis(f, i, t)	(((t *) xhash)[(f)] |= \
-			 (1L << (i & (widthof(t) - 1))))
+			 (1UL << (i & (widthof(t) - 1))))
 # define cbit(f, i)	tbit(f, i, unsigned char)
 # define cbis(f, i)	tbis(f, i, unsigned char)
 # define sbit(f, i)	tbit(f, i, unsigned short)
@@ -144,17 +143,18 @@ static Char *justabs[] = {STRNULL, 0};
 
 static	void	pexerr		__P((void));
 static	void	texec		__P((Char *, Char **));
-static	int	hashname	__P((Char *));
+int	hashname	__P((Char *));
 static	int 	iscommand	__P((Char *));
 
 void
-doexec(t)
-    register struct command *t;
+doexec(t, do_glob)
+    struct command *t;
+    int do_glob;
 {
-    register Char *dp, **pv, **av, *sav;
-    register struct varent *v;
-    register bool slash;
-    register int hashval, i;
+    Char *dp, **pv, **av, *sav;
+    struct varent *v;
+    int slash;
+    int hashval, i;
     Char   *blk[2];
 
     /*
@@ -164,7 +164,9 @@ doexec(t)
      */
     blk[0] = t->t_dcom[0];
     blk[1] = 0;
-    gflag = 0, tglob(blk);
+    gflag = 0;
+    if (do_glob)
+	tglob(blk);
     if (gflag) {
 	pv = globall(blk);
 	if (pv == 0) {
@@ -196,7 +198,8 @@ doexec(t)
      */
     gflag = 0;
     av = &t->t_dcom[1];
-    tglob(av);
+    if (do_glob)
+	tglob(av);
     if (gflag) {
 	av = globall(av);
 	if (av == 0) {
@@ -250,7 +253,7 @@ doexec(t)
      * If no path, no words in path, or a / in the filename then restrict the
      * command search.
      */
-    if (v == 0 || v->vec[0] == 0 || slash)
+    if (v == NULL || v->vec == NULL || v->vec[0] == NULL || slash)
 	pv = justabs;
     else
 	pv = v->vec;
@@ -382,11 +385,11 @@ pexerr()
 static void
 texec(sf, st)
     Char   *sf;
-    register Char **st;
+    Char **st;
 {
-    register char **t;
-    register char *f;
-    register struct varent *v;
+    char **t;
+    char *f;
+    struct varent *v;
     Char  **vp;
     Char   *lastsh[2];
     char    pref[2];
@@ -428,17 +431,21 @@ texec(sf, st)
     switch (errno) {
 
     case ENOEXEC:
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 		nt_feed_to_cmd(f,t);
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 	/*
 	 * From: casper@fwi.uva.nl (Casper H.S. Dik) If we could not execute
 	 * it, don't feed it to the shell if it looks like a binary!
 	 */
-	if ((fd = open(f, O_RDONLY)) != -1) {
+	if ((fd = open(f, O_RDONLY|O_LARGEFILE)) != -1) {
 	    int nread;
+#ifdef O_TEXT
+	    setmode(fd, O_TEXT);
+#endif
 	    if ((nread = read(fd, (char *) pref, 2)) == 2) {
-		if (!Isprint(pref[0]) && (pref[0] != '\n' && pref[0] != '\t')) {
+		if (!isprint((unsigned char)pref[0]) &&
+		    (pref[0] != '\n' && pref[0] != '\t')) {
 		    (void) close(fd);
 		    /*
 		     * We *know* what ENOEXEC means.
@@ -449,7 +456,7 @@ texec(sf, st)
 	    else if (nread < 0 && errno != EINTR) {
 #ifdef convex
 		/* need to print error incase the file is migrated */
-		stderror(ERR_SYSTEM, CMDname, strerror(errno));
+		stderror(ERR_SYSTEM, f, strerror(errno));
 #endif
 	    }
 #ifdef _PATH_BSHELL
@@ -469,7 +476,7 @@ texec(sf, st)
 	 * interpretation of the words at this point.
 	 */
 	    v = adrof1(STRshell, &aliases);
-	    if (v == 0) {
+	    if (v == NULL || v->vec == NULL) {
 		vp = lastsh;
 		vp[0] = adrof(STRshell) ? varval(STRshell) : STR_SHELLPATH;
 		vp[1] = NULL;
@@ -548,7 +555,7 @@ texec(sf, st)
 void
 execash(t, kp)
     Char  **t;
-    register struct command *kp;
+    struct command *kp;
 {
     int     saveIN, saveOUT, saveDIAG, saveSTD;
     int     oSHIN;
@@ -586,10 +593,10 @@ execash(t, kp)
     oSHDIAG = SHDIAG;
     oOLDSTD = OLDSTD;
 
-    saveIN = dcopy(SHIN, -1);
-    saveOUT = dcopy(SHOUT, -1);
-    saveDIAG = dcopy(SHDIAG, -1);
-    saveSTD = dcopy(OLDSTD, -1);
+    (void)close_on_exec (saveIN = dcopy(SHIN, -1), 1);
+    (void)close_on_exec (saveOUT = dcopy(SHOUT, -1), 1);
+    (void)close_on_exec (saveDIAG = dcopy(SHDIAG, -1), 1);
+    (void)close_on_exec (saveSTD = dcopy(OLDSTD, -1), 1);
 	
     lshift(kp->t_dcom, 1);
 
@@ -603,9 +610,9 @@ execash(t, kp)
 #else /* !cray */
     if ((my_reenter = setexit()) == 0) {
 #endif /* cray */
-	SHIN = dcopy(0, -1);
-	SHOUT = dcopy(1, -1);
-	SHDIAG = dcopy(2, -1);
+	(void)close_on_exec (SHIN = dcopy(0, -1), 1);
+	(void)close_on_exec (SHOUT = dcopy(1, -1), 1);
+	(void)close_on_exec (SHDIAG = dcopy(2, -1), 1);
 #ifndef CLOSE_ON_EXEC
 	didcch = 0;
 #endif /* CLOSE_ON_EXEC */
@@ -614,10 +621,10 @@ execash(t, kp)
 	 * Decrement the shell level
 	 */
 	shlvl(-1);
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 	__nt_really_exec=1;
-#endif /* WINNT */
-	doexec(kp);
+#endif /* WINNT_NATIVE */
+	doexec(kp, 1);
     }
 
     (void) sigset(SIGINT, osigint);
@@ -633,10 +640,10 @@ execash(t, kp)
     (void) close(SHOUT);
     (void) close(SHDIAG);
     (void) close(OLDSTD);
-    SHIN = dmove(saveIN, oSHIN);
-    SHOUT = dmove(saveOUT, oSHOUT);
-    SHDIAG = dmove(saveDIAG, oSHDIAG);
-    OLDSTD = dmove(saveSTD, oOLDSTD);
+    (void)close_on_exec(SHIN = dmove(saveIN, oSHIN), 1);
+    (void)close_on_exec(SHOUT = dmove(saveOUT, oSHOUT), 1);
+    (void)close_on_exec(SHDIAG = dmove(saveDIAG, oSHDIAG), 1);
+    (void)close_on_exec(OLDSTD = dmove(saveSTD, oOLDSTD), 1);
 
     resexit(osetexit);
     if (my_reenter)
@@ -648,9 +655,13 @@ xechoit(t)
     Char  **t;
 {
     if (adrof(STRecho)) {
+	int odidfds = didfds;
 	flush();
 	haderr = 1;
+	didfds = 0;
 	blkpr(t), xputchar('\n');
+	flush();
+	didfds = odidfds;
 	haderr = 0;
     }
 }
@@ -665,15 +676,15 @@ dohash(vv, c)
     struct stat stb;
 #endif
     DIR    *dirp;
-    register struct dirent *dp;
+    struct dirent *dp;
     int     i = 0;
     struct varent *v = adrof(STRpath);
     Char  **pv;
     int hashval;
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     int is_windir; /* check if it is the windows directory */
     USE(hashval);
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
     USE(c);
 #ifdef FASTHASH
@@ -694,7 +705,9 @@ dohash(vv, c)
 	hashwidth = uhashwidth;
     else {
 	hashwidth = 0;
-	for (pv = v->vec; *pv; pv++, hashwidth++)
+	if (v == NULL)
+	    return;
+	for (pv = v->vec; pv && *pv; pv++, hashwidth++)
 	    continue;
 	if (hashwidth <= widthof(unsigned char))
 	    hashwidth = sizeof(unsigned char);
@@ -722,7 +735,7 @@ dohash(vv, c)
     havhash = 1;
     if (v == NULL)
 	return;
-    for (pv = v->vec; *pv; pv++, i++) {
+    for (pv = v->vec; pv && *pv; pv++, i++) {
 	if (!ABSOLUTEP(pv[0]))
 	    continue;
 	dirp = opendir(short2str(*pv));
@@ -735,9 +748,9 @@ dohash(vv, c)
 	    continue;
 	}
 #endif
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 	is_windir = nt_check_if_windir(short2str(*pv));
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 	while ((dp = readdir(dirp)) != NULL) {
 	    if (dp->d_ino == 0)
 		continue;
@@ -745,9 +758,26 @@ dohash(vv, c)
 		(dp->d_name[1] == '\0' ||
 		 (dp->d_name[1] == '.' && dp->d_name[2] == '\0')))
 		continue;
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 	    nt_check_name_and_hash(is_windir, dp->d_name, i);
-#else /* !WINNT */
+#else /* !WINNT_NATIVE*/
+#if defined(_UWIN) || defined(__CYGWIN__)
+	    /* Turn foo.{exe,com,bat} into foo since UWIN's readdir returns
+	     * the file with the .exe, .com, .bat extension
+	     */
+	    {
+		size_t	ext = strlen(dp->d_name) - 4;
+		if ((ext > 0) && (strcasecmp(&dp->d_name[ext], ".exe") == 0 ||
+				  strcasecmp(&dp->d_name[ext], ".bat") == 0 ||
+				  strcasecmp(&dp->d_name[ext], ".com") == 0))
+		    {
+			dp->d_name[ext] = '\0';
+#if defined(__CYGWIN__)
+			strlwr(dp->d_name);
+#endif /* __CYGWIN__ */
+		    }
+	    }
+#endif /* _UWIN || __CYGWIN__ */
 # ifdef FASTHASH
 	    hashval = hashname(str2short(dp->d_name));
 	    bis(hashval, i);
@@ -759,7 +789,7 @@ dohash(vv, c)
 	    bis(xhash, hashval);
 # endif /* FASTHASH */
 	    /* tw_add_comm_name (dp->d_name); */
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 	}
 	(void) closedir(dirp);
     }
@@ -808,11 +838,11 @@ hashstat(v, c)
 /*
  * Hash a command name.
  */
-static int
+int
 hashname(cp)
-    register Char *cp;
+    Char *cp;
 {
-    register long h;
+    unsigned long h;
 
     for (h = 0; *cp; cp++)
 	h = hash(h, *cp);
@@ -823,14 +853,14 @@ static int
 iscommand(name)
     Char   *name;
 {
-    register Char **pv;
-    register Char *sav;
-    register struct varent *v;
-    register bool slash = any(short2str(name), '/');
-    register int hashval, i;
+    Char **pv;
+    Char *sav;
+    struct varent *v;
+    int slash = any(short2str(name), '/');
+    int hashval, i;
 
     v = adrof(STRpath);
-    if (v == 0 || v->vec[0] == 0 || slash)
+    if (v == NULL || v->vec == NULL || v->vec[0] == NULL || slash)
 	pv = justabs;
     else
 	pv = v->vec;
@@ -878,6 +908,7 @@ cont:
  * Thanks again!!
  */
 
+#ifndef WINNT_NATIVE
 /*
  * executable() examines the pathname obtained by concatenating dir and name
  * (dir may be NULL), and returns 1 either if it is executable by us, or
@@ -887,41 +918,16 @@ cont:
 int
 executable(dir, name, dir_ok)
     Char   *dir, *name;
-    bool    dir_ok;
+    int    dir_ok;
 {
     struct stat stbuf;
     Char    path[MAXPATHLEN + 1];
     char   *strname;
-#ifdef WINNT
-    int	    nt_exetype;
-#endif /* WINNT */
     (void) memset(path, 0, sizeof(path));
 
     if (dir && *dir) {
 	copyn(path, dir, MAXPATHLEN);
 	catn(path, name, MAXPATHLEN);
-#ifdef WINNT
-	{
-	    char *ptr = short2str(path);
-	    char *p2 = ptr;
-	    int has_ext = 0;
-
-	    while (*ptr++)
-	    	continue;
-
-	    while(ptr > p2) { 
-		if (*ptr == '/')
-		    break;
-		if (*ptr == '.') {
-		    has_ext = 1;
-		    break;
-		}
-		ptr--;
-	    }
-	    if (!has_ext && (stat(p2, &stbuf) == -1))
-		catn(path, ".EXE", MAXPATHLEN);
-	}
-#endif /* WINNT */
 	strname = short2str(path);
     }
     else
@@ -931,25 +937,21 @@ executable(dir, name, dir_ok)
 	    ((dir_ok && S_ISDIR(stbuf.st_mode)) ||
 	     (S_ISREG(stbuf.st_mode) &&
     /* save time by not calling access() in the hopeless case */
-#ifdef WINNT
-	      (GetBinaryType(strname,&nt_exetype) ||
-	      (stbuf.st_mode & (S_IXOTH | S_IXGRP | S_IXUSR)))
-#else /* !WINNT */
 	      (stbuf.st_mode & (S_IXOTH | S_IXGRP | S_IXUSR)) &&
 	      access(strname, X_OK) == 0
-#endif /* WINNT */
 	)));
 }
+#endif /*!WINNT_NATIVE*/
 
 int
 tellmewhat(lexp, str)
     struct wordent *lexp;
     Char *str;
 {
-    register int i;
-    register struct biltins *bptr;
-    register struct wordent *sp = lexp->next;
-    bool    aliased = 0, found;
+    int i;
+    struct biltins *bptr;
+    struct wordent *sp = lexp->next;
+    int    aliased = 0, found;
     Char   *s0, *s1, *s2, *cmd;
     Char    qc;
 
@@ -1001,7 +1003,7 @@ tellmewhat(lexp, str)
 	    return TRUE;
 	}
     }
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     for (bptr = nt_bfunc; bptr < &nt_bfunc[nt_nbfunc]; bptr++) {
 	if (eq(sp->word, str2short(bptr->bname))) {
 	    if (str == NULL) {
@@ -1017,17 +1019,17 @@ tellmewhat(lexp, str)
 	    return TRUE;
 	}
     }
-#endif /* WINNT*/
+#endif /* WINNT_NATIVE*/
 
     sp->word = cmd = globone(sp->word, G_IGNORE);
 
     if ((i = iscommand(sp->word)) != 0) {
-	register Char **pv;
-	register struct varent *v;
-	bool    slash = any(short2str(sp->word), '/');
+	Char **pv;
+	struct varent *v;
+	int    slash = any(short2str(sp->word), '/');
 
 	v = adrof(STRpath);
-	if (v == 0 || v->vec[0] == 0 || slash)
+	if (v == NULL || v->vec == NULL || v->vec[0] == NULL || slash)
 	    pv = justabs;
 	else
 	    pv = v->vec;
@@ -1082,7 +1084,7 @@ tellmewhat(lexp, str)
 /*ARGSUSED*/
 void
 dowhere(v, c)
-    register Char **v;
+    Char **v;
     struct command *c;
 {
     int found = 1;
@@ -1115,7 +1117,8 @@ find_cmd(cmd, prt)
     if (prt && adrof1(cmd, &aliases)) {
 	if ((var = adrof1(cmd, &aliases)) != NULL) {
 	    xprintf(CGETS(13, 8, "%S is aliased to "), cmd);
-	    blkpr(var->vec);
+	    if (var->vec != NULL)
+		blkpr(var->vec);
 	    xputchar('\n');
 	    rval = 1;
 	}
@@ -1132,7 +1135,7 @@ find_cmd(cmd, prt)
 		return rval;
 	}
     }
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     for (bptr = nt_bfunc; bptr < &nt_bfunc[nt_nbfunc]; bptr++) {
 	if (eq(cmd, str2short(bptr->bname))) {
 	    rval = 1;
@@ -1142,7 +1145,7 @@ find_cmd(cmd, prt)
 		return rval;
 	}
     }
-#endif /* WINNT*/
+#endif /* WINNT_NATIVE*/
 
     /* last, look through the path for the command */
 
@@ -1153,7 +1156,7 @@ find_cmd(cmd, prt)
 
     sv = Strspl(STRslash, cmd);
 
-    for (pv = var->vec, i = 0; *pv; pv++, i++) {
+    for (pv = var->vec, i = 0; pv && *pv; pv++, i++) {
 	if (havhash && !eq(*pv, STRdot)) {
 #ifdef FASTHASH
 	    if (!bit(hashval, i))
@@ -1184,54 +1187,7 @@ find_cmd(cmd, prt)
     xfree((ptr_t) sv);
     return rval;
 }
-
-#ifdef WINNT
-int
-nt_check_if_windir(path)
-    char *path;
-{
-    char windir[MAX_PATH];
-
-    (void)GetWindowsDirectory(windir, sizeof(windir));
-    windir[2] = '/';
-
-    return (strstr(path, windir) != NULL);
-}
-
-void
-nt_check_name_and_hash(is_windir, file, i)
-    int is_windir;
-    char *file;
-    int i;
-{
-    char name_only[MAX_PATH];
-    char *tmp = (char *)strrchr(file, '.');
-    char uptmp[5], *nameptr, *np2;
-    int icount, hashval;
-
-    if(!tmp || tmp[4]) 
-	goto nodot;
-
-    for (icount = 0; icount < 4; icount++)
-	uptmp[icount] = toupper(tmp[icount]);
-    uptmp[4]=0;
-
-    if (is_windir)
-	if((uptmp[1] != 'E') || (uptmp[2] != 'X') || (uptmp[3] != 'E'))
-	    return;
-    (void) memset(name_only, 0, MAX_PATH);
-    nameptr = file;
-    np2 = name_only;
-    while(nameptr != tmp) {
-	*np2++= tolower(*nameptr);
-	nameptr++;
-    }
-    hashval = hashname(str2short(name_only));
-    bis(hashval, i);
-nodot:
-    hashval = hashname(str2short(file));
-    bis(hashval, i);
-}
+#ifdef WINNT_NATIVE
 int hashval_extern(cp)
 	Char *cp;
 {
@@ -1243,4 +1199,11 @@ int bit_extern(val,i)
 {
 	return bit(val,i);
 }
-#endif /* WINNT */
+void bis_extern(val,i)
+	int val;
+	int i;
+{
+	bis(val,i);
+}
+#endif /* WINNT_NATIVE */
+

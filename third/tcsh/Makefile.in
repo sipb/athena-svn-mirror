@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1.1.1 1998-10-03 21:09:40 danw Exp $
+# $Id: Makefile.in,v 1.1.1.2 2005-06-03 14:35:51 ghudson Exp $
 #	Makefile.in	4.3	6/11/83
 #
 # C Shell with process control; VM/UNIX VAX Makefile
@@ -8,8 +8,8 @@
 # things; Paul Placeway, CIS Dept., Ohio State University
 #
 SHELL=/bin/sh
-VERSION=6.08
-BUILD=tcsh
+VERSION=6.12
+BUILD=tcsh$(EXEEXT)
 VPATH=@srcdir@
 srcdir=@srcdir@
 
@@ -23,52 +23,52 @@ srcdir=@srcdir@
 SUF=o
 CF=-c
 
-INCLUDES=-I. -I$(srcdir)
+CPPFLAGS=-I. -I$(srcdir)
 
-LFLAGS=$(INCLUDES)
-#LFLAGS=$(INCLUDES) -Zn10000		# hpux lint
+LFLAGS=
+#LFLAGS= -Zn10000		# hpux lint
 
 
-CFLAGS = $(INCLUDES) @CFLAGS@		# This is set by autoconf.
-#CFLAGS= $(INCLUDES) -g			# debug
-#CFLAGS= $(INCLUDES) -O			# production
-#CFLAGS= $(INCLUDES) 			# Broken optimizers....
+CFLAGS = @CFLAGS@		# This is set by autoconf.
+#CFLAGS= -g			# debug
+#CFLAGS= -O			# production
+#CFLAGS= 			# Broken optimizers....
 
-#CFLAGS= -g -pg $(INCLUDES) -DPROF
-#CFLAGS= -O -pg $(INCLUDES) -DPROF
+#CFLAGS= -g -pg -DPROF
+#CFLAGS= -O -pg -DPROF
 
 # gcc 1.00-1.37
-#CFLAGS=-O $(INCLUDES) -finline-functions -fstrength-reduce 
+#CFLAGS= -O -finline-functions -fstrength-reduce 
 
 # gcc 1.37-1.40
-#CFLAGS=-O $(INCLUDES) -fcombine-regs -finline-functions -fstrength-reduce 
+#CFLAGS= -O -fcombine-regs -finline-functions -fstrength-reduce 
 # add -msoft-float for 68881 machines.
 
 # gcc 2.0
 # On the sparc, don't use -O2; it breaks setjmp() and vfork()
-#CFLAGS=-O $(INCLUDES)
+#CFLAGS= -O
 
 # gcc-2.1+
-#CFLAGS=-O2 $(INCLUDES)
+#CFLAGS= -O2
 
 # lucid c on suns
-#CFLAGS=-O5 $(INCLUDES)
+#CFLAGS= -O5
 
 # gcc 2.1 on linux
-#CFLAGS=-O6 -fomit-frame-pointer $(INCLUDES)
+#CFLAGS= -O6 -fomit-frame-pointer
 
 # HP/UX 8.0, 9.0
-#CFLAGS= $(INCLUDES) +O3 -Aa
+#CFLAGS= +O3 -Aa
 
 # Ultrix 4.2a
-#CFLAGS= $(INCLUDES) -O -Olimit 2000
+#CFLAGS= -O -Olimit 2000
 
 # Intel Paragon OSF/1 with PGI compilers
-#CFLAGS=-O -Mnodebug -Mnoperfmon $(INCLUDES)
+#CFLAGS= -O -Mnodebug -Mnoperfmon
 
 # DEC Alpha OSF/1
-#CFLAGS= -O2 $(INCLUDES) -Olimit 2000	## Normal Optimization
-#CFLAGS= -O3 $(INCLUDES) -Olimit 2000	## Full Optimization - may not work
+#CFLAGS= -O2 -Olimit 2000	## Normal Optimization
+#CFLAGS= -O3 -Olimit 2000	## Full Optimization - may not work
 #CF=-j
 #SUF=u
 #.SUFFIXES: .u
@@ -76,26 +76,26 @@ CFLAGS = $(INCLUDES) @CFLAGS@		# This is set by autoconf.
 # for silicon graphics (and other mips compilers) -- use the
 # global optimizer! (-O3).
 # On SGI 4.0+ you need to add -D__STDC__ too.
-#CFLAGS= -O3 $(INCLUDES) 
-#CFLAGS= -O3 $(INCLUDES) -Olimit 2000	## Ultrix 4.2a
+#CFLAGS= -O3
+#CFLAGS= -O3 -Olimit 2000	## Ultrix 4.2a
 #CF=-j
 #SUF=u
 #.SUFFIXES: .u 				## Ultrix and gnu-make need that
 
 # mips systems
-# CFLAGS= $(INCLUDES) -O -systype bsd43 -Wf,-XNd5000 -Wf,-XNp6000 -Olimit 2000
+# CFLAGS= -O -systype bsd43 -Wf,-XNd5000 -Wf,-XNp6000 -Olimit 2000
 
 # for at&t machines
-#CFLAGS= -O -Ksd $(INCLUDES)
+#CFLAGS= -O -Ksd
 
 # Stardent Titan
-#CFLAGS = $(INCLUDES) -O -43
+#CFLAGS = -O -43
 
 # Stardent Stellar or sunos4 /bin/cc or Solaris2.1 /opt/SUNWspro/bin/cc
-#CFLAGS = $(INCLUDES) -O4
+#CFLAGS = -O4
 
 # Intergraph clipper CLIX 3.1
-#CFLAGS= -w -O2 $(INCLUDES)
+#CFLAGS= -w -O2
 
 # Dnix 5.3
 #CFLAGS = -O -X7
@@ -136,7 +136,7 @@ CFLAGS = $(INCLUDES) @CFLAGS@		# This is set by autoconf.
 #DFLAGS=
 #DFLAGS=-D_PATH_TCSHELL='"${DESTBIN}/tcsh"'
 ## The following is set by autoconf.
-DFLAGS = -D_PATH_TCSHELL='"${DESTBIN}/tcsh"' @DFLAGS@ @CPPFLAGS@
+DFLAGS = -D_PATH_TCSHELL='"${bindir}/tcsh"' @DFLAGS@ @CPPFLAGS@
 
 
 ################################################################
@@ -153,6 +153,13 @@ LDFLAGS= @LDFLAGS@		## This is set by autoconf.
 #LDFLAGS= -Wl,-s,-n		## Stripped, shared text (Unicos)
 #LDFLAGS= -s -static		## Link statically. (linux)
 #LDFLAGS= -s -N			## Impure executable (linux)
+
+################################################################
+## SBINLDFLAGS.  Flags to build a tcsh suitable for installation in
+##		 in /sbin under Solaris with gcc. See the "tcsh.sbin"
+##		 target.
+################################################################
+SBINLDFLAGS=-Wl,-R/etc/lib,-I/etc/lib/ld.so.1,-ldl,-Bstatic
 
 ################################################################
 ## LIBES.  Pick one, or roll your own.
@@ -208,10 +215,6 @@ LIBES= @LIBS@	 			 ## This is set by autoconf.
 ################################################################
 ## EXTRAFLAGS and EXTRALIBS
 ################################################################
-# Compiling for HESIOD
-#HESDEF = -DHESIOD -I/usr/athena/include
-#HESLIB = -L/usr/athena/lib -lhesiod
-#
 # Compiling for AFS with kerberos authentication
 #AFSLIBDIR = /usr/afsws/lib
 #AFSDEF = -DAFS -I/usr/afsws/include
@@ -227,8 +230,8 @@ LIBES= @LIBS@	 			 ## This is set by autoconf.
 #         $(AFSLIBDIR)/afs/util.a $(AFS33LIB) $(AFSAUXLIB)
 #
 
-EXTRAFLAGS = $(HESDEF) $(AFSDEF)
-EXTRALIBS = $(HESLIB) $(AFSLIB)
+EXTRAFLAGS = @HESDEF@ $(AFSDEF)
+EXTRALIBS = @HESLIB@ $(AFSLIB)
 
 
 # The difficult choice of a c-compiler...
@@ -244,6 +247,7 @@ CPP = @CPP@ # This is set by autoconf.
 # The -B tells gcc to use /bin/ld. This is to avoid using the gnu ld, which
 # on the suns does not know how to make dynamically linked binaries.
 CC = @CC@ # This is set by autoconf.
+#CC= gcc -Wall -Wmissing-prototypes -Wstrict-prototypes -Wpointer-arith -Werror -Wmissing-declarations -Wredundant-decls -Wnested-externs -Wsign-compare -Wcast-qual -Wreturn-type -Wswitch -Wshadow -Wwrite-strings
 #CC=	gcc -Wall -pipe -B/bin/	# -ansi -pedantic
 #CC=	gcc -m486 -pipe -Wall # Generate code for Intel 486 (linux)
 #CC=	shlicc 	# BSDI2.1 w/ shared libraries
@@ -257,6 +261,7 @@ CC = @CC@ # This is set by autoconf.
 #CC=	/usr/lib/sun.compile/cc  # FPS 500 (+FPX) with Sun C compiler
 #CC=	/opt/SUNWspro/bin/cc	# Solaris 2.1
 #CC=	scc 	# Alliant fx2800
+#CC=	cc	-h0,ansi,novector,float0 # for NEC SX-4
 #CC=	lcc	-wa 
 ED=	ed
 AS=	as
@@ -271,14 +276,15 @@ PARALLEL=12				# Make the multi-max run fast.
 P=
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-DESTDIR=${prefix}
-#DESTDIR=/usr/contrib
+bindir=@bindir@
+mandir=@mandir@
 MANSECT=1
-DESTBIN=@bindir@
-DESTMAN=${DESTDIR}/man/man${MANSECT}
+DESTBIN=${DESTDIR}${bindir}
+DESTMAN=${DESTDIR}${mandir}/man${MANSECT}
 # DESTMAN=${DESTDIR}/catman/man${MANSECT}	 # A/UX
 # DESTMAN=${DESTDIR}/usr/share/man/man${MANSECT} # Stardent Vistra (SysVR4)
 # DESTMAN=/usr/catman/1l			 # Amiga unix (SysVR4)
+EXEEXT=@EXEEXT@
 FTPAREA=/usr/spool/ftp
 
 ASSRCS=	sh.c sh.dir.c sh.dol.c sh.err.c sh.exec.c sh.char.c \
@@ -290,11 +296,11 @@ PSSRCS= sh.decls.h glob.c glob.h mi.termios.c mi.wait.h mi.varargs.h ma.setp.c \
 	vms.termcap.c
 SHSRCS= ${ASSRCS} ${PSSRCS}
 SHOBJS=	sh.${SUF} sh.dir.${SUF} sh.dol.${SUF} sh.err.${SUF} sh.exec.${SUF} \
-	sh.char.${SUF} sh.exp.${SUF} sh.func.${SUF} sh.glob.${SUF} \
-	sh.hist.${SUF} sh.init.${SUF} sh.lex.${SUF} sh.misc.${SUF} \
-	sh.parse.${SUF} sh.print.${SUF} sh.proc.${SUF} sh.sem.${SUF} \
-	sh.set.${SUF} sh.time.${SUF} glob.${SUF} mi.termios.${SUF} \
-	ma.setp.${SUF} vms.termcap.${SUF}
+	sh.char.${SUF} sh.exp.${SUF} sh.file.${SUF} sh.func.${SUF} \
+	sh.glob.${SUF} sh.hist.${SUF} sh.init.${SUF} sh.lex.${SUF} \
+	sh.misc.${SUF} sh.parse.${SUF} sh.print.${SUF} sh.proc.${SUF} \
+	sh.sem.${SUF} sh.set.${SUF} sh.time.${SUF} glob.${SUF} \
+	mi.termios.${SUF} ma.setp.${SUF} vms.termcap.${SUF}
 
 TWSRCS= tw.decls.h tw.h tw.help.c tw.init.c tw.parse.c tw.spell.c \
 	tw.comp.c tw.color.c
@@ -307,11 +313,11 @@ EDOBJS=	ed.chared.${SUF} ed.refresh.${SUF} ed.screen.${SUF} ed.init.${SUF} \
 	ed.inputl.${SUF} ed.defns.${SUF} ed.xmap.${SUF} ed.term.${SUF}
 
 TCSRCS= tc.alloc.c tc.bind.c tc.const.c tc.decls.h tc.disc.c \
-	tc.func.c tc.os.c tc.os.h tc.printf.c tc.prompt.c \
+	tc.func.c tc.nls.c tc.os.c tc.os.h tc.printf.c tc.prompt.c \
 	tc.sched.c tc.sig.c tc.sig.h tc.str.c sh.types.h tc.vers.c tc.wait.h \
 	tc.who.c tc.h
 TCOBJS=	tc.alloc.${SUF} tc.bind.${SUF} tc.const.${SUF} tc.defs.${SUF} \
-	tc.disc.${SUF} tc.func.${SUF} tc.os.${SUF} tc.printf.${SUF} \
+	tc.disc.${SUF} tc.func.${SUF} tc.nls.${SUF} tc.os.${SUF} tc.printf.${SUF} \
 	tc.prompt.${SUF} tc.sched.${SUF} tc.sig.${SUF} tc.str.${SUF} \
 	tc.vers.${SUF} tc.who.${SUF} 
 
@@ -335,21 +341,25 @@ OBJS= ${SHOBJS} ${TWOBJS} ${EDOBJS} ${TCOBJS}
 
 all: ${BUILD}
 
-tcsh:$(P) ${OBJS} 
-	rm -f tcsh core
-	${CC} -o tcsh ${LDFLAGS} ${CFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
+tcsh$(EXEEXT):$(P) ${OBJS} 
+	rm -f tcsh$(EXEEXT) core
+	${CC} -o tcsh$(EXEEXT) ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
+
+tcsh.sbin:$(P) ${OBJS} 
+	rm -f tcsh.sbin core
+	${CC} -o tcsh.sbin ${SBINLDFLAGS} ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
 
 # Purify
 pure:$(P) ${OBJS} 
-	rm -f tcsh core
-	purify `echo ${CC} | sed -e s,-B/bin/,,` -o tcsh ${LDFLAGS} ${CFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
+	rm -f tcsh$(EXEEXT) core
+	purify `echo ${CC} | sed -e s,-B/bin/,,` -o tcsh$(EXEEXT) ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
 # OS/2
-tcsh.exe: tcsh
-	emxbind tcsh
+#tcsh.exe: tcsh
+#	emxbind tcsh
 
 gethost:  gethost.c sh.err.h tc.const.h sh.h
 	rm -f gethost
-	${CC} -o gethost ${LDFLAGS} ${CFLAGS} ${DFLAGS} $(srcdir)/gethost.c ${LIBES} ${EXTRALIBS}
+	${CC} -o gethost ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${DFLAGS} $(srcdir)/gethost.c ${LIBES} ${EXTRALIBS}
 
 tc.defs.c:	gethost host.defs
 	@rm -f $@
@@ -362,13 +372,13 @@ tcsh.ps: tcsh.man
 
 
 .c.${SUF}:
-	${CC} ${CF} ${CFLAGS} ${DFLAGS} ${EXTRAFLAGS} $<
+	${CC} ${CF} ${CFLAGS} ${CPPFLAGS} ${DFLAGS} ${EXTRAFLAGS} $<
 
 # _VMS_POSIX #module addition
 #.c.${SUF}:
 #	@(echo '#module '`echo $< | sed -e 's/\./_/g'`; cat $<) > $*..c
-#	@echo ${CC} ${CF} ${CFLAGS} ${DFLAGS} ${EXTRAFLAGS} $*.c
-#	@${CC} ${CF} ${CFLAGS} ${DFLAGS} ${EXTRAFLAGS} $*..c
+#	@echo ${CC} ${CF} ${CFLAGS} ${CPPFLAGS} ${DFLAGS} ${EXTRAFLAGS} $*.c
+#	@${CC} ${CF} ${CFLAGS} ${CPPFLAGS} ${DFLAGS} ${EXTRAFLAGS} $*..c
 #	@mv $*..o $*.o
 #	@rm -f $*..c
 
@@ -376,14 +386,14 @@ tcsh.ps: tcsh.man
 # Don't do any special massaging of C files for sharing of strings!!
 # it causes weird segmentation faults on some systems.
 #.c.o:
-#	${CPP} ${CFLAGS} $*.c | ${XSTR} -c -
-#	${CC} ${CF} ${CFLAGS} x.c 
+#	${CPP} ${CFLAGS} ${CPPFLAGS} $*.c | ${XSTR} -c -
+#	${CC} ${CF} ${CFLAGS} ${CPPFLAGS} x.c 
 #	mv -f x.o $*.o
 #	rm -f x.c
 
 #ed.init.o: ed.init.c
-#	${CPP} ${CFLAGS} $*.c | ${XSTR} -c -
-#	${CC} -R ${CF} ${CF} x.c 
+#	${CPP} ${CFLAGS} ${CPPFLAGS} $*.c | ${XSTR} -c -
+#	${CC} -R ${CF} ${CFLAGS} ${CPPFLAGS} x.c 
 #	mv -f x.o $*.o
 #	rm -f x.c
 
@@ -420,9 +430,9 @@ tc.const.h: tc.const.c sh.char.h config.h config_f.h sh.types.h sh.err.h
 	@echo '/* Do not edit this file, make creates it. */' > $@
 	@echo '#ifndef _h_tc_const' >> $@
 	@echo '#define _h_tc_const' >> $@
-	${CPP} $(INCLUDES) ${DFLAGS} ${EXTRAFLAGS} -D_h_tc_const\
-	    $(srcdir)/tc.const.c | grep 'Char STR' | \
-	    sed -e 's/Char \([a-zA-Z0-9_]*\)\[\].*/extern Char \1[];/' | \
+	${CPP} $(CPPFLAGS) ${DFLAGS} ${EXTRAFLAGS} -D_h_tc_const\
+	    $(srcdir)/tc.const.c | \
+	    sed -n -e 's/^\(Char STR[a-zA-Z0-9_]*\) *\[ *\].*/extern \1[];/p' | \
 	    sort >> $@
 	@echo '#endif /* _h_tc_const */' >> $@
 
@@ -432,13 +442,13 @@ csh.prof: ${OBJS} sh.prof.${SUF} mcrt0.${SUF}
 
 sh.prof.${SUF}:
 	cp sh.c sh.prof.c
-	${CC} ${CF} ${CFLAGS} -DPROF sh.prof.c
+	${CC} ${CF} ${CFLAGS} ${CPPFLAGS} -DPROF sh.prof.c
 
 lint: tc.const.h ed.defns.h
-	lint ${DFLAGS} ${LFLAGS} sh*.c tw*.c ed*.c tc.*.c ${LIBES}
+	lint ${DFLAGS} ${CPPFLAGS} ${LFLAGS} sh*.c tw*.c ed*.c tc.*.c ${LIBES}
 
 alint: tc.const.h ed.defns.h
-	alint ${DFLAGS} ${LFLAGS} sh*.c tw*.c ed*.c tc.*.c ${LIBES}
+	alint ${DFLAGS} ${CPPFLAGS} ${LFLAGS} sh*.c tw*.c ed*.c tc.*.c ${LIBES}
 
 print:
 	@pr READ_ME
@@ -463,16 +473,33 @@ vgrind:
 	@for i in *.c; do vgrind -t -h "C Shell" $$i >/crp/bill/csh/$$i.t; done
 	@vgrind -t -x -h Index index >/crp/bill/csh/index.t
 
-install: tcsh 
-	-mv -f ${DESTBIN}/tcsh  ${DESTBIN}/tcsh.old
-	cp tcsh ${DESTBIN}/tcsh
-	-strip ${DESTBIN}/tcsh
-	chmod 555 ${DESTBIN}/tcsh
+install-strip: install
+
+install: tcsh$(EXEEXT) 
+	-mkdir -p ${DESTBIN}
+	-mv -f ${DESTBIN}/tcsh$(EXEEXT)  ${DESTBIN}/tcsh.old
+	cp tcsh$(EXEEXT) ${DESTBIN}/tcsh$(EXEEXT)
+	-strip ${DESTBIN}/tcsh$(EXEEXT)
+	chmod 755 ${DESTBIN}/tcsh$(EXEEXT)
 
 install.man: tcsh.man
+	-mkdir -p ${DESTMAN}
 	-rm -f ${DESTMAN}/tcsh.${MANSECT}
 	cp $(srcdir)/tcsh.man ${DESTMAN}/tcsh.${MANSECT}
 	chmod 444 ${DESTMAN}/tcsh.${MANSECT}
+
+install.cygwin: install install.man
+	-mkdir -p ${DESTDIR}${prefix}/doc/tcsh
+	cp ${srcdir}/FAQ ${srcdir}/Fixes ${DESTDIR}${prefix}/doc/tcsh
+	cp ${srcdir}/NewThings ${srcdir}/README ${DESTDIR}${prefix}/doc/tcsh
+	cp ${srcdir}/WishList ${srcdir}/Y2K ${DESTDIR}${prefix}/doc/tcsh
+	perl ${srcdir}/tcsh.man2html ${srcdir}/tcsh.man
+	cp -rp tcsh.html ${DESTDIR}${prefix}/doc/tcsh
+	-mkdir -p ${DESTDIR}/etc/profile.d
+	-mkdir -p ${DESTDIR}/etc/postinstall
+	cp -p ${srcdir}/cygwin/etc/csh.* ${DESTDIR}/etc
+	cp -p ${srcdir}/cygwin/etc/profile.d/*.tcsh ${DESTDIR}/etc/profile.d
+	cp -p ${srcdir}/cygwin/etc/postinstall/tcsh.sh ${DESTDIR}/etc/postinstall
 
 # Amiga Unix
 #install.man: tcsh.man
@@ -487,12 +514,15 @@ install.man: tcsh.man
 #	chmod 444 ${DESTMAN}/tcsh.${MANSECT}.Z
 
 clean:
-	${RM} -f a.out strings x.c xs.c tcsh tcsh.a _MAKE_LOG core gethost
+	${RM} -f a.out strings x.c xs.c tcsh$(EXEEXT) tcsh.a _MAKE_LOG gethost
 	${RM} -f *.${SUF} sh.prof.c ed.defns.h tc.const.h sh.err.h tc.defs.c
 	${RM} -f tcsh.*.m tcsh.*.cat
 
 veryclean: clean
-	${RM} -f config.h config.status config.cache config.log Makefile tcsh.ps
+	${RM} -f Makefile config.h config_p.h
+	${RM} -f config.status config.cache config.log tcsh.ps
+	${RM} -f missing
+	${RM} -rf autom4te.cache
 	${RM} -f *~ #*
 
 distclean: veryclean
@@ -503,7 +533,7 @@ tags:	/tmp
 tar.Z:
 	rm -f tcsh-${VERSION}.tar.Z
 	rm -rf tcsh-${VERSION} 
-	mkdir tcsh-${VERSION} tcsh-${VERSION}/config
+	-mkdir tcsh-${VERSION} tcsh-${VERSION}/config
 	cp ${ALLSRCS} tcsh-${VERSION}
 	cp ${CONFSRCS} tcsh-${VERSION}/config
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -513,7 +543,7 @@ tar.Z:
 tar.gz:
 	rm -f tcsh-${VERSION}.tar.gz
 	rm -rf tcsh-${VERSION} 
-	mkdir tcsh-${VERSION} tcsh-${VERSION}/config
+	-mkdir tcsh-${VERSION} tcsh-${VERSION}/config
 	cp ${ALLSRCS} tcsh-${VERSION}
 	cp ${CONFSRCS} tcsh-${VERSION}/config
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -523,7 +553,7 @@ tar.gz:
 shar:
 	rm -f tcsh-*.shar
 	rm -rf tcsh-${VERSION} 
-	mkdir tcsh-${VERSION} tcsh-${VERSION}/config
+	-mkdir tcsh-${VERSION} tcsh-${VERSION}/config
 	cp ${ALLSRCS} tcsh-${VERSION}
 	cp ${CONFSRCS} tcsh-${VERSION}/config
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -538,11 +568,11 @@ catalogs:
 tcsh-${VERSION}.tar.Z:
 	rm -rf tcsh-${VERSION} 
 	rm -f tcsh-${VERSION}.tar tcsh-${VERSION}.tar.Z DIFFS.[123]
-	mkdir tcsh-${VERSION}
+	-mkdir tcsh-${VERSION}
 	./MAKEDIFFS bsd
 	mv DIFFS.1 DIFFS.2 DIFFS.3 tcsh-${VERSION}
 	cp ${DISTSRCS} tcsh-${VERSION}
-	mkdir tcsh-${VERSION}/config
+	-mkdir tcsh-${VERSION}/config
 	cp ${CONFSRCS} tcsh-${VERSION}/config
 	cp Makefile tcsh-${VERSION}/Makefile.new
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -552,11 +582,11 @@ tcsh-${VERSION}.tar.Z:
 tcsh.tahoe-${VERSION}.tar.Z:
 	rm -rf tcsh.tahoe-${VERSION} 
 	rm -f tcsh.tahoe-${VERSION}.tar tcsh.tahoe-${VERSION}.tar.Z DIFFS.[123]
-	mkdir tcsh.tahoe-${VERSION}
+	-mkdir tcsh.tahoe-${VERSION}
 	./MAKEDIFFS tahoe
 	mv DIFFS.1 DIFFS.2 DIFFS.3 tcsh.tahoe-${VERSION}
 	cp ${DISTSRCS} tcsh.tahoe-${VERSION}
-	mkdir tcsh.tahoe-${VERSION}/config
+	-mkdir tcsh.tahoe-${VERSION}/config
 	cp ${CONFSRCS} tcsh.tahoe-${VERSION}/config
 	cp Makefile tcsh.tahoe-${VERSION}/Makefile.new
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -566,11 +596,11 @@ tcsh.tahoe-${VERSION}.tar.Z:
 tcsh.reno-${VERSION}.tar.Z:
 	rm -rf tcsh.reno-${VERSION} 
 	rm -f tcsh.reno-${VERSION}.tar tcsh.reno-${VERSION}.tar.Z DIFFS.[123]
-	mkdir tcsh.reno-${VERSION}
+	-mkdir tcsh.reno-${VERSION}
 	./MAKEDIFFS reno
 	mv DIFFS.1 DIFFS.2 DIFFS.3 tcsh.reno-${VERSION}
 	cp ${DISTSRCS} tcsh.reno-${VERSION}
-	mkdir tcsh.reno-${VERSION}/config
+	-mkdir tcsh.reno-${VERSION}/config
 	cp ${CONFSRCS} tcsh.reno-${VERSION}/config
 	cp Makefile tcsh.reno-${VERSION}/Makefile.new
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -596,7 +626,7 @@ $(srcdir)/stamp-h.in: $(srcdir)/configure.in
 #
 config.h: config_f.h
 
-TCH=tc.h tc.const.h tc.decls.h tc.os.h tc.sig.h
+TCH=tc.h tc.const.h tc.decls.h tc.nls.h tc.os.h tc.sig.h
 SHH=sh.h sh.types.h sh.char.h sh.err.h sh.dir.h sh.proc.h pathnames.h \
     sh.decls.h ${TCH}
 TWH=tw.h tw.decls.h
@@ -613,7 +643,7 @@ ${OBJS}: config.h ${SHH}
 
 # TWH
 TWINC=ed.chared.${SUF} ed.inputl.${SUF} sh.exec.${SUF} sh.func.${SUF} \
-      sh.set.${SUF} tc.func.${SUF} tw.color.${SUF}
+      sh.set.${SUF} tc.func.${SUF} tc.nls.${SUF} tw.color.${SUF}
 ${TWOBJS} ${TWINC}: ${TWH}
 
 # glob.h

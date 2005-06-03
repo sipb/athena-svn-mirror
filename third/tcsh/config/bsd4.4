@@ -66,12 +66,6 @@
 #define BSDLIMIT
 
 /*
- * BSDNICE	Your system uses setpriority() instead of nice, to
- *		change a processes scheduling priority
- */
-#define BSDNICE
-
-/*
  * TERMIO	You have struct termio instead of struct sgttyb.
  * 		This is usually the case for SYSV systems, where
  *		BSD uses sgttyb. POSIX systems should define this
@@ -94,36 +88,18 @@
  */
 #undef YPBUGS
 
-/*
- * SIGVOID	Define this if your signal handlers return void.  On older
- *		systems, signal returns int, but on newer ones, it returns void.
- */
-#define SIGVOID 
-
-/*
- * HAVEDUP2	Define this if your system supports dup2().
- */
-#define HAVEDUP2
-
-/*
- * UTHOST	Does the utmp file have a host field?
- */
-#define UTHOST
-
-/*
- * DIRENT	Your system has <dirent.h> instead of <sys/dir.h>
- */
-#define DIRENT
 /****************** local defines *********************/
-/****************** configurable hacks ****************/
 
-/* have been moved to config_f.h */
-#include "config_f.h"
+#if defined(__FreeBSD__)
+#define NLS_BUGS
+#define BSD_STYLE_COLORLS
+#endif
 
-#ifdef __bsdi__
+#if defined(__bsdi__)
 /*
  * _PATH_TCSHELL      if you've change the installation location (vix)
  */
+#include <sys/param.h>
 # ifdef _BSDI_VERSION >= 199701
 #  define _PATH_TCSHELL "/bin/tcsh"
 #  undef SYSMALLOC
@@ -134,6 +110,10 @@
 
 # undef NLS
 # undef NLS_CATALOGS
+
+#elif defined(__APPLE__)
+# define SYSMALLOC
+
 #else
 # define NLS_CATALOGS
 #endif

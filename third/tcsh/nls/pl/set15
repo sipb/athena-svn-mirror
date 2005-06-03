@@ -1,0 +1,7 @@
+$ $Id: set15,v 1.1.1.1 2005-06-03 14:38:26 ghudson Exp $
+$ sh.func.c
+$set 15 
+1 %s: %s: Nie mogê limitowaæ %s%s\n
+2 usuñ
+3 ustaw
+4 \040twardy

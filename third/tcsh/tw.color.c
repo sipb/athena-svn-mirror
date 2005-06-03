@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.color.c,v 1.1.1.1 1998-10-03 21:10:20 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.color.c,v 1.1.1.2 2005-06-03 14:35:30 ghudson Exp $ */
 /*
  * tw.color.c: builtin color ls-F
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,7 +32,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tw.color.c,v 1.1.1.1 1998-10-03 21:10:20 danw Exp $")
+RCSID("$Id: tw.color.c,v 1.1.1.2 2005-06-03 14:35:30 ghudson Exp $")
 
 #include "tw.h"
 #include "ed.h"
@@ -45,7 +41,7 @@ RCSID("$Id: tw.color.c,v 1.1.1.1 1998-10-03 21:10:20 danw Exp $")
 #ifdef COLOR_LS_F
 
 typedef struct {
-    char   *s;
+    const char   *s;
     int     len;
 } Str;
 
@@ -70,23 +66,24 @@ static Variable variables[] = {
     VAR('&', "or", ""),		/* Orphanned symbolic link (defaults to ln) */
     VAR('|', "pi", "33"),	/* Named pipe (FIFO) */
     VAR('=', "so", "01;35"),	/* Socket */
+    VAR('>', "do", "01;35"),	/* Door (solaris fast ipc mechanism)  */
     VAR('#', "bd", "01;33"),	/* Block device */
     VAR('%', "cd", "01;33"),	/* Character device */
     VAR('*', "ex", "01;32"),	/* Executable file */
     VAR(NOS, "fi", "0"),	/* Regular file */
     VAR(NOS, "no", "0"),	/* Normal (non-filename) text */
     VAR(NOS, "mi", ""),		/* Missing file (defaults to fi) */
-#ifdef _OSD_POSIX
+#ifdef IS_ASCII
+    VAR(NOS, "lc", "\033["),	/* Left code (ASCII) */
+#else
     VAR(NOS, "lc", "\x27["),	/* Left code (EBCDIC)*/
-#else /* _OSD_POSIX */
-    VAR(NOS, "lc", "\033["),	/* Left code */
-#endif /* _OSD_POSIX */
+#endif
     VAR(NOS, "rc", "m"),	/* Right code */
     VAR(NOS, "ec", ""),		/* End code (replaces lc+no+rc) */
 };
 
 enum FileType {
-    VDir, VSym, VOrph, VPipe, VSock, VBlock, VChr, VExe,
+    VDir, VSym, VOrph, VPipe, VSock, VDoor, VBlock, VChr, VExe,
     VFile, VNormal, VMiss, VLeft, VRight, VEnd
 };
 
@@ -98,15 +95,15 @@ typedef struct {
 } Extension;
 
 static Extension *extensions = NULL;
-static int nextensions = 0;
+static size_t nextensions = 0;
 
 static char *colors = NULL;
-bool	     color_context_ls = FALSE;	/* do colored ls */
-static bool  color_context_lsmF = FALSE;	/* do colored ls-F */
+int	     color_context_ls = FALSE;	/* do colored ls */
+static int  color_context_lsmF = FALSE;	/* do colored ls-F */
 
-static bool getstring __P((char **, const Char **, Str *, int));
+static int getstring __P((char **, const Char **, Str *, int));
 static void put_color __P((Str *));
-static void print_color __P((Char *, size_t, int));
+static void print_color __P((Char *, size_t, Char));
 
 /* set_color_context():
  */
@@ -115,15 +112,13 @@ set_color_context()
 {
     struct varent *vp = adrof(STRcolor);
 
-    if (!vp) {
+    if (vp == NULL || vp->vec == NULL) {
 	color_context_ls = FALSE;
 	color_context_lsmF = FALSE;
-    }
-    else if (!vp->vec[0] || vp->vec[0][0] == '\0') {
+    } else if (!vp->vec[0] || vp->vec[0][0] == '\0') {
 	color_context_ls = TRUE;
 	color_context_lsmF = TRUE;
-    }
-    else {
+    } else {
 	size_t i;
 
 	color_context_ls = FALSE;
@@ -139,7 +134,7 @@ set_color_context()
 
 /* getstring():
  */
-static  bool
+static  int
 getstring(dp, sp, pd, f)
     char        **dp;		/* dest buffer */
     const Char  **sp;		/* source buffer */
@@ -148,24 +143,23 @@ getstring(dp, sp, pd, f)
 {
     const Char *s = *sp;
     char *d = *dp;
-    int sc;
+    eChar sc;
 
-    while (*s && (*s & CHAR) != f && (*s & CHAR) != ':') {
+    while (*s && (*s & CHAR) != (Char)f && (*s & CHAR) != ':') {
 	if ((*s & CHAR) == '\\' || (*s & CHAR) == '^') {
-	    if ((sc = parseescape(&s)) == -1)
+	    if ((sc = parseescape(&s)) == CHAR_ERR)
 		return 0;
-	    else
-		*d++ = (char) sc;
 	}
 	else
-	    *d++ = *s++ & CHAR;
+	    sc = *s++ & CHAR;
+	d += one_wctomb(d, sc);
     }
 
     pd->s = *dp;
-    pd->len = d - *dp;
+    pd->len = (int) (d - *dp);
     *sp = s;
     *dp = d;
-    return *s == f;
+    return *s == (Char)f;
 }
 
 
@@ -176,11 +170,13 @@ void
 parseLS_COLORS(value)
     Char   *value;		/* LS_COLOR variable's value */
 {
-    int     i;
-    size_t  len;
+    size_t  i, len;
     const Char   *v;		/* pointer in value */
     char   *c;			/* pointer in colors */
-    Extension *e;		/* pointer in extensions */
+    Extension *volatile e;	/* pointer in extensions */
+    jmp_buf_t osetexit;
+
+    (void) &e;
 
     /* init */
     if (extensions)
@@ -209,6 +205,12 @@ parseLS_COLORS(value)
     c = colors;
     e = &extensions[0];
 
+    /* Prevent from crashing if unknown parameters are given. */
+
+    getexit(osetexit);
+
+    if (setexit() == 0) {
+	    
     /* parse */
     while (*v) {
 	switch (*v & CHAR) {
@@ -230,8 +232,8 @@ parseLS_COLORS(value)
 	default:		/* :vl=color: */
 	    if (v[0] && v[1] && (v[2] & CHAR) == '=') {
 		for (i = 0; i < nvariables; i++)
-		    if (variables[i].variable[0] == (v[0] & CHAR) &&
-			variables[i].variable[1] == (v[1] & CHAR))
+		    if ((Char)variables[i].variable[0] == (v[0] & CHAR) &&
+			(Char)variables[i].variable[1] == (v[1] & CHAR))
 			break;
 		if (i < nvariables) {
 		    v += 3;
@@ -246,8 +248,11 @@ parseLS_COLORS(value)
 	while (*v && (*v & CHAR) != ':')
 	    v++;
     }
+    }
 
-    nextensions = e - extensions;
+    resexit(osetexit);
+
+    nextensions = (int) (e - extensions);
 }
 
 
@@ -257,10 +262,9 @@ static void
 put_color(color)
     Str    *color;
 {
-    extern bool output_raw;	/* PWP: in sh.print.c */
     size_t  i;
-    char   *c = color->s;
-    bool    original_output_raw = output_raw;
+    const char   *c = color->s;
+    int    original_output_raw = output_raw;
 
     output_raw = TRUE;
     for (i = color->len; 0 < i; i--)
@@ -275,9 +279,9 @@ static void
 print_color(fname, len, suffix)
     Char   *fname;
     size_t  len;
-    int     suffix;
+    Char    suffix;
 {
-    int     i;
+    size_t  i;
     char   *filename = short2str(fname);
     char   *last = filename + len;
     Str    *color = &variables[VFile].color;
@@ -294,7 +298,7 @@ print_color(fname, len, suffix)
     default:
 	for (i = 0; i < nvariables; i++)
 	    if (variables[i].suffix != NOS &&
-		variables[i].suffix == suffix) {
+		(Char)variables[i].suffix == suffix) {
 		color = &variables[i].color;
 		break;
 	    }
@@ -322,7 +326,7 @@ void
 print_with_color(filename, len, suffix)
     Char   *filename;
     size_t  len;
-    int    suffix;
+    Char    suffix;
 {
     if (color_context_lsmF &&
 	(haderr ? (didfds ? is2atty : isdiagatty) :
@@ -336,10 +340,10 @@ print_with_color(filename, len, suffix)
 	    put_color(&variables[VNormal].color);
 	    put_color(&variables[VRight].color);
 	}
-	xputchar(suffix);
     }
     else
-	xprintf("%S%c", filename, suffix);
+	xprintf("%S", filename);
+    xputwchar(suffix);
 }
 
 

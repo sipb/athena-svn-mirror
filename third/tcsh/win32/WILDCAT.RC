@@ -1,0 +1,10 @@
+/*$Header: /afs/dev.mit.edu/source/repository/third/tcsh/win32/WILDCAT.RC,v 1.1.1.1 2005-06-03 14:34:51 ghudson Exp $*/
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+IDI_ICON1               ICON    DISCARDABLE     "win32/WILDCAT.ICO"
+
+#ifdef LOADABLE_RC
+#include "tcshrc.rc"
+#endif 

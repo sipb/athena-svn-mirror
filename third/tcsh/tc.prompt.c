@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.prompt.c,v 1.1.1.2 1998-10-03 21:10:14 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.prompt.c,v 1.1.1.3 2005-06-03 14:35:15 ghudson Exp $ */
 /*
  * tc.prompt.c: Prompt printing stuff
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,7 +32,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.prompt.c,v 1.1.1.2 1998-10-03 21:10:14 danw Exp $")
+RCSID("$Id: tc.prompt.c,v 1.1.1.3 2005-06-03 14:35:15 ghudson Exp $")
 
 #include "ed.h"
 #include "tw.h"
@@ -52,8 +48,8 @@ RCSID("$Id: tc.prompt.c,v 1.1.1.2 1998-10-03 21:10:14 danw Exp $")
  *	29-Dec-96	added rprompt support
  */
 
-static char   *month_list[12];
-static char   *day_list[7];
+static const char   *month_list[12];
+static const char   *day_list[7];
 
 void
 dateinit()
@@ -114,10 +110,10 @@ dateinit()
 void
 printprompt(promptno, str)
     int     promptno;
-    char   *str;
+    const char   *str;
 {
     static  Char *ocp = NULL;
-    static  char *ostr = NULL;
+    static  const char *ostr = NULL;
     time_t  lclock = time(NULL);
     Char   *cp;
 
@@ -149,10 +145,9 @@ printprompt(promptno, str)
 
     PromptBuf[0] = '\0';
     tprintf(FMT_PROMPT, PromptBuf, cp, 2 * INBUFSIZE - 2, str, lclock, NULL);
-
     if (!editing) {
 	for (cp = PromptBuf; *cp ; )
-	    (void) putraw(*cp++);
+	    (void) putwraw(*cp++);
 	SetAttributes(0);
 	flush();
     }
@@ -161,11 +156,10 @@ printprompt(promptno, str)
     if (promptno == 0) {	/* determine rprompt if using main prompt */
 	cp = varval(STRrprompt);
 	tprintf(FMT_PROMPT, RPromptBuf, cp, INBUFSIZE - 2, NULL, lclock, NULL);
-
 				/* if not editing, put rprompt after prompt */
 	if (!editing && RPromptBuf[0] != '\0') {
 	    for (cp = RPromptBuf; *cp ; )
-		(void) putraw(*cp++);
+		(void) putwraw(*cp++);
 	    SetAttributes(0);
 	    putraw(' ');
 	    flush();
@@ -179,16 +173,17 @@ tprintf(what, buf, fmt, siz, str, tim, info)
     Char *buf;
     const Char *fmt;
     size_t siz;
-    char *str;
+    const char *str;
     time_t tim;
     ptr_t info;
 {
     Char   *z, *q;
     Char    attributes = 0;
     static int print_prompt_did_ding = 0;
-    const char   *cz;
     Char    buff[BUFSIZE];
-    char    cbuff[BUFSIZE];
+    /* Need to be unsigned to avoid sign extension */
+    const unsigned char   *cz;
+    unsigned char    cbuff[BUFSIZE];
 
     Char *p  = buf;
     Char *ep = &p[siz];
@@ -198,22 +193,34 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 
 			/* prompt stuff */
     static Char *olddir = NULL, *olduser = NULL;
-    extern int tlength;	/* cache cleared */
-    int updirs, sz;
-    size_t pdirs;
+    int updirs;
+    size_t pdirs, sz;
+    int l;
 
     for (; *cp; cp++) {
 	if (p >= ep)
 	    break;
-	if (*cp == '%') {
+	l = NLSSize(cp, -1);
+	if (l > 1) {
+	    while (l--)
+		*p++ = attributes | *cp++;
+	    cp--;
+	    continue;
+	}
+	if ((*cp == '%') && ! (cp[1] == '\0')) {
 	    cp++;
 	    switch (*cp) {
 	    case 'R':
-		if (what == FMT_HISTORY)
-		    fmthist('R', info, str = cbuff, sizeof(cbuff));
-		if (str != NULL)
-		    for (; *str; *p++ = attributes | *str++)
-			if (p >= ep) break;
+		if (what == FMT_HISTORY) {
+		    fmthist('R', info, (char *) cbuff, sizeof(cbuff));
+		    cz = cbuff;
+		} else
+		    cz = (const unsigned char *) str;
+		if (cz != NULL)
+		    for (; *cz && p < ep; p++) {
+			cz += one_mbtowc(p, (const char *)cz, MB_LEN_MAX);
+			*p |= attributes;
+		    }
 		break;
 	    case '#':
 		*p++ = attributes | ((uid == 0) ? PRCHROOT : PRCH);
@@ -225,14 +232,18 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 		    fmthist('h', info, (char *) cbuff, sizeof(cbuff));
 		    break;
 		case FMT_SCHED:
-		    (void) xsnprintf((char *) cbuff, sizeof(cbuff), "%d", *(int *)info);
+		    (void) xsnprintf((char *) cbuff, sizeof(cbuff), "%d", 
+			*(int *)info);
 		    break;
 		default:
-		    (void) xsnprintf((char *) cbuff, sizeof(cbuff), "%d", eventno + 1);
+		    (void) xsnprintf((char *) cbuff, sizeof(cbuff), "%d",
+			eventno + 1);
 		    break;
 		}
-		for (cz = cbuff; *cz; *p++ = attributes | *cz++)
-		    if (p >= ep) break;
+		for (cz = cbuff; *cz && p < ep; p++) {
+		    cz += one_mbtowc(p, (const char *)cz, MB_LEN_MAX);
+		    *p |= attributes;
+		}
 		break;
 	    case 'T':		/* 24 hour format	 */
 	    case '@':
@@ -262,31 +273,12 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 			what != FMT_PROMPT || adrof(STRnoding)) {
 			if (t->tm_min)
 			    print_prompt_did_ding = 0;
-			Itoa(hr, buff);
-			*p++ = attributes | buff[0];
-			if (buff[1]) 
-			    *p++ = attributes | buff[1];
+			p = Itoa(hr, p, 0, attributes);
 			*p++ = attributes | ':';
-			Itoa(t->tm_min, buff);
-			if (buff[1]) {
-			    *p++ = attributes | buff[0];
-			    *p++ = attributes | buff[1];
-			}
-			else {
-			    *p++ = attributes | '0';
-			    *p++ = attributes | buff[0];
-			}
+			p = Itoa(t->tm_min, p, 2, attributes);
 			if (*cp == 'p' || *cp == 'P') {
 			    *p++ = attributes | ':';
-			    Itoa(t->tm_sec, buff);
-			    if (buff[1]) {
-				*p++ = attributes | buff[0];
-				*p++ = attributes | buff[1];
-			    }
-			    else {
-				*p++ = attributes | '0';
-				*p++ = attributes | buff[0];
-			    }
+			    p = Itoa(t->tm_sec, p, 2, attributes);
 			}
 			if (adrof(STRampm) || (*cp != 'T' && *cp != 'P')) {
 			    *p++ = attributes | ampm;
@@ -308,31 +300,37 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 	    case 'M':
 #ifndef HAVENOUTMP
 		if (what == FMT_WHO)
-		    cz = who_info(info, 'M', (char *) cbuff, sizeof(cbuff));
+		    cz = (const unsigned char *) who_info(info, 'M',
+			(char *) cbuff, sizeof(cbuff));
 		else 
 #endif /* HAVENOUTMP */
-		    cz = getenv("HOST");
+		    cz = (const unsigned char *) getenv("HOST");
 		/*
 		 * Bug pointed out by Laurent Dami <dami@cui.unige.ch>: don't
 		 * derefrence that NULL (if HOST is not set)...
 		 */
 		if (cz != NULL)
-		    for (; *cz ; *p++ = attributes | *cz++)
-			if (p >= ep) break;
+		    for (; *cz && p < ep; p++) {
+			cz += one_mbtowc(p, (const char *)cz, MB_LEN_MAX);
+			*p |= attributes;
+		    }
 		break;
 
 	    case 'm':
 #ifndef HAVENOUTMP
 		if (what == FMT_WHO)
-		    cz = who_info(info, 'm', (char *) cbuff, sizeof(cbuff));
+		    cz = (const unsigned char *) who_info(info, 'm',
+			(char *) cbuff, sizeof(cbuff));
 		else 
 #endif /* HAVENOUTMP */
-		    cz = getenv("HOST");
+		    cz = (const unsigned char *) getenv("HOST");
 
 		if (cz != NULL)
-		    for ( ; *cz && (what == FMT_WHO || *cz != '.')
-			  ; *p++ = attributes | *cz++ )
-			if (p >= ep) break;
+		    for (; *cz && (what == FMT_WHO || *cz != '.') && p < ep;
+			 p++) {
+			cz += one_mbtowc(p, (const char *)cz, MB_LEN_MAX);
+			*p |= attributes;
+		    }
 		break;
 
 			/* lukem: new directory prompt code */
@@ -361,7 +359,8 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 			/* option to determine fixed # of dirs from path */
 		if (Scp == '.' || Scp == 'C') {
 		    int skip;
-#ifdef WINNT
+#ifdef WINNT_NATIVE
+		    Char *oldz = z;
 		    if (z[1] == ':') {
 		    	*p++ = attributes | *z++;
 		    	*p++ = attributes | *z++;
@@ -373,11 +372,23 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 					*p++ = attributes | *z++;
 				}while(*z != '/');
 			}
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 		    q = z;
 		    while (*z)				/* calc # of /'s */
 			if (*z++ == '/')
 			    updirs++;
+
+#ifdef WINNT_NATIVE
+		    /*
+		     * for format type c, prompt will be following...
+		     * c:/path                => c:/path
+		     * c:/path/to             => c:to
+		     * //machine/share        => //machine/share
+		     * //machine/share/folder => //machine:folder
+		     */
+		    if (oldz[0] == '/' && oldz[1] == '/' && updirs > 1)
+			*p++ = attributes | ':';
+#endif /* WINNT_NATIVE */
 		    if ((Scp == 'C' && *q != '/'))
 			updirs++;
 
@@ -428,7 +439,7 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 			    *p++ = attributes | '+';
 			} else
 			    *p++ = attributes | ('0' + updirs);
-			*p++ = attributes | tcsh ? '>' : '%';
+			*p++ = attributes | '>';
 		    }
 		}
 		
@@ -440,9 +451,12 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 	    case 'n':
 #ifndef HAVENOUTMP
 		if (what == FMT_WHO) {
-		    cz = who_info(info, 'n', (char *) cbuff, sizeof(cbuff));
-		    for (; cz && *cz ; *p++ = attributes | *cz++)
-			if (p >= ep) break;
+		    cz = (const unsigned char *) who_info(info, 'n',
+			(char *) cbuff, sizeof(cbuff));
+		    for (; *cz && p < ep; p++) {
+			cz += one_mbtowc(p, (const char *)cz, MB_LEN_MAX);
+			*p |= attributes;
+		    }
 		}
 		else  
 #endif /* HAVENOUTMP */
@@ -455,9 +469,12 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 	    case 'l':
 #ifndef HAVENOUTMP
 		if (what == FMT_WHO) {
-		    cz = who_info(info, 'l', (char *) cbuff, sizeof(cbuff));
-		    for (; cz && *cz ; *p++ = attributes | *cz++)
-			if (p >= ep) break;
+		    cz = (const unsigned char *) who_info(info, 'l',
+			(char *) cbuff, sizeof(cbuff));
+		    for (; *cz && p < ep; p++) {
+			cz += one_mbtowc(p, (const char *)cz, MB_LEN_MAX);
+			*p |= attributes;
+		    }
 		}
 		else  
 #endif /* HAVENOUTMP */
@@ -468,57 +485,35 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 		}
 		break;
 	    case 'd':
-		for (cz = day_list[t->tm_wday]; *cz; *p++ = attributes | *cz++)
-		    if (p >= ep) break;
+		for (cz = (const unsigned char *) day_list[t->tm_wday];
+		     *cz && p < ep; p++) {
+		    cz += one_mbtowc(p, (const char *)cz, MB_LEN_MAX);
+		    *p |= attributes;
+		}
 		break;
 	    case 'D':
-		Itoa(t->tm_mday, buff);
 		if (p >= ep - 3) break;
-		if (buff[1]) {
-		    *p++ = attributes | buff[0];
-		    *p++ = attributes | buff[1];
-		}
-		else {
-		    *p++ = attributes | '0';
-		    *p++ = attributes | buff[0];
-		}
+		p = Itoa(t->tm_mday, p, 2, attributes);
 		break;
 	    case 'w':
 		if (p >= ep - 5) break;
-		for (cz = month_list[t->tm_mon]; *cz;)
-		    *p++ = attributes | *cz++;
+		for (cz = (const unsigned char *) month_list[t->tm_mon];
+		    *cz && p < ep; p++) {
+		    cz += one_mbtowc(p, (const char *)cz, MB_LEN_MAX);
+		    *p |= attributes;
+		}
 		break;
 	    case 'W':
 		if (p >= ep - 3) break;
-		Itoa(t->tm_mon + 1, buff);
-		if (buff[1]) {
-		    *p++ = attributes | buff[0];
-		    *p++ = attributes | buff[1];
-		}
-		else {
-		    *p++ = attributes | '0';
-		    *p++ = attributes | buff[0];
-		}
+		p = Itoa(t->tm_mon + 1, p, 2, attributes);
 		break;
 	    case 'y':
 		if (p >= ep - 3) break;
-		Itoa(t->tm_year, buff);
-		if (buff[1]) {
-		    *p++ = attributes | buff[0];
-		    *p++ = attributes | buff[1];
-		}
-		else {
-		    *p++ = attributes | '0';
-		    *p++ = attributes | buff[0];
-		}
+		p = Itoa(t->tm_year % 100, p, 2, attributes);
 		break;
 	    case 'Y':
 		if (p >= ep - 5) break;
-		Itoa(t->tm_year + 1900, buff);
-		*p++ = attributes | buff[0];
-		*p++ = attributes | buff[1];
-		*p++ = attributes | buff[2];
-		*p++ = attributes | buff[3];
+		p = Itoa(t->tm_year + 1900, p, 4, attributes);
 		break;
 	    case 'S':		/* start standout */
 		attributes |= STANDOUT;
@@ -541,6 +536,20 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 	    case 'L':
 		ClearToBottom();
 		break;
+
+	    case 'j':
+		{
+		    Char xbuf[128], *ebuf, *xq;
+		    int njobs = -1;
+		    struct process *pp;
+		    for (pp = proclist.p_next; pp; pp = pp->p_next)
+			njobs++;
+		    /* make sure we have space */
+		    ebuf = Itoa(njobs, buf, 1, attributes);
+		    for (xq = xbuf; xq < ebuf; *p++ = *xq++)
+			if (p >= ep) break;
+		    break;
+		}
 	    case '?':
 		if ((z = varval(STRstatus)) != STRNULL)
 		    for (; *z; *p++ = attributes | *z++)
@@ -548,7 +557,9 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 		break;
 	    case '$':
 		sz = ep - p;
-		(void) expdollar(&p, &cp, &pdirs, attributes);
+		(void) expdollar(&p, &cp, &sz, attributes);
+		/* cp should point the last char of currnet % sequence */
+		cp--;
 		break;
 	    case '%':
 		*p++ = attributes | '%';
@@ -570,9 +581,12 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 	    default:
 #ifndef HAVENOUTMP
 		if (*cp == 'a' && what == FMT_WHO) {
-		    cz = who_info(info, 'a', (char *) cbuff, sizeof(cbuff));
-		    for (; cz && *cz; *p++ = attributes | *cz++)
-			if (p >= ep) break;
+		    cz = (const unsigned char *) who_info(info, 'a',
+			(char *) cbuff, sizeof(cbuff));
+		    for (; *cz && p < ep; p++) {
+			cz += one_mbtowc(p, (const char *)cz, MB_LEN_MAX);
+			*p |= attributes;
+		    }
 		}
 		else 
 #endif /* HAVENOUTMP */
@@ -591,8 +605,10 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 		fmthist('h', info, (char *) cbuff, sizeof(cbuff));
 	    else
 		(void) xsnprintf((char *) cbuff, sizeof(cbuff), "%d", eventno + 1);
-	    for (cz = cbuff; *cz; *p++ = attributes | *cz++)
-		if (p >= ep) break;
+	    for (cz = cbuff; *cz && p < ep; p++) {
+		cz += one_mbtowc(p, (const char *)cz, MB_LEN_MAX);
+		*p |= attributes;
+	    }
 	}
 	else 
 	    *p++ = attributes | *cp;	/* normal character */
@@ -632,7 +648,7 @@ expdollar(dstp, srcp, spp, attr)
 
     vp = adrof(var);
     val = (!vp) ? tgetenv(var) : NULL;
-    if (vp) {
+    if (vp && vp->vec) {
 	for (i = 0; vp->vec[i] != NULL; i++) {
 	    for (val = vp->vec[i]; *spp > 0 && *val; (*spp)--)
 		*dst++ = *val++ | attr;

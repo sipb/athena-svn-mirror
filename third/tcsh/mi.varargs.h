@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/mi.varargs.h,v 1.1.1.2 1998-10-03 21:09:53 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/mi.varargs.h,v 1.1.1.3 2005-06-03 14:36:07 ghudson Exp $ */
 /*
  * mi.varargs.h: Correct varargs for minix
  */

@@ -1,9 +1,9 @@
-$ $Id: set11,v 1.1.1.1 1998-10-03 21:10:26 danw Exp $
+$ $Id: set11,v 1.1.1.2 2005-06-03 14:34:47 ghudson Exp $
 $ sh.c
 $set 11 
 1 Attention: pas d'accès au tty (%s).\n
 2 Ainsi pas de contrôle de job dans ce shell.\n
-3 Vous avez%d messages courrier (mail).\n
+3 Vous avez %d messages courrier (mail).\n
 4 Vous avez %d messages courrier (mail) dans %s.\n
 5 Vous avez du %scourrier.\n
 6 nouveau 

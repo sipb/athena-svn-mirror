@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.init.c,v 1.1.1.2 1998-10-03 21:10:22 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.init.c,v 1.1.1.3 2005-06-03 14:35:13 ghudson Exp $ */
 /*
  * tw.init.c: Handle lists of things to complete
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,19 +32,12 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tw.init.c,v 1.1.1.2 1998-10-03 21:10:22 danw Exp $")
+RCSID("$Id: tw.init.c,v 1.1.1.3 2005-06-03 14:35:13 ghudson Exp $")
 
 #include "tw.h"
 #include "ed.h"
 #include "tc.h"
 #include "sh.proc.h"
-
-#if !defined(NSIG) && defined(SIGMAX)
-# define NSIG (SIGMAX+1)
-#endif /* !NSIG && SIGMAX */
-#if !defined(NSIG) && defined(_NSIG)
-# define NSIG _NSIG
-#endif /* !NSIG && _NSIG */
 
 #define TW_INCR	128
 
@@ -115,7 +104,7 @@ static sigmask_t tw_omask;
 static Char	*tw_str_add		__P((stringlist_t *, int));
 static void	 tw_str_free		__P((stringlist_t *));
 static Char     *tw_dir_next		__P((DIR *));
-static void	 tw_cmd_add 		__P((Char *name));
+static void	 tw_cmd_add 		__P((const Char *name));
 static void 	 tw_cmd_cmd		__P((void));
 static void	 tw_cmd_builtin		__P((void));
 static void	 tw_cmd_alias		__P((void));
@@ -154,7 +143,7 @@ tw_str_add(sl, len)
 		    (Char *) xmalloc((size_t) (sl->tbuff * sizeof(Char)));
 	/* Re-thread the new pointer list, if changed */
 	if (ptr != NULL && ptr != sl->buff) {
-	    int offs = sl->buff - ptr;
+	    intptr_t offs = sl->buff - ptr;
 	    for (i = 0; i < sl->nlist; i++)
 		sl->list[i] += offs;
 	}
@@ -192,7 +181,7 @@ static Char *
 tw_dir_next(dfd)
     DIR *dfd;
 {
-    register struct dirent *dirp;
+    struct dirent *dirp;
 
     if (dfd == NULL)
 	return NULL;
@@ -210,7 +199,7 @@ tw_dir_next(dfd)
  */
 static void
 tw_cmd_add(name)
-    Char *name;
+    const Char *name;
 {
     int len;
 
@@ -236,16 +225,16 @@ tw_cmd_free()
 static void
 tw_cmd_cmd()
 {
-    register DIR *dirp;
-    register struct dirent *dp;
-    register Char *dir = NULL, *name;
-    register Char **pv;
+    DIR *dirp;
+    struct dirent *dp;
+    Char *dir = NULL, *name;
+    Char **pv;
     struct varent *v = adrof(STRpath);
     struct varent *recexec = adrof(STRrecognize_only_executables);
     int len;
 
 
-    if (v == NULL) /* if no path */
+    if (v == NULL || v->vec == NULL) /* if no path */
 	return;
 
     for (pv = v->vec; *pv; pv++) {
@@ -260,6 +249,16 @@ tw_cmd_cmd()
 	if (recexec)
 	    dir = Strspl(*pv, STRslash);
 	while ((dp = readdir(dirp)) != NULL) {
+#if defined(_UWIN) || defined(__CYGWIN__)
+	    /* Turn foo.{exe,com,bat} into foo since UWIN's readdir returns
+	     * the file with the .exe, .com, .bat extension
+	     */
+	    size_t ext = strlen(dp->d_name) - 4;
+	    if ((ext > 0) && (strcmp(&dp->d_name[ext], ".exe") == 0 ||
+		strcmp(&dp->d_name[ext], ".bat") == 0 ||
+		strcmp(&dp->d_name[ext], ".com") == 0))
+		dp->d_name[ext] = '\0';
+#endif /* _UWIN || __CYGWIN__ */
 	    /* the call to executable() may make this a bit slow */
 	    name = str2short(dp->d_name);
 	    if (dp->d_ino == 0 || (recexec && !executable(dir, name, 0)))
@@ -285,16 +284,16 @@ tw_cmd_cmd()
 static void
 tw_cmd_builtin()
 {
-    register struct biltins *bptr;
+    struct biltins *bptr;
 
     for (bptr = bfunc; bptr < &bfunc[nbfunc]; bptr++)
 	if (bptr->bname)
 	    tw_cmd_add(str2short(bptr->bname));
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     for (bptr = nt_bfunc; bptr < &nt_bfunc[nt_nbfunc]; bptr++)
 	if (bptr->bname)
 	    tw_cmd_add(str2short(bptr->bname));
-#endif /* WINNT*/
+#endif /* WINNT_NATIVE*/
 } /* end tw_cmd_builtin */
 
 
@@ -304,8 +303,8 @@ tw_cmd_builtin()
 static void
 tw_cmd_alias()
 {
-    register struct varent *p;
-    register struct varent *c;
+    struct varent *p;
+    struct varent *c;
 
     p = &aliases;
     for (;;) {
@@ -495,9 +494,9 @@ tw_shvar_next(dir, flags)
     Char *dir;
     int	 *flags;
 {
-    register struct varent *p;
-    register struct varent *c;
-    register Char *cp;
+    struct varent *p;
+    struct varent *c;
+    Char *cp;
 
     USE(flags);
     USE(dir);
@@ -596,8 +595,6 @@ tw_complete_start(dfd, pat)
     DIR *dfd;
     Char *pat;
 {
-    extern struct varent completions;
-
     USE(pat);
     SETDIR(dfd)
     tw_vptr_start(&completions);
@@ -634,9 +631,9 @@ tw_logname_start(dfd, pat)
 {
     USE(pat);
     SETDIR(dfd)
-#if !defined(_VMS_POSIX) && !defined(WINNT)
+#ifdef HAVE_GETPWENT
     (void) setpwent();	/* Open passwd file */
-#endif /* !_VMS_POSIX && !WINNT */
+#endif
 } /* end tw_logname_start */
 
 
@@ -660,12 +657,11 @@ tw_logname_next(dir, flags)
     USE(flags);
     USE(dir);
     TW_HOLD();
-#if !defined(_VMS_POSIX) && !defined(WINNT)
-    /* ISC does not declare getpwent()? */
-    pw = (struct passwd *) getpwent();
-#else /* _VMS_POSIX || WINNT */
+#ifdef HAVE_GETPWENT
+    pw = getpwent();
+#else
     pw = NULL;
-#endif /* !_VMS_POSIX && !WINNT */
+#endif
     TW_RELS();
 
     if (pw == NULL) {
@@ -688,9 +684,9 @@ tw_logname_end()
 #ifdef YPBUGS
     fix_yp_bugs();
 #endif
-#if !defined(_VMS_POSIX) && !defined(WINNT)
+#ifdef HAVE_GETPWENT
    (void) endpwent();
-#endif /* !_VMS_POSIX && !WINNT */
+#endif
 } /* end tw_logname_end */
 
 
@@ -705,9 +701,9 @@ tw_grpname_start(dfd, pat)
 {
     USE(pat);
     SETDIR(dfd)
-#if !defined(_VMS_POSIX) && !defined(_OSD_POSIX) && !defined(WINNT)
+#if !defined(_VMS_POSIX) && !defined(_OSD_POSIX) && !defined(WINNT_NATIVE)
     (void) setgrent();	/* Open group file */
-#endif /* !_VMS_POSIX && !_OSD_POSIX && !WINNT */
+#endif /* !_VMS_POSIX && !_OSD_POSIX && !WINNT_NATIVE */
 } /* end tw_grpname_start */
 
 
@@ -731,11 +727,11 @@ tw_grpname_next(dir, flags)
     USE(flags);
     USE(dir);
     TW_HOLD();
-#if !defined(_VMS_POSIX) && !defined(_OSD_POSIX) && !defined(WINNT)
+#if !defined(_VMS_POSIX) && !defined(_OSD_POSIX) && !defined(WINNT_NATIVE)
     gr = (struct group *) getgrent();
-#else /* _VMS_POSIX || _OSD_POSIX || WINNT */
+#else /* _VMS_POSIX || _OSD_POSIX || WINNT_NATIVE */
     gr = NULL;
-#endif /* !_VMS_POSIX && !_OSD_POSIX && !WINNT */
+#endif /* !_VMS_POSIX && !_OSD_POSIX && !WINNT_NATIVE */
     TW_RELS();
 
     if (gr == NULL) {
@@ -758,9 +754,9 @@ tw_grpname_end()
 #ifdef YPBUGS
     fix_yp_bugs();
 #endif
-#if !defined(_VMS_POSIX) && !defined(_OSD_POSIX) && !defined(WINNT)
+#if !defined(_VMS_POSIX) && !defined(_OSD_POSIX) && !defined(WINNT_NATIVE)
    (void) endgrent();
-#endif /* !_VMS_POSIX && !_OSD_POSIX && !WINNT */
+#endif /* !_VMS_POSIX && !_OSD_POSIX && !WINNT_NATIVE */
 } /* end tw_grpname_end */
 
 /* tw_file_start():
@@ -947,7 +943,7 @@ tw_bind_next(dir, flags)
     Char *dir;
     int *flags;
 {
-    char *ptr;
+    const char *ptr;
     USE(flags);
     if (tw_bind && tw_bind->name) {
 	for (ptr = tw_bind->name, dir = tw_retname;
@@ -987,7 +983,7 @@ tw_limit_next(dir, flags)
     int *flags;
 {
 #ifndef HAVENOLIMIT
-    char *ptr;
+    const char *ptr;
     if (tw_limit && tw_limit->limname) {
 	for (ptr = tw_limit->limname, dir = tw_retname; 
 	     (*dir++ = (Char) *ptr++) != '\0';)
@@ -1025,8 +1021,7 @@ tw_sig_next(dir, flags)
     Char *dir;
     int *flags;
 {
-    char *ptr;
-    extern int nsig;
+    const char *ptr;
     USE(flags);
     for (;tw_index < nsig; tw_index++) {
 

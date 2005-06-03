@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.init.c,v 1.1.1.2 1998-10-03 21:10:03 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.init.c,v 1.1.1.3 2005-06-03 14:35:24 ghudson Exp $ */
 /*
  * sh.init.c: Function and signal tables
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,7 +32,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.init.c,v 1.1.1.2 1998-10-03 21:10:03 danw Exp $")
+RCSID("$Id: sh.init.c,v 1.1.1.3 2005-06-03 14:35:24 ghudson Exp $")
 
 #include "ed.h"
 #include "tw.h"
@@ -65,6 +61,9 @@ struct	biltins bfunc[] = {
     { "bindkey",	dobindkey,	0,	8	},
     { "break",		dobreak,	0,	0	},
     { "breaksw",	doswbrk,	0,	0	},
+#ifdef _OSD_POSIX
+    { "bs2cmd",		dobs2cmd,	1,	INF	},
+#endif /* OBSOLETE */
     { "builtins",	dobuiltins,	0,	0	},
 #ifdef KAI
     { "bye",		goodbye,	0,	0	},
@@ -122,7 +121,7 @@ struct	biltins bfunc[] = {
     { "migrate",	domigrate,	1,	INF	},
 #endif /* TCF */
 #ifdef NEWGRP
-    { "newgrp",		donewgrp,	1,	2	},
+    { "newgrp",		donewgrp,	0,	2	},
 #endif /* NEWGRP */
     { "nice",		donice,		0,	INF	},
     { "nohup",		donohup,	0,	INF	},
@@ -156,6 +155,9 @@ struct	biltins bfunc[] = {
     { "suspend",	dosuspend,	0,	0	},
     { "switch",		doswitch,	1,	INF	},
     { "telltc",		dotelltc,	0,	INF	},
+#ifndef WINNT_NATIVE
+    { "termname",	dotermname,	0,  	1       },
+#endif
     { "time",		dotime,		0,	INF	},
 #if defined(_CX_UX)
     { "ucb",		doucb,		0,	INF	},
@@ -218,7 +220,7 @@ int nsrchn = sizeof srchn / sizeof *srchn;
  */
 
 /* We define NUMSIG to avoid changing NSIG or MAXSIG */
-#ifdef POSIX
+#if defined(POSIX) && !defined(__CYGWIN__)
 # define NUMSIG 65
 #else /* !POSIX */
 # define NUMSIG 33
@@ -226,7 +228,7 @@ int nsrchn = sizeof srchn / sizeof *srchn;
 
 int	nsig = NUMSIG - 1;	/* This should be the number of real signals */
 				/* not counting signal 0 */
-struct	mesg mesg[NUMSIG];	/* Arrays start at [0] so we initialize from */
+struct mesg mesg[NUMSIG];	/* Arrays start at [0] so we initialize from */
 				/* 0 to 32 or 64, the max real signal number */
 
 void
@@ -734,6 +736,15 @@ mesginit()
     }
 #endif /* SIGTHAW */
 
+#ifdef SIGCANCEL
+    /* solaris */
+    if (mesg[SIGCANCEL].pname == NULL) {
+	mesg[SIGCANCEL].iname = "CANCEL";
+	mesg[SIGCANCEL].pname = CSAVS(2, 109, 
+	    "Thread cancellation signal used by libthread");
+    }
+#endif /* SIGCANCEL */
+
 /*
  * Careful, some OS's (HP/UX 10.0) define these as -1
  */
@@ -919,7 +930,147 @@ mesginit()
 #ifdef SIGUNUSED
     if (mesg[SIGUNUSED].pname == NULL) {
 	mesg[SIGUNUSED].iname = "UNUSED";
-	mesg[SIGUNUSED].pname = CSAVS(2, 91, "Stack limit exceeded");
+	mesg[SIGUNUSED].pname = CSAVS(2, 91, "Unused signal");
     }
 #endif /* SIGUNUSED */
+
+#ifdef SIGOVLY
+    /* SX-4 */
+    if (mesg[SIGOVLY].pname == NULL) {
+	mesg[SIGOVLY].iname = "OVLY";
+	mesg[SIGOVLY].pname = CSAVS(2, 92, "LM overlay");
+    }
+#endif /* SIGOVLY */
+
+#ifdef SIGFRZ
+    /* SX-4 */
+    if (mesg[SIGFRZ].pname == NULL) {
+	mesg[SIGFRZ].iname = "FRZ";
+	mesg[SIGFRZ].pname = CSAVS(2, 93, "system freeze");
+    }
+#endif /* SIGFRZ */
+
+#ifdef SIGDFRZ
+    /* SX-4 */
+    if (mesg[SIGDFRZ].pname == NULL) {
+	mesg[SIGDFRZ].iname = "DFRZ";
+	mesg[SIGDFRZ].pname = CSAVS(2, 94, "system defreeze");
+    }
+#endif /* SIGDFRZ */
+
+#ifdef SIGDEAD
+    /* SX-4 */
+    if (mesg[SIGDEAD].pname == NULL) {
+	mesg[SIGDEAD].iname = "DEAD";
+	mesg[SIGDEAD].pname = CSAVS(2, 95, "dead lock");
+    }
+#endif /* SIGDEAD */
+
+#ifdef SIGXMEM
+    /* SX-4 */
+    if (mesg[SIGXMEM].pname == NULL) {
+	mesg[SIGXMEM].iname = "XMEM";
+	mesg[SIGXMEM].pname = CSAVS(2, 96, "exceeded memory size limit");
+    }
+#endif /* SIGXMEM */
+
+#ifdef SIGXDSZ
+    /* SX-4 */
+    if (mesg[SIGXDSZ].pname == NULL) {
+	mesg[SIGXDSZ].iname = "XDSZ";
+	mesg[SIGXDSZ].pname = CSAVS(2, 97, "exceeded data size limit");
+    }
+#endif /* SIGXDSZ */
+
+#ifdef SIGMEM32
+    /* SX-4 */
+    if (mesg[SIGMEM32].pname == NULL) {
+	mesg[SIGMEM32].iname = "MEM32";
+	mesg[SIGMEM32].pname = CSAVS(2, 98, "exceeded memory size limit of 32KB");
+    }
+#endif /* SIGMEM32 */
+
+#ifdef SIGNMEM
+    /* SX-4 */
+    if (mesg[SIGNMEM].pname == NULL) {
+	mesg[SIGNMEM].iname = "NMEM";
+	mesg[SIGNMEM].pname = CSAVS(2, 99, "exce error for no memory");
+    }
+#endif /* SIGNMEM */
+
+#ifdef SIGCHKP
+    /* SX-4 */
+    if (mesg[SIGCHKP].pname == NULL) {
+	mesg[SIGCHKP].iname = "CHKP";
+	mesg[SIGCHKP].pname = CSAVS(2, 100, "check point start");
+    }
+#endif /* SIGCHKP */
+
+#ifdef SIGKCHKP
+#if 0
+    /* SX-4 */
+    if (mesg[SIGKCHKP].pname == NULL) {
+	mesg[SIGKCHKP].iname = "KCHKP";
+	mesg[SIGKCHKP].pname = CSAVS(2, 101, "check point start of kernel");
+    }
+#endif
+#endif /* SIGKCHKP */
+
+#ifdef SIGRSTA
+    /* SX-4 */
+    if (mesg[SIGRSTA].pname == NULL) {
+	mesg[SIGRSTA].iname = "RSTA";
+	mesg[SIGRSTA].pname = CSAVS(2, 102, "restart start");
+    }
+#endif /* SIGRSTA */
+
+#ifdef SIGKRSTA
+#if 0
+    /* SX-4 */
+    if (mesg[SIGKRSTA].pname == NULL) {
+	mesg[SIGKRSTA].iname = "KRSTA";
+	mesg[SIGKRSTA].pname = CSAVS(2, 103, "restart of kernel");
+    }
+#endif
+#endif /* SIGKRSTA */
+
+#ifdef SIGXXMU
+    /* SX-4 */
+    if (mesg[SIGXXMU].pname == NULL) {
+	mesg[SIGXXMU].iname = "XXMU";
+	mesg[SIGXXMU].pname = CSAVS(2, 104, "exeeded XMU size limit");
+    }
+#endif /* SIGXXMU */
+
+#ifdef SIGXRLG0
+    /* SX-4 */
+    if (mesg[SIGXRLG0].pname == NULL) {
+	mesg[SIGXRLG0].iname = "XRLG0";
+	mesg[SIGXRLG0].pname = CSAVS(2, 105, "exeeded RLG0 limit");
+    }
+#endif /* SIGXRLG0 */
+
+#ifdef SIGXRLG1
+    /* SX-4 */
+    if (mesg[SIGXRLG1].pname == NULL) {
+	mesg[SIGXRLG1].iname = "XRLG1";
+	mesg[SIGXRLG1].pname = CSAVS(2, 106, "exeeded RLG1 limit");
+    }
+#endif /* SIGXRLG1 */
+
+#ifdef SIGXRLG2
+    /* SX-4 */
+    if (mesg[SIGXRLG2].pname == NULL) {
+	mesg[SIGXRLG2].iname = "XRLG2";
+	mesg[SIGXRLG2].pname = CSAVS(2, 107, "exeeded RLG2 limit");
+    }
+#endif /* SIGXRLG2 */
+
+#ifdef SIGXRLG3
+    /* SX-4 */
+    if (mesg[SIGXRLG3].pname == NULL) {
+	mesg[SIGXRLG3].iname = "XRLG3";
+	mesg[SIGXRLG3].pname = CSAVS(2, 108, "exeeded RLG3 limit");
+    }
+#endif /* SIGXRLG3 */
 }

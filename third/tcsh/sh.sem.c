@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.sem.c,v 1.1.1.2 1998-10-03 21:10:07 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.sem.c,v 1.1.1.3 2005-06-03 14:35:18 ghudson Exp $ */
 /*
  * sh.sem.c: I/O redirections and job forking. A touchy issue!
  *	     Most stuff with builtins is incorrect
@@ -15,11 +15,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -37,13 +33,13 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.sem.c,v 1.1.1.2 1998-10-03 21:10:07 danw Exp $")
+RCSID("$Id: sh.sem.c,v 1.1.1.3 2005-06-03 14:35:18 ghudson Exp $")
 
 #include "tc.h"
 #include "tw.h"
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 #include "nt.const.h"
-#endif /*WINNT*/
+#endif /*WINNT_NATIVE*/
 
 #ifdef CLOSE_ON_EXEC
 # ifndef SUNOS4
@@ -54,13 +50,13 @@ RCSID("$Id: sh.sem.c,v 1.1.1.2 1998-10-03 21:10:07 danw Exp $")
 #endif /* CLOSE_ON_EXEC */
 
 #if defined(__sparc__) || defined(sparc)
-# if !defined(MACH) && SYSVREL == 0 && !defined(Lynx) && !defined(BSD4_4) && !defined(linux)
+# if !defined(MACH) && SYSVREL == 0 && !defined(Lynx) && !defined(BSD4_4) && !defined(linux) && !defined(__GNU__) && !defined(__GLIBC__)
 #  include <vfork.h>
-# endif /* !MACH && SYSVREL == 0 && !Lynx && !BSD4_4 */
+# endif /* !MACH && SYSVREL == 0 && !Lynx && !BSD4_4 && !glibc */
 #endif /* __sparc__ || sparc */
 
 #ifdef VFORK
-static	sigret_t	vffree	__P((int));
+static	RETSIGTYPE	vffree	__P((int));
 #endif 
 static	Char		*splicepipe	__P((struct command *, Char *));
 static	void		 doio		__P((struct command *, int *, int *));
@@ -88,16 +84,13 @@ static	void		 chkclob	__P((char *));
 
 /*VARARGS 1*/
 void
-execute(t, wanttty, pipein, pipeout)
-    register struct command *t;
+execute(t, wanttty, pipein, pipeout, do_glob)
+    struct command *t;
     int     wanttty;
     int *pipein, *pipeout;
+    int do_glob;
 {
-#ifdef VFORK
-    extern bool use_fork;	/* use fork() instead of vfork()? */
-#endif
-
-    bool    forked = 0;
+    int    forked = 0;
     struct biltins *bifunc;
     int     pid = 0;
     int     pv[2];
@@ -116,9 +109,9 @@ execute(t, wanttty, pipein, pipeout)
     if (t == 0) 
 	return;
 
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     {
-        if ((varval(STRNTslowexec) != STRNULL) &&
+        if ((varval(STRNTslowexec) == STRNULL) &&
             !t->t_dcdr && !t->t_dcar && !t->t_dflg && !didfds &&
             (intty || intact) && (t->t_dtyp == NODE_COMMAND) &&
 	    !isbfunc(t)) {
@@ -129,7 +122,7 @@ execute(t, wanttty, pipein, pipeout)
                 return;
         }
     }
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
     /*
      * Ed hutchins@sgi.com & Dominic dbg@sgi.com
@@ -164,9 +157,9 @@ execute(t, wanttty, pipein, pipeout)
 	pathname = short2str(sCName);
 	/* if this is a dir, tack a "cd" on as the first arg */
 	if ((stat(pathname, &stbuf) != -1 && S_ISDIR(stbuf.st_mode))
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 	    || (pathname[0] && pathname[1] == ':' && pathname[2] == '\0')
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 	) {
 	    Char *vCD[2];
 	    Char **ot_dcom = t->t_dcom;
@@ -319,6 +312,18 @@ execute(t, wanttty, pipein, pipeout)
 		break;
 	}
 
+	/* 
+	 * GrP Executing a command - run jobcmd hook
+	 * Don't run for builtins
+	 * Don't run if we're not in a tty
+	 * Don't run if we're not really executing 
+	 */
+	if (t->t_dtyp == NODE_COMMAND && !bifunc && !noexec && intty) {
+	    Char *cmd = unparse(t);
+	    job_cmd(cmd);
+	    xfree(cmd);
+	}
+	   
 	/*
 	 * We fork only if we are timed, or are not the end of a parenthesized
 	 * list and not a simple builtin function. Simple meaning one that is
@@ -349,7 +354,7 @@ execute(t, wanttty, pipein, pipeout)
 	 * We have to fork for eval too.
 	 */
 	    (bifunc && (t->t_dflg & F_PIPEIN) != 0 &&
-	     bifunc->bfunct == (bfunc_t)doeval))
+	     bifunc->bfunct == (bfunc_t)doeval)) {
 #ifdef VFORK
 	    if (t->t_dtyp == NODE_PAREN ||
 		t->t_dflg & (F_REPEAT | F_AMPERSAND) || bifunc)
@@ -513,7 +518,7 @@ execute(t, wanttty, pipein, pipeout)
 		else {		/* child */
 		    /* this is from pfork() */
 		    int     pgrp;
-		    bool    ignint = 0;
+		    int    ignint = 0;
 		    if (nosigchld) {
 # ifdef BSDSIGS
 			(void) sigsetmask(csigmask);
@@ -570,11 +575,13 @@ execute(t, wanttty, pipein, pipeout)
 			(void) signal(SIGHUP, SIG_DFL);
 		    if (t->t_dflg & F_NICE) {
 			int nval = SIGN_EXTEND_CHAR(t->t_nice);
-# ifdef BSDNICE
-			(void) setpriority(PRIO_PROCESS, 0, nval);
-# else /* !BSDNICE */
+# ifdef HAVE_SETPRIORITY
+			if (setpriority(PRIO_PROCESS, 0, nval) == -1 && errno)
+				stderror(ERR_SYSTEM, "setpriority",
+				    strerror(errno));
+# else /* !HAVE_SETPRIORITY */
 			(void) nice(nval);
-# endif /* BSDNICE */
+# endif /* HAVE_SETPRIORITY */
 		    }
 # ifdef F_VER
 		    if (t->t_dflg & F_VER) {
@@ -586,6 +593,7 @@ execute(t, wanttty, pipein, pipeout)
 
 	    }
 #endif /* VFORK */
+	}
 	if (pid != 0) {
 	    /*
 	     * It would be better if we could wait for the whole job when we
@@ -642,53 +650,64 @@ execute(t, wanttty, pipein, pipeout)
 	    func(t, bifunc);
 	    if (forked)
 		exitstat();
+	    else {
+		if (adrof(STRprintexitvalue)) {
+		    int rv = getn(varval(STRstatus));
+		    if (rv != 0)
+			xprintf(CGETS(17, 2, "Exit %d\n"), rv);
+		}
+	    }
 	    break;
 	}
 	if (t->t_dtyp != NODE_PAREN) {
-	    doexec(t);
+	    doexec(t, do_glob);
 	    /* NOTREACHED */
 	}
 	/*
 	 * For () commands must put new 0,1,2 in FSH* and recurse
 	 */
-	OLDSTD = dcopy(0, FOLDSTD);
-	SHOUT = dcopy(1, FSHOUT);
+	(void)close_on_exec(OLDSTD = dcopy(0, FOLDSTD), 1);
+	(void)close_on_exec(SHOUT = dcopy(1, FSHOUT), 1);
 	isoutatty = isatty(SHOUT);
-	SHDIAG = dcopy(2, FSHDIAG);
+	(void)close_on_exec(SHDIAG = dcopy(2, FSHDIAG), 1);
 	isdiagatty = isatty(SHDIAG);
 	(void) close(SHIN);
 	SHIN = -1;
 #ifndef CLOSE_ON_EXEC
 	didcch = 0;
+#else
+	(void) close_on_exec(FSHOUT, 1);
+	(void) close_on_exec(FSHDIAG, 1);
+	(void) close_on_exec(FOLDSTD, 1);
 #endif /* !CLOSE_ON_EXEC */
 	didfds = 0;
 	wanttty = -1;
 	t->t_dspr->t_dflg |= t->t_dflg & F_NOINTERRUPT;
-	execute(t->t_dspr, wanttty, NULL, NULL);
+	execute(t->t_dspr, wanttty, NULL, NULL, do_glob);
 	exitstat();
 
     case NODE_PIPE:
 #ifdef BACKPIPE
 	t->t_dcdr->t_dflg |= F_PIPEIN | (t->t_dflg &
 			(F_PIPEOUT | F_AMPERSAND | F_NOFORK | F_NOINTERRUPT));
-	execute(t->t_dcdr, wanttty, pv, pipeout);
+	execute(t->t_dcdr, wanttty, pv, pipeout, do_glob);
 	t->t_dcar->t_dflg |= F_PIPEOUT |
 	    (t->t_dflg & (F_PIPEIN | F_AMPERSAND | F_STDERR | F_NOINTERRUPT));
-	execute(t->t_dcar, wanttty, pipein, pv);
+	execute(t->t_dcar, wanttty, pipein, pv, do_glob);
 #else /* !BACKPIPE */
 	t->t_dcar->t_dflg |= F_PIPEOUT |
 	    (t->t_dflg & (F_PIPEIN | F_AMPERSAND | F_STDERR | F_NOINTERRUPT));
-	execute(t->t_dcar, wanttty, pipein, pv);
+	execute(t->t_dcar, wanttty, pipein, pv, do_glob);
 	t->t_dcdr->t_dflg |= F_PIPEIN | (t->t_dflg &
 			(F_PIPEOUT | F_AMPERSAND | F_NOFORK | F_NOINTERRUPT));
-	execute(t->t_dcdr, wanttty, pv, pipeout);
+	execute(t->t_dcdr, wanttty, pv, pipeout, do_glob);
 #endif /* BACKPIPE */
 	break;
 
     case NODE_LIST:
 	if (t->t_dcar) {
 	    t->t_dcar->t_dflg |= t->t_dflg & F_NOINTERRUPT;
-	    execute(t->t_dcar, wanttty, NULL, NULL);
+	    execute(t->t_dcar, wanttty, NULL, NULL, do_glob);
 	    /*
 	     * In strange case of A&B make a new job after A
 	     */
@@ -699,7 +718,7 @@ execute(t, wanttty, pipein, pipeout)
 	if (t->t_dcdr) {
 	    t->t_dcdr->t_dflg |= t->t_dflg &
 		(F_NOFORK | F_NOINTERRUPT);
-	    execute(t->t_dcdr, wanttty, NULL, NULL);
+	    execute(t->t_dcdr, wanttty, NULL, NULL, do_glob);
 	}
 	break;
 
@@ -707,7 +726,7 @@ execute(t, wanttty, pipein, pipeout)
     case NODE_AND:
 	if (t->t_dcar) {
 	    t->t_dcar->t_dflg |= t->t_dflg & F_NOINTERRUPT;
-	    execute(t->t_dcar, wanttty, NULL, NULL);
+	    execute(t->t_dcar, wanttty, NULL, NULL, do_glob);
 	    if ((getn(varval(STRstatus)) == 0) !=
 		(t->t_dtyp == NODE_AND)) {
 		return;
@@ -716,7 +735,7 @@ execute(t, wanttty, pipein, pipeout)
 	if (t->t_dcdr) {
 	    t->t_dcdr->t_dflg |= t->t_dflg &
 		(F_NOFORK | F_NOINTERRUPT);
-	    execute(t->t_dcdr, wanttty, NULL, NULL);
+	    execute(t->t_dcdr, wanttty, NULL, NULL, do_glob);
 	}
 	break;
 
@@ -735,12 +754,12 @@ execute(t, wanttty, pipein, pipeout)
 }
 
 #ifdef VFORK
-static sigret_t
+static RETSIGTYPE
 /*ARGSUSED*/
 vffree(snum)
 int snum;
 {
-    register Char **v;
+    Char **v;
 
     USE(snum);
     if ((v = gargv) != 0) {
@@ -754,10 +773,6 @@ int snum;
     }
 
     _exit(1);
-#ifndef SIGVOID
-    /*NOTREACHED*/
-    return(0);
-#endif /* SIGVOID */
 }
 #endif /* VFORK */
 
@@ -778,7 +793,7 @@ int snum;
  */
 static Char *
 splicepipe(t, cp)
-    register struct command *t;
+    struct command *t;
     Char *cp;	/* word after < or > */
 {
     Char *blk[2];
@@ -824,12 +839,12 @@ splicepipe(t, cp)
  */
 static void
 doio(t, pipein, pipeout)
-    register struct command *t;
+    struct command *t;
     int    *pipein, *pipeout;
 {
-    register int fd;
-    register Char *cp;
-    register unsigned long flags = t->t_dflg;
+    int fd;
+    Char *cp;
+    unsigned long flags = t->t_dflg;
 
     if (didfds || (flags & F_REPEAT))
 	return;
@@ -847,12 +862,12 @@ doio(t, pipein, pipeout)
 	    (void) strncpy(tmp, short2str(cp), MAXPATHLEN);
 	    tmp[MAXPATHLEN] = '\0';
 	    xfree((ptr_t) cp);
-	    if ((fd = open(tmp, O_RDONLY)) < 0)
+	    if ((fd = open(tmp, O_RDONLY|O_LARGEFILE)) < 0)
 		stderror(ERR_SYSTEM, tmp, strerror(errno));
-#ifdef O_LARGEFILE
 	    /* allow input files larger than 2Gb  */
-	    (void) fcntl(fd, O_LARGEFILE, 0);
-#endif /* O_LARGEFILE */
+#ifndef WINNT_NATIVE
+	    (void) fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_LARGEFILE);
+#endif /*!WINNT_NATIVE*/
 	    (void) dmove(fd, 0);
 	}
 	else if (flags & F_PIPEIN) {
@@ -863,7 +878,7 @@ doio(t, pipein, pipeout)
 	}
 	else if ((flags & F_NOINTERRUPT) && tpgrp == -1) {
 	    (void) close(0);
-	    (void) open(_PATH_DEVNULL, O_RDONLY);
+	    (void) open(_PATH_DEVNULL, O_RDONLY|O_LARGEFILE);
 	}
 	else {
 	    (void) close(0);
@@ -893,9 +908,9 @@ doio(t, pipein, pipeout)
 	(void) dcopy(SHDIAG, 2);
 	if ((flags & F_APPEND) != 0) {
 #ifdef O_APPEND
-	    fd = open(tmp, O_WRONLY | O_APPEND);
+	    fd = open(tmp, O_WRONLY|O_APPEND|O_LARGEFILE);
 #else /* !O_APPEND */
-	    fd = open(tmp, O_WRONLY);
+	    fd = open(tmp, O_WRONLY|O_LARGEFILE);
 	    (void) lseek(fd, (off_t) 0, L_XTND);
 #endif /* O_APPEND */
 	}
@@ -909,10 +924,10 @@ doio(t, pipein, pipeout)
 	    }
 	    if ((fd = creat(tmp, 0666)) < 0)
 		stderror(ERR_SYSTEM, tmp, strerror(errno));
-#ifdef O_LARGEFILE
 	    /* allow input files larger than 2Gb  */
-	    (void) fcntl(fd, O_LARGEFILE, 0);
-#endif /* O_LARGEFILE */
+#ifndef WINNT_NATIVE
+	    (void) fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_LARGEFILE);
+#endif /*!WINNT_NATIVE*/
 	}
 	(void) dmove(fd, 1);
 	is1atty = isatty(1);
@@ -948,13 +963,13 @@ doio(t, pipein, pipeout)
 
 void
 mypipe(pv)
-    register int *pv;
+    int *pv;
 {
 
     if (pipe(pv) < 0)
 	goto oops;
-    pv[0] = dmove(pv[0], -1);
-    pv[1] = dmove(pv[1], -1);
+    (void)close_on_exec(pv[0] = dmove(pv[0], -1), 1);
+    (void)close_on_exec(pv[1] = dmove(pv[1], -1), 1);
     if (pv[0] >= 0 && pv[1] >= 0)
 	return;
 oops:
@@ -963,7 +978,7 @@ oops:
 
 static void
 chkclob(cp)
-    register char *cp;
+    char *cp;
 {
     struct stat stb;
 
