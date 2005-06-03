@@ -1,6 +1,6 @@
-$ $Id: set14,v 1.1.1.1 1998-10-03 21:10:25 danw Exp $
+$ $Id: set14,v 1.1.1.2 2005-06-03 14:37:58 ghudson Exp $
 $ sh.file.c
 $set 14 
 1 \nYikes!! Too many %s!!\n
-3 names in password file
+2 names in password file
 3 files

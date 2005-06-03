@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.help.c,v 1.1.1.2 1998-10-03 21:10:21 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.help.c,v 1.1.1.3 2005-06-03 14:35:18 ghudson Exp $ */
 /* tw.help.c: actually look up and print documentation on a file.
  *	      Look down the path for an appropriate file, then print it.
  *	      Note that the printing is NOT PAGED.  This is because the
@@ -17,11 +17,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -39,18 +35,18 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tw.help.c,v 1.1.1.2 1998-10-03 21:10:21 danw Exp $")
+RCSID("$Id: tw.help.c,v 1.1.1.3 2005-06-03 14:35:18 ghudson Exp $")
 
 #include "tw.h"
 #include "tc.h"
 
 
 static int f = -1;
-static	sigret_t	 cleanf		__P((int));
+static	RETSIGTYPE	 cleanf		__P((int));
 static	Char    	*skipslist	__P((Char *));
 static	void		 nextslist 	__P((Char *, Char *));
 
-static char *h_ext[] = {
+static const char *h_ext[] = {
     ".help", ".1", ".8", ".6", "", NULL
 };
 
@@ -60,11 +56,11 @@ do_help(command)
 {
     Char    name[FILSIZ + 1];
     Char   *cmd_p, *ep;
-    char  **sp;
+    const char  **sp;
 
     signalfun_t orig_intr;
     Char    curdir[MAXPATHLEN];	/* Current directory being looked at */
-    register Char *hpath;	/* The environment parameter */
+    Char *hpath;	/* The environment parameter */
     Char    full[MAXPATHLEN];
     char    buf[512];		/* full path name and buffer for read */
     int     len;		/* length of read buffer */
@@ -106,7 +102,7 @@ do_help(command)
 
 	for (;;) {
 	    if (!*hpath) {
-		xprintf(CGETS(28, 1, "No help file for %S\n"), name);
+		xprintf(CGETS(29, 1, "No help file for %S\n"), name);
 		break;
 	    }
 	    nextslist(hpath, curdir);
@@ -124,7 +120,7 @@ do_help(command)
 	    for (sp = h_ext; *sp; sp++) {
 		*ep = '\0';
 		catn(full, str2short(*sp), (int) (sizeof(full) / sizeof(Char)));
-		if ((f = open(short2str(full), O_RDONLY)) != -1)
+		if ((f = open(short2str(full), O_RDONLY|O_LARGEFILE)) != -1)
 		    break;
 	    }
 	    if (f != -1) {
@@ -147,11 +143,12 @@ do_help(command)
     }
 }
 
-static  sigret_t
+static RETSIGTYPE
 /*ARGSUSED*/
 cleanf(snum)
 int snum;
 {
+    USE(snum);
 #ifdef UNRELSIGS
     if (snum)
 	(void) sigset(SIGINT, cleanf);
@@ -159,9 +156,6 @@ int snum;
     if (f != -1)
 	(void) close(f);
     f = -1;
-#ifndef SIGVOID
-    return (snum);
-#endif
 }
 
 /* these next two are stolen from CMU's man(1) command for looking down
@@ -176,8 +170,8 @@ int snum;
 
 static void
 nextslist(sl, np)
-    register Char *sl;
-    register Char *np;
+    Char *sl;
+    Char *np;
 {
     if (!*sl)
 	*np = '\000';
@@ -198,7 +192,7 @@ nextslist(sl, np)
 
 static Char *
 skipslist(sl)
-    register Char *sl;
+    Char *sl;
 {
     while (*sl && *sl++ != ':')
 	continue;

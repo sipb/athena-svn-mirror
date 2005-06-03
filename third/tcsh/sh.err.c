@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.err.c,v 1.1.1.2 1998-10-03 21:09:58 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.err.c,v 1.1.1.3 2005-06-03 14:35:23 ghudson Exp $ */
 /*
  * sh.err.c: Error printing routines. 
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -37,7 +33,7 @@
 #define _h_sh_err		/* Don't redefine the errors	 */
 #include "sh.h"
 
-RCSID("$Id: sh.err.c,v 1.1.1.2 1998-10-03 21:09:58 danw Exp $")
+RCSID("$Id: sh.err.c,v 1.1.1.3 2005-06-03 14:35:23 ghudson Exp $")
 
 /*
  * C Shell
@@ -192,7 +188,7 @@ char   *seterr = NULL;	/* Holds last error if there was one */
 #define ERR_BADCOLORVAR	134
 #define NO_ERRORS	135
 
-static char *elst[NO_ERRORS] INIT_ZERO_STRUCT;
+static const char *elst[NO_ERRORS] INIT_ZERO_STRUCT;
 
 /*
  * Init the elst depending on the locale
@@ -205,6 +201,11 @@ errinit()
 
     for (i = 0; i < NO_ERRORS; i++)
 	xfree((ptr_t) elst[i]);
+#  if defined(__FreeBSD__) || defined(hpux)
+#  define NLS_MAXSET 30
+    for (i = 1; i <= NLS_MAXSET; i++)
+	CGETS(i, 1, "" );
+#  endif
 #endif
 
     elst[ERR_SYNTAX] = CSAVS(1, 1, "Syntax Error");
@@ -360,7 +361,7 @@ errinit()
     elst[ERR_MFLAG] = CSAVS(1, 133, "No operand for -m flag");
     elst[ERR_ULIMUS] = CSAVS(1, 134, "Usage: unlimit [-fh] [limits]");
     elst[ERR_READONLY] = CSAVS(1, 135, "$%S is read-only");
-    elst[ERR_BADJOB] = CSAVS(1, 136, "No such job");
+    elst[ERR_BADJOB] = CSAVS(1, 136, "No such job (badjob)");
     elst[ERR_BADCOLORVAR] = CSAVS(1, 137, "Unknown colorls variable `%c%c'");
 }
 /*
@@ -370,7 +371,7 @@ errinit()
  */
 void
 /*VARARGS1*/
-#ifdef FUNCPROTO
+#ifdef PROTOTYPES
 seterror(unsigned int id, ...)
 #else
 seterror(va_alist)
@@ -381,7 +382,7 @@ seterror(va_alist)
     if (seterr == 0) {
 	va_list va;
 	char    berr[BUFSIZE];
-#ifdef FUNCPROTO
+#ifdef PROTOTYPES
 	va_start(va, id);
 #else
 	unsigned int id;
@@ -418,7 +419,7 @@ seterror(va_alist)
  */
 void
 /*VARARGS*/
-#ifdef FUNCPROTO
+#ifdef PROTOTYPES
 stderror(unsigned int id, ...)
 #else
 stderror(va_alist)
@@ -426,11 +427,11 @@ stderror(va_alist)
 #endif
 {
     va_list va;
-    register Char **v;
+    Char **v;
     int flags;
     int vareturn;
 
-#ifdef FUNCPROTO
+#ifdef PROTOTYPES
     va_start(va, id);
 #else
     unsigned int id;
@@ -499,7 +500,7 @@ stderror(va_alist)
     /*
      * Go away if -e or we are a child shell
      */
-    if (exiterr || child)
+    if (!exitset || exiterr || child)
 	xexit(1);
 
     /*

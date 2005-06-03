@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.wait.h,v 1.1.1.2 1998-10-03 21:10:17 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.wait.h,v 1.1.1.3 2005-06-03 14:35:09 ghudson Exp $ */
 /*
  * tc.wait.h: <sys/wait.h> for machines that don't have it or have it and
  *	      is incorrect.
@@ -15,11 +15,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -43,7 +39,7 @@
  * We try to use the system's wait.h when we can...
  */
 
-#if SYSVREL > 0 && !defined(linux)
+#if SYSVREL > 0 && !defined(linux) && !defined(__GNU__) && !defined(__GLIBC__)
 # ifdef hpux
 #  ifndef __hpux
 #   define NEEDwait
@@ -63,16 +59,16 @@
 #   define NEEDwait
 #  endif /* OREO || IRIS4D || POSIX */
 # endif	/* hpux */
-#else /* SYSVREL == 0 || linux */
+#else /* SYSVREL == 0 || glibc */
 # ifdef _MINIX
 #  undef NEEDwait
 #  include "mi.wait.h"
 # else
-#  ifndef WINNT
+#  ifndef WINNT_NATIVE
 #   include <sys/wait.h>
-#  endif /* WINNT */
+#  endif /* WINNT_NATIVE */
 # endif /* _MINIX */
-#endif /* SYSVREL == 0 || linux */
+#endif /* SYSVREL == 0 || glibc */
 
 #ifdef NEEDwait
 /*
@@ -98,7 +94,7 @@ union wait {
 #  define w_stopval     w_S.w_Stopval
 #  define w_stopsig     w_S.w_Stopsig
 # else /* _SEQUENT_ */
-#  if defined(vax) || defined(i386) || defined(_I386)
+#  if defined(vax) || defined(__vax__) || defined(i386) || defined(_I386) || defined(__i386__)
     union {
 	struct {
 	    unsigned int w_Termsig:7;
@@ -131,7 +127,7 @@ union wait {
 	    unsigned int w_Stopval:8;
 	}       w_S;
     }       w_P;
-#  endif /* vax || i386 || _I386 */
+#  endif /* vax || __vax__ || i386 || _I386 || __i386__ */
 };
 
 #  define w_termsig	w_P.w_T.w_Termsig

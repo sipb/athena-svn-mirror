@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.spell.c,v 1.1.1.2 1998-10-03 21:10:23 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.spell.c,v 1.1.1.3 2005-06-03 14:35:05 ghudson Exp $ */
 /*
  * tw.spell.c: Spell check words
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,7 +32,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tw.spell.c,v 1.1.1.2 1998-10-03 21:10:23 danw Exp $")
+RCSID("$Id: tw.spell.c,v 1.1.1.3 2005-06-03 14:35:05 ghudson Exp $")
 
 #include "tw.h"
 
@@ -50,9 +46,9 @@ spell_me(oldname, oldsize, looking, pat, suf)
 {
     /* The +1 is to fool hp's optimizer */
     Char    guess[FILSIZ + 1], newname[FILSIZ + 1];
-    register Char *new = newname, *old = oldname;
-    register Char *p, *cp, *ws;
-    bool    foundslash = 0;
+    Char *new = newname, *old = oldname;
+    Char *p, *cp, *ws;
+    int    foundslash = 0;
     int     retval;
 
     for (;;) {
@@ -115,7 +111,7 @@ spell_me(oldname, oldsize, looking, pat, suf)
 
 int
 spdist(s, t)
-    register Char *s, *t;
+    Char *s, *t;
 {
     for (; (*s & TRIM) == (*t & TRIM); t++, s++)
 	if (*t == '\0')

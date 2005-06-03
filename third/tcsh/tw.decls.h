@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.decls.h,v 1.1.1.2 1998-10-03 21:10:20 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.decls.h,v 1.1.1.3 2005-06-03 14:35:00 ghudson Exp $ */
 /*
  * tw.decls.h: Tenex external declarations
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -46,17 +42,19 @@ extern	void		  do_help		__P((Char *));
  * tw.parse.c
  */
 extern	 Char		 *dollar		__P((Char *, const Char *));
+#ifndef __MVS__
 extern	 int		  tenematch		__P((Char *, int, COMMAND));
 extern	 int		  t_search		__P((Char *, Char *, COMMAND, 
 						     int, int, int, Char *, 
 						     int));
+#endif
 extern	 int		  starting_a_command	__P((Char *, Char *));
 extern	 void		  copyn			__P((Char *, Char *, int));
-extern	 void		  catn			__P((Char *, Char *, int));
+extern	 void		  catn			__P((Char *, const Char *, int));
 extern	 int		  fcompare		__P((Char **, Char **));
 extern	 void		  print_by_column	__P((Char *, Char *[], int, 
 						     int));
-extern	 int		  StrQcmp		__P((Char *, Char *));
+extern	 int		  StrQcmp		__P((const Char *, const Char *));
 extern	 Char		 *tgetenv		__P((Char *));
 
 /*
@@ -119,7 +117,7 @@ extern	 int		  tw_complete		__P((Char *, Char **,
  * tw.color.c
  */
 extern	 void		  set_color_context	__P((void));
-extern	 void		  print_with_color	__P((Char *, size_t, int));
+extern	 void		  print_with_color	__P((Char *, size_t, Char));
 extern	 void		  parseLS_COLORS	__P((Char *));
 #endif /* COLOR_LS_F */
 

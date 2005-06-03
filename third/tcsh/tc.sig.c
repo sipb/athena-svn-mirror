@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sig.c,v 1.1.1.2 1998-10-03 21:10:15 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sig.c,v 1.1.1.3 2005-06-03 14:35:18 ghudson Exp $ */
 /*
  * tc.sig.c: Signal routine emulations
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,7 +32,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.sig.c,v 1.1.1.2 1998-10-03 21:10:15 danw Exp $")
+RCSID("$Id: tc.sig.c,v 1.1.1.3 2005-06-03 14:35:18 ghudson Exp $")
 
 #include "tc.wait.h"
 
@@ -58,7 +54,7 @@ static int stk_ptr = -1;
 
 /* queue child signals
  */
-static sigret_t
+static RETSIGTYPE
 sig_ch_queue()
 {
 #  ifdef JOBDEBUG
@@ -69,14 +65,11 @@ sig_ch_queue()
     stk[stk_ptr].s_pid = (pid_t) wait(&stk[stk_ptr].s_w);
     stk[stk_ptr].s_errno = errno;
     (void) signal(SIGCHLD, sig_ch_queue);
-#  ifndef SIGVOID
-    return(0);
-#  endif /* SIGVOID */
 }
 
 /* process all awaiting child signals
  */
-static sigret_t
+static RETSIGTYPE
 sig_ch_rel()
 {
     while (stk_ptr > -1)
@@ -85,14 +78,11 @@ sig_ch_rel()
     xprintf("signal(SIGCHLD, pchild);\n");
 #  endif /* JOBDEBUG */
     (void) signal(SIGCHLD, pchild);
-#  ifndef SIGVOID
-    return(0);
-#  endif /* SIGVOID */
 }
 
 
 /* libc.a contains these functions in SYSVREL >= 3. */
-sigret_t
+RETSIGTYPE
 (*xsigset(a, b)) ()
     int     a;
     signalfun_t  b;
@@ -161,7 +151,7 @@ ourwait(w)
     pid_t pid;
 
 #  ifdef JOBDEBUG
-    xprintf(CGETS(25, 1, "our wait %d\n", stk_ptr));
+    xprintf(CGETS(25, 1, "our wait %d\n"), stk_ptr);
     flush();
 #  endif /* JOBDEBUG */
 
@@ -185,7 +175,7 @@ ourwait(w)
 
 #  ifdef COHERENT
 #   undef signal
-sigret_t
+RETSIGTYPE
 (*xsignal(a, b)) ()
     int     a;
     signalfun_t  b;
@@ -225,7 +215,7 @@ sigpause(what)
 
 #ifdef NEEDsignal
 /* turn into bsd signals */
-sigret_t
+RETSIGTYPE
 (*xsignal(s, a)) ()
     int     s;
     signalfun_t a;
@@ -281,7 +271,7 @@ sigsetmask(mask)
 {
     sigset_t set, oset;
     int     m;
-    register int i;
+    int i;
 
     (void) sigemptyset(&set);
     (void) sigemptyset(&oset);
@@ -297,7 +287,7 @@ sigsetmask(mask)
 
     m = 0;
     for (i = 1; i <= MAXSIG; i++)
-	if (sigismember(&oset, i))
+	if (sigismember(&oset, i) == 1)
 	    SETBIT(m, i);
 
     return (m);
@@ -317,7 +307,7 @@ sigblock(mask)
 {
     sigset_t set, oset;
     int     m;
-    register int i;
+    int i;
 
     (void) sigemptyset(&set);
     (void) sigemptyset(&oset);
@@ -337,7 +327,7 @@ sigblock(mask)
     /* Return old mask to user. */
     m = 0;
     for (i = 1; i <= MAXSIG; i++)
-	if (sigismember(&oset, i))
+	if (sigismember(&oset, i) == 1)
 	    SETBIT(m, i);
 
     return (m);
@@ -356,7 +346,7 @@ bsd_sigpause(mask)
     sigmask_t     mask;
 {
     sigset_t set;
-    register int i;
+    int i;
 
     (void) sigemptyset(&set);
 
@@ -371,7 +361,7 @@ bsd_sigpause(mask)
  *
  * Emulate bsd style signal()
  */
-sigret_t (*bsd_signal(sig, func)) ()
+RETSIGTYPE (*bsd_signal(sig, func)) ()
         int sig;
         signalfun_t func;
 {
@@ -407,7 +397,7 @@ sigret_t (*bsd_signal(sig, func)) ()
 #ifdef SIGSYNCH
 static long Synch_Cnt = 0;
 
-sigret_t
+RETSIGTYPE
 synch_handler(sno)
 int sno;
 {

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.proc.h,v 1.1.1.2 1998-10-03 21:10:07 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.proc.h,v 1.1.1.3 2005-06-03 14:35:04 ghudson Exp $ */
 /*
  * sh.proc.h: Process data structures and variables
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -120,7 +116,7 @@ struct process {
 #define	AREASON		0200
 
 EXTERN struct process proclist IZERO_STRUCT;/* list head of all processes */
-EXTERN bool    pnoprocesses IZERO;	/* pchild found nothing to wait for */
+EXTERN int    pnoprocesses IZERO;	/* pchild found nothing to wait for */
 
 EXTERN struct process *pholdjob IZERO;	/* one level stack of current jobs */
 
@@ -131,7 +127,7 @@ EXTERN struct process *pprevious IZERO;	/* previous job in table */
 EXTERN int   pmaxindex IZERO;		/* current maximum job index */
 
 #ifndef BSDTIMES
-EXTERN bool    timesdone;	/* shtimes buffer full ? */
+EXTERN int    timesdone;	/* shtimes buffer full ? */
 #endif /* BSDTIMES */
 
 #endif /* _h_sh_proc */

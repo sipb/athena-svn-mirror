@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.file.c,v 1.1.1.2 1998-10-03 21:10:00 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.file.c,v 1.1.1.3 2005-06-03 14:35:11 ghudson Exp $ */
 /*
  * sh.file.c: File completion for csh. This file is not used in tcsh.
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -35,10 +31,11 @@
  * SUCH DAMAGE.
  */
 #include "sh.h"
+#include "ed.h"
 
-RCSID("$Id: sh.file.c,v 1.1.1.2 1998-10-03 21:10:00 danw Exp $")
+RCSID("$Id: sh.file.c,v 1.1.1.3 2005-06-03 14:35:11 ghudson Exp $")
 
-#ifdef FILEC
+#if defined(FILEC) && defined(TIOCSTI)
 
 /*
  * Tenex style file name recognition, .. and more.
@@ -67,17 +64,18 @@ static	void	 back_to_col_1		__P((void));
 static	void	 pushback		__P((Char *));
 static	void	 catn			__P((Char *, Char *, int));
 static	void	 copyn			__P((Char *, Char *, int));
-static	Char	 filetype		__P((Char *, Char *));
-static	void	 print_by_column	__P((Char *, Char *[], int));
+static	int	 filetype		__P((Char *, Char *));
+static	void	 print_by_column	__P((Char *, Char *[], size_t));
 static	Char 	*tilde			__P((Char *, Char *));
 static	void	 retype			__P((void));
 static	void	 beep			__P((void));
 static	void 	 print_recognized_stuff	__P((Char *));
 static	void	 extract_dir_and_name	__P((Char *, Char *, Char *));
 static	Char	*getitem		__P((DIR *, int));
-static	void	 free_items		__P((Char **));
+static	void	 free_items		__P((Char **, size_t));
 static	int	 tsearch		__P((Char *, COMMAND, int));
-static	int	 recognize		__P((Char *, Char *, int, int));
+static	int	 compare		__P((const ptr_t, const ptr_t));
+static	int	 recognize		__P((Char *, Char *, int, size_t));
 static	int	 is_prefix		__P((Char *, Char *));
 static	int	 is_suffix		__P((Char *, Char *));
 static	int	 ignored		__P((Char *));
@@ -88,7 +86,7 @@ static	int	 ignored		__P((Char *));
  * completion by default.  Filec controls completion, nobeep controls
  * ringing the terminal bell on incomplete expansions.
  */
-bool    filec = 0;
+int    filec = 0;
 
 static void
 setup_tty(on)
@@ -227,8 +225,7 @@ static void
 pushback(string)
     Char   *string;
 {
-    register Char *p;
-    char    c;
+    Char *p;
 #ifdef TERMIO
 # ifdef POSIX
     struct termios tty, tty_normal;
@@ -259,14 +256,19 @@ pushback(string)
     (void) ioctl(SHOUT, TCSETAW, (ioctl_t) &tty);
 # endif /* POSIX */
 
-    for (p = string; c = *p; p++)
-	(void) ioctl(SHOUT, TIOCSTI, (ioctl_t) & c);
+    for (p = string; *p != '\0'; p++) {
+	char buf[MB_LEN_MAX];
+	size_t i, len;
+
+	len = one_wctomb(buf, *p & CHAR);
+	for (i = 0; i < len; i++)
+	    (void) ioctl(SHOUT, TIOCSTI, (ioctl_t) &buf[i]);
+    }
 # ifdef POSIX
     (void) tcsetattr(SHOUT, TCSANOW, &tty_normal);
 # else
     (void) ioctl(SHOUT, TCSETAW, (ioctl_t) &tty_normal);
 # endif /* POSIX */
-    (void) sigsetmask(omask);
 #else
     (void) ioctl(SHOUT, TIOCGETP, (ioctl_t) & tty);
     tty_normal = tty;
@@ -292,8 +294,8 @@ pushback(string)
  */
 static void
 catn(des, src, count)
-    register Char *des, *src;
-    register count;
+    Char *des, *src;
+    int count;
 {
     while (--count >= 0 && *des)
 	des++;
@@ -309,8 +311,8 @@ catn(des, src, count)
  */
 static void
 copyn(des, src, count)
-    register Char *des, *src;
-    register count;
+    Char *des, *src;
+    int count;
 {
     while (--count >= 0)
 	if ((*des++ = *src++) == 0)
@@ -318,7 +320,7 @@ copyn(des, src, count)
     *des = '\0';
 }
 
-static  Char
+static int
 filetype(dir, file)
     Char   *dir, *file;
 {
@@ -357,9 +359,10 @@ static struct winsize win;
 static void
 print_by_column(dir, items, count)
     Char   *dir, *items[];
-    int     count;
+    size_t  count;
 {
-    register int i, rows, r, c, maxwidth = 0, columns;
+    size_t i;
+    int rows, r, c, maxwidth = 0, columns;
 
     if (ioctl(SHOUT, TIOCGWINSZ, (ioctl_t) & win) < 0 || win.ws_col == 0)
 	win.ws_col = 80;
@@ -374,7 +377,7 @@ print_by_column(dir, items, count)
 	for (c = 0; c < columns; c++) {
 	    i = c * rows + r;
 	    if (i < count) {
-		register int w;
+		int w;
 
 		xprintf("%S", items[i]);
 		xputchar(dir ? filetype(dir, items[i]) : ' ');
@@ -400,8 +403,8 @@ static Char *
 tilde(new, old)
     Char   *new, *old;
 {
-    register Char *o, *p;
-    register struct passwd *pw;
+    Char *o, *p;
+    struct passwd *pw;
     static Char person[40];
 
     if (old[0] != '~')
@@ -456,14 +459,14 @@ static void
 beep()
 {
     if (adrof(STRnobeep) == 0)
-#ifndef _OSD_POSIX
+#ifdef IS_ASCII
 	(void) write(SHOUT, "\007", 1);
-#else /*_OSD_POSIX*/
+#else
     {
 	unsigned char beep_ch = CTL_ESC('\007');
 	(void) write(SHOUT, &beep_ch, 1);
     }
-#endif /*_OSD_POSIX*/
+#endif
 }
 
 /*
@@ -507,7 +510,7 @@ static void
 extract_dir_and_name(path, dir, name)
     Char   *path, *dir, *name;
 {
-    register Char *p;
+    Char *p;
 
     p = Strrchr(path, '/');
     if (p == NULL) {
@@ -519,21 +522,17 @@ extract_dir_and_name(path, dir, name)
 	copyn(dir, path, p - path);
     }
 }
-/* atp vmsposix - I need to remove all the setpwent 
- *		  getpwent endpwent stuff. VMS_POSIX has getpwnam getpwuid
- *		  and getlogin. This needs fixing. (There is no access to 
- *		  pw->passwd in VMS - a secure system benefit :-| )
- */
+
 static Char *
 getitem(dir_fd, looking_for_lognames)
     DIR    *dir_fd;
     int     looking_for_lognames;
 {
-    register struct passwd *pw;
-    register struct dirent *dirp;
+    struct passwd *pw;
+    struct dirent *dirp;
 
     if (looking_for_lognames) {
-#ifdef _VMS_POSIX
+#ifndef HAVE_GETPWENT
 	    return (NULL);
 #else
 	if ((pw = getpwent()) == NULL)
@@ -541,36 +540,35 @@ getitem(dir_fd, looking_for_lognames)
 	return (str2short(pw->pw_name));
 #endif /* atp vmsposix */
     }
-    if (dirp = readdir(dir_fd))
+    if ((dirp = readdir(dir_fd)) != NULL)
 	return (str2short(dirp->d_name));
     return (NULL);
 }
 
 static void
-free_items(items)
-    register Char **items;
+free_items(items, numitems)
+    Char **items;
+    size_t numitems;
 {
-    register int i;
+    size_t i;
 
-    for (i = 0; items[i]; i++)
+    for (i = 0; i < numitems; i++)
 	xfree((ptr_t) items[i]);
     xfree((ptr_t) items);
 }
 
 #ifdef BSDSIGS
-# define FREE_ITEMS(items) { \
+# define FREE_ITEMS(items, numitems) { \
 	sigmask_t omask;\
 \
 	omask = sigblock(sigmask(SIGINT));\
-	free_items(items);\
-	items = NULL;\
+	free_items(items, numitems);\
 	(void) sigsetmask(omask);\
 }
 #else
-# define FREE_ITEMS(items) { \
+# define FREE_ITEMS(items, numitems) { \
 	(void) sighold(SIGINT);\
-	free_items(items);\
-	items = NULL;\
+	free_items(items, numitems);\
 	(void) sigrelse(SIGINT);\
 }
 #endif /* BSDSIGS */
@@ -584,24 +582,20 @@ tsearch(word, command, max_word_length)
     int     max_word_length;
     COMMAND command;
 {
-    static Char **items = NULL;
-    register DIR *dir_fd;
-    register numitems = 0, ignoring = TRUE, nignored = 0;
-    register name_length, looking_for_lognames;
+    DIR *dir_fd;
+    int ignoring = TRUE, nignored = 0;
+    int name_length, looking_for_lognames;
     Char    tilded_dir[MAXPATHLEN + 1], dir[MAXPATHLEN + 1];
     Char    name[MAXNAMLEN + 1], extended_name[MAXNAMLEN + 1];
     Char   *item;
-
-#define MAXITEMS 1024
-
-    if (items != NULL)
-	FREE_ITEMS(items);
+    Char **items = NULL;
+    size_t numitems = 0, maxitems = 0;
 
     looking_for_lognames = (*word == '~') && (Strchr(word, '/') == NULL);
     if (looking_for_lognames) {
-#ifndef _VMS_POSIX
+#ifdef HAVE_GETPWENT
 	(void) setpwent();
-#endif /*atp vmsposix */
+#endif
 	copyn(name, &word[1], MAXNAMLEN);	/* name sans ~ */
 	dir_fd = NULL;
     }
@@ -616,7 +610,8 @@ tsearch(word, command, max_word_length)
 
 again:				/* search for matches */
     name_length = Strlen(name);
-    for (numitems = 0; item = getitem(dir_fd, looking_for_lognames);) {
+    for (numitems = 0;
+	(item = getitem(dir_fd, looking_for_lognames)) != NULL;) {
 	if (!is_prefix(name, item))
 	    continue;
 	/* Don't match . files on null prefix match */
@@ -624,25 +619,14 @@ again:				/* search for matches */
 	    !looking_for_lognames)
 	    continue;
 	if (command == LIST) {
-	    if (numitems >= MAXITEMS) {
-		xprintf(CGETS(14, 1, "\nYikes!! Too many %s!!\n"),
-			looking_for_lognames ?
-			CGETS(14, 2, "names in password file") :
-			CGETS(14, 3, "files");
-		break;
+	    if (numitems >= maxitems) {
+		maxitems += 1024;
+		if (items == NULL)
+			items = (Char **) xmalloc(sizeof(*items) * maxitems);
+		else
+			items = (Char **) xrealloc((ptr_t) items,
+			    sizeof(*items) * maxitems);
 	    }
-	    /*
-	     * From Beto Appleton (beto@aixwiz.austin.ibm.com)
-	     *	typing "./control-d" will cause the csh to core-dump.
-	     *	the problem can be reproduce as following:
-	     *	 1. set ignoreeof
-	     *	 2. set filec
-	     *	 3. create a directory with 1050 files
-	     *	 4. typing "./control-d" will cause the csh to core-dump
-	     * Solution: Add + 1 to MAXITEMS
-	     */
-	    if (items == NULL)
-		items = (Char **) xcalloc(sizeof(items[0]), MAXITEMS + 1);
 	    items[numitems] = (Char *) xmalloc((size_t) (Strlen(item) + 1) *
 					       sizeof(Char));
 	    copyn(items[numitems], item, MAXNAMLEN);
@@ -659,20 +643,20 @@ again:				/* search for matches */
     if (ignoring && numitems == 0 && nignored > 0) {
 	ignoring = FALSE;
 	nignored = 0;
-	if (looking_for_lognames)
-#ifndef _VMS_POSIX
+	if (looking_for_lognames) {
+#ifdef HAVE_GETPWENT
 	    (void) setpwent();
 #endif /* atp vmsposix */
-	else
+	} else
 	    rewinddir(dir_fd);
 	goto again;
     }
 
-    if (looking_for_lognames)
-#ifndef _VMS_POSIX
+    if (looking_for_lognames) {
+#ifndef HAVE_GETPWENT
 	(void) endpwent();
-#endif /*atp vmsposix */
-    else
+#endif
+    } else
 	(void) closedir(dir_fd);
     if (numitems == 0)
 	return (0);
@@ -687,13 +671,41 @@ again:				/* search for matches */
 	return (numitems);
     }
     else {			/* LIST */
-	qsort((ptr_t) items, (size_t) numitems, sizeof(items[0]), sortscmp);
+	qsort((ptr_t) items, numitems, sizeof(items[0]), 
+	    (int (*) __P((const void *, const void *))) compare);
 	print_by_column(looking_for_lognames ? NULL : tilded_dir,
 			items, numitems);
 	if (items != NULL)
-	    FREE_ITEMS(items);
+	    FREE_ITEMS(items, numitems);
     }
     return (0);
+}
+
+
+static int
+compare(p, q)
+    const ptr_t  p, q;
+{
+#ifdef WIDE_STRINGS
+    errno = 0;
+
+    return (wcscoll(*(Char **) p, *(Char **) q));
+#else
+    char *p1, *q1;
+    int res;
+
+    p1 = strsave(short2str(*(Char **) p));
+    q1 = strsave(short2str(*(Char **) q));
+# if defined(NLS) && !defined(NOSTRCOLL)
+    errno = 0;  /* strcoll sets errno, another brain-damage */
+    res = strcoll(p1, q1);
+# else
+    res = strcmp(p1, q1);
+# endif /* NLS && !NOSTRCOLL */
+    xfree (p1);
+    xfree (q1);
+    return res;
+#endif /* not WIDE_STRINGS */
 }
 
 /*
@@ -707,13 +719,14 @@ again:				/* search for matches */
 static int
 recognize(extended_name, item, name_length, numitems)
     Char   *extended_name, *item;
-    int     name_length, numitems;
+    int     name_length;
+    size_t  numitems;
 {
     if (numitems == 1)		/* 1st match */
 	copyn(extended_name, item, MAXNAMLEN);
     else {			/* 2nd & subsequent matches */
-	register Char *x, *ent;
-	register int len = 0;
+	Char *x, *ent;
+	int len = 0;
 
 	x = extended_name;
 	for (ent = item; *x && *x == *ent++; x++, len++);
@@ -731,7 +744,7 @@ recognize(extended_name, item, name_length, numitems)
  */
 static int
 is_prefix(check, template)
-    register Char *check, *template;
+    Char *check, *template;
 {
     do
 	if (*check == 0)
@@ -748,7 +761,7 @@ static int
 is_suffix(check, template)
     Char   *check, *template;
 {
-    register Char *c, *t;
+    Char *c, *t;
 
     for (c = check; *c++;);
     for (t = template; *t++;);
@@ -765,22 +778,22 @@ tenex(inputline, inputline_size)
     Char   *inputline;
     int     inputline_size;
 {
-    register int numitems, num_read;
-    char    tinputline[BUFSIZE];
+    int numitems, num_read;
+    char    tinputline[BUFSIZE + 1];
 
 
     setup_tty(ON);
 
     while ((num_read = read(SHIN, tinputline, BUFSIZE)) > 0) {
-	int     i;
 	static Char delims[] = {' ', '\'', '"', '\t', ';', '&', '<',
 	'>', '(', ')', '|', '^', '%', '\0'};
-	register Char *str_end, *word_start, last_Char, should_retype;
-	register int space_left;
+	Char *str_end, *word_start, last_Char, should_retype;
+	int space_left;
 	COMMAND command;
 
-	for (i = 0; i < num_read; i++)
-	    inputline[i] = (unsigned char) tinputline[i];
+	tinputline[num_read] = 0;
+	Strcpy(inputline, str2short(tinputline));
+	num_read = Strlen(inputline);
 	last_Char = inputline[num_read - 1] & ASCII;
 
 	if (last_Char == '\n' || num_read == inputline_size)
@@ -833,10 +846,10 @@ tenex(inputline, inputline_size)
 
 static int
 ignored(item)
-    register Char *item;
+    Char *item;
 {
     struct varent *vp;
-    register Char **cp;
+    Char **cp;
 
     if ((vp = adrof(STRfignore)) == NULL || (cp = vp->vec) == NULL)
 	return (FALSE);
@@ -845,4 +858,4 @@ ignored(item)
 	    return (TRUE);
     return (FALSE);
 }
-#endif	/* FILEC */
+#endif	/* FILEC && TIOCSTI */

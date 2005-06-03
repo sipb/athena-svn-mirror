@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.bind.c,v 1.1.1.2 1998-10-03 21:10:10 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.bind.c,v 1.1.1.3 2005-06-03 14:35:55 ghudson Exp $ */
 /*
  * tc.bind.c: Key binding functions
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,7 +32,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.bind.c,v 1.1.1.2 1998-10-03 21:10:10 danw Exp $")
+RCSID("$Id: tc.bind.c,v 1.1.1.3 2005-06-03 14:35:55 ghudson Exp $")
 
 #include "ed.h"
 #include "ed.defns.h"
@@ -71,7 +67,7 @@ dobindkey(v, c)
     struct command *c;
 {
     KEYCMD *map;
-    int     ntype, no, remove, key, bind;
+    int     ntype, no, removeb, key, bindk;
     Char   *par;
     Char    p;
     KEYCMD  cmd;
@@ -91,7 +87,7 @@ dobindkey(v, c)
 
     map = CcKeyMap;
     ntype = XK_CMD;
-    key = remove = bind = 0;
+    key = removeb = bindk = 0;
     for (no = 1, par = v[no]; 
 	 par != NULL && (*par++ & CHAR) == '-'; no++, par = v[no]) {
 	if ((p = (*par & CHAR)) == '-') {
@@ -101,7 +97,7 @@ dobindkey(v, c)
 	else 
 	    switch (p) {
 	    case 'b':
-		bind = 1;
+		bindk = 1;
 		break;
 	    case 'k':
 		key = 1;
@@ -116,7 +112,7 @@ dobindkey(v, c)
 		ntype = XK_EXE;
 		break;
 	    case 'r':
-		remove = 1;
+		removeb = 1;
 		break;
 	    case 'v':
 		ed_InitVIMaps();
@@ -152,7 +148,7 @@ dobindkey(v, c)
 	in.len = Strlen(in.buf);
     }
     else {
-	if (bind) {
+	if (bindk) {
 	    if (parsebind(v[no++], &in) == NULL)
 		return;
 	}
@@ -162,9 +158,15 @@ dobindkey(v, c)
 	}
     }
 
+#ifndef WINNT_NATIVE
+    if (in.buf[0] > 0xFF) {
+	bad_spec(in.buf);
+	return;
+    }
+#endif
     ch = (uChar) in.buf[0];
 
-    if (remove) {
+    if (removeb) {
 	if (key) {
 	    (void) ClearArrowKeys(&in);
 	    return;
@@ -199,7 +201,7 @@ dobindkey(v, c)
 	    return;
 	if (key) {
 	    if (SetArrowKeys(&in, XmapStr(&out), ntype) == -1)
-		xprintf(CGETS(20, 2, "Bad key name: %S\n"), in);
+		xprintf(CGETS(20, 2, "Bad key name: %S\n"), in.buf);
 	}
 	else
 	    AddXkey(&in, XmapStr(&out), ntype);
@@ -235,7 +237,7 @@ printkey(map, in)
     CStr   *in;
 {
     unsigned char outbuf[100];
-    register struct KeyFuncs *fp;
+    struct KeyFuncs *fp;
 
     if (in->len < 2) {
 	(void) unparsestring(in, outbuf, STRQQ);
@@ -253,7 +255,7 @@ static  KEYCMD
 parsecmd(str)
     Char   *str;
 {
-    register struct KeyFuncs *fp;
+    struct KeyFuncs *fp;
 
     for (fp = FuncNames; fp->name; fp++) {
 	if (strcmp(short2str(str), fp->name) == 0) {
@@ -277,26 +279,23 @@ parsebind(s, str)
     Char *s;
     CStr *str;
 {
-#ifdef DSPMBYTE
-    extern bool NoNLSRebind;
-#endif /* DSPMBYTE */
     Char *b = str->buf;
 
     if (Iscntrl(*s)) {
 	*b++ = *s;
 	*b = '\0';
-	str->len = b - str->buf;
+	str->len = (int) (b - str->buf);
 	return str;
     }
 
     switch (*s) {
     case '^':
 	s++;
-#ifndef _OSD_POSIX
+#ifdef IS_ASCII
 	*b++ = (*s == '?') ? '\177' : ((*s & CHAR) & 0237);
-#else /*_OSD_POSIX*/
+#else
 	*b++ = (*s == '?') ? CTL_ESC('\177') : _toebcdic[_toascii[*s & CHAR] & 0237];
-#endif /*_OSD_POSIX*/
+#endif
 	*b = '\0';
 	break;
 
@@ -304,9 +303,9 @@ parsebind(s, str)
     case 'M':
     case 'X':
     case 'C':
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     case 'N':
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 	if (s[1] != '-' || s[2] == '\0') {
 	    bad_spec(s);
 	    return NULL;
@@ -321,89 +320,50 @@ parsebind(s, str)
 	    break;
 
 	case 'C': case 'c':	/* Turn into ^c */
-#ifndef _OSD_POSIX
+#ifdef IS_ASCII
 	    *b++ = (*s == '?') ? '\177' : ((*s & CHAR) & 0237);
-#else /*_OSD_POSIX*/
+#else
 	    *b++ = (*s == '?') ? CTL_ESC('\177') : _toebcdic[_toascii[*s & CHAR] & 0237];
-#endif /*_OSD_POSIX*/
+#endif
 	    *b = '\0';
 	    break;
 
 	case 'X' : case 'x':	/* Turn into ^Xc */
-#ifndef _OSD_POSIX
+#ifdef IS_ASCII
 	    *b++ = 'X' & 0237;
-#else /*_OSD_POSIX*/
+#else
 	    *b++ = _toebcdic[_toascii['X'] & 0237];
-#endif /*_OSD_POSIX*/
+#endif
 	    *b++ = *s;
 	    *b = '\0';
 	    break;
 
 	case 'M' : case 'm':	/* Turn into 0x80|c */
-#ifdef DSPMBYTE
 	    if (!NoNLSRebind) {
 	    	*b++ = CTL_ESC('\033');
 	    	*b++ = *s;
 	    } else {
-#endif /* DSPMBYTE */
-#ifndef _OSD_POSIX
+#ifdef IS_ASCII
 	    *b++ = *s | 0x80;
-#else /*_OSD_POSIX*/
+#else
 	    *b++ = _toebcdic[_toascii[*s] | 0x80];
-#endif /*_OSD_POSIX*/
-#ifdef DSPMBYTE
+#endif
 	    }
-#endif /* DSPMBYTE */
 	    *b = '\0';
 	    break;
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 	case 'N' : case 'n':	/* NT */
 		{
-			extern int lstricmp(char*,char*);
-			char *str = short2str(s);
-			short fkey;
-			fkey = atoi(str);
-			if (fkey !=0) {
-				*b++ = 255+fkey;
-				*b = '\0';
-			}
-			else {
-				if (!lstrcmpi("pgup",str)) {
-					*b++ = 255+24+1;
-				}
-				else if (!lstrcmpi("pgdn",str)) {
-					*b++ = 255+24+2;
-				}
-				else if (!lstrcmpi("end",str)) {
-					*b++ = 255+24+3;
-				}
-				else if (!lstrcmpi("home",str)) {
-					*b++ = 255+24+4;
-				}
-				else if (!lstrcmpi("left",str)) {
-					*b++ = 255+24+5;
-				}
-				else if (!lstrcmpi("up",str)) {
-					*b++ = 255+24+6;
-				}
-				else if (!lstrcmpi("right",str)) {
-					*b++ = 255+24+7;
-				}
-				else if (!lstrcmpi("down",str)) {
-					*b++ = 255+24+8;
-				}
-				else if (!lstrcmpi("ins",str)) {
-					*b++ = 255+24+9;
-				}
-				else if (!lstrcmpi("del",str)) {
-					*b++ = 255+24+10;
-				}
-				else
-					bad_spec(s);
-			}
+			Char bnt;
+
+			bnt = nt_translate_bindkey(s);
+			if (bnt != 0)
+				*b++ = bnt;
+			else
+				bad_spec(s);
 		}
 	    break;
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
 	default:
 	    abort();
@@ -417,7 +377,7 @@ parsebind(s, str)
 	return NULL;
     }
 
-    str->len = b - str->buf;
+    str->len = (int) (b - str->buf);
     return str;
 }
 
@@ -429,7 +389,7 @@ parsestring(str, buf)
 {
     Char   *b;
     const Char   *p;
-    int    es;
+    eChar  es;
 
     b = buf->buf;
     if (*str == 0) {
@@ -439,7 +399,7 @@ parsestring(str, buf)
 
     for (p = str; *p != 0; p++) {
 	if ((*p & CHAR) == '\\' || (*p & CHAR) == '^') {
-	    if ((es = parseescape(&p)) == -1)
+	    if ((es = parseescape(&p)) == CHAR_ERR)
 		return 0;
 	    else
 		*b++ = (Char) es;
@@ -448,7 +408,7 @@ parsestring(str, buf)
 	    *b++ = *p & CHAR;
     }
     *b = 0;
-    buf->len = b - buf->buf;
+    buf->len = (int) (b - buf->buf);
     return buf;
 }
 
@@ -491,7 +451,7 @@ printkeys(map, first, last)
     KEYCMD *map;
     int     first, last;
 {
-    register struct KeyFuncs *fp;
+    struct KeyFuncs *fp;
     Char    firstbuf[2], lastbuf[2];
     CStr fb, lb;
     unsigned char unparsbuf[10], extrabuf[10];
@@ -577,7 +537,7 @@ bindkey_usage()
 static void
 list_functions()
 {
-    register struct KeyFuncs *fp;
+    struct KeyFuncs *fp;
 
     for (fp = FuncNames; fp->name; fp++) {
 	xprintf("%s\n          %s\n", fp->name, fp->desc);
@@ -611,9 +571,10 @@ tocontrol(c)
     if (c == '?')
 	c = CTL_ESC('\177');
     else
-#ifndef _OSD_POSIX
+#ifdef IS_ASCII
 	c &= 037;
-#else /* EBCDIC: simulate ASCII-behavior by transforming to ASCII and back */
+#else
+	/* EBCDIC: simulate ASCII-behavior by transforming to ASCII and back */
 	c  = _toebcdic[_toascii[c] & 037];
 #endif
     return (c);
@@ -621,9 +582,9 @@ tocontrol(c)
 
 static char *
 unparsekey(c)			/* 'c' -> "c", '^C' -> "^" + "C" */
-    register int c;
+    int c;
 {
-    register char *cp;
+    char *cp;
     static char tmp[10];
 
     cp = tmp;
@@ -656,7 +617,7 @@ unparsekey(c)			/* 'c' -> "c", '^C' -> "^" + "C" */
     case '\t':
 	(void) strcpy(cp, "Tab");
 	return (tmp);
-#ifndef _OSD_POSIX
+#ifdef IS_ASCII
     case '\033':
 	(void) strcpy(cp, "Esc");
 	return (tmp);
@@ -673,7 +634,7 @@ unparsekey(c)			/* 'c' -> "c", '^C' -> "^" + "C" */
 	}
 	*cp = '\0';
 	return (tmp);
-#else /*_OSD_POSIX*/
+#else /* IS_ASCII */
     default:
         if (*cp == CTL_ESC('\033')) {
 	    (void) strcpy(cp, "Esc");
@@ -692,7 +653,7 @@ unparsekey(c)			/* 'c' -> "c", '^C' -> "^" + "C" */
 	    xsnprintf(cp, 3, "\\%3.3o", c);
 	    cp += 4;
 	}
-#endif /*_OSD_POSIX*/
+#endif /* IS_ASCII */
     }
 }
 
@@ -700,9 +661,9 @@ static  KEYCMD
 getkeycmd(sp)
     Char  **sp;
 {
-    register Char *s = *sp;
-    register char c;
-    register KEYCMD keycmd = F_UNASSIGNED;
+    Char *s = *sp;
+    char c;
+    KEYCMD keycmd = F_UNASSIGNED;
     KEYCMD *map;
     int     meta = 0;
     Char   *ret_sp = s;
@@ -747,7 +708,7 @@ parsekey(sp)
     Char  **sp;			/* Return position of first unparsed character
 				 * for return value -2 (xkeynext) */
 {
-    register int c, meta = 0, control = 0, ctrlx = 0;
+    int c, meta = 0, control = 0, ctrlx = 0;
     Char   *s = *sp;
     KEYCMD  keycmd;
 
@@ -896,12 +857,12 @@ parsekey(sp)
 /*ARGSUSED*/
 void
 dobind(v, dummy)
-    register Char **v;
+    Char **v;
     struct command *dummy;
 {
-    register int c;
-    register struct KeyFuncs *fp;
-    register int i, prev;
+    int c;
+    struct KeyFuncs *fp;
+    int i, prev;
     Char   *p, *l;
     CStr    cstr;
     Char    buf[1000];
@@ -933,7 +894,7 @@ dobind(v, dummy)
 			if (i != CTL_ESC('\033') && (CcKeyMap[i] == F_XKEY ||
 					 CcAltMap[i] == F_XKEY)) {
 			    p = buf;
-#ifndef _OSD_POSIX /* this is only for ASCII, not for EBCDIC */
+#ifdef IS_ASCII
 			    if (i > 0177) {
 				*p++ = 033;
 				*p++ = i & ASCII;
@@ -941,9 +902,9 @@ dobind(v, dummy)
 			    else {
 				*p++ = (Char) i;
 			    }
-#else /*_OSD_POSIX*/
+#else
 			    *p++ = (Char) i;
-#endif /*_OSD_POSIX*/
+#endif
 			    for (l = s; *l != 0; l++) {
 				*p++ = *l;
 			    }
@@ -1063,10 +1024,10 @@ dobind(v, dummy)
 
 static void
 pkeys(first, last)
-    register int first, last;
+    int first, last;
 {
-    register struct KeyFuncs *fp;
-    register KEYCMD *map;
+    struct KeyFuncs *fp;
+    KEYCMD *map;
     int mask;
     char    buf[8];
 

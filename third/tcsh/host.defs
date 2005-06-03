@@ -1,5 +1,5 @@
 newcode	:
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/host.defs,v 1.1.1.1 1998-10-03 21:09:51 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/host.defs,v 1.1.1.2 2005-06-03 14:35:31 ghudson Exp $ */
 /*
  * host.defs: Hosttype/Machtype etc.
  */
@@ -15,11 +15,7 @@ newcode	:
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -37,12 +33,14 @@ newcode	:
  */
 #include "sh.h"
 
-RCSID("$Id: host.defs,v 1.1.1.1 1998-10-03 21:09:51 danw Exp $")
+RCSID("$Id: host.defs,v 1.1.1.2 2005-06-03 14:35:31 ghudson Exp $")
 
 endcode	:
 
-macro	: M_mipsel : (defined(mips) || defined(__mips)) && (defined(MIPSEL) || defined(__MIPSEL))
-macro	: M_mipseb : (defined(mips) || defined(__mips)) && (defined(MIPSEB) || defined(__MIPSEB))
+macro	: M_mips64el : (defined(mips64) || defined(__mips64)) && (defined(MIPSEL) || defined(__MIPSEL))
+macro	: M_mips64eb : (defined(mips64) || defined(__mips64)) && (defined(MIPSEB) || defined(__MIPSEB))
+macro	: M_mipsel : (!defined(M_mips64el)) && (defined(mips) || defined(__mips)) && (defined(MIPSEL) || defined(__MIPSEL))
+macro	: M_mipseb : (!defined(M_mips64eb)) && (defined(mips) || defined(__mips)) && (defined(MIPSEB) || defined(__MIPSEB))
 macro	: M_i386 : (defined(i386) || defined(__i386__))
 macro	: M_i486 : (defined(i486) || defined(__i486__))
 macro	: M_i586 : (defined(i586) || defined(__i586__))
@@ -176,12 +174,17 @@ newcode	:
 void
 getmachine()
 {
-     char *hosttype;
-     char *ostype;
-     char *vendor;
-     char *machtype;
+     const char *hosttype;
+     const char *ostype;
+     const char *vendor;
+     const char *machtype;
 
 endcode	:
+
+
+newdef	: defined(HOSTTYPE)
+hosttype:						: HOSTTYPE
+enddef	:
 
 
 newdef	: defined(__PARAGON__)
@@ -432,14 +435,24 @@ machtype: defined(M_i386)				: "i386"
 enddef	:
 
 
-newdef	: defined(linux)
+newdef	: defined(linux) || defined(__GNU__) || defined(__GLIBC__)
 comment	: Linus Torvalds's linux
 vendor	: defined(M_intel)				: "intel"
+hosttype: defined(__ia64__)				: "ia64-linux"
+hosttype: defined(__powerpc64__)			: "powerpc64-linux"
+hosttype: defined(__s390x__)				: "s390x-linux"
+hosttype: defined(__s390__)				: "s390-linux"
+hosttype: defined(__x86_64__)				: "x86_64-linux"
 hosttype: defined(M_i586) 				: "i586-linux"
 hosttype: defined(M_i486) 				: "i486-linux"
 hosttype: defined(M_i386)				: "i386-linux"
 ostype	: !defined(PPC) 				: "linux"
 ostype	: defined(PPC)					: "mklinux"
+machtype: defined(__ia64__)				: "ia64"
+machtype: defined(__powerpc64__)			: "powerpc64"
+machtype: defined(__s390x__)				: "s390x"
+machtype: defined(__s390__)				: "s390"
+machtype: defined(__x86_64__)				: "x86_64"
 machtype: defined(M_i586) 				: "i586"
 machtype: defined(M_i486) 				: "i486"
 machtype: defined(M_i386)				: "i386"
@@ -449,6 +462,10 @@ hosttype: defined(__alpha)				: "alpha"
 hosttype: defined(PPC)					: "powerpc"
 machtype: defined(__alpha)				: "alpha"
 machtype: defined(PPC)					: "powerpc"
+machtype: defined(M_mipsel)				: "mipsel"
+machtype: defined(M_mipseb)				: "mipseb"
+machtype: defined(M_mips64el)				: "mips64el"
+machtype: defined(M_mips64eb)				: "mips64eb"
 enddef	:
 
 
@@ -463,7 +480,7 @@ enddef	:
 
 newdef	: defined(__NetBSD__) 
 comment	: NetBSD
-vendor	: defined(arm32)				: "acorn"
+vendor	: defined(arm32) || defined(__arm__)		: "acorn"
 vendor	: defined(alpha)				: "digital"
 vendor	: defined(amiga)				: "commodore"
 vendor	: defined(atari)				: "atari"
@@ -472,14 +489,16 @@ vendor	: defined(M_intel)				: "intel"
 vendor	: defined(m68k)					: "motorola"
 vendor	: defined(mac68k)				: "apple"
 vendor	: defined(pc532)				: "national-semi"
-vendor	: defined(pmax)	|| defined(mips)		: "dec"
-vendor	: defined(M_mipsel)				: "dec"
+vendor	: defined(pmax)					: "dec"
+vendor	: defined(mips)					: "mips"
 vendor	: defined(sparc)				: "sun"
 vendor	: defined(sun3)					: "sun"
 vendor	: defined(vax)					: "digital"
 hosttype: 						: "NetBSD"
 ostype	: 						: "NetBSD"
-machtype: defined(arm32)				: "arm32"
+machtype: defined(arm32) || defined(__APCS_32__)	: "arm32"
+machtype: defined(arm26) || defined(__APCS_26__)	: "arm26"
+machtype: defined(arm) || defined(__arm__)		: "arm"
 machtype: defined(sparc)				: "sparc"
 machtype: defined(mc68020)				: "m68k"
 machtype: defined(M_i386)				: "i386"
@@ -494,10 +513,12 @@ enddef	:
 
 newdef	: defined(__FreeBSD__) 
 comment	: FreeBSD
+vendor	: defined(__alpha)				: "digital"
 vendor	: defined(M_intel)				: "intel"
 hosttype:						: "FreeBSD"
 ostype	:						: "FreeBSD"
-machtype:						: "i386"
+machtype: defined(__alpha)				: "alpha"
+machtype: defined(M_i386)				: "i386"
 enddef	:
 
 
@@ -532,6 +553,14 @@ hosttype:						: "coh386"
 hosttype:						: "coherent"
 ostype	:						: "coherent"
 machtype: defined(_I386)				: "i386"
+enddef	:
+
+newdef	: defined(concurrent)
+comment	: Concurrent PowerHawk
+vendor	:						: "concurrent"
+hosttype:						: "powerhawk"
+ostype	:						: "powermax_os"
+machtype:						: "powerhawk"
 enddef	:
 
 newdef	: defined(SCO)
@@ -698,14 +727,28 @@ enddef	:
 
 
 newdef	: defined(NeXT)
-comment	: NeXT
+comment	: NeXTStep
 vendor	:						: "next"
-hosttype:						: "next"
-ostype	:						: "mach"
+hosttype: defined(mc68020) || defined(__mc68020__)	: "next"
+hosttype: defined(M_i386)  || defined(__i386__)		: "intel-pc"
+hosttype: defined(hppa)    || defined(__hppa__)		: "hp"
+hosttype: defined(sparc)   || defined(__sparc__)	: "sun"
+ostype	:						: "nextstep"
 machtype: defined(mc68020) || defined(__mc68020__)	: "m68k"
-machtype: defined(M_i386)				: "i386"
-machtype: defined(hppa) || defined(__hppa__)		: "hppa"
-machtype: defined(sparc) || defined(__sparc__)		: "sparc"
+machtype: defined(M_i386)  || defined(__i386__)		: "i386"
+machtype: defined(hppa)    || defined(__hppa__)		: "hppa"
+machtype: defined(sparc)   || defined(__sparc__)	: "sparc"
+enddef	:
+
+
+newdef	: defined(__APPLE__) && defined(__MACH__)
+comment	: OS X
+vendor	:						: "apple"
+hosttype: defined(__i386__)				: "intel-pc"
+hosttype: defined(__ppc__)				: "powermac"
+ostype	:						: "darwin"
+machtype: defined(__i386__)				: "i386"
+machtype: defined(__ppc__)				: "powerpc"
 enddef	:
 
 
@@ -889,6 +932,15 @@ ostype	:						: "ndix"
 enddef	:
 
 
+newdef	: defined(AMIGA)
+comment	: Amiga running AmigaOS+GG
+vendor	:						: "commodore"
+hosttype:						: "amiga"
+ostype	:						: "AmigaOS"
+machtype:						: "m68k"
+enddef	:
+
+
 newdef	: defined(uts)
 comment	: Amdahl running uts 2.1
 vendor	: 						: "amdahl"
@@ -954,9 +1006,9 @@ machtype:						: "clipper"
 enddef	:
 
 
-newdef	: defined(SNI) || defined(sinix)
-comment	: Siemens Nixdorf Informationssysteme SINIX
-vendor	:						: "sni"
+newdef	: (defined(SNI) || defined(sinix)) && !defined(_OSD_POSIX)
+comment	: Fujitsu Siemens Computers (former "Siemens Nixdorf Informationssysteme"): SINIX aka. ReliantUNIX, a SVR4 derivative
+vendor	:						: "fsc"
 hosttype: defined(M_intel)				: "wx200i"
 hosttype: defined(MIPSEB)				: "rm400"
 ostype	: defined(sinix)				: "sinix"
@@ -969,11 +1021,30 @@ machtype:						: "mips"
 enddef	:
 
 newdef	: defined(_OSD_POSIX)
-comment	: Siemens Nixdorf Informationssysteme BS2000 POSIX (mainframe, EBCDIC)
-vendor	:						: "sni"
-hosttype: defined(M_intel)				: "bs2000"
-ostype	: 						: "posix"
+comment	: Fujitsu Siemens Computers (former "Siemens Nixdorf Informationssysteme"): BS2000 POSIX (mainframe, EBCDIC)
+vendor	:						: "fsc"
+hosttype:						: "bs2000"
+ostype	:						: "osdposix"
+machtype: #machine(7500)				: "s390"
+machtype: #machine(mips)				: "mips"
+machtype: #machine(sparc)				: "sparc"
 machtype:						: "bs2000"
+enddef	:
+
+newdef	: defined(__MVS__)
+comment	: ibm uss s/390 (mainframe, EBCDIC)
+vendor	:						: "ibm"
+hosttype:					 	: "s390"
+ostype	: 						: "os390"
+machtype:						: "s390"
+enddef	:
+
+newdef	: defined(_SX)
+comment : NEC Corporation (SX-4)
+vendor	: 						: "nec"
+ostype	:						: "superux"
+hosttype:						: "sx4"
+machtype:						: "sx4"
 enddef	:
 
 newdef  : !defined(SOLARIS2) && (SYSVREL == 4)
@@ -991,6 +1062,14 @@ hosttype:						: "ds90"
 ostype	:						: "sysv4"
 machtype:						: "sparc"
 enddef	:
+
+newdef  : defined(_UWIN)
+comment : AT&T Research Unix for Windows
+vendor  :               				: "att"
+hosttype:                       			: "win32.i386"
+machtype:                       			: "i386"
+enddef	:
+
 
 newdef	: defined(mc68000) || defined(__mc68000__) || defined(mc68k32) || defined(m68k) || defined(mc68010) || defined(mc68020)
 hosttype:						: "m68k"
@@ -1037,7 +1116,6 @@ newdef	: SYSVREL == 0
 ostype	: defined(BSD4_4)				: "bsd44"
 ostype	: defined(BSD)					: "bsd"
 ostype	: defined(POSIX)				: "posix"
-ostype	: defined(unix) || defined(__unix__)		: "unix"
 enddef	:
 
 

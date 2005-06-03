@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/snames.h,v 1.1.1.1 1998-10-03 21:10:09 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/snames.h,v 1.1.1.2 2005-06-03 14:36:08 ghudson Exp $ */
 /*
  * snames.h: Short names for old compilers
  */

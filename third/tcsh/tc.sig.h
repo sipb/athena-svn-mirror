@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sig.h,v 1.1.1.2 1998-10-03 21:10:15 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sig.h,v 1.1.1.3 2005-06-03 14:35:18 ghudson Exp $ */
 /*
  * tc.sig.h: Signal handling
  *
@@ -15,11 +15,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -38,7 +34,7 @@
 #ifndef _h_tc_sig
 #define _h_tc_sig
 
-#if (SYSVREL > 0) || defined(BSD4_4) || defined(_MINIX) || defined(DGUX) || defined(WINNT)
+#if (SYSVREL > 0) || defined(BSD4_4) || defined(_MINIX) || defined(DGUX) || defined(WINNT_NATIVE)
 # include <signal.h>
 # ifndef SIGCHLD
 #  define SIGCHLD SIGCLD
@@ -47,7 +43,7 @@
 # include <sys/signal.h>
 #endif /* SYSVREL > 0 */
 
-#if defined(SUNOS4) || defined(DGUX) || defined(hp800) || (SYSVREL > 3 && defined(POSIXSIGS) && defined(VFORK))
+#if defined(__APPLE__) || defined(SUNOS4) || defined(DGUX) || defined(hp800) || (SYSVREL > 3 && defined(POSIXSIGS) && defined(VFORK))
 # define SAVESIGVEC
 #endif /* SUNOS4 || DGUX || hp800 || SVR4 & POSIXSIGS & VFORK */
 
@@ -66,11 +62,9 @@
 #  define HAVE_SIGVEC
 #  define mysigvec(a, b, c)	sigaction(a, b, c)
 typedef struct sigaction sigvec_t;
-#  if defined(convex) || defined(__convex__)
-     /* eliminate compiler warnings since these are defined in signal.h  */
-#    undef sv_handler
-#    undef sv_flags
-#  endif
+/* eliminate compiler warnings since these are defined in signal.h  */
+#  undef sv_handler
+#  undef sv_flags
 #  define sv_handler sa_handler
 #  define sv_flags sa_flags
 # endif /* _SEQUENT || (_POSIX_SOURCE && !hpux) */
@@ -86,10 +80,12 @@ typedef struct sigvec sigvec_t;
 #  ifdef POSIXSIGS
 #  define mysigvec(a, b, c)	sigaction(a, b, c)
 typedef struct sigaction sigvec_t;
+#   undef sv_handler
+#   undef sv_flags
 #   define sv_handler sa_handler
 #   define sv_flags sa_flags
 #  else /* BSDSIGS */
-#  define mysigvec(a, b, c)	sigvec(a, b, c)
+#   define mysigvec(a, b, c)	sigvec(a, b, c)
 typedef struct sigvec sigvec_t;
 #  endif /* POSIXSIGS */
 # endif /* HAVE_SIGVEC */
@@ -118,7 +114,10 @@ typedef struct sigvec sigvec_t;
 
 #ifdef _MINIX
 # include <signal.h>
-#  define killpg(a, b) kill((a), (b))
+# define killpg(a, b) kill((a), (b))
+# ifdef _MINIX_VMD
+#  define signal(a, b) signal((a), (a) == SIGCHLD ? SIG_IGN : (b))
+# endif /* _MINIX_VMD */
 #endif /* _MINIX */
 
 #ifdef _VMS_POSIX
@@ -134,6 +133,9 @@ typedef struct sigvec sigvec_t;
 #if !defined(NSIG) && defined(_NSIG)
 # define NSIG _NSIG
 #endif /* !NSIG && _NSIG */
+#if !defined(NSIG)
+#define NSIG (sizeof(sigset_t) * 8)
+#endif /* !NSIG */
 #if !defined(MAXSIG) && defined(NSIG)
 # define MAXSIG NSIG
 #endif /* !MAXSIG && NSIG */
@@ -148,9 +150,9 @@ typedef struct sigvec sigvec_t;
 # define	sigmask(s)	(1 << ((s)-1))
 # ifdef POSIXSIGS
 #  define 	sigpause(a)	(void) bsd_sigpause(a)
-#  ifdef WINNT
+#  ifdef WINNT_NATIVE
 #   undef signal
-#  endif /* WINNT */
+#  endif /* WINNT_NATIVE */
 #  define 	signal(a, b)	bsd_signal(a, b)
 # endif /* POSIXSIGS */
 # ifndef _SEQUENT_
@@ -188,7 +190,7 @@ typedef struct sigvec sigvec_t;
 # else
 #  define SYNCHMASK 	(sigmask(SIGCHLD))
 # endif
-extern sigret_t synch_handler();
+extern RETSIGTYPE synch_handler();
 #endif /* convex */
 
 #ifdef SAVESIGVEC

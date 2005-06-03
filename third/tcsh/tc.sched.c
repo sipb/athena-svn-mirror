@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sched.c,v 1.1.1.2 1998-10-03 21:10:15 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sched.c,v 1.1.1.3 2005-06-03 14:35:05 ghudson Exp $ */
 /*
  * tc.sched.c: Scheduled command execution
  *
@@ -16,11 +16,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -38,9 +34,10 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.sched.c,v 1.1.1.2 1998-10-03 21:10:15 danw Exp $")
+RCSID("$Id: tc.sched.c,v 1.1.1.3 2005-06-03 14:35:05 ghudson Exp $")
 
 #include "ed.h"
+#include "tw.h"
 #include "tc.h"
 
 extern int just_signaled;
@@ -64,24 +61,24 @@ sched_next()
 /*ARGSUSED*/
 void
 dosched(v, c)
-    register Char **v;
+    Char **v;
     struct command *c;
 {
-    register struct sched_event *tp, *tp1, *tp2;
+    struct sched_event *tp, *tp1, *tp2;
     time_t  cur_time;
     int     count, hours, minutes, dif_hour, dif_min;
     Char   *cp;
-    bool    relative;		/* time specified as +hh:mm */
+    int    relative;		/* time specified as +hh:mm */
     struct tm *ltp;
 
     USE(c);
 /* This is a major kludge because of a gcc linker  */
 /* Problem.  It may or may not be needed for you   */
-#ifdef _MINIX
+#if defined(_MINIX) && !defined(_MINIX_VMD)
     char kludge[10];
     extern char *sprintf();
     sprintf(kludge, CGETS(24, 1, "kludge"));
-#endif /* _MINIX */
+#endif /* _MINIX && !_MINIX_VMD */
 
     v++;
     cp = *v++;
@@ -96,7 +93,7 @@ dosched(v, c)
 	    tprintf(FMT_SCHED, sbuf, fmt, sizeof(sbuf), 
 		    short2str(buf), tp->t_when, (ptr_t) &count);
 	    for (cp = sbuf; *cp;)
-		xputchar(*cp++);
+		xputwchar(*cp++);
 	}
 	return;
     }
@@ -171,7 +168,11 @@ dosched(v, c)
 	}
     }
     tp = (struct sched_event *) xcalloc(1, sizeof *tp);
+#ifdef _SX
+    tp->t_when = cur_time - ltp->tm_sec + dif_hour * 3600 + dif_min * 60;
+#else	/* _SX */	
     tp->t_when = cur_time - ltp->tm_sec + dif_hour * 3600L + dif_min * 60L;
+#endif /* _SX */
     /* use of tm_sec: get to beginning of minute. */
     if (!sched_ptr || tp->t_when < sched_ptr->t_when) {
 	tp->t_next = sched_ptr;
@@ -199,11 +200,10 @@ sched_run(n)
     int n;
 {
     time_t   cur_time;
-    register struct sched_event *tp, *tp1;
+    struct sched_event *tp, *tp1;
     struct wordent cmd, *nextword, *lastword;
     struct command *t;
     Char  **v, *cp;
-    extern Char GettingInput;
 #ifdef BSDSIGS
     sigmask_t omask;
 
@@ -264,7 +264,7 @@ sched_run(n)
 	if (seterr)
 	    stderror(ERR_OLD);
 	/* execute the parse tree. */
-	execute(t, -1, NULL, NULL);
+	execute(t, -1, NULL, NULL, TRUE);
 	/* done. free the lex list and parse tree. */
 	freelex(&cmd), freesyn(t);
     }
