@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.dol.c,v 1.2 2000-11-13 09:19:37 zacheiss Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.dol.c,v 1.3 2005-06-03 15:17:09 ghudson Exp $ */
 /*
  * sh.dol.c: Variable substitutions
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,7 +32,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.dol.c,v 1.2 2000-11-13 09:19:37 zacheiss Exp $")
+RCSID("$Id: sh.dol.c,v 1.3 2005-06-03 15:17:09 ghudson Exp $")
 
 /*
  * C shell
@@ -51,10 +47,11 @@ RCSID("$Id: sh.dol.c,v 1.2 2000-11-13 09:19:37 zacheiss Exp $")
  * some QUOTEing may have occurred already, so we dont "trim()" here.
  */
 
-static int Dpeekc, Dpeekrd;	/* Peeks for DgetC and Dreadc */
+static Char Dpeekc;		/* Peek for DgetC */
+static eChar Dpeekrd;		/* Peek for Dreadc */
 static Char *Dcp, **Dvp;	/* Input vector for Dreadc */
 
-#define	DEOF	-1
+#define	DEOF	CHAR_ERR
 
 #define	unDgetC(c)	Dpeekc = c
 
@@ -86,13 +83,13 @@ static	void	 Dfix2		__P((Char **));
 static	Char 	*Dpack		__P((Char *, Char *));
 static	int	 Dword		__P((void));
 static	void	 dolerror	__P((Char *));
-static	int	 DgetC		__P((int));
+static	eChar	 DgetC		__P((int));
 static	void	 Dgetdol	__P((void));
 static	void	 fixDolMod	__P((void));
 static	void	 setDolp	__P((Char *));
-static	void	 unDredc	__P((int));
-static	int	 Dredc		__P((void));
-static	void	 Dtestq		__P((int));
+static	void	 unDredc	__P((eChar));
+static	eChar	 Dredc		__P((void));
+static	void	 Dtestq		__P((Char));
 
 /*
  * Fix up the $ expansions and quotations in the
@@ -100,10 +97,10 @@ static	void	 Dtestq		__P((int));
  */
 void
 Dfix(t)
-    register struct command *t;
+    struct command *t;
 {
-    register Char **pp;
-    register Char *p;
+    Char **pp;
+    Char *p;
 
     if (noexec)
 	return;
@@ -126,7 +123,7 @@ Dfix(t)
  */
 Char   *
 Dfix1(cp)
-    register Char *cp;
+    Char *cp;
 {
     Char   *Dv[2];
 
@@ -169,8 +166,8 @@ static Char *
 Dpack(wbuf, wp)
     Char   *wbuf, *wp;
 {
-    register int c;
-    register int i = MAXWLEN - (wp - wbuf);
+    eChar c;
+    int i = MAXWLEN - (int) (wp - wbuf);
 
     for (;;) {
 	c = DgetC(DODOL);
@@ -216,12 +213,12 @@ Dpack(wbuf, wp)
 static int
 Dword()
 {
-    register int c, c1;
+    eChar c, c1;
     Char    wbuf[BUFSIZE];
-    register Char *wp = wbuf;
-    register int i = MAXWLEN;
-    register bool dolflg;
-    bool    sofar = 0, done = 0;
+    Char *wp = wbuf;
+    int i = MAXWLEN;
+    int dolflg;
+    int    sofar = 0, done = 0;
 
     while (!done) {
 	done = 1;
@@ -262,7 +259,7 @@ Dword()
 		if (c == c1)
 		    break;
 		if (c == '\n' || c == DEOF)
-		    stderror(ERR_UNMATCHED, c1);
+		    stderror(ERR_UNMATCHED, (int)c1);
 		if ((c & (QUOTE | TRIM)) == ('\n' | QUOTE)) {
 		    if ((wp[-1] & TRIM) == '\\')
 			--wp;
@@ -308,9 +305,9 @@ Dword()
      * rewritten. Therefore, we can't just ignore it, DAS DEC-90.
      */
 		i = MAXWLEN;
-		i -= (wp - wbuf);
+		i -= (int) (wp - wbuf);
 #else /* !masscomp */
-		i = MAXWLEN - (wp - wbuf);
+		i = MAXWLEN - (int) (wp - wbuf);
 #endif /* masscomp */
 		done = 0;
 	    }
@@ -342,9 +339,9 @@ Dword()
      * rewritten. Therefore, we can't just ignore it, DAS DEC-90.
      */
 		i = MAXWLEN;
-		i -= (wp - wbuf);
+		i -= (int) (wp - wbuf);
 #else /* !masscomp */
-		i = MAXWLEN - (wp - wbuf);
+		i = MAXWLEN - (int) (wp - wbuf);
 #endif /* masscomp */
 		done = 0;
 	    }
@@ -360,11 +357,11 @@ Dword()
  * Any QUOTES character which is returned from a $ expansion is
  * QUOTEd so that it will not be recognized above.
  */
-static int
+static eChar
 DgetC(flag)
-    register int flag;
+    int flag;
 {
-    register int c;
+    Char c;
 
 top:
     if ((c = Dpeekc) != 0) {
@@ -424,13 +421,12 @@ dolerror(s)
 static void
 Dgetdol()
 {
-    register Char *np;
-    register struct varent *vp = NULL;
+    Char *np;
+    struct varent *vp = NULL;
     Char    name[4 * MAXVARLEN + 1];
-    int     c, sc;
+    eChar   c, sc;
     int     subscr = 0, lwb = 1, upb = 0;
-    bool    dimen = 0, bitset = 0, length = 0;
-    char    tnp;
+    int    dimen = 0, bitset = 0, length = 0;
     Char    wbuf[BUFSIZE];
     static Char *dolbang = NULL;
 
@@ -469,7 +465,9 @@ Dgetdol()
 #ifdef COHERENT
     /* Coherent compiler doesn't allow case-labels that are not 
        constant-expressions */
-#ifdef SHORT_STRINGS
+#ifdef WIDE_STRINGS
+    case 0x4000003C:		/* Does Coherent have 32-bit int at all? */
+#elif defined (SHORT_STRINGS)
     case 0100074:
 #else /* !SHORT_STRINGS */
     case 0274:
@@ -484,17 +482,45 @@ Dgetdol()
 	if (length)
 	    stderror(ERR_NOTALLOWED, "$%<");
 	{
+	    char cbuf[MB_LEN_MAX];
+	    size_t cbp = 0;
+
 #ifdef BSDSIGS
 	    sigmask_t omask = sigsetmask(sigblock(0) & ~sigmask(SIGINT));
 #else /* !BSDSIGS */
 	    (void) sigrelse(SIGINT);
 #endif /* BSDSIGS */
-	    for (np = wbuf; force_read(OLDSTD, &tnp, 1) == 1; np++) {
-		*np = (unsigned char) tnp;
+	    np = wbuf;
+	    while (force_read(OLDSTD, cbuf + cbp++, 1) == 1) {
+	        int len;
+
+		len = normal_mbtowc(np, cbuf, cbp);
+		if (len == -1) {
+		    reset_mbtowc();
+		    if (cbp < MB_LEN_MAX)
+		        continue; /* Maybe a partial character */
+		    *np = (unsigned char)*cbuf | INVALID_BYTE;
+		}
+		if (len <= 0)
+		    len = 1;
+		if (cbp != (size_t)len)
+		    memmove(cbuf, cbuf + len, cbp - len);
+		cbp -= len;
 		if (np >= &wbuf[BUFSIZE - 1])
 		    stderror(ERR_LTOOLONG);
-		if (tnp == '\n')
+		if (*np == '\n')
 		    break;
+		np++;
+	    }
+	    while (cbp != 0) {
+	        *np = (unsigned char)*cbuf;
+		if (np >= &wbuf[BUFSIZE - 1])
+		    stderror(ERR_LTOOLONG);
+		if (*np == '\n')
+		    break;
+		np++;
+		cbp--;
+		memmove(cbuf, cbuf + 1, cbp);
 	    }
 	    *np = 0;
 #ifdef BSDSIGS
@@ -558,10 +584,8 @@ Dgetdol()
 		c = DgetC(0);
 	    } while (Isdigit(c));
 	    unDredc(c);
-	    if (subscr < 0) {
-		dolerror(vp->v_name);
-		return;
-	    }
+	    if (subscr < 0)
+		stderror(ERR_RANGE);
 	    if (subscr == 0) {
 		if (bitset) {
 		    dolp = dolzero ? STR1 : STR0;
@@ -571,7 +595,7 @@ Dgetdol()
 		    stderror(ERR_DOLZERO);
 		if (length) {
 		    Char *cp;
-		    length = Strlen(ffile);
+		    length = NLSChars(ffile);
 		    cp = putn(length);
 		    addla(cp);
 		    xfree((ptr_t) cp);
@@ -624,7 +648,7 @@ Dgetdol()
 	dolp = (vp || getenv(short2str(name))) ? STR1 : STR0;
 	goto eatbrac;
     }
-    if (vp == 0) {
+    if (vp == NULL || vp->vec == NULL) {
 	np = str2short(getenv(short2str(name)));
 	if (np) {
 	    fixDolMod();
@@ -671,7 +695,7 @@ Dgetdol()
 	else if (*np != '-')
 	    stderror(ERR_MISSING, '-');
 	else {
-	    register int i = upb;
+	    int i = upb;
 
 	    np++;
 	    if (Isdigit(*np)) {
@@ -729,7 +753,7 @@ Dgetdol()
 	int i;
 	Char   *cp;
 	for (i = lwb - 1, length = 0; i < upb; i++)
-	    length += Strlen(vp->vec[i]);
+	    length += NLSChars(vp->vec[i]);
 #ifdef notdef
 	/* We don't want that, since we can always compute it by adding $#xxx */
 	length += i - 1;	/* Add the number of spaces in */
@@ -755,7 +779,7 @@ eatbrac:
 static void
 fixDolMod()
 {
-    register int c;
+    eChar c;
 
     c = DgetC(0);
     if (c == ':') {
@@ -781,7 +805,7 @@ fixDolMod()
 
 	    if (c == 's') {	/* [eichin:19910926.0755EST] */
 		int delimcnt = 2;
-		int delim = DgetC(0);
+		eChar delim = DgetC(0);
 		dolmod[dolnmod++] = (Char) c;
 		dolmod[dolnmod++] = (Char) delim;
 		
@@ -790,7 +814,7 @@ fixDolMod()
 		    seterror(ERR_BADSUBST);
 		    break;
 		}	
-		while ((c = DgetC(0)) != (-1)) {
+		while ((c = DgetC(0)) != DEOF) {
 		    dolmod[dolnmod++] = (Char) c;
 		    if(c == delim) delimcnt--;
 		    if(!delimcnt) break;
@@ -802,7 +826,7 @@ fixDolMod()
 		continue;
 	    }
 	    if (!any("luhtrqxes", c))
-		stderror(ERR_BADMOD, c);
+		stderror(ERR_BADMOD, (int)c);
 #ifndef COMPAT
 	    dolmod[dolnmod++] = (Char) c;
 #else
@@ -822,9 +846,9 @@ fixDolMod()
 
 static void
 setDolp(cp)
-    register Char *cp;
+    Char *cp;
 {
-    register Char *dp;
+    Char *dp;
 #ifndef COMPAT
     int i;
 #endif /* COMPAT */
@@ -834,6 +858,12 @@ setDolp(cp)
 #else
     if (dolnmod == 0 || dolmcnt == 0) {
 #endif /* COMPAT */
+	for (dp = cp; *dp; dp++) {
+	    if (NLSSize(dp, -1) != 1) {
+		addla(cp);
+		return;
+	    }
+	}
 	dolp = cp;
 	return;
     }
@@ -844,7 +874,7 @@ setDolp(cp)
     for (i = 0; i < dolnmod; i++) {
 	/* handle s// [eichin:19910926.0510EST] */
 	if(dolmod[i] == 's') {
-	    int delim;
+	    Char delim;
 	    Char *lhsub, *rhsub, *np;
 	    size_t lhlen = 0, rhlen = 0;
 	    int didmod = 0;
@@ -947,16 +977,16 @@ setDolp(cp)
 
 static void
 unDredc(c)
-    int     c;
+    eChar   c;
 {
 
     Dpeekrd = c;
 }
 
-static int
+static eChar
 Dredc()
 {
-    register int c;
+    Char c;
 
     if ((c = Dpeekrd) != 0) {
 	Dpeekrd = 0;
@@ -974,7 +1004,7 @@ Dredc()
 
 static void
 Dtestq(c)
-    register int c;
+    Char c;
 {
 
     if (cmap(c, QUOTES))
@@ -990,16 +1020,19 @@ void
 heredoc(term)
     Char   *term;
 {
-    int c;
+    eChar  c;
     Char   *Dv[2];
-    Char    obuf[BUFSIZE], lbuf[BUFSIZE], mbuf[BUFSIZE];
+    Char    obuf[BUFSIZE + 1], lbuf[BUFSIZE], mbuf[BUFSIZE];
     int     ocnt, lcnt, mcnt;
-    register Char *lbp, *obp, *mbp;
+    Char *lbp, *obp, *mbp;
     Char  **vp;
-    bool    quoted;
+    int    quoted;
     char   *tmp;
+#ifndef WINNT_NATIVE
     struct timeval tv;
- again:
+
+again:
+#endif /* WINNT_NATIVE */
     tmp = short2str(shtemp);
 #ifndef O_CREAT
 # define O_CREAT 0
@@ -1013,19 +1046,21 @@ heredoc(term)
 #ifndef O_EXCL
 # define O_EXCL 0
 #endif
-    if (open(tmp, O_RDWR|O_CREAT|O_EXCL|O_TEMPORARY) == -1) {
-      int oerrno = errno;
-      if (errno == EEXIST) {
-	if (unlink(tmp) == -1) {
-	  (void) gettimeofday(&tv, NULL);
-	  shtemp = Strspl(STRtmpsh, putn((((int)tv.tv_sec) ^
-	      ((int)tv.tv_usec) ^ ((int)doldol)) & 0x00ffffff));
+    if (open(tmp, O_RDWR|O_CREAT|O_EXCL|O_TEMPORARY|O_LARGEFILE, 0600) == -1) {
+	int oerrno = errno;
+#ifndef WINNT_NATIVE
+	if (errno == EEXIST) {
+	    if (unlink(tmp) == -1) {
+		(void) gettimeofday(&tv, NULL);
+		shtemp = Strspl(STRtmpsh, putn((((int)tv.tv_sec) ^ 
+		    ((int)tv.tv_usec) ^ ((int)getpid())) & 0x00ffffff));
+	    }
+	    goto again;
 	}
-	goto again;
-      }
-      (void) unlink(tmp);
-      errno = oerrno;
-      stderror(ERR_SYSTEM, tmp, strerror(errno));
+#endif /* WINNT_NATIVE */
+	(void) unlink(tmp);
+	errno = oerrno;
+ 	stderror(ERR_SYSTEM, tmp, strerror(errno));
     }
     (void) unlink(tmp);		/* 0 0 inode! */
     Dv[0] = term;
@@ -1036,10 +1071,17 @@ heredoc(term)
     quoted = gflag;
     ocnt = BUFSIZE;
     obp = obuf;
+    obuf[BUFSIZE] = 0;
     inheredoc = 1;
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     __dup_stdin = 1;
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
+#ifdef O_TEXT
+    setmode(1, O_TEXT);
+#endif
+#ifdef O_BINARY
+    setmode(0, O_BINARY);
+#endif
     for (;;) {
 	/*
 	 * Read up a line
@@ -1048,7 +1090,7 @@ heredoc(term)
 	lcnt = BUFSIZE - 4;
 	for (;;) {
 	    c = readc(1);	/* 1 -> Want EOF returns */
-	    if (c < 0 || c == '\n')
+	    if (c == CHAR_ERR || c == '\n')
 		break;
 	    if ((c &= TRIM) != 0) {
 		*lbp++ = (Char) c;
@@ -1063,9 +1105,11 @@ heredoc(term)
 	/*
 	 * Check for EOF or compare to terminator -- before expansion
 	 */
-	if (c < 0 || eq(lbuf, term)) {
-	    (void) write(0, short2str(obuf), (size_t) (BUFSIZE - ocnt));
-	    (void) lseek(0, 0l, L_SET);
+	if (c == CHAR_ERR || eq(lbuf, term)) {
+	    *obp = 0;
+	    tmp = short2str(obuf);
+	    (void) write(0, tmp, strlen (tmp));
+	    (void) lseek(0, (off_t) 0, L_SET);
 	    inheredoc = 0;
 	    return;
 	}
@@ -1079,7 +1123,8 @@ heredoc(term)
 	    for (lbp = lbuf; (c = *lbp++) != 0;) {
 		*obp++ = (Char) c;
 		if (--ocnt == 0) {
-		    (void) write(0, short2str(obuf), BUFSIZE);
+		    tmp = short2str(obuf);
+		    (void) write(0, tmp, strlen (tmp));
 		    obp = obuf;
 		    ocnt = BUFSIZE;
 		}
@@ -1143,14 +1188,16 @@ heredoc(term)
 	    for (mbp = *vp; *mbp; mbp++) {
 		*obp++ = *mbp & TRIM;
 		if (--ocnt == 0) {
-		    (void) write(0, short2str(obuf), BUFSIZE);
+		    tmp = short2str(obuf);
+		    (void) write(0, tmp, strlen (tmp));
 		    obp = obuf;
 		    ocnt = BUFSIZE;
 		}
 	    }
 	    *obp++ = '\n';
 	    if (--ocnt == 0) {
-		(void) write(0, short2str(obuf), BUFSIZE);
+	        tmp = short2str(obuf);
+		(void) write(0, tmp, strlen (tmp));
 		obp = obuf;
 		ocnt = BUFSIZE;
 	    }

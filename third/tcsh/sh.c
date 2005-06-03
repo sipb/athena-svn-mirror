@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.c,v 1.3 1998-10-04 01:39:28 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.c,v 1.4 2005-06-03 15:17:09 ghudson Exp $ */
 /*
  * sh.c: Main shell routines
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -43,15 +39,14 @@ char    copyright[] =
  All rights reserved.\n";
 #endif /* not lint */
 
-RCSID("$Id: sh.c,v 1.3 1998-10-04 01:39:28 danw Exp $")
+RCSID("$Id: sh.c,v 1.4 2005-06-03 15:17:09 ghudson Exp $")
 
 #include "tc.h"
 #include "ed.h"
 #include "tw.h"
 
-extern bool MapsAreInited;
-extern bool NLSMapsAreInited;
-extern bool NoNLSRebind;
+extern int MapsAreInited;
+extern int NLSMapsAreInited;
 
 /*
  * C Shell
@@ -86,9 +81,9 @@ extern bool NoNLSRebind;
 jmp_buf_t reslab INIT_ZERO_STRUCT;
 
 static const char tcshstr[] = "tcsh";
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 static const char tcshstr_nt[] = "tcsh.exe";
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
 signalfun_t parintr = 0;	/* Parents interrupt catch */
 signalfun_t parterm = 0;	/* Parents terminate catch */
@@ -98,7 +93,7 @@ int do_logout = 0;
 #endif /* TESLA */
 
 
-bool    use_fork = 0;		/* use fork() instead of vfork()? */
+int    use_fork = 0;		/* use fork() instead of vfork()? */
 
 /*
  * Magic pointer values. Used to specify other invalid conditions aside
@@ -109,21 +104,22 @@ Char    *INVPTR = &INVCHAR;
 Char    **INVPPTR = &INVPTR;
 
 static int     nofile = 0;
-static bool    reenter = 0;
-static bool    nverbose = 0;
-static bool    nexececho = 0;
-static bool    quitit = 0;
-static bool    rdirs = 0;
-bool    fast = 0;
-static bool    batch = 0;
-static bool    mflag = 0;
-static bool    prompt = 1;
-static int     enterhist = 0;
-bool    tellwhat = 0;
+static int    reenter = 0;
+static int    nverbose = 0;
+static int    nexececho = 0;
+static int    quitit = 0;
+static int    rdirs = 0;
+int    fast = 0;
+static int    batch = 0;
+static int    mflag = 0;
+static int    prompt = 1;
+int     enterhist = 0;
+int    tellwhat = 0;
 time_t  t_period;
 Char  *ffile = NULL;
-bool	dolzero = 0;
+int	dolzero = 0;
 int	insource = 0;
+int	exitset = 0;
 static time_t  chktim;		/* Time mail last checked */
 char *progname;
 int tcsh;
@@ -135,7 +131,10 @@ extern char **environ;
  */
 struct saved_state {
     int		  insource;
+    int		  OLDSTD;
     int		  SHIN;
+    int		  SHOUT;
+    int		  SHDIAG;
     int		  intty;
     struct whyle *whyles;
     Char 	 *gointr;
@@ -145,10 +144,10 @@ struct saved_state {
     Char	 *alvecp;
     Char	**alvec;
     int		  onelflg;
-    bool	  enterhist;
+    int	  enterhist;
     Char	**argv;
     Char	  HIST;
-    bool	  cantell;
+    int	  cantell;
     struct Bin	  B;
     /* These keep signal state and setjump state */
 #ifdef BSDSIGS
@@ -159,9 +158,13 @@ struct saved_state {
 };
 
 static	int		  srccat	__P((Char *, Char *));
-static	int		  srcfile	__P((char *, bool, int, Char **));
-static	sigret_t	  phup		__P((int));
-static	void		  srcunit	__P((int, bool, int, Char **));
+#ifndef WINNT_NATIVE
+static	int		  srcfile	__P((const char *, int, int, Char **));
+#else
+int		  srcfile	__P((const char *, int, int, Char **));
+#endif /*WINNT_NATIVE*/
+static	RETSIGTYPE	  phup		__P((int));
+static	void		  srcunit	__P((int, int, int, Char **));
 static	void		  mailchk	__P((void));
 #ifndef _PATH_DEFPATH
 static	Char	 	**defaultpath	__P((void));
@@ -178,21 +181,23 @@ main(argc, argv)
     int     argc;
     char  **argv;
 {
-    register Char *cp;
+    Char *cp;
 #ifdef AUTOLOGOUT
-    register Char *cp2;
+    Char *cp2;
 #endif
-    register char *tcp, *ttyn;
-    register int f;
-    register char **tempv;
+    char *tcp, *ttyn;
+    int f;
+    char **tempv;
+    int osetintr;
+    signalfun_t oparintr;
 
 #ifdef BSDSIGS
     sigvec_t osv;
 #endif /* BSDSIGS */
 
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     nt_init();
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 #if defined(NLS_CATALOGS) && defined(LC_MESSAGES)
     (void) setlocale(LC_MESSAGES, "");
 #endif /* NLS_CATALOGS && LC_MESSAGES */
@@ -206,9 +211,9 @@ main(argc, argv)
     nlsinit();
 
 #ifdef MALLOC_TRACE
-     mal_setstatsfile(fdopen(dup2(open("/tmp/tcsh.trace", 
-				       O_WRONLY|O_CREAT, 0666), 25), "w"));
-     mal_trace(1);
+    mal_setstatsfile(fdopen(dmove(open("/tmp/tcsh.trace", 
+	O_WRONLY|O_CREAT|O_LARGEFILE, 0666), 25), "w"));
+    mal_trace(1);
 #endif /* MALLOC_TRACE */
 
 #if !(defined(BSDTIMES) || defined(_SEQUENT_)) && defined(POSIX)
@@ -234,12 +239,16 @@ main(argc, argv)
      */
     {
 	do 
-	    if ((f = open(_PATH_DEVNULL, O_RDONLY)) == -1 &&
-		(f = open("/", O_RDONLY)) == -1) 
+	    if ((f = open(_PATH_DEVNULL, O_RDONLY|O_LARGEFILE)) == -1 &&
+		(f = open("/", O_RDONLY|O_LARGEFILE)) == -1) 
 		exit(1);
 	while (f < 3);
 	(void) close(f);
     }
+
+#ifdef O_TEXT
+    setmode(0, O_TEXT);
+#endif
 
     osinit();			/* Os dependent initialization */
 
@@ -248,13 +257,13 @@ main(argc, argv)
 	char *t;
 
 	t = strrchr(argv[0], '/');
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 	{
 	    char *s = strrchr(argv[0], '\\');
 	    if (s)
 		t = s;
 	}
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 	t = t ? t + 1 : argv[0];
 	if (*t == '-') t++;
 	progname = strsave((t && *t) ? t : tcshstr);    /* never want a null */
@@ -297,7 +306,6 @@ main(argc, argv)
     gid = getgid();
     euid = geteuid();
     egid = getegid();
-#ifdef OREO
     /*
      * We are a login shell if: 1. we were invoked as -<something> with
      * optional arguments 2. or we were invoked only with the -l flag
@@ -305,16 +313,6 @@ main(argc, argv)
     loginsh = (**tempv == '-') || (argc == 2 &&
 				   tempv[1][0] == '-' && tempv[1][1] == 'l' &&
 						tempv[1][2] == '\0');
-#else
-    /*
-     * We are a login shell if: 1. we were invoked as -<something> and we had
-     * no arguments 2. or we were invoked only with the -l flag
-     */
-    loginsh = (**tempv == '-' && argc == 1) || (argc == 2 &&
-				   tempv[1][0] == '-' && tempv[1][1] == 'l' &&
-						tempv[1][2] == '\0');
-#endif
-
 #ifdef _VMS_POSIX
     /* No better way to find if we are a login shell */
     if (!loginsh) {
@@ -364,7 +362,7 @@ main(argc, argv)
 
 	for (k = 0200; k <= 0377 && !Isprint(k); k++)
 	    continue;
-	AsciiOnly = k > 0377;
+	AsciiOnly = MB_CUR_MAX == 1 && k > 0377;
     }
 #else
     AsciiOnly = getenv("LANG") == NULL && getenv("LC_CTYPE") == NULL;
@@ -402,7 +400,7 @@ main(argc, argv)
      if (loginsh && isatty(SHIN)) {
 	 ttyn = (char *) ttyname(SHIN);
 	 (void) close(SHIN);
-	 SHIN = open(ttyn, O_RDWR);
+	 SHIN = open(ttyn, O_RDWR|O_LARGEFILE);
 	 shpgrp = getpid();
 	 (void) ioctl (SHIN, TIOCSPGRP, (ioctl_t) &shpgrp);
 	 (void) setpgid(0, shpgrp);
@@ -467,12 +465,12 @@ main(argc, argv)
 # ifdef convex
     if (uid == 0) {
 	/*  root always has a 15 minute autologout  */
-	set(STRautologout, Strsave(STRrootdefautologout));
+	set(STRautologout, Strsave(STRrootdefautologout), VAR_READWRITE);
     }
     else
 	if (loginsh)
 	    /*  users get autologout set to 0  */
-	    set(STRautologout, Strsave(STR0));
+	    set(STRautologout, Strsave(STR0), VAR_READWRITE);
 # else /* convex */
     if (loginsh || (uid == 0)) {
 	if (*cp) {
@@ -500,41 +498,54 @@ main(argc, argv)
     set(STRstatus, Strsave(STR0), VAR_READWRITE);
 
     /*
-     * get and set machine specific envirnment variables
+     * get and set machine specific environment variables
      */
     getmachine();
 
-    fix_version();		/* publish the shell version */
 
     /*
      * Publish the selected echo style
      */
-#if ECHO_STYLE == NONE_ECHO
-    set(STRecho_style, Strsave(STRnone), VAR_READWRITE);
-#endif /* ECHO_STYLE == NONE_ECHO */
-#if ECHO_STYLE == BSD_ECHO
-    set(STRecho_style, Strsave(STRbsd), VAR_READWRITE);
-#endif /* ECHO_STYLE == BSD_ECHO */
-#if ECHO_STYLE == SYSV_ECHO
-    set(STRecho_style, Strsave(STRsysv), VAR_READWRITE);
-#endif /* ECHO_STYLE == SYSV_ECHO */
-#if ECHO_STYLE == BOTH_ECHO
-    set(STRecho_style, Strsave(STRboth), VAR_READWRITE);
-#endif /* ECHO_STYLE == BOTH_ECHO */
+#if ECHO_STYLE != BSD_ECHO
+    if (tcsh) {
+# if ECHO_STYLE == NONE_ECHO
+	set(STRecho_style, Strsave(STRnone), VAR_READWRITE);
+# endif /* ECHO_STYLE == NONE_ECHO */
+# if ECHO_STYLE == SYSV_ECHO
+	set(STRecho_style, Strsave(STRsysv), VAR_READWRITE);
+# endif /* ECHO_STYLE == SYSV_ECHO */
+# if ECHO_STYLE == BOTH_ECHO
+	set(STRecho_style, Strsave(STRboth), VAR_READWRITE);
+# endif /* ECHO_STYLE == BOTH_ECHO */
+    } else
+#endif /* ECHO_STYLE != BSD_ECHO */
+	set(STRecho_style, Strsave(STRbsd), VAR_READWRITE);
 
     /*
      * increment the shell level.
      */
     shlvl(1);
 
-    if ((tcp = getenv("HOME")) != NULL)
-	cp = quote(SAVE(tcp));
-    else
+    if ((tcp = getenv("HOME")) != NULL) {
+	if (strlen(tcp) >= MAXPATHLEN) {
+	    struct passwd *pw;
+	    if ((pw = getpwuid(getuid())) != NULL)
+		cp = quote(SAVE(pw->pw_dir));
+	    else {
+		tcp[MAXPATHLEN-1] = '\0';
+		cp = quote(SAVE(tcp));
+	    }
+	} else {
+	    cp = quote(SAVE(tcp));
+	}
+    } else
 	cp = NULL;
+
     if (cp == NULL)
 	fast = 1;		/* No home -> can't read scripts */
     else
 	set(STRhome, cp, VAR_READWRITE);
+
     dinit(cp);			/* dinit thinks that HOME == cwd in a login
 				 * shell */
     /*
@@ -551,14 +562,14 @@ main(argc, argv)
 #ifdef apollo
 	int     oid = getoid();
 
-	Itoa(oid, buff);
+	(void) Itoa(oid, buff, 0, 0);
 	set(STRoid, Strsave(buff), VAR_READWRITE);
 #endif /* apollo */
 
-	Itoa(uid, buff);
+	(void) Itoa(uid, buff, 0, 0);
 	set(STRuid, Strsave(buff), VAR_READWRITE);
 
-	Itoa(gid, buff);
+	(void) Itoa(gid, buff, 0, 0);
 	set(STRgid, Strsave(buff), VAR_READWRITE);
 
 	cln = getenv("LOGNAME");
@@ -663,6 +674,16 @@ main(argc, argv)
     set(STRaddsuffix, Strsave(STRNULL), VAR_READWRITE);
 
     /*
+     * Compatibility with tcsh >= 6.12 by default
+     */
+    set(STRcsubstnonl, Strsave(STRNULL), VAR_READWRITE);
+    
+    /*
+     * Random default kill ring size
+     */
+    set(STRkillring, SAVE("30"), VAR_READWRITE);
+
+    /*
      * Re-initialize path if set in environment
      */
     if ((tcp = getenv("PATH")) == NULL)
@@ -693,7 +714,7 @@ main(argc, argv)
 	if ((tcp = getenv("SHELL")) != NULL) {
 	    sh_len = strlen(tcp);
 	    if ((sh_len >= 5 && strcmp(tcp + (sh_len - 5), "/tcsh") == 0) || 
-	        (sh_len >= 4 && strcmp(tcp + (sh_len - 4), "/csh") == 0))
+	        (!tcsh && sh_len >= 4 && strcmp(tcp + (sh_len - 4), "/csh") == 0))
 		set(STRshell, quote(SAVE(tcp)), VAR_READWRITE);
 	    else
 		sh_len = 0;
@@ -708,16 +729,16 @@ main(argc, argv)
 #endif /* COLOR_LS_F */
 
     doldol = putn((int) getpid());	/* For $$ */
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     {
 	char *strtmp1, strtmp2[MAXPATHLEN];
 	if ((strtmp1 = getenv("TMP")) != NULL)
 	    wsprintf(strtmp2, "%s/%s", strtmp1, "sh");
 	shtemp = Strspl(SAVE(strtmp2), doldol);	/* For << */
     }
-#else /* !WINNT */
+#else /* !WINNT_NATIVE */
     shtemp = Strspl(STRtmpsh, doldol);	/* For << */
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
     /*
      * Record the interrupt states from the parent process. If the parent is
@@ -759,6 +780,35 @@ main(argc, argv)
     (void) signal(SIGMIGRATE, SIG_DFL);
 #endif /* TCF */
 
+    /*
+     * dspkanji/dspmbyte autosetting
+     */
+    /* PATCH IDEA FROM Issei.Suzuki VERY THANKS */
+#if defined(DSPMBYTE)
+#if defined(NLS) && defined(LC_CTYPE)
+    if (((tcp = setlocale(LC_CTYPE, NULL)) != NULL || (tcp = getenv("LANG")) != NULL) && !adrof(CHECK_MBYTEVAR)) {
+#else
+    if ((tcp = getenv("LANG")) != NULL && !adrof(CHECK_MBYTEVAR)) {
+#endif
+	autoset_dspmbyte(str2short(tcp));
+    }
+#if defined(WINNT_NATIVE)
+    else if (!adrof(CHECK_MBYTEVAR))
+      nt_autoset_dspmbyte();
+#endif /* WINNT_NATIVE */
+#endif
+
+    fix_version();		/* publish the shell version */
+
+    if (argc > 1 && strcmp(argv[1], "--version") == 0) {
+	xprintf("%S\n", varval(STRversion));
+	xexit(0);
+    }
+    if (argc > 1 && strcmp(argv[1], "--help") == 0) {
+	xprintf("%S\n\n", varval(STRversion));
+	xprintf(CGETS(11, 8, HELP_STRING));
+	xexit(0);
+    }
     /*
      * Process the arguments.
      * 
@@ -814,7 +864,7 @@ main(argc, argv)
 		 * ensure that you don't make * nonportable csh scripts.
 		 */
 		{
-		    register int count;
+		    int count;
 
 		    cp = arginp + Strlen(arginp);
 		    count = 0;
@@ -835,7 +885,7 @@ main(argc, argv)
 #ifdef apollo
 	    case 'D':		/* -D	Define environment variable */
 		{
-		    register Char *dp;
+		    Char *dp;
 
 		    cp = str2short(tcp);
 		    if (dp = Strchr(cp, '=')) {
@@ -934,12 +984,15 @@ main(argc, argv)
      * read commands.
      */
     if (nofile == 0 && argc > 0) {
-	nofile = open(tempv[0], O_RDONLY);
+	nofile = open(tempv[0], O_RDONLY|O_LARGEFILE);
 	if (nofile < 0) {
 	    child = 1;		/* So this ... */
 	    /* ... doesn't return */
 	    stderror(ERR_SYSTEM, tempv[0], strerror(errno));
 	}
+#ifdef O_TEXT
+	setmode(nofile, O_TEXT);
+#endif
 	if (ffile != NULL)
 	    xfree((ptr_t) ffile);
 	dolzero = 1;
@@ -969,6 +1022,13 @@ main(argc, argv)
 	 /* argc not used any more */ tempv++;
     }
 
+    /* 
+     * Call to closem() used to be part of initdesc(). Now called below where
+     * the script name argument has become stdin. Kernel may have used a file
+     * descriptor to hold the name of the script (setuid case) and this name
+     * mustn't be lost by closing the fd too soon.
+     */
+    closem();
 
     /*
      * Consider input a tty if it really is or we are interactive. but not for
@@ -1210,14 +1270,14 @@ main(argc, argv)
      * Set an exit here in case of an interrupt or error reading the shell
      * start-up scripts.
      */
+    osetintr = setintr;
+    oparintr = parintr;
     reenter = setexit();	/* PWP */
+    exitset++;
     haderr = 0;			/* In case second time through */
     if (!fast && reenter == 0) {
 	/* Will have varval(STRhome) here because set fast if don't */
 	{
-	    int     osetintr = setintr;
-	    signalfun_t oparintr = parintr;
-
 #ifdef BSDSIGS
 	    sigmask_t omask = sigblock(sigmask(SIGINT));
 #else
@@ -1272,6 +1332,10 @@ main(argc, argv)
 	if (!fast && (loginsh || rdirs))
 	    loaddirs(NULL);
     }
+    /* Reset interrupt flag */
+    setintr = osetintr;
+    parintr = oparintr;
+
     /* Initing AFTER .cshrc is the Right Way */
     if (intty && !arginp) {	/* PWP setup stuff */
 	ed_Init();		/* init the new line editor */
@@ -1279,20 +1343,6 @@ main(argc, argv)
 	check_window_size(1);	/* mung environment */
 #endif				/* SIG_WINDOW */
     }
-
-    /*
-     * dspkanji/dspmbyte autosetting
-     */
-    /* PATCH IDEA FROM Issei.Suzuki VERY THANKS */
-#if defined(DSPMBYTE)
-    if ((tcp = getenv("LANG")) != NULL && !adrof(CHECK_MBYTEVAR)) {
-	autoset_dspmbyte(str2short(tcp));
-    }
-#if defined(WINNT)
-    else if (!adrof(CHECK_MBYTEVAR))
-      nt_autoset_dspmbyte();
-#endif /* WINNT */
-#endif
 
     /*
      * Now are ready for the -v and -x flags
@@ -1348,9 +1398,9 @@ void
 importpath(cp)
     Char   *cp;
 {
-    register int i = 0;
-    register Char *dp;
-    register Char **pv;
+    int i = 0;
+    Char *dp;
+    Char **pv;
     int     c;
 
     for (dp = cp; *dp; dp++)
@@ -1375,10 +1425,10 @@ importpath(cp)
 		else
 		    break;
 	    }
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 	    else if (*dp == '\\')
 		*dp = '/';
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 	    dp++;
 	}
     pv[i] = 0;
@@ -1395,17 +1445,17 @@ srccat(cp, dp)
     if (cp[0] == '/' && cp[1] == '\0') 
 	return srcfile(short2str(dp), (mflag ? 0 : 1), 0, NULL);
     else {
-	register Char *ep;
+	Char *ep;
 	char   *ptr;
 	int rv;
 
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 	ep = cp;
 	while(*ep)
 	    ep++;
 	if (ep[-1] == '/' && dp[0] == '/') /* silly win95 */
 	    dp++;
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
 	ep = Strspl(cp, dp);
 	ptr = short2str(ep);
@@ -1419,17 +1469,24 @@ srccat(cp, dp)
 /*
  * Source to a file putting the file descriptor in a safe place (> 2).
  */
+#ifndef WINNT_NATIVE
 static int
+#else
+int
+#endif /*WINNT_NATIVE*/
 srcfile(f, onlyown, flag, av)
-    char   *f;
-    bool    onlyown;
+    const char   *f;
+    int    onlyown;
     int flag;
     Char **av;
 {
-    register int unit;
+    int unit;
 
-    if ((unit = open(f, O_RDONLY)) == -1) 
+    if ((unit = open(f, O_RDONLY|O_LARGEFILE)) == -1) 
 	return 0;
+#ifdef O_TEXT
+    setmode(unit, O_TEXT);
+#endif
     unit = dmove(unit, -1);
 
     (void) close_on_exec(unit, 1);
@@ -1450,6 +1507,40 @@ st_save(st, unit, hflg, al, av)
 {
     st->insource	= insource;
     st->SHIN		= SHIN;
+    /* Want to preserve the meaning of "source file >output".
+     * Save old descriptors, move new 0,1,2 to safe places and assign
+     * them to SH* and let process() redo 0,1,2 from them.
+     *
+     * The macro returns true if d1 and d2 are good and they point to
+     * different things.  If you don't avoid saving duplicate
+     * descriptors, you really limit the depth of "source" recursion
+     * you can do because of all the open file descriptors.  -IAN!
+     */
+#define NEED_SAVE_FD(d1,d2) \
+    (fstat(d1, &s1) != -1 && fstat(d2, &s2) != -1 \
+	&& (s1.st_ino != s2.st_ino || s1.st_dev != s2.st_dev) )
+
+    st->OLDSTD = st->SHOUT = st->SHDIAG = -1;/* test later to restore these */
+    if (didfds) {
+	    struct stat s1, s2;
+	    if (NEED_SAVE_FD(0,OLDSTD)) {
+		    st->OLDSTD = OLDSTD;
+		    OLDSTD = dmove(0, -1);
+		    (void)close_on_exec(OLDSTD, 1);
+	    }
+	    if (NEED_SAVE_FD(1,SHOUT)) {
+		    st->SHOUT = SHOUT;
+		    SHOUT = dmove(1, -1);
+		    (void)close_on_exec(SHOUT, 1);
+	    }
+	    if (NEED_SAVE_FD(2,SHDIAG)) {
+		    st->SHDIAG = SHDIAG;
+		    SHDIAG = dmove(2, -1);
+		    (void)close_on_exec(SHDIAG, 1);
+	    }
+	    donefds();
+    }
+
     st->intty		= intty;
     st->whyles		= whyles;
     st->gointr		= gointr;
@@ -1474,7 +1565,7 @@ st_save(st, unit, hflg, al, av)
      */
     if (av != NULL && *av != NULL) {
 	struct varent *vp;
-	if ((vp = adrof(STRargv)) != NULL)
+	if ((vp = adrof(STRargv)) != NULL && vp->vec != NULL)
 	    st->argv = saveblk(vp->vec);
 	else
 	    st->argv = NULL;
@@ -1521,9 +1612,9 @@ st_restore(st, av)
 
     /* Reset input arena */
     {
-	register int i;
-	register Char** nfbuf = fbuf;
-	register int nfblocks = fblocks;
+	int i;
+	Char** nfbuf = fbuf;
+	int nfblocks = fblocks;
 
 	fblocks = 0;
 	fbuf = NULL;
@@ -1537,6 +1628,12 @@ st_restore(st, av)
 
     insource	= st->insource;
     SHIN	= st->SHIN;
+    if (st->OLDSTD != -1)
+	    (void)close(OLDSTD), OLDSTD = st->OLDSTD;
+    if (st->SHOUT != -1)
+	    (void)close(SHOUT),  SHOUT = st->SHOUT;
+    if (st->SHDIAG != -1)
+	    (void)close(SHDIAG), SHDIAG = st->SHDIAG;
     arginp	= st->arginp;
     onelflg	= st->onelflg;
     evalp	= st->evalp;
@@ -1563,8 +1660,8 @@ st_restore(st, av)
  */
 static void
 srcunit(unit, onlyown, hflg, av)
-    register int unit;
-    bool    onlyown;
+    int unit;
+    int    onlyown;
     int hflg;
     Char **av;
 {
@@ -1573,9 +1670,6 @@ srcunit(unit, onlyown, hflg, av)
 
     if (unit < 0)
 	return;
-
-    if (didfds)
-	donefds();
 
     if (onlyown) {
 	struct stat stb;
@@ -1653,6 +1747,7 @@ goodbye(v, c)
     Char **v;
     struct command *c;
 {
+    USE(v);
     USE(c);
     record();
 
@@ -1699,7 +1794,7 @@ exitstat()
 /*
  * in the event of a HUP we want to save the history
  */
-static  sigret_t
+static RETSIGTYPE
 phup(snum)
 int snum;
 {
@@ -1768,9 +1863,6 @@ int snum;
 #endif /* POSIXJOBS */
 
     xexit(snum);
-#ifndef SIGVOID
-    return (snum);
-#endif
 }
 
 static Char   *jobargv[2] = {STRjobs, 0};
@@ -1784,29 +1876,24 @@ static Char   *jobargv[2] = {STRjobs, 0};
  */
 int     just_signaled;		/* bugfix by Michael Bloom (mg@ttidca.TTI.COM) */
 
-#ifdef SIGVOID
-/*ARGSUSED*/
-#endif
-sigret_t
+RETSIGTYPE
 pintr(snum)
 int snum;
 {
+    USE(snum);
 #ifdef UNRELSIGS
     if (snum)
 	(void) sigset(snum, pintr);
 #endif /* UNRELSIGS */
     just_signaled = 1;
     pintr1(1);
-#ifndef SIGVOID
-    return (snum);
-#endif
 }
 
 void
 pintr1(wantnl)
-    bool    wantnl;
+    int    wantnl;
 {
-    register Char **v;
+    Char **v;
 #ifdef BSDSIGS
     sigmask_t omask;
 #endif
@@ -1829,15 +1916,11 @@ pintr1(wantnl)
     }
     /* MH - handle interrupted completions specially */
     {
-	extern int InsideCompletion;
-
 	if (InsideCompletion)
 	    stderror(ERR_SILENT);
     }
     /* JV - Make sure we shut off inputl */
     {
-	extern Char GettingInput;
-
 	(void) Cookedmode();
 	GettingInput = 0;
     }
@@ -1848,10 +1931,10 @@ pintr1(wantnl)
 	(void) sighold(SIGINT);
     (void) sigrelse(SIGCHLD);
 #endif
-    draino();
-#if !defined(_VMS_POSIX) && !defined(WINNT)
+    drainoline();
+#ifdef HAVE_GETPWENT
     (void) endpwent();
-#endif /* !_VMS_POSIX && !WINNT */
+#endif
 
     /*
      * If we have an active "onintr" then we search for the label. Note that if
@@ -1904,9 +1987,8 @@ pintr1(wantnl)
 static struct command *savet = NULL;
 void
 process(catch)
-    bool    catch;
+    int    catch;
 {
-    extern char Expand;
     jmp_buf_t osetexit;
     /* PWP: This might get nuked my longjmp so don't make it a register var */
     struct command *t = savet;
@@ -1997,7 +2079,7 @@ process(catch)
 	     * read fresh stuff. Otherwise, we are rereading input and don't
 	     * need or want to prompt.
 	     */
-	    if (fseekp == feobp && aret == F_SEEK)
+	    if (fseekp == feobp && aret == TCSH_F_SEEK)
 		printprompt(0, NULL);
 	    flush();
 	    setalarm(1);
@@ -2013,9 +2095,13 @@ process(catch)
 	 */
 	if ((lex(&paraml) && !seterr && intty && !tellwhat && !Expand && 
 	     !whyles) || adrof(STRverbose)) {
+	    int odidfds = didfds;
 	    haderr = 1;
+	    didfds = 0;
 	    prlex(&paraml);
+	    flush();
 	    haderr = 0;
+	    didfds = odidfds;
 	}
 	(void) alarm(0);	/* Autologout OFF */
 
@@ -2085,11 +2171,12 @@ process(catch)
 	if (seterr)
 	    stderror(ERR_OLD);
 
+	postcmd();
 	/*
 	 * Execute the parse tree From: Michael Schroeder
 	 * <mlschroe@immd4.informatik.uni-erlangen.de> was execute(t, tpgrp);
 	 */
-	execute(savet, (tpgrp > 0 ? tpgrp : -1), NULL, NULL);
+	execute(savet, (tpgrp > 0 ? tpgrp : -1), NULL, NULL, TRUE);
 
 	/*
 	 * Made it!
@@ -2097,9 +2184,11 @@ process(catch)
 	freelex(&paraml);
 	freesyn(savet), savet = NULL;
 #ifdef SIG_WINDOW
-	if (catch && intty && !whyles && !tellwhat)
-	    (void) window_change(0);	/* for window systems */
+	if (windowchg || (catch && intty && !whyles && !tellwhat)) {
+	    (void) check_window_size(0);	/* for window systems */
+	}
 #endif /* SIG_WINDOW */
+	set(STR_, Strsave(InputBuf), VAR_READWRITE | VAR_NOGLOB);
     }
     savet = t;
     resexit(osetexit);
@@ -2108,12 +2197,11 @@ process(catch)
 /*ARGSUSED*/
 void
 dosource(t, c)
-    register Char **t;
+    Char **t;
     struct command *c;
 {
-    register Char *f;
-    bool    hflg = 0;
-    extern int bequiet;
+    Char *f;
+    int    hflg = 0;
     char    buf[BUFSIZE];
 
     USE(c);
@@ -2132,6 +2220,15 @@ dosource(t, c)
     f = globone(*t++, G_ERROR);
     (void) strcpy(buf, short2str(f));
     xfree((ptr_t) f);
+    gflag = 0, tglob(t);
+    if (gflag) {
+	t = globall(t);
+	if (t == 0)
+	    stderror(ERR_NAME | ERR_NOMATCH);
+    } else {
+	t = saveblk(t);
+	trim(t);
+    }
     if ((!srcfile(buf, 0, hflg, t)) && (!hflg) && (!bequiet))
 	stderror(ERR_SYSTEM, buf, strerror(errno));
 }
@@ -2158,15 +2255,15 @@ dosource(t, c)
 static void
 mailchk()
 {
-    register struct varent *v;
-    register Char **vp;
+    struct varent *v;
+    Char **vp;
     time_t  t;
     int     intvl, cnt;
     struct stat stb;
-    bool    new;
+    int    new;
 
     v = adrof(STRmail);
-    if (v == 0)
+    if (v == NULL || v->vec == NULL)
 	return;
     (void) time(&t);
     vp = v->vec;
@@ -2185,7 +2282,7 @@ mailchk()
 #if defined(BSDTIMES) || defined(_SEQUENT_)
 	new = stb.st_mtime > time0.tv_sec;
 #else
-	new = stb.st_mtime > time0;
+	new = stb.st_mtime > seconds0;
 #endif
 	if (S_ISDIR(stb.st_mode)) {
 	    DIR *mailbox;
@@ -2204,7 +2301,7 @@ mailchk()
 #if defined(BSDTIMES) || defined(_SEQUENT_)
 		new = stb.st_mtime > time0.tv_sec;
 #else
-		new = stb.st_mtime > time0;
+		new = stb.st_mtime > seconds0;
 #endif
 		mboxdir = tempfilename;
 	    }
@@ -2233,16 +2330,18 @@ mailchk()
 			mailcount, filename);
 	}
 	else {
+	    char *type;
+	    
 	    if (stb.st_size == 0 || stb.st_atime > stb.st_mtime ||
 		(stb.st_atime <= chktim && stb.st_mtime <= chktim) ||
 		(loginsh && !new))
 		continue;
+	    type = strsave(new ? CGETS(11, 6, "new ") : "");
 	    if (cnt == 1)
-		xprintf(CGETS(11, 5, "You have %smail.\n"),
-			new ? CGETS(11, 6, "new ") : "");
+		xprintf(CGETS(11, 5, "You have %smail.\n"), type);
 	    else
-	        xprintf(CGETS(11, 7, "You have %smail in %s.\n"),
-			new ? CGETS(11, 6, "new ") : "", filename);
+	        xprintf(CGETS(11, 7, "You have %smail in %s.\n"), type, filename);
+	    xfree(type);
 	}
     }
     chktim = t;
@@ -2290,6 +2389,12 @@ gethdir(home)
 void
 initdesc()
 {
+#ifdef NLS_BUGS
+#ifdef NLS_CATALOGS
+    nlsclose();
+#endif /* NLS_CATALOGS */
+#endif /* NLS_BUGS */
+
 
     didfds = 0;			/* 0, 1, 2 aren't set up */
     (void) close_on_exec(SHIN = dcopy(0, FSHIN), 1);
@@ -2301,7 +2406,11 @@ initdesc()
 #endif /* CLOSE_ON_EXEC */
     isdiagatty = isatty(SHDIAG);
     isoutatty = isatty(SHOUT);
-    closem();
+#ifdef NLS_BUGS
+#ifdef NLS_CATALOGS
+    nlsinit();
+#endif /* NLS_CATALOGS */
+#endif /* NLS_BUGS */
 }
 
 
@@ -2357,11 +2466,11 @@ xexit(i)
      * because messages will stop working on the parent too.
      */
     if (child == 0)
-	(void) catclose(catd);
+	nlsclose();
 #endif /* NLS_CATALOGS */
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     nt_cleanup();
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
     _exit(i);
 }
 

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/config_f.h,v 1.3 1998-10-04 01:39:27 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/config_f.h,v 1.4 2005-06-03 15:17:09 ghudson Exp $ */
 /*
  * config_f.h -- configure various defines for tcsh
  *
@@ -19,11 +19,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -43,12 +39,20 @@
 #define _h_config_f
 
 /*
- * SHORT_STRINGS Use 16 bit characters instead of 8 bit chars
+ * SHORT_STRINGS Use at least 16 bit characters instead of 8 bit chars
  * 	         This fixes up quoting problems and eases implementation
  *	         of nls...
  *
  */
 #define SHORT_STRINGS
+
+/*
+ * WIDE_STRINGS	Represent strings using wide characters
+ *		Allows proper function in multibyte encodings like UTF-8
+ */
+#if defined (SHORT_STRINGS) && SIZEOF_WCHAR_T >= 4 && !defined (WINNT_NATIVE) && !defined(_OSD_POSIX)
+# define WIDE_STRINGS
+#endif
 
 /*
  * NLS:		Use Native Language System
@@ -114,16 +118,19 @@
 
 /*
  * KANJI	Ignore meta-next, and the ISO character set. Should
- *		be used with SHORT_STRINGS
+ *		be used with SHORT_STRINGS (or WIDE_STRINGS)
  *
  */
-#undef KANJI
+#define KANJI
 
 /*
  * DSPMBYTE	add variable "dspmbyte" and display multi-byte string at
- *		only output, when "dspmbyte" is set.
+ *		only output, when "dspmbyte" is set. Should be used with
+ *		KANJI
  */
-#undef DSPMBYTE
+#if defined (SHORT_STRINGS) && !defined (WIDE_STRINGS)
+# define DSPMBYTE
+#endif
 
 /*
  * MBYTEDEBUG	when "dspmbyte" is changed, set multi-byte checktable to
@@ -142,7 +149,7 @@
  *		This can be much slower and no memory statistics will be
  *		provided.
  */
-#if defined(__MACHTEN__) || defined(PURIFY) || defined(MALLOC_TRACE) || defined(_OSD_POSIX)
+#if defined(__MACHTEN__) || defined(PURIFY) || defined(MALLOC_TRACE) || defined(_OSD_POSIX) || defined(__MVS__)
 # define SYSMALLOC
 #else
 # undef SYSMALLOC
@@ -170,6 +177,17 @@
 #define COLOR_LS_F
 
 /*
+ * COLORCAT Do you want to colorful message ?
+ *
+ */
+#undef COLORCAT
+
+/*
+ * FILEC    support for old style file completion
+ */
+#define FILEC
+
+/*
  * RCSID	This defines if we want rcs strings in the binary or not
  *
  */
@@ -182,5 +200,32 @@
 #else
 # define RCSID(id)	/* Nothing */
 #endif /* !lint && !SABER */
+
+/* Consistency checks */
+#ifdef WIDE_STRINGS
+# if SIZEOF_WCHAR_T < 4
+    #error "wchar_t must be at least 4 bytes for WIDE_STRINGS"
+# endif
+
+# ifdef WINNT_NATIVE
+    #error "WIDE_STRINGS cannot be used together with WINNT_NATIVE"
+# endif
+
+# ifndef SHORT_STRINGS
+    #error "SHORT_STRINGS must be defined if WIDE_STRINGS is defined"
+# endif
+
+# ifndef NLS
+    #error "NLS must be defined if WIDE_STRINGS is defined"
+# endif
+
+# ifdef DSPMBYTE
+    #error "DSPMBYTE must not be defined if WIDE_STRINGS is defined"
+# endif
+#endif
+
+#if !defined (SHORT_STRINGS) && defined (DSPMBYTE)
+    #error "SHORT_STRINGS must be defined if DSPMBYTE is defined"
+#endif
 
 #endif /* _h_config_f */
