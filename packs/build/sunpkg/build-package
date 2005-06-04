@@ -278,18 +278,23 @@ for proc in checkinstall preinstall postinstall preremove postremove ; do
   fi
 done
 
-# Copy in the class action scripts.  Every package should have at
-# least class "none".
+# Copy in the class action scripts for classes other than "none".
+# (The "none" install script is copied explicitly into the package
+# install directory below; we omit it here so that it is not listed
+# in the pkgmap, since pkgadd does not seem to save it in the pkg
+# save directory).
 classes=`grep '^CLASSES=' $destdir/INSTALL/$source_name/pkginfo | \
 	    sed -e 's|^CLASSES=||'`
 for class in $classes ; do
-  for type in i r ; do
-    if [ -f $sourcedir/packs/build/sunpkg/class/$type.$class ]; then
-      cp $sourcedir/packs/build/sunpkg/class/$type.$class \
-	$destdir/INSTALL/$source_name
-      echo "i $type.$class" >> $prototype
-    fi
-  done
+  if [ $class != none ]; then
+    for type in i r ; do
+      if [ -f $sourcedir/packs/build/sunpkg/class/$type.$class ]; then
+	cp $sourcedir/packs/build/sunpkg/class/$type.$class \
+	  $destdir/INSTALL/$source_name
+	echo "i $type.$class" >> $prototype
+      fi
+    done
+  fi
 done
 
 # We have completed the prototype, so copy it in.
@@ -302,6 +307,13 @@ echo "==== generate the installable package"
 rm -rf $pkgdir/$package_name
 (cd $destdir/INSTALL/$source_name && \
   pkgmk -d $pkgdir -b $destdir/INSTALL/$source_name) || exit 1
+
+# Copy in the install script for the "none" class (omitted from the
+# package above).
+mkdir -p $pkgdir/$package_name/install
+cp $sourcedir/packs/build/sunpkg/class/i.none \
+  $pkgdir/$package_name/install || exit 1
+chmod 644 $pkgdir/$package_name/install/i.none
 
 echo "==== build a compressed archive of the package files"
 
