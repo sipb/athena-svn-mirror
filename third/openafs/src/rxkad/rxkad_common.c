@@ -23,7 +23,7 @@
 #define INCLUDE_RXKAD_PRIVATE_DECLS
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_common.c,v 1.1.1.5 2005-06-02 19:43:59 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_common.c,v 1.2 2005-06-06 19:16:58 zacheiss Exp $");
 
 #ifdef KERNEL
 #ifndef UKERNEL
@@ -89,8 +89,11 @@ struct rxkad_global_stats rxkad_global_stats = { 0 };
 pthread_mutex_t rxkad_global_stats_lock;
 pthread_key_t rxkad_stats_key;
 #else /* AFS_PTHREAD_ENV */
+#if defined(KERNEL) && !defined(UKERNEL)
+struct rxkad_stats rxkad_stats = { { 0 } }; 
+#else
 /* Move delaration of this to des/key_sched.c */
-/* struct rxkad_stats rxkad_stats = { { 0 } }; */
+#endif
 #endif /* AFS_PTHREAD_ENV */
 
 #ifdef AFS_PTHREAD_ENV
