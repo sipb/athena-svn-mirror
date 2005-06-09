@@ -102,7 +102,8 @@ if [ -s "$PATCHES" ]; then
   # patchadd is stupid and elides blank arguments, so we have to be careful
   # specifying the update root.
   ur="${UPDATE_ROOT:+-R $UPDATE_ROOT}"
-  yes | patchadd $ur -u -M /install/patches `cat $PATCHES`
+  yes="y\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny"
+  echo "$yes" | patchadd $ur -u -M /install/patches `cat $PATCHES`
 fi
 
 if [ "$OSCHANGES" = true ]; then
