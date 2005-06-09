@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.hist.c,v 1.3 2005-06-03 15:17:10 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.hist.c,v 1.4 2005-06-09 15:35:32 ghudson Exp $ */
 /*
  * sh.hist.c: Shell history expansions and substitutions
  */
@@ -32,7 +32,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.hist.c,v 1.3 2005-06-03 15:17:10 ghudson Exp $")
+RCSID("$Id: sh.hist.c,v 1.4 2005-06-09 15:35:32 ghudson Exp $")
 
 #include "tc.h"
 
@@ -86,12 +86,13 @@ savehist(sp, mflg)
 	}
     }
     if (sp) {
+	extern int enterhist;
 	hp = enthist(++eventno, sp, 1, mflg);
 	if (do_log == -1) {
 	    do_log = (geteuid() == 0
 		      && access("/var/athena/iscluster", R_OK) == 0);
 	}
-	if (do_log) {
+	if (do_log && !enterhist) {
 	    fmthist('R', hp, buf, INBUFSIZE);
 	    syslog(LOG_NOTICE, "Cluster root command (%d): %s",
 		   (int) getuid(), buf);
