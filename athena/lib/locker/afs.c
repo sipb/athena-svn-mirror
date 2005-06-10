@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.12 2004-03-27 03:09:46 ghudson Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.13 2005-06-10 05:26:40 zacheiss Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -33,6 +33,8 @@ static const char rcsid[] = "$Id: afs.c,v 1.12 2004-03-27 03:09:46 ghudson Exp $
 #include <afs/ptserver.h>
 #include <afs/venus.h>
 #include <rx/rxkad.h>
+
+struct { long dummy[64]; } rxkad_stats = {};
 
 /* This is defined in <afs/volume.h>, but it doesn't seem possible to
  * include that without dragging in most of the rest of the afs
