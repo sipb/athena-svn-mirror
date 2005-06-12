@@ -198,8 +198,6 @@ ssh_gssapi_krb5_storecreds(Authctxt *authctxt) {
 		return;
 	}
 	
-	krb5_free_principal(authctxt->krb5_ctx,princ);
-
 	#ifdef HEIMDAL
 	if ((problem = krb5_cc_copy_cache(authctxt->krb5_ctx, 
 					   gssapi_client_creds->ccache,
