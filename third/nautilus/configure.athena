@@ -1,2 +1,0 @@
-#!/bin/sh
-exec ./configure --with-freetype2-prefix=$ATHTOOLROOT/usr/athena
