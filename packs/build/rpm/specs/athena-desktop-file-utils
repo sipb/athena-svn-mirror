@@ -1,0 +1,14 @@
+Name: athena-desktop-file-utils
+Summary: Utilities for manipulating .desktop files, for Athena
+License: LGPL
+Group: Development/Tools
+
+Requires: athena-glib2 
+
+%description
+.desktop files are used to describe an application for inclusion in
+GNOME or KDE menus.  This package contains desktop-file-validate which
+checks whether a .desktop file complies with the specification at
+http://www.freedesktop.org/standards/, and desktop-file-install
+which installs a desktop file to the standard directory, optionally
+fixing it up in the process.

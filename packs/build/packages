@@ -1,4 +1,4 @@
-# $Id: packages,v 1.312 2005-05-27 06:40:56 zacheiss Exp $
+# $Id: packages,v 1.313 2005-06-17 16:41:13 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -148,6 +148,7 @@ third/cyrus-imapd		requires cyrus-sasl,perl package cyrus-imap-client
 third/cyrus-sasl		requires krb5
 third/control-center		requires gettext,intltool,gtk2,GConf2,libgnomeui,libglade2,libbonobo,libbonoboui,libglade2,libxklavier,gnome-desktop,libxml2,gnome-vfs2,esound,metacity,nautilus,metacity
 third/db
+third/desktop-file-utils	requires glib2,popt,emacs
 third/diffutils			on solaris
 third/eel			requires gettext,GConf2,gtk2,glib2,gnome-vfs2,gail,libart_lgpl,libgnome,libgnomeui,libxml2,libglade2
 third/emacs			requires hesiod,krb5,texinfo
