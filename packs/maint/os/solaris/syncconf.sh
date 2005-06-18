@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.16 2005-03-30 16:52:53 rbasch Exp $
+# $Id: syncconf.sh,v 1.17 2005-06-18 17:14:35 rbasch Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -74,7 +74,7 @@ handle()
 		;;
 
 	NFSCLIENT)
-		syncsvc network/nfs/client "$NFSSRV"
+		syncsvc network/nfs/client "$NFSCLIENT"
 		;;
 
 	HOSTADDR)
