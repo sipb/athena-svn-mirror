@@ -283,6 +283,13 @@ EOF
 	success pixmaps
 	echo
 
+	# Recreate mimeinfo.cache files.
+	echo -n Recreating mimeinfo.cache files:
+	XDG_DATA_DIRS=/usr/athena/share:/usr/share \
+	  /usr/athena/bin/update-desktop-database
+	success update-desktop-database
+	echo
+
 	;;
   stop)
 	;;

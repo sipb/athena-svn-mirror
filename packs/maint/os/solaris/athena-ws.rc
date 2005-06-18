@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athena-ws.rc,v 1.12 2005-04-22 18:05:46 ghudson Exp $
+# $Id: athena-ws.rc,v 1.13 2005-06-18 17:10:19 rbasch Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -279,6 +279,12 @@ start)
   for f in $gdir/schemas/*.schemas $gdir/schemas/athena.schemas; do
     gconftool-2 --makefile-install-rule $f > /dev/null 2>&1
   done
+  echo "done."
+
+  # Recreate mimeinfo.cache files.
+  echo "Recreating mimeinfo.cache files... \c"
+  XDG_DATA_DIRS=/usr/athena/share:/usr/share \
+    /usr/athena/bin/update-desktop-database
   echo "done."
 
   echo "Ending Athena startup tasks"
