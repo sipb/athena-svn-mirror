@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.78 2004-04-24 14:06:52 rbasch Exp $
+# $Id: reactivate.sh,v 1.79 2005-06-20 21:12:19 zacheiss Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -257,8 +257,8 @@ if [ "$PUBLIC" = true ]; then
 			/etc/group.local
 	fi
 	if [ -d $config ]; then
-		cp -p $config/etc/athena/athinfo.access /etc/athena
-		cp -p $config/etc/athena/local-lockers.conf /etc/athena
+		cp $config/etc/athena/athinfo.access /etc/athena
+		cp $config/etc/athena/local-lockers.conf /etc/athena
 	fi
 	rm -rf /etc/athena/access >/dev/null 2>&1
 fi
