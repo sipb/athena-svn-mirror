@@ -47,6 +47,12 @@ if [ "$NEWOS" = "true" ]; then
     rm -rf $UPDATE_ROOT/var/sadm/patch/$i
   done
 
+  # The VERSION setting in INST_RELEASE is now out of date, so
+  # remove the file before installing packages in the new OS rev.
+  # (The new INST_RELEASE will be installed below, after the
+  # new OS packages are installed).
+  rm -f "$UPDATE_ROOT/var/sadm/system/admin/INST_RELEASE"
+
   # Restore the files we preserved above.
   if [ -n "$ospreserve" ]; then
     echo "Restoring preserved config files after removing OS packages"
