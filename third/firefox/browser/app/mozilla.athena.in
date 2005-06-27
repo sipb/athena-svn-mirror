@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.2 2005-04-22 19:15:13 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.3 2005-06-27 15:10:59 rbasch Exp $
 # Firefox wrapper script for Athena.
 
 # Set up the environment.
@@ -36,12 +36,10 @@ SunOS)
     XSUNSMESIZE=512
     export XSUNTRANSPORT XSUNSMESIZE
   fi
-  # Ensure that we use the Sun gtk libraries.
-  moz_lib_path=$moz_lib_path:/usr/sfw/lib
-  java_plugin_dir=/usr/j2se/jre/plugin/sparc/ns610
+  java_plugin_dir=/usr/java/jre/plugin/sparc/ns7
   ;;
 Linux)
-  java_plugin_dir=/usr/java/j2sdk/jre/plugin/i386/ns610-gcc32
+  java_plugin_dir=/usr/java/jdk/jre/plugin/i386/ns7
   ;;
 esac
 
