@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.39 2000-12-18 08:44:08 ghudson Exp $
+ * $Id: finger.c,v 1.40 2005-06-27 03:33:42 zacheiss Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.39 2000-12-18 08:44:08 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.40 2005-06-27 03:33:42 zacheiss Exp $";
 #endif /*lint*/
 
 /*
@@ -1066,11 +1066,9 @@ decode(pers)
 fw_open()
 {
 #ifndef NO_LASTLOG
-	if ((lf = open(LASTLOG, 0)) < 0)
-		fprintf(stderr, "finger: %s open error\n", LASTLOG);
+  	lf = open(LASTLOG, 0);
 #endif
-	if ((lw = open(ACCTLOG, 0)) < 0)
-		fprintf(stderr, "finger: %s open error\n", ACCTLOG);
+	lw = open(ACCTLOG, 0);
 }
 
 findwhen(pers)
