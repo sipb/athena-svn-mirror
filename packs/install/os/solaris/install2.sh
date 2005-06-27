@@ -31,28 +31,32 @@ chmod 1777 /root/var/rtmp
 
 echo "installing the os packages"
 libdir=/srvd/usr/athena/lib/update
-case `uname -m` in
-sun4u)
-    for i in `cat /install/cdrom/.order.install` ; do 
-	echo $i
-	pkgadd -M -a $libdir/admin-update -n -R /root -d /install/cdrom $i
-    done
-    ;;
-*)
-    echo "unsupported architecture - contact Athena administration"
-    exit 1
-    ;;
-esac
+
+# For platform-dependent packages, we assume here that the package
+# directory name is $pkg.$suffix, where the suffix is 'u' for sun4u,
+# etc.  (This could be gleaned from /install/cdrom/.packagetoc).
+suffix=`uname -m | sed -e 's|sun4||g'`
+for pkg in `cat /install/cdrom/.order.install` ; do 
+    # If this package is platform-dependent, it will have a subdirectory
+    # in the distribution directory named foo.$suffix.  If there is no
+    # such directory, it must be platform-independent.
+    if [ -d "/install/cdrom/$pkg.$suffix" ] ; then
+      pkg="$pkg.$suffix"
+    fi
+    echo "$pkg"
+    pkgadd -M -a $libdir/admin-update -n -R /root -d /install/cdrom "$pkg"
+done
 
 echo "correction to pkg installation"
 cp /install/cdrom/INST_RELEASE /root/var/sadm/system/admin/
 
-rm /root/etc/.UNC*
-cp /install/cdrom/.sysIDtool.state /root/etc/default/
+rm -f /root/etc/.UNCONFIGURED
+rm -f /root/etc/.sysidconfig.apps
+touch /root/etc/.NFS4inst_state.domain
 
 echo "Installing Requested and Security patches for OS "
 patches=`cat /install/patches/current-patches` 
-yes | patchadd -d -R /root -u -M /install/patches/patches.link $patches
+patchadd -R /root -u -M /install/patches $patches < /util/yes-file
 
 echo "add/remove osfiles as needed\n"
 sh /srvd/install/oschanges 2>/dev/null
@@ -70,11 +74,6 @@ for pkg in `$libdir/pkg-order -d $pkgdir $core_pkgs` ; do
   pkgadd -M -a $libdir/admin-update -n -R /root -d $pkgdir $pkg
 done
 echo "Finished installing Athena core packages."
-
-# Install the finish-update script; it will invoke finish-install.
-cp -p /srvd/etc/init.d/finish-update /root/etc/init.d
-rm -f /root/etc/rc2.d/S70finish-update
-ln -s ../init.d/finish-update /root/etc/rc2.d/S70finish-update
 
 echo "Create devices and dev"
 /usr/sbin/devfsadm -R /root
