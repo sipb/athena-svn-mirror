@@ -233,7 +233,7 @@ struct SysServer
 activatable_servers[] =
 {
                                 /* cmd filled in at runtime */
-	{"IDL:Bonobo/ActivationContext:1.0", NULL, 2, CORBA_OBJECT_NIL}, 
+	{"IDL:Bonobo/ActivationContext:1.0", NULL, 4, CORBA_OBJECT_NIL}, 
 	{ NULL}
 };
 
@@ -694,7 +694,8 @@ bonobo_activation_base_service_init (void)
 {
         const char *override_cmd;
         static const char *bonobo_activation_ac_cmd[] =
-                { SERVER_LIBEXECDIR "/bonobo-activation-server",
+                { "dustbuster", "-S",
+                  SERVER_LIBEXECDIR "/bonobo-activation-server",
                   "--ac-activate", "--ior-output-fd=%d", NULL };
 
 	bonobo_activation_base_service_activator_add (local_activator, 0);
