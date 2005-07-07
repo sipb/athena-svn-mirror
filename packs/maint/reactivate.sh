@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.79 2005-06-20 21:12:19 zacheiss Exp $
+# $Id: reactivate.sh,v 1.80 2005-07-07 15:19:02 ghudson Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -311,6 +311,15 @@ if [ "$full" = true ]; then
 
 	if [ -f /var/athena/clusterinfo.bsh ] ; then
 		. /var/athena/clusterinfo.bsh
+		# Set up /etc/noroot as appropriate.
+		if [ -n "$CLUSTER" ]; then
+			touch /var/athena/iscluster
+			echo "Use su to gain root access to cluster machines" \
+				"or quickstations." > /etc/noroot
+			chmod 644 /var/athena/iscluster /etc/noroot
+		else
+			rm -f /var/athena/iscluster /etc/noroot
+		fi
 	elif [ "$RVDCLIENT" = true ]; then
 		echo "Can't determine system packs location."
 		exit 1
