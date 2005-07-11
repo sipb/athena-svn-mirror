@@ -179,6 +179,7 @@ Distribution sites for software under third
   kermit                http://www.columbia.edu/kermit
   krb5*                 http://web.mit.edu/network/kerberos-form.html
   lam                   From NetBSD (ftp.netbsd.org), usr.bin/lam
+  libao                 http://www.xiph.org/ao/
   libart_lgpl           ftp.gnome.org:pub/gnome/sources/libart_lgpl
   libbonobo             ftp.gnome.org:pub/gnome/sources/libbonobo
   libbonoboui           ftp.gnome.org:pub/gnome/sources/libbonoboui
