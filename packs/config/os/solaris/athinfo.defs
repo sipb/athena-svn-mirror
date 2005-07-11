@@ -37,3 +37,4 @@ cpuspeed	psrinfo -pv
 packages  	pkginfo
 patches  	showrev -p
 modules  	modinfo
+prom		prtconf -V
