@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.25 2001-11-28 20:48:11 ghudson Exp $
+# $Id: update_ws.sh,v 1.26 2005-07-14 14:45:45 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -15,6 +15,7 @@
 # this software for any purpose.  It is provided "as is"
 # without express or implied warranty.
 
+/etc/athena/save_cluster_info
 if [ -f /var/athena/clusterinfo.bsh ] ; then
   . /var/athena/clusterinfo.bsh
 fi
