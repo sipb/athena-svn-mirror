@@ -1,4 +1,4 @@
-# $Id: packages,v 1.313 2005-06-17 16:41:13 rbasch Exp $
+# $Id: packages,v 1.314 2005-07-14 14:58:15 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -221,6 +221,7 @@ third/krb5			requires et,ss package krb5-prep
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
 third/lam
 third/libart_lgpl
+third/libao			requires audiofile,esound
 third/libbonobo			requires gettext,intltool,ORBit2,glib2,libxml2
 third/libbonoboui		requires gettext,intltool,libgnomecanvas,libbonobo,libgnome,libxml2,GConf2,gtk2,libglade2,glib2
 third/libdaemon			on linux

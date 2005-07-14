@@ -1,0 +1,7 @@
+Name: athena-libao
+Summary: Cross-platform audio output library, for Athena
+License: GPL
+Group: System Environment/Libraries
+
+%description
+Libao is a cross-platform audio output library.
