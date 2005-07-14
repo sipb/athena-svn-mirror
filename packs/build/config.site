@@ -1,23 +1,13 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.37 2003-05-06 22:25:42 rbasch Exp $
+# $Id: config.site,v 1.38 2005-07-14 14:46:35 ghudson Exp $
 #
 
 athena=true
 
-# OS-specific shared-library rules, and other hacks
-case "$ATHENA_HOSTTYPE" in
-sgi)
-  SHARED_LDFLAGS="-Wl,-rpath,/usr/athena/lib"
-  ;;
-*)
-  SHARED_LDFLAGS="-Wl,-R/usr/athena/lib"
-  ;;
-esac
-
 # Compile programs with debugging and without optimization, for ease
 # of maintenance.  Use headers and libraries from /usr/athena.
 : ${CFLAGS=-g}
-: ${LDFLAGS="-L/usr/athena/lib $SHARED_LDFLAGS"}
+: ${LDFLAGS="-L/usr/athena/lib -Wl,-R/usr/athena/lib"}
 : ${CPPFLAGS="-I/usr/athena/include -D_REENTRANT"}
 
 # Set location of X and Motif includes and libraries.
