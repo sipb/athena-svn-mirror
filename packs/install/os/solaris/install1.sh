@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.31 2004-07-16 20:18:30 rbasch Exp $
+### $Id: install1.sh,v 1.32 2005-07-20 20:32:04 rbasch Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin:/usr/athena/bin
@@ -118,6 +118,13 @@ while true; do
 done
 
 default_release=${NEW_PRODUCTION_RELEASE:-$NEW_TESTING_RELEASE}
+
+# Temporary hack:  Force machines that should run 9.4 to install 9.3
+# (from which they can update to 9.4).  Remove this when the native 9.4
+# install is available.
+if [ "$default_release" = 9.4 ]; then
+    default_release=9.3
+fi
 
 major=`echo $default_release | awk -F. '{ print int($1); }'`
 if [ "$major" -lt 9 ]; then
