@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athena-sendmail.rc,v 1.2 2003-07-25 05:14:45 zacheiss Exp $
+# $Id: athena-sendmail.rc,v 1.3 2005-07-25 17:04:17 zacheiss Exp $
 #
 # athena-sendmail: Stop/Start the Athena sendmail service
 #
@@ -29,7 +29,7 @@ start)
   fi
   ;;
 stop)
-  pkill sendmail
+  pkill -x sendmail.real
   ;;
 restart)
   $0 stop
