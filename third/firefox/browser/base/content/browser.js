@@ -511,7 +511,16 @@ function Startup()
   // Check for window.arguments[0]. If present, use that for uriToLoad.
   if ("arguments" in window && window.arguments.length >= 1 && window.arguments[0])
     uriToLoad = window.arguments[0];
-    
+
+  try {
+    if (makeURL(uriToLoad).schemeIs("chrome")) {
+      dump("*** Preventing external load of chrome: URI into browser window\n");
+      dump("    Use -chrome <uri> instead\n");
+      window.close();
+      return;
+    }
+  } catch(e) {}
+
   gIsLoadingBlank = uriToLoad == "about:blank";
 
   if (!gIsLoadingBlank)
@@ -1048,7 +1057,7 @@ function ctrlNumberTabSelection(event)
     // XXXblake Proper fix is to just check whether focus is in the urlbar. However, focus with the autocomplete widget is all
     // hacky and broken and there's no way to do that right now. So this just patches it to ensure that alt+enter works when focus
     // is on a link.
-    if (!document.commandDispatcher.focusedElement || document.commandDispatcher.focusedElement.localName.toLowerCase() != "a") {
+    if (!(document.commandDispatcher.focusedElement instanceof HTMLAnchorElement)) {
       // Don't let winxp beep on ALT+ENTER, since the URL bar uses it.
       event.preventDefault();
       return;
@@ -3104,9 +3113,9 @@ nsBrowserStatusHandler.prototype =
         if (this.urlBar)
           this.urlBar.setAttribute("level", "low");
         try {
-          this.securityButton.setAttribute("label", 
+          this.securityButton.setAttribute("label",
             gBrowser.contentWindow.location.host);
-        } catch(exception) {}        
+        } catch(exception) {}
         break;
       case wpl.STATE_IS_BROKEN:
         this.securityButton.setAttribute("level", "broken");
@@ -3195,6 +3204,14 @@ nsBrowserAccess.prototype =
   {
     var newWindow = null;
     var referrer = null;
+    var isExternal = (aContext == nsCI.nsIBrowserDOMWindow.OPEN_EXTERNAL);
+
+    if (isExternal && aURI && aURI.schemeIs("chrome"))
+      return null;
+
+    var loadflags = isExternal ?
+                       nsCI.nsIWebNavigation.LOAD_FLAGS_FROM_EXTERNAL :
+                       nsCI.nsIWebNavigation.LOAD_FLAGS_NONE;
     if (aWhere == nsCI.nsIBrowserDOMWindow.OPEN_DEFAULTWINDOW) {
       switch (aContext) {
         case nsCI.nsIBrowserDOMWindow.OPEN_EXTERNAL :
@@ -3225,8 +3242,7 @@ nsBrowserAccess.prototype =
           }
           newWindow.QueryInterface(nsCI.nsIInterfaceRequestor)
                    .getInterface(nsCI.nsIWebNavigation)
-                   .loadURI(url, nsCI.nsIWebNavigation.LOAD_FLAGS_NONE,
-                            referrer, null, null);
+                   .loadURI(url, loadflags, referrer, null, null);
         } catch(e) {
         }
         break;
@@ -3241,13 +3257,12 @@ nsBrowserAccess.prototype =
                                       .call(aOpener);
             newWindow.QueryInterface(nsCI.nsIInterfaceRequestor)
                      .getInterface(nsIWebNavigation)
-                     .loadURI(url, nsIWebNavigation.LOAD_FLAGS_NONE, referrer,
-                              null, null);
+                     .loadURI(url, loadflags, referrer, null, null);
           } else {
             newWindow = gBrowser.selectedBrowser.docShell
                                 .QueryInterface(nsCI.nsIInterfaceRequestor)
                                 .getInterface(nsCI.nsIDOMWindow);
-            loadURI(url, null);
+            getWebNavigation().loadURI(url, loadflags, null, null, null);
           }
         } catch(e) {
         }
@@ -3647,9 +3662,23 @@ nsContextMenu.prototype = {
 #endif
         this.showItem( "context-setWallpaper", haveSetWallpaper && this.onImage );
 
-        if( haveSetWallpaper && this.onImage )
-            // Disable the Set As Wallpaper menu item if we're still trying to load the image
-          this.setItemAttr( "context-setWallpaper", "disabled", (("complete" in this.target) && !this.target.complete) ? "true" : null );
+        if( haveSetWallpaper && this.onImage ) {
+            // Disable the Set As Wallpaper menu item if we're still trying to load the image or the load failed
+            const nsIImageLoadingContent = Components.interfaces.nsIImageLoadingContent;
+            var disableSetWallpaper = false;
+            if (("complete" in this.target) && !this.target.complete)
+                 disableSetWallpaper = true;
+            else if (this.target instanceof nsIImageLoadingContent) {
+                var request = this.target.QueryInterface(nsIImageLoadingContent)
+                                  .getRequest(nsIImageLoadingContent.CURRENT_REQUEST);
+                if (!request)
+                    disableSetWallpaper = true;
+            }
+            else if (makeURL(this.target.src).scheme == "javascript")
+                disableSetWallpaper = true;
+              
+            this.setItemAttr( "context-setWallpaper", "disabled", disableSetWallpaper);
+        }
 
         // View Image depends on whether an image was clicked on.
         this.showItem( "context-viewimage", this.onImage );
@@ -3762,7 +3791,7 @@ nsContextMenu.prototype = {
 
         // See if the user clicked on an image.
         if ( this.target.nodeType == Node.ELEMENT_NODE ) {
-             if ( this.target.localName.toUpperCase() == "IMG" ) {
+             if ( this.target instanceof HTMLImageElement ) {
                 this.onImage = true;
                 this.imageURL = this.target.src;
                 // Look for image map.
@@ -3777,9 +3806,7 @@ nsContextMenu.prototype = {
                         areas.length = 0;
                         for ( var i = 0; i < areas.length && !this.onLink; i++ ) {
                             var area = areas[i];
-                            if ( area.nodeType == Node.ELEMENT_NODE
-                                 &&
-                                 area.localName.toUpperCase() == "AREA" ) {
+                            if ( area instanceof HTMLAreaElement ) {
                                 // Get type (rect/circle/polygon/default).
                                 var type = area.getAttribute( "type" );
                                 var coords = this.parseCoords( area );
@@ -3804,7 +3831,7 @@ nsContextMenu.prototype = {
                         }
                     }
                 }
-             } else if ( this.target.localName.toUpperCase() == "OBJECT"
+             } else if ( this.target instanceof HTMLObjectElement
                          &&
                          // See if object tag is for an image.
                          this.objectIsImage( this.target ) ) {
@@ -3812,7 +3839,7 @@ nsContextMenu.prototype = {
                 this.onImage = true;
                 // URL must be constructed.
                 this.imageURL = this.objectImageURL( this.target );
-             } else if ( this.target.localName.toUpperCase() == "INPUT") {
+             } else if ( this.target instanceof HTMLInputElement) {
                type = this.target.getAttribute("type");
                if(type && type.toUpperCase() == "IMAGE") {
                  this.onImage = true;
@@ -3823,9 +3850,9 @@ nsContextMenu.prototype = {
                  this.onTextInput = this.isTargetATextBox(this.target);
                  this.onKeywordField = this.isTargetAKeywordField(this.target);
                }
-            } else if ( this.target.localName.toUpperCase() == "TEXTAREA" ) {
+            } else if ( this.target instanceof HTMLTextAreaElement ) {
                  this.onTextInput = true;
-            } else if ( this.target.localName.toUpperCase() == "HTML" ) {
+            } else if ( this.target instanceof HTMLHtmlElement ) {
                // pages with multiple <body>s are lame. we'll teach them a lesson.
                var bodyElt = this.target.ownerDocument.getElementsByTagName("body")[0];
                if ( bodyElt ) {
@@ -3892,13 +3919,11 @@ nsContextMenu.prototype = {
         var elem = this.target;
         while ( elem ) {
             if ( elem.nodeType == Node.ELEMENT_NODE ) {
-                var localname = elem.localName.toUpperCase();
-                
                 // Link?
                 if ( !this.onLink && 
-                    ( (localname === "A" && elem.href) ||
-                      localname === "AREA" ||
-                      localname === "LINK" ||
+                    ( (elem instanceof HTMLAnchorElement && elem.href) ||
+                      elem instanceof HTMLAreaElement ||
+                      elem instanceof HTMLLinkElement ||
                       elem.getAttributeNS( "http://www.w3.org/1999/xlink", "type") == "simple" ) ) {
                     // Clicked on a link.
                     this.onLink = true;
@@ -3920,14 +3945,12 @@ nsContextMenu.prototype = {
                 if ( !this.onMetaDataItem ) {
                     // We currently display metadata on anything which fits
                     // the below test.
-                    if ( ( localname === "BLOCKQUOTE" && 'cite' in elem && elem.cite)  ||
-                         ( localname === "Q" && 'cite' in elem && elem.cite)           ||
-                         ( localname === "TABLE" && 'summary' in elem && elem.summary) ||
-                         ( ( localname === "INS" || localname === "DEL" ) &&
-                           ( ( 'cite' in elem && elem.cite ) ||
-                             ( 'dateTime' in elem && elem.dateTime ) ) )               ||
-                         ( 'title' in elem && elem.title )                             ||
-                         ( 'lang' in elem && elem.lang ) ) {
+                    if ( ( elem instanceof HTMLQuoteElement && elem.cite)    ||
+                         ( elem instanceof HTMLTableElement && elem.summary) ||
+                         ( elem instanceof HTMLModElement &&
+                             ( elem.cite || elem.dateTime ) )                ||
+                         ( elem instanceof HTMLElement &&
+                             ( elem.title || elem.lang ) ) ) {
                         this.onMetaDataItem = true;
                     }
                 }
@@ -4057,10 +4080,12 @@ nsContextMenu.prototype = {
     },
     // Change current window to the URL of the image.
     viewImage : function (e) {
+        urlSecurityCheck( this.imageURL, document )
         openUILink( this.imageURL, e );
     },
     // Change current window to the URL of the background image.
     viewBGImage : function (e) {
+        urlSecurityCheck( this.bgImageURL, document )
         openUILink( this.bgImageURL, e );
     },
     setWallpaper: function() {
@@ -4336,28 +4361,10 @@ nsContextMenu.prototype = {
     },
     isTargetATextBox : function ( node )
     {
-      if (node.nodeType != Node.ELEMENT_NODE)
-        return false;
+      if (node instanceof HTMLInputElement)
+        return (node.type == "text" || node.type == "password")
 
-      if (node.localName.toUpperCase() == "INPUT") {
-        var attrib = "";
-        var type = node.getAttribute("type");
-
-        if (type)
-          attrib = type.toUpperCase();
-
-        return( (attrib != "IMAGE") &&
-                (attrib != "CHECKBOX") &&
-                (attrib != "RADIO") &&
-                (attrib != "SUBMIT") &&
-                (attrib != "RESET") &&
-                (attrib != "FILE") &&
-                (attrib != "HIDDEN") &&
-                (attrib != "RESET") &&
-                (attrib != "BUTTON") );
-      } else  {
-        return(node.localName.toUpperCase() == "TEXTAREA");
-      }
+      return (node instanceof HTMLTextAreaElement);
     },
     isTargetAKeywordField : function ( node )
     {
@@ -4451,26 +4458,20 @@ function asyncOpenWebPanel(event)
    var target = event.target;
    var linkNode;
 
-   var local_name = target.localName;
-
-   if (local_name) {
-     local_name = local_name.toLowerCase();
+   if (target instanceof HTMLAnchorElement ||
+       target instanceof HTMLAreaElement ||
+       target instanceof HTMLLinkElement) {
+     if (target.hasAttribute("href"))
+       linkNode = target;
    }
-
-   switch (local_name) {
-     case "a":
-     case "area":
-     case "link":
-       if (target.hasAttribute("href")) 
-         linkNode = target;
-       break;
-     default:
-       linkNode = findParentNode(event.originalTarget, "a");
-       // <a> cannot be nested.  So if we find an anchor without an
-       // href, there is no useful <a> around the target
-       if (linkNode && !linkNode.hasAttribute("href"))
-         linkNode = null;
-       break;
+   else {
+     linkNode = event.originalTarget;
+     while (linkNode && !(linkNode instanceof HTMLAnchorElement))
+       linkNode = linkNode.parentNode;
+     // <a> cannot be nested.  So if we find an anchor without an
+     // href, there is no useful <a> around the target
+     if (linkNode && !linkNode.hasAttribute("href"))
+       linkNode = null;
    }
    if (linkNode) {
      var wrapper = new XPCNativeWrapper(linkNode, "href", "getAttribute()", "ownerDocument");
@@ -4494,6 +4495,9 @@ function asyncOpenWebPanel(event)
            return true;
          // javascript links should be executed in the current browser
          if (wrapper.href.substr(0, 11) === "javascript:")
+           return true;
+         // data links should be executed in the current browser
+         if (wrapper.href.substr(0, 5) === "data:")
            return true;
 
          if (!webPanelSecurityCheck(locWrapper.href, wrapper.href))
@@ -4566,7 +4570,7 @@ function asyncOpenWebPanel(event)
      }
    }
    if (event.button == 1 &&
-       !findParentNode(event.originalTarget, "scrollbar") &&
+       !event.getPreventDefault() &&
        gPrefService.getBoolPref("middlemouse.contentLoadURL")) {
      middleMousePaste(event);
    }
@@ -4642,27 +4646,6 @@ function makeURLAbsolute( base, url )
   var baseURI  = ioService.newURI(base, null, null);
 
   return ioService.newURI(baseURI.resolve(url), null, null).spec;
-}
-
-function findParentNode(node, parentNode)
-{
-  if (node && node.nodeType == Node.TEXT_NODE) {
-    node = node.parentNode;
-  }
-  while (node) {
-    var nodeName = node.localName;
-    if (!nodeName)
-      return null;
-    nodeName = nodeName.toLowerCase();
-    if (nodeName == "body" || nodeName == "html" ||
-        nodeName == "#document") {
-      return null;
-    }
-    if (nodeName == parentNode)
-      return node;
-    node = node.parentNode;
-  }
-  return null;
 }
 
 function saveFrameDocument()
@@ -5353,10 +5336,10 @@ function AddKeywordForSearchField()
       (node.form.enctype == "application/x-www-form-urlencoded" || node.form.enctype == "")) {
     for (var i = 0; i < node.form.elements.length; ++i) {
       var e = node.form.elements[i];
-      if (e.type.toLowerCase() == "text" || e.type.toLowerCase() == "hidden" || 
-          e.localName.toLowerCase() == "textarea") 
+      if (e.type.toLowerCase() == "text" || e.type.toLowerCase() == "hidden" ||
+          e instanceof HTMLTextAreaElement)
         postData += escape(e.name + "=" + (e == node ? "%s" : e.value)) + "&";
-      else if (e.localName.toLowerCase() == "select" && e.selectedIndex >= 0)
+      else if (e instanceof HTMLSelectElement && e.selectedIndex >= 0)
         postData += escape(e.name + "=" + e.options[e.selectedIndex].value) + "&";
       else if ((e.type.toLowerCase() == "checkbox" ||
 	  	e.type.toLowerCase() == "radio") && e.checked)
@@ -5370,10 +5353,10 @@ function AddKeywordForSearchField()
       if (e == node) // avoid duplication of the target field value, which was populated above.
         continue;
         
-      if (e.type.toLowerCase() == "text" || e.type.toLowerCase() == "hidden" || 
-          e.localName.toLowerCase() == "textarea")
+      if (e.type.toLowerCase() == "text" || e.type.toLowerCase() == "hidden" ||
+          e instanceof HTMLTextAreaElement)
         spec += "&" + escape(e.name) + "=" + escape(e.value);
-      else if (e.localName.toLowerCase() == "select" && e.selectedIndex >= 0)
+      else if (e instanceof HTMLSelectElement && e.selectedIndex >= 0)
         spec += "&" + escape(e.name) + "=" + escape(e.options[e.selectedIndex].value);
       else if ((e.type.toLowerCase() == "checkbox" ||
 	  	e.type.toLowerCase() == "radio") && e.checked)
@@ -5620,14 +5603,19 @@ function missingPluginInstaller(){
 }
 
 missingPluginInstaller.prototype.installSinglePlugin = function(aEvent){
+  // Check if the event is trust-worthy.
+  if (!aEvent.isTrusted) {
+    return;
+  }
+
   var tabbrowser = getBrowser();
   var missingPluginsArray = new Object;
 
   var tagMimetype;
   var pluginsPage;
-  if (aEvent.target.localName.toLowerCase() == "applet") {
+  if (aEvent.target instanceof HTMLAppletElement) {
     tagMimetype = "application/x-java-vm";
-  } else if (aEvent.target.localName.toLowerCase() == "object") {
+  } else if (aEvent.target instanceof HTMLObjectElement) {
     tagMimetype = aEvent.target.type;
     pluginsPage = aEvent.target.getAttribute("codebase");
   } else {
@@ -5646,12 +5634,17 @@ missingPluginInstaller.prototype.installSinglePlugin = function(aEvent){
 }
 
 missingPluginInstaller.prototype.newMissingPlugin = function(aEvent){
+  // Check if the event is trust-worthy.
+  if (!aEvent.isTrusted) {
+    return;
+  }
+
   // For broken non-object plugin tags, register a click handler so
   // that the user can click the plugin replacement to get the new
   // plugin. Object tags can, and often do, deal with that themselves,
   // so don't stomp on the page developers toes.
 
-  if (aEvent.target.localName.toLowerCase() != "object") {
+  if (!(aEvent.target instanceof HTMLObjectElement)) {
     aEvent.target.addEventListener("click",
                                    gMissingPluginInstaller.installSinglePlugin,
                                    false);
@@ -5681,9 +5674,9 @@ missingPluginInstaller.prototype.newMissingPlugin = function(aEvent){
 
   var tagMimetype;
   var pluginsPage;
-  if (aEvent.target.localName.toLowerCase() == "applet") {
+  if (aEvent.target instanceof HTMLAppletElement) {
     tagMimetype = "application/x-java-vm";
-  } else if (aEvent.target.localName.toLowerCase() == "object") {
+  } else if (aEvent.target instanceof HTMLObjectElement) {
     tagMimetype = aEvent.target.type;
     pluginsPage = aEvent.target.getAttribute("codebase");
   } else {

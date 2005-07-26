@@ -54,7 +54,13 @@ nsWindowRoot::~nsWindowRoot()
 {
 }
 
-NS_IMPL_ISUPPORTS5(nsWindowRoot, nsIDOMEventReceiver, nsIChromeEventHandler, nsPIWindowRoot, nsIDOMEventTarget, nsIDOM3EventTarget)
+NS_IMPL_ISUPPORTS6(nsWindowRoot,
+                   nsIDOMEventReceiver,
+                   nsIChromeEventHandler,
+                   nsPIWindowRoot,
+                   nsIDOMEventTarget,
+                   nsIDOM3EventTarget,
+                   nsIDOMNSEventTarget)
 
 NS_IMETHODIMP
 nsWindowRoot::AddEventListener(const nsAString& aType, nsIDOMEventListener* aListener, PRBool aUseCapture)
@@ -132,6 +138,24 @@ nsWindowRoot::IsRegisteredHere(const nsAString & type, PRBool *_retval)
 }
 
 NS_IMETHODIMP
+nsWindowRoot::AddEventListener(const nsAString& aType,
+                               nsIDOMEventListener *aListener,
+                               PRBool aUseCapture, PRBool aWantsUntrusted)
+{
+  nsCOMPtr<nsIEventListenerManager> manager;
+  nsresult rv = GetListenerManager(getter_AddRefs(manager));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  PRInt32 flags = aUseCapture ? NS_EVENT_FLAG_CAPTURE : NS_EVENT_FLAG_BUBBLE;
+
+  if (aWantsUntrusted) {
+    flags |= NS_PRIV_EVENT_UNTRUSTED_PERMITTED;
+  }
+
+  return manager->AddEventListenerByType(aListener, aType, flags, nsnull);
+}
+
+NS_IMETHODIMP
 nsWindowRoot::AddEventListenerByIID(nsIDOMEventListener *aListener, const nsIID& aIID)
 {
   nsCOMPtr<nsIEventListenerManager> manager;
@@ -186,10 +210,14 @@ nsWindowRoot::GetSystemEventGroup(nsIDOMEventGroup **aGroup)
   return NS_ERROR_FAILURE;
 }
 
-NS_IMETHODIMP nsWindowRoot::HandleChromeEvent(nsIPresContext* aPresContext,
-   nsEvent* aEvent, nsIDOMEvent** aDOMEvent, PRUint32 aFlags, 
-   nsEventStatus* aEventStatus)
+NS_IMETHODIMP
+nsWindowRoot::HandleChromeEvent(nsIPresContext* aPresContext, nsEvent* aEvent,
+                                nsIDOMEvent** aDOMEvent, PRUint32 aFlags, 
+                                nsEventStatus* aEventStatus)
 {
+  // Make sure to tell the event that dispatch has started.
+  NS_MARK_EVENT_DISPATCH_STARTED(aEvent);
+
   // Prevent the world from going
   // away until after we've finished handling the event.
   nsCOMPtr<nsIDOMWindow> kungFuDeathGrip(mWindow);
@@ -212,13 +240,16 @@ NS_IMETHODIMP nsWindowRoot::HandleChromeEvent(nsIPresContext* aPresContext,
   }
 
   if (NS_EVENT_FLAG_INIT & aFlags) {
-    // We're leaving the DOM event loop so if we created a DOM event, release here.
+    // We're leaving the DOM event loop so if we created a DOM event,
+    // release here.
     if (nsnull != *aDOMEvent) {
       nsrefcnt rc;
       NS_RELEASE2(*aDOMEvent, rc);
       if (0 != rc) {
-      //Okay, so someone in the DOM loop (a listener, JS object) still has a ref to the DOM Event but
-      //the internal data hasn't been malloc'd.  Force a copy of the data here so the DOM Event is still valid.
+        // Okay, so someone in the DOM loop (a listener, JS object)
+        // still has a ref to the DOM Event but the internal data
+        // hasn't been malloc'd.  Force a copy of the data here so the
+        // DOM Event is still valid.
         nsIPrivateDOMEvent *privateEvent;
         if (NS_OK == (*aDOMEvent)->QueryInterface(NS_GET_IID(nsIPrivateDOMEvent), (void**)&privateEvent)) {
           privateEvent->DuplicatePrivateData();
@@ -227,6 +258,10 @@ NS_IMETHODIMP nsWindowRoot::HandleChromeEvent(nsIPresContext* aPresContext,
       }
     }
     aDOMEvent = nsnull;
+
+    // Now that we're done with this event, remove the flag that says
+    // we're in the process of dispatching this event.
+    NS_MARK_EVENT_DISPATCH_DONE(aEvent);
   }
 
   return ret;

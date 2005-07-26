@@ -262,6 +262,8 @@ NS_IMETHODIMP nsDrawingSurfaceWin :: Lock(PRInt32 aX, PRInt32 aY,
       }
       else
       {
+        if (!(aFlags & NS_LOCK_SURFACE_WRITE_ONLY))
+          ::GdiFlush();
         mLockedBitmap = mSelectedBitmap;
         mBitmap.bmBits = mDIBits + mBitmap.bmWidthBytes * aY;
       }
@@ -426,11 +428,15 @@ NS_IMETHODIMP nsDrawingSurfaceWin :: Init(HDC aDC, PRUint32 aWidth,
   if (nsnull == mSurface)
 #endif
   {
-    HBITMAP tbits;
+    HBITMAP tbits = nsnull;
 
     if ((aWidth > 0) && (aHeight > 0))
     {
-      if (aFlags & NS_CREATEDRAWINGSURFACE_FOR_PIXEL_ACCESS)
+      if ((aFlags & NS_CREATEDRAWINGSURFACE_FOR_PIXEL_ACCESS) == 0)
+        tbits = ::CreateCompatibleBitmap(aDC, aWidth, aHeight);
+
+      // Create a DIB if we need Pixel Access, or it DDB creation failed
+      if (nsnull == tbits)
       {
         void        *bits;
         BITMAPINFO  *binfo;
@@ -440,21 +446,19 @@ NS_IMETHODIMP nsDrawingSurfaceWin :: Init(HDC aDC, PRUint32 aWidth,
 
         binfo = CreateBitmapInfo(aWidth, aHeight, depth);
 
-        if (nsnull != binfo)
-          mSelectedBitmap = tbits = ::CreateDIBSection(aDC, binfo, DIB_RGB_COLORS, &bits, NULL, 0);
+        if (nsnull == binfo)
+          return NS_ERROR_FAILURE;
+
+        mSelectedBitmap = tbits = ::CreateDIBSection(aDC, binfo, DIB_RGB_COLORS, &bits, NULL, 0);
 
         if (NULL == mSelectedBitmap)
-          tbits = ::CreateCompatibleBitmap(aDC, aWidth, aHeight);
-        else
-        {
-          mBitmapInfo = binfo;
-          mDIBits = (PRUint8 *)bits;
-          mBitmap.bmWidthBytes = RASWIDTH(aWidth, depth);
-          mBitmap.bmBitsPixel = depth;
-        }
+          return NS_ERROR_FAILURE;
+
+        mBitmapInfo = binfo;
+        mDIBits = (PRUint8 *)bits;
+        mBitmap.bmWidthBytes = RASWIDTH(aWidth, depth);
+        mBitmap.bmBitsPixel = depth;
       }
-      else
-        tbits = ::CreateCompatibleBitmap(aDC, aWidth, aHeight);
     }
     else
     {

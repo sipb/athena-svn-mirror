@@ -65,6 +65,7 @@
 #include "nsIURI.h"
 #include "nsIPrefBranch.h"
 #include "nsIPrefService.h"
+#include "nsIScriptSecurityManager.h"
 
 static const char* const sEventNames[] = {
   "mousedown", "mouseup", "click", "dblclick", "mouseover",
@@ -492,7 +493,7 @@ nsDOMEvent::PreventCapture()
 NS_IMETHODIMP
 nsDOMEvent::GetIsTrusted(PRBool *aIsTrusted)
 {
-  *aIsTrusted = (mEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED) != 0;
+  *aIsTrusted = NS_IS_TRUSTED_EVENT(mEvent);
 
   return NS_OK;
 }
@@ -1190,7 +1191,7 @@ NS_METHOD nsDOMEvent::GetPreventDefault(PRBool* aReturn)
 nsresult
 nsDOMEvent::SetEventType(const nsAString& aEventTypeArg)
 {
-  nsCOMPtr<nsIAtom> atom= do_GetAtom(NS_LITERAL_STRING("on") + aEventTypeArg);
+  nsCOMPtr<nsIAtom> atom = do_GetAtom(NS_LITERAL_STRING("on") + aEventTypeArg);
   mEvent->message = NS_USER_DEFINED_EVENT;
 
   if (mEvent->eventStructType == NS_MOUSE_EVENT) {
@@ -1264,9 +1265,32 @@ nsDOMEvent::SetEventType(const nsAString& aEventTypeArg)
 NS_IMETHODIMP
 nsDOMEvent::InitEvent(const nsAString& aEventTypeArg, PRBool aCanBubbleArg, PRBool aCancelableArg)
 {
+  // Make sure this event isn't already being dispatched.
+  NS_ENSURE_TRUE(!NS_IS_EVENT_IN_DISPATCH(mEvent), NS_ERROR_INVALID_ARG);
+
+  if (NS_IS_TRUSTED_EVENT(mEvent)) {
+    // Ensure the caller is permitted to dispatch trusted DOM events.
+
+    PRBool enabled = PR_FALSE;
+    nsContentUtils::GetSecurityManager()->
+      IsCapabilityEnabled("UniversalBrowserWrite", &enabled);
+
+    if (!enabled) {
+      SetTrusted(PR_FALSE);
+    }
+  }
+
   NS_ENSURE_SUCCESS(SetEventType(aEventTypeArg), NS_ERROR_FAILURE);
-  mEvent->flags |= aCanBubbleArg ? NS_EVENT_FLAG_NONE : NS_EVENT_FLAG_CANT_BUBBLE;
-  mEvent->flags |= aCancelableArg ? NS_EVENT_FLAG_NONE : NS_EVENT_FLAG_CANT_CANCEL;
+
+  mEvent->flags |=
+    aCanBubbleArg ? NS_EVENT_FLAG_NONE : NS_EVENT_FLAG_CANT_BUBBLE;
+  mEvent->flags |=
+    aCancelableArg ? NS_EVENT_FLAG_NONE : NS_EVENT_FLAG_CANT_CANCEL;
+
+  // Unset the NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY bit (which is
+  // set at the end of event dispatch) so that this event can be
+  // dispatched.
+  mEvent->flags &= ~NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY;
 
   return NS_OK;
 }
@@ -1275,6 +1299,26 @@ NS_IMETHODIMP
 nsDOMEvent::InitUIEvent(const nsAString& aTypeArg, PRBool aCanBubbleArg, PRBool aCancelableArg, 
                         nsIDOMAbstractView* aViewArg, PRInt32 aDetailArg)
 {
+  // Make sure this event isn't already being dispatched.
+  NS_ENSURE_TRUE(!NS_IS_EVENT_IN_DISPATCH(mEvent), NS_ERROR_INVALID_ARG);
+
+  if (NS_IS_TRUSTED_EVENT(mEvent)) {
+    // Ensure the caller is permitted to dispatch trusted DOM events.
+
+    PRBool enabled = PR_FALSE;
+    nsContentUtils::GetSecurityManager()->
+      IsCapabilityEnabled("UniversalBrowserWrite", &enabled);
+
+    if (!enabled) {
+      SetTrusted(PR_FALSE);
+    }
+  }
+
+  // Unset the NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY bit (which is
+  // set at the end of event dispatch) so that this event can be
+  // dispatched.
+  mEvent->flags &= ~NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY;
+
   return NS_ERROR_FAILURE;
 }
 
@@ -1285,6 +1329,26 @@ nsDOMEvent::InitMouseEvent(const nsAString & aTypeArg, PRBool aCanBubbleArg, PRB
                            PRBool aCtrlKeyArg, PRBool aAltKeyArg, PRBool aShiftKeyArg, 
                            PRBool aMetaKeyArg, PRUint16 aButtonArg, nsIDOMEventTarget *aRelatedTargetArg)
 {
+  // Make sure this event isn't already being dispatched.
+  NS_ENSURE_TRUE(!NS_IS_EVENT_IN_DISPATCH(mEvent), NS_ERROR_INVALID_ARG);
+
+  if (NS_IS_TRUSTED_EVENT(mEvent)) {
+    // Ensure the caller is permitted to dispatch trusted DOM events.
+
+    PRBool enabled = PR_FALSE;
+    nsContentUtils::GetSecurityManager()->
+      IsCapabilityEnabled("UniversalBrowserWrite", &enabled);
+
+    if (!enabled) {
+      SetTrusted(PR_FALSE);
+    }
+  }
+
+  // Unset the NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY bit (which is
+  // set at the end of event dispatch) so that this event can be
+  // dispatched.
+  mEvent->flags &= ~NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY;
+
   NS_ENSURE_SUCCESS(SetEventType(aTypeArg), NS_ERROR_FAILURE);
   mEvent->flags |= aCanBubbleArg ? NS_EVENT_FLAG_NONE : NS_EVENT_FLAG_CANT_BUBBLE;
   mEvent->flags |= aCancelableArg ? NS_EVENT_FLAG_NONE : NS_EVENT_FLAG_CANT_CANCEL;
@@ -1325,6 +1389,26 @@ nsDOMEvent::InitKeyEvent(const nsAString& aTypeArg, PRBool aCanBubbleArg, PRBool
                          PRBool aShiftKeyArg, PRBool aMetaKeyArg, 
                          PRUint32 aKeyCodeArg, PRUint32 aCharCodeArg)
 {
+  // Make sure this event isn't already being dispatched.
+  NS_ENSURE_TRUE(!NS_IS_EVENT_IN_DISPATCH(mEvent), NS_ERROR_INVALID_ARG);
+
+  if (NS_IS_TRUSTED_EVENT(mEvent)) {
+    // Ensure the caller is permitted to dispatch trusted DOM events.
+
+    PRBool enabled = PR_FALSE;
+    nsContentUtils::GetSecurityManager()->
+      IsCapabilityEnabled("UniversalBrowserWrite", &enabled);
+
+    if (!enabled) {
+      SetTrusted(PR_FALSE);
+    }
+  }
+
+  // Unset the NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY bit (which is
+  // set at the end of event dispatch) so that this event can be
+  // dispatched.
+  mEvent->flags &= ~NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY;
+
   NS_ENSURE_SUCCESS(SetEventType(aTypeArg), NS_ERROR_FAILURE);
   mEvent->flags |= aCanBubbleArg ? NS_EVENT_FLAG_NONE : NS_EVENT_FLAG_CANT_BUBBLE;
   mEvent->flags |= aCancelableArg ? NS_EVENT_FLAG_NONE : NS_EVENT_FLAG_CANT_CANCEL;
@@ -1352,6 +1436,26 @@ NS_IMETHODIMP nsDOMEvent::InitPopupBlockedEvent(const nsAString & aTypeArg,
                             nsIURI *aPopupWindowURI,
                             const nsAString & aPopupWindowFeatures)
 {
+  // Make sure this event isn't already being dispatched.
+  NS_ENSURE_TRUE(!NS_IS_EVENT_IN_DISPATCH(mEvent), NS_ERROR_INVALID_ARG);
+
+  if (NS_IS_TRUSTED_EVENT(mEvent)) {
+    // Ensure the caller is permitted to dispatch trusted DOM events.
+
+    PRBool enabled = PR_FALSE;
+    nsContentUtils::GetSecurityManager()->
+      IsCapabilityEnabled("UniversalBrowserWrite", &enabled);
+
+    if (!enabled) {
+      SetTrusted(PR_FALSE);
+    }
+  }
+
+  // Unset the NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY bit (which is
+  // set at the end of event dispatch) so that this event can be
+  // dispatched.
+  mEvent->flags &= ~NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY;
+
   NS_ENSURE_SUCCESS(SetEventType(aTypeArg), NS_ERROR_FAILURE);
   mEvent->flags |= aCanBubbleArg ? NS_EVENT_FLAG_NONE : NS_EVENT_FLAG_CANT_BUBBLE;
   mEvent->flags |= aCancelableArg ? NS_EVENT_FLAG_NONE : NS_EVENT_FLAG_CANT_CANCEL;
@@ -1570,7 +1674,7 @@ nsDOMEvent::GetEventPopupControlState(nsEvent *aEvent)
     }
     break;
   case NS_KEY_EVENT :
-    if (aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED) {
+    if (NS_IS_TRUSTED_EVENT(aEvent)) {
       PRUint32 key = NS_STATIC_CAST(nsKeyEvent *, aEvent)->keyCode;
       switch(aEvent->message) {
       case NS_KEY_PRESS :
@@ -1595,7 +1699,7 @@ nsDOMEvent::GetEventPopupControlState(nsEvent *aEvent)
     }
     break;
   case NS_MOUSE_EVENT :
-    if (aEvent->internalAppFlags & NS_APP_EVENT_FLAG_TRUSTED) {
+    if (NS_IS_TRUSTED_EVENT(aEvent)) {
       switch(aEvent->message) {
       case NS_MOUSE_LEFT_BUTTON_UP :
         if (::PopupAllowedForEvent("mouseup"))
@@ -1818,25 +1922,25 @@ nsDOMEvent::AllocateEvent(const nsAString& aEventType)
   //Allocate internal event
   nsAutoString eventType(aEventType);
   if (eventType.EqualsIgnoreCase("MouseEvents")) {
-    mEvent = new nsMouseEvent();
+    mEvent = new nsMouseEvent(PR_FALSE, 0, nsnull);
   }
   else if (eventType.EqualsIgnoreCase("MouseScrollEvents")) {
-    mEvent = new nsMouseScrollEvent();
+    mEvent = new nsMouseScrollEvent(PR_FALSE, 0, nsnull);
   }
   else if (eventType.EqualsIgnoreCase("KeyEvents")) {
-    mEvent = new nsKeyEvent();
+    mEvent = new nsKeyEvent(PR_FALSE, 0, nsnull);
   }
   else if (eventType.EqualsIgnoreCase("MutationEvents")) {
-    mEvent = new nsMutationEvent();
+    mEvent = new nsMutationEvent(PR_FALSE, 0);
   }
   else if (eventType.EqualsIgnoreCase("PopupEvents")) {
-    mEvent = new nsGUIEvent();
+    mEvent = new nsGUIEvent(PR_FALSE, 0, nsnull);
   }
   else if (eventType.EqualsIgnoreCase("PopupBlockedEvents")) {
-    mEvent = new nsPopupBlockedEvent();
+    mEvent = new nsPopupBlockedEvent(PR_FALSE, 0);
   }
   else {
-    mEvent = new nsEvent();
+    mEvent = new nsEvent(PR_FALSE, 0);
   }
   mEvent->time = PR_Now();
 }
