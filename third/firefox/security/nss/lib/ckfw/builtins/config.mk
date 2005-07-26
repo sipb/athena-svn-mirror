@@ -30,7 +30,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-CONFIG_CVS_ID = "@(#) $RCSfile: config.mk,v $ $Revision: 1.1.1.3 $ $Date: 2005-05-12 19:35:23 $ $Name: not supported by cvs2svn $"
+CONFIG_CVS_ID = "@(#) $RCSfile: config.mk,v $ $Revision: 1.1.1.4 $ $Date: 2005-07-26 19:22:51 $ $Name: not supported by cvs2svn $"
 
 #
 #  Override TARGETS variable so that only shared libraries
