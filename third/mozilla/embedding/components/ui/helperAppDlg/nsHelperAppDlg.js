@@ -239,7 +239,9 @@ nsHelperAppDialog.prototype = {
 
          // Some URIs do not implement nsIURL, so we can't just QI.
          var url = this.mLauncher.source.clone();
-         url.userPass = "";
+         try {
+           url.userPass = "";
+         } catch (ex) {}
          var fname = "";
          this.mSourcePath = url.prePath;
          try {
@@ -361,7 +363,7 @@ nsHelperAppDialog.prototype = {
     notify: function (aTimer) {
         if (!this._blurred)
           this.mDialog.document.documentElement.getButton('accept').disabled = false;
-        _timer = null;
+        this._timer = null;
     },
 
     _blurred: false,
@@ -378,7 +380,7 @@ nsHelperAppDialog.prototype = {
           return;
 
         this._blurred = false;
-        if (!_timer) {
+        if (!this._timer) {
           // Don't enable the button if the initial timer is running
           var script = "document.documentElement.getButton('accept').disabled = false";
           this.mDialog.setTimeout(script, 250);
