@@ -71,7 +71,7 @@ FinalizeInstallVersion(JSContext *cx, JSObject *obj);
 //
 JSClass InstallVersionClass = {
   "InstallVersion",
-  JSCLASS_HAS_PRIVATE,
+  JSCLASS_HAS_PRIVATE | JSCLASS_PRIVATE_IS_NSISUPPORTS,
   JS_PropertyStub,
   JS_PropertyStub,
   GetInstallVersionProperty,
@@ -97,7 +97,7 @@ extern PRBool ConvertJSValToBool(PRBool* aProp,
 
 extern PRBool ConvertJSValToObj(nsISupports** aSupports,
                                REFNSIID aIID,
-                               const nsString& aTypeName,
+                               JSClass* aClass,
                                JSContext* aContext,
                                jsval aValue);
 
@@ -465,10 +465,16 @@ InstallVersionCompareTo(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, j
 
         if(JS_FALSE == ConvertJSValToObj(getter_AddRefs(versionObj),
                                          NS_GET_IID(nsIDOMInstallVersion),
-                                         NS_ConvertASCIItoUCS2("InstallVersion"),
+                                         &InstallVersionClass,
                                          cx,
                                          argv[0]))
         {
+          return JS_FALSE;
+        }
+
+        if (!versionObj)
+        {
+          JS_ReportError(cx, "Function compareTo expects a non null object.");
           return JS_FALSE;
         }
 

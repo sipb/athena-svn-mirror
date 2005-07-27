@@ -221,6 +221,7 @@ bin/defaults/wallet/DistinguishedSchema.tbl
 bin/defaults/wallet/SchemaStrings.tbl
 bin/defaults/wallet/PositionalSchema.tbl
 bin/defaults/wallet/StateSchema.tbl
+bin/res/hiddenWindow.html
 bin/res/arrow.gif
 bin/res/loading-image.gif
 bin/res/broken-image.gif
@@ -264,8 +265,6 @@ bin/res/fonts/*
 bin/res/dtd/*
 ;debug menus reference samples dir - remove for actual releases:
 bin/res/samples/*
-bin/res/builtin/htmlBindings.xml
-bin/res/builtin/platformHTMLBindings.xml
 
 ; p3p
 bin/components/p3p.xpt

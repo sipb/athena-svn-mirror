@@ -50,15 +50,32 @@
 #include "nsMemory.h"
 
 JS_STATIC_DLL_CALLBACK(void *)
-nsGetPrincipalArray(JSContext *cx, struct JSPrincipals *prin)
+nsGetPrincipalArray(JSContext *cx, JSPrincipals *prin)
 {
     return nsnull;
 }
 
 JS_STATIC_DLL_CALLBACK(JSBool)
-nsGlobalPrivilegesEnabled(JSContext *cx , struct JSPrincipals *jsprin)
+nsGlobalPrivilegesEnabled(JSContext *cx, JSPrincipals *jsprin)
 {
     return JS_TRUE;
+}
+
+JS_STATIC_DLL_CALLBACK(JSBool)
+nsJSPrincipalsSubsume(JSPrincipals *jsprin, JSPrincipals *other)
+{
+    nsJSPrincipals *nsjsprin = NS_STATIC_CAST(nsJSPrincipals *, jsprin);
+    nsJSPrincipals *nsother  = NS_STATIC_CAST(nsJSPrincipals *, other);
+
+    nsCOMPtr<nsISubsumingPrincipal> subjsprin =
+        do_QueryInterface(nsjsprin->nsIPrincipalPtr);
+    if (!subjsprin) {
+        return JS_FALSE;
+    }
+
+    JSBool result;
+    nsresult rv = subjsprin->Subsumes(nsother->nsIPrincipalPtr, &result);
+    return NS_SUCCEEDED(rv) && result;
 }
 
 JS_STATIC_DLL_CALLBACK(void)
@@ -182,6 +199,7 @@ nsJSPrincipals::nsJSPrincipals()
     globalPrivilegesEnabled = nsGlobalPrivilegesEnabled;
     refcount = 0;
     destroy = nsDestroyJSPrincipals;
+    subsume = nsJSPrincipalsSubsume;
     nsIPrincipalPtr = nsnull;
 }
 

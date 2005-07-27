@@ -64,11 +64,13 @@ NS_INTERFACE_MAP_BEGIN(nsPrincipal)
   NS_INTERFACE_MAP_ENTRY(nsIPrincipal)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISerializable, nsIPrincipal)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIPrincipal)
+  NS_INTERFACE_MAP_ENTRY(nsISubsumingPrincipal)
   NS_INTERFACE_MAP_ENTRY(nsIPrincipalObsolete)
   NS_IMPL_QUERY_CLASSINFO(nsPrincipal)
 NS_INTERFACE_MAP_END
 
-NS_IMPL_CI_INTERFACE_GETTER2(nsPrincipal,
+NS_IMPL_CI_INTERFACE_GETTER3(nsPrincipal,
+                             nsISubsumingPrincipal,
                              nsIPrincipal,
                              nsISerializable)
 
@@ -145,6 +147,7 @@ deleteElement(void* aElement, void *aData)
 nsPrincipal::~nsPrincipal(void)
 {
   mAnnotations.EnumerateForwards(deleteElement, nsnull);
+  SetSecurityPolicy(nsnull); 
 }
 
 NS_IMETHODIMP
@@ -201,14 +204,25 @@ nsPrincipal::GetOrigin(char **aOrigin)
 NS_IMETHODIMP
 nsPrincipal::GetSecurityPolicy(void** aSecurityPolicy)
 {
-  *aSecurityPolicy = mSecurityPolicy;
+  if (mSecurityPolicy && mSecurityPolicy->IsInvalid()) 
+    SetSecurityPolicy(nsnull);
+  
+  *aSecurityPolicy = (void *) mSecurityPolicy;
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsPrincipal::SetSecurityPolicy(void* aSecurityPolicy)
 {
-  mSecurityPolicy = aSecurityPolicy;
+  DomainPolicy *newPolicy = NS_REINTERPRET_CAST(
+                              DomainPolicy *, aSecurityPolicy);
+  if (newPolicy)
+    newPolicy->Hold();
+ 
+  if (mSecurityPolicy)
+    mSecurityPolicy->Drop();
+  
+  mSecurityPolicy = newPolicy;
   return NS_OK;
 }
 
@@ -252,6 +266,11 @@ nsPrincipal::Equals(nsIPrincipal *aOther, PRBool *aResult)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsPrincipal::Subsumes(nsIPrincipal *aOther, PRBool *aResult)
+{
+  return Equals(aOther, aResult);
+}
 
 NS_IMETHODIMP
 nsPrincipal::CanEnableCapability(const char *capability, PRInt16 *result)
@@ -563,7 +582,7 @@ nsPrincipal::SetDomain(nsIURI* aDomain)
 {
   mDomain = aDomain;
   // Domain has changed, forget cached security policy
-  mSecurityPolicy = nsnull;
+  SetSecurityPolicy(nsnull);
 
   return NS_OK;
 }

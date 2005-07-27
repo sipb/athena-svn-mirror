@@ -306,6 +306,7 @@ bin/chrome/icons/default/main-window.ico
 bin/greprefs/*
 bin/defaults/pref/*
 bin/defaults/autoconfig/*
+bin/res/hiddenWindow.html
 bin/res/ua.css
 bin/res/html.css
 bin/res/quirk.css
@@ -359,7 +360,6 @@ bin/res/rdf/loading.gif
 bin/res/throbber/*
 ;debug menus reference samples dir - remove for actual releases:
 bin/res/samples/*
-bin/res/builtin/platformHTMLBindings.xml
 
 [mail]
 bin/msgbsutl.dll
