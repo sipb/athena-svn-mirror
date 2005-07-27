@@ -41,7 +41,7 @@
 #define CKHELPER_H
 
 #ifdef DEBUG
-static const char CKHELPER_CVS_ID[] = "@(#) $RCSfile: ckhelper.h,v $ $Revision: 1.1.1.11 $ $Date: 2005-05-12 19:55:31 $ $Name: not supported by cvs2svn $";
+static const char CKHELPER_CVS_ID[] = "@(#) $RCSfile: ckhelper.h,v $ $Revision: 1.1.1.12 $ $Date: 2005-07-27 12:20:43 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSCKT_H
