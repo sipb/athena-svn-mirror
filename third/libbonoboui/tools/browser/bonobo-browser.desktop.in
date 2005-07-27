@@ -1,8 +1,0 @@
-[Desktop Entry]
-_Name=Bonobo Component Browser
-_Comment=Shows available Bonobo components
-Exec=bonobo-browser
-Terminal=0
-Type=Application
-Icon=
-Categories=Application;System;

@@ -1,9 +1,0 @@
-# NO BLANK LINES ALLOWED
-#
-# Link all network share icons to gnome-fs-share.png
-#
-gnome-fs-share.png: gnome-fs-nfs.png gnome-fs-smb.png gnome-fs-ssh.png gnome-fs-web.png gnome-fs-ftp.png
-#
-gnome-fs-directory-accept.png: gnome-fs-directory-visiting.png
-#
-gnome-fs-regular.png: gnome-fs-loading-icon.png
