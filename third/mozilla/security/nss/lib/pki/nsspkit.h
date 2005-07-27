@@ -35,7 +35,7 @@
 #define NSSPKIT_H
 
 #ifdef DEBUG
-static const char NSSPKIT_CVS_ID[] = "@(#) $RCSfile: nsspkit.h,v $ $Revision: 1.1.1.11 $ $Date: 2005-05-12 18:59:26 $ $Name: not supported by cvs2svn $";
+static const char NSSPKIT_CVS_ID[] = "@(#) $RCSfile: nsspkit.h,v $ $Revision: 1.1.1.12 $ $Date: 2005-07-27 11:24:39 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
