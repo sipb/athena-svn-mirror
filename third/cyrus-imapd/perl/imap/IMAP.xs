@@ -39,7 +39,7 @@
  *
  */
 
-/* $Id: IMAP.xs,v 1.5 2004-02-23 23:56:43 rbasch Exp $ */
+/* $Id: IMAP.xs,v 1.6 2005-07-28 23:14:05 rbasch Exp $ */
 
 /*
  * Perl interface to the Cyrus imclient routines.  This enables the
@@ -311,8 +311,8 @@ CODE:
 	  }
 	  /*FALLTHROUGH*/
 	default:
-	  bang = perl_get_sv("^E", TRUE);
-	  sv_setiv(bang, rc);
+	  bang = perl_get_sv("!", TRUE);
+	  sv_setiv_mg(bang, rc);
 	  XSRETURN_UNDEF;
 	}
 	ST(0) = sv_newmortal();
