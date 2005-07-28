@@ -1,6 +1,6 @@
 /* imclient.c -- Streaming IMxP client library
  *
- * $Id: imclient.c,v 1.5 2004-02-23 23:56:42 rbasch Exp $
+ * $Id: imclient.c,v 1.6 2005-07-28 23:09:29 rbasch Exp $
  *
  * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
@@ -276,9 +276,11 @@ int imclient_connect(struct imclient **imclient,
 		/* Check if we are connected. */
 		len = sizeof(socket_error);
 		if (getsockopt(s, SOL_SOCKET, SO_ERROR, &socket_error, &len)
-		    == 0)
+		    == 0 && socket_error == 0)
 		    break;
 	    }
+	    else if (status == 0)
+		socket_error = ETIMEDOUT;
 	}
 	close(s);
 	s = -1;
