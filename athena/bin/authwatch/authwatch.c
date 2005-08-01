@@ -17,7 +17,7 @@
  * expire.
  */
 
-static const char rcsid[] = "$Id: authwatch.c,v 1.6 2005-05-13 16:05:29 ghudson Exp $";
+static const char rcsid[] = "$Id: authwatch.c,v 1.7 2005-08-01 15:56:13 rbasch Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -104,8 +104,6 @@ static gint timeout_cb(gpointer reset)
   time_t duration = 0;
   int nstate;
   unsigned int timeout;
-  GtkContainer *container;
-  GList *children;
 
   static GtkWidget *dialog = NULL;
   static int state = -1;
@@ -175,11 +173,8 @@ static gint timeout_cb(gpointer reset)
 			   G_CALLBACK(gtk_widget_destroy), NULL);
 	  g_signal_connect(G_OBJECT(dialog), "destroy",
 			   G_CALLBACK(gtk_widget_destroyed), &dialog);
-	  container = GTK_CONTAINER(GTK_DIALOG(dialog)->vbox);
-	  children = gtk_container_get_children(container);
-	  g_signal_connect(G_OBJECT(g_list_nth_data(children, 1)),
+	  g_signal_connect(G_OBJECT(GTK_DIALOG(dialog)->vbox),
 			   "expose_event", G_CALLBACK(expose_cb), NULL);
-	  g_list_free(children);
 	  gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	  gtk_widget_show(dialog);
 	}
