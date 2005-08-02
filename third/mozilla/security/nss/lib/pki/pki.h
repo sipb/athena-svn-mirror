@@ -35,7 +35,7 @@
 #define PKI_H
 
 #ifdef DEBUG
-static const char PKI_CVS_ID[] = "@(#) $RCSfile: pki.h,v $ $Revision: 1.1.1.12 $ $Date: 2005-07-27 12:05:29 $ $Name: not supported by cvs2svn $";
+static const char PKI_CVS_ID[] = "@(#) $RCSfile: pki.h,v $ $Revision: 1.1.1.13 $ $Date: 2005-08-02 12:12:45 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSDEVT_H
