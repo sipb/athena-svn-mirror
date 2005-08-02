@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/log/kseal.c,v 1.1.1.2 2005-03-10 20:38:27 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/log/kseal.c,v 1.1.1.3 2005-08-02 21:14:46 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -37,9 +37,8 @@ RCSID
 
 #include "AFS_component_version_number.c"
 
-main(argc, argv)
-     int argc;
-     char **argv;
+int
+main(int argc, char **argv)
 {
     struct ktc_token token;
     struct ktc_principal sname;

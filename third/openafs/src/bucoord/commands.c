@@ -11,10 +11,16 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/commands.c,v 1.1.1.4 2005-05-04 17:44:56 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/commands.c,v 1.1.1.5 2005-08-02 21:14:32 zacheiss Exp $");
 
 #include <afs/stds.h>
+#if defined(AFS_LINUX24_ENV)
+#define _REGEX_RE_COMP
+#endif
 #include <sys/types.h>
+#if defined(AFS_LINUX24_ENV)
+#include <regex.h>
+#endif
 #include <afs/cmd.h>
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>

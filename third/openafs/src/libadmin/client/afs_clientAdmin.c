@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/client/afs_clientAdmin.c,v 1.1.1.2 2005-03-10 20:48:28 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/client/afs_clientAdmin.c,v 1.1.1.3 2005-08-02 21:15:00 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include "afs_clientAdmin.h"
@@ -754,12 +754,6 @@ typedef struct afs_server {
     int *valid;
 } afs_server_t, *afs_server_p;
 
-static afs_server_t servers[NUM_SERVER_TYPES]
-= { {AFSCONF_KAUTHSERVICE, KA_MAINTENANCE_SERVICE, 0, 0, 0},
-{AFSCONF_PROTSERVICE, PRSRV, 0, 0, 0},
-{AFSCONF_VLDBSERVICE, USER_SERVICE_ID, 0, 0, 0}
-};
-
 /*
  * afsclient_CellOpen - Open a particular cell for work as a particular
  * user.
@@ -803,6 +797,12 @@ afsclient_CellOpen(const char *cellName, const void *tokenHandle,
     int scIndex;
     char copyCell[MAXCELLCHARS];
 
+    afs_server_t servers[NUM_SERVER_TYPES]
+      = { {AFSCONF_KAUTHSERVICE, KA_MAINTENANCE_SERVICE, 0, 0, 0},
+	  {AFSCONF_PROTSERVICE, PRSRV, 0, 0, 0},
+	  {AFSCONF_VLDBSERVICE, USER_SERVICE_ID, 0, 0, 0}
+      };
+    
     if (client_init == 0) {
 	tst = ADMCLIENTNOINIT;
 	goto fail_afsclient_CellOpen;

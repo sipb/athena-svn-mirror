@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butc/recoverDb.c,v 1.1.1.4 2005-05-04 17:45:09 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butc/recoverDb.c,v 1.1.1.5 2005-08-02 21:14:34 zacheiss Exp $");
 
 #include <stdio.h>
 #ifdef AFS_NT40_ENV
@@ -909,7 +909,7 @@ databaseTape(tapeName)
     if (!sptr)
 	return (0);
 
-    c = (int)((afs_int32) sptr - (afs_int32) tapeName);
+    c = (int)((char *) sptr - (char *) tapeName);
     if (strncmp(tapeName, DUMP_TAPE_NAME, c) == 0)
 	return (1);
 

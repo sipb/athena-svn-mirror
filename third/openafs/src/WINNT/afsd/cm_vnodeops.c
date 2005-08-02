@@ -128,7 +128,6 @@ char cm_LegalChars[256] = {
 int cm_Is8Dot3(char *namep)
 {
     int sawDot = 0;
-    int sawUpper = 0, sawLower = 0;
     unsigned char tc;
     int charCount = 0;
         
@@ -153,10 +152,6 @@ int cm_Is8Dot3(char *namep)
         }
         if (cm_LegalChars[tc] == 0)
             return 0;
-        if (tc >= 'A' && tc <= 'Z')
-            sawUpper = 1;
-        else if (tc >= 'a' && tc <= 'z')
-            sawLower = 1;
         charCount++;
         if (!sawDot && charCount > 8)
             /* more than 8 chars in name */
@@ -165,14 +160,6 @@ int cm_Is8Dot3(char *namep)
             /* more than 3 chars in extension */
             return 0;
     }
-    /*
-     * Used to check that all characters were the same case.
-     * This doesn't help 16-bit apps, and meanwhile it causes the
-     * MS-DOS Command Prompt to misbehave; see Sybase defect 10709.
-     *
-     if (sawUpper && sawLower)
-         return 0;
-     */
     return 1;
 }
 
@@ -2705,6 +2692,10 @@ long cm_Lock(cm_scache_t *scp, unsigned char LockType,
     int found = 0;
     struct rx_connection * callp;
 
+    osi_Log1(afsd_logp, "cm_Lock scp 0x%x ...", (long) scp);
+    osi_Log4(afsd_logp, "cm_Lock type 0x%x offset %d length %d timeout %d",
+             LockType, (unsigned long)LOffset.QuadPart, (unsigned long)LLength.QuadPart, Timeout);
+
     /* Look for a conflict.  Also, if we are asking for a shared lock,
      * look for another shared lock, so we don't have to do an RPC.
      */
@@ -2720,6 +2711,8 @@ long cm_Lock(cm_scache_t *scp, unsigned char LockType,
         q = osi_QNext(q);
     }
 
+    osi_Log1(afsd_logp, "cm_Lock found = %d", found);
+
     if (found)
         code = 0;
     else {
@@ -2728,6 +2721,7 @@ long cm_Lock(cm_scache_t *scp, unsigned char LockType,
         tfid.Unique = scp->fid.unique;
         lock_ReleaseMutex(&scp->mx);
         do {
+            osi_Log1(afsd_logp, "CALL SetLock scp 0x%x", (long) scp);
             code = cm_Conn(&scp->fid, userp, reqp, &connp);
             if (code) 
                 break;
@@ -2739,6 +2733,10 @@ long cm_Lock(cm_scache_t *scp, unsigned char LockType,
 
         } while (cm_Analyze(connp, userp, reqp, &scp->fid, &volSync,
                              NULL, NULL, code));
+        if (code)
+            osi_Log1(afsd_logp, "CALL SetLock FAILURE, code 0x%x", code);
+        else
+            osi_Log0(afsd_logp, "CALL SetLock SUCCESS");
         lock_ObtainMutex(&scp->mx);
         code = cm_MapRPCError(code, reqp);
     }
@@ -2758,6 +2756,7 @@ long cm_Lock(cm_scache_t *scp, unsigned char LockType,
         lock_ReleaseWrite(&cm_scacheLock);
         if (code != 0) 
             *lockpp = fileLock;
+        osi_Log1(afsd_logp, "cm_Lock Lock added 0x%x", (long) fileLock);
     }
     return code;
 }
@@ -2777,6 +2776,9 @@ long cm_Unlock(cm_scache_t *scp, unsigned char LockType,
     int smallLock = 0;
     int found = 0;
     struct rx_connection * callp;
+
+    osi_Log4(afsd_logp, "cm_Unlock scp 0x%x type 0x%x offset %d length %d",
+             (long) scp, LockType, (unsigned long)LOffset.QuadPart, (unsigned long)LLength.QuadPart);
 
     if (LargeIntegerLessThan(LLength, scp->length))
         smallLock = 1;
@@ -2802,12 +2804,16 @@ long cm_Unlock(cm_scache_t *scp, unsigned char LockType,
     }
 
     /* ignore byte ranges */
-    if (smallLock && !found)
+    if (smallLock && !found) {
+        osi_Log0(afsd_logp, "cm_Unlock lock not found and ignored");
         return 0;
+    }
 
     /* don't try to unlock other people's locks */
-    if (!found)
+    if (!found) {
+        osi_Log0(afsd_logp, "cm_Unlock lock not found; failure");
         return CM_ERROR_WOULDBLOCK;
+    }
 
     /* discard lock record */
     osi_QRemove(&scp->fileLocks, qq);
@@ -2847,6 +2853,7 @@ long cm_Unlock(cm_scache_t *scp, unsigned char LockType,
         lock_ObtainMutex(&scp->mx);
     }
 
+    osi_Log1(afsd_logp, "cm_Unlock code 0x%x", code);
     return code;
 }
 

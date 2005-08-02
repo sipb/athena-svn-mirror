@@ -29,6 +29,7 @@ SOFTWARE.
 #include <windows.h>
 #include <npapi.h>
 #include <ntsecapi.h>
+#include <tchar.h>
 #include <strsafe.h>
 
 
@@ -40,6 +41,7 @@ SOFTWARE.
 #define REG_CLIENT_LOGON_OPTION_PARM	"LogonOptions"
 #define REG_CLIENT_LOGON_SCRIPT_PARMW	L"LogonScript"
 #define REG_CLIENT_THESE_CELLS_PARM     "TheseCells"
+#define REG_CLIENT_LOGOFF_TOKENS_PARM	"LogoffPreserveTokens"
 #define DEFAULT_RETRY_INTERVAL          60                        /* seconds*/
 #define DEFAULT_FAIL_SILENTLY           FALSE
 #define DEFAULT_SLEEP_INTERVAL          5                         /* seconds*/
