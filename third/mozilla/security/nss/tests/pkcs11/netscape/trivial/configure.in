@@ -30,7 +30,7 @@ dnl may use your version of this file under either the MPL or the
 dnl GPL.
 dnl
 
-dnl My revision info: "@(#) $RCSfile: configure.in,v $ $Revision: 1.1.1.12 $ $Date: 2005-07-27 14:43:17 $ $Name: not supported by cvs2svn $"
+dnl My revision info: "@(#) $RCSfile: configure.in,v $ $Revision: 1.1.1.13 $ $Date: 2005-08-02 14:50:16 $ $Name: not supported by cvs2svn $"
 dnl Don't use AC_REVISION; it's broken
 
 AC_INIT(trivial.c)
