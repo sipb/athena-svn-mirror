@@ -279,7 +279,7 @@ BOOL IsServiceStartPending (void)
         CloseServiceHandle (hManager);
     }
     DebugEvent("AFS AfsLogon - Test Service Start Pending","Return Code[%x] ?Start Pending[%d]",Status.dwCurrentState,(Status.dwCurrentState == SERVICE_START_PENDING));
-    return (Status.dwCurrentState == SERVICE_RUNNING);
+    return (Status.dwCurrentState == SERVICE_START_PENDING);
 }   
 
 /* LOOKUPKEYCHAIN: macro to look up the value in the list of keys in order until it's found
@@ -781,8 +781,8 @@ DWORD APIENTRY NPLogonNotify(
     }
 
     /* loop until AFS is started. */
-    while (TRUE) {
-        DebugEvent("while(TRUE) LogonOption[%x], Service AutoStart[%d]",
+    while (IsServiceRunning() || IsServiceStartPending()) {
+        DebugEvent("while(autostart) LogonOption[%x], Service AutoStart[%d]",
                     opt.LogonOption,afsWillAutoStart);
 
         if (ISADREALM(opt.flags)) {
@@ -847,14 +847,14 @@ DWORD APIENTRY NPLogonNotify(
             * client is set to autostart (and therefore it makes sense for
             * us to wait for it to start) then sleep a while and try again. 
             * If the error was something else, then give up. */
-            if (code != KTC_NOCM && code != KTC_NOCMRPC || !afsWillAutoStart)
+            if (code != KTC_NOCM && code != KTC_NOCMRPC)
                 break;
         }
         else {  
             /*JUST check to see if its running*/
             if (IsServiceRunning())
                 break;
-            if (afsWillAutoStart && !IsServiceStartPending()) {
+            if (!IsServiceStartPending()) {
                 code = KTC_NOCMRPC;
                 reason = "AFS Service start failed";
                 break;
@@ -1007,52 +1007,64 @@ VOID AFS_Logoff_Event( PWLX_NOTIFICATION_INFO pInfo )
     DWORD  len = 1024;
     PTOKEN_USER  tokenUser = NULL;
     DWORD  retLen;
+    DWORD LSPtype, LSPsize;
+    HKEY NPKey;
+    DWORD LogoffPreserveTokens = 0;
 
     /* Make sure the AFS Libraries are initialized */
     AfsLogonInit();
 
     DebugEvent0("AFS_Logoff_Event - Start");
 
-    if (!GetTokenInformation(pInfo->hToken, TokenUser, NULL, 0, &retLen))
-    {
-        if ( GetLastError() == ERROR_INSUFFICIENT_BUFFER ) {
-            tokenUser = (PTOKEN_USER) LocalAlloc(LPTR, retLen);
+    (void) RegOpenKeyEx(HKEY_LOCAL_MACHINE, AFSREG_CLT_SVC_PARAM_SUBKEY,
+                         0, KEY_QUERY_VALUE, &NPKey);
+    LSPsize=sizeof(LogoffPreserveTokens);
+    RegQueryValueEx(NPKey, REG_CLIENT_LOGOFF_TOKENS_PARM, NULL,
+                     &LSPtype, (LPBYTE)&LogoffPreserveTokens, &LSPsize);
+    RegCloseKey (NPKey);
 
-            if (!GetTokenInformation(pInfo->hToken, TokenUser, tokenUser, retLen, &retLen))
-            {
-                DebugEvent("AFS_Logoff_Event - GetTokenInformation failed: GLE = %lX", GetLastError());
+    if (LogoffPreserveTokens) {
+        if (!GetTokenInformation(pInfo->hToken, TokenUser, NULL, 0, &retLen))
+        {
+            if ( GetLastError() == ERROR_INSUFFICIENT_BUFFER ) {
+                tokenUser = (PTOKEN_USER) LocalAlloc(LPTR, retLen);
+
+                if (!GetTokenInformation(pInfo->hToken, TokenUser, tokenUser, retLen, &retLen))
+                {
+                    DebugEvent("AFS_Logoff_Event - GetTokenInformation failed: GLE = %lX", GetLastError());
+                }
             }
         }
-    }
 
-    /* We can't use pInfo->Domain for the domain since in the cross realm case 
-     * this is source domain and not the destination domain.
-     */
-    if (QueryAdHomePathFromSid( profileDir, sizeof(profileDir), tokenUser->User.Sid, pInfo->Domain)) {
-        WCHAR Domain[64]=L"";
-        GetLocalShortDomain(Domain, sizeof(Domain));
-        if (QueryAdHomePathFromSid( profileDir, sizeof(profileDir), tokenUser->User.Sid, Domain)) {
-            if (NetUserGetProfilePath(pInfo->Domain, pInfo->UserName, profileDir, len))
-                GetUserProfileDirectory(pInfo->hToken, profileDir, &len);
+        /* We can't use pInfo->Domain for the domain since in the cross realm case 
+         * this is source domain and not the destination domain.
+         */
+        if (QueryAdHomePathFromSid( profileDir, sizeof(profileDir), tokenUser->User.Sid, pInfo->Domain)) {
+            WCHAR Domain[64]=L"";
+            GetLocalShortDomain(Domain, sizeof(Domain));
+            if (QueryAdHomePathFromSid( profileDir, sizeof(profileDir), tokenUser->User.Sid, Domain)) {
+                if (NetUserGetProfilePath(pInfo->Domain, pInfo->UserName, profileDir, len))
+                    GetUserProfileDirectory(pInfo->hToken, profileDir, &len);
+            }
         }
-    }
-    
-    if (strlen(profileDir)) {
-        DebugEvent("AFS_Logoff_Event - Profile Directory: %s", profileDir);
-        if (!IsPathInAfs(profileDir)) {
-            if (code = ktc_ForgetAllTokens())
-                DebugEvent("AFS_Logoff_Event - ForgetAllTokens failed [%lX]",code);
-            else
-                DebugEvent0("AFS_Logoff_Event - ForgetAllTokens succeeded");
+
+        if (strlen(profileDir)) {
+            DebugEvent("AFS_Logoff_Event - Profile Directory: %s", profileDir);
+            if (!IsPathInAfs(profileDir)) {
+                if (code = ktc_ForgetAllTokens())
+                    DebugEvent("AFS_Logoff_Event - ForgetAllTokens failed [%lX]",code);
+                else
+                    DebugEvent0("AFS_Logoff_Event - ForgetAllTokens succeeded");
+            } else {
+                DebugEvent0("AFS_Logoff_Event - Tokens left in place; profile in AFS");
+            }
         } else {
-            DebugEvent0("AFS_Logoff_Event - Tokens left in place; profile in AFS");
+            DebugEvent0("AFS_Logoff_Event - Unable to load profile");
         }
-    } else {
-        DebugEvent0("AFS_Logoff_Event - Unable to load profile");
-    }
 
-    if ( tokenUser )
-        LocalFree(tokenUser);
+        if ( tokenUser )
+            LocalFree(tokenUser);
+    }
 
     DebugEvent0("AFS_Logoff_Event - End");
 }   

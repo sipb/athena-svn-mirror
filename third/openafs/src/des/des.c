@@ -37,7 +37,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/des.c,v 1.1.1.3 2005-06-02 19:43:49 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/des.c,v 1.1.1.4 2005-08-02 21:13:19 zacheiss Exp $");
 
 #ifndef KERNEL
 #include <stdio.h>
@@ -92,7 +92,7 @@ des_ecb_encrypt(void * clear, void * cipher,
 #endif
 #endif
     afs_uint32 P_temp;
-    register unsigned char *P_temp_p = (unsigned char *)&P_temp;
+    volatile unsigned char *P_temp_p = (unsigned char *)&P_temp;
 #ifdef BITS16
     sbox_out S_out;
     afs_uint32 *S_out_p = (afs_uint32 *) & S_out;

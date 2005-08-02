@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dir/dir.c,v 1.1.1.5 2005-05-04 17:45:01 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dir/dir.c,v 1.1.1.6 2005-08-02 21:14:26 zacheiss Exp $");
 
 #ifdef KERNEL
 #if !defined(UKERNEL)
@@ -25,24 +25,16 @@ RCSID
 #include "h/errno.h"
 #endif
 #include "h/time.h"
-#if defined(AFS_AIX_ENV) || defined(AFS_SGI_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_LINUX20_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_AIX_ENV) || defined(AFS_SGI_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_LINUX20_ENV)
 #include "h/errno.h"
 #else
 #if !defined(AFS_SUN5_ENV) && !defined(AFS_LINUX20_ENV)
 #include "h/kernel.h"
 #endif
 #endif
-#if	defined(AFS_SUN56_ENV) || defined(AFS_HPUX_ENV)
+#if	defined(AFS_SUN56_ENV) || defined(AFS_HPUX_ENV) || defined(AFS_FBSD_ENV)
 #include "afs/sysincludes.h"
 #endif
-#if defined(AFS_FBSD_ENV)
-#include "h/libkern.h"
-#include "h/lock.h"
-#include "vm/vm.h"
-#include "vm/vm_extern.h"
-#include "vm/pmap.h"
-#include "vm/vm_map.h"
-#endif /* AFS_FBSD_ENV */
 #if !defined(AFS_SGI64_ENV) && !defined(AFS_DARWIN60_ENV)
 #include "h/user.h"
 #endif /* AFS_SGI64_ENV */

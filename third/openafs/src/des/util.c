@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/util.c,v 1.1.1.2 2005-03-10 20:30:21 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/util.c,v 1.1.1.3 2005-08-02 21:13:39 zacheiss Exp $");
 
 #include "mit-cpyright.h"
 #ifndef KERNEL

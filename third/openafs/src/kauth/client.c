@@ -15,9 +15,12 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/client.c,v 1.1.1.3 2005-03-10 20:48:27 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/client.c,v 1.1.1.4 2005-08-02 21:14:36 zacheiss Exp $");
 
 #if defined(UKERNEL)
+#ifdef HAVE_UNISTD_H
+#define __USE_XOPEN
+#endif
 #include "afs/sysincludes.h"
 #include "afsincludes.h"
 #include "afs/stds.h"

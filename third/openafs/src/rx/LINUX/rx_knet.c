@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_knet.c,v 1.1.1.5 2005-05-04 17:45:51 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_knet.c,v 1.1.1.6 2005-08-02 21:15:08 zacheiss Exp $");
 
 #include <linux/version.h>
 #ifdef AFS_LINUX22_ENV
@@ -95,27 +95,15 @@ rxk_FreeSocket(register struct socket *asocket)
  * non-zero = failure
  */
 int
-osi_NetSend(osi_socket sop, struct sockaddr_in *to, struct iovec *iov,
+osi_NetSend(osi_socket sop, struct sockaddr_in *to, struct iovec *iovec,
 	    int iovcnt, afs_int32 size, int istack)
 {
     KERNEL_SPACE_DECL;
     struct msghdr msg;
     int code;
-    struct iovec tmpvec[RX_MAXWVECS + 2];
 
-    if (iovcnt > RX_MAXWVECS + 2) {
-	osi_Panic("Too many (%d) iovecs passed to osi_NetSend\n", iovcnt);
-    }
-
-    if (iovcnt <= 2) {		/* avoid pointless uiomove */
-	tmpvec[0].iov_base = iov[0].iov_base;
-	tmpvec[0].iov_len = size;
-	msg.msg_iovlen = 1;
-    } else {
-	memcpy(tmpvec, iov, iovcnt * sizeof(struct iovec));
-	msg.msg_iovlen = iovcnt;
-    }
-    msg.msg_iov = tmpvec;
+    msg.msg_iovlen = iovcnt;
+    msg.msg_iov = iovec;
     msg.msg_name = to;
     msg.msg_namelen = sizeof(*to);
     msg.msg_control = NULL;

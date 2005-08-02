@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butc/lwps.c,v 1.1.1.3 2005-03-10 20:41:19 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butc/lwps.c,v 1.1.1.4 2005-08-02 21:14:34 zacheiss Exp $");
 
 #include <sys/types.h>
 #ifdef AFS_NT40_ENV
@@ -2418,7 +2418,7 @@ readVolumeHeader(buffer, bufloc, header)
 
 {
     struct volumeHeader vhptr, *tempvhptr;
-    afs_int32 firstSplice = (afs_int32) & vhptr.pad - (afs_int32) & vhptr;
+    afs_int32 firstSplice = (afs_int32) ((char*)& vhptr.pad - (char*) & vhptr);
     int padLen = sizeof(vhptr.pad);	/* pad to achieve 4 byte alignment */
     int nextSplice = sizeof(struct volumeHeader) - firstSplice - padLen;
 

@@ -418,7 +418,7 @@ char *SkipLine (register char *astr)
 }
 
 /* tell if a name is 23 or -45 (digits or minus digits), which are bad names we must prune */
-static BadName(register char *aname)
+static int BadName(register char *aname)
 {
     register int tc;
 
@@ -813,7 +813,8 @@ BOOL SaveACL(const CString& strCellName, const CString& strDir, const CStringArr
     pAcl = EmptyAcl(strCellName);
 
     // Set its normal rights
-    for (int i = 0; i < normal.GetSize(); i += 2) {
+    int i;
+    for (i = 0; i < normal.GetSize(); i += 2) {
         rights = Convert(normal[i + 1], 0, &rtype);
         ChangeList(pAcl, TRUE, normal[i], rights);
     }
@@ -878,7 +879,8 @@ BOOL CopyACL(const CString& strToDir, const CStringArray& normal, const CStringA
     enum rtype rtype;
 
     // Set normal rights
-    for (int i = 0; i < normal.GetSize(); i += 2) {
+    int i;
+    for (i = 0; i < normal.GetSize(); i += 2) {
         LONG rights = Convert(normal[i + 1], 0, &rtype);
         ChangeList(pToAcl, TRUE, normal[i], rights);
     }
@@ -1234,6 +1236,7 @@ BOOL IsMountPoint(const char * name)
     char lsbuffer[1024];
     register char *tp;
     char szCurItem[1024];
+
     strcpy(szCurItem, name);
 	
     tp = (char *)strrchr(szCurItem, '\\');
@@ -1272,6 +1275,7 @@ BOOL RemoveMount(CStringArray& files)
     char tbuffer[1024];
     char lsbuffer[1024];
     register char *tp;
+    char szCurItem[1024];
     BOOL error = FALSE;
     CStringArray results;
     CString str;
@@ -1287,6 +1291,20 @@ BOOL RemoveMount(CStringArray& files)
             else
                 results.Add(GetMessageString(IDS_ERROR, GetAfsError(errno, StripPath(files[i]))));
             continue;	// don't bother trying
+        }
+
+        strcpy(szCurItem, files[i]);
+	
+        tp = (char *)strrchr(szCurItem, '\\');
+        if (tp) {
+            strncpy(tbuffer, szCurItem, code = tp - szCurItem + 1);  /* the dir name */
+            tbuffer[code] = 0;
+            tp++;   /* skip the slash */
+        } else {
+            fs_ExtractDriveLetter(szCurItem, tbuffer);
+            strcat(tbuffer, ".");
+            tp = szCurItem;
+            fs_StripDriveLetter(tp, tp, 0);
         }
 
         blob.out_size = 0;

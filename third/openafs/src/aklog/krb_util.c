@@ -11,14 +11,15 @@
 
 #ifndef lint
 static char rcsid_send_to_kdc_c[] =
-"$Id: krb_util.c,v 1.1.1.1 2005-03-10 20:42:05 zacheiss Exp $";
+"$Id: krb_util.c,v 1.1.1.2 2005-08-02 21:14:54 zacheiss Exp $";
 #endif /* lint */
 
 #if 0
 #include <kerberosIV/mit-copyright.h>
 #endif
+#include <afs/stds.h>
+#include "aklog.h"
 #include <krb5.h>
-#include <kerberosIV/krb.h> 
 
 #ifndef MAX_HSTNM
 #define MAX_HSTNM 100
@@ -35,13 +36,12 @@ static char rcsid_send_to_kdc_c[] =
 
 #endif /* WINDOWS */
 
+#include <string.h>
+
 #define S_AD_SZ sizeof(struct sockaddr_in)
 
-char *afs_realm_of_cell(context, cellconfig)
-    krb5_context context;
-    struct afsconf_cell *cellconfig;
+char *afs_realm_of_cell(krb5_context context, struct afsconf_cell *cellconfig)
 {
-    char krbhst[MAX_HSTNM];
     static char krbrlm[REALM_SZ+1];
 	char **hrealms = 0;
 	krb5_error_code retval;

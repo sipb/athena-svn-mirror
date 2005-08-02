@@ -2,7 +2,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/FBSD/osi_vfsops.c,v 1.1.1.5 2005-06-02 19:43:33 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/FBSD/osi_vfsops.c,v 1.1.1.6 2005-08-02 21:14:25 zacheiss Exp $");
 
 #include <afs/sysincludes.h>	/* Standard vendor system headers */
 #include <afsincludes.h>	/* Afs-based standard headers */
@@ -155,7 +155,9 @@ afs_unmount(struct mount *mp, int flags, THREAD_OR_PROC)
 }
 
 int
-#ifdef AFS_FBSD53_ENV
+#if defined(AFS_FBSD60_ENV)
+afs_root(struct mount *mp, int flags, struct vnode **vpp, struct thread *td)
+#elif defined(AFS_FBSD53_ENV)
 afs_root(struct mount *mp, struct vnode **vpp, struct thread *td)
 #else
 afs_root(struct mount *mp, struct vnode **vpp)
@@ -224,7 +226,7 @@ tryagain:
 	*vpp = vp;
     }
 
-    afs_Trace2(afs_iclSetp, CM_TRACE_VFSROOT, ICL_TYPE_POINTER, *vpp,
+    afs_Trace2(afs_iclSetp, CM_TRACE_VFSROOT, ICL_TYPE_POINTER, tvp ? AFSTOV(tvp) : NULL,
 	       ICL_TYPE_INT32, error);
     AFS_GUNLOCK();
     crfree(cr);

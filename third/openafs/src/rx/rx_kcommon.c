@@ -15,7 +15,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_kcommon.c,v 1.1.1.5 2005-05-04 17:45:49 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_kcommon.c,v 1.1.1.6 2005-08-02 21:15:10 zacheiss Exp $");
 
 #include "rx/rx_kcommon.h"
 
@@ -127,11 +127,7 @@ osi_Panic(msg, a1, a2, a3)
 	msg = "Unknown AFS panic";
 
     printf(msg, a1, a2, a3);
-#ifdef AFS_LINUX20_ENV
-    *((char *)0xffffffff) = 42;
-#else
     panic(msg);
-#endif
 }
 
 /*

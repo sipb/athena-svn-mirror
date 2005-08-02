@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/adminutil/afs_utilAdmin.c,v 1.1.1.2 2005-03-10 20:48:27 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/adminutil/afs_utilAdmin.c,v 1.1.1.3 2005-08-02 21:14:19 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <afs/afs_Admin.h>
@@ -450,7 +450,7 @@ util_AdminServerAddressGetFromName(const char *serverName, int *serverAddress,
 	server = gethostbyname(serverName);
 	if (server != NULL) {
 	    memcpy((void *)serverAddress, (const void *)server->h_addr,
-		   sizeof(serverAddress));
+		   sizeof(int));
 	    *serverAddress = ntohl(*serverAddress);
 	} else {
 	    tst = ADMUTILCANTGETSERVERNAME;
