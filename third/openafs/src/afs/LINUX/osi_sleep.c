@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_sleep.c,v 1.3 2005-03-10 22:16:44 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_sleep.c,v 1.4 2005-08-02 21:47:27 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -193,8 +193,10 @@ afs_osi_SleepSig(void *event)
 	AFS_GUNLOCK();
 	schedule();
 #ifdef AFS_LINUX26_ENV
+#ifdef CONFIG_PF
 	if (current->flags & PF_FREEZE)
 	    refrigerator(PF_FREEZE);
+#endif
 #endif
 	AFS_GLOCK();
 	if (signal_pending(current)) {
@@ -275,8 +277,10 @@ osi_TimedSleep(char *event, afs_int32 ams, int aintok)
     } else
 	schedule_timeout(ticks);
 #ifdef AFS_LINUX26_ENV
+#ifdef CONFIG_PF
     if (current->flags & PF_FREEZE)
 	refrigerator(PF_FREEZE);
+#endif
 #endif
 
     AFS_GLOCK();

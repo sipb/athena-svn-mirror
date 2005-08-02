@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bnode.c,v 1.4 2005-03-10 22:16:49 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bnode.c,v 1.5 2005-08-02 21:47:29 zacheiss Exp $");
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -723,7 +723,7 @@ SendNotifierData(register int fd, register struct bnode_proc *tp)
     bufp += strlen(bufp);
     (void)sprintf(bufp, "END bnode\n");
     bufp += strlen(bufp);
-    len = (int)bufp - (int)buffer;
+    len = (int)(bufp - buffer);
     if (write(fd, buffer, len) < 0) {
 	return -1;
     }

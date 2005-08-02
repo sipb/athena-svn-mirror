@@ -50,7 +50,7 @@ static int newVLDB = 1;
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/fssync.c,v 1.5 2005-05-04 18:15:04 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/fssync.c,v 1.6 2005-08-02 21:47:34 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -172,7 +172,7 @@ FSYNC_clientInit(void)
 	if (!*timeout)
 	    break;
 	if (!(*timeout & 1))
-	    Log(0, ("FSYNC_clientInit temporary failure (will retry)"));
+	    Log("FSYNC_clientInit temporary failure (will retry)");
 	FSYNC_clientFinis();
 	sleep(*timeout++);
     }

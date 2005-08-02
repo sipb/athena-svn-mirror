@@ -17,7 +17,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_create.c,v 1.4 2005-03-10 22:16:46 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_create.c,v 1.5 2005-08-02 21:47:28 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -414,6 +414,8 @@ afs_create(OSI_VC_DECL(adp), char *aname, struct vattr *attrs,
 	    }
 	    ReleaseWriteLock(&afs_xcbhash);
 	    afs_ProcessFS(tvc, &OutFidStatus, &treq);
+	    tvc->parentVnode = adp->fid.Fid.Vnode;
+	    tvc->parentUnique = adp->fid.Fid.Unique;
 	    ReleaseWriteLock(&tvc->lock);
 	    *avcp = tvc;
 	    code = 0;

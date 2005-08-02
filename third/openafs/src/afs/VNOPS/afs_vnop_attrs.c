@@ -24,7 +24,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_attrs.c,v 1.7 2005-05-04 18:14:56 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_attrs.c,v 1.8 2005-08-02 21:47:28 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -177,10 +177,6 @@ afs_CopyOutAttrs(register struct vcache *avc, register struct vattr *attrs)
 #endif
 #endif /* ! AFS_OSF_ENV && !AFS_DARWIN_ENV && !AFS_XBSD_ENV */
 
-#ifdef AFS_LINUX22_ENV
-    /* And linux has its own stash as well. */
-    vattr2inode(AFSTOV(avc), attrs);
-#endif
     return 0;
 }
 
@@ -297,8 +293,8 @@ afs_getattr(OSI_VC_DECL(avc), struct vattr *attrs, struct AFS_UCRED *acred)
 		     * confuses getwd()... */
 #ifdef AFS_LINUX22_ENV
 		    if (avc == afs_globalVp) {
-			struct inode *ip = avc->v.i_sb->s_root->d_inode;
-			attrs->va_nodeid = ip->i_ino;
+			struct inode *ip = AFSTOV(avc)->i_sb->s_root->d_inode;
+			attrs->va_nodeid = ip->i_ino;	/* VTOI()? */
 		    }
 #else
 		    if (AFSTOV(avc)->v_flag & VROOT) {
