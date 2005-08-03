@@ -1,0 +1,3 @@
+PKG=MIT-gettext
+NAME=Compatibility version of GNU gettext library, for Athena
+DESC=This package exists to install an old version of the gettext shared library, for the sake of locker programs which depend on that version.
