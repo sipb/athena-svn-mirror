@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.17 2005-05-29 06:10:18 zacheiss Exp $
+# $Id: Makefile.athena,v 1.18 2005-08-03 17:54:24 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -19,10 +19,11 @@ prepare:
 	   . ./compiler && CONFIG_SITE=`pwd`/config.site.athena CC=$$cc \
 	   ./configure --enable-transarc-paths --enable-redhat-buildsys \
 	   --with-linux-kernel-headers=/lib/modules/$${LINUX_VERS}/build \
+	   --without-krb5 \
 	   ;; \
 	*) \
 	   . ./compiler && CONFIG_SITE=`pwd`/config.site.athena CC=$$cc \
-	   ./configure --enable-transarc-paths \
+	   ./configure --enable-transarc-paths --without-krb5 \
 	   ;; \
 	esac
 
