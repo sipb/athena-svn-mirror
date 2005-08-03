@@ -22,7 +22,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.10 2005-08-02 21:47:27 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.11 2005-08-03 17:55:30 zacheiss Exp $");
 
 #include "afs/sysincludes.h"
 #include "afsincludes.h"
@@ -913,6 +913,7 @@ afs_linux_lookup(struct inode *dip, struct dentry *dp)
     if (res) {
 	if (d_unhashed(res))
 	    d_rehash(res);
+	iput(ip);
     } else
 #endif
     d_add(dp, ip);
@@ -1263,7 +1264,7 @@ afs_linux_readpage(struct file *fp, struct page *pp)
     cred_t *credp = crref();
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
     char *address;
-    afs_offs_t offset = pp->index << PAGE_CACHE_SHIFT;
+    afs_offs_t offset = ((loff_t) pp->index) << PAGE_CACHE_SHIFT;
 #else
     ulong address = afs_linux_page_address(pp);
     afs_offs_t offset = pageoff(pp);
@@ -1359,7 +1360,7 @@ afs_linux_writepage_sync(struct inode *ip, struct page *pp,
     int f_flags = 0;
 
     buffer = kmap(pp) + offset;
-    base = (pp->index << PAGE_CACHE_SHIFT) + offset;
+    base = (((loff_t) pp->index) << PAGE_CACHE_SHIFT)  + offset;
 
     credp = crref();
     lock_kernel();

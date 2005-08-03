@@ -17,7 +17,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_groups.c,v 1.4 2005-03-10 22:16:44 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_groups.c,v 1.5 2005-08-03 17:55:30 zacheiss Exp $");
 
 #include "afs/sysincludes.h"
 #include "afsincludes.h"
@@ -172,6 +172,7 @@ setpag(cred_t ** cr, afs_uint32 pagvalue, afs_uint32 * newpag,
     
     for (i = 0; i < group_info->ngroups; ++i)
       GROUP_AT(tmp, i + need_space) = GROUP_AT(group_info, i);
+    put_group_info(group_info);
     group_info = tmp;
 
     *newpag = (pagvalue == -1 ? genpag() : pagvalue);
