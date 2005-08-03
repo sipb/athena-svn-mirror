@@ -128,13 +128,12 @@ To set up a build machine, follow these instructions after installing:
   * Set the root password.
   * Put "builder rl" in /etc/athena/access.
   * In /etc/athena/rc.conf, set SSHD and ACCESSON to true.  Set
-    AFSADJUST, PUBLIC, and AUTOUPDATE to false.
-  * Create /rel/wash/afs and parents.
-  * Edit /usr/vice/etc/cacheinfo and change the AFS mountpoint from
-    "/afs" to "/rel/wash/afs".
-  * Reboot.  (Remote access daemons should work without AFS, more or
-    less.)
-  * Create symlinks /afs -> rel/wash/afs and /rel/afs -> wash/afs.
+    PUBLIC, and AUTOUPDATE to false.
+  * On Solaris, add a line "/afs - /rel/afs lofs - yes -" to
+    /etc/vfstab, and similarly for /rel/wash/afs.  mount /rel/afs and
+    /rel/wash/afs.
+  * On Linux, add a line "/afs /rel/afs none bind" to /etc/fstab, and
+    similarly for /rel/afs.
   * Run "/mit/source/packs/build/makeroot.sh /rel X.Y", where X.Y is
     the full release this build is for.
   * Run "/mit/source/packs/build/makeroot.sh /rel/wash".
@@ -145,8 +144,9 @@ To set up a build machine, follow these instructions after installing:
     mounted in the chroot environment.)  Add lines to /etc/vfstab to
     make this happen at boot.
   * On Solaris, install the Sun compiler locally.  Run:
-      pkgadd -R /rel -d /afs/dev.mit.edu/reference/sunpro8/packages \
-        -a /usr/athena/lib/update/noask `cat ../installed-packages`
+      cd /afs/dev.mit.edu/reference/sunpro8/packages
+      pkgadd -R /rel -a /usr/athena/lib/update/noask \
+        `cat ../installed-packages`
     and follow the directions in
     /afs/dev.mit.edu/reference/sunpro8/README.  Repeat for /rel/wash.
 
