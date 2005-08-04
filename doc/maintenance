@@ -132,6 +132,9 @@ To set up a build machine, follow these instructions after installing:
   * On Solaris, add a line "/afs - /rel/afs lofs - yes -" to
     /etc/vfstab, and similarly for /rel/wash/afs.  mount /rel/afs and
     /rel/wash/afs.
+  * On Solaris, add "/etc/mnttab - /rel/etc/mnttab lofs - yes -"
+    to /etc/vfstab, and similarly for /rel/wash/etc/mnttab.  Mount
+    /rel/etc/mnttab and /rel/wash/etc/mnttab.
   * On Linux, add a line "/afs /rel/afs none bind" to /etc/fstab, and
     similarly for /rel/afs.
   * Run "/mit/source/packs/build/makeroot.sh /rel X.Y", where X.Y is
