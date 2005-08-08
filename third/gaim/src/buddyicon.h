@@ -105,6 +105,13 @@ void gaim_buddy_icon_update(GaimBuddyIcon *icon);
 void gaim_buddy_icon_cache(GaimBuddyIcon *icon, GaimBuddy *buddy);
 
 /**
+ * Removes cached buddy icon for a specific buddy.
+ *
+ * @param buddy The buddy for which to remove the cached icon.
+ */
+void gaim_buddy_icon_uncache(GaimBuddy *buddy);
+
+/**
  * Sets the buddy icon's account.
  *
  * @param icon    The buddy icon.
@@ -156,6 +163,15 @@ const char *gaim_buddy_icon_get_username(const GaimBuddyIcon *icon);
  * @return The icon data.
  */
 const void *gaim_buddy_icon_get_data(const GaimBuddyIcon *icon, size_t *len);
+
+/**
+ * Returns an extension corresponding to the buddy icon's file type.
+ *
+ * @param icon The buddy icon.
+ *
+ * @return The icon's extension.
+ */
+const char *gaim_buddy_icon_get_type(const GaimBuddyIcon *icon);
 
 /*@}*/
 

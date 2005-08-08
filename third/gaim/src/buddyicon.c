@@ -196,6 +196,25 @@ gaim_buddy_icon_update(GaimBuddyIcon *icon)
 		gaim_conv_im_set_icon(GAIM_CONV_IM(conv), icon);
 }
 
+static void
+delete_icon_cache_file(const char *dirname, const char *old_icon)
+{
+	struct stat st;
+
+	g_return_if_fail(dirname != NULL);
+	g_return_if_fail(old_icon != NULL);
+
+	if (g_stat(old_icon, &st) == 0)
+		g_unlink(old_icon);
+	else
+	{
+		char *filename = g_build_filename(dirname, old_icon, NULL);
+		if (g_stat(filename, &st) == 0)
+			g_unlink(filename);
+		g_free(filename);
+	}
+}
+
 void
 gaim_buddy_icon_cache(GaimBuddyIcon *icon, GaimBuddy *buddy)
 {
@@ -205,7 +224,6 @@ gaim_buddy_icon_cache(GaimBuddyIcon *icon, GaimBuddy *buddy)
 	char *filename;
 	const char *old_icon;
 	size_t len;
-	struct stat st;
 	FILE *file = NULL;
 
 	g_return_if_fail(icon  != NULL);
@@ -239,23 +257,40 @@ gaim_buddy_icon_cache(GaimBuddyIcon *icon, GaimBuddy *buddy)
 		fclose(file);
 	}
 
+	gaim_signal_emit(gaim_buddy_icons_get_handle(), "buddy-icon-cached",
+					 icon, buddy, filename, old_icon);
+
 	g_free(filename);
 
 	if (old_icon != NULL)
-	{
-		if(!g_stat(old_icon, &st))
-			g_unlink(old_icon);
-		else {
-			filename = g_build_filename(dirname, old_icon, NULL);
-			if(!g_stat(filename, &st))
-				g_unlink(filename);
-			g_free(filename);
-		}
-	}
+		delete_icon_cache_file(dirname, old_icon);
 
 	gaim_blist_node_set_string((GaimBlistNode *)buddy, "buddy_icon", random);
 
 	g_free(random);
+}
+
+void
+gaim_buddy_icon_uncache(GaimBuddy *buddy)
+{
+	const char *old_icon;
+
+	g_return_if_fail(buddy != NULL);
+
+	old_icon = gaim_blist_node_get_string((GaimBlistNode *)buddy, "buddy_icon");
+
+	if (old_icon != NULL)
+		delete_icon_cache_file(gaim_buddy_icons_get_cache_dir(), old_icon);
+
+	gaim_blist_node_remove_setting((GaimBlistNode *)buddy, "buddy_icon");
+
+	/* Unset the icon in case this function is called from
+	 * something other than gaim_buddy_set_icon(). */
+	if (buddy->icon != NULL)
+	{
+		gaim_buddy_icon_unref(buddy->icon);
+		buddy->icon = NULL;
+	}
 }
 
 void
@@ -326,6 +361,32 @@ gaim_buddy_icon_get_data(const GaimBuddyIcon *icon, size_t *len)
 		*len = icon->len;
 
 	return icon->data;
+}
+
+const char *
+gaim_buddy_icon_get_type(const GaimBuddyIcon *icon)
+{
+	const void *data;
+	size_t len;
+
+	g_return_val_if_fail(icon != NULL, NULL);
+
+	data = gaim_buddy_icon_get_data(icon, &len);
+
+	/* TODO: Find a way to do this with GDK */
+	if (len >= 4)
+	{
+		if (!strncmp(data, "BM", 2))
+			return "bmp";
+		else if (!strncmp(data, "GIF8", 4))
+			return "gif";
+		else if (!strncmp(data, "\xff\xd8\xff\xe0", 4))
+			return "jpg";
+		else if (!strncmp(data, "\x89PNG", 4))
+			return "png";
+	}
+
+	return NULL;
 }
 
 void
@@ -444,6 +505,15 @@ gaim_buddy_icons_init()
 		NULL, (GFreeFunc)g_hash_table_destroy);
 
 	cache_dir = g_build_filename(gaim_user_dir(), "icons", NULL);
+
+	gaim_signal_register(gaim_buddy_icons_get_handle(), "buddy-icon-cached",
+						 gaim_marshal_VOID__POINTER_POINTER_POINTER_POINTER, NULL, 4,
+						 gaim_value_new(GAIM_TYPE_SUBTYPE,
+										GAIM_SUBTYPE_BUDDY_ICON),
+						 gaim_value_new(GAIM_TYPE_SUBTYPE,
+						 				GAIM_SUBTYPE_BLIST_BUDDY),
+						 gaim_value_new(GAIM_TYPE_STRING),
+						 gaim_value_new(GAIM_TYPE_STRING));
 }
 
 void

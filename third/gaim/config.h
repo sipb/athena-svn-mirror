@@ -2,7 +2,7 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* configure arguments */
-#define CONFIG_ARGS ""
+#define CONFIG_ARGS " 'CFLAGS=-Wall -ggdb'"
 
 /* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
    systems. This function is required for `alloca.c' support on those systems.
@@ -107,7 +107,7 @@
 /* #undef HAVE_DOT */
 
 /* whether or not we have doxygen */
-/* #undef HAVE_DOXYGEN */
+#define HAVE_DOXYGEN 1
 
 /* Define to 1 if you have the <endian.h> header file. */
 #define HAVE_ENDIAN_H 1
@@ -246,7 +246,7 @@
 /* #undef HAVE_NSPR_H */
 
 /* Define if you have Mozilla NSS */
-/* #undef HAVE_NSS */
+#define HAVE_NSS 1
 
 /* Define to 1 if you have the <nss.h> header file. */
 /* #undef HAVE_NSS_H */
@@ -294,7 +294,7 @@
 #define HAVE_SNPRINTF 1
 
 /* Define if you have SSL */
-/* #undef HAVE_SSL */
+#define HAVE_SSL 1
 
 /* Define to 1 if you have the <ssl.h> header file. */
 /* #undef HAVE_SSL_H */
@@ -474,13 +474,13 @@
 #define PACKAGE_NAME "gaim"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "gaim 1.3.1"
+#define PACKAGE_STRING "gaim 1.4.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "gaim"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.3.1"
+#define PACKAGE_VERSION "1.4.0"
 
 /* Define if <inttypes.h> exists and defines unusable PRI* macros. */
 /* #undef PRI_MACROS_BROKEN */
@@ -510,7 +510,7 @@
 /* #undef TM_IN_SYS_TIME */
 
 /* Define if we're using libao and libaudiofile for sound playing */
-/* #undef USE_AO */
+#define USE_AO 1
 
 /* do we have gtkspell? */
 #define USE_GTKSPELL 
@@ -525,7 +525,7 @@
 #define USE_SM 1
 
 /* Version number of package */
-#define VERSION "1.3.1"
+#define VERSION "1.4.0"
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([gaim], [1.3.1], [gaim-devel@lists.sourceforge.net])
+AC_INIT([gaim], [1.4.0], [gaim-devel@lists.sourceforge.net])
 AC_CANONICAL_SYSTEM
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
@@ -33,7 +33,7 @@ darwin*)
 	;;
 esac
 
-ALL_LINGUAS="am az bg ca cs da de en_AU en_CA en_GB es et fi fr he hi hu it ja ka ko lt mk my_MM nb nl pa pl pt_BR pt ro ru sk sl sq sr sr@Latn sv tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am az bg ca cs da de en_AU en_CA en_GB es et fi fr he hi hu it ja ka ko lt mk my_MM nb nl nn pa pl pt_BR pt ro ru sk sl sq sr sr@Latn sv tr uk vi zh_CN zh_TW"
 AM_GNU_GETTEXT_VERSION(0.10.40)
 AM_GNU_GETTEXT
 
