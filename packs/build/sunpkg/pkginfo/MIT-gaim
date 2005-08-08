@@ -1,0 +1,3 @@
+PKG=MIT-gaim
+NAME=A Gtk+ based multiprotocol instant messaging client, for Athena
+DESC=Gaim allows you to talk to anyone using a variety of messaging protocols, including AIM (Oscar and TOC), ICQ, IRC, Yahoo!, MSN Messenger, Jabber, Gadu-Gadu, Napster, and Zephyr.  These protocols are implemented using a modular, easy to use design.  To use a protocol, just add an account using the account editor.
