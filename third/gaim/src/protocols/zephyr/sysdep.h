@@ -27,7 +27,7 @@
 #include <sys/param.h>
 #include <sys/time.h>
 
-#ifdef STDC_HEADERS
+#if defined(STDC_HEADERS) || defined(HAVE_STDLIB_H)
 # include <stdlib.h>
 #else
 # ifdef HAVE_MALLOC_H
@@ -56,7 +56,7 @@ extern char *sys_errlist[];
 #endif
 
 /* Strings. */
-#ifdef STDC_HEADERS
+#if defined(STDC_HEADERS) || defined(HAVE_STRING_H)
 # include <string.h>
 #else
 # ifndef HAVE_STRCHR

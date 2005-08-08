@@ -5,6 +5,7 @@
  * Some code copyright (C) 1999-2001, Eric Warmenhoven
  * Some code copyright (C) 2001-2003, Sean Egan
  * Some code copyright (C) 2001-2004, Mark Doliner <thekingant@users.sourceforge.net>
+ * Some code copyright (C) 2005, Jonathan Clark <ardentlygnarly@users.sourceforge.net>
  *
  * Most libfaim code copyright (C) 1998-2001 Adam Fritzler <afritz@auk.cx>
  * Some libfaim code copyright (C) 2001-2004 Mark Doliner <thekingant@users.sourceforge.net>
@@ -2095,7 +2096,7 @@ static gboolean oscar_can_receive_file(GaimConnection *gc, const char *who) {
 	gboolean can_receive = FALSE;
 	OscarData *od = gc->proto_data;
 
-	if (!od->icq) {
+	if (od != NULL) {
 		aim_userinfo_t *userinfo;
 		userinfo = aim_locate_finduserinfo(od->sess, who);
 		if (userinfo && userinfo->capabilities & AIM_CAPS_SENDFILE)
@@ -4581,18 +4582,23 @@ static int gaim_icon_parseicon(aim_session_t *sess, aim_frame_t *fr, ...) {
 	GSList *cur;
 	va_list ap;
 	char *sn;
-	fu8_t *iconcsum, *icon;
+	fu8_t iconcsumtype, *iconcsum, *icon;
 	fu16_t iconcsumlen, iconlen;
 
 	va_start(ap, fr);
 	sn = va_arg(ap, char *);
+	iconcsumtype = va_arg(ap, int);
 	iconcsum = va_arg(ap, fu8_t *);
 	iconcsumlen = va_arg(ap, int);
 	icon = va_arg(ap, fu8_t *);
 	iconlen = va_arg(ap, int);
 	va_end(ap);
 
-	if (iconlen > 0) {
+	/*
+	 * Some AIM clients will send a blank GIF image with iconlen 90 when
+	 * no icon is set.  Ignore these.
+	 */
+	if ((iconlen > 0) && (iconlen != 90)) {
 		char *b16;
 		GaimBuddy *b = gaim_find_buddy(gc->account, sn);
 		gaim_buddy_icons_set_for_user(gaim_connection_get_account(gc),
@@ -4671,7 +4677,7 @@ static gboolean gaim_icon_timerfunc(gpointer data) {
 
 	userinfo = aim_locate_finduserinfo(od->sess, (char *)od->requesticon->data);
 	if ((userinfo != NULL) && (userinfo->iconcsumlen > 0)) {
-		aim_bart_request(od->sess, od->requesticon->data, userinfo->iconcsum, userinfo->iconcsumlen);
+		aim_bart_request(od->sess, od->requesticon->data, userinfo->iconcsumtype, userinfo->iconcsum, userinfo->iconcsumlen);
 		return FALSE;
 	} else {
 		char *sn = od->requesticon->data;
@@ -5862,6 +5868,9 @@ static void oscar_alias_buddy(GaimConnection *gc, const char *name, const char *
 	}
 }
 
+/*
+ * FYI, the OSCAR SSI code removes empty groups automatically.
+ */
 static void oscar_rename_group(GaimConnection *gc, const char *old_name, GaimGroup *group, GList *moved_buddies) {
 	OscarData *od = (OscarData *)gc->proto_data;
 
@@ -5872,7 +5881,10 @@ static void oscar_rename_group(GaimConnection *gc, const char *old_name, GaimGro
 			/* Make a list of what the groups each buddy is in */
 			for (cur = moved_buddies; cur != NULL; cur = cur->next) {
 				GaimBlistNode *node = cur->data;
-				groups = g_list_append(groups, node->parent);
+				/* node is GaimBuddy, parent is a GaimContact.
+				 * We must go two levels up to get the Group */
+				groups = g_list_append(groups,
+						node->parent->parent);
 			}
 
 			oscar_remove_buddies(gc, moved_buddies, groups);

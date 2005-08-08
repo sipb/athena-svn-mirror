@@ -1,5 +1,42 @@
 Gaim: The Pimpin' Penguin IM Clone that's good for the soul!
 
+version 1.4.0 (7/7/2005):
+	* Catalan translation updated (Josep Puigdemont)
+	* Chinese (Traditional) translation updated (Ambrose C. Li)
+	* Chinese (Traditional) win32 installer translation updated
+	  (Paladin R. Liu)
+	* Danish translation updated (Morten (mbrix) Brix Pedersen)
+	* Dutch translation updated (Vincent van Adrighem)
+	* English (British) translation updated (Luke (lukeross) Ross)
+	* Finnish translation updated (Arto Alakulju)
+	* French translation updated (Éric Boumaour)
+	* French win32 installer translation updated (Éric Boumaour)
+	* German translation updated (Björn Voigt)
+	* German win32 installer translation updated (Björn Voigt)
+	* Hungarian translation updated (Gabor Kelemen)
+	* Hungarian win32 installer translation updated (Gabor Kelemen)
+	* Italian translation updated (Claudio Satriano)
+	* Japanese translation updated (Takeshi Aihana)
+	* Japanese gaim.desktop translation updated (Takeshi Aihana)
+	* Norwegian (Nynorsk) translation added (Kurt-Rune Bergset)
+	* Portuguese translation updated (Duarte Henriques)
+	* Portuguese win32 installer translation updated (Duarte Henriques)
+	* Portuguese (Brazilian) translation updated (Mauricio de Lemos
+	  Rodrigues Collares Neto)
+	* Portuguese (Brazilian) win32 installer translation updated
+	  (Mauricio de Lemos Rodrigues Collares Neto)
+	* Romanian translation updated (Misu Moldovan)
+	* Romanian win32 installer translation updated (Misu Moldovan)
+	* Romanian gaim.desktop translation updated (Misu Moldovan)
+	* Russian translation updated (Dmitry Beloglazov)
+	* Serbian translation updated (Danilo Segan)
+	* Serbian Latin translation updated (Danilo Segan)
+	* Slovenian translation updated (Martin Srebotnjak)
+	* Slovenian win32 installer translation updated (Martin Srebotnjak)
+	* Swedish translation updated (Peter Hjalmarsson)
+	* Swedish win32 installer translation updated (Peter Hjalmarsson)
+	* Ukrainian translation updated (Maxim V. Dziumanenko)
+
 version 1.3.1 (6/9/2005):
 	* Albanian gaim.desktop translation updated (Programe Shqip)
 	* Catalan translation updated (Josep Puigdemont)

@@ -4,7 +4,7 @@
 
 Summary:    A Gtk+ based multiprotocol instant messaging client
 Name:       gaim
-Version:    1.3.1
+Version:    1.4.0
 Release:    0
 Epoch:      1
 License:    GPL
@@ -22,7 +22,15 @@ BuildRequires: libtool, pkgconfig, libao-devel, audiofile-devel
 # For some reason perl isn't always automatically detected as a requirement :(
 Requires: perl
 
+# Mandrake 10.1 and lower
 %if "%{_vendor}" == "MandrakeSoft"
+# Mandrake/Mandriva requirements
+BuildRequires: libgtk+2.0_0-devel, libnss3-devel, perl-devel
+Provides:  libgaim-remote0
+%else
+
+# Mandrake 10.2 (and higher?)
+%if "%{_vendor}" == "Mandrakesoft"
 # Mandrake/Mandriva requirements
 BuildRequires: libgtk+2.0_0-devel, libnss3-devel, perl-devel
 Provides:  libgaim-remote0
@@ -35,6 +43,7 @@ BuildRequires: gtk2-devel
 BuildRequires: gnutls-devel
 %else
 BuildRequires: mozilla-nss-devel
+%endif
 %endif
 %endif
 

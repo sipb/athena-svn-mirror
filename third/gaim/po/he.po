@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-09 22:38-0400\n"
+"POT-Creation-Date: 2005-07-07 21:57-0400\n"
 "PO-Revision-Date: 2004-04-10 04:12+0200\n"
 "Last-Translator: Pavel Bibergal <cyberkm203@hotmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -152,8 +152,8 @@ msgstr "חדש..."
 #: src/protocols/jabber/jutil.c:32 src/protocols/jabber/presence.c:69
 #: src/protocols/jabber/presence.c:132 src/protocols/novell/novell.c:2800
 #: src/protocols/novell/novell.c:2917 src/protocols/novell/novell.c:2969
-#: src/protocols/oscar/oscar.c:679 src/protocols/oscar/oscar.c:5696
-#: src/protocols/oscar/oscar.c:6687 src/protocols/oscar/oscar.c:6887
+#: src/protocols/oscar/oscar.c:680 src/protocols/oscar/oscar.c:5702
+#: src/protocols/oscar/oscar.c:6699 src/protocols/oscar/oscar.c:6899
 #: src/protocols/silc/buddy.c:1388 src/protocols/silc/silc.c:47
 #: src/protocols/silc/silc.c:81
 msgid "Away"
@@ -161,7 +161,7 @@ msgstr "רחוק מהמחשב"
 
 #. else...
 #: plugins/docklet/docklet.c:183 src/away.c:595
-#: src/protocols/oscar/oscar.c:5614 src/protocols/oscar/oscar.c:6895
+#: src/protocols/oscar/oscar.c:5620 src/protocols/oscar/oscar.c:6907
 msgid "Back"
 msgstr "חזר"
 
@@ -457,13 +457,13 @@ msgstr ""
 
 #. "Search"
 #: plugins/gevolution/add_buddy_dialog.c:468
-#: plugins/gevolution/assoc-buddy.c:354 src/protocols/oscar/oscar.c:7171
+#: plugins/gevolution/assoc-buddy.c:354 src/protocols/oscar/oscar.c:7183
 msgid "Search"
 msgstr "חיפוש"
 
 #: plugins/gevolution/add_buddy_dialog.c:549
-#: plugins/gevolution/new_person_dialog.c:304 src/gtkblist.c:4153
-#: src/gtkblist.c:4501
+#: plugins/gevolution/new_person_dialog.c:304 src/gtkblist.c:4186
+#: src/gtkblist.c:4534
 msgid "Group:"
 msgstr "קבוצה:"
 
@@ -500,13 +500,13 @@ msgid "_Associate Buddy"
 msgstr "שייך איש _קשר"
 
 #: plugins/gevolution/eds-utils.c:74 plugins/gevolution/eds-utils.c:87
-#: src/gtkblist.c:3092 src/gtkprefs.c:962 src/gtkprefs.c:1014
+#: src/gtkblist.c:3122 src/gtkprefs.c:962 src/gtkprefs.c:1014
 #: src/gtkprefs.c:1827 src/protocols/jabber/jabber.c:949
 msgid "None"
 msgstr "ללא"
 
 #: plugins/gevolution/gevolution.c:93 plugins/gevolution/gevo-util.c:64
-#: src/blist.c:776 src/blist.c:983 src/blist.c:1933 src/gtkblist.c:3968
+#: src/blist.c:776 src/blist.c:983 src/blist.c:1933 src/gtkblist.c:4001
 #: src/protocols/jabber/roster.c:67
 msgid "Buddies"
 msgstr "אנשי קשר"
@@ -577,7 +577,7 @@ msgstr "בקשת מידע"
 
 #. Label
 #: plugins/gevolution/new_person_dialog.c:335 src/gtkaccount.c:379
-#: src/gtkaccount.c:409 src/protocols/oscar/oscar.c:585
+#: src/gtkaccount.c:409 src/protocols/oscar/oscar.c:586
 msgid "Buddy Icon"
 msgstr "סמל איש הקשר"
 
@@ -910,7 +910,7 @@ msgstr ""
 #. *< dependencies
 #. *< priority
 #. *< id
-#: plugins/signals-test.c:585
+#: plugins/signals-test.c:601
 msgid "Signals Test"
 msgstr "בדיקת אירועים"
 
@@ -918,7 +918,7 @@ msgstr "בדיקת אירועים"
 #. *< version
 #. *  summary
 #. *  description
-#: plugins/signals-test.c:588 plugins/signals-test.c:590
+#: plugins/signals-test.c:604 plugins/signals-test.c:606
 #, fuzzy
 msgid "Test to see that all signals are working properly."
 msgstr "בודק שכל האירועים עובדים כמו שצריך"
@@ -1217,7 +1217,7 @@ msgid "_Start Gaim on Windows startup"
 msgstr "הפעל את Gaim בעת הפעלת חלונות"
 
 #. Buddy List
-#: plugins/win32/winprefs/winprefs.c:362 src/gtkblist.c:3137
+#: plugins/win32/winprefs/winprefs.c:362 src/gtkblist.c:3167
 #: src/gtkprefs.c:2421
 msgid "Buddy List"
 msgstr "רשימת אנשי קשר"
@@ -1289,49 +1289,49 @@ msgstr "הכנס סיסמא:"
 #. *
 #. * A wrapper for gaim_request_action() that uses OK and Cancel buttons.
 #.
-#: src/account.c:363 src/connection.c:198 src/gtkblist.c:2462
-#: src/gtkdialogs.c:501 src/gtkdialogs.c:643 src/gtkdialogs.c:697
+#: src/account.c:363 src/connection.c:198 src/gtkblist.c:2492
+#: src/gtkdialogs.c:505 src/gtkdialogs.c:647 src/gtkdialogs.c:701
 #: src/gtkrequest.c:243 src/protocols/jabber/jabber.c:1086
 #: src/protocols/jabber/xdata.c:337 src/protocols/msn/msn.c:226
 #: src/protocols/msn/msn.c:241 src/protocols/msn/msn.c:256
-#: src/protocols/msn/msn.c:271 src/protocols/oscar/oscar.c:2333
-#: src/protocols/oscar/oscar.c:3599 src/protocols/oscar/oscar.c:3693
-#: src/protocols/oscar/oscar.c:6958 src/protocols/oscar/oscar.c:7050
-#: src/protocols/oscar/oscar.c:7102 src/protocols/oscar/oscar.c:7188
+#: src/protocols/msn/msn.c:271 src/protocols/oscar/oscar.c:2334
+#: src/protocols/oscar/oscar.c:3600 src/protocols/oscar/oscar.c:3694
+#: src/protocols/oscar/oscar.c:6970 src/protocols/oscar/oscar.c:7062
+#: src/protocols/oscar/oscar.c:7114 src/protocols/oscar/oscar.c:7200
 #: src/protocols/silc/buddy.c:460 src/protocols/silc/buddy.c:1132
 #: src/protocols/silc/chat.c:421 src/protocols/silc/chat.c:459
 #: src/protocols/silc/chat.c:722 src/protocols/silc/ops.c:1081
 #: src/protocols/silc/ops.c:1699 src/protocols/silc/silc.c:711
-#: src/protocols/yahoo/yahoo.c:2940 src/protocols/yahoo/yahoo.c:2949
+#: src/protocols/yahoo/yahoo.c:2938 src/protocols/yahoo/yahoo.c:2947
 #: src/request.h:1245
 msgid "OK"
 msgstr "אישור"
 
 #: src/account.c:364 src/account.c:402 src/away.c:367 src/connection.c:199
-#: src/gtkaccount.c:2029 src/gtkaccount.c:2564 src/gtkaccount.c:2595
-#: src/gtkblist.c:2463 src/gtkblist.c:4539 src/gtkconn.c:169
-#: src/gtkdialogs.c:502 src/gtkdialogs.c:644 src/gtkdialogs.c:698
-#: src/gtkdialogs.c:796 src/gtkdialogs.c:818 src/gtkdialogs.c:838
-#: src/gtkdialogs.c:875 src/gtkdialogs.c:935 src/gtkdialogs.c:978
-#: src/gtkdialogs.c:1019 src/gtkimhtmltoolbar.c:437 src/gtkprivacy.c:593
-#: src/gtkprivacy.c:606 src/gtkprivacy.c:631 src/gtkprivacy.c:642
+#: src/gtkaccount.c:2029 src/gtkaccount.c:2568 src/gtkaccount.c:2599
+#: src/gtkblist.c:2493 src/gtkblist.c:4572 src/gtkconn.c:169
+#: src/gtkdialogs.c:506 src/gtkdialogs.c:648 src/gtkdialogs.c:702
+#: src/gtkdialogs.c:800 src/gtkdialogs.c:822 src/gtkdialogs.c:842
+#: src/gtkdialogs.c:879 src/gtkdialogs.c:939 src/gtkdialogs.c:982
+#: src/gtkdialogs.c:1023 src/gtkimhtmltoolbar.c:437 src/gtkprivacy.c:597
+#: src/gtkprivacy.c:610 src/gtkprivacy.c:635 src/gtkprivacy.c:646
 #: src/gtkrequest.c:244 src/protocols/icq/gaim_icq.c:276
 #: src/protocols/jabber/buddy.c:515 src/protocols/jabber/chat.c:754
 #: src/protocols/jabber/jabber.c:678 src/protocols/jabber/jabber.c:1087
 #: src/protocols/jabber/presence.c:213 src/protocols/jabber/xdata.c:338
 #: src/protocols/msn/msn.c:227 src/protocols/msn/msn.c:242
 #: src/protocols/msn/msn.c:257 src/protocols/msn/msn.c:272
-#: src/protocols/msn/msn.c:289 src/protocols/oscar/oscar.c:1529
-#: src/protocols/oscar/oscar.c:2334 src/protocols/oscar/oscar.c:3557
-#: src/protocols/oscar/oscar.c:3600 src/protocols/oscar/oscar.c:3637
-#: src/protocols/oscar/oscar.c:3694 src/protocols/oscar/oscar.c:6959
-#: src/protocols/oscar/oscar.c:7051 src/protocols/oscar/oscar.c:7103
-#: src/protocols/oscar/oscar.c:7172 src/protocols/oscar/oscar.c:7189
+#: src/protocols/msn/msn.c:289 src/protocols/oscar/oscar.c:1530
+#: src/protocols/oscar/oscar.c:2335 src/protocols/oscar/oscar.c:3558
+#: src/protocols/oscar/oscar.c:3601 src/protocols/oscar/oscar.c:3638
+#: src/protocols/oscar/oscar.c:3695 src/protocols/oscar/oscar.c:6971
+#: src/protocols/oscar/oscar.c:7063 src/protocols/oscar/oscar.c:7115
+#: src/protocols/oscar/oscar.c:7184 src/protocols/oscar/oscar.c:7201
 #: src/protocols/silc/buddy.c:461 src/protocols/silc/buddy.c:1037
 #: src/protocols/silc/buddy.c:1133 src/protocols/silc/chat.c:594
 #: src/protocols/silc/chat.c:723 src/protocols/silc/ops.c:1700
 #: src/protocols/silc/silc.c:712 src/protocols/trepia/trepia.c:348
-#: src/protocols/yahoo/yahoo.c:2941 src/protocols/yahoo/yahoo.c:2950
+#: src/protocols/yahoo/yahoo.c:2939 src/protocols/yahoo/yahoo.c:2948
 #: src/request.h:1245 src/request.h:1255
 msgid "Cancel"
 msgstr "ביטול"
@@ -1375,7 +1375,7 @@ msgid "Remove Away Message"
 msgstr "תצורת הודעות לא-נמצא"
 
 #. Remove button
-#: src/away.c:366 src/gtkconv.c:1520 src/gtkconv.c:3901 src/gtkconv.c:3972
+#: src/away.c:366 src/gtkconv.c:1520 src/gtkconv.c:3902 src/gtkconv.c:3973
 #: src/gtkrequest.c:249
 msgid "Remove"
 msgstr "הסר"
@@ -1478,7 +1478,7 @@ msgid "Unable to send message. The message is too large."
 msgstr ""
 
 #: src/conversation.c:237 src/conversation.c:251
-#: src/protocols/oscar/oscar.c:4160
+#: src/protocols/oscar/oscar.c:4161
 #, fuzzy, c-format
 msgid "Unable to send message to %s:"
 msgstr "לא ניתן לשלוח הודעה"
@@ -1492,64 +1492,64 @@ msgstr "אם המסר &ארוך מדי:"
 msgid "Unable to send message."
 msgstr "לא ניתן לשלוח הודעה"
 
-#: src/conversation.c:2063
+#: src/conversation.c:2070
 #, c-format
 msgid "%s entered the room."
 msgstr "%s נכנס לחדר"
 
-#: src/conversation.c:2066
+#: src/conversation.c:2073
 #, fuzzy, c-format
 msgid "%s [<I>%s</I>] entered the room."
 msgstr "%s נכנס לחדר"
 
-#: src/conversation.c:2164
+#: src/conversation.c:2171
 #, fuzzy, c-format
 msgid "You are now known as %s"
 msgstr "%s ידוע  כעט בשם %s"
 
-#: src/conversation.c:2167
+#: src/conversation.c:2174
 #, c-format
 msgid "%s is now known as %s"
 msgstr "%s ידוע  כעט בשם %s"
 
-#: src/conversation.c:2209
+#: src/conversation.c:2216
 #, c-format
 msgid "%s left the room (%s)."
 msgstr "%s עזב את החדר (%s)."
 
-#: src/conversation.c:2211
+#: src/conversation.c:2218
 #, c-format
 msgid "%s left the room."
 msgstr "%s עזב את החדר"
 
-#: src/conversation.c:2284
+#: src/conversation.c:2291
 #, fuzzy, c-format
 msgid "(+%d more)"
 msgstr " רתוי"
 
-#: src/conversation.c:2286
+#: src/conversation.c:2293
 #, fuzzy, c-format
 msgid " left the room (%s)."
 msgstr "%s עזב את החדר"
 
-#: src/conversation.c:2691
+#: src/conversation.c:2698
 msgid "Last created window"
 msgstr "חלון אחרון שנוצר"
 
-#: src/conversation.c:2693
+#: src/conversation.c:2700
 #, fuzzy
 msgid "Separate IM and Chat windows"
 msgstr "הצג שיחות והודעות מיידיות בכרטיסיות"
 
-#: src/conversation.c:2695 src/gtkprefs.c:1387
+#: src/conversation.c:2702 src/gtkprefs.c:1387
 msgid "New window"
 msgstr "חלון חדש"
 
-#: src/conversation.c:2697
+#: src/conversation.c:2704
 msgid "By group"
 msgstr "לפי קבוצות"
 
-#: src/conversation.c:2699
+#: src/conversation.c:2706
 msgid "By account"
 msgstr "לפי חשבון"
 
@@ -1749,7 +1749,7 @@ msgstr "מאפייני כניסה למערכת"
 msgid "Protocol:"
 msgstr "פרוטוקול:"
 
-#: src/gtkaccount.c:660 src/gtkblist.c:4125
+#: src/gtkaccount.c:660 src/gtkblist.c:4158
 msgid "Screen Name:"
 msgstr "שם לתצוגה:"
 
@@ -1757,7 +1757,7 @@ msgstr "שם לתצוגה:"
 msgid "Password:"
 msgstr "סיסמא:"
 
-#: src/gtkaccount.c:738 src/gtkblist.c:4139 src/gtkblist.c:4486
+#: src/gtkaccount.c:738 src/gtkblist.c:4172 src/gtkblist.c:4519
 msgid "Alias:"
 msgstr "תיאור:"
 
@@ -1878,14 +1878,14 @@ msgstr "האם אתה בטוח שברצונך למחוק את %s?"
 msgid "Delete"
 msgstr "מחק"
 
-#: src/gtkaccount.c:2142 src/protocols/oscar/oscar.c:4244
+#: src/gtkaccount.c:2142 src/protocols/oscar/oscar.c:4245
 msgid "Screen Name"
 msgstr "שם לתצוגה"
 
 #: src/gtkaccount.c:2166 src/protocols/jabber/jabber.c:996
-#: src/protocols/oscar/oscar.c:685 src/protocols/oscar/oscar.c:5694
-#: src/protocols/oscar/oscar.c:6886 src/protocols/silc/silc.c:45
-#: src/protocols/yahoo/yahoo.c:2703 src/protocols/zephyr/zephyr.c:2122
+#: src/protocols/oscar/oscar.c:686 src/protocols/oscar/oscar.c:5700
+#: src/protocols/oscar/oscar.c:6898 src/protocols/silc/silc.c:45
+#: src/protocols/yahoo/yahoo.c:2701 src/protocols/zephyr/zephyr.c:2122
 #: src/protocols/zephyr/zephyr.c:2141
 msgid "Online"
 msgstr "מחובר"
@@ -1895,12 +1895,12 @@ msgid "Protocol"
 msgstr "פרוטוקול"
 
 #. XXX: Tidy this up when not in string freeze
-#: src/gtkaccount.c:2517 src/protocols/jabber/presence.c:202
+#: src/gtkaccount.c:2521 src/protocols/jabber/presence.c:202
 #, c-format
 msgid "%s%s%s%s has made %s his or her buddy%s%s%s"
 msgstr "%s%s%s%s הפך %s לחבר שלו/שלה %s%s%s"
 
-#: src/gtkaccount.c:2531 src/protocols/jabber/presence.c:208
+#: src/gtkaccount.c:2535 src/protocols/jabber/presence.c:208
 msgid ""
 "\n"
 "\n"
@@ -1910,276 +1910,276 @@ msgstr ""
 "\n"
 "להוסים לרשימת אנשי הקשר שלך?"
 
-#: src/gtkaccount.c:2557
+#: src/gtkaccount.c:2561
 msgid "Information"
 msgstr "מידע"
 
-#: src/gtkaccount.c:2561 src/gtkaccount.c:2592
+#: src/gtkaccount.c:2565 src/gtkaccount.c:2596
 #: src/protocols/jabber/presence.c:210
 msgid "Add buddy to your list?"
 msgstr "להוסיף את איש הקשר לרשימה שלך?"
 
 #. Add button
-#: src/gtkaccount.c:2563 src/gtkaccount.c:2594 src/gtkblist.c:4538
-#: src/gtkconv.c:1522 src/gtkconv.c:3894 src/gtkconv.c:3965
+#: src/gtkaccount.c:2567 src/gtkaccount.c:2598 src/gtkblist.c:4571
+#: src/gtkconv.c:1522 src/gtkconv.c:3895 src/gtkconv.c:3966
 #: src/gtkrequest.c:248 src/protocols/icq/gaim_icq.c:276
-#: src/protocols/jabber/presence.c:212 src/protocols/oscar/oscar.c:3871
+#: src/protocols/jabber/presence.c:212 src/protocols/oscar/oscar.c:3872
 #: src/protocols/silc/chat.c:593
 msgid "Add"
 msgstr "הוסף"
 
-#: src/gtkblist.c:844
+#: src/gtkblist.c:846
 msgid "Join a Chat"
 msgstr "הצטרף לשיחה"
 
-#: src/gtkblist.c:865
+#: src/gtkblist.c:867
 msgid ""
 "Please enter the appropriate information about the chat you would like to "
 "join.\n"
 msgstr ""
 
-#: src/gtkblist.c:876 src/gtkpounce.c:415 src/gtkroomlist.c:354
+#: src/gtkblist.c:878 src/gtkpounce.c:415 src/gtkroomlist.c:354
 msgid "_Account:"
 msgstr "חש_בון:"
 
-#: src/gtkblist.c:1171 src/gtkblist.c:3290
+#: src/gtkblist.c:1173 src/gtkblist.c:3323
 msgid "Get _Info"
 msgstr "הצג _פרטים"
 
-#: src/gtkblist.c:1174 src/gtkblist.c:3280
+#: src/gtkblist.c:1176 src/gtkblist.c:3313
 msgid "I_M"
 msgstr "הודעה"
 
-#: src/gtkblist.c:1180
+#: src/gtkblist.c:1182
 #, fuzzy
 msgid "_Send File"
 msgstr "שלח קובץ"
 
-#: src/gtkblist.c:1186
+#: src/gtkblist.c:1188
 #, fuzzy
 msgid "Add Buddy _Pounce"
 msgstr "להוסיף איש קשר לרשימה שלך?"
 
-#: src/gtkblist.c:1188 src/gtkblist.c:1285
+#: src/gtkblist.c:1190 src/gtkblist.c:1287
 msgid "View _Log"
 msgstr "הצ_ג רישום"
 
-#: src/gtkblist.c:1198
+#: src/gtkblist.c:1200
 #, fuzzy
 msgid "_Alias Buddy..."
 msgstr "שם נוסף לאיש הקשר"
 
-#: src/gtkblist.c:1200
+#: src/gtkblist.c:1202
 #, fuzzy
 msgid "_Remove Buddy"
 msgstr "הסר איש קשר"
 
-#: src/gtkblist.c:1202
+#: src/gtkblist.c:1204
 #, fuzzy
 msgid "Alias Contact..."
 msgstr "שם איש קשר"
 
-#: src/gtkblist.c:1205 src/gtkdialogs.c:872 src/gtkdialogs.c:874
+#: src/gtkblist.c:1207 src/gtkdialogs.c:876 src/gtkdialogs.c:878
 msgid "Remove Contact"
 msgstr "הסר איש קשר"
 
-#: src/gtkblist.c:1209 src/gtkblist.c:1293 src/gtkblist.c:1307
+#: src/gtkblist.c:1211 src/gtkblist.c:1295 src/gtkblist.c:1309
 msgid "_Alias..."
 msgstr "_שם נוסף..."
 
-#: src/gtkblist.c:1211 src/gtkblist.c:1295 src/gtkblist.c:1312
+#: src/gtkblist.c:1213 src/gtkblist.c:1297 src/gtkblist.c:1314
 #: src/gtkconn.c:367
 msgid "_Remove"
 msgstr "_הסר"
 
-#: src/gtkblist.c:1257
+#: src/gtkblist.c:1259
 msgid "Add a _Buddy"
 msgstr "הוספת _איש קשר"
 
-#: src/gtkblist.c:1259
+#: src/gtkblist.c:1261
 msgid "Add a C_hat"
 msgstr "הוסף _שיחה"
 
-#: src/gtkblist.c:1261
+#: src/gtkblist.c:1263
 msgid "_Delete Group"
 msgstr "הסר _קבוצה"
 
-#: src/gtkblist.c:1263
+#: src/gtkblist.c:1265
 msgid "_Rename"
 msgstr "_שנה שם"
 
 #. join button
-#: src/gtkblist.c:1281 src/gtkroomlist.c:264 src/gtkroomlist.c:409
+#: src/gtkblist.c:1283 src/gtkroomlist.c:264 src/gtkroomlist.c:409
 #: src/stock.c:88
 msgid "_Join"
 msgstr "הצ_טרף"
 
-#: src/gtkblist.c:1283
+#: src/gtkblist.c:1285
 msgid "Auto-Join"
 msgstr "הצטרף אוטומטית"
 
-#: src/gtkblist.c:1309 src/gtkblist.c:1334
+#: src/gtkblist.c:1311 src/gtkblist.c:1336
 msgid "_Collapse"
 msgstr "_קפל"
 
-#: src/gtkblist.c:1339
+#: src/gtkblist.c:1341
 msgid "_Expand"
 msgstr "ה_רחב"
 
-#: src/gtkblist.c:1986 src/gtkconv.c:4537 src/gtkpounce.c:316
+#: src/gtkblist.c:2016 src/gtkconv.c:4538 src/gtkpounce.c:316
 msgid ""
 "You are not currently signed on with an account that can add that buddy."
 msgstr ""
 
 #. Buddies menu
-#: src/gtkblist.c:2407
+#: src/gtkblist.c:2437
 msgid "/_Buddies"
 msgstr "/_אנשי קשר"
 
-#: src/gtkblist.c:2408
+#: src/gtkblist.c:2438
 msgid "/Buddies/New Instant _Message..."
 msgstr "/אנשי קשר/הו_דעה חדשה..."
 
-#: src/gtkblist.c:2409
+#: src/gtkblist.c:2439
 msgid "/Buddies/Join a _Chat..."
 msgstr "/אנשי קשר/הצטרף ל_שיחה.."
 
-#: src/gtkblist.c:2410
+#: src/gtkblist.c:2440
 msgid "/Buddies/Get User _Info..."
 msgstr "/אנשי קשר/הצג _פרטי המשתמש.."
 
-#: src/gtkblist.c:2411
+#: src/gtkblist.c:2441
 #, fuzzy
 msgid "/Buddies/View User _Log..."
 msgstr "/אנשי קשר/הצג _פרטי המשתמש.."
 
-#: src/gtkblist.c:2413
+#: src/gtkblist.c:2443
 msgid "/Buddies/Show _Offline Buddies"
 msgstr "/אנשי קשר/הצג אנשי קשר ש_אינם מחוברים"
 
-#: src/gtkblist.c:2414
+#: src/gtkblist.c:2444
 msgid "/Buddies/Show _Empty Groups"
 msgstr "/אנשי קשר/הצג _קבוצות ריקות"
 
-#: src/gtkblist.c:2415
+#: src/gtkblist.c:2445
 msgid "/Buddies/_Add Buddy..."
 msgstr "/אנשי קשר/_הוסף איש קשר"
 
-#: src/gtkblist.c:2416
+#: src/gtkblist.c:2446
 #, fuzzy
 msgid "/Buddies/Add C_hat..."
 msgstr "להוסיף איש קשר לרשימה שלך?"
 
-#: src/gtkblist.c:2417
+#: src/gtkblist.c:2447
 #, fuzzy
 msgid "/Buddies/Add _Group..."
 msgstr "הוסף קבוצה חדשה..."
 
-#: src/gtkblist.c:2419
+#: src/gtkblist.c:2449
 msgid "/Buddies/_Signoff"
 msgstr "/אנשי קשר/_התנתקות"
 
-#: src/gtkblist.c:2420
+#: src/gtkblist.c:2450
 msgid "/Buddies/_Quit"
 msgstr "/אנשי קשר/_יציאה"
 
 #. Tools
-#: src/gtkblist.c:2423
+#: src/gtkblist.c:2453
 msgid "/_Tools"
 msgstr "/_כלים"
 
-#: src/gtkblist.c:2424
+#: src/gtkblist.c:2454
 msgid "/Tools/_Away"
 msgstr ""
 
-#: src/gtkblist.c:2425
+#: src/gtkblist.c:2455
 #, fuzzy
 msgid "/Tools/Buddy _Pounce"
 msgstr "שגיעה ברשימת הידידים"
 
-#: src/gtkblist.c:2426
+#: src/gtkblist.c:2456
 #, fuzzy
 msgid "/Tools/Account Ac_tions"
 msgstr "/כלים/_חשבונות"
 
-#: src/gtkblist.c:2427
+#: src/gtkblist.c:2457
 #, fuzzy
 msgid "/Tools/Pl_ugin Actions"
 msgstr "לא ניתן לבצע פעולות"
 
-#: src/gtkblist.c:2429
+#: src/gtkblist.c:2459
 msgid "/Tools/A_ccounts"
 msgstr "/כלים/_חשבונות"
 
-#: src/gtkblist.c:2430
+#: src/gtkblist.c:2460
 msgid "/Tools/_File Transfers"
 msgstr "/כלים/_העברת קבצים..."
 
-#: src/gtkblist.c:2431
+#: src/gtkblist.c:2461
 msgid "/Tools/R_oom List"
 msgstr "/כלים/_רשימת החלונות"
 
-#: src/gtkblist.c:2432
+#: src/gtkblist.c:2462
 msgid "/Tools/Pr_eferences"
 msgstr ""
 
-#: src/gtkblist.c:2433
+#: src/gtkblist.c:2463
 msgid "/Tools/Pr_ivacy"
 msgstr "/כלים/_פרטיות"
 
-#: src/gtkblist.c:2435
+#: src/gtkblist.c:2465
 msgid "/Tools/View System _Log"
 msgstr "/כלים/הצג את קובץ דו\"ח המערכת"
 
 #. Help
-#: src/gtkblist.c:2438
+#: src/gtkblist.c:2468
 msgid "/_Help"
 msgstr "/_עזרה"
 
-#: src/gtkblist.c:2439
+#: src/gtkblist.c:2469
 msgid "/Help/Online _Help"
 msgstr "/עזרה/עזרה מקוונת"
 
-#: src/gtkblist.c:2440
+#: src/gtkblist.c:2470
 msgid "/Help/_Debug Window"
 msgstr "/עזרה/_חלון ניפוי באגים"
 
-#: src/gtkblist.c:2441
+#: src/gtkblist.c:2471
 msgid "/Help/_About"
 msgstr "/עזרה/_אודות"
 
-#: src/gtkblist.c:2459
+#: src/gtkblist.c:2489
 msgid "Rename Group"
 msgstr "שנה את שם הקבוצה"
 
-#: src/gtkblist.c:2459
+#: src/gtkblist.c:2489
 msgid "New group name"
 msgstr "תן שם לקבוצה החדשה"
 
-#: src/gtkblist.c:2460
+#: src/gtkblist.c:2490
 msgid "Please enter a new name for the selected group."
 msgstr "אנא הזן שם חדש לקבוצה שנבחרה."
 
-#: src/gtkblist.c:2489
+#: src/gtkblist.c:2519
 #, fuzzy, c-format
 msgid ""
 "\n"
 "<b>Account:</b> %s"
 msgstr "חשבון:"
 
-#: src/gtkblist.c:2555
+#: src/gtkblist.c:2585
 #, fuzzy
 msgid ""
 "\n"
 "<b>Status:</b> Offline"
 msgstr "אין אפשרות להמשיך במצב לא מקוון"
 
-#: src/gtkblist.c:2570
+#: src/gtkblist.c:2600
 #, c-format
 msgid "%d%%"
 msgstr ""
 
-#: src/gtkblist.c:2586
+#: src/gtkblist.c:2616
 msgid ""
 "\n"
 "<b>Account:</b>"
@@ -2187,14 +2187,14 @@ msgstr ""
 "\n"
 "<b>חשבון:</b>"
 
-#: src/gtkblist.c:2587
+#: src/gtkblist.c:2617
 #, fuzzy
 msgid ""
 "\n"
 "<b>Contact Alias:</b>"
 msgstr "Name=כינוי"
 
-#: src/gtkblist.c:2588
+#: src/gtkblist.c:2618
 msgid ""
 "\n"
 "<b>Alias:</b>"
@@ -2202,7 +2202,7 @@ msgstr ""
 "\n"
 "<b>שם נוסף:</b>"
 
-#: src/gtkblist.c:2589
+#: src/gtkblist.c:2619
 msgid ""
 "\n"
 "<b>Nickname:</b>"
@@ -2210,14 +2210,14 @@ msgstr ""
 "\n"
 "<b>כינוי:</b>"
 
-#: src/gtkblist.c:2590
+#: src/gtkblist.c:2620
 #, fuzzy
 msgid ""
 "\n"
 "<b>Logged In:</b>"
 msgstr "%s התחבר"
 
-#: src/gtkblist.c:2591
+#: src/gtkblist.c:2621
 msgid ""
 "\n"
 "<b>Idle:</b>"
@@ -2225,97 +2225,97 @@ msgstr ""
 "\n"
 "<b>לא פעיל:</b>"
 
-#: src/gtkblist.c:2592
+#: src/gtkblist.c:2622
 #, fuzzy
 msgid ""
 "\n"
 "<b>Warned:</b>"
 msgstr "על-ידי %1"
 
-#: src/gtkblist.c:2594
+#: src/gtkblist.c:2624
 #, fuzzy
 msgid ""
 "\n"
 "<b>Description:</b> Spooky"
 msgstr "Description=רוח רפאים"
 
-#: src/gtkblist.c:2595
+#: src/gtkblist.c:2625
 #, fuzzy
 msgid ""
 "\n"
 "<b>Status</b>: Awesome"
 msgstr "לפי מצב"
 
-#: src/gtkblist.c:2596
+#: src/gtkblist.c:2626
 #, fuzzy
 msgid ""
 "\n"
 "<b>Status</b>: Rockin'"
 msgstr "לפי מצב"
 
-#: src/gtkblist.c:2878
+#: src/gtkblist.c:2908
 #, fuzzy, c-format
 msgid "Idle (%dh%02dm) "
 msgstr "&הסר העברות במנוחה"
 
-#: src/gtkblist.c:2880
+#: src/gtkblist.c:2910
 #, c-format
 msgid "Idle (%dm) "
 msgstr "לא פעיל (%d דקות)"
 
-#: src/gtkblist.c:2885
+#: src/gtkblist.c:2915
 #, fuzzy, c-format
 msgid "Warned (%d%%) "
 msgstr "על-ידי %1"
 
-#: src/gtkblist.c:2888
+#: src/gtkblist.c:2918
 msgid "Offline "
 msgstr "לא מקוון"
 
 #. Make menu items sensitive/insensitive where appropriate
-#: src/gtkblist.c:3006
+#: src/gtkblist.c:3036
 #, fuzzy
 msgid "/Buddies/Join a Chat..."
 msgstr "/אנשי קשר/הצטרף ל_שיחה.."
 
-#: src/gtkblist.c:3009
+#: src/gtkblist.c:3039
 #, fuzzy
 msgid "/Tools/Room List"
 msgstr "/כלים/_רשימת החלונות"
 
-#: src/gtkblist.c:3012
+#: src/gtkblist.c:3042
 #, fuzzy
 msgid "/Tools/Privacy"
 msgstr "/כלים/_פרטיות"
 
-#: src/gtkblist.c:3094
+#: src/gtkblist.c:3124
 msgid "Alphabetical"
 msgstr "אלפבתית"
 
-#: src/gtkblist.c:3095
+#: src/gtkblist.c:3125
 msgid "By status"
 msgstr "לפי מצב"
 
-#: src/gtkblist.c:3096
+#: src/gtkblist.c:3126
 msgid "By log size"
 msgstr "לפי גודל הרישום"
 
-#: src/gtkblist.c:3162
+#: src/gtkblist.c:3192
 #, fuzzy
 msgid "/Tools/Away"
 msgstr "הודעות מרוחק"
 
-#: src/gtkblist.c:3165
+#: src/gtkblist.c:3195
 #, fuzzy
 msgid "/Tools/Buddy Pounce"
 msgstr "שגיעה ברשימת הידידים"
 
-#: src/gtkblist.c:3168
+#: src/gtkblist.c:3198
 #, fuzzy
 msgid "/Tools/Account Actions"
 msgstr "/כלים/_חשבונות"
 
-#: src/gtkblist.c:3171
+#: src/gtkblist.c:3201
 #, fuzzy
 msgid "/Tools/Plugin Actions"
 msgstr "לא ניתן לבצע פעולות"
@@ -2323,48 +2323,48 @@ msgstr "לא ניתן לבצע פעולות"
 #. set the Show Offline Buddies option. must be done
 #. * after the treeview or faceprint gets mad. -Robot101
 #.
-#: src/gtkblist.c:3259
+#: src/gtkblist.c:3292
 #, fuzzy
 msgid "/Buddies/Show Offline Buddies"
 msgstr "הצג גם &משתמשים מנותקים ברשימה"
 
-#: src/gtkblist.c:3261
+#: src/gtkblist.c:3294
 msgid "/Buddies/Show Empty Groups"
 msgstr "/אנשי קשר/הצג קבוצות ריקות"
 
-#: src/gtkblist.c:3286
+#: src/gtkblist.c:3319
 #, fuzzy
 msgid "Send a message to the selected buddy"
 msgstr "שליחת הודעה אל שחקן מרוחק"
 
-#: src/gtkblist.c:3296
+#: src/gtkblist.c:3329
 msgid "Get information on the selected buddy"
 msgstr "הצג פרטים עבור איש קשר שנבחר"
 
-#: src/gtkblist.c:3300
+#: src/gtkblist.c:3333
 msgid "_Chat"
 msgstr "_שיחה"
 
-#: src/gtkblist.c:3305
+#: src/gtkblist.c:3338
 msgid "Join a chat room"
 msgstr "הצטרף לחדר השיחה:"
 
-#: src/gtkblist.c:3310
+#: src/gtkblist.c:3343
 msgid "_Away"
 msgstr "_רחוק מהמחשב"
 
-#: src/gtkblist.c:3315
+#: src/gtkblist.c:3348
 #, fuzzy
 msgid "Set an away message"
 msgstr "תצורת הודעות לא-נמצא"
 
-#: src/gtkblist.c:4079 src/protocols/silc/buddy.c:731
+#: src/gtkblist.c:4112 src/protocols/silc/buddy.c:731
 #: src/protocols/silc/buddy.c:989 src/protocols/silc/buddy.c:1034
-#: src/protocols/silc/buddy.c:1124 src/protocols/yahoo/yahoo.c:2870
+#: src/protocols/silc/buddy.c:1124 src/protocols/yahoo/yahoo.c:2868
 msgid "Add Buddy"
 msgstr "הוספת חבר..."
 
-#: src/gtkblist.c:4103
+#: src/gtkblist.c:4136
 msgid ""
 "Please enter the screen name of the person you would like to add to your "
 "buddy list. You may optionally enter an alias, or nickname,  for the buddy. "
@@ -2372,40 +2372,40 @@ msgid ""
 msgstr ""
 
 #. Set up stuff for the account box
-#: src/gtkblist.c:4163 src/gtkblist.c:4466
+#: src/gtkblist.c:4196 src/gtkblist.c:4499
 msgid "Account:"
 msgstr "חשבון:"
 
-#: src/gtkblist.c:4399
+#: src/gtkblist.c:4432
 #, fuzzy
 msgid "This protocol does not support chat rooms."
 msgstr "גירסת ה-HTTP אינה נתמכת"
 
-#: src/gtkblist.c:4415
+#: src/gtkblist.c:4448
 msgid ""
 "You are not currently signed on with any protocols that have the ability to "
 "chat."
 msgstr ""
 
-#: src/gtkblist.c:4432
+#: src/gtkblist.c:4465
 msgid "Add Chat"
 msgstr "הוסף שיחה"
 
-#: src/gtkblist.c:4456
+#: src/gtkblist.c:4489
 msgid ""
 "Please enter an alias, and the appropriate information about the chat you "
 "would like to add to your buddy list.\n"
 msgstr ""
 
-#: src/gtkblist.c:4535
+#: src/gtkblist.c:4568
 msgid "Add Group"
 msgstr "הוסף קבוצה"
 
-#: src/gtkblist.c:4536
+#: src/gtkblist.c:4569
 msgid "Please enter the name of the group to be added."
 msgstr ""
 
-#: src/gtkblist.c:5105 src/gtkblist.c:5202
+#: src/gtkblist.c:5138 src/gtkblist.c:5235
 msgid "No actions available"
 msgstr "לא ניתן לבצע פעולות"
 
@@ -2550,7 +2550,7 @@ msgid "IM"
 msgstr "הודעה"
 
 #. Send File button
-#: src/gtkconv.c:1475 src/gtkconv.c:3887 src/protocols/oscar/oscar.c:600
+#: src/gtkconv.c:1475 src/gtkconv.c:3888 src/protocols/oscar/oscar.c:601
 msgid "Send File"
 msgstr "שלח קובץ"
 
@@ -2564,7 +2564,7 @@ msgid "Ignore"
 msgstr "התעלם"
 
 #. Info button
-#: src/gtkconv.c:1495 src/gtkconv.c:3908
+#: src/gtkconv.c:1495 src/gtkconv.c:3909
 msgid "Info"
 msgstr "מידע"
 
@@ -2578,345 +2578,345 @@ msgstr "הועבר"
 msgid "Unable to save icon file to disk."
 msgstr "לא ניתן לשמור את הסמל לדיסק"
 
-#: src/gtkconv.c:2674
+#: src/gtkconv.c:2675
 msgid "Save Icon"
 msgstr "שמירת סמל"
 
-#: src/gtkconv.c:2704
+#: src/gtkconv.c:2705
 msgid "Animate"
 msgstr "הנפש"
 
-#: src/gtkconv.c:2709
+#: src/gtkconv.c:2710
 msgid "Hide Icon"
 msgstr "הסתר סמל"
 
-#: src/gtkconv.c:2715
+#: src/gtkconv.c:2716
 msgid "Save Icon As..."
 msgstr "שמירת סמל בשם..."
 
-#: src/gtkconv.c:3092
+#: src/gtkconv.c:3093
 msgid "User is typing..."
 msgstr "המשתמש כותב כרגע..."
 
-#: src/gtkconv.c:3100
+#: src/gtkconv.c:3101
 msgid "User has typed something and paused"
 msgstr "המשתמש כתב משהו והפסיק"
 
 #. Build the Send As menu
-#: src/gtkconv.c:3203
+#: src/gtkconv.c:3204
 msgid "_Send As"
 msgstr "שלח בתור"
 
 #. Conversation menu
-#: src/gtkconv.c:3657
+#: src/gtkconv.c:3658
 msgid "/_Conversation"
 msgstr "/_שיחה"
 
-#: src/gtkconv.c:3659
+#: src/gtkconv.c:3660
 #, fuzzy
 msgid "/Conversation/New Instant _Message..."
 msgstr "/ידידים/הו_דעה חדשה..."
 
-#: src/gtkconv.c:3664
+#: src/gtkconv.c:3665
 #, fuzzy
 msgid "/Conversation/_Find..."
 msgstr ".אצמנ אל `%s' ץבוק"
 
-#: src/gtkconv.c:3666
+#: src/gtkconv.c:3667
 #, fuzzy
 msgid "/Conversation/View _Log"
 msgstr "הצגת רישום משחק"
 
-#: src/gtkconv.c:3667
+#: src/gtkconv.c:3668
 #, fuzzy
 msgid "/Conversation/_Save As..."
 msgstr "שמירת סמל בשם..."
 
-#: src/gtkconv.c:3669
+#: src/gtkconv.c:3670
 #, fuzzy
 msgid "/Conversation/Clear"
 msgstr "סגור חלון"
 
-#: src/gtkconv.c:3673
+#: src/gtkconv.c:3674
 #, fuzzy
 msgid "/Conversation/Se_nd File..."
 msgstr ".אצמנ אל `%s' ץבוק"
 
-#: src/gtkconv.c:3674
+#: src/gtkconv.c:3675
 #, fuzzy
 msgid "/Conversation/Add Buddy _Pounce..."
 msgstr "להוסיף ידיד לרשימה שלך?"
 
-#: src/gtkconv.c:3676
+#: src/gtkconv.c:3677
 #, fuzzy
 msgid "/Conversation/_Get Info"
 msgstr "מידע כללי על המשתמש"
 
-#: src/gtkconv.c:3678
+#: src/gtkconv.c:3679
 #, fuzzy
 msgid "/Conversation/_Warn..."
 msgstr "הזהר את המשתמש"
 
-#: src/gtkconv.c:3680
+#: src/gtkconv.c:3681
 #, fuzzy
 msgid "/Conversation/In_vite..."
 msgstr "הפעל _במסוף"
 
-#: src/gtkconv.c:3685
+#: src/gtkconv.c:3686
 #, fuzzy
 msgid "/Conversation/A_lias..."
 msgstr "שנוי &כינוי..."
 
-#: src/gtkconv.c:3687
+#: src/gtkconv.c:3688
 #, fuzzy
 msgid "/Conversation/_Block..."
 msgstr "גודל בלוק"
 
-#: src/gtkconv.c:3689
+#: src/gtkconv.c:3690
 #, fuzzy
 msgid "/Conversation/_Add..."
 msgstr "הוסף מדפסת"
 
-#: src/gtkconv.c:3691
+#: src/gtkconv.c:3692
 #, fuzzy
 msgid "/Conversation/_Remove..."
 msgstr "הסר ידיד"
 
-#: src/gtkconv.c:3696
+#: src/gtkconv.c:3697
 #, fuzzy
 msgid "/Conversation/Insert Lin_k..."
 msgstr "הכנס ערך ASCII"
 
-#: src/gtkconv.c:3698
+#: src/gtkconv.c:3699
 #, fuzzy
 msgid "/Conversation/Insert Imag_e..."
 msgstr "הכנס ערך ASCII"
 
-#: src/gtkconv.c:3703
+#: src/gtkconv.c:3704
 #, fuzzy
 msgid "/Conversation/_Close"
 msgstr "סגור חלון"
 
 #. Options
-#: src/gtkconv.c:3707
+#: src/gtkconv.c:3708
 msgid "/_Options"
 msgstr "/_אפשרויות"
 
-#: src/gtkconv.c:3708
+#: src/gtkconv.c:3709
 msgid "/Options/Enable _Logging"
 msgstr "/אפשרויות/אפשר רישום"
 
-#: src/gtkconv.c:3709
+#: src/gtkconv.c:3710
 msgid "/Options/Enable _Sounds"
 msgstr "/אפשרויות/אפשר צלילים"
 
-#: src/gtkconv.c:3710
+#: src/gtkconv.c:3711
 #, fuzzy
 msgid "/Options/Show Formatting _Toolbar"
 msgstr "הצג או הסתר סרגל כלים"
 
-#: src/gtkconv.c:3711
+#: src/gtkconv.c:3712
 #, fuzzy
 msgid "/Options/Show T_imestamps"
 msgstr "הטבע חותמת זמן על שיחות"
 
-#: src/gtkconv.c:3753
+#: src/gtkconv.c:3754
 #, fuzzy
 msgid "/Conversation/View Log"
 msgstr "הצגת רישום משחק"
 
-#: src/gtkconv.c:3758
+#: src/gtkconv.c:3759
 #, fuzzy
 msgid "/Conversation/Send File..."
 msgstr "הזמן משתמש"
 
-#: src/gtkconv.c:3762
+#: src/gtkconv.c:3763
 #, fuzzy
 msgid "/Conversation/Add Buddy Pounce..."
 msgstr "להוסיף ידיד לרשימה שלך?"
 
-#: src/gtkconv.c:3768
+#: src/gtkconv.c:3769
 #, fuzzy
 msgid "/Conversation/Get Info"
 msgstr "מידע כללי על המשתמש"
 
-#: src/gtkconv.c:3772
+#: src/gtkconv.c:3773
 #, fuzzy
 msgid "/Conversation/Warn..."
 msgstr "הזהר את המשתמש"
 
-#: src/gtkconv.c:3776
+#: src/gtkconv.c:3777
 #, fuzzy
 msgid "/Conversation/Invite..."
 msgstr "הזמן משתמש"
 
-#: src/gtkconv.c:3782
+#: src/gtkconv.c:3783
 #, fuzzy
 msgid "/Conversation/Alias..."
 msgstr "Name=כינוי"
 
-#: src/gtkconv.c:3786
+#: src/gtkconv.c:3787
 #, fuzzy
 msgid "/Conversation/Block..."
 msgstr "גודל בלוק"
 
-#: src/gtkconv.c:3790
+#: src/gtkconv.c:3791
 #, fuzzy
 msgid "/Conversation/Add..."
 msgstr "הוסף מדפסת"
 
-#: src/gtkconv.c:3794
+#: src/gtkconv.c:3795
 #, fuzzy
 msgid "/Conversation/Remove..."
 msgstr "הסר ידיד"
 
-#: src/gtkconv.c:3800
+#: src/gtkconv.c:3801
 #, fuzzy
 msgid "/Conversation/Insert Link..."
 msgstr "ה_עתק מיקום הקישור"
 
-#: src/gtkconv.c:3804
+#: src/gtkconv.c:3805
 #, fuzzy
 msgid "/Conversation/Insert Image..."
 msgstr "פרטי רקע תמונה"
 
-#: src/gtkconv.c:3810
+#: src/gtkconv.c:3811
 #, fuzzy
 msgid "/Options/Enable Logging"
 msgstr "/אפשרויות/אפשר רישום"
 
-#: src/gtkconv.c:3813
+#: src/gtkconv.c:3814
 #, fuzzy
 msgid "/Options/Enable Sounds"
 msgstr "/אפשרויות/אפשר צלילים"
 
-#: src/gtkconv.c:3816
+#: src/gtkconv.c:3817
 #, fuzzy
 msgid "/Options/Show Formatting Toolbar"
 msgstr "הצג או הסתר סרגל כלים"
 
-#: src/gtkconv.c:3819
+#: src/gtkconv.c:3820
 #, fuzzy
 msgid "/Options/Show Timestamps"
 msgstr "הטבע חותמת זמן על שיחות"
 
 #. The buttons, from left to right
 #. Warn button
-#: src/gtkconv.c:3873
+#: src/gtkconv.c:3874
 msgid "Warn"
 msgstr "אזהר"
 
-#: src/gtkconv.c:3874
+#: src/gtkconv.c:3875
 msgid "Warn the user"
 msgstr "הזהר את המשתמש"
 
 #. Block button
-#: src/gtkconv.c:3880 src/gtkprivacy.c:630 src/gtkprivacy.c:641
+#: src/gtkconv.c:3881 src/gtkprivacy.c:634 src/gtkprivacy.c:645
 msgid "Block"
 msgstr "חסום"
 
-#: src/gtkconv.c:3881
+#: src/gtkconv.c:3882
 msgid "Block the user"
 msgstr "חסום משתמש"
 
-#: src/gtkconv.c:3888
+#: src/gtkconv.c:3889
 #, fuzzy
 msgid "Send a file to the user"
 msgstr "שלח בתור הודעה"
 
-#: src/gtkconv.c:3895
+#: src/gtkconv.c:3896
 msgid "Add the user to your buddy list"
 msgstr "הוסף את המשתמש לרשימת אנשי הקשר שלך"
 
-#: src/gtkconv.c:3902
+#: src/gtkconv.c:3903
 msgid "Remove the user from your buddy list"
 msgstr "הסר את המשתמש מרשימץ אנשי הקשר שלך"
 
-#: src/gtkconv.c:3909 src/gtkconv.c:4244
+#: src/gtkconv.c:3910 src/gtkconv.c:4245
 #, fuzzy
 msgid "Get the user's information"
 msgstr "מידע משתמש של %1"
 
 #. Send button
-#: src/gtkconv.c:3915 src/gtkconv.c:3979
+#: src/gtkconv.c:3916 src/gtkconv.c:3980
 msgid "Send"
 msgstr "שלח"
 
-#: src/gtkconv.c:3916 src/gtkconv.c:3980
+#: src/gtkconv.c:3917 src/gtkconv.c:3981
 #, fuzzy
 msgid "Send message"
 msgstr "שליחת הודעה"
 
 #. The buttons, from left to right
 #. Invite
-#: src/gtkconv.c:3958
+#: src/gtkconv.c:3959
 msgid "Invite"
 msgstr "הזמן"
 
-#: src/gtkconv.c:3959
+#: src/gtkconv.c:3960
 msgid "Invite a user"
 msgstr "הזמן משתמש"
 
-#: src/gtkconv.c:3966
+#: src/gtkconv.c:3967
 #, fuzzy
 msgid "Add the chat to your buddy list"
 msgstr "הוסף את המשתמש לרשימת הידידים שלך"
 
-#: src/gtkconv.c:3973
+#: src/gtkconv.c:3974
 #, fuzzy
 msgid "Remove the chat from your buddy list"
 msgstr "הסר את המשתמש מרשימץ הידידים שלך"
 
-#: src/gtkconv.c:4097
+#: src/gtkconv.c:4098
 msgid "Topic:"
 msgstr "כותרת:"
 
 #. Setup the label telling how many people are in the room.
-#: src/gtkconv.c:4160
+#: src/gtkconv.c:4161
 msgid "0 people in room"
 msgstr "0 אנשים בחדר זה"
 
-#: src/gtkconv.c:4221
+#: src/gtkconv.c:4222
 msgid "IM the user"
 msgstr "שלח הודעה מיידית למשתמש זה"
 
-#: src/gtkconv.c:4233
+#: src/gtkconv.c:4234
 msgid "Ignore the user"
 msgstr "התעלם מהמשתמש"
 
-#: src/gtkconv.c:4832
+#: src/gtkconv.c:4833
 msgid "Close conversation"
 msgstr "סגור חלון"
 
-#: src/gtkconv.c:5369 src/gtkconv.c:5398 src/gtkconv.c:5494 src/gtkconv.c:5552
+#: src/gtkconv.c:5370 src/gtkconv.c:5399 src/gtkconv.c:5495 src/gtkconv.c:5553
 #, fuzzy, c-format
 msgid "%d person in room"
 msgid_plural "%d people in room"
 msgstr[0] "0 אנשים בחדר זה"
 msgstr[1] "0 אנשים בחדר זה"
 
-#: src/gtkconv.c:6129 src/gtkconv.c:6132
+#: src/gtkconv.c:6130 src/gtkconv.c:6133
 #, fuzzy
 msgid "<main>/Conversation/Close"
 msgstr "/קובץ/_סגור חלון"
 
-#: src/gtkconv.c:6504
+#: src/gtkconv.c:6505
 msgid ""
 "say &lt;message&gt;:  Send a message normally as if you weren't using a "
 "command."
 msgstr ""
 
-#: src/gtkconv.c:6507
+#: src/gtkconv.c:6508
 msgid "me &lt;action&gt;:  Send an IRC style action to a buddy or chat."
 msgstr ""
 
-#: src/gtkconv.c:6510
+#: src/gtkconv.c:6511
 msgid ""
 "debug &lt;option&gt;:  Send various debug information to the current "
 "conversation."
 msgstr ""
 
-#: src/gtkconv.c:6514
+#: src/gtkconv.c:6515
 msgid "help &lt;command&gt;:  Help on a specific command."
 msgstr ""
 
@@ -2942,7 +2942,7 @@ msgstr "מפתח ראשי"
 
 #: src/gtkdialogs.c:64 src/gtkdialogs.c:67 src/gtkdialogs.c:68
 #: src/gtkdialogs.c:69 src/gtkdialogs.c:70 src/gtkdialogs.c:71
-#: src/gtkdialogs.c:73 src/gtkdialogs.c:74
+#: src/gtkdialogs.c:73 src/gtkdialogs.c:74 src/gtkdialogs.c:75
 msgid "developer"
 msgstr "מפתח"
 
@@ -2958,314 +2958,319 @@ msgstr "גירסה לחלונות"
 msgid "support"
 msgstr "תמיכה"
 
-#: src/gtkdialogs.c:89
+#: src/gtkdialogs.c:91
 msgid "maintainer"
 msgstr "מתחזק"
 
-#: src/gtkdialogs.c:90
+#: src/gtkdialogs.c:92
 #, fuzzy
 msgid "former libfaim maintainer"
 msgstr "מתחזק 1999-2000"
 
-#: src/gtkdialogs.c:91
+#: src/gtkdialogs.c:93
 #, fuzzy
 msgid "former lead developer"
 msgstr "מפתח מרכזי לשעבר"
 
-#: src/gtkdialogs.c:92
+#: src/gtkdialogs.c:94
 #, fuzzy
 msgid "former maintainer"
 msgstr "מתחזק נוכחי"
 
-#: src/gtkdialogs.c:93
+#: src/gtkdialogs.c:95
 #, fuzzy
 msgid "former Jabber developer"
 msgstr "מפתח לשעבר, מחבר תוסף Jabber"
 
-#: src/gtkdialogs.c:94
+#: src/gtkdialogs.c:96
 msgid "original author"
 msgstr "מתכנת מקורי"
 
-#: src/gtkdialogs.c:95
+#: src/gtkdialogs.c:97
 msgid "hacker and designated driver [lazy bum]"
 msgstr ""
 
-#: src/gtkdialogs.c:100
+#: src/gtkdialogs.c:102
 #, fuzzy
 msgid "Azerbaijani"
 msgstr "סרבית"
 
-#: src/gtkdialogs.c:101 src/gtkdialogs.c:146
+#: src/gtkdialogs.c:103 src/gtkdialogs.c:149
 msgid "Bulgarian"
 msgstr "בולגרית"
 
-#: src/gtkdialogs.c:101
+#: src/gtkdialogs.c:103
 msgid "Vladimira Girginova and Vladimir (Kaladan) Petkov"
 msgstr ""
 
-#: src/gtkdialogs.c:102 src/gtkdialogs.c:147 src/gtkdialogs.c:148
+#: src/gtkdialogs.c:104 src/gtkdialogs.c:150 src/gtkdialogs.c:151
 msgid "Catalan"
 msgstr "קטלנית"
 
-#: src/gtkdialogs.c:103 src/gtkdialogs.c:149
+#: src/gtkdialogs.c:105 src/gtkdialogs.c:152
 msgid "Czech"
 msgstr "צ'כית"
 
-#: src/gtkdialogs.c:104
+#: src/gtkdialogs.c:106
 msgid "Danish"
 msgstr "דנית"
 
-#: src/gtkdialogs.c:105 src/gtkdialogs.c:150
+#: src/gtkdialogs.c:107 src/gtkdialogs.c:153
 msgid "German"
 msgstr "גרמנית"
 
-#: src/gtkdialogs.c:106
+#: src/gtkdialogs.c:108
 #, fuzzy
 msgid "Australian English"
 msgstr "אנגלית בריטית"
 
-#: src/gtkdialogs.c:107
+#: src/gtkdialogs.c:109
 msgid "Canadian English"
 msgstr ""
 
-#: src/gtkdialogs.c:108
+#: src/gtkdialogs.c:110
 msgid "British English"
 msgstr "אנגלית בריטית"
 
-#: src/gtkdialogs.c:109 src/gtkdialogs.c:151
+#: src/gtkdialogs.c:111 src/gtkdialogs.c:154
 msgid "Spanish"
 msgstr "ספרדית"
 
-#: src/gtkdialogs.c:110
+#: src/gtkdialogs.c:112
 #, fuzzy
 msgid "Estonian"
 msgstr "רומנית"
 
-#: src/gtkdialogs.c:111 src/gtkdialogs.c:152
+#: src/gtkdialogs.c:113 src/gtkdialogs.c:155
 msgid "Finnish"
 msgstr "פינית"
 
-#: src/gtkdialogs.c:112 src/gtkdialogs.c:153
+#: src/gtkdialogs.c:114 src/gtkdialogs.c:156
 msgid "French"
 msgstr "צרפתית"
 
-#: src/gtkdialogs.c:113
+#: src/gtkdialogs.c:115
 msgid "Hebrew"
 msgstr "עברית"
 
-#: src/gtkdialogs.c:114 src/gtkdialogs.c:154
+#: src/gtkdialogs.c:116 src/gtkdialogs.c:157
 msgid "Hindi"
 msgstr "הינדית"
 
-#: src/gtkdialogs.c:115
+#: src/gtkdialogs.c:117 src/gtkdialogs.c:158
 msgid "Hungarian"
 msgstr "הונגרית"
 
-#: src/gtkdialogs.c:116 src/gtkdialogs.c:155
+#: src/gtkdialogs.c:118 src/gtkdialogs.c:159
 msgid "Italian"
 msgstr "איטלקית"
 
-#: src/gtkdialogs.c:117 src/gtkdialogs.c:156
+#: src/gtkdialogs.c:119 src/gtkdialogs.c:160
 msgid "Japanese"
 msgstr "יפנית"
 
-#: src/gtkdialogs.c:118
+#: src/gtkdialogs.c:120
 #, fuzzy
 msgid "Georgian"
 msgstr "גרמנית"
 
-#: src/gtkdialogs.c:119 src/gtkdialogs.c:157
+#: src/gtkdialogs.c:121 src/gtkdialogs.c:161
 msgid "Korean"
 msgstr "קוריאנית"
 
-#: src/gtkdialogs.c:120
+#: src/gtkdialogs.c:122
 msgid "Lithuanian"
 msgstr ""
 
-#: src/gtkdialogs.c:121
+#: src/gtkdialogs.c:123
 msgid "Macedonian"
 msgstr ""
 
-#: src/gtkdialogs.c:122
+#: src/gtkdialogs.c:124
 msgid "Burmese"
 msgstr ""
 
-#: src/gtkdialogs.c:123
+#: src/gtkdialogs.c:125
 #, fuzzy
 msgid "Dutch; Flemish"
 msgstr "Name=הולנדית"
 
-#: src/gtkdialogs.c:124 src/gtkdialogs.c:158
+#: src/gtkdialogs.c:126
+#, fuzzy
+msgid "Norwegian (Nynorsk)"
+msgstr "נורבגית"
+
+#: src/gtkdialogs.c:127 src/gtkdialogs.c:162
 msgid "Norwegian"
 msgstr "נורבגית"
 
-#: src/gtkdialogs.c:125
+#: src/gtkdialogs.c:128
 msgid "Punjabi"
 msgstr ""
 
-#: src/gtkdialogs.c:126 src/gtkdialogs.c:159
+#: src/gtkdialogs.c:129 src/gtkdialogs.c:163
 msgid "Polish"
 msgstr "פולנית"
 
-#: src/gtkdialogs.c:127
+#: src/gtkdialogs.c:130
 msgid "Portuguese"
 msgstr "פורטוגזית"
 
-#: src/gtkdialogs.c:128
+#: src/gtkdialogs.c:131
 msgid "Portuguese-Brazil"
 msgstr "פורטוגזית ברזילאית"
 
-#: src/gtkdialogs.c:129
+#: src/gtkdialogs.c:132
 msgid "Romanian"
 msgstr "רומנית"
 
-#: src/gtkdialogs.c:130 src/gtkdialogs.c:160 src/gtkdialogs.c:161
+#: src/gtkdialogs.c:133 src/gtkdialogs.c:164 src/gtkdialogs.c:165
 msgid "Russian"
 msgstr "רוסית"
 
-#: src/gtkdialogs.c:131
+#: src/gtkdialogs.c:134
 #, fuzzy
 msgid "Slovenian"
 msgstr "סלובקית"
 
-#: src/gtkdialogs.c:132
+#: src/gtkdialogs.c:135
 #, fuzzy
 msgid "Albanian"
 msgstr "רומנית"
 
-#: src/gtkdialogs.c:133
+#: src/gtkdialogs.c:136
 msgid "Serbian"
 msgstr "סרבית"
 
-#: src/gtkdialogs.c:134 src/gtkdialogs.c:163 src/gtkdialogs.c:164
+#: src/gtkdialogs.c:137 src/gtkdialogs.c:167 src/gtkdialogs.c:168
 msgid "Swedish"
 msgstr "שוודית"
 
-#: src/gtkdialogs.c:135
+#: src/gtkdialogs.c:138
 msgid "Turkish"
 msgstr ""
 
-#: src/gtkdialogs.c:136
+#: src/gtkdialogs.c:139
 msgid "Ukrainian"
 msgstr ""
 
-#: src/gtkdialogs.c:137
+#: src/gtkdialogs.c:140
 msgid "Vietnamese"
 msgstr "ויאטנמית"
 
-#: src/gtkdialogs.c:137
+#: src/gtkdialogs.c:140
 #, fuzzy
 msgid "T.M.Thanh and the Gnome-Vi Team"
 msgstr "צוות VI של גנום"
 
-#: src/gtkdialogs.c:138
+#: src/gtkdialogs.c:141
 msgid "Simplified Chinese"
 msgstr "סינית פשוטה"
 
-#: src/gtkdialogs.c:139
+#: src/gtkdialogs.c:142
 msgid "Traditional Chinese"
 msgstr "סינית מסורתית"
 
-#: src/gtkdialogs.c:145
+#: src/gtkdialogs.c:148
 msgid "Amharic"
 msgstr "אמהרית"
 
-#: src/gtkdialogs.c:162
+#: src/gtkdialogs.c:166
 msgid "Slovak"
 msgstr "סלובקית"
 
-#: src/gtkdialogs.c:165
+#: src/gtkdialogs.c:169
 msgid "Chinese"
 msgstr "סינית"
 
-#: src/gtkdialogs.c:207
+#: src/gtkdialogs.c:211
 #, fuzzy
 msgid "About Gaim"
 msgstr "אודות Gaim גירסה %s"
 
-#: src/gtkdialogs.c:222
+#: src/gtkdialogs.c:226
 #, fuzzy, c-format
 msgid "<span weight=\"bold\" size=\"larger\">Gaim v%s</span>"
 msgstr "<span size=\"larger\" weight=\"bold\">התקן ערכת נושא חדשה</span>"
 
-#: src/gtkdialogs.c:244
+#: src/gtkdialogs.c:248
 msgid ""
 "Gaim is a modular messaging client capable of using AIM, MSN, Yahoo!, "
 "Jabber, ICQ, IRC, SILC, Novell GroupWise, Napster, Zephyr, and Gadu-Gadu all "
 "at once.  It is written using Gtk+ and is licensed under the GPL.<BR><BR>"
 msgstr ""
 
-#: src/gtkdialogs.c:254
+#: src/gtkdialogs.c:258
 msgid "<FONT SIZE=\"4\">IRC:</FONT> #wingaim on irc.freenode.net<BR><BR>"
 msgstr ""
 
-#: src/gtkdialogs.c:257
+#: src/gtkdialogs.c:261
 msgid "<FONT SIZE=\"4\">IRC:</FONT> #gaim on irc.freenode.net<BR><BR>"
 msgstr ""
 
-#: src/gtkdialogs.c:263
+#: src/gtkdialogs.c:267
 msgid "Active Developers"
 msgstr "מפתחים פעילים"
 
-#: src/gtkdialogs.c:278
+#: src/gtkdialogs.c:282
 #, fuzzy
 msgid "Crazy Patch Writers"
 msgstr "קובץ טלאי דחוי"
 
-#: src/gtkdialogs.c:293
+#: src/gtkdialogs.c:297
 msgid "Retired Developers"
 msgstr "מפתחים שתרמו בעבר"
 
-#: src/gtkdialogs.c:308
+#: src/gtkdialogs.c:312
 msgid "Current Translators"
 msgstr "מתרגמים פעילים"
 
-#: src/gtkdialogs.c:328
+#: src/gtkdialogs.c:332
 msgid "Past Translators"
 msgstr "מתרגמים לשעבר"
 
-#: src/gtkdialogs.c:483 src/gtkdialogs.c:625 src/gtkdialogs.c:678
+#: src/gtkdialogs.c:487 src/gtkdialogs.c:629 src/gtkdialogs.c:682
 msgid "_Screen name"
 msgstr "שם _לתצוגה"
 
-#: src/gtkdialogs.c:489 src/gtkdialogs.c:631 src/gtkdialogs.c:684
+#: src/gtkdialogs.c:493 src/gtkdialogs.c:635 src/gtkdialogs.c:688
 msgid "_Account"
 msgstr "_חשבון"
 
-#: src/gtkdialogs.c:496
+#: src/gtkdialogs.c:500
 #, fuzzy
 msgid "New Instant Message"
 msgstr "/ידידים/הו_דעה חדשה..."
 
-#: src/gtkdialogs.c:498
+#: src/gtkdialogs.c:502
 msgid "Please enter the screen name of the person you would like to IM."
 msgstr ""
 
-#: src/gtkdialogs.c:638
+#: src/gtkdialogs.c:642
 msgid "Get User Info"
 msgstr "מידע כללי על המשתמש"
 
-#: src/gtkdialogs.c:640
+#: src/gtkdialogs.c:644
 msgid ""
 "Please enter the screen name of the person whose info you would like to view."
 msgstr ""
 
-#: src/gtkdialogs.c:692
+#: src/gtkdialogs.c:696
 #, fuzzy
 msgid "Get User Log"
 msgstr "מידע כללי על המשתמש"
 
-#: src/gtkdialogs.c:694
+#: src/gtkdialogs.c:698
 #, fuzzy
 msgid ""
 "Please enter the screen name of the person whose log you would like to view."
 msgstr "הזן את שם המשתמש ברצונך לחסום"
 
-#: src/gtkdialogs.c:734
+#: src/gtkdialogs.c:738
 msgid "Warn User"
 msgstr "הזהר את המשתמש"
 
-#: src/gtkdialogs.c:755
+#: src/gtkdialogs.c:759
 #, c-format
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Warn %s?</span>\n"
@@ -3274,81 +3279,81 @@ msgid ""
 "harsher rate limiting.\n"
 msgstr ""
 
-#: src/gtkdialogs.c:764
+#: src/gtkdialogs.c:768
 msgid "Warn _anonymously?"
 msgstr "הזהר בעילום שם"
 
-#: src/gtkdialogs.c:771
+#: src/gtkdialogs.c:775
 msgid "<b>Anonymous warnings are less severe.</b>"
 msgstr ""
 
-#: src/gtkdialogs.c:792
+#: src/gtkdialogs.c:796
 #, fuzzy
 msgid "Alias Contact"
 msgstr "שם איש קשר"
 
-#: src/gtkdialogs.c:793
+#: src/gtkdialogs.c:797
 msgid "Enter an alias for this contact."
 msgstr "הזן שם נוסף עבור איש קשר זה."
 
-#: src/gtkdialogs.c:795 src/gtkdialogs.c:817 src/gtkdialogs.c:837
+#: src/gtkdialogs.c:799 src/gtkdialogs.c:821 src/gtkdialogs.c:841
 #: src/gtkrequest.c:251 src/protocols/silc/chat.c:584
 msgid "Alias"
 msgstr "שם נוסף"
 
-#: src/gtkdialogs.c:813
+#: src/gtkdialogs.c:817
 #, fuzzy, c-format
 msgid "Enter an alias for %s."
 msgstr "כינוי חדש עבור %1:"
 
-#: src/gtkdialogs.c:815
+#: src/gtkdialogs.c:819
 msgid "Alias Buddy"
 msgstr "שם נוסף לאיש הקשר"
 
-#: src/gtkdialogs.c:834
+#: src/gtkdialogs.c:838
 msgid "Alias Chat"
 msgstr "שם נוסף לשיחה"
 
-#: src/gtkdialogs.c:835
+#: src/gtkdialogs.c:839
 msgid "Enter an alias for this chat."
 msgstr "הזן שם נוסף לשיחה זו."
 
-#: src/gtkdialogs.c:869
+#: src/gtkdialogs.c:873
 #, c-format
 msgid ""
 "You are about to remove the contact containing %s and %d other buddies from "
 "your buddy list.  Do you want to continue?"
 msgstr ""
 
-#: src/gtkdialogs.c:930
+#: src/gtkdialogs.c:934
 #, c-format
 msgid ""
 "You are about to remove the group %s and all its members from your buddy "
 "list.  Do you want to continue?"
 msgstr ""
 
-#: src/gtkdialogs.c:933 src/gtkdialogs.c:934
+#: src/gtkdialogs.c:937 src/gtkdialogs.c:938
 msgid "Remove Group"
 msgstr "הסר קבוצה"
 
-#: src/gtkdialogs.c:972
+#: src/gtkdialogs.c:976
 #, c-format
 msgid ""
 "You are about to remove %s from your buddy list.  Do you want to continue?"
 msgstr ""
 
-#: src/gtkdialogs.c:975 src/gtkdialogs.c:977
+#: src/gtkdialogs.c:979 src/gtkdialogs.c:981
 msgid "Remove Buddy"
 msgstr "הסר איש קשר"
 
-#: src/gtkdialogs.c:1014
+#: src/gtkdialogs.c:1018
 #, c-format
 msgid ""
 "You are about to remove the chat %s from your buddy list.  Do you want to "
 "continue?"
 msgstr ""
 
-#: src/gtkdialogs.c:1017 src/gtkdialogs.c:1018
+#: src/gtkdialogs.c:1021 src/gtkdialogs.c:1022
 msgid "Remove Chat"
 msgstr "הסר שיחה"
 
@@ -3496,24 +3501,43 @@ msgstr "ה_עתק מיקום הקישור"
 msgid "_Open Link in Browser"
 msgstr "_פתח את הקישור בדפדפן"
 
-#: src/gtkimhtml.c:2914
+#: src/gtkimhtml.c:2915
 msgid ""
-"Unable to guess the image type based on the file extension supplied.  "
+"<span size='larger' weight='bold'>Unrecognized file type</span>\n"
+"\n"
 "Defaulting to PNG."
 msgstr ""
 
-#: src/gtkimhtml.c:2922
+#: src/gtkimhtml.c:2918
+msgid ""
+"Unrecognized file type\n"
+"\n"
+"Defaulting to PNG."
+msgstr ""
+
+#: src/gtkimhtml.c:2931
 #, fuzzy, c-format
-msgid "Error saving image: %s"
+msgid ""
+"<span size='larger' weight='bold'>Error saving image</span>\n"
+"\n"
+"%s"
+msgstr "<span size=\"larger\" weight=\"bold\">התקן ערכת נושא חדשה</span>"
+
+#: src/gtkimhtml.c:2934
+#, fuzzy, c-format
+msgid ""
+"Error saving image\n"
+"\n"
+"%s"
 msgstr ""
 "אירעה שגיאה בשמירת התמונה:\n"
 "%1"
 
-#: src/gtkimhtml.c:2999 src/gtkimhtml.c:3011
+#: src/gtkimhtml.c:3014 src/gtkimhtml.c:3026
 msgid "Save Image"
 msgstr "שמור תמונה"
 
-#: src/gtkimhtml.c:3039
+#: src/gtkimhtml.c:3054
 msgid "_Save Image..."
 msgstr "שמור _תמונה..."
 
@@ -3618,13 +3642,13 @@ msgstr "הכנס תמונה"
 msgid "Insert smiley"
 msgstr "הכנס חיוך"
 
-#: src/gtklog.c:315
+#: src/gtklog.c:316
 #, fuzzy, c-format
 msgid "Conversations with %s"
 msgstr "פתח באמצעות..."
 
 #. Window **********
-#: src/gtklog.c:411 src/gtklog.c:427
+#: src/gtklog.c:412 src/gtklog.c:429
 msgid "System Log"
 msgstr "דו\"ח מערכת"
 
@@ -4089,8 +4113,8 @@ msgstr "ימין"
 msgid "New conversation _placement:"
 msgstr "סגור חלון"
 
-#: src/gtkprefs.c:1127 src/protocols/oscar/oscar.c:743
-#: src/protocols/oscar/oscar.c:5106
+#: src/gtkprefs.c:1127 src/protocols/oscar/oscar.c:744
+#: src/protocols/oscar/oscar.c:5112
 msgid "IP Address"
 msgstr "כתובת IP"
 
@@ -4337,7 +4361,7 @@ msgstr "כאשר נשאלת, ברחת."
 
 #: src/gtkprefs.c:1824 src/protocols/msn/msn.c:1327
 #: src/protocols/msn/state.c:32 src/protocols/novell/novell.c:2806
-#: src/protocols/oscar/oscar.c:4259 src/protocols/yahoo/yahoo.c:2699
+#: src/protocols/oscar/oscar.c:4260 src/protocols/yahoo/yahoo.c:2697
 #: src/protocols/yahoo/yahoo_profile.c:664
 msgid "Idle"
 msgstr "חוסר פעילות"
@@ -4481,64 +4505,64 @@ msgstr "חסום את כל המשתמשים"
 msgid "Block only the users below"
 msgstr "אפשר רק למשתמשים הבאים"
 
-#: src/gtkprivacy.c:393 src/protocols/jabber/jabber.c:1504
+#: src/gtkprivacy.c:397 src/protocols/jabber/jabber.c:1504
 msgid "Privacy"
 msgstr "פרטיות"
 
-#: src/gtkprivacy.c:406
+#: src/gtkprivacy.c:410
 msgid "Changes to privacy settings take effect immediately."
 msgstr ""
 
 #. "Set privacy for:" label
-#: src/gtkprivacy.c:418
+#: src/gtkprivacy.c:422
 #, fuzzy
 msgid "Set privacy for:"
 msgstr "לא נקבע <%s> לערכת הנושא \"%s\""
 
-#: src/gtkprivacy.c:587 src/gtkprivacy.c:603
+#: src/gtkprivacy.c:591 src/gtkprivacy.c:607
 msgid "Permit User"
 msgstr "אפשר למשתמש"
 
-#: src/gtkprivacy.c:588
+#: src/gtkprivacy.c:592
 msgid "Type a user you permit to contact you."
 msgstr ""
 
-#: src/gtkprivacy.c:589
+#: src/gtkprivacy.c:593
 msgid "Please enter the name of the user you wish to be able to contact you."
 msgstr ""
 
-#: src/gtkprivacy.c:592 src/gtkprivacy.c:605
+#: src/gtkprivacy.c:596 src/gtkprivacy.c:609
 msgid "Permit"
 msgstr "הרשה"
 
-#: src/gtkprivacy.c:597
+#: src/gtkprivacy.c:601
 #, c-format
 msgid "Allow %s to contact you?"
 msgstr "לאפשר ל %s ליצור איתך קשר?"
 
-#: src/gtkprivacy.c:599
+#: src/gtkprivacy.c:603
 #, c-format
 msgid "Are you sure you wish to allow %s to contact you?"
 msgstr ""
 
-#: src/gtkprivacy.c:626 src/gtkprivacy.c:639
+#: src/gtkprivacy.c:630 src/gtkprivacy.c:643
 msgid "Block User"
 msgstr "חסום משתמש"
 
-#: src/gtkprivacy.c:627
+#: src/gtkprivacy.c:631
 msgid "Type a user to block."
 msgstr "רשום את שם המחשמש ברצונך לחסום"
 
-#: src/gtkprivacy.c:628
+#: src/gtkprivacy.c:632
 msgid "Please enter the name of the user you wish to block."
 msgstr "הזן את שם המשתמש ברצונך לחסום"
 
-#: src/gtkprivacy.c:635
+#: src/gtkprivacy.c:639
 #, c-format
 msgid "Block %s?"
 msgstr "לחסום את %s?"
 
-#: src/gtkprivacy.c:637
+#: src/gtkprivacy.c:641
 #, fuzzy, c-format
 msgid "Are you sure you want to block %s?"
 msgstr "האם אתה בטוח שברצונך לבטל?"
@@ -4800,8 +4824,8 @@ msgstr "&HTML ושימוש בסגנון ברירת המחדל(משעמם)"
 #: src/protocols/msn/state.c:30 src/protocols/msn/state.c:37
 #: src/protocols/msn/state.c:38 src/protocols/novell/novell.c:2797
 #: src/protocols/novell/novell.c:2916 src/protocols/novell/novell.c:2967
-#: src/protocols/oscar/oscar.c:765 src/protocols/yahoo/yahoo.c:3044
-#: src/protocols/yahoo/yahoo.c:3160
+#: src/protocols/oscar/oscar.c:766 src/protocols/yahoo/yahoo.c:3042
+#: src/protocols/yahoo/yahoo.c:3158
 msgid "Available"
 msgstr "זמין"
 
@@ -4814,11 +4838,11 @@ msgid "Away for friends only"
 msgstr "מרוחק מהמחשב רק לחברים"
 
 #: src/protocols/gg/gg.c:54 src/protocols/jabber/jabber.c:1002
-#: src/protocols/jabber/presence.c:139 src/protocols/oscar/oscar.c:683
-#: src/protocols/oscar/oscar.c:5609 src/protocols/oscar/oscar.c:5687
-#: src/protocols/oscar/oscar.c:5711 src/protocols/oscar/oscar.c:6892
-#: src/protocols/oscar/oscar.c:6897 src/protocols/yahoo/yahoo.c:2697
-#: src/protocols/yahoo/yahoo.c:3064 src/protocols/yahoo/yahoo.c:3172
+#: src/protocols/jabber/presence.c:139 src/protocols/oscar/oscar.c:684
+#: src/protocols/oscar/oscar.c:5615 src/protocols/oscar/oscar.c:5693
+#: src/protocols/oscar/oscar.c:5717 src/protocols/oscar/oscar.c:6904
+#: src/protocols/oscar/oscar.c:6909 src/protocols/yahoo/yahoo.c:2695
+#: src/protocols/yahoo/yahoo.c:3062 src/protocols/yahoo/yahoo.c:3170
 msgid "Invisible"
 msgstr "בלתי נראה"
 
@@ -4861,7 +4885,7 @@ msgstr "האימות נכשל."
 msgid "Unknown Error Code."
 msgstr "קוד שגיאה לא מוכר"
 
-#: src/protocols/gg/gg.c:243 src/protocols/oscar/oscar.c:4060
+#: src/protocols/gg/gg.c:243 src/protocols/oscar/oscar.c:4061
 #, fuzzy, c-format
 msgid "<B>UIN:</B> %s<BR><B>Status:</B> %s<HR>%s"
 msgstr "המיקום הנוכחי של הניגון<BR><HR><B><I>הקובץ הנוכחי</I></B>:"
@@ -4869,8 +4893,8 @@ msgstr "המיקום הנוכחי של הניגון<BR><HR><B><I>הקובץ הנ
 #. res[0] == username
 #. XXX this should use gaim_notify_userinfo, but it is unclear to me what should be passed for 'who'
 #: src/protocols/gg/gg.c:244 src/protocols/gg/gg.c:1013
-#: src/protocols/napster/napster.c:404 src/protocols/oscar/oscar.c:4064
-#: src/protocols/oscar/oscar.c:4288 src/protocols/silc/ops.c:1086
+#: src/protocols/napster/napster.c:404 src/protocols/oscar/oscar.c:4065
+#: src/protocols/oscar/oscar.c:4289 src/protocols/silc/ops.c:1086
 #: src/protocols/silc/ops.c:1148 src/protocols/toc/toc.c:468
 #: src/protocols/zephyr/zephyr.c:720 src/protocols/zephyr/zephyr.c:1130
 msgid "Buddy Information"
@@ -4963,25 +4987,25 @@ msgstr "Comment=מנוע חיפוש"
 msgid "Active"
 msgstr "פעיל"
 
-#: src/protocols/gg/gg.c:955 src/protocols/oscar/oscar.c:5098
+#: src/protocols/gg/gg.c:955 src/protocols/oscar/oscar.c:5104
 msgid "UIN"
 msgstr "מספר זיהוי"
 
 #. First Name
 #: src/protocols/gg/gg.c:959 src/protocols/jabber/jabber.c:624
-#: src/protocols/oscar/oscar.c:5109 src/protocols/silc/ops.c:808
+#: src/protocols/oscar/oscar.c:5115 src/protocols/silc/ops.c:808
 #: src/protocols/trepia/trepia.c:268
 msgid "First Name"
 msgstr "שם פרטי"
 
 #. Last Name
 #: src/protocols/gg/gg.c:964 src/protocols/jabber/jabber.c:629
-#: src/protocols/oscar/oscar.c:5110 src/protocols/trepia/trepia.c:275
+#: src/protocols/oscar/oscar.c:5116 src/protocols/trepia/trepia.c:275
 msgid "Last Name"
 msgstr "שם משפחה"
 
 #: src/protocols/gg/gg.c:968 src/protocols/gg/gg.c:1712
-#: src/protocols/irc/msgs.c:219 src/protocols/oscar/oscar.c:5099
+#: src/protocols/irc/msgs.c:219 src/protocols/oscar/oscar.c:5105
 #: src/protocols/silc/ops.c:1204
 msgid "Nick"
 msgstr "כינוי"
@@ -4997,7 +5021,7 @@ msgstr "מין:"
 
 #. City
 #: src/protocols/gg/gg.c:992 src/protocols/jabber/jabber.c:639
-#: src/protocols/oscar/oscar.c:5153 src/protocols/oscar/oscar.c:5161
+#: src/protocols/oscar/oscar.c:5159 src/protocols/oscar/oscar.c:5167
 #: src/protocols/trepia/trepia.c:332 src/protocols/trepia/trepia.c:411
 msgid "City"
 msgstr "עיר"
@@ -5150,14 +5174,14 @@ msgid "The user %s (%s%s%s%s%s) wants you to authorize them."
 msgstr ""
 
 #: src/protocols/icq/gaim_icq.c:296 src/protocols/jabber/presence.c:300
-#: src/protocols/msn/userlist.c:103 src/protocols/oscar/oscar.c:3799
-#: src/protocols/oscar/oscar.c:6340
+#: src/protocols/msn/userlist.c:103 src/protocols/oscar/oscar.c:3800
+#: src/protocols/oscar/oscar.c:6352
 msgid "Authorize"
 msgstr "אישור"
 
 #: src/protocols/icq/gaim_icq.c:296 src/protocols/jabber/presence.c:301
-#: src/protocols/msn/userlist.c:104 src/protocols/oscar/oscar.c:3801
-#: src/protocols/oscar/oscar.c:6341
+#: src/protocols/msn/userlist.c:104 src/protocols/oscar/oscar.c:3802
+#: src/protocols/oscar/oscar.c:6353
 msgid "Deny"
 msgstr "דחה"
 
@@ -5248,7 +5272,7 @@ msgstr ""
 #. connect to the server
 #: src/protocols/irc/irc.c:237 src/protocols/jabber/jabber.c:798
 #: src/protocols/msn/session.c:364 src/protocols/napster/napster.c:510
-#: src/protocols/novell/novell.c:2152 src/protocols/oscar/oscar.c:1754
+#: src/protocols/novell/novell.c:2152 src/protocols/oscar/oscar.c:1755
 #: src/protocols/trepia/trepia.c:1065 src/protocols/yahoo/yahoo.c:2558
 #: src/protocols/zephyr/zephyr.c:1452
 msgid "Connecting"
@@ -5260,7 +5284,7 @@ msgid "Couldn't create socket"
 msgstr "אין אפשרות ליצור שקע תקף"
 
 #: src/protocols/irc/irc.c:259 src/protocols/jabber/jabber.c:304
-#: src/protocols/oscar/oscar.c:1685 src/protocols/oscar/oscar.c:1750
+#: src/protocols/oscar/oscar.c:1686 src/protocols/oscar/oscar.c:1751
 #, fuzzy
 msgid "Couldn't connect to host"
 msgstr "התחבר למארח זה"
@@ -5270,12 +5294,12 @@ msgid "Read error"
 msgstr "שגיאה בקריאה"
 
 #: src/protocols/irc/irc.c:557 src/protocols/silc/chat.c:1373
-#: src/protocols/yahoo/yahoochat.c:1426
+#: src/protocols/yahoo/yahoochat.c:1444
 msgid "Users"
 msgstr "משתמשים"
 
 #: src/protocols/irc/irc.c:560 src/protocols/silc/chat.c:1376
-#: src/protocols/silc/ops.c:1166 src/protocols/yahoo/yahoochat.c:1435
+#: src/protocols/silc/ops.c:1166 src/protocols/yahoo/yahoochat.c:1453
 msgid "Topic"
 msgstr "נושא"
 
@@ -5366,7 +5390,7 @@ msgid "<b>%s:</b> %s<br>"
 msgstr "ע&יון..."
 
 #: src/protocols/irc/msgs.c:234 src/protocols/silc/ops.c:967
-#: src/protocols/silc/ops.c:1117 src/protocols/yahoo/yahoo_profile.c:1005
+#: src/protocols/silc/ops.c:1117 src/protocols/yahoo/yahoo_profile.c:1012
 msgid "Realname"
 msgstr "שם אמיתי"
 
@@ -5698,7 +5722,7 @@ msgid "CTCP PING reply"
 msgstr "המענה גדול מדיי"
 
 #: src/protocols/irc/parse.c:525 src/protocols/irc/parse.c:529
-#: src/protocols/oscar/oscar.c:1582 src/protocols/toc/toc.c:188
+#: src/protocols/oscar/oscar.c:1583 src/protocols/toc/toc.c:188
 #: src/protocols/toc/toc.c:596 src/protocols/toc/toc.c:612
 #: src/protocols/toc/toc.c:689
 msgid "Disconnected."
@@ -5760,7 +5784,7 @@ msgstr "שם פרטי"
 #: src/protocols/jabber/jabber.c:619 src/protocols/msn/msn.c:1317
 #: src/protocols/silc/buddy.c:1451 src/protocols/silc/ops.c:820
 #: src/protocols/silc/ops.c:963 src/protocols/silc/ops.c:1113
-#: src/protocols/yahoo/yahoo_profile.c:1000
+#: src/protocols/yahoo/yahoo_profile.c:1007
 msgid "Nickname"
 msgstr "כינוי"
 
@@ -5802,7 +5826,7 @@ msgstr "טלפון"
 
 #: src/protocols/jabber/buddy.c:258 src/protocols/jabber/buddy.c:718
 #: src/protocols/jabber/buddy.c:726 src/protocols/silc/silc.c:656
-#: src/protocols/silc/util.c:511 src/protocols/yahoo/yahoo_profile.c:995
+#: src/protocols/silc/util.c:511 src/protocols/yahoo/yahoo_profile.c:1002
 msgid "Email"
 msgstr "דוא\"ל"
 
@@ -5825,7 +5849,7 @@ msgid "Role"
 msgstr "תפקיד"
 
 #: src/protocols/jabber/buddy.c:263 src/protocols/jabber/buddy.c:647
-#: src/protocols/oscar/oscar.c:5134
+#: src/protocols/oscar/oscar.c:5140
 msgid "Birthday"
 msgstr "יום הולדת"
 
@@ -5847,9 +5871,9 @@ msgstr "זיהוי Jabber"
 #: src/protocols/jabber/buddy.c:566 src/protocols/jabber/buddy.c:573
 #: src/protocols/jabber/buddy.c:586 src/protocols/jabber/jabber.c:971
 #: src/protocols/msn/msn.c:489 src/protocols/novell/novell.c:2819
-#: src/protocols/novell/novell.c:2823 src/protocols/oscar/oscar.c:725
-#: src/protocols/oscar/oscar.c:731 src/protocols/oscar/oscar.c:733
-#: src/protocols/yahoo/yahoo.c:2822
+#: src/protocols/novell/novell.c:2823 src/protocols/oscar/oscar.c:726
+#: src/protocols/oscar/oscar.c:732 src/protocols/oscar/oscar.c:734
+#: src/protocols/yahoo/yahoo.c:2820
 msgid "Status"
 msgstr "מצב"
 
@@ -5858,7 +5882,7 @@ msgid "Middle Name"
 msgstr "שם אמצעי"
 
 #: src/protocols/jabber/buddy.c:652 src/protocols/jabber/jabber.c:634
-#: src/protocols/oscar/oscar.c:5152 src/protocols/oscar/oscar.c:5160
+#: src/protocols/oscar/oscar.c:5158 src/protocols/oscar/oscar.c:5166
 #: src/protocols/silc/ops.c:848
 msgid "Address"
 msgstr "כתובת"
@@ -5907,8 +5931,8 @@ msgstr "דרוש אימות(אימות מחדש) מאת"
 msgid "Unsubscribe"
 msgstr "בטל את המנוי אצל"
 
-#: src/protocols/jabber/chat.c:41 src/protocols/oscar/oscar.c:6411
-#: src/protocols/yahoo/yahoochat.c:1029
+#: src/protocols/jabber/chat.c:41 src/protocols/oscar/oscar.c:6423
+#: src/protocols/yahoo/yahoochat.c:1040
 msgid "_Room:"
 msgstr "_חדר:"
 
@@ -6076,8 +6100,8 @@ msgid "E-Mail"
 msgstr "דואר"
 
 #. State
-#: src/protocols/jabber/jabber.c:644 src/protocols/oscar/oscar.c:5154
-#: src/protocols/oscar/oscar.c:5162 src/protocols/trepia/trepia.c:336
+#: src/protocols/jabber/jabber.c:644 src/protocols/oscar/oscar.c:5160
+#: src/protocols/oscar/oscar.c:5168 src/protocols/trepia/trepia.c:336
 #: src/protocols/trepia/trepia.c:414
 msgid "State"
 msgstr "מחוז"
@@ -6119,7 +6143,7 @@ msgstr "מאתחל את הזרם מחדש"
 
 #: src/protocols/jabber/jabber.c:897 src/protocols/jabber/jabber.c:1197
 #: src/protocols/jabber/jabber.c:1238 src/protocols/jabber/jabber.c:1271
-#: src/protocols/oscar/oscar.c:731 src/protocols/oscar/oscar.c:6695
+#: src/protocols/oscar/oscar.c:732 src/protocols/oscar/oscar.c:6707
 msgid "Not Authorized"
 msgstr "לא מורשה"
 
@@ -6165,8 +6189,8 @@ msgstr "העדרות ממושכת"
 
 #: src/protocols/jabber/jabber.c:1000 src/protocols/jabber/jutil.c:41
 #: src/protocols/jabber/presence.c:76 src/protocols/jabber/presence.c:137
-#: src/protocols/oscar/oscar.c:673 src/protocols/oscar/oscar.c:5699
-#: src/protocols/oscar/oscar.c:6888
+#: src/protocols/oscar/oscar.c:674 src/protocols/oscar/oscar.c:5705
+#: src/protocols/oscar/oscar.c:6900
 msgid "Do Not Disturb"
 msgstr "נא לא להפריע"
 
@@ -6730,7 +6754,7 @@ msgstr ""
 "\n"
 "... יותר מידי שגיאות כדי להציג ..."
 
-#: src/protocols/msn/error.c:112 src/protocols/oscar/oscar.c:188
+#: src/protocols/msn/error.c:112 src/protocols/oscar/oscar.c:189
 msgid "Not logged in"
 msgstr "לא מחובר"
 
@@ -6829,7 +6853,7 @@ msgstr ""
 msgid "Server too busy"
 msgstr "המודם תפוס."
 
-#: src/protocols/msn/error.c:198 src/protocols/oscar/oscar.c:2192
+#: src/protocols/msn/error.c:198 src/protocols/oscar/oscar.c:2193
 #: src/protocols/silc/ops.c:1508 src/protocols/toc/toc.c:630
 msgid "Authentication failed"
 msgstr "האימות נכשל"
@@ -6918,7 +6942,7 @@ msgid "Page"
 msgstr "דף"
 
 #: src/protocols/msn/msn.c:489 src/protocols/msn/msn.c:497
-#: src/protocols/msn/msn.c:500 src/protocols/yahoo/yahoo.c:2822
+#: src/protocols/msn/msn.c:500 src/protocols/yahoo/yahoo.c:2820
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -6940,8 +6964,8 @@ msgid "Away From Computer"
 msgstr "מרוחק מהמחשב"
 
 #: src/protocols/msn/msn.c:515 src/protocols/msn/msn.c:803
-#: src/protocols/msn/state.c:33 src/protocols/yahoo/yahoo.c:2679
-#: src/protocols/yahoo/yahoo.c:3046 src/protocols/yahoo/yahoo.c:3162
+#: src/protocols/msn/state.c:33 src/protocols/yahoo/yahoo.c:2677
+#: src/protocols/yahoo/yahoo.c:3044 src/protocols/yahoo/yahoo.c:3160
 msgid "Be Right Back"
 msgstr "חוזר עוד שניה"
 
@@ -6949,20 +6973,20 @@ msgstr "חוזר עוד שניה"
 #: src/protocols/msn/state.c:31 src/protocols/novell/novell.c:2803
 #: src/protocols/novell/novell.c:2918 src/protocols/novell/novell.c:2972
 #: src/protocols/silc/buddy.c:1392 src/protocols/silc/silc.c:48
-#: src/protocols/silc/silc.c:83 src/protocols/yahoo/yahoo.c:2681
-#: src/protocols/yahoo/yahoo.c:3048 src/protocols/yahoo/yahoo.c:3163
+#: src/protocols/silc/silc.c:83 src/protocols/yahoo/yahoo.c:2679
+#: src/protocols/yahoo/yahoo.c:3046 src/protocols/yahoo/yahoo.c:3161
 msgid "Busy"
 msgstr "עסוק"
 
 #: src/protocols/msn/msn.c:517 src/protocols/msn/msn.c:807
-#: src/protocols/msn/state.c:35 src/protocols/yahoo/yahoo.c:2689
-#: src/protocols/yahoo/yahoo.c:3056 src/protocols/yahoo/yahoo.c:3167
+#: src/protocols/msn/state.c:35 src/protocols/yahoo/yahoo.c:2687
+#: src/protocols/yahoo/yahoo.c:3054 src/protocols/yahoo/yahoo.c:3165
 msgid "On The Phone"
 msgstr "משוחח בטלפון"
 
 #: src/protocols/msn/msn.c:518 src/protocols/msn/msn.c:809
-#: src/protocols/msn/state.c:36 src/protocols/yahoo/yahoo.c:2693
-#: src/protocols/yahoo/yahoo.c:3060 src/protocols/yahoo/yahoo.c:3169
+#: src/protocols/msn/state.c:36 src/protocols/yahoo/yahoo.c:2691
+#: src/protocols/yahoo/yahoo.c:3058 src/protocols/yahoo/yahoo.c:3167
 msgid "Out To Lunch"
 msgstr "אוכל"
 
@@ -7028,7 +7052,7 @@ msgstr "ע&יון..."
 
 #. put a link to the actual profile URL
 #: src/protocols/msn/msn.c:1317 src/protocols/msn/msn.c:1675
-#: src/protocols/yahoo/yahoo_profile.c:1168 src/util.c:796
+#: src/protocols/yahoo/yahoo_profile.c:1174 src/util.c:796
 #, fuzzy, c-format
 msgid "<b>%s:</b> "
 msgstr "מצב:"
@@ -7039,35 +7063,35 @@ msgid "MSN Profile"
 msgstr "\t-W profile[=ץבוק-םש]\t--profile[=ץבוק-םש]\n"
 
 #: src/protocols/msn/msn.c:1410 src/protocols/msn/msn.c:1662
-#: src/protocols/yahoo/yahoo_profile.c:761
+#: src/protocols/yahoo/yahoo_profile.c:763
 #, fuzzy
 msgid "Error retrieving profile"
 msgstr "ההוזמ-יתלב הלקת"
 
 #. Age
-#: src/protocols/msn/msn.c:1481 src/protocols/oscar/oscar.c:5139
+#: src/protocols/msn/msn.c:1481 src/protocols/oscar/oscar.c:5145
 #: src/protocols/trepia/trepia.c:286 src/protocols/trepia/trepia.c:405
-#: src/protocols/yahoo/yahoo_profile.c:1015
+#: src/protocols/yahoo/yahoo_profile.c:1022
 msgid "Age"
 msgstr "גיל"
 
 #. Gender
-#: src/protocols/msn/msn.c:1488 src/protocols/oscar/oscar.c:5125
+#: src/protocols/msn/msn.c:1488 src/protocols/oscar/oscar.c:5131
 #: src/protocols/trepia/trepia.c:280 src/protocols/trepia/trepia.c:407
-#: src/protocols/yahoo/yahoo_profile.c:1025
+#: src/protocols/yahoo/yahoo_profile.c:1032
 msgid "Gender"
 msgstr "מין"
 
-#: src/protocols/msn/msn.c:1497 src/protocols/yahoo/yahoo_profile.c:1020
+#: src/protocols/msn/msn.c:1497 src/protocols/yahoo/yahoo_profile.c:1027
 msgid "Marital Status"
 msgstr "מצב משפחתי"
 
 #: src/protocols/msn/msn.c:1504 src/protocols/novell/novell.c:1445
-#: src/protocols/yahoo/yahoo_profile.c:1010
+#: src/protocols/yahoo/yahoo_profile.c:1017
 msgid "Location"
 msgstr "מיקום"
 
-#: src/protocols/msn/msn.c:1512 src/protocols/yahoo/yahoo_profile.c:1030
+#: src/protocols/msn/msn.c:1512 src/protocols/yahoo/yahoo_profile.c:1037
 msgid "Occupation"
 msgstr "עיסוק"
 
@@ -7089,11 +7113,11 @@ msgid "Hobbies and Interests"
 msgstr "%s-ו %s :תוהז תויקית-תת\n"
 
 #: src/protocols/msn/msn.c:1617 src/protocols/msn/msn.c:1623
-#: src/protocols/yahoo/yahoo_profile.c:1072
+#: src/protocols/yahoo/yahoo_profile.c:1079
 msgid "Favorite Quote"
 msgstr "ציטוט"
 
-#: src/protocols/msn/msn.c:1631 src/protocols/yahoo/yahoo_profile.c:1123
+#: src/protocols/msn/msn.c:1631
 msgid "Last Updated"
 msgstr "עודכן לאחרונה"
 
@@ -7120,7 +7144,7 @@ msgid ""
 "likely does not exist."
 msgstr ""
 
-#: src/protocols/msn/msn.c:1675 src/protocols/yahoo/yahoo_profile.c:1168
+#: src/protocols/msn/msn.c:1675 src/protocols/yahoo/yahoo_profile.c:1174
 #, fuzzy
 msgid "Profile URL"
 msgstr "פרופיל:"
@@ -7158,7 +7182,7 @@ msgid "Use HTTP Method"
 msgstr "השתמש בשיטת HTTP"
 
 #: src/protocols/msn/nexus.c:103 src/protocols/msn/servconn.c:127
-#: src/protocols/yahoo/yahoochat.c:1383
+#: src/protocols/yahoo/yahoochat.c:1394
 msgid "Unable to connect"
 msgstr "לא ניתן להתחבר"
 
@@ -7243,7 +7267,7 @@ msgid "Reading error"
 msgstr "שגיאה בקריאה"
 
 #: src/protocols/msn/servconn.c:133 src/protocols/msn/session.c:341
-#: src/protocols/oscar/oscar.c:4122
+#: src/protocols/oscar/oscar.c:4123
 msgid "Unknown error"
 msgstr "שגיאה לא מוכרת"
 
@@ -7666,8 +7690,8 @@ msgstr "דפדפן אינטרנט"
 msgid "Mailstop"
 msgstr "דואר"
 
-#: src/protocols/novell/novell.c:1455 src/protocols/oscar/oscar.c:5112
-#: src/protocols/oscar/oscar.c:5119
+#: src/protocols/novell/novell.c:1455 src/protocols/oscar/oscar.c:5118
+#: src/protocols/oscar/oscar.c:5125
 msgid "Email Address"
 msgstr "כתובת דוא\"ל"
 
@@ -7770,8 +7794,8 @@ msgstr ""
 msgid "This conference has been closed. No more messages can be sent."
 msgstr ""
 
-#: src/protocols/novell/novell.c:2809 src/protocols/oscar/oscar.c:733
-#: src/protocols/oscar/oscar.c:6697 src/protocols/yahoo/yahoo.c:2701
+#: src/protocols/novell/novell.c:2809 src/protocols/oscar/oscar.c:734
+#: src/protocols/oscar/oscar.c:6709 src/protocols/yahoo/yahoo.c:2699
 msgid "Offline"
 msgstr "מנותק"
 
@@ -7809,308 +7833,308 @@ msgstr "כתובת"
 msgid "Server port"
 msgstr "שרת"
 
-#: src/protocols/oscar/oscar.c:184
+#: src/protocols/oscar/oscar.c:185
 msgid "Invalid error"
 msgstr "מספר שגיאה לא תקף."
 
-#: src/protocols/oscar/oscar.c:185
+#: src/protocols/oscar/oscar.c:186
 #, fuzzy
 msgid "Invalid SNAC"
 msgstr "SNAC לא תקף"
 
-#: src/protocols/oscar/oscar.c:186
+#: src/protocols/oscar/oscar.c:187
 msgid "Rate to host"
 msgstr "דירוג למארח"
 
-#: src/protocols/oscar/oscar.c:187
+#: src/protocols/oscar/oscar.c:188
 msgid "Rate to client"
 msgstr "דירוג ללקוח"
 
-#: src/protocols/oscar/oscar.c:189
+#: src/protocols/oscar/oscar.c:190
 msgid "Service unavailable"
 msgstr "השירות אינו זמין"
 
-#: src/protocols/oscar/oscar.c:190
+#: src/protocols/oscar/oscar.c:191
 msgid "Service not defined"
 msgstr "שירות אינו מוגדר"
 
-#: src/protocols/oscar/oscar.c:191
+#: src/protocols/oscar/oscar.c:192
 #, fuzzy
 msgid "Obsolete SNAC"
 msgstr "SNAC לא תקף"
 
-#: src/protocols/oscar/oscar.c:192
+#: src/protocols/oscar/oscar.c:193
 #, fuzzy
 msgid "Not supported by host"
 msgstr "לא נתמך על-ידי השרת"
 
-#: src/protocols/oscar/oscar.c:193
+#: src/protocols/oscar/oscar.c:194
 #, fuzzy
 msgid "Not supported by client"
 msgstr "לא נתמך על-ידי השרת"
 
-#: src/protocols/oscar/oscar.c:194
+#: src/protocols/oscar/oscar.c:195
 msgid "Refused by client"
 msgstr "החיבור נדחה על ידי הלקוח."
 
-#: src/protocols/oscar/oscar.c:195
+#: src/protocols/oscar/oscar.c:196
 msgid "Reply too big"
 msgstr "המענה גדול מדיי"
 
-#: src/protocols/oscar/oscar.c:196
+#: src/protocols/oscar/oscar.c:197
 #, fuzzy
 msgid "Responses lost"
 msgstr "Resource lost"
 
-#: src/protocols/oscar/oscar.c:197
+#: src/protocols/oscar/oscar.c:198
 msgid "Request denied"
 msgstr "הבקשה נדחית."
 
-#: src/protocols/oscar/oscar.c:198
+#: src/protocols/oscar/oscar.c:199
 msgid "Busted SNAC payload"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:199
+#: src/protocols/oscar/oscar.c:200
 msgid "Insufficient rights"
 msgstr "אין די הרשאות"
 
-#: src/protocols/oscar/oscar.c:200
+#: src/protocols/oscar/oscar.c:201
 #, fuzzy
 msgid "In local permit/deny"
 msgstr "`%s'-ב היוגש תימוקמ האיצי"
 
-#: src/protocols/oscar/oscar.c:201
+#: src/protocols/oscar/oscar.c:202
 msgid "Too evil (sender)"
 msgstr "השולח מרושע מדי"
 
-#: src/protocols/oscar/oscar.c:202
+#: src/protocols/oscar/oscar.c:203
 msgid "Too evil (receiver)"
 msgstr "המקבל מרושע מדי"
 
-#: src/protocols/oscar/oscar.c:203
+#: src/protocols/oscar/oscar.c:204
 msgid "User temporarily unavailable"
 msgstr "המשתמש אינו זמין באופן זמני"
 
-#: src/protocols/oscar/oscar.c:204
+#: src/protocols/oscar/oscar.c:205
 msgid "No match"
 msgstr "אין התאמה"
 
-#: src/protocols/oscar/oscar.c:205
+#: src/protocols/oscar/oscar.c:206
 msgid "List overflow"
 msgstr "גלישת מחסנית"
 
-#: src/protocols/oscar/oscar.c:206
+#: src/protocols/oscar/oscar.c:207
 #, fuzzy
 msgid "Request ambiguous"
 msgstr "בקשת מידע"
 
-#: src/protocols/oscar/oscar.c:207
+#: src/protocols/oscar/oscar.c:208
 msgid "Queue full"
 msgstr "הרשימה מלאה"
 
-#: src/protocols/oscar/oscar.c:208
+#: src/protocols/oscar/oscar.c:209
 #, fuzzy
 msgid "Not while on AOL"
 msgstr "והשלכ שקמל הרושק הניא `%s' הדוקפה"
 
-#: src/protocols/oscar/oscar.c:403 src/protocols/oscar/oscar.c:486
+#: src/protocols/oscar/oscar.c:404 src/protocols/oscar/oscar.c:487
 msgid ""
 "(There was an error receiving this message.  The buddy you are speaking to "
 "most likely has a buggy client.)"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:588
+#: src/protocols/oscar/oscar.c:589
 msgid "Voice"
 msgstr "קול"
 
-#: src/protocols/oscar/oscar.c:591
+#: src/protocols/oscar/oscar.c:592
 #, fuzzy
 msgid "AIM Direct IM"
 msgstr "צרף כתובת מס&רים מידיים"
 
-#: src/protocols/oscar/oscar.c:594 src/protocols/silc/silc.c:654
+#: src/protocols/oscar/oscar.c:595 src/protocols/silc/silc.c:654
 #: src/protocols/silc/util.c:509
 msgid "Chat"
 msgstr "שיחה"
 
-#: src/protocols/oscar/oscar.c:597 src/protocols/oscar/oscar.c:6999
+#: src/protocols/oscar/oscar.c:598 src/protocols/oscar/oscar.c:7011
 msgid "Get File"
 msgstr "קבל קובץ"
 
-#: src/protocols/oscar/oscar.c:604
+#: src/protocols/oscar/oscar.c:605
 msgid "Games"
 msgstr "משחקים"
 
-#: src/protocols/oscar/oscar.c:607
+#: src/protocols/oscar/oscar.c:608
 msgid "Add-Ins"
 msgstr "תוספות"
 
-#: src/protocols/oscar/oscar.c:610
+#: src/protocols/oscar/oscar.c:611
 msgid "Send Buddy List"
 msgstr "שלח רשימת אנשי הקשר"
 
-#: src/protocols/oscar/oscar.c:613
+#: src/protocols/oscar/oscar.c:614
 #, fuzzy
 msgid "ICQ Direct Connect"
 msgstr "GenericName=תואם Direct Connect"
 
-#: src/protocols/oscar/oscar.c:616
+#: src/protocols/oscar/oscar.c:617
 #, fuzzy
 msgid "AP User"
 msgstr "זיהוי משתמש"
 
-#: src/protocols/oscar/oscar.c:619
+#: src/protocols/oscar/oscar.c:620
 #, fuzzy
 msgid "ICQ RTF"
 msgstr "Name=ICQ"
 
-#: src/protocols/oscar/oscar.c:622
+#: src/protocols/oscar/oscar.c:623
 msgid "Nihilist"
 msgstr "כופר במוסכמות"
 
-#: src/protocols/oscar/oscar.c:625
+#: src/protocols/oscar/oscar.c:626
 #, fuzzy
 msgid "ICQ Server Relay"
 msgstr "שגיאה פנימית בשרת"
 
-#: src/protocols/oscar/oscar.c:628
+#: src/protocols/oscar/oscar.c:629
 #, fuzzy
 msgid "Old ICQ UTF8"
 msgstr "Comment=איש-קשר ICQ"
 
-#: src/protocols/oscar/oscar.c:631
+#: src/protocols/oscar/oscar.c:632
 #, fuzzy
 msgid "Trillian Encryption"
 msgstr "מפתח הצפנה"
 
-#: src/protocols/oscar/oscar.c:634
+#: src/protocols/oscar/oscar.c:635
 #, fuzzy
 msgid "ICQ UTF8"
 msgstr "Name=ICQ"
 
-#: src/protocols/oscar/oscar.c:637
+#: src/protocols/oscar/oscar.c:638
 #, fuzzy
 msgid "Hiptop"
 msgstr "היסטוריה"
 
-#: src/protocols/oscar/oscar.c:640
+#: src/protocols/oscar/oscar.c:641
 #, fuzzy
 msgid "Security Enabled"
 msgstr "העריכה זמינה"
 
-#: src/protocols/oscar/oscar.c:643
+#: src/protocols/oscar/oscar.c:644
 #, fuzzy
 msgid "Video Chat"
 msgstr "שיחת ידידים"
 
-#: src/protocols/oscar/oscar.c:647
+#: src/protocols/oscar/oscar.c:648
 #, fuzzy
 msgid "iChat AV"
 msgstr "שיחה"
 
-#: src/protocols/oscar/oscar.c:650
+#: src/protocols/oscar/oscar.c:651
 #, fuzzy
 msgid "Live Video"
 msgstr "וידאו AVI"
 
-#: src/protocols/oscar/oscar.c:653
+#: src/protocols/oscar/oscar.c:654
 msgid "Camera"
 msgstr "מצלמה"
 
-#: src/protocols/oscar/oscar.c:671 src/protocols/oscar/oscar.c:5708
-#: src/protocols/oscar/oscar.c:6891
+#: src/protocols/oscar/oscar.c:672 src/protocols/oscar/oscar.c:5714
+#: src/protocols/oscar/oscar.c:6903
 msgid "Free For Chat"
 msgstr "פנוי לשיחה"
 
-#: src/protocols/oscar/oscar.c:675 src/protocols/oscar/oscar.c:5702
-#: src/protocols/oscar/oscar.c:6889
+#: src/protocols/oscar/oscar.c:676 src/protocols/oscar/oscar.c:5708
+#: src/protocols/oscar/oscar.c:6901
 msgid "Not Available"
 msgstr "לא זמין"
 
-#: src/protocols/oscar/oscar.c:677 src/protocols/oscar/oscar.c:5705
-#: src/protocols/oscar/oscar.c:6890
+#: src/protocols/oscar/oscar.c:678 src/protocols/oscar/oscar.c:5711
+#: src/protocols/oscar/oscar.c:6902
 msgid "Occupied"
 msgstr "עסוק"
 
-#: src/protocols/oscar/oscar.c:681
+#: src/protocols/oscar/oscar.c:682
 #, fuzzy
 msgid "Web Aware"
 msgstr "&מודע רשת"
 
-#: src/protocols/oscar/oscar.c:749
+#: src/protocols/oscar/oscar.c:750
 msgid "Capabilities"
 msgstr "יכולות"
 
-#: src/protocols/oscar/oscar.c:758
+#: src/protocols/oscar/oscar.c:759
 #, fuzzy
 msgid "Buddy Comment"
 msgstr "הערת '#if 0'"
 
-#: src/protocols/oscar/oscar.c:893
+#: src/protocols/oscar/oscar.c:894
 #, c-format
 msgid "Direct IM with %s closed"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:895
+#: src/protocols/oscar/oscar.c:896
 #, fuzzy, c-format
 msgid "Direct IM with %s failed"
 msgstr "%d םע לשכנ sys$search\n"
 
-#: src/protocols/oscar/oscar.c:902
+#: src/protocols/oscar/oscar.c:903
 #, fuzzy
 msgid "Direct Connect failed"
 msgstr "GenericName=תואם Direct Connect"
 
-#: src/protocols/oscar/oscar.c:979 src/protocols/oscar/oscar.c:1110
+#: src/protocols/oscar/oscar.c:980 src/protocols/oscar/oscar.c:1111
 #, fuzzy, c-format
 msgid "Direct IM with %s established"
 msgstr "בוצע חיבור ישיר ל %1 "
 
-#: src/protocols/oscar/oscar.c:1060
+#: src/protocols/oscar/oscar.c:1061
 #, c-format
 msgid "Attempting to connect to %s at %s:%hu for Direct IM."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:1480
+#: src/protocols/oscar/oscar.c:1481
 #, c-format
 msgid "Asking %s to connect to us at %s:%hu for Direct IM."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:1485
+#: src/protocols/oscar/oscar.c:1486
 #, fuzzy
 msgid "Unable to open Direct IM"
 msgstr "אין אפשרות לפתוח קובץ זמני."
 
-#: src/protocols/oscar/oscar.c:1520
+#: src/protocols/oscar/oscar.c:1521
 #, c-format
 msgid "You have selected to open a Direct IM connection with %s."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:1524
+#: src/protocols/oscar/oscar.c:1525
 msgid ""
 "Because this reveals your IP address, it may be considered a privacy risk.  "
 "Do you wish to continue?"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:1528 src/protocols/oscar/oscar.c:3556
+#: src/protocols/oscar/oscar.c:1529 src/protocols/oscar/oscar.c:3557
 msgid "Connect"
 msgstr "התחבר"
 
-#: src/protocols/oscar/oscar.c:1595 src/protocols/toc/toc.c:874
+#: src/protocols/oscar/oscar.c:1596 src/protocols/toc/toc.c:874
 #, c-format
 msgid "You have been disconnected from chat room %s."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:1614
+#: src/protocols/oscar/oscar.c:1615
 msgid "Chat is currently unavailable"
 msgstr "השיחה אינה זמינה כעט."
 
-#: src/protocols/oscar/oscar.c:1695
+#: src/protocols/oscar/oscar.c:1696
 #, fuzzy
 msgid "Screen name sent"
 msgstr "שם משתמש ב &AIM:"
 
-#: src/protocols/oscar/oscar.c:1709
+#: src/protocols/oscar/oscar.c:1710
 #, c-format
 msgid ""
 "Unable to login: Could not sign on as %s because the screen name is "
@@ -8118,50 +8142,50 @@ msgid ""
 "letters, numbers and spaces, or contain only numbers."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:1737
+#: src/protocols/oscar/oscar.c:1738
 msgid "Unable to login to AIM"
 msgstr "לאניתן להתחבר ל AIM"
 
-#: src/protocols/oscar/oscar.c:1839 src/protocols/oscar/oscar.c:2285
+#: src/protocols/oscar/oscar.c:1840 src/protocols/oscar/oscar.c:2286
 msgid "Could Not Connect"
 msgstr "לא ניתן להתחבר"
 
-#: src/protocols/oscar/oscar.c:1847
+#: src/protocols/oscar/oscar.c:1848
 #, fuzzy
 msgid "Connection established, cookie sent"
 msgstr "בוצע חיבור ישיר ל %1 "
 
-#: src/protocols/oscar/oscar.c:1967 src/protocols/yahoo/yahoo_filexfer.c:177
+#: src/protocols/oscar/oscar.c:1968 src/protocols/yahoo/yahoo_filexfer.c:177
 #: src/protocols/yahoo/yahoo_filexfer.c:186
 #: src/protocols/yahoo/yahoo_filexfer.c:195
 #, fuzzy
 msgid "Unable to establish file descriptor."
 msgstr "מתאר הקובץ לכתיבת IOR"
 
-#: src/protocols/oscar/oscar.c:1972
+#: src/protocols/oscar/oscar.c:1973
 #, fuzzy
 msgid "Unable to create new connection."
 msgstr "אין אפשרות ליצור מסמך חדש."
 
-#: src/protocols/oscar/oscar.c:2044
+#: src/protocols/oscar/oscar.c:2045
 #, fuzzy
 msgid "Unable to establish listener socket."
 msgstr ".(SSL) חטבואמ רשק ץורע םיקהל ןתינ אל\n"
 
-#: src/protocols/oscar/oscar.c:2169 src/protocols/toc/toc.c:541
+#: src/protocols/oscar/oscar.c:2170 src/protocols/toc/toc.c:541
 msgid "Incorrect nickname or password."
 msgstr "שם משתמש או סיסמה שגויים"
 
-#: src/protocols/oscar/oscar.c:2174
+#: src/protocols/oscar/oscar.c:2175
 msgid "Your account is currently suspended."
 msgstr ""
 
 #. service temporarily unavailable
-#: src/protocols/oscar/oscar.c:2178
+#: src/protocols/oscar/oscar.c:2179
 msgid "The AOL Instant Messenger service is temporarily unavailable."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:2183
+#: src/protocols/oscar/oscar.c:2184
 msgid ""
 "You have been connecting and disconnecting too frequently. Wait ten minutes "
 "and try again. If you continue to try, you will need to wait even longer."
@@ -8169,117 +8193,117 @@ msgstr ""
 "התחברת והתנתקת התדירות גבוהה מדיי. המתן 10 דקות ונסה שנית. אם תמשיך לנסות, "
 "תיאלץ להמתין אפילו יותר."
 
-#: src/protocols/oscar/oscar.c:2188
+#: src/protocols/oscar/oscar.c:2189
 #, c-format
 msgid "The client version you are using is too old. Please upgrade at %s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:2220
+#: src/protocols/oscar/oscar.c:2221
 msgid "Internal Error"
 msgstr "שגיאה פנימית"
 
-#: src/protocols/oscar/oscar.c:2292
+#: src/protocols/oscar/oscar.c:2293
 #, fuzzy
 msgid "Received authorization"
 msgstr "ההרשאה נדחית."
 
-#: src/protocols/oscar/oscar.c:2316
+#: src/protocols/oscar/oscar.c:2317
 msgid "The SecurID key entered is invalid."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:2330
+#: src/protocols/oscar/oscar.c:2331
 msgid "Enter SecurID"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:2331
+#: src/protocols/oscar/oscar.c:2332
 msgid "Enter the 6 digit number from the digital display."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:2371 src/protocols/oscar/oscar.c:2401
-#: src/protocols/oscar/oscar.c:2490
+#: src/protocols/oscar/oscar.c:2372 src/protocols/oscar/oscar.c:2402
+#: src/protocols/oscar/oscar.c:2491
 #, c-format
 msgid ""
 "You may be disconnected shortly.  You may want to use TOC until this is "
 "fixed.  Check %s for updates."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:2374 src/protocols/oscar/oscar.c:2404
+#: src/protocols/oscar/oscar.c:2375 src/protocols/oscar/oscar.c:2405
 #, fuzzy
 msgid "Gaim was unable to get a valid AIM login hash."
 msgstr "גיים לא מצליח לטעון את התוסף שלך."
 
-#: src/protocols/oscar/oscar.c:2493
+#: src/protocols/oscar/oscar.c:2494
 #, fuzzy
 msgid "Gaim was unable to get a valid login hash."
 msgstr "גיים לא מצליח לטעון את התוסף שלך."
 
-#: src/protocols/oscar/oscar.c:2525
+#: src/protocols/oscar/oscar.c:2526
 msgid "Password sent"
 msgstr "הסיסמא נשלחה"
 
-#: src/protocols/oscar/oscar.c:3548
+#: src/protocols/oscar/oscar.c:3549
 #, c-format
 msgid "%s has just asked to directly connect to %s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:3551
+#: src/protocols/oscar/oscar.c:3552
 msgid ""
 "This requires a direct connection between the two computers and is necessary "
 "for IM Images.  Because your IP address will be revealed, this may be "
 "considered a privacy risk."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:3589
+#: src/protocols/oscar/oscar.c:3590
 msgid "Please authorize me so I can add you to my buddy list."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:3597
+#: src/protocols/oscar/oscar.c:3598
 #, fuzzy
 msgid "Authorization Request Message:"
 msgstr "דרוש אימות(אימות מחדש) מאת"
 
-#: src/protocols/oscar/oscar.c:3598
+#: src/protocols/oscar/oscar.c:3599
 #, fuzzy
 msgid "Please authorize me!"
 msgstr "&שם איש-קשר:"
 
-#: src/protocols/oscar/oscar.c:3628
+#: src/protocols/oscar/oscar.c:3629
 #, c-format
 msgid ""
 "The user %s requires authorization before being added to a buddy list.  Do "
 "you want to send an authorization request?"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:3633 src/protocols/oscar/oscar.c:3635
+#: src/protocols/oscar/oscar.c:3634 src/protocols/oscar/oscar.c:3636
 #, fuzzy
 msgid "Request Authorization"
 msgstr "דרוש אימות"
 
-#: src/protocols/oscar/oscar.c:3683 src/protocols/oscar/oscar.c:3685
-#: src/protocols/oscar/oscar.c:3692 src/protocols/oscar/oscar.c:3789
-#: src/protocols/oscar/oscar.c:3809 src/protocols/oscar/oscar.c:6332
-#: src/protocols/oscar/oscar.c:6378
+#: src/protocols/oscar/oscar.c:3684 src/protocols/oscar/oscar.c:3686
+#: src/protocols/oscar/oscar.c:3693 src/protocols/oscar/oscar.c:3790
+#: src/protocols/oscar/oscar.c:3810 src/protocols/oscar/oscar.c:6344
+#: src/protocols/oscar/oscar.c:6390
 msgid "No reason given."
 msgstr "לא ניתנה סיבה."
 
-#: src/protocols/oscar/oscar.c:3691
+#: src/protocols/oscar/oscar.c:3692
 #, fuzzy
 msgid "Authorization Denied Message:"
 msgstr "גודל מקסימלי של הודעה"
 
-#: src/protocols/oscar/oscar.c:3789
+#: src/protocols/oscar/oscar.c:3790
 #, c-format
 msgid ""
 "The user %u wants to add you to their buddy list for the following reason:\n"
 "%s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:3797 src/protocols/oscar/oscar.c:6338
+#: src/protocols/oscar/oscar.c:3798 src/protocols/oscar/oscar.c:6350
 #, fuzzy
 msgid "Authorization Request"
 msgstr "דרוש &אימות עבור אנשי-קשר שרוצים להוסיף אותך לרשימתם"
 
-#: src/protocols/oscar/oscar.c:3809
+#: src/protocols/oscar/oscar.c:3810
 #, c-format
 msgid ""
 "The user %u has denied your request to add them to your buddy list for the "
@@ -8287,18 +8311,18 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:3810
+#: src/protocols/oscar/oscar.c:3811
 #, fuzzy
 msgid "ICQ authorization denied."
 msgstr "הגישה אל %1 נדחית"
 
 #. Someone has granted you authorization
-#: src/protocols/oscar/oscar.c:3817
+#: src/protocols/oscar/oscar.c:3818
 #, c-format
 msgid "The user %u has granted your request to add them to your buddy list."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:3825
+#: src/protocols/oscar/oscar.c:3826
 #, c-format
 msgid ""
 "You have received a special message\n"
@@ -8307,7 +8331,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:3833
+#: src/protocols/oscar/oscar.c:3834
 #, c-format
 msgid ""
 "You have received an ICQ page\n"
@@ -8316,7 +8340,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:3841
+#: src/protocols/oscar/oscar.c:3842
 #, c-format
 msgid ""
 "You have received an ICQ email from %s [%s]\n"
@@ -8325,35 +8349,35 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:3862
+#: src/protocols/oscar/oscar.c:3863
 #, c-format
 msgid "ICQ user %u has sent you a buddy: %s (%s)"
 msgstr "משתמש %u הפנה אותך לאיש קשר %s - פרטים: %s"
 
-#: src/protocols/oscar/oscar.c:3868
+#: src/protocols/oscar/oscar.c:3869
 #, fuzzy
 msgid "Do you want to add this buddy to your buddy list?"
 msgstr "האם כתגובה להוסיף את %1 לרשימת הקשר שלך?"
 
-#: src/protocols/oscar/oscar.c:3872
+#: src/protocols/oscar/oscar.c:3873
 msgid "Decline"
 msgstr "דחה"
 
-#: src/protocols/oscar/oscar.c:3956
+#: src/protocols/oscar/oscar.c:3957
 #, c-format
 msgid "You missed %hu message from %s because it was invalid."
 msgid_plural "You missed %hu messages from %s because they were invalid."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/protocols/oscar/oscar.c:3965
+#: src/protocols/oscar/oscar.c:3966
 #, c-format
 msgid "You missed %hu message from %s because it was too large."
 msgid_plural "You missed %hu messages from %s because they were too large."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/protocols/oscar/oscar.c:3974
+#: src/protocols/oscar/oscar.c:3975
 #, c-format
 msgid ""
 "You missed %hu message from %s because the rate limit has been exceeded."
@@ -8362,293 +8386,293 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/protocols/oscar/oscar.c:3983
+#: src/protocols/oscar/oscar.c:3984
 #, c-format
 msgid "You missed %hu message from %s because he/she was too evil."
 msgid_plural "You missed %hu messages from %s because he/she was too evil."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/protocols/oscar/oscar.c:3992
+#: src/protocols/oscar/oscar.c:3993
 #, c-format
 msgid "You missed %hu message from %s because you are too evil."
 msgid_plural "You missed %hu messages from %s because you are too evil."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/protocols/oscar/oscar.c:4001
+#: src/protocols/oscar/oscar.c:4002
 #, c-format
 msgid "You missed %hu message from %s for an unknown reason."
 msgid_plural "You missed %hu messages from %s for an unknown reason."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/protocols/oscar/oscar.c:4055 src/protocols/oscar/oscar.c:4287
+#: src/protocols/oscar/oscar.c:4056 src/protocols/oscar/oscar.c:4288
 #, fuzzy, c-format
 msgid "Info for %s"
 msgstr "פרטי ICQ עבור %s"
 
-#: src/protocols/oscar/oscar.c:4121
+#: src/protocols/oscar/oscar.c:4122
 #, fuzzy, c-format
 msgid "SNAC threw error: %s\n"
 msgstr "ההוזמ-יתלב הלקת"
 
 #. Data is assumed to be the destination sn
-#: src/protocols/oscar/oscar.c:4157
+#: src/protocols/oscar/oscar.c:4158
 #, fuzzy, c-format
 msgid "Unable to send message: %s"
 msgstr "לא ניתן לשלוח הודעה"
 
-#: src/protocols/oscar/oscar.c:4157 src/protocols/oscar/oscar.c:4162
-#: src/protocols/oscar/oscar.c:4220 src/protocols/oscar/oscar.c:4224
+#: src/protocols/oscar/oscar.c:4158 src/protocols/oscar/oscar.c:4163
+#: src/protocols/oscar/oscar.c:4221 src/protocols/oscar/oscar.c:4225
 #, fuzzy
 msgid "Unknown reason."
 msgstr "שגיאה לא ידועה"
 
-#: src/protocols/oscar/oscar.c:4220
+#: src/protocols/oscar/oscar.c:4221
 #, fuzzy, c-format
 msgid "User information not available: %s"
 msgstr "קו להצגת מידע"
 
-#: src/protocols/oscar/oscar.c:4223
+#: src/protocols/oscar/oscar.c:4224
 #, fuzzy, c-format
 msgid "User information for %s unavailable:"
 msgstr "קו להצגת מידע"
 
-#: src/protocols/oscar/oscar.c:4245
+#: src/protocols/oscar/oscar.c:4246
 #, fuzzy
 msgid "Warning Level"
 msgstr "<b>רמות צבעי הסוללה (%)</b>"
 
-#: src/protocols/oscar/oscar.c:4249
+#: src/protocols/oscar/oscar.c:4250
 #, fuzzy
 msgid "Online Since"
 msgstr "מחובר מאז:"
 
-#: src/protocols/oscar/oscar.c:4254 src/protocols/yahoo/yahoo_profile.c:1118
+#: src/protocols/oscar/oscar.c:4255 src/protocols/yahoo/yahoo_profile.c:1125
 #, fuzzy
 msgid "Member Since"
 msgstr "מחובר מאז:"
 
-#: src/protocols/oscar/oscar.c:4338
+#: src/protocols/oscar/oscar.c:4339
 msgid "Your AIM connection may be lost."
 msgstr ""
 
 #. The conversion failed!
-#: src/protocols/oscar/oscar.c:4524
+#: src/protocols/oscar/oscar.c:4525
 msgid ""
 "[Unable to display a message from this user because it contained invalid "
 "characters.]"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:4744
+#: src/protocols/oscar/oscar.c:4750
 #, fuzzy
 msgid "Rate limiting error."
 msgstr "ההוזמ-יתלב הלקת"
 
-#: src/protocols/oscar/oscar.c:4745
+#: src/protocols/oscar/oscar.c:4751
 msgid ""
 "The last action you attempted could not be performed because you are over "
 "the rate limit. Please wait 10 seconds and try again."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:4808
+#: src/protocols/oscar/oscar.c:4814
 msgid ""
 "You have been disconnected because you have signed on with this screen name "
 "at another location."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:4810
+#: src/protocols/oscar/oscar.c:4816
 msgid "You have been signed off for an unknown reason."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:4841
+#: src/protocols/oscar/oscar.c:4847
 #, fuzzy
 msgid "Finalizing connection"
 msgstr "החיבור נסגר."
 
-#: src/protocols/oscar/oscar.c:5124 src/protocols/silc/util.c:541
+#: src/protocols/oscar/oscar.c:5130 src/protocols/silc/util.c:541
 msgid "Mobile Phone"
 msgstr "פלאפון"
 
-#: src/protocols/oscar/oscar.c:5125
+#: src/protocols/oscar/oscar.c:5131
 #, fuzzy
 msgid "Not specified"
 msgstr "לא היה צפוי"
 
-#: src/protocols/oscar/oscar.c:5126 src/protocols/trepia/trepia.c:282
+#: src/protocols/oscar/oscar.c:5132 src/protocols/trepia/trepia.c:282
 #: src/protocols/trepia/trepia.c:408
 msgid "Female"
 msgstr "נקבה"
 
-#: src/protocols/oscar/oscar.c:5126 src/protocols/trepia/trepia.c:281
+#: src/protocols/oscar/oscar.c:5132 src/protocols/trepia/trepia.c:281
 #: src/protocols/trepia/trepia.c:408
 msgid "Male"
 msgstr "זכר"
 
-#: src/protocols/oscar/oscar.c:5142
+#: src/protocols/oscar/oscar.c:5148
 #, fuzzy
 msgid "Personal Web Page"
 msgstr "דפדפן אינטרנט"
 
-#: src/protocols/oscar/oscar.c:5146
+#: src/protocols/oscar/oscar.c:5152
 #, fuzzy
 msgid "Additional Information"
 msgstr "מידע נוסף: %1"
 
-#: src/protocols/oscar/oscar.c:5151
+#: src/protocols/oscar/oscar.c:5157
 msgid "Home Address"
 msgstr "כתובת בבית"
 
-#: src/protocols/oscar/oscar.c:5155 src/protocols/oscar/oscar.c:5163
+#: src/protocols/oscar/oscar.c:5161 src/protocols/oscar/oscar.c:5169
 msgid "Zip Code"
 msgstr "מיקוד"
 
-#: src/protocols/oscar/oscar.c:5159
+#: src/protocols/oscar/oscar.c:5165
 msgid "Work Address"
 msgstr "כתובת העבודה"
 
-#: src/protocols/oscar/oscar.c:5167
+#: src/protocols/oscar/oscar.c:5173
 msgid "Work Information"
 msgstr "פרטי עבודה"
 
-#: src/protocols/oscar/oscar.c:5168
+#: src/protocols/oscar/oscar.c:5174
 msgid "Company"
 msgstr "חברה"
 
-#: src/protocols/oscar/oscar.c:5169
+#: src/protocols/oscar/oscar.c:5175
 msgid "Division"
 msgstr "מחלקה"
 
-#: src/protocols/oscar/oscar.c:5170
+#: src/protocols/oscar/oscar.c:5176
 msgid "Position"
 msgstr "משרה"
 
-#: src/protocols/oscar/oscar.c:5172
+#: src/protocols/oscar/oscar.c:5178
 msgid "Web Page"
 msgstr "דף אינטרנט"
 
-#: src/protocols/oscar/oscar.c:5182
+#: src/protocols/oscar/oscar.c:5188
 #, c-format
 msgid "ICQ Info for %s"
 msgstr "פרטי ICQ עבור %s"
 
-#: src/protocols/oscar/oscar.c:5231
+#: src/protocols/oscar/oscar.c:5237
 #, fuzzy
 msgid "Pop-Up Message"
 msgstr "גודל מקסימלי של הודעה"
 
-#: src/protocols/oscar/oscar.c:5252
+#: src/protocols/oscar/oscar.c:5258
 #, c-format
 msgid "The following screen names are associated with %s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5256
+#: src/protocols/oscar/oscar.c:5262
 msgid "Search Results"
 msgstr "תוצאות חיפוש"
 
-#: src/protocols/oscar/oscar.c:5273
+#: src/protocols/oscar/oscar.c:5279
 #, c-format
 msgid "No results found for email address %s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5294
+#: src/protocols/oscar/oscar.c:5300
 #, c-format
 msgid "You should receive an email asking to confirm %s."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5296
+#: src/protocols/oscar/oscar.c:5302
 #, fuzzy
 msgid "Account Confirmation Requested"
 msgstr "כבה מבלי לבקש אישור"
 
-#: src/protocols/oscar/oscar.c:5327
+#: src/protocols/oscar/oscar.c:5333
 #, fuzzy
 msgid "Error Changing Account Info"
 msgstr "שגיאה בקריאת מידע הקובץ."
 
-#: src/protocols/oscar/oscar.c:5330
+#: src/protocols/oscar/oscar.c:5336
 #, c-format
 msgid ""
 "Error 0x%04x: Unable to format screen name because the requested screen name "
 "differs from the original."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5333
+#: src/protocols/oscar/oscar.c:5339
 #, c-format
 msgid ""
 "Error 0x%04x: Unable to format screen name because the requested screen name "
 "ends in a space."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5336
+#: src/protocols/oscar/oscar.c:5342
 #, c-format
 msgid ""
 "Error 0x%04x: Unable to format screen name because the requested screen name "
 "is too long."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5339
+#: src/protocols/oscar/oscar.c:5345
 #, c-format
 msgid ""
 "Error 0x%04x: Unable to change email address because there is already a "
 "request pending for this screen name."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5342
+#: src/protocols/oscar/oscar.c:5348
 #, c-format
 msgid ""
 "Error 0x%04x: Unable to change email address because the given address has "
 "too many screen names associated with it."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5345
+#: src/protocols/oscar/oscar.c:5351
 #, c-format
 msgid ""
 "Error 0x%04x: Unable to change email address because the given address is "
 "invalid."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5348
+#: src/protocols/oscar/oscar.c:5354
 #, fuzzy, c-format
 msgid "Error 0x%04x: Unknown error."
 msgstr "שגיאת חבילה: שגיאה לא ידועה"
 
-#: src/protocols/oscar/oscar.c:5358
+#: src/protocols/oscar/oscar.c:5364
 #, c-format
 msgid ""
 "Your screen name is currently formatted as follows:\n"
 "%s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5359 src/protocols/oscar/oscar.c:5366
+#: src/protocols/oscar/oscar.c:5365 src/protocols/oscar/oscar.c:5372
 #, fuzzy
 msgid "Account Info"
 msgstr "<< פחות _מידע"
 
-#: src/protocols/oscar/oscar.c:5364
+#: src/protocols/oscar/oscar.c:5370
 #, fuzzy, c-format
 msgid "The email address for %s is %s"
 msgstr "בתפריט עבור \"%s\"."
 
-#: src/protocols/oscar/oscar.c:5429
+#: src/protocols/oscar/oscar.c:5435
 msgid ""
 "Your IM Image was not sent. You must be Direct Connected to send IM Images."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5557
+#: src/protocols/oscar/oscar.c:5563
 #, fuzzy
 msgid "Unable to set AIM profile."
 msgstr "אין אפשרות להגדיר את תכונות העבודה: "
 
-#: src/protocols/oscar/oscar.c:5558
+#: src/protocols/oscar/oscar.c:5564
 msgid ""
 "You have probably requested to set your profile before the login procedure "
 "completed.  Your profile remains unset; try setting it again when you are "
 "fully connected."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5585
+#: src/protocols/oscar/oscar.c:5591
 #, c-format
 msgid ""
 "The maximum profile length of %d byte has been exceeded.  Gaim has truncated "
@@ -8659,27 +8683,27 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/protocols/oscar/oscar.c:5590
+#: src/protocols/oscar/oscar.c:5596
 #, fuzzy
 msgid "Profile too long."
 msgstr "%s: המחרוזת ארוכה מידי!"
 
-#: src/protocols/oscar/oscar.c:5606 src/protocols/oscar/oscar.c:6896
+#: src/protocols/oscar/oscar.c:5612 src/protocols/oscar/oscar.c:6908
 msgid "Visible"
 msgstr "נראה"
 
-#: src/protocols/oscar/oscar.c:5624
+#: src/protocols/oscar/oscar.c:5630
 msgid "Unable to set AIM away message."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5625
+#: src/protocols/oscar/oscar.c:5631
 msgid ""
 "You have probably requested to set your away message before the login "
 "procedure completed.  You remain in a \"present\" state; try setting it "
 "again when you are fully connected."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5665
+#: src/protocols/oscar/oscar.c:5671
 #, c-format
 msgid ""
 "The maximum away message length of %d byte has been exceeded.  Gaim has "
@@ -8690,12 +8714,12 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/protocols/oscar/oscar.c:5670
+#: src/protocols/oscar/oscar.c:5676
 #, fuzzy
 msgid "Away message too long."
 msgstr "אם המסר &ארוך מדי:"
 
-#: src/protocols/oscar/oscar.c:5747
+#: src/protocols/oscar/oscar.c:5753
 #, c-format
 msgid ""
 "Could not add the buddy %s because the screen name is invalid.  Screen names "
@@ -8703,41 +8727,41 @@ msgid ""
 "spaces, or contain only numbers."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:5749 src/protocols/oscar/oscar.c:6198
-#: src/protocols/oscar/oscar.c:6212
+#: src/protocols/oscar/oscar.c:5755 src/protocols/oscar/oscar.c:6210
+#: src/protocols/oscar/oscar.c:6224
 msgid "Unable To Add"
 msgstr "לא ניתן להוסיף"
 
-#: src/protocols/oscar/oscar.c:5910
+#: src/protocols/oscar/oscar.c:5922
 #, fuzzy
 msgid "Unable To Retrieve Buddy List"
 msgstr "כשלון ביבוא רשימת השרותים"
 
-#: src/protocols/oscar/oscar.c:5911
+#: src/protocols/oscar/oscar.c:5923
 msgid ""
 "Gaim was temporarily unable to retrieve your buddy list from the AIM "
 "servers.  Your buddy list is not lost, and will probably become available in "
 "a few hours."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:6093 src/protocols/oscar/oscar.c:6094
-#: src/protocols/oscar/oscar.c:6099 src/protocols/oscar/oscar.c:6256
-#: src/protocols/oscar/oscar.c:6257 src/protocols/oscar/oscar.c:6262
+#: src/protocols/oscar/oscar.c:6105 src/protocols/oscar/oscar.c:6106
+#: src/protocols/oscar/oscar.c:6111 src/protocols/oscar/oscar.c:6268
+#: src/protocols/oscar/oscar.c:6269 src/protocols/oscar/oscar.c:6274
 msgid "Orphans"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:6196
+#: src/protocols/oscar/oscar.c:6208
 #, c-format
 msgid ""
 "Could not add the buddy %s because you have too many buddies in your buddy "
 "list.  Please remove one and try again."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:6196 src/protocols/oscar/oscar.c:6210
+#: src/protocols/oscar/oscar.c:6208 src/protocols/oscar/oscar.c:6222
 msgid "(no name)"
 msgstr "(ללא שם)"
 
-#: src/protocols/oscar/oscar.c:6210
+#: src/protocols/oscar/oscar.c:6222
 #, c-format
 msgid ""
 "Could not add the buddy %s for an unknown reason.  The most common reason "
@@ -8745,19 +8769,19 @@ msgid ""
 "buddy list."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:6293
+#: src/protocols/oscar/oscar.c:6305
 #, c-format
 msgid ""
 "The user %s has given you permission to add you to their buddy list.  Do you "
 "want to add them?"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:6299
+#: src/protocols/oscar/oscar.c:6311
 #, fuzzy
 msgid "Authorization Given"
 msgstr "שם פרטי"
 
-#: src/protocols/oscar/oscar.c:6332
+#: src/protocols/oscar/oscar.c:6344
 #, c-format
 msgid ""
 "The user %s wants to add you to their buddy list for the following reason:\n"
@@ -8765,18 +8789,18 @@ msgid ""
 msgstr ""
 
 #. Granted
-#: src/protocols/oscar/oscar.c:6374
+#: src/protocols/oscar/oscar.c:6386
 #, c-format
 msgid "The user %s has granted your request to add them to your buddy list."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:6375
+#: src/protocols/oscar/oscar.c:6387
 #, fuzzy
 msgid "Authorization Granted"
 msgstr "<b>[בקשת אימות אושרה:]</b> %1"
 
 #. Denied
-#: src/protocols/oscar/oscar.c:6378
+#: src/protocols/oscar/oscar.c:6390
 #, c-format
 msgid ""
 "The user %s has denied your request to add them to your buddy list for the "
@@ -8784,171 +8808,171 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:6379
+#: src/protocols/oscar/oscar.c:6391
 msgid "Authorization Denied"
 msgstr "ההרשאה נדחית."
 
-#: src/protocols/oscar/oscar.c:6416 src/protocols/toc/toc.c:1273
+#: src/protocols/oscar/oscar.c:6428 src/protocols/toc/toc.c:1273
 #, fuzzy
 msgid "_Exchange:"
 msgstr "החלפה:"
 
-#: src/protocols/oscar/oscar.c:6454
+#: src/protocols/oscar/oscar.c:6466
 #, fuzzy
 msgid "Invalid chat name specified."
 msgstr "השתמש בשם עבודה מצויין על ידי המשתמש"
 
-#: src/protocols/oscar/oscar.c:6543
+#: src/protocols/oscar/oscar.c:6555
 msgid "Your IM Image was not sent. You cannot send IM Images in AIM chats."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:6669
+#: src/protocols/oscar/oscar.c:6681
 #, fuzzy
 msgid "Away Message"
 msgstr "<b>[הודעת \"לא-נמצא\":]</b> %1"
 
-#: src/protocols/oscar/oscar.c:6955
+#: src/protocols/oscar/oscar.c:6967
 #, fuzzy, c-format
 msgid "Buddy Comment for %s"
 msgstr "הערת '#if 0'"
 
-#: src/protocols/oscar/oscar.c:6956
+#: src/protocols/oscar/oscar.c:6968
 #, fuzzy
 msgid "Buddy Comment:"
 msgstr "הערת '#if 0'"
 
-#: src/protocols/oscar/oscar.c:6975
+#: src/protocols/oscar/oscar.c:6987
 #, fuzzy
 msgid "Edit Buddy Comment"
 msgstr "כבד הערות EOF"
 
-#: src/protocols/oscar/oscar.c:6981
+#: src/protocols/oscar/oscar.c:6993
 #, fuzzy
 msgid "Get Status Msg"
 msgstr "הועבר"
 
-#: src/protocols/oscar/oscar.c:6993
+#: src/protocols/oscar/oscar.c:7005
 #, fuzzy
 msgid "Direct IM"
 msgstr "חלונות הודעה"
 
-#: src/protocols/oscar/oscar.c:7010
+#: src/protocols/oscar/oscar.c:7022
 #, fuzzy
 msgid "Re-request Authorization"
 msgstr "דרוש אימות(אימות מחדש) מאת"
 
-#: src/protocols/oscar/oscar.c:7040
+#: src/protocols/oscar/oscar.c:7052
 #, fuzzy
 msgid "The new formatting is invalid."
 msgstr "המיקום המצוין אינו תקני."
 
-#: src/protocols/oscar/oscar.c:7041
+#: src/protocols/oscar/oscar.c:7053
 msgid "Screen name formatting can change only capitalization and whitespace."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:7048
+#: src/protocols/oscar/oscar.c:7060
 #, fuzzy
 msgid "New screen name formatting:"
 msgstr "(לא נקבע כינוי)"
 
-#: src/protocols/oscar/oscar.c:7100
+#: src/protocols/oscar/oscar.c:7112
 msgid "Change Address To:"
 msgstr "שנה כתובת ל:"
 
-#: src/protocols/oscar/oscar.c:7145
+#: src/protocols/oscar/oscar.c:7157
 msgid "<i>you are not waiting for authorization</i>"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:7148
+#: src/protocols/oscar/oscar.c:7160
 msgid "You are awaiting authorization from the following buddies"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:7149
+#: src/protocols/oscar/oscar.c:7161
 msgid ""
 "You can re-request authorization from these buddies by right-clicking on "
 "them and selecting \"Re-request Authorization.\""
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:7166
+#: src/protocols/oscar/oscar.c:7178
 msgid "Find Buddy by E-mail"
 msgstr "מצא איש קשר לפי דוא\"ל"
 
-#: src/protocols/oscar/oscar.c:7167
+#: src/protocols/oscar/oscar.c:7179
 msgid "Search for a buddy by e-mail address"
 msgstr "חפש איש קשר לפי כתובת בדואר האלרקטרוני שלו"
 
-#: src/protocols/oscar/oscar.c:7168
+#: src/protocols/oscar/oscar.c:7180
 msgid "Type the e-mail address of the buddy you are searching for."
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:7185
+#: src/protocols/oscar/oscar.c:7197
 #, fuzzy
 msgid "Available Message:"
 msgstr "קרא &הודעת \"לא זמין\""
 
-#: src/protocols/oscar/oscar.c:7186
+#: src/protocols/oscar/oscar.c:7198
 msgid "I'm doing work and hoping for a distraction--IM me!"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:7267 src/protocols/silc/silc.c:812
+#: src/protocols/oscar/oscar.c:7279 src/protocols/silc/silc.c:812
 #, fuzzy
 msgid "Set User Info..."
 msgstr "מידע כללי על המשתמש"
 
-#: src/protocols/oscar/oscar.c:7272
+#: src/protocols/oscar/oscar.c:7284
 #, fuzzy
 msgid "Set User Info (URL)..."
 msgstr "מיבא פרטי משתמש עבור %1 ..."
 
-#: src/protocols/oscar/oscar.c:7278
+#: src/protocols/oscar/oscar.c:7290
 #, fuzzy
 msgid "Set Available Message..."
 msgstr "                  קבע את גוף ההודעה"
 
-#: src/protocols/oscar/oscar.c:7283 src/protocols/silc/silc.c:808
+#: src/protocols/oscar/oscar.c:7295 src/protocols/silc/silc.c:808
 msgid "Change Password..."
 msgstr "שנה סיסמא..."
 
-#: src/protocols/oscar/oscar.c:7288
+#: src/protocols/oscar/oscar.c:7300
 #, fuzzy
 msgid "Change Password (URL)"
 msgstr "הסיסמה שלך שונתה בהצלחה."
 
-#: src/protocols/oscar/oscar.c:7292
+#: src/protocols/oscar/oscar.c:7304
 msgid "Configure IM Forwarding (URL)"
 msgstr ""
 
-#: src/protocols/oscar/oscar.c:7301
+#: src/protocols/oscar/oscar.c:7313
 #, fuzzy
 msgid "Format Screen Name..."
 msgstr "שם משתמש ב &AIM:"
 
-#: src/protocols/oscar/oscar.c:7305
+#: src/protocols/oscar/oscar.c:7317
 #, fuzzy
 msgid "Confirm Account"
 msgstr "לפי חשבון"
 
-#: src/protocols/oscar/oscar.c:7309
+#: src/protocols/oscar/oscar.c:7321
 #, fuzzy
 msgid "Display Currently Registered Address"
 msgstr "%s: לא יכול לקרוא את כתובת התצוגה"
 
-#: src/protocols/oscar/oscar.c:7313
+#: src/protocols/oscar/oscar.c:7325
 #, fuzzy
 msgid "Change Currently Registered Address..."
 msgstr "שנה את נראות חלון הפלט בחלון הנוכחי"
 
-#: src/protocols/oscar/oscar.c:7320
+#: src/protocols/oscar/oscar.c:7332
 #, fuzzy
 msgid "Show Buddies Awaiting Authorization"
 msgstr "/ידידים/הצג _קבוצות ריקות"
 
-#: src/protocols/oscar/oscar.c:7326
+#: src/protocols/oscar/oscar.c:7338
 #, fuzzy
 msgid "Search for Buddy by Email..."
 msgstr "חפש ידיד לפי כתובת בדואר האלרקטרוני שלו"
 
-#: src/protocols/oscar/oscar.c:7331
+#: src/protocols/oscar/oscar.c:7343
 #, fuzzy
 msgid "Search for Buddy by Information"
 msgstr "חפש ידיד לפי כתובת בדואר האלרקטרוני שלו"
@@ -8963,21 +8987,21 @@ msgstr "חפש ידיד לפי כתובת בדואר האלרקטרוני שלו
 #. *< version
 #. *  summary
 #. *  description
-#: src/protocols/oscar/oscar.c:7452 src/protocols/oscar/oscar.c:7454
+#: src/protocols/oscar/oscar.c:7464 src/protocols/oscar/oscar.c:7466
 msgid "AIM/ICQ Protocol Plugin"
 msgstr "תוסף פרוטוקולים Aim/ICQ"
 
-#: src/protocols/oscar/oscar.c:7473
+#: src/protocols/oscar/oscar.c:7485
 #, fuzzy
 msgid "Auth host"
 msgstr "המארח הוא %s\n"
 
-#: src/protocols/oscar/oscar.c:7476
+#: src/protocols/oscar/oscar.c:7488
 #, fuzzy
 msgid "Auth port"
 msgstr "_יציאת המדפסת:"
 
-#: src/protocols/oscar/oscar.c:7479 src/protocols/zephyr/zephyr.c:2760
+#: src/protocols/oscar/oscar.c:7491 src/protocols/zephyr/zephyr.c:2760
 msgid "Encoding"
 msgstr "קידוד"
 
@@ -10648,7 +10672,7 @@ msgstr ""
 msgid "Your Yahoo! message did not get sent."
 msgstr "הודעת ה Yahoo שלך לא נשלחה."
 
-#: src/protocols/yahoo/yahoo.c:936 src/protocols/yahoo/yahoo.c:3439
+#: src/protocols/yahoo/yahoo.c:936 src/protocols/yahoo/yahoo.c:3437
 msgid "Buzz!!"
 msgstr ""
 
@@ -10746,78 +10770,78 @@ msgstr "לא ניתן לקרוא"
 
 #: src/protocols/yahoo/yahoo.c:2417 src/protocols/yahoo/yahoo.c:2527
 #: src/protocols/yahoo/yahoo.c:2577 src/protocols/yahoo/yahoo.c:2587
-#: src/protocols/yahoo/yahoochat.c:1443 src/protocols/yahoo/yahoochat.c:1504
+#: src/protocols/yahoo/yahoochat.c:1461 src/protocols/yahoo/yahoochat.c:1528
 #: src/protocols/yahoo/ycht.c:518
 #, fuzzy
 msgid "Connection problem"
 msgstr "בעיה של KNotify "
 
-#: src/protocols/yahoo/yahoo.c:2683 src/protocols/yahoo/yahoo.c:3050
-#: src/protocols/yahoo/yahoo.c:3164
+#: src/protocols/yahoo/yahoo.c:2681 src/protocols/yahoo/yahoo.c:3048
+#: src/protocols/yahoo/yahoo.c:3162
 msgid "Not At Home"
 msgstr "לא נמצא בבית"
 
-#: src/protocols/yahoo/yahoo.c:2685 src/protocols/yahoo/yahoo.c:3052
-#: src/protocols/yahoo/yahoo.c:3165
+#: src/protocols/yahoo/yahoo.c:2683 src/protocols/yahoo/yahoo.c:3050
+#: src/protocols/yahoo/yahoo.c:3163
 msgid "Not At Desk"
 msgstr "לא ליד השולחן"
 
-#: src/protocols/yahoo/yahoo.c:2687 src/protocols/yahoo/yahoo.c:3054
-#: src/protocols/yahoo/yahoo.c:3166
+#: src/protocols/yahoo/yahoo.c:2685 src/protocols/yahoo/yahoo.c:3052
+#: src/protocols/yahoo/yahoo.c:3164
 msgid "Not In Office"
 msgstr "לא נמצא במשרד"
 
-#: src/protocols/yahoo/yahoo.c:2691 src/protocols/yahoo/yahoo.c:3058
-#: src/protocols/yahoo/yahoo.c:3168
+#: src/protocols/yahoo/yahoo.c:2689 src/protocols/yahoo/yahoo.c:3056
+#: src/protocols/yahoo/yahoo.c:3166
 msgid "On Vacation"
 msgstr "בחופשה"
 
-#: src/protocols/yahoo/yahoo.c:2695 src/protocols/yahoo/yahoo.c:3062
-#: src/protocols/yahoo/yahoo.c:3170
+#: src/protocols/yahoo/yahoo.c:2693 src/protocols/yahoo/yahoo.c:3060
+#: src/protocols/yahoo/yahoo.c:3168
 #, fuzzy
 msgid "Stepped Out"
 msgstr "התנתק"
 
-#: src/protocols/yahoo/yahoo.c:2776 src/protocols/yahoo/yahoo.c:2802
+#: src/protocols/yahoo/yahoo.c:2774 src/protocols/yahoo/yahoo.c:2800
 #, fuzzy
 msgid "Not on server list"
 msgstr "אופן השימוש: /list - הצג רשימה של ערוצים ציבוריים בשרת."
 
-#: src/protocols/yahoo/yahoo.c:2881
+#: src/protocols/yahoo/yahoo.c:2879
 #, fuzzy
 msgid "Join in Chat"
 msgstr "הצטרף לשיחה בתור:"
 
-#: src/protocols/yahoo/yahoo.c:2886
+#: src/protocols/yahoo/yahoo.c:2884
 #, fuzzy
 msgid "Initiate Conference"
 msgstr "אין אפשרות לאתחל את הפרוטוקול %1"
 
-#: src/protocols/yahoo/yahoo.c:2938
+#: src/protocols/yahoo/yahoo.c:2936
 #, fuzzy
 msgid "Active which ID?"
 msgstr "רשימת זיהויי לוח"
 
-#: src/protocols/yahoo/yahoo.c:2947
+#: src/protocols/yahoo/yahoo.c:2945
 #, fuzzy
 msgid "Join who in chat?"
 msgstr "אחרים מדברים בשיחה"
 
-#: src/protocols/yahoo/yahoo.c:2957
+#: src/protocols/yahoo/yahoo.c:2955
 #, fuzzy
 msgid "Activate ID..."
 msgstr "זיהוי קבוצה"
 
-#: src/protocols/yahoo/yahoo.c:2961
+#: src/protocols/yahoo/yahoo.c:2959
 #, fuzzy
 msgid "Join user in chat..."
 msgstr "המשתמש %1 כבר נמצא בשיחה זו."
 
-#: src/protocols/yahoo/yahoo.c:3481
+#: src/protocols/yahoo/yahoo.c:3479
 msgid "join &lt;room&gt;:  Join a chat room on the Yahoo network"
 msgstr ""
 
-#: src/protocols/yahoo/yahoo.c:3485
+#: src/protocols/yahoo/yahoo.c:3483
 msgid "buzz: Buzz a contact to get their attention"
 msgstr ""
 
@@ -10831,105 +10855,110 @@ msgstr ""
 #. *< version
 #. *  summary
 #. *  description
-#: src/protocols/yahoo/yahoo.c:3564 src/protocols/yahoo/yahoo.c:3566
+#: src/protocols/yahoo/yahoo.c:3562 src/protocols/yahoo/yahoo.c:3564
 msgid "Yahoo Protocol Plugin"
 msgstr "תוסף פרוטוקול Yahoo"
 
-#: src/protocols/yahoo/yahoo.c:3585
+#: src/protocols/yahoo/yahoo.c:3583
 #, fuzzy
 msgid "Yahoo Japan"
 msgstr "Yahoo"
 
-#: src/protocols/yahoo/yahoo.c:3588
+#: src/protocols/yahoo/yahoo.c:3586
 #, fuzzy
 msgid "Pager host"
 msgstr "המארח הוא %s\n"
 
-#: src/protocols/yahoo/yahoo.c:3591
+#: src/protocols/yahoo/yahoo.c:3589
 #, fuzzy
 msgid "Japan Pager host"
 msgstr "המארח הוא %s\n"
 
-#: src/protocols/yahoo/yahoo.c:3594
+#: src/protocols/yahoo/yahoo.c:3592
 msgid "Pager port"
 msgstr "יציאת ביפר"
 
-#: src/protocols/yahoo/yahoo.c:3597
+#: src/protocols/yahoo/yahoo.c:3595
 #, fuzzy
 msgid "File transfer host"
 msgstr "פרוטוקול להעברת קבצים"
 
-#: src/protocols/yahoo/yahoo.c:3600
+#: src/protocols/yahoo/yahoo.c:3598
 #, fuzzy
 msgid "Japan File transfer host"
 msgstr "פרוטוקול להעברת קבצים"
 
-#: src/protocols/yahoo/yahoo.c:3603
+#: src/protocols/yahoo/yahoo.c:3601
 #, fuzzy
 msgid "File transfer port"
 msgstr "פרוטוקול להעברת קבצים"
 
-#: src/protocols/yahoo/yahoo.c:3606
+#: src/protocols/yahoo/yahoo.c:3604
+#, fuzzy
+msgid "Chat Room Locale"
+msgstr "משתמש \"%s\" מזמין את \"%s\" לחדר שיחות \"%s\" \n"
+
+#: src/protocols/yahoo/yahoo.c:3607
 #, fuzzy
 msgid "Chat Room List Url"
 msgstr "משתמש \"%s\" מזמין את \"%s\" לחדר שיחות \"%s\" \n"
 
-#: src/protocols/yahoo/yahoo.c:3609
+#: src/protocols/yahoo/yahoo.c:3610
 msgid "YCHT Host"
 msgstr ""
 
-#: src/protocols/yahoo/yahoo.c:3612
+#: src/protocols/yahoo/yahoo.c:3613
 #, fuzzy
 msgid "YCHT Port"
 msgstr "י_ציאה"
 
-#: src/protocols/yahoo/yahoochat.c:199
+#: src/protocols/yahoo/yahoochat.c:206
 #, c-format
 msgid "%s declined your conference invitation to room \"%s\" because \"%s\"."
 msgstr ""
 
-#: src/protocols/yahoo/yahoochat.c:201
+#: src/protocols/yahoo/yahoochat.c:208
 msgid "Invitation Rejected"
 msgstr "ההזמנה נדחתה"
 
-#: src/protocols/yahoo/yahoochat.c:356
+#: src/protocols/yahoo/yahoochat.c:363
 msgid "Failed to join chat"
 msgstr "לא ניתן להצטרף לשיחה"
 
-#: src/protocols/yahoo/yahoochat.c:356
+#: src/protocols/yahoo/yahoochat.c:363
 msgid "Maybe the room is full?"
 msgstr "יכול להיות שהחדר מלא?"
 
-#: src/protocols/yahoo/yahoochat.c:434
+#: src/protocols/yahoo/yahoochat.c:441
 #, fuzzy, c-format
 msgid "You are now chatting in %s."
 msgstr "קיבלת %1 עוגיות מהשרת"
 
-#: src/protocols/yahoo/yahoochat.c:605
+#: src/protocols/yahoo/yahoochat.c:616
 msgid "Failed to join buddy in chat"
 msgstr ""
 
-#: src/protocols/yahoo/yahoochat.c:606
+#: src/protocols/yahoo/yahoochat.c:617
 msgid "Maybe they're not in a chat?"
 msgstr ""
 
-#: src/protocols/yahoo/yahoochat.c:1383
+#: src/protocols/yahoo/yahoochat.c:1394
 msgid "Fetching the room list failed."
 msgstr "שגיאה בקבלת רשימת החדרים"
 
-#: src/protocols/yahoo/yahoochat.c:1429
+#: src/protocols/yahoo/yahoochat.c:1447
 msgid "Voices"
 msgstr "קולות"
 
-#: src/protocols/yahoo/yahoochat.c:1432
+#: src/protocols/yahoo/yahoochat.c:1450
 msgid "Webcams"
 msgstr "מצלמות אינטרנט"
 
-#: src/protocols/yahoo/yahoochat.c:1443 src/protocols/yahoo/yahoochat.c:1504
+#: src/protocols/yahoo/yahoochat.c:1461 src/protocols/yahoo/yahoochat.c:1528
 msgid "Unable to fetch room list."
 msgstr "לא ניתן לקבל רשימת החדרים"
 
-#: src/protocols/yahoo/yahoochat.c:1497
+#: src/protocols/yahoo/yahoochat.c:1521
 msgid "User Rooms"
 msgstr "חדרים של משתמשים"
 
@@ -10938,84 +10967,89 @@ msgstr "חדרים של משתמשים"
 msgid "<b>IP Address:</b> %s<br>"
 msgstr "ע&יון..."
 
-#: src/protocols/yahoo/yahoo_profile.c:749
+#: src/protocols/yahoo/yahoo_profile.c:751
 msgid "Yahoo! Japan Profile"
 msgstr ""
 
-#: src/protocols/yahoo/yahoo_profile.c:750
+#: src/protocols/yahoo/yahoo_profile.c:752
 #, fuzzy
 msgid "Yahoo! Profile"
 msgstr "פרופיל:"
 
-#: src/protocols/yahoo/yahoo_profile.c:794
+#: src/protocols/yahoo/yahoo_profile.c:796
 msgid ""
 "Sorry, profiles marked as containing adult content are not supported at this "
 "time."
 msgstr ""
 
-#: src/protocols/yahoo/yahoo_profile.c:796
+#: src/protocols/yahoo/yahoo_profile.c:798
 msgid ""
 "If you wish to view this profile, you will need to visit this link in your "
 "web browser"
 msgstr ""
 
-#: src/protocols/yahoo/yahoo_profile.c:969
+#: src/protocols/yahoo/yahoo_profile.c:976
 msgid "Yahoo! ID"
 msgstr "זיהוי Yahoo"
 
-#: src/protocols/yahoo/yahoo_profile.c:1043
-#: src/protocols/yahoo/yahoo_profile.c:1047
-#: src/protocols/yahoo/yahoo_profile.c:1051
+#: src/protocols/yahoo/yahoo_profile.c:1050
+#: src/protocols/yahoo/yahoo_profile.c:1054
+#: src/protocols/yahoo/yahoo_profile.c:1058
 msgid "Hobbies"
 msgstr "תחביבים"
 
-#: src/protocols/yahoo/yahoo_profile.c:1061
-#: src/protocols/yahoo/yahoo_profile.c:1065
+#: src/protocols/yahoo/yahoo_profile.c:1068
+#: src/protocols/yahoo/yahoo_profile.c:1072
 #, fuzzy
 msgid "Latest News"
 msgstr "מאמר חדשות"
 
-#: src/protocols/yahoo/yahoo_profile.c:1086
+#: src/protocols/yahoo/yahoo_profile.c:1093
 msgid "Home Page"
 msgstr "דף הבית"
 
-#: src/protocols/yahoo/yahoo_profile.c:1101
+#: src/protocols/yahoo/yahoo_profile.c:1108
 msgid "Cool Link 1"
 msgstr "קישור מגניב 1"
 
-#: src/protocols/yahoo/yahoo_profile.c:1106
+#: src/protocols/yahoo/yahoo_profile.c:1113
 msgid "Cool Link 2"
 msgstr "קישור מגניב 2"
 
-#: src/protocols/yahoo/yahoo_profile.c:1110
+#: src/protocols/yahoo/yahoo_profile.c:1117
 msgid "Cool Link 3"
 msgstr "קישור מגניב 3"
 
 #: src/protocols/yahoo/yahoo_profile.c:1130
+#, fuzzy
+msgid "Last Update"
+msgstr "עודכן לאחרונה"
+
+#: src/protocols/yahoo/yahoo_profile.c:1136
 #, fuzzy, c-format
 msgid "User information for %s unavailable"
 msgstr "קו להצגת מידע"
 
-#: src/protocols/yahoo/yahoo_profile.c:1136
+#: src/protocols/yahoo/yahoo_profile.c:1142
 msgid ""
 "Sorry, this profile seems to be in a language that is not supported at this "
 "time."
 msgstr ""
 
-#: src/protocols/yahoo/yahoo_profile.c:1152
+#: src/protocols/yahoo/yahoo_profile.c:1158
 msgid ""
 "Could not retrieve the user's profile. This most likely is a temporary "
 "server-side problem. Please try again later."
 msgstr ""
 
-#: src/protocols/yahoo/yahoo_profile.c:1155
+#: src/protocols/yahoo/yahoo_profile.c:1161
 msgid ""
 "Could not retrieve the user's profile. This most likely means that the user "
 "does not exist; however, Yahoo! sometimes does fail to find a user's "
 "profile. If you know that the user exists, please try again later."
 msgstr ""
 
-#: src/protocols/yahoo/yahoo_profile.c:1163
+#: src/protocols/yahoo/yahoo_profile.c:1169
 #, fuzzy
 msgid "The user's profile is empty."
 msgstr "שם המשתמש ריק."
