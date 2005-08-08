@@ -8,15 +8,7 @@ Requires: athena-libxml athena-ORBit athena-dustbuster
 %description
 OAF is an object activation framework for GNOME. It uses ORBit.
 
-%post
-# oaf sucks.  All the .oaf files have to be in one place so that oafd
-# can find them.  So we have to help out gnumeric, which is installed
-# in a locker.
-adir=/afs/athena.mit.edu/software/gnumeric/current/distrib/oaf
-ldir=/usr/athena/share/oaf
-oafs="GNOME_Gnumeric GNOME_Guppi_Gnumeric"
-for i in $oafs; do
-  rm -f $ldir/$i.oaf
-  ln -s $adir/$i.oaf $ldir/$i.oaf
-done
+%triggerun -- athena-oaf < 9.4-6
+rm -f /usr/athena/share/oaf/GNOME_Gnumeric.oaf
+rm -f /usr/athena/share/oaf/GNOME_Guppi_Gnumeric.oaf
 exit 0
