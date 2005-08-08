@@ -1,0 +1,54 @@
+#!/bin/sh
+# $Id: athena-gaim,v 1.1 2005-08-08 13:00:40 ghudson Exp $
+
+# If .gaim directory does not exist, create it and make it private.
+if [ ! -d "$HOME/.gaim" ]; then
+  mkdir "$HOME/.gaim" || exit 1
+  fs sa "$HOME/.gaim" system:anyuser none > /dev/null 2>&1
+fi
+
+# Set up an MIT Jabber account if no account settings exist.
+if [ ! -f "$HOME/.gaim/accounts.xml" ]; then
+  cat > $HOME/.gaim/accounts.xml << EOF
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<accounts version='1.0'>
+ <account>
+  <protocol>prpl-jabber</protocol>
+  <name>$USER@mit.edu/Gaim</name>
+  <settings>
+   <setting name='athena' type='bool'>1</setting>
+   <setting name='use_tls' type='bool'>1</setting>
+   <setting name='connect_server' type='string'>jabber.mit.edu</setting>
+   <setting name='old_ssl' type='bool'>0</setting>
+   <setting name='auth_plain_in_clear' type='bool'>0</setting>
+   <setting name='port' type='int'>5222</setting>
+  </settings>
+  <settings ui='gtk-gaim'>
+   <setting name='auto-login' type='bool'>0</setting>
+  </settings>
+ </account>
+</accounts>
+EOF
+fi
+
+# Set the browser preference to gnome-open if no preferences exist.
+if [ ! -f "$HOME/.gaim/prefs.xml" ]; then
+  cat > $HOME/.gaim/prefs.xml << "EOF"
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<pref version='1.0' name='/'>
+	<pref name='gaim'>
+		<pref name='gtk'>
+			<pref name='browsers'>
+				<pref name='place' type='int' value='0' />
+				<pref name='command' type='string' value='' />
+				<pref name='browser' type='string' value='gnome-open' />
+			</pref>
+		</pref>
+	</pref>
+</pref>
+EOF
+fi
+
+exec /usr/athena/bin/gaim.real "$@"
