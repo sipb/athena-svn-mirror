@@ -16,5 +16,7 @@ check:
 
 install:
 	${MAKE} install DESTDIR="$$SRVD"
+	eval `perl -V:installarchlib`; \
+	  rm -rf "$$SRVD/$$installarchlib/perllocal.pod"
 	cd "$$SRVD/usr/athena/bin" && mv gaim gaim.real
 	install -c -m 755 athena-gaim "$$SRVD/usr/athena/bin/gaim"

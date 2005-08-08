@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 2004-10-10 15:48:31 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2005-08-08 17:56:43 ghudson Exp $
 
 dist:
 
@@ -14,4 +14,6 @@ all:
 check:
 
 install:
+	eval `perl -V:installarchlib`; \
+	  rm -rf "$$SRVD/$$installarchlib/perllocal.pod"
 	${MAKE} install DESTDIR="$$SRVD"
