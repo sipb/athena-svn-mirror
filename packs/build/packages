@@ -1,4 +1,4 @@
-# $Id: packages,v 1.317 2005-08-08 16:42:36 ghudson Exp $
+# $Id: packages,v 1.318 2005-08-09 19:25:19 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -162,7 +162,7 @@ third/file-roller		requires gettext,intltool,glib2,gtk2,libgnome,libgnomeui,gnom
 third/findutils			on solaris
 third/firefox			requires libIDL,krb5
 third/gail			requires atk,gtk2,libgnomecanvas
-third/gaim			requires startup-notification,evolution,perl,mozilla,gtk2,glib2,libao,zephyr
+third/gaim			requires startup-notification,evolution,mozilla,gtk2,glib2,libao,zephyr
 third/gal			requires gnome-vfs,libglade,gdk-pixbuf
 third/gal2			requires gettext,intltool,libiconv,libgnomeprint,libgnomeprintui,libglade2,libgnomeui,libgnomecanvas,libxml2
 third/gcalctool			requires gettext,intltool,libgnome,libgnomeui,GConf2,scrollkeeper
