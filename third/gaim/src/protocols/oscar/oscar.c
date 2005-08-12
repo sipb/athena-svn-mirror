@@ -59,11 +59,15 @@
 #define OSCAR_CONNECT_STEPS 6
 #define OSCAR_DEFAULT_CUSTOM_ENCODING "ISO-8859-1"
 
+/* Seconds each file transfer ip address will be given to make a connection */
+#define FT_IP_TIMEOUT	15
+
 static int caps_aim = AIM_CAPS_CHAT | AIM_CAPS_BUDDYICON | AIM_CAPS_DIRECTIM | AIM_CAPS_SENDFILE | AIM_CAPS_INTEROPERATE | AIM_CAPS_ICHAT;
 static int caps_icq = AIM_CAPS_BUDDYICON | AIM_CAPS_DIRECTIM | AIM_CAPS_SENDFILE | AIM_CAPS_ICQUTF8 | AIM_CAPS_INTEROPERATE | AIM_CAPS_ICHAT;
 
 static fu8_t features_aim[] = {0x01, 0x01, 0x01, 0x02};
 static fu8_t features_icq[] = {0x01, 0x06};
+static fu8_t features_icq_offline[] = {0x01};
 static fu8_t ck[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 typedef struct _OscarData OscarData;
@@ -291,6 +295,7 @@ static gboolean gaim_icon_timerfunc(gpointer data);
 /* just because */
 static void oscar_callback(gpointer data, gint source, GaimInputCondition condition);
 static void oscar_direct_im_initiate(GaimConnection *gc, const char *who, const char *cookie);
+static void oscar_xfer_init_recv(GaimXfer *xfer);
 
 /* remove these at some point? */
 /* Because I don't like forward declarations?  I think that was why... */
@@ -1938,10 +1943,74 @@ static void oscar_xfer_end(GaimXfer *xfer)
 	od->file_transfers = g_slist_remove(od->file_transfers, xfer);
 }
 
+/* xfer functions used when receiving files */
+
+/*
+ * This is a gaim timeout callback for when the clientip looks to be useless (after verifiedip has been tried)
+ * It gives up on the file transfer completely if it doesn't approve of the file transfer status
+ */
+static gboolean oscar_clientip_timeout(gpointer data) {
+	GaimXfer *xfer;
+	struct aim_oft_info *oft_info;
+	char *msg = NULL;
+	
+	gaim_debug_info("oscar","AAA - in oscar_clientip_timeout\n");
+	xfer = (GaimXfer*) data;
+	if(xfer->data) {
+		oft_info = (struct aim_oft_info*) xfer->data;
+		
+		/* Check to see if the clientip has produced any results */
+		if(!oft_info->success) {
+			msg = g_strdup_printf(_("Transfer of file %s timed out."),gaim_xfer_get_filename(xfer));
+			gaim_xfer_conversation_write(xfer, msg, TRUE);
+			g_free(msg);
+			gaim_xfer_unref(xfer);
+			gaim_xfer_cancel_local(xfer);
+		} else {
+			gaim_debug_info("oscar","connection successful; no action taken\n");
+		}
+	}
+	return FALSE;
+}
+
+/*
+ * This is a gaim timeout callback for when the verifiedip looks to be useless 
+ * It tries the file transfer again using the clientip
+ *
+ * BBB
+ */
+static gboolean oscar_verifiedip_timeout(gpointer data) {
+	GaimXfer *xfer;
+	struct aim_oft_info *oft_info;
+	
+	gaim_debug_info("oscar","AAA - in oscar_verifiedip_timeout\n");
+	xfer = (GaimXfer*) data;
+	if(xfer->data) {
+		oft_info = (struct aim_oft_info*) xfer->data;
+		
+		/* Check to see if the verifiedip has produced any results */
+		if(!oft_info->success) {
+			/* gaim_xfer_conversation_write(xfer,
+				"Attempting file transfer via secondary IP address...", FALSE); */
+		
+			/* The verifiedip connection has worn out its welcome. Goodbye. */
+			aim_conn_kill(oft_info->sess, &oft_info->conn);
+			
+			/* Try the file transfer again with the clientip */
+			g_free(xfer->remote_ip);
+			xfer->remote_ip = g_strdup(oft_info->clientip);
+			gaim_debug_info("oscar","attempting connection using clientip\n");
+			oscar_xfer_init_recv(xfer);
+		} else {
+			gaim_debug_info("oscar","connection successful; no action taken\n");
+		}
+	}
+	return FALSE;
+}
+
 /*
  * xfer functions used when receiving files
  */
-
 static void oscar_xfer_init_recv(GaimXfer *xfer)
 {
 	struct aim_oft_info *oft_info;
@@ -1956,13 +2025,28 @@ static void oscar_xfer_init_recv(GaimXfer *xfer)
 	od = gc->proto_data;
 
 	gaim_debug_info("oscar", "AAA - in oscar_xfer_recv_init\n");
+	
+	/* Start a timer for this ip address
+	 * If the verifiedip fails, try the clientip
+	 * If clientip fails, declare the whole file transfer dead
+	 * This xfer reference will be released in oscar_clientip_timeout */
+	if(xfer->data) {
+		gaim_xfer_ref(xfer);
+		/* If clientip & verifiedip are the same, we must prevent an infinite loop */
+		if(g_ascii_strcasecmp(xfer->remote_ip, oft_info->verifiedip) == 0
+			&& g_ascii_strcasecmp(oft_info->clientip, oft_info->verifiedip) != 0 ) {
+			gaim_timeout_add(FT_IP_TIMEOUT * 1000, oscar_verifiedip_timeout, xfer);
+		} else {
+			gaim_timeout_add(FT_IP_TIMEOUT * 1000, oscar_clientip_timeout, xfer);
+		}
+	}
 
 	oft_info->conn = aim_newconn(od->sess, AIM_CONN_TYPE_RENDEZVOUS, NULL);
 	if (oft_info->conn) {
 		oft_info->conn->subtype = AIM_CONN_SUBTYPE_OFT_SENDFILE;
 		aim_conn_addhandler(od->sess, oft_info->conn, AIM_CB_FAM_OFT, AIM_CB_OFT_PROMPT, oscar_sendfile_prompt, 0);
 		oft_info->conn->fd = xfer->fd = gaim_proxy_connect(gaim_connection_get_account(gc),
-					xfer->remote_ip, xfer->remote_port,	oscar_sendfile_connected, xfer);
+					xfer->remote_ip, xfer->remote_port, oscar_sendfile_connected, xfer);
 		if (xfer->fd == -1) {
 			gaim_xfer_error(GAIM_XFER_RECEIVE, xfer->who,
 							_("Unable to establish file descriptor."));
@@ -3130,10 +3214,23 @@ static void oscar_sendfile_connected(gpointer data, gint source, GaimInputCondit
 	if (!(oft_info = xfer->data))
 		return;
 	if (source < 0) {
-		gaim_xfer_cancel_remote(xfer);
-		return;
+		/* This will also be called 3 minutes after the verifiedip times out.
+		 * However, we might have made a successful connection with the clientip
+		 * so we need to make sure the verifiedip's failures aren't taken out
+		 * on the poor little clientip, which might actually have been a success. */
+		if(oft_info->success) {
+			gaim_debug_info("oscar","fd of 0 for verifiedip, but clientip succeeded; ignoring\n");
+			return;
+		} else {
+			gaim_debug_info("oscar","received source of 0 for fd; aborting transfer\n");
+			gaim_xfer_cancel_remote(xfer);
+			return;
+		}
 	}
 
+	gaim_debug_info("oscar","marking connection as success\n");
+	oft_info->success = TRUE; /* Mark this connection as successful before it times out */
+	
 	xfer->fd = source;
 	oft_info->conn->fd = source;
 
@@ -3455,8 +3552,26 @@ static int incomingim_chan2(aim_session_t *sess, aim_conn_t *conn, aim_userinfo_
 			xfer = gaim_xfer_new(gc->account, GAIM_XFER_RECEIVE, userinfo->sn);
 			xfer->remote_ip = g_strdup(args->verifiedip);
 			xfer->remote_port = args->port;
-			gaim_xfer_set_filename(xfer, args->info.sendfile.filename);
+
+			if (g_utf8_validate(args->info.sendfile.filename, -1,
+						NULL)) {
+				gaim_xfer_set_filename(xfer,
+						args->info.sendfile.filename);
+			} else {
+				gchar * utf8_filename = gaim_utf8_salvage(
+						args->info.sendfile.filename);
+				gaim_xfer_set_filename(xfer, utf8_filename);
+				g_free(utf8_filename);
+			}
+
 			gaim_xfer_set_size(xfer, args->info.sendfile.totsize);
+			
+			/* Ignore <ICQ_COOL_FT> XML that is sent along with ICQ sendfile requests */
+			if(g_ascii_strncasecmp(message,"<ICQ_COOL_FT>",13)) {
+				gaim_debug_info("oscar","Ignoring ICQ file transfer message: %s\n", message);
+				g_free(message);
+				message = NULL;
+			}
 			gaim_xfer_set_message(xfer, message);
 
 			/* Create the oscar-specific data */
@@ -5444,8 +5559,21 @@ static int oscar_send_im(GaimConnection *gc, const char *name, const char *messa
 
 		args.flags = AIM_IMFLAGS_ACK | AIM_IMFLAGS_CUSTOMFEATURES;
 		if (od->icq) {
-			args.features = features_icq;
-			args.featureslen = sizeof(features_icq);
+			/* We have to present different "features" (whose meaning
+			   is unclear and are merely a result of protocol inspection)
+			   to offline ICQ buddies. Otherwise, the official
+			   ICQ client doesn't treat those messages as being "ANSI-
+			   encoded" (and instead, assumes them to be UTF-8).
+			   For more details, see SF issue 1179452.
+			*/
+			GaimBuddy *buddy = gaim_find_buddy(gc->account, name);
+			if (buddy && buddy->present != 0) {
+				args.features = features_icq;
+				args.featureslen = sizeof(features_icq);
+			} else {
+				args.features = features_icq_offline;
+				args.featureslen = sizeof(features_icq_offline);
+			}
 			args.flags |= AIM_IMFLAGS_OFFLINE;
 		} else {
 			args.features = features_aim;
@@ -7378,6 +7506,33 @@ static void oscar_convo_closed(GaimConnection *gc, const char *who)
 	oscar_direct_im_destroy(od, dim);
 }
 
+static const char *
+oscar_normalize(const GaimAccount *account, const char *str)
+{
+	static char buf[BUF_LEN];
+	char *tmp1, *tmp2;
+	int i, j;
+
+	g_return_val_if_fail(str != NULL, NULL);
+
+	strncpy(buf, str, BUF_LEN);
+	for (i=0, j=0; buf[j]; i++, j++)
+	{
+		while (buf[j] == ' ')
+			j++;
+		buf[i] = buf[j];
+	}
+	buf[i] = '\0';
+
+	tmp1 = g_utf8_strdown(buf, -1);
+	tmp2 = g_utf8_normalize(tmp1, -1, G_NORMALIZE_DEFAULT);
+	g_snprintf(buf, sizeof(buf), "%s", tmp2);
+	g_free(tmp2);
+	g_free(tmp1);
+
+	return buf;
+}
+
 static GaimPluginProtocolInfo prpl_info =
 {
 	OPT_PROTO_MAIL_CHECK | OPT_PROTO_IM_IMAGE,
@@ -7433,7 +7588,7 @@ static GaimPluginProtocolInfo prpl_info =
 #endif
 	NULL,					/* buddy_free */
 	oscar_convo_closed,		/* convo_closed */
-	NULL,					/* normalize */
+	oscar_normalize,		/* normalize */
 	oscar_set_icon,			/* set_buddy_icon */
 	NULL,					/* remove_group */
 	NULL,					/* get_cb_real_name */

@@ -1614,7 +1614,9 @@ gaim_markup_linkify(const char *text)
 				/* iterate backwards grabbing the local part of an email address */
 				g = g_utf8_get_char(t);
 				if (badchar(*t) || (g >= 127) || (*t == '(') ||
-						((*t == ';') && (t > (text+2)) && !g_ascii_strncasecmp(t - 3, "&lt;", 4))) {
+					((*t == ';') && ((t > (text+2) && (!g_ascii_strncasecmp(t - 3, "&lt;", 4) ||
+				                                       !g_ascii_strncasecmp(t - 3, "&gt;", 4))) ||
+				                     (t > (text+4) && (!g_ascii_strncasecmp(t - 5, "&quot;", 6)))))) {
 					/* local part will already be part of ret, strip it out */
 					ret = g_string_truncate(ret, ret->len - (c - t));
 					ret = g_string_append_unichar(ret, g);
@@ -2083,7 +2085,7 @@ gaim_fd_get_ip(int fd)
  * String Functions
  **************************************************************************/
 const char *
-gaim_normalize(const GaimAccount *account, const char *s)
+gaim_normalize(const GaimAccount *account, const char *str)
 {
 	GaimPlugin *prpl = NULL;
 	GaimPluginProtocolInfo *prpl_info = NULL;
@@ -2096,41 +2098,50 @@ gaim_normalize(const GaimAccount *account, const char *s)
 		prpl_info = GAIM_PLUGIN_PROTOCOL_INFO(prpl);
 
 	if(prpl_info && prpl_info->normalize)
-		ret = prpl_info->normalize(account, s);
+		ret = prpl_info->normalize(account, str);
 
-	if(!ret) {
+	if(!ret)
+	{
 		static char buf[BUF_LEN];
 		char *tmp;
-		int i, j;
 
-		g_return_val_if_fail(s != NULL, NULL);
-
-		strncpy(buf, s, BUF_LEN);
-		for (i=0, j=0; buf[j]; i++, j++) {
-			while (buf[j] == ' ')
-				j++;
-			buf[i] = buf[j];
-		}
-		buf[i] = '\0';
-
-		tmp = g_utf8_strdown(buf, -1);
-		g_snprintf(buf, sizeof(buf), "%s", tmp);
-		g_free(tmp);
-		tmp = g_utf8_normalize(buf, -1, G_NORMALIZE_DEFAULT);
+		tmp = g_utf8_normalize(str, -1, G_NORMALIZE_DEFAULT);
 		g_snprintf(buf, sizeof(buf), "%s", tmp);
 		g_free(tmp);
 
 		ret = buf;
 	}
+
 	return ret;
+}
+
+/*
+ * You probably don't want to call this directly, it is
+ * mainly for use as a PRPL callback function.  See the
+ * comments in util.h.
+ */
+const char *
+gaim_normalize_nocase(const GaimAccount *account, const char *str)
+{
+	static char buf[BUF_LEN];
+	char *tmp1, *tmp2;
+
+	g_return_val_if_fail(str != NULL, NULL);
+
+	tmp1 = g_utf8_strdown(str, -1);
+	tmp2 = g_utf8_normalize(tmp1, -1, G_NORMALIZE_DEFAULT);
+	g_snprintf(buf, sizeof(buf), "%s", tmp2);
+	g_free(tmp2);
+	g_free(tmp1);
+
+	return buf;
 }
 
 gchar *
 gaim_str_sub_away_formatters(const char *str, const char *name)
 {
 	char *c;
-	gchar *cpy;
-	int cnt = 0;
+	GString *cpy;
 	time_t t;
 	struct tm *tme;
 	char tmp[20];
@@ -2138,12 +2149,12 @@ gaim_str_sub_away_formatters(const char *str, const char *name)
 	g_return_val_if_fail(str  != NULL, NULL);
 	g_return_val_if_fail(name != NULL, NULL);
 
-	cpy = g_malloc(BUF_LONG);
+	/* Create an empty GString that is hopefully big enough for most messages */
+	cpy = g_string_sized_new(1024);
 
 	t = time(NULL);
 	tme = localtime(&t);
 
-	cpy[0] = '\0';
 	c = (char *)str;
 	while (*c) {
 		switch (*c) {
@@ -2152,39 +2163,35 @@ gaim_str_sub_away_formatters(const char *str, const char *name)
 				switch (*(c + 1)) {
 				case 'n':
 					/* append name */
-					strcpy(cpy + cnt, name);
-					cnt += strlen(name);
+					g_string_append(cpy, name);
 					c++;
 					break;
 				case 'd':
 					/* append date */
 					strftime(tmp, 20, "%m/%d/%Y", tme);
-					strcpy(cpy + cnt, tmp);
-					cnt += strlen(tmp);
+					g_string_append(cpy, tmp);
 					c++;
 					break;
 				case 't':
 					/* append time */
 					strftime(tmp, 20, "%I:%M:%S %p", tme);
-					strcpy(cpy + cnt, tmp);
-					cnt += strlen(tmp);
+					g_string_append(cpy, tmp);
 					c++;
 					break;
 				default:
-					cpy[cnt++] = *c;
+					g_string_append_c(cpy, *c);
 				}
 			} else {
-				cpy[cnt++] = *c;
+				g_string_append_c(cpy, *c);
 			}
 			break;
 		default:
-			cpy[cnt++] = *c;
+			g_string_append_c(cpy, *c);
 		}
 		c++;
 	}
-	cpy[cnt] = '\0';
 
-	return cpy;
+	return g_string_free(cpy, FALSE);
 }
 
 gchar *
