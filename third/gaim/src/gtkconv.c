@@ -355,6 +355,21 @@ debug_command_cb(GaimConversation *conv,
 }
 
 static GaimCmdRet
+clear_command_cb(GaimConversation *conv,
+                 const char *cmd, char **args, char **error, void *data)
+{
+	GaimGtkConversation *gtkconv = NULL;
+
+	gtkconv = GAIM_GTK_CONVERSATION(conv);
+
+	gtk_imhtml_clear(GTK_IMHTML(gtkconv->imhtml));
+	g_string_free(conv->history, TRUE);
+	conv->history = g_string_new("");
+
+	return GAIM_CMD_STATUS_OK;
+}
+
+static GaimCmdRet
 help_command_cb(GaimConversation *conv,
                  const char *cmd, char **args, char **error, void *data)
 {
@@ -3674,7 +3689,7 @@ static GtkItemFactoryEntry menu_items[] =
 	{ N_("/Conversation/Se_nd File..."), NULL, menu_send_file_cb, 0, "<StockItem>", GAIM_STOCK_FILE_TRANSFER },
 	{ N_("/Conversation/Add Buddy _Pounce..."), NULL, menu_add_pounce_cb,
 		0, NULL },
-	{ N_("/Conversation/_Get Info"), NULL, menu_get_info_cb, 0,
+	{ N_("/Conversation/_Get Info"), "<CTL>O", menu_get_info_cb, 0,
 	  "<StockItem>", GAIM_STOCK_INFO },
 	{ N_("/Conversation/_Warn..."), NULL, menu_warn_cb, 0,
 	  "<StockItem>", GAIM_STOCK_WARN },
@@ -3683,7 +3698,7 @@ static GtkItemFactoryEntry menu_items[] =
 
 	{ "/Conversation/sep2", NULL, NULL, 0, "<Separator>" },
 
-	{ N_("/Conversation/A_lias..."), NULL, menu_alias_cb, 0,
+	{ N_("/Conversation/Al_ias..."), NULL, menu_alias_cb, 0,
 	  "<StockItem>", GAIM_STOCK_EDIT },
 	{ N_("/Conversation/_Block..."), NULL, menu_block_cb, 0,
 	  "<StockItem>", GAIM_STOCK_BLOCK },
@@ -3709,7 +3724,7 @@ static GtkItemFactoryEntry menu_items[] =
 	{ N_("/Options/Enable _Logging"), NULL, menu_logging_cb, 0, "<CheckItem>" },
 	{ N_("/Options/Enable _Sounds"), NULL, menu_sounds_cb, 0, "<CheckItem>" },
 	{ N_("/Options/Show Formatting _Toolbar"), NULL, menu_toolbar_cb, 0, "<CheckItem>" },
-	{ N_("/Options/Show T_imestamps"), "F2", menu_timestamps_cb, 0, "<CheckItem>" },
+	{ N_("/Options/Show Ti_mestamps"), "F2", menu_timestamps_cb, 0, "<CheckItem>" },
 };
 
 static const int menu_item_count =
@@ -6509,7 +6524,9 @@ gaim_gtk_conversations_init(void)
 	gaim_cmd_register("debug", "w", GAIM_CMD_P_DEFAULT,
 	                  GAIM_CMD_FLAG_CHAT | GAIM_CMD_FLAG_IM, NULL,
 	                  debug_command_cb, _("debug &lt;option&gt;:  Send various debug information to the current conversation."), NULL);
-
+	gaim_cmd_register("clear", "", GAIM_CMD_P_DEFAULT,
+	                  GAIM_CMD_FLAG_CHAT | GAIM_CMD_FLAG_IM, NULL,
+	                  clear_command_cb, _("clear: Clears the conversation scrollback."), NULL);
 	gaim_cmd_register("help", "w", GAIM_CMD_P_DEFAULT,
 	                  GAIM_CMD_FLAG_CHAT | GAIM_CMD_FLAG_IM | GAIM_CMD_FLAG_ALLOW_WRONG_ARGS, NULL,
 	                  help_command_cb, _("help &lt;command&gt;:  Help on a specific command."), NULL);

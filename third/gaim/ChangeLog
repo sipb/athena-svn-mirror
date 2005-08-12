@@ -1,5 +1,16 @@
 Gaim: The Pimpin' Penguin IM Client that's good for the soul!
 
+version 1.5.0 (8/11/2005):
+	* Ability to set IRC quit message (Lalo Martins)
+	* OSCAR file transfers now work for 2 users behind the same NAT
+	  (Jonathan Clark)
+	* Yahoo! buddy requests to add you to their buddy list now prompt for
+	  authorization
+	* Added a /clear command for conversations/chats
+	* Fixed ICQ encoding for messages with offline ICQ users
+	  (Ilya Konstantinov, SF Bug #1179452)
+	* Default Yahoo! chat roomlist locale to 'us'
+
 version 1.4.0 (7/7/2005):
 	* Fix system log start times for some protocols
 	* SILC compiles with newer SILC toolkit versions (Pekka Riikonen)
