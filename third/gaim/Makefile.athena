@@ -4,7 +4,7 @@ dist:
 	cp "$$CONFIG_SITE" config.site.athena
 
 prepare:
-	LDFLAGS="-L/usr/athena/lib -Wl,-R/usr/athena/lib -Wl,-R/usr/athena/lib/mozilla" CONFIG_SITE=`pwd`/config.site.athena ./configure --disable-perl
+	LDFLAGS="-L/usr/athena/lib -Wl,-R/usr/athena/lib -Wl,-R/usr/athena/lib/mozilla" CONFIG_SITE=`pwd`/config.site.athena ./configure --disable-perl --disable-gnutls
 
 clean:
 	${MAKE} clean
