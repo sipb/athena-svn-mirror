@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "SUNWgnome-xml-share"				>> $PACKAGES
+echo "SUNWgnome-xml-root"				>> $PACKAGES
