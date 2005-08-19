@@ -3,12 +3,31 @@
 ### This is the first script file in the installation program for
 ### installing Athena software on Solaris.
 
-### $Id: athenainstall,v 1.4 2004-05-25 16:58:52 rbasch Exp $
+### $Id: athenainstall,v 1.5 2005-08-19 15:50:05 rbasch Exp $
 
-# Define some variables
-echo "in athenainstall"
-hostname=`cat /etc/nodename`
+echo "Starting Athena install..."
+
+# setup-install stashes the IP address in a file...
 netaddr=`cat /etc/myIPaddr`
+
+# Make sure we have a valid hostname for getcluster.
+hostname=`uname -n`
+if [ -z "$hostname" ]; then
+  # Do a DNS reverse lookup on our IP address to get the host name.
+  echo "Getting host name from DNS..."
+  hostname=`/usr/athena/bin/host $netaddr | \
+    sed -n -e 's|^.*domain name pointer \(.*\)$|\1|p' | sed -e 's|\.*$||'`
+  if [ -z "$hostname" ]; then
+    echo "Cannot determine the machine host name, aborting the install."
+    echo "Please contact Athena Hotline at x3-1410."
+    echo "Thank you. -Athena Operations"
+    /sbin/sh
+    halt
+  fi
+fi
+hostname=`echo $hostname | /usr/bin/tr "[A-Z]" "[a-z]"`
+uname -S "$hostname"
+
 gateway=`cat /etc/defaultrouter`
 echo "the important variable are :"
 echo $netaddr $gateway $hostname
