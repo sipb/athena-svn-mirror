@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.32 2005-07-20 20:32:04 rbasch Exp $
+### $Id: install1.sh,v 1.33 2005-08-19 15:54:03 rbasch Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin:/usr/athena/bin
@@ -119,13 +119,6 @@ done
 
 default_release=${NEW_PRODUCTION_RELEASE:-$NEW_TESTING_RELEASE}
 
-# Temporary hack:  Force machines that should run 9.4 to install 9.3
-# (from which they can update to 9.4).  Remove this when the native 9.4
-# install is available.
-if [ "$default_release" = 9.4 ]; then
-    default_release=9.3
-fi
-
 major=`echo $default_release | awk -F. '{ print int($1); }'`
 if [ "$major" -lt 9 ]; then
     echo "The production release for this machine is $default_release."
@@ -149,7 +142,7 @@ Y)
 	"")
 	    REV=$default_release
 	    ;;
-	9.[0-3]|$NEW_PRODUCTION_RELEASE|$NEW_TESTING_RELEASE)
+	9.[0-4]|$NEW_PRODUCTION_RELEASE|$NEW_TESTING_RELEASE)
 	    REV=$rev
 	    ;;
 	*.*)
@@ -507,12 +500,12 @@ Y)
     # Installing 9.3 or later; use the new layout.
     vice=/usr/vice
     mkdir -p $vice/cache
-    mount $cachedrive $vice/cache
+    mount -o nologging $cachedrive $vice/cache
     ;;
 *)
     # Installing a pre-9.3 rev; use the old layout.
     vice=/var/usr/vice
-    mount $cachedrive $vice
+    mount -o nologging $cachedrive $vice
     mkdir -p $vice/cache
     ;;
 esac
@@ -541,6 +534,16 @@ modload /kernel/misc/sparcv9/nfssrv
 modload /kernel/fs/sparcv9/afs
 echo "Starting afsd "
 /etc/afsd -afsdb -nosettime -daemons 4
+
+# Allow setuid/setgid bits from the install cell(s), in case any such
+# files are copied explicitly.
+cells=`/bin/athena/fs whichcell /os /install /srvd 2>/dev/null | \
+  sed -e "s/.* lives in cell '\(.*\)'/\1/" | sort -u`
+for cell in $cells ; do
+  echo "Allowing setuid/setgid programs from $cell"
+  /bin/athena/fs setcell $cell -suid
+done
+
 type=install; export type
 date >/tmp/install.log
 
