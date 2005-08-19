@@ -8,19 +8,6 @@
 # it sets up the env & runs athenainstall
 #
 
-case "$1" in
-start)
-    # Fall through to start the install.
-    ;;
-stop)
-    exit 0
-    ;;
-*)
-    echo "Usage: $0 {start|stop}" 1>&2
-    exit 1
-    ;;
-esac
-
 # first thing, source /etc/TIMEZONE, so TZ (and maybe others) set
 . /etc/TIMEZONE
 
