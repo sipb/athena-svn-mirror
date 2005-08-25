@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.69 2005-03-31 16:35:48 rbasch Exp $
+# $Id: update_ws.sh,v 1.70 2005-08-25 18:32:09 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -256,13 +256,14 @@ sun4)
     failupdate
   fi
 
-  # Set required filesystem size for the 9.3 release, and required
-  # filesystem space for the 9.3 update.  Filesystem overhead consumes
+  # Set required filesystem size for the 9.4 release, and required
+  # filesystem space for the 9.4 update.  Filesystem overhead consumes
   # about 7% of a partition, so we check for a filesystem size 10%
   # less than the partition size we want.  We get some extra margin
   # from minfree, but we don't deliberately rely on that.
-  reqsize=4718592	# 5GB partition; measured use 3447108K
-  reqspace=2621440	# 2.5GB; measured space increase 2257525K
+  reqsize=4718592	# 5GB partition; measured use 4362422K
+  reqspace=1572864	# 1.5GB; measured space increase about 1.1GB
+  reqmem=256		# 256MB RAM required
 
   # Check filesystem size.
   rootsize=`df -k / | awk '{ x = $2; } END { print x; }'`
@@ -273,9 +274,18 @@ sun4)
     failupdate
   fi
 
-  # Check free space if this is a full update to 9.3.
+  # Check memory.
+  mem=`/usr/sbin/prtconf | awk '/^Memory size:/ { print $3; }'`
+  if [ "$reqmem" -gt "$mem" ]; then
+    echo "This machine has only ${mem}MB of RAM."
+    echo "${reqmem}MB is required for Athena release 9.4."
+    logger -t "$HOST" -p user.notice insufficient memory to take update
+    failupdate
+  fi
+
+  # Check free space if this is a full update to 9.4.
   case $version in
-  9.2.*)
+  9.3.*)
     rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
     if [ "$reqspace" -gt "$rootspace" ]; then
       echo "The / partition must have ${reqspace}K free for this update."
