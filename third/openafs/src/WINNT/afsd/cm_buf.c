@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <strsafe.h>
+#include <math.h>
 
 #include "afsd.h"
 #include "cm_memmap.h"
@@ -109,7 +110,7 @@ void buf_IncrSyncer(long parm)
     bp = cm_data.buf_allp;
     bp->refCount++;
     lock_ReleaseWrite(&buf_globalLock);
-    nAtOnce = cm_data.buf_nbuffers / 10;
+    nAtOnce = (long)sqrt(cm_data.buf_nbuffers);
     while (buf_ShutdownFlag == 0) {
 #ifndef DJGPP
         i = SleepEx(5000, 1);
@@ -155,6 +156,13 @@ buf_ValidateBuffers(void)
 {
     cm_buf_t * bp, *bpf, *bpa, *bpb;
     afs_uint32 countb = 0, countf = 0, counta = 0;
+
+    if (cm_data.buf_freeListp == NULL && cm_data.buf_freeListEndp != NULL ||
+         cm_data.buf_freeListp != NULL && cm_data.buf_freeListEndp == NULL) {
+        afsi_log("cm_ValidateBuffers failure: inconsistent free list pointers");
+        fprintf(stderr, "cm_ValidateBuffers failure: inconsistent free list pointers\n");
+        return -9;                  
+    }
 
     for (bp = cm_data.buf_freeListEndp; bp; bp=(cm_buf_t *) osi_QPrev(&bp->q)) { 
         if (bp->magic != CM_BUF_MAGIC) {
@@ -427,7 +435,7 @@ void buf_Release(cm_buf_t *bp)
 }
 
 /* wait for reading or writing to clear; called with write-locked
- * buffer, and returns with locked buffer.
+ * buffer and unlocked scp and returns with locked buffer.
  */
 void buf_WaitIO(cm_scache_t * scp, cm_buf_t *bp)
 {
@@ -447,15 +455,15 @@ void buf_WaitIO(cm_scache_t * scp, cm_buf_t *bp)
         if ( bp->flags & CM_BUF_WAITING ) {
             bp->waitCount++;
             bp->waitRequests++;
-            osi_Log1(buf_logp, "buf_WaitIO CM_BUF_WAITING already set for 0x%x", bp);
+            osi_Log1(afsd_logp, "buf_WaitIO CM_BUF_WAITING already set for 0x%x", bp);
         } else {
-            osi_Log1(buf_logp, "buf_WaitIO CM_BUF_WAITING set for 0x%x", bp);
+            osi_Log1(afsd_logp, "buf_WaitIO CM_BUF_WAITING set for 0x%x", bp);
             bp->flags |= CM_BUF_WAITING;
             bp->waitCount = bp->waitRequests = 1;
         }
         osi_SleepM((long) bp, &bp->mx);
         lock_ObtainMutex(&bp->mx);
-        osi_Log1(buf_logp, "buf_WaitIO conflict wait done for 0x%x", bp);
+        osi_Log1(afsd_logp, "buf_WaitIO conflict wait done for 0x%x", bp);
         bp->waitCount--;
         if (bp->waitCount == 0) {
             osi_Log1(afsd_logp, "buf_WaitIO CM_BUF_WAITING reset for 0x%x", bp);
@@ -469,10 +477,10 @@ void buf_WaitIO(cm_scache_t * scp, cm_buf_t *bp)
         if ( scp ) {
             lock_ObtainMutex(&scp->mx);
             if (scp->flags & CM_SCACHEFLAG_WAITING) {
-                osi_Log1(buf_logp, "buf_WaitIO waking scp 0x%x", scp);
-                osi_Wakeup(&scp->flags);
-                lock_ReleaseMutex(&scp->mx);
+                osi_Log1(afsd_logp, "buf_WaitIO waking scp 0x%x", scp);
+                osi_Wakeup((long)&scp->flags);
             }
+	    lock_ReleaseMutex(&scp->mx);
         }
     }
         
@@ -480,10 +488,10 @@ void buf_WaitIO(cm_scache_t * scp, cm_buf_t *bp)
      * the I/O to complete.  Do so.
      */
     if (bp->flags & CM_BUF_WAITING) {
-        osi_Log1(buf_logp, "buf_WaitIO Waking bp 0x%x", bp);
+        osi_Log1(afsd_logp, "buf_WaitIO Waking bp 0x%x", bp);
         osi_Wakeup((long) bp);
     }
-    osi_Log1(buf_logp, "WaitIO finished wait for bp 0x%x", (long) bp);
+    osi_Log1(afsd_logp, "WaitIO finished wait for bp 0x%x", (long) bp);
 }
 
 /* code to drop reference count while holding buf_globalLock */
@@ -555,9 +563,11 @@ void buf_LockedCleanAsync(cm_buf_t *bp, cm_req_t *reqp)
     while ((bp->flags & CM_BUF_DIRTY) == CM_BUF_DIRTY) {
         lock_ReleaseMutex(&bp->mx);
 
+	osi_Log1(afsd_logp, "buf_LockedCleanAsync starts I/O on 0x%x", bp);
         code = (*cm_buf_opsp->Writep)(&bp->fid, &bp->offset,
                                        cm_data.buf_blockSize, 0, bp->userp,
                                        reqp);
+	osi_Log2(afsd_logp, "buf_LockedCleanAsync I/O on 0x%x, done=%d", bp, code);
                 
         lock_ObtainMutex(&bp->mx);
         if (code) 
@@ -571,7 +581,6 @@ void buf_LockedCleanAsync(cm_buf_t *bp, cm_req_t *reqp)
     };
 
     /* do logging after call to GetLastError, or else */
-    osi_Log2(buf_logp, "buf_CleanAsync starts I/O on 0x%x, done=%d", bp, code);
         
     /* if someone was waiting for the I/O that just completed or failed,
      * wake them up.

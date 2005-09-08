@@ -33,7 +33,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_server.c,v 1.1.1.4 2005-03-10 20:43:57 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_server.c,v 1.1.1.5 2005-09-08 18:02:45 zacheiss Exp $");
 
 #include "afs/stds.h"
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
@@ -603,7 +603,7 @@ afs_CheckServers(int adown, struct cell *acellp)
 	multi_RXAFS_GetTime(&tv.tv_sec, &tv.tv_usec);
 	tc = conns[multi_i];
 	sa = tc->srvr;
-	if (conntimer[multi_i] == 0)
+	if (conntimer[multi_i] == 1)
 	  rx_SetConnDeadTime(tc->id, afs_rx_deadtime);
 	end = osi_Time();
 	results[multi_i]=multi_error;
