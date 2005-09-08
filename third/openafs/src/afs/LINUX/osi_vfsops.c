@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vfsops.c,v 1.1.1.6 2005-08-02 21:15:09 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vfsops.c,v 1.1.1.7 2005-09-08 18:03:07 zacheiss Exp $");
 
 #define __NO_VERSION__		/* don't define kernel_version in module.h */
 #include <linux/module.h> /* early to avoid printf->printk mapping */
@@ -341,16 +341,14 @@ afs_clear_inode(struct inode *ip)
 static void
 afs_put_inode(struct inode *ip)
 {
-    cred_t *credp = crref();
     struct vcache *vcp = VTOAFS(ip);
 
-    AFS_GLOCK();
-    ObtainReadLock(&vcp->lock);
-    if (VREFCOUNT(vcp) == 2)
-	afs_InactiveVCache(vcp, credp);
-    ReleaseReadLock(&vcp->lock);
-    AFS_GUNLOCK();
-    crfree(credp);
+    if (VREFCOUNT(vcp) == 2) {
+	AFS_GLOCK();
+	if (VREFCOUNT(vcp) == 2)
+	    afs_InactiveVCache(vcp, NULL);
+	AFS_GUNLOCK();
+    }
 }
 
 /* afs_put_super
@@ -358,8 +356,6 @@ afs_put_inode(struct inode *ip)
 static void
 afs_put_super(struct super_block *sbp)
 {
-    int code = 0;
-
     AFS_GLOCK();
     AFS_STATCNT(afs_unmount);
 
@@ -382,14 +378,12 @@ afs_put_super(struct super_block *sbp)
     osi_linux_verify_alloced_memory();
     AFS_GUNLOCK();
 
-    if (!code) {
-	sbp->s_dev = 0;
+    sbp->s_dev = 0;
 #if defined(AFS_LINUX26_ENV)
-	module_put(THIS_MODULE);
+    module_put(THIS_MODULE);
 #else
-	MOD_DEC_USE_COUNT;
+    MOD_DEC_USE_COUNT;
 #endif
-    }
 }
 
 
@@ -436,12 +430,6 @@ afs_statfs(struct super_block *sbp, struct statfs *__statp, int size)
     return 0;
 }
 
-void
-afs_umount_begin(struct super_block *sbp)
-{
-    afs_shuttingdown = 1;
-}
-
 struct super_operations afs_sops = {
 #if defined(STRUCT_SUPER_HAS_ALLOC_INODE)
   .alloc_inode =	afs_alloc_inode,
@@ -451,7 +439,6 @@ struct super_operations afs_sops = {
   .put_inode =		afs_put_inode,
   .put_super =		afs_put_super,
   .statfs =		afs_statfs,
-  .umount_begin =	afs_umount_begin
 #if !defined(AFS_LINUX24_ENV)
   .notify_change =	afs_notify_change,
 #endif

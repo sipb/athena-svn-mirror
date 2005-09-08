@@ -37,7 +37,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/des.c,v 1.1.1.4 2005-08-02 21:13:19 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/des.c,v 1.1.1.5 2005-09-08 18:03:04 zacheiss Exp $");
 
 #ifndef KERNEL
 #include <stdio.h>
@@ -51,7 +51,6 @@ RCSID
 #ifdef BIG
 #include "p_table.h"
 #endif
-#include "stats.h"
 
 #include "des_prototypes.h"
 
@@ -101,10 +100,6 @@ des_ecb_encrypt(void * clear, void * cipher,
 #ifdef DEBUG
     afs_uint32 dbg_tmp[2];
 #endif
-    if (encrypt)
-	INC_RXKAD_STATS(des_encrypts[DES_ENCRYPT]);
-    else
-	INC_RXKAD_STATS(des_encrypts[DES_DECRYPT]);
     /*
      * Use L1,R1 and L2,R2 as two sets of "64-bit" registers always
      * work from L1,R1 input to L2,R2 output; initialize the cleartext

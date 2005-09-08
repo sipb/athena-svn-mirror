@@ -139,7 +139,7 @@ afsi_start()
     char wd[256];
     char t[100], u[100], *p, *path;
     int zilch;
-    int code;
+    DWORD code;
     DWORD dwLow, dwHigh;
     HKEY parmKey;
     DWORD dummyLen;
@@ -638,7 +638,7 @@ int afsd_InitCM(char **reasonP)
     dummyLen = sizeof(TraceOption);
     code = RegQueryValueEx(parmKey, "TraceOption", NULL, NULL,
                             (BYTE *) &TraceOption, &dummyLen);
-    afsi_log("Event Log Tracing = %lX", TraceOption);
+    afsi_log("Trace Options = %lX", TraceOption);
 
     dummyLen = sizeof(traceBufSize);
     code = RegQueryValueEx(parmKey, "TraceBufferSize", NULL, NULL,
@@ -653,7 +653,13 @@ int afsd_InitCM(char **reasonP)
     /* setup and enable debug log */
     afsd_logp = osi_LogCreate("afsd", traceBufSize);
     afsi_log("osi_LogCreate log addr %x", (int)afsd_logp);
-    osi_LogEnable(afsd_logp);
+    if ((TraceOption & 0x8)
+#ifdef DEBUG
+	 || 1
+#endif
+	 ) {
+	osi_LogEnable(afsd_logp);
+    }
     logReady = 1;
 
     osi_Log0(afsd_logp, "Log init");

@@ -22,7 +22,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.1.1.7 2005-08-02 21:15:07 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.1.1.8 2005-09-08 18:03:28 zacheiss Exp $");
 
 #include "afs/sysincludes.h"
 #include "afsincludes.h"
@@ -631,6 +631,7 @@ afs_linux_revalidate(struct dentry *dp)
 #endif
     AFS_GLOCK();
 
+#ifdef notyet
     /* Make this a fast path (no crref), since it's called so often. */
     if (vcp->states & CStatd) {
 
@@ -643,6 +644,7 @@ afs_linux_revalidate(struct dentry *dp)
 #endif
 	return 0;
     }
+#endif
 
     credp = crref();
     code = afs_getattr(vcp, &vattr, credp);
@@ -792,7 +794,7 @@ afs_dentry_iput(struct dentry *dp, struct inode *ip)
 
     AFS_GLOCK();
     if (vcp->states & CUnlinked)
-	(void) afs_remunlink(vcp, 1);		/* perhaps afs_InactiveVCache() instead */
+	(void) afs_InactiveVCache(vcp, NULL);
     AFS_GUNLOCK();
 
     iput(ip);
@@ -913,6 +915,7 @@ afs_linux_lookup(struct inode *dip, struct dentry *dp)
     if (res) {
 	if (d_unhashed(res))
 	    d_rehash(res);
+	iput(ip);
     } else
 #endif
     d_add(dp, ip);
@@ -973,7 +976,7 @@ afs_linux_unlink(struct inode *dip, struct dentry *dp)
 #if defined(AFS_LINUX26_ENV)
     lock_kernel();
 #endif
-    if (((VREFCOUNT(tvc) > 0) && tvc->opens > 0)
+    if (VREFCOUNT(tvc) > 1 && tvc->opens > 0
 				&& !(tvc->states & CUnlinked)) {
 	struct dentry *__dp;
 	char *__name;
@@ -1097,9 +1100,8 @@ afs_linux_rmdir(struct inode *dip, struct dentry *dp)
     cred_t *credp = crref();
     const char *name = dp->d_name.name;
 
-#if defined(AFS_LINUX26_ENV)
-    lock_kernel();
-#endif
+    /* locking kernel conflicts with glock? */
+
     AFS_GLOCK();
     code = afs_rmdir(VTOAFS(dip), name, credp);
     AFS_GUNLOCK();
@@ -1116,9 +1118,6 @@ afs_linux_rmdir(struct inode *dip, struct dentry *dp)
 	d_drop(dp);
     }
 
-#if defined(AFS_LINUX26_ENV)
-    unlock_kernel();
-#endif
     crfree(credp);
     return -code;
 }
@@ -1263,7 +1262,7 @@ afs_linux_readpage(struct file *fp, struct page *pp)
     cred_t *credp = crref();
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
     char *address;
-    afs_offs_t offset = pp->index << PAGE_CACHE_SHIFT;
+    afs_offs_t offset = ((loff_t) pp->index) << PAGE_CACHE_SHIFT;
 #else
     ulong address = afs_linux_page_address(pp);
     afs_offs_t offset = pageoff(pp);
@@ -1359,7 +1358,7 @@ afs_linux_writepage_sync(struct inode *ip, struct page *pp,
     int f_flags = 0;
 
     buffer = kmap(pp) + offset;
-    base = (pp->index << PAGE_CACHE_SHIFT) + offset;
+    base = (((loff_t) pp->index) << PAGE_CACHE_SHIFT)  + offset;
 
     credp = crref();
     lock_kernel();

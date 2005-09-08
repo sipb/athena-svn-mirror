@@ -18,9 +18,11 @@
 #include <time.h>
 #include <winsock2.h>
 #include <errno.h>
+#include <assert.h>
 
 #include <osi.h>
 #include <afsint.h>
+#include <WINNT\afsreg.h>
 
 #include "fs_utils.h"
 #include "cmd.h"
@@ -57,8 +59,8 @@ foldcmp (a, b)
 }
 
 /* this function returns TRUE (1) if the file is in AFS, otherwise false (0) */
-static int InAFS(apath)
-register char *apath; {
+static int InAFS(register char *apath)
+{
     struct ViceIoctl blob;
     register afs_int32 code;
 
@@ -68,9 +70,186 @@ register char *apath; {
 
     code = pioctl(apath, VIOC_FILE_CELL_NAME, &blob, 1);
     if (code) {
-	if ((errno == EINVAL) || (errno == ENOENT)) return 0;
+	if ((errno == EINVAL) || (errno == ENOENT)) 
+            return 0;
     }
     return 1;
+}
+
+static int 
+IsFreelanceRoot(char *apath)
+{
+    struct ViceIoctl blob;
+    afs_int32 code;
+
+    blob.in_size = 0;
+    blob.out_size = MAXSIZE;
+    blob.out = space;
+
+    code = pioctl(apath, VIOC_FILE_CELL_NAME, &blob, 1);
+    if (code == 0)
+        return !strcmp("Freelance.Local.Root",space);
+    return 1;   /* assume it is because it is more restrictive that way */
+}
+
+static const char * NetbiosName(void)
+{
+    static char buffer[1024] = "AFS";
+    HKEY  parmKey;
+    DWORD code;
+    DWORD dummyLen;
+    DWORD enabled = 0;
+
+    code = RegOpenKeyEx(HKEY_LOCAL_MACHINE, AFSREG_CLT_SVC_PARAM_SUBKEY,
+                         0, KEY_QUERY_VALUE, &parmKey);
+    if (code == ERROR_SUCCESS) {
+        dummyLen = sizeof(buffer);
+        code = RegQueryValueEx(parmKey, "NetbiosName", NULL, NULL,
+			       buffer, &dummyLen);
+        RegCloseKey (parmKey);
+    } else {
+	strcpy(buffer, "AFS");
+    }
+    return buffer;
+}
+
+#define AFSCLIENT_ADMIN_GROUPNAME "AFS Client Admins"
+
+static BOOL IsAdmin (void)
+{
+    static BOOL fAdmin = FALSE;
+    static BOOL fTested = FALSE;
+
+    if (!fTested)
+    {
+        /* Obtain the SID for the AFS client admin group.  If the group does
+         * not exist, then assume we have AFS client admin privileges.
+         */
+        PSID psidAdmin = NULL;
+        DWORD dwSize, dwSize2;
+        char pszAdminGroup[ MAX_COMPUTERNAME_LENGTH + sizeof(AFSCLIENT_ADMIN_GROUPNAME) + 2 ];
+        char *pszRefDomain = NULL;
+        SID_NAME_USE snu = SidTypeGroup;
+
+        dwSize = sizeof(pszAdminGroup);
+
+        if (!GetComputerName(pszAdminGroup, &dwSize)) {
+            /* Can't get computer name.  We return false in this case.
+               Retain fAdmin and fTested. This shouldn't happen.*/
+            return FALSE;
+        }
+
+        dwSize = 0;
+        dwSize2 = 0;
+
+        strcat(pszAdminGroup,"\\");
+        strcat(pszAdminGroup, AFSCLIENT_ADMIN_GROUPNAME);
+
+        LookupAccountName(NULL, pszAdminGroup, NULL, &dwSize, NULL, &dwSize2, &snu);
+        /* that should always fail. */
+
+        if (GetLastError() != ERROR_INSUFFICIENT_BUFFER) {
+            /* if we can't find the group, then we allow the operation */
+            fAdmin = TRUE;
+            return TRUE;
+        }
+
+        if (dwSize == 0 || dwSize2 == 0) {
+            /* Paranoia */
+            fAdmin = TRUE;
+            return TRUE;
+        }
+
+        psidAdmin = (PSID)malloc(dwSize); memset(psidAdmin,0,dwSize);
+        assert(psidAdmin);
+        pszRefDomain = (char *)malloc(dwSize2);
+        assert(pszRefDomain);
+
+        if (!LookupAccountName(NULL, pszAdminGroup, psidAdmin, &dwSize, pszRefDomain, &dwSize2, &snu)) {
+            /* We can't lookup the group now even though we looked it up earlier.  
+               Could this happen? */
+            fAdmin = TRUE;
+        } else {
+            /* Then open our current ProcessToken */
+            HANDLE hToken;
+
+            if (OpenProcessToken (GetCurrentProcess(), TOKEN_QUERY, &hToken))
+            {
+
+                if (!CheckTokenMembership(hToken, psidAdmin, &fAdmin)) {
+                    /* We'll have to allocate a chunk of memory to store the list of
+                     * groups to which this user belongs; find out how much memory
+                     * we'll need.
+                     */
+                    DWORD dwSize = 0;
+                    PTOKEN_GROUPS pGroups;
+
+                    GetTokenInformation (hToken, TokenGroups, NULL, dwSize, &dwSize);
+
+                    pGroups = (PTOKEN_GROUPS)malloc(dwSize);
+                    assert(pGroups);
+
+                    /* Allocate that buffer, and read in the list of groups. */
+                    if (GetTokenInformation (hToken, TokenGroups, pGroups, dwSize, &dwSize))
+                    {
+                        /* Look through the list of group SIDs and see if any of them
+                         * matches the AFS Client Admin group SID.
+                         */
+                        size_t iGroup = 0;
+                        for (; (!fAdmin) && (iGroup < pGroups->GroupCount); ++iGroup)
+                        {
+                            if (EqualSid (psidAdmin, pGroups->Groups[ iGroup ].Sid)) {
+                                fAdmin = TRUE;
+                            }
+                        }
+                    }
+
+                    if (pGroups)
+                        free(pGroups);
+                }
+
+                /* if do not have permission because we were not explicitly listed
+                 * in the Admin Client Group let's see if we are the SYSTEM account
+                 */
+                if (!fAdmin) {
+                    PTOKEN_USER pTokenUser;
+                    SID_IDENTIFIER_AUTHORITY SIDAuth = SECURITY_NT_AUTHORITY;
+                    PSID pSidLocalSystem = 0;
+                    DWORD gle;
+
+                    GetTokenInformation(hToken, TokenUser, NULL, 0, &dwSize);
+
+                    pTokenUser = (PTOKEN_USER)malloc(dwSize);
+                    assert(pTokenUser);
+
+                    if (!GetTokenInformation(hToken, TokenUser, pTokenUser, dwSize, &dwSize))
+                        gle = GetLastError();
+
+                    if (AllocateAndInitializeSid( &SIDAuth, 1,
+                                                  SECURITY_LOCAL_SYSTEM_RID,
+                                                  0, 0, 0, 0, 0, 0, 0,
+                                                  &pSidLocalSystem))
+                    {
+                        if (EqualSid(pTokenUser->User.Sid, pSidLocalSystem)) {
+                            fAdmin = TRUE;
+                        }
+
+                        FreeSid(pSidLocalSystem);
+                    }
+
+                    if ( pTokenUser )
+                        free(pTokenUser);
+                }
+            }
+        }
+
+        free(psidAdmin);
+        free(pszRefDomain);
+
+        fTested = TRUE;
+    }
+
+    return fAdmin;
 }
 
 /* return a static pointer to a buffer */
@@ -181,6 +360,21 @@ register struct cmd_syndesc *as; {
 	    strncpy(parent_dir, true_name, last_component - true_name + 1);
 	    parent_dir[last_component - true_name + 1] = 0;
 	    last_component++;   /*Skip the slash*/
+
+#ifdef WIN32
+	    if (!InAFS(parent_dir)) {
+		const char * nbname = NetbiosName();
+		int len = strlen(nbname);
+
+		if (parent_dir[0] == '\\' && parent_dir[1] == '\\' &&
+		    parent_dir[len+2] == '\\' &&
+		    parent_dir[len+3] == '\0' &&
+		    !strnicmp(nbname,&parent_dir[2],len))
+		{
+		    sprintf(parent_dir,"\\\\%s\\all\\", nbname);
+		}
+	    }
+#endif
 	}
 	else {
 	    /*
@@ -230,29 +424,52 @@ static MakeLinkCmd(as)
 register struct cmd_syndesc *as; {
     register afs_int32 code;
     struct ViceIoctl blob;
+    char * parent;
+    char path[1024] = "";
 
-    if (!InAFS(Parent(as->parms[0].items->data))) {
-	fprintf(stderr,"%s: symlinks must be created within the AFS file system\n", pn);
+    strcpy(path, as->parms[0].items->data);
+    parent = Parent(path);
+
+    if (!InAFS(parent)) {
+#ifdef WIN32
+	const char * nbname = NetbiosName();
+	int len = strlen(nbname);
+
+	if (parent[0] == '\\' && parent[1] == '\\' &&
+	    parent[len+2] == '\\' &&
+	    parent[len+3] == '\0' &&
+	    !strnicmp(nbname,&parent[2],len))
+	{
+	    sprintf(path,"%sall\\%s", parent, &as->parms[0].items->data[strlen(parent)]);
+	    parent = Parent(path);
+	    if (!InAFS(parent)) {
+		fprintf(stderr,"%s: symlinks must be created within the AFS file system\n", pn);
+		return 1;
+	    }
+	} else 
+#endif
+	{
+	    fprintf(stderr,"%s: symlinks must be created within the AFS file system\n", pn);
+	    return 1;
+	}
+    }
+
+#ifdef WIN32
+    if ( IsFreelanceRoot(parent) && !IsAdmin() ) {
+	fprintf(stderr,"%s: Only AFS Client Administrators may alter the root.afs volume\n", pn);
 	return 1;
     }
 
-    strcpy(space, as->parms[1].items->data);
-#ifdef WIN32
     /* create symlink with a special pioctl for Windows NT, since it doesn't
      * have a symlink system call.
      */
-
-    /* TODO: Code needs to go here to prevent the creation of symlinks
-     * in \\AFS\all when not in the "AFS Client Admins" group.
-     */
-
     blob.out_size = 0;
-    blob.in_size = 1 + strlen(space);
-    blob.in = space;
+    blob.in_size = 1 + strlen(as->parms[1].items->data);
+    blob.in = as->parms[1].items->data;
     blob.out = NULL;
-    code = pioctl(as->parms[0].items->data, VIOC_SYMLINK, &blob, 0);
+    code = pioctl(path, VIOC_SYMLINK, &blob, 0);
 #else /* not WIN32 */
-    code = symlink(space, as->parms[0].items->data);
+    code = symlink(as->parms[1].items->data, path);
 #endif /* not WIN32 */
     if (code) {
 	Die(errno, as->parms[0].items->data);
@@ -285,6 +502,21 @@ register struct cmd_syndesc *as; {
 	    strncpy(tbuffer, ti->data, code=tp-ti->data+1);  /* the dir name */
             tbuffer[code] = 0;
 	    tp++;   /* skip the slash */
+
+#ifdef WIN32
+	    if (!InAFS(tbuffer)) {
+		const char * nbname = NetbiosName();
+		int len = strlen(nbname);
+
+		if (tbuffer[0] == '\\' && tbuffer[1] == '\\' &&
+		     tbuffer[len+2] == '\\' &&
+		     tbuffer[len+3] == '\0' &&
+		     !strnicmp(nbname,&tbuffer[2],len))
+		{
+		    sprintf(tbuffer,"\\\\%s\\all\\", nbname);
+		}
+	    }
+#endif
 	}
 	else {
 	    fs_ExtractDriveLetter(ti->data, tbuffer);
@@ -299,12 +531,19 @@ register struct cmd_syndesc *as; {
 	code = pioctl(tbuffer, VIOC_LISTSYMLINK, &blob, 0);
 	if (code) {
 	    if (errno == EINVAL)
-		fprintf(stderr,"fs: '%s' is not a symlink.\n", ti->data);
+		fprintf(stderr,"symlink: '%s' is not a symlink.\n", ti->data);
 	    else {
 		Die(errno, ti->data);
 	    }
 	    continue;	/* don't bother trying */
 	}
+
+        if ( IsFreelanceRoot(tbuffer) && !IsAdmin() ) {
+            fprintf(stderr,"symlink: Only AFS Client Administrators may alter the root.afs volume\n");
+            code = 1;
+            continue;   /* skip */
+        }
+
 	blob.out_size = 0;
 	blob.in = tp;
 	blob.in_size = strlen(tp)+1;
@@ -312,7 +551,6 @@ register struct cmd_syndesc *as; {
 	if (code) {
 	    Die(errno, ti->data);
 	}
-
     }
     return code;
 }
@@ -358,8 +596,9 @@ char **argv; {
     cmd_AddParm(ts, "-name", CMD_SINGLE, 0, "name");
     cmd_AddParm(ts, "-to", CMD_SINGLE, 0, "target");
 
-    ts = cmd_CreateSyntax("rm", RemoveLinkCmd, 0, "remove symlink");
+    ts = cmd_CreateSyntax("remove", RemoveLinkCmd, 0, "remove symlink");
     cmd_AddParm(ts, "-name", CMD_LIST, 0, "name");
+    cmd_CreateAlias(ts, "rm");
 
     code = cmd_Dispatch(argc, argv);
 

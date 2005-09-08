@@ -620,6 +620,7 @@ case $AFS_SYSNAME in *_linux* | *_umlinux*)
 		 LINUX_SCHED_STRUCT_TASK_STRUCT_HAS_RLIM
 		 LINUX_SCHED_STRUCT_TASK_STRUCT_HAS_SIGNAL_RLIM
 		 LINUX_SCHED_STRUCT_TASK_STRUCT_HAS_EXIT_STATE
+		 LINUX_REFRIGERATOR
 		 LINUX_WHICH_MODULES
                  if test "x$ac_cv_linux_config_modversions" = "xno" -o $AFS_SYSKVERS -ge 26; then
                    AC_MSG_WARN([Cannot determine sys_call_table status. assuming it isn't exported])
@@ -1179,7 +1180,7 @@ AC_PROG_LEX
 AC_DECL_YYTEXT])
 
 dnl
-dnl $Id: aclocal.m4,v 1.1.1.7 2005-08-02 21:15:21 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.1.1.8 2005-09-08 18:03:31 zacheiss Exp $
 dnl
 
 dnl check if this computer is little or big-endian
@@ -2069,6 +2070,25 @@ ac_cv_linux_func_a_writepage_takes_writeback_control=no)])
 AC_MSG_RESULT($ac_cv_linux_func_a_writepage_takes_writeback_control)
 if test "x$ac_cv_linux_func_a_writepage_takes_writeback_control" = "xyes" ; then
 AC_DEFINE(AOP_WRITEPAGE_TAKES_WRITEBACK_CONTROL, 1, [define if your aops.writepage takes a struct writeback_control argument])
+fi
+CPPFLAGS="$save_CPPFLAGS"])
+
+AC_DEFUN([LINUX_REFRIGERATOR],[
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+AC_MSG_CHECKING(whether refrigerator takes PF_FREEZE)
+AC_CACHE_VAL(ac_cv_linux_func_refrigerator_takes_pf_freeze,
+[
+AC_TRY_COMPILE(
+[#include <linux/sched.h>],
+[
+refrigerator(PF_FREEZE);
+],
+ac_cv_linux_func_refrigerator_takes_pf_freeze=yes,
+ac_cv_linux_func_refrigerator_takes_pf_freeze=no)])
+AC_MSG_RESULT($ac_cv_linux_func_refrigerator_takes_pf_freeze)
+if test "x$ac_cv_linux_func_refrigerator_takes_pf_freeze" = "xyes" ; then
+AC_DEFINE(LINUX_REFRIGERATOR_TAKES_PF_FREEZE, 1, [define if your refrigerator takes PF_FREEZE])
 fi
 CPPFLAGS="$save_CPPFLAGS"])
 
@@ -3245,7 +3265,7 @@ AC_MSG_RESULT($ac_cv_irix_sys_systm_h_has_mem_funcs)
 ])
 
 dnl
-dnl $Id: aclocal.m4,v 1.1.1.7 2005-08-02 21:15:21 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.1.1.8 2005-09-08 18:03:31 zacheiss Exp $
 dnl
 dnl Kerberos autoconf glue
 dnl
