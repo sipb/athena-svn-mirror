@@ -123,8 +123,36 @@ echo "$netaddr	$hostname $shortname" >> etc/inet/hosts
 
 rm -f /root/.rvdinfo
 /srvd/etc/athena/gettime -s time.mit.edu
-echo installed on `date` from `df -k / | tail -1 | awk '{print $1}'` \
-	> /root/etc/athena/version
+
+# Determine the miniroot URL or mount path used, based on the root
+# filesystem type, and record it in /etc/athena/version.  For a
+# wanboot-based install, root will be a ufs filesystem, so extract the
+# miniroot URL from the wanboot filesystem configuration file.  If root
+# is an NFS mount, as in cnboot-based installs, use host:path.
+case `df -n / | awk '{ print $3; }'` in
+ufs)
+    # wanboot.conf has a setting for root_server of the form
+    # "http://server/cgi-bin/wanboot-cgi", and a setting for
+    # root_file, which is the path to the miniroot image file
+    # within the server's document root.  So combine the two
+    # to produce a full URL to the image.
+    if grep -s '^root_server=' /etc/netboot/wanboot.conf > /dev/null ; then
+      eval `grep '^root_server=' /etc/netboot/wanboot.conf`
+    fi
+    if grep -s '^root_file=' /etc/netboot/wanboot.conf > /dev/null ; then
+      eval `grep '^root_file=' /etc/netboot/wanboot.conf`
+    fi
+    server="`echo $root_server| sed -e 's|\(https\{0,1\}://[^/]*\)/.*|\1|'`"
+    miniroot="$server$root_file"
+    ;;
+nfs)
+    miniroot=`df -k / | awk '(NR == 2) { print $1; }'`
+    ;;
+esac
+: ${miniroot:=unknown}
+
+echo "installed on `date` from $miniroot" > /root/etc/athena/version
+
 if [ $CUSTOM = Y ]; then
 	if [ $PARTITION = Y ]; then
 		echo custom install with custom partitioning \
