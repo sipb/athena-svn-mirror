@@ -411,6 +411,8 @@ gnome_vfs_volume_is_mounted (GnomeVFSVolume *volume)
 gboolean
 gnome_vfs_volume_handles_trash (GnomeVFSVolume *volume)
 {
+	struct stat home_stat;
+
 	if (volume->priv->device_type == GNOME_VFS_DEVICE_TYPE_AUTOFS) {
 		return FALSE;
 	}
@@ -418,7 +420,21 @@ gnome_vfs_volume_handles_trash (GnomeVFSVolume *volume)
 		return FALSE;
 	}
 	if (volume->priv->filesystem_type != NULL) {
-		return _gnome_vfs_filesystem_use_trash (volume->priv->filesystem_type);
+		if (_gnome_vfs_filesystem_use_trash (volume->priv->filesystem_type))
+			return TRUE;
+	}
+	/* Athena hack:
+	 * We return TRUE if this volume contains the user's home
+	 * directory, regardless of whether the file system's type
+	 * supports trash directories, since the volume's trash
+	 * directory will be in the home directory in that case.
+	 * This supports use of the trash directory in an AFS
+	 * home directory, without having to specify the afs
+	 * file system type as supporting trash directories.
+	 */
+	if (stat (g_get_home_dir(), &home_stat) == 0
+	    && volume->priv->unix_device == home_stat.st_dev) {
+		return TRUE;
 	}
 	return FALSE;
 }
