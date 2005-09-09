@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: ifplugd.init.in,v 1.2 2004-04-12 20:01:20 amb Exp $
+# $Id: ifplugd.init.in,v 1.3 2005-09-09 17:52:09 ghudson Exp $
 
 # This file is part of ifplugd.
 #
@@ -25,18 +25,6 @@
 #
 # processname: @sbindir@/ifplugd
 # config: @sysconfdir@/ifplugd/ifplugd.conf
-
-### BEGIN INIT INFO
-# Provides:          athena-ifplugd
-# Required-Start:    $network
-# X-UnitedLinux-Should-Start:
-# Required-Stop:     $network
-# X-UnitedLinux-Should-Stop: $
-# Default-Start:     3 5
-# Default-Stop:      0 1 2 6
-# Short-Description: ifplugd daemon
-# Description:       Start ifplugd
-### END INIT INFO
 
 #
 # Source the Athena configuration.
