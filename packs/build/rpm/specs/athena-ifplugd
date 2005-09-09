@@ -14,4 +14,6 @@ unconfigure it if the cable is pulled.
 chkconfig --add athena-ifplugd
 
 %preun
-chkconfig --del athena-ifplugd
+if [ $1 = 0 ]; then
+  chkconfig --del athena-ifplugd
+fi
