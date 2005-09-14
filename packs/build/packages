@@ -1,4 +1,4 @@
-# $Id: packages,v 1.318 2005-08-09 19:25:19 ghudson Exp $
+# $Id: packages,v 1.319 2005-09-14 19:55:51 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -176,6 +176,7 @@ third/gettext			except linux requires libiconv
 third/gettext2			on solaris requires libiconv
 third/glib
 third/glib2			requires libiconv,gettext
+third/gmp			except linux
 third/gnome2-user-docs		requires scrollkeeper
 third/gnome-applets		requires gettext,intltool,gtk2,libgnome,libgnomeui,libxklavier,gnome-vfs2,GConf2,scrollkeeper,gnome-panel,libwnck,libglade2,gail
 third/gnome-audio
@@ -242,7 +243,7 @@ third/libiconv			except linux
 third/libIDL			requires glib2
 third/libole2			except linux
 third/libpng			except linux
-third/librep			requires gettext,gdbm,readline,texinfo
+third/librep			requires gettext,gdbm,gmp,readline,texinfo
 third/librsvg			requires gtk2,glib2,libart_lgpl,libxml2,pango,popt,libgsf
 third/libsoup			requires glib2,openssl
 third/libungif			except linux
