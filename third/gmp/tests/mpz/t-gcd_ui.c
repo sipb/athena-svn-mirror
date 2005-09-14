@@ -1,7 +1,6 @@
-/* gmp_randseed (state, seed) -- Set initial seed SEED in random state
-   STATE.
+/* Test mpz_gcd_ui.
 
-Copyright 2000, 2004 Free Software Foundation, Inc.
+Copyright 2003 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -20,14 +19,47 @@ along with the GNU MP Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "gmp.h"
 #include "gmp-impl.h"
+#include "tests.h"
 
-void
-gmp_randseed (gmp_randstate_t rstate,
-	      mpz_srcptr seed)
+/* Check mpz_gcd_ui doesn't try to return a value out of range.
+   This was wrong in gmp 4.1.2 with a long long limb.  */
+static void
+check_ui_range (void)
 {
-  mpz_fdiv_r_2exp (rstate->_mp_seed, seed,
-                   rstate->_mp_algdata._mp_lc->_mp_m2exp);
+  unsigned long  got;
+  mpz_t  x;
+  int  i;
 
+  mpz_init_set_ui (x, ULONG_MAX);
+
+  for (i = 0; i < 20; i++)
+    {
+      mpz_mul_2exp (x, x, 1L);
+      got = mpz_gcd_ui (NULL, x, 0L);
+      if (got != 0)
+        {
+          printf ("mpz_gcd_ui (ULONG_MAX*2^%d, 0)\n", i);
+          printf ("   return %#lx\n", got);
+          printf ("   should be 0\n");
+          abort ();
+        }
+    }
+
+  mpz_clear (x);
+}
+
+int
+main (void)
+{
+  tests_start ();
+
+  check_ui_range ();
+
+  tests_end ();
+  exit (0);
 }
