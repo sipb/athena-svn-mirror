@@ -15,8 +15,9 @@
 
 /* This is the part of attach that is used by the "add" alias. */
 
-static const char rcsid[] = "$Id: add.c,v 1.14 2001-03-17 16:50:36 ghudson Exp $";
+static const char rcsid[] = "$Id: add.c,v 1.15 2005-09-15 14:22:00 rbasch Exp $";
 
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <stdio.h>
@@ -35,6 +36,7 @@ static void modify_path(char **path, char *elt);
 static void print_readable_path(char *path);
 static int add_callback(locker_context context, locker_attachent *at,
 			void *arg);
+static int ruid_stat(const char *path, struct stat *st);
 
 static struct agetopt_option add_options[] = {
   { "verbose", 'v', 0 },
@@ -188,7 +190,7 @@ int add_main(int argc, char **argv)
 	  /* Make sure the directory exists, if we're adding it to the
 	   * path. Otherwise we don't care.
 	   */
-	  if (!remove_from_path && stat(argv[optind], &st) == -1)
+	  if (!remove_from_path && ruid_stat(argv[optind], &st) == -1)
 	    {
 	      fprintf(stderr, "%s: no such path: %s\n", whoami,
 		      argv[optind]);
@@ -417,6 +419,22 @@ static void print_readable_path(char *path)
   fprintf(stderr, "\n");
 }
 
+/* stat() the given path after setting the effective UID to the
+ * real UID (if necessary), and return the value returned by stat().
+ */
+static int ruid_stat(const char *path, struct stat *st)
+{
+  uid_t euid = geteuid();
+  uid_t ruid = getuid();
+  int status;
+
+  if (euid != ruid)
+    seteuid(ruid);
+  status = stat(path, st);
+  if (euid != ruid)
+    seteuid(euid);
+  return status;
+}
 
 static void usage(void)
 {
