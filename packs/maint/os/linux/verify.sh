@@ -175,9 +175,9 @@ for failure in $failures; do
 	;;
 
     *)
+	ls -ld $failure
+	ls -ld $failure 2>&1 | logger -t verify -p auth.notice
 	for pkg in `rpm -q -f $failure`; do
-	    ls -ld $failure
-	    ls -ld $failure 2>&1 | logger -t verify -p auth.notice
 	    pkg=`grep $pkg $rpmlist | awk '{print $1}'`
 	    pkglist="$pkglist $pkg"
 	done
