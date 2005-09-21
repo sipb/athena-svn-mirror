@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo "119593-01"					>> $PATCHES
