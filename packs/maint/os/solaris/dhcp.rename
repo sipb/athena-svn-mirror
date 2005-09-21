@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: dhcp.rename,v 1.2 1999-08-22 02:36:33 jweiss Exp $
+# $Id: dhcp.rename,v 1.3 2005-09-21 22:43:42 rbasch Exp $
 #
 # Guess what our name is if we are using DHCP and it couldn't figure it out.
 #
@@ -13,7 +13,9 @@ start)
 
 	if [ "$ADDR" = dhcp -a `hostname` = unknown ]; then
 		address=`ifconfig $NETDEV | awk '/inet/ {print $2}'`
-		hostname=`nslookup $address | awk '/Name/ {print $2}'`
+		hostname=`host $address | \
+		    sed -n -e 's|^.*domain name pointer \(.*\)$|\1|p' | \
+		    sed -e 's|\.*$||' | tr "[A-Z]" "[a-z]"`
 		if [ "x$hostname" = x ]; then
 			echo "Unable to determine hostname."
 			exit 1
