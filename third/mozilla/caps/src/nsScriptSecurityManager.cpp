@@ -24,6 +24,7 @@
  * Mitch Stoltz
  * Steve Morse
  * Christopher A. Aillon
+ * Giorgio Maone
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -1173,6 +1174,8 @@ nsScriptSecurityManager::GetBaseURIScheme(nsIURI* aURI, char** aScheme)
             return NS_ERROR_FAILURE;
         const char* page = spec.get() + sizeof(aboutScheme);
         if ((strcmp(page, "blank") == 0)   ||
+            (strncmp(page, "blank?", 6) == 0) ||
+            (strncmp(page, "blank#", 6) == 0) ||
             (strcmp(page, "mozilla") == 0) ||
             (strcmp(page, "logo") == 0)    ||
             (strcmp(page, "credits") == 0))
@@ -2932,7 +2935,8 @@ jsval nsScriptSecurityManager::sEnabledID   = JSVAL_VOID;
 nsScriptSecurityManager::~nsScriptSecurityManager(void)
 {
     delete mOriginToPolicyMap;
-    delete mDefaultPolicy;
+    if(mDefaultPolicy)
+        mDefaultPolicy->Drop();
     delete mCapabilities;
     gScriptSecMan = nsnull;
 }
@@ -3013,8 +3017,10 @@ nsScriptSecurityManager::InitPolicies()
     DomainPolicy::InvalidateAll();
     
     //-- Release old default policy
-    if(mDefaultPolicy)
+    if(mDefaultPolicy) {
         mDefaultPolicy->Drop();
+        mDefaultPolicy = nsnull;
+    }
     
     //-- Initialize a new mOriginToPolicyMap
     mOriginToPolicyMap =
