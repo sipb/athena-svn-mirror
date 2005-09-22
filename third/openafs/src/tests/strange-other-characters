@@ -1,5 +1,0 @@
-#!/bin/sh
-# $Id: strange-other-characters,v 1.1.1.2 2005-03-10 20:32:57 zacheiss Exp $
-dir=$AFSROOT/stacken.kth.se/ftp/pub/arla/tests
-
-test -f $dir/едц || exit 1
