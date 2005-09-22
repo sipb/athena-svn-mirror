@@ -35,7 +35,7 @@
 #define PKI1_H
 
 #ifdef DEBUG
-static const char PKI1_CVS_ID[] = "@(#) $RCSfile: pki1.h,v $ $Revision: 1.1.1.13 $ $Date: 2005-08-02 15:22:04 $ $Name: not supported by cvs2svn $";
+static const char PKI1_CVS_ID[] = "@(#) $RCSfile: pki1.h,v $ $Revision: 1.1.1.14 $ $Date: 2005-09-22 21:06:54 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
