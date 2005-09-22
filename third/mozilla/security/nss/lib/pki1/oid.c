@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: oid.c,v $ $Revision: 1.1.1.13 $ $Date: 2005-08-02 11:48:37 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: oid.c,v $ $Revision: 1.1.1.14 $ $Date: 2005-09-22 17:33:04 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
