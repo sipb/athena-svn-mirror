@@ -30,7 +30,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-MAKEFILE_CVS_ID = "@(#) $RCSfile: Makefile,v $ $Revision: 1.1.1.4 $ $Date: 2005-07-26 19:58:49 $ $Name: not supported by cvs2svn $"
+MAKEFILE_CVS_ID = "@(#) $RCSfile: Makefile,v $ $Revision: 1.1.1.5 $ $Date: 2005-09-22 19:05:40 $ $Name: not supported by cvs2svn $"
 
 include manifest.mn
 include config.mk
