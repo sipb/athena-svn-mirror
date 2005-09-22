@@ -31,7 +31,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-$cvs_id = '@(#) $RCSfile: ckapi.perl,v $ $Revision: 1.1.1.4 $ $Date: 2005-07-26 18:02:02 $ $Name: not supported by cvs2svn $';
+$cvs_id = '@(#) $RCSfile: ckapi.perl,v $ $Revision: 1.1.1.5 $ $Date: 2005-09-22 17:08:49 $ $Name: not supported by cvs2svn $';
 
 $copyright = '/* THIS IS A GENERATED FILE */
 /* 
