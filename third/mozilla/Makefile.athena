@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.12 2005-09-14 20:05:32 rbasch Exp $
+# $Id: Makefile.athena,v 1.13 2005-09-23 16:15:00 rbasch Exp $
 
 SHELL=/bin/sh
 MOZLIB=/usr/athena/lib/mozilla
@@ -61,4 +61,3 @@ install:
 	  "$$SRVD${NSSINCDIR}" \;
 	rm -f "$$SRVD${ACLOCALDIR}/nspr.m4"
 	-rmdir "$$SRVD${ACLOCALDIR}" 2>/dev/null
-	install -m 644 bug307259.js $$SRVD${MOZLIB}/defaults/pref
