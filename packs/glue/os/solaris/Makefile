@@ -1,9 +1,11 @@
-# $Id: Makefile,v 1.5 2005-03-24 14:51:47 rbasch Exp $
+# $Id: Makefile,v 1.6 2005-10-03 20:13:42 rbasch Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 USRBINDIR=/usr/bin
-ATTACHRUN=cc f77 f90 pc CC
+ATTACHRUN=cc f77 f90 pc CC \
+	funzip unzip unzipsfx zip zipcloak zipgrep zipinfo zipnote zipsplit
+
 ATTRUNTEMPLATE=../../template.sh
 
 all: ${ATTACHRUN}
@@ -24,6 +26,15 @@ install:
 	install -c -m 555 f90 ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 pc ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 CC ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 funzip ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 unzip ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 unzipsfx ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 zip ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 zipcloak ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 zipgrep ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 zipinfo ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 zipnote ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 zipsplit ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	rm -f ${DESTDIR}${USRBINDIR}/lp
 	ln -s ${ATHBINDIR}/lp ${DESTDIR}${USRBINDIR}/lp

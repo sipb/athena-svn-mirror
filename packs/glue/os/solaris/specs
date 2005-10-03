@@ -3,3 +3,15 @@ f77		sunsoft
 f90		sunsoft
 pc		sunsoft
 CC		sunsoft
+
+# The native Solaris versions of zip/unzip do not support encryption,
+# which is required by file-roller.
+funzip		sipb
+unzip		sipb
+unzipsfx	sipb
+zip		sipb
+zipcloak	sipb
+zipgrep		sipb
+zipinfo		sipb
+zipnote		sipb
+zipsplit	sipb
