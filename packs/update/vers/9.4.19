@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo "119059-06"					>> $PATCHES
