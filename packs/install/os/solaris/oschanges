@@ -1,6 +1,6 @@
 #!/sbin/sh
 # Undo any undesired changes resulting from the installation of OS pkgs.
-# $Id: oschanges,v 1.25 2005-05-04 01:42:51 zacheiss Exp $
+# $Id: oschanges,v 1.26 2005-10-18 23:49:39 rbasch Exp $
 
 # Restore various files which belong to the OS, but which are replaced
 # in the Athena release.
@@ -29,6 +29,10 @@ relink() {
   rm -f $UPDATE_ROOT$path
   ln -s $target $UPDATE_ROOT$path
 }
+
+# Point the SMF name service profile symlink at the dns version.
+# This ensures that the dns/client service is properly enabled.
+relink /var/svc/profile/name_service.xml ns_dns.xml
 
 relink /usr/bin/lp /usr/athena/bin/lp
 
