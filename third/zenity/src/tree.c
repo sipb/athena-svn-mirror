@@ -449,7 +449,8 @@ zenity_tree (ZenityData *data, ZenityTreeData *tree_data)
     column_index++;
   }
 
-  gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (tree_view), TRUE);
+  if (!(tree_data->checkbox || tree_data->radiobox))
+    gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (tree_view), TRUE);
 
   if (tree_data->radiobox || tree_data->checkbox) {
     if (tree_data->data)
