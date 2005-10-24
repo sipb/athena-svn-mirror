@@ -1,3 +1,6 @@
 #!/bin/sh
 
 echo "119059-06"					>> $PATCHES
+echo "119578-09"					>> $PATCHES
+echo "118822-19"					>> $PATCHES
+echo "119075-09"					>> $PATCHES
