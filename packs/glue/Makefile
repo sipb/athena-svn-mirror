@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.60 2004-04-23 13:52:15 rbasch Exp $
+# $Id: Makefile,v 1.61 2005-10-27 14:47:46 rbasch Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -6,8 +6,8 @@ ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
 ATTACHRUN=acroread addusr blanche chfn chpobox chsh dcmmaint gs gv lastlog \
-	listmaint mailmaint mitch moira mrcheck namespace stanley stella \
-	usermaint show-application show-audio show-binhex show-excel \
+	listmaint mailmaint mitch moira mrcheck namespace ooffice stanley \
+	stella usermaint show-application show-audio show-binhex show-excel \
 	show-image show-msword show-pdf show-postscript show-text show-video \
 	store-binhex afmdit pscat pscatmap psdit psdraft pslpr psnup psplot \
 	psrev psroff
@@ -131,6 +131,7 @@ install:
 	install -c -m 555 moira ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mrcheck ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 namespace ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 ooffice ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 olc_answers.sh ${DESTDIR}${ATHBINDIR}/olc_answers
 	install -c -m 555 psgrind.sh ${DESTDIR}${ATHBINDIR}/psgrind
 	install -c -m 555 sis.sh ${DESTDIR}${ATHBINDIR}/sis
