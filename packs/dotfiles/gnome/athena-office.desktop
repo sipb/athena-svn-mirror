@@ -3,6 +3,6 @@ Encoding=UTF-8
 Name=OpenOffice.org
 Comment=Microsoft Office Document
 MimeType=application/msword;application/vnd.ms-excel;application/vnd.ms-powerpoint;application/vnd.ms-word;
-Exec=gathrun ooffice ooffice
+Exec=ooffice
 Type=Application
 Terminal=false
