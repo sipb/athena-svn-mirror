@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.29 2005-03-31 22:15:12 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.30 2005-11-04 17:26:22 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -197,6 +197,18 @@ int main(int argc, char **argv)
   ts = rpmtsCreate();
   rpmtsSetRootDir(ts, "/");
   read_installed_versions(pkgtab, ts);
+
+  /* Prevent rpmlib from checking package signatures, since that
+   * requires reading each package file with no user feedback, which
+   * is slow.  (The meaning of RPMVSF_NEEDPAYLOAD is wholly
+   * undocumented; in the rpm 4.3 source code, it suppresses the
+   * recognition of signature types when reading the package header.
+   * Other possibly appropriate flags for this are
+   * _RPMVSF_NOSIGNATURES and _RPMVSF_NODIGESTS which correspond to
+   * the --nosignature and --nodigest rpm options, but those are
+   * internal names for some reason.)
+   */
+  rpmtsSetVSFlags(ts, RPMVSF_NEEDPAYLOAD);
 
   /* Decide what updates to perform, and do them. */
   decide_actions(pkgtab, public);
