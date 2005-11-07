@@ -882,6 +882,7 @@ meta_workspace_focus_mru_window (MetaWorkspace *workspace,
       tmp_window = ((MetaWindow*) tmp->data);
       if (tmp_window != not_this_one           &&
           !tmp_window->minimized               &&
+          !tmp_window->wm_state_demands_attention &&
           tmp_window->type != META_WINDOW_DOCK &&
           tmp_window->type != META_WINDOW_DESKTOP)
         {
