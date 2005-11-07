@@ -37,7 +37,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/AIX/osi_config.c,v 1.1.1.2 2005-03-10 20:40:59 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/AIX/osi_config.c,v 1.1.1.3 2005-11-07 17:34:22 zacheiss Exp $");
 
 #include "sys/limits.h"
 #include "sys/types.h"
@@ -60,7 +60,7 @@ RCSID
 #include <sys/malloc.h>		/* for the parameters to xmalloc()              */
 #include "afs/afs_osi.h"	/* pick up osi_timeval_t for afs_stats.h */
 #include "afs/afs_stats.h"
-#include "export.h"
+#include "../export.h"
 
 #ifdef KOFF
 #define KOFF_PRESENT	1

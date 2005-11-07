@@ -78,6 +78,7 @@ long cm_FlushFile(cm_scache_t *scp, cm_user_t *userp, cm_req_t *reqp)
     lock_ReleaseMutex(&scp->mx);
 
     lock_ReleaseWrite(&scp->bufCreateLock);
+    afsi_log("cm_FlushFile scp 0x%x returns error: [%x]",scp, code);
     return code;
 }
 
@@ -144,6 +145,8 @@ long cm_ParseIoctlPath(smb_ioctl_t *ioctlp, cm_user_t *userp, cm_req_t *reqp,
     long code;
     cm_scache_t *substRootp;
     char * relativePath = ioctlp->inDatap;
+
+    osi_Log1(afsd_logp, "cm_ParseIoctlPath %s", osi_LogSaveString(afsd_logp,relativePath));
 
     /* This is usually the file name, but for StatMountPoint it is the path. */
     /* ioctlp->inDatap can be either of the form:
@@ -530,6 +533,32 @@ long cm_IoctlSetACL(struct smb_ioctl *ioctlp, struct cm_user *userp)
     return code;
 }
 
+long cm_IoctlFlushAllVolumes(struct smb_ioctl *ioctlp, struct cm_user *userp)
+{
+    long code;
+    cm_scache_t *scp;
+    int i;
+    cm_req_t req;
+
+    cm_InitReq(&req);
+
+    lock_ObtainWrite(&cm_scacheLock);
+    for (i=0; i<cm_data.hashTableSize; i++) {
+        for (scp = cm_data.hashTablep[i]; scp; scp = scp->nextp) {
+	    cm_HoldSCacheNoLock(scp);
+	    lock_ReleaseWrite(&cm_scacheLock);
+
+	    /* now flush the file */
+	    code = cm_FlushFile(scp, userp, &req);
+	    lock_ObtainWrite(&cm_scacheLock);
+	    cm_ReleaseSCacheNoLock(scp);
+        }
+    }
+    lock_ReleaseWrite(&cm_scacheLock);
+
+    return code;
+}
+
 long cm_IoctlFlushVolume(struct smb_ioctl *ioctlp, struct cm_user *userp)
 {
     long code;
@@ -555,8 +584,6 @@ long cm_IoctlFlushVolume(struct smb_ioctl *ioctlp, struct cm_user *userp)
 
                 /* now flush the file */
                 code = cm_FlushFile(scp, userp, &req);
-                if ( code )
-                    afsi_log("cm_FlushFile returns error: [%x]",code);
                 lock_ObtainWrite(&cm_scacheLock);
                 cm_ReleaseSCacheNoLock(scp);
             }
@@ -728,6 +755,64 @@ long cm_IoctlGetVolumeStatus(struct smb_ioctl *ioctlp, struct cm_user *userp)
 
     /* return new size */
     ioctlp->outDatap = cp;
+
+    return 0;
+}
+
+long cm_IoctlGetFid(struct smb_ioctl *ioctlp, struct cm_user *userp)
+{
+    cm_scache_t *scp;
+    register long code;
+    register char *cp;
+    cm_fid_t fid;
+    cm_req_t req;
+
+    cm_InitReq(&req);
+
+    code = cm_ParseIoctlPath(ioctlp, userp, &req, &scp);
+    if (code) return code;
+
+    memset(&fid, 0, sizeof(cm_fid_t));
+    fid.volume = scp->fid.volume;
+    fid.vnode  = scp->fid.vnode;
+    fid.unique = scp->fid.unique;
+
+    cm_ReleaseSCache(scp);
+
+    /* Copy all this junk into msg->im_data, keeping track of the lengths. */
+    cp = ioctlp->outDatap;
+    memcpy(cp, (char *)&fid, sizeof(cm_fid_t));
+    cp += sizeof(cm_fid_t);
+
+    /* return new size */
+    ioctlp->outDatap = cp;
+
+    return 0;
+}
+
+long cm_IoctlGetOwner(struct smb_ioctl *ioctlp, struct cm_user *userp)
+{
+    cm_scache_t *scp;
+    register long code;
+    register char *cp;
+    cm_req_t req;
+
+    cm_InitReq(&req);
+
+    code = cm_ParseIoctlPath(ioctlp, userp, &req, &scp);
+    if (code) return code;
+
+    /* Copy all this junk into msg->im_data, keeping track of the lengths. */
+    cp = ioctlp->outDatap;
+    memcpy(cp, (char *)&scp->owner, sizeof(afs_uint32));
+    cp += sizeof(afs_uint32);
+    memcpy(cp, (char *)&scp->group, sizeof(afs_uint32));
+    cp += sizeof(afs_uint32);
+
+    /* return new size */
+    ioctlp->outDatap = cp;
+
+    cm_ReleaseSCache(scp);
 
     return 0;
 }
@@ -2279,6 +2364,52 @@ long cm_IoctlSetRxkcrypt(smb_ioctl_t *ioctlp, cm_user_t *userp)
 
     memcpy(&cryptall, ioctlp->inDatap, sizeof(cryptall));
 
+    return 0;
+}
+
+long cm_IoctlRxStatProcess(struct smb_ioctl *ioctlp, struct cm_user *userp)
+{
+    afs_int32 flags;
+    int code = 0;
+
+    cm_SkipIoctlPath(ioctlp);
+
+    memcpy((char *)&flags, ioctlp->inDatap, sizeof(afs_int32));
+    if (!(flags & AFSCALL_RXSTATS_MASK) || (flags & ~AFSCALL_RXSTATS_MASK)) {
+        return -1;
+    }
+    if (flags & AFSCALL_RXSTATS_ENABLE) {
+        rx_enableProcessRPCStats();
+    }
+    if (flags & AFSCALL_RXSTATS_DISABLE) {
+        rx_disableProcessRPCStats();
+    }
+    if (flags & AFSCALL_RXSTATS_CLEAR) {
+        rx_clearProcessRPCStats(AFS_RX_STATS_CLEAR_ALL);
+    }
+    return 0;
+}
+
+long cm_IoctlRxStatPeer(struct smb_ioctl *ioctlp, struct cm_user *userp)
+{
+    afs_int32 flags;
+    int code = 0;
+
+    cm_SkipIoctlPath(ioctlp);
+
+    memcpy((char *)&flags, ioctlp->inDatap, sizeof(afs_int32));
+    if (!(flags & AFSCALL_RXSTATS_MASK) || (flags & ~AFSCALL_RXSTATS_MASK)) {
+	return -1;
+    }
+    if (flags & AFSCALL_RXSTATS_ENABLE) {
+        rx_enablePeerRPCStats();
+    }
+    if (flags & AFSCALL_RXSTATS_DISABLE) {
+        rx_disablePeerRPCStats();
+    }
+    if (flags & AFSCALL_RXSTATS_CLEAR) {
+        rx_clearPeerRPCStats(AFS_RX_STATS_CLEAR_ALL);
+    }
     return 0;
 }
 

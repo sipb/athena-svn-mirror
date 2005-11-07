@@ -31,6 +31,10 @@ smb_ioctlProc_t *smb_ioctlProcsp[SMB_IOCTL_MAXPROCS];
 
 void smb_InitIoctl(void)
 {
+        int i;
+        for (i=0; i<SMB_IOCTL_MAXPROCS; i++)
+	    smb_ioctlProcsp[i] = NULL;
+
 	smb_ioctlProcsp[VIOCGETAL] = cm_IoctlGetACL;
         smb_ioctlProcsp[VIOC_FILE_CELL_NAME] = cm_IoctlGetFileCellName;
         smb_ioctlProcsp[VIOCSETAL] = cm_IoctlSetACL;
@@ -74,6 +78,11 @@ void smb_InitIoctl(void)
 #endif
 	smb_ioctlProcsp[VIOC_TRACEMEMDUMP] = cm_IoctlMemoryDump;
 	smb_ioctlProcsp[VIOC_ISSYMLINK] = cm_IoctlIslink;
+        smb_ioctlProcsp[VIOC_FLUSHALL] = cm_IoctlFlushAllVolumes;
+        smb_ioctlProcsp[VIOCGETFID] = cm_IoctlGetFid;
+        smb_ioctlProcsp[VIOCGETOWNER] = cm_IoctlGetOwner;
+        smb_ioctlProcsp[VIOC_RXSTAT_PROC] = cm_IoctlRxStatProcess;
+        smb_ioctlProcsp[VIOC_RXSTAT_PEER] = cm_IoctlRxStatPeer;
 }
 
 /* called to make a fid structure into an IOCTL fid structure */

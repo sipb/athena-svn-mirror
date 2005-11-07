@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_vnodeops.c,v 1.1.1.4 2005-05-04 17:44:53 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_vnodeops.c,v 1.1.1.5 2005-11-07 17:35:02 zacheiss Exp $");
 
 /*
  * SOLARIS/osi_vnodeops.c
@@ -266,7 +266,7 @@ afs_GetOnePage(vp, off, alen, protp, pl, plsz, seg, addr, rw, acred)
     register struct dcache *tdc;
     int i, s, pexists;
     int slot;
-    afs_size_t offset, nlen;
+    afs_size_t offset = 0, nlen;
     struct vrequest treq;
     afs_int32 mapForRead = 0, Code = 0;
     u_offset_t toffset;
@@ -1673,6 +1673,24 @@ gafs_rename(aodp, aname1, andp, aname2, acred)
 
     AFS_GLOCK();
     code = afs_rename(aodp, aname1, andp, aname2, acred);
+#ifdef AFS_SUN510_ENV
+    if (code == 0) {
+	struct vcache *avcp = NULL;
+	
+	(void) afs_lookup(andp, aname2, &avcp, NULL, 0, NULL, acred);
+	if (avcp) {
+	    struct vnode *vp = AFSTOV(avcp), *pvp = AFSTOV(andp);
+	    
+	    mutex_enter(&vp->v_lock);
+	    kmem_free(vp->v_path, strlen(vp->v_path) + 1);
+	    vp->v_path = NULL;
+	    mutex_exit(&vp->v_lock);
+	    VN_SETPATH(afs_globalVp, pvp, vp, aname2, strlen(aname2));
+	    
+	    AFS_RELE(avcp);
+	}
+    }
+#endif
     AFS_GUNLOCK();
     return (code);
 }

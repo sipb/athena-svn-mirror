@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/pthread_glock.c,v 1.1.1.2 2005-03-10 20:39:34 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/pthread_glock.c,v 1.1.1.3 2005-11-07 17:34:24 zacheiss Exp $");
 
 #if defined(AFS_NT40_ENV) && defined(AFS_PTHREAD_ENV)
 #define AFS_GRMUTEX_DECLSPEC __declspec(dllexport)
@@ -26,7 +26,7 @@ RCSID
 
 pthread_recursive_mutex_t grmutex;
 
-static int glock_init;
+static int glock_init = 0;
 static pthread_once_t glock_init_once = PTHREAD_ONCE_INIT;
 
 static void

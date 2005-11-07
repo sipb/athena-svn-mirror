@@ -36,7 +36,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxgen/rpc_hout.c,v 1.1.1.2 2005-03-10 20:39:09 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxgen/rpc_hout.c,v 1.1.1.3 2005-11-07 17:35:11 zacheiss Exp $");
 
 #include <stdio.h>
 #include <string.h>
@@ -259,8 +259,9 @@ static void
 psprocdef(definition * defp)
 {
     int split_flag = defp->pc.split_flag;
+    int multi_flag = defp->pc.multi_flag;
 
-    if (split_flag) {
+    if (split_flag || multi_flag) {
 	psproc1(defp, 1, "int", "Start",
 		(1 << DEF_INPARAM) | (1 << DEF_INOUTPARAM));
 	psproc1(defp, 1, "int", "End",
@@ -269,7 +270,8 @@ psprocdef(definition * defp)
 	psproc1(defp, 0, "int", "", 0xFFFFFFFF);
     }
 
-    psproc1(defp, 1, "afs_int32", "S", 0xFFFFFFFF);
+    if (*ServerPrefix)
+	psproc1(defp, 1, "afs_int32", ServerPrefix, 0xFFFFFFFF);
 }
 
 

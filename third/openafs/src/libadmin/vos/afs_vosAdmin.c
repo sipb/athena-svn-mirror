@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/vos/afs_vosAdmin.c,v 1.1.1.2 2005-03-10 20:43:41 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/vos/afs_vosAdmin.c,v 1.1.1.3 2005-11-07 17:35:05 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <stdio.h>
