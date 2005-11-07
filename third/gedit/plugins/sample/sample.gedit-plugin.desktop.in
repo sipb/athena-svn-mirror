@@ -1,6 +1,0 @@
-[Gedit Plugin]
-Location=sample
-_Name=User name
-_Description=Inserts the user name at the cursor position.
-Author=Paolo Maggi <paolo.maggi@polito.it>
-Copyright=Copyright © 2002-2003 Paolo Maggi
