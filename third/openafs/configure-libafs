@@ -1530,7 +1530,7 @@ fi
 
 PACKAGE=openafs-libafs
 
-VERSION=1.4.0-rc3
+VERSION=1.4.0
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -4892,6 +4892,13 @@ echo "${ECHO_T}sun4" >&6
 		MKAFS_OSTYPE=HPUX
                 echo "$as_me:$LINENO: result: hp_ux" >&5
 echo "${ECHO_T}hp_ux" >&6
+		if test -f "/usr/old/usr/include/ndir.h"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_USR_OLD_USR_INCLUDE_NDIR_H 1
+_ACEOF
+
+		fi
                 ;;
         *-irix*)
 		if test -d /usr/include/sys/SN/SN1; then
@@ -9913,6 +9920,77 @@ echo "$as_me:$LINENO: result: $ac_cv_func_pthread_attr_init" >&5
 echo "${ECHO_T}$ac_cv_func_pthread_attr_init" >&6
 if test $ac_cv_func_pthread_attr_init = yes; then
   PTHREAD_LIBS=""
+fi
+
+fi
+if test "x$PTHREAD_LIBS" = xerror; then
+        # pthread_attr_init is a macro under HPUX 11.0 and 11.11
+        echo "$as_me:$LINENO: checking for pthread_attr_destroy in -lpthread" >&5
+echo $ECHO_N "checking for pthread_attr_destroy in -lpthread... $ECHO_C" >&6
+if test "${ac_cv_lib_pthread_pthread_attr_destroy+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpthread  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char pthread_attr_destroy ();
+int
+main ()
+{
+pthread_attr_destroy ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_pthread_pthread_attr_destroy=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_pthread_pthread_attr_destroy=no
+fi
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_pthread_pthread_attr_destroy" >&5
+echo "${ECHO_T}$ac_cv_lib_pthread_pthread_attr_destroy" >&6
+if test $ac_cv_lib_pthread_pthread_attr_destroy = yes; then
+  PTHREAD_LIBS="-lpthread"
 fi
 
 fi

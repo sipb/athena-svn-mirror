@@ -15,7 +15,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packet.c,v 1.6 2005-06-02 20:07:59 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packet.c,v 1.7 2005-11-07 19:44:41 zacheiss Exp $");
 
 #ifdef KERNEL
 #if defined(UKERNEL)
@@ -1472,6 +1472,7 @@ osi_NetSend(osi_socket socket, void *addr, struct iovec *dvec, int nvecs,
 	    int length, int istack)
 {
     struct msghdr msg;
+	int ret;
 
     memset(&msg, 0, sizeof(msg));
     msg.msg_iov = dvec;
@@ -1479,9 +1480,9 @@ osi_NetSend(osi_socket socket, void *addr, struct iovec *dvec, int nvecs,
     msg.msg_name = addr;
     msg.msg_namelen = sizeof(struct sockaddr_in);
 
-    rxi_Sendmsg(socket, &msg, 0);
+    ret = rxi_Sendmsg(socket, &msg, 0);
 
-    return 0;
+    return ret;
 }
 #elif !defined(UKERNEL)
 /*
@@ -2134,6 +2135,15 @@ rxi_SendPacket(struct rx_call *call, struct rx_connection *conn,
 	    clock_Addmsec(&(p->retryTime),
 			  10 + (((afs_uint32) p->backoff) << 8));
 
+#ifdef AFS_NT40_ENV
+	    /* Windows is nice -- it can tell us right away that we cannot
+	     * reach this recipient by returning an WSAEHOSTUNREACH error
+	     * code.  So, when this happens let's "down" the host NOW so
+	     * we don't sit around waiting for this host to timeout later.
+	     */
+		if (call && code == -1 && errno == WSAEHOSTUNREACH)
+			call->lastReceiveTime = 0;
+#endif
 #if defined(KERNEL) && defined(AFS_LINUX20_ENV)
 	    /* Linux is nice -- it can tell us right away that we cannot
 	     * reach this recipient by returning an ENETUNREACH error
@@ -2500,6 +2510,11 @@ rxi_PrepareSendPacket(register struct rx_call *call,
     p->header.cid = (conn->cid | call->channel);
     p->header.serviceId = conn->serviceId;
     p->header.securityIndex = conn->securityIndex;
+
+    /* No data packets on call 0. Where do these come from? */
+    if (*call->callNumber == 0)
+	*call->callNumber = 1;
+
     p->header.callNumber = *call->callNumber;
     p->header.seq = call->tnext++;
     p->header.epoch = conn->epoch;

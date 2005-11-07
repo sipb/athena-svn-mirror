@@ -292,6 +292,9 @@
 /* Define to 1 if you have the <usersec.h> header file. */
 #undef HAVE_USERSEC_H
 
+/* define if you have old ndir.h */
+#undef HAVE_USR_OLD_USR_INCLUDE_NDIR_H
+
 /* Define to 1 if you have the `utimes' function. */
 #undef HAVE_UTIMES
 

@@ -57,7 +57,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.9 2005-10-19 19:18:23 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.10 2005-11-07 19:44:40 zacheiss Exp $");
 
 #define VFS 1
 
@@ -78,6 +78,7 @@ RCSID
 #include <errno.h>
 #include <sys/time.h>
 #include <dirent.h>
+#include <sys/wait.h>
 
 
 #ifdef HAVE_SYS_PARAM_H
