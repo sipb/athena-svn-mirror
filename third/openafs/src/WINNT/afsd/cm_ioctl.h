@@ -47,6 +47,13 @@ extern char *         cm_sysName;
 extern unsigned int   cm_sysNameCount;
 extern char *         cm_sysNameList[MAXNUMSYSNAMES];
 
+/* flags for rxstats pioctl */
+
+#define AFSCALL_RXSTATS_MASK    0x7     /* Valid flag bits */
+#define AFSCALL_RXSTATS_ENABLE  0x1     /* Enable RX stats */
+#define AFSCALL_RXSTATS_DISABLE 0x2     /* Disable RX stats */
+#define AFSCALL_RXSTATS_CLEAR   0x4     /* Clear RX stats */
+
 #ifndef __CM_IOCTL_INTERFACES_ONLY__
 
 void cm_InitIoctl(void);
@@ -59,6 +66,8 @@ extern long cm_IoctlGetFileCellName(smb_ioctl_t *ioctlp, cm_user_t *userp);
 
 extern long cm_IoctlSetACL(smb_ioctl_t *ioctlp, cm_user_t *userp);
 
+extern long cm_IoctlFlushAllVolumes(smb_ioctl_t *ioctlp, cm_user_t *userp);
+
 extern long cm_IoctlFlushVolume(smb_ioctl_t *ioctlp, cm_user_t *userp);
 
 extern long cm_IoctlFlushFile(smb_ioctl_t *ioctlp, cm_user_t *userp);
@@ -66,6 +75,10 @@ extern long cm_IoctlFlushFile(smb_ioctl_t *ioctlp, cm_user_t *userp);
 extern long cm_IoctlSetVolumeStatus(smb_ioctl_t *ioctlp, cm_user_t *userp);
 
 extern long cm_IoctlGetVolumeStatus(smb_ioctl_t *ioctlp, cm_user_t *userp);
+
+extern long cm_IoctlGetFid(smb_ioctl_t *ioctlp, cm_user_t *userp);
+
+extern long cm_IoctlGetOwner(smb_ioctl_t *ioctlp, cm_user_t *userp);
 
 extern long cm_IoctlWhereIs(smb_ioctl_t *ioctlp, cm_user_t *userp);
 
@@ -138,6 +151,10 @@ extern long cm_IoctlFreemountAddCell(smb_ioctl_t *ioctlp, cm_user_t *userp);
 extern long cm_IoctlFreemountRemoveCell(smb_ioctl_t *ioctlp, cm_user_t *userp);
 
 extern long cm_IoctlMemoryDump(smb_ioctl_t *ioctlp, cm_user_t *userp);
+
+extern long cm_IoctlRxStatProcess(smb_ioctl_t *ioctlp, cm_user_t *userp);
+
+extern long cm_IoctlRxStatPeer(smb_ioctl_t *ioctlp, cm_user_t *userp);
 #endif /* __CM_IOCTL_INTERFACES_ONLY__ */
 
 #endif /*  __CM_IOCTL_H_ENV__ */

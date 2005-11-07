@@ -1344,6 +1344,21 @@ ListACLCmd(struct cmd_syndesc *as, char *arock)
 }
 
 static int
+FlushAllCmd(struct cmd_syndesc *as, char *arock)
+{
+    afs_int32 code;
+    struct ViceIoctl blob;
+
+    blob.in_size = blob.out_size = 0;
+    code = pioctl(NULL, VIOC_FLUSHALL, &blob, 0);
+    if (code) {
+	fprintf(stderr, "Error flushing all ");
+	return 1;
+    }
+    return 0;
+}
+
+static int
 FlushVolumeCmd(struct cmd_syndesc *as, char *arock)
 {
     afs_int32 code;
@@ -1489,13 +1504,41 @@ ExamineCmd(struct cmd_syndesc *as, char *arock)
     
     SetDotDefault(&as->parms[0].items);
     for(ti=as->parms[0].items; ti; ti=ti->next) {
-#ifndef WIN32
-        struct VenusFid vfid;
-#endif /* WIN32 */
+        cm_fid_t fid;
+	afs_uint32 owner[2];
+	char cell[MAXCELLCHARS];
+
+	code = GetCell(ti->data, cell);
+	if (code) {
+	    Die(errno, ti->data);
+	    error = 1;
+	    continue;
+	}
+
 	/* once per file */
-	blob.out_size = MAXSIZE;
 	blob.in_size = 0;
+
+        blob.out_size = sizeof(cm_fid_t);
+        blob.out = (char *) &fid;
+        if (0 == pioctl(ti->data, VIOCGETFID, &blob, 1)) {
+            printf("File %s (%u.%u.%u) contained in cell %s\n",
+                    ti->data, fid.volume, fid.vnode, fid.unique,
+                    cell);
+        }
+
+	blob.out_size = 2 * sizeof(afs_uint32);
+        blob.out = (char *) &owner;
+	if (0 == pioctl(ti->data, VIOCGETOWNER, &blob, 1)) {
+	    char oname[PR_MAXNAMELEN] = "(unknown)";
+
+	    /* Go to the PRDB and see if this all number username is valid */
+	    pr_Initialize(1, AFSDIR_CLIENT_ETC_DIRPATH, cell);
+	    pr_SIdToName(owner[0], oname);
+	    printf("Owner %s (%u) Group %u\n", oname, owner[0], owner[1]);
+        }
+	
 	blob.out = space;
+	blob.out_size = MAXSIZE;
 	code = pioctl(ti->data, VIOCGETVOLSTAT, &blob, 1);
 	if (code) {
 	    Die(errno, ti->data);
@@ -1507,15 +1550,6 @@ ExamineCmd(struct cmd_syndesc *as, char *arock)
 	offmsg = name + strlen(name) + 1;
 	motd = offmsg + strlen(offmsg) + 1;
 
-#ifndef WIN32
-        blob.out_size = sizeof(struct VenusFid);
-        blob.out = (char *) &vfid;
-        if (0 == pioctl(ti->data, VIOCGETFID, &blob, 1)) {
-            printf("File %s (%u.%u.%u) contained in volume %u\n",
-                    ti->data, vfid.Fid.Volume, vfid.Fid.Vnode, vfid.Fid.Unique,
-                    vfid.Fid.Volume);
-        }
-#endif /* WIN32 */
 	PrintStatus(status, name, motd, offmsg);
     }
     return error;
@@ -1817,7 +1851,9 @@ MakeMountCmd(struct cmd_syndesc *as, char *arock)
 #endif
     char path[1024] = "";
     struct afsconf_cell info;
+#ifndef WIN32
     struct vldbentry vldbEntry;
+#endif
     struct ViceIoctl blob;
     char * parent;
 
@@ -4161,6 +4197,7 @@ FlushMountCmd(struct cmd_syndesc *as, char *arock)
     }
     return error;
 }
+#endif /* WIN32 */
 
 static int
 RxStatProcCmd(struct cmd_syndesc *as, char *arock)
@@ -4231,7 +4268,6 @@ RxStatPeerCmd(struct cmd_syndesc *as, char *arock)
 
     return 0;
 }
-#endif /* WIN32 */
 
 #ifndef WIN32
 #include "AFS_component_version_number.c"
@@ -4456,7 +4492,9 @@ main(int argc, char **argv)
     cmd_AddParm(ts, "-cell", CMD_LIST, 0, "cell name");
     cmd_AddParm(ts, "-suid", CMD_FLAG, CMD_OPTIONAL, "allow setuid programs");
     cmd_AddParm(ts, "-nosuid", CMD_FLAG, CMD_OPTIONAL, "disallow setuid programs");
-    
+
+    ts = cmd_CreateSyntax("flushall", FlushAllCmd, 0, "flush all data");
+
     ts = cmd_CreateSyntax("flushvolume", FlushVolumeCmd, 0, "flush all data in volume");
     cmd_AddParm(ts, "-path", CMD_LIST, CMD_OPTIONAL, "dir/file path");
 
@@ -4483,7 +4521,6 @@ main(int argc, char **argv)
 
     ts = cmd_CreateSyntax("getcrypt", GetCryptCmd, 0, "get cache manager encryption flag");
 
-#ifndef WIN32
     ts = cmd_CreateSyntax("rxstatproc", RxStatProcCmd, 0,
 			  "Manage per process RX statistics");
     cmd_AddParm(ts, "-enable", CMD_FLAG, CMD_OPTIONAL, "Enable RX stats");
@@ -4496,6 +4533,7 @@ main(int argc, char **argv)
     cmd_AddParm(ts, "-disable", CMD_FLAG, CMD_OPTIONAL, "Disable RX stats");
     cmd_AddParm(ts, "-clear", CMD_FLAG, CMD_OPTIONAL, "Clear RX stats");
 
+#ifndef WIN32
     ts = cmd_CreateSyntax("setcbaddr", CallBackRxConnCmd, 0, "configure callback connection address");
     cmd_AddParm(ts, "-addr", CMD_SINGLE, CMD_OPTIONAL, "host name or address");
 #endif

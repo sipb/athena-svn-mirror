@@ -222,8 +222,8 @@ cm_Analyze(cm_conn_t *connp, cm_user_t *userp, cm_req_t *reqp,
      * until the timeout period expires.
      */
     else if (errorCode == CM_ERROR_NOSUCHVOLUME) {
+	osi_Log0(afsd_logp, "cm_Analyze passed CM_ERROR_NOSUCHVOLUME.");
         if (timeLeft > 7) {
-            osi_Log0(afsd_logp, "cm_Analyze passed CM_ERROR_NOSUCHVOLUME.");
             thrd_Sleep(5000);
             
             retry = 1;
@@ -233,47 +233,57 @@ cm_Analyze(cm_conn_t *connp, cm_user_t *userp, cm_req_t *reqp,
         }
     }
 
+    else if (errorCode == CM_ERROR_ALLDOWN) {
+	osi_Log0(afsd_logp, "cm_Analyze passed CM_ERROR_ALLDOWN.");
+	/* Servers marked DOWN will be restored by the background daemon
+	 * thread as they become available.
+	 */
+    }
+
     else if (errorCode == CM_ERROR_ALLOFFLINE) {
         if (timeLeft > 7) {
             osi_Log0(afsd_logp, "cm_Analyze passed CM_ERROR_ALLOFFLINE.");
             thrd_Sleep(5000);
             
-            /* cm_ForceUpdateVolume marks all servers as non_busy */
-            /* No it doesn't and it won't do anything if all of the 
-             * the servers are marked as DOWN.  So clear the DOWN
-             * flag and reset the busy state as well.
-             */
-            if (!serversp) {
-                code = cm_GetServerList(fidp, userp, reqp, &serverspp);
-                if (code == 0) {
-                    serversp = *serverspp;
-                    free_svr_list = 1;
-                }
-            }
-            if (serversp) {
-                lock_ObtainWrite(&cm_serverLock);
-                for (tsrp = serversp; tsrp; tsrp=tsrp->next) {
-                    tsrp->server->flags &= ~CM_SERVERFLAG_DOWN;
-                    if (tsrp->status == busy)
-                        tsrp->status = not_busy;
-                }
-                lock_ReleaseWrite(&cm_serverLock);
-                if (free_svr_list) {
-                    cm_FreeServerList(&serversp);
-                    *serverspp = serversp;
-                }
-                retry = 1;
-            }
+	    if (fidp) {	/* Not a VLDB call */
+		if (!serversp) {
+		    code = cm_GetServerList(fidp, userp, reqp, &serverspp);
+		    if (code == 0) {
+			serversp = *serverspp;
+			free_svr_list = 1;
+		    }
+		}
+		if (serversp) {
+		    lock_ObtainWrite(&cm_serverLock);
+		    for (tsrp = serversp; tsrp; tsrp=tsrp->next)
+			tsrp->status = not_busy;
+		    lock_ReleaseWrite(&cm_serverLock);
+		    if (free_svr_list) {
+			cm_FreeServerList(&serversp);
+			*serverspp = serversp;
+		    }
+		    retry = 1;
+		}
 
-            if (fidp != NULL)   /* Not a VLDB call */
                 cm_ForceUpdateVolume(fidp, userp, reqp);
-			else
-				retry = 0;
+	    } else { /* VLDB call */
+		if (serversp) {
+		    lock_ObtainWrite(&cm_serverLock);
+		    for (tsrp = serversp; tsrp; tsrp=tsrp->next)
+			tsrp->status = not_busy;
+		    lock_ReleaseWrite(&cm_serverLock);
+		    if (free_svr_list) {
+			cm_FreeServerList(&serversp);
+			*serverspp = serversp;
+		    }
+		}
+	    }	
         }
     }
 
     /* if all servers are busy, mark them non-busy and start over */
     else if (errorCode == CM_ERROR_ALLBUSY) {
+	osi_Log0(afsd_logp, "cm_Analyze passed CM_ERROR_ALLBUSY.");
         if (timeLeft > 7) {
             thrd_Sleep(5000);
             if (!serversp) {
@@ -496,11 +506,16 @@ long cm_ConnByMServers(cm_serverRef_t *serversp, cm_user_t *usersp,
     cm_serverRef_t *tsrp;
     cm_server_t *tsp;
     long firstError = 0;
-    int someBusy = 0, someOffline = 0, allBusy = 1, allDown = 1;
+    int someBusy = 0, someOffline = 0, allOffline = 1, allBusy = 1, allDown = 1;
     long timeUsed, timeLeft, hardTimeLeft;
 #ifdef DJGPP
     struct timeval now;
 #endif /* DJGPP */        
+
+    if (serversp == NULL) {
+	osi_Log1(afsd_logp, "cm_ConnByMServers returning 0x%x", CM_ERROR_NOSUCHVOLUME);
+	return CM_ERROR_NOSUCHVOLUME;
+    }
 
     *connpp = NULL;
 
@@ -521,13 +536,15 @@ long cm_ConnByMServers(cm_serverRef_t *serversp, cm_user_t *usersp,
         cm_GetServerNoLock(tsp);
         lock_ReleaseWrite(&cm_serverLock);
         if (!(tsp->flags & CM_SERVERFLAG_DOWN)) {
+	    allDown = 0;
             if (tsrp->status == busy) {
-                allDown = 0;
+		allOffline = 0;
                 someBusy = 1;
             } else if (tsrp->status == offline) {
-                someOffline = 1;
+		allBusy = 0;
+		someOffline = 1;
             } else {
-                allDown = 0;
+		allOffline = 0;
                 allBusy = 0;
                 code = cm_ConnByServer(tsp, usersp, connpp);
                 if (code == 0) {        /* cm_CBS only returns 0 */
@@ -554,15 +571,15 @@ long cm_ConnByMServers(cm_serverRef_t *serversp, cm_user_t *usersp,
         lock_ObtainWrite(&cm_serverLock);
         cm_PutServerNoLock(tsp);
     }   
-
     lock_ReleaseWrite(&cm_serverLock);
+
     if (firstError == 0) {
-        if (serversp == NULL)
-            firstError = CM_ERROR_NOSUCHVOLUME;
-        else if (allDown) 
-            firstError = CM_ERROR_ALLOFFLINE;
+        if (allDown) 
+            firstError = CM_ERROR_ALLDOWN;
         else if (allBusy) 
             firstError = CM_ERROR_ALLBUSY;
+	else if (allOffline || (someBusy && someOffline))
+	    firstError = CM_ERROR_ALLOFFLINE;
         else {
             osi_Log0(afsd_logp, "cm_ConnByMServers returning impossible error TIMEDOUT");
             firstError = CM_ERROR_TIMEDOUT;

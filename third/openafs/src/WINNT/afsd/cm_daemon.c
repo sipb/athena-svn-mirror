@@ -13,6 +13,7 @@
 #ifndef DJGPP
 #include <windows.h>
 #include <winsock2.h>
+#include <iphlpapi.h>
 #else
 #include <netdb.h>
 #endif /* !DJGPP */
@@ -24,6 +25,7 @@
 #include <rx/rx_prototypes.h>
 
 #include "afsd.h"
+#include "afsicf.h"
 
 long cm_daemonCheckInterval = 30;
 long cm_daemonTokenCheckInterval = 180;
@@ -38,6 +40,22 @@ cm_bkgRequest_t *cm_bkgListp;		/* first elt in the list of requests */
 cm_bkgRequest_t *cm_bkgListEndp;	/* last elt in the list of requests */
 
 static int daemon_ShutdownFlag = 0;
+
+#ifndef DJGPP
+void cm_IpAddrDaemon(long parm)
+{
+    rx_StartClientThread();
+
+    while (daemon_ShutdownFlag == 0) {
+	DWORD Result = NotifyAddrChange(NULL,NULL);
+	if (Result == NO_ERROR && daemon_ShutdownFlag == 0) {
+	    osi_Log0(afsd_logp, "cm_IpAddrDaemon CheckDownServers");
+	    Sleep(2500);
+            cm_CheckServers(CM_FLAG_CHECKDOWNSERVERS, NULL);
+	}
+    }
+}
+#endif
 
 void cm_BkgDaemon(long parm)
 {
@@ -99,6 +117,57 @@ void cm_QueueBKGRequest(cm_scache_t *scp, cm_bkgProc_t *procp, long p1, long p2,
     osi_Wakeup((long) &cm_bkgListp);
 }
 
+static int
+IsWindowsFirewallPresent(void)
+{
+    SC_HANDLE scm;
+    SC_HANDLE svc;
+    BOOLEAN flag;
+    BOOLEAN result = FALSE;
+    LPQUERY_SERVICE_CONFIG pConfig = NULL;
+    DWORD BufSize;
+    LONG status;
+
+    /* Open services manager */
+    scm = OpenSCManager(NULL, NULL, GENERIC_READ);
+    if (!scm) return FALSE;
+
+    /* Open Windows Firewall service */
+    svc = OpenService(scm, "SharedAccess", SERVICE_QUERY_CONFIG);
+    if (!svc)
+        goto close_scm;
+
+    /* Query Windows Firewall service config, first just to get buffer size */
+    /* Expected to fail, so don't test return value */
+    (void) QueryServiceConfig(svc, NULL, 0, &BufSize);
+    status = GetLastError();
+    if (status != ERROR_INSUFFICIENT_BUFFER)
+        goto close_svc;
+
+    /* Allocate buffer */
+    pConfig = (LPQUERY_SERVICE_CONFIG)GlobalAlloc(GMEM_FIXED,BufSize);
+    if (!pConfig)
+        goto close_svc;
+
+    /* Query Windows Firewall service config, this time for real */
+    flag = QueryServiceConfig(svc, pConfig, BufSize, &BufSize);
+    if (!flag)
+        goto free_pConfig;
+
+    /* Is it autostart? */
+    if (pConfig->dwStartType < SERVICE_DEMAND_START)
+        result = TRUE;
+
+  free_pConfig:
+    GlobalFree(pConfig);
+  close_svc:
+    CloseServiceHandle(svc);
+  close_scm:
+    CloseServiceHandle(scm);
+
+    return result;
+}
+
 /* periodic check daemon */
 void cm_Daemon(long parm)
 {
@@ -113,6 +182,7 @@ void cm_Daemon(long parm)
     unsigned long code;
     struct hostent *thp;
     HMODULE hHookDll;
+    int configureFirewall = IsWindowsFirewallPresent();
 
     /* ping all file servers, up or down, with unauthenticated connection,
      * to find out whether we have all our callbacks from the server still.
@@ -142,9 +212,30 @@ void cm_Daemon(long parm)
     lastTokenCacheCheck = now - cm_daemonTokenCheckInterval/2 + (rand() % cm_daemonTokenCheckInterval);
 
     while (daemon_ShutdownFlag == 0) {
-        thrd_Sleep(30 * 1000);		/* sleep 30 seconds */
+	thrd_Sleep(30 * 1000);		/* sleep 30 seconds */
         if (daemon_ShutdownFlag == 1)
             return;
+
+	if (configureFirewall) {
+	    /* Open Microsoft Firewall to allow in port 7001 */
+	    switch (icf_CheckAndAddAFSPorts(AFS_PORTSET_CLIENT)) {
+	    case 0:
+		afsi_log("Windows Firewall Configuration succeeded");
+		configureFirewall = 0;
+		break;
+	    case 1:
+		afsi_log("Invalid Windows Firewall Port Set");
+		break;
+	    case 2:
+		afsi_log("Unable to open Windows Firewall Profile");
+		break;
+	    case 3:
+		afsi_log("Unable to create/modify Windows Firewall Port entries");
+		break;
+	    default:
+		afsi_log("Unknown Windows Firewall Configuration error");
+	    }
+	}
 
         /* find out what time it is */
         now = osi_Time();
@@ -152,33 +243,41 @@ void cm_Daemon(long parm)
         /* check down servers */
         if (now > lastDownServerCheck + cm_daemonCheckInterval) {
             lastDownServerCheck = now;
+	    osi_Log0(afsd_logp, "cm_Daemon CheckDownServers");
             cm_CheckServers(CM_FLAG_CHECKDOWNSERVERS, NULL);
+	    now = osi_Time();
         }
 
         /* check up servers */
         if (now > lastUpServerCheck + 3600) {
             lastUpServerCheck = now;
+	    osi_Log0(afsd_logp, "cm_Daemon CheckUpServers");
             cm_CheckServers(CM_FLAG_CHECKUPSERVERS, NULL);
+	    now = osi_Time();
         }
 
         if (now > lastVolCheck + 3600) {
             lastVolCheck = now;
             cm_CheckVolumes();
+	    now = osi_Time();
         }
 
         if (now > lastCBExpirationCheck + 60) {
             lastCBExpirationCheck = now;
             cm_CheckCBExpiration();
+	    now = osi_Time();
         }
 
         if (now > lastLockCheck + 60) {
             lastLockCheck = now;
             cm_CheckLocks();
+	    now = osi_Time();
         }
 
         if (now > lastTokenCacheCheck + cm_daemonTokenCheckInterval) {
             lastTokenCacheCheck = now;
             cm_CheckTokenCache(now);
+	    now = osi_Time();
         }
 
         /* allow an exit to be called prior to stopping the service */
@@ -217,14 +316,22 @@ void cm_InitDaemon(int nDaemons)
     if (osi_Once(&once)) {
         lock_InitializeRWLock(&cm_daemonLock, "cm_daemonLock");
         osi_EndOnce(&once);
-                
+
+#ifndef DJGPP
+	/* creating IP Address Change monitor daemon */
+        phandle = thrd_Create((SecurityAttrib) 0, 0,
+                               (ThreadFunc) cm_IpAddrDaemon, 0, 0, &pid, "cm_IpAddrDaemon");
+        osi_assert(phandle != NULL);
+        thrd_CloseHandle(phandle);
+#endif /* DJGPP */
+
         /* creating pinging daemon */
         phandle = thrd_Create((SecurityAttrib) 0, 0,
                                (ThreadFunc) cm_Daemon, 0, 0, &pid, "cm_Daemon");
         osi_assert(phandle != NULL);
-
         thrd_CloseHandle(phandle);
-        for(i=0; i < nDaemons; i++) {
+
+	for(i=0; i < nDaemons; i++) {
             phandle = thrd_Create((SecurityAttrib) 0, 0,
                                    (ThreadFunc) cm_BkgDaemon, 0, 0, &pid,
                                    "cm_BkgDaemon");

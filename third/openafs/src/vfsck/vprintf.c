@@ -14,7 +14,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vfsck/vprintf.c,v 1.1.1.2 2005-03-10 20:39:42 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vfsck/vprintf.c,v 1.1.1.3 2005-11-07 17:34:50 zacheiss Exp $");
 
 #define VICE			/* allow us to put our changes in at will */
 #include <stdio.h>
@@ -71,7 +71,11 @@ RCSID
 #include <sys/sysmacros.h>
 #include <sys/ino.h>
 #define	DIRSIZ_MACRO
+#ifdef HAVE_USR_OLD_USR_INCLUDE_NDIR_H
+#include </usr/old/usr/include/ndir.h>
+#else
 #include <ndir.h>
+#endif
 #else
 #define KERNEL
 #include <sys/dir.h>
