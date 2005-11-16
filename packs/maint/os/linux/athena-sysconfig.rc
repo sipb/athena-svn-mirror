@@ -22,7 +22,7 @@ case "$1" in
 	RETVAL=$?
 	echo
 	# Revert xorg.conf if kudzu has changed it.
-	if find /etc/X11/xorg.conf -cmin -1 > /dev/null \
+	if [ -n "`find /etc/X11/xorg.conf -mmin -1`" ] \
 	    && test -f /etc/X11/xorg.conf.backup ; then
 	  echo "xorg.conf has changed; saving new version as /etc/X11/xorg.conf.kudzunew"
 	  mv /etc/X11/xorg.conf /etc/X11/xorg.conf.kudzunew
