@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# $Id: oscheck.sh,v 1.5 2004-04-27 14:46:01 rbasch Exp $
+# $Id: oscheck.sh,v 1.6 2005-12-05 20:46:51 rbasch Exp $
 
 # This script checks the integrity of the Solaris OS installation, by
 # running the os-checkfiles program against the appropriate set of
 # stats files for this machine architecture.
 
-usage="Usage: $0 [-n|-y] [-o <osroot>] [-r <root>]"
+usage="Usage: $0 [-n|-y] [-l <libdir>] [-o <osroot>] [-r <root>]"
 
 . /etc/athena/rc.conf
 
@@ -28,8 +28,11 @@ globalexceptions=$libdir/exceptions.all
 localexceptions=/etc/athena/oscheck.exceptions
 exceptions=/tmp/exceptions$$
 
-while getopts no:r:y opt; do
+while getopts l:no:r:y opt; do
   case "$opt" in
+  l)
+    libdir=$OPTARG
+    ;;
   n)
     noop="-n"
     ;;
