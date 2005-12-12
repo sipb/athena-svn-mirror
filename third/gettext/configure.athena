@@ -1,2 +1,2 @@
 #!/bin/sh
-exec ./configure --with-included-gettext
+exec ./configure --with-included-gettext --mandir=/usr/athena/man
