@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.6 2002-09-14 23:12:16 ghudson Exp $
+# $Id: Makefile.athena,v 1.7 2005-12-14 19:22:49 rbasch Exp $
 
 .PHONY: dist
 
@@ -7,8 +7,18 @@ dist:
 
 prepare:
 	rm -f build_unix/config.cache
-	cd build_unix && CONFIG_SITE=`pwd`/../config.site.athena \
-	  ../dist/configure --enable-compat185 --enable-shared
+	cd build_unix && \
+	case $$ATHENA_HOSTTYPE in \
+	sun4) \
+	    CONFIG_SITE=`pwd`/../config.site.athena \
+	    LD=gcc \
+	    ../dist/configure --enable-compat185 --enable-shared \
+	    ;; \
+	*) \
+	    CONFIG_SITE=`pwd`/../config.site.athena \
+	    ../dist/configure --enable-compat185 --enable-shared \
+	    ;; \
+	esac
 
 check:
 	# Do nothing for check.
