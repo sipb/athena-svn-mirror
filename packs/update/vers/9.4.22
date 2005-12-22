@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "119254-10"					>> $PATCHES
+echo "121229-01"					>> $PATCHES
