@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession,v 1.7 2004-09-24 22:15:59 rbasch Exp $
+# $Id: Xsession,v 1.8 2005-12-22 14:54:17 rbasch Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -53,6 +53,14 @@ test -f /usr/athena/lib/X11/keymaps/AthenaMods && \
 
 # Set X screensaver to noblanking to avoid power saving.
 xset s noblank
+
+# Create a unique temporary directory for the session, and remember
+# the directory name in the environment.
+sessiondir="`$initlib/mksessiondir -s $$`"
+if [ -n "$sessiondir" ]; then
+	ATHENA_SESSION_TMPDIR="$sessiondir"
+	export ATHENA_SESSION_TMPDIR
+fi
 
 # Only attempt using bugme if packs are actually available.
 if [ -x /usr/athena/bin/bugme ]; then

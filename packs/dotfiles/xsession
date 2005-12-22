@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.23 2005-05-13 16:03:17 ghudson Exp $
+# $Id: xsession,v 1.24 2005-12-22 14:54:17 rbasch Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -63,13 +63,6 @@ endif
 # Identify this as a window session.
 
 setenv XSESSION $$
-
-# Create a unique temporary directory for the session, and remember
-# the directory name in the environment.
-set sessiondir = "`$initdir/mksessiondir -s $$`"
-if ("$sessiondir" != "") then
-  setenv ATHENA_SESSION_TMPDIR "$sessiondir"
-endif
 
 # We set sleep_time to 0 for historical purposes, in case anyone has
 # code that depends on its value.
