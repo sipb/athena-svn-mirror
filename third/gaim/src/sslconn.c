@@ -226,6 +226,16 @@ gaim_ssl_write(GaimSslConnection *gsc, const void *data, size_t len)
 }
 
 void
+gaim_ssl_nonblocking_read(GaimSslConnection *gsc, gboolean nonblocking)
+{
+	GaimSslOps *ops;
+
+	ops = gaim_ssl_get_ops();
+	if (ops != NULL && (ops->nonblocking_read) != NULL)
+		(ops->nonblocking_read)(gsc, nonblocking);
+}
+
+void
 gaim_ssl_set_ops(GaimSslOps *ops)
 {
 	_ssl_ops = ops;

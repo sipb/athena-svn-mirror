@@ -243,12 +243,10 @@ jabber_recv_cb_ssl(gpointer data, GaimSslConnection *gsc,
 		return;
 	}
 
-	if((len = gaim_ssl_read(gsc, buf, sizeof(buf) - 1)) > 0) {
+	while((len = gaim_ssl_read(gsc, buf, sizeof(buf) - 1)) > 0) {
 		buf[len] = '\0';
 		gaim_debug(GAIM_DEBUG_INFO, "jabber", "Recv (ssl)(%d): %s\n", len, buf);
 		jabber_parser_process(js, buf, len);
-	} else {
-		gaim_connection_error(gc, _("Read Error"));
 	}
 }
 
@@ -291,6 +289,7 @@ jabber_login_callback_ssl(gpointer data, GaimSslConnection *gsc,
 
 	jabber_stream_set_state(js, JABBER_STREAM_INITIALIZING);
 	gaim_ssl_input_add(gsc, jabber_recv_cb_ssl, gc);
+	gaim_ssl_nonblocking_read(gsc, TRUE);
 }
 
 
@@ -1517,7 +1516,8 @@ static GaimPluginUiInfo prefs_info = {
 
 static GaimPluginProtocolInfo prpl_info =
 {
-	OPT_PROTO_CHAT_TOPIC | OPT_PROTO_UNIQUE_CHATNAME,
+	OPT_PROTO_CHAT_TOPIC | OPT_PROTO_UNIQUE_CHATNAME |
+	OPT_PROTO_PASSWORD_OPTIONAL,
 	NULL,							/* user_splits */
 	NULL,							/* protocol_options */
 	NO_BUDDY_ICONS,					/* icon_spec */

@@ -4057,7 +4057,8 @@ add_buddy_cb(GtkWidget *w, int resp, GaimGtkAddBuddyData *data)
 			gaim_blist_add_group(g, NULL);
 		}
 
-		if(!gaim_find_buddy_in_group(data->account, who, g)) {
+		b = gaim_find_buddy_in_group(data->account, who, g);
+		if (!b) {
 			b = gaim_buddy_new(data->account, who, whoalias);
 			gaim_blist_add_buddy(b, NULL, g, NULL);
 			serv_add_buddy(gaim_account_get_connection(data->account), b);
@@ -4080,7 +4081,8 @@ add_buddy_cb(GtkWidget *w, int resp, GaimGtkAddBuddyData *data)
 				gaim_conversation_update(c, GAIM_CONV_UPDATE_ADD);
 			}
 		} else {
-			/* XXX pop up a dialog reminding the user they already have this buddy in the group */
+			/* Buddy may not be authorized yet (e.g. Jabber); do a server add. */
+			serv_add_buddy(gaim_account_get_connection(data->account), b);
 		}
 	}
 

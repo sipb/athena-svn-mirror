@@ -28,6 +28,7 @@
 #define _GAIM_ACCOUNT_H_
 
 #include <glib.h>
+#include <glib-object.h>
 
 typedef struct _GaimAccountUiOps GaimAccountUiOps;
 typedef struct _GaimAccount      GaimAccount;
@@ -162,6 +163,17 @@ void gaim_account_notify_added(GaimAccount *account, const char *remote_user,
 void gaim_account_request_add(GaimAccount *account, const char *remote_user,
                               const char *id, const char *alias,
                               const char *message);
+
+/**
+ * Requests a password from the user for the account.  Does not set the
+ * account password on success; do that in ok_cb if desired.
+ *
+ * @param account   The account to request the password for.
+ * @param ok_cb     The callback for the OK button
+ * @param cancel_cb The callback for the cancel button
+ */
+void gaim_account_request_password(GaimAccount *account, GCallback ok_cb,
+								   GCallback cancel_cb, void *user_data);
 
 /**
  * Requests information from the user to change the account's password.
