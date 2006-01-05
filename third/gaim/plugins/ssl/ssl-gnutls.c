@@ -34,6 +34,7 @@
 typedef struct
 {
 	gnutls_session session;
+	gboolean nonblocking_read;
 
 } GaimSslGnutlsData;
 
@@ -85,6 +86,8 @@ ssl_gnutls_connect_cb(gpointer data, gint source, GaimInputCondition cond)
 
 	gnutls_data = g_new0(GaimSslGnutlsData, 1);
 	gsc->private_data = gnutls_data;
+
+	gnutls_data->nonblocking_read = FALSE;
 
 	gnutls_init(&gnutls_data->session, GNUTLS_CLIENT);
 	gnutls_set_default_priority(gnutls_data->session);
@@ -148,7 +151,7 @@ ssl_gnutls_read(GaimSslConnection *gsc, void *data, size_t len)
 	{
 		s = gnutls_record_recv(gnutls_data->session, data, len);
 	}
-	while ((s == GNUTLS_E_AGAIN) || (s == GNUTLS_E_INTERRUPTED));
+	while ((s == GNUTLS_E_INTERRUPTED));
 
 	if (s < 0)
 	{
@@ -171,6 +174,17 @@ ssl_gnutls_write(GaimSslConnection *gsc, const void *data, size_t len)
 	return s;
 }
 
+static void
+ssl_gnutls_nonblocking_read(GaimSslConnection *gsc, gboolean nonblocking)
+{
+	int flags, nflags;
+
+	flags = fcntl(gsc->fd, F_GETFL);
+	nflags = (nonblocking) ? (flags | O_NONBLOCK) : (flags & ~O_NONBLOCK);
+	if (flags != nflags)
+		fcntl(gsc->fd, F_SETFL, nflags);
+}
+
 static GaimSslOps ssl_ops =
 {
 	ssl_gnutls_init,
@@ -178,7 +192,8 @@ static GaimSslOps ssl_ops =
 	ssl_gnutls_connect_cb,
 	ssl_gnutls_close,
 	ssl_gnutls_read,
-	ssl_gnutls_write
+	ssl_gnutls_write,
+	ssl_gnutls_nonblocking_read
 };
 
 #endif /* HAVE_GNUTLS */

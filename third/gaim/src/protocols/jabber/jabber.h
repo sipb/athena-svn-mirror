@@ -65,7 +65,8 @@ typedef struct _JabberStream
 		JABBER_AUTH_UNKNOWN,
 		JABBER_AUTH_DIGEST_MD5,
 		JABBER_AUTH_PLAIN,
-		JABBER_AUTH_IQ_AUTH
+		JABBER_AUTH_IQ_AUTH,
+		JABBER_AUTH_GSSAPI
 	} auth_type;
 	char *stream_id;
 	JabberStreamState state;
@@ -95,6 +96,7 @@ typedef struct _JabberStream
 	GaimSslConnection *gsc;
 
 	gboolean registration;
+	struct _JabberGssapi *gss;
 } JabberStream;
 
 void jabber_process_packet(JabberStream *js, xmlnode *packet);

@@ -46,6 +46,7 @@ typedef struct
 {
 	PRFileDesc *fd;
 	PRFileDesc *in;
+	gboolean nonblocking_read;
 
 } GaimSslNssData;
 
@@ -168,6 +169,8 @@ ssl_nss_connect_cb(gpointer data, gint source, GaimInputCondition cond)
 
 	gsc->fd = source;
 
+	nss_data->nonblocking_read = FALSE;
+
 	nss_data->fd = PR_ImportTCPSocket(gsc->fd);
 
 	if (nss_data->fd == NULL)
@@ -247,8 +250,12 @@ static size_t
 ssl_nss_read(GaimSslConnection *gsc, void *data, size_t len)
 {
 	GaimSslNssData *nss_data = GAIM_SSL_NSS_DATA(gsc);
+	PRIntervalTime timeout;
 
-	return PR_Read(nss_data->in, data, len);
+	timeout = (nss_data->nonblocking_read) ? PR_INTERVAL_NO_WAIT
+		: PR_INTERVAL_NO_TIMEOUT;
+
+	return PR_Recv(nss_data->in, data, len, 0, timeout);
 }
 
 static size_t
@@ -262,6 +269,14 @@ ssl_nss_write(GaimSslConnection *gsc, const void *data, size_t len)
 	return PR_Write(nss_data->in, data, len);
 }
 
+static void
+ssl_nss_nonblocking_read(GaimSslConnection *gsc, gboolean nonblocking)
+{
+	GaimSslNssData *nss_data = GAIM_SSL_NSS_DATA(gsc);
+
+	nss_data->nonblocking_read = nonblocking;
+}
+
 static GaimSslOps ssl_ops =
 {
 	ssl_nss_init,
@@ -269,7 +284,8 @@ static GaimSslOps ssl_ops =
 	ssl_nss_connect_cb,
 	ssl_nss_close,
 	ssl_nss_read,
-	ssl_nss_write
+	ssl_nss_write,
+	ssl_nss_nonblocking_read
 };
 
 #endif /* HAVE_NSS */

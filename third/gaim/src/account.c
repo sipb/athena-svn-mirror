@@ -283,6 +283,25 @@ gaim_account_request_add(GaimAccount *account, const char *id,
 		*/
 }
 
+void
+gaim_account_request_password(GaimAccount *account, GCallback ok_cb,
+							  GCallback cancel_cb, void *user_data)
+{
+	gchar *primary;
+	gchar *escaped;
+	const gchar *username = gaim_account_get_username(account);
+
+	gaim_debug(GAIM_DEBUG_INFO, "connection", "Requesting password\n");
+	escaped = g_markup_escape_text(username, strlen(username));
+	primary = g_strdup_printf(_("Enter password for %s (%s)"), escaped,
+							  gaim_account_get_protocol_name(account));
+	gaim_request_input(gaim_account_get_connection(account), NULL, primary,
+					   NULL, NULL, FALSE, TRUE, NULL, _("OK"), ok_cb,
+					   _("Cancel"), cancel_cb, user_data);
+	g_free(primary);
+	g_free(escaped);
+}
+
 static void
 change_password_cb(GaimAccount *account, GaimRequestFields *fields)
 {

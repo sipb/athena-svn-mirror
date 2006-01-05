@@ -33,6 +33,28 @@
 #include "sslconn.h"
 #include "request.h"
 
+#define GSS_USE_FUNCTION_POINTERS 1
+#include "gssapi.h"
+
+typedef struct _JabberGssapi
+{
+  gss_ctx_id_t	context;
+  gss_name_t	server;
+  gboolean	complete;
+  gboolean	ready;
+} JabberGssapi;
+
+static gss_OID_desc gss_c_nt_hostbased_service =
+	{ 10, (void *) "\x2a\x86\x48\x86\xf7\x12\x01\x02\x01\x04" };
+
+static gss_init_sec_context_type gss_init_sec_context;
+static gss_import_name_type	 gss_import_name;
+static gss_release_buffer_type   gss_release_buffer;
+static gss_release_name_type	 gss_release_name;
+static gss_wrap_type		 gss_wrap;
+static gss_unwrap_type		 gss_unwrap;
+static gss_display_status_type	 gss_display_status;
+
 static void auth_old_result_cb(JabberStream *js, xmlnode *packet,
 		gpointer data);
 
@@ -115,12 +137,238 @@ static void disallow_plaintext_auth(GaimAccount *account)
 	gaim_connection_error(account->gc, _("Server requires plaintext authentication over an unencrypted stream"));
 }
 
+gboolean
+jabber_auth_gssapi_init() {
+	static gboolean tried = FALSE, status = FALSE;
+	static GModule *gssapiModule = NULL;
+	gboolean ok = TRUE;
+	const char *libnames[] = {
+#ifdef _WIN32
+		"gssapi32",
+#else
+		"gss", "gssapi_krb5", "gssapi",
+#endif
+		NULL
+	};
+	int i;
+
+	if (tried)
+		return status;
+	tried = TRUE;
+
+	for (i = 0; libnames[i]; i++) {
+		char *name = g_module_build_path(NULL, libnames[i]);
+
+		gssapiModule = g_module_open(name, G_MODULE_BIND_LAZY);
+		g_free(name);
+		if (gssapiModule)
+			break;
+	}
+
+	if (!gssapiModule) {
+		gaim_debug(GAIM_DEBUG_MISC, "jabber", "Module loading failed\n");
+		return FALSE;
+	}
+
+	if (ok) ok = g_module_symbol(gssapiModule,"gss_init_sec_context",(gpointer *)&gss_init_sec_context);
+	if (ok) ok = g_module_symbol(gssapiModule,"gss_import_name",(gpointer *)&gss_import_name);
+	if (ok) ok = g_module_symbol(gssapiModule,"gss_release_buffer",(gpointer *)&gss_release_buffer);
+	if (ok) ok = g_module_symbol(gssapiModule,"gss_release_name",(gpointer *)&gss_release_name);
+	if (ok) ok = g_module_symbol(gssapiModule,"gss_unwrap",(gpointer *)&gss_unwrap);
+	if (ok) ok = g_module_symbol(gssapiModule,"gss_wrap",(gpointer *)&gss_wrap);
+	if (ok) ok = g_module_symbol(gssapiModule,"gss_display_status",(gpointer *)&gss_display_status);
+
+	if (!ok)
+		gaim_debug(GAIM_DEBUG_MISC, "jabber", "Symbol lookups failed\n");
+	status = ok;
+	return ok;
+}
+
+
+static void log_gss_error(OM_uint32 major, OM_uint32 minor)
+{
+	OM_uint32 maj_stat, min_stat;
+	gss_buffer_desc msg;
+	OM_uint32 msg_ctx;
+
+	msg_ctx = 0;
+	while (1) {
+		maj_stat = gss_display_status(&min_stat, major,
+					      GSS_C_GSS_CODE, GSS_C_NULL_OID,
+					      &msg_ctx, &msg);
+		if (GSS_ERROR(maj_stat))
+			return;
+		gaim_debug(GAIM_DEBUG_MISC, "jabber", "GSSAPI: %s\n", msg.value);
+		gss_release_buffer(&min_stat, &msg);
+		if (!msg_ctx)
+			break;
+	}
+
+	msg_ctx = 0;
+	while (1) {
+		maj_stat = gss_display_status(&min_stat, minor,
+					      GSS_C_MECH_CODE, GSS_C_NULL_OID,
+					      &msg_ctx, &msg);
+		if (GSS_ERROR(maj_stat))
+			return;
+		gaim_debug(GAIM_DEBUG_MISC, "jabber", "GSSAPI: %s\n", msg.value);
+		if (!msg_ctx)
+			break;
+	}
+}
+
+gboolean
+jabber_auth_gssapi_step(JabberStream *js,char *indata, char **outdata) {
+	gss_buffer_t inTokenPtr = NULL;
+	gss_buffer_desc inputToken = GSS_C_EMPTY_BUFFER;
+	gss_buffer_desc	outputToken = GSS_C_EMPTY_BUFFER;
+	unsigned int len;
+	OM_uint32 major, minor;
+
+	if (indata) {
+		gaim_base64_decode(indata, (char **) &inputToken.value, &len);
+		inputToken.length = len;
+		inTokenPtr = &inputToken;
+	}
+
+	if (js->gss->complete) {
+		if (inputToken.length == 0) {
+			/* We've received an empty token from the server,
+			 * so we should send an empty one back */
+			*outdata = NULL;
+		} else {
+			GString *response;
+			major = gss_unwrap(&minor, js->gss->context,
+				   	   &inputToken, &outputToken, 
+					   NULL, NULL);
+			if (GSS_ERROR(major)) {
+				log_gss_error(major, minor);
+				gss_release_buffer(&minor, &outputToken);
+				return FALSE;
+			}
+			gss_release_buffer(&minor, &outputToken);
+			response = g_string_new("");
+			response = g_string_append_c(response, 0x01);
+			response = g_string_append_c(response, 0x00);
+			response = g_string_append_c(response, 0x00);
+			response = g_string_append_c(response, 0x00);
+			response = g_string_append(response, js->user->node);
+			gaim_debug(GAIM_DEBUG_MISC,"jabber","Username is %s\n",js->user->node);
+			inputToken.value = response->str;
+			inputToken.length = response->len;
+			major = gss_wrap(&minor, js->gss->context,
+					 0, GSS_C_QOP_DEFAULT,
+					 &inputToken, NULL,
+					 &outputToken);
+
+			*outdata = gaim_base64_encode(outputToken.value, 
+						      outputToken.length);
+			gss_release_buffer(&minor, &outputToken);
+			g_string_free(response, TRUE);
+		}
+	} else {
+	
+		gss_OID_desc gss_krb5_mech_oid_desc =
+			{ 9, (void *) "\x2a\x86\x48\x86\xf7\x12\x01\x02\x02" };
+
+		major = gss_init_sec_context(&minor,
+					     GSS_C_NO_CREDENTIAL,
+					     &js->gss->context,
+					     js->gss->server,
+					     &gss_krb5_mech_oid_desc,
+					     GSS_C_MUTUAL_FLAG,
+					     GSS_C_INDEFINITE,
+					     GSS_C_NO_CHANNEL_BINDINGS,
+					     inTokenPtr,
+					     NULL,
+					     &outputToken,
+					     NULL,
+					     NULL);
+
+		if (inputToken.value)
+			g_free(inputToken.value);
+
+		if (GSS_ERROR(major)) {
+			gss_release_buffer(&minor, &outputToken);
+			return FALSE;
+		}
+
+		if (major == GSS_S_COMPLETE)
+			js->gss->complete = TRUE;
+
+		if (outputToken.length > 0)
+			*outdata = gaim_base64_encode(outputToken.value, 
+						      outputToken.length);
+		else
+			*outdata = NULL;
+
+		gss_release_buffer(&minor, &outputToken);
+	}
+
+	return TRUE;
+}
+
+gboolean
+jabber_auth_gssapi_start(JabberStream *js, char **outdata) {
+
+	GString *server;
+	gss_buffer_desc serverName;
+	OM_uint32 major, minor;
+	const char *domain;
+
+	if (!jabber_auth_gssapi_init())
+		return FALSE;
+
+	g_assert(js->gss == NULL);
+
+	js->gss = g_new0(JabberGssapi,1);
+	domain = gaim_account_get_string(js->gc->account, "connect_server",
+					 js->user->domain);
+	server = g_string_new("xmpp@");
+	server = g_string_append(server, domain);
+	serverName.value = server->str;
+	serverName.length = server->len;
+	major = gss_import_name(&minor, &serverName, 
+				&gss_c_nt_hostbased_service, 
+				&js->gss->server);
+	g_string_free(server, TRUE);
+	if (GSS_ERROR(major))
+		return FALSE;
+
+	js->gss->complete = FALSE;
+	js->gss->ready = FALSE;
+	return jabber_auth_gssapi_step(js, NULL, outdata);
+}
+
+struct auth_pass_data {
+	JabberStream *js;
+	xmlnode *packet;
+};
+
+static void
+auth_pass_cb(struct auth_pass_data *data, const char *entry)
+{
+	gaim_account_set_password(data->js->gc->account, (*entry != '\0') ? entry : NULL);
+	jabber_auth_start(data->js, data->packet);
+	xmlnode_free(data->packet);
+	g_free(data);
+}
+
+static void
+auth_no_pass_cb(struct auth_pass_data *data)
+{
+	gaim_connection_disconnect(data->js->gc);
+	xmlnode_free(data->packet);
+	g_free(data);
+}
+
 void
 jabber_auth_start(JabberStream *js, xmlnode *packet)
 {
 	xmlnode *mechs, *mechnode;
+	char *outdata;
 
-	gboolean digest_md5 = FALSE, plain=FALSE;
+	gboolean digest_md5 = FALSE, plain=FALSE, gssapi=FALSE;
 
 
 	if(js->registration) {
@@ -136,18 +384,42 @@ jabber_auth_start(JabberStream *js, xmlnode *packet)
 	}
 
 	for(mechnode = xmlnode_get_child(mechs, "mechanism"); mechnode;
-			mechnode = xmlnode_get_next_twin(mechnode))
-	{
+			mechnode = xmlnode_get_next_twin(mechnode)) {
 		char *mech_name = xmlnode_get_data(mechnode);
 		if(mech_name && !strcmp(mech_name, "DIGEST-MD5"))
 			digest_md5 = TRUE;
 		else if(mech_name && !strcmp(mech_name, "PLAIN"))
 			plain = TRUE;
+		if(mech_name && !strcmp(mech_name, "GSSAPI"))
+			gssapi = TRUE;	
 		g_free(mech_name);
 	}
 
+	if(gssapi && !jabber_auth_gssapi_start(js, &outdata))
+		gssapi = FALSE;
 
-	if(digest_md5) {
+	if(!gssapi && gaim_account_get_password(js->gc->account) == NULL) {
+		struct auth_pass_data *data = g_new(struct auth_pass_data, 1);
+
+		data->js = js;
+		data->packet = xmlnode_copy(packet);
+		gaim_account_request_password(js->gc->account, G_CALLBACK(auth_pass_cb),
+									  G_CALLBACK(auth_no_pass_cb), data);
+		return;
+	}
+
+	if(gssapi) {
+		xmlnode *auth;
+
+		js->auth_type = JABBER_AUTH_GSSAPI;
+		auth = xmlnode_new("auth");
+		xmlnode_set_attrib(auth, "xmlns", "urn:ietf:params:xml:ns:xmpp-sasl");
+		xmlnode_set_attrib(auth, "mechanism", "GSSAPI");
+		xmlnode_insert_data(auth, outdata, -1);
+		g_free(outdata);
+		jabber_send(js, auth);
+		xmlnode_free(auth);
+	} else if(digest_md5) {
 		xmlnode *auth;
 
 		js->auth_type = JABBER_AUTH_DIGEST_MD5;
@@ -255,10 +527,29 @@ static void auth_old_cb(JabberStream *js, xmlnode *packet, gpointer data)
 	}
 }
 
+static void
+old_pass_cb(JabberStream *js, const char *entry)
+{
+	gaim_account_set_password(js->gc->account, (*entry != '\0') ? entry : NULL);
+	jabber_auth_start_old(js);
+}
+
+static void
+old_no_pass_cb(JabberStream *js)
+{
+	gaim_connection_disconnect(js->gc);
+}
+
 void jabber_auth_start_old(JabberStream *js)
 {
 	JabberIq *iq;
 	xmlnode *query, *username;
+
+	if (gaim_account_get_password(js->gc->account) == NULL) {
+		gaim_account_request_password(js->gc->account, G_CALLBACK(old_pass_cb),
+									  G_CALLBACK(old_no_pass_cb), js);
+		return;
+	}
 
 	iq = jabber_iq_new_query(js, JABBER_IQ_GET, "jabber:iq:auth");
 
@@ -456,6 +747,24 @@ jabber_auth_handle_challenge(JabberStream *js, xmlnode *packet)
 		g_free(enc_in);
 		g_free(dec_in);
 		g_hash_table_destroy(parts);
+	} else if (js->auth_type == JABBER_AUTH_GSSAPI) {
+		char *enc_in = xmlnode_get_data(packet);
+		char *enc_out = NULL;
+		xmlnode *response;
+
+		if (jabber_auth_gssapi_step(js, enc_in, &enc_out)) {
+			response = xmlnode_new("response");
+			xmlnode_set_attrib(response, "xmlns", "urn:ietf:params:xml:ns:xmpp-sasl");
+			if (enc_out) {
+				xmlnode_insert_data(response, enc_out, -1);
+				g_free(enc_out);
+			}
+			jabber_send(js, response);
+			xmlnode_free(response);
+		} else {
+			gaim_connection_error(js->gc, _("SASL error"));
+			return;
+		}
 	}
 }
 

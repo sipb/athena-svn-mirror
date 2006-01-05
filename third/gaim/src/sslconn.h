@@ -71,6 +71,7 @@ typedef struct
 	void (*close)(GaimSslConnection *gsc);
 	size_t (*read)(GaimSslConnection *gsc, void *data, size_t len);
 	size_t (*write)(GaimSslConnection *gsc, const void *data, size_t len);
+	void (*nonblocking_read)(GaimSslConnection *gsc, gboolean nonblocking);
 
 } GaimSslOps;
 
@@ -161,6 +162,14 @@ size_t gaim_ssl_read(GaimSslConnection *gsc, void *buffer, size_t len);
  * @return The number of bytes written.
  */
 size_t gaim_ssl_write(GaimSslConnection *gsc, const void *buffer, size_t len);
+
+/**
+ * Sets whether reads to an SSL connection should be non-blocking.
+ *
+ * @param gsc         The SSL connection handle.
+ * @param nonblocking TRUE if reads should be non-blocking
+ */
+void gaim_ssl_nonblocking_read(GaimSslConnection *gsc, gboolean nonblocking);
 
 /*@}*/
 
