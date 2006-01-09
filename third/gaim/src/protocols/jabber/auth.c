@@ -146,7 +146,7 @@ jabber_auth_gssapi_init() {
 #ifdef _WIN32
 		"gssapi32",
 #else
-		"gss", "gssapi_krb5", "gssapi",
+		"gssapi_krb5", "gss", "gssapi",
 #endif
 		NULL
 	};
