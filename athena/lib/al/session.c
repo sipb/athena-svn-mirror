@@ -17,7 +17,7 @@
  * functions to get and put the session record.
  */
 
-static const char rcsid[] = "$Id: session.c,v 1.11 1999-09-22 22:10:27 danw Exp $";
+static const char rcsid[] = "$Id: session.c,v 1.12 2006-01-14 16:31:15 rbasch Exp $";
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -27,6 +27,7 @@ static const char rcsid[] = "$Id: session.c,v 1.11 1999-09-22 22:10:27 danw Exp 
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 #include "al.h"
 #include "al_private.h"
 
@@ -96,7 +97,8 @@ int al__get_session_record(const char *username,
   fl.l_whence = SEEK_SET;
   fl.l_start = 0;
   fl.l_len = 0;
-  fcntl(fd, F_SETLKW, &fl);
+  while (fcntl(fd, F_SETLKW, &fl) == -1 && errno == EINTR)
+    ;
   record->fp = fdopen(fd, "r+");
 
   /* Get the first line (0 or 1; passwd created). */
@@ -305,6 +307,7 @@ int al__put_session_record(struct al_record *record)
       for (i = 0; i < record->npids; i++)
 	fprintf(record->fp, "%lu:", (unsigned long) record->pids[i]);
       fputs("\n", record->fp);
+      fflush(record->fp);
       ftruncate(fileno(record->fp), ftell(record->fp));
     }
   else
