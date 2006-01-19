@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Existing formatted man pages should be removed during a full
+# Athena release (before formatted pages are newly generated in
+# finish-update), but this was not done for 9.4.0.  Do so now.
+rm -rf /usr/athena/man/cat*
