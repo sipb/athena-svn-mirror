@@ -1,10 +1,11 @@
-# $Id: Makefile,v 1.6 2005-10-03 20:13:42 rbasch Exp $
+# $Id: Makefile,v 1.7 2006-02-03 16:21:31 rbasch Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 USRBINDIR=/usr/bin
 ATTACHRUN=cc f77 f90 pc CC \
-	funzip unzip unzipsfx zip zipcloak zipgrep zipinfo zipnote zipsplit
+	funzip unzip unzipsfx zip zipcloak zipgrep zipinfo zipnote zipsplit \
+	ps2epsi
 
 ATTRUNTEMPLATE=../../template.sh
 
@@ -35,6 +36,7 @@ install:
 	install -c -m 555 zipinfo ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 zipnote ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 zipsplit ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 ps2epsi ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	rm -f ${DESTDIR}${USRBINDIR}/lp
 	ln -s ${ATHBINDIR}/lp ${DESTDIR}${USRBINDIR}/lp

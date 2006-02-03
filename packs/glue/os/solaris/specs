@@ -15,3 +15,6 @@ zipgrep		sipb
 zipinfo		sipb
 zipnote		sipb
 zipsplit	sipb
+
+# /usr/sfw/bin/ps2epsi is broken in Solaris 10.
+ps2epsi		ghostscript
