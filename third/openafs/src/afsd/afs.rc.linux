@@ -288,6 +288,32 @@ choose_afsdoptions() {
 
 case "$1" in 
   start)
+    # Check and mount afs cache partition.
+    d=`grep '^/dev[^ 	]*[ 	]*/usr/vice/cache[ 	]*ext2[	 ]*' /etc/fstab \
+	|sed -e 's/[ 	].*//'`
+    # Try and repair or rebuild cache filesystem if:
+    # 1) it's not mounted
+    # 2) it's explicitly not mountable, and
+    # 3) we know what partition it's on
+    # 4) it appears to be a valid partition
+    # ...otherwise continue with a warning message only.
+    if ! grep -q " /usr/vice/cache " /proc/mounts \
+	      && ! mount /usr/vice/cache && [ -n "$d" ] \
+	      && grep -q " ${d##*/}$" /proc/partitions; then
+	fsck -p /usr/vice/cache
+	case $? in
+	  0|1|2) # fsck succeeded
+	    mount /usr/vice/cache
+	    ;;
+	  *) # fsck failed
+	    echo "AFS cache filesystem ($d) check failed; rebuilding filesystem."
+	    mkfs.ext2 $d
+	    mount /usr/vice/cache
+	    ;;
+	esac
+    else
+	echo "Warning: AFS cache partition not mounted and not mountable."
+    fi
     if [ ! "$afs_rh" -o ! -f /var/lock/subsys/openafs ]; then
 	if [ `echo "$OPTIONS" | grep -c dynroot` = 0 ]; then
 	    on_network || exit 1
