@@ -52,6 +52,19 @@ grep -q ^AFSADJUST /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 AFSADJUST=true; 	export AFSADJUST;	#  Adjust AFS cache-size?
 EOF
 
+# Switch AFS cache partition fstab entry to be neither checked nor mounted at boot.
+# This will now be done by the openafs startup script.
+if grep -q '^/dev/[^ 	]*[ 	]*/usr/vice/cache[ 	]*ext2[	 ]*defaults[ 	]' \
+      /etc/fstab ; then
+  # Modify the cache partition's /etc/fstab entry to add ",noauto" to the
+  # mount options and change the last field (fs_passno) to "0" to prevent
+  # fsck being run on this partition at boot time.
+  sed -e '/^\/dev\/[^ 	]*[ 	]*\/usr\/vice\/cache[ 	]/s/defaults/defaults,noauto/' \
+      -e '/^\/dev\/[^ 	]*[ 	]*\/usr\/vice\/cache[ 	]/s/[0-9]*[ 	]*$/0/' \
+      /etc/fstab > /etc/fstab.new
+  mv -f /etc/fstab.new /etc/fstab
+fi
+
 %ifos linux
 chkconfig --add openafs
 # Force a reset to what's specified in the rc file; we changed it to
