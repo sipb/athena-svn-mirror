@@ -438,11 +438,6 @@ do_authentication(void)
 	status = al_login_allowed(user, 1, &is_local_acct, &filetext);
 	if (status != AL_SUCCESS)
 	  {
-	    /* We don't want to use `packet_disconnect', because it will syslog
-	       at LOG_ERR. Ssh doesn't provide a primitive way to give an
-	       informative message and disconnect without any bad 
-	       feelings... */
-
 	    char *buf;
 
 	    err = al_strerror(status, &errmem);
@@ -457,13 +452,10 @@ do_authentication(void)
 		buf = xmalloc(40 + strlen(err));
 		sprintf(buf, "You are not allowed to log in here: %s\n", err);
 	      }
-	    packet_start(SSH_MSG_DISCONNECT);
-	    packet_put_string(buf, strlen(buf));
-	    packet_send();
-	    packet_write_wait();
-	    
-	    fatal("Login denied: attempted login as %s from %s: %s",
-		  user, get_canonical_hostname(1), err);
+
+	    log("Login denied: attempted login as %s from %s: %s",
+		user, get_canonical_hostname(1), err);
+	    packet_disconnect(buf);
 	  }
 	if (!is_local_acct)
 	  {

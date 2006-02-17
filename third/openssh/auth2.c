@@ -193,15 +193,9 @@ input_userauth_request(int type, u_int32_t seq, void *ctxt)
 			sprintf(buf, "You are not allowed to log in here: "
 				"%s\n", err);
 		      }
-		    packet_start(SSH2_MSG_DISCONNECT);
-		    packet_put_int(SSH2_DISCONNECT_ILLEGAL_USER_NAME);
-		    packet_put_cstring(buf);
-		    packet_put_cstring("");
-		    packet_send();
-		    packet_write_wait();
-
-		    fatal("Login denied: attempted login as %s from %s: %s",
-			  user, get_canonical_hostname(1), err);
+		    log("Login denied: attempted login as %s from %s: %s",
+			user, get_canonical_hostname(1), err);
+		    packet_disconnect(buf);
 		  }
 		if (!is_local_acct)
 		  {
