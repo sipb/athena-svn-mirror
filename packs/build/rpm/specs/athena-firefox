@@ -12,6 +12,9 @@ Requires: athena-openssl athena-krb5
 Mozilla Firefox is an open-source web browser, designed for standards
 compliance, performance and portability.
 
+%pre
+rm -rf /usr/athena/lib/firefox/components
+
 %post
 umask 022
 # Rebuild the registries.
