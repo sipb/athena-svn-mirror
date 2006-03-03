@@ -1,9 +1,9 @@
-# $Id: Makefile,v 1.7 2006-02-03 16:21:31 rbasch Exp $
+# $Id: Makefile,v 1.8 2006-03-03 20:44:45 rbasch Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 USRBINDIR=/usr/bin
-ATTACHRUN=cc f77 f90 pc CC \
+ATTACHRUN=cc f77 f90 CC \
 	funzip unzip unzipsfx zip zipcloak zipgrep zipinfo zipnote zipsplit \
 	ps2epsi
 
@@ -25,7 +25,6 @@ install:
 	install -c -m 555 cc ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 f77 ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 f90 ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 pc ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 CC ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 funzip ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 unzip ${DESTDIR}${ATHBINDIR}

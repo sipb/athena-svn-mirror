@@ -1,7 +1,6 @@
 cc		sunsoft
 f77		sunsoft
 f90		sunsoft
-pc		sunsoft
 CC		sunsoft
 
 # The native Solaris versions of zip/unzip do not support encryption,
