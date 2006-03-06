@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_util.c,v 1.1.1.4 2005-03-10 20:42:32 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_util.c,v 1.1.1.5 2006-03-06 20:41:42 zacheiss Exp $");
 
 #include "afs/stds.h"
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
@@ -270,10 +270,15 @@ afs_CheckLocks(void)
 
 	for (i = 0; i < VCSIZE; i++) {
 	    for (tvc = afs_vhashT[i]; tvc; tvc = tvc->hnext) {
+                if (tvc->states & CVInit) continue;
 #ifdef	AFS_OSF_ENV
 		if (VREFCOUNT(tvc) > 1)
 #else /* AFS_OSF_ENV */
+#ifdef AFS_DARWIN80_ENV
+		if (vnode_isinuse(AFSTOV(tvc), 0))
+#else
 		if (VREFCOUNT(tvc))
+#endif
 #endif
 		    afs_warn("Stat cache entry at %x is held\n", tvc);
 		if (CheckLock(&tvc->lock))

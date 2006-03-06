@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/procmgmt/redirect_nt.c,v 1.1.1.2 2005-03-10 20:38:41 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/procmgmt/redirect_nt.c,v 1.1.1.3 2006-03-06 20:43:14 zacheiss Exp $");
 
 
 #include <stddef.h>
@@ -110,3 +110,23 @@ pmgt_RedirectNativeSignals(void)
 	return 0;
     }
 }
+
+/*
+ * pmgt_RedirectNativeSignals() -- initialize native signal redirection.
+ */
+int
+pmgt_RestoreNativeSignals(void)
+{
+    if (signal(SIGINT, SIG_DFL) == SIG_ERR
+	|| signal(SIGILL, SIG_DFL) == SIG_ERR
+	|| signal(SIGFPE, SIG_DFL) == SIG_ERR
+	|| signal(SIGSEGV, SIG_DFL) == SIG_ERR
+	|| signal(SIGTERM, SIG_DFL) == SIG_ERR
+	|| signal(SIGABRT, SIG_DFL) == SIG_ERR) {
+	errno = EINVAL;
+	return -1;
+    } else {
+	return 0;
+    }
+}
+

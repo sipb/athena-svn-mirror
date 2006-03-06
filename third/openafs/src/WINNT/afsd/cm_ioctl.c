@@ -62,6 +62,23 @@ void cm_InitIoctl(void)
     lock_InitializeMutex(&cm_Afsdsbmt_Lock, "AFSDSBMT.INI Access Lock");
 }
 
+
+long cm_CleanFile(cm_scache_t *scp, cm_user_t *userp, cm_req_t *reqp)
+{
+    long code;
+
+    lock_ObtainWrite(&scp->bufCreateLock);
+    code = buf_CleanVnode(scp, userp, reqp);
+        
+    lock_ObtainMutex(&scp->mx);
+    cm_DiscardSCache(scp);
+    lock_ReleaseMutex(&scp->mx);
+
+    lock_ReleaseWrite(&scp->bufCreateLock);
+    osi_Log2(afsd_logp,"cm_CleanFile scp 0x%x returns error: [%x]",scp, code);
+    return code;
+}
+
 long cm_FlushFile(cm_scache_t *scp, cm_user_t *userp, cm_req_t *reqp)
 {
     long code;
@@ -70,15 +87,52 @@ long cm_FlushFile(cm_scache_t *scp, cm_user_t *userp, cm_req_t *reqp)
     code = buf_FlushCleanPages(scp, userp, reqp);
         
     lock_ObtainMutex(&scp->mx);
-    scp->cbServerp = NULL;
-    scp->cbExpires = 0;
-    cm_dnlcPurgedp(scp);
-    cm_dnlcPurgevp(scp);
-    cm_FreeAllACLEnts(scp);
+    cm_DiscardSCache(scp);
+
     lock_ReleaseMutex(&scp->mx);
 
     lock_ReleaseWrite(&scp->bufCreateLock);
-    afsi_log("cm_FlushFile scp 0x%x returns error: [%x]",scp, code);
+    osi_Log2(afsd_logp,"cm_FlushFile scp 0x%x returns error: [%x]",scp, code);
+    return code;
+}
+
+long cm_FlushParent(cm_scache_t *scp, cm_user_t *userp, cm_req_t *reqp)
+{
+    long code = 0;
+    cm_scache_t * pscp;
+
+    pscp = cm_FindSCacheParent(scp);
+
+    /* now flush the file */
+    code = cm_FlushFile(pscp, userp, reqp);
+    cm_ReleaseSCache(scp);
+
+    return code;
+}
+
+
+long cm_FlushVolume(cm_user_t *userp, cm_req_t *reqp, afs_uint32 cell, afs_uint32 volume)
+{
+    long code = 0;
+    cm_scache_t *scp;
+    int i;
+
+    lock_ObtainWrite(&cm_scacheLock);
+    for (i=0; i<cm_data.hashTableSize; i++) {
+        for (scp = cm_data.hashTablep[i]; scp; scp = scp->nextp) {
+            if (scp->fid.volume == volume && scp->fid.cell == cell) {
+                cm_HoldSCacheNoLock(scp);
+                lock_ReleaseWrite(&cm_scacheLock);
+
+                /* now flush the file */
+                code = cm_FlushFile(scp, userp, reqp);
+                lock_ObtainWrite(&cm_scacheLock);
+                cm_ReleaseSCacheNoLock(scp);
+            }
+        }
+    }
+    lock_ReleaseWrite(&cm_scacheLock);
+
     return code;
 }
 
@@ -533,6 +587,8 @@ long cm_IoctlSetACL(struct smb_ioctl *ioctlp, struct cm_user *userp)
     return code;
 }
 
+
+
 long cm_IoctlFlushAllVolumes(struct smb_ioctl *ioctlp, struct cm_user *userp)
 {
     long code;
@@ -564,7 +620,7 @@ long cm_IoctlFlushVolume(struct smb_ioctl *ioctlp, struct cm_user *userp)
     long code;
     cm_scache_t *scp;
     unsigned long volume;
-    int i;
+    unsigned long cell;
     cm_req_t req;
 
     cm_InitReq(&req);
@@ -573,23 +629,10 @@ long cm_IoctlFlushVolume(struct smb_ioctl *ioctlp, struct cm_user *userp)
     if (code) return code;
         
     volume = scp->fid.volume;
+    cell = scp->fid.cell;
     cm_ReleaseSCache(scp);
 
-    lock_ObtainWrite(&cm_scacheLock);
-    for (i=0; i<cm_data.hashTableSize; i++) {
-        for (scp = cm_data.hashTablep[i]; scp; scp = scp->nextp) {
-            if (scp->fid.volume == volume) {
-                cm_HoldSCacheNoLock(scp);
-                lock_ReleaseWrite(&cm_scacheLock);
-
-                /* now flush the file */
-                code = cm_FlushFile(scp, userp, &req);
-                lock_ObtainWrite(&cm_scacheLock);
-                cm_ReleaseSCacheNoLock(scp);
-            }
-        }
-    }
-    lock_ReleaseWrite(&cm_scacheLock);
+    code = cm_FlushVolume(userp, &req, cell, volume);
 
     return code;
 }
@@ -983,12 +1026,12 @@ long cm_IoctlCheckServers(struct smb_ioctl *ioctlp, struct cm_user *userp)
         memcpy(&csi, tp, sizeof(csi));
         if (csi.tinterval >= 0) {
             cp = ioctlp->outDatap;
-            memcpy(cp, (char *)&cm_daemonCheckInterval, sizeof(long));
+            memcpy(cp, (char *)&cm_daemonCheckDownInterval, sizeof(long));
             ioctlp->outDatap += sizeof(long);
             if (csi.tinterval > 0) {
                 if (!smb_SUser(userp))
                     return CM_ERROR_NOACCESS;
-                cm_daemonCheckInterval = csi.tinterval;
+                cm_daemonCheckDownInterval = csi.tinterval;
             }
             return 0;
         }
@@ -1216,6 +1259,7 @@ long cm_IoctlNewCell(struct smb_ioctl *ioctlp, struct cm_user *userp)
     for (cp = cm_data.allCellsp; cp; cp=cp->nextp) 
     {
         long code;
+	lock_ObtainMutex(&cp->mx);
         /* delete all previous server lists - cm_FreeServerList will ask for write on cm_ServerLock*/
         cm_FreeServerList(&cp->vlServersp);
         cp->vlServersp = NULL;
@@ -1243,6 +1287,7 @@ long cm_IoctlNewCell(struct smb_ioctl *ioctlp, struct cm_user *userp)
             cp->flags &= ~CM_CELLFLAG_VLSERVER_INVALID;
             cm_RandomizeServer(&cp->vlServersp);
         }
+	lock_ReleaseMutex(&cp->mx);
     }
     
     lock_ReleaseWrite(&cm_cellLock);
@@ -1453,13 +1498,16 @@ long cm_IoctlSetSPrefs(struct smb_ioctl *ioctlp, struct cm_user *userp)
                 /* set preferences for an existing vlserver */
                 cm_ChangeRankCellVLServer(tsp);
             }
-            cm_PutServer(tsp);  /* decrease refcount */
         }
         else	/* add a new server without a cell */
         {
             tsp = cm_NewServer(&tmp, type, NULL); /* refcount = 1 */
             tsp->ipRank = rank;
         }
+	lock_ObtainMutex(&tsp->mx);
+	tsp->flags |= CM_SERVERFLAG_PREF_SET;
+	lock_ReleaseMutex(&tsp->mx);
+	cm_PutServer(tsp);  /* decrease refcount */
     }
     return 0;
 }
@@ -1829,6 +1877,7 @@ long cm_IoctlSetToken(struct smb_ioctl *ioctlp, struct cm_user *userp)
     int flags;
     char sessionKey[8];
     char *smbname;
+    int release_userp = 0;
 
     saveDataPtr = ioctlp->inDatap;
 
@@ -1897,7 +1946,9 @@ long cm_IoctlSetToken(struct smb_ioctl *ioctlp, struct cm_user *userp)
     }
 
     if (flags & PIOCTL_LOGON) {
-        userp = smb_FindCMUserByName(smbname, ioctlp->fidp->vcp->rname);
+        userp = smb_FindCMUserByName(smbname, ioctlp->fidp->vcp->rname,
+				     SMB_FLAG_CREATE|SMB_FLAG_AFSLOGON);
+	release_userp = 1;
     }
 
     /* store the token */
@@ -1934,6 +1985,9 @@ long cm_IoctlSetToken(struct smb_ioctl *ioctlp, struct cm_user *userp)
     }
 
     cm_ResetACLCache(userp);
+
+    if (release_userp)
+	cm_ReleaseUser(userp);
 
     return 0;
 }

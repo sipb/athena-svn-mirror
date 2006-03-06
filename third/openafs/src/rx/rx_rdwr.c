@@ -15,7 +15,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_rdwr.c,v 1.1.1.5 2005-06-02 19:43:37 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_rdwr.c,v 1.1.1.6 2006-03-06 20:44:43 zacheiss Exp $");
 
 #ifdef KERNEL
 #ifndef UKERNEL
@@ -28,6 +28,9 @@ RCSID
 #include "h/types.h"
 #include "h/time.h"
 #include "h/stat.h"
+#if defined(AFS_AIX_ENV) || defined(AFS_AUX_ENV) || defined(AFS_SUN5_ENV) 
+#include "h/systm.h"
+#endif
 #ifdef	AFS_OSF_ENV
 #include <net/net_globals.h>
 #endif /* AFS_OSF_ENV */

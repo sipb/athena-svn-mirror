@@ -279,26 +279,29 @@ configureBackConnectionHostNames(void)
                        KEY_READ|KEY_WRITE,
                        &hkMSV10) == ERROR_SUCCESS )
     {
-        if (RegQueryValueEx( hkMSV10, "BackConnectionHostNames", 0, &dwType, NULL, &dwSize) == ERROR_SUCCESS) {
-            pHostNames = malloc(dwSize + strlen(cm_NetbiosName) + 1);
-            RegQueryValueEx( hkMSV10, "BackConnectionHostNames", 0, &dwType, pHostNames, &dwSize);
-
-            for (pName = pHostNames; *pName ; pName += strlen(pName) + 1)
-            {
-                if ( !stricmp(pName, cm_NetbiosName) ) {
-                    bNameFound = TRUE;
-                    break;
-                }   
-            }
-        }
+	if (RegQueryValueEx( hkMSV10, "BackConnectionHostNames", 0, 
+			     &dwType, NULL, &dwSize) == ERROR_SUCCESS) {
+	    dwSize += strlen(cm_NetbiosName) + 1;
+	    pHostNames = malloc(dwSize);
+	    if (RegQueryValueEx( hkMSV10, "BackConnectionHostNames", 0, &dwType, 
+				 pHostNames, &dwSize) == ERROR_SUCCESS) {
+		for (pName = pHostNames; *pName ; pName += strlen(pName) + 1)
+		{
+		    if ( !stricmp(pName, cm_NetbiosName) ) {
+			bNameFound = TRUE;
+			break;
+		    }   
+		}
+	    }
+	}
              
         if ( !bNameFound ) {
             int size = strlen(cm_NetbiosName) + 2;
             if ( !pHostNames ) {
                 pHostNames = malloc(size);
-                dwSize = 1;
+                dwSize = size;
+		pName = pHostNames;
             }
-            pName = pHostNames;
             StringCbCopyA(pName, size, cm_NetbiosName);
             pName += size - 1;
             *pName = '\0';  /* add a second nul terminator */
@@ -370,7 +373,11 @@ configureBackConnectionHostNames(void)
         }
         RegCloseKey(hkMSV10);
     }
+
+    if (pHostNames)
+	free(pHostNames);
 }
+
 
 #if !defined(DJGPP)
 static void afsd_InitServerPreferences(void)
@@ -566,15 +573,19 @@ int afsd_InitCM(char **reasonP)
     WSAStartup(0x0101, &WSAjunk);
 
     afsd_initUpperCaseTable();
+    init_et_to_sys_error();
 
     /* setup osidebug server at RPC slot 1000 */
     osi_LongToUID(1000, &debugID);
     code = osi_InitDebug(&debugID);
     afsi_log("osi_InitDebug code %d", code);
 
-    //	osi_LockTypeSetDefault("stat");	/* comment this out for speed *
+    //	osi_LockTypeSetDefault("stat");	/* comment this out for speed */
     if (code != 0) {
-        *reasonP = "unknown error";
+        if (code == RPC_S_NO_PROTSEQS)
+            *reasonP = "No RPC Protocol Sequences registered.  Check HKLM\\SOFTWARE\\Microsoft\\RPC\\ClientProtocols";
+        else
+            *reasonP = "unknown error";
         return -1;
     }
 
@@ -725,30 +736,22 @@ int afsd_InitCM(char **reasonP)
     dummyLen = sizeof(ltt);
     code = RegQueryValueEx(parmKey, "LogoffTokenTransfer", NULL, NULL,
                             (BYTE *) &ltt, &dummyLen);
-    if (code == ERROR_SUCCESS)
-        afsi_log("Logoff token transfer %s",  (ltt ? "on" : "off"));
-    else {
+    if (code != ERROR_SUCCESS)
         ltt = 1;
-        afsi_log("Logoff token transfer on by default");
-    }
     smb_LogoffTokenTransfer = ltt;
-    afsi_log("Logoff token transfer is currently ignored");
+    afsi_log("Logoff token transfer %s",  (ltt ? "on" : "off"));
 
     if (ltt) {
         dummyLen = sizeof(ltto);
         code = RegQueryValueEx(parmKey, "LogoffTokenTransferTimeout",
                                 NULL, NULL, (BYTE *) &ltto, &dummyLen);
-        if (code == ERROR_SUCCESS)
-            afsi_log("Logoff token tranfer timeout %d seconds", ltto);
-        else {
-            ltto = 10;
-            afsi_log("Default logoff token transfer timeout 10 seconds");
-        }
+        if (code != ERROR_SUCCESS)
+            ltto = 120;
     } else {
         ltto = 0;
     }   
     smb_LogoffTransferTimeout = ltto;
-    afsi_log("Default logoff token is currently ignored");
+    afsi_log("Logoff token transfer timeout %d seconds", ltto);
 
     dummyLen = sizeof(cm_rootVolumeName);
     code = RegQueryValueEx(parmKey, "RootVolume", NULL, NULL,

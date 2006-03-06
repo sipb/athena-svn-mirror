@@ -20,12 +20,15 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/domestic/fcrypt.c,v 1.1.1.4 2005-08-02 21:13:20 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/domestic/fcrypt.c,v 1.1.1.5 2006-03-06 20:44:44 zacheiss Exp $");
 
 #define DEBUG 0
 #ifdef KERNEL
 #ifndef UKERNEL
 #include "afs/stds.h"
+#if defined(AFS_AIX_ENV) || defined(AFS_AUX_ENV) || defined(AFS_SUN5_ENV) 
+#include "h/systm.h"
+#endif
 #include "h/types.h"
 #if !defined(AFS_LINUX20_ENV) && !defined(AFS_OBSD_ENV)
 #include "netinet/in.h"

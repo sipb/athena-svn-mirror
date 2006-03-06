@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/auth/cellconfig.c,v 1.1.1.5 2005-05-04 17:44:56 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/auth/cellconfig.c,v 1.1.1.6 2006-03-06 20:42:44 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <afs/pthread_glock.h>
@@ -740,6 +740,8 @@ afsconf_GetAfsdbInfo(char *acellName, char *aservice,
     size_t len;
     unsigned char answer[1024];
     unsigned char *p;
+    char *dotcellname;
+    int cellnamelength;
     char realCellName[256];
     char host[256];
     int server_num = 0;
@@ -749,9 +751,25 @@ afsconf_GetAfsdbInfo(char *acellName, char *aservice,
      * replaced with a more fine-grained lock just for the resolver
      * operations.
      */
-    LOCK_GLOBAL_MUTEX;
-    len = res_search(acellName, C_IN, T_AFSDB, answer, sizeof(answer));
-    UNLOCK_GLOBAL_MUTEX;
+
+    if ( ! strchr(acellName,'.') ) {
+       cellnamelength=strlen(acellName);
+       dotcellname=malloc(cellnamelength+2);
+       memcpy(dotcellname,acellName,cellnamelength);
+       dotcellname[cellnamelength]='.';
+       dotcellname[cellnamelength+1]=0;
+       LOCK_GLOBAL_MUTEX;
+	    len = res_search(dotcellname, C_IN, T_AFSDB, answer, sizeof(answer));
+       if ( len < 0 ) {
+          len = res_search(acellName, C_IN, T_AFSDB, answer, sizeof(answer));
+       }
+       UNLOCK_GLOBAL_MUTEX;
+       free(dotcellname);
+    } else {
+       LOCK_GLOBAL_MUTEX;
+	    len = res_search(acellName, C_IN, T_AFSDB, answer, sizeof(answer));
+       UNLOCK_GLOBAL_MUTEX;
+    }
     if (len < 0)
 	return AFSCONF_NOTFOUND;
 
@@ -1109,6 +1127,13 @@ afsconf_IntGetKeys(struct afsconf_dir *adir)
 
     /* convert key structure to host order */
     tstr->nkeys = ntohl(tstr->nkeys);
+
+    if (code < sizeof(afs_int32) + (tstr->nkeys*sizeof(struct afsconf_key))) {
+	tstr->nkeys = 0;
+	UNLOCK_GLOBAL_MUTEX;
+	return 0;
+    }
+
     for (fd = 0; fd < tstr->nkeys; fd++)
 	tstr->key[fd].kvno = ntohl(tstr->key[fd].kvno);
 

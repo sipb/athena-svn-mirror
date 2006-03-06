@@ -100,13 +100,15 @@ void cm_CheckServers(long flags, cm_cell_t *cellp)
             }	/* got an unauthenticated connection to this server */
 
             lock_ObtainMutex(&tsp->mx);
-            if (code == 0) {
+            if (code >= 0) {
                 /* mark server as up */
                 tsp->flags &= ~CM_SERVERFLAG_DOWN;
             }
             else {
                 /* mark server as down */
                 tsp->flags |= CM_SERVERFLAG_DOWN;
+		if (code != VRESTARTING)
+		    cm_ForceNewConnections(tsp);
             }
             lock_ReleaseMutex(&tsp->mx);
         }
@@ -233,6 +235,7 @@ cm_server_t *cm_NewServer(struct sockaddr_in *socketp, int type, cm_cell_t *cell
     tsp->refCount = 1;
     lock_InitializeMutex(&tsp->mx, "cm_server_t mutex");
     tsp->addr = *socketp;
+    tsp->flags = 0;	/* assume up until we attempt to contact it */
 
     cm_SetServerPrefs(tsp); 
 
@@ -438,21 +441,24 @@ void cm_FreeServer(cm_server_t* serverp)
          */
         cm_GCConnections(serverp);  /* connsp */
 
-        lock_FinalizeMutex(&serverp->mx);
-        if ( cm_allServersp == serverp )
-            cm_allServersp = serverp->allNextp;
-        else {
-            cm_server_t *tsp;
+	if (!(serverp->flags & CM_SERVERFLAG_PREF_SET)) {
+	    lock_FinalizeMutex(&serverp->mx);
+	    if ( cm_allServersp == serverp )
+		cm_allServersp = serverp->allNextp;
+	    else {
+		cm_server_t *tsp;
 
-            for(tsp = cm_allServersp; tsp->allNextp; tsp=tsp->allNextp) {
-                if ( tsp->allNextp == serverp ) {
-                    tsp->allNextp = serverp->allNextp;
-                    break;
-                }
+		for(tsp = cm_allServersp; tsp->allNextp; tsp=tsp->allNextp) {
+		    if ( tsp->allNextp == serverp ) {
+			tsp->allNextp = serverp->allNextp;
+			break;
+		    }
+		}
             }
+	    free(serverp);
         }
     }
- }
+}
 
 void cm_FreeServerList(cm_serverRef_t** list)
 {

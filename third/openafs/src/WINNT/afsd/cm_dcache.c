@@ -501,6 +501,7 @@ void cm_BkgStore(cm_scache_t *scp, long p1, long p2, long p3, long p4,
     lock_ReleaseMutex(&scp->mx);
 }
 
+/* Called with scp locked */
 void cm_ClearPrefetchFlag(long code, cm_scache_t *scp, osi_hyper_t *base)
 {
     osi_hyper_t thyper;
@@ -1263,7 +1264,7 @@ long cm_GetBuffer(cm_scache_t *scp, cm_buf_t *bufp, int *cpffp, cm_user_t *up,
         callp = rx_NewCall(rxconnp);
         rx_PutConnection(rxconnp);
 
-        osi_Log3(afsd_logp, "CALL FetchData vp %x, off 0x%x, size 0x%x",
+        osi_Log3(afsd_logp, "CALL FetchData scp 0x%x, off 0x%x, size 0x%x",
                   (long) scp, biod.offset.LowPart, biod.length);
 
         code = StartRXAFS_FetchData(callp, &tfid, biod.offset.LowPart,
@@ -1368,7 +1369,7 @@ long cm_GetBuffer(cm_scache_t *scp, cm_buf_t *bufp, int *cpffp, cm_user_t *up,
         if (code == 0)
             code = EndRXAFS_FetchData(callp, &afsStatus, &callback, &volSync);
         else
-            osi_Log0(afsd_logp, "CALL EndRXAFS_FetchData skipped due to error");
+            osi_Log1(afsd_logp, "CALL EndRXAFS_FetchData skipped due to error %d", code);
         code = rx_EndCall(callp, code);
         if (code == RXKADUNKNOWNKEY)
             osi_Log0(afsd_logp, "CALL EndCall returns RXKADUNKNOWNKEY");
