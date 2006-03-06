@@ -16,9 +16,9 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_strategy.c,v 1.1.1.4 2005-05-04 17:46:15 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_strategy.c,v 1.1.1.5 2006-03-06 20:41:54 zacheiss Exp $");
 
-#if !defined(AFS_HPUX_ENV) && !defined(AFS_SGI_ENV) && !defined(AFS_LINUX20_ENV)
+#if !defined(AFS_HPUX_ENV) && !defined(AFS_SGI_ENV) && !defined(AFS_LINUX20_ENV) && !defined(AFS_DARWIN80_ENV)
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -40,6 +40,8 @@ afs_ustrategy(abp)
 {
     register afs_int32 code;
     struct uio tuio;
+    struct uio *tuiop = &tuio;
+    struct iovec tiovec[1];
     register struct vcache *tvc = VTOAFS(abp->b_vp);
     register afs_int32 len = abp->b_bcount;
 #if	!defined(AFS_SUN5_ENV) && !defined(AFS_OSF_ENV) && !defined(AFS_DARWIN_ENV) && !defined(AFS_XBSD_ENV)
@@ -49,7 +51,6 @@ afs_ustrategy(abp)
     struct AFS_UCRED *credp = u.u_cred;
 #endif
 #endif
-    struct iovec tiovec[1];
 
     AFS_STATCNT(afs_ustrategy);
 #ifdef	AFS_AIX41_ENV
@@ -80,12 +81,13 @@ afs_ustrategy(abp)
 	tuio.afsio_iovcnt = 1;
 #if	defined(AFS_OSF_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_XBSD_ENV)
 #ifdef AFS_64BIT_CLIENT
+#ifdef AFS_SUN5_ENV
+	tuio.afsio_offset = (afs_offs_t) ldbtob(abp->b_lblkno);
+#else
 	tuio.afsio_offset = (afs_offs_t) dbtob(abp->b_blkno);
+#endif
 #else /* AFS_64BIT_CLIENT */
 	tuio.afsio_offset = (u_int) dbtob(abp->b_blkno);
-#if	defined(AFS_SUN5_ENV)
-	tuio._uio_offset._p._u = 0;
-#endif
 #endif /* AFS_64BIT_CLIENT */
 #else
 	tuio.afsio_offset = DEV_BSIZE * abp->b_blkno;
@@ -138,12 +140,13 @@ afs_ustrategy(abp)
 	tuio.afsio_iovcnt = 1;
 #if	defined(AFS_OSF_ENV) || defined(AFS_SUN5_ENV)
 #ifdef AFS_64BIT_CLIENT
+#ifdef AFS_SUN5_ENV
+	tuio.afsio_offset = (afs_offs_t) ldbtob(abp->b_lblkno);
+#else
 	tuio.afsio_offset = (afs_offs_t) dbtob(abp->b_blkno);
+#endif
 #else /* AFS_64BIT_CLIENT */
 	tuio.afsio_offset = (u_int) dbtob(abp->b_blkno);
-#ifdef	AFS_SUN5_ENV
-	tuio._uio_offset._p._u = 0;
-#endif
 #endif /* AFS_64BIT_CLIENT */
 #ifdef	AFS_SUN5_ENV
 #ifdef	AFS_SUN59_ENV

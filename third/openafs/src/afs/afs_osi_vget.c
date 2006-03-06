@@ -15,7 +15,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_osi_vget.c,v 1.1.1.3 2005-03-10 20:29:41 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_osi_vget.c,v 1.1.1.4 2006-03-06 20:41:42 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -23,7 +23,7 @@ RCSID
 
 
 
-#if !defined(AFS_LINUX20_ENV)
+#if !defined(AFS_LINUX20_ENV) && !defined(AFS_DARWIN80_ENV)
 /* This is the common part of the vget VFS call. */
 int
 afs_osi_vget(struct vcache **avcpp, struct fid *afidp, struct vrequest *areqp)

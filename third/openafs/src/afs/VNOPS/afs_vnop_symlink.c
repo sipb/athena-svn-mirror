@@ -22,7 +22,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_symlink.c,v 1.1.1.3 2005-03-10 20:43:10 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_symlink.c,v 1.1.1.4 2006-03-06 20:42:09 zacheiss Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -191,6 +191,12 @@ int afs_symlink
      * no one can get a pointer to the new cache entry until we release 
      * the xvcache lock. */
     tvc = afs_NewVCache(&newFid, hostp);
+    if (!tvc)
+    {
+	code = -2;
+	ReleaseWriteLock(&afs_xvcache);
+	goto done;
+    }
     ObtainWriteLock(&tvc->lock, 157);
     ObtainWriteLock(&afs_xcbhash, 500);
     tvc->states |= CStatd;	/* have valid info */

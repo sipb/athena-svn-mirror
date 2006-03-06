@@ -91,6 +91,7 @@ typedef struct smb {
 
 /* flags for functions */
 #define SMB_FLAG_CREATE		1	/* create the structure if necessary */
+#define SMB_FLAG_AFSLOGON       2       /* operating on behalf of afslogon.dll */
 
 /* max # of bytes we'll receive in an incoming SMB message */
 /* the maximum is 2^18-1 for NBT and 2^25-1 for Raw transport messages */
@@ -166,9 +167,8 @@ typedef struct smb_packet {
 } smb_packet_t;
 
 /* smb_packet flags */
-#define SMB_PACKETFLAG_PROFILE_UPDATE_OK	1
-#define SMB_PACKETFLAG_NOSEND			2
-#define SMB_PACKETFLAG_SUSPENDED		4
+#define SMB_PACKETFLAG_NOSEND			1
+#define SMB_PACKETFLAG_SUSPENDED		2
 
 /* a structure for making Netbios calls; locked by smb_globalLock */
 #define SMB_NCBMAGIC	0x2334344
@@ -203,8 +203,6 @@ typedef struct smb_vc {
     struct smb_tid *tidsp;		/* the first child in the tid list */
     struct smb_user *usersp;	        /* the first child in the user session list */
     struct smb_fid *fidsp;		/* the first child in the open file list */
-    struct smb_user *justLoggedOut;	/* ready for profile upload? */
-    time_t logoffTime;	                /* tick count when logged off */
     unsigned char errorCount;
     char rname[17];
     int lana;
@@ -212,6 +210,7 @@ typedef struct smb_vc {
     void * secCtx;                      /* security context when negotiating SMB extended auth
                                          * valid when SMB_VCFLAG_AUTH_IN_PROGRESS is set
                                          */
+    unsigned short session;		/* This is the Session Index associated with the NCBs */
 } smb_vc_t;
 
 					/* have we negotiated ... */
@@ -228,12 +227,15 @@ typedef struct smb_vc {
 typedef struct smb_user {
     struct smb_user *nextp;		/* next sibling */
     unsigned long refCount;		/* ref count */
-    long flags;			        /* flags; locked by mx */
+    afs_uint32 flags;		        /* flags; locked by mx */
     osi_mutex_t mx;
-    long userID;			/* the session identifier */
+    unsigned short userID;		/* the session identifier */
     struct smb_vc *vcp;		        /* back ptr to virtual circuit */
     struct smb_username *unp;           /* user name struct */
+    afs_uint32	delete;			/* ok to del: locked by smb_rctLock */
 } smb_user_t;
+
+#define SMB_USERFLAG_DELETE	    1	/* delete struct when ref count zero */
 
 typedef struct smb_username {
     struct smb_username *nextp;		/* next sibling */
@@ -243,9 +245,25 @@ typedef struct smb_username {
     struct cm_user *userp;		/* CM user structure */
     char *name;			        /* user name */
     char *machine;                      /* machine name */
+    time_t last_logoff_t;		/* most recent logoff time */
 } smb_username_t;
 
-#define SMB_USERFLAG_DELETE	1	/* delete struct when ref count zero */
+/* The SMB_USERNAMEFLAG_AFSLOGON is used to preserve the existence of an 
+ * smb_username_t even when the refCount is zero.  This is used to ensure
+ * that tokens set to a username during the integrated logon process are 
+ * preserved until the SMB Session that will require the tokens is created.
+ * The cm_IoctlSetTokens() function when executed from the Network Provider
+ * connects to the AFS Client Service using the credentials of the machine
+ * and not the user for whom the tokens are being configured. */
+#define SMB_USERNAMEFLAG_AFSLOGON   1
+
+/* The SMB_USERNAMEFLAG_LOGOFF is used to indicate that the user most
+ * recently logged off at 'last_logoff_t'.  The smb_username_t should not
+ * be deleted even if the refCount is zero before 'last_logoff_t' + 
+ * 'smb_LogoffTransferTimeout' if 'smb_LogoffTokenTransfer' is non-zero.
+ * The smb_Daemon() thread is responsible for purging the expired objects */
+
+#define SMB_USERNAMEFLAG_LOGOFF     2
 
 #define SMB_MAX_USERNAME_LENGTH 256
 
@@ -253,17 +271,17 @@ typedef struct smb_username {
 typedef struct smb_tid {
     struct smb_tid *nextp;		/* next sibling */
     unsigned long refCount;
-    long flags;
+    afs_uint32 flags;			/* protected by mx */
     osi_mutex_t mx;			/* for non-tree-related stuff */
     unsigned short tid;		        /* the tid */
     struct smb_vc *vcp;		        /* back ptr */
     struct cm_user *userp;		/* user logged in at the
 					 * tree connect level (base) */
     char *pathname;			/* pathname derived from sharename */
+    afs_uint32	delete;			/* ok to del: locked by smb_rctLock */
 } smb_tid_t;
 
-#define SMB_TIDFLAG_DELETE	1	/* delete struct when ref count zero */
-#define SMB_TIDFLAG_IPC	2 /* IPC$ */
+#define SMB_TIDFLAG_IPC		1 	/* IPC$ */
 
 /* one per process ID */
 typedef struct smb_pid {
@@ -310,11 +328,15 @@ typedef struct smb_ioctl {
 typedef struct smb_fid {
     osi_queue_t q;
     unsigned long refCount;
-    unsigned long flags;
+    afs_uint32 flags;			/* protected by mx */
     osi_mutex_t mx;			/* for non-tree-related stuff */
     unsigned short fid;		        /* the file ID */
     struct smb_vc *vcp;		        /* back ptr */
     struct cm_scache *scp;		/* scache of open file */
+    struct cm_user *userp;              /* user that opened the file
+                                           originally (used to close
+                                           the file if session is
+                                           terminated) */
     long offset;			/* our file pointer */
     smb_ioctl_t *ioctlp;		/* ptr to ioctl structure */
 					/* Under NT, we may need to know the
@@ -329,15 +351,17 @@ typedef struct smb_fid {
     int prev_chunk;			/* previous chunk read */
     int raw_writers;		        /* pending async raw writes */
     EVENT_HANDLE raw_write_event;	/* signal this when raw_writers zero */
+    afs_uint32	delete;			/* ok to del: locked by smb_rctLock */
 } smb_fid_t;
 
 #define SMB_FID_OPENREAD		1	/* open for reading */
 #define SMB_FID_OPENWRITE		2	/* open for writing */
-#define SMB_FID_DELETE			4	/* delete struct on ref count 0 */
+#define SMB_FID_UNUSED                  4       /* free for use */
 #define SMB_FID_IOCTL			8	/* a file descriptor for the
 						 * magic ioctl file */
 #define SMB_FID_OPENDELETE		0x10	/* open for deletion (NT) */
 #define SMB_FID_DELONCLOSE		0x20	/* marked for deletion */
+
 /*
  * Now some special flags to work around a bug in NT Client
  */
@@ -345,6 +369,14 @@ typedef struct smb_fid {
 #define SMB_FID_MTIMESETDONE		0x80	/* have set modtime via Tr2 */
 #define SMB_FID_LOOKSLIKECOPY	(SMB_FID_LENGTHSETDONE | SMB_FID_MTIMESETDONE)
 #define SMB_FID_NTOPEN			0x100	/* have dscp and pathp */
+
+#define SMB_FID_SHARE_READ              0x1000
+#define SMB_FID_SHARE_WRITE             0x2000
+
+#define SMB_FID_QLOCK_HIGH              0x0fe00000
+#define SMB_FID_QLOCK_LOW               0x00000000
+#define SMB_FID_QLOCK_LENGTH            1
+#define SMB_FID_QLOCK_PID               0
 
 /*
  * SMB file attributes (32-bit)
@@ -406,17 +438,33 @@ typedef struct smb_dirListPatch {
  * Note: will not be set if smb_hideDotFiles is false 
  */
 
-/* waiting lock list elements */
+/* individual lock on a waiting lock request */
 typedef struct smb_waitingLock {
-    osi_queue_t q;
-    smb_vc_t *vcp;
-    smb_packet_t *inp;
-    smb_packet_t *outp;
-    time_t timeRemaining;
-    void *lockp;
+    osi_queue_t      q;
+    cm_key_t         key;
+    LARGE_INTEGER    LOffset;
+    LARGE_INTEGER    LLength;
+    cm_file_lock_t * lockp;
+    int              state;
 } smb_waitingLock_t;
 
-extern smb_waitingLock_t *smb_allWaitingLocks;
+#define SMB_WAITINGLOCKSTATE_WAITING 0
+#define SMB_WAITINGLOCKSTATE_DONE    1
+#define SMB_WAITINGLOCKSTATE_ERROR   2
+
+/* waiting lock request */
+typedef struct smb_waitingLockRequest {
+    osi_queue_t   q;
+    smb_vc_t *    vcp;
+    cm_scache_t * scp;
+    smb_packet_t *inp;
+    smb_packet_t *outp;
+    int           lockType;
+    time_t        timeRemaining;
+    smb_waitingLock_t * locks;
+} smb_waitingLockRequest_t;
+
+extern smb_waitingLockRequest_t *smb_allWaitingLocks;
 
 typedef long (smb_proc_t)(smb_vc_t *vcp, smb_packet_t *inp, smb_packet_t *outp);
 
@@ -458,23 +506,27 @@ extern void CompensateForSmbClientLastWriteTimeBugs(afs_uint32 *dosTimep);
 
 extern smb_vc_t *smb_FindVC(unsigned short lsn, int flags, int lana);
 
+extern void smb_CleanupDeadVC(smb_vc_t *vcp);
+
 extern void smb_ReleaseVC(smb_vc_t *vcp);
 
 extern void smb_ReleaseVCNoLock(smb_vc_t *vcp);
 
 extern smb_tid_t *smb_FindTID(smb_vc_t *vcp, unsigned short tid, int flags);
 
+extern void smb_HoldTIDNoLock(smb_tid_t *tidp);
+
 extern void smb_ReleaseTID(smb_tid_t *tidp);
 
 extern smb_user_t *smb_FindUID(smb_vc_t *vcp, unsigned short uid, int flags);
 
-extern smb_username_t *smb_FindUserByName(char *usern, char *machine, int flags);
+extern smb_username_t *smb_FindUserByName(char *usern, char *machine, afs_uint32 flags);
 
 extern smb_user_t *smb_FindUserByNameThisSession(smb_vc_t *vcp, char *usern); 
 
-extern smb_username_t *smb_FindUserByName(char *usern, char *machine, int flags);
+extern void smb_ReleaseUsername(smb_username_t *unp);
 
-extern smb_user_t *smb_FindUserByNameThisSession(smb_vc_t *vcp, char *usern);
+extern void smb_HoldUIDNoLock(smb_user_t *uidp);
 
 extern void smb_ReleaseUID(smb_user_t *uidp);
 
@@ -484,7 +536,12 @@ extern long smb_LookupTIDPath(smb_vc_t *vcp, unsigned short tid, char ** tidPath
 
 extern smb_fid_t *smb_FindFID(smb_vc_t *vcp, unsigned short fid, int flags);
 
+extern void smb_HoldFIDNoLock(smb_fid_t *fidp);
+
 extern void smb_ReleaseFID(smb_fid_t *fidp);
+
+extern long smb_CloseFID(smb_vc_t *vcp, smb_fid_t *fidp, cm_user_t *userp,
+                         afs_uint32 dosTime);
 
 extern int smb_FindShare(smb_vc_t *vcp, smb_user_t *uidp, char *shareName, char **pathNamep);
 
@@ -543,10 +600,6 @@ extern void smb_HoldVCNoLock(smb_vc_t *vcp);
 
 /* some globals, too */
 extern char *smb_localNamep;
-extern int loggedOut;
-extern time_t loggedOutTime;
-extern char *loggedOutName;
-extern smb_user_t *loggedOutUserp;
 
 extern osi_log_t *smb_logp;
 

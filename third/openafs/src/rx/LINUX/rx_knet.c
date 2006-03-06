@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_knet.c,v 1.1.1.6 2005-08-02 21:15:08 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_knet.c,v 1.1.1.7 2006-03-06 20:44:52 zacheiss Exp $");
 
 #include <linux/version.h>
 #ifdef AFS_LINUX22_ENV
@@ -164,6 +164,24 @@ osi_NetReceive(osi_socket so, struct sockaddr_in *from, struct iovec *iov,
     TO_KERNEL_SPACE();
 
     if (code < 0) {
+#ifdef AFS_LINUX26_ENV
+#ifdef CONFIG_PM
+	if (
+#ifdef PF_FREEZE
+	    current->flags & PF_FREEZE
+#else
+	    !current->todo
+#endif
+	    )
+#ifdef LINUX_REFRIGERATOR_TAKES_PF_FREEZE
+	    refrigerator(PF_FREEZE);
+#else
+	    refrigerator();
+#endif
+	    set_current_state(TASK_INTERRUPTIBLE);
+#endif
+#endif
+
 	/* Clear the error before using the socket again.
 	 * Oh joy, Linux has hidden header files as well. It appears we can
 	 * simply call again and have it clear itself via sock_error().

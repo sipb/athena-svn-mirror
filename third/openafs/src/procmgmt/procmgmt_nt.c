@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/procmgmt/procmgmt_nt.c,v 1.1.1.2 2005-03-10 20:38:40 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/procmgmt/procmgmt_nt.c,v 1.1.1.3 2006-03-06 20:43:14 zacheiss Exp $");
 
 #include <afs/stds.h>
 
@@ -1363,7 +1363,8 @@ DllMain(HINSTANCE dllInstHandle,	/* instance handle for this DLL module */
 	DWORD reason,		/* reason function is being called */
 	LPVOID reserved)
 {				/* reserved for future use */
-    if (reason == DLL_PROCESS_ATTACH) {
+    switch (reason) {
+    case DLL_PROCESS_ATTACH:
 	/* library is being attached to a process */
 	if (PmgtLibraryInitialize()) {
 	    /* failed to initialize library */
@@ -1372,7 +1373,11 @@ DllMain(HINSTANCE dllInstHandle,	/* instance handle for this DLL module */
 
 	/* disable thread attach/detach notifications */
 	(void)DisableThreadLibraryCalls(dllInstHandle);
+	return TRUE;
+    case DLL_PROCESS_DETACH:
+	pmgt_RestoreNativeSignals();
+    	return TRUE;
+    default:
+	return FALSE;
     }
-
-    return TRUE;
 }

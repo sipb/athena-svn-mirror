@@ -90,7 +90,7 @@ void cm_InitReq(cm_req_t *reqp)
 {
 	memset((char *)reqp, 0, sizeof(cm_req_t));
 #ifndef DJGPP
-	reqp->startTime = GetCurrentTime();
+	reqp->startTime = GetTickCount();
 #else
         gettimeofday(&reqp->startTime, NULL);
 #endif
@@ -189,7 +189,7 @@ cm_Analyze(cm_conn_t *connp, cm_user_t *userp, cm_req_t *reqp,
     
     /* timeleft - get if from reqp the same way as cmXonnByMServers does */
 #ifndef DJGPP
-    timeUsed = (GetCurrentTime() - reqp->startTime) / 1000;
+    timeUsed = (GetTickCount() - reqp->startTime) / 1000;
 #else
     gettimeofday(&now, NULL);
     timeUsed = sub_time(now, reqp->startTime) / 1000;
@@ -401,6 +401,28 @@ cm_Analyze(cm_conn_t *connp, cm_user_t *userp, cm_req_t *reqp,
         }
         if ( timeLeft > 2 )
             retry = 1;
+    } else if ( errorCode == VNOVNODE ) {
+	if ( fidp ) {
+	    cm_scache_t * scp;
+	    osi_Log4(afsd_logp, "cm_Analyze passed VNOVNODE cell %u vol %u vn %u uniq %u.",
+		      fidp->cell, fidp->volume, fidp->vnode, fidp->unique);
+	    scp = cm_FindSCache(fidp);
+	    if (scp) {
+		cm_scache_t *pscp = cm_FindSCacheParent(scp);
+		cm_CleanFile(scp, userp, reqp);
+		cm_ReleaseSCache(scp);
+		if (pscp) {
+		    if (pscp->cbExpires > 0 && pscp->cbServerp != NULL) {
+			lock_ObtainMutex(&pscp->mx);
+			cm_DiscardSCache(pscp);
+			lock_ReleaseMutex(&pscp->mx);
+		    }
+		    cm_ReleaseSCache(pscp);
+		}
+	    }
+	} else {
+	    osi_Log0(afsd_logp, "cm_Analyze passed VNOVNODE unknown fid.");
+	}
     }
 
     /* RX codes */
@@ -430,6 +452,7 @@ cm_Analyze(cm_conn_t *connp, cm_user_t *userp, cm_req_t *reqp,
         lock_ObtainMutex(&serverp->mx);
         serverp->flags |= CM_SERVERFLAG_DOWN;
         lock_ReleaseMutex(&serverp->mx);
+	cm_ForceNewConnections(serverp);
         if ( timeLeft > 2 )
             retry = 1;
     }
@@ -480,6 +503,8 @@ cm_Analyze(cm_conn_t *connp, cm_user_t *userp, cm_req_t *reqp,
             case VRESTRICTED       : s = "VRESTRICTED";        break;
             case VRESTARTING       : s = "VRESTARTING";        break;
             case VREADONLY         : s = "VREADONLY";          break;
+            case EAGAIN            : s = "EAGAIN";             break;
+            case EACCES            : s = "EACCES";             break;
             }
             osi_Log2(afsd_logp, "cm_Analyze: ignoring error code 0x%x (%s)", 
                      errorCode, s);
@@ -520,7 +545,7 @@ long cm_ConnByMServers(cm_serverRef_t *serversp, cm_user_t *usersp,
     *connpp = NULL;
 
 #ifndef DJGPP
-    timeUsed = (GetCurrentTime() - reqp->startTime) / 1000;
+    timeUsed = (GetTickCount() - reqp->startTime) / 1000;
 #else
     gettimeofday(&now, NULL);
     timeUsed = sub_time(now, reqp->startTime) / 1000;
@@ -694,7 +719,8 @@ long cm_ConnByServer(cm_server_t *serverp, cm_user_t *userp, cm_conn_t **connpp)
         tcp->refCount = 1;
         lock_ReleaseMutex(&tcp->mx);
     } else {
-        if ((tcp->ucgen < ucellp->gen) ||
+        if ((tcp->flags & CM_CONN_FLAG_FORCE_NEW) ||
+            (tcp->ucgen < ucellp->gen) ||
             (tcp->cryptlevel != (cryptall ? (ucellp->flags & CM_UCELLFLAG_RXKAD ? rxkad_crypt : rxkad_clear) : rxkad_clear)))
         {
             if (tcp->ucgen < ucellp->gen)
@@ -702,6 +728,7 @@ long cm_ConnByServer(cm_server_t *serverp, cm_user_t *userp, cm_conn_t **connpp)
             else
                 osi_Log0(afsd_logp, "cm_ConnByServer replace connection due to crypt change");
             lock_ObtainMutex(&tcp->mx);
+	    tcp->flags &= ~CM_CONN_FLAG_FORCE_NEW;
             rx_DestroyConnection(tcp->callp);
             cm_NewRXConnection(tcp, ucellp, serverp);
             lock_ReleaseMutex(&tcp->mx);
@@ -747,3 +774,15 @@ cm_GetRxConn(cm_conn_t *connp)
     return rxconn;
 }
 
+void cm_ForceNewConnections(cm_server_t *serverp)
+{
+    cm_conn_t *tcp;
+
+    lock_ObtainWrite(&cm_connLock);
+    for (tcp = serverp->connsp; tcp; tcp=tcp->nextp) {
+	lock_ObtainMutex(&tcp->mx);
+	tcp->flags |= CM_CONN_FLAG_FORCE_NEW;
+	lock_ReleaseMutex(&tcp->mx);
+    }
+    lock_ReleaseWrite(&cm_connLock);
+}

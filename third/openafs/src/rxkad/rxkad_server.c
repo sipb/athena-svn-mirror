@@ -15,10 +15,13 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_server.c,v 1.1.1.5 2005-06-02 19:43:53 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_server.c,v 1.1.1.6 2006-03-06 20:44:43 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
+#if defined(AFS_AIX_ENV) || defined(AFS_AUX_ENV) || defined(AFS_SUN5_ENV) 
+#include <sys/systm.h>
+#endif
 #include <time.h>
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
@@ -325,8 +328,8 @@ rxkad_CheckResponse(struct rx_securityClass *aobj,
      * If the alternate decoder is not present, or returns -1, then
      * assume the ticket is of the default style.
      */
-    if (code == -1 && (kvno == RXKAD_TKT_TYPE_KERBEROS_V5)
-	|| (kvno == RXKAD_TKT_TYPE_KERBEROS_V5_ENCPART_ONLY)) {
+    if (code == -1 && ((kvno == RXKAD_TKT_TYPE_KERBEROS_V5)
+	|| (kvno == RXKAD_TKT_TYPE_KERBEROS_V5_ENCPART_ONLY))) {
 	code =
 	    tkt_DecodeTicket5(tix, tlen, tsp->get_key, tsp->get_key_rock,
 			      kvno, client.name, client.instance, client.cell,

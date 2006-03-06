@@ -19,12 +19,15 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/domestic/crypt_conn.c,v 1.1.1.3 2005-06-02 19:43:53 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/domestic/crypt_conn.c,v 1.1.1.4 2006-03-06 20:44:44 zacheiss Exp $");
 
 #ifdef KERNEL
 #include "afs/stds.h"
 #ifndef UKERNEL
 #include "h/types.h"
+#if defined(AFS_AIX_ENV) || defined(AFS_AUX_ENV) || defined(AFS_SUN5_ENV)
+#include "h/systm.h"
+#endif
 #include "rx/rx.h"
 #include "netinet/in.h"
 #else /* !UKERNEL */

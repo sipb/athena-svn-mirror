@@ -23,13 +23,13 @@
 #define INCLUDE_RXKAD_PRIVATE_DECLS
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_common.c,v 1.1.1.6 2005-08-02 21:13:17 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_common.c,v 1.1.1.7 2006-03-06 20:44:43 zacheiss Exp $");
 
 #ifdef KERNEL
 #ifndef UKERNEL
 #include "afs/stds.h"
 #include "afs/afs_osi.h"
-#ifdef	AFS_AIX_ENV
+#if defined(AFS_AIX_ENV) || defined(AFS_AUX_ENV) || defined(AFS_SUN5_ENV) 
 #include "h/systm.h"
 #endif
 #if defined(AFS_DARWIN60_ENV) || defined(AFS_OBSD_ENV)

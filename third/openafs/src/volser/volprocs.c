@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/volprocs.c,v 1.1.1.4 2005-09-08 18:03:18 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/volprocs.c,v 1.1.1.5 2006-03-06 20:43:37 zacheiss Exp $");
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -1790,7 +1790,7 @@ VolListOneVolume(struct rx_call *acid, afs_int32 partid, afs_int32
 		pntr->volid = volid;
 		goto drop;
 	    }
-	    tv = VAttachVolumeByName(&error, pname, volname, V_PEEK);
+	    tv = VAttachVolumeByName(&error, pname, volname, V_READONLY);
 	    if (error) {
 		pntr->status = 0;	/*things are messed up */
 		strcpy(pntr->name, volname);
@@ -2004,7 +2004,7 @@ VolXListOneVolume(struct rx_call *a_rxCidP, afs_int32 a_partID,
 	    /*
 	     * Attach the volume, give up on the volume if we can't.
 	     */
-	    tv = VAttachVolumeByName(&error, pname, volname, V_PEEK);
+	    tv = VAttachVolumeByName(&error, pname, volname, V_READONLY);
 	    if (error) {
 		xInfoP->status = 0;	/*things are messed up */
 		strcpy(xInfoP->name, volname);

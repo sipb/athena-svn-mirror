@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/vos/vosutils.c,v 1.1.1.2 2005-03-10 20:43:41 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/vos/vosutils.c,v 1.1.1.3 2006-03-06 20:42:38 zacheiss Exp $");
 
 #include "vosutils.h"
 #include "vsprocs.h"
@@ -133,7 +133,7 @@ VLDB_CreateEntry(afs_cell_handle_p cellHandle, struct nvldbentry *entryp,
 }
 
 int
-VLDB_GetEntryByID(afs_cell_handle_p cellHandle, afs_int32 volid,
+aVLDB_GetEntryByID(afs_cell_handle_p cellHandle, afs_int32 volid,
 		  afs_int32 voltype, struct nvldbentry *entryp,
 		  afs_status_p st)
 {
@@ -171,7 +171,7 @@ VLDB_GetEntryByID(afs_cell_handle_p cellHandle, afs_int32 volid,
 }
 
 int
-VLDB_GetEntryByName(afs_cell_handle_p cellHandle, const char *namep,
+aVLDB_GetEntryByName(afs_cell_handle_p cellHandle, const char *namep,
 		    struct nvldbentry *entryp, afs_status_p st)
 {
     struct vldbentry oentry;
@@ -412,7 +412,7 @@ GetVolumeInfo(afs_cell_handle_p cellHandle, unsigned int volid,
     afs_status_t tst;
     int i, index = -1;
 
-    if (!VLDB_GetEntryByID(cellHandle, volid, -1, rentry, &tst)) {
+    if (!aVLDB_GetEntryByID(cellHandle, volid, -1, rentry, &tst)) {
 	rc = 0;
 	goto fail_GetVolumeInfo;
     }

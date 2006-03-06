@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/kaserver.c,v 1.1.1.5 2005-08-02 21:14:10 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/kaserver.c,v 1.1.1.6 2006-03-06 20:44:05 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -198,6 +198,8 @@ main(argc, argv)
     sigaction(SIGABRT, &nsa, NULL);
     sigaction(SIGSEGV, &nsa, NULL);
 #endif
+    osi_audit_init();
+
     if (argc == 0) {
       usage:
 	printf("Usage: kaserver [-noAuth] [-fastKeys] [-database <dbpath>] "

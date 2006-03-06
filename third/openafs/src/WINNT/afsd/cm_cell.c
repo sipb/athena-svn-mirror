@@ -61,11 +61,12 @@ long cm_AddCellProc(void *rockp, struct sockaddr_in *addrp, char *namep)
  */
 cm_cell_t *cm_UpdateCell(cm_cell_t * cp)
 {
-    long code;
+    long code = 0;
 
     if (cp == NULL)
         return NULL;
 
+    lock_ObtainMutex(&cp->mx);
     if ((cp->vlServersp == NULL 
 #ifdef AFS_FREELANCE_CLIENT
           && !(cp->flags & CM_CELLFLAG_FREELANCE)
@@ -83,8 +84,8 @@ cm_cell_t *cm_UpdateCell(cm_cell_t * cp)
         }
 
         code = cm_SearchCellFile(cp->name, NULL, cm_AddCellProc, cp);
-        if (code) {
 #ifdef AFS_AFSDB_ENV
+        if (code) {
             if (cm_dnsEnabled) {
                 int ttl;
 
@@ -101,18 +102,16 @@ cm_cell_t *cm_UpdateCell(cm_cell_t * cp)
                     * current entry alone 
                     */
                     cp->flags |= CM_CELLFLAG_VLSERVER_INVALID;
-                    cp = NULL;      /* return NULL to indicate failure */
                 }
-            } else 
+	    }
+	} else 
 #endif /* AFS_AFSDB_ENV */
-            {
-                cp = NULL;          /* return NULL to indicate failure */
-            }
-        } else {
+        {
 	    cp->timeout = time(0) + 7200;
 	}	
     }
-    return cp;
+    lock_ReleaseMutex(&cp->mx);
+    return code ? NULL : cp;
 }
 
 /* load up a cell structure from the cell database, afsdcell.ini */
@@ -132,7 +131,7 @@ cm_cell_t *cm_GetCell_Gen(char *namep, char *newnamep, long flags)
 
     lock_ObtainWrite(&cm_cellLock);
     for (cp = cm_data.allCellsp; cp; cp=cp->nextp) {
-        if (strcmp(namep, cp->name) == 0) {
+        if (stricmp(namep, cp->name) == 0) {
             strcpy(fullname, cp->name);
             break;
         }
@@ -321,14 +320,14 @@ void cm_ChangeRankCellVLServer(cm_server_t *tsp)
     int code;
 
     cp = tsp->cellp;	/* cell that this vlserver belongs to */
-    osi_assert(cp);
+    if (cp) {
+	lock_ObtainMutex(&cp->mx);
+	code = cm_ChangeRankServer(&cp->vlServersp, tsp);
 
-    lock_ObtainMutex(&cp->mx);
-    code = cm_ChangeRankServer(&cp->vlServersp, tsp);
+	if ( !code ) 		/* if the server list was rearranged */
+	    cm_RandomizeServer(&cp->vlServersp);
 
-    if ( !code ) 		/* if the server list was rearranged */
-        cm_RandomizeServer(&cp->vlServersp);
-
-    lock_ReleaseMutex(&cp->mx);
+	lock_ReleaseMutex(&cp->mx);
+    }
 }       
 

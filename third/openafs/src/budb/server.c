@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/budb/server.c,v 1.1.1.4 2005-08-02 21:14:09 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/budb/server.c,v 1.1.1.5 2006-03-06 20:44:04 zacheiss Exp $");
 
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -395,6 +395,7 @@ main(argc, argv)
     sigaction(SIGSEGV, &nsa, NULL);
     sigaction(SIGABRT, &nsa, NULL);
 #endif
+    osi_audit_init();
     osi_audit(BUDB_StartEvent, 0, AUD_END);
 
     initialize_BUDB_error_table();

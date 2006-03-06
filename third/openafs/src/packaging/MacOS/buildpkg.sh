@@ -32,7 +32,8 @@ else
 fi
 
 if [ -x /usr/bin/curl ]; then
-    /usr/bin/curl -f -O http://www.central.org/dl/cellservdb/CellServDB
+#    /usr/bin/curl -f -O http://www.central.org/dl/cellservdb/CellServDB
+    /usr/bin/curl -f -O http://dl.central.org/dl/cellservdb/CellServDB
 fi
 
 if [ ! -f CellServDB ]; then
@@ -82,6 +83,8 @@ cp $BINDEST/root.client/usr/vice/etc/StartupParameters.plist  $PKGROOT/Library/S
 chown -R root${SEP}admin $PKGROOT/Library
 chmod -R o-w $PKGROOT/Library
 chmod -R g+w $PKGROOT/Library
+chown -R root${SEP}wheel $PKGROOT/Library/StartupItems
+chmod -R og-w $PKGROOT/Library/StartupItems
 chown -R root${SEP}wheel $PKGROOT/Library/OpenAFS/Tools
 chmod -R og-w $PKGROOT/Library/OpenAFS/Tools
 
@@ -99,11 +102,12 @@ if [ $majorvers -ge 7 ]; then
 else
     echo /Network/afs:/var/db/openafs/cache:30000 > $PKGROOT/private/var/db/openafs/etc/cacheinfo.sample
 fi
-echo '-stat 2000 -dcache 800 -daemons 3 -volumes 70 -dynroot -fakestat-all' > $PKGROOT/private/var/db/openafs/etc/config/afsd.options.sample
+echo '-afsdb -stat 2000 -dcache 800 -daemons 3 -volumes 70 -dynroot -fakestat-all' > $PKGROOT/private/var/db/openafs/etc/config/afsd.options.sample
 
 strip -X -S $PKGROOT/Library/OpenAFS/Tools/root.client/usr/vice/etc/afs.kext/Contents/MacOS/afs
 
 cp -RP $PKGROOT/Library/OpenAFS/Tools/root.client/usr/vice/etc/afs.kext $PKGROOT/private/var/db/openafs/etc
+cp -RP $PKGROOT/Library/OpenAFS/Tools/root.client/usr/vice/etc/C $PKGROOT/private/var/db/openafs/etc
 
 chown -R root${SEP}wheel $PKGROOT/private
 chmod -R og-w $PKGROOT/private
@@ -111,7 +115,7 @@ chmod  og-rx $PKGROOT/private/var/db/openafs/cache
 
 mkdir $PKGROOT/usr $PKGROOT/usr/bin $PKGROOT/usr/sbin
 
-BINLIST="fs klog klog.krb pagsh pagsh.krb pts sys tokens tokens.krb unlog unlog.krb"
+BINLIST="fs klog klog.krb pagsh pagsh.krb pts sys tokens tokens.krb unlog unlog.krb aklog"
 
 # Should these be linked into /usr too?
 OTHER_BINLIST="bos cmdebug rxgen translate_et udebug xstat_cm_test xstat_fs_test"
@@ -131,6 +135,12 @@ if [ $majorvers -ge 7 ]; then
     cp OpenAFS.post_install $PKGRES/postinstall
     cp OpenAFS.pre_upgrade $PKGRES/preupgrade
     cp OpenAFS.post_install $PKGRES/postupgrade
+    if [ $majorvers -ge 8 ]; then
+        cp InstallationCheck $PKGRES
+        mkdir $PKGRES/English.lproj
+        cp InstallationCheck $PKGRES/English.lproj
+        chmod a+x $PKGRES/InstallationCheck
+    fi
     chmod a+x $PKGRES/postinstall $PKGRES/postupgrade $PKGRES/preupgrade
 else
     cp OpenAFS.post_install OpenAFS.pre_upgrade $PKGRES
@@ -162,6 +172,11 @@ else
 fi
 
 rm -rf pkgroot pkgres
+mkdir dmg
+mv OpenAFS.pkg dmg
+rm -rf OpenAFS.dmg
+hdiutil create -srcfolder dmg -volname OpenAFS -anyowners OpenAFS.dmg
+rm -rf dmg
 # Unfortunately, sudo sets $USER to root, so I can't chown the 
 #.pkg dir back to myself
 #chown -R $USER OpenAFS.pkg
