@@ -854,7 +854,7 @@ Optional Features:
   --disable-pam 			disable PAM support
   --enable-bos-restricted-mode 	enable bosserver restricted mode which disables certain bosserver functionality
   --enable-bos-new-config	 	enable bosserver pickup of BosConfig.new on restarts
-  --enable-largefile-fileserver        enable large file support in fileserver
+  --disable-largefile-fileserver       disable large file support in fileserver
   --enable-namei-fileserver 		force compilation of namei fileserver in preference to inode fileserver
   --enable-supergroups 		enable support for nested pts groups
   --enable-fast-restart 		enable fast startup of file server without salvaging
@@ -1530,7 +1530,7 @@ fi
 
 PACKAGE=openafs-libafs
 
-VERSION=1.4.0
+VERSION=1.4.1-rc9
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -3154,7 +3154,7 @@ if test "${enable_largefile_fileserver+set}" = set; then
   enableval="$enable_largefile_fileserver"
 
 else
-  enable_largefile_fileserver="no"
+  enable_largefile_fileserver="yes"
 fi;
 # Check whether --enable-namei-fileserver or --disable-namei-fileserver was given.
 if test "${enable_namei_fileserver+set}" = set; then
@@ -4931,10 +4931,15 @@ echo "$as_me: error: Need a configured kernel directory" >&2;}
 		fi
 
                 ;;
-        *-darwin*)
+        powerpc-*-darwin*)
 		MKAFS_OSTYPE=DARWIN
                 echo "$as_me:$LINENO: result: ppc_darwin" >&5
 echo "${ECHO_T}ppc_darwin" >&6
+                ;;
+        i386-*-darwin*)
+		MKAFS_OSTYPE=DARWIN
+                echo "$as_me:$LINENO: result: x86_darwin" >&5
+echo "${ECHO_T}x86_darwin" >&6
                 ;;
 	*-freebsd*)
 		MKAFS_OSTYPE=FBSD
@@ -4963,62 +4968,17 @@ else
 	echo "$as_me:$LINENO: checking your AFS sysname" >&5
 echo $ECHO_N "checking your AFS sysname... $ECHO_C" >&6
 	case $host in
-		i?86-*-openbsd3.1)
-			AFS_SYSNAME="i386_obsd31"
+		i?86-*-openbsd?.?)
+			v=${host#*openbsd}
+			vM=${v%.*}
+			vm=${v#*.}
+			AFS_SYSNAME="i386_obsd${vM}${vm}"
 			;;
-		i?86-*-openbsd3.2)
-			AFS_SYSNAME="i386_obsd32"
-			;;
-		i?86-*-openbsd3.3)
-			AFS_SYSNAME="i386_obsd33"
-			;;
-		i?86-*-openbsd3.4)
-			AFS_SYSNAME="i386_obsd34"
-			;;
-		i?86-*-openbsd3.5)
-			AFS_SYSNAME="i386_obsd35"
-			;;
-		i?86-*-openbsd3.6)
-			AFS_SYSNAME="i386_obsd36"
-			;;
-		i?86-*-openbsd3.7)
-			AFS_SYSNAME="i386_obsd37"
-			;;
-		i?86-*-freebsd4.2*)
-			AFS_SYSNAME="i386_fbsd_42"
-			;;
-		i?86-*-freebsd4.3*)
-			AFS_SYSNAME="i386_fbsd_43"
-			;;
-		i?86-*-freebsd4.4*)
-			AFS_SYSNAME="i386_fbsd_44"
-			;;
-		i?86-*-freebsd4.5*)
-			AFS_SYSNAME="i386_fbsd_45"
-			;;
-		i?86-*-freebsd4.6*)
-			AFS_SYSNAME="i386_fbsd_46"
-			;;
-		i?86-*-freebsd4.7*)
-			AFS_SYSNAME="i386_fbsd_47"
-			;;
-		i?86-*-freebsd5.0*)
-			AFS_SYSNAME="i386_fbsd_50"
-			;;
-		i?86-*-freebsd5.1*)
-			AFS_SYSNAME="i386_fbsd_51"
-			;;
-		i?86-*-freebsd5.2*)
-			AFS_SYSNAME="i386_fbsd_52"
-			;;
-		i?86-*-freebsd5.3*)
-			AFS_SYSNAME="i386_fbsd_53"
-			;;
-		i?86-*-freebsd5.4*)
-			AFS_SYSNAME="i386_fbsd_54"
-			;;
-		i?86-*-freebsd6.0*)
-			AFS_SYSNAME="i386_fbsd_60"
+		i?86-*-freebsd?.*)
+			v=${host#*freebsd}
+			vM=${v%.*}
+			vm=${v#*.}
+			AFS_SYSNAME="i386_fbsd_${vM}${vm}"
 			;;
 		i?86-*-netbsd*1.5*)
 			AFS_PARAM_COMMON=param.nbsd15.h
@@ -5039,6 +4999,10 @@ echo $ECHO_N "checking your AFS sysname... $ECHO_C" >&6
 		i?86-*-netbsd*2.0*)
 			AFS_PARAM_COMMON=param.nbsd20.h
 			AFS_SYSNAME="i386_nbsd20"
+			;;
+		amd64-*-netbsd*2.0*)
+			AFS_PARAM_COMMON=param.nbsd20.h
+			AFS_SYSNAME="amd64_nbsd20"
 			;;
 		powerpc-*-netbsd*2.0*)
 			AFS_PARAM_COMMON=param.nbsd20.h
@@ -5146,6 +5110,15 @@ echo $ECHO_N "checking your AFS sysname... $ECHO_C" >&6
 			;;
 		powerpc-apple-darwin7.5*)
 			AFS_SYSNAME="ppc_darwin_70"
+			;;
+		powerpc-apple-darwin8*)
+			AFS_SYSNAME="ppc_darwin_80"
+			;;
+		powerpc-apple-darwin8.*)
+			AFS_SYSNAME="ppc_darwin_80"
+			;;
+		i386-apple-darwin8.*)
+			AFS_SYSNAME="x86_darwin_80"
 			;;
 		sparc-sun-solaris2.5*)
 			AFS_SYSNAME="sun4x_55"
@@ -5673,7 +5646,7 @@ cp  $tmpldir/osi_vfs.hin $outputdir/osi_vfs.h
 echo "$as_me:$LINENO: checking for linux/completion.h existance" >&5
 echo $ECHO_N "checking for linux/completion.h existance... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_completion_h_exists+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5737,7 +5710,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for defined for_each_process" >&5
 echo $ECHO_N "checking for defined for_each_process... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_defines_for_each_process+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5798,7 +5771,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for defined prev_task" >&5
 echo $ECHO_N "checking for defined prev_task... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_defines_prev_task+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5859,7 +5832,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for alloc_inode in struct super_operations" >&5
 echo $ECHO_N "checking for alloc_inode in struct super_operations... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_fs_struct_super_has_alloc_inode+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5919,7 +5892,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for page_lock in struct address_space" >&5
 echo $ECHO_N "checking for page_lock in struct address_space... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_fs_struct_address_space_has_page_lock+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5979,7 +5952,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for gfp_mask in struct address_space" >&5
 echo $ECHO_N "checking for gfp_mask in struct address_space... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_fs_struct_address_space_has_gfp_mask+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -6039,7 +6012,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for i_alloc_sem in struct inode" >&5
 echo $ECHO_N "checking for i_alloc_sem in struct inode... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_fs_struct_inode_has_i_alloc_sem+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -6099,7 +6072,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for i_truncate_sem in struct inode" >&5
 echo $ECHO_N "checking for i_truncate_sem in struct inode... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_fs_struct_inode_has_i_truncate_sem+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -6159,7 +6132,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for i_dirty_data_buffers in struct inode" >&5
 echo $ECHO_N "checking for i_dirty_data_buffers in struct inode... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_fs_struct_inode_has_i_dirty_data_buffers+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -6219,8 +6192,8 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for i_devices in struct inode" >&5
 echo $ECHO_N "checking for i_devices in struct inode... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
-if test "${ac_cv_linux_fs_struct_inode_has_i_cdev+set}" = set; then
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
+if test "${ac_cv_linux_fs_struct_inode_has_i_devices+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
 
@@ -6276,10 +6249,130 @@ echo "$as_me:$LINENO: result: $ac_cv_linux_fs_struct_inode_has_i_devices" >&5
 echo "${ECHO_T}$ac_cv_linux_fs_struct_inode_has_i_devices" >&6
 CPPFLAGS="$save_CPPFLAGS"
 
+echo "$as_me:$LINENO: checking for i_mmap_shared in struct inode" >&5
+echo $ECHO_N "checking for i_mmap_shared in struct inode... $ECHO_C" >&6
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
+if test "${ac_cv_linux_fs_struct_inode_has_i_mmap_shared+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/fs.h>
+int
+main ()
+{
+struct inode _inode;
+printf("%d\n", _inode.i_mmap_shared);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_fs_struct_inode_has_i_mmap_shared=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_linux_fs_struct_inode_has_i_mmap_shared=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+
+echo "$as_me:$LINENO: result: $ac_cv_linux_fs_struct_inode_has_i_mmap_shared" >&5
+echo "${ECHO_T}$ac_cv_linux_fs_struct_inode_has_i_mmap_shared" >&6
+CPPFLAGS="$save_CPPFLAGS"
+
+echo "$as_me:$LINENO: checking for i_mutex in struct inode" >&5
+echo $ECHO_N "checking for i_mutex in struct inode... $ECHO_C" >&6
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
+if test "${ac_cv_linux_fs_struct_inode_has_i_mutex+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/fs.h>
+int
+main ()
+{
+struct inode _inode;
+printf("%d\n", _inode.i_mutex);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_fs_struct_inode_has_i_mutex=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_linux_fs_struct_inode_has_i_mutex=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+
+echo "$as_me:$LINENO: result: $ac_cv_linux_fs_struct_inode_has_i_mutex" >&5
+echo "${ECHO_T}$ac_cv_linux_fs_struct_inode_has_i_mutex" >&6
+CPPFLAGS="$save_CPPFLAGS"
+
 echo "$as_me:$LINENO: checking for i_sb_list in struct inode" >&5
 echo $ECHO_N "checking for i_sb_list in struct inode... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_fs_struct_inode_has_i_sb_list+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -6339,7 +6432,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for i_security in struct inode" >&5
 echo $ECHO_N "checking for i_security in struct inode... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_fs_struct_inode_has_i_security+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -6399,7 +6492,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for inotify_lock in struct inode" >&5
 echo $ECHO_N "checking for inotify_lock in struct inode... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_fs_struct_inode_has_inotify_lock+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -6459,7 +6552,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for inotify_sem in struct inode" >&5
 echo $ECHO_N "checking for inotify_sem in struct inode... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_fs_struct_inode_has_inotify_sem+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -6519,7 +6612,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for inode_setattr return type" >&5
 echo $ECHO_N "checking for inode_setattr return type... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_func_inode_setattr_returns_int+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -6581,7 +6674,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for write_inode return type" >&5
 echo $ECHO_N "checking for write_inode return type... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_func_write_inode_returns_int+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -6641,7 +6734,7 @@ echo "${ECHO_T}$ac_cv_linux_func_write_inode_returns_int" >&6
 CPPFLAGS="$save_CPPFLAGS"
 
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 echo "$as_me:$LINENO: checking whether inode_operations.create takes a nameidata" >&5
 echo $ECHO_N "checking whether inode_operations.create takes a nameidata... $ECHO_C" >&6
 if test "${ac_cv_linux_func_i_create_takes_nameidata+set}" = set; then
@@ -6908,7 +7001,7 @@ fi
 CPPFLAGS="$save_CPPFLAGS"
 
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 echo "$as_me:$LINENO: checking whether address_space_operations.writepage takes a writeback_control" >&5
 echo $ECHO_N "checking whether address_space_operations.writepage takes a writeback_control... $ECHO_C" >&6
 if test "${ac_cv_linux_func_a_writepage_takes_writeback_control+set}" = set; then
@@ -7068,7 +7161,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for 5th argument in sock_create found in some SELinux kernels" >&5
 echo $ECHO_N "checking for 5th argument in sock_create found in some SELinux kernels... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ -DKBUILD_BASENAME=\\"libafs\\" $CPPFLAGS"
 if test "${ac_cv_linux_kernel_sock_create_v+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7129,7 +7222,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for page_follow_link_light vs page_follow_link" >&5
 echo $ECHO_N "checking for page_follow_link_light vs page_follow_link... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-default -Werror-implicit-function-declaration -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-default -Werror-implicit-function-declaration -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_kernel_page_follow_link+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7218,7 +7311,7 @@ fi
 echo "$as_me:$LINENO: checking for recalc_sigpending arg type" >&5
 echo $ECHO_N "checking for recalc_sigpending arg type... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_func_recalc_sigpending_takes_void+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7277,7 +7370,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for parent in struct task_struct" >&5
 echo $ECHO_N "checking for parent in struct task_struct... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_sched_struct_task_struct_has_parent+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7337,7 +7430,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for real_parent in struct task_struct" >&5
 echo $ECHO_N "checking for real_parent in struct task_struct... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_sched_struct_task_struct_has_real_parent+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7397,7 +7490,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for sig in struct task_struct" >&5
 echo $ECHO_N "checking for sig in struct task_struct... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_sched_struct_task_struct_has_sig+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7457,7 +7550,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for sighand in struct task_struct" >&5
 echo $ECHO_N "checking for sighand in struct task_struct... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_sched_struct_task_struct_has_sighand+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7517,7 +7610,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for sigmask_lock in struct task_struct" >&5
 echo $ECHO_N "checking for sigmask_lock in struct task_struct... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_sched_struct_task_struct_has_sigmask_lock+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7577,7 +7670,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for rlim in struct task_struct" >&5
 echo $ECHO_N "checking for rlim in struct task_struct... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_sched_struct_task_struct_has_rlim+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7637,7 +7730,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for signal->rlim in struct task_struct" >&5
 echo $ECHO_N "checking for signal->rlim in struct task_struct... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_sched_struct_task_struct_has_signal_rlim+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7697,7 +7790,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for exit_state in struct task_struct" >&5
 echo $ECHO_N "checking for exit_state in struct task_struct... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_sched_struct_task_struct_has_exit_state+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7755,7 +7848,7 @@ echo "${ECHO_T}$ac_cv_linux_sched_struct_task_struct_has_exit_state" >&6
 CPPFLAGS="$save_CPPFLAGS"
 
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 echo "$as_me:$LINENO: checking whether refrigerator takes PF_FREEZE" >&5
 echo $ECHO_N "checking whether refrigerator takes PF_FREEZE... $ECHO_C" >&6
 if test "${ac_cv_linux_func_refrigerator_takes_pf_freeze+set}" = set; then
@@ -7911,7 +8004,7 @@ echo "$as_me: WARNING: Cannot determine sys_call_table status. assuming it isn't
 echo "$as_me:$LINENO: checking for exported init_mm" >&5
 echo $ECHO_N "checking for exported init_mm... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_exports_init_mm+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -7972,7 +8065,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for exported kallsyms_address_to_symbol" >&5
 echo $ECHO_N "checking for exported kallsyms_address_to_symbol... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_exports_kallsyms_address+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -8033,7 +8126,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for exported kallsyms_symbol_to_address" >&5
 echo $ECHO_N "checking for exported kallsyms_symbol_to_address... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_exports_kallsyms_symbol+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -8094,7 +8187,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for exported sys_call_table" >&5
 echo $ECHO_N "checking for exported sys_call_table... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_exports_sys_call_table+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -8155,7 +8248,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for exported ia32_sys_call_table" >&5
 echo $ECHO_N "checking for exported ia32_sys_call_table... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_exports_ia32_sys_call_table+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -8216,7 +8309,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for exported sys_chdir" >&5
 echo $ECHO_N "checking for exported sys_chdir... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_exports_sys_chdir+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -8277,7 +8370,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for exported sys_close" >&5
 echo $ECHO_N "checking for exported sys_close... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_exports_sys_close+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -8338,7 +8431,7 @@ CPPFLAGS="$save_CPPFLAGS"
 echo "$as_me:$LINENO: checking for exported sys_wait4" >&5
 echo $ECHO_N "checking for exported sys_wait4... $ECHO_C" >&6
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -D__KERNEL__ $CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -I${LINUX_KERNEL_PATH}/include/asm/mach-${SUBARCH} -DKBUILD_BASENAME=\"libafs\" -D__KERNEL__ $CPPFLAGS"
 if test "${ac_cv_linux_exports_sys_wait4+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -11746,7 +11839,8 @@ done
 
 
 
-for ac_func in setprogname getprogname sigaction mkstemp vsnprintf strerror
+
+for ac_func in setprogname getprogname sigaction mkstemp vsnprintf strerror strcasestr
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $ac_func" >&5
@@ -13377,6 +13471,7 @@ case $AFS_SYSNAME in
 		MT_LIBS="-pthread"
 		PAM_CFLAGS="-O2 -pipe -fPIC"
 		SHLIB_LDFLAGS="-shared -Xlinker -x"
+		SHLIB_LINKER="${MT_CC} -shared"
 		TXLIBS="-lncurses"
 		XCFLAGS="-O2 -pipe"
 		YACC="byacc"
@@ -13388,6 +13483,7 @@ case $AFS_SYSNAME in
 		MT_LIBS="-lpthread" # XXX -pthread soon
 		PAM_CFLAGS="-O2 -pipe -fPIC"
 		SHLIB_LDFLAGS="-shared -Xlinker -x"
+		SHLIB_LINKER="${MT_CC} -shared"
 		TXLIBS="/usr/lib/libcurses.so"
 		XCFLAGS="-O2 -pipe"
 		YACC="yacc"
@@ -13399,6 +13495,7 @@ case $AFS_SYSNAME in
 		MT_LIBS=""
 		PAM_CFLAGS="-O2 -pipe -fPIC"
 		SHLIB_LDFLAGS="-shared -Xlinker -x"
+		SHLIB_LINKER="${MT_CC} -shared"
 		TXLIBS="/usr/lib/libcurses.so"
 		XCFLAGS="-O2 -pipe"
 		YACC="bison -y"
@@ -13539,6 +13636,7 @@ case $AFS_SYSNAME in
 		PAM_CFLAGS="-O2 -pipe -fpic"
 		SHLIB_CFLAGS="-fpic"
 		SHLIB_LDFLAGS="-shared -Xlinker -x"
+		SHLIB_LINKER="${MT_CC} -shared"
 		TXLIBS="/usr/lib/libcurses.a"
 		XCFLAGS="-O2"
 		YACC="yacc"
@@ -13562,6 +13660,7 @@ case $AFS_SYSNAME in
 		LEX="lex -l"
 		REGEX_OBJ="regex.o"
 		XCFLAGS="-traditional-cpp"
+		SHLIB_LINKER="${MT_CC} -dynamiclib"
 		;;
 
 	ppc_darwin_13)
@@ -13570,6 +13669,7 @@ case $AFS_SYSNAME in
 		LWP_OPTMZ="-O2"
 		REGEX_OBJ="regex.o"
 		XCFLAGS="-no-cpp-precomp"
+		SHLIB_LINKER="${MT_CC} -dynamiclib"
 		;;
 
 	ppc_darwin_14)
@@ -13578,6 +13678,7 @@ case $AFS_SYSNAME in
 		LWP_OPTMZ="-O2"
 		REGEX_OBJ="regex.o"
 		XCFLAGS="-no-cpp-precomp"
+		SHLIB_LINKER="${MT_CC} -dynamiclib"
 		;;
 
 	ppc_darwin_60)
@@ -13587,6 +13688,7 @@ case $AFS_SYSNAME in
 		REGEX_OBJ="regex.o"
 		XCFLAGS="-no-cpp-precomp"
 		TXLIBS="-lncurses"
+		SHLIB_LINKER="${MT_CC} -dynamiclib"
 		;;
 
 	ppc_darwin_70)
@@ -13600,9 +13702,10 @@ case $AFS_SYSNAME in
 		XCFLAGS="-no-cpp-precomp"
 		TXLIBS="-lncurses"
 		EXTRA_VLIBOBJS="fstab.o"
+		SHLIB_LINKER="${MT_CC} -dynamiclib"
 		;;
 
-	ppc_darwin_80)
+	*_darwin_80)
 		AFSD_LDFLAGS="-F/System/Library/PrivateFrameworks -framework DiskArbitration"
 		LEX="lex -l"
 		MT_CFLAGS='-DAFS_PTHREAD_ENV -D_REENTRANT ${XCFLAGS}'
@@ -13613,6 +13716,7 @@ case $AFS_SYSNAME in
 		XCFLAGS="-no-cpp-precomp"
 		TXLIBS="-lncurses"
 		EXTRA_VLIBOBJS="fstab.o"
+		SHLIB_LINKER="${MT_CC} -dynamiclib"
 		;;
 
 	ppc_linux*)
@@ -13725,7 +13829,7 @@ case $AFS_SYSNAME in
 
 	s390x_linux24|s390x_linux26)
 		CC="gcc"
-		CCOBJ="gcc"
+		CCOBJ="gcc -fPIC"
 		LD="ld"
 		KERN_OPTMZ=-O2
 		LEX="flex -l"
@@ -13802,7 +13906,7 @@ case $AFS_SYSNAME in
 		SHLIB_LINKER="${CC} -shared"
 		;;
 
-	sparc64_linux22)
+	sparc64_linux*)
 		KERN_OPTMZ=-O2
 		LEX="flex -l"
 		MT_CFLAGS='-DAFS_PTHREAD_ENV -pthread -D_REENTRANT ${XCFLAGS}'
@@ -13811,19 +13915,8 @@ case $AFS_SYSNAME in
 		SHLIB_LDFLAGS="-shared -Xlinker -x"
 		TXLIBS="-lncurses"
 		XCFLAGS="-O2 -D_LARGEFILE64_SOURCE"
-		YACC="bison -y"
-		SHLIB_LINKER="${MT_CC} -shared"
-		;;
-
-	sparc64_linux24)
-		KERN_OPTMZ=-O2
-		LEX="flex -l"
-		MT_CFLAGS='-DAFS_PTHREAD_ENV -pthread -D_REENTRANT ${XCFLAGS}'
-		MT_LIBS="-lpthread"
-		PAM_CFLAGS="-O2 -Dlinux -DLINUX_PAM -fPIC"
-		SHLIB_LDFLAGS="-shared -Xlinker -x"
-		TXLIBS="-lncurses"
-		XCFLAGS="-O2 -D_LARGEFILE64_SOURCE"
+		XCFLAGS64="-O2 -D_LARGEFILE64_SOURCE -m64"
+		XLDFLAGS64="-m64"
 		YACC="bison -y"
 		SHLIB_LINKER="${MT_CC} -shared"
 		;;
@@ -13870,6 +13963,7 @@ case $AFS_SYSNAME in
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
 		LD="/usr/ccs/bin/ld"
 		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		LWP_OPTMZ="-g"
 		;;
 
 	sun4x_56)
@@ -13890,6 +13984,7 @@ case $AFS_SYSNAME in
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
 		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		LWP_OPTMZ="-g"
 		;;
 
 	sun4x_57)
@@ -13911,6 +14006,7 @@ case $AFS_SYSNAME in
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
 		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		LWP_OPTMZ="-g"
 		;;
 
 	sun4x_58)
@@ -13932,6 +14028,7 @@ case $AFS_SYSNAME in
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
 		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		LWP_OPTMZ="-g"
 		;;
 
 	sun4x_59)
@@ -13953,6 +14050,7 @@ case $AFS_SYSNAME in
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
 		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		LWP_OPTMZ="-g"
 		;;
 
 	sun4x_510)
@@ -13974,6 +14072,7 @@ case $AFS_SYSNAME in
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
 		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		LWP_OPTMZ="-g"
 		;;
 
 	sunx86_57)

@@ -62,7 +62,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/ticket5.c,v 1.4 2005-03-10 22:16:55 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/ticket5.c,v 1.5 2006-03-06 21:25:08 zacheiss Exp $");
 
 #if defined(UKERNEL)
 #include "../afs/sysincludes.h"
@@ -242,11 +242,6 @@ tkt_DecodeTicket5(char *ticket, afs_int32 ticket_len,
 	v5_serv_kvno = *t5.enc_part.kvno;
     }
 
-
-    code = (*get_key) (get_key_rock, v5_serv_kvno, &serv_key);
-    if (code)
-	goto unknown_key;
-
     /* Check that the key type really fit into 8 bytes */
     switch (t5.enc_part.etype) {
     case ETYPE_DES_CBC_CRC:
@@ -261,6 +256,10 @@ tkt_DecodeTicket5(char *ticket, afs_int32 ticket_len,
     if (t5.enc_part.cipher.length > sizeof(plain)
 	|| t5.enc_part.cipher.length % 8 != 0)
 	goto bad_ticket;
+
+    code = (*get_key) (get_key_rock, v5_serv_kvno, &serv_key);
+    if (code)
+	goto unknown_key;
 
     /* Decrypt data here, save in plain, assume it will shrink */
     code =

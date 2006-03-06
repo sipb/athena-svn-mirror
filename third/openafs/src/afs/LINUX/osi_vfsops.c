@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vfsops.c,v 1.10 2005-09-08 18:39:46 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vfsops.c,v 1.11 2006-03-06 21:24:55 zacheiss Exp $");
 
 #define __NO_VERSION__		/* don't define kernel_version in module.h */
 #include <linux/module.h> /* early to avoid printf->printk mapping */
@@ -324,7 +324,7 @@ afs_clear_inode(struct inode *ip)
 
     if (vcp->vlruq.prev || vcp->vlruq.next)
 	osi_Panic("inode freed while on LRU");
-    if (vcp->hnext || vcp->vhnext)
+    if (vcp->hnext)
 	osi_Panic("inode freed while still hashed");
 
 #if !defined(STRUCT_SUPER_HAS_ALLOC_INODE)
@@ -343,12 +343,12 @@ afs_put_inode(struct inode *ip)
 {
     struct vcache *vcp = VTOAFS(ip);
 
+    AFS_GLOCK();
     if (VREFCOUNT(vcp) == 2) {
-	AFS_GLOCK();
 	if (VREFCOUNT(vcp) == 2)
 	    afs_InactiveVCache(vcp, NULL);
-	AFS_GUNLOCK();
     }
+    AFS_GUNLOCK();
 }
 
 /* afs_put_super
