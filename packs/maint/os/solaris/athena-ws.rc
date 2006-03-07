@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athena-ws.rc,v 1.13 2005-06-18 17:10:19 rbasch Exp $
+# $Id: athena-ws.rc,v 1.14 2006-03-07 21:43:24 rbasch Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -181,7 +181,8 @@ start)
       newv=`awk '{ a = $5; } END { print a; }' /srvd/.rvdinfo`
       thisv=`awk '{ a = $5; } END { print a; }' /etc/athena/version`
       if [ "$newv" = "$thisv" ]; then
-        echo "Checking system integrity (this takes a few minutes)..."
+        echo "Checking system integrity (this takes a few minutes)..." \
+          > /dev/msglog
         /etc/athena/verify
         if [ -f /srvd/etc/athena/rc.conf ]; then
           sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
@@ -267,7 +268,7 @@ start)
   echo "done."
 
   # Recreate GConf schemas.
-  echo "Recreating gconf schemas... \c"
+  echo "Recreating gconf schemas... \c" > /dev/msglog
   gdir=/etc/athena/gconf
   rm -rf $gdir/gconf.xml.defaults
   mkdir $gdir/gconf.xml.defaults
@@ -279,7 +280,7 @@ start)
   for f in $gdir/schemas/*.schemas $gdir/schemas/athena.schemas; do
     gconftool-2 --makefile-install-rule $f > /dev/null 2>&1
   done
-  echo "done."
+  echo "done." > /dev/msglog
 
   # Recreate mimeinfo.cache files.
   echo "Recreating mimeinfo.cache files... \c"
