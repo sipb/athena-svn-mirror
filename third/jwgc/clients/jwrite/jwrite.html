@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>jwrite - write to a Jabber user</title>
+<link rev="made" href="mailto:root@hampsten.nonet" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>jwrite - write to a Jabber user</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>jwrite [ -d &lt;flags&gt; ] [ -h ] [ -v ] [ -q ] [ -e ] [ -n ] [ -f ] [ -m &lt;message&gt; ] recips...</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><em>Jwrite</em> is used to send a message to a Jabber user via <em>jwgc</em>.  It
+accepts a full jid, a nickname, or a part of a jid.  If a recipient
+specified is part of a jid, a match is attempted from the beginning
+of the full jids in the user's contact list.  Multiple recipients may
+be specified to send a single message to multiple users.</p>
+<p><em>Jwrite</em> understands the following options:</p>
+<p>-d &lt;flags&gt;          Debugging output.  Run without &lt;flags&gt; for usage.</p>
+<p>-h                  Displays usage information.</p>
+<p>-v                  Verbose output of communication with <em>jwgc</em>.</p>
+<p>-q                  Silences all unnecessary output from <em>jwrite</em>.</p>
+<p>-e                  Encrypt message.</p>
+<p>-f                  Send message without checking recipient validity.</p>
+<p>-n                  Send message without pinging recipient.</p>
+<p>-m <em>message</em>    Send message <em>message</em> instead of prompting for one.</p>
+<p><em>Jwrite</em> does not yet support any formatting attributes for messages.</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Daniel Henninger &lt;<a href="mailto:jadestorm@users.sourceforge.net">jadestorm@users.sourceforge.net</a>&gt;</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright (c) 2002 Daniel Henninger. All right reserved.
+This program is free software; you can redistribute it
+and/or modify it under the terms explained in the <strong>LICENSE</strong>
+file that comes with the <em>jwgc</em> distribution.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p>jwgc(1), jctl(1), jlocate(1), <code>jstat(1)</code></p>
+
+</body>
+
+</html>

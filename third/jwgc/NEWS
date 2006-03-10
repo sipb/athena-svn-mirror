@@ -1,0 +1,70 @@
+beta5:
+
+* Added capability to use a JWGCSCK variable to specify location of socket file.
+
+* Composing events now sent and received.
+
+* Unicode translation of incoming messages.
+
+beta4:
+
+* Moved to unix filesystem socket based communication.
+
+* Both below are via a new 'form' manager.
+
+* 'real' registration support.
+
+* search support (jud and such).
+
+* Unicode translation of outgoing messages.
+
+* GPG support.
+
+* Revamped variable system.
+
+* Revamped contact lists.
+
+* Ability to specify priority.
+
+* Many more compile-time options.
+
+* jwgc.var.fixed to force variable settings.
+
+* Documentation more complete.
+
+* Resource support for jlocate.
+
+* Groupchat/Conference support.
+
+* Debugging adjustable on the fly.
+
+* Bad description file no longer means no message display.
+
+
+beta3:
+
+* SSL support added, as well as port specification.
+
+* XML-based communication between jwgc and clients.
+
+* Moved to brand new style of debugging.
+
+* Many fixes to allow proper compilation on Mac OS X, Solaris, and Linux.
+
+
+beta2:
+
+* All of the missing support I 'required' is in now.
+
+* The configure script is cleaned up and more or less complete.
+
+* jabber.org is now the default server, with a configure option to change it.
+
+* Compiles but doesn't function correctly under cygwin, I'm not real sure why.
+
+ 
+beta1:
+
+* Autoconf support, making the project actually reasonable to compile.
+
+* Almost a complete system now.

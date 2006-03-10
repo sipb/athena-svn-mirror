@@ -1,0 +1,215 @@
+#############################################################################
+#                                                                           #
+# Default JWGC Description File                                             #
+#                                                                           #
+#############################################################################
+
+case $type
+###
+# Message Notices
+###
+match "message"
+	###
+	# If you set JWGCLOG in your environment, we'll try to log there.
+	###
+	set log = getenv("JWGCLOG")
+	if ($log != "") then
+		appendport "log" $log
+	endif
+
+	case $subtype
+	match "internal"
+		###
+		# Special "internal" messages, come directly from jwgc
+		###
+
+        	fields body
+		print $body
+		put
+		exit
+
+	match "groupchat"
+		###
+		# Groupchat messages, conferencing and such
+		###
+
+        	fields body
+
+		if ($log != "") then
+			put "log" "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+			put "log" "Message received at "+$time+" on "+$date+"\n"
+			put "log" "Group: "+$sender+" ("+$server+")\n"
+			put "log" "From: "+$resource+"\n"
+			put "log" "\n"
+			put "log" $body+"\n"
+			put "log" "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+			closeoutput "log"
+		endif
+
+
+		print "Message received at "+$time12+" on "+$longdate+"\n"
+		print "@bold(Group:) "+$sender+" ("+$server+")\n"
+		print "@bold(From:) "+$resource+"\n"
+		print "\n"
+		print paragraph($body,"80")+"\n"
+		put
+		exit
+
+	match "headline"
+		###
+		# Headline messages should be very small
+		###
+
+        	fields body
+		print $body
+		exit
+
+	default
+		###
+		# All chat and normal messages fall under this category
+		###
+
+        	fields body
+
+		if ($error != "") then
+			print "@b(Error from "+$from+")\n"
+			print paragraph($error,"80")
+			put
+
+			exit
+		endif
+
+		if ($event == "composing" and $body == "") then
+			print "Incoming message started at "+$time12+" on "+$longdate+"\n"
+			print "@bold(From:) "+$sender
+			if $server != "" then
+				print "@"+$server
+			endif
+			if $resource != "" then
+				print " ("+$resource+")"
+			endif
+			if $nickname != "" then
+				print " aka "+$nickname
+			endif
+			print "\n"
+			put
+			exit
+		endif
+
+		if ($body == "") then
+			# empty message, junk
+			exit
+		endif
+
+		if ($log != "") then
+			put "log" "\n========================================================================\n"
+			put "log" "Message received at "+$time+" on "+$date+"\n"
+			put "log" "From: "+$sender
+
+			if $server != "" then
+				put "log" "@"+$server
+			endif
+			if $resource != "" then
+				put "log" " ("+$resource+")"
+			endif
+			if $nickname != "" then
+				put "log" " aka "+$nickname
+			endif
+			put "log" "\n"
+			if $subject != "" then
+				put "log" "@bold(Subject:) "+$subject+"\n"
+			endif
+			put "log" "\n"
+			if $error != "" then
+				put "log" "@bold(Error:) "+$error+" on message:\n"
+			endif
+			put "log" $body+"\n"
+			put "log" "\n========================================================================\n"
+			closeoutput "log"
+		endif
+
+
+		print "Message received at "+$time12+" on "+$longdate+"\n"
+		print "@bold(From:) "+$sender
+		if $server != "" then
+			print "@"+$server
+		endif
+		if $resource != "" then
+			print " ("+$resource+")"
+		endif
+		if $nickname != "" then
+			print " aka "+$nickname
+		endif
+		print "\n"
+		if $subject != "" then
+			print "@bold(Subject:) "+$subject+"\n"
+		endif
+		print "\n"
+		if $error != "" then
+			print "@bold(Error:) "+$error+" on message:\n"
+		endif
+		print paragraph($body,"80")
+		put
+		exit
+	endcase
+
+###
+# Presence Notices
+###
+match "presence"
+	print $from
+	if $nickname != "" then
+		print " aka "+$nickname
+	endif
+
+	case $subtype
+	match "available"
+		print" is "
+		if $show != "" then
+			print $show+"\n"
+			print "Status: "+$status
+		else
+			print "available"
+		endif
+
+	match "unavailable"
+		print " is unavailable"
+
+	match "invisible"
+		print " is invisible"
+
+	match "subscribe"
+		print " has subscribed to your presence\n"
+
+	match "unsubscribe"
+		print " has unsubscribed to your presence\n"
+
+	match "subscribed"
+		print " has been added to your subscription list\n"
+
+	match "unsubscribed"
+		print " has been removed from your subscription list\n"
+
+	default
+		print " is set to an unknown presence"
+		if $show != "" then
+			print " ("+$show+")"
+		endif
+		if $status != "" then
+			print " ["+$status+"]"
+		endif
+	endcase
+
+	put
+	exit
+
+###
+# I don't recognize this notice?
+###
+default
+	print "@center(@bold(Unknown Notice))\n"
+	print "@bold(Type:) "+$type+"\n"
+	print "@bold(Subtype:) "+$subtype
+	put
+	exit
+endcase

@@ -1,0 +1,1135 @@
+=head1 NAME
+
+jwgc - Jabber Windowgram Client
+
+=head1 SYNOPSIS
+
+jwgc [-h] [-debug <flags>] [-f <filename>] [-j <jid>]
+     [-u <username>] [-p <password>] [-r <resource>]
+     [-s <server>] [-register] [-ssl] [-port <port>]
+     [-priority <priority>] [-ttymode] [-nofork]
+     [-default <driver>] {-disable <driver>}*
+     [output driver options]
+
+I<Jwgc> is the base of all of I<jwgc>'s functionality.  It handles
+connections to the Jabber server and from the various I<jwgc> clients.
+(such as I<jwrite>, I<jlocate>, etc)  You must have the I<jwgc> component
+running for anything else to work.  It also handles displaying incoming
+messages on any output devices you have enabled.
+
+=head1 OPTIONS AND VARIABLES
+
+I<Jwgc> is almost entirely configurable from the command line.  Almost
+all of the command line options have associated variables as listed
+below.
+
+=head2 Options
+
+=over 8
+
+=item B<-h>
+
+Provides a listing of all of the available flags.
+
+=item B<-debug> I<flags>
+
+Without flags, -debug lists all of the available debug output
+types.  Otherwise, this option enables debugging output of the
+specified types, or 'all' for all debugging output.
+
+=item B<-f> I<filename>
+
+Load an alternate description file.
+
+=item B<-u> I<username>
+
+Username to log into the jabber server as.  If this isn't
+specified anywhere, and -j isn't specified, I<jwgc> will use
+your unix username.
+
+Associated variable: B<username>
+
+=item B<-p> I<password>
+
+Password to log into the jabber server with.  If this isn't
+specified anywhere, I<jwgc> will prompt you for it.
+
+Associated variable: B<password>
+
+=item B<-r> I<resource>
+
+Jabber resource to use.  This defaults to I<jwgc> unless you
+specify something else.
+
+Associated variable: B<resource>
+
+=item B<-s> I<server>
+
+Jabber server to connect to.  This defaults to I<jabber.org>
+unless you specify something else.
+
+Associated variable: B<server>
+
+=item B<-j> I<jid>
+
+This option causes -u, -r and -s to be ignored.  Instead, all
+of this information is taken directory from the jid specified,
+which tends to be of the form:
+username@server/resource
+
+Associated variable: B<jid>
+
+=item B<-ssl>
+
+Turns on ssl support.  This will try to connect to the ssl port
+of the Jabber server for a secure connection.
+
+Associated variable: B<usessl> (true)
+
+=item B<-nossl>
+
+Turns off ssl support.  This can be useful if ssl is enabled
+by default and you don't have ssl support on the target server.
+
+Associated variable: B<usessl> (false)
+
+=item B<-port> I<port>
+
+Specifies the port to connect to on the Jabber server.
+
+Associated variable: B<port>
+
+=item B<-priority> I<priority>
+
+Specifies the Jabber priority to connect with.
+
+Associated variable: B<priority>
+
+=item B<-ttymode>
+
+Enables only tty mode, which eliminates any graphical interface.
+
+=item B<-nofork>
+
+Prevents I<jwgc> from backgrounding itself.
+
+=item B<-register>
+
+Causes I<jwgc> to attempt to register your account with the Jabber
+server on startup.  This is necessary to create a new account.
+
+=item B<-default> I<driver>, B<-disable> I<driver>, B<[output driver options]>
+
+These are all currently undocumented, sorry.
+
+=back
+
+=head2 Extra Variables
+
+The following variables have no associated command line arguments:
+
+=over 8
+
+=item B<initprogs>
+
+Programs specifed with this variable are run automatically when jwgc
+is started up.
+
+=back
+
+=head1 DESCRIPTION
+
+I<Jwgc> consists of two main types of configuration files, and extra
+configuration files depending on which drivers you have enabled.
+
+=head2 Jwgc Description Files
+
+The I<jwgc> description files are the most important piece of I<jwgc>'s
+configuration.  They tell I<jwgc> how to display incoming messages.  If
+your description file is broken, then most likely nothing will be displayed
+at all.  There are two instances of the description file.  One is
+I<jwgc.desc>, installed in an B<etc> directory wherever the root of
+your installation is.  This is the default description file users will
+be using.  This can be overridden by placing a I<.jwgc.desc> file in
+one's home directory.  Note that this is a -complete- override.  The
+default will not be read at all if a I<.jwgc.desc> exists in the user's
+home directory.  As such, if a user wants to modify the output, that user
+should copy the default I<jwgc.desc> into their home directory as
+I<.jwgc.desc> and modify it there. 
+
+=head2 Jwgc Variable Files
+
+The I<jwgc> variable files contain default settings for any of the
+various variables I<jwgc> uses.  These are described in more detail
+later, but there are three incarnations of this file: I<jwgc.vars>,
+I<jwgc.vars.fixed>, and I<.jwgc.vars>.  I<jwgc.vars> is a system
+default file, and can be overridden by I<.jwgc.vars>.  I<jwgc.vars.fixed>
+is a system default file that contains variables that can -not- be
+overridden by other config files, or by command line options.  Finally,
+I<.jwgc.vars> is the user's personal configuration options.  These files
+don't have to exist at all for I<jwgc> to function.  In fact, all of the
+options in them can be specified at the command line.
+
+=head1 DESCRIPTION FILE LANGUAGE/SYNTAX
+
+A description file is simply a list of commands.  Whitespace
+(spaces,  tabs, and line breaks) is used to separate tokens.
+The type and  amount  of  whitespace  separating  tokens  is
+irrelevant.  Comments can be delimited by # and newline (for
+line-oriented comments, e.g. "# this is a comment" on a line
+by itself) or by /* and */ (e.g. "/* this is a comment */").
+
+=head2 Expressions
+
+Expressions are used by certain commands.  They are composed
+from  string  literals, variable references, function calls,
+and operators.  Parentheses  can  be  used  anywhere  in  an
+expression to group expressions or increase readability.
+
+String literals are specified by  putting  the  contents  in
+"double quotes".
+
+Variables are set using the  set  command  (see  "COMMANDS",
+below).  They  are referenced in an expression by using the
+form $varname.  Some variables are set by default  for  each
+notice.  All  other  variables  retain their values between
+notice interpretations, so that if you set  a  variable,  it
+retains that value until later modified.
+
+Functions are called using a C-like syntax,
+fname(expr1,expr2),  where  fname  is  the function name and
+exprn are the arguments.
+
+Binary operators use infix notation, such as "a == b".
+
+Some commands use an expression list  (exprlist),  which  is
+simply  a  set  of expressions separated by whitespace (e.g.
+$var1 "lit1" $var2).
+
+=head2 Variables
+
+The following variables are always available:
+
+=over 8
+
+=item B<1, ...>
+
+Numeric variables are assigned values corresponding  to
+that  field  in  the notice (the body of each notice is
+conceptually an array of fields, each terminated with a
+null  character).  If  the  number is greater than the
+number of fields actually in the notice, the  value  is
+"".  For example, the standard jwrite messages have two
+fields: $1 is the signature, and $2 is the text of  the
+message.
+
+=item B<date>
+
+The date on which the notice was sent.
+
+=item B<error>
+
+An error message from the port read/write commands.
+
+=item B<event>
+
+Event markers for messages, such as "composing".
+
+=item B<from>
+
+The full jabber id of the user that sent the current notice.
+
+=item B<longdate>
+
+The date on which the notice was sent, in a longer format.
+
+=item B<message>
+
+The full text of the message, with nulls  converted  to
+newlines.
+
+=item B<nickname>
+
+The nickname associated with the jabber id of the user
+that sent the current notice, if present.
+
+=item B<number_of_fields>
+
+The number of fields in the message (a string represen-
+tation of a decimal number).
+
+=item B<output_driver>
+
+The name of the output driver in use.
+
+=item B<resource>
+
+The resource set by the user that sent the current notice.
+
+=item B<sender>
+
+Only the username of the user that sent the current notice.
+
+=item B<server>
+
+Only the server hostname of the user that sent the current notice.
+
+=item B<show>
+
+This is a piece of B<type>: I<presence> notices, and can be used to
+indicate more information about the user's presence.
+
+=item B<status>
+
+This is a piece of B<type>: I<presence> notices, and can be used to
+indicate more information about the user's presence.
+
+=item B<subject>
+
+The subject of the messaage.
+
+=item B<subtype>
+
+The jabber notice subtype of the current notice.  This depends fairly
+highly on what B<type> the message is.
+
+=item B<time>
+
+The time of day at which the notice was sent, in 24-hour format.
+
+=item B<time12>
+
+The time of day at which the notice was sent, in 12-hour format.
+
+=item B<type>
+
+The jabber notice type of the current notice.  This can be I<message>,
+I<presence>, or some other variety of notice.
+
+=back
+
+All of these variables (except for error, output_driver, and
+version) are re-set before each notice is processed.
+
+=head2 Functions
+
+Following is a list of functions available for  use  in  the
+description file.
+
+=over 8
+
+=item B<buffer()>
+
+The contents of the current output buffer.
+
+=item B<downcase(expr)>
+
+Returns the value of expr, converted to lower case.
+
+=item B<get(expr)>
+
+Returns a line from the port named expr.  If  there  is
+no text waiting on the port (e.g. the program connected
+to the port has not printed any output), this  function
+will  wait  until  it  can read a line of text from the
+port.
+
+=item B<getenv(expr)>
+
+Returns the value of the environment variable expr,  or
+the empty string if it does not exist.
+
+=item B<lany(expr1, expr2)>, B<rany(expr1, expr2)>
+
+Return a number of characters equal to  the  length  of
+expr2  from the beginning (lany) or end (rany) of expr1
+(e.g. lany("1234567890","foo") would return "123").  If
+expr1 is a variable reference, the variable is modified
+to remove the characters returned.  If expr2 is  longer
+than  expr1,  the value of expr1 is returned (and expr1
+is set to "", if a variable).
+
+=item B<lbreak(expr1, expr2)>, B<rbreak(expr1, expr2)>
+
+Expr2  defines  a  set  of  characters.  The  function
+returns  the longest initial (lbreak) or final (rbreak)
+string from expr1 composed of characters  not  in  this
+set  (e.g.  lbreak("characters",  "tuv")  would  return
+"charac").  If  expr1  is  a  variable  reference,  the
+variable is modified to remove the characters returned.
+If no characters in expr2 are in expr1, then  expr1  is
+returned (and expr1 is set to "", if a variable).
+
+=item B<lspan(expr1, expr2)>, B<rspan(expr1, expr2)>
+
+These functions are the negation  of  the  break  func-
+tions;  the  returned  string consists of characters in
+the set defined by expr2
+
+=item B<protect(expr)>
+
+Returns a string which will be evaluated identically to
+expr, but will not affect any surrounding environments.
+That is,  any  characters  which  could  close  outside
+environments  are  quoted, and any environments in expr
+which are not closed at the end are closed.
+
+=item B<substitute(expr)>
+
+Evaluates variable references of the form $variable  in
+expr and converts $$ to $.
+
+=item B<upcase(expr)>
+
+Returns the value of expr, converted to upper case.
+
+=item B<verbatim(expr)>
+
+Returns a string that will be displayed exactly as expr
+looks.  Anything  which  could  be  mistaken  for  an
+environment is quoted.
+
+=item B<jvar(expr)>
+
+Returns the value of the jabber variable expr,  or  the
+empty  string  if it does not exist.
+
+=back
+
+=head2 Operators
+
+Following is a list of operators which can be  used  in  the
+description file to compose expressions:
+
+=over 8
+
+=item I<expr1> + I<expr2>
+
+String concatenation of expr1 and expr2
+
+=item I<expr1> == I<expr2>
+
+True if the two expressions are equal, false otherwise.
+
+=item I<expr> =~ I<expr2>
+
+True if the regular expression  pattern  expr2  matches
+expr1.
+
+=item I<expr1> !~ I<expr2>
+
+Negation of "=~".
+
+=item I<expr1> != I<expr2>
+
+Negation of "=="
+
+=item I<expr1> and I<expr2>, I<expr1> & I<expr2>
+
+True if expr1 and expr2 are both true.
+
+=item I<expr1> or I<expr2>, I<expr1> | I<expr2>
+
+True if either of expr1 or expr2 are true.
+
+=item ! I<expr1>, not I<expr1>
+
+The logical negation of expr1.
+
+=back
+
+=head2 Commands
+
+Following is a list of the commands usable in  the  descrip-
+tion language:
+
+=over 8
+
+=item B<appendport> I<expr1> I<expr2>
+
+Creates a port called expr1.  All output  to  the  port
+will be appended to the file expr2.  There is no input.
+If the file is created, its mode is set to  read-write,
+owner only (no access for others).
+
+=item B<break>
+
+Exits the innermost if, case, or while block.
+
+=item B<case> I<expr1> [ ((B<match> I<expr> [,I<expr> ...]) | I<default>) B<commands> ] ... B<endcase>
+
+Evaluates  expr1.  Then, each of the match expressions
+is evaluated in order.  The first  time  an  expression
+matches  expr1,  then  the body of commands under it is
+executed,  and  the  rest  of  the  case  statement  is
+skipped.  This  compare  is case-insensitive.  default
+always matches, so it should always appear as the  last
+set  of commands.  See the default description file for
+an example of use.
+
+=item B<clearbuf>
+
+Clears the output buffer  (see  below  for  details  on
+buffering).
+
+=item B<closeinput> I<expr>
+
+Closes the file associated with expr.
+
+=item B<closeoutput> I<expr>
+
+Sends an EOF (end-of-file) to the process if expr was a
+port  created by execport, or closes the file if it was
+created by outputport or appendport.
+
+=item B<closeport> I<expr>
+
+Closes both input and output of expr as defined above.
+
+=item B<fields> I<variable1> ...
+
+sets the list of variables to be equal to the fields in
+the  notice.  If there are more variables than fields,
+the extra variables are left empty.
+
+=item B<exec> I<exprlist>
+
+Executes a program without any input or output.  A com-
+mand named by exprlist is executed.  Each expression is
+used as an argument to the program; the  first  expres-
+sion  names  the  program (it may be either an absolute
+pathname,  or  a  program  name;  the  user's  PATH  is
+searched to find simple program names).
+
+=item B<execport> I<expr1> I<exprlist>
+
+Creates a  port  called  expr1.  A  command  named  by
+exprlist is executed, as described above for exec.  All
+output to the port is sent to the standard input of the
+process.  Reading  from the port will return the stan-
+dard output of the process.
+
+=item B<exit>
+
+Completes  processing  of  the  current  notice.  The
+remainder of the description file is ignored after exe-
+cution of this command.
+
+=item B<if> I<expr1> B<then> I<commands1> [B<elseif> I<expr2> B<then> I<commands2>] ... [B<else> I<commandsn>] B<endif>
+
+If  expr1 evaluates to true, execute commands1, etc. [A
+conditional construct, similar to the constructs in the
+C shell (csh).]
+
+=item B<inputport> I<expr1> I<expr2>
+
+Creates a port called expr1.  All input from  the  port
+comes from the file expr2.  There is no output.
+
+=item B<noop>
+
+does nothing
+
+=item B<outputport> I<expr1> I<expr2>
+
+Creates a port called expr1.  The file  expr2  will  be
+truncated, or created if it does not exist.  All output
+to the port will be appended to the file expr2.  There
+is  no  input.  If the file is created, its mode is set
+to read-write, owner only (no access for others).
+
+=item B<print> I<expr1> ...
+
+adds the values of the expressions to the current  out-
+put buffer.  The  values  of  the  expressions  are
+separated by spaces in the output.
+
+=item B<put> [I<expr> [I<exprlist>]]
+
+Sends data to a port.  If expr is provided, then it  is
+used  as  the port, otherwise the port used is the port
+corresponding  to  the  default  output device.  If
+exprlist  is  provided, the expressions in the list are
+sent to the port, separated by spaces.  If it is  omit-
+ted, then the contents of the output buffer are sent as
+the data.
+
+=item B<set> I<variable> = I<expr>
+
+sets variable equal to expr.  Variable  can  later  be
+referenced by $variable.
+
+=item B<show> I<text> B<endshow>
+
+Appends text to the output  buffer.  This  command  is
+special, because the string does not need to be quoted.
+Whitespace at the beginning or end of the lines of text
+is ignored.  The endshow must appear as the first token
+on a line (it may only be preceded on that line by whi-
+tespace).  Variable  substitutions and formatting com-
+mands (but not expressions or functions) are  processed
+in the text.  Example:
+
+    show
+       this is some text
+       from: $sender
+    endshow
+
+=item B<while> I<expr> B<do> I<statements> B<endwhile>
+
+Executes statements until expr is false.
+
+=back
+
+=head2 Ports
+
+Ports are an abstraction encompassing all I/O forms of which
+jwgc  is  capable.  There  are  pre-existing  output  ports
+corresponding to each of the output devices, and more  ports
+can be created with the port commands described above.
+
+=head1 OUTPUT
+
+The output is usually collected in  the  output  buffer  and
+saved until a put command sends the output to an output dev-
+ice (such as an X display or a terminal).  The output buffer
+is  implicitly  cleared after each notice is completely pro-
+cessed.
+
+Output devices are implemented as output ports.  A  message
+is  displayed  in a device-dependent manner when a string is
+output to the port corresponding to the output device.  For-
+matting  commands  are embedded in the text as @ commands of
+the form @command(text).  Command names are case-insensitive
+and  consist  of  alphanumeric  characters  and underscores.
+Valid brackets are () [] {} and <>.  If the command name  is
+empty  (such  as in ``@(foo)''), then a new environment with
+no changes is created (This is useful to temporarily  change
+some parameter of the output, such as the font).
+
+The following output devices are supported:
+
+=over 8
+
+=item B<stdout>
+
+Sends the string to standard output exactly as is.
+
+=item B<stderr>
+
+Sends the string to standard error exactly as is.
+
+=item B<plain>
+
+Sends  the  string  with  all  formatting  environments
+removed to standard output.
+
+=item B<tty>
+
+Does formatting on the message according to @  commands
+embedded  in  the  text.  The output, with appropriate
+mode-changing sequences, is sent to the  standard  out-
+put.  The  appropriate  characteristics of the display
+are taken from the TERMCAP entry (see  termcap(5))  for
+the  terminal  named  by the TERM environment variable.
+Supported @ commands are:
+
+=over 5
+
+=item B<@roman>
+
+Roman (plain)  letters  (turns  off all special modes).
+
+=item B<@b> or B<@bold>
+
+Bold letters.  If  not  available, reverse video, else underline.
+
+=item B<@i> or B<@italic>
+
+Italic  letters  (underlining, if available).
+
+=item B<@beep>
+
+"bl" termcap entry, else "^G" (beep the  terminal);
+limited to once per message.
+
+=item B<@l> or B<@left>
+
+left aligned
+
+=item B<@c> or B<@center>
+
+center aligned
+
+=item B<@r> or B<@right>
+
+right aligned
+
+=back
+
+Other @-commands are silently ignored.
+
+=item B<X>
+
+Displays one window per string output to the port.  The
+output is formatted according to @ commands embedded in
+the string.  Supported @ commands are:
+
+=over 5
+
+=item B<@roman>
+
+turns off @italic and @bold
+
+=item B<@b> or B<@bold>
+
+turns on boldface
+
+=item B<@i> or B<@italic>
+
+turns on italics
+
+=item B<@l> or B<@left>
+
+left aligned
+
+=item B<@c> or B<@center>
+
+center aligned
+
+=item B<@r> or B<@right>
+
+right aligned
+
+=item B<@large>
+
+large type size
+
+=item B<@medium>
+
+medium type size
+
+=item B<@small>
+
+small type size
+
+=item B<@beep>
+
+Ring the X bell  (limited  to  once per message)
+
+=item B<@font>
+
+sets the current font to  the  font specified  in  the  contents of the
+environment  (e.g. @font(fixed)).  This  will remain in effect for the
+rest of the environment (a temporary change can be achieved by
+enclosing  the  font-change  in  an @(...)  environment).  If the named
+font is  not  available,  the  font ``fixed'' is used instead.
+
+=item B<@color>
+
+sets the color to the color  specified in the contents  of  the
+environment.  The color name should appear  in  the  X color name data-
+base.  This color  will  remain  in effect for the rest of the environ-
+ment.  If the named  color  is  not available,  the  default foreground
+color is used.
+
+=back
+
+=back
+
+Any other environment name  not  corresponding  to  the
+above  environment  names  will  set the current ``sub-
+style.''
+
+The attributes of a given block of text are  determined
+by any active environments, evaluated in the context of
+the current style and substyle.
+
+The style is specific to each  window.  Its  name  has
+three  dot  (``.'')  separated  fields,  which  are  by
+default the values of the class,  instance,  and  reci-
+pient  variables,  with all dots changed to underscores
+(``_'') and all letters converted  to  lowercase.  The
+style  can  be  altered  by setting the style variable.
+Note that it must always have exactly two ``.'' char-
+acters in it.
+
+The substyle is determined by @ commands in the message
+text.
+
+Jwgc variables which the X output device reads are:
+
+=over 5
+
+=item B<default_X_geometry>
+
+default geometry for  notices,  set from resources
+
+=item B<X_geometry>
+
+overrides  geometry in resource file, if set
+
+=item B<default_X_background>
+
+default background color for notices, set from resources
+
+=item B<X_background>
+
+overrides bgcolor in resource file, if set
+
+=item B<style>
+
+style, as described above
+
+=back
+
+The expected geometry values are described below.
+
+The fonts and color for a piece of text are  determined
+by  the  styles  defined  in the X resources file.  The
+following resources relating to text style are used  by
+jwgc:
+
+=over 5
+
+=item B<jwgc.style.stylenames.geometry>
+
+geometry for messages of  the  specified style
+
+=item B<jwgc.style.stylenames.background>
+
+background color  for  messages  of  the specified style
+
+=item B<jwgc.style.stylenames.substyle.substylename.fontfamily>
+
+fontfamily  name for the specified style and substyle
+
+=item B<jwgc.style.stylenames.substyle.substylename.foreground>
+
+foreground color for the specified style and substyle
+
+=item B<jwgc.fontfamily.fontfamilyname.size.face>
+
+specifies the fonts for a given fontfam- ily.  size
+is one of small, medium, or large, and face is one of  roman,  bold,
+italic, or bolditalic.
+
+=back
+
+The best way to get started in customizing X  resources
+for jwgc is  to  examine  the  default  application
+resources and other users' resources to understand  how
+they specify the default appearance.
+
+=head2 X Resources
+
+Other X resources used by jwgc are  listed  below.  Entries
+like
+
+    jwgc*option: value
+    Jwgc*option: value
+    jwgc.option: value
+    *option: value
+
+will work.
+
+An entry labeled with jwgc*option  in  any  of  the  sources
+takes  precedence  over  Jwgc*option, which takes precedence
+over *option entries.  The following sources are searched in
+order:
+    command-line arguments (-xrm)
+    contents of file named by XENVIRONMENT environment variable
+    X server resource database (see xrdb(1))
+    application resources file
+
+Logical values can be ( Yes On True T ) or (  No  Off  False
+nil ).
+
+=over 5
+
+=item B<cursorCode>
+
+number of a code from the cursorfont  (should
+be  an  even integer, see <X11/cursorfont.h>)
+to use for the windows.
+
+=item B<foreground>
+
+Primary foreground color
+
+=item B<Foreground>
+
+Secondary foreground color (if foreground not
+set) [BlackPixel is the default if neither is
+set]
+
+=item B<background>
+
+Primary background color
+
+=item B<Background>
+
+Secondary background color (if background not
+set) [WhitePixel is the default if neither is
+set]
+
+=item B<borderColor>
+
+Primary border color
+
+=item B<BorderColor>
+
+Secondary border color  (if  borderColor  not
+set) [BlackPixel is the default if neither is
+set]
+
+=item B<pointerColor>
+
+Primary mouse pointer color [foreground color
+is the default if not set]
+
+=item B<reverseVideo>
+
+(logical) Toggles foreground  and  background
+(and  border,  if  it  matches  foreground or
+background).
+
+=item B<ReverseVideo>
+
+Secondary toggle, if reverseVideo is not set.
+[off is the default if neither is set]
+
+=item B<borderWidth>
+
+Primary border width selector
+
+=item B<BorderWidth>
+
+Secondary  border  width  selector  (if  bor-
+derWidth  is not set) [1 is the default value
+if neither is set]
+
+=item B<internalBorder>
+
+Primary border between edge and text
+
+=item B<InternalBorder>
+
+Secondary  selector  (if  internalBorder  not
+set)  [2  is  the default value if neither is
+set]
+
+=item B<geometry>
+
+Primary POSITION (not size) geometry  specif-
+ier.  The  geometry  should  be  of the form
+"{+|-}x{+|-}y", specifying an (x,y)
+coordinate for a  corner  of  the  window
+displaying the notice.  The interpretation of
+positive and negative location specifications
+follows the X conventions.  A  special  loca-
+tion  of `c' for either x or y indicates that
+the window  should  be  centered  along  that
+axis.  Example:  a geometry of "+0+c" speci-
+fies the window should be at the top  of  the
+screen, centered horizontally.
+
+=item B<Geometry>
+
+Secondary position  specifer.  [+0+0  is  the
+default if neither is set.]
+
+=item B<resetSaver>
+
+(logical) Primary value to  force  screen  to
+unsave when a message first appears.
+
+=item B<ResetSaver>
+
+(logical) Secondary value to force screen  to
+unsave. [default True]
+
+=item B<reverseStack>
+
+(logical) Primary value to specify that  jwgc
+should  attempt  to  stack WindowGram windows
+such that the oldest messages  normally  show
+on  top.  Some X window managers may silently
+ignore jwgc's attempts to  restack  its  win-
+dows.  This  option  can  cause some unusual
+interactions with other windows if  the  user
+manually restacks either the other windows or
+the WindowGram windows.
+
+=item B<ReverseStack>
+
+Secondary value to enable  reverse  stacking.
+[default False]
+
+=item B<title>
+
+(string) Primary window title
+
+=item B<Title>
+
+Secondary window title [defaults to the  last
+pathname  component of the program name, usu-
+ally "jwgc"]
+
+=item B<transient>
+
+(logical) Primary value which  determines  if
+jwgc  windows  will be created with the
+WM_TRANSIENT_FOR  property  set.  If this
+resource  is  true, the property will be set,
+telling  certain  windowmanagers to treat
+jwgc  windows specially.  For instance,
+twm will not  put  decorations  on  transient
+windows,  mwm  will not let you iconify them,
+and uwm ignores the resource entirely.
+
+=item B<Transient>
+
+Secondary transient determining value
+[default False]
+
+=item B<enableDelete>
+
+(logical) If true, jwgc creates a
+WM_PROTOCOLS  property  on  all  jgrams, with
+WM_DELETE_WINDOW as contents.
+
+=item B<EnableDelete>
+
+Secondary value  to  enable  WM_DELETE_WINDOW
+protocol on jgrams [default False]
+
+=item B<minTimeToLive>
+
+Primary value  which  specifies  the  minimum
+amount  of  time (``minimum time to live'') a
+WindowGram  must  be on-screen (in mil-
+liseconds)  until  it can be destroyed.  This
+feature  is  useful  to  avoid accidentally
+clicking  on  new  WindowGrams when trying to
+delete old ones.
+
+=item B<MinTimeToLive>
+
+Secondary value of ``minimum time to live.''
+
+=item B<iconName>
+
+(string) Primary icon name
+
+=item B<IconName>
+
+Secondary icon name  [defaults  to  the  last
+pathname  component of the program name, usu-
+ally "jwgc"]
+
+=item B<name>
+
+(string) Primary window class name
+
+=item B<name>
+
+Secondary window class name [defaults to  the
+last  pathname component of the program name,
+usually "jwgc"]
+
+=item B<synchronous>
+
+(logical) Primary X synchronous mode  specif-
+ier.  On means to put the X library into syn-
+chronous mode.
+
+=item B<Synchronous>
+
+Secondary  X  synchronous mode specifier.
+[default is `off']
+
+=back
+
+The window class is always "Jwgc".
+
+=head2 X Buttons
+
+Clicking and releasing any  button  without  the  shift  key
+depressed while the pointer remains inside a WindowGram win-
+dow will cause it to disappear. If the  pointer  leaves  the
+window  while  the  button is depressed, the window does not
+disappear; this provides a way to avoid accidentally  losing
+messages.
+
+If the control button is held down while clicking on a  Win-
+dowGram,  then that WindowGram and all windowgrams under the
+point where the button is released will be erased.
+
+Portions of the text of a message may be selected for "past-
+ing"  into  other  X  applications by using the shift key in
+cooperation with the pointer buttons.  Holding the Shift key
+while  depressing Button1 (usually the left button) will set
+a marker at  the  text  under  the  pointer.  Dragging  the
+pointer  with  Shift-Button1  still  depressed  extends  the
+selection  from  the  start  point,  until  the  button is
+released.  The end of the selection may also be indicated by
+releasing Button1, holding down the Shift key, and  pressing
+Button3  (usually  the right button) at the desired endpoint
+of the selection.  The selection will appear with  the  text
+and background colors reversed.
+
+If jwgc receives a WM_DELETE_WINDOW, it destroys the jwgc
+window as if it were clicked on.
+
+If a jwgc window is unmapped, it is removed from the stacking
+order used by reverseStack.
+
+=head1 FILES
+
+=over 6
+
+=item F<jwgc.desc>
+
+This is the default jwgc description file, read if a user's own
+F<.jwgc.desc> does not exist.  This is more or less required to
+exist, unless you plan on automatically putting a F<.jwgc.desc>
+in everyone's home directory by default.
+
+=item F<jwgc.vars>, F<jwgc.vars.fixed>
+
+These contain default jwgc variable settings.  Neither are required
+to exist, nor contain any actual settings.  Any settings in
+F<jwgc.vars.fixed> can -not- be changed by F<.jwgc.vars>, F<jwgc.vars>,
+or command line options.
+
+=item F<.jwgc.vars>, F<.jwgc.desc>
+
+These are the user (personal) variable and description files.  If
+a user wishes to customize I<jwgc>, they should create these files
+in their home directory.
+
+=item F<jwgc_resources>
+
+This contains the default X resources for I<jwgc>.  These can be
+in a variety of ways, all explained in X windows documentation.
+
+=back
+
+=head1 SEE ALSO
+
+jwrite(1), jctl(1), jlocate(1), jstat(1)
+
+=head1 AUTHOR
+
+Daniel Henninger I<jadestorm@users.sourceforge.net>.
+
+=head1 COPYRIGHT
+
+Copyright (c) 2002 Daniel Henninger.  All right reserved.
+This program is free software; you can redistribute
+it and/or modify it under the terms explained in the B<LICENSE>
+file that comes with the I<jwgc> distribution.  The bulk of this
+documentation is taken almost directly from MIT's zwgc man page.
+I may have reworded a fair amount of it, but it's by far not my
+original work.

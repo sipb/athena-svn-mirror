@@ -1,0 +1,881 @@
+2004-08-21  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwrite/jwrite.pod:
+	* clients/jwrite/jwrite.html:
+	* clients/jwrite/jwrite.1:
+	Updated to reflect change in flags.
+
+	* configure.in:
+	Changed to beta5.
+
+	* lib/libjwgc/jconn.c:
+	Fixed handling of stream id strings, which allows digest auth to work.
+
+	* clients/jwgc/jwgc.desc:
+	Added composing pieces.
+
+2004-08-20  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JHashTable.c:
+	Fixed ordering of header file that I thought caused digest not to work.
+	Was wrong.  ;)
+
+	* clients/jwwgc/jabber_handler.c:
+	Convert incoming messages from unicode to localized.
+
+	* clients/jwwgc/notice.c:
+	Convert presence status from unicode to localized.
+
+	* clients/jwrite/jwrite.c:
+	Fixed bug with -m msg arg pinging.
+	Fixed bugs with multiple recipients.
+
+	* lib/libjwgc/JStr.c:
+	Added debugging statements.
+	Fixed (albeit haphazardly) unicode conversions.
+
+2004-08-17  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JStr.c:
+	* lib/libjwgc/include/libjwgc.h:
+	More work on redoing unicode convert functions to work correctly.
+
+2004-08-17  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JStr.c:
+	Added EINVAL check, though didn't fix anything and not necessary right.
+
+2004-08-15  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjabber/jutil.c:
+	Added request for composing events.
+	Added function for composing packet.
+
+	* lib/libjabber/include/libjabber.h:
+	Added function for composing packet.
+
+	* clients/jwgc/jwgc_handler.c:
+	Added ping functionality.
+
+	* clients/jwrite/jwrite.c:
+	Added preemptive ping.
+
+	* lib/libjwgc/include/libjwgc_types.h:
+	Added JWGPACKET_PING.
+
+	* clients/jwgc/main.c:
+	Fixed bug with live jwgc test.
+
+	* lib/libjwgc/JFile.c:
+	Added functionality for env variable JWGCSCK.
+
+2004-08-11  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libxode/xmlparse.c:
+	Removed comment that was causing cc not to compile it.
+
+2004-08-10  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/jwgc_variables.c:
+	* clients/jwgc/main.c:
+	Applied patch to fix inability to compile w/o SSL support.
+
+	* clients/jwgc/main.c:
+	* config.h.in:
+	* config.h:
+	* configure.in:
+	* configure:
+	Applied patch to use getpassphrase instead of getpass, if available.
+
+2004-04-13  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/jwgc_handler.c:
+	* clients/jwrite/jwrite.c:
+	Added ability to specify message type.
+
+	* configure.in:
+	Changed to 1.0.
+
+	* BUILDINFO:
+	Added comment about fink.
+
+	* clients/jctl/jctl.1:
+	* clients/jwrite/jwrite.1:
+	* clients/jwgc/jwgc.1:
+	Updated documentation.
+
+	* clients/jctl/jctl.c:
+	Fixed bug with checking results.
+
+	* lib/libjwgc/JForm.c:
+	Finished functionality for list-single and boolean types.
+	Others I can not test so I'm not implementing them officially yet.
+
+	* lib/libjwgc/JVariables.c:
+	Got rid of the line that adds homedir to varfilepersonal somehow..
+	it's back now.
+
+2004-04-04  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JXMLComm.c:
+	More work on weird socket issues.
+
+	* clients/jlocate/jlocate.c:
+	* clients/jstat/jstat.c:
+	* clients/jctl/jctl.c:
+	* clients/jwrite/jwrite.c:
+	Switched from jwg_recv to jwg_poll to resolve some issues.
+
+2004-04-03  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JXMLComm.c:
+	* lib/libjwgc/JFile.c:
+	* clients/jlocate/jlocate.c:
+	More attempts to get my local socket issues worked out.
+
+2004-03-08  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* client/jwgc/jabber_handler.c:
+	"disable" digest auth as it is currently broken.
+
+2004-03-07  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* client/jwgc/jabber_handler.c:
+	Store auth capabilities.
+
+	* client/jwgc/main.c:
+	* lib/libjabber/jconn.c:
+	* lib/libjabber/include/libjabber.h:
+	Restructuring of startup procedures.
+
+2004-02-29  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* client/jwgc/main.c:
+	Was calling jwg_recv instead of jwg_servrecv.
+
+	* lib/libjwgc/JDebug.c:
+	* lib/libjwgc/include/libjwgc_debug.h:
+	* lib/libjwgc/JXMLComm.c:
+	* lib/libjabber/jconn.c:
+	Renamed a couple of debug variables.
+
+	* lib/libjwgc/JXMLComm.c:
+	Attempts to make socket communication work better.
+	
+2004-02-27  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/main.c:
+	FINALLY fixed bug under Solaris.
+
+2004-02-23  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JVariables.c:
+	Fixed USRVARS size check.
+
+	* lib/libjwgc/JVariables.c:
+	* lib/libjwgc/JEncryption.c:
+	* lib/libjwgc/JContact.c:
+	* lib/libjwgc/JStr.c:
+	* lib/libjwgc/JXMLComm.c:
+	Lots of realloc code cleanup.
+
+2004-02-03  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/main.c:
+	Smaller/better keepalive.
+
+2004-02-02  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JXMLComm.c:
+	Made recv/select code more robust.
+
+2004-02-01  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jctl/jctl.c:
+	Cleanup and form fixes.
+
+	* lib/libjwgc/JForm.c:
+	Fixed form support up.
+
+	* clients/jwgc/main.h:
+	Removed query strings.
+
+	* clients/jwgc/jabber_handler.c:
+	Removed query strings.
+	Added 'dump results' handling.
+
+	* lib/libjabber/include/libjabber_types.h:
+	* lib/libjabber/jconn.c:
+	Added new dump file descriptor.
+
+	* clients/*/*.c:
+	Cleaned up old authdata stuff.
+
+	* lib/libjwgc/JXMLComm.c:
+	Cleaned up things we don't use anymore.
+
+	* lib/libjwgc/Makefile.am:
+	Don't compile JAuth.c anymore.
+
+	* lib/libjwgc/JAuth.c:
+	Don't need this at all anymore.
+
+	* lib/libjwgc/JFile.c:
+	Cleaned up things we don't use anymore.
+
+	* lib/libjwgc/include/libjwgc.h:
+	Cleaned up things we don't use anymore.
+
+	* clients/jwgc/jwgc_handler.c:
+	Typo fix.
+	Changed mktemp to mkstemp.
+
+2004-01-31  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/main.c:
+	* clients/jlocate/jlocate.c:
+	* clients/jstat/jstat.c:
+	* clients/jwrite/jwrite.c:
+	* clients/jctl/jctl.c:
+	* lib/libjwgc/JXMLComm.c:
+	* lib/libjwgc/JFile.c:
+	Changed to using filesystem socket.
+
+2004-01-29  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/main.c:
+	Added many "long" options, and -gpgpass.
+
+	* clients/jwgc/text_operations.c:
+	Fixed up paragraph to handle long lines that are last.
+
+2004-01-25  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* *:
+	Lots of code cleanup.
+
+	* lib/libjwgc/JContact.c:
+	Moved from jwgc to libjwgc.
+
+2004-01-24  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/jabber_handler.c:
+	* lib/libjwgc/JEncryption.c:
+	* lib/libjabber/jutil.c:
+	Some code cleanup.
+
+2004-01-20  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JVariables.c:
+	Fixed bad init of usegpg variable.
+
+2004-01-17  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* configure.in:
+	Added ability to specify just include or lib paths.
+
+	* clients/jwrite/jwrite.c:
+	Moving encoding functions to JStr.c in libjwgc.
+
+	* clients/jwgc/jabber_handler.c:
+	Converting messages to local charset.
+
+	* lib/libjwgc/JStr.c:
+	Added encoding/decoding functions.
+
+	* clients/jwgc/jwgc_handler.c:
+	* lib/libjwgc/JEncryption.c:
+	* lib/libjabber/jutil.c:
+	More work on GPG support.
+
+2004-01-14  Daniel Henninger  <jadestorm@users.sourceforge.net>
+	
+	* configure.in:
+	Man, dumb mistake..  CFLAGS/LDFLAGS were overwriting themselves.
+
+2004-01-13  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* configure.in:
+	Started adding libiconv specification.
+
+	* clients/jwrite/jwrite.c:
+	Using iconv to encode strings into unicode.
+	Beginnings of real support for non-english characters.
+
+	* clients/jwgc/jctl.c:
+	More modifications to work with new form.
+
+	* lib/libjwgc/JForm.c:
+	Finishing up form support.
+
+	* lib/libjabber/include/libjabber.h:
+	Added NS_DATA.
+
+	* lib/libjwgc/Makefile.am:
+	Added path to libjabber include.
+
+2004-01-12  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/encryption.c:
+	* clients/jwgc/main.h:
+	Moved all into libjwgc.
+	Change update_key_list to JUpdateKeyList.
+
+	* lib/libjwgc/JEncryption.c:
+	* clients/jwgc/main.c:
+	* clients/jwgc/jwgc_variables.c:
+	Fixed a GPGME reference outside the scope of the define.
+
+	* lib/libjwgc/include/libjwgc.h:
+	Added JUpdateKeyList.
+	JForm.c added.
+
+	* lib/libjwgc/JForm.c:
+	Form handler routines.
+
+	* clients/jctl/jctl.c:
+	Modified to use form handler.
+
+2004-01-11  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JVariables.c:
+	* lib/libjwgc/include/libjwgc.h:
+	* clients/jwgc/jwgc_variables.c:
+	* clients/jwgc/main.h:
+	* clients/jwgc/main.c:
+	* configure.in:
+	Added usegpg flag.
+
+	* clients/jwgc/jabber_handler.c:
+	Added decryption handling.
+
+	* lib/libjabber/jutil.c:
+	Added signing on presence packets.
+	Began adding encryption.
+
+	* lib/libjabber/include/libjabber.h:
+	Modified msgnew.
+
+	* lib/libjwgc/JEncryption.c:
+	Added signing.
+	Added trimming.
+	Added decryption.
+	Added encryption, untested.
+	Added verification, probably incomplete.
+
+	* lib/libjwgc/JDebug.c:
+	Added GPG debug flag.
+
+	* sysdep.h:
+	Added LIBGPGME check.
+
+2004-01-10  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* configure.in:
+	Added gpgme check.
+
+	* lib/libjwgc/JEncryption.c:
+	Decided to go with gpgme, started work on detached sig.
+
+	* lib/libjwgc/JVariables.c:
+	* lib/libjwgc/include/libjwgc.h:
+	Added GPG variables.
+
+2004-01-09  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/jwgc.desc:
+	Check for error message, and check up output a bit.
+
+	* lib/libjwgc/JForm.c:
+	Stub for form handling.
+
+	* lib/libjwgc/JEncryption.c:
+	Added interface with gpg pieces.
+
+	* lib/libjwgc/Makefile.am:
+	Added JEncryption.c and JForm.c.
+
+2004-01-05  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/encryption.c:
+	Added new encryption pieces.
+
+	* clients/jwgc/jabber_handler.c:
+	Added encryption handling to presence handling.
+
+	* clients/jwgc/main.h:
+	Cleaned up code.
+
+2003-12-19  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/jwgc_handler.c:
+	Fixed issue with jlocate not finding anything with "all" search.
+	
+2003-12-16  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/text_operations.c:
+	Fixed bug with paragraph and over width length line.
+
+2003-11-22  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* configure.in:
+	Added --enable-nodebug.
+
+	* lib/libjwgc/JDebug.c:
+	* lib/libjwgc/include/libjwgc.h:
+	* clients/jwgc/main.c:
+	* clients/jstat/jstat.c:
+	* clients/jlocate/jlocate.c:
+	* clients/jwrite/jwrite.c:
+	* clients/jctl/jctl.c:
+	Added support for leaving out debugging.
+
+2003-11-10  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/jwgc_handler.c:
+	Checks added to make sure all required fields are set.
+
+	* clients/jctl/jctl.c:
+	Proper arg count checks.
+
+2003-10-26  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjabber/jconn.c:
+	* lib/libjabber/include/libjabber.h:
+	Compatibility fixes for SSL support.
+
+	* lib/libjwgc/include/libjwgc.h:
+	* lib/libjwgc/JInternal.c:
+	* lib/libjwgc/JStr.c:
+	* lib/libjabber/include/libjabber.h:
+	Cleanup.
+
+	* lib/libjwgc/JGenHash.c:
+	* lib/libjwgc/JXHash.c:
+	* lib/libjabber/pproxy.c:
+	* lib/libjabber/rate.c:
+	Removed unnecessary/depricated functions.
+
+2003-10-24  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* configure,in:
+	Added usleep check.
+
+	* BUILDINFO:
+	Updated to indicate I'm using Panther now.
+
+	* clients/jwgc/jabber_handler.c:
+	Moved roster retrieval and such where it should be.
+	Fixed resource handling off of jid from roster.
+	Moved trim_message.
+
+	* clients/jwgc/jwgc_handler.c:
+	Fixed register and search to work correctly.
+	Added trim to outgoing messages too.
+
+	* lib/libjabber/jconn.c:
+	Removed OpenSSL_add_all_algoriths, not compatible with newer OpenSSL.
+
+	* lib/libjwgc/JStr.c:
+	* lib/libjwgc/include/libjwgc.h:
+	Moved trim_message.
+
+	* clients/jctl/jctl.c:
+	Changed sleep to usleep (if possible).
+
+2003-10-15  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/lexer.c:
+	* clients/jwgc/parser.y:
+	Added support for opening a buffer instead of only a file.
+
+	* clients/jwgc/main.c:
+	* clients/jwgc/main.h:
+	Added punt to "bare bones" desc file if main desc file fails.
+	Added trim_message to chop off whitespace from end.
+
+	* clients/jctl/jctl.c:
+	Did bulk of support for "forms".
+
+	* lib/libxode/xode_from.c:
+	Added debugging output.
+
+	* lib/libxode/include/libxode.h:
+	Added libjwgc.h.
+
+	* lib/libxode/Makefile.am:
+	Added libjwgc include.
+
+	* clients/jwgc/jwgc_handler.c:
+	* clients/jwgc/jabber_handler.c:
+	Working on register/search support.
+
+2003-10-14  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jctl/jctl.c:
+	Modified register for new style, added search.
+
+	* clients/jwgc/jwgc.desc:
+	Handling of presence resources.
+
+	* clients/jwgc/contact.c:
+	Yikes, nasty typo trying to free illegal memory.
+
+	* clients/jwgc/notice.c:
+	Fixed parse of from to be a jabber packet jid parse, not just
+	what's in the from attribute.
+
+	* clients/jlocate/jlocate.c:
+	Fixed crash bug.
+	Fixed output bug.
+
+	* lib/libjwgc/JXMLComm.c:
+	Fixed a typo.
+
+	* clients/jwgc/jwgc.c:
+	Fixed grouplist to add unknown flag to non-grouped groups.
+	Register modified, search added.
+
+2003-10-13  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/jabber_handler.c:
+	Handle "error" presence.  Currently, just hide and debug output it.
+	Fixed call to update_contact_status to incorporate new arg.
+
+	* clients/jwgc/contact.c:
+	Moved around resource handling to function more correctly.
+
+	* clients/jwgc/notice.c:
+	* clients/jwgc/jwgc.desc:
+	Added handling for composing events.
+
+	* clients/jwgc/jwgc_handler:
+	* lib/libjwgc/JXMLComm.c:
+	* lib/libjwgc/include/libjwgc.h:
+	* clients/jctl/jctl.c:
+	Added support for adjusting debugging on the fly.
+
+	* clients/jwgc/jwgc.pod:
+	* clients/jctl/jctl.pod:
+	Fixed up documentation.
+
+	* lib/libjabber/include/libjabber.h:
+	Changed type to int instead of unsigned char.
+
+2003-10-12  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/contact.c:
+	Status is now no longer automatically set.
+	Cleaned up functions some.
+
+	* clients/jwgc/jabber_handler.c:
+	Status is now no longer automatically set.
+	Cleaned up functions some.
+
+	* clients/jwgc/status.c:
+	Cleaned up functions some.
+
+	* clients/jlocate/jlocate.c:
+	Updated to handle new contact list methods.
+
+	* clients/jstat/jstat.c:
+	Updated to handle new contact list methods.
+
+2003-10-10  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jlocate/jlocate.c:
+	Fixed jlocate to handle resources.
+
+	* clients/jwgc/contact.c:
+	Adjusted contact lists to be xode-ish.  Help prevent a lot of
+	issues I kept running into.
+
+2003-10-09  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/contact.c:
+	Removed removal of resource from jid.
+	Complete revamp of the way the contacts allocate memory and such.
+	Separate tracking for different resources.
+	Something is horribly broken.
+
+	* clients/jwgc/jabber_handler.c:
+	Return if no from.
+
+2003-10-08  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/eval.c:
+	Fixed jvar command to do what it's supposed to.
+
+	* clients/jwgc/jwgc.desc:
+	Cleaned up default config file, added groupchat and such.
+
+	* clients/jwgc/jwgc_resources:
+	Adjusted positions of other types of messages.
+
+	* lib/libjwgc/JVariables.c:
+	Fixed issue with keeping newline attached to read-in variables.
+
+	* clients/jwgc/contact.c:
+	Placing "matching" output in it's own debug class.
+
+	* clients/jwgc/notice.c:
+	* clients/jwgc/jabber_handler.c:
+	* lib/libjabber/jpacket.c:
+	Removed S10N weirdness... consolidated back into presence.
+
+	* lib/libjabber/include/libjabber.h:
+	* lib/libjabber/jpacket.c:
+	Added "internal" processing.
+
+	* clients/jwgc/main.c:
+	* clients/jwgc/jwgc_handler.c:
+	Checks for actual success of description file load.
+
+2003-10-07  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/eval.c:
+	Using evaluation debug flag.
+
+	* clients/jwgc/jabber_handler.c:
+	Cleaned up code.
+
+	* clients/jwgc/jwgc_handler.c:
+	* clients/jctl/jctl.c:
+	* lib/libjwgc/JXMLComm.c:
+	* lib/libjwgc/include/libjwgc.h:
+	Added conference/groupchat support!  =)
+	
+2003-10-06  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/notice.c:
+	Fixed resources -> resource.
+
+	* clients/jwgc/main,c:
+	Removed -subfile from usage output.
+	Added -nossl to usage output.
+
+	* clients/jwgc/jwgc.pod:
+	* clients/jwgc/jwgc.1:
+	Fixed up docs to have real information in them.
+
+	* clients/jctl/jctl.pod:
+	* clients/jstat/jstat.pod:
+	* clients/jlocate/jlocate.pod:
+	* clients/jwrite/jwrite.pod:
+	Removed references to non-existant documentation.
+
+2003-10-05  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/main.c:
+	Added -j (jid) option.
+
+2003-10-03  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jlocate/jlocate.c:
+	Forced specified username to be displayed even if unavailable.
+
+	* clients/jwgc/main.c:
+	Fixed and re-enabled check_live_jwgc.
+	Added fix to run jab_delete at a more appropriate time. (prevent crash)
+	Switched to new variable style.
+
+	* clients/jwgc/jwgc_variables.c:
+	Removed variable free that was causing a crash.
+	Switched to new variable style.
+
+	* clients/jwgc/jabber_handler.c:
+	Removed jab_delete after disconnect. (prevent crash)
+	Switched to new variable style.
+
+	* clients/jwgc/jwgc_handler.c:
+	Switched to new variable style.
+
+	* clients/jctl/jctl.c:
+	Variable settings and such now interact more with jwgc.
+
+	* lib/libjwgc/JVariables.c:
+	* lib/libjwgc/include/libjwgc.h:
+	Continued work on new variable methods.
+
+	* lib/libjabber/jutil.c:
+	Fixed bug in priority (%s instead of %d).
+
+	* lib/libjwgc/XMLComm.c:
+	* lib/libjwgc/include/libjwgc.h:
+	Removed scanvars, added showvar, setvar, and unsetvar.
+
+	* lib/libjwgc/Makefile.am:
+	Removed unnecessary files.
+
+	* configure.in:
+	Changed openssl fix to use define instead of include paths.
+	Added many new compile-time options.
+
+2003-10-01  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JVariables.c:
+	Continued work on new variable methods.
+
+2003-09-30  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* README:
+	Created a -real- readme for once.
+
+	* NEWS:
+	Added some info about beta4.
+
+	* AUTHORS:
+	Added comments about myself and various other author info.
+
+	* lib/libjwgc/include/libjwgc.h:
+	* lib/libjwgc/JVariables.c:
+	More adjustments to variable handling.
+
+	* lib/libjwgc/mit-copyright.h:
+	Being that I've basically rewritten all of the code I originally
+	got from the Zephyr source, I don't see the need to have this
+	include anymore.  Besides, I credit them heavily elsewhere.
+
+	* configure.in:
+	Updated to version beta4.
+
+2003-09-29  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/main.c:
+	Ability to set priority added.
+	Minor cosmetic fixes.
+
+	* clients/jctl/jctl.c:
+	Password not permitted to be displayed.
+
+	* clients/jwgc/jabber_handler.c:
+	Fixed potential debugging crashes.
+	Priority handling.
+
+	* lib/libjwgc/JVariables.c.c:
+	Patches to allow for "jwgc.vars.fixed" (system-level fixed variables).
+	Added resources of HOSTNAME and HOSTNAMETRIMMED.
+	Added priority.
+	Revamped entirely to handle variables differently.
+
+2003-09-28  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jctl/jctl.c:
+	Fixed bad arg check for register.
+
+2003-09-27  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libjwgc/JXMLComm.c:
+	Fixed send/recv issues, as well as sending too large of a length to
+	the parser.
+
+	* clients/jctl/jctl.c:
+	* clients/jlocate/jlocate.c:
+	* clients/jwrite/jwrite.c:
+	Added debugging flags.
+
+	* clients/jctl/jctl.pod:
+	* clients/jctl/jctl.1:
+	* clients/jstat/jstat.pod:
+	* clients/jstat/jstat.1:
+	* clients/jwrite/jwrite.pod:
+	* clients/jwrite/jwrite.1:
+	* clients/jlocate/jlocate.pod:
+	* clients/jlocate/jlocate.1:
+	Updated docs.
+
+	* clients/jctl/Makefile.am:
+	* clients/jstat/Makefile.am:
+	* clients/jlocate/Makefile.am:
+	* clients/jwrite/Makefile.am:
+	* clients/jwgc/Makefile.am:
+	Fixed man page creation command.
+
+	* clients/jlocate/jlocate.c:
+	Added -e option to usage.
+
+	* clients/jwgc/error.h:
+	Removed useless TRAP and com_err stuff that conflicts with kerberos.
+
+	* configure.in:
+	Added check for odd requirement on Redhat.  (kerberos with ssl?)
+
+2003-09-26  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* *:
+	Have not done a good job of keeping this up to date amongst
+	the move to XML based communication between jwgc and it's clients.
+	Debugging has been revamped and the code has been cleaned up
+	quite a bit.
+
+2003-01-21  William Uther  <willu@cse.unsw.edu.au>
+
+	* clients/jwgc/main.h:
+	* clients/jwgc/main.c:
+	* clients/jwgc/jwgc_variables.c:
+	Added support for ssl and port specification in .jwgc.vars.
+
+2003-01-19  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/main.c:
+	* lib/libjabber/jconn.c:
+	* lib/libjabber/include/jabber/jabber.h:
+	SSL patches are functional now.
+
+	* lib/libjabber/jutil.c:
+	* lib/libxode/sha.c:
+	* lib/libxode/include/lib.h:
+	* lib/libxode/include/libxode.h:
+	Renamed sha functions so they don't conflict with OpenSSL's.
+
+2003-01-13  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/main.c:
+	* lib/libjabber/jconn.c:
+	* lib/libjabber/include/jabber/jabber.h:
+	Patches to add SSL functionality.
+
+2003-01-10  Mark Eichin  <eichin@thok.org>
+
+	* clients/jctl/jctl.c:
+	Patch to fix segv when no args were passed.
+
+2002-12-31  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* lib/libxode/include/lib.h:
+	Fixed a silly comment issue that prevented compiling with non-gcc
+	compilers.
+
+2002-12-30  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* clients/jwgc/incoming.c:
+	* clients/jwgc/notice.c:
+	* clients/jwgc/jwgc_variables.c:
+	* clients/jwgc/jabber_handler.c:
+	* clients/jwgc/main.c:
+	Cleaned up some unfree variables here and there.
+
+	* lib/libjwgc/JInternal.c:
+	* lib/libjwgc/include/libjwgc.h:
+	Added JServInit command to auto-free cmd, arg1, and arg2.
+
+	* clients/jwgc/Makefile.am:
+	Fixed double-inclusion of *_dictionary.o.
+
+	* clients/jwgc/main.c:
+	Trying to figure out bizarre crashing-under-Solaris issues.  One
+	specific one is when a jwg.{uid} exists it doesn't pass the jid to
+	jabber_init right??
+
+2002-12-23  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* *:
+	Not keeping this changelog up to date very well yet until we're more
+	towards a real release.  Overall, all requirements from TODO list
+	for beta2 release have been met.
+
+2002-12-01  Daniel Henninger  <jadestorm@users.sourceforge.net>
+
+	* *:
+	Initial modifications to move towards more professional feel for
+	the distribution.

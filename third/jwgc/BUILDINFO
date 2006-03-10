@@ -1,0 +1,12 @@
+My primary build platform is Mac OS X 10.3 (Panther).
+
+Some 'sub-primary' platforms (IE, platforms I have access to and will try
+to make jwgc compile and work on) are:
+- Redhat Linux
+- Solaris (sparc)
+- FreeBSD
+- Cygwin
+
+I use autoconf 2.57 and automake 1.7.6 for configuring.
+I also aim to keep up-to-date releases under fink (http://fink.sourceforge.net)
+as well.
