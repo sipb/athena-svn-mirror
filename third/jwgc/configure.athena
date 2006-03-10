@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./configure --with-ssl-dir=/usr/athena CPPFLAGS=-I/usr/athena/include/gssapi LIBS=-lgssapi_krb5
