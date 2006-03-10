@@ -15,7 +15,7 @@
 
 /* This is the server for the lert system. */
 
-static const char rcsid[] = "$Id: lertsrv.c,v 1.8 2003-11-07 08:44:57 zacheiss Exp $";
+static const char rcsid[] = "$Id: lertsrv.c,v 1.9 2006-03-10 07:07:34 ghudson Exp $";
 
 #include <stdio.h>
 #include <unistd.h>
@@ -28,6 +28,7 @@ static const char rcsid[] = "$Id: lertsrv.c,v 1.8 2003-11-07 08:44:57 zacheiss E
 #include <sys/socket.h>
 #include <sys/uio.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/time.h>
 #include <hesiod.h>
@@ -37,7 +38,7 @@ static const char rcsid[] = "$Id: lertsrv.c,v 1.8 2003-11-07 08:44:57 zacheiss E
 #include <errno.h>
 #include "lert.h"
 
-int get_user(char *pname, char *result, int onetime);
+int get_user(char *pname, char *result, int onetime, char *ip);
 
 krb5_context context = NULL;
 
@@ -47,6 +48,7 @@ int main(int argc, char **argv)
   struct sockaddr_in sin;
   struct sockaddr_in from;
   char packet[2048];
+  char *ip;
   char *username = NULL;
   int plen;
   char opacket[2048];
@@ -149,7 +151,8 @@ int main(int argc, char **argv)
 	      opacket[2] = '\0';
 	    }
 	  else
-	    get_user(ad.pname, &(opacket[1]), ad.checksum);
+	    get_user(ad.pname, &(opacket[1]), ad.checksum,
+		     inet_ntoa(from.sin_addr));
 	  
 	  /* Prepare krb_mk_priv message */
 	  des_key_sched(ad.session, sched);
@@ -249,7 +252,8 @@ int main(int argc, char **argv)
 		      krb5_princ_component(context, client, 0)->length);
 	      username[krb5_princ_component(context, client, 0)->length] = '\0';
 
-	      get_user(username, &(opacket[1]), packet[1]);
+	      get_user(username, &(opacket[1]), packet[1],
+		       inet_ntoa(from.sin_addr));
 	    }
 
 	  inbuf.data = opacket;
@@ -301,7 +305,7 @@ int main(int argc, char **argv)
   return 0;
 }
 
-int get_user(char *pname, char *result, int onetime)
+int get_user(char *pname, char *result, int onetime, char *ip)
 {
   DBM *db;
   DBM *db2;
@@ -333,7 +337,7 @@ int get_user(char *pname, char *result, int onetime)
       /* Not in db. */
       dbm_close(db);
 #ifdef LOGGING
-      fprintf(stdout, "lertsrv: user %s not in db\n", pname);
+      fprintf(stdout, "lertsrv: %s user %s not in db\n", ip, pname);
 #endif
       return LERT_NOT_IN_DB;
     }
@@ -373,7 +377,8 @@ int get_user(char *pname, char *result, int onetime)
 
   result[0] = LERT_MSG;
 #ifdef LOGGING
-  fprintf(stdout, "lertsrv: user %s in db with groups :%s:\n", pname, result);
+  fprintf(stdout, "lertsrv: %s user %s in db with groups :%s:\n", ip, pname,
+	  result);
 #endif
   return LERT_GOTCHA;
 }
