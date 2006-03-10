@@ -1,0 +1,25 @@
+Daniel Henninger:
+Deriving most of the initial work from MIT's Zephyr system, put together a
+jwgc package that works very similarly to zwgc and related programs.  I'm not
+going to say much more than that about my contributions since, basically,
+unless it's listed below, I probably wrote it.  =)
+
+Mark Eichin:
+Fixed a crash bug in jctl when no args were specified.
+
+William Uther:
+Added jwgc.vars support for port and ssl, as well as fixes for compiling under
+MacOS X.  Also added priority support, 'fixed' system variables, and the
+ability to use your hostname as your jabber resource string.
+
+Arun A Tharuvai:
+Fixed a problem where getpass was only allowing 8 characters to be accepted
+for a password.  getpassphrase allows more.
+
+Kimmo Suominen:
+Fixed compile problem when SSL not available/desired.
+
+The authors of:
+libxode
+everybuddy
+zephyr

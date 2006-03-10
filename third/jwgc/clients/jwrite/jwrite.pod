@@ -1,0 +1,50 @@
+=head1 NAME
+
+jwrite - write to a Jabber user
+
+=head1 SYNOPSIS
+
+jwrite [ -d <flags> ] [ -h ] [ -v ] [ -q ] [ -e ] [ -n ] [ -f ] [ -m <message> ] recips...
+
+=head1 DESCRIPTION
+
+I<Jwrite> is used to send a message to a Jabber user via I<jwgc>.  It
+accepts a full jid, a nickname, or a part of a jid.  If a recipient
+specified is part of a jid, a match is attempted from the beginning
+of the full jids in the user's contact list.  Multiple recipients may
+be specified to send a single message to multiple users.
+
+I<Jwrite> understands the following options:
+
+-d <flags>          Debugging output.  Run without <flags> for usage.
+
+-h                  Displays usage information.
+
+-v                  Verbose output of communication with I<jwgc>.
+
+-q                  Silences all unnecessary output from I<jwrite>.
+
+-e                  Encrypt message.
+
+-f                  Send message without checking recipient validity.
+
+-n                  Send message without pinging recipient.
+
+-m I<message>    Send message I<message> instead of prompting for one.
+
+I<Jwrite> does not yet support any formatting attributes for messages.
+
+=head1 AUTHOR
+
+Daniel Henninger <jadestorm@users.sourceforge.net>
+
+=head1 COPYRIGHT
+
+Copyright (c) 2002 Daniel Henninger. All right reserved.
+This program is free software; you can redistribute it
+and/or modify it under the terms explained in the B<LICENSE>
+file that comes with the I<jwgc> distribution.
+
+=head1 SEE ALSO
+
+jwgc(1), jctl(1), jlocate(1), jstat(1)
