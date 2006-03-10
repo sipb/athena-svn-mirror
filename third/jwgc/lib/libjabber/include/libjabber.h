@@ -18,7 +18,7 @@
  *
  */
 
-/* $Id: libjabber.h,v 1.1.1.1 2006-03-10 15:32:57 ghudson Exp $ */
+/* $Id: libjabber.h,v 1.1.1.2 2006-03-10 15:35:16 ghudson Exp $ */
 
 #ifndef _LIBJABBER_H_
 #define _LIBJABBER_H_ 1
@@ -71,7 +71,7 @@ int		jabpacket_subtype(jabpacket p);
 /* jconn.c                                                   */
 /* JConn structures & functions                              */
 /* --------------------------------------------------------- */
-jabconn	jab_new(char *user, char *pass);
+jabconn	jab_new(char *user, char *server);
 void	jab_delete(jabconn j);
 void	jab_state_handler(jabconn j, jabconn_state_h h);
 void	jab_packet_handler(jabconn j, jabconn_packet_h h);
@@ -85,9 +85,9 @@ char	*jab_getid(jabconn j);
 void	jab_send(jabconn j, xode x);
 void	jab_send_raw(jabconn j, const char *str);
 void	jab_recv(jabconn j);
+void	jab_recv_packet(jabconn j, int npkt);
 void	jab_poll(jabconn j, int timeout);
 char	*jab_auth(jabconn j);
-char	*jab_reg(jabconn j);
 
 
 
@@ -103,7 +103,7 @@ xode	jabutil_msgnew(char *type, char *to, char *subj, char *body, char *encrypt)
 	/* Create a skeleton message packet */
 xode	jabutil_pingnew(char *type, char *to);
 	/* Create a skeleton composing packet */
-xode	jabutil_header(char* xmlns, char* server);
+char	*jabutil_header(char* xmlns, char* server);
 	/* Create a skeleton stream packet */
 int	jabutil_priority(xode x);
 	/* Determine priority of this packet */

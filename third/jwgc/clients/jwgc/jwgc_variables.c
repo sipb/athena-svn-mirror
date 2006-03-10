@@ -1,13 +1,6 @@
 #include "main.h"
 #include <libjwgc.h>
 
-int
-jwgc_show_password_event_handler()
-{
-	jVars_set_error("Displaying password is not permitted.");
-	return 0;
-}
-
 #define PRESENCE_AVAILABLE      "available"
 #define PRESENCE_NORMAL         "normal"
 #define PRESENCE_AWAY           "away"
@@ -95,7 +88,6 @@ jwgc_change_resource_event_handler(oldval, newval)
 
 void setup_jwgc_variable_handlers()
 {
-	jVars_set_show_handler(jVarPassword, jwgc_show_password_event_handler);
 	jVars_set_change_handler(jVarPresence, jwgc_change_presence_event_handler);
 	jVars_set_change_handler(jVarResource, jwgc_change_resource_event_handler);
 	jVars_set_check_handler(jVarPresence, jwgc_check_presence_event_handler);

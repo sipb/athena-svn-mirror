@@ -39,7 +39,7 @@
  * --------------------------------------------------------------------------
  */
 
-/* $Id: jutil.c,v 1.1.1.1 2006-03-10 15:32:57 ghudson Exp $ */
+/* $Id: jutil.c,v 1.1.1.2 2006-03-10 15:35:15 ghudson Exp $ */
 
 #include "libjabber.h"
 #include "libjwgc.h"
@@ -194,18 +194,27 @@ jabutil_pingnew(char *type, char *to)
 }
 
 /* util for making stream packets */
-xode 
+char *
 jabutil_header(char *xmlns, char *server)
 {
-	xode result;
+	xode x;
+	char *str, *p;
+
 	if ((xmlns == NULL) || (server == NULL))
 		return NULL;
-	result = xode_new("stream:stream");
-	xode_put_attrib(result, "xmlns:stream", "http://etherx.jabber.org/streams");
-	xode_put_attrib(result, "xmlns", xmlns);
-	xode_put_attrib(result, "to", server);
+	x = xode_new("stream:stream");
+	xode_put_attrib(x, "xmlns:stream", "http://etherx.jabber.org/streams");
+	xode_put_attrib(x, "xmlns", xmlns);
+	xode_put_attrib(x, "to", server);
+	xode_put_attrib(x, "version", "1.0");
 
-	return result;
+	str = strdup(xode_to_str(x));
+	p = strstr(str, "/>");
+	*p++ = '>';
+	*p = '\0';
+	xode_free(x);
+
+	return str;
 }
 
 /* returns the priority on a presence packet */

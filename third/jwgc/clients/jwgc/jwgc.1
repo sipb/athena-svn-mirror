@@ -145,8 +145,8 @@ jwgc \- Jabber Windowgram Client
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
 jwgc [\-h] [\-debug <flags>] [\-f <filename>] [\-j <jid>]
-     [\-u <username>] [\-p <password>] [\-r <resource>]
-     [\-s <server>] [\-register] [\-ssl] [\-port <port>]
+     [\-u <username>] [\-domain <domain>] [\-r <resource>]
+     [\-s <server>] [\-ssl] [\-port <port>]
      [\-priority <priority>] [\-ttymode] [\-nofork]
      [\-default <driver>] {\-disable <driver>}*
      [output driver options]
@@ -181,10 +181,10 @@ specified anywhere, and \-j isn't specified, \fIjwgc\fR will use
 your unix username.
 .Sp
 Associated variable: \fBusername\fR
-.Ip "\fB\-p\fR \fIpassword\fR" 8
-.IX Item "-p password"
-Password to log into the jabber server with.  If this isn't
-specified anywhere, \fIjwgc\fR will prompt you for it.
+.Ip "\fB\-domain\fR \fIdomain\fR" 8
+.IX Item "-domain domain"
+The domain of your JID.  This defaults to mit.edu unless you specify
+something else.
 .Sp
 Associated variable: \fBpassword\fR
 .Ip "\fB\-r\fR \fIresource\fR" 8
@@ -195,13 +195,13 @@ specify something else.
 Associated variable: \fBresource\fR
 .Ip "\fB\-s\fR \fIserver\fR" 8
 .IX Item "-s server"
-Jabber server to connect to.  This defaults to \fIjabber.org\fR
+Jabber server to connect to.  This defaults to \fIjabber.mit.edu\fR
 unless you specify something else.
 .Sp
 Associated variable: \fBserver\fR
 .Ip "\fB\-j\fR \fIjid\fR" 8
 .IX Item "-j jid"
-This option causes \-u, \-r and \-s to be ignored.  Instead, all
+This option causes \-u, \-r and \-domain to be ignored.  Instead, all
 of this information is taken directory from the jid specified,
 which tends to be of the form:
 username@server/resource
@@ -235,10 +235,6 @@ Enables only tty mode, which eliminates any graphical interface.
 .Ip "\fB\-nofork\fR" 8
 .IX Item "-nofork"
 Prevents \fIjwgc\fR from backgrounding itself.
-.Ip "\fB\-register\fR" 8
-.IX Item "-register"
-Causes \fIjwgc\fR to attempt to register your account with the Jabber
-server on startup.  This is necessary to create a new account.
 .Ip "\fB\-default\fR \fIdriver\fR, \fB\-disable\fR \fIdriver\fR, \fB[output driver options]\fR" 8
 .IX Item "-default driver, -disable driver, [output driver options]"
 These are all currently undocumented, sorry.
@@ -948,6 +944,19 @@ and uwm ignores the resource entirely.
 .IX Item "Transient"
 Secondary transient determining value
 [default False]
+.Ip "\fBallDesktops\fR" 5
+.IX Item "allDesktops"
+(logical) Primary value which determines if windows should appear on
+all desktops, for those window managers which support multiple
+desktops (sometimes referred to as workspaces).  When this resource is
+true (the default),
+.I jwgc
+sets the \fB_NET_WM_DESKTOP\fR property to 0xFFFFFFFF for each window,
+indicating that it should appear on all desktops.
+.IP "\fBAllDesktops\fR" 5
+.IX Item "AllDesktops"
+Secondary value determining whether zephyrgram windows should appear
+on all desktops.
 .Ip "\fBenableDelete\fR" 5
 .IX Item "enableDelete"
 (logical) If true, jwgc creates a

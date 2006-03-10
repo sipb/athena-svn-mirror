@@ -9,7 +9,6 @@
 jabconn jab_c = NULL;
 jwgconn jwg_c = NULL;
 time_t jab_connect_time = 0;
-int jwgc_register = 0;
 int jab_reauth = 0;
 
 char *whoami = NULL;
@@ -39,10 +38,10 @@ usage()
 {
 	fprintf(stderr, "\
 Usage: %s [-h] [-f <filename>]\n\
-                  [-u <username>] [-p <password>]\n\
+                  [-u <username>] [-domain <domain>]\n\
                   [-r <resource>] [-s <server>] [-j <jid>]\n\
                   [-port <port>] [-priority <priority>]\n\
-                  [-ttymode] [-nofork] [-register]\n\
+                  [-ttymode] [-nofork]\n\
                   [-default <driver>] {-disable <driver>}*\n\
                   [output driver options]\n\
 ", whoami);
@@ -163,7 +162,7 @@ void
 jabber_init()
 {
 	jab_reauth = 0;
-	jab_c = jab_new((char *)jVars_get(jVarJID), (char *)jVars_get(jVarPassword));
+	jab_c = jab_new((char *)jVars_get(jVarJID), (char *)jVars_get(jVarServer));
 	if (!jab_c) {
 		fprintf(stderr, "jwgc: unable to create jabber connection.\n");
 		exit(1);
@@ -178,11 +177,6 @@ jabber_init()
 		0
 #endif /* USE_SSL */
 	);
-	if (jwgc_register) {
-		dprintf(dExecution, "Registering user...\n");
-		jab_reg(jab_c);
-		jwgc_register = 0;
-	}
 	jab_auth(jab_c);
 	if (jab_c->state == JABCONN_STATE_OFF) {
 		fprintf(stderr, "Unable to connect to jabber server.  Retrying in %d seconds.\n", ALARMTIMEOUT);
@@ -458,6 +452,13 @@ main(argc, argv)
 				usage();
 			description_filename_override = *current;
 		}
+		else if (string_Eq(*current, "-domain")) {
+			argc -= 2;
+			current++;
+			if (!*current)
+				usage();
+			jVars_set(jVarDomain, *current);
+		}
 		else if (string_Eq(*current, "-j") ||
 			 string_Eq(*current, "-jid")) {
 			argc -= 2;
@@ -484,10 +485,6 @@ main(argc, argv)
 		else if (string_Eq(*current, "-nofork")) {
 			argc--;
 			dofork = 0;
-		}
-		else if (string_Eq(*current, "-register")) {
-			argc--;
-			jwgc_register = 1;
 		}
 #ifdef USE_SSL
 		else if (string_Eq(*current, "-ssl")) {
@@ -540,14 +537,6 @@ main(argc, argv)
 				usage();
 			jVars_set(jVarResource, *current);
 		}
-		else if (string_Eq(*current, "-p") ||
-			 string_Eq(*current, "-password")) {
-			argc -= 2;
-			current++;
-			if (!*current)
-				usage();
-			jVars_set(jVarPassword, *current);
-		}
 		else
 			*(new)++ = *current;
 	}
@@ -566,20 +555,6 @@ main(argc, argv)
 		}
 	}
 
-	if (jVars_get(jVarPassword) == NULL) {
-		snprintf(prompt, 255, "Password for %s@%s:",
-				(char *)jVars_get(jVarUsername),
-				(char *)jVars_get(jVarServer));
-#ifdef HAVE_GETPASSPHRASE
-		if (!jVars_set(jVarPassword, getpassphrase(prompt))) {
-#else
-		if (!jVars_set(jVarPassword, getpass(prompt))) {
-#endif
-			printf("No password specified.\n");
-			exit(0);
-		}
-	}
-
 	mux_init();
 	var_clear_all_variables();
 	init_ports();
@@ -591,15 +566,18 @@ main(argc, argv)
 	setup_signals(dofork);
 
 	if (!jVars_get(jVarJID)) {
-		char *jwgcjid;
+		char *domain, *jwgcjid;
 		dprintf(dExecution, "Creating JID...\n");
+		domain = jVars_get(jVarDomain);
+		if (!domain)
+			domain = jVars_get(jVarServer);
 		jwgcjid = (char *) malloc(sizeof(char) *
 			(strlen((char *)jVars_get(jVarUsername))
-			+ strlen((char *)jVars_get(jVarServer))
+			+ strlen(domain)
 			+ strlen((char *)jVars_get(jVarResource)) + 3));
 		sprintf(jwgcjid, "%s@%s/%s",
 			(char *)jVars_get(jVarUsername),
-			(char *)jVars_get(jVarServer),
+			domain,
 			(char *)jVars_get(jVarResource));
 		dprintf(dExecution, "JID = %s\n", jwgcjid ? jwgcjid : "n/a");
 		jVars_set(jVarJID, jwgcjid);

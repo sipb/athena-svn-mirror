@@ -39,7 +39,7 @@
  * --------------------------------------------------------------------------
  */
 
-/* $Id: JStr.c,v 1.1.1.1 2006-03-10 15:33:01 ghudson Exp $ */
+/* $Id: JStr.c,v 1.1.1.2 2006-03-10 15:35:14 ghudson Exp $ */
 
 #include <sysdep.h>
 #include "libjwgc.h"
@@ -319,6 +319,7 @@ unicode_to_str(in, out)
 	*out = outbuf;
 	return 1;
 #else
-	return in;
+	*out = strdup(in);
+	return 1;
 #endif /* HAVE_LIBICONV */
 }

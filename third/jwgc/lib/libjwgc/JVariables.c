@@ -9,7 +9,7 @@
  *      "mit-copyright.h".
  */
 
-/* $Id: JVariables.c,v 1.1.1.1 2006-03-10 15:32:48 ghudson Exp $ */
+/* $Id: JVariables.c,v 1.1.1.2 2006-03-10 15:35:16 ghudson Exp $ */
 
 #include "libjwgc.h"
 
@@ -191,8 +191,8 @@ jVars_init()
 	jVars_strings[jVarUsername] = "username";
 	jVars_types[jVarUsername] = jTypeString;
 
-	jVars_strings[jVarPassword] = "password";
-	jVars_types[jVarPassword] = jTypeString;
+	jVars_strings[jVarDomain] = "domain";
+	jVars_types[jVarDomain] = jTypeString;
 
 	jVars_strings[jVarServer] = "server";
 	jVars_types[jVarServer] = jTypeString;

@@ -39,7 +39,7 @@
  * --------------------------------------------------------------------------
  */
 
-/* $Id: jpacket.c,v 1.1.1.1 2006-03-10 15:32:38 ghudson Exp $ */
+/* $Id: jpacket.c,v 1.1.1.2 2006-03-10 15:35:16 ghudson Exp $ */
 
 #include "libjabber.h"
 #include "libxode.h"
@@ -79,6 +79,15 @@ jabpacket_reset(jabpacket p)
 		p->type = JABPACKET_IQ;
 		p->iq = xode_get_tag(x, "?xmlns");
 		p->iqns = xode_get_attrib(p->iq, "xmlns");
+	}
+	else if (strncmp(xode_get_name(x), "challenge", 9) == 0) {
+		p->type = JABPACKET_SASL_CHALLENGE;
+	}
+	else if (strncmp(xode_get_name(x), "success", 7) == 0) {
+		p->type = JABPACKET_SASL_SUCCESS;
+	}
+	else if (strncmp(xode_get_name(x), "failure", 7) == 0) {
+		p->type = JABPACKET_SASL_FAILURE;
 	}
 
 	val = xode_get_attrib(x, "to");

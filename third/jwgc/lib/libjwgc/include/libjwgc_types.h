@@ -1,4 +1,4 @@
-/* $Id: libjwgc_types.h,v 1.1.1.1 2006-03-10 15:32:57 ghudson Exp $ */
+/* $Id: libjwgc_types.h,v 1.1.1.2 2006-03-10 15:35:16 ghudson Exp $ */
 
 #ifndef _LIBJWGC_TYPES_H_
 #define _LIBJWGC_TYPES_H_ 1
@@ -117,7 +117,7 @@ typedef struct {
 
 typedef enum jVar_name {
 	jVarUsername,
-	jVarPassword,
+	jVarDomain,
 	jVarServer,
 	jVarResource,
 	jVarPort,
