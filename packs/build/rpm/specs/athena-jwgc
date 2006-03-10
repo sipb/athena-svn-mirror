@@ -1,0 +1,8 @@
+Name: athena-jwgc
+Summary: Jabber Windowgram Client, for Athena
+License: GPL
+Group: Applications/Internet
+
+%description
+jwgc is an adaptation of zwgc (the Zephyr Windowgram Client) for
+Jabber.
