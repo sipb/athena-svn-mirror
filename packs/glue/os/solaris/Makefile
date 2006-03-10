@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 2006-03-03 20:44:45 rbasch Exp $
+# $Id: Makefile,v 1.9 2006-03-10 01:48:52 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -39,6 +39,8 @@ install:
 	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	rm -f ${DESTDIR}${USRBINDIR}/lp
 	ln -s ${ATHBINDIR}/lp ${DESTDIR}${USRBINDIR}/lp
+	rm -f ${DESTDIR}${USRBINDIR}/lpstat
+	ln -s ${ATHBINDIR}/lpstat ${DESTDIR}${USRBINDIR}/lpstat
 	rm -f ${DESTDIR}${ATHBINDIR}/otalk
 	ln -s /usr/bin/talk ${DESTDIR}${ATHBINDIR}/otalk
 	rm -f ${DESTDIR}${ATHBINDIR}/xlock.real
