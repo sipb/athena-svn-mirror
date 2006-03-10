@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpstat.c,v 1.4 2001-03-07 01:19:39 ghudson Exp $";
+"$Id: lpstat.c,v 1.5 2006-03-10 01:48:08 zacheiss Exp $";
 
 
 /***************************************************************************
@@ -203,14 +203,14 @@ void Show_status(char **argv)
 	Fix_Rm_Rp_info();
 
 	if( s_flag || t_flag || p_flag || o_flag ){
-		plp_snprintf(msg,sizeof(msg), "printer %s unkown state. enabled since %s. available\n",
+		plp_snprintf(msg,sizeof(msg), "printer %s unknown state. enabled since %s. available\n",
 			Printer_DYN, Pretty_time(0));
 		Write_fd_str(1,msg);
 	}
 
 	if( Check_for_rg_group( Logname_DYN ) ){
 		plp_snprintf( msg, sizeof(msg),
-			"  Printer: %s - cannot use printer, not in privileged group\n" );
+			"  Printer: %s - cannot use printer, not in privileged group\n", Printer_DYN);
 		if(  Write_fd_str( 1, msg ) < 0 ) cleanup(0);
 		return;
 	}
@@ -243,8 +243,9 @@ int Read_status_info( char *host, int sock,
 	int output, int timeout, int displayformat,
 	int status_line_count )
 {
-	int n, status, count;
+	int n, status, count, not_accepting_jobs = 0;
 	char buffer[LARGEBUFFER];
+	char msg[LINEBUFFER];
 	char *s;
 	struct line_list l;
 
@@ -270,6 +271,16 @@ int Read_status_info( char *host, int sock,
 			buffer[count+n] = 0;
 		}
 		DEBUG3("Read_status_info: got '%s'", buffer );
+
+		/* Determine if the queue is disabled so we can present 
+		 * that information to the user in the same way that
+		 * the native SVR4 lpstat command does.
+		 */
+		if (strstr(buffer, "is down") || 
+		    strstr(buffer, "Printer Error") ||
+		    strstr(buffer, "ing disabled"))
+		  not_accepting_jobs = 1;
+
 		if( (s = strrchr(buffer,'\n')) ){
 			*s++ = 0;
 			/* add the lines */
@@ -281,6 +292,14 @@ int Read_status_info( char *host, int sock,
 	Check_max(&l,1);
 	l.list[l.count] = 0;
 	if(DEBUGL3)Dump_line_list("Read_status_info - raw status", &l);
+	/* emulate SVR4 lpstat output */
+	if (a_flag)
+	  {
+	    plp_snprintf(msg, sizeof(msg), "%s %s requests since %s\n",
+			 Printer_DYN, not_accepting_jobs ?
+			 "not accepting" : "accepting", Pretty_time(0));
+	    Write_fd_str(1,msg);
+	  }
 	Remove_excess( &l, 3, 1 );
 	Free_line_list(&l);
 	DEBUG1("Read_status_info: done" );
