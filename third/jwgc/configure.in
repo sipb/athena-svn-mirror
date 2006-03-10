@@ -209,11 +209,11 @@ AC_PROG_MAKE_SET
 
 dnl Check some initial paths and such.
 AC_PATH_X
-CFLAGS="$CFLAGS -I${ac_x_includes}"
-CPPFLAGS="$CPPFLAGS -I${ac_x_includes}"
-LDFLAGS="$LDFLAGS -L${ac_x_libraries}"
+CFLAGS="$CFLAGS -I${x_includes}"
+CPPFLAGS="$CPPFLAGS -I${x_includes}"
+LDFLAGS="$LDFLAGS -L${x_libraries}"
 if test -n "${need_dash_r}"; then
-	LDFLAGS="$LDFLAGS -R${ac_x_libraries}"
+	LDFLAGS="$LDFLAGS -R${x_libraries}"
 fi
 
 dnl Checks for libraries.
