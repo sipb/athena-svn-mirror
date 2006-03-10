@@ -1,7 +1,0 @@
-$ $Id: set15,v 1.1.1.1 2005-06-03 14:38:08 ghudson Exp $
-$ sh.func.c
-$set 15 
-1 %s: %s: Ei õnnestu %s%s piirangut\n
-2 eemaldada
-3 seada
-4 \040kõva
