@@ -37,7 +37,7 @@ jab_on_packet_handler(conn, packet)
 		case JABPACKET_MESSAGE: {
 			xode x;
 			char *cbody, *body, *ns, *convbody;
-			int body_sz;
+			int body_sz = 0;
 
 			body = NULL;
 
@@ -69,10 +69,12 @@ jab_on_packet_handler(conn, packet)
 				}
 			}
 
-			if (!unicode_to_str(body, &convbody)) {
-				convbody = strdup("");
+			if (body) {
+				if (!unicode_to_str(body, &convbody)) {
+					convbody = strdup("");
+				}
+				body_sz = strlen(convbody);
 			}
-			body_sz = strlen(convbody);
 
 			decode_notice(packet);
 			dprintf(dExecution, "Rendering message...\n");
@@ -119,6 +121,18 @@ jab_on_packet_handler(conn, packet)
 						"Unknown subtype.\n");
 				} break;
 			}
+		} break;
+
+		case JABPACKET_SASL_CHALLENGE: {
+			conn->gsstoken = strdup(xode_get_data(packet->x));
+		} break;
+
+		case JABPACKET_SASL_SUCCESS: {
+			conn->gsssuccess = 1;
+		} break;
+
+		case JABPACKET_SASL_FAILURE: {
+			conn->gsssuccess = -1;
 		} break;
 
 		default: {
@@ -168,11 +182,6 @@ jab_on_state_handler(conn, state)
 
 			dprintf(dExecution, "requesting roster\n");
 			x = jabutil_iqnew(JABPACKET__GET, NS_ROSTER);
-			jab_send(conn, x);
-			xode_free(x);
-
-			dprintf(dExecution, "requesting agent info\n");
-			x = jabutil_iqnew(JABPACKET__GET, NS_AGENT);
 			jab_send(conn, x);
 			xode_free(x);
 

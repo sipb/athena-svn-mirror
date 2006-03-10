@@ -18,10 +18,12 @@
  *
  */
 
-/* $Id: libjabber_types.h,v 1.1.1.1 2006-03-10 15:32:45 ghudson Exp $ */
+/* $Id: libjabber_types.h,v 1.1.1.2 2006-03-10 15:35:16 ghudson Exp $ */
 
 #ifndef _LIBJABBER_TYPES_H_
 #define _LIBJABBER_TYPES_H_ 1
+
+#include <gssapi.h>
 
 /* --------------------------------------------------------- */
 /* jid.c                                                     */
@@ -46,10 +48,13 @@ typedef struct jid_struct {
 /* jpacket.c                                                 */
 /* JPacket structures & constants                            */
 /* --------------------------------------------------------- */
-#define JABPACKET_UNKNOWN	0
-#define JABPACKET_MESSAGE	1
-#define JABPACKET_PRESENCE	2
-#define JABPACKET_IQ		3
+#define JABPACKET_UNKNOWN		0
+#define JABPACKET_MESSAGE		1
+#define JABPACKET_PRESENCE		2
+#define JABPACKET_IQ			3
+#define JABPACKET_SASL_CHALLENGE	4
+#define JABPACKET_SASL_SUCCESS		5
+#define JABPACKET_SASL_FAILURE		6
 
 #define JABPACKET__UNKNOWN	0
 #define JABPACKET__NONE		1
@@ -107,7 +112,7 @@ typedef struct jabconn_struct {
 	SSL_CTX			*ssl_ctx;	/* SSL context */
 #endif /* USE_SSL */
 	jid			user;		/* User info */
-	char			*pass;		/* User passwd */
+	char			*server;	/* Server hostname */
 	int			port;		/* Port to connect to */
 
 	/* Capability tracking */
@@ -123,6 +128,14 @@ typedef struct jabconn_struct {
 	char			*token;		/* Token id */
 	XML_Parser		parser;		/* Parser instance */
 	xode			current;	/* Current parsing node */
+	int			endcount;	/* Count of stream end tags */
+
+	/* GSSAPI authentication */
+	gss_ctx_id_t		gsscontext;	/* GSSAPI context */
+	gss_name_t		gssserver;	/* GSSAPI server name */
+	char			*gsstoken;	/* Challenge token */
+	int			gsscomplete;	/* Completed flag */
+	int			gsssuccess;	/* Success flag */
 
 	/* Event callback ptrs */
 	void (*on_state)(struct jabconn_struct *j, int state);
@@ -198,6 +211,9 @@ typedef struct terror_struct
 #define NS_XDBGINSERT	"jabber:xdb:ginsert"
 #define NS_XDBNSLIST	"jabber:xdb:nslist"
 #define NS_DATA		"jabber:x:data"
+#define NS_SASL		"urn:ietf:params:xml:ns:xmpp-sasl"
+#define NS_BIND		"urn:ietf:params:xml:ns:xmpp-bind"
+#define NS_SESSION	"urn:ietf:params:xml:ns:xmpp-session"
 
 /* Message Types                                             */
 #define TMSG_NORMAL	"normal"

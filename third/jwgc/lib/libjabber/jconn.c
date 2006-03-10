@@ -18,7 +18,7 @@
  *
  */
 
-/* $Id: jconn.c,v 1.1.1.1 2006-03-10 15:33:02 ghudson Exp $ */
+/* $Id: jconn.c,v 1.1.1.2 2006-03-10 15:35:16 ghudson Exp $ */
 
 #include "libjabber.h"
 
@@ -29,6 +29,8 @@
 static void startElement(void *userdata, const char *name, const char **attribs);
 static void endElement(void *userdata, const char *name);
 static void charData(void *userdata, const char *s, int slen);
+static unsigned char *base64_encode(const unsigned char *in, size_t inlen);
+static void base64_decode(const char *text, char **data, int *size);
 
 /*
  *  jab_new -- initialize a new jabber connection
@@ -42,7 +44,7 @@ static void charData(void *userdata, const char *s, int slen);
  *      or NULL if allocations failed
  */
 jabconn 
-jab_new(char *user, char *pass)
+jab_new(char *user, char *server)
 {
 	xode_pool p;
 	jabconn j;
@@ -59,7 +61,7 @@ jab_new(char *user, char *pass)
 	j->p = p;
 
 	j->user = jid_new(p, user);
-	j->pass = xode_pool_strdup(p, pass);
+	j->server = xode_pool_strdup(p, server);
 	j->port = 5222;
 
 	j->state = JABCONN_STATE_OFF;
@@ -72,6 +74,7 @@ jab_new(char *user, char *pass)
 	j->ssl_ctx = NULL;
 	j->sslfd = -1;
 #endif /* USE_SSL */
+	j->endcount = 0;
 
 	return j;
 }
@@ -168,8 +171,7 @@ init_prng()
 void 
 jab_start(jabconn j, int ssl)
 {
-	xode x;
-	char *t, *t2;
+	char *t;
 
 	if (!j || j->state != JABCONN_STATE_OFF)
 		return;
@@ -179,7 +181,7 @@ jab_start(jabconn j, int ssl)
 	XML_SetElementHandler(j->parser, startElement, endElement);
 	XML_SetCharacterDataHandler(j->parser, charData);
 
-	j->fd = make_netsocket(j->port, j->user->server, NETSOCKET_CLIENT);
+	j->fd = make_netsocket(j->port, j->server, NETSOCKET_CLIENT);
 	if (j->fd < 0) {
 		STATE_EVT(JABCONN_STATE_OFF)
 			return;
@@ -212,21 +214,13 @@ jab_start(jabconn j, int ssl)
 	j->state = JABCONN_STATE_CONNECTED;
 	STATE_EVT(JABCONN_STATE_CONNECTED)
 	/* start stream */
-	x = jabutil_header(NS_CLIENT, j->user->server);
-	t = xode_to_str(x);
-	/*
-	 * this is ugly, we can create the string here instead of
-	 * jutil_header
-	 */
-	/* what do you think about it? -madcat */
-	t2 = strstr(t, "/>");
-	*t2++ = '>';
-	*t2 = '\0';
+	t = jabutil_header(NS_CLIENT, j->user->server);
 	jab_send_raw(j, "<?xml version='1.0'?>");
 	jab_send_raw(j, t);
-	xode_free(x);
+	free(t);
 
-	jab_recv(j);
+	/* Receive back a stream header and stream:features packet. */
+	jab_recv_packet(j, 1);
 
 	j->state = JABCONN_STATE_AUTH;
 	STATE_EVT(JABCONN_STATE_AUTH);
@@ -388,6 +382,14 @@ jab_send_raw(jabconn j, const char *str)
 	dprintf(dJAB, "out: %s\n", str);
 }
 
+void
+jab_recv_packet(jabconn j, int npkt)
+{
+	j->endcount = 0;
+	while (j->endcount < npkt)
+		jab_recv(j);
+}
+
 /*
  *  jab_recv -- read and parse incoming data
  *
@@ -476,6 +478,97 @@ jab_poll(jabconn j, int timeout)
 	}
 }
 
+/* Written by Simon Wilkinson for Gaim; adapted for jwgc. */
+static int
+gssapi_step(jabconn j, char *indata, char **outdata) {
+	gss_buffer_t in_token_ptr = NULL;
+	gss_buffer_desc input_token = GSS_C_EMPTY_BUFFER;
+	gss_buffer_desc	output_token = GSS_C_EMPTY_BUFFER;
+	unsigned int len;
+	OM_uint32 major, minor;
+
+	if (indata) {
+		base64_decode(indata, (char **) &input_token.value, &len);
+		input_token.length = len;
+		in_token_ptr = &input_token;
+	}
+
+	if (j->gsscomplete) {
+		if (input_token.length == 0) {
+			/* We've received an empty token from the server,
+			 * so we should send an empty one back */
+			*outdata = NULL;
+		} else {
+			char *response;
+			major = gss_unwrap(&minor, j->gsscontext,
+				   	   &input_token, &output_token, 
+					   NULL, NULL);
+			if (GSS_ERROR(major)) {
+				gss_release_buffer(&minor, &output_token);
+				return 0;
+			}
+			gss_release_buffer(&minor, &output_token);
+			input_token.length = strlen(j->user->user) + 4;
+			response = malloc(input_token.length);
+			response[0] = 1;
+			response[1] = 0;
+			response[2] = 0;
+			response[3] = 0;
+			memcpy(response + 4, j->user->user,
+			       input_token.length - 4);
+			input_token.value = response;
+			major = gss_wrap(&minor, j->gsscontext,
+					 0, GSS_C_QOP_DEFAULT,
+					 &input_token, NULL,
+					 &output_token);
+
+			*outdata = base64_encode(output_token.value, 
+						 output_token.length);
+			gss_release_buffer(&minor, &output_token);
+			free(response);
+		}
+	} else {
+	
+		gss_OID_desc mech_oid_desc =
+			{ 9, (void *) "\x2a\x86\x48\x86\xf7\x12\x01\x02\x02" };
+
+		major = gss_init_sec_context(&minor,
+					     GSS_C_NO_CREDENTIAL,
+					     &j->gsscontext,
+					     j->gssserver,
+					     &mech_oid_desc,
+					     GSS_C_MUTUAL_FLAG,
+					     GSS_C_INDEFINITE,
+					     GSS_C_NO_CHANNEL_BINDINGS,
+					     in_token_ptr,
+					     NULL,
+					     &output_token,
+					     NULL,
+					     NULL);
+
+		if (input_token.value)
+			free(input_token.value);
+
+		if (GSS_ERROR(major)) {
+			gss_release_buffer(&minor, &output_token);
+			return 0;
+		}
+
+		if (major == GSS_S_COMPLETE)
+			j->gsscomplete = 1;
+
+		if (output_token.length > 0)
+			*outdata = base64_encode(output_token.value, 
+						 output_token.length);
+		else
+			*outdata = NULL;
+
+		gss_release_buffer(&minor, &output_token);
+	}
+
+	return 1;
+}
+
 /*
  *  jab_auth -- authorize user
  *
@@ -489,114 +582,100 @@ char *
 jab_auth(jabconn j)
 {
 	xode x, y, z;
-	char *user, *id;
+	char *outdata, *t;
+	gss_buffer_desc server_desc, output_token;
+	OM_uint32 major, minor;
+	gss_OID_desc gss_c_nt_hostbased_service =
+		{ 10, (void *) "\x2a\x86\x48\x86\xf7\x12\x01\x02\x01\x04" };
+	int status;
 
 	if (!j)
 		return (NULL);
 
-	user = j->user->user;
-	id = jab_getid(j);
+	server_desc.value = malloc(strlen(j->server) + 6);
+	sprintf(server_desc.value, "xmpp@%s", j->server);
+	server_desc.length = strlen(server_desc.value);
+	major = gss_import_name(&minor, &server_desc,
+				&gss_c_nt_hostbased_service, &j->gssserver);
+	free(server_desc.value);
+	if (GSS_ERROR(major))
+		return NULL;
 
-	x = jabutil_iqnew(JABPACKET__GET, NS_AUTH);
-	xode_put_attrib(x, "id", "auth_1");
-	xode_put_attrib(x, "to", j->user->server);
-	y = xode_get_tag(x, "query");
+	j->gsscontext = GSS_C_NO_CONTEXT;
+	j->gsstoken = NULL;
+	j->gsscomplete = 0;
+	j->gsssuccess = 0;
 
-	if (user) {
-		z = xode_insert_tag(y, "username");
-		xode_insert_cdata(z, user, -1);
-	}
+	if (!gssapi_step(j, NULL, &outdata))
+		return NULL;
 
-	jab_send(j, x);
-	xode_free(x);
-	jab_recv(j);
-
-	x = jabutil_iqnew(JABPACKET__SET, NS_AUTH);
-	xode_put_attrib(x, "id", "auth_2");
-	xode_put_attrib(x, "to", j->user->server);
-	y = xode_get_tag(x, "query");
-
-	if (user) {
-		dprintf(dExecution, "Got auth user %s...\n", user);
-		z = xode_insert_tag(y, "username");
-		xode_insert_cdata(z, user, -1);
-	}
-
-	z = xode_insert_tag(y, "resource");
-	xode_insert_cdata(z, j->user->resource, -1);
-	dprintf(dExecution, "Got auth resource %s...\n", j->user->resource);
-
-	dprintf(dExecution, "Got auth password %s...\n", j->pass);
-	if (j->sid && j->auth_digest) {
-		char *hash;
-
-		dprintf(dExecution, "Got digest auth id %s...\n", j->sid);
-		z = xode_insert_tag(y, "digest");
-		hash = xode_pool_malloc(x->p,
-			strlen(j->sid) + strlen(j->pass) + 1);
-		strcpy(hash, j->sid);
-		strcat(hash, j->pass);
-		hash = (char *)j_shahash(hash);
-		xode_insert_cdata(z, hash, 40);
-	}
-	else if (j->auth_password) {
-		z = xode_insert_tag(y, "password");
-		xode_insert_cdata(z, j->pass, -1);
-	}
-
-	jab_send(j, x);
-	xode_free(x);
-	jab_recv(j);
-
-	return id;
-}
-
-/*
- *  jab_reg -- register user
- *
- *  parameters
- *      j -- connection
- *
- *  returns
- *      id of the iq packet
- */
-char *
-jab_reg(jabconn j)
-{
-	xode x, y, z;
-	char *user, *id;
-	/* UNUSED char *hash; */
-
-	if (!j)
-		return (NULL);
-
-	x = jabutil_iqnew(JABPACKET__SET, NS_REGISTER);
-	id = jab_getid(j);
-	xode_put_attrib(x, "id", id);
-	y = xode_get_tag(x, "query");
-
-	user = j->user->user;
-
-	if (user) {
-		z = xode_insert_tag(y, "username");
-		xode_insert_cdata(z, user, -1);
-	}
-
-	z = xode_insert_tag(y, "resource");
-	xode_insert_cdata(z, j->user->resource, -1);
-
-	if (j->pass) {
-		z = xode_insert_tag(y, "password");
-		xode_insert_cdata(z, j->pass, -1);
-	}
-
+	/* Kick off the authentication. */
+	x = xode_new("auth");
+	xode_put_attrib(x, "xmlns", NS_SASL);
+	xode_put_attrib(x, "mechanism", "GSSAPI");
+	xode_insert_cdata(x, outdata, -1);
+	free(outdata);
 	jab_send(j, x);
 	xode_free(x);
 
-	j->state = JABCONN_STATE_AUTH;
-	STATE_EVT(JABCONN_STATE_AUTH)
+	/* Respond to challenges until we receive a success notification. */
+	jab_recv_packet(j, 1);
+	while (j->gsssuccess == 0) {
+		if (!j->gsstoken)
+			return NULL;
+		status = gssapi_step(j, j->gsstoken, &outdata);
+		free(j->gsstoken);
+		j->gsstoken = NULL;
+		if (!status)
+			return NULL;
 
-	return id;
+		x = xode_new("response");
+		xode_put_attrib(x, "xmlns", NS_SASL);
+		xode_insert_cdata(x, outdata, -1);
+		free(outdata);
+		jab_send(j, x);
+		xode_free(x);
+		jab_recv_packet(j, 1);
+	}
+
+	/* The XML stream restarts at this point, so make a new parser. */
+	XML_ParserFree(j->parser);
+	j->parser = XML_ParserCreate(NULL);
+	XML_SetUserData(j->parser, (void *) j);
+	XML_SetElementHandler(j->parser, startElement, endElement);
+	XML_SetCharacterDataHandler(j->parser, charData);
+
+	/* Send a new stream header. */
+	t = jabutil_header(NS_CLIENT, j->user->server);
+	jab_send_raw(j, t);
+	free(t);
+
+	/* Receive back a stream header and stream:features packet. */
+	jab_recv_packet(j, 1);
+
+	/* Perform resource binding. */
+	x = xode_new("iq");
+	xode_put_attrib(x, "type", "set");
+	y = xode_insert_tag(x, "bind");
+	xode_put_attrib(y, "xmlns", NS_BIND);
+	if (j->user->resource) {
+		z = xode_insert_tag(y, "resource");
+		xode_insert_cdata(z, j->user->resource, -1);
+	}
+	jab_send(j, x);
+	xode_free(x);
+	jab_recv_packet(j, 1);
+
+	/* Request a session. */
+	x = xode_new("iq");
+	xode_put_attrib(x, "type", "set");
+	y = xode_insert_tag(x, "session");
+	xode_put_attrib(y, "xmlns", NS_SESSION);
+	jab_send(j, x);
+	xode_free(x);
+	jab_recv_packet(j, 1);
+
+	return NULL;
 }
 
 
@@ -650,6 +729,8 @@ endElement(void *userdata, const char *name)
 	x = xode_get_parent(j->current);
 
 	if (x == NULL) {
+		j->endcount++;
+
 		/* it is time to fire the event */
 		p = jabpacket_new(j->current);
 
@@ -668,4 +749,113 @@ charData(void *userdata, const char *s, int slen)
 
 	if (j->current)
 		xode_insert_cdata(j->current, s, slen);
+}
+
+/**************************************************************************
+ * Base64 Functions (taken from Gaim)
+ **************************************************************************/
+static const char alphabet[] =
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	"0123456789+/";
+
+static const char xdigits[] =
+	"0123456789abcdef";
+
+static unsigned char *
+base64_encode(const unsigned char *in, size_t inlen)
+{
+	char *out, *rv;
+
+	rv = out = malloc(((inlen/3)+1)*4 + 1);
+
+	for (; inlen >= 3; inlen -= 3)
+	{
+		*out++ = alphabet[in[0] >> 2];
+		*out++ = alphabet[((in[0] << 4) & 0x30) | (in[1] >> 4)];
+		*out++ = alphabet[((in[1] << 2) & 0x3c) | (in[2] >> 6)];
+		*out++ = alphabet[in[2] & 0x3f];
+		in += 3;
+	}
+
+	if (inlen > 0)
+	{
+		unsigned char fragment;
+
+		*out++ = alphabet[in[0] >> 2];
+		fragment = (in[0] << 4) & 0x30;
+
+		if (inlen > 1)
+			fragment |= in[1] >> 4;
+
+		*out++ = alphabet[fragment];
+		*out++ = (inlen < 2) ? '=' : alphabet[(in[1] << 2) & 0x3c];
+		*out++ = '=';
+	}
+
+	*out = '\0';
+
+	return rv;
+}
+
+static void
+base64_decode(const char *text, char **data, int *size)
+{
+	char *out = NULL;
+	char tmp = 0;
+	const char *c;
+	int tmp2 = 0, len = 0, n = 0;
+
+	c = text;
+
+	while (*c) {
+		if (*c >= 'A' && *c <= 'Z') {
+			tmp = *c - 'A';
+		} else if (*c >= 'a' && *c <= 'z') {
+			tmp = 26 + (*c - 'a');
+		} else if (*c >= '0' && *c <= 57) {
+			tmp = 52 + (*c - '0');
+		} else if (*c == '+') {
+			tmp = 62;
+		} else if (*c == '/') {
+			tmp = 63;
+		} else if (*c == '\r' || *c == '\n') {
+			c++;
+			continue;
+		} else if (*c == '=') {
+			if (n == 3) {
+				out = realloc(out, len + 2);
+				out[len] = (char)(tmp2 >> 10) & 0xff;
+				len++;
+				out[len] = (char)(tmp2 >> 2) & 0xff;
+				len++;
+			} else if (n == 2) {
+				out = realloc(out, len + 1);
+				out[len] = (char)(tmp2 >> 4) & 0xff;
+				len++;
+			}
+			break;
+		}
+		tmp2 = ((tmp2 << 6) | (tmp & 0xff));
+		n++;
+		if (n == 4) {
+			out = realloc(out, len + 3);
+			out[len] = (char)((tmp2 >> 16) & 0xff);
+			len++;
+			out[len] = (char)((tmp2 >> 8) & 0xff);
+			len++;
+			out[len] = (char)(tmp2 & 0xff);
+			len++;
+			tmp2 = 0;
+			n = 0;
+		}
+		c++;
+	}
+
+	out = realloc(out, len + 1);
+	out[len] = 0;
+
+	*data = out;
+
+	if (size)
+		*size = len;
 }
