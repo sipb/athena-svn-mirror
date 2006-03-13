@@ -318,7 +318,7 @@ case "$1" in
 	    mount /usr/vice/cache
 	    ;;
 	esac
-    else
+    elif ! grep -q " /usr/vice/cache " /proc/mounts; then
 	echo "Warning: AFS cache partition not mounted and not mountable."
     fi
     if [ ! "$afs_rh" -o ! -f /var/lock/subsys/openafs ]; then
