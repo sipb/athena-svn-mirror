@@ -100,6 +100,7 @@ int main(int argc, char **argv)
       (void) dbm_clearerr(db);
     }
   }
+  dbm_close(db);
   return (0);
 }
     
