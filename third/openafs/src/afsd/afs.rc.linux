@@ -61,8 +61,7 @@ if [ "${OPTIONS+set}" != set ]; then
 	OPTIONS="-stat 10000 -daemons 4 -volumes 200 -afsdb -dynroot -fakestat"
 fi
 AFS_POST_INIT=/etc/athena/config_afs
-athena_afsadjust () {
-        . /etc/athena/rc.conf
+athena_afsadjust () {    # Assumes /etc/athena/rc.conf has been read
         if [ "true" = "$AFSADJUST" -o "true" = "$PUBLIC" ] ; then
                 df -k /usr/vice/cache | awk '
                   (NR == 2) {
@@ -286,8 +285,16 @@ choose_afsdoptions() {
 	fi
 }
 
+# On disconnectable systems, don't start AFS until the first net-up
+# event.  The AFS system net-event script will call us with
+# "netevent-start" when that happens.
+. /etc/athena/rc.conf
+if [ "$1" = start -a "$DISCONNECTABLE" = true ]; then
+  exit 0
+fi
+
 case "$1" in 
-  start)
+  start|netevent-start)
     # Check and mount afs cache partition.
     d=`grep '^/dev[^ 	]*[ 	]*/usr/vice/cache[ 	]*ext2[	 ]*' /etc/fstab \
 	|sed -e 's/[ 	].*//'`

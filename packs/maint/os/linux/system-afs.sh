@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: system-afs.sh,v 1.1 2002-12-09 22:56:09 ghudson Exp $
+# $Id: system-afs.sh,v 1.2 2006-03-13 21:26:01 ghudson Exp $
 #
 # Check the AFS servers at net-up events.
 #
@@ -14,6 +14,11 @@ case "$EVENT" in
 net-up)
   if mount | grep -q AFS; then
     fs checks -all -fast > /dev/null 2>&1
+  fi
+
+  # On the first net-up event, try to start AFS
+  if [ true = "$FIRST_NET_UP" ]; then
+    sh /etc/init.d/openafs netevent-start
   fi
   ;;
 esac
