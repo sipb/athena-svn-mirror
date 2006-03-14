@@ -27,16 +27,19 @@ case "$1" in
 	echo -n "Removing old attach mount points: "
 
 	detach -O -n -h -a && success "detaching mount points" || failure "detaching mount points"
+	echo
 
 	if [ "$PUBLIC" = true ]; then
 		echo -n "Cleaning attachtab: "
 		rm -f /var/athena/attachtab/mountpoint/* /var/athena/attachtab/locker/* && success "cleaning attachtab" || failure "cleaning attachtab"
+		echo
 
 		echo -n "Clearing out /mit: "
 		rm -f /mit/* \
 		    && rmdir /mit/* 2>/dev/null \
 		    && rm -f /var/athena/attachtab/directory/_=mit* \
 		    && success "clearing /mit" || failure "clearing /mit"
+		echo
 	fi
 
 
