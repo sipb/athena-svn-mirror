@@ -13,7 +13,7 @@
  */
 
 #include <sm/gen.h>
-SM_RCSID("@(#)$Id: fflush.c,v 1.1.1.1 2003-04-08 15:06:04 zacheiss Exp $")
+SM_RCSID("@(#)$Id: fflush.c,v 1.2 2006-03-23 21:02:44 zacheiss Exp $")
 #include <unistd.h>
 #include <errno.h>
 #include <sys/time.h>
@@ -145,6 +145,7 @@ sm_flush(fp, timeout)
 				return SM_IO_EOF;
 			}
 			SM_IO_WR_TIMEOUT(fp, fd, *timeout);
+			t = 0;
 		}
 	}
 	return 0;

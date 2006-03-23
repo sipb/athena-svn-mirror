@@ -13,7 +13,7 @@
 
 #include <sendmail.h>
 
-SM_RCSID("@(#)$Id: conf.c,v 1.2 2004-04-13 19:07:04 zacheiss Exp $")
+SM_RCSID("@(#)$Id: conf.c,v 1.3 2006-03-23 21:02:45 zacheiss Exp $")
 
 #include <sendmail/pathnames.h>
 
@@ -5216,8 +5216,8 @@ sm_syslog(level, id, fmt, va_alist)
 	va_dcl
 #endif /* __STDC__ */
 {
-	static char *buf = NULL;
-	static size_t bufsize;
+	char *buf;
+	size_t bufsize;
 	char *begin, *end;
 	int save_errno;
 	int seq = 1;
@@ -5241,11 +5241,8 @@ sm_syslog(level, id, fmt, va_alist)
 	else
 		idlen = strlen(id) + SyslogPrefixLen;
 
-	if (buf == NULL)
-	{
-		buf = buf0;
-		bufsize = sizeof buf0;
-	}
+	buf = buf0;
+	bufsize = sizeof buf0;
 
 	for (;;)
 	{
@@ -5287,8 +5284,8 @@ sm_syslog(level, id, fmt, va_alist)
 			(void) sm_io_fprintf(smioerr, SM_TIME_DEFAULT,
 					     "%s: %s\n", id, newstring);
 #endif /* LOG */
-		if (buf == buf0)
-			buf = NULL;
+		if (buf != buf0)
+			sm_free(buf);
 		errno = save_errno;
 		return;
 	}
@@ -5352,8 +5349,8 @@ sm_syslog(level, id, fmt, va_alist)
 		(void) sm_io_fprintf(smioerr, SM_TIME_DEFAULT,
 				     "%s[%d]: %s\n", id, seq, begin);
 #endif /* LOG */
-	if (buf == buf0)
-		buf = NULL;
+	if (buf != buf0)
+		sm_free(buf);
 	errno = save_errno;
 }
 /*
