@@ -48,7 +48,9 @@ jwrite_on_event_handler(jwgconn conn, jwgpacket packet)
 	cdata = xode_get_data(x);
 
 	if (!strcmp(xode_get_name(x), "success")) {
-		printf("%s\n", cdata);
+		if (!quiet) {
+			printf("%s\n", cdata);
+		}
 	}
 	else if (!strcmp(xode_get_name(x), "error")) {
 		printf("ERROR: %s\n", cdata);

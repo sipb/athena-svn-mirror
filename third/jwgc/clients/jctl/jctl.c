@@ -125,7 +125,9 @@ jctl_on_event_handler(conn, packet)
 			return;
 		}
 	}
-	else if (!strcmp(xode_get_name(x), "success")) {
+	else if (!strcmp(xode_get_name(x), "success") ||
+		 !strcmp(xode_get_name(x), "results"))
+	{
 		printf("%s\n", cdata);
 		return;
 	}

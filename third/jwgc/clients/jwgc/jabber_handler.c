@@ -402,6 +402,8 @@ process_iq_result(conn, packet)
 				sub ? sub : "n/a",
 				name ? name : "n/a");
 			update_contact_status(jid, NULL, resource);
+			if (!strcasecmp(jid, jid_bare(conn->user)))
+				fake_own_presence(conn);
 			if (name) {
 				update_nickname(jid, name);
 			}
@@ -525,7 +527,7 @@ process_iq_set(conn, packet)
 	ns = xode_get_attrib(x, "xmlns");
 	if (strcmp(ns, NS_ROSTER) == 0) {
 		xode y;
-		char *jid, *sub, *name, *ask;
+		char *jid, *sub, *name, *ask, *pos, *resource = NULL;
 
 		y = xode_get_tag(x, "item");
 		jid = xode_get_attrib(y, "jid");
@@ -538,16 +540,26 @@ process_iq_set(conn, packet)
 			name ? name : "n/a",
 			ask ? ask : "n/a");
 
+		pos = (char *) strchr(jid, '/');
+		if (pos) {
+			*pos = '\0';
+			resource = pos + 1;
+		}
+
 		if (sub) {
+			if (!jid) {
+				dprintf(dExecution,
+					"No jid specified!\n");
+				return;
+			}
 			if (!strcmp(sub, "remove") || !strcmp(sub, "none")) {
-				if (!jid) {
-					dprintf(dExecution,
-						"No jid specified!\n");
-					return;
-				}
 				remove_from_contact_list(jid);
 				dprintf(dExecution, "Contact %s removed\n", jid);
 				return;
+			} else {
+				update_contact_status(jid, NULL, resource);
+				if (!strcasecmp(jid, jid_bare(conn->user)))
+					fake_own_presence(conn);
 			}
 		}
 	}
@@ -622,4 +634,15 @@ process_iq_error(conn, packet)
 		default:
 			break;
 	}
+}
+
+void
+fake_own_presence(conn)
+	jabconn conn;
+{
+	char *presence = jVars_get(jVarPresence);
+	char *bare = jid_bare(conn->user);
+
+	if (contact_exists(bare))
+		update_contact_status(bare, presence, conn->user->resource);
 }

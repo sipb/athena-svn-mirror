@@ -18,7 +18,7 @@
  *
  */
 
-/* $Id: libjabber_types.h,v 1.1.1.2 2006-03-10 15:35:16 ghudson Exp $ */
+/* $Id: libjabber_types.h,v 1.1.1.3 2006-03-24 16:59:41 ghudson Exp $ */
 
 #ifndef _LIBJABBER_TYPES_H_
 #define _LIBJABBER_TYPES_H_ 1
@@ -39,6 +39,7 @@ typedef struct jid_struct {
 	char			*user;
 	char			*server;
 	char			*full;
+	char			*bare;
 	struct jid_struct	*next;	/* for lists of jids */
 } *jid;
   

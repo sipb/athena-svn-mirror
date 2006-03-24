@@ -1,4 +1,4 @@
-/* $Id: libjwgc.h,v 1.1.1.1 2006-03-10 15:33:01 ghudson Exp $ */
+/* $Id: libjwgc.h,v 1.1.1.2 2006-03-24 16:59:39 ghudson Exp $ */
 
 #ifndef _LIBJWGC_H_
 #define _LIBJWGC_H_ 1
@@ -37,6 +37,7 @@ int update_contact_status(char *jid, char *status, char *resource);
 void update_nickname(char *target, char *nickname);
 void update_group(char *target, char *group);
 void remove_from_contact_list(char *contact);
+int contact_exists(char *jid);
 int test_match(char *matchstr, xode contact, int exactmatch);
 char *find_match(char *searchstr);
 void insert_into_agent_list(char *jid, char *name, char *service, int flags);
