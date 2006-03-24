@@ -1,4 +1,4 @@
-/* $Id: JContact.c,v 1.1.1.1 2006-03-10 15:32:40 ghudson Exp $ */
+/* $Id: JContact.c,v 1.1.1.2 2006-03-24 16:59:39 ghudson Exp $ */
 
 #include "libjwgc.h"
 
@@ -152,11 +152,7 @@ update_contact_status(char *jid, char *status, char *resource)
 
 					curstatus = xode_get_attrib(y,
 								"status");
-					if (curstatus && !status) {
-						xode_hide_attrib(y, "status");
-						ret = 1;
-					}
-					else if (status && (!curstatus ||
+					if (status && (!curstatus ||
 						strcmp(curstatus, status))) {
 						xode_put_attrib(y,
 							"status",
@@ -207,8 +203,7 @@ contact_status_change(jabpacket packet)
 	switch (packet->subtype) {
 		case JABPACKET__AVAILABLE:
 			x = xode_get_tag(packet->x, "show");
-			if (x) {
-				temp = xode_get_data(x);
+			if (x && (temp = xode_get_data(x))) {
 				update_contact_status(from, temp, resource);
 				ret = 1;
 			}
@@ -517,6 +512,22 @@ test_match(matchstr, contact, exactmatch)
 		return 1;
 	}
 
+	return 0;
+}
+
+int
+contact_exists(char *jid)
+{
+	int i;
+	char *cjid;
+
+	/* Try exact jid match */
+	for (i = 0; i < num_contacts; i++) {
+		cjid = xode_get_attrib(contact_list[i], "jid");
+		if (!strcasecmp(jid, cjid)) {
+			return 1;
+		}
+	}
 	return 0;
 }
 

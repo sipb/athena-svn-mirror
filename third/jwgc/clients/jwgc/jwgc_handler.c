@@ -60,7 +60,7 @@ jwg_on_event_handler(jwgconn conn, jwgpacket packet)
 
 		case JWGPACKET_MESSAGE: {
 			char *match, *target, *message, *dontmatch, *encrypt,
-				*encmessage, *type;
+				*encmessage, *type, *me;
 			char retstr[80];
 			xode out;
 
@@ -83,12 +83,11 @@ jwg_on_event_handler(jwgconn conn, jwgpacket packet)
 			}
 
 			dprintf(dExecution, "Target %s\n", target);
+			me = jVars_get(jVarJID);
 			if (dontmatch && !strcmp(dontmatch, "yes")) {
 				match = strdup(target);
 			}
-			else if (strncmp(target,
-					(char *)jVars_get(jVarJID),
-					strlen(target))) {
+			else if (strncmp(target, me, strlen(target))) {
 				match = find_match(target);
 				if (!match) {
 					dprintf(dExecution, "No match\n");
@@ -98,7 +97,7 @@ jwg_on_event_handler(jwgconn conn, jwgpacket packet)
 				}
 			}
 			else {
-				match = strdup(target);
+				match = strdup(me);
 			}
 
 			message = xode_get_data(packet->x);
@@ -142,6 +141,7 @@ jwg_on_event_handler(jwgconn conn, jwgpacket packet)
 			jab_send(jab_c, out);
 
 			sprintf(retstr, "Successfully sent to %.67s.", match);
+			free(match);
 			jwg_servsuccess(conn, retstr);
 		} break;
 

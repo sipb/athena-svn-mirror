@@ -64,6 +64,7 @@ extern time_t jab_connect_time;
 /* jabber_handler.c */
 void jab_on_packet_handler(jabconn conn, jabpacket packet);
 void jab_on_state_handler(jabconn conn, int state);
+void fake_own_presence(jabconn conn);
 
 
 /* jwgc_handler.c */

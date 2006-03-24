@@ -60,6 +60,7 @@ jwgc_change_presence_event_handler(oldval, newval)
 			jab_send(jab_c, out);
 			xode_free(out);
 		}
+		fake_own_presence(jab_c);
 	}
 }
 

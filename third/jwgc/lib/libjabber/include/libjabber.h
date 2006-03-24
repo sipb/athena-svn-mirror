@@ -18,7 +18,7 @@
  *
  */
 
-/* $Id: libjabber.h,v 1.1.1.2 2006-03-10 15:35:16 ghudson Exp $ */
+/* $Id: libjabber.h,v 1.1.1.3 2006-03-24 16:59:41 ghudson Exp $ */
 
 #ifndef _LIBJABBER_H_
 #define _LIBJABBER_H_ 1
@@ -39,8 +39,9 @@ jid	jid_new(xode_pool p, char *idstr);
 void	jid_set(jid id, char *str, int item);
 	/* Individually sets jid components */
 char	*jid_full(jid id);
-	/* Builds a string type=user/resource@server from the jid data */
-jid	jid_user(jid a);
+	/* Builds a string type=user@server/resource from the jid data */
+char	*jid_bare(jid id);
+	/* Builds a string type=user@server from the jid data */
 int	jid_cmp(jid a, jid b);
 	/* Compares two jid's, returns 0 for perfect match */
 int	jid_cmpx(jid a, jid b, int parts);

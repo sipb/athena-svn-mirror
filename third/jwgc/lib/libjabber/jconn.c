@@ -18,7 +18,7 @@
  *
  */
 
-/* $Id: jconn.c,v 1.1.1.2 2006-03-10 15:35:16 ghudson Exp $ */
+/* $Id: jconn.c,v 1.1.1.3 2006-03-24 16:59:41 ghudson Exp $ */
 
 #include "libjabber.h"
 
@@ -478,8 +478,47 @@ jab_poll(jabconn j, int timeout)
 	}
 }
 
+static char *
+get_gss_error(OM_uint32 major, OM_uint32 minor)
+{
+	OM_uint32 maj_stat, min_stat;
+	gss_buffer_desc msg;
+	OM_uint32 msg_ctx;
+	xode_spool s = xode_spool_new();
+
+	msg_ctx = 0;
+	while (1) {
+		maj_stat = gss_display_status(&min_stat, major,
+					      GSS_C_GSS_CODE, GSS_C_NULL_OID,
+					      &msg_ctx, &msg);
+		if (GSS_ERROR(maj_stat))
+			break;
+		xode_spooler(s, "jwgc: GSSAPI: ", msg.value, "\n", s);
+		gss_release_buffer(&min_stat, &msg);
+		if (!msg_ctx)
+			break;
+	}
+
+	msg_ctx = 0;
+	while (1) {
+		maj_stat = gss_display_status(&min_stat, minor,
+					      GSS_C_MECH_CODE, GSS_C_NULL_OID,
+					      &msg_ctx, &msg);
+		if (GSS_ERROR(maj_stat))
+			break;
+		xode_spooler(s, "jwgc: GSSAPI: ", msg.value, "\n", s);
+		if (!msg_ctx)
+			break;
+	}
+
+	if (xode_spool_getlen(s) == 0)
+		xode_spool_add(s, "jwgc: GSSAPI: Unknown error\n");
+
+	return xode_spool_tostr(s);
+}
+
 /* Written by Simon Wilkinson for Gaim; adapted for jwgc. */
-static int
+static char *
 gssapi_step(jabconn j, char *indata, char **outdata) {
 	gss_buffer_t in_token_ptr = NULL;
 	gss_buffer_desc input_token = GSS_C_EMPTY_BUFFER;
@@ -497,16 +536,14 @@ gssapi_step(jabconn j, char *indata, char **outdata) {
 		if (input_token.length == 0) {
 			/* We've received an empty token from the server,
 			 * so we should send an empty one back */
-			*outdata = NULL;
+			*outdata = strdup("");
 		} else {
 			char *response;
 			major = gss_unwrap(&minor, j->gsscontext,
 				   	   &input_token, &output_token, 
 					   NULL, NULL);
-			if (GSS_ERROR(major)) {
-				gss_release_buffer(&minor, &output_token);
-				return 0;
-			}
+			if (GSS_ERROR(major))
+				return get_gss_error(major, minor);
 			gss_release_buffer(&minor, &output_token);
 			input_token.length = strlen(j->user->user) + 4;
 			response = malloc(input_token.length);
@@ -521,6 +558,8 @@ gssapi_step(jabconn j, char *indata, char **outdata) {
 					 0, GSS_C_QOP_DEFAULT,
 					 &input_token, NULL,
 					 &output_token);
+			if (GSS_ERROR(major))
+				return get_gss_error(major, minor);
 
 			*outdata = base64_encode(output_token.value, 
 						 output_token.length);
@@ -549,10 +588,8 @@ gssapi_step(jabconn j, char *indata, char **outdata) {
 		if (input_token.value)
 			free(input_token.value);
 
-		if (GSS_ERROR(major)) {
-			gss_release_buffer(&minor, &output_token);
-			return 0;
-		}
+		if (GSS_ERROR(major))
+			return get_gss_error(major, minor);
 
 		if (major == GSS_S_COMPLETE)
 			j->gsscomplete = 1;
@@ -566,7 +603,7 @@ gssapi_step(jabconn j, char *indata, char **outdata) {
 		gss_release_buffer(&minor, &output_token);
 	}
 
-	return 1;
+	return NULL;
 }
 
 /*
@@ -576,21 +613,21 @@ gssapi_step(jabconn j, char *indata, char **outdata) {
  *      j -- connection
  *
  *  returns
- *      id of the iq packet
+ *      error message (with newlines), or NULL if auth succeeds
+ *      (error message should not be freed; assuming caller will exit)
  */
 char *
 jab_auth(jabconn j)
 {
 	xode x, y, z;
-	char *outdata, *t;
+	char *outdata, *t, *err;
 	gss_buffer_desc server_desc, output_token;
 	OM_uint32 major, minor;
 	gss_OID_desc gss_c_nt_hostbased_service =
 		{ 10, (void *) "\x2a\x86\x48\x86\xf7\x12\x01\x02\x01\x04" };
-	int status;
 
 	if (!j)
-		return (NULL);
+		return "jwgc: Internal error: invalid connection\n";
 
 	server_desc.value = malloc(strlen(j->server) + 6);
 	sprintf(server_desc.value, "xmpp@%s", j->server);
@@ -599,15 +636,16 @@ jab_auth(jabconn j)
 				&gss_c_nt_hostbased_service, &j->gssserver);
 	free(server_desc.value);
 	if (GSS_ERROR(major))
-		return NULL;
+		return get_gss_error(major, minor);
 
 	j->gsscontext = GSS_C_NO_CONTEXT;
 	j->gsstoken = NULL;
 	j->gsscomplete = 0;
 	j->gsssuccess = 0;
 
-	if (!gssapi_step(j, NULL, &outdata))
-		return NULL;
+	err = gssapi_step(j, NULL, &outdata);
+	if (err)
+		return err;
 
 	/* Kick off the authentication. */
 	x = xode_new("auth");
@@ -622,12 +660,12 @@ jab_auth(jabconn j)
 	jab_recv_packet(j, 1);
 	while (j->gsssuccess == 0) {
 		if (!j->gsstoken)
-			return NULL;
-		status = gssapi_step(j, j->gsstoken, &outdata);
+			return "jwgc: Unexpected lack of GSSAPI token\n";
+		err = gssapi_step(j, j->gsstoken, &outdata);
+		if (err)
+			return err;
 		free(j->gsstoken);
 		j->gsstoken = NULL;
-		if (!status)
-			return NULL;
 
 		x = xode_new("response");
 		xode_put_attrib(x, "xmlns", NS_SASL);
@@ -637,6 +675,9 @@ jab_auth(jabconn j)
 		xode_free(x);
 		jab_recv_packet(j, 1);
 	}
+
+	if (j->gsssuccess == -1)
+		return "jwgc: GSSAPI authentication failed\n";
 
 	/* The XML stream restarts at this point, so make a new parser. */
 	XML_ParserFree(j->parser);

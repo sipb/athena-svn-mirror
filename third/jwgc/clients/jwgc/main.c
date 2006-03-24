@@ -161,6 +161,8 @@ jwgc_init()
 void 
 jabber_init()
 {
+	char *err;
+
 	jab_reauth = 0;
 	jab_c = jab_new((char *)jVars_get(jVarJID), (char *)jVars_get(jVarServer));
 	if (!jab_c) {
@@ -177,7 +179,11 @@ jabber_init()
 		0
 #endif /* USE_SSL */
 	);
-	jab_auth(jab_c);
+	err = jab_auth(jab_c);
+	if (err) {
+		fputs(err, stderr);
+		exit(1);
+	}
 	if (jab_c->state == JABCONN_STATE_OFF) {
 		fprintf(stderr, "Unable to connect to jabber server.  Retrying in %d seconds.\n", ALARMTIMEOUT);
 		jab_reauth = 1;

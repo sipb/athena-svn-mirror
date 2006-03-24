@@ -145,6 +145,75 @@ convert_nulls_to_newlines(data, length)
 	return (result);
 }
 
+char *get_error_string(x)
+	xode x;
+{
+	xode y;
+	char *temp;
+
+	if ((y = xode_get_tag(x, "text")) && (temp = xode_get_data(y))) {
+		return temp;
+	} else if (xode_get_tag(x, "bad-request")) {
+		return "Bad request";
+	} else if (xode_get_tag(x, "conflict")) {
+		return "Conflict";
+	} else if (xode_get_tag(x, "feature-not-implemented")) {
+		return "Feature not implemented";
+	} else if (xode_get_tag(x, "forbidden")) {
+		return "Forbidden";
+	} else if ((y = xode_get_tag(x, "gone"))) {
+		temp = xode_get_data(y);
+		if (temp) {
+			return xode_spool_str(x->p, "Recipient gone, use ",
+					      temp, x->p);
+		} else {
+			return "Recipient gone";
+		}
+	} else if (xode_get_tag(x, "internal-server-error")) {
+		return "Internal server error";
+	} else if (xode_get_tag(x, "item-not-found")) {
+		return "Item not found";
+	} else if (xode_get_tag(x, "jid-malformed")) {
+		return "Malformed JID";
+	} else if (xode_get_tag(x, "not-acceptable")) {
+		return "Not acceptable";
+	} else if (xode_get_tag(x, "not-allowed")) {
+		return "Not allowed";
+	} else if (xode_get_tag(x, "not-authorized")) {
+		return "Not authorized";
+	} else if (xode_get_tag(x, "payment-required")) {
+		return "Payment required";
+	} else if (xode_get_tag(x, "recipient-unavailable")) {
+		return "Recipient temporarily unavailable";
+	} else if ((y = xode_get_tag(x, "redirect"))) {
+		temp = xode_get_data(y);
+		if (temp) {
+			return xode_spool_str(x->p, "Redirect to: ", temp,
+					      x->p);
+		} else {
+			return "Redirect";
+		}
+	} else if (y = xode_get_tag(x, "registration-required")) {
+		return "Registration required";
+	} else if (y = xode_get_tag(x, "remote-server-not-found")) {
+		return "Remote server not found";
+	} else if (y = xode_get_tag(x, "remote-server-timeout")) {
+		return "Remote server timed out";
+	} else if (y = xode_get_tag(x, "resource-constraint")) {
+		return "Resource constraint";
+	} else if (y = xode_get_tag(x, "service-unavailable")) {
+		return "Service unavailable";
+	} else if (y = xode_get_tag(x, "subscription-required")) {
+		return "Subscription required";
+	} else if (y = xode_get_tag(x, "undefined-condition")) {
+		return "Undefined condition";
+	} else if (y = xode_get_tag(x, "unexpected-request")) {
+		return "Unexpected request";
+	} else {
+		return "Unknown error condition";
+	}
+}
+
 /*
  *    char *decode_notice(JNotice_t *notice)
  *        Modifies: various description language variables
@@ -285,8 +354,7 @@ decode_notice(notice)
 
 	x = xode_get_tag(notice->x, "error");
 	if (x) {
-		temp = xode_get_data(x);
-		var_set_variable("error", temp);
+		var_set_variable("error", get_error_string(x));
 	}
 	else {
 		var_set_variable("error", "");

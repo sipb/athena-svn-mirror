@@ -39,7 +39,7 @@
  * --------------------------------------------------------------------------
  */
 
-/* $Id: jid.c,v 1.1.1.1 2006-03-10 15:32:41 ghudson Exp $ */
+/* $Id: jid.c,v 1.1.1.2 2006-03-24 16:59:41 ghudson Exp $ */
 
 #include "libjabber.h"
 
@@ -184,6 +184,29 @@ jid_full(jid id)
 
 	id->full = xode_spool_tostr(s);
 	return id->full;
+}
+
+char *
+jid_bare(jid id)
+{
+	xode_spool s;
+
+	if (id == NULL)
+		return NULL;
+
+	/* use cached copy */
+	if (id->bare != NULL)
+		return id->bare;
+
+	s = xode_spool_newfrompool(id->p);
+
+	if (id->user != NULL)
+		xode_spooler(s, id->user, "@", s);
+
+	xode_spool_add(s, id->server);
+
+	id->bare = xode_spool_tostr(s);
+	return id->bare;
 }
 
 /*
@@ -335,20 +358,4 @@ jid_nodescan(jid id, xode x)
 	xode_pool_free(p);
 
 	return cur;
-}
-
-jid 
-jid_user(jid a)
-{
-	jid ret;
-
-	if (a == NULL || a->resource == NULL)
-		return a;
-
-	ret = xode_pool_malloco(a->p, sizeof(struct jid_struct));
-	ret->p = a->p;
-	ret->user = a->user;
-	ret->server = a->server;
-
-	return ret;
 }
