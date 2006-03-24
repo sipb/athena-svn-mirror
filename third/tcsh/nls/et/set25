@@ -1,6 +1,0 @@
-$ $Id: set25,v 1.1.1.1 2005-06-03 14:38:09 ghudson Exp $
-$ tc.sig.c
-$set 25 
-1 our wait %d\n
-2 viga: bsd_signal(%d) pole signaal\n
-3 viga: bsd_signal(%d) - sigaction ebaõnnestus, errno = %d\n
