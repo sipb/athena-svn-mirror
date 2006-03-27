@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# Add SUNWlom packages.
-echo "SUNWlomu"						>> $PACKAGES
-echo "SUNWlomr"						>> $PACKAGES
-echo "SUNWlomm"						>> $PACKAGES
-
-echo "/etc/mail/sendmail.cf"				>> $CONFCHG

@@ -1,7 +1,0 @@
-Name: athena-gnome-speech
-Summary: GNOME text-to-speech component, for Athena
-License: LGPL
-Group: User Interface/Desktops
-
-%description
-A GNOME component for producing text-to-speech output.

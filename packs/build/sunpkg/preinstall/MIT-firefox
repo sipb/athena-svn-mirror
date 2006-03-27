@@ -1,3 +1,0 @@
-#!/bin/sh
-
-rm -rf $PKG_INSTALL_ROOT/usr/athena/lib/firefox/components

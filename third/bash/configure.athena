@@ -1,1 +1,0 @@
-CPPFLAGS="-I/usr/athena/include -DHESIOD" LIBS="-lhesiod -lresolv" ./configure --bindir=/bin/athena --with-afs
