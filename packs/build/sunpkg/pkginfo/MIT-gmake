@@ -1,3 +1,0 @@
-PKG=MIT-gmake
-NAME=GNU Make as modified for Athena workstations.
-DESC=A modified version of the normal GNU make utility, for use on Athena workstations.  Athena workstations should normally have this package installed.

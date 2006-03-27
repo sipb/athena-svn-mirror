@@ -1,3 +1,0 @@
-PKG=MIT-libao
-NAME=Cross-platform audio output library, for Athena
-DESC=Libao is a cross-platform audio output library.

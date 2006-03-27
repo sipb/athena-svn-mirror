@@ -1,8 +1,0 @@
-case $OS in
-solaris)
-	cc=$sprobin/cc
-	;;
-*)
-	cc=cc
-	;;
-esac
