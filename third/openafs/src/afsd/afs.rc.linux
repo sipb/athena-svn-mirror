@@ -117,7 +117,7 @@ choose_client() {
 
 	# Kernels compiled for different machine types may have
 	# different symbol versions.  Yay Linux.
-	MACHINE=`rpm -q --queryformat='%{ARCH}\n' $KPKG-$VERSION | tail -n 1`
+	MACHINE=`rpm -q --queryformat='%{ARCH}\n' $KPKG-$KERNEL_VERSION | tail -n 1`
 	case $MACHINE in
         i?86) 
               ;;
