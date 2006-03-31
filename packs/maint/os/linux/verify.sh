@@ -85,93 +85,53 @@ for failure in $failures; do
 
     # These are all config files that we handle below in STEP 3.
     /etc/passwd | \
-    /etc/shadow | \
     /etc/group | \
-    /etc/services  | \
     /etc/syslog.conf | \
     /etc/inittab | \
     /etc/X11/prefdm | \
-    /etc/X11/fs/config | \
-    /etc/info-dir | \
     /usr/X11R6/lib/X11/app-defaults/XTerm | \
     /etc/xinetd.conf | \
     /etc/xinetd.d/* | \
     /etc/athena/rc.conf | \
     /etc/athena/athinfo.access | \
     /etc/athena/local-lockers.conf | \
-    /etc/conf.linuxconf | \
     /etc/man.config | \
     /etc/krb5.conf )
         ;;
 
     # These are managed by other parts of the system which work to make
     # sure they are correct.
-    /etc/motd | \
     /usr/vice/etc/CellAlias | \
     /usr/vice/etc/CellServDB | \
-    /usr/lib/umb-scheme/slibcat | \
     /etc/sysconfig/openafs | \
     /usr/vice/etc/cacheinfo | \
-    /usr/vice/cache | \
-    /boot/kernel.h | \
-    /var/spool/at/.SEQ | \
     /etc/DIR_COLORS | \
     /etc/DIR_COLORS.xterm | \
-    /etc/X11/XF86Config-4 | \
-    /var/lib/rpm/__db.* | \
-    /etc/printcap | \
     /etc/athena/ifplugd/ifplugd.conf | \
     /etc/xml/catalog | \
     /usr/share/sgml/docbook/xmlcatalog | \
     /usr/share/application-registry/gnome-vfs.applications | \
     /usr/share/mime-info/gnome-vfs.keys | \
-    /usr/X11R6/lib/X11/system.mwmrc )
+    /usr/X11R6/lib/X11/system.mwmrc | \
+    /etc/rc.local )
         ;;
 
     # These are all files that we simply tolerate changes in without
-    # comment.  They probably shouldn't be generating conflicts, but
-    # it's easier to just ignore theme here than to fix their rpms.
-    /etc/X11/fs | \
-    /dev/* | \
-    /var/log/* | \
-    /var/state/* | \
-    /usr/vice/cache | \
+    # comment, most frequently because they're installed by one rpm and
+    # subsequently modified by post-install scripts.  They probably
+    # shouldn't be generating conflicts, but it's easier to just ignore
+    # theme here than to fix their rpms.
     /usr/X11R6/lib/X11/fonts/*/fonts.dir | \
-    /usr/X11R6/lib/X11/fonts/*/encodings.dir | \
-    /usr/share/fonts/default/Type1/fonts.dir | \
-    /usr/share/fonts/default/Type1/fonts.scale | \
     /usr/share/fonts/KOI8-R/*/fonts.dir | \
-    /etc/bashrc | \
-    /etc/profile | \
-    /etc/csh.cshrc | \
-    /etc/csh.login | \
-    /etc/filesystems | \
-    /etc/X11/XftConfig | \
-    /etc/skel/.bash* | \
-    /etc/pwdb.conf | \
-    /usr/share/ssl/openssl.cnf | \
-    /usr/lib/libglide3.so.3 | \
-    /var/lock | \
-    /usr/sbin/lockdev | \
-    /etc/rc.d/rc.local | \
-    /etc/sysconfig/apmd | \
-    /etc/sysconfig/arpwatch | \
-    /etc/sysconfig/init | \
-    /etc/sysconfig/kudzu | \
-    /etc/sysconfig/syslog | \
-    /etc/sysctl.conf | \
-    /etc/pcmcia/*.opts | \
-    /usr/lib/mc/bin/cons.saver | \
     /etc/pam.d/system-auth | \
-    /etc/issue | \
-    /etc/issue.net | \
-    /etc/X11/xinit/xinitrc.d/xinput | \
-    /etc/logrotate.conf | \
     /etc/bonobo-activation/bonobo-activation-config.xml | \
     /etc/cups | \
     /var/spool/cups/tmp | \
     /etc/aliases | \
-    /usr/java/j2sdk1.4.2_06/* )
+    /etc/mailcap | \
+    /etc/mime.types | \
+    /usr/java/jdk1.5.0_06/*.pack | \
+    /dev/MAKEDEV )
 	;;
 
     *)
