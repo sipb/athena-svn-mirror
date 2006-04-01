@@ -131,7 +131,12 @@ for failure in $failures; do
     /etc/mailcap | \
     /etc/mime.types | \
     /usr/java/jdk1.5.0_06/*.pack | \
-    /dev/MAKEDEV )
+    /dev/MAKEDEV | \
+    /usr/lib/rpm/*-linux | \
+    /etc/logrotate.d/rpm | \
+    /usr/lib/rpm/i386-linux/macros | \
+    /etc/skel/.emacs | \
+    /etc/cron.daily/rpm )
 	;;
 
     *)
