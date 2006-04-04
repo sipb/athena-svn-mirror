@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "119689-07"					>> $PATCHES
+echo "122032-01"					>> $PATCHES
