@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.37 2005-05-31 14:13:14 rbasch Exp $
+# $Id: bashrc,v 1.38 2006-04-10 22:45:41 rbasch Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -119,15 +119,12 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	# pathnames being printed when /mit/<user> is a symlink to a
 	# path within AFS.
 
-	# Since this code is being invoked only at the beginning of
-	# the session, and prior to the inclusion of any of the user's
-	# other dotfiles, we can assume that the current directory is
-	# the user's home directory.
-
-	x=`/bin/pwd`
+	x=`(cd && /bin/pwd) 2>/dev/null`
 	if [ -n "$x" ]; then
 		export HOME=$x
-		cd "$HOME"
+		if [ "$x" = "`/bin/pwd`" ]; then
+			cd "$HOME"
+		fi
 	fi
 	unset x
 
