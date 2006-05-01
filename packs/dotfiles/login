@@ -1,5 +1,5 @@
 # Prototype global .login file
-# $Id: login,v 1.13 2004-10-22 18:31:12 ghudson Exp $
+# $Id: login,v 1.14 2006-05-01 21:03:33 ghudson Exp $
 
 # This file is sourced by default user file ~/.login
 
@@ -78,24 +78,6 @@ if (("$term" == switch) || ("$term" == network) || ("$term" == dialup) \
     if (! $?DEF_TERM) setenv DEF_TERM vt100
     set noglob; eval `tset -s -I -Q "?${DEF_TERM}"` || unset noglob
 
-endif
-
-
-# If the login is on an X display but the DISPLAY variable has not 
-# been set, ask the user what the DISPLAY should be (e.g., rlogin)
-
-if (("$term" =~ xterm*) && (! $?DISPLAY)) then
-	echo -n "What DISPLAY are you using [default: none]? "
-	set response = ($<)
-	if ("$response" != "") then
-		if ($response =~ *:*) then
-			echo "Setting DISPLAY to $response"
-			setenv DISPLAY "$response"
-		else
-			echo "Setting DISPLAY to ${response}:0"
-			setenv DISPLAY "${response}:0"
-		endif
-	endif
 endif
 
 
