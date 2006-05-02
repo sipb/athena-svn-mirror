@@ -157,10 +157,14 @@ jabber_auth_gssapi_init() {
 	tried = TRUE;
 
 	for (i = 0; libnames[i]; i++) {
+#ifdef _WIN32
+		gssapiModule = g_module_open(libnames[i], G_MODULE_BIND_LAZY);
+#else
 		char *name = g_module_build_path(NULL, libnames[i]);
 
 		gssapiModule = g_module_open(name, G_MODULE_BIND_LAZY);
 		g_free(name);
+#endif
 		if (gssapiModule)
 			break;
 	}
@@ -319,7 +323,9 @@ jabber_auth_gssapi_start(JabberStream *js, char **outdata) {
 	if (!jabber_auth_gssapi_init())
 		return FALSE;
 
-	g_assert(js->gss == NULL);
+	/* If js->gss is initialized, then we tried before and failed. */
+	if (js->gss != NULL)
+		return FALSE;
 
 	js->gss = g_new0(JabberGssapi,1);
 	domain = gaim_account_get_string(js->gc->account, "connect_server",
