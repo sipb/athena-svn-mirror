@@ -242,12 +242,21 @@ jabber_recv_cb_ssl(gpointer data, GaimSslConnection *gsc,
 		gaim_ssl_close(gsc);
 		return;
 	}
-
+#ifdef _WIN32 /* Haven't gotten non-blocking TLS working on win32 */
+	if((len = gaim_ssl_read(gsc, buf, sizeof(buf) - 1)) > 0) {
+		buf[len] = '\0';
+		gaim_debug(GAIM_DEBUG_INFO, "jabber", "Recv (ssl)(%d): %s\n", len, buf);
+		jabber_parser_process(js, buf, len);
+	} else {
+		gaim_connection_error(gc, _("Read Error"));
+	}
+#else
 	while((len = gaim_ssl_read(gsc, buf, sizeof(buf) - 1)) > 0) {
 		buf[len] = '\0';
 		gaim_debug(GAIM_DEBUG_INFO, "jabber", "Recv (ssl)(%d): %s\n", len, buf);
 		jabber_parser_process(js, buf, len);
 	}
+#endif
 }
 
 static void
@@ -289,7 +298,9 @@ jabber_login_callback_ssl(gpointer data, GaimSslConnection *gsc,
 
 	jabber_stream_set_state(js, JABBER_STREAM_INITIALIZING);
 	gaim_ssl_input_add(gsc, jabber_recv_cb_ssl, gc);
+#ifndef _WIN32 /* Doesn't seem to work there, not sure why */
 	gaim_ssl_nonblocking_read(gsc, TRUE);
+#endif
 }
 
 
