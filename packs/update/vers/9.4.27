@@ -2,3 +2,5 @@
 
 echo "119689-07"					>> $PATCHES
 echo "122032-01"					>> $PATCHES
+
+echo "/platform/SUNW,UltraAX-i2/kernel/drv/sparcv9/dmfe" >> $DEADFILES
