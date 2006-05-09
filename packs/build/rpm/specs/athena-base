@@ -3,6 +3,8 @@ Summary: A few base files needed by any Athena package
 License: MIT
 Group: System Environment/Base
 
+Requires: shadow-utils
+
 %description
 A few base files needed by any Athena package
 
