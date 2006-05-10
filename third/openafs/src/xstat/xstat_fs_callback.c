@@ -24,9 +24,13 @@
 
 #include <afsconfig.h>
 #include <afs/param.h>
+#ifdef AFS_NT40_ENV
+#include <windows.h>
+#include <rpc.h>
+#endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/xstat/xstat_fs_callback.c,v 1.1.1.4 2005-03-10 20:39:57 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/xstat/xstat_fs_callback.c,v 1.1.1.5 2006-05-10 19:42:39 zacheiss Exp $");
 
 #include <errno.h>
 #include <stdio.h>		/*Standard I/O stuff */
@@ -54,7 +58,11 @@ init_afs_cb()
 {
     int count;
 
+#ifdef AFS_NT40_ENV
+    UuidCreate((UUID *)&afs_cb_interface.uuid);
+#else
     afs_uuid_create(&afs_cb_interface.uuid);
+#endif
     count = rx_getAllAddr(&afs_cb_interface.addr_in, AFS_MAX_INTERFACE_ADDR);
     if (count <= 0)
 	afs_cb_interface.numberOfInterfaces = 0;

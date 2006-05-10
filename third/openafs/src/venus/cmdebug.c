@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/cmdebug.c,v 1.1.1.4 2006-03-06 20:43:31 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/cmdebug.c,v 1.1.1.5 2006-05-10 19:43:41 zacheiss Exp $");
 
 
 #include <sys/types.h>
@@ -399,10 +399,15 @@ PrintCacheEntries64(struct rx_connection *aconn, int aint32)
 	    printf("\n");
 	}
 #ifdef AFS_64BIT_ENV
-	printf("    %012I64d bytes  DV %012d  refcnt %05d\n", centry.Length,
+#ifdef AFS_NT40_ENV
+	printf("    %12I64d bytes  DV %12d  refcnt %5d\n", centry.Length,
 	       centry.DataVersion, centry.refCount);
 #else
-	printf("    %012d bytes  DV %012d  refcnt %05d\n", centry.Length,
+	printf("    %12llu bytes  DV %12d  refcnt %5d\n", centry.Length,
+	       centry.DataVersion, centry.refCount);
+#endif
+#else
+	printf("    %12d bytes  DV %12d  refcnt %5d\n", centry.Length,
 	       centry.DataVersion, centry.refCount);
 #endif
 	printf("    callback %08x\texpires %u\n", centry.callback,

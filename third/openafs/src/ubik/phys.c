@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ubik/phys.c,v 1.1.1.2 2005-03-10 20:39:27 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ubik/phys.c,v 1.1.1.3 2006-05-10 19:43:09 zacheiss Exp $");
 
 #include <sys/types.h>
 #ifdef AFS_NT40_ENV
@@ -276,7 +276,7 @@ uphys_setlabel(register struct ubik_dbase *adbase, afs_int32 afile,
     thdr.version.epoch = htonl(aversion->epoch);
     thdr.version.counter = htonl(aversion->counter);
     thdr.magic = htonl(UBIK_MAGIC);
-    thdr.size = htonl(HDRSIZE);
+    thdr.size = htons(HDRSIZE);
     code = write(fd, &thdr, sizeof(thdr));
     fsync(fd);			/* preserve over crash */
     uphys_close(fd);

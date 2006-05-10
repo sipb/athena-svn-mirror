@@ -1,10 +1,10 @@
-/* $Id: ubik.c,v 1.1.1.2 2005-03-10 20:43:54 zacheiss Exp $ */
+/* $Id: ubik.c,v 1.1.1.3 2006-05-10 19:42:57 zacheiss Exp $ */
 
 #include <afsconfig.h>
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ptserver/ubik.c,v 1.1.1.2 2005-03-10 20:43:54 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ptserver/ubik.c,v 1.1.1.3 2006-05-10 19:42:57 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -46,7 +46,7 @@ ubik_BeginTrans(register struct ubik_dbase *dbase, afs_int32 transMode,
 	thdr.version.epoch = htonl(2);
 	thdr.version.counter = htonl(0);
 	thdr.magic = htonl(UBIK_MAGIC);
-	thdr.size = htonl(HDRSIZE);
+	thdr.size = htons(HDRSIZE);
 	lseek(dbase_fd, 0, 0);
 	write(dbase_fd, &thdr, sizeof(thdr));
 	fsync(dbase_fd);

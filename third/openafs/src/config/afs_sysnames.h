@@ -60,6 +60,8 @@
 #define SYS_NAME_ID_ppc_darwin_70        507
 #define SYS_NAME_ID_ppc_darwin_80        508
 #define SYS_NAME_ID_x86_darwin_80        509
+#define SYS_NAME_ID_ppc_darwin_90        510
+#define SYS_NAME_ID_x86_darwin_90        511
 
 #define SYS_NAME_ID_next_mach20		 601
 #define SYS_NAME_ID_next_mach30		 602
@@ -157,6 +159,7 @@
 #define SYS_NAME_ID_s390_linux2         1900
 #define SYS_NAME_ID_s390_linux22        1901
 #define SYS_NAME_ID_s390_linux24        1902
+#define SYS_NAME_ID_s390_linux26        1907
 #define SYS_NAME_ID_s390x_linux2         1903
 #define SYS_NAME_ID_s390x_linux22        1904
 #define SYS_NAME_ID_s390x_linux24        1905

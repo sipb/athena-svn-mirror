@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/log/tokens.c,v 1.1.1.3 2005-08-02 21:14:46 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/log/tokens.c,v 1.1.1.4 2006-05-10 19:43:29 zacheiss Exp $");
 
 #include <stdio.h>
 #ifdef	AFS_AIX32_ENV
@@ -54,7 +54,7 @@ main(int argc, char **argv)
     time_t current_time;	/*Current time of day */
     time_t tokenExpireTime;	/*When token expires */
     char *expireString;		/*Char string of expiration time */
-    char UserName[16];		/*Printable user name */
+    char UserName[MAXKTCNAMELEN * 2 + 2]; /*Printable user name */
     struct ktc_principal serviceName, clientName;	/* service name for ticket */
     struct ktc_token token;	/* the token we're printing */
 

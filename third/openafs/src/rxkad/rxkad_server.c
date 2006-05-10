@@ -15,11 +15,11 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_server.c,v 1.1.1.6 2006-03-06 20:44:43 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_server.c,v 1.1.1.7 2006-05-10 19:44:11 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
-#if defined(AFS_AIX_ENV) || defined(AFS_AUX_ENV) || defined(AFS_SUN5_ENV) 
+#if (defined(AFS_AIX_ENV) && defined(KERNEL) && !defined(UKERNEL)) || defined(AFS_AUX_ENV) || defined(AFS_SUN5_ENV) 
 #include <sys/systm.h>
 #endif
 #include <time.h>

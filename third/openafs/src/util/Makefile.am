@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1.1.1 2002-01-31 21:48:01 zacheiss Exp $
+# $Id: Makefile.am,v 1.1.1.2 2006-05-10 19:43:13 zacheiss Exp $
 
 include $(top_srcdir)/Makefile.am.common
 
@@ -27,5 +27,6 @@ libutil_a_SOURCES =  	\
 	flipbase64.c	\
 	afs_atomlist.c	\
 	afs_lhash.c	\
-	snprintf.c
+	snprintf.c	\
+	fstab.c
 

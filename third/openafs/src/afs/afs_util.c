@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_util.c,v 1.1.1.5 2006-03-06 20:41:42 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_util.c,v 1.1.1.6 2006-05-10 19:42:41 zacheiss Exp $");
 
 #include "afs/stds.h"
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
@@ -262,8 +262,8 @@ afs_CheckLocks(void)
     register int i;
 
     afs_warn("Looking for locked data structures.\n");
-    afs_warn("conn %x, volume %x, user %x, cell %x, server %x\n", afs_xconn,
-	     afs_xvolume, afs_xuser, afs_xcell, afs_xserver);
+    afs_warn("conn %lx, volume %lx, user %lx, cell %lx, server %lx\n", &afs_xconn,
+	     &afs_xvolume, &afs_xuser, &afs_xcell, &afs_xserver);
     {
 	register struct vcache *tvc;
 	AFS_STATCNT(afs_CheckLocks);
