@@ -29,7 +29,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.1.1.8 2006-03-06 20:44:48 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.1.1.9 2006-05-10 19:43:59 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -5950,6 +5950,36 @@ SRXAFS_GetXStats(struct rx_call *a_call, afs_int32 a_clientVersionNum,
 #endif
 	break;
 
+    case AFS_XSTATSCOLL_CBSTATS:
+	afs_perfstats.numPerfCalls++;
+
+	dataBytes = sizeof(struct cbcounters);
+	dataBuffP = (afs_int32 *) malloc(dataBytes);
+	{
+	    extern struct cbcounters cbstuff;
+	    dataBuffP[0]=cbstuff.DeleteFiles;
+	    dataBuffP[1]=cbstuff.DeleteCallBacks;
+	    dataBuffP[2]=cbstuff.BreakCallBacks;
+	    dataBuffP[3]=cbstuff.AddCallBacks;
+	    dataBuffP[4]=cbstuff.GotSomeSpaces;
+	    dataBuffP[5]=cbstuff.DeleteAllCallBacks;
+	    dataBuffP[6]=cbstuff.nFEs;
+	    dataBuffP[7]=cbstuff.nCBs;
+	    dataBuffP[8]=cbstuff.nblks;
+	    dataBuffP[9]=cbstuff.CBsTimedOut;
+	    dataBuffP[10]=cbstuff.nbreakers;
+	    dataBuffP[11]=cbstuff.GSS1;
+	    dataBuffP[12]=cbstuff.GSS2;
+	    dataBuffP[13]=cbstuff.GSS3;
+	    dataBuffP[14]=cbstuff.GSS4;
+	    dataBuffP[15]=cbstuff.GSS5;
+	}
+
+	a_dataP->AFS_CollData_len = dataBytes >> 2;
+	a_dataP->AFS_CollData_val = dataBuffP;
+	break;
+
+
     default:
 	/*
 	 * Illegal collection number.
@@ -6121,56 +6151,25 @@ SRXAFS_GetCapabilities(struct rx_call * acall, Capabilities * capabilities)
     struct host *thost;
     afs_int32 *dataBuffP;
     afs_int32 dataBytes;
-#if FS_STATS_DETAILED
-    struct fs_stats_opTimingData *opP;	/* Ptr to this op's timing struct */
-    struct timeval opStartTime, opStopTime;	/* Start/stop times for RPC op */
-    struct timeval elapsedTime;	/* Transfer time */
 
-    /*
-     * Set our stats pointer, remember when the RPC operation started, and
-     * tally the operation.
-     */
-    opP = &(afs_FullPerfStats.det.rpcOpTimes[FS_STATS_RPCIDX_GETCAPABILITIES]);
     FS_LOCK;
-    (opP->numOps)++;
+    AFSCallStats.GetCapabilities++, AFSCallStats.TotalCalls++;
+    afs_FullPerfStats.overall.fs_nGetCaps++;
     FS_UNLOCK;
-    TM_GetTimeOfDay(&opStartTime, 0);
-#endif /* FS_STATS_DETAILED */
+    ViceLog(2, ("SAFS_GetCapabilties\n"));
 
     if ((code = CallPreamble(acall, NOTACTIVECALL, &tcon, &thost)))
 	goto Bad_GetCaps;
 
-    FS_LOCK;
-    AFSCallStats.GetCapabilities++, AFSCallStats.TotalCalls++;
-    FS_UNLOCK;
     dataBytes = 1 * sizeof(afs_int32);
     dataBuffP = (afs_int32 *) malloc(dataBytes);
     dataBuffP[0] = CAPABILITY_ERRORTRANS;
     capabilities->Capabilities_len = dataBytes / sizeof(afs_int32);
     capabilities->Capabilities_val = dataBuffP;
 
-    ViceLog(2, ("SAFS_GetCapabilties\n"));
-
   Bad_GetCaps:
     code = CallPostamble(tcon, code, thost);
 
-#if FS_STATS_DETAILED
-    TM_GetTimeOfDay(&opStopTime, 0);
-    fs_stats_GetDiff(elapsedTime, opStartTime, opStopTime);
-    if (code == 0) {
-	FS_LOCK;
-	(opP->numSuccesses)++;
-	fs_stats_AddTo((opP->sumTime), elapsedTime);
-	fs_stats_SquareAddTo((opP->sqrTime), elapsedTime);
-	if (fs_stats_TimeLessThan(elapsedTime, (opP->minTime))) {
-	    fs_stats_TimeAssign((opP->minTime), elapsedTime);
-	}
-	if (fs_stats_TimeGreaterThan(elapsedTime, (opP->maxTime))) {
-	    fs_stats_TimeAssign((opP->maxTime), elapsedTime);
-	}
-	FS_UNLOCK;
-    }
-#endif /* FS_STATS_DETAILED */
     return 0;
 }
 
@@ -7473,7 +7472,7 @@ SRXAFS_CallBackRxConnAddr (struct rx_call * acall, afs_int32 *addr)
     Error errorCode = 0;
     struct host *thost;
     struct client *tclient;
-    struct client *tcallhost;
+    struct host *tcallhost;
     static struct rx_securityClass *sc = 0;
     int i,j;
     struct rx_connection *tcon;

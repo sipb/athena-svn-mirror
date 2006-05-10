@@ -1,5 +1,5 @@
 /* 
- * $Id: aklog.h,v 1.1.1.2 2005-08-02 21:14:08 zacheiss Exp $
+ * $Id: aklog.h,v 1.1.1.3 2006-05-10 19:43:57 zacheiss Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
@@ -9,7 +9,7 @@
 #define __AKLOG_H__
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_aklog_h = "$Id: aklog.h,v 1.1.1.2 2005-08-02 21:14:08 zacheiss Exp $";
+static char *rcsid_aklog_h = "$Id: aklog.h,v 1.1.1.3 2006-05-10 19:43:57 zacheiss Exp $";
 #endif /* lint || SABER */
 
 #include <krb5.h>
@@ -54,7 +54,7 @@ void aklog ARGS((int, char *[]));
 struct ktext {
     unsigned int length;
     unsigned char dat[MAX_KTXT_LEN];
-    u_int32_t mbz;
+    afs_uint32 mbz;
 };
 
 struct credentials {

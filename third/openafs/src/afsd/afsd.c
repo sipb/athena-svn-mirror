@@ -58,7 +58,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.1.1.9 2006-03-06 20:42:59 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.1.1.10 2006-05-10 19:43:37 zacheiss Exp $");
 
 #define VFS 1
 
@@ -1069,6 +1069,10 @@ CheckCacheBaseDir(char *dir)
 	    return "cannot use reiserfs as cache partition";
 	} else if  (statfsbuf.f_type == 0x58465342) { /* XFS_SUPER_MAGIC */
 	    return "cannot use xfs as cache partition";
+	} else if (statfsbuf.f_type == 0x01021994) {    /* TMPFS_SUPER_MAGIC */
+            return "cannot use tmpfs as cache partition";
+        } else if (statfsbuf.f_type != 0xEF53) {
+            return "must use ext2 or ext3 for cache partition";
 	}
     }
 #endif
@@ -1719,7 +1723,12 @@ mainproc(struct cmd_syndesc *as, char *arock)
     vFilePtr = fullpn_VFile + strlen(fullpn_VFile);
 
     if  (!(cacheFlags & AFSCALL_INIT_MEMCACHE) && (fsTypeMsg = CheckCacheBaseDir(cacheBaseDir))) {
-	printf("%s: WARNING: Cache dir check failed (%s)\n", rn, fsTypeMsg);
+#ifdef AFS_SUN5_ENV
+        printf("%s: WARNING: Cache dir check failed (%s)\n", rn, fsTypeMsg);
+#else
+	printf("%s: ERROR: Cache dir check failed (%s)\n", rn, fsTypeMsg);
+	exit(1);
+#endif
     }
 #if 0
     fputs(AFS_GOVERNMENT_MESSAGE, stdout);

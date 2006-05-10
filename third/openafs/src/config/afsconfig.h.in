@@ -143,6 +143,9 @@
 /* Define if you have the <kerberosIV/krb.h> header file.  */
 #undef HAVE_KERBEROSIV_KRB_H
 
+/* Define if you have the <kerberosV/heim_err.h> header file.  */
+#undef HAVE_KERBEROSV_HEIM_ERR_H
+
 /* Define if you have the <malloc.h> header file.  */
 #undef HAVE_MALLOC_H
 
@@ -337,6 +340,9 @@
 
 /* define if you struct inode has i_security */
 #undef STRUCT_INODE_HAS_I_SECURITY
+
+/* define if you struct inode has i_mutex */
+#undef STRUCT_INODE_HAS_I_MUTEX
 
 /* define if you struct inode has i_sb_list */
 #undef STRUCT_INODE_HAS_I_SB_LIST

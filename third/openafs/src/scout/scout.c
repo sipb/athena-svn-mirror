@@ -15,7 +15,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/scout/scout.c,v 1.1.1.3 2005-03-10 20:39:15 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/scout/scout.c,v 1.1.1.4 2006-05-10 19:43:04 zacheiss Exp $");
 
 #undef	IN
 #ifdef	AFS_AIX32_ENV
@@ -1765,7 +1765,11 @@ execute_scout(a_numservers, a_srvname, a_pkg)
 	    return (-1);
 	}
 	memcpy(&(curr_skt->sin_addr.s_addr), he->h_addr, 4);
+#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+	curr_skt->sin_family = AF_INET;		/*Internet family */
+#else
 	curr_skt->sin_family = htons(AF_INET);	/*Internet family */
+#endif
 	curr_skt->sin_port = htons(7000);	/*FileServer port */
 
 	/*

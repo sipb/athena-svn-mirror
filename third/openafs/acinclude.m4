@@ -392,6 +392,12 @@ else
 		i386-apple-darwin8.*)
 			AFS_SYSNAME="x86_darwin_80"
 			;;
+		powerpc-apple-darwin9.*)
+			AFS_SYSNAME="ppc_darwin_90"
+			;;
+		i386-apple-darwin9.*)
+			AFS_SYSNAME="x86_darwin_90"
+			;;
 		sparc-sun-solaris2.5*)
 			AFS_SYSNAME="sun4x_55"
 			enable_login="yes"
@@ -466,7 +472,7 @@ else
 		i?86-*-linux*)
 			AFS_SYSNAME="i386_linuxXX"
 			;;
-		parisc-*-linux-gnu)
+		parisc-*-linux-gnu|hppa-*-linux-gnu)
 			AFS_SYSNAME="parisc_linuxXX"
 			enable_pam="no"
 			;;
@@ -684,6 +690,9 @@ case $AFS_SYSNAME in *_linux* | *_umlinux*)
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_security" = "xyes"; then 
 		  AC_DEFINE(STRUCT_INODE_HAS_I_SECURITY, 1, [define if you struct inode has i_security])
+		 fi
+		 if test "x$ac_cv_linux_fs_struct_inode_has_i_mutex" = "xyes"; then 
+		  AC_DEFINE(STRUCT_INODE_HAS_I_MUTEX, 1, [define if you struct inode has i_mutex])
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_sb_list" = "xyes"; then 
 		  AC_DEFINE(STRUCT_INODE_HAS_I_SB_LIST, 1, [define if you struct inode has i_sb_list])

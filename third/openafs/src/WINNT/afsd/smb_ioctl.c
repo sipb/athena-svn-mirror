@@ -116,7 +116,7 @@ void smb_SetupIoctlFid(smb_fid_t *fidp, cm_space_t *prefix)
 smb_IoctlPrepareRead(smb_fid_t *fidp, smb_ioctl_t *ioctlp, cm_user_t *userp)
 {
     long opcode;
-    smb_ioctlProc_t *procp;
+    smb_ioctlProc_t *procp = NULL;
     long code;
 
     if (ioctlp->flags & SMB_IOCTLFLAG_DATAIN) {
@@ -137,7 +137,11 @@ smb_IoctlPrepareRead(smb_fid_t *fidp, smb_ioctl_t *ioctlp, cm_user_t *userp)
             return CM_ERROR_TOOBIG;
 
         /* check for no such proc */
-        procp = smb_ioctlProcsp[opcode];
+	if (fidp->flags & SMB_FID_IOCTL)
+	    procp = smb_ioctlProcsp[opcode];
+	else
+	    procp = NULL;
+
         if (procp == NULL) 
             return CM_ERROR_BADOP;
 

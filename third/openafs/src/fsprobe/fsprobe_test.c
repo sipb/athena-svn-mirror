@@ -17,7 +17,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/fsprobe/fsprobe_test.c,v 1.1.1.2 2005-03-10 20:38:06 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/fsprobe/fsprobe_test.c,v 1.1.1.3 2006-05-10 19:42:50 zacheiss Exp $");
 
 #ifdef HAVE_STRING_H
 #include <string.h>
@@ -171,7 +171,11 @@ main(argc, argv)
     /*
      * Fill in the socket array for bigbird, vice1, and vice2.
      */
+#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+    FSSktArray[0].sin_family = AF_INET;		/*Internet family */
+#else
     FSSktArray[0].sin_family = htons(AF_INET);	/*Internet family */
+#endif
     FSSktArray[0].sin_port = htons(7000);	/*FileServer port */
     he = hostutil_GetHostByName("servername1");
     if (he == NULL) {
@@ -180,7 +184,11 @@ main(argc, argv)
     }
     memcpy(&(FSSktArray[0].sin_addr.s_addr), he->h_addr, 4);
 
+#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+    FSSktArray[1].sin_family = AF_INET;		/*Internet address family */
+#else
     FSSktArray[1].sin_family = htons(AF_INET);	/*Internet address family */
+#endif
     FSSktArray[1].sin_port = htons(7000);	/*FileServer port */
     he = hostutil_GetHostByName("servername2");
     if (he == NULL) {
@@ -189,7 +197,11 @@ main(argc, argv)
     }
     memcpy(&(FSSktArray[1].sin_addr.s_addr), he->h_addr, 4);
 
+#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+    FSSktArray[2].sin_family = AF_INET;		/*Internet address family */
+#else
     FSSktArray[2].sin_family = htons(AF_INET);	/*Internet address family */
+#endif
     FSSktArray[2].sin_port = htons(7000);	/*FileServer port */
     he = hostutil_GetHostByName("servername3");
     if (he == NULL) {
