@@ -15,7 +15,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_module.c,v 1.11 2006-03-06 21:24:55 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_module.c,v 1.12 2006-05-10 20:23:22 zacheiss Exp $");
 
 #include <linux/module.h> /* early to avoid printf->printk mapping */
 #include "afs/sysincludes.h"
@@ -48,7 +48,9 @@ extern struct file_system_type afs_fs_type;
 static long get_page_offset(void);
 #endif
 
-#if defined(AFS_LINUX24_ENV)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16)
+DEFINE_MUTEX(afs_global_lock);
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
 DECLARE_MUTEX(afs_global_lock);
 #else
 struct semaphore afs_global_lock = MUTEX;

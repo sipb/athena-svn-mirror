@@ -404,6 +404,12 @@ else
 		i386-apple-darwin8.*)
 			AFS_SYSNAME="x86_darwin_80"
 			;;
+		powerpc-apple-darwin9.*)
+			AFS_SYSNAME="ppc_darwin_90"
+			;;
+		i386-apple-darwin9.*)
+			AFS_SYSNAME="x86_darwin_90"
+			;;
 		sparc-sun-solaris2.5*)
 			AFS_SYSNAME="sun4x_55"
 			enable_login="yes"
@@ -478,7 +484,7 @@ else
 		i?86-*-linux*)
 			AFS_SYSNAME="i386_linuxXX"
 			;;
-		parisc-*-linux-gnu)
+		parisc-*-linux-gnu|hppa-*-linux-gnu)
 			AFS_SYSNAME="parisc_linuxXX"
 			enable_pam="no"
 			;;
@@ -696,6 +702,9 @@ case $AFS_SYSNAME in *_linux* | *_umlinux*)
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_security" = "xyes"; then 
 		  AC_DEFINE(STRUCT_INODE_HAS_I_SECURITY, 1, [define if you struct inode has i_security])
+		 fi
+		 if test "x$ac_cv_linux_fs_struct_inode_has_i_mutex" = "xyes"; then 
+		  AC_DEFINE(STRUCT_INODE_HAS_I_MUTEX, 1, [define if you struct inode has i_mutex])
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_sb_list" = "xyes"; then 
 		  AC_DEFINE(STRUCT_INODE_HAS_I_SB_LIST, 1, [define if you struct inode has i_sb_list])
@@ -1162,7 +1171,7 @@ AC_PROG_LEX
 AC_DECL_YYTEXT])
 
 dnl
-dnl $Id: aclocal.m4,v 1.16 2006-03-06 21:24:45 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.17 2006-05-10 20:23:15 zacheiss Exp $
 dnl
 
 dnl check if this computer is little or big-endian
@@ -2641,6 +2650,7 @@ case $AFS_SYSNAME in
 		REGEX_OBJ="regex.o"
 		XCFLAGS="-traditional-cpp"
 		SHLIB_LINKER="${MT_CC} -dynamiclib"
+		SHLIB_SUFFIX="dylib"
 		;;
 
 	ppc_darwin_13)
@@ -2650,6 +2660,7 @@ case $AFS_SYSNAME in
 		REGEX_OBJ="regex.o"
 		XCFLAGS="-no-cpp-precomp"
 		SHLIB_LINKER="${MT_CC} -dynamiclib"
+		SHLIB_SUFFIX="dylib"
 		;;
 
 	ppc_darwin_14)
@@ -2659,6 +2670,7 @@ case $AFS_SYSNAME in
 		REGEX_OBJ="regex.o"
 		XCFLAGS="-no-cpp-precomp"
 		SHLIB_LINKER="${MT_CC} -dynamiclib"
+		SHLIB_SUFFIX="dylib"
 		;;
 
 	ppc_darwin_60)
@@ -2669,6 +2681,7 @@ case $AFS_SYSNAME in
 		XCFLAGS="-no-cpp-precomp"
 		TXLIBS="-lncurses"
 		SHLIB_LINKER="${MT_CC} -dynamiclib"
+		SHLIB_SUFFIX="dylib"
 		;;
 
 	ppc_darwin_70)
@@ -2683,20 +2696,40 @@ case $AFS_SYSNAME in
 		TXLIBS="-lncurses"
 		EXTRA_VLIBOBJS="fstab.o"
 		SHLIB_LINKER="${MT_CC} -dynamiclib"
+		SHLIB_SUFFIX="dylib"
 		;;
 
 	*_darwin_80)
 		AFSD_LDFLAGS="-F/System/Library/PrivateFrameworks -framework DiskArbitration"
 		LEX="lex -l"
-		MT_CFLAGS='-DAFS_PTHREAD_ENV -D_REENTRANT ${XCFLAGS}'
+		MT_CFLAGS='-DAFS_PTHREAD_ENV -D_REENTRANT ${XCFLAGS} ${ARCHFLAGS}'
 		KROOT=
 		KINCLUDES='-I$(KROOT)/System/Library/Frameworks/Kernel.framework/Headers'
-		LWP_OPTMZ="-O2"
+		KERN_OPTMZ="-Os"
+		LWP_OPTMZ="-Os"
+		OPTMZ="-Os"
 		REGEX_OBJ="regex.o"
-		XCFLAGS="-no-cpp-precomp"
 		TXLIBS="-lncurses"
 		EXTRA_VLIBOBJS="fstab.o"
 		SHLIB_LINKER="${MT_CC} -dynamiclib"
+		SHLIB_SUFFIX="dylib"
+		;;
+
+	*_darwin_90)
+		AFSD_LDFLAGS="-F/System/Library/PrivateFrameworks -framework DiskArbitration"
+		LEX="lex -l"
+		MT_CFLAGS='-DAFS_PTHREAD_ENV -D_REENTRANT ${XCFLAGS} ${ARCHFLAGS}'
+		KROOT=
+		KINCLUDES='-I$(KROOT)/System/Library/Frameworks/Kernel.framework/Headers'
+		LD="cc"
+		KERN_OPTMZ="-Os"
+		LWP_OPTMZ="-Os"
+		OPTMZ="-Os"
+		REGEX_OBJ="regex.o"
+		TXLIBS="-lncurses"
+		EXTRA_VLIBOBJS="fstab.o"
+		SHLIB_LINKER="${MT_CC} -dynamiclib"
+		SHLIB_SUFFIX="dylib"
 		;;
 
 	ppc_linux*)
@@ -3268,7 +3301,7 @@ AC_MSG_RESULT($ac_cv_irix_sys_systm_h_has_mem_funcs)
 ])
 
 dnl
-dnl $Id: aclocal.m4,v 1.16 2006-03-06 21:24:45 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.17 2006-05-10 20:23:15 zacheiss Exp $
 dnl
 dnl Kerberos autoconf glue
 dnl
@@ -3329,6 +3362,7 @@ if test X$conf_krb5 = XYES; then
 	LIBS="$LIBS $KRB5LIBS"
 	AC_CHECK_FUNCS([add_to_error_table add_error_table krb5_princ_size krb5_principal_get_comp_string krb5_524_convert_creds krb524_convert_creds_kdc])
 	AC_CHECK_HEADERS([kerberosIV/krb.h])
+	AC_CHECK_HEADERS([kerberosV/heim_err.h])
 
 AC_MSG_CHECKING(for krb5_creds.keyblock existence)
 AC_CACHE_VAL(ac_cv_krb5_creds_keyblock_exists,
@@ -3363,9 +3397,18 @@ dnl	AC_CHECK_MEMBERS([krb5_creds.keyblock, krb5_creds.session],,, [#include <krb
 	CPPFLAGS="$save_CPPFLAGS"
 	LIBS="$save_LIBS"
 fi
+
+if test "$ac_cv_header_kerberosV_heim_err_h" = "yes"; then
+    ASETKEY=
+else
+    ASETKEY=asetkey
+fi
+
 AC_SUBST(BUILD_KRB5)
 AC_SUBST(KRB5CFLAGS)
 AC_SUBST(KRB5LIBS)
+AC_SUBST(ASETKEY)
+
 ])dnl
 
 # Do all the work for Automake.  This macro actually does too much --
