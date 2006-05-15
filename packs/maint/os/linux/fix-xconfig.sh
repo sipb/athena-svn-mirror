@@ -1,12 +1,12 @@
 #!/bin/sh
-# $Id: fix-xconfig.sh,v 1.4 2002-07-17 17:46:56 amb Exp $
+# $Id: fix-xconfig.sh,v 1.5 2006-05-15 20:09:22 amb Exp $
 
 # fix-xconfig: Modify the X configuration to match timings retrieved
 # from read-edid and to have the desired maximum resolution.  Run from
 # athena-ws.rc on PUBLIC=true machines.
 
 PATH=/etc/athena:/bin:/usr/bin:/sbin
-cfg=/etc/X11/XF86Config-4
+cfg=/etc/X11/xorg.conf
 
 if [ ! -f $cfg ]; then
   exit
