@@ -73,7 +73,7 @@ cp /etc/man.config.athena /etc/man.config
 %triggerin -- sysklogd
 cp /etc/syslog.conf.athena /etc/syslog.conf
 
-%triggerin -- XFree86
+%triggerin -- xorg-x11
 cp /usr/X11R6/lib/X11/app-defaults/XTerm.athena /usr/X11R6/lib/X11/app-defaults/XTerm
 
 %triggerin -- openmotif
@@ -387,17 +387,19 @@ if /sbin/lspci -n | grep -q 10b7:9200; then
 fi
 
 # Turn on DontZap in the X configuration.
-if [ -f /etc/X11/XF86Config ]; then
-  sed -e 's/#DontZap/DontZap/' < /etc/X11/XF86Config > /etc/X11/XF86Config.new
-  mv /etc/X11/XF86Config.new /etc/X11/XF86Config
+cfg=/etc/X11/xorg.conf
+if [ -f $cfg ]; then
+  sed -e 's/#DontZap/DontZap/' < $cfg > ${cfg}.new
+  mv ${cfg}.new $cfg
 fi
 
 # Enable loading of freetype and type1 font handlers in the X configuration.
-if [ -f /etc/X11/XF86Config-4 ]; then
+cfg=/etc/X11/xorg.conf
+if [ -f $cfg ]; then
   sed -e 's/#[[:space:]]*\(Load[[:space:]]\+"freetype"\)/\1/' \
       -e 's/#[[:space:]]*\(Load[[:space:]]\+"type1"\)/\1/' \
-      /etc/X11/XF86Config-4 > /etc/X11/XF86Config-4.new
-  mv /etc/X11/XF86Config-4.new /etc/X11/XF86Config-4
+      $cfg > ${cfg}.new
+  mv ${cfg}.new $cfg
 fi
 
 # kernel-headers-2.2.16-3 from Red Hat moved /usr/include/{linux,asm}
