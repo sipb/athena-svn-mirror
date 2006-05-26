@@ -17,6 +17,21 @@ EOF
 
 [ -d $PKG_INSTALL_ROOT/afs ] || mkdir -p $PKG_INSTALL_ROOT/afs
 
+# If the machine has the new filesystem layout, i.e. where the
+# AFS partition mountpoint is /usr/vice/cache, change it not to
+# be checked or mounted automatically at boot time.  The AFS
+# start-up script will now handle this.
+change=`awk '$1 !~ /^#/ && $3 == "/usr/vice/cache" && $6 == "yes"' \
+          $PKG_INSTALL_ROOT/etc/vfstab`
+if [ -n "$change" ]; then
+  rm -f $PKG_INSTALL_ROOT/etc/vfstab.update-new
+  sed -e '/^[ 	]*\/dev[^ 	]*[ 	]*\/dev[^ 	]*[ 	]*\/usr\/vice\/cache[ 	]/s/\([ 	]\)[0-9]*\([ 	]*\)yes\([ 	]\)/\1-\2no\3/' \
+    $PKG_INSTALL_ROOT/etc/vfstab > $PKG_INSTALL_ROOT/etc/vfstab.update-new &&
+    mv -f $PKG_INSTALL_ROOT/etc/vfstab.update-new \
+      $PKG_INSTALL_ROOT/etc/vfstab &&
+    chmod 644 $PKG_INSTALL_ROOT/etc/vfstab
+fi
+
 # Package version 9.3.0, which was installed in Athena 9.3 releases prior
 # to 9.3.5, installed paths under /var/usr/vice instead of /usr/vice
 # (machines installed before 9.3 mount /var/usr/vice instead of
