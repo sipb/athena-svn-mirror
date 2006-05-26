@@ -15,7 +15,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/scout/scout.c,v 1.1.1.4 2006-05-10 19:43:04 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/scout/scout.c,v 1.4 2006-05-10 20:23:28 zacheiss Exp $");
 
 #undef	IN
 #ifdef	AFS_AIX32_ENV

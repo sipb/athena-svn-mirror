@@ -14,7 +14,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/fstrace.c,v 1.1.1.7 2006-03-06 20:41:49 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/fstrace.c,v 1.6 2006-03-06 21:25:11 zacheiss Exp $");
 
 #include <stdio.h>
 #include <sys/types.h>

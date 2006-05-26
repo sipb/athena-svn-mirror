@@ -1171,7 +1171,7 @@ AC_PROG_LEX
 AC_DECL_YYTEXT])
 
 dnl
-dnl $Id: aclocal.m4,v 1.1.1.11 2006-05-10 19:44:12 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.17 2006-05-10 20:23:15 zacheiss Exp $
 dnl
 
 dnl check if this computer is little or big-endian
@@ -3040,7 +3040,7 @@ case $AFS_SYSNAME in
 		XLIBELFA="-lelf"
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
-		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
 		LWP_OPTMZ="-g"
 		;;
 
@@ -3062,7 +3062,7 @@ case $AFS_SYSNAME in
 		XLIBELFA="-lelf"
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
-		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
 		LWP_OPTMZ="-g"
 		;;
 
@@ -3084,7 +3084,7 @@ case $AFS_SYSNAME in
 		XLIBELFA="-lelf"
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
-		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
 		LWP_OPTMZ="-g"
 		;;
 
@@ -3301,7 +3301,7 @@ AC_MSG_RESULT($ac_cv_irix_sys_systm_h_has_mem_funcs)
 ])
 
 dnl
-dnl $Id: aclocal.m4,v 1.1.1.11 2006-05-10 19:44:12 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.17 2006-05-10 20:23:15 zacheiss Exp $
 dnl
 dnl Kerberos autoconf glue
 dnl

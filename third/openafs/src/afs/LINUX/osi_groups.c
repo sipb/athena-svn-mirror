@@ -17,7 +17,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_groups.c,v 1.1.1.5 2005-09-08 18:02:43 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_groups.c,v 1.5 2005-08-03 17:55:30 zacheiss Exp $");
 
 #include "afs/sysincludes.h"
 #include "afsincludes.h"

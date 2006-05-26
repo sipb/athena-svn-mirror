@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/afssyscalls.c,v 1.1.1.4 2006-03-06 20:44:30 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/afssyscalls.c,v 1.4 2006-03-06 21:25:10 zacheiss Exp $");
 
 #include <signal.h>
 #include <sys/errno.h>

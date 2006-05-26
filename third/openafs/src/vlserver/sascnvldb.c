@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vlserver/sascnvldb.c,v 1.1.1.3 2005-03-10 20:39:46 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vlserver/sascnvldb.c,v 1.3 2005-03-10 22:17:03 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>

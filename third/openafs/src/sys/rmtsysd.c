@@ -17,7 +17,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsysd.c,v 1.1.1.3 2005-03-10 20:39:19 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsysd.c,v 1.3 2005-03-10 22:16:56 zacheiss Exp $");
 
 #ifdef	AFS_AIX32_ENV
 #include <signal.h>

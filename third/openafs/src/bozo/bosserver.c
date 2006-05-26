@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bosserver.c,v 1.1.1.6 2006-03-06 20:44:31 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bosserver.c,v 1.7 2006-03-06 21:25:02 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -61,7 +61,7 @@ struct rx_securityClass *bozo_rxsc[3];
 const char *bozo_fileName;
 FILE *bozo_logFile;
 
-int DoLogging = 0;
+int DoLogging = 1;
 int DoSyslog = 0;
 #ifndef AFS_NT40_ENV
 int DoSyslogFacility = LOG_DAEMON;

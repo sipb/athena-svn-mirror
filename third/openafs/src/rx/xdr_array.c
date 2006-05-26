@@ -31,7 +31,7 @@
 #include "rx.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_array.c,v 1.1.1.4 2006-03-06 20:43:07 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_array.c,v 1.5 2006-03-06 21:25:06 zacheiss Exp $");
 
 #ifndef	NeXT
 

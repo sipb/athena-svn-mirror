@@ -19,7 +19,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsmonitor/afsmonitor.c,v 1.1.1.7 2006-05-10 19:42:42 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsmonitor/afsmonitor.c,v 1.7 2006-05-10 20:23:24 zacheiss Exp $");
 
 #include <stdio.h>
 #include <math.h>

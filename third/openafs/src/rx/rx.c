@@ -17,7 +17,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.1.1.9 2006-03-06 20:42:57 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.18 2006-03-06 21:25:05 zacheiss Exp $");
 
 #ifdef KERNEL
 #include "afs/sysincludes.h"
@@ -1035,7 +1035,7 @@ void
 rx_GetConnection(register struct rx_connection *conn)
 {
     SPLVAR;
-
+    
     NETPRI;
     MUTEX_ENTER(&conn->conn_data_lock);
     conn->refCount++;

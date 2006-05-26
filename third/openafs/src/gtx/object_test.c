@@ -15,7 +15,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/object_test.c,v 1.1.1.3 2005-03-10 20:38:10 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/object_test.c,v 1.3 2005-03-10 22:16:51 zacheiss Exp $");
 
 #include "gtxscreenobj.h"	/*Gator screen object interface */
 #include "gtxtextobj.h"		/*Gator text object interface */

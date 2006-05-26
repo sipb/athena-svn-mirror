@@ -11,13 +11,14 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bnode.c,v 1.1.1.4 2005-08-02 21:14:31 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bnode.c,v 1.5 2005-08-02 21:47:29 zacheiss Exp $");
 
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <syslog.h>
 #ifdef AFS_NT40_ENV
 #include <io.h>
 #else
@@ -52,6 +53,7 @@ RCSID
 #define BNODE_LWP_STACKSIZE	(16 * 1024)
 
 int bnode_waiting = 0;
+extern int DoLogging;
 static PROCESS bproc_pid;	/* pid of waker-upper */
 static struct bnode *allBnodes = 0;	/* list of all bnodes */
 static struct bnode_proc *allProcs = 0;	/* list of all processes for which we're waiting */
@@ -125,6 +127,14 @@ SaveCore(register struct bnode *abnode, register struct bnode_proc
     strcpy(tbuffer, FileName);
 #endif
     code = renamefile(AFSDIR_SERVER_CORELOG_FILEPATH, tbuffer);
+
+    if (DoLogging)
+      {
+	bozo_Log("Server process dumped core: %s (signal %d)\n",
+		 tbuffer, aproc->lastSignal);
+	syslog(LOG_CRIT, "Server process dumped core: %s (signal %d)\n",
+	       tbuffer, aproc->lastSignal);
+      }
 }
 
 int

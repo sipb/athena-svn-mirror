@@ -14,7 +14,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/test/owntest.c,v 1.1.1.3 2005-03-10 20:39:40 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/test/owntest.c,v 1.4 2005-03-10 22:17:00 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <sys/file.h>

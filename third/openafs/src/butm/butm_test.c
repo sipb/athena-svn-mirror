@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butm/butm_test.c,v 1.1.1.3 2005-03-10 20:30:12 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butm/butm_test.c,v 1.3 2005-03-10 22:16:50 zacheiss Exp $");
 
 #include <errno.h>
 #include <sys/types.h>

@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/auth/cellconfig.c,v 1.1.1.7 2006-05-10 19:43:48 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/auth/cellconfig.c,v 1.2 2006-03-29 19:15:25 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <afs/pthread_glock.h>
