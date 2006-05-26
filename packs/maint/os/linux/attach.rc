@@ -18,7 +18,7 @@ PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
 RETVAL=0
 
 # Fetch the PUBLIC variable.  
-[ -r /etc/athena/rc.conf ] || . /etc/athena/rc.conf
+[ -r /etc/athena/rc.conf ] && . /etc/athena/rc.conf
 
 
 # See how we were called
@@ -36,7 +36,7 @@ case "$1" in
 
 		echo -n "Clearing out /mit: "
 		rm -f /mit/* \
-		    && rmdir /mit/* 2>/dev/null \
+		    && (rmdir /mit/* 2>/dev/null || :) \
 		    && rm -f /var/athena/attachtab/directory/_=mit* \
 		    && success "clearing /mit" || failure "clearing /mit"
 		echo
