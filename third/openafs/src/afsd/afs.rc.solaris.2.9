@@ -44,6 +44,32 @@ case $1 in
 if [ "$AFSCLIENT" = false ]; then
         exit 0
 fi
+
+# Check and mount the cache partition (if it is not already mounted).
+if [ -z "`awk '$2 == "/usr/vice/cache"' /etc/mnttab`" ]; then
+    # Get the character special device for the filesystem.
+    rdev=`awk '$1 !~ /^#/ && $3 == "/usr/vice/cache" { print $2; }' \
+      /etc/vfstab`
+    if [ -n "$rdev" -a -c "$rdev" ]; then
+        /usr/sbin/fsck -y -o p "$rdev" > /dev/console 2>&1
+        case $? in
+        0|40)
+            /usr/sbin/mount /usr/vice/cache > /dev/console 2>&1 || exit 1
+            ;;
+        33)
+            # Filesystem is already mounted (should not happen).
+            ;;
+        *)
+            # fsck failed; rebuild the filesystem.
+            echo "AFS cache filesystem ($rdev) check failed; rebuilding." \
+                > /dev/console
+            /usr/sbin/newfs "$rdev" < /dev/null > /dev/console 2>&1 || exit 1
+            /usr/sbin/mount /usr/vice/cache > /dev/console 2>&1 || exit 1
+            ;;
+        esac
+    fi
+fi
+
 AFSCLIENTNUM=4
 if [ "$AFSCLIENT" != true ]; then
         AFSCLIENTNUM="$AFSCLIENT"
