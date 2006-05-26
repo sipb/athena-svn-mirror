@@ -25,6 +25,7 @@ case "$1" in
 	
 	/etc/athena/syncconf && success "syncconf" || failure "syncconf"
 	RETVAL=$?
+	echo
 	;;
 
   stop)
