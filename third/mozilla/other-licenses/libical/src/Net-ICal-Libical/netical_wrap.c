@@ -62,7 +62,7 @@ extern "C" {
 
 
 /*****************************************************************************
- * $Header: /afs/dev.mit.edu/source/repository/third/mozilla/other-licenses/libical/src/Net-ICal-Libical/netical_wrap.c,v 1.1.1.1 2003-02-14 18:04:23 rbasch Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/mozilla/other-licenses/libical/src/Net-ICal-Libical/netical_wrap.c,v 1.1.1.2 2006-05-30 16:31:02 rbasch Exp $
  *
  * perl5ptr.swg
  *
