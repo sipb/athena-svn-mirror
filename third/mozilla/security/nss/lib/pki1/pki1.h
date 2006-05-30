@@ -35,7 +35,7 @@
 #define PKI1_H
 
 #ifdef DEBUG
-static const char PKI1_CVS_ID[] = "@(#) $RCSfile: pki1.h,v $ $Revision: 1.1.1.14 $ $Date: 2005-09-22 21:06:54 $ $Name: not supported by cvs2svn $";
+static const char PKI1_CVS_ID[] = "@(#) $RCSfile: pki1.h,v $ $Revision: 1.1.1.15 $ $Date: 2006-05-30 18:59:19 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
@@ -55,7 +55,9 @@ static const char PKI1_CVS_ID[] = "@(#) $RCSfile: pki1.h,v $ $Revision: 1.1.1.14
 
 PR_BEGIN_EXTERN_C
 
-/* fgmr 19990505 moved these here from oiddata.h */
+extern const NSSOID nss_builtin_oids[];
+extern const PRUint32 nss_builtin_oid_count;
+
 extern const nssAttributeTypeAliasTable nss_attribute_type_aliases[];
 extern const PRUint32 nss_attribute_type_alias_count;
 

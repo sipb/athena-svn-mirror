@@ -1,4 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* vim: set ts=4 sw=4 et tw=80: */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -957,21 +958,31 @@ nsScriptSecurityManager::LookupPolicy(nsIPrincipal* aPrincipal,
         if (NS_FAILED(rv = aPrincipal->GetOrigin(getter_Copies(origin))))
             return rv;
  
-        const char *start = origin;
+        char *start = origin.BeginWriting();
         const char *nextToLastDot = nsnull;
         const char *lastDot = nsnull;
         const char *colon = nsnull;
-        const char *p = start;
-        while (*p)
+        char *p = start;
+
+        //-- skip (nested) jar schemes to reach the "real" URI
+        while (*p == 'j' && *(++p) == 'a' && *(++p) == 'r' && *(++p) == ':')
+            start = ++p;
+        
+        //-- search domain (stop at the end of the string or at the 3rd slash)
+        for (PRUint32 slashes=0; *p; p++)
         {
+            if (*p == '/' && ++slashes == 3) 
+            {
+                *p = '\0'; // truncate at 3rd slash
+                break;
+            }
             if (*p == '.')
             {
                 nextToLastDot = lastDot;
                 lastDot = p;
-            }
-            if (!colon && *p == ':')
+            } 
+            else if (!colon && *p == ':')
                 colon = p;
-            p++;
         }
 
         nsCStringKey key(nextToLastDot ? nextToLastDot+1 : start);
@@ -1025,6 +1036,12 @@ nsScriptSecurityManager::LookupPolicy(nsIPrincipal* aPrincipal,
         if ((dpolicy == mDefaultPolicy) && aCachedClassPolicy)
             *aCachedClassPolicy = cpolicy;
     }
+
+    // We look for a PropertyPolicy in the following places:
+    // 1)  The ClassPolicy for our class we got from our DomainPolicy
+    // 2)  The mWildcardPolicy of our DomainPolicy
+    // 3)  The ClassPolicy for our class we got from mDefaultPolicy
+    // 4)  The mWildcardPolicy of our mDefaultPolicy
     PropertyPolicy* ppolicy = nsnull;
     if (cpolicy != NO_POLICY_FOR_CLASS)
     {
@@ -1033,38 +1050,47 @@ nsScriptSecurityManager::LookupPolicy(nsIPrincipal* aPrincipal,
                                                       (void*)aProperty,
                                                       PL_DHASH_LOOKUP));
     }
-    else
-    {
-        // If there's no per-domain policy and no default policy, we're done
-        if (dpolicy == mDefaultPolicy)
-            return NS_OK;
 
-        // This class is not present in the domain policy, check its wildcard policy
-        if (dpolicy->mWildcardPolicy)
+    // If there is no class policy for this property, and we have a wildcard
+    // policy, try that.
+    if (dpolicy->mWildcardPolicy &&
+        (!ppolicy || PL_DHASH_ENTRY_IS_FREE(ppolicy)))
+    {
+        ppolicy =
+            NS_STATIC_CAST(PropertyPolicy*,
+                           PL_DHashTableOperate(dpolicy->mWildcardPolicy->mPolicy,
+                                                (void*)aProperty,
+                                                PL_DHASH_LOOKUP));
+    }
+
+    // If dpolicy is not the defauly policy and there's no class or wildcard
+    // policy for this property, check the default policy for this class and
+    // the default wildcard policy
+    if (dpolicy != mDefaultPolicy &&
+        (!ppolicy || PL_DHASH_ENTRY_IS_FREE(ppolicy)))
+    {
+        cpolicy = NS_STATIC_CAST(ClassPolicy*,
+                                 PL_DHashTableOperate(mDefaultPolicy,
+                                                      aClassName,
+                                                      PL_DHASH_LOOKUP));
+
+        if (PL_DHASH_ENTRY_IS_BUSY(cpolicy))
+        {
+            ppolicy =
+                NS_STATIC_CAST(PropertyPolicy*,
+                               PL_DHashTableOperate(cpolicy->mPolicy,
+                                                    (void*)aProperty,
+                                                    PL_DHASH_LOOKUP));
+        }
+
+        if ((!ppolicy || PL_DHASH_ENTRY_IS_FREE(ppolicy)) &&
+            mDefaultPolicy->mWildcardPolicy)
         {
             ppolicy =
               NS_STATIC_CAST(PropertyPolicy*,
-                             PL_DHashTableOperate(dpolicy->mWildcardPolicy->mPolicy,
+                             PL_DHashTableOperate(mDefaultPolicy->mWildcardPolicy->mPolicy,
                                                   (void*)aProperty,
                                                   PL_DHASH_LOOKUP));
-        }
-
-        // If there's no wildcard policy, check the default policy for this class
-        if (!ppolicy || PL_DHASH_ENTRY_IS_FREE(ppolicy))
-        {
-            cpolicy = NS_STATIC_CAST(ClassPolicy*,
-                                     PL_DHashTableOperate(mDefaultPolicy,
-                                                          aClassName,
-                                                          PL_DHASH_LOOKUP));
-
-            if (PL_DHASH_ENTRY_IS_BUSY(cpolicy))
-            {
-                ppolicy =
-                  NS_STATIC_CAST(PropertyPolicy*,
-                                 PL_DHashTableOperate(cpolicy->mPolicy,
-                                                      (void*)aProperty,
-                                                      PL_DHASH_LOOKUP));
-            }
         }
     }
 
@@ -1840,11 +1866,24 @@ nsScriptSecurityManager::GetFunctionObjectPrincipal(JSContext *cx,
         }
         else if (JS_GetFunctionObject(fun) != obj)
         {
-            // Function is a clone, its prototype was precompiled from
-            // brutally shared chrome. For this case only, get the
-            // principals from the clone's scope since there's no
-            // reliable principals compiled into the function.
-            return doGetObjectPrincipal(cx, obj, result);
+            // Function is a clone. In some cases (such as brutal sharing or
+            // when a function comes from a function expression) the JS engine
+            // sticks the function's principals in the third slot (0 based).  If
+            // it doesn't, then we're probably looking at a function that was
+            // not in a script page (such as a function in a JS component), and
+            // we should fall back on getting the principals from its scope.
+            jsval v;
+            if (!JS_GetReservedSlot(cx, obj, 2, &v))
+                return NS_ERROR_FAILURE;
+            if (JSVAL_IS_VOID(v))
+                return doGetObjectPrincipal(cx, obj, result);
+
+            nsJSPrincipals *prin =
+                NS_STATIC_CAST(nsJSPrincipals *,
+                               NS_STATIC_CAST(JSPrincipals*,
+                                              JSVAL_TO_PRIVATE(v)));
+            NS_ADDREF(*result = prin->nsIPrincipalPtr);
+            return NS_OK;
         }
         else
         {
@@ -3098,7 +3137,7 @@ nsScriptSecurityManager::InitPolicies()
             delete domainPolicy;
             return NS_ERROR_UNEXPECTED;
         }
-
+        domainPolicy->Hold();
         //-- Parse list of sites and create an entry in mOriginToPolicyMap for each
         char* domainStart = domainList.BeginWriting();
         char* domainCurrent = domainStart;
@@ -3115,7 +3154,7 @@ nsScriptSecurityManager::InitPolicies()
                 DomainEntry *newEntry = new DomainEntry(domainStart, domainPolicy);
                 if (!newEntry)
                 {
-                    delete domainPolicy;
+                    domainPolicy->Drop();
                     return NS_ERROR_OUT_OF_MEMORY;
                 }
 #ifdef DEBUG
@@ -3160,6 +3199,7 @@ nsScriptSecurityManager::InitPolicies()
         }
 
         rv = InitDomainPolicy(cx, nameBegin, domainPolicy);
+        domainPolicy->Drop();
         if (NS_FAILED(rv))
             return rv;
     }
@@ -3249,8 +3289,14 @@ nsScriptSecurityManager::InitDomainPolicy(JSContext* cx,
 
         // If this is the wildcard class (class '*'), save it in mWildcardPolicy
         // (we leave it stored in the hashtable too to take care of the cleanup)
-        if ((*start == '*') && (end == start + 1))
+        if ((*start == '*') && (end == start + 1)) {
             aDomainPolicy->mWildcardPolicy = cpolicy;
+
+            // Make sure that cpolicy knows about aDomainPolicy so it can reset
+            // the mWildcardPolicy pointer as needed if it gets moved in the
+            // hashtable.
+            cpolicy->mDomainWeAreWildcardFor = aDomainPolicy;
+        }
 
         // Get the property name
         start = end + 1;

@@ -31,7 +31,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-$cvs_id = '@(#) $RCSfile: oidgen.perl,v $ $Revision: 1.1.1.14 $ $Date: 2005-09-22 17:29:33 $ $Name: not supported by cvs2svn $';
+$cvs_id = '@(#) $RCSfile: oidgen.perl,v $ $Revision: 1.1.1.15 $ $Date: 2006-05-30 18:59:19 $ $Name: not supported by cvs2svn $';
 $cfile = shift;
 $hfile = shift;
 $count = -1;
@@ -232,12 +232,6 @@ static const char OIDDATA_CVS_ID[] = "$g{CVS_ID} ; $cvs_id";
 #ifndef NSSPKI1T_H
 #include "nsspki1t.h"
 #endif /* NSSPKI1T_H */
-
-extern const NSSOID nss_builtin_oids[];
-extern const PRUint32 nss_builtin_oid_count;
-
-/*extern const nssAttributeTypeAliasTable nss_attribute_type_aliases[];*/
-/*extern const PRUint32 nss_attribute_type_alias_count;*/
 
 EOD
     ;

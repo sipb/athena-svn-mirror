@@ -32,7 +32,7 @@
  * GPL.
  */
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: oiddata.c,v $ $Revision: 1.1.1.14 $ $Date: 2005-09-22 17:41:09 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: oiddata.c,v $ $Revision: 1.1.1.14 $ $Date: 2005-09-22 17:41:09 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: oiddata.c,v $ $Revision: 1.1.1.15 $ $Date: 2006-05-30 18:59:19 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: oiddata.c,v $ $Revision: 1.1.1.15 $ $Date: 2006-05-30 18:59:19 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef PKI1T_H
@@ -178,7 +178,7 @@ const NSSOID nss_builtin_oids[] = {
     "ucl",
     "RFC 1327 ucl",
 #endif /* DEBUG */
-    { "\x09\x92\x26\x86\xe8\xc4\xb5\xbe\x7f", 9 }
+    { "\x09\x92\x26\x86\xe8\xc4\xb5\xbe\x2c", 9 }
   },
   {
 #ifdef DEBUG

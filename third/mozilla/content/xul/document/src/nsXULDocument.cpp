@@ -117,6 +117,7 @@
 #include "nsIScriptSecurityManager.h"
 #include "nsContentUtils.h"
 #include "nsIParser.h"
+#include "nsIParserService.h"
 #include "nsICSSStyleSheet.h"
 
 //----------------------------------------------------------------------
@@ -151,6 +152,8 @@ const nsForwardReference::Phase nsForwardReference::kPasses[] = {
     nsForwardReference::eDone
 };
 
+const PRUint32 kMaxAttrNameLength = 512;
+const PRUint32 kMaxAttributeLength = 4096;
 
 //----------------------------------------------------------------------
 //
@@ -1490,6 +1493,22 @@ nsXULDocument::Persist(const nsAString& aID,
         nameSpaceID = ni->NamespaceID();
     }
     else {
+        // Make sure that this QName is going to be valid.
+        nsIParserService *parserService = nsContentUtils::GetParserServiceWeakRef();
+        NS_ASSERTION(parserService, "Running scripts during shutdown?");
+
+        const PRUnichar *colon;
+        rv = parserService->CheckQName(PromiseFlatString(aAttr), PR_TRUE, &colon);
+        if (NS_FAILED(rv)) {
+            // There was an invalid character or it was malformed.
+            return NS_ERROR_INVALID_ARG;
+        }
+
+        if (colon) {
+            // We don't really handle namespace qualifiers in attribute names.
+            return NS_ERROR_NOT_IMPLEMENTED;
+        }
+
         tag = do_GetAtom(aAttr);
         NS_ENSURE_TRUE(tag, NS_ERROR_OUT_OF_MEMORY);
 
@@ -1529,6 +1548,14 @@ nsXULDocument::Persist(nsIContent* aElement, PRInt32 aNameSpaceID,
     rv = aAttribute->GetUTF8String(&attrstr);
     if (NS_FAILED(rv)) return rv;
 
+    // Don't bother with unreasonable attributes. We clamp long values,
+    // but truncating attribute names turns it into a different attribute
+    // so there's no point in persisting anything at all
+    if (!attrstr || strlen(attrstr) > kMaxAttrNameLength) {
+        NS_WARNING("Can't persist, Attribute name too long");
+        return NS_ERROR_ILLEGAL_VALUE;
+    }
+
     nsCOMPtr<nsIRDFResource> attr;
     rv = gRDFService->GetResource(nsDependentCString(attrstr),
                                   getter_AddRefs(attr));
@@ -1538,6 +1565,14 @@ nsXULDocument::Persist(nsIContent* aElement, PRInt32 aNameSpaceID,
     nsAutoString valuestr;
     rv = aElement->GetAttr(kNameSpaceID_None, aAttribute, valuestr);
     if (NS_FAILED(rv)) return rv;
+
+    // prevent over-long attributes that choke the parser (bug 319846)
+    // (can't simply Truncate without testing, it's implemented
+    // using SetLength and will grow a short string)
+    if (valuestr.Length() > kMaxAttributeLength) {
+        NS_WARNING("Truncating persisted attribute value");
+        valuestr.Truncate(kMaxAttributeLength);
+    }
 
     PRBool novalue = (rv != NS_CONTENT_ATTR_HAS_VALUE);
 
