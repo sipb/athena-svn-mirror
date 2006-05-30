@@ -36,18 +36,12 @@
 #define OIDDATA_H
 
 #ifdef DEBUG
-static const char OIDDATA_CVS_ID[] = "@(#) $RCSfile: oiddata.h,v $ $Revision: 1.1.1.14 $ $Date: 2005-09-22 17:41:09 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: oiddata.h,v $ $Revision: 1.1.1.14 $ $Date: 2005-09-22 17:41:09 $ $Name: not supported by cvs2svn $";
+static const char OIDDATA_CVS_ID[] = "@(#) $RCSfile: oiddata.h,v $ $Revision: 1.1.1.15 $ $Date: 2006-05-30 18:59:19 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: oiddata.h,v $ $Revision: 1.1.1.15 $ $Date: 2006-05-30 18:59:19 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSPKI1T_H
 #include "nsspki1t.h"
 #endif /* NSSPKI1T_H */
-
-extern const NSSOID nss_builtin_oids[];
-extern const PRUint32 nss_builtin_oid_count;
-
-/*extern const nssAttributeTypeAliasTable nss_attribute_type_aliases[];*/
-/*extern const PRUint32 nss_attribute_type_alias_count;*/
 
 extern const NSSOID *NSS_OID_RFC1274_UID;
 extern const NSSOID *NSS_OID_RFC1274_EMAIL;

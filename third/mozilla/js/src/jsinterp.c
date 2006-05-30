@@ -659,8 +659,7 @@ js_Invoke(JSContext *cx, uintN argc, uintN flags)
     JSNative native;
     JSFunction *fun;
     JSScript *script;
-    uintN minargs, nvars;
-    intN nslots, nalloc, surplus;
+    uintN nslots, nvars, nalloc, surplus;
     JSInterpreterHook hook;
     void *hookData;
 
@@ -817,7 +816,7 @@ js_Invoke(JSContext *cx, uintN argc, uintN flags)
         }
         fun = NULL;
         script = NULL;
-        minargs = nvars = 0;
+        nslots = nvars = 0;
 
         /* Try a call or construct native object op. */
         native = (flags & JSINVOKE_CONSTRUCT) ? ops->construct : ops->call;
@@ -829,7 +828,8 @@ have_fun:
         fun = (JSFunction *) JS_GetPrivate(cx, funobj);
         native = fun->native;
         script = fun->script;
-        minargs = fun->nargs + fun->extra;
+        nslots = (fun->nargs > argc) ? fun->nargs - argc : 0;
+        nslots += fun->extra;
         nvars = fun->nvars;
 
         /* Handle bound method special case. */
@@ -868,8 +868,7 @@ have_fun:
     hook = cx->runtime->callHook;
     hookData = NULL;
 
-    /* Check for missing arguments expected by the function. */
-    nslots = (intN)((argc < minargs) ? minargs - argc : 0);
+    /* Check for argument slots required by the function. */
     if (nslots) {
         /* All arguments must be contiguous, so we may have to copy actuals. */
         nalloc = nslots;
@@ -879,15 +878,15 @@ have_fun:
             nalloc += 2 + argc;
         } else {
             /* Take advantage of surplus slots in the caller's frame depth. */
+            JS_ASSERT((jsval *)mark >= sp);
             surplus = (jsval *)mark - sp;
-            JS_ASSERT(surplus >= 0);
             nalloc -= surplus;
         }
 
         /* Check whether we have enough space in the caller's frame. */
-        if (nalloc > 0) {
+        if ((intN)nalloc > 0) {
             /* Need space for actuals plus missing formals minus surplus. */
-            newsp = js_AllocRawStack(cx, (uintN)nalloc, NULL);
+            newsp = js_AllocRawStack(cx, nalloc, NULL);
             if (!newsp) {
                 ok = JS_FALSE;
                 goto out;
@@ -896,7 +895,7 @@ have_fun:
             /* If we couldn't allocate contiguous args, copy actuals now. */
             if (newsp != mark) {
                 JS_ASSERT(sp + nslots > limit);
-                JS_ASSERT(2 + argc + nslots == (uintN)nalloc);
+                JS_ASSERT(2 + argc + nslots == nalloc);
                 *newsp++ = vp[0];
                 *newsp++ = vp[1];
                 if (argc)
@@ -910,16 +909,18 @@ have_fun:
         frame.vars += nslots;
 
         /* Push void to initialize missing args. */
-        while (--nslots >= 0)
+        do {
             PUSH(JSVAL_VOID);
+        } while (--nslots != 0);
     }
+    JS_ASSERT(nslots == 0);
 
     /* Now allocate stack space for local variables. */
-    nslots = (intN)frame.nvars;
-    if (nslots) {
-        surplus = (intN)((jsval *)cx->stackPool.current->avail - frame.vars);
-        if (surplus < nslots) {
-            newsp = js_AllocRawStack(cx, (uintN)nslots, NULL);
+    if (nvars) {
+        JS_ASSERT((jsval *)cx->stackPool.current->avail >= frame.vars);
+        surplus = (jsval *)cx->stackPool.current->avail - frame.vars;
+        if (surplus < nvars) {
+            newsp = js_AllocRawStack(cx, nvars, NULL);
             if (!newsp) {
                 ok = JS_FALSE;
                 goto out;
@@ -931,8 +932,9 @@ have_fun:
         }
 
         /* Push void to initialize local variables. */
-        while (--nslots >= 0)
+        do {
             PUSH(JSVAL_VOID);
+        } while (--nvars != 0);
     }
 
     /* Store the current sp in frame before calling fun. */
@@ -2242,6 +2244,7 @@ js_Interpret(JSContext *cx, jsval *result)
             }                                                                 \
         } else {                                                              \
             VALUE_TO_PRIMITIVE(cx, lval, JSTYPE_NUMBER, &lval);               \
+            sp[-2] = lval;                                                    \
             VALUE_TO_PRIMITIVE(cx, rval, JSTYPE_NUMBER, &rval);               \
             if (JSVAL_IS_STRING(lval) && JSVAL_IS_STRING(rval)) {             \
                 str  = JSVAL_TO_STRING(lval);                                 \
@@ -2283,10 +2286,12 @@ js_Interpret(JSContext *cx, jsval *result)
                 cond = 1 OP 0;                                                \
             } else {                                                          \
                 if (ltmp == JSVAL_OBJECT) {                                   \
-                    VALUE_TO_PRIMITIVE(cx, lval, JSTYPE_VOID, &lval);         \
+                    VALUE_TO_PRIMITIVE(cx, lval, JSTYPE_VOID, &sp[-2]);       \
+                    lval = sp[-2];                                            \
                     ltmp = JSVAL_TAG(lval);                                   \
                 } else if (rtmp == JSVAL_OBJECT) {                            \
-                    VALUE_TO_PRIMITIVE(cx, rval, JSTYPE_VOID, &rval);         \
+                    VALUE_TO_PRIMITIVE(cx, rval, JSTYPE_VOID, &sp[-1]);       \
+                    rval = sp[-1];                                            \
                     rtmp = JSVAL_TAG(rval);                                   \
                 }                                                             \
                 if (ltmp == JSVAL_STRING && rtmp == JSVAL_STRING) {           \
@@ -2429,16 +2434,18 @@ js_Interpret(JSContext *cx, jsval *result)
           case JSOP_ADD:
             rval = FETCH_OPND(-1);
             lval = FETCH_OPND(-2);
-            VALUE_TO_PRIMITIVE(cx, lval, JSTYPE_VOID, &ltmp);
-            VALUE_TO_PRIMITIVE(cx, rval, JSTYPE_VOID, &rtmp);
-            if ((cond = JSVAL_IS_STRING(ltmp)) || JSVAL_IS_STRING(rtmp)) {
+            VALUE_TO_PRIMITIVE(cx, lval, JSTYPE_VOID, &sp[-2]);
+            lval = sp[-2];
+            VALUE_TO_PRIMITIVE(cx, rval, JSTYPE_VOID, &sp[-1]);
+            rval = sp[-1];
+            if ((cond = JSVAL_IS_STRING(lval)) || JSVAL_IS_STRING(rval)) {
                 SAVE_SP(fp);
                 if (cond) {
-                    str = JSVAL_TO_STRING(ltmp);
-                    ok = (str2 = js_ValueToString(cx, rtmp)) != NULL;
+                    str = JSVAL_TO_STRING(lval);
+                    ok = (str2 = js_ValueToString(cx, rval)) != NULL;
                 } else {
-                    str2 = JSVAL_TO_STRING(rtmp);
-                    ok = (str = js_ValueToString(cx, ltmp)) != NULL;
+                    str2 = JSVAL_TO_STRING(rval);
+                    ok = (str = js_ValueToString(cx, lval)) != NULL;
                 }
                 if (!ok)
                     goto out;
@@ -2741,7 +2748,9 @@ js_Interpret(JSContext *cx, jsval *result)
 /*
  * Initially, rval contains the value to increment or decrement, which is not
  * yet converted.  As above, the expression result goes in rtmp, the updated
- * value goes in rval.
+ * value goes in rval.  Our caller must set vp to point at a GC-rooted jsval
+ * in which we home rtmp, to protect it from GC in case the unconverted rval
+ * is not a number.
  */
 #define NONINT_INCREMENT_OP()                                                 \
     JS_BEGIN_MACRO                                                            \
@@ -2752,6 +2761,7 @@ js_Interpret(JSContext *cx, jsval *result)
                 ok = js_NewNumberValue(cx, d, &rtmp);                         \
                 if (!ok)                                                      \
                     goto out;                                                 \
+                *vp = rtmp;                                                   \
             }                                                                 \
             (cs->format & JOF_INC) ? d++ : d--;                               \
             ok = js_NewNumberValue(cx, d, &rval);                             \
@@ -2763,6 +2773,20 @@ js_Interpret(JSContext *cx, jsval *result)
         if (!ok)                                                              \
             goto out;                                                         \
     JS_END_MACRO
+
+                if (cs->format & JOF_POST) {
+                    /*
+                     * We must push early to protect the postfix increment
+                     * or decrement result, if converted to a jsdouble from
+                     * a non-number value, from GC nesting in the setter.
+                     */
+                    vp = sp++;
+                    SAVE_SP(fp);
+                    --i;
+                }
+#ifdef __GNUC__
+                else vp = NULL; /* suppress bogus gcc warnings */
+#endif
 
                 NONINT_INCREMENT_OP();
             }
@@ -3644,8 +3668,8 @@ js_Interpret(JSContext *cx, jsval *result)
              * in the same compilation unit (ECMA Program).
              *
              * However, we could be in a Program being eval'd from inside a
-             * with statement, so we need to distinguish variables object from
-             * scope chain head.  Hence the two assignments to parent below.
+             * with statement, so we need to distinguish scope chain head from
+             * variables object.  Hence the obj2 vs. parent distinction below.
              * First we make sure the function object we're defining has the
              * right scope chain.  Then we define its name in fp->varobj.
              *
@@ -3667,14 +3691,22 @@ js_Interpret(JSContext *cx, jsval *result)
              * promote compile-cost sharing and amortizing, and because Script
              * is not and will not be standardized.
              */
-            parent = fp->scopeChain;
-            if (OBJ_GET_PARENT(cx, obj) != parent) {
-                obj = js_CloneFunctionObject(cx, obj, parent);
+            obj2 = fp->scopeChain;
+            if (OBJ_GET_PARENT(cx, obj) != obj2) {
+                obj = js_CloneFunctionObject(cx, obj, obj2);
                 if (!obj) {
                     ok = JS_FALSE;
                     goto out;
                 }
             }
+
+            /*
+             * Protect obj from any GC hiding below OBJ_DEFINE_PROPERTY.  All
+             * paths from here must flow through the "Restore fp->scopeChain"
+             * code below the OBJ_DEFINE_PROPERTY call.
+             */
+            fp->scopeChain = obj;
+            rval = OBJECT_TO_JSVAL(obj);
 
             /*
              * ECMA requires functions defined when entering Global code to be
@@ -3691,8 +3723,10 @@ js_Interpret(JSContext *cx, jsval *result)
              * in the property itself, not in obj->slots.
              */
             flags = fun->flags & (JSFUN_GETTER | JSFUN_SETTER);
-            if (flags)
+            if (flags) {
                 attrs |= flags | JSPROP_SHARED;
+                rval = JSVAL_VOID;
+            }
 
             /*
              * Check for a const property of the same name -- or any kind
@@ -3702,19 +3736,20 @@ js_Interpret(JSContext *cx, jsval *result)
              */
             parent = fp->varobj;
             ok = js_CheckRedeclaration(cx, parent, id, attrs, &cond);
-            if (!ok)
-                goto out;
+            if (ok) {
+                ok = OBJ_DEFINE_PROPERTY(cx, parent, id, rval,
+                                         (flags & JSFUN_GETTER)
+                                         ? (JSPropertyOp) obj
+                                         : NULL,
+                                         (flags & JSFUN_SETTER)
+                                         ? (JSPropertyOp) obj
+                                         : NULL,
+                                         attrs,
+                                         NULL);
+            }
 
-            ok = OBJ_DEFINE_PROPERTY(cx, parent, id,
-                                     flags ? JSVAL_VOID : OBJECT_TO_JSVAL(obj),
-                                     (flags & JSFUN_GETTER)
-                                     ? (JSPropertyOp) obj
-                                     : NULL,
-                                     (flags & JSFUN_SETTER)
-                                     ? (JSPropertyOp) obj
-                                     : NULL,
-                                     attrs,
-                                     NULL);
+            /* Restore fp->scopeChain now that obj is defined in fp->varobj. */
+            fp->scopeChain = obj2;
             if (!ok)
                 goto out;
             break;
@@ -3779,8 +3814,9 @@ js_Interpret(JSContext *cx, jsval *result)
              * of the Function object clone.
              */
             SAVE_SP(fp);
-            parent = js_ConstructObject(cx, &js_ObjectClass, NULL,
-                                        fp->scopeChain, 0, NULL);
+            obj2 = fp->scopeChain;
+            parent = js_ConstructObject(cx, &js_ObjectClass, NULL, obj2,
+                                        0, NULL);
             if (!parent) {
                 ok = JS_FALSE;
                 goto out;
@@ -3799,16 +3835,25 @@ js_Interpret(JSContext *cx, jsval *result)
             }
 
             /*
+             * Protect obj from any GC hiding below OBJ_DEFINE_PROPERTY.  All
+             * paths from here must flow through the "Restore fp->scopeChain"
+             * code below the OBJ_DEFINE_PROPERTY call.
+             */
+            fp->scopeChain = obj;
+            rval = OBJECT_TO_JSVAL(obj);
+
+            /*
              * 4. Create a property in the object Result(1).  The property's
              * name is [fun->atom, the identifier parsed by the compiler],
              * value is Result(3), and attributes are { DontDelete, ReadOnly }.
              */
             fun = (JSFunction *) JS_GetPrivate(cx, obj);
             attrs = fun->flags & (JSFUN_GETTER | JSFUN_SETTER);
-            if (attrs)
+            if (attrs) {
                 attrs |= JSPROP_SHARED;
-            ok = OBJ_DEFINE_PROPERTY(cx, parent, (jsid)fun->atom,
-                                     attrs ? JSVAL_VOID : OBJECT_TO_JSVAL(obj),
+                rval = JSVAL_VOID;
+            }
+            ok = OBJ_DEFINE_PROPERTY(cx, parent, (jsid)fun->atom, rval,
                                      (attrs & JSFUN_GETTER)
                                      ? (JSPropertyOp) obj
                                      : NULL,
@@ -3819,6 +3864,9 @@ js_Interpret(JSContext *cx, jsval *result)
                                      JSPROP_ENUMERATE | JSPROP_PERMANENT |
                                      JSPROP_READONLY,
                                      NULL);
+
+            /* Restore fp->scopeChain now that obj is defined in parent. */
+            fp->scopeChain = obj2;
             if (!ok) {
                 cx->newborn[GCX_OBJECT] = NULL;
                 goto out;
@@ -3852,14 +3900,22 @@ js_Interpret(JSContext *cx, jsval *result)
              * well-scoped function object.
              */
             SAVE_SP(fp);
-            parent = fp->scopeChain;
-            if (OBJ_GET_PARENT(cx, obj) != parent) {
-                obj = js_CloneFunctionObject(cx, obj, parent);
+            obj2 = fp->scopeChain;
+            if (OBJ_GET_PARENT(cx, obj) != obj2) {
+                obj = js_CloneFunctionObject(cx, obj, obj2);
                 if (!obj) {
                     ok = JS_FALSE;
                     goto out;
                 }
             }
+
+            /*
+             * Protect obj from any GC hiding below OBJ_DEFINE_PROPERTY.  All
+             * paths from here must flow through the "Restore fp->scopeChain"
+             * code below the OBJ_DEFINE_PROPERTY call.
+             */
+            fp->scopeChain = obj;
+            rval = OBJECT_TO_JSVAL(obj);
 
             /*
              * Make a property in fp->varobj with id fun->atom and value obj,
@@ -3868,18 +3924,24 @@ js_Interpret(JSContext *cx, jsval *result)
              */
             fun = (JSFunction *) JS_GetPrivate(cx, obj);
             attrs = fun->flags & (JSFUN_GETTER | JSFUN_SETTER);
-            if (attrs)
+            if (attrs) {
                 attrs |= JSPROP_SHARED;
-            ok = OBJ_DEFINE_PROPERTY(cx, fp->varobj, (jsid)fun->atom,
-                                     attrs ? JSVAL_VOID : OBJECT_TO_JSVAL(obj),
+                rval = JSVAL_VOID;
+            }
+            parent = fp->varobj;
+            ok = OBJ_DEFINE_PROPERTY(cx, parent, (jsid)fun->atom, rval,
                                      (attrs & JSFUN_GETTER)
                                      ? (JSPropertyOp) obj
                                      : NULL,
                                      (attrs & JSFUN_SETTER)
                                      ? (JSPropertyOp) obj
                                      : NULL,
-                                     attrs | JSPROP_ENUMERATE,
+                                     attrs | JSPROP_ENUMERATE
+                                           | JSPROP_PERMANENT,
                                      NULL);
+
+            /* Restore fp->scopeChain now that obj is defined in fp->varobj. */
+            fp->scopeChain = obj2;
             if (!ok) {
                 cx->newborn[GCX_OBJECT] = NULL;
                 goto out;

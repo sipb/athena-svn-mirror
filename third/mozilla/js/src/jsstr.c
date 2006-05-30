@@ -1,4 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: set ts=8 sw=4 et tw=80:
  *
  * ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -546,6 +547,8 @@ str_enumerate(JSContext *cx, JSObject *obj)
     str = js_ValueToString(cx, OBJECT_TO_JSVAL(obj));
     if (!str)
         return JS_FALSE;
+    cx->newborn[GCX_STRING] = (JSGCThing *)str;
+
     length = JSSTRING_LENGTH(str);
     for (i = 0; i < length; i++) {
         str1 = js_NewDependentString(cx, str, i, 1, 0);
@@ -572,6 +575,8 @@ str_resolve(JSContext *cx, JSObject *obj, jsval id)
     str = js_ValueToString(cx, OBJECT_TO_JSVAL(obj));
     if (!str)
         return JS_FALSE;
+    cx->newborn[GCX_STRING] = (JSGCThing *) str;
+
     slot = JSVAL_TO_INT(id);
     if ((size_t)slot < JSSTRING_LENGTH(str)) {
         str1 = js_NewDependentString(cx, str, (size_t)slot, 1, 0);
@@ -608,6 +613,8 @@ str_quote(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     str = js_ValueToString(cx, OBJECT_TO_JSVAL(obj));
     if (!str)
         return JS_FALSE;
+    argv[-1] = STRING_TO_JSVAL(str);
+
     str = js_QuoteString(cx, str, '"');
     if (!str)
         return JS_FALSE;
@@ -748,6 +755,8 @@ str_toLowerCase(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
     str = js_ValueToString(cx, OBJECT_TO_JSVAL(obj));
     if (!str)
         return JS_FALSE;
+    argv[-1] = STRING_TO_JSVAL(str);
+
     n = JSSTRING_LENGTH(str);
     news = (jschar *) JS_malloc(cx, (n + 1) * sizeof(jschar));
     if (!news)
@@ -779,6 +788,7 @@ str_toLocaleLowerCase(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
         str = js_ValueToString(cx, OBJECT_TO_JSVAL(obj));
         if (!str)
             return JS_FALSE;
+        argv[-1] = STRING_TO_JSVAL(str);
         return cx->localeCallbacks->localeToLowerCase(cx, str, rval);
     }
     return str_toLowerCase(cx, obj, 0, argv, rval);
@@ -795,6 +805,8 @@ str_toUpperCase(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
     str = js_ValueToString(cx, OBJECT_TO_JSVAL(obj));
     if (!str)
         return JS_FALSE;
+    argv[-1] = STRING_TO_JSVAL(str);
+
     n = JSSTRING_LENGTH(str);
     news = (jschar *) JS_malloc(cx, (n + 1) * sizeof(jschar));
     if (!news)
@@ -826,6 +838,7 @@ str_toLocaleUpperCase(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
         str = js_ValueToString(cx, OBJECT_TO_JSVAL(obj));
         if (!str)
             return JS_FALSE;
+        argv[-1] = STRING_TO_JSVAL(str);
         return cx->localeCallbacks->localeToUpperCase(cx, str, rval);
     }
     return str_toUpperCase(cx, obj, 0, argv, rval);
@@ -848,8 +861,10 @@ str_localeCompare(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
         thatStr = js_ValueToString(cx, argv[0]);
         if (!thatStr)
             return JS_FALSE;
-        if (cx->localeCallbacks && cx->localeCallbacks->localeCompare)
+        if (cx->localeCallbacks && cx->localeCallbacks->localeCompare) {
+            argv[0] = STRING_TO_JSVAL(thatStr);
             return cx->localeCallbacks->localeCompare(cx, str, thatStr, rval);
+        }
         *rval = INT_TO_JSVAL(js_CompareStrings(str, thatStr));
     }
     return JS_TRUE;
@@ -1140,7 +1155,9 @@ match_or_replace(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
             return JS_FALSE;
         reobj = NULL;
     }
+    /* From here on, all control flow must reach the matching DROP. */
     data->regexp = re;
+    HOLD_REGEXP(cx, re);
 
     if (re->flags & JSREG_GLOB)
         data->flags |= GLOBAL_REGEXP;
@@ -1156,23 +1173,23 @@ match_or_replace(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
         if (reobj) {
             /* Set the lastIndex property's reserved slot to 0. */
             ok = js_SetLastIndex(cx, reobj, 0);
-            if (!ok)
-                return JS_FALSE;
         } else {
             ok = JS_TRUE;
         }
-        length = JSSTRING_LENGTH(str);
-        for (count = 0; index <= length; count++) {
-            ok = js_ExecuteRegExp(cx, re, str, &index, JS_TRUE, rval);
-            if (!ok || *rval != JSVAL_TRUE)
-                break;
-            ok = glob(cx, count, data);
-            if (!ok)
-                break;
-            if (cx->regExpStatics.lastMatch.length == 0) {
-                if (index == length)
+        if (ok) {
+            length = JSSTRING_LENGTH(str);
+            for (count = 0; index <= length; count++) {
+                ok = js_ExecuteRegExp(cx, re, str, &index, JS_TRUE, rval);
+                if (!ok || *rval != JSVAL_TRUE)
                     break;
-                index++;
+                ok = glob(cx, count, data);
+                if (!ok)
+                    break;
+                if (cx->regExpStatics.lastMatch.length == 0) {
+                    if (index == length)
+                        break;
+                    index++;
+                }
             }
         }
     } else {
@@ -1213,6 +1230,7 @@ match_or_replace(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
         ok = js_ExecuteRegExp(cx, re, str, &index, test, rval);
     }
 
+    DROP_REGEXP(cx, re);
     if (reobj) {
         /* Tell our caller that it doesn't need to destroy data->regexp. */
         data->flags &= ~KEEP_REGEXP;
@@ -1221,6 +1239,7 @@ match_or_replace(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
         data->regexp = NULL;
         js_DestroyRegExp(cx, re);
     }
+
     return ok;
 }
 
@@ -1982,6 +2001,7 @@ str_substr(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     str = js_ValueToString(cx, OBJECT_TO_JSVAL(obj));
     if (!str)
         return JS_FALSE;
+    argv[-1] = STRING_TO_JSVAL(str);
 
     if (argc != 0) {
         if (!js_ValueToNumber(cx, argv[0], &d))
@@ -2328,6 +2348,7 @@ String(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
         str = js_ValueToString(cx, argv[0]);
         if (!str)
             return JS_FALSE;
+        argv[0] = STRING_TO_JSVAL(str);
     } else {
         str = cx->runtime->emptyString;
     }
@@ -4270,6 +4291,12 @@ Encode(JSContext *cx, JSString *str, const jschar *unescapedSet,
     static const char HexDigits[] = "0123456789ABCDEF"; /* NB: uppercase */
     JSString *R;
 
+    length = JSSTRING_LENGTH(str);
+    if (length == 0) {
+        *rval = STRING_TO_JSVAL(cx->runtime->emptyString);
+        return JS_TRUE;
+    }
+
     R = js_NewString(cx, NULL, 0, 0);
     if (!R)
         return JS_FALSE;
@@ -4277,7 +4304,6 @@ Encode(JSContext *cx, JSString *str, const jschar *unescapedSet,
     hexBuf[0] = '%';
     hexBuf[3] = 0;
     chars = JSSTRING_CHARS(str);
-    length = JSSTRING_LENGTH(str);
     for (k = 0; k < length; k++) {
         C = chars[k];
         if (js_strchr(unescapedSet, C) ||
@@ -4340,12 +4366,17 @@ Decode(JSContext *cx, JSString *str, const jschar *reservedSet, jsval *rval)
     JSString *R;
     intN j, n;
 
+    length = JSSTRING_LENGTH(str);
+    if (length == 0) {
+        *rval = STRING_TO_JSVAL(cx->runtime->emptyString);
+        return JS_TRUE;
+    }
+
     R = js_NewString(cx, NULL, 0, 0);
     if (!R)
         return JS_FALSE;
 
     chars = JSSTRING_CHARS(str);
-    length = JSSTRING_LENGTH(str);
     for (k = 0; k < length; k++) {
         C = chars[k];
         if (C == '%') {
@@ -4430,6 +4461,7 @@ str_decodeURI(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
     str = js_ValueToString(cx, argv[0]);
     if (!str)
         return JS_FALSE;
+    argv[0] = STRING_TO_JSVAL(str);
     return Decode(cx, str, js_uriReservedPlusPound_ucstr, rval);
 }
 
@@ -4442,6 +4474,7 @@ str_decodeURI_Component(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
     str = js_ValueToString(cx, argv[0]);
     if (!str)
         return JS_FALSE;
+    argv[0] = STRING_TO_JSVAL(str);
     return Decode(cx, str, js_empty_ucstr, rval);
 }
 
@@ -4454,6 +4487,7 @@ str_encodeURI(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
     str = js_ValueToString(cx, argv[0]);
     if (!str)
         return JS_FALSE;
+    argv[0] = STRING_TO_JSVAL(str);
     return Encode(cx, str, js_uriReservedPlusPound_ucstr, js_uriUnescaped_ucstr,
                   rval);
 }
@@ -4467,6 +4501,7 @@ str_encodeURI_Component(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
     str = js_ValueToString(cx, argv[0]);
     if (!str)
         return JS_FALSE;
+    argv[0] = STRING_TO_JSVAL(str);
     return Encode(cx, str, js_uriUnescaped_ucstr, NULL, rval);
 }
 

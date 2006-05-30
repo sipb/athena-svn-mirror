@@ -260,19 +260,30 @@ pref("capability.policy.default.Navigator.preferenceinternal.set", "UniversalPre
 
 pref("capability.policy.default.Window.blur.get", "allAccess");
 pref("capability.policy.default.Window.close.get", "allAccess");
-pref("capability.policy.default.Window.closed", "allAccess");
+pref("capability.policy.default.Window.closed.get", "allAccess");
 pref("capability.policy.default.Window.Components", "allAccess");
-pref("capability.policy.default.Window.document", "allAccess");
+pref("capability.policy.default.Window.document.get", "allAccess");
 pref("capability.policy.default.Window.focus.get", "allAccess");
-pref("capability.policy.default.Window.frames", "allAccess");
-pref("capability.policy.default.Window.history", "allAccess");
-pref("capability.policy.default.Window.length", "allAccess");
+pref("capability.policy.default.Window.frames.get", "allAccess");
+pref("capability.policy.default.Window.history.get", "allAccess");
+pref("capability.policy.default.Window.length.get", "allAccess");
 pref("capability.policy.default.Window.location", "allAccess");
-pref("capability.policy.default.Window.opener", "allAccess");
-pref("capability.policy.default.Window.parent", "allAccess");
-pref("capability.policy.default.Window.self", "allAccess");
-pref("capability.policy.default.Window.top", "allAccess");
-pref("capability.policy.default.Window.window", "allAccess");
+pref("capability.policy.default.Window.opener.get", "allAccess");
+pref("capability.policy.default.Window.parent.get", "allAccess");
+pref("capability.policy.default.Window.self.get", "allAccess");
+pref("capability.policy.default.Window.top.get", "allAccess");
+pref("capability.policy.default.Window.window.get", "allAccess");
+
+pref("capability.policy.default.XULControllers.commandDispatcher", "noAccess");
+pref("capability.policy.default.XULControllers.getControllerForCommand", "noAccess");
+pref("capability.policy.default.XULControllers.insertControllerAt", "noAccess");
+pref("capability.policy.default.XULControllers.removeControllerAt", "noAccess");
+pref("capability.policy.default.XULControllers.getControllerAt", "noAccess");
+pref("capability.policy.default.XULControllers.appendController", "noAccess");
+pref("capability.policy.default.XULControllers.removeController", "noAccess");
+pref("capability.policy.default.XULControllers.getControllerId", "noAccess");
+pref("capability.policy.default.XULControllers.getControllerById", "noAccess");
+pref("capability.policy.default.XULControllers.getControllerCount", "noAccess");
 
 // Restrictions on the DOM for mail/news - see bugs 66938 and 84545
 pref("capability.policy.mailnews.sites", "mailbox: imap: news:");
@@ -335,8 +346,8 @@ pref("capability.policy.mailnews.XMLHttpRequest.onerror", "noAccess");
 pref("capability.policy.mailnews.XMLHttpRequest.onreadystatechange", "noAccess");
 pref("capability.policy.mailnews.XMLSerializer.serializeToString", "noAccess");
 pref("capability.policy.mailnews.XMLSerializer.serializeToStream", "noAccess");
-pref("capability.policy.mailnews.DOMParser,parseFromString", "noAccess");
-pref("capability.policy.mailnews.DOMParser,parseFromStream", "noAccess");
+pref("capability.policy.mailnews.DOMParser.parseFromString", "noAccess");
+pref("capability.policy.mailnews.DOMParser.parseFromStream", "noAccess");
 pref("capability.policy.mailnews.SOAPCall.transportURI", "noAccess");
 pref("capability.policy.mailnews.SOAPCall.verifySourceHeader", "noAccess");
 pref("capability.policy.mailnews.SOAPCall.invoke", "noAccess");

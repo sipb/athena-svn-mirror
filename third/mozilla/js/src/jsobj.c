@@ -1,4 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: set ts=8 sw=4 et tw=80:
  *
  * ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -528,16 +529,13 @@ js_EnterSharpObject(JSContext *cx, JSObject *obj, JSIdArray **idap,
                 JS_ReportOutOfMemory(cx);
                 goto bad;
             }
-            *sp = NULL;
             sharpid = 0;
             goto out;
         }
     }
 
     sharpid = (jsatomid) he->value;
-    if (sharpid == 0) {
-        *sp = NULL;
-    } else {
+    if (sharpid != 0) {
         len = JS_snprintf(buf, sizeof buf, "#%u%c",
                           sharpid >> SHARP_ID_SHIFT,
                           (sharpid & SHARP_BIT) ? '#' : '=');
@@ -601,7 +599,7 @@ js_LeaveSharpObject(JSContext *cx, JSIdArray **idap)
     }
 }
 
-#define OBJ_TOSTRING_EXTRA      3       /* for 3 local GC roots */
+#define OBJ_TOSTRING_EXTRA      4       /* for 4 local GC roots */
 
 #if JS_HAS_INITIALIZERS || JS_HAS_TOSOURCE
 JSBool
@@ -622,7 +620,7 @@ js_obj_toSource(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
     JSProperty *prop;
     uintN attrs;
 #endif
-    jsval val[2];
+    jsval *val;
     JSString *gsop[2];
     JSAtom *atom;
     JSString *idstr, *valstr, *str;
@@ -693,6 +691,13 @@ js_obj_toSource(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
 
     comma = NULL;
 
+    /*
+     * We have four local roots for cooked and raw value GC safety.  Hoist the
+     * "argv + 2" out of the loop using the val local, which refers to the raw
+     * (unconverted, "uncooked") values.
+     */
+    val = argv + 2;
+
     for (i = 0, length = ida->length; i < length; i++) {
         /* Get strings for id and value and GC-root them via argv. */
         id = ida->vector[i];
@@ -760,7 +765,7 @@ js_obj_toSource(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
             ok = JS_FALSE;
             goto error;
         }
-        argv[0] = STRING_TO_JSVAL(idstr);
+        *rval = STRING_TO_JSVAL(idstr);         /* local root */
 
         /*
          * If id is a string that's a reserved identifier, or else id is not
@@ -775,7 +780,7 @@ js_obj_toSource(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
                 ok = JS_FALSE;
                 goto error;
             }
-            argv[0] = STRING_TO_JSVAL(idstr);
+            *rval = STRING_TO_JSVAL(idstr);     /* local root */
         }
         idstrchars = JSSTRING_CHARS(idstr);
         idstrlength = JSSTRING_LENGTH(idstr);
@@ -787,7 +792,7 @@ js_obj_toSource(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
                 ok = JS_FALSE;
                 goto error;
             }
-            argv[1+j] = STRING_TO_JSVAL(valstr);
+            argv[j] = STRING_TO_JSVAL(valstr);  /* local root */
             vchars = JSSTRING_CHARS(valstr);
             vlength = JSSTRING_LENGTH(valstr);
 
@@ -953,6 +958,28 @@ obj_valueOf(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     return JS_TRUE;
 }
 
+/*
+ * Check whether principals subsumes scopeobj's principals, and return true
+ * if so.
+ */
+JSBool
+js_CheckPrincipalsAccess(JSContext *cx, JSObject *scopeobj,
+                         JSPrincipals *principals, const char *caller)
+{
+    JSPrincipals *scopePrincipals;
+
+    if (cx->findObjectPrincipals) {
+        scopePrincipals = cx->findObjectPrincipals(cx, scopeobj);
+        if (!principals || !scopePrincipals ||
+            !principals->subsume(principals, scopePrincipals)) {
+            JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
+                                 JSMSG_BAD_INDIRECT_CALL, caller);
+            return JS_FALSE;
+        }
+    }
+    return JS_TRUE;
+}
+
 static JSBool
 obj_eval(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
@@ -962,7 +989,7 @@ obj_eval(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     JSString *str;
     const char *file;
     uintN line;
-    JSPrincipals *principals, *scopePrincipals;
+    JSPrincipals *principals;
     JSScript *script;
     JSBool ok;
 #if JS_HAS_EVAL_THIS_SCOPE
@@ -1008,6 +1035,12 @@ obj_eval(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
         if (indirectCall) {
             callerScopeChain = caller->scopeChain;
             if (obj != callerScopeChain) {
+                if (!js_CheckPrincipalsAccess(cx, obj,
+                                              caller->script->principals,
+                                              js_eval_str)) {
+                    return JS_FALSE;
+                }
+
                 scopeobj = js_NewObject(cx, &js_WithClass, obj,
                                         callerScopeChain);
                 if (!scopeobj)
@@ -1085,17 +1118,9 @@ obj_eval(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
      * Belt-and-braces: check that the lesser of eval's principals and the
      * caller's principals has access to scopeobj.
      */
-    if (principals && cx->findObjectPrincipals) {
-        scopePrincipals = cx->findObjectPrincipals(cx, scopeobj);
-        if (scopePrincipals &&
-            !principals->subsume(principals, scopePrincipals)) {
-            JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
-                                 JSMSG_BAD_INDIRECT_CALL, js_eval_str);
-            return JS_FALSE;
-        }
-    }
-
-    ok = js_Execute(cx, scopeobj, script, caller, JSFRAME_EVAL, rval);
+    ok = js_CheckPrincipalsAccess(cx, scopeobj, principals, js_eval_str);
+    if (ok)
+        ok = js_Execute(cx, scopeobj, script, caller, JSFRAME_EVAL, rval);
     JS_DestroyScript(cx, script);
 
 out:
@@ -1255,6 +1280,7 @@ obj_watch(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
     JSObject *funobj;
     JSFunction *fun;
+    JSStackFrame *caller;
     jsval userid, value;
     jsid propid;
     uintN attrs;
@@ -1266,8 +1292,15 @@ obj_watch(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
         if (!fun)
             return JS_FALSE;
         funobj = fun->object;
+        caller = JS_GetScriptedCaller(cx, cx->fp);
+        if (caller &&
+            !js_CheckPrincipalsAccess(cx, funobj,
+                                      caller->script->principals,
+                                      JS_GetFunctionName(fun))) {
+            return JS_FALSE;
+        }
+        argv[1] = OBJECT_TO_JSVAL(funobj);
     }
-    argv[1] = OBJECT_TO_JSVAL(funobj);
 
     /* Compute the unique int/atom symbol id needed by js_LookupProperty. */
     userid = argv[0];
@@ -1994,6 +2027,7 @@ js_ConstructObject(JSContext *cx, JSClass *clasp, JSObject *proto,
                    JSObject *parent, uintN argc, jsval *argv)
 {
     jsval cval, rval;
+    JSTempValueRooter tvr;
     JSObject *obj, *ctor;
 
     if (!FindConstructor(cx, parent, clasp->name, &cval))
@@ -2002,6 +2036,13 @@ js_ConstructObject(JSContext *cx, JSClass *clasp, JSObject *proto,
         js_ReportIsNotFunction(cx, &cval, JSV2F_CONSTRUCT | JSV2F_SEARCH_STACK);
         return NULL;
     }
+
+    /*
+     * Protect cval in case a crazy getter for .prototype uproots it.  After
+     * this point, all control flow must exit through label out with obj set.
+     */
+    JS_PUSH_SINGLE_TEMP_ROOT(cx, cval, &tvr);
+    obj = NULL;
 
     /*
      * If proto or parent are NULL, set them to Constructor.prototype and/or
@@ -2014,7 +2055,7 @@ js_ConstructObject(JSContext *cx, JSClass *clasp, JSObject *proto,
         if (!OBJ_GET_PROPERTY(cx, ctor,
                               (jsid)cx->runtime->atomState.classPrototypeAtom,
                               &rval)) {
-            return NULL;
+            goto out;
         }
         if (JSVAL_IS_OBJECT(rval))
             proto = JSVAL_TO_OBJECT(rval);
@@ -2022,14 +2063,19 @@ js_ConstructObject(JSContext *cx, JSClass *clasp, JSObject *proto,
 
     obj = js_NewObject(cx, clasp, proto, parent);
     if (!obj)
-        return NULL;
+        goto out;
 
-    if (!js_InternalConstruct(cx, obj, cval, argc, argv, &rval))
-        goto bad;
-    return JSVAL_IS_OBJECT(rval) ? JSVAL_TO_OBJECT(rval) : obj;
-bad:
-    cx->newborn[GCX_OBJECT] = NULL;
-    return NULL;
+    if (!js_InternalConstruct(cx, obj, cval, argc, argv, &rval)) {
+        cx->newborn[GCX_OBJECT] = NULL;
+        obj = NULL;
+        goto out;
+    }
+
+    if (!JSVAL_IS_PRIMITIVE(rval))
+        obj = JSVAL_TO_OBJECT(rval);
+out:
+    JS_POP_TEMP_ROOT(cx, &tvr);
+    return obj;
 }
 
 void
@@ -3408,13 +3454,13 @@ js_CheckAccess(JSContext *cx, JSObject *obj, jsid id, JSAccessMode mode,
      * checkObjectAccess hook.  This covers precompilation-based sharing and
      * (possibly unintended) runtime sharing across trust boundaries.
      */
-    clasp = LOCKED_OBJ_GET_CLASS(obj);
+    clasp = LOCKED_OBJ_GET_CLASS(pobj);
     check = clasp->checkAccess;
     if (!check)
         check = cx->runtime->checkObjectAccess;
     if (check) {
         JS_UNLOCK_OBJ(cx, pobj);
-        ok = check(cx, obj, ID_TO_VALUE(id), mode, vp);
+        ok = check(cx, pobj, ID_TO_VALUE(id), mode, vp);
         JS_LOCK_OBJ(cx, pobj);
     } else {
         ok = JS_TRUE;
