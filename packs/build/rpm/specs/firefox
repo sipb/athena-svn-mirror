@@ -1,0 +1,26 @@
+Name: firefox
+Summary: Mozilla Firefox Web browser
+License: MPL
+Group: Applications/Internet
+Version: 1.5.0.3
+Release: 1
+
+%description
+Mozilla Firefox is an open-source web browser, designed for standards
+compliance, performance and portability.  This is a repackaging of
+the binary release from mozilla.org for Athena.
+
+%define ffdir /usr/lib/firefox
+
+%pre
+# Clean up any existing components and extensions.
+rm -rf %{ffdir}/components
+rm -rf %{ffdir}/extensions
+
+%preun
+# If no instance of the package remains, clean up the components
+# and extensions directories.
+if [ $1 = 0 ]; then
+  rm -rf %{ffdir}/components
+  rm -rf %{ffdir}/extensions
+fi
