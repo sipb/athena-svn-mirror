@@ -1,4 +1,4 @@
-# $Id: packages,v 1.320 2006-03-10 21:29:45 ghudson Exp $
+# $Id: packages,v 1.321 2006-06-01 22:43:06 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -59,6 +59,7 @@ athena/bin/dent
 athena/bin/discuss		requires krb5,zephyr,ss,et
 athena/bin/dustbuster
 athena/bin/finger		requires hesiod,zephyr
+athena/bin/firefox-wrapper
 athena/bin/from			requires cyrus-imapd,perl
 athena/bin/gathlogout		requires gtk2
 athena/bin/gathrun
@@ -125,6 +126,7 @@ athena/lib/al			requires hesiod,openafs package libal
 athena/lib/ares
 athena/lib/athdir		package libathdir
 athena/lib/et			package libet
+athena/lib/firefox-extension
 athena/lib/gms			requires et
 athena/lib/hesiod
 athena/lib/larv			requires hesiod
@@ -160,7 +162,6 @@ third/evolution-data-server	requires gettext,intltool,openldap,libbonobo,ORBit2,
 third/expat			except linux
 third/file-roller		requires gettext,intltool,glib2,gtk2,libgnome,libgnomeui,gnome-vfs2,libglade2,libbonobo,libbonoboui,scrollkeeper
 third/findutils			on solaris
-third/firefox			requires libIDL,krb5
 third/gail			requires atk,gtk2,libgnomecanvas
 third/gaim			requires startup-notification,evolution,mozilla,gtk2,glib2,libao,zephyr
 third/gal			requires gnome-vfs,libglade,gdk-pixbuf
