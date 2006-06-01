@@ -1,0 +1,13 @@
+#!/bin/sh
+
+ffdir=$PKG_INSTALL_ROOT/opt/sfw/lib/firefox
+
+# Make sure the extension is installed in the firefox extensions
+# directory, and force an auto-registration.
+if [ -d $ffdir/extensions -a -f $ffdir/firefox-bin ]; then
+  rm -rf $ffdir/extensions/athena@mit.edu
+  ln -s /usr/athena/lib/firefox-extension $ffdir/extensions/athena@mit.edu
+  touch $ffdir/.autoreg
+fi
+
+exit 0

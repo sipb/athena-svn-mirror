@@ -1,0 +1,48 @@
+Name: athena-firefox-extension
+
+Summary: Athena customizations to the Mozilla Firefox Web browser.
+License: MIT
+Group: Applications/Internet
+
+Requires: firefox
+
+%description
+Mozilla Firefox is an open-source web browser, designed for standards
+compliance, performance and portability.  This package provides an
+extension which customizes the stock version of the browser for the
+Athena environment.
+
+%triggerin -- firefox
+# Make sure the extension is installed in all valid firefox directories.
+for d in /usr/lib/firefox* ; do
+  if [ -d $d/extensions -a -f $d/firefox-bin ]; then
+    rm -rf $d/extensions/athena@mit.edu
+    ln -s /usr/athena/lib/firefox-extension $d/extensions/athena@mit.edu
+    # Force an auto-registration.
+    touch $d/.autoreg
+  fi
+done
+
+%triggerpostun -- firefox
+# Handle the removal of a firefox instance:  Make sure we clean up our
+# extension symlink for any remaining firefox directory which is no
+# longer valid.
+for d in /usr/lib/firefox* ; do
+  if [ ! -f $d/firefox-bin ]; then
+    rm -rf $d/extensions/athena@mit.edu
+  fi
+done
+
+%preun
+# If no instance of this package remains, clean up any symlink made
+# in the triggerin script above.
+if [ $1 = 0 ]; then
+  for d in /usr/lib/firefox* ; do
+    # Force an auto-registration if we are actually removing the
+    # extension from a valid firefox directory.
+    if [ -e $d/extensions/athena@mit.edu -a -f $d/firefox-bin ]; then
+      touch $d/.autoreg
+    fi
+    rm -rf $d/extensions/athena@mit.edu
+  done
+fi

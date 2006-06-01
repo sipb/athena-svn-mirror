@@ -1,0 +1,3 @@
+PKG=MIT-firefox-extension
+NAME=Athena customizations to the Mozilla Firefox Web browser.
+DESC=An extension which customizes the stock version of the Mozilla Firefox browser for the Athena environment.

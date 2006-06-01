@@ -1,0 +1,10 @@
+#!/bin/sh
+
+ffdir=$PKG_INSTALL_ROOT/opt/sfw/lib/firefox
+
+rm -rf $ffdir/extensions/athena@mit.edu
+if [ -f $ffdir/firefox-bin ]; then
+  touch $ffdir/.autoreg
+fi
+
+exit 0
