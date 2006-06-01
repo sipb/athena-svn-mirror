@@ -1,0 +1,13 @@
+Name: athena-firefox-wrapper
+
+Summary: Wrapper to configure Mozilla Firefox Web browser for Athena
+License: MIT
+Group: Applications/Internet
+
+Requires: firefox
+Conflicts: athena-firefox
+
+%description
+This package provides a wrapper for the stock Mozilla Firefox web
+browser.  It handles disposing of stale profile locks, as well as
+configuring plugin and font directories for the Athena environment.
