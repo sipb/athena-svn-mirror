@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE overlay SYSTEM "chrome://athena/content/athena.dtd">
+<overlay id="athena" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <window id="main-window" titlemodifier="&mainWindow.titlemodifier;"/>
+
+  <menupopup id="menu_HelpPopup">
+    <menuseparator insertafter="aboutSeparator"/>
+    <menuitem id="foo" label="&athenaHelp.label;" insertafter="aboutSeparator"
+       oncommand="openUILink('&athenaHelp.url;', event, false, true);"/>
+  </menupopup>
+
+</overlay>

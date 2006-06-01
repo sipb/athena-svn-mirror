@@ -1,0 +1,53 @@
+# $Id: Makefile.in,v 1.1 2006-06-01 16:59:11 rbasch Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_SCRIPT=@INSTALL_SCRIPT@
+INSTALL_DATA=@INSTALL_DATA@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+
+ATHEXTDIR = ${libdir}/firefox-extension
+CHROMEDIR = ${ATHEXTDIR}/chrome
+CHROMESUBDIRS = content skin
+COMPONENTS_DIR = ${ATHEXTDIR}/components
+COMPONENTS_FILES = athenaService.js
+DEFAULTS_DIR = ${ATHEXTDIR}/defaults
+PREFS_DIR = ${DEFAULTS_DIR}/preferences
+PREFS_FILES = athena.js
+
+all: athena.jar chrome.manifest
+
+athena.jar:
+	cd chrome && jar -cf athena.jar ${CHROMESUBDIRS}
+
+chrome.manifest: chrome.manifest.in
+	sed -e 's|chrome/\([^/]*\)/|jar:chrome/athena.jar!/\1/|' \
+	  chrome.manifest.in > chrome.manifest
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${ATHEXTDIR}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${CHROMEDIR}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${COMPONENTS_DIR}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${PREFS_DIR}
+	${INSTALL_DATA} chrome/athena.jar ${DESTDIR}${CHROMEDIR}
+	${INSTALL_DATA} chrome.manifest ${DESTDIR}${ATHEXTDIR}
+	for i in ${COMPONENTS_FILES} ; do \
+	  ${INSTALL_DATA} "components/$$i" ${DESTDIR}${COMPONENTS_DIR} ; \
+	done
+	for i in ${PREFS_FILES} ; do \
+	  ${INSTALL_DATA} "defaults/preferences/$$i" ${DESTDIR}${PREFS_DIR} ; \
+	done
+	${INSTALL_DATA} install.rdf ${DESTDIR}${ATHEXTDIR}
+
+clean:
+
+distclean:
+	rm -f config.cache config.log config.status Makefile

@@ -1,0 +1,3 @@
+content	athena	chrome/content/
+skin	athena	default	chrome/skin/
+overlay	chrome://browser/content/browser.xul	chrome://athena/content/athena.xul
