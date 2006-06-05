@@ -1,5 +1,5 @@
 # Prototype global .bash_login file
-# $Id: bash_login,v 1.10 2004-10-24 18:14:44 ghudson Exp $
+# $Id: bash_login,v 1.11 2006-06-05 16:35:09 ghudson Exp $
 
 # This file is sourced by default user file ~/.bash_login
 
@@ -90,31 +90,6 @@ switch|network|dialup|unknown)
 	set -f; eval `tset -s -I -Q "?${DEF_TERM}"`; set +f
 	;;
 esac
-
-# If the login is on an X display but the DISPLAY variable has not 
-# been set, ask the user what the DISPLAY should be (e.g., rlogin)
-
-if [ "${DISPLAY+set}" != set ]; then
-	case $TERM in
-	xterm*)
-		echo -n "What DISPLAY are you using [default: none]? "
-		read response
-		if [ -n "$response" ]; then
-			export DISPLAY
-			case $response in
-			*:*)
-				echo "Setting DISPLAY to $response"
-				DISPLAY="$response"
-				;;
-			*)
-				echo "Setting DISPLAY to ${response}:0"
-				DISPLAY="${response}:0"
-				;;
-			esac
-		fi
-		;;
-	esac
-fi
 
 
 # *******************   ACTIVITY STARTUP   *******************
