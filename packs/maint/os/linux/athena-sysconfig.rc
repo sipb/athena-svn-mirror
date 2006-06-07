@@ -21,8 +21,13 @@ case "$1" in
 	/usr/sbin/kudzu -q && success "sysconfig" || failure "sysconfig"
 	RETVAL=$?
 	echo
-	# Revert xorg.conf if kudzu has changed it.
-	if [ -n "`find /etc/X11/xorg.conf -mmin -1`" ] \
+	# Reconfigure X for new installs under an old installer.
+	if test -f /var/athena/reconfigure-x-at-boot ; then
+	  echo "Reconfiguring X11 with default settings."
+	  system-config-display --reconfig --set-depth=24 --set-resolution=1280x1024
+	  rm -f /var/athena/reconfigure-x-at-boot
+	# Otherwise, revert xorg.conf if kudzu has changed it.
+	elif [ -n "`find /etc/X11/xorg.conf -mmin -1`" ] \
 	    && test -f /etc/X11/xorg.conf.backup ; then
 	  echo "xorg.conf has changed; saving new version as /etc/X11/xorg.conf.kudzunew"
 	  mv /etc/X11/xorg.conf /etc/X11/xorg.conf.kudzunew
