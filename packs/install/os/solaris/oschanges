@@ -1,6 +1,6 @@
 #!/sbin/sh
 # Undo any undesired changes resulting from the installation of OS pkgs.
-# $Id: oschanges,v 1.28 2006-06-01 17:07:34 rbasch Exp $
+# $Id: oschanges,v 1.29 2006-06-08 23:16:23 rbasch Exp $
 
 # Restore various files which belong to the OS, but which are replaced
 # in the Athena release.
@@ -68,7 +68,6 @@ fi
 ffdir=$UPDATE_ROOT/opt/sfw/lib/firefox
 if [ -f $ffdir/firefox-bin -a ! -h $ffdir/extensions/athena@mit.edu ]; then
   rm -rf $ffdir/extensions/athena@mit.edu
-  ln -s /usr/athena/lib/firefox/extensions/athena@mit.edu \
-    $ffdir/extensions/athena@mit.edu
+  ln -s /usr/athena/lib/firefox-extension $ffdir/extensions/athena@mit.edu
   touch $ffdir/.autoreg
 fi
