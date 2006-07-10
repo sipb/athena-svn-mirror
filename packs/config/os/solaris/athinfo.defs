@@ -31,7 +31,7 @@ partitions	prtvtoc `mount | sed -n -e 's/^\/ on \([^ ]*\).*$/\1/p'`
 df		df -F ufs -k
 interfaces	netstat -in
 routes		netstat -rn
-listeners	netstat -an -f inet -P tcp | grep 'LISTEN$'
+listeners	netstat -an -f inet -f inet6 -P tcp | grep 'LISTEN$'
 login		test -f /etc/nologin; echo $?
 cpuspeed	psrinfo -pv
 packages  	pkginfo
