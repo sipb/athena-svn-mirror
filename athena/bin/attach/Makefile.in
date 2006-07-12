@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.13 2005-03-12 17:29:49 ghudson Exp $
+# $Id: Makefile.in,v 1.14 2006-07-12 19:54:39 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -61,12 +61,12 @@ install:
 	rm -f ${DESTDIR}${lsbindir}/zinit
 	ln -s ${lbindir}/attach ${DESTDIR}${lsbindir}/zinit
 	${INSTALL} -m 755 atconvert ${DESTDIR}${sbindir}
-	${INSTALL} -m 644 add.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 attach.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 detach.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 fsid.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 nfsid.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 zinit.8 ${DESTDIR}${mandir}/man8
+	${INSTALL} -m 644 ${srcdir}/add.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 644 ${srcdir}/attach.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 644 ${srcdir}/detach.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 644 ${srcdir}/fsid.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 644 ${srcdir}/nfsid.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 644 ${srcdir}/zinit.8 ${DESTDIR}${mandir}/man8
 
 clean:
 	rm -f ${ATTACH_OBJS} attach
