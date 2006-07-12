@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.18 2005-03-11 19:59:41 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.19 2006-07-12 19:53:04 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -70,7 +70,7 @@ dnl is a com_err library in the AFS libraries which requires -lutil.
 
 dnl ----- com_err -----
 
-AC_DEFUN(ATHENA_UTIL_COM_ERR,
+AC_DEFUN([ATHENA_UTIL_COM_ERR],
 [AC_ARG_WITH(com_err,
 	[  --with-com_err=PREFIX   Specify location of com_err],
 	[com_err="$withval"], [com_err=yes])
@@ -87,7 +87,7 @@ fi])
 
 dnl ----- ss -----
 
-AC_DEFUN(ATHENA_UTIL_SS,
+AC_DEFUN([ATHENA_UTIL_SS],
 [AC_ARG_WITH(ss,
 	[  --with-ss=PREFIX        Specify location of ss (requires com_err)],
 	[ss="$withval"], [ss=yes])
@@ -106,7 +106,7 @@ fi])
 
 dnl ----- Regular expressions -----
 
-AC_DEFUN(ATHENA_REGEXP,
+AC_DEFUN([ATHENA_REGEXP],
 [AC_ARG_WITH(regex,
 	[  --with-regex=PREFIX     Use installed regex library],
 	[regex="$withval"], [regex=no])
@@ -125,14 +125,14 @@ AC_SUBST(REGEX_LIBS)])
 
 dnl ----- Motif -----
 
-AC_DEFUN(ATHENA_MOTIF_CHECK,
+AC_DEFUN([ATHENA_MOTIF_CHECK],
 [if test "$motif" != yes; then
 	CPPFLAGS="$CPPFLAGS -I$motif/include"
 	LDFLAGS="$LDFLAGS -L$motif/lib"
 fi
 AC_CHECK_LIB(Xm, XmStringFree, :, [AC_MSG_ERROR(Motif library not found)])])
 
-AC_DEFUN(ATHENA_MOTIF,
+AC_DEFUN([ATHENA_MOTIF],
 [AC_ARG_WITH(motif,
 	[  --with-motif=PREFIX     Use Motif],
 	[motif="$withval"], [motif=no])
@@ -143,7 +143,7 @@ if test "$motif" != no; then
 fi
 AC_SUBST(MOTIF_LIBS)])
 
-AC_DEFUN(ATHENA_MOTIF_REQUIRED,
+AC_DEFUN([ATHENA_MOTIF_REQUIRED],
 [AC_ARG_WITH(motif,
 	[  --with-motif=PREFIX     Specify location of Motif],
 	[motif="$withval"], [motif=yes])
@@ -155,7 +155,7 @@ fi])
 
 dnl ----- AFS -----
 
-AC_DEFUN(ATHENA_AFS_CHECK,
+AC_DEFUN([ATHENA_AFS_CHECK],
 [AC_CHECK_FUNC(insque, :, AC_CHECK_LIB(compat, insque))
 AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
 AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
@@ -170,7 +170,7 @@ AFS_DIR=$afs
 AC_SUBST(AFS_DIR)])
 
 dnl Specify desired AFS libraries as a parameter.
-AC_DEFUN(ATHENA_AFS,
+AC_DEFUN([ATHENA_AFS],
 [AC_ARG_WITH(afs,
 	[  --with-afs=PREFIX       Use AFS libraries],
 	[afs="$withval"], [afs=no])
@@ -181,7 +181,7 @@ if test "$afs" != no; then
 fi
 AC_SUBST(AFS_LIBS)])
 
-AC_DEFUN(ATHENA_AFS_REQUIRED,
+AC_DEFUN([ATHENA_AFS_REQUIRED],
 [AC_ARG_WITH(afs,
 	[  --with-afs=PREFIX       Specify location of AFS libraries],
 	[afs="$withval"], [afs=/usr/afsws])
@@ -193,7 +193,7 @@ fi])
 
 dnl ----- Kerberos 4 -----
 
-AC_DEFUN(ATHENA_KRB4_CHECK,
+AC_DEFUN([ATHENA_KRB4_CHECK],
 [AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
 AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
 AC_CHECK_LIB(gen, compile)
@@ -212,7 +212,7 @@ AC_CHECK_LIB(krb4, krb_rd_req,
 			   -ldes)],
 	     -ldes425 -lkrb5 -lk5crypto -lcom_err)])
 
-AC_DEFUN(ATHENA_KRB4,
+AC_DEFUN([ATHENA_KRB4],
 [AC_ARG_WITH(krb4,
 	[  --with-krb4=PREFIX      Use Kerberos 4],
 	[krb4="$withval"], [krb4=no])
@@ -222,7 +222,7 @@ if test "$krb4" != no; then
 fi
 AC_SUBST(KRB4_LIBS)])
 
-AC_DEFUN(ATHENA_KRB4_REQUIRED,
+AC_DEFUN([ATHENA_KRB4_REQUIRED],
 [AC_ARG_WITH(krb4,
 	[  --with-krb4=PREFIX      Specify location of Kerberos 4],
 	[krb4="$withval"], [krb4=yes])
@@ -235,7 +235,7 @@ fi])
 
 dnl ----- Kerberos 5 -----
 
-AC_DEFUN(ATHENA_KRB5_CHECK,
+AC_DEFUN([ATHENA_KRB5_CHECK],
 [AC_SEARCH_LIBS(gethostbyname, nsl)
 AC_SEARCH_LIBS(socket, socket)
 AC_CHECK_LIB(gen, compile)
@@ -247,7 +247,7 @@ AC_CHECK_LIB(krb5, krb5_init_context, :,
 	     [AC_MSG_ERROR(Kerberos 5 libraries not found)],
 	     -lk5crypto -lcom_err)])
 
-AC_DEFUN(ATHENA_KRB5,
+AC_DEFUN([ATHENA_KRB5],
 [AC_ARG_WITH(krb5,
 	[  --with-krb5=PREFIX      Use Kerberos 5],
 	[krb5="$withval"], [krb5=no])
@@ -258,7 +258,7 @@ if test "$krb5" != no; then
 fi
 AC_SUBST(KRB5_LIBS)])
 
-AC_DEFUN(ATHENA_KRB5_REQUIRED,
+AC_DEFUN([ATHENA_KRB5_REQUIRED],
 [AC_ARG_WITH(krb5,
 	[  --with-krb5=PREFIX      Specify location of Kerberos 5],
 	[krb5="$withval"], [krb5=yes])
@@ -270,7 +270,7 @@ fi])
 
 dnl ----- Hesiod -----
 
-AC_DEFUN(ATHENA_HESIOD_CHECK,
+AC_DEFUN([ATHENA_HESIOD_CHECK],
 [AC_CHECK_FUNC(res_send, :, AC_CHECK_LIB(resolv, res_send))
 if test "$hesiod" != yes; then
 	CPPFLAGS="$CPPFLAGS -I$hesiod/include"
@@ -279,7 +279,7 @@ fi
 AC_CHECK_LIB(hesiod, hes_resolve, :,
 	     [AC_MSG_ERROR(Hesiod library not found)])])
 
-AC_DEFUN(ATHENA_HESIOD,
+AC_DEFUN([ATHENA_HESIOD],
 [AC_ARG_WITH(hesiod,
 	[  --with-hesiod=PREFIX    Use Hesiod],
 	[hesiod="$withval"], [hesiod=no])
@@ -290,7 +290,7 @@ if test "$hesiod" != no; then
 fi
 AC_SUBST(HESIOD_LIBS)])
 
-AC_DEFUN(ATHENA_HESIOD_REQUIRED,
+AC_DEFUN([ATHENA_HESIOD_REQUIRED],
 [AC_ARG_WITH(hesiod,
 	[  --with-hesiod=PREFIX    Specify location of Hesiod],
 	[hesiod="$withval"], [hesiod=yes])
@@ -302,7 +302,7 @@ fi])
 
 dnl ----- libares -----
 
-AC_DEFUN(ATHENA_ARES_CHECK,
+AC_DEFUN([ATHENA_ARES_CHECK],
 [AC_CHECK_FUNC(res_send, :, AC_CHECK_LIB(resolv, res_send))
 if test "$ares" != yes; then
 	CPPFLAGS="$CPPFLAGS -I$ares/include"
@@ -310,7 +310,7 @@ if test "$ares" != yes; then
 fi
 AC_CHECK_LIB(ares, ares_init, :, [AC_MSG_ERROR(libares not found)])])
 
-AC_DEFUN(ATHENA_ARES,
+AC_DEFUN([ATHENA_ARES],
 [AC_ARG_WITH(ares,
 	[  --with-ares=PREFIX      Use libares],
 	[ares="$withval"], [ares=no])
@@ -321,7 +321,7 @@ if test "$ares" != no; then
 fi
 AC_SUBST(ARES_LIBS)])
 
-AC_DEFUN(ATHENA_ARES_REQUIRED,
+AC_DEFUN([ATHENA_ARES_REQUIRED],
 [AC_ARG_WITH(ares,
 	[  --with-ares=PREFIX      Specify location of libares],
 	[ares="$withval"], [ares=yes])
@@ -332,14 +332,14 @@ else
 fi])
 dnl ----- zephyr -----
 
-AC_DEFUN(ATHENA_ZEPHYR_CHECK,
+AC_DEFUN([ATHENA_ZEPHYR_CHECK],
 [if test "$zephyr" != yes; then
 	CPPFLAGS="$CPPFLAGS -I$zephyr/include"
 	LDFLAGS="$LDFLAGS -L$zephyr/lib"
 fi
 AC_CHECK_LIB(zephyr, ZFreeNotice, :, [AC_MSG_ERROR(zephyr not found)])])
 
-AC_DEFUN(ATHENA_ZEPHYR,
+AC_DEFUN([ATHENA_ZEPHYR],
 [AC_ARG_WITH(zephyr,
 	[  --with-zephyr=PREFIX      Use zephyr],
 	[zephyr="$withval"], [zephyr=no])
@@ -350,7 +350,7 @@ if test "$zephyr" != no; then
 fi
 AC_SUBST(ZEPHYR_LIBS)])
 
-AC_DEFUN(ATHENA_ZEPHYR_REQUIRED,
+AC_DEFUN([ATHENA_ZEPHYR_REQUIRED],
 [AC_ARG_WITH(zephyr,
 	[  --with-zephyr=PREFIX      Specify location of zephyr],
 	[zephyr="$withval"], [zephyr=yes])
