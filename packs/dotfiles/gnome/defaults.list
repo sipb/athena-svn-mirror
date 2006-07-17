@@ -5,3 +5,7 @@ application/vnd.ms-excel=athena-office.desktop
 application/vnd.ms-powerpoint=athena-office.desktop
 application/vnd.ms-word=athena-office.desktop
 text/html=athena-web.desktop
+audio/x-pn-realaudio=realplay.desktop
+audio/vnd.rn-realaudio=realplay.desktop
+video/vnd.rn-realvideo=realplay.desktop
+application/vnd.rn-realmedia=realplay.desktop

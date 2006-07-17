@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 2005-05-31 14:09:56 rbasch Exp $
+# $Id: Makefile,v 1.5 2006-07-17 23:08:52 rbasch Exp $
 
 PIXMAPDIR=/usr/athena/share/pixmaps
 GNOMEATHDIR=/usr/athena/share/gnome/athena
@@ -47,6 +47,7 @@ install:
 	install -c -m 0644 athena-office.desktop ${DESTDIR}${APPLICATIONS}
 	install -c -m 0644 athena-pdf.desktop ${DESTDIR}${APPLICATIONS}
 	install -c -m 0644 athena-web.desktop ${DESTDIR}${APPLICATIONS}
+	install -c -m 0644 realplay.desktop ${DESTDIR}${APPLICATIONS}
 	install -c -m 0644 defaults.list ${DESTDIR}${APPLICATIONS}
 
 clean:
