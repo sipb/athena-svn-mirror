@@ -42,3 +42,5 @@ psnup		psutils
 psplot		psutils
 psrev		psutils
 psroff		psutils
+
+realplay	infoagents

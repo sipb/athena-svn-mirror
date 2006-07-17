@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.61 2005-10-27 14:47:46 rbasch Exp $
+# $Id: Makefile,v 1.62 2006-07-17 23:10:09 rbasch Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -10,7 +10,7 @@ ATTACHRUN=acroread addusr blanche chfn chpobox chsh dcmmaint gs gv lastlog \
 	stella usermaint show-application show-audio show-binhex show-excel \
 	show-image show-msword show-pdf show-postscript show-text show-video \
 	store-binhex afmdit pscat pscatmap psdit psdraft pslpr psnup psplot \
-	psrev psroff
+	psrev psroff realplay
 MOIRA=/afs/athena.mit.edu/system/moira
 MKSERV=/afs/athena.mit.edu/system/mkserv
 TELLME=/afs/athena.mit.edu/system/config/tellme
@@ -163,6 +163,7 @@ install:
 	install -c -m 555 psplot ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 psrev ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 psroff ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 realplay ${DESTDIR}${ATHBINDIR}
 	@set ${SYMLINKS}; while [ $$# -ne 0 ]; do \
 		echo rm -f ${DESTDIR}$$2; \
 		rm -f ${DESTDIR}$$2; \
