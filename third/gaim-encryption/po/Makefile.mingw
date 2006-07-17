@@ -1,0 +1,91 @@
+# Makefile.mingw
+# 
+# Description: Makefile to generate mo files
+#
+
+PACKAGE = gaim-encryption
+
+##
+## PATHS
+##
+
+srcdir = .
+GAIM_TOP = ../../..
+GE_TOP := ..
+
+GAIM_INSTALL_DIR = $(GAIM_TOP)/win32-install-dir
+STANDALONE_INSTALL_DIR :=  $(GE_TOP)/win32-install-dir
+
+LOCALEDIR = $(GAIM_INSTALL_DIR)/locale
+STANDALONELOCALEDIR = $(STANDALONE_INSTALL_DIR)/locale
+
+GTK_BIN = $(GAIM_TOP)/../win32-dev/gtk_2_0/bin
+
+##
+## TOOLS
+##
+
+GMSGFMT = $(GTK_BIN)/msgfmt
+
+
+.SUFFIXES:
+.SUFFIXES: .po .gmo
+
+
+##
+## SOURCES, OBJECTS
+##
+
+CATALOGS = $(patsubst %.po,%.gmo,$(wildcard *.po))
+
+##
+## RULES
+##
+
+.po.gmo:
+	rm -f $@ && $(GMSGFMT) --statistics -o $@ $<
+
+
+##
+## TARGETS
+##
+
+
+all: $(CATALOGS)
+
+install: all
+	mkdir -p $(LOCALEDIR)
+	@catalogs='$(CATALOGS)'; \
+	for cat in $$catalogs; do \
+	  cat=`basename $$cat`; \
+	  lang=`echo $$cat | sed 's/\.gmo$$//'`; \
+	  dir=$(LOCALEDIR)/$$lang/LC_MESSAGES; \
+	  mkdir -p $$dir; \
+	  if test -r $$cat; then \
+	    cp $$cat $$dir/$(PACKAGE).mo; \
+	    echo "installing $$cat as $$dir/$(PACKAGE).mo"; \
+	  else \
+	    cp $(srcdir)/$$cat $$dir/$(PACKAGE).mo; \
+	    echo "installing $(srcdir)/$$cat as" \
+		 "$$dir/$(PACKAGE).mo"; \
+	  fi; \
+	done
+	mkdir -p $(STANDALONELOCALEDIR)
+	@catalogs='$(CATALOGS)'; \
+	for cat in $$catalogs; do \
+	  cat=`basename $$cat`; \
+	  lang=`echo $$cat | sed 's/\.gmo$$//'`; \
+	  dir=$(STANDALONELOCALEDIR)/$$lang/LC_MESSAGES; \
+	  mkdir -p $$dir; \
+	  if test -r $$cat; then \
+	    cp $$cat $$dir/$(PACKAGE).mo; \
+	    echo "installing $$cat as $$dir/$(PACKAGE).mo"; \
+	  else \
+	    cp $(srcdir)/$$cat $$dir/$(PACKAGE).mo; \
+	    echo "installing $(srcdir)/$$cat as" \
+		 "$$dir/$(PACKAGE).mo"; \
+	  fi; \
+	done
+
+clean:
+	rm -f *.gmo

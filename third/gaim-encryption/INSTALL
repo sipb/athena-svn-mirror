@@ -1,0 +1,49 @@
+====================
+Release version:
+====================
+
+First, unpack the plugin, and cd to its directory.
+
+Running ./configure:
+
+  If you have Gaim installed in a system directory, you should be able to just run
+  ./configure
+
+  If you have Gaim installed in /usr/local, you may need to add /usr/local/lib/pkgconfig
+  to your PKG_CONFIG_PATH environment variable first.  So run it like
+
+  PKG_CONFIG_PATH=$(PKG_CONFIG_PATH):/usr/local/lib/pkgconfig ./configure
+
+  If your NSS/NSPR libraries are installed somewhere random, you may need to add
+  something else to your PKG_CONFIG_PATH for them, or use one of the configure options:
+
+--with-nspr-includes=PATH
+  Specify the location of the Mozilla NSPR include files.  Make sure that
+  they're installed (mozilla-nspr-devel is the Redhat package, for example).
+  PATH should be where the nspr.h header file was installed to.
+
+--with-nss-includes=PATH
+  Ditto, but the Mozilla NSS include files.  Redhat package is
+  mozilla-nss-devel.  Look for nssbase.h
+
+--with-nspr-libs=PATH
+  Specify the location of the NSPR runtime libraries (libnspr4.so or
+  libnspr4.a)
+
+--with-nss-libs=PATH
+  Specify the location of the NSS runtime libraries (libnss3.so or
+  libnss3.a)
+
+If you specified a --prefix when compiling Gaim, you should specify it for the plugin as well.
+
+NOTE:  If you update Gaim, you should re-compile and re-install the plugin, otherwise
+you will probably see some strange behavior.
+
+
+==============
+CVS version:
+==============
+
+First run ./autogen.sh
+
+Then follow the above instructions.
