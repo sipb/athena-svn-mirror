@@ -1,0 +1,230 @@
+     2.38    Added #defines for older gtk to bypass gstdio
+             Fixed flags on outgoing key messages to avoid un-idling
+             Changed default auto-accept of unknown keys to false.
+             Fixed debug output for version warning (Daniel Atallah)
+
+     2.37    Bugfix for possible double-free of buffer
+             Bugfix for preference directories with unicode chars
+             Relaxed checks on Gaim version to allow minor version bumps
+             Same relaxed checks on the Win32 installer (Daniel Atallah)
+             Change to intl code to compile on Solaris (Jonathan Wang)
+
+     2.36    Bugfix for users who use a non-default prefs directory
+             Bugfix for Windows 2000
+
+     2.35    Workaround for Jabber bug in Gaim
+
+     2.34    Bugfix for crash with old key files
+
+     2.33    Added better key dialogs
+             Bugfix for mangled incoming keys (Miah Gregory)
+             Bugfix in name escaping code that affected Meanwhile users
+             
+             Hungarian translation added (Peter Tutervai)
+             Czech translation added (Lubos Stanek)
+             Chinese (trad) translation added (Tim Hsu)
+             Russian translation added (Roman Sosenko)
+             Ukranian translation added (Roman Sosenko)
+
+     2.32    Slovenian translation added (Martin Srebotnjak)
+             Portugese translation added (Aury Fink Filho)
+             Workaround for Debian not supporting NSS
+             No debug output in unload to avoid Win32 crash on exit.
+
+     2.31    Dutch translation added (Menno Jonkers)
+             Japanese translation added (Takeshi AIHANA)
+             Italian translation added (Giacomo Succi)
+             Danish translation added (Morten Brix Pedersen)
+             Spanish translation added (Javier Fernández-Sanguino Peña)
+             Changes to track the Gaim API (thanks Giacomo Succi, JP LaFleur,
+               and Daniel Caujolle-Bert)
+
+     2.30    Gaim API tracking in button code (Stu Tomlinson)
+             Bugfix for plugin unloading (Stu Tomlinson)
+             Fix for translation in prefs strings (pre-plugin load)
+
+     2.29    Polish translation added (Marek Habersack)
+             German translation added (Karim Malhas)
+
+     2.28    French translation added (Davy Defaud)
+             Fixes for Gaim 0.80 API (Daniel Atallah)
+             Bugfix for improper HTML-izing of unencrypted messages
+
+     2.27    Changes for Gaim 0.79 API.
+             Minor bugfixes
+
+     2.26    New lock icons
+             Auto-enlarge the default IM window size if plugin has never
+               been loaded before
+             Don't put icons on chat windows
+             Fixes to make compatible with Gaim 0.78 BList API changes
+               (Courtesy of Stu Tomlinson)
+             Fix to make more compatible with other plugins
+               (Courtesy of Casey Ho)      
+             Added MSN message length limit.
+
+     2.25    Compatible with new Gaim 0.77 plugin API.
+             Fix for bug where old keys were not deleted when regenerated.
+             Can now copy key fingerprints to clipboard from dialog.
+
+     2.24    Fixed a bug that caused crash on encrypted message received when no
+               window was currently open.
+
+     2.23    Gaim 0.76 now removes or mangles HTML in most protocols.  So, there is
+               now a table of what header to use for each protocol, with the default
+               being a non-html header.  ICQ is tricky, since AIM does allow HTML,
+               and ICQ doesn't.  So ICQ gets the HTML headers, but we check to see
+               if they got escaped on the way in to Gaim.  A side effect of all this
+               is that it is now safer to have Broadcast/Notify on, since it does
+               nothing for most protocols that don't have native HTML.
+             Changes to the configuration files to avoid hassles from duplicate
+               PACKAGE_XXX vars from the gaim config.h.
+
+     2.22    Now attaches protocol to username, so the plugin doesn't get confused
+               if you talk to BoB151 on AIM and BoB151 on MSN.  This also robustifies
+               some of the other conversation-finding code, for changing the lock icons,
+               for example.  This is a good thing.  Only problem- old keys (in the
+               known_keys file) won't have the protocol attached, so users will see
+               the "Unknown key" for each buddy.
+             Fixes for some crashes in parsing mangled header code.  Thanks to
+               Michael Wright for finding the problem.
+             Fix for using HKCU vs HKLM rights on Windows install.
+
+     2.21    Another bugfix for updated NSS versions (esp 3.9 that ships with
+               Gaim 0.75 on Windows)
+
+     2.20    Bugfix for gcc < 2.7.x
+             More config updates and code simplification, courtesy of Daniel Atallah
+             Should be functionally identical to 2.19, if 2.19 compiled for you
+
+     2.19    Updated for Gaim API 0.75
+             Those API changes allow better startup of NSS, which may solve some problems
+               for MSN users.
+             Changes to the way config is handled internally (Daniel Atallah)
+             Gettext-friendlier code (Daniel Atallah)
+             Bugfix for Mozilla 1.6b compatibility             
+
+     2.18    New Windows installer (standalone now).  Thanks Mike Campell and Daniel Atallah
+             Detects protocol now, and shortens max message length for conversations on
+               Yahoo.  Also estimates message lengths correctly now.
+             More defensiveness for buddy list crashes.
+
+     2.17    Added some defensiveness to avoid a crash in Gaim when asking for certain
+               buddy info.
+	
+     2.16    Updated for Gaim API 0.72
+             Fix for conversation close of non-buddy -> crash
+             Hopeful fix for condition when you recieve a bad nonce
+               but don't have a conversation window open for that person
+               (caused lost message).
+
+     2.15    Updated for Gaim API 0.71
+             Added receive sounds when popping up key dialog boxes.
+
+     2.14    Fixed typo in configure file for folks who need to use --with-nspr-includes
+
+     2.13    Updated calls to send and write functions for changed Gaim API.
+             Works with 0.70
+
+     2.12    Updated blist to work with Gaim 0.69
+             Added check on compiled vs. running Gaim versions
+             Grabbed Gaim configure.ac's section on NSS/NSPR
+
+     2.11    Fix for code that doesn't compile on older gcc
+
+     2.10    Updates to event/signal system (for Gaim 0.68 release)
+             Work around bug in gtkblist signal
+
+     2.09    Added Auto-Encrypt feature
+             Fixed --with-nss-libs spec
+
+     2.08    Ditto of 2.06 (doh!)
+
+     2.07    Changes to configure system to include "." as an appended
+               directory to try.
+             Fix for case when user clicks on "No" when asked about
+               accepting a key.
+             Better handling of queued away messages.  Now, if keys are known ahead
+               of time, it should just work.  Conversation windows only get auto-opened
+               as a last resort.
+             On conversation close, any queued outgoing messages that are awaiting a key
+               are now deleted.  This follows what a user would expect, since the message
+               hasn't been displayed in the outgoing window yet.
+             Refactored widget/capable/tx-rx-encryption-status code.  Not a huge impact
+               on behavior at present (except enabling better queued message support).
+               Will enable cool new options in the future, like remembering whether to
+               encrypt to a given buddy.
+
+
+     2.06    Oops, some ./configure type files were missing last release.
+             No actual changes, just a full release this time.
+
+     2.05    New "standalone" configure system (thanks Jeff Squyres!)
+             Updates to make compatible with 0.67
+
+     2.04    Changed broadcast header to break compatibility with 1.x plugin
+
+     2.03    Fixed problems that occured with new accounts.
+             Now caches sent messages, and re-sends if there was a nonce problem
+               (no more "garbled message" indications if a buddy logs out and logs
+                back in in the middle of a conversation).
+             Fixed icon problem that caused crashes on some platforms.
+
+     2.02    Fix mem leak/double free.
+             Tweak to configure.
+
+     2.01    Fixed Yahoo problem
+             Fixed (finally?!?) Jabber problem
+             Better configure/makefile stuff, including NSS/NSPR location guessing.
+
+     2.00    Better detection of NSS and NSPR libraries.
+             Fixed crash on bad Base64 data.
+             Hopefully improved Jabber compatibility.
+
+     2.0beta Now uses Mozilla NSS libs the RSA encryption.
+             Added a windowed nonce to each message to avoid a replay attack.
+             Trimmed message header/footer.
+             Base64 instead of Base16 encoding of keys and messages. 
+
+     1.20   Bugfix for key file reading
+            Updated to new Gaim debug logging
+
+     1.19   Gaim 0.63 compatible release: new plugin API in Gaim.
+            Only sends notification message once per conversation now.
+            Defaults to displaying incoming key and asking if user
+              wants to accept it.
+            Displays keys using a hash (aka fingerprint) rather than
+              displaying high bytes of key.
+
+     1.18   Gaim 0.61 compatible release.
+
+     1.17   Gaim 0.60 compatible release.
+
+     1.16   Fixed bug that could allow remote user to crash Gaim, or
+            worse.
+
+     1.14   Stuff added to config dialog.  Now does broadcast/
+            detection of other Gaim-Encryption plugin users.
+            Fixed problem with tabbed windows.
+                                                           
+     1.13   Now has config dialog, and prompts for key saving.  Oh,
+            and it's saving keys in files! (ok, that went in between
+            1.11 and 1.12)
+
+     1.12   Now uses OpenSSL crypto libraries.
+
+     1.11   Gaim-0.54 changed the interface to serv_send_im, breaking  
+            1.10.  Also, gcc2.95.3 doesn't like unnamed unions, while  
+            gcc2.96.x don't mind them.  Now works with either.         
+                                                                       
+     1.10:  Refactored some, and moved all the RSA specific code into  
+            rsa.c.  Now should be much easier to add other types of    
+            encryption routines, basically as sub-plugins.             
+            This did break compatibility with the 1.0x releases though 
+                                                                       
+     1.01:  Fixed bug that resulted in dropping the "Encrypted" button 
+            (with resulting crash).  Also set up to use a new (?)      
+            interface function so that we encrypt after everything     
+            else happens (now works with spellcheck!) and the sent     
+            text gets erased again.  Tested with gaim-20020205         
+

@@ -1,0 +1,436 @@
+# Gaim-encryption po file for Slovenian.
+# Copyright (C) 2004 Karim Malhas
+# This file is distributed under the GPL
+# Martin Srebotnjak <miles@filmsi.net>, Ljubljana 2004
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gaim-encryption\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-06-11 13:53-0400\n"
+"PO-Revision-Date: 2004-09-20 10:45+0100\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+
+#: config_ui.c:78
+msgid "Bad key size"
+msgstr "Napačna velikost ključa"
+
+#: config_ui.c:84
+msgid "Keys < 512 bits are VERY insecure"
+msgstr "Ključi < 512 bitov SPLOH niso varni"
+
+#: config_ui.c:90
+msgid ""
+"Keys > 4096 bits will cause extreme\n"
+"message bloat, causing problems with\n"
+"message transmission"
+msgstr ""
+"Ključi > 4096 bitov povzročajo izjemno\n"
+"smetenje s sporočili, povzročajo težave s\n"
+"prenosi sporočil"
+
+#: config_ui.c:145
+msgid "Generate Keys"
+msgstr "Tvori ključe"
+
+#: config_ui.c:155
+msgid "No key selected to re-generate!"
+msgstr "Noben ključ ni izbran za ponovno tvorbo!"
+
+#: config_ui.c:163
+msgid "OK"
+msgstr "Prav"
+
+#  First column
+#. First column
+#: config_ui.c:179
+msgid "Encryption protocol:"
+msgstr "Protokol šifriranja:"
+
+#: config_ui.c:186
+msgid "Key size:"
+msgstr "Velikost ključa:"
+
+#: config_ui.c:228
+msgid "Cancel"
+msgstr "Razveljavi"
+
+#: config_ui.c:235 state_ui.c:287
+msgid "Ok"
+msgstr "Prav"
+
+#: config_ui.c:267 config_ui.c:311 config_ui.c:492 config_ui.c:526
+#: config_ui.c:553
+#, fuzzy
+msgid "Delete Key"
+msgstr "Tvori ključe"
+
+#: config_ui.c:388
+msgid "Account"
+msgstr ""
+
+#: config_ui.c:390
+msgid "Name"
+msgstr "Ime"
+
+#: config_ui.c:394
+msgid "Bits"
+msgstr "bitov"
+
+#: config_ui.c:397
+msgid "Key Fingerprint"
+msgstr "Prstni odtis ključa"
+
+#: config_ui.c:464
+msgid "Config"
+msgstr ""
+
+#: config_ui.c:466
+msgid "Accept key automatically if no key on file"
+msgstr "Sprejmi ključ samodejno, če ni shranjenega ključa"
+
+#: config_ui.c:469
+msgid "Accept conflicting keys automatically (security risk)"
+msgstr "Sprejmi nasprotujoče ključe samodejno (nevarnost)"
+
+#: config_ui.c:472
+msgid "Automatically encrypt if sent an encrypted message"
+msgstr "Samodejno šifriraj, če je bilo poslano šifrirano sporočilo"
+
+#: config_ui.c:475
+msgid "Broadcast encryption capability"
+msgstr "Sposobnost šifriranja distribucije"
+
+#: config_ui.c:478
+msgid "Automatically encrypt if buddy has plugin"
+msgstr "Samodejno šifriraj, če ima prijatelj vstavek"
+
+#: config_ui.c:499
+msgid "Regenerate Key"
+msgstr "Ponovno tvori ključ"
+
+#: config_ui.c:506 config_ui.c:533 config_ui.c:560
+msgid "Copy Fingerprint to Clipboard"
+msgstr "Kopiraj prstni odtis v odložišče"
+
+#: config_ui.c:514
+msgid "Local Keys"
+msgstr ""
+
+#: config_ui.c:541
+msgid "Trusted Buddy Keys"
+msgstr ""
+
+#: config_ui.c:568
+msgid "Recent Buddy Keys"
+msgstr ""
+
+#: cryptutil.c:131
+#, c-format
+msgid "Invalid Base64 data, length %d\n"
+msgstr "Napačni podatki Base64, dolžina %d\n"
+
+#: encrypt.c:192
+msgid "This account key is too large for this protocol. Unable to send."
+msgstr "Ključ računa je prevelik za ta protokol. Pošiljanje ni možno."
+
+#: encrypt.c:561
+msgid "Last outgoing message not received properly- resetting"
+msgstr "Zadnje odhodno sporočilo ni bilo sprejeto pravilno - ponastavljanje"
+
+#: encrypt.c:630
+msgid "Received message encrypted with wrong key"
+msgstr "Prejeto sporočilo je šifrirano z napačnim ključem"
+
+#: encrypt.c:667
+msgid "Error in decryption- asking for resend..."
+msgstr "Napaka v dešifriranju - prošnja za ponovno pošiljanje..."
+
+#: encrypt.c:804
+msgid "Requesting key..."
+msgstr "Zahtevanje ključa"
+
+#: encrypt.c:907
+msgid "No key to resend message.  Message lost."
+msgstr "Ni ključa za ponovno pošiljanje sporočila. Sporočilo je izgubljeno."
+
+#: encrypt.c:960
+msgid "Outgoing message lost."
+msgstr "Odhodno sporočilo je bilo izgubljeno."
+
+#: encrypt.c:1222
+msgid "Gaim-Encryption"
+msgstr "Šifriranje Gaim"
+
+#: encrypt.c:1223
+msgid "Encrypts conversations with RSA encryption."
+msgstr "Šifrira pogovore s šifriranjem RSA."
+
+#: encrypt.c:1224
+msgid ""
+"RSA encryption with keys up to 4096 bits, using the Mozilla NSS crypto "
+"library.\n"
+msgstr ""
+"Šifriranje RSA s ključi do 4096 bitov z uporabo šifrirne knjižnice Mozilla "
+"NSS.\n"
+
+#. Translators: Feel free to add your name to the author field, with text like
+#. "Bill Tompkins, translation by Phil McGee"
+#: encrypt.c:1228
+msgid "Bill Tompkins"
+msgstr "Bill Tompkins"
+
+#: ge_blist.c:63
+msgid "Turn Auto-Encrypt Off"
+msgstr "Izključi samodejno šifriranje"
+
+#: ge_blist.c:66
+msgid "Turn Auto-Encrypt On"
+msgstr "Vključi samodejno šifriranje"
+
+#: keys.c:97
+msgid "Making new key pair..."
+msgstr "Tvorim nov par ključev..."
+
+#: keys.c:114
+msgid "Error trying to make key."
+msgstr "Napaka pri tvorbi ključa."
+
+#: keys.c:274
+msgid "Conflicting Key Received!"
+msgstr "Prejet nasprotujoč ključ!"
+
+#: keys.c:389
+#, c-format
+msgid ""
+"Error changing access mode for file: %s\n"
+"Cannot save key."
+msgstr ""
+"Napaka pri spreminjanju dostopnega načina za datoteko: %s\n"
+"Ključa ni mogoče shranit."
+
+#: keys.c:398
+#, c-format
+msgid ""
+"Error (2) changing access mode for file: %s\n"
+"Cannot save key."
+msgstr ""
+"Napaka (2) pri spreminjanju dostopnega načina za datoteko %s\n"
+"Ključa ni mogoče shraniti."
+
+#: keys.c:412
+#, c-format
+msgid ""
+"Bad permissions on key file: %s\n"
+"Gaim-Encryption will not save keys to a world- or group-accessible file."
+msgstr ""
+"Slaba dovoljenja za datoteko ključa: %s\n"
+"Šifriranje Gaim ne bo shranilo ključev v datoteko, ki bo na voljo vsem ali "
+"skupini."
+
+#: keys_ui.c:126
+msgid "Gaim-Encryption Key Received"
+msgstr "Sprejet ključ za Šifriranje Gaim"
+
+#: keys_ui.c:136
+#, c-format
+msgid "%s key received for '%s'"
+msgstr "Ključ %s sprejet za '%s'"
+
+#: keys_ui.c:143 keys_ui.c:244
+#, c-format
+msgid "Key Fingerprint:%*s"
+msgstr "Prstni podpis ključa: %*s"
+
+#: keys_ui.c:150 keys_ui.c:264
+msgid "Do you want to accept this key?"
+msgstr "Želite sprejeti ta ključ?"
+
+#: keys_ui.c:160 keys_ui.c:274
+msgid "No"
+msgstr "Ne"
+
+#: keys_ui.c:168 keys_ui.c:282
+msgid "Accept and Save"
+msgstr "Sprejmi in shrani"
+
+#: keys_ui.c:176 keys_ui.c:290
+msgid "This session only"
+msgstr "Samo to sejo"
+
+#: keys_ui.c:222
+msgid "CONFLICTING Gaim-Encryption Key Received"
+msgstr "Sprejet NASPROTUJOČ ključ za Šifriranje Gaim"
+
+#: keys_ui.c:232 keys_ui.c:251
+msgid " ******* WARNING ******* "
+msgstr " ******* OPOZORILO ******* "
+
+#: keys_ui.c:237
+#, c-format
+msgid "CONFLICTING %s key received for '%s'!"
+msgstr "Sprejet NASPROTUJOČ ključ %s za '%s'!"
+
+#: keys_ui.c:256
+msgid ""
+"This could be a man-in-the-middle attack, or\n"
+"could be someone impersonating your buddy.\n"
+"You should check with your buddy to see if they have\n"
+"generated this new key before trusting it."
+msgstr ""
+"To bi lahko bil napad vmesnega človeka ali\n"
+"pa bi se nekdo lahko predstavljal kot vaš prijatelj.\n"
+"Preverite pri prijatelju, da vidite, če so\n"
+"ustvarili ta nov ključ, preden mu zaupate"
+
+#: rsa_nss.c:244
+#, c-format
+msgid "Generating RSA Key Pair for %s"
+msgstr "Tvorba para ključev RSA za %s."
+
+#: rsa_nss.c:247
+msgid "This may take a little bit..."
+msgstr "Tole lahko malce traja..."
+
+#: rsa_nss.c:282
+#, c-format
+msgid "Could not generate key.  NSS Error: %d\n"
+msgstr "Tvorba ključa ni možna. Napaka NSS: %d\n"
+
+#: rsa_nss.c:496 rsa_nss.c:506 rsa_nss.c:519 rsa_nss.c:529 rsa_nss.c:559
+#: rsa_nss.c:570 rsa_nss.c:589 rsa_nss.c:609
+msgid "Error parsing RSANSS key\n"
+msgstr "Napaka pri obdelavi ključa RSANSS\n"
+
+#: rsa_nss.c:855
+#, c-format
+msgid "Bad signature on message (len %d, mod %d)\n"
+msgstr "Slab podpis sporočila (len %d, mod %d)\n"
+
+#: state_ui.c:134
+msgid "Tx: capable"
+msgstr "Tx: zmožen"
+
+#: state_ui.c:135
+msgid ""
+"Your buddy appears to have the Gaim-Encryption plugin. Still, your next "
+"outgoing message will NOT be encrypted  by the Gaim-Encryption plugin"
+msgstr ""
+"Vaš prijatelj ima očitno vtičnik Šifriranje Gaim. Kljub temu vaše naslednje "
+"odhodno sporočilo NE bo šifrirano z vtičnikom Šifriranje Gaim."
+
+#: state_ui.c:149
+msgid "Tx: secure"
+msgstr "Tx: varno"
+
+#: state_ui.c:150
+msgid ""
+"Your next outgoing message will be encrypted  by the Gaim-Encryption plugin"
+msgstr "Vaše naslednje odhodno sporočilo bo šifrirano s "
+
+#: state_ui.c:168
+msgid "Tx: plain"
+msgstr "Tx: običajno"
+
+#: state_ui.c:169
+msgid ""
+"Your next outgoing message will NOT be encrypted  by the Gaim-Encryption "
+"plugin"
+msgstr ""
+"Naslednje vaše poslano sporočilo NI bilo šifrirano z vstavkom Šifriranje "
+"Gaim."
+
+#: state_ui.c:182
+msgid "Rx: secure"
+msgstr "Rx: varno"
+
+#: state_ui.c:183
+msgid ""
+"The last message received was encrypted  with the Gaim-Encryption plugin"
+msgstr "Zadnje prejeto sporočilo je bilo šifrirano z vstavkom Šifriranje Gaim."
+
+#: state_ui.c:196
+msgid "Rx: plain"
+msgstr "Rx: običajno"
+
+#: state_ui.c:197
+msgid ""
+"The last message received was NOT encrypted  with the Gaim-Encryption plugin"
+msgstr "Zadnje prejeto sporočilo NI bilo šifrirano z vstavkom Šifriranje Gaim."
+
+#~ msgid ""
+#~ "Compiled with '%s', running with '%s'.  Gaim-Encryption will probably not "
+#~ "run right.\n"
+#~ msgstr ""
+#~ "Prevedeno z '%s', zagnano z '%s'. Šifriranje Gaim najbrž ne bo delovalo "
+#~ "pravilno.\n"
+
+#~ msgid ""
+#~ "Gaim-Encryption plugin was compiled with a different version of Gaim.  "
+#~ "You may experience problems."
+#~ msgstr ""
+#~ "Vstavek Šifriranje Gaim je preveden z drugačno različico Gaima. Lahko "
+#~ "bodo sledile težave."
+
+#~ msgid "Currently cached keys"
+#~ msgstr "Trenutno v spominu shranjeni ključi"
+
+#~ msgid "Key Type"
+#~ msgstr "Vrsta ključa"
+
+#~ msgid "Protocol"
+#~ msgstr "Protokol"
+
+#~ msgid "private"
+#~ msgstr "zaseben"
+
+#~ msgid "public"
+#~ msgstr "javen"
+
+#~ msgid "Error parsing RSANSS nonce/key\n"
+#~ msgstr "Napaka pri obdelavi nonce/ključa RSANSS\n"
+
+#~ msgid "Error decoding Base64 RSANSS Public key\n"
+#~ msgstr "Napaka pri dešifriranju Base64 javnega ključa RSANSS\n"
+
+#~ msgid "Error Base64 decoding RSANSS Public key\n"
+#~ msgstr "Napaka pri dešifriranju Base64 javnega ključa RSANSS\n"
+
+#~ msgid "Error decoding RSANSS Public key\n"
+#~ msgstr "Napaka pri dešifriranju javnega ključa RSANSS\n"
+
+#~ msgid "Error parsing RSANSS Private key\n"
+#~ msgstr "Napaka pri obdelavi zasebnega ključa RSANSS\n"
+
+#~ msgid "Error parsing Base64 in RSANSS Private Key\n"
+#~ msgstr "Napaka pri obdelavi Base64 zasebnega ključa RSANSS\n"
+
+#~ msgid "Error creating symmetric key: unable to load private key\n"
+#~ msgstr ""
+#~ "Napaka pri ustvarjanju simetričnega ključa: zasebnega ključa ni mogoče "
+#~ "naložiti\n"
+
+#~ msgid "Error decoding RSANSS Private key\n"
+#~ msgstr "Napaka pri dešifriranju zasebnega ključa RSANSS\n"
+
+#~ msgid "No Nonce in message\n"
+#~ msgstr "V sporočilu ni Nonce\n"
+
+#~ msgid "Bad Nonce in message\n"
+#~ msgstr "Slab Nonce v sporočilu\n"
+
+#~ msgid "Can't load the NSS plugin\n"
+#~ msgstr "Nalaganje vtičnika NSS ni uspelo.\n"
+
+#~ msgid ""
+#~ "Gaim was not compiled with the NSS plugin enabled.  Gaim-Encryption "
+#~ "requires the NSS plugin to function."
+#~ msgstr ""
+#~ "Gaim ni bil preveden z omogočenim vtičnikom NSS. Šifriranje Gaim zahteva "
+#~ "delujoč vtičnik NSS."

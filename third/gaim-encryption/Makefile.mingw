@@ -1,0 +1,156 @@
+#
+# Makefile.mingw
+#
+# Description: Makefile for encrypt plugin.
+#
+
+#
+# PATHS
+#
+
+GTK_TOP :=		../../../win32-dev/gtk_2_0
+GAIM_TOP :=		../..
+GE_TOP := .
+
+GAIM_INSTALL_DIR :=	$(GAIM_TOP)/win32-install-dir
+DLL_INSTALL_DIR :=	$(GAIM_INSTALL_DIR)/plugins
+STANDALONE_INSTALL_DIR :=  $(GE_TOP)/win32-install-dir
+
+NSS_TOP :=		../../../win32-dev/nss-3.9
+NSPR_TOP :=		../../../win32-dev/nspr-4.4.1
+
+##
+## VARIABLE DEFINITIONS
+##
+
+ENC_VERSION := $(shell cat ./VERSION)
+GAIM_VERSION := $(shell cat ../../VERSION)
+
+TARGET = encrypt
+
+PO = ./po
+
+# Compiler Options
+
+CFLAGS = -DGETTEXT_STATIC
+
+DEFINES = -DENABLE_NLS -DENC_VERSION=\"$(ENC_VERSION)\" -DNO_CONFIG -DENC_PACKAGE=\"gaim-encryption\"
+
+##
+## INCLUDE  MAKEFILES
+##
+
+include $(GAIM_TOP)/src/win32/global.mak
+
+##
+## INCLUDE PATHS
+##
+
+INCLUDE_PATHS +=	-I. \
+			-I$(GTK_TOP)/include \
+			-I$(NSS_TOP)/include \
+			-I$(NSPR_TOP)/include \
+			-I$(GTK_TOP)/include/gtk-2.0 \
+			-I$(GTK_TOP)/include/glib-2.0 \
+			-I$(GTK_TOP)/include/pango-1.0 \
+			-I$(GTK_TOP)/include/atk-1.0 \
+			-I$(GTK_TOP)/lib/glib-2.0/include \
+			-I$(GTK_TOP)/lib/gtk-2.0/include \
+			-I$(GAIM_TOP)/src \
+			-I$(GAIM_TOP)/src/win32 \
+			-I$(GAIM_TOP)
+
+
+LIB_PATHS =		-L$(NSS_TOP)/lib \
+         -L$(NSPR_TOP)/lib \
+         -L$(GTK_TOP)/lib \
+			-L$(GAIM_TOP)/src
+
+
+##
+##  SOURCES, OBJECTS
+##
+
+C_SRC = ge_blist.c config_ui.c cryptutil.c gpg.c keys_ui.c \
+        prefs.c cryptproto.c encrypt.c keys.c nonce.c\
+        nss_mgf1.c nss_oaep.c nss_pss.c rsa_nss.c \
+        state.c state_ui.c ge_ui.c
+
+
+
+OBJECTS = $(C_SRC:%.c=%.o)
+
+
+##
+## LIBRARIES
+##
+
+LIBS =			-lgtk-win32-2.0 \
+         -latk-1.0 \
+         -lpango-1.0 \
+			-lglib-2.0 \
+			-lgdk-win32-2.0 \
+         -lgdk_pixbuf-2.0 \
+			-lgmodule-2.0 \
+			-lgobject-2.0 \
+         -liberty \
+         -lwinmm \
+			-lws2_32 \
+			-lintl \
+			-lgaim \
+         -lnss3 \
+         -lnspr4 \
+         -lssl3
+
+
+##
+## RULES
+##
+
+# How to make a C file
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(DEFINES) $(INCLUDE_PATHS) -o $@ -c $<
+
+##
+## TARGET DEFINITIONS
+##
+
+.PHONY: all clean installer
+
+all: $(TARGET).dll
+
+install: $(TARGET).dll
+	$(MAKE) -C $(PO) -f Makefile.mingw install
+	cp $(TARGET).dll $(DLL_INSTALL_DIR)
+	mkdir -p $(STANDALONE_INSTALL_DIR)/plugins
+	cp $(TARGET).dll $(STANDALONE_INSTALL_DIR)/plugins
+
+
+##
+## BUILD Dependencies
+##
+
+$(GAIM_TOP)/src/gaim.lib:
+	$(MAKE) -C $(GAIM_TOP)/src -f Makefile.mingw gaim.lib
+
+##
+## BUILD DLL
+##
+
+$(TARGET).dll: gaim-encryption-config.h $(OBJECTS) $(GAIM_TOP)/src/gaim.lib
+	$(CC) -shared $(OBJECTS) $(LIB_PATHS) $(LIBS) $(DLL_LD_FLAGS) -o $(TARGET).dll
+
+installer:
+	makensis.exe /DGAIM-ENCRYPTION_VERSION="$(ENC_VERSION)" /DGAIM_VERSION="$(GAIM_VERSION)" gaim-encryption-installer.nsi
+
+gaim-encryption-config.h:
+	touch gaim-encryption-config.h
+
+##
+## CLEAN RULES
+##
+
+clean:
+	rm -rf *.o
+	rm -rf $(TARGET).dll

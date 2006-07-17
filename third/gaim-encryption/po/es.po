@@ -1,0 +1,470 @@
+# Gaim-Encryption
+# Copyright (C) September 2004
+# 	  Javier Fernández-Sanguino Peña  <jfs@computer.org>
+#
+# This file is distributed under the same license as the Gaim package.
+#
+# Notas de traducción:
+#
+# - Gaim-Encryption: complemento de Cifrado de Gaim 
+msgid ""
+msgstr ""
+"Project-Id-Version: Gaim-Encryption\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-06-11 13:53-0400\n"
+"PO-Revision-Date: 2004-09-09 20:41+0200\n"
+"Last-Translator: Javier Fernández-Sanguino <jfs@computer.org>\n"
+"Language-Team:  Spanish team <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: config_ui.c:78
+msgid "Bad key size"
+msgstr "Tamaño de clave erróneo"
+
+#: config_ui.c:84
+msgid "Keys < 512 bits are VERY insecure"
+msgstr "Las claves de menos de 512 bits son MUY inseguras"
+
+#: config_ui.c:90
+msgid ""
+"Keys > 4096 bits will cause extreme\n"
+"message bloat, causing problems with\n"
+"message transmission"
+msgstr ""
+"Las claves de más de 4096 bits pueden\n"
+"hacer crecer los mensajes de forma excesiva\n"
+"causando problemas en la transmisión de\n"
+"los mensajes"
+
+#: config_ui.c:145
+msgid "Generate Keys"
+msgstr "Generar par de claves"
+
+#: config_ui.c:155
+msgid "No key selected to re-generate!"
+msgstr "¡No ha seleccionado ninguna clave a regenerar!"
+
+#: config_ui.c:163
+msgid "OK"
+msgstr "OK"
+
+#. First column
+#: config_ui.c:179
+msgid "Encryption protocol:"
+msgstr "Protocolo de cifrado:"
+
+#: config_ui.c:186
+msgid "Key size:"
+msgstr "Tamaño de la clave:"
+
+#: config_ui.c:228
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: config_ui.c:235 state_ui.c:287
+msgid "Ok"
+msgstr "Ok"
+
+#: config_ui.c:267 config_ui.c:311 config_ui.c:492 config_ui.c:526
+#: config_ui.c:553
+#, fuzzy
+msgid "Delete Key"
+msgstr "Generar par de claves"
+
+#: config_ui.c:388
+msgid "Account"
+msgstr ""
+
+#: config_ui.c:390
+msgid "Name"
+msgstr "Nombre"
+
+#: config_ui.c:394
+msgid "Bits"
+msgstr "Bits"
+
+#: config_ui.c:397
+msgid "Key Fingerprint"
+msgstr "Huella de la clave"
+
+#: config_ui.c:464
+msgid "Config"
+msgstr ""
+
+#: config_ui.c:466
+msgid "Accept key automatically if no key on file"
+msgstr "Aceptar la clave automáticamente si no hay una clave en el fichero"
+
+#: config_ui.c:469
+msgid "Accept conflicting keys automatically (security risk)"
+msgstr ""
+"Aceptar las claves conflicitvas automáticamente (conlleva un riesgo de "
+"seguridad)"
+
+#: config_ui.c:472
+msgid "Automatically encrypt if sent an encrypted message"
+msgstr "Cifrar automáticamente si se le envió un mensaje cifrado"
+
+#: config_ui.c:475
+msgid "Broadcast encryption capability"
+msgstr "Indicar las capacidades de cifrado"
+
+#: config_ui.c:478
+msgid "Automatically encrypt if buddy has plugin"
+msgstr "Cifrar automáticamente si el amigo tiene el complemento"
+
+#: config_ui.c:499
+msgid "Regenerate Key"
+msgstr "Regenerar la clave"
+
+#: config_ui.c:506 config_ui.c:533 config_ui.c:560
+msgid "Copy Fingerprint to Clipboard"
+msgstr "Copiar la huella al portapapeles"
+
+#: config_ui.c:514
+msgid "Local Keys"
+msgstr ""
+
+#: config_ui.c:541
+msgid "Trusted Buddy Keys"
+msgstr ""
+
+#: config_ui.c:568
+msgid "Recent Buddy Keys"
+msgstr ""
+
+#: cryptutil.c:131
+#, c-format
+msgid "Invalid Base64 data, length %d\n"
+msgstr "Datos Base64 incorrectos, longitud %d\n"
+
+#: encrypt.c:192
+msgid "This account key is too large for this protocol. Unable to send."
+msgstr ""
+"Esta clave de cuenta es muy grande para este protocolo. No se pudo enviar."
+
+#: encrypt.c:561
+msgid "Last outgoing message not received properly- resetting"
+msgstr "No se recibió correctamente el último mensaje saliente, reiniciando"
+
+#: encrypt.c:630
+msgid "Received message encrypted with wrong key"
+msgstr "Se recibió un mensaje cifrado con una clave incorrecta"
+
+#: encrypt.c:667
+msgid "Error in decryption- asking for resend..."
+msgstr "Se produjo un error al descifrar, solicitando un reenvío..."
+
+#: encrypt.c:804
+msgid "Requesting key..."
+msgstr "Solicitando la clave..."
+
+#: encrypt.c:907
+msgid "No key to resend message.  Message lost."
+msgstr ""
+"No existe una clave para reenviar el mensaje. El mensaje se ha perdido."
+
+#: encrypt.c:960
+msgid "Outgoing message lost."
+msgstr "Mensaje saliente perdido."
+
+#: encrypt.c:1222
+msgid "Gaim-Encryption"
+msgstr "Cifrado de Gaim"
+
+#: encrypt.c:1223
+msgid "Encrypts conversations with RSA encryption."
+msgstr "Cifra las conversaciones con cifrado RSA."
+
+#: encrypt.c:1224
+msgid ""
+"RSA encryption with keys up to 4096 bits, using the Mozilla NSS crypto "
+"library.\n"
+msgstr ""
+"Cifrado RSA con claves de hasta 4096 bits, haciendo uso de la biblioteca "
+"criptográfica NSS de Mozilla.\n"
+
+#. Translators: Feel free to add your name to the author field, with text like
+#. "Bill Tompkins, translation by Phil McGee"
+#: encrypt.c:1228
+msgid "Bill Tompkins"
+msgstr "Bill Tompkins"
+
+#: ge_blist.c:63
+msgid "Turn Auto-Encrypt Off"
+msgstr "Desactivar cifrado automático"
+
+#: ge_blist.c:66
+msgid "Turn Auto-Encrypt On"
+msgstr "Activar cifrado automático"
+
+#: keys.c:97
+msgid "Making new key pair..."
+msgstr "Generando un nuevo par de claves..."
+
+#: keys.c:114
+msgid "Error trying to make key."
+msgstr "Se produjo un error al generar la clave."
+
+#: keys.c:274
+msgid "Conflicting Key Received!"
+msgstr "¡Se recibió una clave problemática!"
+
+#: keys.c:389
+#, c-format
+msgid ""
+"Error changing access mode for file: %s\n"
+"Cannot save key."
+msgstr ""
+"Se produjo un error al cambiar los permisos del fichero: %s\n"
+"No se pudo guardar la clave."
+
+#: keys.c:398
+#, c-format
+msgid ""
+"Error (2) changing access mode for file: %s\n"
+"Cannot save key."
+msgstr ""
+"Se produjo un error (2) al cambiar los permismos del fichero: %s\n"
+"No se pudo guardar la clave."
+
+#: keys.c:412
+#, c-format
+msgid ""
+"Bad permissions on key file: %s\n"
+"Gaim-Encryption will not save keys to a world- or group-accessible file."
+msgstr ""
+"El fichero de clave no tiene los permisos adecuados: %s\n"
+"El complemento de Cifrado de Gaim no guardará claves en un fichero que pueda "
+"ser accedido por el grupo o por todo el mundo."
+
+#: keys_ui.c:126
+msgid "Gaim-Encryption Key Received"
+msgstr "Se recibió un clave para Cifrado de Gaim"
+
+#: keys_ui.c:136
+#, c-format
+msgid "%s key received for '%s'"
+msgstr "Se recibió una clave %s para «%s»"
+
+#: keys_ui.c:143 keys_ui.c:244
+#, c-format
+msgid "Key Fingerprint:%*s"
+msgstr "Huella de clave:%*s"
+
+#: keys_ui.c:150 keys_ui.c:264
+msgid "Do you want to accept this key?"
+msgstr "¿Acepta esta clave?"
+
+#: keys_ui.c:160 keys_ui.c:274
+msgid "No"
+msgstr "No"
+
+#: keys_ui.c:168 keys_ui.c:282
+msgid "Accept and Save"
+msgstr "Aceptar y guardar"
+
+#: keys_ui.c:176 keys_ui.c:290
+msgid "This session only"
+msgstr "Sólo por esta sesión"
+
+#: keys_ui.c:222
+msgid "CONFLICTING Gaim-Encryption Key Received"
+msgstr "Se recibió una clave Cifrado de Gaim ERRÓNEA"
+
+#: keys_ui.c:232 keys_ui.c:251
+msgid " ******* WARNING ******* "
+msgstr " ******** AVISO ********"
+
+#: keys_ui.c:237
+#, c-format
+msgid "CONFLICTING %s key received for '%s'!"
+msgstr "¡Se recibió la clave %s ERRONEA para «%s»!"
+
+#: keys_ui.c:256
+msgid ""
+"This could be a man-in-the-middle attack, or\n"
+"could be someone impersonating your buddy.\n"
+"You should check with your buddy to see if they have\n"
+"generated this new key before trusting it."
+msgstr ""
+"Podría tratarse de una ataque de tercero interpuesto, \n"
+"o alguien se está haciendo pasar por su amigo.\n"
+"Debería contactar con su amigo para ver si ha generado\n"
+"esta nueva clave antes de aceptarla."
+
+#: rsa_nss.c:244
+#, c-format
+msgid "Generating RSA Key Pair for %s"
+msgstr "Generando un par de claves RSA para %s"
+
+#: rsa_nss.c:247
+msgid "This may take a little bit..."
+msgstr "Esto tardará un rato..."
+
+#: rsa_nss.c:282
+#, c-format
+msgid "Could not generate key.  NSS Error: %d\n"
+msgstr "No se pudo generar la clave. Se produjo un error NSS: %d\n"
+
+#: rsa_nss.c:496 rsa_nss.c:506 rsa_nss.c:519 rsa_nss.c:529 rsa_nss.c:559
+#: rsa_nss.c:570 rsa_nss.c:589 rsa_nss.c:609
+msgid "Error parsing RSANSS key\n"
+msgstr "Se produjo un error al analizar la clave RSANSS\n"
+
+#: rsa_nss.c:855
+#, c-format
+msgid "Bad signature on message (len %d, mod %d)\n"
+msgstr "La firma del mensaje no es correcta (longitud %d, mód %d)\n"
+
+#: state_ui.c:134
+msgid "Tx: capable"
+msgstr "Tx: capaz"
+
+#: state_ui.c:135
+msgid ""
+"Your buddy appears to have the Gaim-Encryption plugin. Still, your next "
+"outgoing message will NOT be encrypted  by the Gaim-Encryption plugin"
+msgstr ""
+"Parece que su amigo no tiene el complemento de Cifrado de Gaim. Por eso, el "
+"proximo mensaje saliente que envíe NO estará cifrado por el complemento de "
+"Cifrado de Gaim."
+
+#: state_ui.c:149
+msgid "Tx: secure"
+msgstr "Tx: seguro"
+
+#: state_ui.c:150
+msgid ""
+"Your next outgoing message will be encrypted  by the Gaim-Encryption plugin"
+msgstr ""
+"Su próximo mensaje saliente será cifrado con el complemento de Cifrado de "
+"Gaim"
+
+#: state_ui.c:168
+msgid "Tx: plain"
+msgstr "Tx: en claro"
+
+#: state_ui.c:169
+msgid ""
+"Your next outgoing message will NOT be encrypted  by the Gaim-Encryption "
+"plugin"
+msgstr ""
+"Su siguiente mensaje saliente NO será cifrado por el complemento de Cifrado "
+"de Gaim"
+
+#: state_ui.c:182
+msgid "Rx: secure"
+msgstr "Rx: seguro"
+
+#: state_ui.c:183
+msgid ""
+"The last message received was encrypted  with the Gaim-Encryption plugin"
+msgstr ""
+"El último mensaje que recibió estaba cifrado con el complemento de Cifrado "
+"de Gaim"
+
+#: state_ui.c:196
+msgid "Rx: plain"
+msgstr "Rx: en claro"
+
+#: state_ui.c:197
+msgid ""
+"The last message received was NOT encrypted  with the Gaim-Encryption plugin"
+msgstr ""
+"El último mensaje que recibió NO estaba cifrado por el complemento de "
+"Cifrado de Gaim"
+
+#~ msgid ""
+#~ "Compiled with '%s', running with '%s'.  Gaim-Encryption will probably not "
+#~ "run right.\n"
+#~ msgstr ""
+#~ "Compilado con «%s», ejecutándose con «%s». Es posible que el complemento "
+#~ "Cifrado de Gaim no funcione correctamente.\n"
+
+#~ msgid ""
+#~ "Gaim-Encryption plugin was compiled with a different version of Gaim.  "
+#~ "You may experience problems."
+#~ msgstr ""
+#~ "Se compiló el complemento de Cifrado de Gaim con una versión de Gaim "
+#~ "distinta. Puede que tenga problemas."
+
+#~ msgid "Currently cached keys"
+#~ msgstr "Claves almacenadas actualmente en caché"
+
+#~ msgid "Key Type"
+#~ msgstr "Tipo de clave"
+
+#~ msgid "Protocol"
+#~ msgstr "Protocolo"
+
+#~ msgid "private"
+#~ msgstr "privada"
+
+#~ msgid "public"
+#~ msgstr "pública"
+
+#~ msgid "Error parsing RSANSS nonce/key\n"
+#~ msgstr "Se produjo un error al analizar la clave/nonce RSANSS\n"
+
+#~ msgid "Error decoding Base64 RSANSS Public key\n"
+#~ msgstr ""
+#~ "Se produjo un error al decodificar la clave pública RSANSS en Base64\n"
+
+#~ msgid "Error Base64 decoding RSANSS Public key\n"
+#~ msgstr ""
+#~ "Se produjo un error al decodificar la clave pública RSANSS en Base64\n"
+
+#~ msgid "Error decoding RSANSS Public key\n"
+#~ msgstr "Se produjo un error al decodificar la clave pública RSANSS\n"
+
+#~ msgid "Error parsing RSANSS Private key\n"
+#~ msgstr "Se produjo un error al analizar la clave privada RSANSS\n"
+
+#~ msgid "Error parsing Base64 in RSANSS Private Key\n"
+#~ msgstr "Se produjo un error al analizar la clave privada RSANSS en Base64\n"
+
+#~ msgid "Error creating symmetric key: unable to load private key\n"
+#~ msgstr ""
+#~ "Se produjo un error al crear la clave simétrica: no se pudo cargar la "
+#~ "clave privada\n"
+
+#~ msgid "Error decoding RSANSS Private key\n"
+#~ msgstr "Se produjo un error al decodificar la clave privada RSANSS\n"
+
+#~ msgid "No Nonce in message\n"
+#~ msgstr "No hay un «Nonce» en el mensaje\n"
+
+#~ msgid "Bad Nonce in message\n"
+#~ msgstr "El «Nonce» del mensaje no es correcto\n"
+
+#~ msgid "Can't load the NSS plugin\n"
+#~ msgstr "No se puede cargar el complemento NSS\n"
+
+#~ msgid ""
+#~ "Gaim was not compiled with the NSS plugin enabled.  Gaim-Encryption "
+#~ "requires the NSS plugin to function."
+#~ msgstr ""
+#~ "No se compiló Gaim con el complemento NSS. El complemento de Cifrado de "
+#~ "Gaim necesita del complemento NSS para funcionar."
+
+#~ msgid "PK11_PubDecryptRaw Failed\n"
+#~ msgstr "Falló la función «PK11_PubDecryptRaw»\n"
+
+#~ msgid "Not a multiple of block len: %d %d %d\n"
+#~ msgstr "No se trata de un múltiplo de la longitud de bloque: %d %d %d\n"
+
+#~ msgid "PubDecryptRaw failed %d\n"
+#~ msgstr "Falló la función «PubDecryptRaw» %d\n"
+
+#~ msgid "OAEP unpadding failed\n"
+#~ msgstr "Fallo «OAEP unpadding»\n"
+
+#~ msgid "Bad msg_len in Auth\n"
+#~ msgstr "«msg_len» corrupto en «Auth»\n"
+
+#~ msgid "PK11_PubEncryptRaw Failed\n"
+#~ msgstr "Falló la función «PK11_PubEncryptRaw»\n"

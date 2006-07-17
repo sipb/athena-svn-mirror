@@ -1,0 +1,379 @@
+# Gaim-encryption po file for Portuguese.
+# Copyright (C) 2004 Aury Fink Filho
+# This file is distributed under the GPL license.
+# Aury Fink Filho <nuny@aury.com.br>, october 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gaim-Encryption\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-06-11 13:53-0400\n"
+"PO-Revision-Date: 2004-12-14 16:09-0300\n"
+"Last-Translator: Aury Fink Filho <nuny@aury.com.br>\n"
+"Language-Team: Portuguese <pt@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: config_ui.c:78
+msgid "Bad key size"
+msgstr "Tamanho de chave incorreto"
+
+#: config_ui.c:84
+msgid "Keys < 512 bits are VERY insecure"
+msgstr "Chaves menores que 512 bits são muito inseguras"
+
+#: config_ui.c:90
+msgid ""
+"Keys > 4096 bits will cause extreme\n"
+"message bloat, causing problems with\n"
+"message transmission"
+msgstr ""
+"Chaves maiores que 4096 bits deixam\n"
+"as mensagens muito grandes, gerando problemas\n"
+"com a sua transmissão"
+
+#: config_ui.c:145
+msgid "Generate Keys"
+msgstr "Gerar chaves"
+
+#: config_ui.c:155
+msgid "No key selected to re-generate!"
+msgstr "Nenhuma chave selecionada para ser regerada!"
+
+#: config_ui.c:163
+msgid "OK"
+msgstr "OK"
+
+#. First column
+#: config_ui.c:179
+msgid "Encryption protocol:"
+msgstr "Protocolo de encriptação:"
+
+#: config_ui.c:186
+msgid "Key size:"
+msgstr "Tamanho da chave:"
+
+#: config_ui.c:228
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: config_ui.c:235 state_ui.c:287
+msgid "Ok"
+msgstr "Ok"
+
+#: config_ui.c:267 config_ui.c:311 config_ui.c:492 config_ui.c:526
+#: config_ui.c:553
+msgid "Delete Key"
+msgstr "Excluir Chave"
+
+#: config_ui.c:388
+msgid "Account"
+msgstr "Conta"
+
+#: config_ui.c:390
+msgid "Name"
+msgstr "Nome"
+
+#: config_ui.c:394
+msgid "Bits"
+msgstr "Bits"
+
+#: config_ui.c:397
+msgid "Key Fingerprint"
+msgstr "Fingerprint da chave"
+
+#: config_ui.c:464
+msgid "Config"
+msgstr "Configuração"
+
+#: config_ui.c:466
+msgid "Accept key automatically if no key on file"
+msgstr "Aceitar a chave automaticamente se não existir a mesma em arquivo"
+
+#: config_ui.c:469
+msgid "Accept conflicting keys automatically (security risk)"
+msgstr "Aceitar chaves em conflito automaticamente (risco de segurança)"
+
+#: config_ui.c:472
+msgid "Automatically encrypt if sent an encrypted message"
+msgstr "Encriptar automaticamente se uma mensagem for enviada encriptografada"
+
+#: config_ui.c:475
+msgid "Broadcast encryption capability"
+msgstr "Capacidade de encriptação por broadcast"
+
+#: config_ui.c:478
+msgid "Automatically encrypt if buddy has plugin"
+msgstr "Encriptar automaticamente se seu contato possuir o plugin"
+
+#: config_ui.c:499
+msgid "Regenerate Key"
+msgstr "Regerar chave"
+
+#: config_ui.c:506 config_ui.c:533 config_ui.c:560
+msgid "Copy Fingerprint to Clipboard"
+msgstr "Copiar Fingerprint para a área de transferência"
+
+#: config_ui.c:514
+msgid "Local Keys"
+msgstr "Chaves Locais"
+
+#: config_ui.c:541
+msgid "Trusted Buddy Keys"
+msgstr "Chaves de Contatos Confiáveis"
+
+#: config_ui.c:568
+msgid "Recent Buddy Keys"
+msgstr "Chaves de Contatos Recentes"
+
+#: cryptutil.c:131
+#, c-format
+msgid "Invalid Base64 data, length %d\n"
+msgstr "Dados em Base64 inválidos, tamanho %d\n"
+
+#: encrypt.c:192
+msgid "This account key is too large for this protocol. Unable to send."
+msgstr ""
+"Essa chave é grande demais para este protocolo. Não foi possível enviar."
+
+#: encrypt.c:561
+msgid "Last outgoing message not received properly- resetting"
+msgstr "A última mensagem enviada não foi recebida corretamente- reiniciando"
+
+#: encrypt.c:630
+msgid "Received message encrypted with wrong key"
+msgstr "Mensagem encriptada recebida com a chave errada"
+
+#: encrypt.c:667
+msgid "Error in decryption- asking for resend..."
+msgstr "Erro na decriptação- pedindo reenvio..."
+
+#: encrypt.c:804
+msgid "Requesting key..."
+msgstr "Requisitando chave..."
+
+#: encrypt.c:907
+msgid "No key to resend message.  Message lost."
+msgstr "Não há chave para reenviar a mensagem. Mensagem perdida."
+
+#: encrypt.c:960
+msgid "Outgoing message lost."
+msgstr "Mensagem enviada perdida."
+
+#: encrypt.c:1222
+msgid "Gaim-Encryption"
+msgstr "Gaim-Encryption"
+
+#: encrypt.c:1223
+msgid "Encrypts conversations with RSA encryption."
+msgstr "Encripta conversas com encriptação RSA."
+
+#: encrypt.c:1224
+msgid ""
+"RSA encryption with keys up to 4096 bits, using the Mozilla NSS crypto "
+"library.\n"
+msgstr ""
+"Encriptação RSA com chaves até 4096 bits, usando a biblioteca de "
+"criptografia Mozilla NSS.\n"
+
+#. Translators: Feel free to add your name to the author field, with text like
+#. "Bill Tompkins, translation by Phil McGee"
+#: encrypt.c:1228
+msgid "Bill Tompkins"
+msgstr "Bill Tompkins, traduzido por Aury Fink Filho"
+
+#: ge_blist.c:63
+msgid "Turn Auto-Encrypt Off"
+msgstr "Desligar Auto-Encriptação"
+
+#: ge_blist.c:66
+msgid "Turn Auto-Encrypt On"
+msgstr "Ligar Auto-Encriptação"
+
+#: keys.c:97
+msgid "Making new key pair..."
+msgstr "Gerando novo par de chaves..."
+
+#: keys.c:114
+msgid "Error trying to make key."
+msgstr "Erro tentando gerar chave."
+
+#: keys.c:274
+msgid "Conflicting Key Received!"
+msgstr "Conflito em chave recebida!"
+
+#: keys.c:389
+#, c-format
+msgid ""
+"Error changing access mode for file: %s\n"
+"Cannot save key."
+msgstr ""
+"Erro mudando modo de acesso para o arquivo: %s\n"
+"Não é possível salvar a chave."
+
+#: keys.c:398
+#, c-format
+msgid ""
+"Error (2) changing access mode for file: %s\n"
+"Cannot save key."
+msgstr ""
+"Erro (2) mudando modo de acesso para o arquivo: %s\n"
+"Não é possível salvar a chave."
+
+#: keys.c:412
+#, c-format
+msgid ""
+"Bad permissions on key file: %s\n"
+"Gaim-Encryption will not save keys to a world- or group-accessible file."
+msgstr ""
+"Permissões incorretas no arquivo de chaves: %s\n"
+"Gaim-Encryption não irá salvar chaves em um arquivo acessível por grupos ou "
+"globalmente."
+
+#: keys_ui.c:126
+msgid "Gaim-Encryption Key Received"
+msgstr "Gaim-Encryption Chave Recebida"
+
+#: keys_ui.c:136
+#, c-format
+msgid "%s key received for '%s'"
+msgstr "%s chave recebida para '%s'"
+
+#: keys_ui.c:143 keys_ui.c:244
+#, c-format
+msgid "Key Fingerprint:%*s"
+msgstr "Fingerprint da chave:%*s"
+
+#: keys_ui.c:150 keys_ui.c:264
+msgid "Do you want to accept this key?"
+msgstr "Você deseja aceitar essa chave?"
+
+#: keys_ui.c:160 keys_ui.c:274
+msgid "No"
+msgstr "Não"
+
+#: keys_ui.c:168 keys_ui.c:282
+msgid "Accept and Save"
+msgstr "Aceitar e Salvar"
+
+#: keys_ui.c:176 keys_ui.c:290
+msgid "This session only"
+msgstr "Essa sessão apenas"
+
+#: keys_ui.c:222
+msgid "CONFLICTING Gaim-Encryption Key Received"
+msgstr "CONFLITO em chave recebida pelo Gaim-Encryption"
+
+#: keys_ui.c:232 keys_ui.c:251
+msgid " ******* WARNING ******* "
+msgstr " ******* AVISO ******* "
+
+#: keys_ui.c:237
+#, c-format
+msgid "CONFLICTING %s key received for '%s'!"
+msgstr "CONFLITO %s chave recebida para '%s'"
+
+#: keys_ui.c:256
+msgid ""
+"This could be a man-in-the-middle attack, or\n"
+"could be someone impersonating your buddy.\n"
+"You should check with your buddy to see if they have\n"
+"generated this new key before trusting it."
+msgstr ""
+"Isso pode ser um ataque man-in-the-middle, ou\n"
+"alguém está tentando se passar por seu contato.\n"
+"Você deve checar com seu contato para ver se ele\n"
+"gerou essa nova chave antes de você confiar nele."
+
+#: rsa_nss.c:244
+#, c-format
+msgid "Generating RSA Key Pair for %s"
+msgstr "Gerando par de chaves RSA para %s"
+
+#: rsa_nss.c:247
+msgid "This may take a little bit..."
+msgstr "Isso pode demorar um pouco..."
+
+#: rsa_nss.c:282
+#, c-format
+msgid "Could not generate key.  NSS Error: %d\n"
+msgstr "Não foi possível gerar a chave. Erro NSS: %d\n"
+
+#: rsa_nss.c:496 rsa_nss.c:506 rsa_nss.c:519 rsa_nss.c:529 rsa_nss.c:559
+#: rsa_nss.c:570 rsa_nss.c:589 rsa_nss.c:609
+msgid "Error parsing RSANSS key\n"
+msgstr "Erro analizando chave RSANSS\n"
+
+#: rsa_nss.c:855
+#, c-format
+msgid "Bad signature on message (len %d, mod %d)\n"
+msgstr "Assinatura inválida na mensagem (tam %d, mod %d)\n"
+
+#: state_ui.c:134
+msgid "Tx: capable"
+msgstr "Tx: apto"
+
+#: state_ui.c:135
+msgid ""
+"Your buddy appears to have the Gaim-Encryption plugin. Still, your next "
+"outgoing message will NOT be encrypted  by the Gaim-Encryption plugin"
+msgstr ""
+"Seu contato aparenta ter o plugin do Gaim-Encryption. Mesmo assim, sua "
+"próxima mensagem enviada NÃO será encriptada pelo plugin do Gaim-Encryption"
+
+#: state_ui.c:149
+msgid "Tx: secure"
+msgstr "Tx: seguro"
+
+#: state_ui.c:150
+msgid ""
+"Your next outgoing message will be encrypted  by the Gaim-Encryption plugin"
+msgstr ""
+"Sua próxima mensagem enviada será encriptada pelo plugin do Gaim-Encryption"
+
+#: state_ui.c:168
+msgid "Tx: plain"
+msgstr "Tx: limpo"
+
+#: state_ui.c:169
+msgid ""
+"Your next outgoing message will NOT be encrypted  by the Gaim-Encryption "
+"plugin"
+msgstr ""
+"Sua próxima mensagem enviada NÃO será encriptada pelo plugin do Gaim-"
+"Encryption"
+
+#: state_ui.c:182
+msgid "Rx: secure"
+msgstr "Rx: seguro"
+
+#: state_ui.c:183
+msgid ""
+"The last message received was encrypted  with the Gaim-Encryption plugin"
+msgstr ""
+"A última mensagem recebida foi encriptada com o plugin do Gaim-Encryption"
+
+#: state_ui.c:196
+msgid "Rx: plain"
+msgstr "Rx: limpo"
+
+#: state_ui.c:197
+msgid ""
+"The last message received was NOT encrypted  with the Gaim-Encryption plugin"
+msgstr ""
+"A última mensagem recebida NÃO foi encriptada com o plugin do Gaim-Encryption"
+
+#~ msgid ""
+#~ "Compiled with '%s', running with '%s'.  Gaim-Encryption will probably not "
+#~ "run right.\n"
+#~ msgstr ""
+#~ "Compilado com '%s', rodando com '%s'. Gaim-Encryption provavelmente não "
+#~ "rodará direito.\n"
+
+#~ msgid ""
+#~ "Gaim-Encryption plugin was compiled with a different version of Gaim.  "
+#~ "You may experience problems."
+#~ msgstr ""
+#~ "Plugin do Gaim-Encryption foi compilado com uma versão diferente do Gaim. "
+#~ "Você poderá ter problemas."
