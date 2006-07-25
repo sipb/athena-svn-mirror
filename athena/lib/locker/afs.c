@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.14 2006-07-25 23:27:21 ghudson Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.15 2006-07-25 23:29:08 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -31,10 +31,9 @@ static const char rcsid[] = "$Id: afs.c,v 1.14 2006-07-25 23:27:21 ghudson Exp $
 #include <afs/auth.h>
 #include <afs/cellconfig.h>
 #include <afs/ptserver.h>
+#include <afs/ptuser.h>
 #include <afs/venus.h>
 #include <rx/rxkad.h>
-
-struct { long dummy[64]; } rxkad_stats = {};
 
 /* This is defined in <afs/volume.h>, but it doesn't seem possible to
  * include that without dragging in most of the rest of the afs
@@ -59,6 +58,11 @@ struct { long dummy[64]; } rxkad_stats = {};
 #else
 #define AFSDIR_CLIENT_ETC_DIRPATH AFSCONF_CLIENTNAME
 #endif
+
+/*
+ * Why doesn't AFS provide this prototype?
+ */
+extern int pioctl(char *, afs_int32, struct ViceIoctl *, afs_int32);
 
 static int afs_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **at);
@@ -365,7 +369,7 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
   struct afsconf_cell cellconfig;
   struct ktc_principal server, client, xclient;
   struct ktc_token token, xtoken;
-  long vice_id;
+  afs_int32 vice_id;
   uid_t uid = geteuid(), ruid = getuid();
   krb5_context v5context;
   krb5_creds *v5cred = NULL;
@@ -460,7 +464,7 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
     sprintf(user + strlen(user), "@%s", urealm);
 
   /* Look up principal's PTS id. */
-  status = pr_Initialize(0, AFSDIR_CLIENT_ETC_DIRPATH, cell);
+  status = pr_Initialize(0, (char *)AFSDIR_CLIENT_ETC_DIRPATH, cell);
   if (status)
     {
       locker__error(context, "%s: Could not initialize AFS protection "
@@ -483,7 +487,7 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
   if (vice_id == ANONYMOUSID)
     strncpy(client.name, user, MAXKTCNAMELEN - 1);
   else
-    sprintf(client.name, "AFS ID %ld", vice_id);
+    sprintf(client.name, "AFS ID %ld", (long) vice_id);
   free(user);
   strcpy(client.instance, "");
   strncpy(client.cell, crealm, MAXKTCREALMLEN - 1);
@@ -668,15 +672,12 @@ static char *afs_realm_of_cell(context, cellconfig)
      krb5_context context;
      struct afsconf_cell *cellconfig;
 {
-  char krbhst[MAX_K_NAME_SZ];
   static char krbrlm[REALM_SZ+1];
   char **hrealms = 0;
-  krb5_error_code retval;
 
   if (!cellconfig)
     return 0;
-  if (retval = krb5_get_host_realm(context,
-				   cellconfig->hostName[0], &hrealms))
+  if (krb5_get_host_realm(context, cellconfig->hostName[0], &hrealms))
     return 0;
   if (!hrealms[0])
     return 0;

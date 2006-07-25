@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements reading attach.conf. */
 
-static const char rcsid[] = "$Id: conf.c,v 1.8 2002-10-17 05:20:06 ghudson Exp $";
+static const char rcsid[] = "$Id: conf.c,v 1.9 2006-07-25 23:29:09 ghudson Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -28,7 +28,6 @@ static const char rcsid[] = "$Id: conf.c,v 1.8 2002-10-17 05:20:06 ghudson Exp $
 
 #include <com_err.h>
 #include <hesiod.h>
-#include <zephyr/zephyr.h>
 
 #include "locker.h"
 #include "locker_private.h"

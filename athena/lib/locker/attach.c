@@ -15,11 +15,12 @@
 
 /* This file is part of liblocker. It implements attaching lockers. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.12 2003-01-03 17:53:12 ghudson Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.13 2006-07-25 23:29:09 ghudson Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <sys/param.h>
 

@@ -15,13 +15,14 @@
 
 /* This file is part of liblocker. It implements UFS and ERR lockers. */
 
-static const char rcsid[] = "$Id: miscfs.c,v 1.4 2000-04-24 02:13:56 mwhitson Exp $";
+static const char rcsid[] = "$Id: miscfs.c,v 1.5 2006-07-25 23:29:09 ghudson Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
 #include <netdb.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "locker.h"
 #include "locker_private.h"

@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements NFS lockers. */
 
-static const char rcsid[] = "$Id: nfs.c,v 1.4 1999-06-22 20:28:31 danw Exp $";
+static const char rcsid[] = "$Id: nfs.c,v 1.5 2006-07-25 23:29:09 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -328,11 +328,12 @@ int locker_auth_to_host(locker_context context, char *name, char *host,
 	    }
 	}
 
-      rpc_stat = clnt_call(cl, op, xdr_krbtkt, (caddr_t)&authent,
-			   xdr_void, 0, timeout);
+      rpc_stat = clnt_call(cl, op, (xdrproc_t)xdr_krbtkt, (caddr_t)&authent,
+			   (xdrproc_t)xdr_void, 0, timeout);
     }
   else
-    rpc_stat = clnt_call(cl, op, xdr_void, 0, xdr_void, 0, timeout);
+    rpc_stat = clnt_call(cl, op, (xdrproc_t)xdr_void, 0, (xdrproc_t)xdr_void,
+			 0, timeout);
 
   auth_destroy(cl->cl_auth);
   clnt_destroy(cl);
