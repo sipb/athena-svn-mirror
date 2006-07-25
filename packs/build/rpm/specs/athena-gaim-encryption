@@ -1,0 +1,7 @@
+Name: athena-gaim-encryption
+Summary: An encryption plugin for Gaim, for Athena
+License: GPL
+Group: Applications/Internet
+
+%description
+RSA encryption support for Gaim.

@@ -1,0 +1,3 @@
+PKG=MIT-gaim-encryption
+NAME=An encryption plugin for Gaim, for Athena
+DESC=RSA encryption support for Gaim.
