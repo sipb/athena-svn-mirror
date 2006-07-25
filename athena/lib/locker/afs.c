@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.13 2005-06-10 05:26:40 zacheiss Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.14 2006-07-25 23:27:21 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -367,7 +367,7 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
   struct ktc_token token, xtoken;
   long vice_id;
   uid_t uid = geteuid(), ruid = getuid();
-  krb5_context krb5_context;
+  krb5_context v5context;
   krb5_creds *v5cred = NULL;
 
   if (op != LOCKER_AUTH_AUTHENTICATE)
@@ -398,19 +398,19 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
    * to the user before touching the ticket file.) Try
    * afs.cellname@realm first, and afs@realm if that doesn't exist.
    */
-  status = krb5_init_context(&krb5_context);
+  status = krb5_init_context(&v5context);
   if (status)
     {
       locker__error(context, "%s: Could not establish krb5 context: %s\n",
 		    name, error_message(status));
       return LOCKER_EAUTH;
     }
-  crealm = afs_realm_of_cell(krb5_context, &cellconfig);
+  crealm = afs_realm_of_cell(v5context, &cellconfig);
   if (uid != ruid)
     seteuid(ruid);
-  status = afs_get_cred(krb5_context, "afs", cell, crealm, &cred, &v5cred);
+  status = afs_get_cred(v5context, "afs", cell, crealm, &cred, &v5cred);
   if (status)
-    status = afs_get_cred(krb5_context, "afs", "", crealm, &cred, &v5cred);
+    status = afs_get_cred(v5context, "afs", "", crealm, &cred, &v5cred);
   if (uid != ruid)
     seteuid(uid);
   if (status)
@@ -426,7 +426,7 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
 			"%s:\n%s while getting tickets for %s.\n",
 			name, cell, error_message(status), crealm);
 	}
-      krb5_free_context(krb5_context);
+      krb5_free_context(v5context);
       return LOCKER_EAUTH;
     }
 
@@ -438,9 +438,9 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
   token.ticketLen = cred.ticket_st.length;
   memcpy(token.ticket, cred.ticket_st.dat, token.ticketLen);
 
-  status = get_user_realm(krb5_context, urealm);
-  krb5_free_creds(krb5_context, v5cred);
-  krb5_free_context(krb5_context);
+  status = get_user_realm(v5context, urealm);
+  krb5_free_creds(v5context, v5cred);
+  krb5_free_context(v5context);
   if (status)
     {
       locker__error(context, "Couldn't obtain user's realm.\n");
