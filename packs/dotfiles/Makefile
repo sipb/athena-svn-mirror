@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.19 2004-12-17 00:18:21 ghudson Exp $
+# $Id: Makefile,v 1.20 2006-07-25 23:14:55 ghudson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -42,6 +42,7 @@ install:
 	install -c -m 0444 lockers.7 ${DESTDIR}${ATHMANDIR}/man7
 	install -c -m 0644 login ${DESTDIR}${SYSTEM}
 	install -c -m 0755 mksessiondir.sh ${DESTDIR}${SYSTEM}/mksessiondir
+	install -c -m 0755 quotawarn.sh ${DESTDIR}${SYSTEM}/quotawarn
 	install -c -m 0644 bashrc ${DESTDIR}${SYSTEM}
 	install -c -m 0644 bash_login ${DESTDIR}${SYSTEM}
 	install -c -m 0444 renew.1 ${DESTDIR}${ATHMANDIR}/man1
