@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2001-05-06 15:53:38 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2006-07-25 23:37:02 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -18,7 +18,7 @@ check:
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
-	${INSTALL_PROGRAM} gathrun.sh ${DESTDIR}${bindir}/gathrun
+	${INSTALL_PROGRAM} ${srcdir}/gathrun.sh ${DESTDIR}${bindir}/gathrun
 	${INSTALL} -m 444 ${srcdir}/gathrun.1 ${DESTDIR}${mandir}/man1
 
 clean:

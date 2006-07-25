@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2000-03-25 19:05:26 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2006-07-25 23:37:02 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -18,7 +18,7 @@ check:
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
-	${INSTALL_PROGRAM} athrun.sh ${DESTDIR}${bindir}/athrun
+	${INSTALL_PROGRAM} ${srcdir}/athrun.sh ${DESTDIR}${bindir}/athrun
 	${INSTALL} -m 444 ${srcdir}/athrun.1 ${DESTDIR}${mandir}/man1
 
 clean:

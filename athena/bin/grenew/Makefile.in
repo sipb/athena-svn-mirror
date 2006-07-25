@@ -1,5 +1,5 @@
 # modified from /mit/source/athena/bin/panel-wrapper
-# $Id: Makefile.in,v 1.6 2004-04-27 22:25:20 mwhitson Exp $
+# $Id: Makefile.in,v 1.7 2006-07-25 23:37:02 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -35,7 +35,7 @@ install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
 	${INSTALL_PROGRAM} grenew ${DESTDIR}${bindir}
-	${INSTALL} grenew.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} ${srcdir}/grenew.1 ${DESTDIR}${mandir}/man1
 
 clean:
 	rm -f grenew.o grenew
