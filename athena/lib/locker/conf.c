@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements reading attach.conf. */
 
-static const char rcsid[] = "$Id: conf.c,v 1.9 2006-07-25 23:29:09 ghudson Exp $";
+static const char rcsid[] = "$Id: conf.c,v 1.10 2006-08-08 21:50:09 ghudson Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -62,6 +62,7 @@ static struct opt_def {
   { "keep-mount", parse_bool, offsetof(struct locker_context, keep_mount) },
   { "nfs-root-hack", parse_bool, offsetof(struct locker_context, nfs_root_hack) },
   { "ownercheck", parse_bool, offsetof(struct locker_context, ownercheck) },
+  { "use-krb4", parse_bool, offsetof(struct locker_context, use_krb4) },
 
   /* String options */
   { "afs-mount-dir", parse_string, offsetof(struct locker_context, afs_mount_dir) },

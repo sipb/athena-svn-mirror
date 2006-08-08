@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.15 2006-07-25 23:29:08 ghudson Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.16 2006-08-08 21:50:09 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -84,7 +84,7 @@ struct locker_ops locker__afs_ops = {
 };
 
 static int afs_get_cred(krb5_context context, char *name, char *inst, char *realm,
-			CREDENTIALS *cred, krb5_creds **creds);
+			krb5_creds **creds);
 static int afs_maybe_auth_to_cell(locker_context context, char *name,
 				  char *cell, int op, int force);
 static int get_user_realm(krb5_context context, char *realm);
@@ -362,8 +362,7 @@ int locker_auth_to_cell(locker_context context, char *name, char *cell, int op)
 static int afs_maybe_auth_to_cell(locker_context context, char *name,
 				  char *cell, int op, int force)
 {
-  char *crealm, urealm[REALM_SZ], *user;
-  CREDENTIALS cred;
+  char *crealm, urealm[REALM_SZ], *user = NULL;
   int status;
   struct afsconf_dir *configdir;
   struct afsconf_cell cellconfig;
@@ -412,9 +411,9 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
   crealm = afs_realm_of_cell(v5context, &cellconfig);
   if (uid != ruid)
     seteuid(ruid);
-  status = afs_get_cred(v5context, "afs", cell, crealm, &cred, &v5cred);
+  status = afs_get_cred(v5context, "afs", cell, crealm, &v5cred);
   if (status)
-    status = afs_get_cred(v5context, "afs", "", crealm, &cred, &v5cred);
+    status = afs_get_cred(v5context, "afs", "", crealm, &v5cred);
   if (uid != ruid)
     seteuid(uid);
   if (status)
@@ -433,35 +432,105 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
       krb5_free_context(v5context);
       return LOCKER_EAUTH;
     }
-
-  /* Create a token from the ticket. (Code stolen from aklog.) */
-  token.kvno = cred.kvno;
-  token.startTime = cred.issue_date;
-  token.endTime = v5cred->times.endtime;
-  memcpy(&token.sessionKey, cred.session, sizeof(token.sessionKey));
-  token.ticketLen = cred.ticket_st.length;
-  memcpy(token.ticket, cred.ticket_st.dat, token.ticketLen);
-
   status = get_user_realm(v5context, urealm);
-  krb5_free_creds(v5context, v5cred);
-  krb5_free_context(v5context);
   if (status)
     {
       locker__error(context, "Couldn't obtain user's realm.\n");
       return LOCKER_EAUTH;
     }
 
-  user = malloc(strlen(cred.pname) + strlen(cred.pinst) + strlen(urealm) + 3);
-  if (!user)
+  /*
+   * Create a token from the ticket.
+   * (This code is shamelessly stolen from aklog.)
+   */
+
+  if (! context->use_krb4)
     {
-      locker__error(context, "Out of memory authenticating to cell.\n");
-      return LOCKER_ENOMEM;
+      char *p;
+      char *pname, *pinst = NULL;
+      int pnamelen, pinstlen = 0;
+
+      /* Using Kerberos V5 ticket natively via rxkad 2b */
+
+      pname    = krb5_princ_component(v5context, v5cred->client, 0)->data;
+      pnamelen = krb5_princ_component(v5context, v5cred->client, 0)->length;
+
+      if (krb5_princ_size(v5context, v5cred->client) > 1)
+	{
+	  pinst    = krb5_princ_component(v5context, v5cred->client, 1)->data;
+	  pinstlen = krb5_princ_component(v5context, v5cred->client, 1)->length;
+	}
+
+      user = malloc(pnamelen + pinstlen + strlen(urealm) + 3);
+      if (!user)
+	{
+	  locker__error(context, "Out of memory authenticating to cell.\n");
+	  return LOCKER_ENOMEM;
+	}
+
+      strncpy(user, pname, pnamelen);
+      user[pnamelen] = '\0';
+
+      if (pinst)
+	{
+	  strcat(user, ".");
+	  p = user + strlen(user);
+	  strncpy(p, pinst, pinstlen);
+	  p[pinstlen] = '\0';
+	}
+
+      if (strcasecmp(crealm, urealm))
+	sprintf(user + strlen(user), "@%s", urealm);
+
+      memset(&token, 0, sizeof(token));
+      token.kvno = RXKAD_TKT_TYPE_KERBEROS_V5;
+      token.startTime = v5cred->times.starttime;;
+      token.endTime = v5cred->times.endtime;
+      memcpy(&token.sessionKey, v5cred->keyblock.contents,
+	     v5cred->keyblock.length);
+      token.ticketLen = v5cred->ticket.length;
+      memcpy(token.ticket, v5cred->ticket.data, token.ticketLen);
+    } 
+  else 
+    {
+      CREDENTIALS cred;
+
+      /* Using Kerberos 524 translator service */
+
+      status = krb5_524_convert_creds(v5context, v5cred, &cred);
+
+      if (status)
+	{
+	  locker__error(context, "%s: Could not convert tickets "
+			"to Kerberos V4 format: %s.\n",
+			name, error_message(status));
+	  krb5_free_context(v5context);
+	  return LOCKER_EAUTH;
+	}
+
+      user = malloc(strlen(cred.pname) + strlen(cred.pinst) + strlen(urealm) + 3);
+      if (!user)
+	{
+	  locker__error(context, "Out of memory authenticating to cell.\n");
+	  return LOCKER_ENOMEM;
+	}
+
+      strcpy(user, cred.pname);
+      if (*cred.pinst)
+	sprintf(user + strlen(user), ".%s", cred.pinst);
+      if (strcasecmp(crealm, urealm))
+	sprintf(user + strlen(user), "@%s", urealm);
+
+      token.kvno = cred.kvno;
+      token.startTime = cred.issue_date;
+      token.endTime = v5cred->times.endtime;
+      memcpy(&token.sessionKey, cred.session, sizeof(token.sessionKey));
+      token.ticketLen = cred.ticket_st.length;
+      memcpy(token.ticket, cred.ticket_st.dat, token.ticketLen);
     }
-  strcpy(user, cred.pname);
-  if (*cred.pinst)
-    sprintf(user + strlen(user), ".%s", cred.pinst);
-  if (strcasecmp(crealm, urealm))
-    sprintf(user + strlen(user), "@%s", urealm);
+
+  krb5_free_creds(v5context, v5cred);
+  krb5_free_context(v5context);
 
   /* Look up principal's PTS id. */
   status = pr_Initialize(0, (char *)AFSDIR_CLIENT_ETC_DIRPATH, cell);
@@ -527,7 +596,7 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
 }
 
 static int afs_get_cred(krb5_context context, char *name, char *inst, char *realm,
-			CREDENTIALS *c, krb5_creds **creds)
+			krb5_creds **creds)
 {
   krb5_creds increds;
   krb5_principal client_principal = NULL;
@@ -557,11 +626,6 @@ static int afs_get_cred(krb5_context context, char *name, char *inst, char *real
   increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
 
   retval = krb5_get_credentials(context, 0, krb425_ccache, &increds, creds);
-  if (retval)
-    goto fail;
-
-  /* This requires krb524d to be running with the KDC */
-  retval = krb524_convert_creds_kdc(context, *creds, c);
 
 fail:
   krb5_free_cred_contents(context, &increds);

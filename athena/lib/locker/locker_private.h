@@ -1,4 +1,4 @@
-/* $Id: locker_private.h,v 1.7 2002-10-17 05:20:08 ghudson Exp $ */
+/* $Id: locker_private.h,v 1.8 2006-08-08 21:50:10 ghudson Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -58,6 +58,7 @@ struct locker__regexp_list {
 struct locker_context {
   /* attach.conf variables */
   int exp_desc, exp_mountpoint, keep_mount, nfs_root_hack, ownercheck;
+  int use_krb4;
   char *afs_mount_dir, *attachtab, *nfs_mount_dir, *local_dir;
   struct locker__regexp_list allow, setuid, mountpoint;
   struct locker__regexp_list allowopts, defopts, filesystem, reqopts;

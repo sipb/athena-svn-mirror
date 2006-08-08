@@ -1,4 +1,4 @@
-.\" $Id: attach.conf.5,v 1.4 2002-10-17 05:20:29 ghudson Exp $
+.\" $Id: attach.conf.5,v 1.5 2006-08-08 21:50:13 ghudson Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -94,6 +94,11 @@ mounted directory.  If
 is on, then if the remotely mounted directory is the root (/), it is
 replaced by ``/root'' for the purposes of contructing the default
 mount point.
+.IP "use-krb4 (type boolean) (default: off)"
+The default mode of AFS cell authentication uses a Kerberos V5 ticket 
+natively via the ``rxkad 2b'' mechanism of newer AFS implementations. If
+.I use-krb4
+is on, then a V4 ticket obtained from krb524d will be used instead.
 .IP "nfs-mount-dir (type string) (default: /)"
 This option affects the construction of the default mount point for
 explicit NFS attaches.  See the description for
