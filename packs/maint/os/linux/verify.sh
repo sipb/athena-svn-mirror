@@ -37,6 +37,9 @@ if [ "${SYSPREFIX+set}" != set ]; then
   errorout "$0: Cannot find Linux clusterinfo for this machine."
 fi
 config=$SYSPREFIX/config/$athenaversion
+if [ ! -d "$config" ]; then
+  errorout "$0: Cannot find config area for $athenaversion."
+fi
 
 # Find the files list from the control file.
 
@@ -76,72 +79,9 @@ for rpm in `rpm -qa`; do
 done
 echo
 
-# Filter out the exceptions from the verify failures.
-unset realfailures
-for failure in $failures; do
-  case $failure in
-
-    # These are all config files that we handle later in verification.
-    /etc/passwd | \
-    /etc/group | \
-    /etc/syslog.conf | \
-    /etc/inittab | \
-    /etc/X11/prefdm | \
-    /usr/X11R6/lib/X11/app-defaults/XTerm | \
-    /etc/xinetd.conf | \
-    /etc/xinetd.d/* | \
-    /etc/athena/rc.conf | \
-    /etc/athena/athinfo.access | \
-    /etc/athena/local-lockers.conf | \
-    /etc/man.config | \
-    /etc/krb5.conf )
-        ;;
-
-    # These are managed by other parts of the system which work to make
-    # sure they are correct.
-    /usr/vice/etc/CellAlias | \
-    /usr/vice/etc/CellServDB | \
-    /etc/sysconfig/openafs | \
-    /usr/vice/etc/cacheinfo | \
-    /etc/DIR_COLORS | \
-    /etc/DIR_COLORS.xterm | \
-    /etc/athena/ifplugd/ifplugd.conf | \
-    /etc/xml/catalog | \
-    /usr/share/sgml/docbook/xmlcatalog | \
-    /usr/share/application-registry/gnome-vfs.applications | \
-    /usr/share/mime-info/gnome-vfs.keys | \
-    /usr/X11R6/lib/X11/system.mwmrc | \
-    /etc/rc.local )
-        ;;
-
-    # These are all files that we simply tolerate changes in without
-    # comment, most frequently because they're installed by one rpm and
-    # subsequently modified by post-install scripts.  They probably
-    # shouldn't be generating conflicts, but it's easier to just ignore
-    # theme here than to fix their rpms.
-    /usr/X11R6/lib/X11/fonts/*/fonts.dir | \
-    /usr/share/fonts/KOI8-R/*/fonts.dir | \
-    /etc/pam.d/system-auth | \
-    /etc/bonobo-activation/bonobo-activation-config.xml | \
-    /etc/cups | \
-    /var/spool/cups/tmp | \
-    /etc/aliases | \
-    /etc/mailcap | \
-    /etc/mime.types | \
-    /usr/java/jdk1.5.0_06/*.pack | \
-    /dev/MAKEDEV | \
-    /usr/lib/rpm/*-linux | \
-    /etc/logrotate.d/rpm | \
-    /usr/lib/rpm/i386-linux/macros | \
-    /etc/skel/.emacs | \
-    /etc/cron.daily/rpm )
-	;;
-
-    *)
-	realfailures="$realfailures $failure"
-	;;
-  esac
-done
+# Invoke version-dependent exceptions scriptlet to filter $failures
+# into $realfailures.
+. $config/exceptions
 
 # For each failed file which is not an exception, add its package
 # to the failing package list.
