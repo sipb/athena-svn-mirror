@@ -44,3 +44,5 @@ psrev		psutils
 psroff		psutils
 
 realplay	infoagents
+ivview		inventor
+freewrl		freewrl
