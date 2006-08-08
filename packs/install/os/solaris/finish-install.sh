@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-install.sh,v 1.3 2005-03-24 14:36:56 rbasch Exp $
+# $Id: finish-install.sh,v 1.4 2006-08-08 21:29:54 rbasch Exp $
 
 echo "Starting the second stage of the install at `date`."
 
@@ -33,7 +33,9 @@ cp -p /etc/passwd.local /etc/passwd
 cp -p /etc/shadow.local /etc/shadow
 chmod 600 /etc/shadow
 if [ -r $pwconfig/group ]; then
-  cp -p $pwconfig/group /etc/group
+  cp -p $pwconfig/group /etc/group.local
+  cp -p /etc/group.local /etc/group
+  chmod 644 /etc/group.local /etc/group
 fi
 
 pkgdir=/srvd/pkg/$vers
