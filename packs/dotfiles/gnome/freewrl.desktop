@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=freewrl
+Comment=FreeWRL VRML and X3D browser
+MimeType=x-world/x-vrml;model/vrml;
+Exec=freewrl
+Type=Application
+Terminal=false
+NoDisplay=true

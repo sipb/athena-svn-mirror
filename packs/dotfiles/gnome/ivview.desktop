@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=ivview
+Comment=VRML1/Open Inventor
+MimeType=application/x-inventor;
+Exec=ivview
+Type=Application
+Terminal=false
+NoDisplay=true

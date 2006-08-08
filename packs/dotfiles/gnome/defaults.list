@@ -9,3 +9,6 @@ audio/x-pn-realaudio=realplay.desktop
 audio/vnd.rn-realaudio=realplay.desktop
 video/vnd.rn-realvideo=realplay.desktop
 application/vnd.rn-realmedia=realplay.desktop
+application/x-inventor=ivview.desktop
+x-world/x-vrml=freewrl.desktop
+model/vrml=freewrl.desktop
