@@ -1,9 +1,20 @@
 #!/bin/sh
-# $Id: sendmail-relay-select,v 1.3 2003-10-26 20:04:24 ghudson Exp $
+# $Id: sendmail-relay-select,v 1.4 2006-08-08 21:56:49 ghudson Exp $
 
-if [ -n "$DIRECT_DELIVERY" ]; then
-  exit 0
-elif [ -f /etc/athena/sendmail.conf ]; then
+# If we're not using a custom mail relay and are sending unauthentic mail
+# to a non-mit.edu address, do direct delivery.  Otherwise, use the mail
+# relay.
+
+. /etc/athena/rc.conf
+
+if [ "$MAILRELAY" = "default" -a -n "$UNAUTH_MAIL" ]; then
+  domain=`echo $1 | tr '[A-Z]' '[a-z]'`
+  if [ "$domain" != "mit.edu" ]; then
+    exit 0
+  fi
+fi
+
+if [ -f /etc/athena/sendmail.conf ]; then
   awk '/relay/ {print $2}' /etc/athena/sendmail.conf
   exit 0
 fi

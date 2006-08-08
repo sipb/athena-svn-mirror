@@ -25,7 +25,7 @@ SM_UNUSED(static char copyright[]) =
 	The Regents of the University of California.  All rights reserved.\n";
 #endif /* ! lint */
 
-SM_RCSID("@(#)$Id: main.c,v 1.4 2003-11-02 03:14:43 zacheiss Exp $")
+SM_RCSID("@(#)$Id: main.c,v 1.5 2006-08-08 21:56:51 ghudson Exp $")
 
 
 #if NETINET || NETINET6
@@ -636,7 +636,7 @@ main(argc, argv, envp)
 	setuserenv("KRBTKFILE", NULL);
 
 	/* Flag to determine if we should use a mailhub or not. */
-	setuserenv("DIRECT_DELIVERY", NULL);
+	setuserenv("UNAUTH_MAIL", NULL);
 
 	/*
 	**  restore any original TZ setting until TimeZoneSpec has been

@@ -1,21 +1,17 @@
 #!/bin/sh
-# $Id: sendmail.sh,v 1.3 2003-11-13 01:51:00 ghudson Exp $
+# $Id: sendmail.sh,v 1.4 2006-08-08 21:56:51 ghudson Exp $
 
-# If we don't have tickets, we must do direct delivery and not do
-# authentication.
-# If we're not using the default MAILRELAY, we can't do authentication.
-# Otherwise, we have tickets and are using the ATHENA.MIT.EDU MX record, 
-# and can use authentication.
+# If we don't have tickets, or aren't using the default MAILRELAY, we
+# can't do authentication.  Otherwise, we have tickets and are using the
+# ATHENA.MIT.EDU MX record, and can use authentication.
 
 . /etc/athena/rc.conf
 
 /usr/athena/bin/klist -s
-if [ $? != 0 ]; then
-  DIRECT_DELIVERY=1; export DIRECT_DELIVERY
-fi
 
-if [ "$MAILRELAY" != "default" -o ! -f /etc/athena/sendmail.conf \
-     -o -n "$DIRECT_DELIVERY" ]; then
+if [ $? != 0 -o "$MAILRELAY" != "default" \
+     -o ! -f /etc/athena/sendmail.conf ]; then
+  UNAUTH_MAIL=1; export UNAUTH_MAIL
   flags="-U"
 else
   flags="-P 587"
