@@ -36,6 +36,7 @@ eval `AUTOUPDATE=false getcluster -b "$athenaversion"`
 if [ "${SYSPREFIX+set}" != set ]; then
   errorout "$0: Cannot find Linux clusterinfo for this machine."
 fi
+config=$SYSPREFIX/config/$athenaversion
 
 # Find the files list from the control file.
 
@@ -75,15 +76,12 @@ for rpm in `rpm -qa`; do
 done
 echo
 
-# For each failing file, see if it's an exception.  If it's not, then
-# find out its package, and make sure the package file is on the
-# failing packages list.
-
-unset pkglist
+# Filter out the exceptions from the verify failures.
+unset realfailures
 for failure in $failures; do
   case $failure in
 
-    # These are all config files that we handle below in STEP 3.
+    # These are all config files that we handle later in verification.
     /etc/passwd | \
     /etc/group | \
     /etc/syslog.conf | \
@@ -140,14 +138,21 @@ for failure in $failures; do
 	;;
 
     *)
-	ls -ld $failure
-	ls -ld $failure 2>&1 | logger -t verify -p auth.notice
-	for pkg in `rpm -q -f $failure`; do
-	    pkg=`grep $pkg $rpmlist | awk '{print $1}'`
-	    pkglist="$pkglist $pkg"
-	done
+	realfailures="$realfailures $failure"
 	;;
   esac
+done
+
+# For each failed file which is not an exception, add its package
+# to the failing package list.
+unset pkglist
+for failure in $realfailures; do
+  ls -ld $failure
+  ls -ld $failure 2>&1 | logger -t verify -p auth.notice
+  for pkg in `rpm -q -f $failure`; do
+    pkg=`grep $pkg $rpmlist | awk '{print $1}'`
+    pkglist="$pkglist $pkg"
+  done
 done
 
 # Uniquify the package list and install it
@@ -161,8 +166,6 @@ else
 fi
 
 # STEP 3: Copy generic public master config files
-
-config=$SYSPREFIX/config/$athenaversion
 
 for i in man.config services syslog.conf inittab info-dir \
         xinetd.conf krb5.conf; do
