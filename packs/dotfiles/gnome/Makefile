@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 2006-07-17 23:08:52 rbasch Exp $
+# $Id: Makefile,v 1.6 2006-08-09 15:42:50 rbasch Exp $
 
 PIXMAPDIR=/usr/athena/share/pixmaps
 GNOMEATHDIR=/usr/athena/share/gnome/athena
@@ -48,6 +48,8 @@ install:
 	install -c -m 0644 athena-pdf.desktop ${DESTDIR}${APPLICATIONS}
 	install -c -m 0644 athena-web.desktop ${DESTDIR}${APPLICATIONS}
 	install -c -m 0644 realplay.desktop ${DESTDIR}${APPLICATIONS}
+	install -c -m 0644 ivview.desktop ${DESTDIR}${APPLICATIONS}
+	install -c -m 0644 freewrl.desktop ${DESTDIR}${APPLICATIONS}
 	install -c -m 0644 defaults.list ${DESTDIR}${APPLICATIONS}
 
 clean:
