@@ -6,6 +6,9 @@
 ! $XTermId: XTerm.ad,v 1.61 2004/07/13 00:41:24 tom Exp $
 ! $XFree86: xc/programs/xterm/XTerm.ad,v 3.28 2004/07/13 00:41:24 dickey Exp $
 
+! Athena addition:
+*ttyModes: erase ^?
+
 *saveLines: 1024
 
 *SimpleMenu*BackingStore: NotUseful
