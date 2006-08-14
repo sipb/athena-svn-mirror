@@ -73,7 +73,7 @@ cp /etc/man.config.athena /etc/man.config
 %triggerin -- sysklogd
 cp /etc/syslog.conf.athena /etc/syslog.conf
 
-%triggerin -- xorg-x11
+%triggerin -- xterm
 cp /usr/X11R6/lib/X11/app-defaults/XTerm.athena /usr/X11R6/lib/X11/app-defaults/XTerm
 
 %triggerin -- openmotif
