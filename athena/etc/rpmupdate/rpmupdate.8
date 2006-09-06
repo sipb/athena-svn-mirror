@@ -1,4 +1,4 @@
-.\" $Id: rpmupdate.8,v 1.4 2003-05-27 18:02:53 amb Exp $
+.\" $Id: rpmupdate.8,v 1.5 2006-09-06 18:06:32 ghudson Exp $
 .\"
 .\" Copyright 2000 by the Massachusetts Institute of Technology.
 .\"
@@ -122,6 +122,13 @@ rpmupdate will not touch in any way.  This file does not operate if
 the
 .B \-p
 flag is specified.
+.PP
+If the old or new lists contain an entry for the package "kernel", and
+the local system has a package named "kernel-smp",
+.B rpmupdate
+will synthesize list entries for the "kernel-smp" based on the list
+entries for the "kernel" package, and will ignore any entry for
+"kernel-smp" in the upgrade list if one is specified.
 .SH "SEE ALSO"
 .BR update_ws (8)
 .SH AUTHOR

@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.30 2005-11-04 17:26:22 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.31 2006-09-06 18:06:32 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -83,6 +83,7 @@ static void read_new_list(struct package **pkgtab, const char *newlistname);
 static void read_upgrade_list(struct package **pkgtab, const char *listname);
 static void read_exception_list(struct package **pkgtab, const char *listname);
 static void read_installed_versions(struct package **pkgtab, rpmts ts);
+static void fudge_smp_kernel_package(struct package **pkgtab);
 static void decide_actions(struct package **pkgtab, int public);
 static void perform_updates(struct package **pkgtab, rpmts ts, int depcheck,
 			    int hashmarks, int copy);
@@ -105,6 +106,7 @@ static void read_rev_from_header(struct rev *rev, Header h);
 static void printrev(struct rev *rev);
 static int revcmp(struct rev *rev1, struct rev *rev2);
 static int revsame(struct rev *rev1, struct rev *rev2);
+static void copyrev(struct rev *target, struct rev *source);
 static void freerev(struct rev *rev);
 static void parse_line(const char *path, char **pkgname, int *epoch,
 		       char **version, char **release, char **filename);
@@ -197,6 +199,10 @@ int main(int argc, char **argv)
   ts = rpmtsCreate();
   rpmtsSetRootDir(ts, "/");
   read_installed_versions(pkgtab, ts);
+
+  /* Manufacture a new-list entry for kernel-smp on systems which have that
+     package installed. */
+  fudge_smp_kernel_package(pkgtab);
 
   /* Prevent rpmlib from checking package signatures, since that
    * requires reading each package file with no user feedback, which
@@ -357,6 +363,46 @@ static void read_installed_versions(struct package **pkgtab, rpmts ts)
 	}
     }
   rpmdbFreeIterator(mi);
+}
+
+static void fudge_smp_kernel_package(struct package **pkgtab)
+{
+  struct package *kernel_pkg = get_package(pkgtab, "kernel");
+  struct package *smp_pkg = get_package(pkgtab, "kernel-smp");
+  const char *filename = kernel_pkg->filename, *p;
+
+  /* If the kernel-smp package isn't installed, do nothing. */
+  if (!smp_pkg->instrev.present)
+    return;
+
+  /* If the kernel package has no list entry or the filename doesn't
+     contain "/kernel" for some reason, then we can't fudge the SMP
+     package properly and should do nothing. */
+  if (!filename || !(p = strstr(filename, "/kernel")))
+    return;
+
+  /* Remove any existing list state for the kernel-smp package.  We
+     expect there to be an upgrade list entry for kernel-smp, for
+     compatibility with old versions of rpmupdate, but we don't care
+     about it. */
+  if (smp_pkg->oldlistrev.present)
+    freerev(&smp_pkg->oldlistrev);
+  smp_pkg->oldlistrev.present = 0;
+  if (smp_pkg->newlistrev.present)
+    freerev(&smp_pkg->newlistrev);
+  smp_pkg->newlistrev.present = 0;
+  free(smp_pkg->filename);
+  smp_pkg->filename = NULL;
+  smp_pkg->only_upgrade = 0;
+
+  /* Construct old and new list revisions for kernel-smp matching
+     those of the kernel package. */
+  copyrev(&smp_pkg->oldlistrev, &kernel_pkg->oldlistrev);
+  copyrev(&smp_pkg->newlistrev, &kernel_pkg->newlistrev);
+
+  /* Construct a filename based on the kernel package filename. */
+  easprintf(&smp_pkg->filename, "%.*s/kernel-smp%s", p - filename, filename,
+	    p + strlen("/kernel"));
 }
 
 static void decide_actions(struct package **pkgtab, int public)
@@ -1084,6 +1130,14 @@ static int revsame(struct rev *rev1, struct rev *rev2)
     return 1;
   else
     return (revcmp(rev1, rev2) == 0);
+}
+
+static void copyrev(struct rev *target, struct rev *source)
+{
+  target->present = source->present;
+  target->epoch = source->epoch;
+  target->version = estrdup(source->version);
+  target->release = estrdup(source->release);
 }
 
 static void freerev(struct rev *rev)
