@@ -20,7 +20,7 @@ foreach my $uid (@uids) {
 sub visit {
     my ($dev, $ino, $mode, $nlink, $uid, $gid) = lstat($_);
     return if (-b _ || -c _ || -p _ || -S _);
-    return if ($_ eq "ps_data"); # Used by "ps" on Solaris.
+    return if ($_ eq ".");
     return if ($uidset{$uid});
     if (-d _) {
 	return if (-M _ < 2);
