@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.25 2006-07-25 23:14:58 ghudson Exp $
+# $Id: xsession,v 1.26 2006-09-06 18:05:50 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -242,7 +242,9 @@ if (! $?skip_x_startup) then
   else
     $ZEPHYR_CLIENT && get_message -new -zephyr
   endif
-  $initdir/quotawarn		# Display warning dialogs if near quota
+  if (! $?skip_quotawarn) then
+    $initdir/quotawarn		# Display warning dialogs if near quota
+  endif
   from -t -n			# Check for mail
   (olc who &) >& /dev/null	# Ping the OLC server
   if (! $?skip_xss) then
