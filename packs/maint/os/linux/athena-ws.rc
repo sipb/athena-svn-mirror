@@ -290,6 +290,20 @@ EOF
 	success update-desktop-database
 	echo
 
+	# Firefox will update its extensions cache in the user's
+	# profile when it detects that an extension has changed.
+	# Since an extension directory's modification time differs
+	# on each machine, Firefox will perform this update for
+	# each extension every time a user runs it on a different
+	# machine.  With the Red Hat Firefox RPM installed, which
+	# includes several dozen language pack extensions, this
+	# procedure introduces a huge delay in start-up time.  We
+	# work around the problem by removing all of these language
+	# pack extensions.
+	echo -n Removing Firefox language pack extensions:
+	rm -rf /usr/lib/firefox-*/extensions/langpack-*
+	success "removing Firefox langpack extensions"
+
 	;;
   stop)
 	;;
