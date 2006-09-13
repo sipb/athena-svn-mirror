@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "119059-17"					>> $PATCHES
+
+echo "OSCHANGES=true"					>> $CONFVARS
