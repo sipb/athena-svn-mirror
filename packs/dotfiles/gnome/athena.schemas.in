@@ -13,6 +13,10 @@
 [apps/gnome_settings_daemon/screensaver]
  start_screensaver = false
 
+# nautilus defaults
+[apps/nautilus/preferences]
+ enable_delete = true
+
 # gnome-panel 2.8 defaults.
 [apps/panel/default_setup]
  [general]
