@@ -1820,7 +1820,9 @@ move_items (const GList *source_uri_list,
 	    GnomeVFSXferOptions xfer_options,
 	    GnomeVFSXferErrorMode *error_mode,
 	    GnomeVFSXferOverwriteMode *overwrite_mode,
-	    GnomeVFSProgressCallbackState *progress)
+	    GnomeVFSProgressCallbackState *progress,
+	    GList **merge_source_uri_list,
+	    GList **merge_target_uri_list)
 {
 	GnomeVFSResult result;
 	const GList *source_item, *target_item;
@@ -1891,7 +1893,16 @@ move_items (const GList *source_uri_list,
 				retry = TRUE;
 				continue;
 			}
-
+			
+			if (result == GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM) {
+			
+				*merge_source_uri_list = g_list_prepend (*merge_source_uri_list, gnome_vfs_uri_ref (source_uri));
+				*merge_target_uri_list = g_list_prepend (*merge_target_uri_list, gnome_vfs_uri_ref (target_uri));
+				gnome_vfs_uri_unref (target_uri);
+				result = GNOME_VFS_OK;
+				break;
+			}
+			
 			if (result != GNOME_VFS_OK) {
 				retry = handle_error (&result, progress, error_mode, &skip);
 			}
@@ -2387,62 +2398,8 @@ gnome_vfs_xfer_uri_internal (const GList *source_uris,
 							&merge_source_uri_list,
 							&merge_target_uri_list);
 
-			progress->progress_info->bytes_total = 0;
-			progress->progress_info->files_total = 0;
-			
-			if (result == GNOME_VFS_OK && move && merge_source_uri_list != NULL) {
-				/* Some moves was converted to copy,
-				   remove previously added non-recursive sizes,
-				   and add recursive sizes */
-
-				result = list_add_items_and_size (merge_source_uri_list, xfer_options, progress, FALSE);
-				if (result != GNOME_VFS_ERROR_INTERRUPTED) {
-					/* Ignore anything but interruptions here -- we will deal with the errors
-					 * during the actual copy
-					 */
-					result = GNOME_VFS_OK;
-				}
-
-				progress->progress_info->bytes_total = -progress->progress_info->bytes_total;
-				progress->progress_info->files_total = -progress->progress_info->files_total;
-				
-				if (result == GNOME_VFS_OK) {
-					result = list_add_items_and_size (merge_source_uri_list, xfer_options, progress, TRUE);
-					if (result != GNOME_VFS_ERROR_INTERRUPTED) {
-						/* Ignore anything but interruptions here -- we will deal with the errors
-						 * during the actual copy
-						 */
-						result = GNOME_VFS_OK;
-					}
-				}
-				
-				if (result == GNOME_VFS_OK) {
-					/* We're moving, and some moves were converted to copies.
-					 * Make sure we have space for the copies.
-					 */
-					target_dir_uri = gnome_vfs_uri_get_parent ((GnomeVFSURI *)merge_target_uri_list->data);
-					result = gnome_vfs_get_volume_free_space (target_dir_uri, &free_bytes);
-					
-					if (result == GNOME_VFS_OK) {
-						if (progress->progress_info->bytes_total > free_bytes) {
-							result = GNOME_VFS_ERROR_NO_SPACE;
-							progress_set_source_target_uris (progress, NULL, target_dir_uri);
-						}
-					} else {
-						/* Errors from gnome_vfs_get_volume_free_space should be ignored */
-						result = GNOME_VFS_OK;
-					}
-					
-					if (target_dir_uri != NULL) {
-						gnome_vfs_uri_unref (target_dir_uri);
-						target_dir_uri = NULL;
-					}
-				}
-			}
-
-			/* Add previous size (non-copy size in the case of a move) */
-			progress->progress_info->bytes_total += bytes_total;
-			progress->progress_info->files_total += files_total;
+			progress->progress_info->bytes_total = bytes_total;
+			progress->progress_info->files_total = files_total;
 		}
 
 
@@ -2462,9 +2419,69 @@ gnome_vfs_xfer_uri_internal (const GList *source_uris,
 			if (move) {
 				g_assert (!link);
 				result = move_items (source_uri_list, target_uri_list,
-						     xfer_options, &error_mode, &overwrite_mode, 
-						     progress);
+						     xfer_options, &error_mode, &overwrite_mode,
+						     progress,
+						     &merge_source_uri_list, &merge_target_uri_list);
+
+
 				if (result == GNOME_VFS_OK && merge_source_uri_list != NULL) {
+
+					bytes_total = progress->progress_info->bytes_total;
+					files_total = progress->progress_info->files_total;
+
+					/* Some moves was converted to copy,
+					   remove previously added non-recursive sizes,
+					   and add recursive sizes */
+					progress->progress_info->bytes_total = 0;
+					progress->progress_info->files_total = 0;
+
+					result = list_add_items_and_size (merge_source_uri_list, xfer_options, progress, FALSE);
+					if (result != GNOME_VFS_ERROR_INTERRUPTED) {
+						/* Ignore anything but interruptions here -- we will deal with the errors
+						 * during the actual copy
+						 */
+						result = GNOME_VFS_OK;
+					}
+
+					progress->progress_info->bytes_total = -progress->progress_info->bytes_total;
+					progress->progress_info->files_total = -progress->progress_info->files_total;
+				
+					if (result == GNOME_VFS_OK) {
+						result = list_add_items_and_size (merge_source_uri_list, xfer_options, progress, TRUE);
+						if (result != GNOME_VFS_ERROR_INTERRUPTED) {
+							/* Ignore anything but interruptions here -- we will deal with the errors
+							* during the actual copy
+							*/
+							result = GNOME_VFS_OK;
+						}
+					}
+				
+					if (result == GNOME_VFS_OK) {
+						/* We're moving, and some moves were converted to copies.
+						 * Make sure we have space for the copies.
+						 */
+						target_dir_uri = gnome_vfs_uri_get_parent ((GnomeVFSURI *)merge_target_uri_list->data);
+						result = gnome_vfs_get_volume_free_space (target_dir_uri, &free_bytes);
+					
+						if (result == GNOME_VFS_OK) {
+							if (progress->progress_info->bytes_total > free_bytes) {
+								result = GNOME_VFS_ERROR_NO_SPACE;
+								progress_set_source_target_uris (progress, NULL, target_dir_uri);
+							}
+						} else {
+							/* Errors from gnome_vfs_get_volume_free_space should be ignored */
+							result = GNOME_VFS_OK;
+						}
+					
+						if (target_dir_uri != NULL) {
+							gnome_vfs_uri_unref (target_dir_uri);
+							target_dir_uri = NULL;
+						}
+					}
+
+					progress->progress_info->bytes_total += bytes_total;
+					progress->progress_info->files_total += files_total;
+
 					result = copy_items (merge_source_uri_list, merge_target_uri_list,
 							     xfer_options, &error_mode, overwrite_mode, 
 							     progress, &source_uri_list_copied);
