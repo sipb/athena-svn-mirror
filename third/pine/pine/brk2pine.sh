@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: brk2pine.sh,v 1.1.1.1 2001-02-19 06:59:52 ghudson Exp $
+# $Id: brk2pine.sh,v 1.1.1.2 2006-10-17 18:11:40 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #

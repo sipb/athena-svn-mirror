@@ -502,11 +502,16 @@ changed From address to the
 <A HREF="#alt-addresses"><EM>alt-addresses</EM></A>
 configuration option.
 <P>
-Limitation: Because commas are used to separate the list of
-Customized-Headers, it is not possible to have the value of a
-header contain a comma.
-Nor is there currently an &quot;escape&quot; mechanism provided
-to make this work.
+Because commas are used in the configuration file to separate the
+list of Customized-Hdrs, you need to quote the value if that value
+contains a comma.
+Use double quotes and place the quotes around the entire value part of
+the header, not including the name of the header.
+For example, you might have
+<P>
+<CENTER><SAMP>Organization: &quot;My Organization Name, My City&quot;</SAMP></CENTER>
+<P>
+as one of the Customized-Hdrs.
 <P>
 
 <DT> <A NAME="dead-letter-files"><EM>dead-letter-files</EM></A>
@@ -2399,21 +2404,9 @@ be sure to turn that on if you use quote suppression.
 For the purposes of this option, a quote is a line that begins with the
 character &quot;&gt;&quot;.
 <P>
-Quote suppression happens after long line wrapping in <EM>Pine</EM>.
-It is done that way so that messages written in the style of one long line
-per paragraph don't count as a single line as far as quote suppression goes.
-Quote suppression line counting happens on the lines you see, not the raw
-lines of the message.
-For that reason, you may sometimes see unexpected results.
-For example, if a quoted line is long, it may wrap to the next line.
-If it isn't labeled <A HREF="#quell-flowed-text">flowed</A> that will
-cause the wrapped text to be on a line by itself.
-As far as the quote suppression algorithm is concerned, this is now
-a line that is not part of the quote, so it won't be suppressed.
-On the other hand,
-<A HREF="#quote-colors">quote coloring</A>
-happens before line wrapping.
-So a line may be colored like it is a quote even though it is not suppressed.
+Quotes are only suppressed when displaying a message on the screen.
+The entire quote will be left intact when printing or forwarding or something
+similar.
 <P>
 
 <DT> <A NAME="read-msg-fold"><EM>read-message-folder</EM></A>
@@ -2466,6 +2459,50 @@ No matter what the value, the validity check is always done when the
 address book is about to be changed by the user.
 The check can be initiated manually by typing <EM>^L</EM> (Ctrl-L)
 while in the address book maintenance screen for the remote address book.
+<P>
+
+<DT> <A NAME="quote-replace-string"><EM>quote-replace-string</EM></A>
+
+<DD> This option specifies what string to use as a quote when <b>viewing</b> a
+message.  The standard way of quoting messages when replying is the string
+&quot;&gt;&nbsp;&quot; (quote space).
+With this variable set, viewing a message will
+replace occurrences of &quot;&gt;&nbsp;&quot; with the replacement string.
+This setting works best when
+<A HREF="#reply-ind-string">Reply-Indent-String</A>
+or the equivalent setting in your correspondents' mail programs
+is set to the default &quot;&gt;&nbsp;&quot;, but it will also work fine with the
+Reply-Indent-String set to &quot;&gt;&quot;.
+<P>
+By default, this setting will only work on messages that are flowed, which is
+the default way of sending messages for many mail clients including versions
+of Pine after 4.60.  Enable the feature
+<A HREF="#quote-replace-nonflowed">Quote-Replace-Nonflowed</A>
+to also have quote-replacement performed on non-flowed messages.
+<P>
+Setting this option will replace  &quot;&gt;&quot; and 
+&quot;&gt;&nbsp;&quot; with the new setting. This string may include trailing
+spaces. To preserve those spaces enclose the full string in double quotes.
+<P>
+No padding to separate the text of the message from the quote string is
+added. This means that if you do not add trailing spaces to the value of
+this variable, text will be displayed right next to the quote string,
+which may be undesirable. This can be avoided by adding a new string
+separated by a space from your selection of quote string replacement. This
+last string will be used for padding. For example, setting this variable to 
+&quot;&gt;&quot;&nbsp;&quot; &quot; has the effect of setting
+&quot;&gt;&quot; as the quote-replace-string, with the text padded by
+a space from the last quote string to make it more readable.
+<P>
+One possible setting for this variable could be
+&quot;&nbsp;&nbsp;&nbsp;&nbsp;&quot; (four spaces wrapped in quotes), which
+would have the effect of indenting each level of quoting four spaces and
+removing the &quot;&gt;&quot;'s.  Different levels of quoting could be made
+more discernible by setting colors for quoted text.
+<P>
+Replying to or forwarding the viewed message will preserve the original
+formatting of the message, so quote-replacement will not be performed on
+messages that are being composed.
 <P>
 
 <DT> <A NAME="reply-ind-str"><EM>reply-indent-string</EM></A>
@@ -2915,7 +2952,7 @@ program.
 Your SMTP server may offer SMTP AUTH authentication.
 It may even require it.
 If your SMTP server offers SMTP AUTH authentication you may specify a
-user name parameter to cause Pine to attempt to authenticate.
+&quot;user&quot; name parameter to cause Pine to attempt to authenticate.
 This parameter requires an associated value,
 the username identifier with which to establish the server
 connection.
@@ -2941,13 +2978,39 @@ yourself to the POP or IMAP server by opening a mailbox before you
 can send mail.
 To do this, you usually only have to open your INBOX.
 <P>
+You may tell <EM>Pine</EM> to use the
+<A HREF="http://www.ietf.org/rfc/rfc2476.txt">Message Submission</A>
+port (587) instead of the SMTP port (25) by including the &quot;submit&quot;
+parameter
+in this option.
+At this time &quot;/submit&quot; is simply equivalent to specifying
+port 587, though it may imply more than that at some point in the future.
+Some ISPs are blocking port 25 in order to reduce the amount of spam
+being sent to their users.
+You may find that the submit option allows you to get around such a block.
 
-To use a non-standard port number on the SMTP server, follow the hostname
-with colon portnumber.
+<P>
+<CENTER><SAMP>smtpserver.example.com/submit</SAMP></CENTER>
+<P>
+
+To specify any non-standard port number on the SMTP server you may follow
+the hostname with a colon followed by the portnumber.
 
 <P>
 <CENTER><SAMP>smtpserver.example.com:12345</SAMP></CENTER>
 <P>
+
+Normally, when a connection is made to the Smtp-Server <EM>Pine</EM> will attempt
+to negotiate a secure (encrypted) session using Transport Layer Security (TLS).
+If that fails then a non-encrypted connection will be attempted instead.
+You may specify that a TLS connection is required if you wish.
+If you append &quot;/tls&quot; to the name then the connection will fail
+instead of falling back to a non-secure connection.
+
+<P>
+<CENTER><SAMP>smtpserver.example.com/tls</SAMP></CENTER>
+<P>
+
 See the
 <A HREF="config-notes.html#smtp-server">SMTP Servers</A>
 section or the
@@ -3910,6 +3973,21 @@ The WhereIs command will change a little.
 It will search through all of the folders in the current collection as well
 as all the folder in any other expanded collection.
 
+<P>
+
+<DT> <A NAME="compose-cancel-confirm-uses-yes"><EM>compose-cancel-confirm-uses-yes</EM></A>
+
+<DD> This feature affects what happens when you type ^C to cancel a composition.
+By default, if you attempt to cancel a composition by typing ^C, you will be
+asked to confirm the cancellation by typing a &quot;C&quot;
+for <EM>C</EM>onfirm.
+It logically ought to be a &quot;Y&quot; for <EM>Y</EM>es, but that is
+risky because the &quot;^C Y&quot; needed to cancel a message
+is close (on the keyboard) to the &quot;^X Y&quot; needed to send a message.
+<P>
+If this feature is set the confirmation asked for
+will be a &quot;<EM>Y</EM>es&quot;
+instead of a &quot;<EM>C</EM>onfirm&quot; response.
 <P>
 
 <DT> <A NAME="compose-cut-from-cursor"><EM>compose-cut-from-cursor</EM></A>
@@ -5178,6 +5256,27 @@ allows you to interactively set whether or not attachments are saved
 to the Fcc'd copy.
 <P>
 
+<DT> <A NAME="force-arrow-cursor"><EM>force-arrow-cursor</EM></A>
+
+<DD> This feature affects <EM>Pine</EM>'s MESSAGE INDEX display routine.
+If set, the normal inverse-video cursor will be
+replaced by a simple &quot;arrow&quot; cursor, which normally occupies the
+second column of the index display.
+<P>
+This is the same index cursor you get if you turn on
+<A HREF="#assume-slow-link">Assume-Slow-Link</A>, but the index
+line coloring will still be present if this feature is turned on and
+Assume-Slow-Link is off.
+<P>
+An alternative version of the Arrow cursor is available by including the
+ARROW
+token in the
+<A HREF="#index-format"><EM>Index-Format</EM></A> option.
+<P>
+It ought to be the case that this feature also affects the ATTACHMENT INDEX,
+but that is not implemented.
+<P>
+
 <DT> <A NAME="hide-nntp-path"><EM>hide-nntp-path</EM></A>
 
 <DD> Normally the Path header that <EM>Pine</EM> generates when posting to a newsgroup
@@ -6048,6 +6147,9 @@ to open the INBOX.  Normally, this prompt happens before composing
 a message, and only happens when there is no user-id already set
 in the configuration.
 <P>
+With this feature set, composing a message is only possible after
+establishing a connection to the INBOX.
+<P>
 
 <DT> <A NAME="quell-ssl-largeblocks"><EM>quell-ssl-largeblocks</EM></A>
 
@@ -6128,6 +6230,21 @@ for incomplete addresses you enter.
 
 <DD> This feature controls whether or not <EM>Pine</EM> will ask for confirmation when a
 <EM>Quit</EM> command is received.
+<P>
+
+<DT> <A NAME="quote-replace-nonflowed"><EM>quote-replace-nonflowed</EM></A>
+
+<DD> This feature, which is only active when
+<A HREF="#quote-replace-string">Quote-Replace-String</A> is
+also set,
+enables quote-replacement on non-flowed messages.  It is off
+by default because a non-flowed message is more dependent on its format,
+and thus quote-replacement may cause less-than-pleasing results.
+Setting this feature will cause quote-replacement similar to that of flowed
+messages, but with the added possibility of long lines being wrapped
+into new lines if the Quote-Replacement-String is longer than the string
+it is replacing, which is &quot;&gt;&nbsp;&quot;.
+
 <P>
 
 <DT> <A NAME="reply-always-uses-reply-to"><EM>reply-always-uses-reply-to</EM></A>
@@ -7315,9 +7432,11 @@ When the feature
 is set, if the first character would have been
 blank then it will instead be a '-' if the message is cc'd to you.
 The second character is typically blank,
-though the arrow cursor may occupy it if the 
+though the arrow cursor may occupy it if either the 
 <A HREF="#assume-slow-link"><EM>assume-slow-link</EM></A>
-feature is set, or you actually are on a slow link.
+or the
+<A HREF="#force-arrow-cursor"><EM>force-arrow-cursor</EM></A> feature
+is set (or you actually are on a slow link).
 The third character is either the letter 'D' if the
 message is deleted, 'A' if it is answered (but not deleted), or 'N' if
 it is new (but not deleted or answered), or blank if it is neither
@@ -7557,6 +7676,40 @@ a Newsgroups header; this token will be your name instead of the name
 of the newsgroup (like it would be with FROMORTO).
 </DD>
 
+<DT>ARROW</DT>
+<DD>
+This gives an alternative way to display the current message in the
+MESSAGE INDEX screen.
+Usually the current message is indicated by the line being shown in
+reverse video.
+Instead, if the ARROW token is included in your Index-Format,
+the current line will include an &quot;arrow&quot; that
+looks like
+<P>
+<CENTER><SAMP>-&gt;</SAMP></CENTER>
+<P>
+in the ARROW token's field.
+For all of the non-current messages, the ARROW field will be filled
+with blanks.
+If you use the fixed-field width feature the length of the &quot;arrow&quot;
+may be adjusted.
+The arrow will be drawn as width-1 dashes followed by a greater than sign.
+For example, if you use ARROW(3) you will get
+<P>
+<CENTER><SAMP>--&gt;</SAMP></CENTER>
+<P>
+and ARROW(1) will give you just
+<P>
+<CENTER><SAMP>&gt;</SAMP></CENTER>
+<P>
+It is also possible to set the color of the ARROW field.
+By default (and for non-current messages) the arrow is colored the same
+as the index line it is part of.
+You may set it to be another color with the 
+&quot;Index Arrow Color&quot; option available from
+the <A HREF="#color-config">Setup Kolor</A> screen.
+</DD>
+
 <DT>SCORE</DT>
 <DD>
 This gives the score
@@ -7576,6 +7729,12 @@ may slow down the display of the MESSAGE INDEX screen.
 <H3><EM>Tokens Available for all but Index-Format</EM></H3>
 
 <DL>
+<DT>CURNEWS</DT>
+<DD>
+This token represents the current newsgroup if there is one.
+For example, &quot;comp.mail.pine&quot;.
+</DD>
+
 <DT>MSGID</DT>
 <DD>
 This token represents the message ID of the message.
@@ -8030,6 +8189,23 @@ If the &quot;Search-Rule&quot; you were using was &quot;begins-with&quot;,
 then it would also match the name &quot;Greg Donaldson&quot;.
 <P>
 Turning on this feature will disable this substitution.
+<P>
+
+<DT> <A NAME="allow-ldap-v3"><EM>allow-ldap-v3</EM></A>
+
+<DD> <EM>Pine</EM> normally attempts to use version 2 of the LDAP protocol.
+When the version 3 protocol is used the server will output the results
+in the UTF-8 character set.
+Since <EM>Pine</EM> is not currently able to handle this UTF-8 output, it does not
+use version 3 protocol.
+However, there are some servers which do not support version 2 of the protocol
+and only support version 3.
+Some people have found that even though <EM>Pine</EM> does not handle
+everything correctly, the results are still usually usable and may be
+better than nothing.
+<P>
+Turning on this feature will cause <EM>Pine</EM> to attempt to talk version 3 LDAP
+protocol to this server.
 <P>
 
 <DT> <A NAME="search-type"><EM>search-type</EM></A>
@@ -8724,59 +8900,55 @@ For each role there are several possible actions that may be defined.
 They are actions to set the From address, the Reply-To address,
 the Fcc, the Signature file, and the Template file.
 
-<H4>Initialize Setttings Using Role</H4>
+<H4>Initialize Settings Using Role</H4>
 
 This is a power user feature.
 You will usually want to leave this field empty.
 The value of this field is the nickname of another one of your roles.
-The action values from that other role
-are used as the initial values of the action items for this role.
+The Action values from that other role
+are used as the initial values of the Action items for this role.
 If you put something in any of the action fields for this role, that will
 override whatever was in the corresponding field of the initializer role.
-The fields affected by this field are the fields labeled
-&quot;Set From&quot;,
-&quot;Set Reply-To&quot;,
-&quot;Set Other Headers&quot;,
-&quot;Set Fcc&quot;,
-&quot;Set LiteralSig&quot;,
-&quot;Set Signature&quot;,
-&quot;Set Template&quot;, and
-&quot;Use SMTP Server&quot;.
 <P>
-You might use this field if the &quot;action&quot; part of one of your roles
+You might use this field if the &quot;Action&quot; part of one of your roles
 is something you want to use in more than one role.
 Instead of filling in those action values again for each role, you
 may give the nickname of the role where the values are filled in.
-It's just a shortcut way to define role actions.
+It's just a shortcut way to define Role Actions.
 <P>
 Here's an example to help explain how this works.
 Suppose you have a role with nickname &quot;role1&quot; and role1 has
 (among other things)
 <P>
-<CENTER><SAMP>Set Signature = sig_file1</SAMP></CENTER>
+<CENTER><SAMP>Set Reply-To = The Pres &lt;president@example.com&gt;</SAMP></CENTER>
 <P>
 set.
 If in &quot;role2&quot; you set &quot;Initialize settings using role&quot; to
-&quot;role1&quot;, then role2 will inherit the Set Signature value
-from role1 by default (and any of the three other action values that are set).
+&quot;role1&quot;, then role2 will inherit the Set Reply-To value
+from role1 by default (and any of the other inheritable action values
+that are set).
 So if role2 had
 <P>
-<CENTER><SAMP>Set Signature =</SAMP></CENTER>
+<CENTER><SAMP>Set Reply-To = &lt;No Value Set&gt;</SAMP></CENTER>
 <P>
-defined, the signature file used with role2 would be &quot;sig-file1&quot;.
+defined, the Reply-To used with role2 would be &quot;The Pres &lt;president@example.com&gt;&quot;
 However, if role2 had
 <P>
-<CENTER><SAMP>Set Signature = sig_file2</SAMP></CENTER>
+<CENTER><SAMP>Set Reply-To = VP &lt;vicepresident@example.com&gt;</SAMP></CENTER>
 <P>
-defined, then the signature file used with role2 would be &quot;sig-file2&quot;.
+defined, then the Reply-To used with role2 would be &quot;VP &lt;vicepresident@example.com&gt;&quot; instead.
 <P>
 If you wish,
 you may choose a nickname from your list of roles by using the
 &quot;T&quot; command.
+If the role you are using to initialize also has a role it initializes from,
+then that initialization happens first.
+That is, inheritance works as expected with the grandparent and
+great-grandparent (and so on) roles having the expected effect.
 
 <H4>Set From</H4>
 
-This field consists of a single address which will be used as the From
+This field consists of an address (or comma-separated list of addresses) which will be used as the From
 address on the message you are sending.
 This should be a fully-qualified address like
 <P>
@@ -8790,7 +8962,7 @@ If this is left blank, then the normal From address will be used.
 
 <H4>Set Reply-To</H4>
 
-The Reply-To address is the address used on the Reply-To line of the message
+The Reply-To address is the address (or comma-separated list of addresses) used on the Reply-To line of the message
 you are sending.
 You don't need a Reply-To address unless it is different from the From address.
 This should be a fully-qualified address like
@@ -8833,11 +9005,16 @@ However, if you Reply using a role which sets the To header, that role's
 To header value will be used instead.
 The customized-hdrs headers are defaults.
 <P>
-Limitation: Because commas are used to separate the list of
-Other Headers, it is not possible to have the value of a
-header contain a comma;
-nor is there currently an &quot;escape&quot; mechanism provided
-to make this work.
+Because commas are used in the configuration file to separate the
+list of Other Hdrs, you need to quote the value if that value
+contains a comma.
+Use double quotes and place the quotes around the entire value part of
+the header, not including the name of the header.
+For example, you might have
+<P>
+<CENTER><SAMP>Organization: &quot;My Organization Name, My City&quot;</SAMP></CENTER>
+<P>
+as one of the Other Hdrs.
 
 <H4>Set Fcc</H4>
 
@@ -9300,7 +9477,7 @@ Scoring, and Other Rules.
 Patterns are compared with a message to see if there is a match.
 For Filtering, the messages being checked are all the messages in the
 folder, one at a time.
-For Index Line Coloring, each message which is visible on the screen is
+For Index Line Coloring, each message that is visible on the screen is
 checked for matches with the Index Coloring Patterns.
 Roles are used with the Reply, Forward, and Compose commands.
 For Reply, the message used to compare the Pattern with is the message
@@ -9312,7 +9489,7 @@ on a message (everything other than Current Folder Type and the
 Beginning of Month and Year)
 are not used.
 Only the Current Folder Type matters for Compose (plus the Beginning of
-Month, which you wouldn't usually use for a Role).
+Month or Year, which you wouldn't usually use for a Role).
 For Scoring, the message being scored is compared with all of the Score
 Patterns, and the Score Values from the ones that match are added together to 
 get the message's score.
@@ -9428,16 +9605,20 @@ when checking for matches for Scoring.
 There are five similar settings which relate to the status of the message.
 These settings rely on the message being New or not, Deleted or not,
 Answered or not, Important or not, and Recent or not.
-There are also five more specialized settings.
+There are also some other miscellaneous settings.
 The first is the Age of the message in days.
-The second is the Size of the message in bytes.
+Another is the Size of the message in bytes.
 The third is a setting which detects whether or not the Subject of a
 message contains raw 8-bit characters (unencoded characters with the most
 significant bit set).
-The fourth is a setting which detects whether or not this is the first time
-<EM>Pine</EM> has been run this month (doesn't depend on individual messages).
-And the fifth is a setting which detects whether or not the From address of a
-message appears in your address book.
+There is a setting which detects whether or not this is the first time
+<EM>Pine</EM> has been run this month (doesn't depend on individual messages),
+and another which detects whether or not this is the first time <EM>Pine</EM> has
+been run this year.
+Other parts of the Pattern detect whether or not the From address of a
+message appears in your address book, whether or not certain keywords
+are set for a message, and whether or not certain character sets are
+used in a message.
 
 <H3>Parts of a Pattern</H3>
 
@@ -9491,7 +9672,7 @@ searched for anywhere in the message's headers or body, not just in the
 contents of a particular header field.
 <P>
 
-<H3><A NAME="pattern_bodytext">BodyText patterns</A></H3>
+<H4><A NAME="pattern_bodytext">BodyText patterns</A></H3>
 
 BodyText patterns are just like header patterns except that the text is
 searched for anywhere in the message's body, not just in the
@@ -9626,7 +9807,7 @@ near the bottom of the rule definition.
 <P>
 A value of 0 is today, 1 is yesterday, 2 is the day before yesterday, and so on.
 
-<H3><A NAME="pattern_size_interval">Size Interval</A></H3>
+<H4><A NAME="pattern_size_interval">Size Interval</A></H3>
 
 The &quot;Size Interval&quot; may be set to an interval of message
 sizes which should be considered a match.
@@ -9716,6 +9897,32 @@ The Keyword part of the Pattern is a match if the message has any of
 the keywords in the list set.
 Like other parts of the Pattern, if this is unset it will be ignored.
 
+<H4>Message Character Set</H4>
+
+A message may use one or more character sets.
+This part of the Pattern matches messages which make use of one or more of
+the character sets specified in the pattern.
+It will be considered a match if a message uses any of the character
+sets in the list you give here.
+The syntax of this part of the Pattern is similar to the header patterns
+and the Message Keywords pattern.
+It is a list of character sets.
+
+<P>
+Besides actual character set names (for example, ISO-8859-7, KOI8-R, or
+GB2312) you may also use some shorthand names that <EM>Pine</EM> provides.
+These names are more understandable shorthand names for sets of 
+character set names.
+Two examples are &quot;Cyrillic&quot; and &quot;Greek&quot;.
+Selecting one of these shorthand names is equivalent to selecting all of
+the character sets that make up the set.
+You can see all of these shorthand names and the lists of character sets
+they stand for by typing the &quot;T&quot; command with the Character
+Set pattern highlighted.
+The Character Set part of the Pattern is a match if the message uses any
+of the character sets in the list.
+Like other parts of the Pattern, if this is unset it will be ignored.
+
 <H4>Raw 8-bit in Subject</H4>
 
 It seems that lots of unwanted email contains unencoded 8-bit characters
@@ -9782,7 +9989,7 @@ if the categorizer command didn't exist.
 
 <DL COMPACT>
 
-<DT> <A NAME="role-nickname"><EM>nickname</EM></A>
+<DT> <A NAME="role-nickname"><EM>Nickname</EM></A>
 
 <DD> This is a nickname to help you.
 You should have a different nickname for each role you define.
@@ -9793,6 +10000,13 @@ sending with a different role than you use by default, and
 it will be useful for choosing a role when composing with the Role command
 or when composing with one of the Role Uses set to With Confirmation.
 This field is not used in the outgoing message.
+<P>
+
+<DT> <A NAME="role-comment"><EM>Comment</EM></A>
+
+<DD> This is a comment to help you.
+This comment does not play any functional role, it is simply an optional
+comment to help you remember what the rule is for.
 <P>
 
 <DT> <A NAME="to-pattern"><EM>To pattern</EM></A>
@@ -10098,6 +10312,80 @@ It should end up looking like
 <PRE>
  ! Keyword pattern = frizzle
 </PRE>
+<P>
+
+<DT> <A NAME="charset-pattern"><EM>Character Set pattern</EM></A>
+
+<DD> A message may use one or more character sets.
+This part of the Pattern matches messages which make use of
+certain specified character sets.
+It will be considered a match if a message uses any of the character
+sets in the list you give here.
+
+<P>
+When filling in a value for this field, you may use
+the &quot;T&quot; command, which presents you with a large list of
+possible character sets to choose from.
+You may also just type in the name of a character set, and it need not
+be one that Pine knows about.
+
+<P>
+Besides actual character set names (for example, ISO-8859-7, KOI8-R, or
+GB2312) you may also use some shorthand names that Pine provides.
+These names are more understandable shorthand names for sets of 
+character set names.
+Two examples are &quot;Cyrillic&quot; and &quot;Greek&quot;.
+Selecting one of these shorthand names is equivalent to selecting all of
+the character sets that make up the set.
+You can see all of these shorthand names and the lists of character sets
+they stand for by typing the &quot;T&quot; command.
+
+<P>
+For the purposes of this Pattern,
+<EM>Pine</EM> will search through a message for all of the text parts and
+collect the character sets declared for each part.
+It will also look in the Subject line for a character set used there.
+<EM>Pine</EM> does not actually look at the text of the message or the text
+of the Subject to determine if a declared character set is actually
+used, it looks only at the declarations themselves in the MIME part headers
+and in the Subject.
+
+<P>
+It is possible to add a <EM>NOT</EM> to the Character Set Pattern meaning with the
+&quot;!&quot; &quot;toggle NOT&quot; command.
+This changes the meaning of the Character Set pattern so that
+it has the opposite meaning.
+It will be considered a match if none of the character sets in the
+list are used in a message.
+<P>
+Don't make the mistake of putting the &quot;!&quot; in the data field for
+the pattern.
+For example, if you type the characters &quot;!GB2312&quot; into the
+Character Set pattern, the pattern will look like:
+<P>
+<PRE>
+ Charset pattern = !GB2312
+</PRE>
+<P>
+This means you want to match the 7 character sequence &quot;!GB2312&quot;.
+In order to match messages which do not have the
+character set &quot;GB2312&quot;
+set, first type the characters &quot;GB2312&quot; followed
+by carriage return for the value of the Character Set pattern, then negate it
+by typing the &quot;!&quot; command.
+It should end up looking like
+<P>
+<PRE>
+ ! Charset pattern = GB2312
+</PRE>
+<P>
+A technicality: Since comma is the character used to separate multiple
+values in a pattern field, you have to escape comma with a backslash (&#92;) if
+you want to include a literal comma in the field.
+In other words, if you type a backslash followed by a comma it will
+be interpreted as a comma by <EM>Pine</EM>, instead of as a separator between
+pattern values.
+All other backslashes are literal backslashes and should not be escaped.
 <P>
 
 <DT> <A NAME="current-folder-type"><EM>Current Folder Type</EM></A>

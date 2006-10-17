@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: other.c,v 1.1.1.5 2005-01-26 17:56:31 ghudson Exp $";
+static char rcsid[] = "$Id: other.c,v 1.1.1.6 2006-10-17 18:11:04 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: other.c,v 1.1.1.5 2005-01-26 17:56:31 ghudson Exp $"
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -222,6 +222,7 @@ static struct variable	*score_act_global_ptr,
 			*cat_cmd_global_ptr,
 			*cat_lim_global_ptr,
 			*startup_ptr,
+			*role_comment_ptr,
 			*role_forw_ptr,
 			*role_repl_ptr,
 			*role_fldr_ptr,
@@ -411,7 +412,6 @@ int	 color_holding_var PROTO((struct pine *, struct variable *));
 int      color_text_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int      save_include PROTO((struct pine *, struct variable *, int));
 char    *role_type_print PROTO((char *, char *, long));
-void	 role_process_filters PROTO(());
 void     role_config_init_disp PROTO((struct pine *, CONF_S **,
 				      long, PAT_STATE *));
 void     add_patline_to_display PROTO((struct pine *, CONF_S **, int, CONF_S **,
@@ -446,6 +446,7 @@ int	 role_filt_text_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int      role_text_tool_inick PROTO((struct pine *, int, CONF_S **, unsigned));
 int      role_text_tool_afrom PROTO((struct pine *, int, CONF_S **, unsigned));
 int      role_text_tool_kword PROTO((struct pine *, int, CONF_S **, unsigned));
+int      role_text_tool_charset PROTO((struct pine *, int, CONF_S **, unsigned));
 void     calculate_inick_stuff PROTO((struct pine *));
 int	 role_radiobutton_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int	 role_addhdr_tool PROTO((struct pine *, int, CONF_S **, unsigned));
@@ -846,6 +847,34 @@ static struct key config_role_keyword_keys_not[] =
 	NULL_MENU,
 	NULL_MENU};
 INST_KEY_MENU(config_role_keyword_keymenu_not, config_role_keyword_keys_not);
+
+static struct key config_role_charset_keys_not[] = 
+       {HELP_MENU,
+	OTHER_MENU,
+	EXIT_SETUP_MENU,
+	{"C", "[Change Val]", {MC_EDIT,3,{'c',ctrl('M'),ctrl('J')}}, KS_NONE},
+	PREV_MENU,
+	NEXT_MENU,
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	{"A", "Add Value", {MC_ADD,1,{'a'}}, KS_NONE},
+	{"D", "Delete Val", {MC_DELETE,1,{'d'}}, KS_NONE},
+	PRYNTTXT_MENU,
+	WHEREIS_MENU,
+
+        HELP_MENU,
+	OTHER_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	{"T", "ToCharSets", {MC_CHOICE, 2, {'t', ctrl('T')}}, KS_NONE},
+	NULL_MENU,
+	{"!", "toggle NOT", {MC_NOT,1,{'!'}}, KS_NONE},
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU};
+INST_KEY_MENU(config_role_charset_keymenu_not, config_role_charset_keys_not);
 
 static struct key config_role_keys[] = 
        {HELP_MENU,
@@ -3197,7 +3226,7 @@ context_config_shuffle(ps, cl)
 		(ekey[0].ch == 'd' || n > 1) ? "DOWN" : "");
 
 	cmd = radio_buttons(prompt, -FOOTER_ROWS(ps), ekey,
-			    deefault, 'x', NO_HELP, RB_NORM);
+			    deefault, 'x', NO_HELP, RB_NORM, NULL);
 	switch(cmd){
 	  case 'x':
 	  default:
@@ -4186,11 +4215,13 @@ ldap_addr_select(ps, ac, result, style, wp_err)
        style == AlwaysDisplayAndMailRequired ||
        (style == DisplayIfOne && got_n_mail >= 1) ||
        (style == DisplayIfTwo && got_n_mail >= 1 && got_n_entries >= 2)){
+	TITLEBAR_STATE_S *tbstate = NULL;
+
 	if(wp_err && wp_err->mangled)
 	  *wp_err->mangled = 1;
 
 	prev_redrawer = ps_global->redrawer;
-	push_titlebar_state();
+	tbstate = save_titlebar_state();
 
 	memset(&screen, 0, sizeof(screen));
 	switch(conf_scroll_screen(ps,&screen,first_line,ac->title,"this ",0)){
@@ -4216,7 +4247,8 @@ ldap_addr_select(ps, ac, result, style, wp_err)
 	}
 
 	ClearScreen();
-	pop_titlebar_state();
+	restore_titlebar_state(tbstate);
+	free_titlebar_state(&tbstate);
 	redraw_titlebar();
 	if(ps_global->redrawer = prev_redrawer)
 	  (*ps_global->redrawer)();
@@ -4724,7 +4756,7 @@ dir_config_shuffle(ps, cl)
 						   : h_dir_shuf;
 
     rv = radio_buttons(tmp, -FOOTER_ROWS(ps), opts, deefault, 'x',
-		       help, RB_NORM);
+		       help, RB_NORM, NULL);
 
     switch(rv){
       case 'x':
@@ -4892,6 +4924,7 @@ dir_config_edit(ps, cl)
 #define   LDAP_F_RHS   1
 #define   LDAP_F_REF   2
 #define   LDAP_F_NOSUB 3
+#define   LDAP_F_LDAPV3OK 4
 bitmap_t  ldap_option_list;
 struct variable *ldap_srch_rule_ptr;
 
@@ -5087,6 +5120,8 @@ dir_edit_screen(ps, def, title, raw_server)
       setbitn(LDAP_F_REF, ldap_option_list);
     if(def && def->nosub)
       setbitn(LDAP_F_NOSUB, ldap_option_list);
+    if(def && def->ldap_v3_ok)
+      setbitn(LDAP_F_LDAPV3OK, ldap_option_list);
 
     /* save the old opt_screen before calling scroll screen again */
     saved_screen = opt_screen;
@@ -5207,6 +5242,9 @@ dir_edit_screen(ps, def, title, raw_server)
 	    break;
 	  case LDAP_F_NOSUB:
 	    ctmp->help      = h_config_ldap_opts_nosub;
+	    break;
+	  case LDAP_F_LDAPV3OK:
+	    ctmp->help      = h_config_ldap_opts_ldap_v3_ok;
 	    break;
 	}
 	ctmp->tool      = ldap_checkbox_tool;
@@ -5600,7 +5638,7 @@ dir_edit_screen(ps, def, title, raw_server)
 	      sprintf(custom_scope, "/scope=%.50s", v->name);
 	}
 
-	sprintf(dir_tmp, "%.100s%s%.100s \"/base=%.100s/impl=%d/rhs=%d/ref=%d/nosub=%d/type=%.50s/srch=%.50s%.100s/time=%.50s/size=%.50s/cust=%.100s/nick=%.100s/matr=%.50s/catr=%.50s/satr=%.50s/gatr=%.50s\"",
+	sprintf(dir_tmp, "%.100s%s%.100s \"/base=%.100s/impl=%d/rhs=%d/ref=%d/nosub=%d/ldap_v3_ok=%d/type=%.50s/srch=%.50s%.100s/time=%.50s/size=%.50s/cust=%.100s/nick=%.100s/matr=%.50s/catr=%.50s/satr=%.50s/gatr=%.50s\"",
 		server ? server : "",
 		(portval >= 0 && port && *port) ? ":" : "",
 		(portval >= 0 && port && *port) ? port : "",
@@ -5609,6 +5647,7 @@ dir_edit_screen(ps, def, title, raw_server)
 		bitnset(LDAP_F_RHS, ldap_option_list) ? 1 : 0,
 		bitnset(LDAP_F_REF, ldap_option_list) ? 1 : 0,
 		bitnset(LDAP_F_NOSUB, ldap_option_list) ? 1 : 0,
+		bitnset(LDAP_F_LDAPV3OK, ldap_option_list) ? 1 : 0,
 		srch_type ? srch_type : "",
 		srch_rule ? srch_rule : "",
 		custom_scope,
@@ -5741,7 +5780,7 @@ dir_config_del(ps, cl)
 	    ans = radio_buttons(
 	"Ignore all default directory servers or just remove this one ? ",
 				-FOOTER_ROWS(ps), opts, 'i', 'x',
-				h_ab_del_dir_ignore, RB_NORM);
+				h_ab_del_dir_ignore, RB_NORM, NULL);
 	}
 
 	if(ans == 0)
@@ -6063,7 +6102,8 @@ ldap_feature_list(index)
 	{"use-implicitly-from-composer",      NULL, LDAP_F_IMPL},
 	{"lookup-addrbook-contents",          NULL, LDAP_F_RHS},
 	{"save-search-criteria-not-result",   NULL, LDAP_F_REF},
-	{"disable-ad-hoc-space-substitution", NULL, LDAP_F_NOSUB}
+	{"disable-ad-hoc-space-substitution", NULL, LDAP_F_NOSUB},
+	{"allow-ldap-v3",                     NULL, LDAP_F_LDAPV3OK}
     };
 
     return((index >= 0 &&
@@ -7528,6 +7568,8 @@ config_help(var, feature)
 	return(h_config_abook_metafile);
       case V_REPLY_STRING :
 	return(h_config_reply_indent_string);
+      case V_QUOTE_REPLACE_STRING :
+	return(h_config_quote_replace_string);
       case V_REPLY_INTRO :
 	return(h_config_reply_intro);
       case V_EMPTY_HDR_MSG :
@@ -7639,6 +7681,9 @@ config_help(var, feature)
       case V_IND_UNS_BACK_COLOR :
       case V_IND_REC_BACK_COLOR :
 	return(h_config_index_color);
+      case V_IND_ARR_FORE_COLOR :
+      case V_IND_ARR_BACK_COLOR :
+	return(h_config_arrow_color);
       case V_KEYLABEL_FORE_COLOR :
       case V_KEYLABEL_BACK_COLOR :
 	return(h_config_keylabel_color);
@@ -7748,7 +7793,13 @@ litsig_text_tool(ps, cmd, cl, flags)
 	    input = (char *)fs_get((strlen(start_with)+1) * sizeof(char));
 	    input[0] = '\0';
 	    cstring_to_string(start_with, input);
-	    err = signature_edit_lit(input, &result, "SIGNATURE EDITOR");
+	    err = signature_edit_lit(input, &result,
+				     ((*cl)->var == role_comment_ptr)
+					 ? "COMMENT EDITOR"
+					 : "SIGNATURE EDITOR",
+				     ((*cl)->var == role_comment_ptr)
+					 ? h_composer_commentedit
+					 : h_composer_sigedit);
 
 	    if(!err){
 		if(olddefval && !strcmp(input, result) &&
@@ -8110,7 +8161,7 @@ text_toolit(ps, cmd, cl, flags, look_for_backslash)
 		ekey[2].ch    = -1;
 		strcpy(prompt, "Replace or Add To default value ? ");
 		switch(radio_buttons(prompt, -FOOTER_ROWS(ps), ekey, 'a', 'x',
-				     h_config_replace_add, RB_NORM)){
+				     h_config_replace_add, RB_NORM, NULL)){
 		  case 'a':
 		    p = sval;
 		    for(j = 0; (*cl)->var->current_val.l[j]; j++){
@@ -8714,7 +8765,7 @@ delete:
 						       : h_hdrcolor_shuf;
 
 	i = radio_buttons(prompt, -FOOTER_ROWS(ps), ekey, deefault, 'x',
-			   help, RB_NORM);
+			   help, RB_NORM, NULL);
 
 	switch(i){
 	  case 'x':
@@ -9634,7 +9685,8 @@ print_edit_tool(ps, cmd, cl, flags)
 		ekey[2].ch    = -1;
 		strcpy(prompt, "Replace or Add To default value ? ");
 		switch(i = radio_buttons(prompt, -FOOTER_ROWS(ps), ekey, 'a',
-					 'x', h_config_replace_add, RB_NORM)){
+					 'x', h_config_replace_add, RB_NORM,
+					 NULL)){
 		  case 'a':
 		    /* Make a list of the default commands, leaving room for 
 		       the command we are about to add below. */
@@ -9861,7 +9913,7 @@ replace_text:
 	    ekey[3].ch    = -1;
 	    strcpy(prompt, "Change Name or Command or Options ? ");
 	    i = radio_buttons(prompt, -FOOTER_ROWS(ps), ekey, 'c', 'x',
-			      h_config_print_name_cmd, RB_NORM);
+			      h_config_print_name_cmd, RB_NORM, NULL);
 
 	    if(i == 'x'){
 		cmd_cancelled("Change");
@@ -9991,7 +10043,7 @@ replace_text:
 		ekey[2].ch    = -1;
 		strcpy(prompt, "Change Init string or Trailer string ? ");
 		j = radio_buttons(prompt, -FOOTER_ROWS(ps), ekey, 'i', 'x',
-				  h_config_print_opt_choice, RB_NORM);
+				  h_config_print_opt_choice, RB_NORM, NULL);
 
 		if(j == 'x'){
 		    cmd_cancelled("Change");
@@ -13028,6 +13080,7 @@ int              revert;
             var == &ps->vars[V_IND_ANS_FORE_COLOR]  ||
             var == &ps->vars[V_IND_NEW_FORE_COLOR]  ||
             var == &ps->vars[V_IND_UNS_FORE_COLOR]  ||
+            var == &ps->vars[V_IND_ARR_FORE_COLOR]  ||
             var == &ps->vars[V_IND_REC_FORE_COLOR]  ||
             var == &ps->vars[V_IND_PLUS_BACK_COLOR] ||
             var == &ps->vars[V_IND_IMP_BACK_COLOR]  ||
@@ -13035,6 +13088,7 @@ int              revert;
             var == &ps->vars[V_IND_ANS_BACK_COLOR]  ||
             var == &ps->vars[V_IND_NEW_BACK_COLOR]  ||
             var == &ps->vars[V_IND_UNS_BACK_COLOR]  ||
+            var == &ps->vars[V_IND_ARR_BACK_COLOR]  ||
             var == &ps->vars[V_IND_REC_BACK_COLOR]){
 	clear_index_cache();
     }
@@ -13432,11 +13486,21 @@ INST_KEY_MENU(sel_from_list_lm, sel_from_list_keys_lm);
  * of strings.
  *
  * Args     lsel -- the items as well as the answer are contained in this list
- *         flags -- 
+ *         flags -- There is some inconsistent flags usage. Notice that the
+ *                  flag SFL_ALLOW_LISTMODE is a flag passed in the flags
+ *                  argument whereas the flag SFL_NOSELECT is a per item
+ *                  (that is, per LIST_SEL_S) flag.
  *         title -- passed to conf_scroll_screen
  *         pdesc -- passed to conf_scroll_screen
  *          help -- passed to conf_scroll_screen
  *     helptitle -- passed to conf_scroll_screen
+ *
+ * You have screen width - 4 columns to work with. If you want to overflow to
+ * a second (or third or fourth) line for an item just send another item
+ * in the list but with the SFL_NOSELECT flag set. Only the selectable lines
+ * will be highlighted, which is kind of a crock, but it looked like a lot
+ * of work to fix that.  Too long lines will be truncated and replaced
+ * with ending "...".
  *
  * Returns 0 on successful choice
  *        -1 if cancelled
@@ -13452,50 +13516,100 @@ select_from_list_screen(lsel, flags, title, pdesc, help, htitle)
 {
     CONF_S      *ctmp = NULL, *first_line = NULL;
     OPT_SCREEN_S screen;
-    int          ret = -1;
+    int          j, lv, ret = -1;
     LIST_SEL_S  *p;
+    char        *display;
     ScreenMode   listmode = SingleMode;
 
     if(!lsel)
       return(ret);
     
+    /* find longest value's length */
+    for(lv = 0, p = lsel; p; p = p->next){
+	if(!(p->flags & SFL_NOSELECT)){
+	    display = p->display_item ? p->display_item :
+			p->item ? p->item : "";
+	    if(lv < (j = strlen(display)))
+	      lv = j;
+	}
+    }
+
+    lv = min(lv, ps_global->ttyo->screen_cols - 4);
+
+
+    /*
+     * Convert the passed in list to conf_scroll lines.
+     */
+
     if(flags & SFL_ALLOW_LISTMODE){
-	/* turn the list into conf_scroll lines */
+
 	for(p = lsel; p; p = p->next){
 
+	    display = p->display_item ? p->display_item :
+			p->item ? p->item : "";
 	    new_confline(&ctmp);
-	    if(!first_line)
+	    if(!first_line && !(p->flags & SFL_NOSELECT))
 	      first_line = ctmp;
 
-	    ctmp->value        = (char *) fs_get((strlen(p->item ? p->item : "") + 4 + 1) * sizeof(char));
-	    sprintf(ctmp->value, "    %s", p->item ? p->item : "");
+	    ctmp->value        = (char *) fs_get((lv + 4 + 1) * sizeof(char));
+	    sprintf(ctmp->value, "    %-*.*s", lv, lv, display);
+	    if(strlen(ctmp->value) > ps_global->ttyo->screen_cols){
+		ctmp->value[ps_global->ttyo->screen_cols-1] = '.';
+		ctmp->value[ps_global->ttyo->screen_cols-2] = '.';
+		ctmp->value[ps_global->ttyo->screen_cols-3] = '.';
+	    }
+
 	    ctmp->d.l.lsel     = p;
 	    ctmp->d.l.listmode = &listmode;
 	    ctmp->keymenu      = &sel_from_list_sm;
 	    ctmp->help         = help;
 	    ctmp->help_title   = htitle;
 	    ctmp->tool         = select_from_list_tool;
-	    ctmp->flags        = CF_STARTITEM;
+	    ctmp->flags        = CF_STARTITEM |
+				 ((p->flags & SFL_NOSELECT) ? CF_NOSELECT : 0);
 	}
     }
     else{
-	/* turn the list into conf_scroll lines */
+
 	for(p = lsel; p; p = p->next){
 
+	    display = p->display_item ? p->display_item :
+			p->item ? p->item : "";
 	    new_confline(&ctmp);
-	    if(!first_line)
+	    if(!first_line && !(p->flags & SFL_NOSELECT))
 	      first_line = ctmp;
 
-	    ctmp->value        = cpystr(p->item ? p->item : "");
+	    ctmp->value        = (char *) fs_get((lv + 1) * sizeof(char));
+	    sprintf(ctmp->value, "%-*.*s", lv, lv, display);
+	    if(strlen(ctmp->value) > ps_global->ttyo->screen_cols){
+		ctmp->value[ps_global->ttyo->screen_cols-1] = '.';
+		ctmp->value[ps_global->ttyo->screen_cols-2] = '.';
+		ctmp->value[ps_global->ttyo->screen_cols-3] = '.';
+	    }
+
 	    ctmp->d.l.lsel     = p;
 	    ctmp->d.l.listmode = &listmode;
 	    ctmp->keymenu      = &sel_from_list;
 	    ctmp->help         = help;
 	    ctmp->help_title   = htitle;
 	    ctmp->tool         = select_from_list_tool;
-	    ctmp->flags        = CF_STARTITEM;
+	    ctmp->flags        = CF_STARTITEM |
+				 ((p->flags & SFL_NOSELECT) ? CF_NOSELECT : 0);
 	    ctmp->valoffset    = 4;
 	}
+    }
+
+    /* just convert to start in listmode after the fact, easier that way */
+    if(flags & SFL_STARTIN_LISTMODE){
+	listmode = ListMode;
+
+	for(ctmp = first_line; ctmp; ctmp = next_confline(ctmp))
+	  if(!(ctmp->flags & CF_NOSELECT) && ctmp->value){
+	      ctmp->value[0] = '[';
+	      ctmp->value[1] = ctmp->d.l.lsel->selected ? 'X' : SPACE;
+	      ctmp->value[2] = ']';
+	      ctmp->keymenu  = &sel_from_list_lm;
+	  }
     }
 
     memset(&screen, 0, sizeof(screen));
@@ -15392,7 +15506,7 @@ role_config_shuffle(ps, cl)
 						   : h_role_shuf;
 
     rv = radio_buttons(tmp, -FOOTER_ROWS(ps), opts, deefault, 'x',
-		       help, RB_NORM);
+		       help, RB_NORM, NULL);
 
     if(rv == 'x'){
 	cmd_cancelled("Shuffle");
@@ -16363,12 +16477,13 @@ role_config_edit_screen(ps, def, title, rflags, result)
     OPT_SCREEN_S     screen, *saved_screen;
     CONF_S          *ctmp = NULL, *ctmpb, *first_line = NULL;
     struct variable  nick_var, to_pat_var, from_pat_var,
+		     comment_var,
 		     sender_pat_var, cc_pat_var, recip_pat_var, news_pat_var,
 		     subj_pat_var, inick_var, fldr_type_var, folder_pat_var,
 		     abook_type_var, abook_pat_var,
 		     alltext_pat_var, scorei_pat_var, partic_pat_var,
 		     bodytext_pat_var, age_pat_var, size_pat_var,
-		     keyword_pat_var,
+		     keyword_pat_var, charset_pat_var,
 		     stat_new_var, stat_del_var, stat_imp_var, stat_ans_var,
 		     stat_rec_var, stat_8bit_var,
 		     stat_bom_var, stat_boy_var,
@@ -16381,8 +16496,9 @@ role_config_edit_screen(ps, def, title, rflags, result)
 		     rolecolor_vars[2], filter_type_var, folder_act_var,
 		     keyword_set_var, keyword_clr_var,
 		     filt_new_var, filt_del_var, filt_imp_var, filt_ans_var;
-    struct variable *v, *varlist[61], opt_var;
+    struct variable *v, *varlist[63], opt_var;
     char            *nick = NULL, *inick = NULL, *fldr_type_pat = NULL,
+		    *comment = NULL,
 		    *scorei_pat = NULL, *age_pat = NULL, *size_pat = NULL,
 		    *abook_type_pat = NULL,
 		    *stat_new = NULL, *stat_del = NULL, *stat_imp = NULL,
@@ -16402,6 +16518,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
 		   **partic_pat = NULL, **subj_pat = NULL,
 		   **alltext_pat = NULL, **bodytext_pat = NULL,
 		   **keyword_pat = NULL, **folder_pat = NULL,
+		   **charset_pat = NULL,
 		   **abook_pat = NULL, **folder_act = NULL,
 		   **keyword_set = NULL, **keyword_clr = NULL,
 		   **cat_cmd = NULL, **cstm_act = NULL, **smtp_act = NULL,
@@ -16449,6 +16566,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
      * so we can use the existing tools from the config screen.
      */
     varlist[j = 0] = &nick_var;
+    varlist[++j] = &comment_var;
     varlist[++j] = &to_pat_var;
     varlist[++j] = &from_pat_var;
     varlist[++j] = &sender_pat_var;
@@ -16460,6 +16578,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     varlist[++j] = &alltext_pat_var;
     varlist[++j] = &bodytext_pat_var;
     varlist[++j] = &keyword_pat_var;
+    varlist[++j] = &charset_pat_var;
     varlist[++j] = &age_pat_var;
     varlist[++j] = &size_pat_var;
     varlist[++j] = &scorei_pat_var;
@@ -16529,6 +16648,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     msg_state1_ptr = msg_state2_ptr = NULL;
     msg_state3_ptr = msg_state4_ptr = NULL;
     role_afrom_ptr = startup_ptr = NULL;
+    role_comment_ptr = NULL;
 
     nick_var.name       = cpystr("Nickname");
     nick_var.is_used    = 1;
@@ -16547,6 +16667,15 @@ role_config_edit_screen(ps, def, title, rflags, result)
 					     ? "Score Rule"
 					     : "Filter Rule"))));
     set_current_val(&nick_var, FALSE, FALSE);
+
+    role_comment_ptr    = &comment_var;		/* so radiobuttons can tell */
+    comment_var.name    = cpystr("Comment");
+    comment_var.is_used = 1;
+    comment_var.is_user = 1;
+    apval = APVAL(&comment_var, ew);
+    *apval = (def && def->patgrp && def->patgrp->comment)
+				? cpystr(def->patgrp->comment) : NULL;
+    set_current_val(&comment_var, FALSE, FALSE);
 
     setup_dummy_pattern_var(&to_pat_var, "To pattern",
 			   (def && def->patgrp) ? def->patgrp->to : NULL);
@@ -16571,6 +16700,8 @@ role_config_edit_screen(ps, def, title, rflags, result)
 
     setup_dummy_pattern_var(&keyword_pat_var, "Keyword pattern",
 			   (def && def->patgrp) ? def->patgrp->keyword : NULL);
+    setup_dummy_pattern_var(&charset_pat_var, "Charset pattern",
+			   (def && def->patgrp) ? def->patgrp->charsets : NULL);
 
     age_pat_global_ptr     = &age_pat_var;
     age_pat_var.name       = cpystr("Age interval");
@@ -16804,7 +16935,9 @@ role_config_edit_screen(ps, def, title, rflags, result)
 
 	bufp = (char *)fs_get((size_t)est_size(def->action->from));
 	apval = APVAL(&from_act_var, ew);
-	*apval = addr_string(def->action->from, bufp);
+	bufp[0] = '\0';
+	rfc822_write_address(bufp, def->action->from);
+	*apval = bufp;
     }
     else{
 	apval = APVAL(&from_act_var, ew);
@@ -16819,7 +16952,9 @@ role_config_edit_screen(ps, def, title, rflags, result)
 
 	bufp = (char *)fs_get((size_t)est_size(def->action->replyto));
 	apval = APVAL(&replyto_act_var, ew);
-	*apval = addr_string(def->action->replyto, bufp);
+	bufp[0] = '\0';
+	rfc822_write_address(bufp, def->action->replyto);
+	*apval = bufp;
     }
     else{
 	apval = APVAL(&replyto_act_var, ew);
@@ -17006,6 +17141,20 @@ role_config_edit_screen(ps, def, title, rflags, result)
     first_line = ctmp;
     if(rflags & ROLE_CHANGES)
       first_line->flags |= CF_CHANGES;
+
+    /* Comment */
+    new_confline(&ctmp);
+    ctmp->help_title= "HELP FOR COMMENT";
+    ctmp->var       = &comment_var;
+    ctmp->valoffset = pindent;
+    ctmp->keymenu   = &config_role_keymenu;
+    ctmp->help      = h_config_role_comment;
+    ctmp->tool      = role_litsig_text_tool;
+    sprintf(tmp, "%-*.100s =", pindent-3, comment_var.name);
+    ctmp->varname   = cpystr(tmp);
+    ctmp->varnamep  = ctmp;
+    ctmp->value     = pretty_value(ps, ctmp);
+    ctmp->varmem    = -1;
 
     /* Blank line */
     new_confline(&ctmp);
@@ -17252,6 +17401,12 @@ role_config_edit_screen(ps, def, title, rflags, result)
     setup_role_pat(ps, &ctmp, &keyword_pat_var, h_config_role_keywordpat,
 		   "HELP FOR KEYWORD PATTERN",
 		   &config_role_keyword_keymenu_not, role_text_tool_kword,
+		   NULL, pindent);
+
+    /* Charset Pattern */
+    setup_role_pat(ps, &ctmp, &charset_pat_var, h_config_role_charsetpat,
+		   "HELP FOR CHARACTER SET PATTERN",
+		   &config_role_charset_keymenu_not, role_text_tool_charset,
 		   NULL, pindent);
 
     /* Important Status */
@@ -18262,6 +18417,11 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	*apval = NULL;
 	removing_leading_and_trailing_white_space(nick);
 
+	apval = APVAL(&comment_var, ew);
+	comment = *apval;
+	*apval = NULL;
+	removing_leading_and_trailing_white_space(comment);
+
 	alval = ALVAL(&to_pat_var, ew);
 	to_pat = *alval;
 	*alval = NULL;
@@ -18304,6 +18464,10 @@ role_config_edit_screen(ps, def, title, rflags, result)
 
 	alval = ALVAL(&keyword_pat_var, ew);
 	keyword_pat = *alval;
+	*alval = NULL;
+
+	alval = ALVAL(&charset_pat_var, ew);
+	charset_pat = *alval;
 	*alval = NULL;
 
 	apval = APVAL(&age_pat_var, ew);
@@ -18567,6 +18731,11 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	else
 	  (*result)->patgrp->nick = cpystr(nick_var.global_val.p);
 
+	if(comment && *comment){
+	    (*result)->patgrp->comment = comment;
+	    comment = NULL;
+	}
+
 	(*result)->action->nick = cpystr((*result)->patgrp->nick);
 
 	(*result)->action->is_a_role   = edit_role  ? 1 : 0;
@@ -18624,6 +18793,11 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	if((*result)->patgrp->keyword &&
 	   !strncmp(keyword_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->keyword->not = 1;
+
+	(*result)->patgrp->charsets = editlist_to_pattern(charset_pat);
+	if((*result)->patgrp->charsets &&
+	   !strncmp(charset_pat_var.name, NOT, NOTLEN))
+	  (*result)->patgrp->charsets->not = 1;
 
 	(*result)->patgrp->age_uses_sentdate =
 		bitnset(FEAT_SENTDATE, feat_option_list) ? 1 : 0;
@@ -19085,6 +19259,8 @@ role_config_edit_screen(ps, def, title, rflags, result)
       free_earb(&earb);
     if(nick)
       fs_give((void **)&nick);
+    if(comment)
+      fs_give((void **)&comment);
     if(to_pat)
       free_list_array(&to_pat);
     if(from_pat)
@@ -19107,6 +19283,8 @@ role_config_edit_screen(ps, def, title, rflags, result)
       free_list_array(&bodytext_pat);
     if(keyword_pat)
       free_list_array(&keyword_pat);
+    if(charset_pat)
+      free_list_array(&charset_pat);
     if(age_pat)
       fs_give((void **)&age_pat);
     if(size_pat)
@@ -19421,7 +19599,9 @@ calculate_inick_stuff(ps)
 	    char *bufp;
 
 	    bufp = (char *)fs_get((size_t)est_size(irole->from));
-	    v->global_val.p = addr_string(irole->from, bufp);
+	    bufp[0] = '\0';
+	    rfc822_write_address(bufp, irole->from);
+	    v->global_val.p = bufp;
 	}
 
 	ctmp = inick_confs[INICK_REPLYTO_CONF];
@@ -19431,7 +19611,9 @@ calculate_inick_stuff(ps)
 	    char *bufp;
 
 	    bufp = (char *)fs_get((size_t)est_size(irole->replyto));
-	    v->global_val.p = addr_string(irole->replyto, bufp);
+	    bufp[0] = '\0';
+	    rfc822_write_address(bufp, irole->replyto);
+	    v->global_val.p = bufp;
 	}
 
 	ctmp = inick_confs[INICK_FCC_CONF];
@@ -21219,8 +21401,8 @@ role_text_tool_kword(ps, cmd, cl, flags)
     CONF_S      **cl;
     unsigned      flags;
 {
-    int    i, rv = -1;
-    char **apval;
+    int    i, j, rv = -1;
+    char **lval;
 
     switch(cmd){
       case MC_CHOICE :		/* Choose keywords from list and add them */
@@ -21229,7 +21411,6 @@ role_text_tool_kword(ps, cmd, cl, flags)
 	 OPT_SCREEN_S *saved_screen;
 	 char         *esc;
 	 char        **kw;
-	 char        **apval;
 
 	ps->redrawer = NULL;
 	ps->next_screen = SCREEN_FUN_NULL;
@@ -21241,6 +21422,115 @@ role_text_tool_kword(ps, cmd, cl, flags)
 		esc = add_roletake_escapes(kw[i]);
 		fs_give((void **) &kw[i]);
 		kw[i] = esc;
+	    }
+
+	    /* eliminate duplicates before the add */
+	    lval = LVAL((*cl)->var, ew);
+	    if(lval && *lval){
+		for(i = 0; kw[i]; ){
+		    /* if kw[i] is a dup, eliminate it */
+		    for(j = 0; lval[j]; j++)
+		      if(!strcmp(kw[i], lval[j]))
+			break;
+
+		    if(lval[j]){		/* it is a dup */
+			for(j = i; kw[j]; j++)
+			  kw[j] = kw[j+1];
+		    }
+		    else
+		      i++;
+		}
+	    }
+
+	    if(kw[0])
+	      config_add_list(ps, cl, kw, NULL, 0);
+	    
+	    fs_give((void **) &kw);
+
+	    if((*cl)->value)
+	      fs_give((void **) &((*cl)->value));
+
+	    (*cl)->value = pretty_value(ps, *cl);
+	    rv = 1;
+	}
+	else{
+	    ps->next_screen = prev_screen;
+	    ps->redrawer = redraw;
+	    rv = 0;
+	}
+
+	opt_screen = saved_screen;
+	}
+
+	ps->mangled_screen = 1;
+	break;
+
+      case MC_EDIT :
+      case MC_ADD :
+      case MC_DELETE :
+      case MC_NOT :
+	rv = role_text_tool(ps, cmd, cl, flags);
+	ps->mangled_screen = 1;
+	break;
+
+      case MC_EXIT :
+      default :
+	rv = role_text_tool(ps, cmd, cl, flags);
+	break;
+    }
+
+    return(rv);
+}
+
+
+/*
+ */
+int
+role_text_tool_charset(ps, cmd, cl, flags)
+    struct pine  *ps;
+    int		  cmd;
+    CONF_S      **cl;
+    unsigned      flags;
+{
+    int    i, j, rv = -1;
+    char **lval;
+
+    switch(cmd){
+      case MC_CHOICE :		/* Choose charsets from list and add them */
+	{void (*prev_screen)() = ps->prev_screen,
+	      (*redraw)() = ps->redrawer;
+	 OPT_SCREEN_S *saved_screen;
+	 char         *esc;
+	 char        **kw;
+
+	ps->redrawer = NULL;
+	ps->next_screen = SCREEN_FUN_NULL;
+
+	saved_screen = opt_screen;
+
+	if(kw=choose_list_of_charsets()){
+	    for(i = 0; kw[i]; i++){
+		esc = add_roletake_escapes(kw[i]);
+		fs_give((void **) &kw[i]);
+		kw[i] = esc;
+	    }
+
+	    /* eliminate duplicates before the add */
+	    lval = LVAL((*cl)->var, ew);
+	    if(lval && *lval){
+		for(i = 0; kw[i]; ){
+		    /* if kw[i] is a dup, eliminate it */
+		    for(j = 0; lval[j]; j++)
+		      if(!strcmp(kw[i], lval[j]))
+			break;
+
+		    if(lval[j]){		/* it is a dup */
+			for(j = i; kw[j]; j++)
+			  kw[j] = kw[j+1];
+		    }
+		    else
+		      i++;
+		}
 	    }
 
 	    if(kw[0])
@@ -23200,9 +23490,11 @@ color_setting_tool(ps, cmd, cl, flags)
 	}
 
 	/* at least put current on some selectable line */
-	for(; *cl && ((*cl)->flags & CF_NOSELECT); *cl = next_confline(*cl))
+	for(; *cl && ((*cl)->flags & CF_NOSELECT) && next_confline(*cl);
+	    *cl = next_confline(*cl))
 	  ;
-	for(; *cl && ((*cl)->flags & CF_NOSELECT); *cl = prev_confline(*cl))
+	for(; *cl && ((*cl)->flags & CF_NOSELECT) && prev_confline(*cl);
+	    *cl = prev_confline(*cl))
 	  ;
 
 	rv = ps->mangled_body = 1;
@@ -23263,7 +23555,7 @@ color_setting_tool(ps, cmd, cl, flags)
 						       : h_hdrcolor_shuf;
 
 	i = radio_buttons(prompt, -FOOTER_ROWS(ps), opts, deefault, 'x',
-			   help, RB_NORM);
+			   help, RB_NORM, NULL);
 
 	switch(i){
 	  case 'x':
@@ -23858,6 +24150,7 @@ set_current_color_vals(ps)
     set_color_val(&vars[V_IND_NEW_FORE_COLOR], 0);
     set_color_val(&vars[V_IND_REC_FORE_COLOR], 0);
     set_color_val(&vars[V_IND_UNS_FORE_COLOR], 0);
+    set_color_val(&vars[V_IND_ARR_FORE_COLOR], 0);
     set_color_val(&vars[V_SIGNATURE_FORE_COLOR], 0);
 
     set_current_val(&ps->vars[V_VIEW_HDR_COLORS], TRUE, TRUE);

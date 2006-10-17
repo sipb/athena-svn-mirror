@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: init.c,v 1.1.1.5 2005-01-26 17:56:21 ghudson Exp $";
+static char rcsid[] = "$Id: init.c,v 1.1.1.6 2006-10-17 18:11:03 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: init.c,v 1.1.1.5 2005-01-26 17:56:21 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -230,6 +230,8 @@ CONF_TXT_T cf_text_fillcol[] =		"Specifies the column of the screen where the co
 
 CONF_TXT_T cf_text_replystr[] =		"Specifies the string to insert when replying to a message.";
 
+CONF_TXT_T cf_text_quotereplstr[] =    	"Specifies the string to replace quotes with when viewing a message.";
+
 CONF_TXT_T cf_text_replyintro[] =	"Specifies the introduction to insert when replying to a message.";
 
 CONF_TXT_T cf_text_emptyhdr[] =		"Specifies the string to use when sending a  message with no to or cc.";
@@ -342,7 +344,7 @@ CONF_TXT_T cf_text_maildropcheck[] =	"The minimum number of seconds between chec
 
 CONF_TXT_T cf_text_nntprange[] =	"For newsgroups accessed using NNTP, only messages numbered in the range\n# lastmsg-range+1 to lastmsg will be considered";
 
-CONF_TXT_T cf_text_news_active[] =	"Path and filename of news configation's active file.\n# The default is typically \"/usr/lib/news/active\".";
+CONF_TXT_T cf_text_news_active[] =	"Path and filename of news configuration's active file.\n# The default is typically \"/usr/lib/news/active\".";
 
 CONF_TXT_T cf_text_news_spooldir[] =	"Directory containing system's news data.\n# The default is typically \"/usr/spool/news\"";
 
@@ -378,15 +380,15 @@ CONF_TXT_T cf_text_tcp_query_timeo[] =	"If this much time has elapsed at the tim
 
 CONF_TXT_T cf_text_rsh_open_timeo[] =	"Sets the time in seconds that Pine will attempt to open a UNIX remote\n# shell connection.  The default is 15, min is 5, and max is unlimited.\n# Zero disables rsh altogether.";
 
-CONF_TXT_T cf_text_rsh_path[] =		"Sets the name of the command used to open a UNIX remote shell connection.\n# The default is tyically /usr/ucb/rsh.";
+CONF_TXT_T cf_text_rsh_path[] =		"Sets the name of the command used to open a UNIX remote shell connection.\n# The default is typically /usr/ucb/rsh.";
 
-CONF_TXT_T cf_text_rsh_command[] =	"Sets the format of the command used to open a UNIX remote\n# shell connection.  The default is \"%s %s -l %s exec /etc/r%sd\"\n# NOTE: the 4 (four) \"%s\" entries MUST exist in the provided command\n# where the first is for the command's path, the second is for the\n# host to connnect to, the third is for the user to connect as, and the\n# fourth is for the connection method (typically \"imap\")";
+CONF_TXT_T cf_text_rsh_command[] =	"Sets the format of the command used to open a UNIX remote\n# shell connection.  The default is \"%s %s -l %s exec /etc/r%sd\"\n# NOTE: the 4 (four) \"%s\" entries MUST exist in the provided command\n# where the first is for the command's path, the second is for the\n# host to connect to, the third is for the user to connect as, and the\n# fourth is for the connection method (typically \"imap\")";
 
 CONF_TXT_T cf_text_ssh_open_timeo[] =	"Sets the time in seconds that Pine will attempt to open a UNIX secure\n# shell connection.  The default is 15, min is 5, and max is unlimited.\n# Zero disables ssh altogether.";
 
-CONF_TXT_T cf_text_ssh_path[] =		"Sets the name of the command used to open a UNIX secure shell connection.\n# Tyically this is /usr/bin/ssh.";
+CONF_TXT_T cf_text_ssh_path[] =		"Sets the name of the command used to open a UNIX secure shell connection.\n# Typically this is /usr/bin/ssh.";
 
-CONF_TXT_T cf_text_ssh_command[] =	"Sets the format of the command used to open a UNIX secure\n# shell connection.  The default is \"%s %s -l %s exec /etc/r%sd\"\n# NOTE: the 4 (four) \"%s\" entries MUST exist in the provided command\n# where the first is for the command's path, the second is for the\n# host to connnect to, the third is for the user to connect as, and the\n# fourth is for the connection method (typically \"imap\")";
+CONF_TXT_T cf_text_ssh_command[] =	"Sets the format of the command used to open a UNIX secure\n# shell connection.  The default is \"%s %s -l %s exec /etc/r%sd\"\n# NOTE: the 4 (four) \"%s\" entries MUST exist in the provided command\n# where the first is for the command's path, the second is for the\n# host to connect to, the third is for the user to connect as, and the\n# fourth is for the connection method (typically \"imap\")";
 
 CONF_TXT_T cf_text_version_threshold[] = "Sets the version number Pine will use as a threshold for offering\n# its new version message on startup.";
 
@@ -539,10 +541,12 @@ static struct variable variables[] = {
 				cf_text_speller},
 {"composer-wrap-column",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_fillcol},
-{"reply-indent-string",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+{"reply-indent-string",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
 				cf_text_replystr},
 {"reply-leadin",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_replyintro},
+{"quote-replace-string",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+				cf_text_quotereplstr},
 {"empty-header-message",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_emptyhdr},
 {"image-viewer",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
@@ -784,6 +788,8 @@ static struct variable variables[] = {
 {"index-recent-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
 {"index-unseen-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
 {"index-unseen-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-arrow-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-arrow-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
 {"viewer-hdr-colors",			0, 1, 0, 1, 1, 1, 0, 0, 0, 1,
 				cf_text_view_hdr_color},
 {"keyword-colors",			0, 1, 0, 1, 1, 1, 0, 0, 0, 1,
@@ -1539,6 +1545,12 @@ init_vars(ps)
     GLO_SMTP_SERVER		= parse_list(DF_SMTP_SERVER, 1,
 					     PL_REMSURRQUOT, NULL);
 #endif
+#ifdef	DF_SSHPATH
+    GLO_SSHPATH			= cpystr(DF_SSHPATH);
+#endif
+#ifdef	DF_SSHCMD
+    GLO_SSHCMD			= cpystr(DF_SSHCMD);
+#endif
 #ifndef	_WINDOWS
     GLO_COLOR_STYLE		= cpystr("no-color");
     GLO_NORM_FORE_COLOR		= cpystr(colorx(DEFAULT_NORM_FORE));
@@ -1754,6 +1766,7 @@ init_vars(ps)
 
     set_current_val(&vars[V_USE_ONLY_DOMAIN_NAME], TRUE, TRUE);
     set_current_val(&vars[V_REPLY_STRING], TRUE, TRUE);
+    set_current_val(&vars[V_QUOTE_REPLACE_STRING], TRUE, TRUE);
     set_current_val(&vars[V_REPLY_INTRO], TRUE, TRUE);
     set_current_val(&vars[V_EMPTY_HDR_MSG], TRUE, TRUE);
 
@@ -2564,6 +2577,8 @@ feature_list(index)
 	 F_ALT_COMPOSE_MENU, h_config_alt_compose_menu, PREF_COMP},
 	{"alternate-role-menu",
 	 F_ALT_ROLE_MENU, h_config_alt_role_menu, PREF_COMP},
+	{"compose-cancel-confirm-uses-yes",
+	 F_CANCEL_CONFIRM, h_config_cancel_confirm, PREF_COMP},
 	{"compose-cut-from-cursor",
 	 F_DEL_FROM_DOT, h_config_del_from_dot, PREF_COMP},
 	{"compose-maps-delete-key-to-ctrl-d",
@@ -2572,6 +2587,8 @@ feature_list(index)
 	 F_COMPOSE_REJECTS_UNQUAL, h_config_compose_rejects_unqual, PREF_COMP},
 	{"compose-send-offers-first-filter",
 	 F_FIRST_SEND_FILTER_DFLT, h_config_send_filter_dflt, PREF_COMP},
+	{"downgrade-multipart-to-text",
+	 F_COMPOSE_ALWAYS_DOWNGRADE, h_downgrade_multipart_to_text, PREF_COMP},
 	{"enable-alternate-editor-cmd",
 	 F_ENABLE_ALT_ED, h_config_enable_alt_ed, PREF_COMP},
 	{"enable-alternate-editor-implicitly",
@@ -2588,14 +2605,12 @@ feature_list(index)
 	 F_QUELL_PINGS_COMPOSING, h_config_quell_checks_comp, PREF_COMP},
 	{"quell-mailchecks-composing-inbox",
 	 F_QUELL_PINGS_COMPOSING_INBOX, h_config_quell_checks_comp_inbox, PREF_COMP},
+	{"quell-user-lookup-in-passwd-file",
+	 F_QUELL_LOCAL_LOOKUP, h_config_quell_local_lookup, PREF_OS_LCLK},
 	{"spell-check-before-sending",
 	 F_ALWAYS_SPELL_CHECK, h_config_always_spell_check, PREF_COMP},
 	{"strip-whitespace-before-send",
 	 F_STRIP_WS_BEFORE_SEND, h_config_strip_ws_before_send, PREF_COMP},
-	{"quell-user-lookup-in-passwd-file",
-	 F_QUELL_LOCAL_LOOKUP, h_config_quell_local_lookup, PREF_OS_LCLK},
-	{"downgrade-multipart-to-text",
-	 F_COMPOSE_ALWAYS_DOWNGRADE, h_downgrade_multipart_to_text, PREF_COMP},
 
 /* Reply Prefs */
 	{"enable-reply-indent-string-editing",
@@ -2862,6 +2877,8 @@ feature_list(index)
 	 F_AUTO_EXPUNGE, h_config_auto_expunge, PREF_MISC},
 	{"expunge-without-confirm-everywhere",
 	 F_FULL_AUTO_EXPUNGE, h_config_full_auto_expunge, PREF_MISC},
+	{"force-arrow-cursor",
+	 F_FORCE_ARROW, h_config_force_arrow, PREF_MISC},
 	{"maildrops-preserve-state",
 	 F_MAILDROPS_PRESERVE_STATE, h_config_maildrops_preserve_state,
 	 PREF_MISC},
@@ -2904,6 +2921,8 @@ feature_list(index)
 	 F_QUELL_BEEPS, h_config_quell_beeps, PREF_MISC},
 	{"quit-without-confirm",
 	 F_QUIT_WO_CONFIRM, h_config_quit_wo_confirm, PREF_MISC},
+	{"quote-replace-nonflowed",
+	 F_QUOTE_REPLACE_NOFLOW, h_config_quote_replace_noflow, PREF_MISC},
 	{"save-partial-msg-without-confirm",
 	 F_SAVE_PARTIAL_WO_CONFIRM, h_config_save_part_wo_confirm, PREF_MISC},
 	{"save-will-advance",
@@ -6502,7 +6521,7 @@ dump_global_conf()
 
      fprintf(f, "#      %s -- system wide pine configuration\n#\n",
 	     SYSTEM_PINERC);
-     fprintf(f, "# Values here affect all pine users unless they've overidden the values\n");
+     fprintf(f, "# Values here affect all pine users unless they've overridden the values\n");
      fprintf(f, "# in their .pinerc files.  A copy of this file with current comments may\n");
      fprintf(f, "# be obtained by running \"pine -conf\". It will be printed to standard output.\n#\n");
      fprintf(f,"# For a variable to be unset its value must be null/blank.  This is not the\n");
@@ -7869,8 +7888,7 @@ rd_free_remdata(rd)
 
 /*
  * Call this when finished with the remdata. This does the REMTRIM if the
- * flag is set, the DEL_FILE if the flag is set. It also closes the stream
- * and frees the rd.
+ * flag is set.
  */
 void
 rd_trim_remdata(rd)
@@ -7889,6 +7907,7 @@ rd_trim_remdata(rd)
 	 * data.
 	 */
 	if((*rd)->flags & DO_REMTRIM &&
+	   (*rd)->flags & REMUPDATE_DONE &&
 	   !((*rd)->flags & REM_OUTOFDATE) &&
 	   (*rd)->t.i.chk_nmsgs > ps_global->remote_abook_history + 2){
 
@@ -10018,6 +10037,15 @@ rd_update_remote(rd, returndate)
 
 	    err = write_fcc(rd->rn, NULL, rd->so, st,
 			    "remote data", NULL) ? 0 : 1;
+	    /*
+	     * This flag keeps us from trying to trim the remote data
+	     * when we haven't even written to it this session. It may
+	     * be that the remote data needs trimming, but if we didn't
+	     * make it worse than let's just leave it instead of going
+	     * to the trouble of opening it in order to check.
+	     */
+	    if(!err)
+	      rd->flags |= REMUPDATE_DONE;
 	}
 
 

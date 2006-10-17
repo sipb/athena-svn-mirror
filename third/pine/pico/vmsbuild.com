@@ -1,4 +1,4 @@
-$! $Id: vmsbuild.com,v 1.1.1.1 2001-02-19 06:59:54 ghudson Exp $
+$! $Id: vmsbuild.com,v 1.1.1.2 2006-10-17 18:11:41 ghudson Exp $
 $!
 $! Yehavi Bourvine
 $! Hebrew University of Jeruselem

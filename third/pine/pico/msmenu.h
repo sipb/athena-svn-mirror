@@ -1,6 +1,6 @@
 #line 2 "msmenu.h"
 /*
- * $Id: msmenu.h,v 1.1.1.1 2001-02-19 07:01:21 ghudson Exp $
+ * $Id: msmenu.h,v 1.1.1.2 2006-10-17 18:12:22 ghudson Exp $
  *
  * Program:	Menu item definitions - Microsoft Windows 3.1
  *

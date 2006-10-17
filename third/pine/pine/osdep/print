@@ -135,7 +135,7 @@ open_printer(desc)
 	fs_give((void **)&nick);
 	
 	cmd = radio_buttons(prompt, -FOOTER_ROWS(ps_global),
-				 ekey, 'y', 'x', help, RB_NORM);
+				 ekey, 'y', 'x', help, RB_NORM, NULL);
 	
 	switch(cmd){
 	  case 'y':

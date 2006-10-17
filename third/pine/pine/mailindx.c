@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailindx.c,v 1.1.1.5 2005-01-26 17:56:20 ghudson Exp $";
+static char rcsid[] = "$Id: mailindx.c,v 1.1.1.6 2006-10-17 18:10:44 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailindx.c,v 1.1.1.5 2005-01-26 17:56:20 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -253,6 +253,8 @@ static struct index_state {
     MAILSTREAM *stream;
     int         status_col;		/* column for select X's */
     int         plus_col;		/* column for threading '+' or '>' */
+    int         arrow_col;		/* column for cursor arrow */
+    int         arrow_width;		/* width of cursor arrow */
 } *current_index_state = NULL;
 
 
@@ -376,8 +378,8 @@ void		from_str PROTO((IndexColType, INDEXDATA_S *, int, char *));
 void            set_msg_score PROTO((MAILSTREAM *, long, long));
 void		load_overview PROTO((MAILSTREAM *, unsigned long, OVERVIEW *,
 				     unsigned long));
-int		paint_index_line PROTO((long, HLINE_S *, int, int, int,
-					struct entry_state *, int, int));
+int		paint_index_line PROTO((HLINE_S *, int, int, int, int,
+					int, struct entry_state *, int, int));
 void		paint_index_hline PROTO((MAILSTREAM *, long, HLINE_S *));
 void		index_search PROTO((struct pine *,MAILSTREAM *,int,MSGNO_S *));
 void		msgno_flush_selected PROTO((MSGNO_S *, long));
@@ -1920,9 +1922,9 @@ update_index(state, screen)
 		  thrd = fetch_thread(screen->stream, rawno);
 	    }
 
-	    row = paint_index_line(n, hline,
-				   i, screen->status_col,
+	    row = paint_index_line(hline, i, screen->status_col,
 				   !THRD_INDX() ? screen->plus_col : -1,
+				   screen->arrow_col, screen->arrow_width,
 				   &screen->entry_state[i],
 				   mn_is_cur(screen->msgmap, n),
 				   THRD_INDX()
@@ -1960,21 +1962,30 @@ update_index(state, screen)
 
 
   Args: hline -- structure describing the header line to paint
-	n -- message number to paint
-	screen -- structure describing current screen state
+	 line -- index line number on screen, starting at 0 for first
+		 visible line, 1, 2, ...
+	 scol -- column number of the start of the status field, which is
+		 where we'll put the X for selected if necessary
+	 pcol -- column number where the thread indicator plus_col symbol goes
+	 acol -- column number of start of column which corresponds to the
+		 index-format ARROW token
+	 awid -- width of the ARROW token
+	entry -- cache used to help us decide whether or not we need to
+	 	 redraw the index line or if we can just leave it alone because
+		 we know it is already correct
+	  cur -- is this the current message?
+	  sel -- is this message in the selected set?
 
-  Returns: 0 or the row number if the message is "current"
+  Returns: screen row number if this is current message, else 0
  ----*/
 int
-paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
-    long		msg;
+paint_index_line(hline, line, scol, pcol, acol, awid, entry, cur, sel)
     HLINE_S	       *hline;
-    int			line, scol, pcol;
+    int			line, scol, pcol, acol, awid;
     struct entry_state *entry;
     int			cur, sel;
 {
     COLOR_PAIR *lastc = NULL, *base_color = NULL;
-    int inverse_hack = 0, lim;
     HLINE_S	      *h;
 
     h = (THRD_INDX() && hline) ? hline->tihl : hline;
@@ -2024,17 +2035,53 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 		Writechar(h->plus, 0);
 		Writechar(' ', 0);
 	    }
+
+	    if(cur && acol >= 0 && awid > 0){
+		int i;
+
+		MoveCursor(HEADER_ROWS(ps_global) + line, acol);
+		for(i = awid-1; i > 0; i--)
+		  Writechar('-', 0);
+
+		Writechar('>', 0);
+	    }
 	}
 	else{
-	    char *draw = h->line, save_schar, save_pchar, save;
-	    int   uc, i, drew_X = 0, cols = ps_global->ttyo->screen_cols;
+	    char *draw = h->line, save_schar1, save_schar2, save_pchar, save;
+	    int   uc, ac, do_arrow;
+	    int   i, drew_X = 0, cols = ps_global->ttyo->screen_cols;
+	    int   inverse_hack = 0, need_inverse_hack = 0, lim;
 
 	    if(uc=pico_usingcolor())
 	      lastc = pico_get_cur_color();
 
+	    /*
+	     * There are two possible "arrow" cursors. One is the one that
+	     * you get when you are at a slow speed or you turn that slow
+	     * speed one on. It is drawn as part of the status column and
+	     * it may overlap into the space between columns. That one is
+	     * the one associated with "ac". It is always the base_color
+	     * or the inverse of the base_color.
+	     *
+	     * The other "arrow" cursor is the one you get by including the
+	     * ARROW token in the index-format. It may be configured to
+	     * be colored.
+	     */
+
+	    /* ac is for the old integrated arrow cursor */
+	    ac = F_ON(F_FORCE_ARROW,ps_global);
+
+	    /* do_arrow is for the ARROW token in index-format */
+	    do_arrow = (acol >= 0 && awid > 0 && acol+awid-1 < cols);
+
 	    MoveCursor(HEADER_ROWS(ps_global) + line, 0);
 
-	    if(cur){
+	    if(cur && !ac && !do_arrow){
+		/*
+		 * This stanza handles the current line marking in the
+		 * regular, non-arrow-cursor case.
+		 */
+
 		/*
 		 * If the current line has a linecolor, apply the
 		 * appropriate reverse transformation to show it is current.
@@ -2060,12 +2107,27 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 	    else
 	      base_color = lastc;
 
-	    save_schar = draw[scol];
+	    save_schar1 = draw[scol];
+	    save_schar2 = draw[scol+1];
 
 	    if(sel && (F_OFF(F_SELECTED_SHOWN_BOLD, ps_global)
 		       || !StartBold())){
 		draw[scol] = 'X';
 		drew_X++;
+	    }
+	    else if(ac && cur && draw[scol] == ' ')
+	      draw[scol] = '-';
+
+	    if(ac && cur)
+	      draw[scol+1] = '>';
+
+	    if(do_arrow && cur){
+		int i;
+
+		for(i = 0; i < awid-1; i++)
+		  draw[acol+i] = '-';
+
+		draw[acol+i] = '>';
 	    }
 
 	    if(pcol >= 0 && pcol < cols){
@@ -2103,13 +2165,19 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 		/*
 		 * Switch to color for i, which shouldn't be NULL.
 		 * But don't switch if we drew an X in this column,
-		 * because that overwrites the colored thing.
+		 * because that overwrites the colored thing, and don't
+		 * switch if this is the ARROW field and this is not
+		 * the current message. ARROW field is only colored for
+		 * the current message.
 		 */
 		if(h->offs[i].color.fg[0] && (!drew_X ||
-					      scol != h->offs[i].offset ||
-					      save_schar != '+')){
+					      scol != h->offs[i].offset)
+		   && !(do_arrow && h->offs[i].offset == acol && !cur)){
+		    need_inverse_hack = 0;
 		    (void)pico_set_colorp(&h->offs[i].color, PSC_NORM);
 		}
+		else
+		  need_inverse_hack = 1;
 
 		if(h->offs[i+1].offset < 0 || h->offs[i+1].offset >= cols){
 		    /* draw this colored section */
@@ -2119,7 +2187,13 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 		    lim = min(h->offs[i].offset + h->offs[i].len, cols);
 		    save = draw[lim];
 		    draw[lim] = '\0';
+		    if(need_inverse_hack && inverse_hack)
+		      StartInverse();
+
 		    Write_to_screen(draw + h->offs[i].offset);
+		    if(need_inverse_hack && inverse_hack)
+		      EndInverse();
+
 		    draw[lim] = save;
 		    (void)pico_set_colorp(base_color, PSC_NORM);
 		    /* draw rest of line */
@@ -2147,7 +2221,13 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 			      h->offs[i+1].offset);
 		    save = draw[lim];
 		    draw[lim] = '\0';
+		    if(need_inverse_hack && inverse_hack)
+		      StartInverse();
+
 		    Write_to_screen(draw + h->offs[i].offset);
+		    if(need_inverse_hack && inverse_hack)
+		      EndInverse();
+
 		    draw[lim] = save;
 		    if(h->offs[i+1].offset > lim){
 			/* draw to next offset */
@@ -2168,10 +2248,13 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 
 	    /* switch to color for last section, which shouldn't be NULL */
 	    if(h->offs[OFFS-1].color.fg[0] && (!drew_X ||
-					  scol != h->offs[OFFS-1].offset ||
-					  save_schar != '+')){
+					  scol != h->offs[OFFS-1].offset)
+	       && !(do_arrow && h->offs[OFFS-1].offset == acol && !cur)){
+		need_inverse_hack = 0;
 		(void)pico_set_colorp(&h->offs[OFFS-1].color, PSC_NORM);
 	    }
+	    else
+	      need_inverse_hack = 1;
 
 	    if(h->offs[OFFS-1].offset < cols){
 		/* draw this colored section */
@@ -2181,7 +2264,14 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 		lim = min(h->offs[OFFS-1].offset + h->offs[OFFS-1].len, cols);
 		save = draw[lim];
 		draw[lim] = '\0';
+		if(need_inverse_hack && inverse_hack)
+		  StartInverse();
+
 		Write_to_screen(draw + h->offs[OFFS-1].offset);
+
+		if(need_inverse_hack && inverse_hack)
+		  EndInverse();
+
 		draw[lim] = save;
 		(void)pico_set_colorp(base_color, PSC_NORM);
 		/* draw rest of line */
@@ -2196,17 +2286,26 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 	    }
 
 done_drawing:
-	    if(drew_X)
-	      draw[scol] = save_schar;
+	    draw[scol] = save_schar1;
+	    draw[scol+1] = save_schar2;
 
 	    if(sel && !drew_X)
 	      EndBold();
 
-	    if(cur)
+	    if(!ac && cur)
 	      EndInverse();
 
 	    if(pcol >= 0 && pcol < cols)
 	      draw[pcol] = save_pchar;
+
+	    if(do_arrow && cur){
+		int i;
+
+		for(i = 0; i < awid-1; i++)
+		  draw[acol+i] = ' ';
+
+		draw[acol+i] = ' ';
+	    }
 	}
 
 	if(base_color && base_color != lastc && base_color != &h->linecolor)
@@ -2366,10 +2465,12 @@ paint_index_hline(stream, msgno, hline)
 		  thrd = fetch_thread(stream, rawno);
 	    }
 
-	    paint_index_line(msgno, hline, line,
+	    paint_index_line(hline, line,
 			     current_index_state->status_col,
 			     !THRD_INDX()
 			       ? current_index_state->plus_col : -1,
+			     current_index_state->arrow_col,
+			     current_index_state->arrow_width,
 			     &current_index_state->entry_state[line],
 			     mn_is_cur(current_index_state->msgmap, msgno),
 			     THRD_INDX()
@@ -2868,6 +2969,7 @@ INDEX_COL_S **answer;
 	      case iMon:
 	      case iDay2Digit:
 	      case iMon2Digit:
+	      case iArrow:
 		(*answer)[column].req_width = 2;
 		break;
 	      case iStatus:
@@ -2976,6 +3078,7 @@ static INDEX_PARSE_T itokens[] = {
     {"RECIPSANDNEWS",	iRecipsAndNews,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"NEWSANDRECIPS",	iNewsAndRecips,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"MSGID",		iMsgID,		FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"CURNEWS",		iCurNews,	FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"DAYDATE",		iRDate,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"DAY",		iDay,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"DAYORDINAL",	iDayOrdinal,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
@@ -3014,6 +3117,7 @@ static INDEX_PARSE_T itokens[] = {
 					FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
     {"LASTYEAR",	iLstYear,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
     {"LASTYEAR2DIGIT",	iLstYear2Digit,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"ARROW",		iArrow,		FOR_INDEX},
     {"CURSORPOS",	iCursorPos,	FOR_TEMPLATE},
     {NULL,		iNothing,	FOR_NOTHING}
 };
@@ -3181,7 +3285,7 @@ redraw_index_body()
  * list get space allocated sooner than the ones at the end of the list.
  */
 static IndexColType fixed_ctypes[] = {
-    iMessNo, iStatus, iFStatus, iIStatus, iDate, iSDate, iSDateTime,
+    iArrow, iMessNo, iStatus, iFStatus, iIStatus, iDate, iSDate, iSDateTime,
     iSTime, iLDate,
     iS1Date, iS2Date, iS3Date, iS4Date, iDateIso, iDateIsoS,
     iSize, iSizeComma, iSizeNarrow, iKSize, iDescripSize,
@@ -3216,7 +3320,7 @@ setup_index_header_widths()
 {
     int		 j, columns, some_to_calculate;
     int		 space_left, screen_width, width, fix, col, scol, altcol;
-    int          pcol, pluscol;
+    int          arrowcol, arrowwidth, pluscol;
     int		 keep_going, tot_pct, was_sl;
     long         max_msgno;
     WidthType	 wtype;
@@ -3294,6 +3398,11 @@ setup_index_header_widths()
 		  case iMon2Digit:
 		    cdesc->actual_length = 2;
 		    cdesc->adjustment = Left;
+		    break;
+
+		  case iArrow:
+		    cdesc->actual_length = 2;
+		    cdesc->adjustment = Right;
 		    break;
 
 		  case iStatus:
@@ -3659,9 +3768,35 @@ setup_index_header_widths()
 	col += width;
       }
 
+    col = 0;
+    arrowcol = -1;
+    arrowwidth = -1;
+    /* figure out which column is start of arrow field, if any */
+    for(cdesc = ps_global->index_disp_format;
+	cdesc->ctype != iNothing;
+	cdesc++){
+	width = cdesc->width;
+	if(width == 0)
+	  continue;
+
+	/* space between columns */
+	if(col > 0)
+	  col++;
+
+	if(cdesc->ctype == iArrow){
+	    arrowcol = col;
+	    arrowwidth = width;
+	    break;
+	}
+
+	col += width;
+    }
+
     if(current_index_state){
 	current_index_state->status_col = scol;
-	current_index_state->plus_col = pluscol;
+	current_index_state->plus_col   = pluscol;
+	current_index_state->arrow_col  = arrowcol;
+	current_index_state->arrow_width  = arrowwidth;
     }
 }
 
@@ -3673,6 +3808,8 @@ setup_thread_header_widths()
     if(current_index_state){
 	current_index_state->status_col = 0;
 	current_index_state->plus_col = -1;
+	current_index_state->arrow_col = -1;
+	current_index_state->arrow_width = -1;
     }
 }
 
@@ -3864,7 +4001,8 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 	    if(seq){
 		ps_global->dont_count_flagchanges = 1;
 		mail_fetch_overview_sequence(stream, seq,
-				    (!strcmp(stream->dtb->name, "imap"))
+				    (stream->dtb && stream->dtb->name
+				     && !strcmp(stream->dtb->name, "imap"))
 				      ? NULL : load_overview);
 		ps_global->dont_count_flagchanges = 0;
 		fs_give((void **) &seq);
@@ -4631,6 +4769,24 @@ format_index_index_line(idata)
 
 	      case iMessNo:
 		sprintf(str, "%ld", idata->msgno);
+		break;
+
+	      case iArrow:
+		sprintf(str, "%-*.*s", width, width, " ");
+		if(noff < OFFS && VAR_IND_ARR_FORE_COLOR
+		   && VAR_IND_ARR_BACK_COLOR){
+		    hline->offs[noff].offset = cur_offset;
+		    hline->offs[noff].len    = width;
+		    strncpy(hline->offs[noff].color.fg,
+			    VAR_IND_ARR_FORE_COLOR,
+			    MAXCOLORLEN);
+		    hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+		    strncpy(hline->offs[noff].color.bg,
+			    VAR_IND_ARR_BACK_COLOR,
+			    MAXCOLORLEN);
+		    hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+	        }
+
 		break;
 
 	      case iScore:
@@ -5660,7 +5816,7 @@ index_in_overview(stream)
     if(!(stream->mailbox && IS_REMOTE(stream->mailbox)))
       return(FALSE);			/* no point! */
 
-    if(stream->dtb && !strcmp(stream->dtb->name, "nntp")){
+    if(stream->dtb && stream->dtb->name && !strcmp(stream->dtb->name, "nntp")){
 
       if(THRD_INDX())
         return(TRUE);
@@ -9441,8 +9597,6 @@ msgno_exclude(stream, msgmap, msgno, reset_isort)
 
 
 /*----------------------------------------------------------------------
-  Got thru the message mapping table, and remove messages with given flag
-
    Accepts: stream -- mail stream to removed message references from
 	    msgs -- pointer to message manipulation struct
 	    flags
@@ -9450,20 +9604,23 @@ msgno_exclude(stream, msgmap, msgno, reset_isort)
 	      MI_STATECHGONLY -- when refiltering, maybe only re-include
 	                         messages which have had state changes
 				 since they were originally filtered
+   Returns 1 if any new messages are included (indicating that we need
+              to re-sort)
+	   0 if no new messages are included
   ----*/
-void
+int
 msgno_include(stream, msgs, flags)
      MAILSTREAM	*stream;
      MSGNO_S	*msgs;
      int	 flags;
 {
     long   i, slop, old_total, old_size;
-    int    exbits;
+    int    exbits, ret = 0;
     size_t len;
     MESSAGECACHE *mc;
 
     if(!msgs)
-      return;
+      return(ret);
 
     for(i = 1L; i <= stream->nmsgs; i++){
 	if(!msgno_exceptions(stream, i, "0", &exbits, FALSE))
@@ -9486,6 +9643,7 @@ msgno_include(stream, msgs, flags)
 	    else
 	      msgs->sort = (long *)fs_get(len);
 
+	    ret = 1;
 	    msgs->sort[++msgs->max_msgno] = i;
 	    msgs->isort[i] = msgs->max_msgno;
 	    set_lflag(stream, msgs, msgs->max_msgno, MN_EXLD, 0);
@@ -9534,6 +9692,8 @@ msgno_include(stream, msgs, flags)
     }
 
     ASSERT_ISORT(msgs, "isort validity: end of msgno_include\n");
+
+    return(ret);
 }
 
 
@@ -9694,6 +9854,20 @@ msgno_flush_selected(msgs, n)
 
     if(shift && msgs->sel_cnt > 1L)
       msgs->sel_cnt -= 1L;
+}
+
+
+void
+msgno_set_sort(msgs, sort)
+    MSGNO_S  *msgs;
+    SortOrder sort;
+{
+    if(msgs){
+	if(sort == SortScore)
+	  scores_are_used(SCOREUSE_INVALID);
+
+	msgs->sort_order = sort;
+    }
 }
 
 

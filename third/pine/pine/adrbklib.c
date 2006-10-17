@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.4 2005-01-26 17:55:27 ghudson Exp $";
+static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.5 2006-10-17 18:11:12 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.4 2005-01-26 17:55:27 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -3414,7 +3414,7 @@ adrbk_lookup_by_nick(ab, nickname, entry_num)
 		 * Guard against the unlikely case where two nicknames have the
 		 * same hash and uid, but are actually different.
 		 */
-		if(strucmp(ae->nickname, nickname) == 0){
+		if(ae && strucmp(ae->nickname, nickname) == 0){
 		    last_one = entry;
 		    last_ind = ind;
 		}

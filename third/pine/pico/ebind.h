@@ -1,5 +1,5 @@
 /*
- * $Id: ebind.h,v 1.1.1.3 2005-01-26 17:54:31 ghudson Exp $
+ * $Id: ebind.h,v 1.1.1.4 2006-10-17 18:08:47 ghudson Exp $
  *
  * Program:	Default key bindings
  *

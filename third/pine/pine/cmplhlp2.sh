@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: cmplhlp2.sh,v 1.1.1.1 2001-02-19 07:04:19 ghudson Exp $
+# $Id: cmplhlp2.sh,v 1.1.1.2 2006-10-17 18:12:19 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #

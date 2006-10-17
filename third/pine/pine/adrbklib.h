@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: adrbklib.h,v 1.1.1.3 2003-05-01 01:12:45 ghudson Exp $
+  $Id: adrbklib.h,v 1.1.1.4 2006-10-17 18:11:12 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -20,7 +20,7 @@
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -331,6 +331,9 @@ typedef enum {Local, Imap} AdrbkType;
 #endif
 #ifndef LOW_FREQ_CHK_INTERVAL
 #define LOW_FREQ_CHK_INTERVAL	(240)		/* minutes */
+#endif
+#ifndef SORTING_LOOP_AVOID_TIMEOUT
+#define SORTING_LOOP_AVOID_TIMEOUT (3L * 60L * 60L) /* seconds */
 #endif
 
 typedef struct adrbk {
@@ -734,6 +737,7 @@ typedef struct peraddrbook {
 		       *filename;
     AdrBk              *address_book;        /* the address book handle */
     int                 gave_parse_warnings;
+    time_t              when_we_sorted;
     COL_S               disp_form[NFIELDS];  /* display format */
     int			nick_is_displayed;   /* these are for convenient, */
     int			full_is_displayed;   /* fast access.  Could get   */
@@ -1094,7 +1098,7 @@ ADDRESS       *abe_to_address PROTO((AdrBk_Entry *, AddrScrn_Disp *,
 int            abes_are_equal PROTO((AdrBk_Entry *, AdrBk_Entry *));
 char          *addr_book_selnick PROTO((void));
 char          *addr_book_takeaddr PROTO((void));
-char          *addr_lookup PROTO((char *, int *, int));
+char          *addr_lookup PROTO((char *, int *, int, AdrBk_Entry **));
 AccessType     adrbk_access PROTO((PerAddrBook *));
 int            adrbk_add PROTO((AdrBk *, a_c_arg_t, char *, char *, char *, \
 		    char *, char *, Tag, adrbk_cntr_t *, int *, int, int, int));

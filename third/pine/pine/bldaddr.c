@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.5 2005-01-26 17:54:36 ghudson Exp $";
+static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.6 2006-10-17 18:11:12 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.5 2005-01-26 17:54:36 ghudson Exp 
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -2562,6 +2562,29 @@ adrbk_access(pab)
 
 
 /*
+ * Trim back remote address books if necessary.
+ */
+void
+trim_remote_adrbks()
+{
+    register PerAddrBook *pab;
+    int i;
+
+    dprint(2, (debugfile, "- trim_remote_adrbks -\n"));
+
+    if(!as.initialized)
+      return;
+
+    for(i = 0; i < as.n_addrbk; i++){
+	pab = &as.adrbks[i];
+	if(pab->ostatus != TotallyClosed && pab->address_book
+	   && pab->address_book->rd)
+	  rd_trim_remdata(&pab->address_book->rd);
+    }
+}
+
+
+/*
  * Free and close everything.
  */
 void
@@ -2737,8 +2760,29 @@ init_abook(pab, want_status)
 		    /*
 		     * For huge addrbooks, it really pays if you can make
 		     * them read-only so that you skip adrbk_is_in_sort_order.
+		     *
+		     * It is possible to get into a sorting contest with
+		     * another pine. For example, if the other pine has
+		     * a different sort rule defined or if the other pine
+		     * is being run in a locale with a different collating
+		     * rule, then the two pines will not agree on the
+		     * correct sorting order. One will sort the addrbook,
+		     * the other will eventually discover that the addrbook
+		     * changed so will re-read it and will then discover that
+		     * it is sorted incorrect from its point of view, so will
+		     * sort it and save it back. Then it happens in the other
+		     * direction and so on and so on. We should not usually
+		     * have to sort the address book. We do it once when we
+		     * start to fix up any problems and then don't do it
+		     * anymore after that (unless 3 hours has passed).
 		     */
-		    if(!adrbk_is_in_sort_order(pab->address_book, 0, 0)){
+		    if(!(pab->when_we_sorted &&
+			 (time((time_t *)0) - pab->when_we_sorted)
+						 < SORTING_LOOP_AVOID_TIMEOUT)
+			 &&
+		       !adrbk_is_in_sort_order(pab->address_book, 0, 0)){
+			/* remember when we sorted */
+			pab->when_we_sorted = time((time_t *) 0);
 /* DOS sorts will be very slow on large addrbooks */
 #if !(defined(DOS) && !defined(_WINDOWS))
 			old_size =
@@ -3171,6 +3215,9 @@ decode_fullname_of_addrstring(addr, verbose)
  * Args: nickname       -- The nickname to look up
  *       which_addrbook -- If matched, addrbook number it was found in.
  *       not_here       -- If non-negative, skip looking in this abook.
+ *       found_abe      -- If this is non-null, it will be set to point to 
+ *                         a copy of the actual abe that was found on return.
+ *                         The caller must free the memory.
  *
  * Result: returns NULL or the corresponding fullname.  The fullname is
  * allocated here so the caller must free it.
@@ -3179,10 +3226,11 @@ decode_fullname_of_addrstring(addr, verbose)
  * them to the state they were in upon entry.
  */
 char *
-addr_lookup(nickname, which_addrbook, not_here)
+addr_lookup(nickname, which_addrbook, not_here, found_abe)
     char *nickname;
     int  *which_addrbook;
     int   not_here;
+    AdrBk_Entry **found_abe;
 {
     AdrBk_Entry  *abe;
     SAVE_STATE_S  state;
@@ -3194,6 +3242,10 @@ addr_lookup(nickname, which_addrbook, not_here)
     save_state(&state);
 
     abe = adrbk_lookup_with_opens_by_nick(nickname,0,which_addrbook,not_here);
+
+    /* copy instead of just point because of the restore_state below */
+    if(found_abe)
+      *found_abe = copy_ae(abe);
 
     fullname = (abe && abe->fullname) ? cpystr(abe->fullname) : NULL;
 
@@ -5357,7 +5409,7 @@ ldap_lookup(info, string, cust, wp_err, name_in_error)
     else if(!ps_global->intr_pending){
       int proto = 3;
 
-      if(ldap_v3_is_supported(ld) &&
+      if(ldap_v3_is_supported(ld, info) &&
 	 our_ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, &proto) == 0){
 	dprint(5,(debugfile, "ldap: using version 3 protocol\n"));
       }
@@ -6099,6 +6151,10 @@ break_up_ldap_server(serv_str)
 	if((q = srchstr(tail, "/nosub=1")) != NULL)
 	  info->nosub = 1;
 
+	/* get the ldap_v3_ok parameter */
+	if((q = srchstr(tail, "/ldap_v3_ok=1")) != NULL)
+	  info->ldap_v3_ok = 1;
+
 	/* get the search type value */
 	if((q = srchstr(tail, "/type=")) != NULL){
 	    NAMEVAL_S *v;
@@ -6306,6 +6362,7 @@ LDAP_SERV_S *src;
 	info->rhs   = src->rhs;
 	info->ref   = src->ref;
 	info->nosub = src->nosub;
+	info->ldap_v3_ok = src->ldap_v3_ok;
     }
 
     return(info);
@@ -6478,10 +6535,15 @@ our_ldap_set_option(ld, option, optdata)
  * Returns 1 if we can use LDAP version 3 protocol.
  */
 int
-ldap_v3_is_supported(ld)
-    LDAP *ld;
+ldap_v3_is_supported(ld, info)
+    LDAP        *ld;
+    LDAP_SERV_S *info;
 {
     int         v3_is_supported_by_server = 0;
+
+    if(info && info->ldap_v3_ok)
+      return(1);
+
 #ifdef NO_VERSION3_PROTO_YET
 /*
  * When we use version 3 protocol we will be getting back utf8 results.
@@ -7363,40 +7425,108 @@ abe_to_nick_or_addr_string(abe, dl, abook_num)
 {
     ADDRESS       *addr;
     char          *a_string;
+    int            return_nick = 1;
 
     if(!dl || !abe)
       return(cpystr(""));
 
-    if((dl->type == Simple || dl->type == ListHead)
-       && abe->nickname && abe->nickname[0]){
-	char *fname;
-	int   which_addrbook;
+    if(!(dl->type == Simple || dl->type == ListHead)
+       || !(abe->nickname && abe->nickname[0]))
+      return_nick = 0;
+
+    if(return_nick){
+	char *fname = NULL;
+	AdrBk_Entry *found_abe = NULL;
+	int which_addrbook, found_it;
 
 	/*
+	 * We may be able to return the nickname instead of the
+	 * whole address.
+	 *
 	 * We prefer to pass back the nickname since that allows the
 	 * caller to keep track of which entry the address came from.
 	 * This is useful in build_address so that the fcc line can
-	 * be kept correct. However, if the nickname is also present in
-	 * another addressbook then we have to be careful. If that other
-	 * addressbook comes before this one then passing back the nickname
-	 * will cause the wrong entry to get used. So check for that
-	 * and pass back the addr_string in that case.
+	 * be kept correct. However, if the nickname appears in the
+	 * addressbooks more than once then we have to be careful.
+	 * If the other entry with the same nickname is an in
+	 * addressbook that comes before this one then passing back
+	 * the nickname will cause the wrong entry to get used.
+	 * So check for that and pass back the addr_string in that case.
+	 * Also, if the other entry with the same nickname is in this
+	 * same addressbook and comes before this entry, same deal.
 	 */
-	if(fname = addr_lookup(abe->nickname, &which_addrbook, abook_num)){
-	    fs_give((void **)&fname);
-	    if(which_addrbook >= abook_num)
-	      return(cpystr(abe->nickname));
+	fname = addr_lookup(abe->nickname, &which_addrbook, -1, &found_abe);
+	found_it = (fname != NULL);
+	if(fname)
+	  fs_give((void **) &fname);
+
+	if(found_it && which_addrbook < abook_num)
+	  return_nick = 0;
+
+	/* if the returned abe is not the same as abe don't use the nickname */
+	if(return_nick && found_it && which_addrbook == abook_num){
+	    if(found_abe
+	       && ((found_abe->tag != abe->tag)
+	           || (found_abe->fullname && !abe->fullname)
+	           || (!found_abe->fullname && abe->fullname)
+	           || strcmp(found_abe->fullname, abe->fullname)
+	           || (found_abe->fcc && !abe->fcc)
+	           || (!found_abe->fcc && abe->fcc)
+	           || strcmp(found_abe->fcc, abe->fcc)
+	           || (found_abe->extra && !abe->extra)
+	           || (!found_abe->extra && abe->extra)
+	           || strcmp(found_abe->extra, abe->extra)
+	           || (abe->tag == Single && strcmp(found_abe->addr.addr ? found_abe->addr.addr : "", abe->addr.addr ? abe->addr.addr : ""))))
+	      return_nick = 0;
+
+	    /* I suppose we ought to check for the lists being the same */
+	    if(return_nick && abe->tag == List && found_abe){
+		char **p, **q;
+		int    i, n1, n2;
+
+		for(p = abe->addr.list; p && *p; p++)
+		  ;
+
+		if(p == NULL)
+		  n1 = 0;
+		else
+		  n1 = p - abe->addr.list;
+
+		for(p = found_abe->addr.list; p && *p; p++)
+		  ;
+
+		if(p == NULL)
+		  n2 = 0;
+		else
+		  n2 = p - found_abe->addr.list;
+
+		if(n1 == n2){
+		    for(i = 0; i < n1 && return_nick; i++)
+		      if(strcmp(abe->addr.list[i], found_abe->addr.list[i]))
+		        return_nick = 0;
+		}
+		else
+		  return_nick = 0;
+	    }
 	}
-	else
-	  return(cpystr(abe->nickname));
+
+	if(found_abe)
+	  free_ae(&found_abe);
     }
 
-    addr = abe_to_address(abe, dl, as.adrbks[abook_num].address_book, NULL);
-    a_string = addr_list_string(addr, NULL, 0, 0); /* always returns a string */
-    if(addr)
-      mail_free_address(&addr);
-    
-    return(a_string);
+    if(return_nick)
+      return(cpystr(abe->nickname));
+    else{
+	addr = abe_to_address(abe, dl, as.adrbks[abook_num].address_book, NULL);
+
+	/* always returns a string */
+	a_string = addr_list_string(addr, NULL, 0, 0);
+
+	if(addr)
+	  mail_free_address(&addr);
+	
+	return(a_string);
+    }
 }
 
 

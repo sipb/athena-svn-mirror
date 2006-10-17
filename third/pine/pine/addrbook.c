@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: addrbook.c,v 1.1.1.4 2005-01-26 17:56:08 ghudson Exp $";
+static char rcsid[] = "$Id: addrbook.c,v 1.1.1.5 2006-10-17 18:11:04 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: addrbook.c,v 1.1.1.4 2005-01-26 17:56:08 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -5204,8 +5204,8 @@ ab_apply_cmd(ps, abook, cur_line, command_line)
 
     opts[PHANTOM_PRINT].ch = (F_ON(F_ENABLE_PRYNT, ps_global)) ? 'y' : -1;
 
-    switch(radio_buttons("APPLY command : ", command_line, opts, 0, 'z',
-			 NO_HELP, RB_NORM)){
+    switch(radio_buttons("APPLY command : ", command_line, opts, 'z', 'x',
+			 NO_HELP, RB_NORM, NULL)){
       case 'c':
 	ret = ab_compose_to_addr(cur_line, 1, 0);
 	break;
@@ -5230,8 +5230,13 @@ ab_apply_cmd(ps, abook, cur_line, command_line)
 	ret = ab_save(ps, abook, cur_line, command_line, 1);
 	break;
 
-      case 'z':
+      case 'x':
 	cmd_cancelled("Apply command");
+	break;
+
+      case 'z':
+        q_status_message(SM_INFO, 0, 2,
+			 "Cancelled, there is no default command");
 	break;
     }
 
@@ -5304,7 +5309,7 @@ ab_select(ps, abook, cur_line, command_line, start_disp)
 	      sel_opts1[1].ch = -2;		/* don't offer this choice */
 
 	    switch(q = radio_buttons(sel_pmt1, command_line, sel_opts1,
-				     'a', 'x', help, RB_NORM)){
+				     'a', 'x', help, RB_NORM, NULL)){
 	      case 'n':			/* narrow selection */
 		narrow++;
 	      case 'b':			/* broaden selection */
@@ -5337,7 +5342,7 @@ ab_select(ps, abook, cur_line, command_line, start_disp)
 
 	if(!q)
 	  q = radio_buttons(sel_pmt2, command_line, sel_opts,
-			    'c', 'x', help, RB_NORM);
+			    'c', 'x', help, RB_NORM, NULL);
 
 	*start_disp = 0;
 	dlc = get_dlc(cur_line);
@@ -5661,7 +5666,7 @@ ab_select_type(abook, narrow)
       return -1;
 
     switch(type = radio_buttons(ab_sel_type, -FOOTER_ROWS(ps_global),
-				ab_sel_type_opt, 'l', 'x', NO_HELP, RB_NORM)){
+				ab_sel_type_opt, 'l', 'x', NO_HELP, RB_NORM, NULL)){
       case 'l':
 	break;
 
@@ -5741,7 +5746,8 @@ ab_select_text(abook, narrow)
       return -1;
 
     switch(type = radio_buttons(ab_sel_text, -FOOTER_ROWS(ps_global),
-				ab_sel_text_opt, 'a', 'x', NO_HELP, RB_NORM)){
+				ab_sel_text_opt, 'a', 'x', NO_HELP, RB_NORM,
+				NULL)){
       case 'n':
 	sprintf(prompt, fmt, "Nickname");
 	break;

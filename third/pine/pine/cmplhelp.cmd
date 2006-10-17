@@ -1,5 +1,5 @@
 /* rexx */
-/* $Id: cmplhelp.cmd,v 1.1.1.1 2001-02-19 06:59:47 ghudson Exp $
+/* $Id: cmplhelp.cmd,v 1.1.1.2 2006-10-17 18:11:36 ghudson Exp $
 /*
  * cmplhelp.sh -- This script take the pine.help file and turns it into
  * a .c file defining lots of strings

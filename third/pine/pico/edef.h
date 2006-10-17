@@ -1,5 +1,5 @@
 /*
- * $Id: edef.h,v 1.1.1.3 2005-01-26 17:55:48 ghudson Exp $
+ * $Id: edef.h,v 1.1.1.4 2006-10-17 18:09:49 ghudson Exp $
  *
  * Program:	Global definitions and initializations
  *

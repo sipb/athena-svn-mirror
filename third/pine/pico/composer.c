@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: composer.c,v 1.1.1.4 2005-01-26 17:55:26 ghudson Exp $";
+static char rcsid[] = "$Id: composer.c,v 1.1.1.5 2006-10-17 18:10:27 ghudson Exp $";
 #endif
 /*
  * Program:	Pine composer routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: composer.c,v 1.1.1.4 2005-01-26 17:55:26 ghudson Exp
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2004 by the University of Washington.
+ * 1989-2005 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -620,6 +620,16 @@ int f, n;
                 /*--- Just turned off all rich headers --*/
 		if(headents[ods.cur_e].rich_header){
                     /*-- current header got turned off too --*/
+#ifdef	ATTACHMENTS
+		    if(headents[ods.cur_e].is_attach){
+			/* verify the attachments */
+			if((i = FormatSyncAttach()) != 0){
+			    FormatLines(headents[ods.cur_e].hd_text, "",
+					term.t_ncol - headents[ods.cur_e].prlen,
+					headents[ods.cur_e].break_on_comma, 0);
+			}
+		    }
+#endif
 		    if(headents[ods.cur_e].builder)	/* verify text */
 		      i = call_builder(&headents[ods.cur_e], &mangled, &err)>0;
                     /* Check below */
@@ -3925,7 +3935,6 @@ ShowPrompt()
     else{
 	menu_header[PONE_KEY].name  = "^O";
 	menu_header[PONE_KEY].label = "Postpone";
-	KS_OSDATASET(&menu_header[PONE_KEY],KS_OSDATAGET(&headents[ods.cur_e]));
 
 	menu_header[ATT_KEY].name   = "^J";
     }

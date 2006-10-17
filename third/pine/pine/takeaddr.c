@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: takeaddr.c,v 1.1.1.3 2005-01-26 17:56:15 ghudson Exp $";
+static char rcsid[] = "$Id: takeaddr.c,v 1.1.1.4 2006-10-17 18:11:04 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: takeaddr.c,v 1.1.1.3 2005-01-26 17:56:15 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -184,7 +184,6 @@ edit_nickname(abook, dl, command_line, orig, prompt, this_help,
     int          flags, rc;
     AdrBk_Entry *check, *passed_in_ae;
     ESCKEY_S     ekey[2];
-    SAVE_STATE_S state;  /* For saving state of addrbooks temporarily */
     char        *error = NULL;
 
     ekey[0].ch    = ctrl('T');
@@ -237,8 +236,10 @@ edit_nickname(abook, dl, command_line, orig, prompt, this_help,
 	if(rc == 2){ /* ^T */
 	    void (*redraw) () = ps_global->redrawer;
 	    char *returned_nickname;
+	    SAVE_STATE_S state;  /* For saving state of addrbooks temporarily */
+	    TITLEBAR_STATE_S *tbstate = NULL;
 
-	    push_titlebar_state();
+	    tbstate = save_titlebar_state();
 	    save_state(&state);
 	    if(takeaddr)
 	      returned_nickname = addr_book_takeaddr();
@@ -253,7 +254,8 @@ edit_nickname(abook, dl, command_line, orig, prompt, this_help,
 	    }
 
 	    ClearScreen();
-	    pop_titlebar_state();
+	    restore_titlebar_state(tbstate);
+	    free_titlebar_state(&tbstate);
 	    redraw_titlebar();
 	    if(ps_global->redrawer = redraw) /* reset old value, and test */
 	      (*ps_global->redrawer)();
@@ -399,8 +401,9 @@ add_abook_entry(ta_entry, nick, fullname, fcc, comment, command_line, tas, cmd)
 					  (unsigned long)strlen(t), &l);
 		*p = '@';		/* restore 'p' */
 		rplstr(p, 12, "");	/* clear special token */
-		rplstr(t, strlen(t), u);
-		fs_give((void **)&u);
+		rplstr(t, strlen(t), u);  /* Null u is handled */
+		if(u)
+		  fs_give((void **)&u);
 	    }
 	    else if(t == scratch)
 	      break;
@@ -666,7 +669,7 @@ get_nick:
 				'r',
 				'x',
 				h_oe_take_replace,
-				RB_NORM);
+				RB_NORM, NULL);
 	}
 	else{
 	    static ESCKEY_S choices[] = {
@@ -691,7 +694,7 @@ get_nick:
 				'a',
 				'x',
 				h_oe_take_replace_or_add,
-				RB_NORM);
+				RB_NORM, NULL);
 	}
 
 	switch(ans){
@@ -2889,7 +2892,7 @@ take_this_one_entry(ps, tasp, abook, cur_line)
 	      i = radio_buttons("Copy backup address or retain LDAP search criteria ? ",
 				-FOOTER_ROWS(ps_global), backup_or_ldap,
 				'b', 'x',
-				h_ab_backup_or_ldap, RB_NORM);
+				h_ab_backup_or_ldap, RB_NORM, NULL);
 
 	    if(i == 'b'){
 		ADDRESS *a = NULL;
@@ -3115,7 +3118,7 @@ save_vcard_att(ps, qline, msgno, a)
 
     j = radio_buttons("Save to address book or Export to filesystem ? ",
 		      qline, save_or_export, 's', 'x',
-		      h_ab_save_exp, RB_NORM|RB_SEQ_SENSITIVE);
+		      h_ab_save_exp, RB_NORM|RB_SEQ_SENSITIVE, NULL);
     
     switch(j){
       case 'x':
@@ -3215,7 +3218,7 @@ export_vcard_att(ps, qline, msgno, a)
 
     i = radio_buttons("Export list of addresses or vCard text ? ",
 		      qline, vcard_or_addresses, 'a', 'x',
-		      h_ab_export_vcard, RB_NORM|RB_SEQ_SENSITIVE);
+		      h_ab_export_vcard, RB_NORM|RB_SEQ_SENSITIVE, NULL);
 
     switch(i){
       case 'x':
@@ -3321,6 +3324,7 @@ add_addresses_to_talist(ps, msgno, field, old_current, adrlist, checked)
 		     */
 		    p = (char *)rfc822_binary((void *)h,
 					      (unsigned long)strlen(h), &l);
+		    sqznewlines(p);
 		    new_addr->mailbox = (char *)fs_get(strlen(p) + 4);
 		    sprintf(new_addr->mailbox, "&%s", p);
 		    fs_give((void **)&p);
@@ -4010,8 +4014,9 @@ take_without_edit(ta_list, num_in_list, command_line, tas, cmd)
 						  (unsigned long)strlen(t), &l);
 			*p = '@';		/* restore 'p' */
 			rplstr(p, 12, "");	/* clear special token */
-			rplstr(t, strlen(t), u);
-			fs_give((void **)&u);
+			rplstr(t, strlen(t), u);  /* Null u is handled */
+			if(u)
+			  fs_give((void **)&u);
 		    }
 		    else if(t == scratch)
 		      break;
@@ -4090,8 +4095,9 @@ take_without_edit(ta_list, num_in_list, command_line, tas, cmd)
 						      (unsigned long)strlen(t), &l);
 			    *p = '@';		/* restore 'p' */
 			    rplstr(p, 12, "");	/* clear special token */
-			    rplstr(t, strlen(t), u);
-			    fs_give((void **)&u);
+			    rplstr(t, strlen(t), u);  /* Null u is handled */
+			    if(u)
+			      fs_give((void **)&u);
 			}
 			else if(t == scratch)
 			  break;
@@ -5173,7 +5179,7 @@ save_ldap_entry(ps, e, save)
 	if(!save){
 	    j = radio_buttons("Save to address book or Export to filesystem ? ",
 			      -FOOTER_ROWS(ps), save_or_export, 's', 'x',
-			      h_ab_save_exp, RB_NORM);
+			      h_ab_save_exp, RB_NORM, NULL);
 	    
 	    switch(j){
 	      case 'x':
@@ -5394,7 +5400,7 @@ save_ldap_entry(ps, e, save)
 	j = radio_buttons(
 		"Export text of entry, address, or VCard format ? ",
 		-FOOTER_ROWS(ps), text_or_vcard, 't', 'x',
-		h_ldap_text_or_vcard, RB_NORM);
+		h_ldap_text_or_vcard, RB_NORM, NULL);
 	
 	switch(j){
 	  case 'x':

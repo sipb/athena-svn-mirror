@@ -1,5 +1,5 @@
 /*
- * $Id: efunc.h,v 1.1.1.4 2005-01-26 17:54:57 ghudson Exp $
+ * $Id: efunc.h,v 1.1.1.5 2006-10-17 18:09:03 ghudson Exp $
  *
  * Program:	Pine's composer and pico's function declarations
  *

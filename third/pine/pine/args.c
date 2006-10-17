@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: args.c,v 1.1.1.5 2005-01-26 17:55:52 ghudson Exp $";
+static char rcsid[] = "$Id: args.c,v 1.1.1.6 2006-10-17 18:10:25 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -100,7 +100,7 @@ char *args_pine_args[] = {
 " -attachlist <file-list>",
 " -attach_and_delete <file>",
 "\t\tGo to composer, attach file, delete when finished",
-"\t\tNote: Attach options can't be used if -f, -F, or -url",
+"\t\tNote: Attach options can't be used if -f, -F",
 "\t\tadded to Attachment list.  Attachlist must be the last",
 "\t\toption on the command line",
 " -bail\t\tExit if pinerc file doesn't already exist",
@@ -151,7 +151,7 @@ char *args_pine_args[] = {
 " -w <rows>\tSet window size in rows on startup",
 #endif
 " -url <url>\tOpen the given URL",
-"\t\tNote: Can't be used if -f, -F, or -attach",
+"\t\tNote: Can't be used if -f, -F",
 "\t\tStandard input redirection is not allowed with URLs.",
 "\t\tFor mailto URLs, 'body='text should be used in place of",
 "\t\tinput redirection.",
@@ -393,7 +393,7 @@ Loop: while(--ac > 0)
 		  if(args->action == aaFolder && !args->data.folder){
 		      args->action = aaURL;
 		      if(--ac){
-			  args->data.url = *++av;
+			  args->url = *++av;
 		      }
 		      else{
 			  display_args_err(args_err_missing_url, NULL, 1);
@@ -410,8 +410,10 @@ Loop: while(--ac > 0)
 	      }
 	      else if(strcmp(*av, "attach") == 0){
 		  if((args->action == aaFolder && !args->data.folder)
-		     || args->action == aaMail){
-		      args->action = aaMail;
+		     || args->action == aaMail
+		     || args->action == aaURL){
+		      if(args->action != aaURL)
+			args->action = aaMail;
 		      if(--ac){
 			  args_add_attach(&args->data.mail.attachlist,
 					  *++av, FALSE);
@@ -432,8 +434,10 @@ Loop: while(--ac > 0)
 	      }
 	      else if(strcmp(*av, "attachlist") == 0){
 		  if((args->action == aaFolder && !args->data.folder)
-		     || args->action == aaMail){
-		      args->action = aaMail;
+		     || args->action == aaMail
+		     || args->action == aaURL){
+		      if(args->action != aaURL)
+			args->action = aaMail;
 		      if(ac - 1){
 			  do{
 			      if(can_access(*(av+1), READ_ACCESS) == 0){
@@ -462,8 +466,10 @@ Loop: while(--ac > 0)
 	      }
 	      else if(strcmp(*av, "attach_and_delete") == 0){
 		  if((args->action == aaFolder && !args->data.folder)
-		     || args->action == aaMail){
-		      args->action = aaMail;
+		     || args->action == aaMail
+		     || args->action == aaURL){
+		      if(args->action != aaURL)
+			args->action = aaMail;
 		      if(--ac){
 			  args_add_attach(&args->data.mail.attachlist,
 					  *++av, TRUE);

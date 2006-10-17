@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: bind.c,v 1.1.1.1 2001-02-19 07:04:46 ghudson Exp $";
+static char rcsid[] = "$Id: bind.c,v 1.1.1.2 2006-10-17 18:14:47 ghudson Exp $";
 #endif
 /*
  * Program:	Key binding routines

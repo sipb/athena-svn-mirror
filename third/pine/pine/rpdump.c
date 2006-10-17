@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: rpdump.c,v 1.1.1.2 2005-01-26 17:54:37 ghudson Exp $";
+static char rcsid[] = "$Id: rpdump.c,v 1.1.1.3 2006-10-17 18:10:35 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: rpdump.c,v 1.1.1.2 2005-01-26 17:54:37 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -91,6 +91,7 @@ main(argc, argv)
     char       *data, *p;
     RemoteType  rtype;
     unsigned long i;
+    struct stat sbuf;
 
 #include "../c-client/linkage.c"
 
@@ -126,7 +127,42 @@ main(argc, argv)
 	exit(-1);
     }
 
-    if(access(local, ACCESS_EXISTS) == 0){
+#ifdef	_WINDOWS
+    if(stat(local, &sbuf))
+#else
+    if(lstat(local, &sbuf))
+#endif
+    {
+	if(errno == ENOENT){		/* File did not exist */
+	    int fd;
+
+	    /* create it */
+	    if(((fd = open(local, O_CREAT|O_EXCL|O_WRONLY,0600)) < 0)
+	       || (close(fd) != 0)){
+		fprintf(stderr, "%s: %s\n", local, err_desc(errno));
+		exit(-1);
+	    }
+
+	    /* now it exists! */
+	}
+	else{				/* unknown error */
+	    fprintf(stderr, "%s: %s\n", local, err_desc(errno));
+	    exit(-1);
+	}
+    }
+    else{				/* file exists */
+
+	/* is it a regular file? */
+#ifdef	S_ISREG
+	if(!S_ISREG(sbuf.st_rdev))
+#else
+	if(!(S_IFREG & sbuf.st_mode))
+#endif
+	{
+	    fprintf(stderr, "Only allowed to write to regular local files. Try another filename.\n");
+	    exit(-1);
+	}
+
 	if(access(local, WRITE_ACCESS) == 0){
 
 	    sprintf(buf, "Local file \"%.20s\" exists, overwrite it",
@@ -140,6 +176,15 @@ main(argc, argv)
 	    fprintf(stderr, "Local file \"%s\" is not writable\n", local);
 	    exit(-1);
 	}
+    }
+
+    /*
+     * Try opening the local file.
+     */
+    if((fp = fopen(local, "w")) == NULL){
+	fprintf(stderr, "Can't open \"%s\": %s\n", local, err_desc(errno));
+	mail_close(stream);
+	exit(-1);
     }
 
     /*
@@ -202,15 +247,6 @@ main(argc, argv)
     }
 
     data = mail_fetch_body(stream, stream->nmsgs, "1", &i, FT_PEEK);
-
-    /*
-     * Try opening the local file.
-     */
-    if((fp = fopen(local, "w")) == NULL){
-	fprintf(stderr, "Can't open \"%s\": %s\n", local, err_desc(errno));
-	mail_close(stream);
-	exit(-1);
-    }
 
     p = data;
     for(p = data; p < data+i; p++){

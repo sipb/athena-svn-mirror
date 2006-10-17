@@ -26,6 +26,8 @@ extern int errno;
 typedef long fpos_t;
 
 #define  USE_DIRENT
+#include <stdlib.h>
+#include <malloc.h>
 #include <sys/dir.h>
 #include <string.h>
 #include <unistd.h>

@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: word.c,v 1.1.1.4 2005-01-26 17:54:35 ghudson Exp $";
+static char rcsid[] = "$Id: word.c,v 1.1.1.5 2006-10-17 18:08:48 ghudson Exp $";
 #endif
 /*
  * Program:	Word at a time routines

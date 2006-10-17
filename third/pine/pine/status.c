@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: status.c,v 1.1.1.3 2005-01-26 17:56:32 ghudson Exp $";
+static char rcsid[] = "$Id: status.c,v 1.1.1.4 2006-10-17 18:11:04 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: status.c,v 1.1.1.3 2005-01-26 17:56:32 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -437,7 +437,7 @@ int
 status_message_remaining()
 {
     if(message_queue){
-	int d = (int)(displayed_time - time(0))
+	int d = (int)(min(displayed_time - time(0), 0))
 					  + message_queue->min_display_time;
 	return((d > 0) ? d : 0);
     }
@@ -558,7 +558,7 @@ display_message(command)
 	    int    diff;
 
 	    now  = time(0);
-	    diff = (int)(displayed_time - now)
+	    diff = (int)(min(displayed_time - now, 0))
 			+ ((command == NO_OP_COMMAND || command == NO_OP_IDLE)
 			    ? message_queue->max_display_time
 			    : message_queue->min_display_time);
@@ -1211,7 +1211,7 @@ want_to(question, dflt, on_ctrl_C, help, flags)
 
     rv = radio_buttons(q2,
 	(ps_global->ttyo->screen_rows > 4) ? - FOOTER_ROWS(ps_global) : -1,
-	yorn, dflt, on_ctrl_C, help, flags);
+	yorn, dflt, on_ctrl_C, help, flags, NULL);
     fs_give((void **)&q2);
 
     return(rv);
@@ -1231,7 +1231,7 @@ one_try_want_to(question, dflt, on_ctrl_C, help, flags)
     sprintf(q2, "%.*s? ", ps_global->ttyo->screen_cols - 6, question);
     rv = radio_buttons(q2,
 	(ps_global->ttyo->screen_rows > 4) ? - FOOTER_ROWS(ps_global) : -1,
-	yorn, dflt, on_ctrl_C, help, flags | RB_ONE_TRY);
+	yorn, dflt, on_ctrl_C, help, flags | RB_ONE_TRY, NULL);
     fs_give((void **)&q2);
 
     return(rv);
@@ -1279,7 +1279,8 @@ off. Character types that are not buttons will result in a beep (unless one_try
 is set).
   ----*/
 int
-radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
+radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags,
+	      passed_in_km_popped)
     char     *prompt;
     int	      line;
     ESCKEY_S *esc_list;
@@ -1287,6 +1288,7 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
     int       on_ctrl_C;
     HelpType  help_text;
     int	      flags;
+    int      *passed_in_km_popped;
 {
     register int     ch, real_line;
     char            *q, *ds = NULL;
@@ -1343,6 +1345,13 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
     }
 #endif
 
+    if(passed_in_km_popped){
+	km_popped = *passed_in_km_popped;
+	if(FOOTER_ROWS(ps_global) == 1 && km_popped){
+	    FOOTER_ROWS(ps_global) = 3;
+	}
+    }
+
     suspend_busy_alarm();
     flush_ordered_messages();		/* show user previous status msgs */
     mark_status_dirty();		/* clear message next display call */
@@ -1355,7 +1364,8 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
     for(i = 0; esc_list && esc_list[i].ch != -1 && i < 11; i++){
       if(esc_list[i].ch == -2) /* -2 means to skip this key and leave blank */
 	continue;
-      max_label = max(max_label, strlen(esc_list[i].name));
+      if(esc_list[i].name)
+        max_label = max(max_label, strlen(esc_list[i].name));
     }
 
     maxcol = ps_global->ttyo->screen_cols - max_label - 1;
@@ -1413,7 +1423,8 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 	 * the right.  A key is invisible if it's label is "".
 	 */
 	if(i >= 12){
-	    if(esc_list[i-start].label[0] != '\0'){  /* visible */
+	    if(esc_list[i-start].label
+	       && esc_list[i-start].label[0] != '\0'){  /* visible */
 		if(i == 12){  /* special case where we put it in help slot */
 		    if(help_text != NO_HELP)
 		  panic("Programming botch in radio_buttons(): too many keys");
@@ -1423,7 +1434,9 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 
 		    fkey_table[0] = esc_list[i-start].ch;
 		    rb_keymenu.keys[0].name  = esc_list[i-start].name;
-		    if(esc_list[i-start].rval == dflt){
+		    if(esc_list[i-start].ch != -2
+		       && esc_list[i-start].rval == dflt
+		       && esc_list[i-start].label){
 			ds = (char *)fs_get((strlen(esc_list[i-start].label)+3)
 					    * sizeof(char));
 			sprintf(ds, "[%s]", esc_list[i-start].label);
@@ -1442,7 +1455,9 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 
 	    fkey_table[i] = esc_list[i-start].ch;
 	    rb_keymenu.keys[i].name  = esc_list[i-start].name;
-	    if(esc_list[i-start].rval == dflt){
+	    if(esc_list[i-start].ch != -2
+	       && esc_list[i-start].rval == dflt
+	       && esc_list[i-start].label){
 		ds = (char *)fs_get((strlen(esc_list[i-start].label) + 3)
 				    * sizeof(char));
 		sprintf(ds, "[%s]", esc_list[i-start].label);
@@ -1535,7 +1550,7 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 
 		  MoveCursor(real_line,len=min(RAD_BUT_COL+strlen(q),maxcol+1));
 		  for(n = 0, len = ps_global->ttyo->screen_cols - len;
-		      esc_list[i].label[n] && len > 0;
+		      esc_list[i].label && esc_list[i].label[n] && len > 0;
 		      n++, len--)
 		    Writechar(esc_list[i].label[n], 0);
 
@@ -1557,9 +1572,10 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 	      if(ch == esc_list[i].rval){
 		  int len, n;
 
-		  MoveCursor(real_line, len=min(RAD_BUT_COL+strlen(q),maxcol+1));
+		  MoveCursor(real_line,len=min(RAD_BUT_COL+strlen(q),maxcol+1));
 		  for(n = 0, len = ps_global->ttyo->screen_cols - len;
-		      esc_list[i].label[n] && len > 0; n++, len--)
+		      esc_list[i].label && esc_list[i].label[n] && len > 0;
+		      n++, len--)
 		    Writechar(esc_list[i].label[n], 0);
 		  break;
 	      }
@@ -1702,6 +1718,8 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 	FOOTER_ROWS(ps_global) = 1;
 	clearfooter(ps_global);
 	ps_global->mangled_body = 1;
+	if(passed_in_km_popped)
+	  *passed_in_km_popped = km_popped;	/* return current value */
     }
 
     return(ch);
@@ -1709,12 +1727,18 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 
 
 #define OTHER_RETURN_VAL 1300
+#define KEYS_PER_LIST 8
 
 /*
  * This should really be part of radio_buttons itself, I suppose. It was
  * easier to do it this way. This is for when there are more than 12
  * possible commands. We could have all the radio_buttons calls call this
  * instead of radio_buttons, or rename this to radio_buttons.
+ *
+ * Radio_buttons is limited to 10 visible commands unless there is no Help,
+ * in which case it is 11 visible commands.
+ * Double_radio_buttons is limited to 16 visible commands because it uses
+ * slots 3 and 4 for readability and the OTHER CMD.
  */
 int
 double_radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text,
@@ -1730,11 +1754,12 @@ double_radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text,
     ESCKEY_S *list = NULL, *list1 = NULL, *list2 = NULL;
     int       count, i = 0, j;
     int       v = OTHER_RETURN_VAL, listnum = 0;
+    int       preserve_km_popped_for_radio_buttons = 0;
 
 #ifdef _WINDOWS
     if(mswin_usedialog())
       return(radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C,
-			   help_text, flags));
+			   help_text, flags, NULL));
 #endif
 
     /* check to see if it will all fit in one */
@@ -1747,26 +1772,26 @@ double_radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text,
     
     if(i <= 12)
       return(radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C,
-			   help_text, flags));
+			   help_text, flags, NULL));
 
     /*
      * Won't fit, split it into two lists.
      *
-     * We can fit at most 9 items in the visible list. The rest of
+     * We can fit at most 8 items in the visible list. The rest of
      * the commands have to be invisible. Each of list1 and list2 should
-     * have no more than 9 visible (name != "" || label != "") items.
+     * have no more than 8 visible (name != "" || label != "") items.
      */
-    list1 = (ESCKEY_S *)fs_get(10 * sizeof(*list1));
-    memset(list1, 0, 10 * sizeof(*list1));
-    list2 = (ESCKEY_S *)fs_get(10 * sizeof(*list2));
-    memset(list2, 0, 10 * sizeof(*list2));
+    list1 = (ESCKEY_S *)fs_get((KEYS_PER_LIST+1) * sizeof(*list1));
+    memset(list1, 0, (KEYS_PER_LIST+1) * sizeof(*list1));
+    list2 = (ESCKEY_S *)fs_get((KEYS_PER_LIST+1) * sizeof(*list2));
+    memset(list2, 0, (KEYS_PER_LIST+1) * sizeof(*list2));
 
-    for(j=0,i=0; esc_list[i].ch != -1 && j < 9; j++,i++)
+    for(j=0,i=0; esc_list[i].ch != -1 && j < KEYS_PER_LIST; j++,i++)
       list1[j] = esc_list[i];
     
     list1[j].ch = -1;
 
-    for(j=0; esc_list[i].ch != -1 && j < 9; j++,i++)
+    for(j=0; esc_list[i].ch != -1 && j < KEYS_PER_LIST; j++,i++)
       list2[j] = esc_list[i];
 
     list2[j].ch = -1;
@@ -1774,7 +1799,27 @@ double_radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text,
     list = construct_combined_esclist(list1, list2);
 
     while(v == OTHER_RETURN_VAL){
-	v = radio_buttons(prompt,line,list,dflt,on_ctrl_C,help_text,flags);
+	int prompt_line;
+
+	/*
+	 * There are some layering violations going on with this
+	 * km_popped stuff. The line is passed in from high above us
+	 * normally, but with this mechanism here we're hardwiring the
+	 * knowledge that FOOTER_ROWS is either 1 or 3, and using that
+	 * below. Radio_buttons itself always puts back the correct
+	 * FOOTER_ROWS before exiting and then restores it based on
+	 * the passed in km_popped and line, which is the second
+	 * layering violation. We could fix it but it's probably not
+	 * worth the effort.
+	 */
+	if(line == -1 && preserve_km_popped_for_radio_buttons)
+	  prompt_line = -3;
+	else
+	  prompt_line = line;
+
+	v = radio_buttons(prompt, prompt_line, list, dflt, on_ctrl_C,
+			  help_text,flags,
+			  &preserve_km_popped_for_radio_buttons);
 	if(v == OTHER_RETURN_VAL){
 	    fs_give((void **)&list);
 	    listnum = 1 - listnum;
@@ -1801,32 +1846,40 @@ construct_combined_esclist(list1, list2)
     ESCKEY_S *list;
     int       i, j=0, count;
     
-    count = 1;	/* for OTHER key */
+    count = 2;	/* for blank key and for OTHER key */
     for(i=0; list1 && list1[i].ch != -1; i++)
       count++;
     for(i=0; list2 && list2[i].ch != -1; i++)
       count++;
     
-    list = (ESCKEY_S *)fs_get((count + 1) * sizeof(*list));
+    list = (ESCKEY_S *) fs_get((count + 1) * sizeof(*list));
     memset(list, 0, (count + 1) * sizeof(*list));
+
+    list[j].ch    = -2;			/* leave blank */
+    list[j].rval  = 0;
+    list[j].name  = NULL;
+    list[j++].label = NULL;
 
     list[j].ch    = 'o';
     list[j].rval  = OTHER_RETURN_VAL;
     list[j].name  = "O";
     list[j].label = "OTHER CMDS";
 
-    /* just checking */
+    /*
+     * Make sure that O for OTHER CMD or the return val for OTHER CMD
+     * isn't used for something else.
+     */
     for(i=0; list1 && list1[i].ch != -1; i++){
 	if(list1[i].rval == list[j].rval)
 	  panic("1bad rval in d_r");
-	if(list1[i].ch == list[j].ch)
+	if(F_OFF(F_USE_FK,ps_global) && list1[i].ch == list[j].ch)
 	  panic("1bad ch in ccl");
     }
 
     for(i=0; list2 && list2[i].ch != -1; i++){
 	if(list2[i].rval == list[j].rval)
 	  panic("2bad rval in d_r");
-	if(list2[i].ch == list[j].ch)
+	if(F_OFF(F_USE_FK,ps_global) && list2[i].ch == list[j].ch)
 	  panic("2bad ch in ccl");
     }
 
@@ -1834,9 +1887,10 @@ construct_combined_esclist(list1, list2)
 
     /* the visible set */
     for(i=0; list1 && list1[i].ch != -1; i++){
-	list[j++] = list1[i];
-	if(i > 9 && list1[i].label[0] != '\0')
+	if(i >= KEYS_PER_LIST && list1[i].label[0] != '\0')
 	  panic("too many visible keys in ccl");
+
+	list[j++] = list1[i];
     }
 
     /* the rest are invisible */

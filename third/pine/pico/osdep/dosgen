@@ -1,6 +1,6 @@
 #line 2 "osdep/dosgen"		/* So compiler knows orig name of this file.*/
 /*
- * $Id: dosgen,v 1.1.1.4 2005-01-26 17:54:28 ghudson Exp $
+ * $Id: dosgen,v 1.1.1.5 2006-10-17 18:08:46 ghudson Exp $
  *
  * Program:	Operating system dependent routines - MS DOS Generic
  *

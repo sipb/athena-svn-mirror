@@ -1,5 +1,5 @@
 #if	!defined(DOS)
-static char rcsid[] = "$Id: term.ans,v 1.1.1.1 2001-02-19 07:01:28 ghudson Exp $";
+static char rcsid[] = "$Id: term.ans,v 1.1.1.2 2006-10-17 18:12:23 ghudson Exp $";
 #endif
 /*
  * Program:	ANSI terminal driver routines

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: filter.c,v 1.1.1.4 2005-01-26 17:56:42 ghudson Exp $";
+static char rcsid[] = "$Id: filter.c,v 1.1.1.5 2006-10-17 18:11:01 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -704,6 +704,7 @@ static	jmp_buf   gf_error_state;
 #define	FL_STF	16
 #define	FL_SIG	17
 #define	STOP_DECODING	18
+#define	SPACECR	19
 
 
 
@@ -2029,7 +2030,6 @@ gf_2022_jp_to_euc(f, flg)
     register int state = f->f1;
 
     /*
-     * f->t lit means we're in middle of decoding a sequence of characters.
      * f->f2 keeps track of first character of pair for Shift-JIS.
      * f->f1 is the state.
      */
@@ -2040,9 +2040,9 @@ gf_2022_jp_to_euc(f, flg)
 	while(GF_GETC(f, c)){
 	    switch(state){
 	      case ESC:				/* saw ESC */
-	        if(!f->t && c == '$')
+	        if(c == '$')
 		  state = ESCDOL;
-	        else if(f->t && c == '(')
+	        else if(c == '(')
 		  state = ESCPAR;
 		else{
 		    GF_PUTC(f->next, '\033');
@@ -2055,7 +2055,6 @@ gf_2022_jp_to_euc(f, flg)
 	      case ESCDOL:			/* saw ESC $ */
 	        if(c == 'B' || c == '@'){
 		    state = EUC;
-		    f->t = 1;			/* filtering into euc */
 		    f->f2 = -1;			/* first character of pair */
 		}
 		else{
@@ -2076,7 +2075,6 @@ gf_2022_jp_to_euc(f, flg)
 		 * Hubert 2004-12-07
 		 */
 		state = DFL;
-		f->t = 0;			/* done filtering */
 	        break;
 
 	      case EUC:				/* filtering into euc */
@@ -2144,7 +2142,6 @@ gf_2022_jp_to_euc(f, flg)
     else if(flg == GF_RESET){
 	dprint(9, (debugfile, "-- gf_reset jp_to_euc\n"));
 	f->f1 = DFL;		/* state */
-	f->t = 0;		/* not translating to euc */
     }
 }
 
@@ -6673,12 +6670,17 @@ gf_control_filter(f, flg)
 
 	while(GF_GETC(f, c)){
 
+	    /*
+	     * Compare to FILTER_THIS macro. Very similar except that we
+	     * allow space through and we have to check for filtering
+	     * based on filt_only_c0.
+	     */
 	    if(((c < 0x20 || c == 0x7f)
 		|| (c >= 0x80 && c < 0xA0 && !filt_only_c0))
-	       && !(isspace((unsigned char) c)
-		    || c == '\016' || c == '\017' || c == '\033')){
+	       && !isspace((unsigned char) c)){
 		GF_PUTC(f->next, c >= 0x80 ? '~' : '^');
-		GF_PUTC(f->next, (c == 0x7f) ? '?' : (c & 0x1f) + '@');
+		GF_PUTC(f->next, (c == 0x7f) ? '?' :
+				  (c == 0x1b) ? '[' : (c & 0x1f) + '@');
 	    }
 	    else
 	      GF_PUTC(f->next, c);
@@ -6827,13 +6829,20 @@ typedef struct wrap_col_s {
 			    }						\
 			}
 
+/*
+ * wrap_flush_embed flags
+ */
+#define	WFE_NONE	0		/* Nothing special */
+#define	WFE_CNT_HANDLE	1		/* account for/don't write handles */
+
+
 int     wrap_flush PROTO((FILTER_S *, unsigned char **, unsigned char **,
 			  unsigned char **, unsigned char **));
 int     wrap_flush_embed PROTO((FILTER_S *, unsigned char **, unsigned char **,
 				unsigned char **, unsigned char **));
 int     wrap_flush_s PROTO((FILTER_S *,char *, int, int, unsigned char **,
-			    unsigned char **,
-			    unsigned char **, unsigned char **));
+			    unsigned char **, unsigned char **,
+			    unsigned char **, int));
 int     wrap_eol PROTO((FILTER_S *, int, unsigned char **, unsigned char **,
 			  unsigned char **, unsigned char **));
 int     wrap_bol PROTO((FILTER_S *, int, int, unsigned char **,
@@ -7522,12 +7531,12 @@ wrap_flush(f, ipp, eibp, opp, eobp)
     s = (char *)so_text(WRAP_SPACES(f));
     n = so_tell(WRAP_SPACES(f));
     so_seek(WRAP_SPACES(f), 0L, 0);
-    wrap_flush_s(f, s, n, 1, ipp, eibp, opp, eobp);
+    wrap_flush_s(f, s, n, 1, ipp, eibp, opp, eobp, WFE_NONE);
     so_truncate(WRAP_SPACES(f), 0L);
     WRAP_SPC_LEN(f) = 0;
     s = f->line;
     n = f->linep - f->line;
-    wrap_flush_s(f, s, n, 1, ipp, eibp, opp, eobp);
+    wrap_flush_s(f, s, n, 1, ipp, eibp, opp, eobp, WFE_NONE);
     f->f2    = 0;
     f->linep = f->line;
     WRAP_PB_OFF(f) = 0;
@@ -7549,7 +7558,7 @@ wrap_flush_embed(f, ipp, eibp, opp, eobp)
   s = (char *)so_text(WRAP_SPACES(f));
   n = so_tell(WRAP_SPACES(f));
   so_seek(WRAP_SPACES(f), 0L, 0);
-  wrap_flush_s(f, s, n, 0, ipp, eibp, opp, eobp);
+  wrap_flush_s(f, s, n, 0, ipp, eibp, opp, eobp, WFE_CNT_HANDLE);
   so_truncate(WRAP_SPACES(f), 0L);
   WRAP_SPC_LEN(f) = 0;
 
@@ -7557,7 +7566,7 @@ wrap_flush_embed(f, ipp, eibp, opp, eobp)
 }
 
 int
-wrap_flush_s(f, s, n, v, ipp, eibp, opp, eobp)
+wrap_flush_s(f, s, n, v, ipp, eibp, opp, eobp, flags)
     FILTER_S    *f;
     char        *s;
     int          n;
@@ -7566,6 +7575,7 @@ wrap_flush_s(f, s, n, v, ipp, eibp, opp, eobp)
     unsigned char **eibp;
     unsigned char **opp;
     unsigned char **eobp;
+    int		  flags;
 {
     for(; n > 0; n--,s++){
 	if(*s == TAG_EMBED){
@@ -7597,18 +7607,29 @@ wrap_flush_s(f, s, n, v, ipp, eibp, opp, eobp)
 		    WRAP_ANCHOR(f) = 0;
 		    break;
 		  case TAG_HANDLE :
-		    GF_PUTC_GLO(f->next,TAG_EMBED);
+		    if((flags & WFE_CNT_HANDLE) == 0)
+		      GF_PUTC_GLO(f->next,TAG_EMBED);
+
 		    if(n-- > 0){
 			int i = *++s;
-			GF_PUTC_GLO(f->next, TAG_HANDLE);
+
+			if((flags & WFE_CNT_HANDLE) == 0)
+			  GF_PUTC_GLO(f->next, TAG_HANDLE);
+
 			if(i <= n){
 			    n -= i;
-			    GF_PUTC_GLO(f->next, i);
+
+			    if((flags & WFE_CNT_HANDLE) == 0)
+			      GF_PUTC_GLO(f->next, i);
+
 			    WRAP_ANCHOR(f) = 0;
 			    while(i-- > 0){
 				WRAP_ANCHOR(f) = (WRAP_ANCHOR(f) * 10) + (*++s-'0');
-				GF_PUTC_GLO(f->next,*s);
+
+				if((flags & WFE_CNT_HANDLE) == 0)
+				  GF_PUTC_GLO(f->next,*s);
 			    }
+
 			}
 		    }
 		    break;
@@ -7781,10 +7802,19 @@ wrap_quote_insert(f, ipp, eibp, opp, eobp)
     unsigned char **opp;
     unsigned char **eobp;
 {
-    int j;
+    int j, i;
     COLOR_PAIR *col = NULL;
+    char *prefix = NULL, *last_prefix = NULL;
+
+    if(ps_global->VAR_QUOTE_REPLACE_STRING){
+	get_pair(ps_global->VAR_QUOTE_REPLACE_STRING, &prefix, &last_prefix, 0, 0);
+	if(!prefix && last_prefix){
+	    prefix = last_prefix;
+	    last_prefix = NULL;
+	}
+    }
+
     for(j = 0; j < WRAP_FL_QD(f); j++){
-	f->n += (WRAP_LV_FLD(f) ? 1 : 2);
 	if(WRAP_USE_CLR(f)){
 	    if((j % 3) == 0
 	       && ps_global->VAR_QUOTE1_FORE_COLOR
@@ -7815,14 +7845,44 @@ wrap_quote_insert(f, ipp, eibp, opp, eobp)
 		col = NULL;
 	    }
 	}
-	GF_PUTC_GLO(f->next, '>');
-	if(!WRAP_LV_FLD(f))
-	  GF_PUTC_GLO(f->next, ' ');
+
+	if(!WRAP_LV_FLD(f)){
+	    if(ps_global->VAR_QUOTE_REPLACE_STRING && prefix){
+		for(i = 0; prefix[i]; i++)
+		  GF_PUTC_GLO(f->next, prefix[i]);
+		f->n += strlen(prefix);
+	    }
+	    else if(ps_global->VAR_REPLY_STRING
+		    && (!strcmp(ps_global->VAR_REPLY_STRING, ">")
+			|| !strcmp(ps_global->VAR_REPLY_STRING, "\">\""))){
+		GF_PUTC_GLO(f->next, '>');
+		f->n += 1;
+	    }
+	    else{
+		GF_PUTC_GLO(f->next, '>');
+		GF_PUTC_GLO(f->next, ' ');
+		f->n += 2;
+	    }
+	}
+	else{
+	    GF_PUTC_GLO(f->next, '>');
+	    f->n += 1;
+	}
     }
     if(j && WRAP_LV_FLD(f)){
 	GF_PUTC_GLO(f->next, ' ');
 	f->n++;
     }
+    else if(j && last_prefix){
+	for(i = 0; last_prefix[i]; i++)
+	  GF_PUTC_GLO(f->next, last_prefix[i]);
+	f->n += strlen(last_prefix);	
+    }
+
+    if(prefix)
+      fs_give((void **)&prefix);
+    if(last_prefix)
+      fs_give((void **)&last_prefix);
 
     return 0;
 }
@@ -7856,6 +7916,254 @@ gf_wrap_filter_opt(width, width_max, margin, indent, flags)
     wrap->use_color    = (GFW_USECOLOR & flags) == GFW_USECOLOR;
 
     return((void *) wrap);
+}
+
+
+#define	PF_QD(F)	(((PREFLOW_S *)(F)->opt)->quote_depth)
+#define	PF_QC(F)	(((PREFLOW_S *)(F)->opt)->quote_count)
+#define	PF_SIG(F)	(((PREFLOW_S *)(F)->opt)->sig)
+
+typedef struct preflow_s {
+    int		quote_depth,
+		quote_count,
+		sig;
+} PREFLOW_S;
+
+/*
+ * This would normally be handled in gf_wrap. If there is a possibility
+ * that a url we want to recognize is cut in half by a soft newline we
+ * want to fix that up by putting the halves back together. We do that
+ * by deleting the soft newline and putting it all in one line. It will
+ * still get wrapped later in gf_wrap. It isn't pretty with all the
+ * goto's, but whatta ya gonna do?
+ */
+void
+gf_preflow(f, flg)
+    FILTER_S *f;
+    int       flg;
+{
+    GF_INIT(f, f->next);
+
+    if(flg == GF_DATA){
+	register unsigned char c;
+	register int state  = f->f1;
+	register int pending = f->f2;
+
+	while(GF_GETC(f, c)){
+	    switch(state){
+	      case DFL:
+default_case:
+		switch(c){
+		  case ' ':
+		    state = WSPACE;
+		    break;
+		  
+		  case '\015':
+		    state = CCR;
+		    break;
+		  
+		  default:
+		    GF_PUTC(f->next, c);
+		    break;
+		}
+
+	        break;
+
+	      case CCR:
+		switch(c){
+		  case '\012':
+		    pending = 1;
+		    state = BOL;
+		    break;
+		  
+		  default:
+		    GF_PUTC(f->next, '\012');
+		    state = DFL;
+		    goto default_case;
+		    break;
+		}
+
+	        break;
+
+	      case WSPACE:
+		switch(c){
+		  case '\015':
+		    state = SPACECR;
+		    break;
+		  
+		  default:
+		    GF_PUTC(f->next, ' ');
+		    state = DFL;
+		    goto default_case;
+		    break;
+		}
+
+	        break;
+
+	      case SPACECR:
+		switch(c){
+		  case '\012':
+		    pending = 2;
+		    state = BOL;
+		    break;
+		  
+		  default:
+		    GF_PUTC(f->next, ' ');
+		    GF_PUTC(f->next, '\012');
+		    state = DFL;
+		    goto default_case;
+		    break;
+		}
+
+	        break;
+
+	      case BOL:
+		PF_QC(f) = 0;
+		if(c == '>'){		/* count quote level */
+		    PF_QC(f)++;
+		    state = FL_QLEV;
+		}
+		else{
+done_counting_quotes:
+		    if(c == ' '){	/* eat stuffed space */
+			state = FL_STF;
+			break;
+		    }
+
+done_with_stuffed_space:
+		    if(c == '-'){	/* look for signature */
+			PF_SIG(f) = 1;
+			state = FL_SIG;
+			break;
+		    }
+
+done_with_sig:
+		    if(pending == 2){
+			if(PF_QD(f) == PF_QC(f) && PF_SIG(f) < 4){
+			    /* delete pending */
+
+			    PF_QD(f) = PF_QC(f);
+
+			    /* suppress quotes, too */
+			    PF_QC(f) = 0;
+			}
+			else{
+			    /*
+			     * This should have been a hard new line
+			     * instead so leave out the trailing space.
+			     */
+			    GF_PUTC(f->next, '\015');
+			    GF_PUTC(f->next, '\012');
+
+			    PF_QD(f) = PF_QC(f);
+			}
+		    }
+		    else if(pending == 1){
+			GF_PUTC(f->next, '\015');
+			GF_PUTC(f->next, '\012');
+			PF_QD(f) = PF_QC(f);
+		    }
+		    else{
+			PF_QD(f) = PF_QC(f);
+		    }
+
+		    pending = 0;
+		    state = DFL;
+		    while(PF_QC(f)-- > 0)
+		      GF_PUTC(f->next, '>');
+
+		    switch(PF_SIG(f)){
+		      case 0:
+		      default:
+		        break;
+
+		      case 1:
+			GF_PUTC(f->next, '-');
+		        break;
+
+		      case 2:
+			GF_PUTC(f->next, '-');
+			GF_PUTC(f->next, '-');
+		        break;
+
+		      case 3:
+		      case 4:
+			GF_PUTC(f->next, '-');
+			GF_PUTC(f->next, '-');
+			GF_PUTC(f->next, ' ');
+		        break;
+		    }
+
+		    PF_SIG(f) = 0;
+		    goto default_case;		/* to handle c */
+		}
+
+		break;
+
+	      case FL_QLEV:		/* count quote level */
+		if(c == '>')
+		  PF_QC(f)++;
+		else
+		  goto done_counting_quotes;
+
+		break;
+
+	      case FL_STF:		/* eat stuffed space */
+		goto done_with_stuffed_space;
+	        break;
+
+	      case FL_SIG:		/* deal with sig indicator */
+		switch(PF_SIG(f)){
+		  case 1:		/* saw '-' */
+		    if(c == '-')
+		      PF_SIG(f) = 2;
+		    else
+		      goto done_with_sig;
+
+		    break;
+
+		  case 2:		/* saw '--' */
+		    if(c == ' ')
+		      PF_SIG(f) = 3;
+		    else
+		      goto done_with_sig;
+
+		    break;
+
+		  case 3:		/* saw '-- ' */
+		    if(c == '\015')
+		      PF_SIG(f) = 4;	/* it really is a sig line */
+
+		    goto done_with_sig;
+		    break;
+		}
+
+	        break;
+	    }
+	}
+
+	f->f1 = state;
+	f->f2 = pending;
+	GF_END(f, f->next);
+    }
+    else if(flg == GF_EOD){
+	fs_give((void **) &f->opt);
+	GF_FLUSH(f->next);
+	(*f->next->f)(f->next, GF_EOD);
+    }
+    else if(flg == GF_RESET){
+	PREFLOW_S *pf;
+
+	pf = (PREFLOW_S *) fs_get(sizeof(*pf));
+	memset(pf, 0, sizeof(*pf));
+	f->opt = (void *) pf;
+
+	f->f1     = BOL;	/* state */
+	f->f2     = 0;		/* pending */
+	PF_QD(f)  = 0;		/* quote depth */
+	PF_QC(f)  = 0;		/* quote count */
+	PF_SIG(f) = 0;		/* sig level */
+    }
 }
 
 
