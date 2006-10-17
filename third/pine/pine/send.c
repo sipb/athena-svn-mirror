@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: send.c,v 1.1.1.5 2005-01-26 17:56:11 ghudson Exp $";
+static char rcsid[] = "$Id: send.c,v 1.1.1.6 2006-10-17 18:11:04 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ static char rcsid[] = "$Id: send.c,v 1.1.1.5 2005-01-26 17:56:11 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -100,6 +100,7 @@ void	   pine_send_newsgroup_name PROTO((char *, char*, size_t));
 long	   message_format_for_pico PROTO((long, int (*)(int)));
 char	  *send_exit_for_pico PROTO((struct headerentry *, void (*)(), int));
 int	   mime_type_for_pico PROTO((char *));
+char      *cancel_for_pico PROTO((void (*)()));
 void	   update_answered_flags PROTO((REPLY_S *));
 int	   pine_write_body_header PROTO((BODY *, soutr_t, TCPSTREAM *));
 int	   pwbh_finish PROTO((int, STORE_S *));
@@ -557,7 +558,7 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
  		F_ON(F_BLANK_KEYMENU,ps_global) ? letters : "the menu below");
 
  	chosen_task = radio_buttons(prompt, -FOOTER_ROWS(ps_global),
- 				    compose_style, 'n', 'x', help, RB_NORM);
+ 				    compose_style, 'n', 'x', help,RB_NORM,NULL);
 	intrptd = postponed = form = 0;
 	switch(chosen_task){
 	  case 'i':
@@ -1969,6 +1970,22 @@ dos_valid_from()
 	    strncpy(answer, mb.user, sizeof(answer)-1);
 	    answer[sizeof(answer)-1] = '\0';
 	}
+	else if(F_ON(F_QUELL_USER_ID_PROMPT, ps_global)){
+	    /* no user-id prompting if set */
+	    no_prompt_user_id = 1;
+	    rc = 0;
+	    if(!ps_global->mail_stream)
+	      do_broach_folder(ps_global->inbox_name,
+			       ps_global->context_list, NULL, 0L);
+	    if(ps_global->mail_stream && ps_global->mail_stream->mailbox
+	       && mail_valid_net_parse(ps_global->mail_stream->mailbox, &mb)
+	       && *mb.user){
+		strncpy(answer, mb.user, sizeof(answer)-1);
+		answer[sizeof(answer)-1] = '\0';
+	    }
+	    else
+	      answer[0] = '\0';
+	}
 	else
 	  answer[0] = '\0';
 
@@ -2417,7 +2434,7 @@ pine_simple_send(outgoing, body, role, prmpt_who, prmpt_cnf,
 	    if(ps_global->never_allow_changing_from)
 	      q_status_message(SM_ORDER, 3, 3, "Site policy doesn't allow changing From address so role's From has no effect");
 	    else
-	      outgoing->from = copyaddr(role->from);
+	      outgoing->from = copyaddrlist(role->from);
 	}
 	else
 	  outgoing->from = generate_from();
@@ -2438,8 +2455,8 @@ pine_simple_send(outgoing, body, role, prmpt_who, prmpt_cnf,
         pf->name        = cpystr(pf_template[i].name);
 	if(i == N_SENDER && F_ON(F_USE_SENDER_NOT_X, ps_global))
 	  /* slide string over so it is Sender instead of X-X-Sender */
-	  for(p=pf->name; *(p+1); p++)
-	    *p = *(p+4);
+	  if(strlen(pf->name) > 6)
+	    strncpy(pf->name, "Sender", 7);
 
         pf->type        = pf_template[i].type;
 	pf->canedit     = pf_template[i].canedit;
@@ -2639,8 +2656,9 @@ pine_simple_send(outgoing, body, role, prmpt_who, prmpt_cnf,
 
 	    if(i == 2){
 		int got_something = 0;
+		TITLEBAR_STATE_S *tbstate = NULL;
 
-		push_titlebar_state();
+		tbstate = save_titlebar_state();
 		returned_addr = addr_book_bounce();
 
 		/*
@@ -2656,7 +2674,8 @@ pine_simple_send(outgoing, body, role, prmpt_who, prmpt_cnf,
 		}
 
 		ClearScreen();
-		pop_titlebar_state();
+		restore_titlebar_state(tbstate);
+		free_titlebar_state(&tbstate);
 		redraw_titlebar();
 		if(ps_global->redrawer = redraw) /* reset old value, and test */
 		  (*ps_global->redrawer)();
@@ -2817,7 +2836,7 @@ pine_simple_send(outgoing, body, role, prmpt_who, prmpt_cnf,
 
 			    rv = radio_buttons(tmp_20k_buf,
 					       -FOOTER_ROWS(ps_global), opts,
-					       'y', 'z', NO_HELP, RB_NORM);
+					       'y', 'z', NO_HELP, RB_NORM,NULL);
 			    if(rv == 'y'){		/* user ACCEPTS! */
 				sendit = 1;
 				break;
@@ -3193,6 +3212,9 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
     pbf->msgntext      = message_format_for_pico;
     pbf->mimetype      = mime_type_for_pico;
     pbf->exittest      = send_exit_for_pico;
+    if(F_OFF(F_CANCEL_CONFIRM, ps_global))
+      pbf->canceltest    = cancel_for_pico;
+
     pbf->alt_ed        = (ps_global->VAR_EDITOR && ps_global->VAR_EDITOR[0] &&
 			    ps_global->VAR_EDITOR[0][0])
 				? ps_global->VAR_EDITOR : NULL;
@@ -3637,7 +3659,7 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		    if(ps_global->never_allow_changing_from)
 		      q_status_message(SM_ORDER, 3, 3, "Site policy doesn't allow changing From address so role's From has no effect");
 		    else{
-			outgoing->from = copyaddr(role->from);
+			outgoing->from = copyaddrlist(role->from);
 			he->display_it  = 1;  /* show it */
 			he->rich_header = 0;
 		    }
@@ -5244,7 +5266,7 @@ postpone_prompt()
 					 {-1, 0, NULL, NULL} };
 
     return(radio_buttons(PSTPN_FORM_PMT, -FOOTER_ROWS(ps_global),
-			 pstpn_form_opt, 'p', 0, NO_HELP, RB_FLUSH_IN));
+			 pstpn_form_opt, 'p', 0, NO_HELP, RB_FLUSH_IN, NULL));
 }
 
 
@@ -6075,7 +6097,7 @@ send_exit_for_pico(he, redraw_pico, allow_flowed)
 			    F_ON(F_DSN, ps_global) ? h_send_prompt_dsn       :
 			     allow_flowed           ? h_send_prompt_flowed   :
 						       h_send_prompt,
-			   RB_NORM);
+			   RB_NORM, NULL);
 
 	if(rv == 'y'){				/* user ACCEPTS! */
 	    break;
@@ -6360,6 +6382,45 @@ void
 resize_for_pico()
 {
     fix_windsize(ps_global);
+}
+
+
+char *
+cancel_for_pico(redraw_pico)
+    void (*redraw_pico)();
+{
+    int	  rv;
+    char *rstr = NULL;
+    char *prompt =
+     "Cancel message (answering \"Confirm\" will abandon your mail message) ? ";
+    void (*redraw)() = ps_global->redrawer;
+    static ESCKEY_S opts[] = {
+	{'c', 'c', "C", "Confirm"},
+	{'n', 'n', "N", "No"},
+	{'y', 'y', "", ""},
+	{-1, 0, NULL, NULL}
+    };
+
+    ps_global->redrawer = redraw_pico;
+    fix_windsize(ps_global);
+    
+    while(1){
+	rv = radio_buttons(prompt, -FOOTER_ROWS(ps_global), opts,
+			   'n', 'x', h_confirm_cancel, RB_NORM, NULL);
+	if(rv == 'c'){				/* user ACCEPTS! */
+	    rstr = "";
+	    break;
+	}
+	else if(rv == 'y'){
+	    q_status_message(SM_INFO, 1, 3, " Type \"C\" to cancel message ");
+	    display_message('x');
+	}
+	else
+	  break;
+    }
+
+    ps_global->redrawer = redraw;
+    return(rstr);
 }
 
 
@@ -7690,12 +7751,11 @@ outgoing2strings(header, bod, text, pico_a)
 			/*
 			 * Rfc822_cat has been changed so that it now quotes
 			 * this sometimes. So we have to look out for quotes
-			 * which confuse the decoder. Rfc822_base64 will
-			 * ignore the trailing quote so we don't have to
-			 * worry about that.
+			 * which confuse the decoder. It was only quoting
+			 * because we were putting \r \n in the input, I think.
 			 */
-			if(t > pf->scratch && t[-1] == '\"')
-			  t[-1] = ' ';
+			if(t > pf->scratch && t[-1] == '\"' && p[-1] == '\"')
+			  t[-1] = p[-1] = ' ';
 
 			*t++ = ' ';		/* replace token */
 			*p = '\0';		/* tie off string */
@@ -7705,8 +7765,10 @@ outgoing2strings(header, bod, text, pico_a)
 			replacelen = strlen(t);
 			*p = '@';		/* restore 'p' */
 			rplstr(p, 12, "");	/* clear special token */
-			rplstr(t, replacelen, u);
-			fs_give((void **) &u);
+			rplstr(t, replacelen, u);  /* NULL u handled in func */
+			if(u)
+			  fs_give((void **) &u);
+
 			if(pf->he)
 			  pf->he->start_here = 1;
 
@@ -10433,8 +10495,10 @@ customized_hdr_setup(head, list, cstmtype)
 		    /* give them an alloc'd default, even if empty */
 		    pf->textbuf = cpystr((*value == ':')
 					   ? skip_white_space(++value) : "");
-		    if(pf->textbuf && pf->textbuf[0])
-		      pf->val = cpystr(pf->textbuf);
+		    if(pf->textbuf && pf->textbuf[0]){
+			removing_double_quotes(pf->textbuf);
+			pf->val = cpystr(pf->textbuf);
+		    }
 
 		    pf++;
 		}
@@ -10513,6 +10577,7 @@ add_defaults_from_list(head, list)
 			if(pf->val)
 			  fs_give((void **)&pf->val);
 			
+			removing_double_quotes(defval);
 			pf->val = cpystr(defval);
 		    }
 		}

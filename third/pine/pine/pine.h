@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: pine.h,v 1.1.1.5 2005-01-26 17:56:48 ghudson Exp $
+  $Id: pine.h,v 1.1.1.6 2006-10-17 18:11:10 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -63,7 +63,7 @@
 #ifndef _PINE_INCLUDED
 #define _PINE_INCLUDED
 
-#define PINE_VERSION		"4.62"
+#define PINE_VERSION		"4.64"
 #define	PHONE_HOME_VERSION	"-count"
 #define	PHONE_HOME_HOST		"docserver.cac.washington.edu"
 
@@ -99,7 +99,8 @@
 
 #define	FM_DISPLAY	0x01		/* flag for format_message */
 #define	FM_NEW_MESS	0x02		/* ditto		   */
-#define	FM_NOWRAP	0x08		/* ditto		   */
+#define	FM_NOWRAP	0x04		/* ditto		   */
+#define	FM_WRAPFLOWED	0x08		/* ditto		   */
 #define	FM_NOCOLOR	0x10		/* ditto		   */
 #define	FM_NOINDENT	0x20		/* no effect if NOWRAP set */
 
@@ -110,6 +111,7 @@
 #define	RS_RULES	0x01		/* include Rules as option	*/
 #define	RS_INCADDR	0x02		/* include Addrbook as option	*/
 #define	RS_INCEXP	0x04		/* include Export as option	*/
+#define	RS_INCFILTNOW	0x08		/* filter now			*/
 
 #define SEQ_EXCEPTION   (-3)		/* returned when seq # change and no
 					   on_ctrl_C available.          */
@@ -429,10 +431,7 @@ typedef struct offsets {
 
 #define	mn_get_sort(p)		((p) ? (p)->sort_order : SortArrival)
 
-#define	mn_set_sort(p, t)	do{					      \
-				  if(p)					      \
-				    (p)->sort_order = (t);		      \
-				}while(0)
+#define	mn_set_sort(p, t)	msgno_set_sort((p), (t))
 
 #define	mn_get_revsort(p)	((p) ? (p)->reverse_sort : 0)
 
@@ -658,6 +657,7 @@ typedef	enum {    V_PERSONAL_NAME = 0
 		, V_FILLCOL
 		, V_REPLY_STRING
 		, V_REPLY_INTRO
+		, V_QUOTE_REPLACE_STRING
 		, V_EMPTY_HDR_MSG
 		, V_IMAGE_VIEWER
 		, V_USE_ONLY_DOMAIN_NAME
@@ -801,6 +801,8 @@ typedef	enum {    V_PERSONAL_NAME = 0
 		, V_IND_REC_BACK_COLOR
 		, V_IND_UNS_FORE_COLOR
 		, V_IND_UNS_BACK_COLOR
+		, V_IND_ARR_FORE_COLOR
+		, V_IND_ARR_BACK_COLOR
 		, V_VIEW_HDR_COLORS
 		, V_KW_COLORS
 #if defined(DOS) || defined(OS2)
@@ -909,6 +911,8 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define GLO_DEADLETS		     vars[V_DEADLETS].global_val.p
 #define VAR_REPLY_STRING	     vars[V_REPLY_STRING].current_val.p
 #define GLO_REPLY_STRING	     vars[V_REPLY_STRING].global_val.p
+#define VAR_QUOTE_REPLACE_STRING     vars[V_QUOTE_REPLACE_STRING].current_val.p
+#define GLO_QUOTE_REPLACE_STRING     vars[V_QUOTE_REPLACE_STRING].global_val.p
 #define VAR_REPLY_INTRO		     vars[V_REPLY_INTRO].current_val.p
 #define GLO_REPLY_INTRO		     vars[V_REPLY_INTRO].global_val.p
 #define VAR_EMPTY_HDR_MSG	     vars[V_EMPTY_HDR_MSG].current_val.p
@@ -1034,7 +1038,9 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define VAR_RSHCMD		     vars[V_RSHCMD].current_val.p
 #define VAR_SSHOPENTIMEO	     vars[V_SSHOPENTIMEO].current_val.p
 #define VAR_SSHPATH		     vars[V_SSHPATH].current_val.p
+#define GLO_SSHPATH		     vars[V_SSHPATH].global_val.p
 #define VAR_SSHCMD		     vars[V_SSHCMD].current_val.p
+#define GLO_SSHCMD		     vars[V_SSHCMD].global_val.p
 #define VAR_NEW_VER_QUELL	     vars[V_NEW_VER_QUELL].current_val.p
 #define VAR_BROWSER		     vars[V_BROWSER].current_val.l
 #define VAR_INCOMING_STARTUP	     vars[V_INCOMING_STARTUP].current_val.p
@@ -1100,6 +1106,8 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define VAR_IND_REC_BACK_COLOR	     vars[V_IND_REC_BACK_COLOR].current_val.p
 #define VAR_IND_UNS_FORE_COLOR	     vars[V_IND_UNS_FORE_COLOR].current_val.p
 #define VAR_IND_UNS_BACK_COLOR	     vars[V_IND_UNS_BACK_COLOR].current_val.p
+#define VAR_IND_ARR_FORE_COLOR	     vars[V_IND_ARR_FORE_COLOR].current_val.p
+#define VAR_IND_ARR_BACK_COLOR	     vars[V_IND_ARR_BACK_COLOR].current_val.p
 #define VAR_KEYLABEL_FORE_COLOR	     vars[V_KEYLABEL_FORE_COLOR].current_val.p
 #define VAR_KEYLABEL_BACK_COLOR	     vars[V_KEYLABEL_BACK_COLOR].current_val.p
 #define VAR_KEYNAME_FORE_COLOR	     vars[V_KEYNAME_FORE_COLOR].current_val.p
@@ -1154,9 +1162,11 @@ typedef enum {
 	F_SAVE_ADVANCES,
 	F_UNSELECT_WONT_ADVANCE,
 	F_FORCE_LOW_SPEED,
+	F_FORCE_ARROW,
 	F_PRUNE_USES_ISO,
 	F_ALT_ED_NOW,
 	F_SHOW_DELAY_CUE,
+	F_CANCEL_CONFIRM,
 	F_AUTO_OPEN_NEXT_UNREAD,
 	F_SELECTED_SHOWN_BOLD,
 	F_QUOTE_ALL_FROMS,
@@ -1320,6 +1330,7 @@ typedef enum {
 	F_COMPOSE_ALWAYS_DOWNGRADE,
 	F_SORT_DEFAULT_FCC_ALPHA,
 	F_SORT_DEFAULT_SAVE_ALPHA,
+	F_QUOTE_REPLACE_NOFLOW,
 #ifdef	_WINDOWS
 	F_ENABLE_TRAYICON,
 	F_QUELL_SSL_LARGEBLOCKS,
@@ -1607,6 +1618,8 @@ typedef enum {
 /* for select_from_list_screen */
 #define	SFL_NONE		0x000
 #define	SFL_ALLOW_LISTMODE	0x001
+#define	SFL_STARTIN_LISTMODE	0x002
+#define	SFL_NOSELECT		0x004
 
 
 /*
@@ -1973,8 +1986,10 @@ typedef struct pine_thrd {
 
 
 typedef struct list_selection {
-    char                  *item;		/* name of item */
-    int                    selected;	/* is item selected or not */
+    char                  *display_item;	/* use item if this is NULL */
+    char                  *item;		/* selected value for item  */
+    int                    selected;		/* is item selected or not */
+    int                    flags;
     struct list_selection *next;
 } LIST_SEL_S;
 
@@ -2044,7 +2059,6 @@ typedef struct argdata {
     union {
 	char	  *folder;
 	char	  *file;
-	char	  *url;
 	struct {
 	    STRLIST_S *addrlist;
 	    PATMT     *attachlist;
@@ -2054,6 +2068,7 @@ typedef struct argdata {
 	    char      *remote;
 	} copy;
     } data;
+    char      *url;
 } ARGDATA_S;
 
 
@@ -2223,6 +2238,10 @@ typedef struct pine_per_stream_data {
  * flags of the PER_STREAM_S structure.
  *
  *     SP_LOCKED -- In use, don't re-use this.
+ *                  That isn't a good description of SP_LOCKED. Every time
+ *                  we pine_mail_open a stream it is SP_LOCKED and a ref_cnt
+ *                  is incremented. Pine_mail_close decrements the ref_cnt
+ *                  and unlocks it when we get to zero.
  * SP_PERMLOCKED -- Should always be kept open, like INBOX. Right now the
  *                  only significance of this is that the expunge_and_close
  *                  won't happen if this is set (like the way INBOX works).
@@ -2543,10 +2562,14 @@ typedef struct folder {
     unsigned char   name_len;			/* name length		      */
     unsigned	    isfolder:1;			/* is it a folder?	      */
     unsigned	    isdir:1;			/* is it a directory?	      */
+		    /* isdual is only set if the user has the separate
+		       directory and folder display option set. Otherwise,
+		       we can tell it's dual use because both isfolder
+		       and isdir will be set. */
+    unsigned	    isdual:1;			/* dual use                   */
     unsigned        haschildren:1;              /* dir known to have children */
     unsigned        hasnochildren:1;            /* known not to have children */
     unsigned	    scanned:1;			/* scanned by c-client	      */
-    unsigned	    parent:1;			/* visit parent		      */
     unsigned	    selected:1;			/* selected by user	      */
     unsigned	    subscribed:1;		/* selected by user	      */
     unsigned long   varhash;			/* hash of var for incoming   */
@@ -2580,6 +2603,7 @@ typedef enum {iNothing, iStatus, iFStatus, iIStatus,
 	      iSize, iSizeComma, iSizeNarrow, iDescripSize,
 	      iNewsAndTo, iToAndNews, iNewsAndRecips, iRecipsAndNews,
 	      iFromTo, iFromToNotNews, iFrom, iTo, iSender, iCc, iNews, iRecips,
+	      iCurNews, iArrow,
 	      iMailbox, iAddress, iInit, iCursorPos,
 	      iDay2Digit, iMon2Digit, iYear2Digit,
 	      iSTime, iKSize,
@@ -3098,6 +3122,7 @@ typedef struct ldap_serv {
 		 rhs,		/* Lookup contents feature	*/
 		 ref,		/* Save by reference feature	*/
 		 nosub,		/* Disable space sub feature	*/
+		 ldap_v3_ok,	/* Use ldap v3 even though no UTF-8 */
 		 type,		/* Search type (surname...)	*/
 		 srch,		/* Search rule (contains...)	*/
 		 scope;		/* Scope of search (base...)	*/
@@ -3253,6 +3278,7 @@ typedef struct intvl_s {
  */
 typedef struct patgrp_s {
     char      *nick;
+    char      *comment;		/* for user, not used for anything */
     PATTERN_S *to,
 	      *from,
 	      *sender,
@@ -3263,7 +3289,9 @@ typedef struct patgrp_s {
 	      *subj,
 	      *alltext,
 	      *bodytext,
-	      *keyword;
+	      *keyword,
+	      *charsets;
+    STRLIST_S *charsets_list;	/* used for efficiency, computed from charset */
     ARBHDR_S  *arbhdr;		/* list of arbitrary hdrnames and patterns */
     int        fldr_type;	/* see FLDR_* below			*/
     PATTERN_S *folder;		/* folder if type FLDR_SPECIFIC		*/
@@ -3333,6 +3361,7 @@ typedef struct action_s {
     unsigned	 is_a_filter:1;	/* this is a filter action		*/
     unsigned	 is_a_other:1;	/* this is a miscellaneous action	*/
     unsigned	 bogus:1;	/* action contains unknown stuff	*/
+    unsigned	 been_here_before:1;  /* inheritance loop prevention	*/
 	    /* --- These are for roles --- */
     ADDRESS	*from;		/* value to set for From		*/
     ADDRESS	*replyto;	/* value to set for Reply-To		*/
@@ -3591,6 +3620,7 @@ typedef enum {Loc, RemImap} RemType;
 #define USER_SAID_NO	0x04000	/* user said no when asked about cookie    */
 #define USER_SAID_YES	0x08000	/* user said yes when asked about cookie   */
 #define BELIEVE_CACHE	0x10000	/* user said yes when asked about cookie   */
+#define REMUPDATE_DONE	0x20000	/* we have written to remote data          */
 
 /* Remote data folder bookkeeping */
 typedef struct remote_data {
@@ -3821,6 +3851,28 @@ typedef enum {InLine, QStatus} DetachErrStyle;
 #define	NM_STATUS_MSG	0x01
 #define	NM_DEFER_SORT	0x02
 #define	NM_FROM_COMPOSER 0x04
+
+
+typedef struct titlebar_state {
+    MAILSTREAM	*stream;
+    MSGNO_S	*msgmap;
+    char	*title,			/* constant, not allocated */
+		*folder_name,		/* allocated memory	   */
+		*context_name;		/*     "       "	   */
+    long	 current_msg,
+		 current_line,
+		 current_thrd,
+		 total_lines;
+    int		 msg_state,
+		 cur_mess_col,
+		 del_column, 
+		 percent_column,
+		 page_column,
+		 screen_cols;
+    enum	 {Nominal, OnlyRead, ClosedUp} stream_status;
+    TitleBarType style;
+    TITLE_S      titlecontainer;
+} TITLEBAR_STATE_S;
 
 
 /*
@@ -4088,6 +4140,7 @@ typedef struct header_s {
 				else{					\
 				    (H)->type = HD_BFIELD;		\
 				    (H)->h.b = (B);			\
+				    (H)->except = 0;			\
 				}
 
 
@@ -4106,16 +4159,14 @@ typedef	struct parmlist {
  * Macro to help determine when we need to filter out chars
  * from message index or headers...
  */
-#define	FILTER_THIS(c)	(((((unsigned char) (c) < 0x20                  \
-                            || (unsigned char) (c) == 0x7f)             \
-                            && !ps_global->pass_ctrl_chars)             \
-                           || (((unsigned char) (c) >= 0x80             \
-                                && (unsigned char) (c) < 0xA0)          \
-                            && !ps_global->pass_ctrl_chars              \
-			    && !ps_global->pass_c1_ctrl_chars))         \
-			 && !(isspace((unsigned char) (c))		\
-			      || (c) == '\016'				\
-			      || (c) == '\017'))
+#define	FILTER_THIS(c)	((((unsigned char) (c) < 0x20                  \
+                           || (unsigned char) (c) == 0x7f)             \
+                          && ((c) != 0x09)                             \
+                          && !ps_global->pass_ctrl_chars)              \
+                         || (((unsigned char) (c) >= 0x80              \
+                              && (unsigned char) (c) < 0xA0)           \
+                             && !ps_global->pass_ctrl_chars            \
+			     && !ps_global->pass_c1_ctrl_chars))
 
 /*
  * return values for IMAP URL parser
@@ -4452,6 +4503,7 @@ void	    from_or_replyto_in_abook PROTO((MAILSTREAM *, SEARCHSET *, int,
 void	    adrbk_maintenance PROTO((void));
 int	    build_address PROTO((char *, char **,char **,BUILDER_ARG *,int *));
 int	    build_addr_lcc PROTO((char *, char **,char **,BUILDER_ARG *,int *));
+void	    trim_remote_adrbks PROTO((void));
 void	    completely_done_with_adrbks PROTO((void));
 void        free_privatetop PROTO((PrivateTop **));
 void        free_privateencoded PROTO((PrivateEncoded **));
@@ -4465,7 +4517,7 @@ char	   *simple_addr_string PROTO((ADDRESS *, char *, size_t));
 #ifdef	ENABLE_LDAP
 LDAP_SERV_S *break_up_ldap_server PROTO((char *));
 void	     free_ldap_server_info PROTO((LDAP_SERV_S **));
-int          ldap_v3_is_supported PROTO((LDAP *));
+int          ldap_v3_is_supported PROTO((LDAP *, LDAP_SERV_S *));
 void	     our_ldap_memfree PROTO((void *));
 void	     our_ldap_dn_memfree PROTO((void *));
 int	     our_ldap_set_option PROTO((LDAP *, int, void *));
@@ -4518,6 +4570,7 @@ void	   *gf_control_filter_opt PROTO((int *));
 void	    gf_tag_filter PROTO((FILTER_S *, int));
 void	    gf_wrap PROTO((FILTER_S *, int));
 void	   *gf_wrap_filter_opt PROTO((int, int, int *, int, int));
+void	    gf_preflow PROTO((FILTER_S *, int));
 void	    gf_busy PROTO((FILTER_S *, int));
 void	    gf_nvtnl_local PROTO((FILTER_S *, int));
 void	    gf_local_nvtnl PROTO((FILTER_S *, int));
@@ -4726,6 +4779,7 @@ int         user_flag_index PROTO((MAILSTREAM *, char *));
 int         keyword_check PROTO((char *, char **));
 char       *choose_a_keyword PROTO((void));
 char      **choose_list_of_keywords PROTO((void));
+char      **choose_list_of_charsets PROTO((void));
 void        advance_cur_after_delete PROTO((struct pine *, MAILSTREAM *,
 					    MSGNO_S *, CmdWhere));
 void	    expunge_and_close PROTO((MAILSTREAM *, char **, unsigned long));
@@ -4795,9 +4849,10 @@ void	    msgno_give PROTO((MSGNO_S **));
 void	    msgno_add_raw PROTO((MSGNO_S *, long));
 void	    msgno_flush_raw PROTO((MSGNO_S *, long));
 int	    msgno_in_select PROTO((MSGNO_S *, long));
+void	    msgno_set_sort PROTO((MSGNO_S *, SortOrder));
 void	    msgno_inc PROTO((MAILSTREAM *, MSGNO_S *, int));
 void	    msgno_dec PROTO((MAILSTREAM *, MSGNO_S *, int));
-void	    msgno_include PROTO((MAILSTREAM *, MSGNO_S *, int));
+int	    msgno_include PROTO((MAILSTREAM *, MSGNO_S *, int));
 void	    msgno_exclude PROTO((MAILSTREAM *, MSGNO_S *, long, int));
 void	    msgno_exclude_deleted PROTO((MAILSTREAM *, MSGNO_S *));
 int	    msgno_exceptions PROTO((MAILSTREAM *, long, char *, int *, int));
@@ -4886,6 +4941,8 @@ HANDLE_S   *get_handle PROTO((HANDLE_S *, int));
 url_tool_t  url_local_handler PROTO((char *));
 int	    url_local_fragment PROTO((char *));
 int	    url_external_specific_handler PROTO((char *, int));
+int	    url_local_mailto PROTO((char *));
+int	    url_local_mailto_and_atts PROTO((char *, PATMT *));
 int	    url_imap_folder PROTO((char *, char **, long *,
 				   long *, char **, int));
 int	    url_hilite PROTO((long, char *, LT_INS_S **, void *));
@@ -5019,6 +5076,7 @@ NAMEVAL_S  *ldap_search_scope PROTO((int));
 void	    role_take PROTO((struct pine *, MSGNO_S *, int));
 void        role_config_screen PROTO((struct pine *, long, int));
 int         role_select_screen PROTO((struct pine *, ACTION_S **, int));
+void        role_process_filters PROTO(());
 NAMEVAL_S  *pat_fldr_types PROTO((int));
 NAMEVAL_S  *abookfrom_fldr_types PROTO((int));
 NAMEVAL_S  *filter_types PROTO((int));
@@ -5092,6 +5150,7 @@ int         sp_a_locked_stream_changed PROTO((void));
 MAILSTREAM *sp_inbox_stream PROTO((void));
 void        sp_cleanup_dead_streams PROTO((void));
 int         sp_nremote_permlocked PROTO((void));
+void        sp_end PROTO((void));
 
 /*-- reply.c --*/
 void	    reply PROTO((struct pine *, ACTION_S *));
@@ -5130,7 +5189,7 @@ ADDRESS    *first_addr PROTO((ADDRESS *));
 char	   *signature_path PROTO((char *, char *, size_t));
 char       *read_remote_sigfile PROTO((char *));
 char	   *signature_edit PROTO((char *, char *));
-char	   *signature_edit_lit PROTO((char *, char **, char *));
+char	   *signature_edit_lit PROTO((char *, char **, char *, HelpType));
 char       *get_signature_file PROTO((char *, int, int, int));
 ENVELOPE   *copy_envelope PROTO((ENVELOPE *));
 BODY	   *copy_body PROTO((BODY *, BODY *));
@@ -5161,8 +5220,9 @@ TITLE_S	   *format_titlebar PROTO((void));
 char	   *set_titlebar PROTO((char *, MAILSTREAM *, CONTEXT_S *, char *,
 				MSGNO_S *, int, TitleBarType, long, long,
 				COLOR_PAIR *));
-void	    push_titlebar_state PROTO(());
-void	    pop_titlebar_state PROTO(());
+TITLEBAR_STATE_S *save_titlebar_state PROTO((void));
+void	    restore_titlebar_state PROTO((TITLEBAR_STATE_S *));
+void	    free_titlebar_state PROTO((TITLEBAR_STATE_S **));
 void	    redraw_titlebar PROTO((void));
 void	    update_titlebar_message PROTO((void));
 int	    update_titlebar_status PROTO((void));
@@ -5261,7 +5321,7 @@ void	    mark_status_unknown PROTO((void));
 int	    want_to PROTO((char *, int, int, HelpType, int));
 int	    one_try_want_to PROTO((char *, int, int, HelpType, int));
 int	    radio_buttons PROTO((char *, int, ESCKEY_S *, int, int, HelpType,
-				 int));
+				 int, int *));
 int	    double_radio_buttons PROTO((char *, int, ESCKEY_S *,
 					int, int, HelpType, int));
 
@@ -5322,6 +5382,8 @@ char	   *vcard_unescape PROTO((char *));
 void	    vcard_unfold PROTO((char *));
 int	    isxpair PROTO((char *));
 STRLIST_S  *new_strlist PROTO((void));
+STRLIST_S  *copy_strlist PROTO((STRLIST_S *));
+int         compare_strlists_for_match PROTO((STRLIST_S *, STRLIST_S *));
 void	    free_strlist PROTO((STRLIST_S **));
 KEYWORD_S  *init_keyword_list PROTO((char **));
 void	    free_keyword_list PROTO((KEYWORD_S **));
@@ -5389,8 +5451,12 @@ void        free_list_sel PROTO((LIST_SEL_S **));
 char	  **rfc2369_hdrs PROTO((char **));
 int	    rfc2369_parse_fields PROTO((char *, RFC2369_S *));
 unsigned char *trans_euc_to_2022_jp PROTO((unsigned char *));
-unsigned char *trans_2022_jp_to_euc PROTO((unsigned char *));
+unsigned char *trans_2022_jp_to_euc PROTO((unsigned char *, unsigned int *));
 char       *keyword_to_nick PROTO((char *));
+void        find_8bitsubj_in_messages PROTO((MAILSTREAM *, SEARCHSET *,
+					     int, int));
+void        find_charsets_in_messages PROTO((MAILSTREAM *, SEARCHSET *,
+					     PATGRP_S *, int));
 
 
 /*-- takeaddr.c --*/

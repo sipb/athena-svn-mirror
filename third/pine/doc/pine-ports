@@ -109,6 +109,7 @@ Here is the full list of Pine ports:
 		  SSLINCLUDE=/usr/include/openssl, and SSLLIB=/usr/lib.
 		(For OS X 10.1.5 or earlier try removing -lncurses from
 		 pico/makefile.osx and from pine/makefile.osx.)
+	ox2     Macintosh OS X 10.2 and earlier.  Disables PAM support.
 
     NetBSD
 	neb	NetBSD

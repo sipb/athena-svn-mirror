@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 if [ install = "$1" -o \( "$1" = upgrade -a \
-    \( "$2" = "4.60" -o "$2" = "4.61" -o "$2" = "4.62" \) \) ]; then
+    \( "$2" = "4.60" -o "$2" = "4.61" -o "$2" = "4.62" -o "$2" = "4.63" -o "$2" = "4.64" \) \) ]; then
     dpkg-divert --quiet --package pine --add --rename \
 	--divert /usr/bin/clone-editor-moved /usr/bin/pico
     dpkg-divert --quiet --package pine --add --rename \

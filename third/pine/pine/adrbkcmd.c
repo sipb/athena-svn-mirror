@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.5 2005-01-26 17:55:20 ghudson Exp $";
+static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.6 2006-10-17 18:11:12 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.5 2005-01-26 17:55:20 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -76,6 +76,7 @@ int            verify_server_name PROTO((char *,char **,char **,BUILDER_ARG *,
 					 int *));
 void           write_single_vcard_entry PROTO((struct pine *, gf_io_t,
 					       char **, VCARD_INFO_S *));
+void           write_single_tab_entry PROTO((gf_io_t, VCARD_INFO_S *));
 VCARD_INFO_S  *prepare_abe_for_vcard PROTO((struct pine *, AdrBk_Entry *, int));
 void           free_vcard_info PROTO((VCARD_INFO_S **));
 int            convert_abook_to_remote PROTO((struct pine *, PerAddrBook *,
@@ -531,7 +532,7 @@ process_abook_view_cmd(cmd, msgmap, sparms)
 	rv = 1;
 	i = radio_buttons("Forward as text or forward as Vcard attachment ? ",
 			  -FOOTER_ROWS(ps_global), text_or_vcard, 't', 'x',
-			  h_ab_text_or_vcard, RB_NORM);
+			  h_ab_text_or_vcard, RB_NORM, NULL);
 	switch(i){
 	  case 'x':
 	    cancel_warning(NO_DING, "forward");
@@ -1355,7 +1356,7 @@ edit_entry(abook, abe, entry, old_tag, readonly, warped, cmd)
 	if(added_to >= as.n_addrbk)
 	  added_to = -1;
 
-	fname = addr_lookup(nick, &which_addrbook, added_to);
+	fname = addr_lookup(nick, &which_addrbook, added_to, NULL);
 	if(fname){
 	    char *decode, *decodebuf;
 	    size_t len;
@@ -2866,7 +2867,7 @@ ab_del_abook(cur_line, command_line, err)
 	   "Ignore all default %.10s address books or just remove this one ? ",
 	       pab->type & GLOBAL ? "global" : "personal");
 	    switch(radio_buttons(tmp, command_line, opts, 'i', 'x',
-		   h_ab_del_ignore, RB_NORM)){
+		   h_ab_del_ignore, RB_NORM, NULL)){
 	      case 'i':
 		modify_config = OverRideDefault;
 		break;
@@ -2917,7 +2918,7 @@ ab_del_abook(cur_line, command_line, err)
 			     (modify_config == RevertToDefault)
 			       ? h_ab_del_data_revert
 			       : h_ab_del_data_modify,
-			     RB_NORM)){
+			     RB_NORM, NULL)){
 	  case 'b':				/* Delete Both */
 	    delete_data = 1;
 	    break;
@@ -3312,7 +3313,7 @@ ab_shuffle(pab, slide, command_line, msg)
 						   : h_ab_shuf;
 
     rv = radio_buttons(tmp, command_line, opts, deefault, 'x',
-		       help, RB_NORM);
+		       help, RB_NORM, NULL);
 
     ps_global->mangled_footer = 1;
 
@@ -3911,7 +3912,7 @@ ab_export(ps, cur_line, command_line, agg)
     char    *addr = NULL, *error = NULL;
     BuildTo  bldto;
     char    *p;
-    int      good_addr, plur, vcard = 0;
+    int      good_addr, plur, vcard = 0, tab = 0;
     AdrBk_Entry *abe;
     VCARD_INFO_S *vinfo;
     static ESCKEY_S ab_export_opts[] = {
@@ -3921,6 +3922,7 @@ ab_export(ps, cur_line, command_line, agg)
     static ESCKEY_S vcard_or_addresses[] = {
 	{'a', 'a', "A", "Address List"},
 	{'v', 'v', "V", "VCard"},
+	{'t', 't', "T", "TabSep"},
 	{-1, 0, NULL, NULL}};
 
 
@@ -3932,9 +3934,18 @@ ab_export(ps, cur_line, command_line, agg)
 	return(ret);
     }
 
-    i = radio_buttons("Export list of addresses or export in vCard format ? ",
-		      command_line, vcard_or_addresses, 'a', 'x',
-		      h_ab_export_vcard, RB_NORM);
+    while(1){
+	i = radio_buttons("Export list of addresses, vCard format, or Tab Separated ? ",
+			  command_line, vcard_or_addresses, 'a', 'x',
+			  NO_HELP, RB_NORM|RB_RET_HELP, NULL);
+	if(i == 3){
+	    helper(h_ab_export_vcard, "HELP FOR EXPORT FORMAT",
+		   HLPD_SIMPLE);
+	    ps_global->mangled_screen = 1;
+	}
+	else
+	  break;
+    }
 
     switch(i){
       case 'x':
@@ -3946,6 +3957,10 @@ ab_export(ps, cur_line, command_line, agg)
 
       case 'v':
 	vcard++;
+	break;
+
+      case 't':
+	tab++;
 	break;
 
       default:
@@ -4005,7 +4020,7 @@ ab_export(ps, cur_line, command_line, agg)
     /*
      * The write_single_vcard_entry function wants a pc.
      */
-    if(vcard)
+    if(vcard || tab)
       gf_set_so_writec(&pc, store);
 
     start_of_append = so_tell(store);
@@ -4025,7 +4040,7 @@ ab_export(ps, cur_line, command_line, agg)
 	    while(!failure && (num = entry_get_next(&next_one)) != NO_NEXT){
 
 		abe = adrbk_get_ae(pab->address_book, (a_c_arg_t)num, Normal);
-		if(vcard && abe){
+		if((vcard || tab) && abe){
 		    /*
 		     * There is no place to store the charset information
 		     * so we don't ask for it.
@@ -4033,7 +4048,11 @@ ab_export(ps, cur_line, command_line, agg)
 		    if(!(vinfo=prepare_abe_for_vcard(ps, abe, 1)))
 		      failure++;
 		    else{
-			write_single_vcard_entry(ps, pc, NULL, vinfo);
+			if(vcard)
+			  write_single_vcard_entry(ps, pc, NULL, vinfo);
+			else
+			  write_single_tab_entry(pc, vinfo);
+
 			free_vcard_info(&vinfo);
 		    }
 		}
@@ -4100,11 +4119,15 @@ ab_export(ps, cur_line, command_line, agg)
 
 	dl  = dlist(cur_line);
 	abe = ae(cur_line);
-	if(vcard && abe){
+	if((vcard || tab) && abe){
 	    if(!(vinfo=prepare_abe_for_vcard(ps, abe, 1)))
 	      failure++;
 	    else{
-		write_single_vcard_entry(ps, pc, NULL, vinfo);
+		if(vcard)
+		  write_single_vcard_entry(ps, pc, NULL, vinfo);
+		else
+		  write_single_tab_entry(pc, vinfo);
+
 		free_vcard_info(&vinfo);
 	    }
 	}
@@ -4173,7 +4196,7 @@ ab_export(ps, cur_line, command_line, agg)
 	}
     }
 
-    if(vcard)
+    if(vcard || tab)
       gf_clear_so_writec(store);
 
     if(so_give(&store))				/* release storage */
@@ -4194,10 +4217,10 @@ ab_export(ps, cur_line, command_line, agg)
 	ret = 1;
 	q_status_message3(SM_ORDER,0,3,
 			  "%.200s %.200s to file \"%.200s\"",
-			  vcard ? (agg ? "Entries" : "Entry")
+			  (vcard || tab) ? (agg ? "Entries" : "Entry")
 			        : (plur ? "Addresses" : "Address"),
 			  retflags & GER_OVER
-			      ? "overwrittten"
+			      ? "overwritten"
 			      : retflags & GER_APPEND ? "appended" : "exported",
 			  filename);
     }
@@ -4695,8 +4718,7 @@ free_vcard_info(vinfo)
 
 
 /*
- * Args  cr -- end of line is \r\n instead of just \n
- *      cset_return -- an array of size at least 200+1
+ * Args   cset_return -- an array of size at least 200+1
  */
 void
 write_single_vcard_entry(ps, pc, cset_return, vinfo)
@@ -4888,6 +4910,78 @@ write_single_vcard_entry(ps, pc, cset_return, vinfo)
 
 
 /*
+ * 
+ */
+void
+write_single_tab_entry(pc, vinfo)
+    gf_io_t        pc;
+    VCARD_INFO_S  *vinfo;
+{
+    char  *decoded, *cset, *tmp = NULL;
+    char **ll;
+    int    i, first;
+    char  *eol;
+
+    if(!vinfo)
+      return;
+
+#if defined(DOS) || defined(OS2)
+      eol = "\r\n";
+#else
+      eol = "\n";
+#endif
+
+    for(i = 0; i < 4; i++){
+	switch(i){
+	  case 0:
+	    ll = vinfo->nickname;
+	    break;
+
+	  case 1:
+	    ll = vinfo->fullname;
+	    break;
+
+	  case 2:
+	    ll = vinfo->email;
+	    break;
+
+	  case 3:
+	    ll = vinfo->note;
+	    break;
+
+	  default:
+	    panic("can't happen in write_single_tab_entry");
+	}
+
+	if(i)
+	  gf_puts("\t", pc);
+
+	for(first = 1; ll && *ll; ll++){
+
+	    cset = NULL;
+	    decoded = (char *)rfc1522_decode((unsigned char *)(tmp_20k_buf),
+					     SIZEOF_20KBUF, *ll, &cset);
+	    tmp = vcard_escape(decoded);
+	    if(tmp){
+		if(i == 2 && !first)
+		  gf_puts(",", pc);
+		else
+		  first = 0;
+
+		gf_puts(tmp, pc);
+		fs_give((void **)&tmp);
+	    }
+
+	    if(cset)
+	      fs_give((void **)&cset);
+	}
+    }
+
+    gf_puts(eol, pc);
+}
+
+
+/*
  * for ab_save percent done
  */
 static int total_to_copy;
@@ -4966,7 +5060,7 @@ ab_save(ps, abook, cur_line, command_line, agg)
 	      as.selections > 1  ? " selected entries" :
 	        as.selections == 1 ? " selected entry" : "");
     i = radio_buttons(tmp, -FOOTER_ROWS(ps), save_or_export, 's', 'x',
-		      h_ab_save_exp, RB_NORM);
+		      h_ab_save_exp, RB_NORM, NULL);
     switch(i){
       case 'x':
 	cancel_warning(NO_DING, "save");
@@ -5426,7 +5520,7 @@ ab_print(agg)
 
 	prompt = "Print Address Book or just this Entry? ";
 	switch(radio_buttons(prompt, -FOOTER_ROWS(ps_global), prt, 'a', 'x',
-			     NO_HELP, RB_NORM)){
+			     NO_HELP, RB_NORM, NULL)){
 	  case 'x' :
 	    cancel_warning(NO_DING, "print");
 	    ps_global->mangled_footer = 1;
@@ -7358,7 +7452,7 @@ url_local_ldap(url)
 	q_status_message(SM_ORDER,3,5, "LDAP search failed: can't initialize");
     }
     else if(!ps_global->intr_pending){
-      if(ldap_v3_is_supported(ld) &&
+      if(ldap_v3_is_supported(ld, NULL) &&
 	 our_ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, &proto) == 0){
 	dprint(5,(debugfile, "ldap: using version 3 protocol\n"));
       }

@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: browse.c,v 1.1.1.4 2005-01-26 17:54:55 ghudson Exp $";
+static char rcsid[] = "$Id: browse.c,v 1.1.1.5 2006-10-17 18:09:02 ghudson Exp $";
 #endif
 /*
  * Program:	Routines to support file browser in pico and Pine composer

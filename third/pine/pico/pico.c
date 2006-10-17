@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: pico.c,v 1.1.1.4 2005-01-26 17:55:19 ghudson Exp $";
+static char rcsid[] = "$Id: pico.c,v 1.1.1.5 2006-10-17 18:10:29 ghudson Exp $";
 #endif
 /*
  * Program:	Main Pine Composer routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: pico.c,v 1.1.1.4 2005-01-26 17:55:19 ghudson Exp $";
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2004 by the University of Washington.
+ * 1989-2005 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -74,6 +74,7 @@ void	func_init PROTO((void));
 void	breplace PROTO((void *));
 int	any_header_changes PROTO((void));
 int     cleanwhitespace PROTO((void));
+int     isquotedspace PROTO((LINE *));
 #ifdef	_WINDOWS
 int	composer_file_drop PROTO((int, int, char *));
 #endif
@@ -614,8 +615,7 @@ int f, n;
 
     Pmaster->arm_winch_cleanup++;
     if(Pmaster->canceltest){
-        if((((Pmaster->pine_flags & MDHDRONLY) && !any_header_changes())
-	     || (!(Pmaster->pine_flags & MDHDRONLY) && !anycb()))
+        if(((Pmaster->pine_flags & MDHDRONLY) && !any_header_changes())
 	  || (result = (*Pmaster->canceltest)(redraw_pico_for_callback))){
 	    pico_all_done = COMP_CANCEL;
 	    emlwrite(result, NULL);
@@ -760,6 +760,26 @@ any_header_changes()
     return(he->name && he->dirty);
 }
 
+int
+isquotedspace(line)
+    LINE *line;
+{
+    int i, was_quote = 0;
+    for(i = 0; i < llength(line); i++){
+	if(lgetc(line, i).c == '>')
+	  was_quote = 1;
+	else if(was_quote && lgetc(line, i).c == ' '){
+	    if(i+1 < llength(line) && isspace(lgetc(line,i+1).c))
+	      return 1;
+	    else
+	      return 0;
+	}
+	else
+	  return 0;
+    }
+    return 0;
+}
+
 /*
  * This function serves two purposes, 1) to strip white space when
  * Pmaster asks that the composition have its trailing white space
@@ -798,7 +818,8 @@ cleanwhitespace()
 		if(Pmaster && !Pmaster->strip_ws_before_send
 		   && lforw(*lp) != curbp->b_linep
 		   && llength(lforw(*lp))
-		   && !isspace(lgetc(lforw(*lp), 0).c)
+		   && !(isspace(lgetc(lforw(*lp), 0).c)
+			|| isquotedspace(lforw(*lp)))
 		   && !(llength(lforw(*lp)) == 3
 			&& lgetc(lforw(*lp), 0).c == '-'
 			&& lgetc(lforw(*lp), 1).c == '-'

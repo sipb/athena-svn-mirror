@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: reply.c,v 1.1.1.5 2005-01-26 17:56:14 ghudson Exp $";
+static char rcsid[] = "$Id: reply.c,v 1.1.1.6 2006-10-17 18:11:04 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: reply.c,v 1.1.1.5 2005-01-26 17:56:14 ghudson Exp $"
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -996,7 +996,7 @@ confirm_role(rflags, role)
 	}
 
 	cmd = radio_buttons(prompt, -FOOTER_ROWS(ps_global), ekey,
-			    'y', 'x', help, RB_NORM);
+			    'y', 'x', help, RB_NORM, NULL);
 
 	switch(cmd){
 	  case 'y':					/* Accept */
@@ -1209,7 +1209,12 @@ reply_cp_addr(ps, msgno, section, field, mask1, mask2, source, us_too)
 		   */
 		  p = (char *) rfc822_binary(h, strlen(h),
 					     (unsigned long *) &l);
+		  sqznewlines(p);
 		  fs_give((void **) &h);
+		  /*
+		   * Seems like the 4 ought to be a 2, but I'll leave it
+		   * to be safe, in case something else adds 2 chars later.
+		   */
 		  ret->mailbox = (char *) fs_get(strlen(p) + 4);
 		  sprintf(ret->mailbox, "&%s", p);
 		  fs_give((void **) &p);
@@ -1667,7 +1672,7 @@ reply_quote_str(env)
 	  fs_give((void **)&q);
     }
     
-    prefix = removing_quotes(cpystr(buf));
+    removing_double_quotes(prefix = cpystr(buf));
 
     return(prefix);
 }
@@ -1730,7 +1735,7 @@ reply_text_query(ps, many, prefix)
 				   rtq_opts,
 				   (edited || F_ON(F_AUTO_INCLUDE_IN_REPLY, ps))
 				       ? 'y' : 'n',
-				   'x', NO_HELP, RB_SEQ_SENSITIVE)){
+				   'x', NO_HELP, RB_SEQ_SENSITIVE, NULL)){
 	  case 'x':
 	    cmd_cancelled("Reply");
 	    return(-1);
@@ -1757,7 +1762,7 @@ reply_text_query(ps, many, prefix)
 		      case 0:		/* entry successful, continue */
 			if(flags & OE_USER_MODIFIED){
 			    fs_give((void **)prefix);
-			    *prefix = removing_quotes(cpystr(buf));
+			    removing_double_quotes(*prefix = cpystr(buf));
 			    edited = 1;
 			}
 
@@ -2471,6 +2476,12 @@ get_news_data(env, type, buf, maxlen)
       case iRecipsAndNews:
 	news = env ? env->newsgroups : NULL;
 	break;
+
+      case iCurNews:
+	if(ps_global->mail_stream && IS_NEWS(ps_global->mail_stream))
+	  news = ps_global->cur_folder;
+
+	break;
     }
 
     orig_maxlen = maxlen;
@@ -2705,6 +2716,7 @@ get_reply_data(env, role, type, buf, maxlen)
 	break;
 
       case iNews:
+      case iCurNews:
 	get_news_data(env, type, buf, maxlen);
 	break;
 
@@ -2811,6 +2823,9 @@ reply_delimiter(env, role, pc)
     int            len;
 
 
+    if(!env)
+      return;
+
     strncpy(buf, ps_global->VAR_REPLY_INTRO, MAX_DELIM);
     buf[MAX_DELIM] = '\0';
     /* preserve exact default behavior from before */
@@ -2830,28 +2845,19 @@ reply_delimiter(env, role, pc)
 	(*pc)(' ');
 	gf_puts(int2string(d.year), pc);
 
-	/* but what follows, depends */
-	if(!env->from || (env->from->host && env->from->host[0] == '.')){
-	    gf_puts(", it was written:", pc);
-	}
-	else if (env->from->personal) {
+	if(env->from
+	   && ((env->from->personal && env->from->personal[0])
+	       || (env->from->mailbox && env->from->mailbox[0]))){
 	    char buftmp[MAILTMPLEN];
 
-	    sprintf(buftmp, "%.200s", env->from->personal);
+	    a_little_addr_string(env->from, buftmp, sizeof(buftmp)-1);
 	    gf_puts(", ", pc);
-	    gf_puts(istrncpy((char *)tmp_20k_buf, (char *)rfc1522_decode((unsigned char *)(tmp_20k_buf+10000), 10000, buftmp, NULL), 10000), pc);
+	    gf_puts(buftmp, pc);
 	    gf_puts(" wrote:", pc);
 	}
-	else {
-	    (*pc)(' ');
-	    gf_puts(env->from->mailbox, pc);
-	    if(env->from->host){
-		(*pc)('@');
-		gf_puts(env->from->host, pc);
-	    }
+	else
+	  gf_puts(", it was written:", pc);
 
-	    gf_puts(" wrote:", pc);
-	}
     }
     else{
 	filtered = detoken_src(buf, FOR_REPLY_INTRO, env, role,
@@ -2954,7 +2960,7 @@ reply_news_test(env, outgoing)
        * ask if the user is posting a follow-up article...
        */
       switch(radio_buttons(NEWS_PMT, -FOOTER_ROWS(ps_global),
-			   news_opt, 'r', 'x', NO_HELP, RB_NORM)){
+			   news_opt, 'r', 'x', NO_HELP, RB_NORM, NULL)){
 	case 'r' :		/* Reply */
 	  ret = 1;
 	  break;
@@ -4710,7 +4716,7 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
     char       *prefix;
 {
     int		i, we_cancel = 0, dashdata, wrapflags = 0, flow_res = 0;
-    FILTLIST_S  filters[10];
+    FILTLIST_S  filters[11];
     long	len;
     char       *err, *charset, *prefix_p = NULL;
 #if	defined(DOS) && !defined(WIN32)
@@ -4853,8 +4859,10 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
 		fs_give((void **) &parmval);
 		if(parmval = rfc2231_get_param(body->parameter,
 					       "delsp", NULL, NULL)){
-		    if(!strucmp(parmval, "yes"))
-		      wrapflags |= GFW_DELSP;
+		    if(!strucmp(parmval, "yes")){
+			filters[i++].filter = gf_preflow;
+			wrapflags |= GFW_DELSP;
+		    }
 
 		    fs_give((void **) &parmval);
 		}
@@ -5666,41 +5674,71 @@ get_signature_lit(lit, prenewlines, postnewlines, is_sig, decode_constants)
 	  decode_constants;
 {
     char *sig = NULL;
-    char *tmplit;
 
     /*
      * Should make this smart enough not to do the copying and double
      * allocation of space.
      */
     if(lit){
+	char  *tmplit = NULL, *p, *q, *d, save;
+	size_t len;
+
 	if(decode_constants){
-	    tmplit = (char *)fs_get((strlen(lit)+1) * sizeof(char));
+	    tmplit = (char *) fs_get((strlen(lit)+1) * sizeof(char));
 	    tmplit[0] = '\0';
 	    cstring_to_string(lit, tmplit);
 	}
 	else
-	  tmplit = lit;
+	  tmplit = cpystr(lit);
 
-	sig = fs_get((strlen(tmplit) + 5 +
-		       (prenewlines+postnewlines) *
-			strlen(NEWLINE) + 1) * sizeof(char));
-	sig[0] = '\0';
+	sig = (char *) fs_get(len=(strlen(tmplit) + 5 +
+				   (prenewlines+postnewlines) *
+				     strlen(NEWLINE) + 1) * sizeof(char));
+	memset(sig, 0, len);
+	d = sig;
 	while(prenewlines--)
-	  strcat(sig, NEWLINE);
+	  sstrcpy(&d, NEWLINE);
 
 	if(is_sig && F_ON(F_ENABLE_SIGDASHES, ps_global) &&
 	   !sigdashes_are_present(tmplit)){
-	    strcat(sig, SIGDASHES);
-	    strcat(sig, NEWLINE);
+	    sstrcpy(&d, SIGDASHES);
+	    sstrcpy(&d, NEWLINE);
 	}
 
-	strcat(sig, tmplit);
+	p = tmplit;
+	while(*p){
+	    /* get a line */
+	    q = strpbrk(p, "\n\r");
+	    if(q){
+		save = *q;
+		*q = '\0';
+	    }
+
+	    /*
+	     * Strip trailing space if we are doing a signature and
+	     * this line is not sigdashes.
+	     */
+	    if(is_sig && strcmp(p, SIGDASHES))
+	      removing_trailing_white_space(p);
+
+	    while((*d = *p++) != '\0')
+	      d++;
+
+	    if(q){
+		*d++ = save;
+		p = q+1;
+	    }
+	    else
+	      break;
+	}
 
 	while(postnewlines--)
-	  strcat(sig, NEWLINE);
+	  sstrcpy(&d, NEWLINE);
+
+	*d = '\0';
 	
-	if(tmplit != lit)
-	  fs_give((void **)&tmplit);
+	if(tmplit)
+	  fs_give((void **) &tmplit);
     }
 
     return(sig);
@@ -6122,10 +6160,11 @@ signature_edit(sigfile, title)
   Result: raw edited signature is returned in result arg
   ---*/
 char *
-signature_edit_lit(litsig, result, title)
+signature_edit_lit(litsig, result, title, composer_help)
     char  *litsig;
     char **result;
     char  *title;
+    HelpType composer_help;
 {
     int	     editor_result;
     char    *errstr = NULL;
@@ -6137,7 +6176,7 @@ signature_edit_lit(litsig, result, title)
     standard_picobuf_setup(&pbf);
     pbf.tty_fix       = PineRaw;
     pbf.search_help   = h_sigedit_search;
-    pbf.composer_help = h_composer_sigedit;
+    pbf.composer_help = composer_help;
     pbf.exittest      = sigedit_exit_for_pico;
     pbf.upload	       = (VAR_UPLOAD_CMD && VAR_UPLOAD_CMD[0])
 			   ? upload_msg_to_pico : NULL;
@@ -6247,7 +6286,7 @@ sigedit_exit_for_pico(he, redraw_pico, allow_flowed)
     while(1){
 	rv = radio_buttons("Exit editor and apply changes? ",
 			   -FOOTER_ROWS(ps_global), opts,
-			   'y', 'x', NO_HELP, RB_NORM);
+			   'y', 'x', NO_HELP, RB_NORM, NULL);
 	if(rv == 'y'){				/* user ACCEPTS! */
 	    break;
 	}

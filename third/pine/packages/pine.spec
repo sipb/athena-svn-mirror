@@ -1,6 +1,6 @@
 Summary: University of Washington Pine mail user agent
 Name: pine
-Version: 4.62
+Version: 4.64
 Release: 1
 Copyright: see file CPYRIGHT
 Group: Applications/Mail

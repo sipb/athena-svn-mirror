@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: context.c,v 1.1.1.4 2005-01-26 17:55:09 ghudson Exp $";
+static char rcsid[] = "$Id: context.c,v 1.1.1.5 2006-10-17 18:09:16 ghudson Exp $";
 #endif
 /*
  * Program:	Mailbox Context Management

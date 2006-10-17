@@ -1,5 +1,5 @@
 /*
- * $Id: dos_gen.h,v 1.1.1.1 2001-02-19 07:01:27 ghudson Exp $
+ * $Id: dos_gen.h,v 1.1.1.2 2006-10-17 18:12:23 ghudson Exp $
  *
  * Program:	Operating system dependent header - MS DOS Generic
  *

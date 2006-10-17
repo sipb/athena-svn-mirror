@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: imap.c,v 1.1.1.5 2005-01-26 17:55:51 ghudson Exp $";
+static char rcsid[] = "$Id: imap.c,v 1.1.1.6 2006-10-17 18:11:04 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -1372,7 +1372,8 @@ mm_diskerror (stream, errcode, serious)
 	  ClearLine(i++);
 
 	switch(radio_buttons(DE_PMT, -FOOTER_ROWS(ps_global), de_opts,
-			     'r', 0, NO_HELP, RB_FLUSH_IN | RB_NO_NEWMAIL)){
+			     'r', 0, NO_HELP, RB_FLUSH_IN | RB_NO_NEWMAIL,
+			     NULL)){
 	  case 'r' :				/* Retry! */
 	    ps_global->mangled_screen = 1;
 	    return(0L);
@@ -1526,6 +1527,7 @@ pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
     MAILSTREAM *ourstream = NULL;
 
     if(check_for_move_mbox(mailbox, source, sizeof(source), &target)){
+	DRIVER *d;
 
 	memset(&status, 0, sizeof(status));
 	memset(&cache,  0, sizeof(cache));
@@ -1539,6 +1541,7 @@ pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
 
 	stream = sp_stream_get(target, SP_SAME);
 
+	/* should never be news, don't worry about mulnewrsc flag*/
 	if((ret = pine_mail_status_full(stream, target, flags, uidvalidity,
 					uidnext))
 	   && !status.recent){
@@ -1560,6 +1563,11 @@ pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
 		    stream = pine_mail_open(NULL, source, openflags, NULL);
 		    ourstream = stream;
 		}
+		else if(F_ON(F_ENABLE_MULNEWSRCS, ps_global)
+			&& d && (!strucmp(d->name, "news")
+				 || !strucmp(d->name, "nntp")))
+		  flags |= SA_MULNEWSRC;
+
 	    }
 
 	    if(mail_status(stream, source, flags)){
@@ -1757,6 +1765,10 @@ pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
 		    ourstream = stream;
 		}
 	    }
+	    else if(F_ON(F_ENABLE_MULNEWSRCS, ps_global)
+		    && d && (!strucmp(d->name, "news")
+			     || !strucmp(d->name, "nntp")))
+	      flags |= SA_MULNEWSRC;
 	}
 
 	ret = mail_status(stream, mailbox, flags);	/* non #move case */

@@ -1700,7 +1700,8 @@ pico_set_colorp(col, flags)
     COLOR_PAIR *col;
     int         flags;
 {
-    return(pico_set_colors(col ? col->fg : NULL, col ? col->bg : NULL, flags));
+    return(pico_set_colors((char *) (col ? col->fg : NULL),
+			   (char *) (col ? col->bg : NULL), flags));
 }
 
 

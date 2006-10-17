@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1.1.1 2001-02-19 07:01:44 ghudson Exp $
+# $Id: Makefile,v 1.1.1.2 2006-10-17 18:12:29 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #

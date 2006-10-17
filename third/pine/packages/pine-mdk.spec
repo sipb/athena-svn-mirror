@@ -1,11 +1,10 @@
 Summary: University of Washington Pine mail user agent
 Name: pine
-Version: 4.62
+Version: 4.64
 Release: 1mdk
 Copyright: see file CPYRIGHT
 Group: Applications/Mail
 Source: ftp://ftp.cac.washington.edu/pine/%{name}%{version}.tar.gz
-Patch: %{name}%{version}-mdk.diff
 URL: http://www.washington.edu/pine
 Vendor: University of Washington
 Packager: Pine Team <pine@cac.washington.edu>
@@ -21,7 +20,6 @@ personal-preference options.
 
 %prep
 %setup -q -n %{name}%{version}
-%patch -p1
 
 %build
 if [ -f /usr/include/krb5.h ]; then
@@ -43,7 +41,7 @@ echo "*** DO NOT FORGET TO DO THE FOLLOWING BY HAND while root:
 ***  chgrp mail $RPM_BUILD_ROOT%{_sysconfdir}/mlock
 ***  echo chmod 2755 $RPM_BUILD_ROOT%{_sysconfdir}/mlock"
 fi
-install -D -m644 doc/pine.1 $RPM_BUILD_ROOT%{_mandir}/man1/pine.1
+install -D -m644 bin/pine.1 $RPM_BUILD_ROOT%{_mandir}/man1/pine.1
 install -D -m644 doc/pico.1 $RPM_BUILD_ROOT%{_mandir}/man1/pico.1
 install -D -m644 doc/pilot.1 $RPM_BUILD_ROOT%{_mandir}/man1/pilot.1
 install -D -m644 doc/rpload.1 $RPM_BUILD_ROOT%{_mandir}/man1/rpload.1
@@ -55,7 +53,7 @@ install -D -m644 imap/src/mailutil/mailutil.1 $RPM_BUILD_ROOT%{_mandir}/man1/mai
 
 %files
 %defattr(-,root,root)
-%doc README CPYRIGHT doc/tech-notes.txt
+%doc README CPYRIGHT bin/tech-notes.txt
 %{_bindir}/pine
 %{_bindir}/pico
 %{_bindir}/pilot

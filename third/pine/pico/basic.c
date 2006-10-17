@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: basic.c,v 1.1.1.4 2005-01-26 17:54:30 ghudson Exp $";
+static char rcsid[] = "$Id: basic.c,v 1.1.1.5 2006-10-17 18:08:47 ghudson Exp $";
 #endif
 /*
  * Program:	Cursor manipulation functions

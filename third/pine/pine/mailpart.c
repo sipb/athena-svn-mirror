@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailpart.c,v 1.1.1.5 2005-01-26 17:56:29 ghudson Exp $";
+static char rcsid[] = "$Id: mailpart.c,v 1.1.1.6 2006-10-17 18:10:39 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailpart.c,v 1.1.1.5 2005-01-26 17:56:29 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -1619,7 +1619,7 @@ write_attachment_to_file(stream, msgno, a, flags, file)
 			    ? comatose(a->body->size.lines) : l_string,
 			  is_text ? " lines" : "",
 			  flags & GER_OVER
-			      ? "overwrittten"
+			      ? "overwritten"
 			      : flags & GER_APPEND ? "appended" : "written",
 			  file,
 			  (is_text || len == a->body->size.bytes)
@@ -1896,7 +1896,7 @@ export_msg_att(msgno, a)
 			  "Attached message (part %.200s) %.200s to \"%.200s\"",
 			    a->number, 
 			    rflags & GER_OVER
-			      ? "overwrittten"
+			      ? "overwritten"
 			      : rflags & GER_APPEND ? "appended" : "written",
 			    full_filename);
 
@@ -2008,7 +2008,7 @@ export_digest_att(msgno, a)
 			    long2string(count),
 			    a->number, 
 			    rflags & GER_OVER
-			      ? "overwrittten"
+			      ? "overwritten"
 			      : rflags & GER_APPEND ? "appended" : "written",
 			    full_filename);
     }
@@ -2239,17 +2239,8 @@ display_attachment(msgno, a, flags)
 		ext ? "Try open by file extension (." : "Try opening anyway",
 		ext ? ext : "",
 		ext ? ")" : "");
-	if(namep == dec_namep){
-	    if(namep)
-	      fs_give((void **)&namep);
-	    dec_namep = NULL;
-	}
-	else{
-	    if(namep)
-	      fs_give((void **)&namep);
-	    if(dec_namep)
-	      fs_give((void **)&dec_namep);
-	}
+	if(namep)
+	  fs_give((void **)&namep);
 	if(want_to(prompt, 'n', 0, NO_HELP, WT_NORM) == 'n'){
 	    cmd_cancelled(NULL);
 	    return(1);
@@ -2299,16 +2290,8 @@ display_attachment(msgno, a, flags)
 		if(dotp && strlen(dotp) < sizeof(ext) - 1)
 		  strcpy(ext, dotp);
 
-		if(dec_namep == namep){
-		    if(namep)
-		      fs_give((void **) &namep);
-		}
-		else{
-		    if(dec_namep)
-		      fs_give((void **) &dec_namep);
-		    if(namep)
-		      fs_give((void **) &namep);
-		}
+		if(namep)
+		  fs_give((void **) &namep);
 	    }
 	}
 
@@ -2579,7 +2562,10 @@ display_digest_att(msgno, a, flags)
     /* initialize a storage object */
 #if	defined(DOS) && !defined(WIN32)
     if(a->body->size.bytes > MAX_MSG_INCORE
-       || strcmp(ps_global->mail_stream->dtb->name, "nntp") == 0)
+       || (ps_global->mail_stream
+           && ps_global->mail_stream->dtb
+	   && ps_global->mail_stream->dtb->name
+	   && !strcmp(ps_global->mail_stream->dtb->name, "nntp")))
       src = TmpFileStar;
 #endif
 
@@ -4724,7 +4710,9 @@ fetch_readc_init(frd, stream, msgno, section, size, flags)
 	SourceType  src = CharStar;
 	char	   *tmpfile_name = NULL;
 
-	if(size > MAX_MSG_INCORE || !strcmp(stream->dtb->name,"nntp")){
+	if(size > MAX_MSG_INCORE
+	   || (stream && stream->dtb && stream->dtb->name
+	       && !strcmp(stream->dtb->name,"nntp"))){
 	    src = FileStar;
 	    if(!(tmpfile_name = temp_nam(NULL, "dt"))
 	       || !(append_file = fopen(tmpfile_name, "w+b"))){

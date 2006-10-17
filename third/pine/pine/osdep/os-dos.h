@@ -1,6 +1,6 @@
 #line 2 "osdep/os-dos.h"
 /*----------------------------------------------------------------------
-  $Id: os-dos.h,v 1.1.1.3 2004-03-01 21:15:52 ghudson Exp $
+  $Id: os-dos.h,v 1.1.1.4 2006-10-17 18:07:07 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 

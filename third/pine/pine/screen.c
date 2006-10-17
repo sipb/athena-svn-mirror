@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: screen.c,v 1.1.1.3 2005-01-26 17:56:09 ghudson Exp $";
+static char rcsid[] = "$Id: screen.c,v 1.1.1.4 2006-10-17 18:11:02 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -972,55 +972,62 @@ redraw_keymenu()
 			      && ((X) & MS_NEW)) ? "NEW" : "   ")
 
 
-static struct titlebar_state {
-    MAILSTREAM	*stream;
-    MSGNO_S	*msgmap;
-    char	*title,
-		*folder_name,
-		*context_name;
-    long	 current_msg,
-		 current_line,
-		 current_thrd,
-		 total_lines;
-    int		 msg_state,
-		 cur_mess_col,
-		 del_column, 
-		 percent_column,
-		 page_column,
-		 screen_cols;
-    enum	 {Normal, OnlyRead, Closed} stream_status;
-    TitleBarType style;
-    TITLE_S      titlecontainer;
-} as, titlebar_stack;
+/* this is the state we actually use */
+static TITLEBAR_STATE_S as;
 
-
-
-
-/*--------
-------*/
-void
-push_titlebar_state()
+/*
+ * Save the current titlebar state and return a structure
+ * describing it.
+ */
+TITLEBAR_STATE_S *
+save_titlebar_state()
 {
-    titlebar_stack     = as;
-    as.folder_name     = NULL;	/* erase knowledge of malloc'd data */
-    as.context_name    = NULL;
+    TITLEBAR_STATE_S *copy;
+
+    copy = (TITLEBAR_STATE_S *) fs_get(sizeof(*copy));
+    memset((void *) copy, 0, sizeof(*copy));
+    *copy = as;				/* copy the structure */
+    if(as.folder_name)	   /* copy the allocated strings in the structure */
+      copy->folder_name = cpystr(as.folder_name);
+    if(as.context_name)
+      copy->context_name = cpystr(as.context_name);
+
+    return(copy);
 }
 
-
-
-/*--------
-------*/
+/*
+ * Restore the titlebar state returned by save_titlebar_state.
+ * Caller must free the state.
+ */
 void
-pop_titlebar_state()
+restore_titlebar_state(state)
+    TITLEBAR_STATE_S *state;
 {
-    /* guard against case where push pushed no state */
-    if(titlebar_stack.style != TitleBarNone){
-	fs_give((void **)&(as.folder_name)); /* free malloc'd values */
-	fs_give((void **)&(as.context_name));
-	as = titlebar_stack;
+    if(as.folder_name)
+      fs_give((void **) &(as.folder_name)); /* free malloc'd values */
+    if(as.context_name)
+      fs_give((void **) &(as.context_name));
+
+    as = (*state);	/* copy back structure */
+
+    /* as inherits the malloced strings */
+    state->folder_name = NULL;
+    state->context_name = NULL;
+}
+
+void
+free_titlebar_state(state)
+    TITLEBAR_STATE_S **state;
+{
+    if(state && *state){
+	if((*state)->folder_name)
+	  fs_give((void **) &((*state)->folder_name));
+	if((*state)->context_name)
+	  fs_give((void **) &((*state)->context_name));
+	fs_give((void **) state);
+	*state = NULL;
     }
 }
-
 
 
 /*--------
@@ -1109,7 +1116,7 @@ set_titlebar(title, stream, cntxt, folder, msgmap, display_on_screen, style,
     as.title	     = title;
     as.stream	     = stream;
     as.stream_status = (!as.stream || (sp_dead_stream(as.stream)))
-			 ? Closed : as.stream->rdonly ? OnlyRead : Normal;
+			 ? ClosedUp : as.stream->rdonly ? OnlyRead : Nominal;
 
     if(color){
 	memset(&as.titlecontainer.color, 0, sizeof(as.titlecontainer.color));
@@ -1301,7 +1308,7 @@ format_titlebar()
     as.page_column    = -1;
     is_context        = strlen(as.context_name);
     sprintf(version, "PINE %.40s", pine_version); 
-    ss_string         = as.stream_status == Closed ? "(CLOSED)" :
+    ss_string         = as.stream_status == ClosedUp ? "(CLOSED)" :
                         (as.stream_status == OnlyRead
 			 && !IS_NEWS(as.stream))
                            ? "(READONLY)" : "";
@@ -1474,7 +1481,7 @@ format_titlebar()
 	s = strlen(sort);
 
 	if(is_context
-	  && as.stream_status != Closed
+	  && as.stream_status != ClosedUp
 	  && (ct_len = strlen(as.context_name))){
 
 	    fmt   = "%-*s<%*.*s> %s%s";

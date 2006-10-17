@@ -367,6 +367,22 @@ An example might be:
 
 </DD>
 
+<DT>TLS</DT>
+<DD>
+Normally, when a new connection is made an attempt is made to 
+negotiate a secure (encrypted) session using Transport Layer Security (TLS).
+If that fails then a non-encrypted connection will be attempted instead.
+This is a unary parameter indicating communication with the server must 
+take place over a TLS connection. If the attempt to use TLS fails then
+this parameter will cause the connection to fail instead of falling
+back to an unsecure connection.
+
+<P>
+<CENTER><SAMP>/tls</SAMP></CENTER>
+<P>
+
+</DD>
+
 <DT>SSL</DT>
 <DD>
 This is a unary parameter indicating communication with the server should 
@@ -416,6 +432,25 @@ the connection if the first (generally most &quot;secure&quot;) method fails.
 
 <P>
 <CENTER><SAMP>/secure</SAMP></CENTER>
+<P>
+
+</DD>
+
+<DT>Submit</DT>
+<DD>This is a unary parameter for use with the
+&quot;SMTP-Server&quot; option.
+It indicates that the connection should be made to the Submit server
+(<A HREF="http://www.ietf.org/rfc/rfc2476.txt">RFC 3676</A>)
+(port 587) instead of the SMTP port (25).
+At the time this help was written the submit option was equivalent to
+specifying port 587.
+
+<P>
+<CENTER><SAMP>/submit</SAMP></CENTER>
+<P>
+or
+<P>
+<CENTER><SAMP>host:587</SAMP></CENTER>
 <P>
 
 </DD>
@@ -488,6 +523,26 @@ functionality for a possible way around this problem.
 </OL>
 </DD>
 </DL>
+
+<DT>Loser</DT>
+<DD>This is intended for use with defective servers that do not implement the
+protocol specification correctly.
+It should be used only as a last resort since it is likely that it
+will seriously degrade performance.
+Setting this parameter will cause <EM>Pine</EM> to disable various protocol features
+and perform client-side workarounds instead.
+For example, it disables the IMAP SEARCH, SORT, and THREAD commands
+and does client-side searching, sorting, and threading instead.
+If set for the <A HREF="h_config_smtp_server">&quot;SMTP-Server&quot;</A>
+option, it causes <EM>Pine</EM> to not use the EHLO command and so not
+to attempt to use any SMTP extensions.
+The precise measures taken when &quot;loser&quot; is set depend on the
+protocol and are subject to change over time.
+
+<P>
+<CENTER><SAMP>/loser</SAMP></CENTER>
+<P>
+</DD>
 </DL>
 
 <P>

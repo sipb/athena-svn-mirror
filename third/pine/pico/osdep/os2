@@ -1,5 +1,5 @@
 /*
- * $Id: os2,v 1.1.1.4 2005-01-26 17:54:29 ghudson Exp $
+ * $Id: os2,v 1.1.1.5 2006-10-17 18:08:46 ghudson Exp $
  *
  * Program:	Operating system dependent routines - OS/2 Text mode
  *

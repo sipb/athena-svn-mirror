@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: folder.c,v 1.1.1.5 2005-01-26 17:56:23 ghudson Exp $";
+static char rcsid[] = "$Id: folder.c,v 1.1.1.6 2006-10-17 18:11:04 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ or search for a folder name.
 #define	SEL_TEXT_PMT	"Select by folder Name or Contents ? "
 #define	SEL_PROP_PMT	"Select by which folder property ? "
 #define DIR_FOLD_PMT \
-		"Folder by the same name *MAY* get deleted as well.  Continue"
+	    "Folder and directory of the same name will be deleted.  Continue"
 
 #define	mail_list(S, R, N)	mail_list_internal(S, R, N)
 
@@ -1828,6 +1828,20 @@ folder_lister(ps, fs)
     if(folder_proc_data.all_done)
       fs->context = NULL;
 
+    if(fs->cache_streamp && *fs->cache_streamp){
+	int i;
+
+	/* 
+	 * check stream pool to see if currently cached
+	 * stream went away
+	 */
+	for(i = 0; i < ps_global->s_pool.nstream; i++)
+	  if(ps_global->s_pool.streams[i] == *fs->cache_streamp)
+	    break;
+	if(i == ps_global->s_pool.nstream)
+	  *fs->cache_streamp = NULL;
+    }
+
     return(folder_proc_data.rv);
 }
 
@@ -3305,7 +3319,7 @@ folder_select(ps, context, cur_index)
 	sel_opts1[1].label = "unselect Cur" + (f->selected ? 0 : 2);
 	sel_opts += 2;			/* disable extra options */
 	switch(q = radio_buttons(SEL_ALTER_PMT, -FOOTER_ROWS(ps_global),
-				 sel_opts1, 'c', 'x', help, RB_NORM)){
+				 sel_opts1, 'c', 'x', help, RB_NORM, NULL)){
 	  case 'f' :			/* flip selection */
 	    n = folder_total(FOLDERS(context));
 	    for(total = i = 0; i < n; i++)
@@ -3341,7 +3355,7 @@ folder_select(ps, context, cur_index)
 
     if(!q)
       q = radio_buttons(sel_pmt2, -FOOTER_ROWS(ps_global),
-			sel_opts, 'c', 'x', help, RB_NORM);
+			sel_opts, 'c', 'x', help, RB_NORM, NULL);
 
     /*
      * NOTE: See note about MESSAGECACHE "searched" bits above!
@@ -3661,14 +3675,13 @@ folder_lister_parent(fs, context, index, force_parent)
     FSTATE_S  *fs;
     CONTEXT_S *context;
     int	       index;
-    int	       force_parent;
+    int        force_parent;
 {
     int       rv = 0;
     FDIR_S   *fp;
     FOLDER_S *f = context ? folder_entry(index, FOLDERS(context)) : NULL;
 
-    if(((force_parent && f->parent) || !force_parent)
-       && (fp = context->dir->prev)){
+    if(!force_parent && (fp = context->dir->prev)){
 	char *s, oldir[MAILTMPLEN];
 
 	folder_select_preserve(context);
@@ -5450,13 +5463,10 @@ rename_folder(context, index, new_name, len, possible_stream)
 	return(0);
     }
     else if((new_f = folder_entry(index, FOLDERS(context)))
-	    && (!strucmp(FLDR_NAME(new_f), ps_global->inbox_name)
-		|| new_f->parent)) {
+	    && !strucmp(FLDR_NAME(new_f), ps_global->inbox_name)) {
         q_status_message1(SM_ORDER | SM_DING, 3, 4,
 			  "Can't change special folder name \"%.200s\"",
-			  new_f->parent
-			    ? new_f->nickname
-			    : ps_global->inbox_name);
+			  ps_global->inbox_name);
         return(0);
     }
 
@@ -5697,7 +5707,7 @@ delete_folder(context, index, next_folder, len, possible_streamp)
     MAILSTREAM **possible_streamp;
 {
     char       *folder, ques_buf[MAX_SCREEN_COLS+1], *target = NULL,
-	       *fnamep, fname[MAILTMPLEN], tmp[MAILTMPLEN];
+	       *fnamep, buf[1000];
     MAILSTREAM *del_stream = NULL, *sub_stream, *strm = NULL;
     FOLDER_S   *fp;
     EditWhich   ew;
@@ -5789,15 +5799,15 @@ delete_folder(context, index, next_folder, len, possible_streamp)
 	return(0);
     }
 
-    if(readonly && (context->use & CNTXT_INCMNG)){
-	q_status_message(SM_ORDER,3,5,
-		     "Deletion cancelled: folder not in editable config file");
-	return(0);
-    }
-    else if(strucmp(folder, ps_global->inbox_name) == 0 || fp->parent) {
+    if(strucmp(folder, ps_global->inbox_name) == 0){
 	q_status_message1(SM_ORDER | SM_DING, 3, 4,
 		 "Can't delete special folder \"%.200s\".",
 		 ps_global->inbox_name);
+	return(0);
+    }
+    else if(readonly && (context->use & CNTXT_INCMNG)){
+	q_status_message(SM_ORDER,3,5,
+		     "Deletion cancelled: folder not in editable config file");
 	return(0);
     }
     else if((fp->name
@@ -5808,16 +5818,22 @@ delete_folder(context, index, next_folder, len, possible_streamp)
 	if(strm == ps_global->mail_stream)
 	  close_opened++;
     }
-    else if(fp->isdir){		/* NO DELETE if directory isn't EMPTY */
+    else if(fp->isdir || fp->isdual){	/* NO DELETE if directory isn't EMPTY */
 	FDIR_S *fdirp = next_folder_dir(context,folder,TRUE,possible_streamp);
 
-	ret = folder_total(fdirp->folders) > 0;
-	free_fdir(&fdirp, 1);
+	if(fp->haschildren)
+	  ret = 1;
+	else if(fp->hasnochildren)
+	  ret = 0;
+	else{
+	    ret = folder_total(fdirp->folders) > 0;
+	    free_fdir(&fdirp, 1);
+	}
 
 	if(ret){
-	    q_status_message1(SM_ORDER | SM_DING, 3, 4,
-			      "Can't delete non-empty directory \"%.200s\".",
-			      folder);
+	    q_status_message2(SM_ORDER | SM_DING, 3, 4,
+			  "Can't delete non-empty directory \"%.200s\"%.200s.",
+			  folder, (fp->isfolder && fp->isdual) ? " (or folder of same name)" : "");
 	    return(0);
 	}
 
@@ -5825,7 +5841,7 @@ delete_folder(context, index, next_folder, len, possible_streamp)
 	 * Folder by the same name exist?  If so, server's probably going
 	 * to delete it as well.  Punt?
 	 */
-	if(folder_index(folder, context, FI_FOLDER) >= 0
+	if(fp->isdual
 	   && (ret = want_to(DIR_FOLD_PMT,'n','x',NO_HELP,WT_NORM)) != 'y'){
 	    q_status_message(SM_ORDER,0,3, (ret == 'x') ? "Delete cancelled" 
 			     : "No folder deleted");
@@ -5842,7 +5858,7 @@ delete_folder(context, index, next_folder, len, possible_streamp)
 #define	DELF_PROMPT	"DELETE only Nickname or Both nickname and folder? "
 
 	switch(radio_buttons(DELF_PROMPT, -FOOTER_ROWS(ps_global),
-			     delf_opts,'n','x',NO_HELP,RB_NORM)){
+			     delf_opts,'n','x',NO_HELP,RB_NORM, NULL)){
 	  case 'n' :
 	    blast_folder = 0;
 	    break;
@@ -5857,19 +5873,20 @@ delete_folder(context, index, next_folder, len, possible_streamp)
     }
     else{
 	sprintf(ques_buf, "DELETE \"%.100s\"%s", folder, 
-		(!fp->isfolder || (fp->isdir && !close_opened))
-		  ? " (a directory)"
-		  : close_opened ? " (the currently open folder)" : "");
+		close_opened ? " (the currently open folder)" :
+	  (fp->isdir && !(fp->isdual || fp->isfolder
+			  || (folder_index(folder, context, FI_FOLDER) >= 0)))
+			      ? " (a directory)" : "");
 
 	if((ret = want_to(ques_buf, 'n', 'x', NO_HELP, WT_NORM)) != 'y'){
 	    q_status_message(SM_ORDER,0,3, (ret == 'x') ? "Delete cancelled" 
-			     : "No folder deleted");
+			     : "Nothing deleted");
 	    return(0);
 	}
     }
 
     if(blast_folder){
-	dprint(2, (debugfile,"deleting folder \"%s\" (%s) in context \"%s\"\n",
+	dprint(2, (debugfile,"deleting \"%s\" (%s) in context \"%s\"\n",
 		   fp->name ? fp->name : "?",
 		   fp->nickname ? fp->nickname : "",
 		   context->context ? context->context : "?"));
@@ -5893,11 +5910,7 @@ delete_folder(context, index, next_folder, len, possible_streamp)
 	   && context_same_stream(context, fp->name, *possible_streamp))
 	  del_stream = *possible_streamp;
 
-	if(!fp->isfolder || (fp->isdir && !close_opened))
-	  sprintf(fnamep = fname, "%.*s%c", sizeof(fname)-3, fp->name,
-		  context->dir->delim);
-	else
-	  fnamep = fp->name;
+	fnamep = fp->name;
 
 	if(!context_delete(context, del_stream, fnamep)){
 /*
@@ -5908,10 +5921,15 @@ delete_folder(context, index, next_folder, len, possible_streamp)
 	}
     }
 
-    q_status_message2(SM_ORDER, 0, 3, "%.200s \"%.200s\" deleted.",
-	  blast_folder ? ((!fp->isfolder || (fp->isdir && !close_opened))
-			    ? "Directory" : "Folder")
-		       : "Nickname", folder);
+    sprintf(buf, "%.50s\"%.200s\" deleted.",
+	    !blast_folder               ? "Nickname "          :
+	     fp->isdual                  ? "Folder/Directory " :
+	      (fp->isdir && fp->isfolder) ? "Folder "          :
+	       fp->isdir                   ? "Directory "      :
+					      "Folder ",
+	    folder);
+
+    q_status_message(SM_ORDER, 0, 3, buf);
 
     if(context->use & CNTXT_INCMNG){
 	char **new_list, **lp, ***alval;
@@ -6097,7 +6115,7 @@ folder_select_text(ps, context, selected)
     }
 
     switch(radio_buttons(SEL_TEXT_PMT, -FOOTER_ROWS(ps_global),
-			 scan_opts, 'n', 'x', NO_HELP, RB_NORM)){
+			 scan_opts, 'n', 'x', NO_HELP, RB_NORM, NULL)){
       case 'n' :				/* Name search */
 	if(scan_get_pattern("NAME", pattern, sizeof(pattern)))
 	  type = 'n';
@@ -6280,7 +6298,7 @@ folder_select_props(ps, context, selected)
     }
 
     switch(radio_buttons(SEL_PROP_PMT, -FOOTER_ROWS(ps_global),
-			 prop_opts, 'n', 'x', h_folder_prop, RB_NORM)){
+			 prop_opts, 'n', 'x', h_folder_prop, RB_NORM, NULL)){
       case 'c' :				/* message count */
 	if(folder_select_count(&count, &cmp))
 	  flags = SA_MESSAGES;
@@ -6775,13 +6793,6 @@ folder_name_exists(cntxt, file, fullpath)
     mm_list_info = &ldata;		/* tie down global reference */
     memset(&ldata, 0, sizeof(ldata));
     ldata.filter = mail_list_exists;
-
-    ldata.stream = sp_stream_get(context_apply(tmp, cntxt, file, sizeof(tmp)),
-				 SP_MATCH);
-
-    /* it not only exists, we have it open! */
-    if(ldata.stream)
-      return(FEX_ISFILE);
 
     ldata.stream = sp_stream_get(tmp, SP_SAME);
 
@@ -7784,7 +7795,7 @@ mail_list_filter(stream, mailbox, delim, attribs, data, options)
     unsigned    options;
 {
     BFL_DATA_S *ld = (BFL_DATA_S *) data;
-    FOLDER_S   *new_f = NULL;
+    FOLDER_S   *new_f = NULL, *dual_f = NULL;
 
     if(delim)
       ld->response.delim = delim;
@@ -7821,6 +7832,7 @@ mail_list_filter(stream, mailbox, delim, attribs, data, options)
 
 	if(F_ON(F_SEPARATE_FLDR_AS_DIR, ps_global)){
 	    folder_insert(-1, new_f, ld->list);
+	    dual_f = new_f;
 	    new_f = NULL;
 	}
     }
@@ -7846,6 +7858,8 @@ mail_list_filter(stream, mailbox, delim, attribs, data, options)
 	      }
 	}
 	else{
+	    int dual;
+
 	    if(!new_f)
 	      new_f = new_folder(mailbox, 0);
 
@@ -7854,6 +7868,25 @@ mail_list_filter(stream, mailbox, delim, attribs, data, options)
 	      new_f->haschildren = 1;
 	    if(attribs & LATT_HASNOCHILDREN)
 	      new_f->hasnochildren = 1;
+
+	    /*
+	     * When we have F_SEPARATE_FLDR_AS_DIR we still want to know
+	     * whether the name really represents both so that we don't
+	     * inadvertently delete both when the user meant one or the
+	     * other.
+	     */
+	    if(dual_f){
+		if(attribs & LATT_HASCHILDREN)
+		  dual_f->haschildren = 1;
+		if(attribs & LATT_HASNOCHILDREN)
+		  dual_f->hasnochildren = 1;
+
+		dual_f->isdual = dual = 1;
+	    }
+	    else
+	      dual = 0;
+
+	    new_f->isdual = dual;
 	}
     }
 
@@ -8865,7 +8898,7 @@ shuffle_incoming_folders(context, index)
 						   : h_incoming_shuf;
 
     rv = radio_buttons(tmp, -FOOTER_ROWS(ps_global), opts, deefault, 'x',
-		       help, RB_NORM);
+		       help, RB_NORM, NULL);
 
     new_index = index;
     new_index_within_var = index_within_var;

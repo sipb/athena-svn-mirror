@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: region.c,v 1.1.1.2 2003-02-12 08:10:55 ghudson Exp $";
+static char rcsid[] = "$Id: region.c,v 1.1.1.3 2006-10-17 18:15:57 ghudson Exp $";
 #endif
 /*
  * Program:	Region management routines

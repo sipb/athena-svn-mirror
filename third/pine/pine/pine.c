@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: pine.c,v 1.1.1.5 2005-01-26 17:56:57 ghudson Exp $";
+static char rcsid[] = "$Id: pine.c,v 1.1.1.6 2006-10-17 18:11:04 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -87,11 +87,9 @@ unsigned long gets_bytes;
 /*
  * Internal prototypes
  */
-MAILSTREAM *sp_stream_get_full PROTO((char *, unsigned long, MAILSTREAM *));
 int     sp_add PROTO((MAILSTREAM *, int));
 int     sp_nusepool_notperm PROTO((void));
 void    sp_delete PROTO((MAILSTREAM *));
-void    sp_end PROTO((void));
 void    sp_free PROTO((PER_STREAM_S **));
 void    reset_stream_view_state PROTO((MAILSTREAM *));
 void    carefully_reset_sp_flags PROTO((MAILSTREAM *, unsigned long));
@@ -378,6 +376,23 @@ main(argc, argv)
     mail_parameters(NULL, SET_SENDCOMMAND, (void *) pine_imap_cmd_happened);
     mail_parameters(NULL, SET_FREESTREAMSPAREP, (void *) sp_free_callback);
     mail_parameters(NULL, SET_FREEELTSPAREP,    (void *) free_pine_elt);
+
+/*
+ * In the case where you need to force use of ssh before the config file
+ * is read, you may define these in your osdep/os-xxx.h file.
+ */
+#ifdef	DF_SSHPATH
+    if(DF_SSHPATH
+       && is_absolute_path(DF_SSHPATH)
+       && can_access(DF_SSHPATH, EXECUTE_ACCESS) == 0){
+	mail_parameters(NULL, SET_SSHPATH, (void *) DF_SSHPATH);
+    }
+#endif
+#ifdef	DF_SSHCMD
+    if(DF_SSHCMD){
+	mail_parameters(NULL, SET_SSHCOMMAND, (void *) DF_SSHCMD);
+    }
+#endif
 
     init_pinerc(pine_state, &init_pinerc_debugging);
 
@@ -1022,13 +1037,27 @@ main(argc, argv)
 		  fs_give((void **) &(pine_state->free_initial_cmds));
 		pine_state->initial_cmds = 0;
 	    }
-	    if(f = url_local_handler(args.data.url)){
-		if(!((*f)(args.data.url) && pine_state->next_screen))
+	    if(f = url_local_handler(args.url)){
+		if(args.data.mail.attachlist){
+		    if(f == url_local_mailto){
+			if(!(url_local_mailto_and_atts(args.url,
+					args.data.mail.attachlist)
+			     && pine_state->next_screen))
+			  free_attachment_list(&args.data.mail.attachlist);
+			  goodnight_gracey(pine_state, 0);
+		    }
+		    else {
+			q_status_message(SM_ORDER | SM_DING, 3, 4,
+			 "Only mailto URLs are allowed with file attachments");
+			goodnight_gracey(pine_state, -1);	/* no return */
+		    }
+		}
+		else if(!((*f)(args.url) && pine_state->next_screen))
 		  goodnight_gracey(pine_state, 0);	/* no return */
 	    }
 	    else{
 		q_status_message1(SM_ORDER | SM_DING, 3, 4,
-				  "Unrecognized URL \"%.200s\"", args.data.url);
+				  "Unrecognized URL \"%.200s\"", args.url);
 		goodnight_gracey(pine_state, -1);	/* no return */
 	    }
 	}
@@ -2561,7 +2590,8 @@ do_setup_task(command)
 		    input[0] = '\0';
 		    cstring_to_string(*apval, input);
 		    err = signature_edit_lit(input, &result,
-					     "SIGNATURE EDITOR");
+					     "SIGNATURE EDITOR",
+					     h_composer_sigedit);
 		    fs_give((void **)&input);
 		}
 	    }
@@ -2621,7 +2651,8 @@ do_setup_task(command)
 
         /*----- RULES -----*/
       case 'r':
-	rtype = rule_setup_type(ps_global, RS_RULES, "Type of rule setup : ");
+	rtype = rule_setup_type(ps_global, RS_RULES | RS_INCFILTNOW,
+				"Type of rule setup : ");
 	switch(rtype){
 	  case 'r':
 	  case 's':
@@ -2639,6 +2670,10 @@ do_setup_task(command)
 	  case 'Z':
 	    q_status_message(SM_ORDER | SM_DING, 3, 5,
 			"Try turning on color with the Setup/Kolor command.");
+	    break;
+
+	  case 'n':
+	    role_process_filters();
 	    break;
 
 	  default:
@@ -2768,10 +2803,17 @@ rule_setup_type(ps, flags, prompt)
 	opts[ekey_num++].label = "Export";
     }
 
+    if(flags & RS_INCFILTNOW){
+	opts[ekey_num].ch      = 'n';
+	opts[ekey_num].rval    = 'n';
+	opts[ekey_num].name    = "N";
+	opts[ekey_num++].label = "filterNow";
+    }
+
     opts[ekey_num].ch    = -1;
 
     return(radio_buttons(prompt, -FOOTER_ROWS(ps), opts,
-			 deefault, 'x', NO_HELP, RB_NORM));
+			 deefault, 'x', NO_HELP, RB_NORM, NULL));
 }
 
 
@@ -3184,6 +3226,9 @@ goodnight_gracey(pine_state, exit_val)
     extern KBESC_T *kbesc;
 
     dprint(2, (debugfile, "goodnight_gracey:\n"));    
+
+    /* We want to do this here before we close up the streams */
+    trim_remote_adrbks();
 
     for(i = 0; i < ps_global->s_pool.nstream; i++){
 	m = ps_global->s_pool.streams[i];
@@ -4507,16 +4552,13 @@ pine_mail_open(stream, mailbox, openflags, retflags)
     }
 
     if(F_ON(F_ENABLE_MULNEWSRCS, ps_global)){
-	if(!struncmp(mailbox, "#move", 5) && strlen(mailbox) > 7){
-	    char *mailbox_parse, *p;
-
-	    mailbox_parse = cpystr(mailbox+6);
-	    if(p = strindex(mailbox_parse, *(mailbox+5)))
-	      *p = '\0';
-	    if((d = mail_valid(NIL, mailbox_parse, (char *) NIL))
-	       && !strcmp(d->name, "nntp"))
+	char source[MAILTMPLEN], *target = NULL;
+	if(check_for_move_mbox(mailbox, source, sizeof(source), &target)){
+	    DRIVER *d;
+	    if((d = mail_valid(NIL, source, (char *) NIL))
+	       && (!strcmp(d->name, "news")
+		   || !strcmp(d->name, "nntp")))
 	      openflags |= OP_MULNEWSRC;
-	    fs_give((void **)&mailbox_parse);
 	}
 	else if((d = mail_valid(NIL, mailbox, (char *) NIL))
 	   && !strcmp(d->name, "nntp"))
@@ -5272,6 +5314,7 @@ pine_mail_append_multiple(stream, mailbox, af, data, not_this_stream)
     long openflags = (OP_HALFOPEN | OP_SILENT | SP_USEPOOL | SP_TEMPUSE);
     char        source[MAILTMPLEN], *target = NULL;
     DRIVER     *d;
+    int         we_blocked_reuse = 0;
 
     dprint(7, (debugfile, "pine_mail_append_multiple: appending to \"%s\"%s\n", 
 	       mailbox ? mailbox : "(NULL)",
@@ -5306,12 +5349,17 @@ pine_mail_append_multiple(stream, mailbox, af, data, not_this_stream)
      * We can't issue a FETCH before the APPEND completes in order to complete
      * the APPEND.) We can re-use a stream if it is a different stream from
      * the one we are reading from, so that's what the not_this_stream
-     * argument is for.
+     * stuff is for. If we mark it !SP_USEPOOL, it won't get reused.
      */
+    if(sp_flagged(not_this_stream, SP_USEPOOL)){
+	we_blocked_reuse++;
+	sp_unflag(not_this_stream, SP_USEPOOL);
+    }
+
     if(!stream)
-      stream = sp_stream_get_full(mailbox, SP_MATCH, not_this_stream);
+      stream = sp_stream_get(mailbox, SP_MATCH);
     if(!stream)
-      stream = sp_stream_get_full(mailbox, SP_SAME, not_this_stream);
+      stream = sp_stream_get(mailbox, SP_SAME);
 
     if(!stream){
 	/*
@@ -5324,6 +5372,9 @@ pine_mail_append_multiple(stream, mailbox, af, data, not_this_stream)
 	    ourstream = stream;
 	}
     }
+
+    if(we_blocked_reuse)
+      sp_set_flags(not_this_stream, sp_flags(not_this_stream) | SP_USEPOOL);
 
     return_val = mail_append_multiple(stream, mailbox, af, data);
 
@@ -6058,22 +6109,12 @@ sp_nremote_permlocked()
 }
 
 
-MAILSTREAM *
-sp_stream_get(mailbox, flags)
-    char         *mailbox;
-    unsigned long flags;
-{
-    return(sp_stream_get_full(mailbox, flags, NULL));
-}
-
-
 /*
  * Look for an already open stream that can be used for a new purpose.
  * (Note that we only look through streams flagged SP_USEPOOL.)
  *
  * Args:   mailbox
  *           flags
- *           not_this_stream   - don't consider this stream a match
  *
  * Flags is a set of values or'd together which tells us what the request
  * is looking for. See pine.h.
@@ -6081,10 +6122,9 @@ sp_stream_get(mailbox, flags)
  *  Returns: a live stream from the stream pool or NULL.
  */
 MAILSTREAM *
-sp_stream_get_full(mailbox, flags, not_this_stream)
+sp_stream_get(mailbox, flags)
     char         *mailbox;
     unsigned long flags;
-    MAILSTREAM *not_this_stream;
 {
     int         i;
     MAILSTREAM *m;
@@ -6101,7 +6141,7 @@ sp_stream_get_full(mailbox, flags, not_this_stream)
     if(flags & SP_MATCH){
 	for(i = 0; i < ps_global->s_pool.nstream; i++){
 	    m = ps_global->s_pool.streams[i];
-	    if(m && m != not_this_stream && sp_flagged(m, SP_USEPOOL)
+	    if(m && sp_flagged(m, SP_USEPOOL)
 	       && (!m->rdonly || (flags & SP_RO_OK)) && !sp_dead_stream(m)
 	       && same_stream_and_mailbox(mailbox, m)){
 		if((sp_flagged(m, SP_LOCKED) && recent_activity(m))
@@ -6139,7 +6179,7 @@ sp_stream_get_full(mailbox, flags, not_this_stream)
 	if(!(flags & SP_UNLOCKED) && !(flags & SP_TEMPUSE)){
 	    for(i = 0; i < ps_global->s_pool.nstream; i++){
 		m = ps_global->s_pool.streams[i];
-		if(m && m != not_this_stream && sp_flagged(m, SP_USEPOOL)
+		if(m && sp_flagged(m, SP_USEPOOL)
 		   && sp_flagged(m, SP_LOCKED) && !sp_dead_stream(m)
 		   && same_stream(mailbox, m)
 		   && !same_stream_and_mailbox(mailbox, m)){
@@ -6156,7 +6196,7 @@ sp_stream_get_full(mailbox, flags, not_this_stream)
 	    /* consider the unlocked streams */
 	    for(i = 0; i < ps_global->s_pool.nstream; i++){
 		m = ps_global->s_pool.streams[i];
-		if(m && m != not_this_stream && sp_flagged(m, SP_USEPOOL)
+		if(m && sp_flagged(m, SP_USEPOOL)
 		   && !sp_flagged(m, SP_LOCKED) && !sp_dead_stream(m)
 		   && same_stream(mailbox, m)
 		   && !same_stream_and_mailbox(mailbox, m)){
@@ -6185,8 +6225,7 @@ sp_stream_get_full(mailbox, flags, not_this_stream)
 	 */
 	for(i = 0; i < ps_global->s_pool.nstream; i++){
 	    m = ps_global->s_pool.streams[i];
-	    if(m && m != not_this_stream
-	       && sp_flagged(m, SP_USEPOOL) && sp_flagged(m, SP_TEMPUSE)
+	    if(m && sp_flagged(m, SP_USEPOOL) && sp_flagged(m, SP_TEMPUSE)
 	       && !sp_flagged(m, SP_LOCKED) && !sp_dead_stream(m)
 	       && same_stream(mailbox, m)
 	       && !same_stream_and_mailbox(mailbox, m)){
@@ -6219,7 +6258,7 @@ sp_stream_get_full(mailbox, flags, not_this_stream)
 	if(!(flags & SP_TEMPUSE)){
 	    for(i = ps_global->s_pool.nstream - 1; i >= 0; i--){
 		m = ps_global->s_pool.streams[i];
-		if(m && m != not_this_stream && sp_flagged(m, SP_USEPOOL)
+		if(m && sp_flagged(m, SP_USEPOOL)
 		   && !sp_flagged(m, SP_LOCKED) && !sp_dead_stream(m)
 		   && same_stream(mailbox, m)
 		   && !same_stream_and_mailbox(mailbox, m)){
@@ -6254,8 +6293,7 @@ sp_stream_get_full(mailbox, flags, not_this_stream)
 	 */
 	for(i = 0; i < ps_global->s_pool.nstream; i++){
 	    m = ps_global->s_pool.streams[i];
-	    if(m && m != not_this_stream
-	       && sp_flagged(m, SP_USEPOOL) && sp_flagged(m, SP_TEMPUSE)
+	    if(m && sp_flagged(m, SP_USEPOOL) && sp_flagged(m, SP_TEMPUSE)
 	       && !sp_flagged(m, SP_LOCKED)){
 		dprint(7, (debugfile,
     "sp_stream_get: found Not-SAME/TEMPUSE match, slot %d\n", i));
@@ -6279,8 +6317,7 @@ sp_stream_get_full(mailbox, flags, not_this_stream)
 	if(!(flags & SP_TEMPUSE)){
 	    for(i = ps_global->s_pool.nstream - 1; i >= 0; i--){
 		m = ps_global->s_pool.streams[i];
-		if(m && m != not_this_stream
-		   && sp_flagged(m, SP_USEPOOL) && !sp_flagged(m, SP_LOCKED)){
+		if(m && sp_flagged(m, SP_USEPOOL) && !sp_flagged(m, SP_LOCKED)){
 		    dprint(7, (debugfile,
 	"sp_stream_get: found Not-SAME/UNLOCKED match, slot %d\n", i));
 		    /*
@@ -6314,6 +6351,11 @@ sp_end()
 	if(m)
 	  pine_mail_actually_close(m);
     }
+
+    if(ps_global->s_pool.streams)
+      fs_give((void **) &ps_global->s_pool.streams);
+
+    ps_global->s_pool.nstream = 0;
 }
 
 
@@ -6683,7 +6725,8 @@ int
 is_imap_stream(stream)
     MAILSTREAM *stream;
 {
-    return(stream && stream->dtb && !strcmp(stream->dtb->name, "imap"));
+    return(stream && stream->dtb && stream->dtb->name
+           && !strcmp(stream->dtb->name, "imap"));
 }
 
 
