@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: build,v 1.4 2005-01-26 18:26:26 ghudson Exp $
+# $Id: build,v 1.5 2006-10-17 18:24:12 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -214,9 +214,10 @@ case $maketarg in
    lmd) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr/lib/ssl ; ALTDOCPATHS=1 ;;
    lsu) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr/share/ssl ;;
    nx3) ccltarg=$maketarg; picotarg=nxt;       pinetarg=$picotarg ;;
-   osx) ccltarg=$maketarg; picotarg=$maketarg; pinetarg=$picotarg ; DEFSSLD=/System/Library/OpenSSL ;;
+   ox2) ccltarg=osx; picotarg=osx; pinetarg=$picotarg ; DEFSSLD=/System/Library/OpenSSL ;;
+   osx) ccltarg=oxp; picotarg=$maketarg; pinetarg=$picotarg ; DEFSSLD=/System/Library/OpenSSL ;;
    os4) ccltarg=$maketarg; picotarg=osf;       pinetarg=$picotarg ;;
-   pt1) ccltarg=psx;       picotarg=$maketarg; pinetarg=$maketarg ;;
+   pt1) ccltarg=ptx;       picotarg=$maketarg; pinetarg=$maketarg ;;
    shp) ccltarg=$maketarg; picotarg=hpp;       pinetarg=$picotarg ;;
    sg6) ccltarg=$maketarg; picotarg=sgi;       pinetarg=$picotarg ;;
    slx) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ;;

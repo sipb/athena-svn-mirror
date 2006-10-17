@@ -1,4 +1,4 @@
-# $Id: pine.hlp,v 1.7 2005-01-26 18:26:28 ghudson Exp $
+# $Id: pine.hlp,v 1.8 2006-10-17 18:24:16 ghudson Exp $
 #
 #           T H E   P I N E    M E S S A G E   S Y S T E M
 #
@@ -189,6 +189,91 @@ Additions include:
 <P>
 
 <UL>
+   <LI> Even though Pine does not properly support the UTF-8 character set, the <A HREF="h_config_ldap_opts_ldap_v3_ok">Allow-Version3-LDAP</A> feature will cause Pine to go ahead and try to talk to an LDAP server which is a version 3 server. You will find this feature in the Setup/Directory screen. It is separately settable for each server you configure.
+</UL>
+
+<P>
+Bugs that have been addressed in this release include:
+<P>
+
+<UL>
+   <LI> Crash with malformed mailbox name that allows an authorized user to run commands from the shell
+   <LI> When a PC-Pine network read, or a non-SSL Unix Pine network read took longer than <A HREF="h_config_tcp_readwarn_timeo">Tcp-Read-Warning-Timeout</A> (default 15 seconds) Pine would always time out instead of allowing the user to continue
+   <LI> Bug when setting <A HREF="h_config_reply_indent_string">Reply-Indent-String</A> to the Empty Value. Quote showed up as a double quote instead of as nothing.
+   <LI> Crash when Pine attempts to open a remote (IMAP, POP3, NNTP) mailbox specification that has an unterminated quoted string in the network part of the name
+   <LI> Sorting by Score would not work after changing a message's score by setting a keyword or changing its status
+   <LI> Crash when adding then deleting the first header color
+   <LI> Crash when Bouncing a message and then selecting the address to bounce the message to using ^T and the directory server screen
+   <LI> When exporting a flowed message, perform wrapping to get rid of long lines and space stuffing
+   <LI> Incorrect MESSAGE INDEX when message contains some high-bit characters (do a better job of ensuring that control characters in a message don't reach the screen by mistake)
+   <LI> Limit amount of delay that can be caused by the system clock jumping backwards
+   <LI> Bug that caused confirmation prompt to be skipped when Apply Saving messages with the first message in the set not having deleted parts
+   <LI> Allow commas in <A HREF="h_config_custom_hdrs">Customized-Hdrs</A> fields and in header fields defined in Roles
+   <LI> When two Pines were accessing the same address book and the two Pines had different ideas of how it should be sorted, they could get into a slow loop changing the sort order back and forth forever. Now give up and leave the sort alone after the first time this happens in a session.
+   <LI> When <A HREF="h_config_blank_keymenu">Disable-Keymenu</A> was set the &quot;Other&quot; subcommand did not work correctly in the Apply command
+   <LI> When an address book contained multiple entries with the same nickname the ^T method of selecting always selected the first
+   <LI> Crash when editing the first of two address book entries with the same nickname and changing the first from a single address into a list of addresses
+</UL>
+
+<P>
+Version 4.63
+addressed bugs found in previous releases and had a few additions as well.
+
+<P>
+Additions included:
+<P>
+
+<UL>
+  <LI> When cancelling a message being composed the commands are now &quot;^C&quot; followed by &quot;<EM>C</EM>onfirm&quot; instead of &quot;^C&quot; followed by &quot;<EM>Y</EM>es&quot;. &quot;^C&quot; &quot;Yes&quot; was close to &quot;^X&quot; &quot;Yes&quot;, the command used to send a message. The change is there to prevent inadvertent cancellations. The old behavior may be restored by setting the feature <A HREF="h_config_cancel_confirm">Compose-Cancel-Confirm-Uses-Yes</A>.
+  <LI> Command-line option "-url" can now be used with "-attach" and similar options
+  <LI> <A HREF="h_config_quell_user_id_prompt">Quell-User-Id-Prompt</A> no longer falls back on prompting for user-id if a connection to the INBOX can't be established
+  <LI> New token _CURNEWS_ which is equal to the current newsgroup if there is one, mostly for use with the <A HREF="h_config_reply_intro">Reply-Leadin</A> option
+  <LI> New token <A HREF="h_config_arrow_color">ARROW</A> for use in the <A HREF="h_config_index_format">Index-Format</A> option for the MESSAGE INDEX screen. This causes the current message to be indicated by an arrow instead of being shown in reverse video. It may also be colored if desired.
+  <LI> New feature <A HREF="h_config_force_arrow">Force-Arrow-Cursor</A> turns on an &quot;arrow&quot; cursor in the MESSAGE INDEX just like you get with the <A HREF="h_config_force_low_speed">Assume-Slow-Link</A> feature turned on, except the coloring of the index line will still take place.
+  <LI> Address book entries can be <A HREF="h_ab_export_vcard">exported</A> to a file in tab-separated columns for more convenient import to some other clients
+  <LI> New variable <A HREF="h_config_quote_replace_string">Quote-Replace-String</A> and feature <A HREF="h_config_quote_replace_noflow">Quote-Replace-Nonflowed</A> allow for replacing quotes with the string of the user's choice when viewing a message
+  <LI> <A HREF="h_config_role_charsetpat">Character Set</A> matching can now be done conveniently in Rules
+  <LI> Field for <A HREF="h_config_role_comment">comments</A> added to Rules. Warning: Don't use this field until all of the Pines that you run are version 4.63 or higher, since it will cause the Rule to be ignored in previous versions.
+  <LI> There is a new filterNow command located under Setup/Rules which causes your filters to be re-run immediately. This is <EM>not</EM> useful for most users since filters are run immediately as new mail arrives, but it may be useful if you want to re-run filters after changing the status (New, Important, Deleted, and so on) of messages and you don't want to wait until exiting the folder or expunging.
+</UL>
+
+<P>
+Bugs addressed in the 4.63 release included:
+<P>
+
+<UL>
+   <LI> Crash when an IMAP server dies while browsing the server's collection of folders
+   <LI> Crash with message &quot;Lock when already locked&quot; when saving multiple messages where some of those messages have had attachments deleted
+   <LI> Possible crash when viewing an attachment with an encoded name
+   <LI> Crash when saving from a local folder which has been closed due to external modification
+   <LI> TABbing for new mail in a news maildrop with multiple newsrcs was broken
+   <LI> Role <A HREF="h_config_role_inick">inheritance</A> only worked one level deep
+   <LI> When viewing messages with the <A HREF="h_config_quote_suppression">Quote-Suppression-Threshold</A> turned on, non-flowed messages with long lines that wrapped caused confusion with the quoted line counting
+   <LI> Malformed addresses were not always handled cleanly when replying. Now the original address should be presented to the user who must sort it out.
+   <LI> In PC-Pine, Postponed tab was needlessly grayed out when editing headers.
+   <LI> It wasn't possible to add a collection that was a sub-collection of the open Inbox on a cyrus server because Pine tried to create the directory Inbox and that Folder/Directory already existed
+   <LI> Handles (for example, for URLs) would sometimes be selectable even though they had been scrolled off the screen one line, causing confusion
+   <LI> Failed to notice expunges in local folders which were in mbx format
+   <LI> In composer: ^R to reveal Attachment line, attach a file without leaving the line (e.g. with ^T), then ^R while still in the Attachment line, and the attachment was not sent
+   <LI> When viewing format=flowed messages with the DelSp=yes parameter urls were not recognized if they were split in the middle. It is recommended that messages not be sent with this format but it is known that some clients (Apple Mail is one) do send such mail.
+   <LI> Avoid unnecessary re-sort of the folder when re-filtering in preparation for an expunge
+   <LI> In PC-Pine, crash when fonts with unknown character sets are loaded
+   <LI> Bug in composer when cleaning up a flowed message with indentations inside of quotes. 
+   <LI> Preserve Literal-Signature leading spaces in config file
+   <LI> Strip trailing spaces from signatures so that they won't be recognized as flowed text
+   <LI> Fix race condition in rpdump that could cause overwriting of arbitrary local files owned by the user running rpdump if a malicious user has write permission in the same directory as the local file specified on the command line.
+   <LI> When running Pine in function key mode, make it possible to Reverse the sort
+</UL>
+
+<P>
+Version 4.62
+addressed bugs found in previous releases and had a few additions as well.
+
+<P>
+Additions included:
+<P>
+
+<UL>
   <LI> <A HREF="h_config_enable_xterm_newmail">Enable-Newmail-in-Xterm-Icon</A> now also sets the title bar text to indicate new mail
   <LI> New feature <a href="h_config_enable_newmail_short_text">Enable-Newmail-Short-Text-in-Icon</a>
   <LI> New UNIX Pine feature <A HREF="h_config_fifopath">NewMail-FIFO-Path</A>
@@ -212,7 +297,7 @@ Additions include:
 </UL>
 
 <P>
-Bugs that have been addressed in this release include:
+Bugs addressed in the 4.62 release included:
 <P>
 
 <UL>
@@ -3003,6 +3088,7 @@ There are also additional details on
 <li><a href="h_index_cmd_apply">Apply Command</a>
 <li><a href="h_attachment_screen">Attachment Index Screen Explained</a>
 <li><a href="h_mail_text_att_view">Attachment View Screen Explained</a>
+<li><a href="h_config_smtp_server">Authenticated SMTP</a>
 <li><a href="h_mainhelp_filtering">Blocking Messages</a>
 <li><a href="h_composer_browse">BROWSER</a>
 <li><a href="h_common_bounce">Bounce Command</a>
@@ -3033,6 +3119,7 @@ There are also additional details on
 <li><a href="h_valid_folder_names">Explanation of Valid Folder Names</a>
 <li><a href="h_ge_export">Export File Selection</a>
 <li><a href="h_ge_allparts">Export Message File Selection</a>
+<li><a href="h_ge_allparts">Exporting All Message Attachments</a>
 <li><a href="h_index_cmd_expunge">Expunge/Exclude Command</a>
 <li><a href="h_info_on_locking">FAQs on Pine Locking</a>
 <li><a href="h_config_allow_chg_from">FEATURE: Allow-Changing-From</a>
@@ -3048,6 +3135,7 @@ There are also additional details on
 <li><a href="h_config_combined_abook_display">FEATURE: Combined-Addrbook-Display</a>
 <li><a href="h_config_combined_folder_display">FEATURE: Combined-Folder-Display</a>
 <li><a href="h_config_combined_subdir_display">FEATURE: Combined-Subdirectory-Display</a>
+<li><a href="h_config_cancel_confirm">FEATURE: Compose-Cancel-Confirm-Uses-Yes</a>
 <li><a href="h_config_del_from_dot">FEATURE: Compose-Cut-From-Cursor</a>
 <li><a href="h_config_compose_maps_del">FEATURE: Compose-Maps-Delete-Key-to-Ctrl-D</a>
 <li><a href="h_config_compose_rejects_unqual">FEATURE: Compose-Rejects-Unqualified-Addrs</a>
@@ -3137,6 +3225,7 @@ There are also additional details on
 <li><a href="h_config_fcc_on_bounce">FEATURE: Fcc-On-Bounce</a>
 <li><a href="h_config_auto_fcc_only">FEATURE: Fcc-Only-Without-Confirm</a>
 <li><a href="h_config_no_fcc_attach">FEATURE: Fcc-Without-Attachments</a>
+<li><a href="h_config_force_arrow">FEATURE: Force-Arrow-Cursor</a>
 <li><a href="h_config_hide_nntp_path">FEATURE: Hide-NNTP-Path</a>
 <li><a href="h_config_attach_in_reply">FEATURE: Include-Attachments-In-Reply</a>
 <li><a href="h_config_include_header">FEATURE: Include-Header-In-Reply</a>
@@ -3259,6 +3348,7 @@ There are also additional details on
 <li><a href="h_compose_justify">Justify Command</a>
 <li><a href="h_main_kblock">Keyboard Lock Command</a>
 <li><a href="h_mainhelp_ldap">LDAP</a>
+<li><a href="h_config_ldap_opts_ldap_v3_ok">LDAP FEATURE: Allow-Version3-LDAP</a>
 <li><a href="h_config_ldap_opts_nosub">LDAP FEATURE: Disable-Ad-Hoc-Space-Substitution</a>
 <li><a href="h_config_ldap_opts_rhs">LDAP FEATURE: Lookup-Addrbook-Contents</a>
 <li><a href="h_config_ldap_opts_ref">LDAP FEATURE: Save-Search-Criteria-Not-Result</a>
@@ -3331,6 +3421,7 @@ There are also additional details on
 <li><a href="h_config_archived_folders">OPTION: Incoming-Archive-Folders</a>
 <li><a href="h_config_incoming_folders">OPTION: Incoming-Folders</a>
 <li><a href="h_config_inc_startup">OPTION: Incoming-Startup-Rule</a>
+<li><a href="h_config_arrow_color">OPTION: Index Arrow Color</a>
 <li><a href="h_config_index_color">OPTION: Index Colors</a>
 <li><a href="h_config_index_format">OPTION: Index-Format</a>
 <li><a href="h_config_init_cmd_list">OPTION: Initial-Keystroke-List</a>
@@ -3441,6 +3532,8 @@ There are also additional details on
 <li><a href="h_config_role_cat_cmd_example">PATTERNS: Categorizer Command Example</a>
 <li><a href="h_config_role_ccpat">PATTERNS: Cc Pattern</a>
 <li><a href="h_config_role_cat_limit">PATTERNS: Character Limit</a>
+<li><a href="h_config_role_charsetpat">PATTERNS: Character Set Pattern</a>
+<li><a href="h_config_role_comment">PATTERNS: Comment</a>
 <li><a href="h_config_role_fldr_type">PATTERNS: Current Folder Type</a>
 <li><a href="h_config_role_cat_status">PATTERNS: Exit Status Interval</a>
 <li><a href="h_config_role_arbpat">PATTERNS: Extra Headers Pattern</a>
@@ -3473,7 +3566,7 @@ There are also additional details on
 <li><a href="h_config_set_index_format">PATTERNS OTHER ACTION: Set Index Format</a>
 <li><a href="h_config_perfolder_sort">PATTERNS OTHER ACTION: Set Sort Order</a>
 <li><a href="h_config_other_startup">PATTERNS OTHER ACTION: Set Startup Rule</a>
-<li><a href="h_config_role_scoreval">PATTERNS ROLE ACTION: Initialize Values From Role</a>
+<li><a href="h_config_role_inick">PATTERNS ROLE ACTION: Initialize Values From Role</a>
 <li><a href="h_config_role_setfcc">PATTERNS ROLE ACTION: Set Fcc</a>
 <li><a href="h_config_role_setfrom">PATTERNS ROLE ACTION: Set From</a>
 <li><a href="h_config_role_setlitsig">PATTERNS ROLE ACTION: Set Literal Signature</a>
@@ -3521,6 +3614,7 @@ There are also additional details on
 <li><a href="h_rules_filter">SETUP FILTERING SCREEN</a>
 <li><a href="h_rules_score">SETUP SCORING SCREEN</a>
 <li><a href="h_common_save">Save and Export Commands</a>
+<li><a href="h_ge_allparts">Saving All Message Attachments</a>
 <li><a href="h_mainhelp_securing">Securing Your Pine Session</a>
 <li><a href="h_index_cmd_select">Selecting: Select and WhereIs/Select</a>
 <li><a href="h_compose_send">Send Command</a>
@@ -3528,6 +3622,7 @@ There are also additional details on
 <li><a href="X-Pine-Config:">Show Available Options</a>
 <li><a href="h_composer_sigedit">Signature Editor Commands Explained</a>
 <li><a href="h_simple_text_view">Simple Text View Screen Explained</a>
+<li><a href="h_config_smtp_server">SMTP Server Configuration</a>
 <li><a href="h_index_cmd_sort">Sort Command</a>
 <li><a href="h_compose_spell">Spell Check Command</a>
 <li><a href="h_mainhelp_status">Status Line</a>
@@ -7511,6 +7606,64 @@ instead of the actual keyword.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+===== h_select_multcharsets_screen =====
+<HTML>
+<HEAD>
+<TITLE>SELECT CHARACTER SETS SCREEN</TITLE>
+</HEAD>
+<BODY>
+<H1>SELECT CHARACTER SETS SCREEN</H1>
+<H2>COMMANDS</H2>
+<!--chtml if pinemode="function_key"-->
+<PRE>
+Available  Commands
+-------------------------------            
+F1  Show Help Text
+F3  Exit without selecting anything
+F4  Select the highlighted charset (or chosen charsets in ListMode)
+F5  Move highlight to previous charset
+F6  Move highlight to next charset
+F7  Previous page of charsets
+F8  Next page of charsets
+F9  Toggle choices when using ListMode
+F10 Turn on/off ListMode (makes it easy to choose multiple charsets)
+F11 Print
+F12 WhereIs
+</PRE>
+<!--chtml else-->
+<PRE>
+Navigation                     General Pine Commands
+-----------------------        ---------------------
+ P  Prev Charset                ?  Display this help text
+ N  Next Charset                E  Exit without selecting anything
+ -  Previous page               %  Print
+Spc (space bar) Next page
+ W  WhereIs
+
+Select Command
+------------------------------------------------
+ S  Select the highlighted charset (or chosen charsets in ListMode)
+ L  Turn on ListMode (makes it easy to choose multiple charsets)
+ 1  Turn off ListMode
+ X  Toggle choices when using ListMode
+</PRE>
+<!--chtml endif-->
+
+<H2>Description of the Select Character Set Screen</H2>
+
+This screen just gives you an easy way to select a character set or a list of
+character sets.
+The list of character sets presented is the list of all character sets known to
+Pine.
+You may select other character sets by typing them in directly.
+
+<P><UL>
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL>
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ===== h_select_multkeyword_screen =====
 <HTML>
 <HEAD>
@@ -7531,7 +7684,7 @@ F6  Move highlight to next keyword
 F7  Previous page of keywords
 F8  Next page of keywords
 F9  Toggle choices when using ListMode
-F10 Turn on ListMode (makes it easy to choose multiple keywords)
+F10 Turn on/off ListMode (makes it easy to choose multiple keywords)
 F11 Print
 F12 WhereIs
 </PRE>
@@ -7549,6 +7702,7 @@ Select Command
 ------------------------------------------------
  S  Select the highlighted keyword (or chosen keywords in ListMode)
  L  Turn on ListMode (makes it easy to choose multiple keywords)
+ 1  Turn off ListMode
  X  Toggle choices when using ListMode
 </PRE>
 <!--chtml endif-->
@@ -7739,7 +7893,7 @@ Scoring, and Other Rules.
 Patterns are compared with a message to see if there is a match.
 For Filtering, the messages being checked are all the messages in the
 folder, one at a time.
-For Index Line Coloring, each message which is visible on the screen is
+For Index Line Coloring, each message that is visible on the screen is
 checked for matches with the Index Coloring Patterns.
 Roles are used with the Reply, Forward, and Compose commands.
 For Reply, the message used to compare the Pattern with is the message
@@ -7751,7 +7905,7 @@ on a message (everything other than Current Folder Type and the
 Beginning of Month and Year)
 are not used.
 Only the Current Folder Type matters for Compose (plus the Beginning of
-Month, which you wouldn't usually use for a Role).
+Month or Year, which you wouldn't usually use for a Role).
 For Scoring, the message being scored is compared with all of the Score
 Patterns, and the Score Values from the ones that match are added together to 
 get the message's score.
@@ -7761,7 +7915,8 @@ for Other Rules.
 Each Pattern has several possible parts, all of which are optional.
 In order for there to be a match, <EM>ALL</EM> of the
 <EM>defined</EM> parts of the Pattern must match the message.
-If a part is not defined it is considered a match.
+If a part is not defined it is considered a match, but note that a filtering
+Pattern must have at least one defined part or it will be ignored.
 For example, if the To pattern is not defined it will be
 displayed as
 <P>
@@ -7769,7 +7924,8 @@ displayed as
 <P>
 That is considered a match because it is not defined.
 This means that the Pattern with nothing defined is a match if the
-Current Folder Type matches, but there is an exception.
+Current Folder Type matches, but there is an exception which was mentioned
+in the previous paragraph.
 Because filtering is a potentially destructive action, filtering Patterns
 with nothing other than Current Folder Type defined are ignored.
 If you really want a filtering Pattern to match all messages (subject to
@@ -7867,16 +8023,20 @@ when checking for matches for Scoring.
 There are five similar settings which relate to the status of the message.
 These settings rely on the message being New or not, Deleted or not,
 Answered or not, Important or not, and Recent or not.
-There are also five more specialized settings.
+There are also some other miscellaneous settings.
 The first is the Age of the message in days.
-The second is the Size of the message, in bytes.
+Another is the Size of the message, in bytes.
 The third is a setting which detects whether or not the Subject of a
 message contains raw 8-bit characters (unencoded characters with the most
 significant bit set).
-The fourth is a setting which detects whether or not this is the first time
-Pine has been run this month (doesn't depend on individual messages).
-And the fifth is a setting which detects whether or not the From address of a
-message appears in your address book.
+There is a setting which detects whether or not this is the first time
+Pine has been run this month (doesn't depend on individual messages),
+and another which detects whether or not this is the first time Pine has
+been run this year.
+Other parts of the Pattern detect whether or not the From address of a
+message appears in your address book, whether or not certain keywords
+are set for a message, and whether or not certain character sets are
+used in a message.
 
 <H2>Parts of a Pattern</H2>
 
@@ -8152,6 +8312,32 @@ The syntax of this part of the Pattern is similar to the header patterns.
 It is a list of keywords.
 The Keyword part of the Pattern is a match if the message has any of
 the keywords in the list set.
+Like other parts of the Pattern, if this is unset it will be ignored.
+
+<H3><A NAME="pattern_message_charsets">Message Character Sets</A></H3>
+
+A message may use one or more character sets.
+This part of the Pattern matches messages that make use of one or more of
+the character sets specified in the pattern.
+It will be considered a match if a message uses any of the character
+sets in the list you give here.
+
+<P>
+Besides actual character set names (for example, ISO-8859-7, KOI8-R, or
+GB2312) you may also use some shorthand names that Pine provides.
+These names are more understandable shorthand names for sets of 
+character set names.
+Two examples are &quot;Cyrillic&quot; and &quot;Greek&quot;.
+Selecting one of these shorthand names is equivalent to selecting all of
+the character sets that make up the set.
+You can see all of these shorthand names and the lists of character sets
+they stand for by typing the &quot;T&quot; command with the Character
+Set pattern highlighted.
+The syntax of this part of the Pattern is similar to the header patterns
+and the Message Keywords pattern.
+It is a list of character sets (or shorthand names).
+The Character Set part of the Pattern is a match if the message uses any
+of the character sets in the list.
 Like other parts of the Pattern, if this is unset it will be ignored.
 
 <H3><A NAME="pattern_8bit_subject">Raw 8-bit in Subject</A></H3>
@@ -8628,7 +8814,7 @@ command, then it will not be re-sorted until the next time it is opened.
 When you enter a new folder, these rules will be checked to see if you
 have set an Index Format which is different from your default Index Format,
 which is set with the
-<A HREF="h_config_index_format">&quot;Index-Format&quot; option</A>.
+<A HREF="h_config_index_format">&quot;Index-Format&quot;</A> option.
 If so, the index will be displayed with this format instead of the default.
 
 <H3>Set Startup Rule</H3>
@@ -12836,6 +13022,73 @@ NOTE: For special handling of Ctrl-S and Ctrl-Q see special comments regarding
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+===== h_composer_commentedit =====
+<HTML>
+<HEAD>
+<TITLE>Comment Editor Commands Explained</TITLE>
+</HEAD>
+<BODY>
+<H1>COMMENT EDITOR COMMANDS</H1>
+<!--chtml if pinemode="function_key"-->
+<PRE>
+CURSOR MOTION KEYS                     |EDITING KEYS
+  ^B (Left Arrow)   Back character     | ^D       Delete current character
+  ^F (Right Arrow)  Forward character  | ^H (DEL) Delete previous character
+  ^P (Up Arrow)     Previous line      | ^^       Set a mark
+  ^N (Down Arrow)   Next line          | F9       Cut marked text or
+  ^A                Beginning of line  |           delete current line
+  ^E                End of line        | F10       Paste text, undelete lines
+  F7                Previous page      |           cut with ^K, or unjustify
+  F8                Next page          |-------------------------------------
+  ^@ (Ctrl-SPACE)   Next word          |SCREEN/COMPOSITION COMMANDS
+---------------------------------------| F6       Whereis (search for string)
+MESSAGE COMMANDS | GENERAL COMMANDS    | F12      Spell checker
+ F3   Cancel     |  F1    Get help     | F4       Justify paragraph
+                 |  ^Z    Suspend      | ^L       Redraw Screen
+ F2   Send       |  F6    Alt. editor  | F5       Read in a file
+</PRE>
+<!--chtml else-->
+<PRE>
+CURSOR MOTION KEYS                     |EDITING KEYS
+  ^B (Left Arrow)   Back character     | ^D       Delete current character
+  ^F (Right Arrow)  Forward character  | ^H (DEL) Delete previous character
+  ^P (Up Arrow)     Previous line      | ^^       Set a mark
+  ^N (Down Arrow)   Next line          | ^K       Cut marked text or
+  ^A                Beginning of line  |           delete current line
+  ^E                End of line        | ^U        Paste text, undelete lines
+  ^Y                Previous page      |           cut with ^K, or unjustify
+  ^V                Next page          |-------------------------------------
+  ^@ (Ctrl-SPACE)   Next word          |SCREEN/COMPOSITION COMMANDS
+---------------------------------------| ^W       <A HREF="h_composer_search">Whereis</A> (search text)
+MESSAGE COMMANDS | GENERAL COMMANDS    | ^T       Spell checker
+ ^C   Cancel     |  ^G    Get help     | ^J       <A HREF="h_compose_justify">Justify</A> paragraph
+                 |  ^Z    <A HREF="h_common_suspend">Suspend</A>      | ^L       Redraw Screen
+ ^X   Send       |  ^_    Alt. editor  | ^R       Read in a file
+</PRE>
+<!--chtml endif-->
+
+NOTE: The presence or absence of the following commands is determined
+by &quot;Feature-List&quot; options in your Pine configuration.  Also,
+some of these commands may be administratively disabled by your system
+manager; if they don't work, please check with your local help desk
+before reporting a bug.
+<P>
+<UL>
+ <LI>Suspend (suspends Pine and gives a system prompt)
+ <LI>Alternate editor (allows you to compose with your own editor)
+</UL>
+<P>
+
+Pine does not use the following keys:  Ctrl-S, Ctrl-Q, Ctrl-],
+Ctrl-&#92;, ESC
+<P>
+
+NOTE: For special handling of Ctrl-S and Ctrl-Q see special comments regarding
+<A HREF="h_special_xon_xoff">&quot;XOFF/XON&quot;</A>.
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ======= h_composer_abook_nick =======
 <HTML>
 <HEAD>
@@ -13444,6 +13697,31 @@ Turning on this feature will disable this substitution.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+======= h_config_ldap_opts_ldap_v3_ok =======
+<HTML>
+<HEAD>
+<TITLE>LDAP FEATURE: Allow-Version3-LDAP</TITLE>
+</HEAD>
+<BODY>
+<H1>LDAP FEATURE: Allow-Version3-LDAP</H1>
+
+Pine normally attempts to use version 2 of the LDAP protocol.
+When the version 3 protocol is used the server will output the results
+in the UTF-8 character set.
+Since Pine is not currently able to handle this UTF-8 output, it does not
+use version 3 protocol.
+However, there are some servers which do not support version 2 of the protocol
+and only support version 3.
+Some people have found that even though Pine does not handle
+everything correctly, the results are still usually usable and may be
+better than nothing.
+<P>
+Turning on this feature will cause Pine to attempt to talk version 3 LDAP
+protocol to this server.
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_ldap_searchtypes =======
 <HTML>
 <HEAD>
@@ -13805,6 +14083,24 @@ sending with a different role than you use by default, and
 it will be useful for choosing a role when composing with the Role command
 or when composing with one of the Role Uses set to With Confirmation.
 This field is not used in the outgoing message.
+<P>
+Look <A HREF="h_edit_nav_cmds">here</A>
+to see the available Editing and Navigation commands.
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+======= h_config_role_comment =======
+<HTML>
+<HEAD>
+<TITLE>Comment Explained</TITLE>
+</HEAD>
+<BODY>
+<H1>Comment Explained</H1>
+
+This is a comment to help you.
+This comment does not play any functional role, it is simply an optional
+comment to help you remember what the rule is for.
 <P>
 Look <A HREF="h_edit_nav_cmds">here</A>
 to see the available Editing and Navigation commands.
@@ -14711,6 +15007,94 @@ It should end up looking like
 <P>
 It is possible that you may notice degraded performance when using
 BodyText Patterns.
+<P>
+A technicality: Since comma is the character used to separate multiple
+values in a pattern field, you have to escape comma with a backslash (&#92;) if
+you want to include a literal comma in the field.
+In other words, if you type a backslash followed by a comma it will
+be interpreted as a comma by Pine, instead of as a separator between
+pattern values.
+All other backslashes are literal backslashes and should not be escaped.
+<P>
+Look &quot;<A HREF="h_rule_patterns">here</A>&quot;
+for more information on Patterns.
+<P>
+Look <A HREF="h_edit_nav_cmds">here</A>
+to see the available Editing and Navigation commands.
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+======= h_config_role_charsetpat =======
+<HTML>
+<HEAD>
+<TITLE>Character Set Pattern Explained</TITLE>
+</HEAD>
+<BODY>
+<H1>Character Set Pattern Explained</H1>
+
+A message may use one or more character sets.
+This part of the Pattern matches messages which make use of
+certain specified character sets.
+It will be considered a match if a message uses any of the character
+sets in the list you give here.
+
+<P>
+When filling in a value for this field, you may use
+the &quot;T&quot; command, which presents you with a large list of
+possible character sets to choose from.
+You may also just type in the name of a character set, and it need not
+be one that Pine knows about.
+
+<P>
+Besides actual character set names (for example, ISO-8859-7, KOI8-R, or
+GB2312) you may also use some shorthand names that Pine provides.
+These names are more understandable shorthand names for sets of 
+character set names.
+Two examples are &quot;Cyrillic&quot; and &quot;Greek&quot;.
+Selecting one of these shorthand names is equivalent to selecting all of
+the character sets that make up the set.
+You can see all of these shorthand names and the lists of character sets
+they stand for by typing the &quot;T&quot; command.
+
+<P>
+For the purposes of this Pattern,
+Pine will search through a message for all of the text parts and
+collect the character sets declared for each part.
+It will also look in the Subject line for a character set used there.
+Pine does not actually look at the text of the message or the text
+of the Subject to determine if a declared character set is actually
+used, it looks only at the declarations themselves in the MIME part headers
+and in the Subject.
+
+<P>
+It is possible to add a <EM>NOT</EM> to the Character Set Pattern meaning with the
+&quot;!&quot; &quot;toggle NOT&quot; command.
+This changes the meaning of the Character Set pattern so that
+it has the opposite meaning.
+It will be considered a match if none of the character sets in the
+list are used in a message.
+<P>
+Don't make the mistake of putting the &quot;!&quot; in the data field for
+the pattern.
+For example, if you type the characters &quot;!GB2312&quot; into the
+Character Set pattern, the pattern will look like:
+<P>
+<PRE>
+ Charset pattern = !GB2312
+</PRE>
+<P>
+This means you want to match the 7 character sequence &quot;!GB2312&quot;.
+In order to match messages which do not have the
+character set &quot;GB2312&quot;
+set, first type the characters &quot;GB2312&quot; followed
+by carriage return for the value of the Character Set pattern, then negate it
+by typing the &quot;!&quot; command.
+It should end up looking like
+<P>
+<PRE>
+ ! Charset pattern = GB2312
+</PRE>
 <P>
 A technicality: Since comma is the character used to separate multiple
 values in a pattern field, you have to escape comma with a backslash (&#92;) if
@@ -16090,17 +16474,10 @@ to see the available Editing and Navigation commands.
 This is a power user feature.
 You will usually want to leave this field empty.
 The value of this field is the nickname of another one of your roles.
-The five Action values which begin with the word &quot;Set&quot; and the index
-line color from that other role
+The Action values from that other role
 are used as the initial values of the Action items for this role.
 If you put something in any of the action fields for this role, that will
 override whatever was in the corresponding field of the initializer role.
-The fields affected by this field are the fields labeled
-&quot;Set From&quot;,
-&quot;Set Reply-To&quot;,
-&quot;Set Fcc&quot;,
-&quot;Set Signature&quot;,
-&quot;Set Template&quot;, and &quot;Index Line Color&quot;.
 <P>
 You might use this field if the &quot;Action&quot; part of one of your roles
 is something you want to use in more than one role.
@@ -16112,27 +16489,31 @@ Here's an example to help explain how this works.
 Suppose you have a role with nickname &quot;role1&quot; and role1 has
 (among other things)
 <P>
-<CENTER><SAMP>Set Signature = sig_file1</SAMP></CENTER>
+<CENTER><SAMP>Set Reply-To = The Pres &lt;president@example.com&gt;</SAMP></CENTER>
 <P>
 set.
 If in &quot;role2&quot; you set &quot;Initialize settings using role&quot; to
-&quot;role1&quot;, then role2 will inherit the Set Signature value
+&quot;role1&quot;, then role2 will inherit the Set Reply-To value
 from role1 by default (and any of the other inheritable action values
 that are set).
 So if role2 had
 <P>
-<CENTER><SAMP>Set Signature =</SAMP></CENTER>
+<CENTER><SAMP>Set Reply-To = &lt;No Value Set&gt;</SAMP></CENTER>
 <P>
-defined, the signature file used with role2 would be &quot;sig-file1&quot;.
+defined, the Reply-To used with role2 would be &quot;The Pres &lt;president@example.com&gt;&quot;
 However, if role2 had
 <P>
-<CENTER><SAMP>Set Signature = sig_file2</SAMP></CENTER>
+<CENTER><SAMP>Set Reply-To = VP &lt;vicepresident@example.com&gt;</SAMP></CENTER>
 <P>
-defined, then the signature file used with role2 would be &quot;sig-file2&quot;.
+defined, then the Reply-To used with role2 would be &quot;VP &lt;vicepresident@example.com&gt;&quot; instead.
 <P>
 If you wish,
 you may choose a nickname from your list of roles by using the
 &quot;T&quot; command.
+If the role you are using to initialize also has a role it initializes from,
+then that initialization happens first.
+That is, inheritance works as expected with the grandparent and
+great-grandparent (and so on) roles having the expected effect.
 <P>
 Look <A HREF="h_edit_nav_cmds">here</A>
 to see the available Editing and Navigation commands.
@@ -16150,7 +16531,7 @@ to see the available Editing and Navigation commands.
 
 This describes part of the action to be taken if the Pattern for this
 role is a match.
-This field consists of a single address which will be used as the From
+This field consists of an address which will be used as the From
 address on the message you are sending.
 This should be a fully-qualified address like
 <P>
@@ -16160,7 +16541,11 @@ or just
 <P>
 <CENTER><SAMP>user@domain</SAMP></CENTER>
 <P>
-If you wish,
+(In the unlikely event that you would like to list more than one address
+in the From line, simply include the multiple addresses separated by
+commas.)
+<P>
+    If you wish,
 you may choose an address from your address book with the
 &quot;T&quot; command.
 <P>
@@ -16186,7 +16571,7 @@ to see the available Editing and Navigation commands.
 
 This describes part of the action to be taken if the Pattern for this
 role is a match.
-This field consists of a single address which will be used as the Reply-To
+This field consists of an address which will be used as the Reply-To
 address on the message you are sending.
 This may be a fully-qualified address like
 <P>
@@ -16195,6 +16580,10 @@ This may be a fully-qualified address like
 or just
 <P>
 <CENTER><SAMP>user@domain</SAMP></CENTER>
+<P>
+(In the unlikely event that you would like to list more than one address
+in the Reply-To line, simply include the multiple addresses separated by
+commas.)
 <P>
 If you wish,
 you may choose an address from your address book with the
@@ -16387,11 +16776,16 @@ least one address in the To header (the address you are Replying to).
 However, if you Reply using a role which sets the To header, that role's
 To header value will be used instead.
 <P>
-Limitation: Because commas are used to separate the list of
-Other Headers, it is not possible to have the value of a
-header contain a comma;
-nor is there currently an &quot;escape&quot; mechanism provided
-to make this work.
+Because commas are used in the configuration file to separate the
+list of Other Hdrs, you need to quote the value if that value
+contains a comma.
+Use double quotes and place the quotes around the entire value part of
+the header, not including the name of the header.
+For example, you might have
+<P>
+<CENTER><SAMP>Organization: &quot;My Organization Name, My City&quot;</SAMP></CENTER>
+<P>
+as one of the Other Hdrs.
 <P>
 Look <A HREF="h_edit_nav_cmds">here</A>
 to see the available Editing and Navigation commands.
@@ -16999,8 +17393,8 @@ to see the available Editing and Navigation commands.
 <BODY>
 
 This set of special tokens may be used in the
-<A HREF="h_config_index_format">&quot;Index-Format&quot; option</A>,
-in the <A HREF="h_config_reply_intro">&quot;Reply-Leadin&quot; option</A>,
+<A HREF="h_config_index_format">&quot;Index-Format&quot;</A> option,
+in the <A HREF="h_config_reply_intro">&quot;Reply-Leadin&quot;</A> option,
 in signature files,
 in template files used in
 <A HREF="h_rules_roles">&quot;roles&quot;</A>, and in the folder name
@@ -17343,9 +17737,11 @@ When the feature
 is set, if the first character would have been
 blank then it will instead be a '-' if the message is cc'd to you.
 The second character is typically blank,
-though the arrow cursor may occupy it if the 
+though the arrow cursor may occupy it if either the 
 &quot;<A HREF="h_config_force_low_speed">Assume-Slow-Link</A>&quot;
-feature is set, or you actually are on a slow link.
+or the
+&quot;<A HREF="h_config_force_arrow">Force-Arrow-Cursor</A>&quot; feature
+is set (or you actually are on a slow link).
 The third character is either '<A HREF="h_flag_deleted">D</A>' (Deleted),
 '<A HREF="h_flag_answered">A</A>' (Answered),
 '<A HREF="h_flag_new">N</A>' (New), or blank.
@@ -17583,6 +17979,40 @@ a Newsgroups header; this token will be your name instead of the name
 of the newsgroup (like it would be with FROMORTO).
 </DD>
 
+<DT>ARROW</DT>
+<DD>
+This gives an alternative way to display the current message in the
+MESSAGE INDEX screen.
+Usually the current message is indicated by the line being shown in
+reverse video.
+Instead, if the ARROW token is included in your Index-Format,
+the current line will include an &quot;arrow&quot; that
+looks like
+<P>
+<CENTER><SAMP>-&gt;</SAMP></CENTER>
+<P>
+in the ARROW token's field.
+For all of the non-current messages, the ARROW field will be filled
+with blanks.
+If you use the fixed-field width feature the length of the &quot;arrow&quot;
+may be adjusted.
+The arrow will be drawn as width-1 dashes followed by a greater than sign.
+For example, if you use ARROW(3) you will get
+<P>
+<CENTER><SAMP>--&gt;</SAMP></CENTER>
+<P>
+and ARROW(1) will give you just
+<P>
+<CENTER><SAMP>&gt;</SAMP></CENTER>
+<P>
+It is also possible to set the color of the ARROW field.
+By default (and for non-current messages) the arrow is colored the same
+as the index line it is part of.
+You may set it to be another color with the 
+<A HREF="h_config_arrow_color">Index Arrow Color</A> option available from
+the <A HREF="h_color_setup">Setup Kolor</A> screen.
+</DD>
+
 <DT>SCORE</DT>
 <DD>
 This gives the
@@ -17603,6 +18033,12 @@ may slow down the display of the MESSAGE INDEX screen.
 <H1><EM>Tokens Available for all but Index-Format</EM></H1>
 
 <DL>
+<DT>CURNEWS</DT>
+<DD>
+This token represents the current newsgroup if there is one.
+For example, &quot;comp.mail.pine&quot;.
+</DD>
+
 <DT>MSGID</DT>
 <DD>
 This token represents the message ID of the message.
@@ -17805,13 +18241,14 @@ template file when the composer starts up.
 <TITLE>Conditional Inclusion of Text for Reply-Leadin, Signatures, and Templates</TITLE>
 </HEAD>
 <BODY>
+<H1>Conditional Inclusion of Text for Reply-Leadin, Signatures, and Templates</H1>
 
 Conditional text inclusion may be used with
-the <A HREF="h_config_reply_intro">&quot;Reply-Leadin&quot; option</A>,
+the <A HREF="h_config_reply_intro">&quot;Reply-Leadin&quot;</A> option,
 in signature files, and in template files used in
 <A HREF="h_rules_roles">&quot;roles&quot;</A>.
 It may <EM>not</EM> be used with the
-&quot;Index-Format&quot; option.
+<A HREF="h_config_index_format">&quot;Index-Format&quot;</A> option.
 
 <P>
 There is a limited if-else capability for including text.
@@ -17888,9 +18325,24 @@ outside of the conditional, so is always included.
 If you wanted to get rid of that blank line you could do so by moving
 the end of line inside the conditional.
 In other words, it's ok to have multi-line
-&quot;if_matched&quot; or &quot;if_not_matched&quot; arguments.
+&quot;if_matched&quot; or &quot;if_not_matched&quot; arguments in your
+template file.
 The text just continues until the next double quotation, even if it's not
 on the same line.
+<P>
+Here's an example for use in the &quot;Reply-Leadin&quot;:
+<P>
+<CENTER><SAMP>On _DAYDATE_, _FROM__CURNEWS_(&quot;&quot;, &quot;&quot;, &quot;seen in _CURNEWS_,&quot;) wrote</SAMP></CENTER>
+<P>
+If this was in your Reply-Leadin and you were replying to a message
+while reading the newsgroup comp.mail.pine the resulting text would be:
+<P>
+<CENTER><SAMP>On Sat, 24 Oct 1998, Fred Flintstone, seen in comp.mail.pine, wrote:</SAMP></CENTER>
+<P>
+If you were replying to a message while reading an email folder instead
+of a newsgroup the resulting leadin text would be
+<P>
+<CENTER><SAMP>On Sat, 24 Oct 1998, Fred Flintstone wrote:</SAMP></CENTER>
 <P>
 Here's one more (contrived) example illustrating a matching argument
 which is not the empty string.
@@ -18001,6 +18453,22 @@ An example might be:
 
 </DD>
 
+<DT>TLS</DT>
+<DD>
+Normally, when a new connection is made an attempt is made to 
+negotiate a secure (encrypted) session using Transport Layer Security (TLS).
+If that fails then a non-encrypted connection will be attempted instead.
+This is a unary parameter indicating communication with the server must 
+take place over a TLS connection. If the attempt to use TLS fails then
+this parameter will cause the connection to fail instead of falling
+back to an insecure connection.
+
+<P>
+<CENTER><SAMP>/tls</SAMP></CENTER>
+<P>
+
+</DD>
+
 <DT>SSL</DT>
 <DD>
 This is a unary parameter indicating communication with the server should 
@@ -18050,6 +18518,25 @@ the connection if the first (generally most &quot;secure&quot;) method fails.
 
 <P>
 <CENTER><SAMP>/secure</SAMP></CENTER>
+<P>
+
+</DD>
+
+<DT>Submit</DT>
+<DD>This is a unary parameter for use with the
+<A HREF="h_config_smtp_server">&quot;SMTP-Server&quot;</A> option.
+It indicates that the connection should be made to the Submit server
+(<A HREF="http://www.ietf.org/rfc/rfc2476.txt">RFC 3676</A>)
+(port 587) instead of the SMTP port (25).
+At the time this help was written the submit option was equivalent to
+specifying port 587.
+
+<P>
+<CENTER><SAMP>/submit</SAMP></CENTER>
+<P>
+or
+<P>
+<CENTER><SAMP>host:587</SAMP></CENTER>
 <P>
 
 </DD>
@@ -18121,6 +18608,26 @@ model and will leave your mail on the server. Refer to the
 </OL>
 </DD>
 </DL>
+
+<DT>Loser</DT>
+<DD>This is intended for use with defective servers that do not implement the
+protocol specification correctly.
+It should be used only as a last resort since it is likely that it
+will seriously degrade performance.
+Setting this parameter will cause Pine to disable various protocol features
+and perform client-side workarounds instead.
+For example, it disables the IMAP SEARCH, SORT, and THREAD commands
+and does client-side searching, sorting, and threading instead.
+If set for the <A HREF="h_config_smtp_server">&quot;SMTP-Server&quot;</A>
+option, it causes Pine to not use the EHLO command and so not
+to attempt to use any SMTP extensions.
+The precise measures taken when &quot;loser&quot; is set depend on the
+protocol and are subject to change over time.
+
+<P>
+<CENTER><SAMP>/loser</SAMP></CENTER>
+<P>
+</DD>
 </DL>
 
 <P>
@@ -19081,7 +19588,7 @@ servers you should use.
 Your SMTP server may offer SMTP AUTH authentication.
 It may even require it.
 If your SMTP server offers SMTP AUTH authentication you may specify a
-user name parameter to cause Pine to attempt to authenticate.
+&quot;user&quot; name parameter to cause Pine to attempt to authenticate.
 This parameter requires an associated value,
 the username identifier with which to establish the server
 connection.
@@ -19106,14 +19613,41 @@ which means that you have to authenticate
 yourself to the POP or IMAP server by opening a mailbox before you
 can send mail.
 To do this, you usually only have to open your INBOX.
+
+<P>
+You may tell Pine to use the
+<A HREF="http://www.ietf.org/rfc/rfc2476.txt">Message Submission</A>
+port (587) instead of the SMTP port (25) by including the &quot;submit&quot;
+parameter
+in this option.
+At this time &quot;/submit&quot; is simply equivalent to specifying
+port 587, though it may imply more than that at some point in the future.
+Some ISPs are blocking port 25 in order to reduce the amount of spam
+being sent to their users.
+You may find that the submit option allows you to get around such a block.
+
+<P>
+<CENTER><SAMP>smtpserver.example.com/submit</SAMP></CENTER>
 <P>
 
-To use a non-standard port number on the SMTP server, follow the hostname
-with colon portnumber.
+To specify any non-standard port number on the SMTP server you may follow
+the hostname with a colon followed by the portnumber.
 
 <P>
 <CENTER><SAMP>smtpserver.example.com:12345</SAMP></CENTER>
 <P>
+
+Normally, when a connection is made to the Smtp-Server Pine will attempt
+to negotiate a secure (encrypted) session using Transport Layer Security (TLS).
+If that fails then a non-encrypted connection will be attempted instead.
+You may specify that a TLS connection is required if you wish.
+If you append &quot;/tls&quot; to the name then the connection will fail
+instead of falling back to a non-secure connection.
+
+<P>
+<CENTER><SAMP>smtpserver.example.com/tls</SAMP></CENTER>
+<P>
+
 
 For more details about server name possibilities see
 <A HREF="h_folder_server_syntax">Server Name Syntax</A>.
@@ -19891,11 +20425,16 @@ changed From address to the
 <a href="h_config_alt_addresses">Alt-Addresses</a>
 configuration option.
 <P>
-Limitation: Because commas are used to separate the list of
-Customized-Hdrs, it is not possible to have the value of a
-header contain a comma.
-Nor is there currently an &quot;escape&quot; mechanism provided
-to make this work.
+Because commas are used in the configuration file to separate the
+list of Customized-Hdrs, you need to quote the value if that value
+contains a comma.
+Use double quotes and place the quotes around the entire value part of
+the header, not including the name of the header.
+For example, you might have
+<P>
+<CENTER><SAMP>Organization: &quot;My Organization Name, My City&quot;</SAMP></CENTER>
+<P>
+as one of the Customized-Hdrs.
 <P><UL>
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
 </UL>
@@ -20103,22 +20642,9 @@ be sure to turn that on if you use quote suppression.
 For the purposes of this option, a quote is a line that begins with the
 character &quot;&gt;&quot;.
 <P>
-Quote suppression happens after long line wrapping in Pine.
-It is done that way so that messages written in the style of one long line
-per paragraph don't count as a single line as far as quote suppression goes.
-Quote suppression line counting happens on the lines you see, not the raw
-lines of the message.
-For that reason, you may sometimes see unexpected results.
-For example, if a quoted line is long, it may wrap to the next line.
-If it isn't labeled <A HREF="h_config_quell_flowed_text">flowed</A> that will
-cause the wrapped text to be on a line by itself.
-As far as the quote suppression algorithm is concerned, this is now
-a line that is not part of the quote, so it won't be suppressed.
-On the other hand,
-<A HREF="h_config_quote_color">quote coloring</A>
-happens before line wrapping.
-So a line may be colored like it is a quote even though it is not suppressed.
-
+Quotes are only suppressed when displaying a message on the screen.
+The entire quote will be left intact when printing or forwarding or something
+similar.
 <P>
 &lt;End of help on this topic&gt;
 </BODY>
@@ -21905,7 +22431,15 @@ PC-Pine only.
 <P>
 Position on the screen of the Pine window.
 <P>
-Pine normally maintains this variable itself.
+Pine normally maintains this variable itself, and it is set automatically. 
+This variable is provided to those who wish to use the same window position 
+across different machines from the same configuration.
+<A HREF="h_config_winpos_in_config">Store-Window-Position-in-Config</A> 
+must also be set for this setting to be used.
+<P>
+The format for this variable is of the form: <CODE>CxR+X+Y</CODE>, where
+C is the number of columns, R is the number of rows, and X and Y specify the
+top left corner of the window.
 <P>
 <UL>   
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
@@ -22642,6 +23176,64 @@ quoted text will not be flowed
 when you reply.
 For this reason, we recommend that you leave your Reply-Indent-String
 set to the default value.
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_quote_replace_string =====
+<HTML>
+<HEAD>
+<TITLE>OPTION: Quote-Replace-String</TITLE>
+</HEAD>
+<BODY>
+<H1>OPTION: Quote-Replace-String</H1>
+
+This option specifies what string to use as a quote when <b>viewing</b> a
+message.  The standard way of quoting messages when replying is the string
+&quot;&gt; &quot; (quote space).
+With this variable set, viewing a message will
+replace occurrences of 
+&quot;&gt; &quot; and &quot;&gt;&quot; with the replacement string.
+This setting works best when
+<A HREF="h_config_reply_indent_string">Reply-Indent-String</A>
+or the equivalent setting in your correspondents' mail programs
+is set to the default
+&quot;&gt; &quot;, but it will also work fine with the
+Reply-Indent-String set to &quot;&gt;&quot;.
+<P>
+By default, this setting will only work on messages that are flowed, which is
+the default way of sending messages for many mail clients including versions
+of Pine after 4.60.  Enable the feature
+<A HREF="h_config_quote_replace_noflow">Quote-Replace-Nonflowed</A>
+to also have quote-replacement performed on non-flowed messages.
+<P>
+
+Setting this option will replace  &quot;&gt;&quot; and 
+&quot;&gt; &quot; with the new setting. This string may include trailing
+spaces. To preserve those spaces enclose the full string in double quotes.
+<P>
+No padding to separate the text of the message from the quote string is
+added. This means that if you do not add trailing spaces to the value of
+this variable, text will be displayed right next to the quote string,
+which may be undesirable. This can be avoided by adding a new string
+separated by a space from your selection of quote string replacement. This
+last string will be used for padding. For example, setting this variable to 
+<br>&quot;&gt;&quot; &quot; &quot; has the effect of setting
+&quot;&gt;&quot; as the quote-replace-string, with the text padded by
+a space from the last quote string to make it more readable.
+<P>
+One possible setting for this variable could be
+&quot;    &quot; (four spaces wrapped in quotes), which
+would have the effect of indenting each level of quoting four spaces and
+removing the &quot;&gt;&quot;'s.  Different levels of quoting could be made
+more discernible by setting colors for quoted text.
+<P>
+Replying to or forwarding the viewed message will preserve the original
+formatting of the message, so quote-replacement will not be performed on
+messages that are being composed.
 <P>
 <UL>   
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
@@ -24263,6 +24855,27 @@ Quit command is received.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+====== h_config_quote_replace_noflow =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: Quote-Replace-Nonflowed</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: Quote-Replace-Nonflowed</H1>
+This feature, which is only active when
+<A HREF="h_config_quote_replace_string">Quote-Replace-String</A> is
+also set,
+enables quote-replacement on non-flowed messages.  It is off
+by default because a non-flowed message is more dependent on its format,
+and thus quote-replacement may cause less-than-pleasing results.
+Setting this feature will cause quote-replacement similar to that of flowed
+messages, but with the added possibility of long lines being wrapped
+into new lines if the Quote-Replacement-String is longer than the string
+it is replacing, which is &quot;&gt;&nbsp;&quot;.
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_enable_jump =====
 <HTML>
 <HEAD>
@@ -24540,7 +25153,7 @@ as &quot;fg&quot; at your system prompt to return to your Pine session.
 <P>
 The <A HREF="h_config_suspend_spawns">Use-Subshell-for-Suspend</A> feature
 adjusts whether Pine is placed into the background of the shell its 
-running in or starts a news shell.
+running in or starts a new shell.
 <!--chtml endif-->
 
 <P>
@@ -25312,6 +25925,30 @@ This feature specifies that Pine will respond to function keys instead of
 the normal single-letter commands. In this mode, the key menus at the
 bottom of each screen will show function key designations instead of the
 normal mnemonic key.
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_cancel_confirm =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: Compose-Cancel-Confirm-Uses-Yes</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: Compose-Cancel-Confirm-Uses-Yes</H1>
+
+This feature affects what happens when you type ^C to cancel a composition.
+By default, if you attempt to cancel a composition by typing ^C, you will be
+asked to confirm the cancellation by typing a &quot;C&quot;
+for <EM>C</EM>onfirm.
+It logically ought to be a &quot;Y&quot; for <EM>Y</EM>es, but that is
+risky because the &quot;^C Y&quot; needed to cancel a message
+is close (on the keyboard) to the &quot;^X Y&quot; needed to send a message.
+<P>
+If this feature is set the confirmation asked for
+will be a &quot;<EM>Y</EM>es&quot;
+instead of a &quot;<EM>C</EM>onfirm&quot; response.
 
 <P>
 &lt;End of help on this topic&gt;
@@ -26936,7 +27573,7 @@ you sometimes see messages from Pine that look like
 or
 
 <P>
-<CENTER><SAMP>&lt;filter name&gt;: Settting flags in 5 messages</SAMP></CENTER>
+<CENTER><SAMP>&lt;filter name&gt;: Setting flags in 5 messages</SAMP></CENTER>
 <P>
 
 or
@@ -27452,6 +28089,36 @@ advance to the next message.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+====== h_config_force_arrow =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: Force-Arrow-Cursor</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: Force-Arrow-Cursor</H1>
+
+This feature affects Pine's MESSAGE INDEX display routine.
+If set, the normal inverse-video cursor will be
+replaced by a simple &quot;arrow&quot; cursor, which normally occupies the
+second column of the index display.
+<P>
+This is the same index cursor you get if you turn on
+<A HREF="h_config_force_low_speed">Assume-Slow-Link</A>, but the index
+line coloring will still be present if this feature is turned on and
+Assume-Slow-Link is off.
+<P>
+An alternative version of the Arrow cursor is available by including the
+<A HREF="h_config_arrow_color">ARROW</A>
+token in the
+<A HREF="h_config_index_format">Index-Format</A> option.
+<P>
+It ought to be the case that this feature also affects the ATTACHMENT INDEX,
+but that is not implemented.
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_force_low_speed =====
 <HTML>
 <HEAD>
@@ -27467,6 +28134,10 @@ screen update optimizations for
 low-speed links (e.g. 2400 bps dialup connections) will be activated.
 One of the optimizations is that colored index lines (set up with Indexcolor
 Rules) will not be colored.
+If you are just turning this feature on because you like using
+the &quot;arrow&quot; cursor you may have an arrow cursor with index line
+coloring by turning this feature off and the
+<A HREF="h_config_force_arrow">Force-Arrow-Cursor</A> on.
 
 <P>
 &lt;End of help on this topic&gt;
@@ -27933,6 +28604,30 @@ to see the available Editing and Navigation commands.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+====== h_config_arrow_color =====
+<HTML>
+<HEAD>
+<TITLE>OPTION: Index Arrow Color</TITLE>
+</HEAD>
+<BODY>
+<H1>OPTION: Index Arrow Color</H1>
+
+If you have configured your
+<A HREF="h_config_index_format">Index-Format</A> option
+to include the &quot;ARROW&quot; token, you may set the color of
+the arrow displayed with this option.
+If you don't set the color it will be colored in the same color as
+the bulk of the index line.
+
+<P>
+<A HREF="h_color_setup">Descriptions of the available commands</A>
+<P>
+Look <A HREF="h_edit_nav_cmds">here</A>
+to see the available Editing and Navigation commands.
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_index_color =====
 <HTML>
 <HEAD>
@@ -27965,7 +28660,7 @@ This is done by using the
 <A HREF="h_rules_incols">SETUP INDEX LINE COLORS</A> screen, which you
 may get to with the commands <EM>S</EM>etup/<EM>R</EM>ules/<EM>I</EM>ndexcolor.
 It is also possible to color
-(<A HREF="h_config_keywords">Keywords</A>
+<A HREF="h_config_keywords">Keywords</A>
 in the index using the
 Setup/Kolor screen (<A HREF="h_config_kw_color">Keyword Colors</A>).
 <P>
@@ -29109,7 +29804,8 @@ configuration from more than one PC.
 If you use multiple configuration files to start PC-Pine, you may want
 to store the window size and position in the configuration file instead
 of in the Registry.
-Setting this feature causes that to happen.
+Setting this feature causes the value to be stored in 
+<A HREF="h_config_window_position">Window-Position</A>.
 
 <P>
 <UL>   
@@ -29208,6 +29904,9 @@ if the information can be obtained from the login name used
 to open the INBOX.  Normally, this prompt happens before composing
 a message, and only happens when there is no user-id already set
 in the configuration.
+<P>
+With this feature set, composing a message is only possible after
+establishing a connection to the INBOX.
 <P>
 <UL>   
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
@@ -30140,6 +30839,54 @@ also may affect the name of the newsrc file that is used.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+======= h_ab_export_vcard =======
+<HTML>
+<HEAD>
+<TITLE>Address Book Export Format</TITLE>
+</HEAD>
+<BODY>
+<H1>Address Book Export Format</H1>
+
+You are exporting address book data from Pine to a file outside of Pine.
+You are being asked to choose the format of the export.
+Here are the choices:
+
+<DL>
+<DT><EM>A</EM>ddress List</DT>
+<DD>
+The addresses from the address book entries you are saving
+from will be saved one address per line.
+Address book lists (those with more than one address) will have
+all of their addresses saved separately.
+</DD>
+
+<DT><EM>V</EM>Card</DT>
+<DD>
+The entries will be saved in
+<A HREF="h_whatis_vcard">vCard</A> format.
+</DD>
+
+<DT><EM>T</EM>ab Separated</DT>
+<DD>
+The entries will be saved in tab-separated columns.
+There will be just 4 columns of data which correspond to Pine's
+Nickname field, Full Name field, Address field, and Comment field.
+It might prove useful to Select only the Simple, non-List address book
+entries before Saving.
+</DD>
+
+<DT><EM>^C</EM> Cancel</DT>
+<DD>
+Cancel out of the Save.
+</DD>
+
+</DL>
+
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_predict_nntp_server =====
 <HTML>
 <HEAD>
@@ -30275,9 +31022,9 @@ Press R to remove this one server and add the others to your personal list.
 ====== h_ab_copy_dups =====
 Yes, overwrite the existing entry.
 No, skip duplicates but save the rest. Press ^C to cancel.
-====== h_ab_export_vcard =====
-A, export list of addresses to file.
-V, export as much vCard information as possible to file. ^C to cancel.
+====== h_confirm_cancel =====
+Type C to Confirm that you want to abandon the message you are composing.
+Type N or ^C to cancel out of the cancel and keep composing.
 ====== h_ab_text_or_vcard =====
 Text, start composer with displayed text already included.
 VCard, start composer with address book entry attached as a vCard. ^C cancels.

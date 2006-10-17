@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailview.c,v 1.4 2005-01-26 18:26:28 ghudson Exp $";
+static char rcsid[] = "$Id: mailview.c,v 1.5 2006-10-17 18:24:15 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailview.c,v 1.4 2005-01-26 18:26:28 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2004 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -306,6 +306,7 @@ void	    view_writec_killbuf PROTO((void));
 int	    view_writec PROTO((int));
 int	    view_end_scroll PROTO((SCROLL_S *));
 int	    quote_editorial PROTO((long, char *, LT_INS_S **, void *));
+int	    replace_quotes PROTO((long, char *, LT_INS_S **, void *));
 int	    delete_quotes PROTO((long, char *, LT_INS_S **, void *));
 void        delete_unused_handles PROTO((HANDLE_S **));
 void        mark_handles_in_line PROTO((char *, HANDLE_S **, int));
@@ -366,7 +367,6 @@ int	    url_hilite_hdr PROTO((long, char *, LT_INS_S **, void *));
 int	    url_launch PROTO((HANDLE_S *));
 int	    url_launch_too_long PROTO((int));
 char	   *url_external_handler PROTO((HANDLE_S *, int));
-int	    url_local_mailto PROTO((char *));
 void	    url_mailto_addr PROTO((ADDRESS **, char *));
 int	    url_local_imap PROTO((char *));
 int	    url_bogus_imap PROTO((char **, char *, char *));
@@ -487,7 +487,10 @@ mail_view_screen(ps)
 	 * Note: this is more a deficiency in NNTP than in c-client.
 	 */
 	src = (mc->rfc822_size > MAX_MSG_INCORE 
-	       || strcmp(ps->mail_stream->dtb->name, "nntp") == 0)
+	       || (ps->mail_stream
+	           && ps->mail_stream->dtb
+		   && ps->mail_stream->dtb->name
+		   && !strcmp(ps->mail_stream->dtb->name, "nntp")))
 		? TmpFileStar : CharStar;
 #endif
 	init_handles(&handles);
@@ -1570,7 +1573,7 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 	    gf_filter_init();
 	    /* link in filters, similar to what is done in decode_text() */
 	    if(!ps_global->pass_ctrl_chars){
-		gf_link_filter(gf_escape_filter, NULL);
+		/* gf_link_filter(gf_escape_filter, NULL); */
 		filt_only_c0 = ps_global->pass_c1_ctrl_chars ? 1 : 0;
 		gf_link_filter(gf_control_filter,
 			       gf_control_filter_opt(&filt_only_c0));
@@ -2805,15 +2808,16 @@ scroll_handle_prompt(handle, force)
 	else
 	  sprintf(prompt, "View selected %s %s%.*s%s ? ",
 		  (handle->type == URL) ? "URL" : "Attachment",
-		  (handle->type == URL) ? "\"" : "",
+		  (handle->type == URL) ? "<" : "",
 		  min(max(0,sc-27), sizeof(prompt)-50),
 		  (handle->type == URL) ? handle->h.url.path : "",
 		  (handle->type == URL)
 		    ? ((strlen(handle->h.url.path) > max(0,sc-27))
-			    ? "...\"" : "\"") : "");
+			    ? "...>" : ">") : "");
 
 	switch(radio_buttons(prompt, -FOOTER_ROWS(ps_global),
-			     launch_opts, 'y', 0, NO_HELP, RB_SEQ_SENSITIVE)){
+			     launch_opts, 'y', 'n', NO_HELP, RB_SEQ_SENSITIVE,
+			     NULL)){
 	  case 'y' :
 	    return(1);
 
@@ -3748,6 +3752,80 @@ color_signature(linenum, line, ins, is_in_sig)
     return 0;
 }
 
+
+/*
+ * Replace quotes of nonflowed messages.  This needs to happen
+ * towards the end of filtering because a lot of prior filters
+ * depend on "> ", such as quote coloring and suppression.
+ * Quotes are already colored here, so we have to account for
+ * that formatting.
+ */
+int
+replace_quotes(linenum, line, ins, local)
+    long       linenum;
+    char      *line;
+    LT_INS_S **ins;
+    void      *local;
+{
+    char *lp = line, *prefix = NULL, *last_prefix = NULL;
+    int no_more_quotes = 0, len, saw_quote = 0;
+
+    if(ps_global->VAR_QUOTE_REPLACE_STRING){
+	get_pair(ps_global->VAR_QUOTE_REPLACE_STRING, &prefix, &last_prefix, 0, 0);
+	if(!prefix && last_prefix){
+	    prefix = last_prefix;
+	    last_prefix = NULL;
+	}
+    }
+    else
+      return(0);
+
+    while(isspace((unsigned char)(*lp)))
+      lp++;
+    while(*lp && !no_more_quotes){
+	switch(*lp++){
+	  case '>':
+	    if(*lp == ' '){
+		ins = gf_line_test_new_ins(ins, lp - 1, "", -2);
+		*lp++;
+	    }
+	    else
+	      ins = gf_line_test_new_ins(ins, lp - 1, "", -1);
+	    if(strlen(prefix))
+	      ins = gf_line_test_new_ins(ins, lp, prefix, strlen(prefix));
+	    saw_quote = 1;
+	    break;
+	  case TAG_EMBED:
+	    switch(*lp++){
+	      case TAG_FGCOLOR:
+	      case TAG_BGCOLOR:
+		len = RGBLEN;
+		break;
+	      case TAG_HANDLE:
+		len = *lp++ + 1;
+		break;
+	    }
+	    if(strlen(lp) < len)
+	      no_more_quotes = 1;
+	    else
+	      lp += len;
+	    break;
+	  case ' ':
+	  case '\t':
+	    break;
+	  default:
+	    if(saw_quote && last_prefix)
+	      ins = gf_line_test_new_ins(ins, lp - 1, last_prefix, strlen(last_prefix));
+	    no_more_quotes = 1;
+	    break;
+	}
+    }
+    if(prefix)
+      fs_give((void **)&prefix);
+    if(last_prefix)
+      fs_give((void **)&last_prefix);
+    return(0);
+}
 
 /*
  * This one is a little more complicated because it comes late in the
@@ -4846,6 +4924,14 @@ int
 url_local_mailto(url)
   char *url;
 {
+    return(url_local_mailto_and_atts(url, NULL));
+}
+
+int
+url_local_mailto_and_atts(url, attachlist)
+  char *url;
+  PATMT *attachlist;
+{
     ENVELOPE *outgoing;
     BODY     *body = NULL;
     REPLY_S   fake_reply;
@@ -4912,6 +4998,14 @@ url_local_mailto(url)
 	    else if(!strucmp(hname, "cc")){
 		url_mailto_addr(&outgoing->cc, hvalue);
 	    }
+	    else if(!strucmp(hname, "bcc")){
+		q_status_message(SM_ORDER, 3, 4,
+				 "\"Bcc\" header in mailto url ignored");
+	    }
+	    else if(!strucmp(hname, "from")){
+		q_status_message(SM_ORDER, 3, 4,
+				 "\"From\" header in mailto url ignored");
+	    }
 	    else if(!strucmp(hname, "body")){
 		char *sub = rfc1738_str(hvalue ? hvalue : "");
 
@@ -4975,6 +5069,9 @@ url_local_mailto(url)
 
 	if(!(role && role->fcc))
 	  fcc = get_fcc_based_on_to(outgoing->to);
+
+	if(attachlist)
+	  create_message_body(&body, attachlist, NULL, 0);
 
 	pine_send(outgoing, &body, "\"MAILTO\" COMPOSE",
 		  role, fcc, &fake_reply, redraft_pos, NULL, NULL, 0);
@@ -5565,11 +5662,12 @@ decode_text(att, msgno, pc, handlesp, style, flags)
     DetachErrStyle  style;
     int		    flags;
 {
-    FILTLIST_S	filters[13];
+    FILTLIST_S	filters[14];
     char       *err, *charset;
     int		filtcnt = 0, error_found = 0, column, wrapit;
     int         is_in_sig = OUT_SIG_BLOCK;
     int         is_flowed_msg = 0;
+    int         is_delsp_yes = 0;
     int         filt_only_c0 = 0;
     char       *parmval;
     CONV_TABLE *ct = NULL;
@@ -5592,6 +5690,16 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 	if(!strucmp(parmval, "flowed"))
 	  is_flowed_msg = 1;
 	fs_give((void **) &parmval);
+
+	if(is_flowed_msg){
+	    if(parmval = rfc2231_get_param(att->body->parameter,
+					   "delsp", NULL, NULL)){
+		if(!strucmp(parmval, "yes"))
+		  is_delsp_yes = 1;
+
+		fs_give((void **) &parmval);
+	    }
+	}
     }
 
     /*
@@ -5622,7 +5730,13 @@ decode_text(att, msgno, pc, handlesp, style, flags)
     }
 
     if(!ps_global->pass_ctrl_chars){
-	filters[filtcnt++].filter = gf_escape_filter;
+	/*
+	 * Escapes are no longer special. The only escape sequence we
+	 * recognize is for ISO-2022-JP and it is handled before this.
+	 * Escape is just treated like any other control character at
+	 * this point.
+	 */
+	/* filters[filtcnt++].filter = gf_escape_filter; */
 	filters[filtcnt].filter = gf_control_filter;
 
 	filt_only_c0 = ps_global->pass_c1_ctrl_chars ? 1 : 0;
@@ -5642,6 +5756,20 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 	    || F_ON(F_VIEW_SEL_URL_HOST, ps_global)
 	    || F_ON(F_SCAN_ADDR, ps_global))
 	   && handlesp){
+
+	    /*
+	     * The url_hilite filter really ought to come
+	     * after flowing, because flowing with the DelSp=yes parameter
+	     * can reassemble broken urls back into identifiable urls.
+	     * We add the preflow filter to do only the reassembly part
+	     * of the flowing so that we can spot the urls.
+	     * At this time (2005-03-29) we know that Apple Mail does
+	     * send mail like this sometimes. This filter removes the
+	     * sequence  SP CRLF  if that seems safe.
+	     */
+	    if(ps_global->full_header != 2 && is_delsp_yes)
+              filters[filtcnt++].filter = gf_preflow;
+
 	    filters[filtcnt].filter = gf_line_test;
 	    filters[filtcnt++].data = gf_line_test_opt(url_hilite, handlesp);
 	}
@@ -5712,7 +5840,40 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 						    handlesp, opts);
     }
 
-    if(wrapit && !(flags & FM_NOWRAP)){
+    /*
+     * If the message is not flowed, we do the quote suppression before
+     * the wrapping, because the wrapping does not preserve the quote
+     * characters at the beginnings of the lines in that case.
+     * Otherwise, we defer until after the wrapping.
+     *
+     * Also, this is a good place to do quote-replacement on nonflowed
+     * messages because no other filters depend on the "> ".
+     * Quote-replacement is easier in the flowed case and occurs
+     * automatically in the flowed wrapping filter.
+     */
+    if(!is_flowed_msg
+       && ps_global->full_header == 0
+       && !(att->body->subtype && strucmp(att->body->subtype, "plain"))
+       && (flags & FM_DISPLAY)){
+	if(ps_global->quote_suppression_threshold != 0){
+	    memset(&dq, 0, sizeof(dq));
+	    dq.lines = ps_global->quote_suppression_threshold;
+	    dq.is_flowed = is_flowed_msg;
+	    dq.indent_length = 0;		/* indent didn't happen yet */
+	    dq.saved_line = &free_this;
+	    dq.handlesp   = handlesp;
+
+	    filters[filtcnt].filter = gf_line_test;
+	    filters[filtcnt++].data = gf_line_test_opt(delete_quotes, &dq);
+	}
+	if(ps_global->VAR_QUOTE_REPLACE_STRING
+	    && F_ON(F_QUOTE_REPLACE_NOFLOW, ps_global)){
+	    filters[filtcnt].filter = gf_line_test;
+	    filters[filtcnt++].data = gf_line_test_opt(replace_quotes, NULL);
+	}
+    }
+
+    if(wrapit && (!(flags & FM_NOWRAP) || ((flags & FM_WRAPFLOWED) && is_flowed_msg))){
 	int   margin = 0, wrapflags = (flags & FM_DISPLAY) ? GFW_HANDLES : 0;
 
 	if(flags & FM_DISPLAY
@@ -5724,13 +5885,8 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 	if(ps_global->full_header != 2 && is_flowed_msg){
 	    wrapflags |= GFW_FLOWED;
 
-	    if(parmval = rfc2231_get_param(att->body->parameter,
-					   "delsp", NULL, NULL)){
-		if(!strucmp(parmval, "yes"))
-		  wrapflags |= GFW_DELSP;
-
-		fs_give((void **) &parmval);
-	    }
+	    if(is_delsp_yes)
+	      wrapflags |= GFW_DELSP;
 	}
 
 	filters[filtcnt].filter = gf_wrap;
@@ -5744,9 +5900,13 @@ decode_text(att, msgno, pc, handlesp, style, flags)
     /*
      * This has to come after wrapping has happened because the user tells
      * us how many quoted lines to display, and we want that number to be
-     * the wrapped lines, not the pre-wrapped lines.
+     * the wrapped lines, not the pre-wrapped lines. We do it before the
+     * wrapping if the message is not flowed, because the wrapping does not
+     * preserve the quote characters at the beginnings of the lines in that
+     * case.
      */
-    if(ps_global->full_header == 0
+    if(is_flowed_msg
+       && ps_global->full_header == 0
        && !(att->body->subtype && strucmp(att->body->subtype, "plain"))
        && (flags & FM_DISPLAY)
        && ps_global->quote_suppression_threshold != 0){
@@ -5852,36 +6012,23 @@ decode_text(att, msgno, pc, handlesp, style, flags)
    NOTE: if the length of these should extend beyond 4 chars, fix
 	 MAX_ESC_LEN in filter.c
   ----*/
-#ifdef	_WINDOWS
 static char *known_escapes[] = {
     "(B",  "(J",  "$@",  "$B",			/* RFC 1468 */
     "(H",
     NULL};
-#else
-static char *known_escapes[] = {
-    "(B",  "(J",  "$@",  "$B",			/* RFC 1468 */
-    "(H",
-    "$A",  "$(C", "$(D", ".A",  ".F",		/* added by RFC 1554 */
-    "$)C", "$)A", "$*E", "$*X",			/* those in apng-draft */
-    "$+G", "$+H", "$+I", "$+J", "$+K",
-    "$+L", "$+M",
-    ")I",   "-A",  "-B",  "-C",  "-D",		/* codes form X11R5 source */
-    "-F",   "-G",  "-H",   "-L",  "-M",
-    "-$(A", "$(B", "$)B", "$)D",
-    NULL};
-#endif
 
 int
 match_escapes(esc_seq)
     char *esc_seq;
 {
-    char **p;
+    char **p = NULL;
     int    n;
 
-    for(p = known_escapes; *p && strncmp(esc_seq, *p, n = strlen(*p)); p++)
-      ;
+    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global))
+      for(p = known_escapes; *p && strncmp(esc_seq, *p, n = strlen(*p)); p++)
+	;
 
-    return(*p ? n + 1 : 0);
+    return((p && *p) ? n + 1 : 0);
 }
 
 
@@ -6219,8 +6366,7 @@ format_raw_header(stream, msgno, section, pc)
 		if(ISRFCEOL(h))		/* all done! */
 		  return(FHT_OK);
 	    }
-	    else if(FILTER_THIS(*h) &&
-		    !(*(h+1) && *h == ESCAPE && match_escapes(h+1))){
+	    else if(FILTER_THIS(*h)){
 		c = (unsigned char) *h++;
 		if(!((*pc)(c >= 0x80 ? '~' : '^')
 		     && (*pc)((c == 0x7f) ? '?' : (c & 0x1f) + '@')))
@@ -6828,6 +6974,9 @@ format_newsgroup_string(field_name, newsgrps, flags, pc)
 
 /*----------------------------------------------------------------------
   Format a text field that's part of some raw (non-envelope) message header
+  This is a bad name for the function. It isn't really raw, it is just not
+  an envelope header that we know about. It shouldn't allow any control
+  characters through.
 
   Args: start --
         finish --
@@ -6845,9 +6994,10 @@ format_raw_hdr_string(start, finish, pc, flags)
 {
     register char *current;
     unsigned char *p, *tmp = NULL, c;
+    char          *q, *s, *tb = NULL;
     size_t	   n, len;
-    char	   ch;
-    int		   rv = FHT_OK;
+    char	   ch, b[1000];
+    int		   rv = FHT_OK, rfceol = 0;
 
     ch = *finish;
     *finish = '\0';
@@ -6874,15 +7024,43 @@ format_raw_hdr_string(start, finish, pc, flags)
 
 	  current += 2;
       }
-      else if(FILTER_THIS(*current) &&
-	     !(*(current+1) && *current == ESCAPE && match_escapes(current+1))){
-	  c = (unsigned char) *current++;
-	  if(!((*pc)(c >= 0x80 ? '~' : '^')
-	       && (*pc)((c == 0x7f) ? '?' : (c & 0x1f) + '@')))
+      else{
+	  /* find next EOL or end */
+	  for(rfceol = 0, q = current; *q; q++)
+	    if(ISRFCEOL(q))
+	      break;
+
+	  if(ISRFCEOL(q)){
+	    rfceol = 1;
+	    *q = '\0';
+	  }
+
+	  tb = NULL;
+	  /* room to escape control chars */
+	  if(2 * (q - current) + 1 > sizeof(b)){
+	      len = 2 * (q - current) + 1;
+	      s = tb = (char *) fs_get(len * sizeof(char));
+	  }
+	  else{
+	      len = sizeof(b);
+	      s = b;
+	  }
+
+	  istrncpy(s, current, len);
+	  s[len-1] = '\0';		/* making sure */
+
+	  if(!gf_puts(s, pc))
 	    rv = FHT_WRTERR;
+
+	  if(tb)
+	    fs_give((void **) &tb);
+
+	  if(rfceol)
+	    *q = '\015';
+
+	  current = q;
       }
-      else if(!(*pc)(*current++))
-	rv = FHT_WRTERR;
+
 
     if(tmp)
       fs_give((void **) &tmp);
@@ -6913,7 +7091,7 @@ format_env_puts(s, pc)
       return(gf_puts(s, pc));
 
     for(; *s; s++)
-      if(FILTER_THIS(*s) && !(*(s+1) && *s == ESCAPE && match_escapes(s+1))){
+      if(FILTER_THIS(*s)){
 	  if(!((*pc)((unsigned char) (*s) >= 0x80 ? '~' : '^')
 	       && (*pc)((*s == 0x7f) ? '?' : (*s & 0x1f) + '@')))
 	    return(0);
@@ -8045,6 +8223,7 @@ scrolltool(sparms)
 		  sparms->start.loc.offset += scroll_handle_column(line, -1);
 
 		done = 1;
+		ClearLine(1);
 		break;
 	    }
 	    /* else no reformatting neccessary, fall thru to repaint */

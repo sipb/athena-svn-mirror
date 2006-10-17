@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: strings.c,v 1.4 2005-01-26 18:26:29 ghudson Exp $";
+static char rcsid[] = "$Id: strings.c,v 1.5 2006-10-17 18:24:17 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -91,6 +91,8 @@ typedef struct role_args {
 
 char       *pattern_to_config PROTO((PATTERN_S *));
 PATTERN_S  *config_to_pattern PROTO((char *));
+char       *address_to_configstr PROTO((ADDRESS *));
+ADDRESS    *configstr_to_address PROTO((char *));
 char       *add_escapes PROTO((char *, char *, int, char *, char *));
 char       *dollar_escape_dollars PROTO((char *));
 char       *add_pat_escapes PROTO((char *));
@@ -139,6 +141,11 @@ KEYWORD_S  *new_keyword_s PROTO((char *, char *));
 int	    rfc2369_parse PROTO((char *, RFC2369_S *));
 int         test_message_with_cmd PROTO((MAILSTREAM *, long, char *, long,
 					 int *));
+int         charsets_present_in_msg PROTO((MAILSTREAM *, unsigned long,
+					   STRLIST_S *));
+void        collect_charsets_from_subj PROTO((ENVELOPE *, STRLIST_S **));
+void        collect_charsets_from_body PROTO((BODY *, STRLIST_S **));
+ACTION_S   *combine_inherited_role_guts PROTO((ACTION_S *));
 
 
 
@@ -385,6 +392,13 @@ removing_quotes(string)
 {
     register char *p, *q;
 
+    /* 
+     * Wart/bug/feature: strings with 2 consecutive quotes turn
+     * the two quotes into one.  This was biting reply-indent-string
+     * with a value of "", but the fix was to call 
+     * removing_double_quotes instead.
+     * Easy enough to fix, but who's to say what fixing it will break
+     */
     if(*(p = q = string) == '\"'){
 	do
 	  if(*q == '\"' || *q == '\\')
@@ -679,22 +693,44 @@ istrncpy(d, s, n)
     char *d, *s;
     int n;
 {
-    char *rv = d;
+    char *rv = d, *p, *src = s, *trans = NULL;
     unsigned char c;
 
     if(!d || !s)
       return(NULL);
     
+    /*
+     * Check to see if we can skip the translation thing.
+     */
+    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global)){
+	for(p = s; *p && (p-s+1) < n; p++)
+	  if(*p == ESCAPE && *(p+1) && match_escapes(p+1))
+	    break;
+
+	/* it looks like we may have to translate */
+	if(*p && (p-s+1) < n){
+	    unsigned int limit = n;
+
+	    trans = trans_2022_jp_to_euc(s, &limit);
+	    if(trans && strcmp(trans, s))
+	      src = trans;
+	}
+    }
+
+    /* src is either original source or the translation string */
+    s = src;
+
+    /* copy while escaping evil chars */
     do
-      if(*s && FILTER_THIS(*s)
-	 && !(*(s+1) && *s == ESCAPE && match_escapes(s+1))){
+      if(*s && FILTER_THIS(*s)){
 	if(n-- > 0){
 	    c = (unsigned char) *s;
 	    *d++ = c >= 0x80 ? '~' : '^';
 
 	    if(n-- > 0){
 		s++;
-		*d = (c == 0x7f) ? '?' : (c & 0x1f) + '@';
+		*d = (c == 0x7f) ? '?' :
+		      (c == 0x1b) ? '[' : (c & 0x1f) + '@';
 	    }
 	}
       }
@@ -703,6 +739,9 @@ istrncpy(d, s, n)
 	    *d = *s++;
       }
     while(n > 0 && *d++);
+
+    if(trans)
+      fs_give((void **) &trans);
 
     return(rv);
 }
@@ -800,14 +839,18 @@ trans_euc_to_2022_jp(src)
  * Copies the source string into allocated space with the ISO-2022-JP
  * converted into 8-bit EUC codes (on Unix) or into Shift-JIS (on PC).
  * Caller is responsible for freeing the result.
+ *
+ * If limit is a NULL pointer, we consider all of src until a null terminator.
+ * If it is not NULL, then the length of the returned string will be no
+ * more than limit bytes.
  */
 unsigned char *
-trans_2022_jp_to_euc(src)
+trans_2022_jp_to_euc(src, limit)
     unsigned char *src;
+    unsigned int  *limit;
 {
     size_t len;
     unsigned char *rv, *p, *q, c;
-    int    inside_esc_seq = 0;
     int    c1 = -1;		/* remembers first of pair for Shift-JIS */
 #define DFL	0
 #define ESC	1	/* saw ESCAPE */
@@ -819,11 +862,26 @@ trans_2022_jp_to_euc(src)
     if(!src)
       return(NULL);
     
-    if(F_ON(F_DISABLE_2022_JP_CONVERSIONS, ps_global))
-      return((unsigned char *) cpystr((char *) src));
+    if(F_ON(F_DISABLE_2022_JP_CONVERSIONS, ps_global)){
+	unsigned char *d;
+
+	if(limit && strlen(src) > (*limit) - 1){
+	    d = (unsigned char *) fs_get((*limit + 1) * sizeof(char));
+	    strncpy((char *) d, src, *limit);
+	    d[*limit] = '\0';
+	}
+	else
+	  d = (unsigned char *) cpystr((char *) src);
+
+	return(d);
+    }
 
     len = strlen((char *) src);
-    rv = (unsigned char *) fs_get((len + 1) * sizeof(char));
+    if(limit)
+      len = (*limit);
+
+    /* 5 there so we don't have to worry about all the *q++'s */ 
+    rv = (unsigned char *) fs_get((len + 5 + 1) * sizeof(char));
 
     /*
      * The state machine is dumb because it is copied from the same
@@ -831,12 +889,12 @@ trans_2022_jp_to_euc(src)
      * one character at a time with no lookahead. Obviously, we could
      * look ahead here, but why make it different?
      */
-    for(p = src, q = rv; *p; p++){
+    for(p = src, q = rv; *p && (!limit || (q-rv) < len); p++){
 	switch(state){
 	  case ESC:				/* saw ESC */
-	    if(!inside_esc_seq && *p == '$')
+	    if(*p == '$')
 	      state = ESCDOL;
-	    else if(inside_esc_seq && *p == '(')
+	    else if(*p == '(')
 	      state = ESCPAR;
 	    else{
 		*q++ = '\033';
@@ -849,7 +907,6 @@ trans_2022_jp_to_euc(src)
 	  case ESCDOL:			/* saw ESC $ */
 	    if(*p == 'B' || *p == '@'){
 		state = EUC;
-		inside_esc_seq = 1;		/* filtering into euc */
 		c1 = -1;			/* first character of pair */
 	    }
 	    else{
@@ -870,7 +927,6 @@ trans_2022_jp_to_euc(src)
 	     * Hubert 2004-12-07
 	     */
 	    state = DFL;
-	    inside_esc_seq = 0;			/* done filtering */
 	    break;
 
 	  case EUC:				/* filtering into euc */
@@ -929,6 +985,9 @@ trans_2022_jp_to_euc(src)
     }
 
     *q = '\0';
+
+    if(limit && *limit < q-rv)
+      rv[*limit] = '\0';
 
     return(rv);
 }
@@ -2042,6 +2101,8 @@ char_to_octal_triple(c, octal)
 /*
  * Convert in memory string s to a C-style string, with backslash escapes
  * like they're used in C character constants.
+ * Also convert leading spaces because read_pinerc deletes those
+ * if not quoted.
  *
  * Returns allocated C string version of s.
  */
@@ -2050,7 +2111,7 @@ string_to_cstring(s)
     char *s;
 {
     char *b, *p;
-    int   n, i;
+    int   n, i, all_space_so_far = 1;
 
     if(!s)
       return(cpystr(""));
@@ -2062,6 +2123,9 @@ string_to_cstring(s)
     i  = 0;
 
     while(*s){
+	if(*s != SPACE)
+	  all_space_so_far = 0;
+
 	if(i + 4 > n){
 	    /*
 	     * The output string may overflow the output buffer.
@@ -2108,6 +2172,19 @@ string_to_cstring(s)
 		*p++ = '\\';
 		i += 2;
 		break;
+
+	      case SPACE:
+		if(all_space_so_far){	/* use octal output */
+		    *p++ = '\\';
+		    char_to_octal_triple(*s, p);
+		    p += 3;
+		    i += 4;
+		    break;
+		}
+		else{
+		    /* fall through */
+		}
+
 
 	      default:
 		if(*s >= SPACE && *s < '~' && *s != '\"' && *s != '$'){
@@ -2938,6 +3015,34 @@ new_strlist()
 }
 
 
+STRLIST_S *
+copy_strlist(src)
+    STRLIST_S *src;
+{
+    STRLIST_S *ret = NULL, *sl, *ss, *new_sl;
+
+    if(src){
+	ss = NULL;
+	for(sl = src; sl; sl = sl->next){
+	    new_sl = (STRLIST_S *) fs_get(sizeof(*new_sl));
+	    memset((void *) new_sl, 0, sizeof(*new_sl));
+	    if(sl->name)
+	      new_sl->name = cpystr(sl->name);
+
+	    if(ss){
+		ss->next = new_sl;
+		ss = ss->next;
+	    }
+	    else{
+		ret = new_sl;
+		ss = ret;
+	    }
+	}
+    }
+
+    return(ret);
+}
+
 
 void
 free_strlist(strp)
@@ -3159,6 +3264,20 @@ rfc1522_decode(d, len, s, charset)
 	    if(!rv)
 	      rv = d;				/* remember start of dest */
 
+	    /*
+	     * We may have been putting off copying the first part of the
+	     * source while waiting to see if we have to copy at all.
+	     */
+	    if(rv == d && s != start){
+		strncpy((char *) d, start,
+			(int) min((l = (sw - start)), len-1));
+		d += l;				/* advance d, tie off text */
+		if(d-rv > len-1)
+		  d = rv+len-1;
+		*d = '\0';
+		s = sw;
+	    }
+
 	    /* copy everything between s and sw to destination */
 	    for(i = 0; &s[i] < sw; i++)
 	      if(!isspace((unsigned char)s[i])){ /* if some non-whitespace */
@@ -3175,8 +3294,7 @@ rfc1522_decode(d, len, s, charset)
 	      *lang++ = '\0';
 
 	    /* Insert text explaining charset if we don't know what it is */
-	    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global)
-	       && !strucmp((char *) cset, "iso-2022-jp")){
+	    if(!strucmp((char *) cset, "iso-2022-jp")){
 		translate_2022_jp++;
 		dprint(5, (debugfile, "RFC1522_decode: translating %s\n",
 		       cset ? cset : "?"));
@@ -3331,7 +3449,7 @@ rfc1522_decode(d, len, s, charset)
 		*d = '\0';
 		s += l;				/* advance s beyond intro */
 	    }
-	    else
+	    else	/* probably won't have to copy it at all, wait */
 	      s += ((sw - s) + RFC1522_INIT_L);
 	}
     }
@@ -3340,19 +3458,12 @@ rfc1522_decode(d, len, s, charset)
       strncat((char *) rv, s, len - 1 - strlen((char *) rv));
 
     if(translate_2022_jp){
-	unsigned char *trans;
+	char *qq;
 
-	/*
-	 * We want to do the translation in place in the string, but to do
-	 * that first we get an allocated copy of the translation and then
-	 * we put it back into rv.
-	 */
-	trans = trans_2022_jp_to_euc(rv);
-	if(trans){
-	    istrncpy(rv, (char *) trans, len);
-	    rv[len - 1] = '\0';
-	    fs_give((void **) &trans);
-	}
+	qq = cpystr(rv);
+	istrncpy(rv, (char *) qq, len);
+	rv[len - 1] = '\0';
+	fs_give((void **) &qq);
     }
     else if(cs){
 	if(rv && F_OFF(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
@@ -5579,6 +5690,8 @@ parse_patgrp_slash(str, patgrp)
     }
     else if(!strncmp(str, "/NICK=", 6))
       patgrp->nick = remove_pat_escapes(str+6);
+    else if(!strncmp(str, "/COMM=", 6))
+      patgrp->comment = remove_pat_escapes(str+6);
     else if(!strncmp(str, "/TO=", 4) || !strncmp(str, "/!TO=", 5))
       patgrp->to = parse_pattern("TO", str, 1);
     else if(!strncmp(str, "/CC=", 4) || !strncmp(str, "/!CC=", 5))
@@ -5601,6 +5714,8 @@ parse_patgrp_slash(str, patgrp)
       patgrp->bodytext = parse_pattern("BODY", str, 1);
     else if(!strncmp(str, "/KEY=", 5) || !strncmp(str, "/!KEY=", 6))
       patgrp->keyword = parse_pattern("KEY", str, 1);
+    else if(!strncmp(str, "/CHAR=", 6) || !strncmp(str, "/!CHAR=", 7))
+      patgrp->charsets = parse_pattern("CHAR", str, 1);
     else if(!strncmp(str, "/FOLDER=", 8) || !strncmp(str, "/!FOLDER=", 9))
       patgrp->folder = parse_pattern("FOLDER", str, 1);
     else if(!strncmp(str, "/ABOOKS=", 8) || !strncmp(str, "/!ABOOKS=", 9))
@@ -5905,22 +6020,10 @@ parse_action_slash(str, action)
 	    fs_give((void **)&p);
 	}
     }
-    else if(!strncmp(str, "/FROM=", 6)){
-	/* get the from */
-	if((p = remove_pat_escapes(str+6)) != NULL){
-	    rfc822_parse_adrlist(&action->from, p,
-				 ps_global->maildomain);
-	    fs_give((void **)&p);
-	}
-    }
-    else if(!strncmp(str, "/REPL=", 6)){
-	/* get the reply-to */
-	if((p = remove_pat_escapes(str+6)) != NULL){
-	    rfc822_parse_adrlist(&action->replyto, p,
-				 ps_global->maildomain);
-	    fs_give((void **)&p);
-	}
-    }
+    else if(!strncmp(str, "/FROM=", 6))
+      action->from = configstr_to_address(str+6);
+    else if(!strncmp(str, "/REPL=", 6))
+      action->replyto = configstr_to_address(str+6);
     else if(!strncmp(str, "/FCC=", 5))
       action->fcc = remove_pat_escapes(str+5);
     else if(!strncmp(str, "/LSIG=", 6))
@@ -6254,7 +6357,8 @@ scores_are_used(flags)
 	if(scores_are_defined)
 	  scores_are_used_somewhere =
 	     ((nonempty_patterns(type2, &pstate2) && first_pattern(&pstate2))
-	      || ps_global->a_format_contains_score);
+	      || ps_global->a_format_contains_score
+	      || mn_get_sort(ps_global->msgmap) == SortScore);
 
 	if(scores_are_used_somewhere){
 	    PAT_S *pat;
@@ -6265,7 +6369,8 @@ scores_are_used(flags)
 	     * sure to reset it after we call nonempty_patterns().
 	     */
 	    scores_in_use = 0;
-	    if(ps_global->a_format_contains_score)
+	    if(ps_global->a_format_contains_score
+	       || mn_get_sort(ps_global->msgmap) == SortScore)
 	      scores_in_use |= SCOREUSE_INDEX;
 
 	    if(nonempty_patterns(type2, &pstate2))
@@ -6765,6 +6870,46 @@ pattern_to_editlist(pat)
       list[i] = add_comma_escapes(p->substring);
     
     return(list);
+}
+
+
+ADDRESS *
+configstr_to_address(str)
+    char *str;
+{
+    char    *s;
+    ADDRESS *a = NULL;
+    
+    s = remove_pat_escapes(str);
+    if(s){
+	removing_double_quotes(s);
+	rfc822_parse_adrlist(&a, s, ps_global->maildomain);
+	fs_give((void **) &s);
+    }
+
+    return(a);
+}
+
+
+char *
+address_to_configstr(address)
+    ADDRESS *address;
+{
+    char *space = NULL, *result = NULL;
+
+    if(!address)
+      return(result);
+
+    /* how much space is needed? */
+    space = (char *) fs_get((size_t) est_size(address));
+    if(space){
+	space[0] = '\0';
+	rfc822_write_address(space, address);
+	result = add_pat_escapes(space);
+	fs_give((void **) &space);
+    }
+
+    return(result);
 }
 
 
@@ -7488,7 +7633,7 @@ data_for_patline(pat)
 		  *arb_pat = NULL, *fldr_type_pat = NULL, *fldr_pat = NULL,
 		  *afrom_type_pat = NULL, *abooks_pat = NULL,
 		  *alltext_pat = NULL, *scorei_pat = NULL, *recip_pat = NULL,
-		  *keyword_pat = NULL,
+		  *keyword_pat = NULL, *charset_pat = NULL,
 		  *bodytext_pat = NULL, *age_pat = NULL, *sentdate = NULL,
 		  *size_pat = NULL,
 		  *category_cmd = NULL, *category_pat = NULL,
@@ -7501,7 +7646,7 @@ data_for_patline(pat)
 		  *from_act = NULL, *replyto_act = NULL, *fcc_act = NULL,
 		  *sig_act = NULL, *nick = NULL, *templ_act = NULL,
 		  *litsig_act = NULL, *cstm_act = NULL, *smtp_act = NULL,
-                  *nntp_act = NULL,
+                  *nntp_act = NULL, *comment = NULL,
 		  *repl_val = NULL, *forw_val = NULL, *comp_val = NULL,
 		  *incol_act = NULL, *inherit_nick = NULL, *score_act = NULL,
 		  *sort_act = NULL, *iform_act = NULL, *start_act = NULL,
@@ -7513,7 +7658,7 @@ data_for_patline(pat)
     int            to_not = 0, news_not = 0, from_not = 0,
 		   sender_not = 0, cc_not = 0, subj_not = 0,
 		   partic_not = 0, recip_not = 0, alltext_not, bodytext_not,
-		   keyword_not = 0;
+		   keyword_not = 0, charset_not = 0;
     ACTION_S      *action = NULL;
     NAMEVAL_S     *f;
 
@@ -7532,6 +7677,10 @@ data_for_patline(pat)
 	if(pat->patgrp->nick)
 	  if((nick = add_pat_escapes(pat->patgrp->nick)) && !*nick)
 	    fs_give((void **) &nick);
+
+	if(pat->patgrp->comment)
+	  if((comment = add_pat_escapes(pat->patgrp->comment)) && !*comment)
+	    fs_give((void **) &comment);
 
 	if(pat->patgrp->to){
 	    to_pat = pattern_to_config(pat->patgrp->to);
@@ -7586,6 +7735,11 @@ data_for_patline(pat)
 	if(pat->patgrp->keyword){
 	    keyword_pat = pattern_to_config(pat->patgrp->keyword);
 	    keyword_not = pat->patgrp->keyword->not;
+	}
+
+	if(pat->patgrp->charsets){
+	    charset_pat = pattern_to_config(pat->patgrp->charsets);
+	    charset_not = pat->patgrp->charsets->not;
 	}
 
 	if(pat->patgrp->arbhdr){
@@ -7921,27 +8075,11 @@ data_for_patline(pat)
 	      start_act = S_OR_L(f);
 	}
 
-	if(action->is_a_role && action->from){
-	    char *bufp;
+	if(action->is_a_role && action->from)
+	  from_act = address_to_configstr(action->from);
 
-	    bufp = (char *)fs_get((size_t)est_size(action->from));
-	    p = addr_string(action->from, bufp);
-	    if(p){
-		from_act = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
-	}
-
-	if(action->is_a_role && action->replyto){
-	    char *bufp;
-
-	    bufp = (char *)fs_get((size_t)est_size(action->replyto));
-	    p = addr_string(action->replyto, bufp);
-	    if(p){
-		replyto_act = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
-	}
+	if(action->is_a_role && action->replyto)
+	  replyto_act = address_to_configstr(action->replyto);
 
 	if(action->is_a_filter){
 	    if(action->folder){
@@ -7992,6 +8130,7 @@ data_for_patline(pat)
     }
 
     p = (char *)fs_get((strlen(nick ? nick : "Alternate Role") +
+			strlen(comment ? comment : "") +
 			strlen(to_pat ? to_pat : "") +
 			strlen(from_pat ? from_pat : "") +
 			strlen(sender_pat ? sender_pat : "") +
@@ -8005,6 +8144,7 @@ data_for_patline(pat)
 			strlen(arb_pat ? arb_pat : "") +
 			strlen(scorei_pat ? scorei_pat : "") +
 			strlen(keyword_pat ? keyword_pat : "") +
+			strlen(charset_pat ? charset_pat : "") +
 			strlen(age_pat ? age_pat : "") +
 			strlen(size_pat ? size_pat : "") +
 			strlen(category_cmd ? category_cmd : "") +
@@ -8044,6 +8184,13 @@ data_for_patline(pat)
     }
     else
       sstrcpy(&q, "Alternate Role");
+
+    if(comment){
+	sstrcpy(&q, "/");
+	sstrcpy(&q, "COMM=");
+	sstrcpy(&q, comment);
+	fs_give((void **) &comment);
+    }
 
     if(to_pat){
 	sstrcpy(&q, "/");
@@ -8153,6 +8300,16 @@ data_for_patline(pat)
 	sstrcpy(&q, "KEY=");
 	sstrcpy(&q, keyword_pat);
 	fs_give((void **) &keyword_pat);
+    }
+
+    if(charset_pat){
+	sstrcpy(&q, "/");
+	if(charset_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "CHAR=");
+	sstrcpy(&q, charset_pat);
+	fs_give((void **) &charset_pat);
     }
 
     if(arb_pat){
@@ -8794,102 +8951,14 @@ match_pattern(patgrp, stream, searchset, section, get_score, flags)
     }
 
     /* if there are still matches, check for 8bit subject match */
-    if(patgrp->stat_8bitsubj != PAT_STAT_EITHER){
-	char      *savebits;
-	SEARCHSET *ss = NULL;
+    if(patgrp->stat_8bitsubj != PAT_STAT_EITHER)
+      find_8bitsubj_in_messages(stream, searchset, patgrp->stat_8bitsubj, 1);
 
-	/*
-	 * Again we may call build_header_line recursively.
-	 */
-	savebits = (char *)fs_get((stream->nmsgs+1) * sizeof(char));
+    /* if there are still matches, check for charset matches */
+    if(patgrp->charsets)
+      find_charsets_in_messages(stream, searchset, patgrp, 1);
 
-	for(i = 1L; i <= stream->nmsgs; i++){
-	    if((mc = mail_elt(stream, i)) != NULL){
-		savebits[i] = mc->sequence;
-		mc->sequence = 0;
-	    }
-	}
-
-	/*
-	 * Build a searchset so we can look at all the envelopes
-	 * we need to look at but only those we need to look at.
-	 * Everything with the searched bit set is still a
-	 * possibility, so restrict to that set.
-	 */
-
-	for(s = searchset; s; s = s->next)
-	  for(msgno = s->first; msgno <= s->last; msgno++)
-	    if(msgno > 0L && msgno <= stream->nmsgs
-	       && (mc = mail_elt(stream, msgno)) && mc->searched)
-	      mc->sequence = 1;
-
-	ss = build_searchset(stream);
-
-	for(s = ss; s; s = s->next){
-	    for(msgno = s->first; msgno <= s->last; msgno++){
-		ENVELOPE   *e;
-		SEARCHSET **sset;
-
-		if(msgno > stream->nmsgs)
-		  continue;
-
-	        /*
-	         * This causes the lookahead to fetch precisely
-	         * the messages we want (in the searchset) instead
-	         * of just fetching the next 20 sequential
-	         * messages. If the searching so far has caused
-	         * a sparse searchset in a large mailbox, the
-	         * difference can be substantial.
-	         */
-	        sset = (SEARCHSET **) mail_parameters(stream,
-						      GET_FETCHLOOKAHEAD,
-						      (void *) stream);
-		if(sset)
-	          *sset = s;
-
-		e = pine_mail_fetchenvelope(stream, msgno);
-		if(patgrp->stat_8bitsubj == PAT_STAT_YES){
-		    if(e && e->subject){
-			char *p;
-
-			for(p = e->subject; *p; p++)
-			  if(*p & 0x80)
-			    break;
-
-			if(!*p && msgno > 0L && msgno <= stream->nmsgs
-			   && (mc = mail_elt(stream, msgno)))
-			  mc->searched = NIL;
-		    }
-		    else if(msgno > 0L && msgno <= stream->nmsgs
-			    && (mc = mail_elt(stream, msgno)))
-		      mc->searched = NIL;
-		}
-		else if(patgrp->stat_8bitsubj == PAT_STAT_NO){
-		    if(e && e->subject){
-			char *p;
-
-			for(p = e->subject; *p; p++)
-			  if(*p & 0x80)
-			    break;
-
-			if(*p && msgno > 0L && msgno <= stream->nmsgs
-			   && (mc = mail_elt(stream, msgno)))
-			  mc->searched = NIL;
-		    }
-		}
-	    }
-	}
-
-	for(i = 1L; i <= stream->nmsgs; i++)
-	  if((mc = mail_elt(stream, i)) != NULL)
-	    mc->sequence = savebits[i];
-    
-	fs_give((void **)&savebits);
-
-	if(ss)
-	  mail_free_searchset(&ss);
-    }
-
+    /* Still matches, check addrbook */
     if(patgrp->abookfrom != AFRM_EITHER)
       from_or_replyto_in_abook(stream, searchset, patgrp->abookfrom,
 			       patgrp->abooks);
@@ -9012,6 +9081,124 @@ match_pattern(patgrp, stream, searchset, section, get_score, flags)
 
 
 /*
+ * Look through messages in searchset to see if they contain 8bit
+ * characters in their subjects. All of the messages in
+ * searchset should initially have the searched bit set. Turn off the
+ * searched bit where appropriate.
+ */
+void
+find_8bitsubj_in_messages(stream, searchset, stat_8bitsubj, saveseqbits)
+    MAILSTREAM *stream;
+    SEARCHSET  *searchset;
+    int         stat_8bitsubj;
+    int         saveseqbits;
+{
+    char         *savebits = NULL;
+    SEARCHSET    *s, *ss = NULL;
+    MESSAGECACHE *mc;
+    unsigned long msgno;
+
+    /*
+     * If we are being called while in build_header_line we may
+     * call build_header_line recursively. So save and restore the
+     * sequence bits.
+     */
+    if(saveseqbits)
+      savebits = (char *) fs_get((stream->nmsgs+1) * sizeof(char));
+
+    for(msgno = 1L; msgno <= stream->nmsgs; msgno++){
+	if((mc = mail_elt(stream, msgno)) != NULL){
+	    if(savebits)
+	      savebits[msgno] = mc->sequence;
+
+	    mc->sequence = 0;
+	}
+    }
+
+    /*
+     * Build a searchset so we can look at all the envelopes
+     * we need to look at but only those we need to look at.
+     * Everything with the searched bit set is still a
+     * possibility, so restrict to that set.
+     */
+
+    for(s = searchset; s; s = s->next)
+      for(msgno = s->first; msgno <= s->last; msgno++)
+	if(msgno > 0L && msgno <= stream->nmsgs
+	   && (mc = mail_elt(stream, msgno)) && mc->searched)
+	  mc->sequence = 1;
+
+    ss = build_searchset(stream);
+
+    for(s = ss; s; s = s->next){
+	for(msgno = s->first; msgno <= s->last; msgno++){
+	    ENVELOPE   *e;
+	    SEARCHSET **sset;
+
+	    if(!stream || msgno <= 0L || msgno > stream->nmsgs)
+	      continue;
+
+	    /*
+	     * This causes the lookahead to fetch precisely
+	     * the messages we want (in the searchset) instead
+	     * of just fetching the next 20 sequential
+	     * messages. If the searching so far has caused
+	     * a sparse searchset in a large mailbox, the
+	     * difference can be substantial.
+	     */
+	    sset = (SEARCHSET **) mail_parameters(stream,
+						  GET_FETCHLOOKAHEAD,
+						  (void *) stream);
+	    if(sset)
+	      *sset = s;
+
+	    e = pine_mail_fetchenvelope(stream, msgno);
+	    if(stat_8bitsubj == PAT_STAT_YES){
+		if(e && e->subject){
+		    char *p;
+
+		    for(p = e->subject; *p; p++)
+		      if(*p & 0x80)
+			break;
+
+		    if(!*p && msgno > 0L && msgno <= stream->nmsgs
+		       && (mc = mail_elt(stream, msgno)))
+		      mc->searched = NIL;
+		}
+		else if(msgno > 0L && msgno <= stream->nmsgs
+			&& (mc = mail_elt(stream, msgno)))
+		  mc->searched = NIL;
+	    }
+	    else if(stat_8bitsubj == PAT_STAT_NO){
+		if(e && e->subject){
+		    char *p;
+
+		    for(p = e->subject; *p; p++)
+		      if(*p & 0x80)
+			break;
+
+		    if(*p && msgno > 0L && msgno <= stream->nmsgs
+		       && (mc = mail_elt(stream, msgno)))
+		      mc->searched = NIL;
+		}
+	    }
+	}
+    }
+
+    if(savebits){
+	for(msgno = 1L; msgno <= stream->nmsgs; msgno++)
+	  if((mc = mail_elt(stream, msgno)) != NULL)
+	    mc->sequence = savebits[msgno];
+
+	fs_give((void **) &savebits);
+    }
+
+    if(ss)
+      mail_free_searchset(&ss);
+}
+
+
+/*
  * Returns 0 if ok, -1 if not ok.
  * If ok then exitval contains the exit value of the cmd.
  */
@@ -9066,6 +9253,314 @@ test_message_with_cmd(stream, msgno, cmd, char_limit, exitval)
     }
 
     return(-1);
+}
+
+
+/*
+ * Look through messages in searchset to see if they contain any of the
+ * charsets or scripts listed in charsets pattern. All of the messages in
+ * searchset should initially have the searched bit set. Turn off the
+ * searched bit where appropriate.
+ */
+void
+find_charsets_in_messages(stream, searchset, patgrp, saveseqbits)
+    MAILSTREAM *stream;
+    SEARCHSET  *searchset;
+    PATGRP_S   *patgrp;
+    int         saveseqbits;
+{
+    char         *savebits = NULL;
+    unsigned long msgno;
+    MESSAGECACHE *mc;
+    SEARCHSET    *s, *ss;
+
+    if(!stream || !patgrp)
+      return;
+
+    /*
+     * When we actually want to use charsets, we convert it into a list
+     * of charsets instead of the mixed list of scripts and charsets and
+     * we eliminate duplicates. This is more efficient when we actually
+     * do the lookups and compares.
+     */
+    if(!patgrp->charsets_list){
+	PATTERN_S    *cs;
+	CHARSET      *cset;
+	STRLIST_S    *sl = NULL, *newsl;
+	unsigned long scripts = 0L;
+	SCRIPT       *script;
+
+	for(cs = patgrp->charsets; cs; cs = cs->next){
+	    /*
+	     * Run through the charsets pattern looking for
+	     * scripts and set the corresponding script bits.
+	     * If it isn't a script, it is a character set.
+	     */
+	    if(cs->substring && (script = utf8_script(cs->substring)))
+	      scripts |= script->script;
+	    else{
+		/* add it to list as a specific character set */
+		newsl = new_strlist();
+		newsl->name = cpystr(cs->substring);
+		if(compare_strlists_for_match(sl, newsl))  /* already in list */
+		  free_strlist(&newsl);
+		else{
+		    newsl->next = sl;
+		    sl = newsl;
+		}
+	    }
+	}
+
+	/*
+	 * Now scripts has a bit set for each script the user
+	 * specified in the charsets pattern. Go through all of
+	 * the known charsets and include ones in these scripts.
+	 */
+	if(scripts){
+	    for(cset = utf8_charset(NIL); cset && cset->name; cset++){
+		if(cset->script & scripts){
+
+		    /* filter this out of each script, not very useful */
+		    if(!strucmp("ISO-2022-JP-2", cset->name)
+		       || !strucmp("UTF-7", cset->name)
+		       || !strucmp("UTF-8", cset->name))
+		      continue;
+
+		    /* add cset->name to the list */
+		    newsl = new_strlist();
+		    newsl->name = cpystr(cset->name);
+		    if(compare_strlists_for_match(sl, newsl))
+		      free_strlist(&newsl);
+		    else{
+			newsl->next = sl;
+			sl = newsl;
+		    }
+		}
+	    }
+	}
+
+	patgrp->charsets_list = sl;
+    }
+
+    /*
+     * This may call build_header_line recursively because we may be in
+     * build_header_line now. So we have to preserve and restore the
+     * sequence bits since we want to use them here.
+     */
+    if(saveseqbits)
+      savebits = (char *) fs_get((stream->nmsgs+1) * sizeof(char));
+
+    for(msgno = 1L; msgno <= stream->nmsgs; msgno++){
+	if((mc = mail_elt(stream, msgno)) != NULL){
+	    if(savebits)
+	      savebits[msgno] = mc->sequence;
+
+	    mc->sequence = 0;
+	}
+    }
+
+
+    /*
+     * Build a searchset so we can look at all the bodies
+     * we need to look at but only those we need to look at.
+     * Everything with the searched bit set is still a
+     * possibility, so restrict to that set.
+     */
+
+    for(s = searchset; s; s = s->next)
+      for(msgno = s->first; msgno <= s->last; msgno++)
+	if(msgno > 0L && msgno <= stream->nmsgs
+	   && (mc = mail_elt(stream, msgno)) && mc->searched)
+	  mc->sequence = 1;
+
+    ss = build_searchset(stream);
+
+    for(s = ss; s; s = s->next){
+	for(msgno = s->first; msgno <= s->last; msgno++){
+	    SEARCHSET **sset;
+
+	    if(msgno <= 0L || msgno > stream->nmsgs)
+	      continue;
+
+	    /*
+	     * This causes the lookahead to fetch precisely
+	     * the messages we want (in the searchset) instead
+	     * of just fetching the next 20 sequential
+	     * messages. If the searching so far has caused
+	     * a sparse searchset in a large mailbox, the
+	     * difference can be substantial.
+	     */
+	    sset = (SEARCHSET **) mail_parameters(stream,
+						  GET_FETCHLOOKAHEAD,
+						  (void *) stream);
+	    if(sset)
+	      *sset = s;
+
+	    if(patgrp->charsets_list
+	       && charsets_present_in_msg(stream,msgno,patgrp->charsets_list)){
+		if(patgrp->charsets->not){
+		    if((mc = mail_elt(stream, msgno)))
+		      mc->searched = NIL;
+		}
+		/* else leave it */
+	    }
+	    else{		/* charset isn't in message */
+		if(!patgrp->charsets->not){
+		    if((mc = mail_elt(stream, msgno)))
+		      mc->searched = NIL;
+		}
+		/* else leave it */
+	    }
+	}
+    }
+
+    if(savebits){
+	for(msgno = 1L; msgno <= stream->nmsgs; msgno++)
+	  if((mc = mail_elt(stream, msgno)) != NULL)
+	    mc->sequence = savebits[msgno];
+
+	fs_give((void **) &savebits);
+    }
+
+    if(ss)
+      mail_free_searchset(&ss);
+}
+
+
+/*
+ * Look for any of the charsets in this particular message.
+ *
+ * Returns 1 if there is a match, 0 otherwise.
+ */
+int
+charsets_present_in_msg(stream, rawmsgno, charsets)
+    MAILSTREAM   *stream;
+    unsigned long rawmsgno;
+    STRLIST_S    *charsets;
+{
+    BODY       *body = NULL;
+    ENVELOPE   *env = NULL;
+    STRLIST_S  *msg_charsets = NULL;
+    int         ret = 0;
+
+    if(charsets && stream && rawmsgno > 0L && rawmsgno <= stream->nmsgs){
+	env = pine_mail_fetchstructure(stream, rawmsgno, &body);
+	collect_charsets_from_subj(env, &msg_charsets);
+	collect_charsets_from_body(body, &msg_charsets);
+	if(msg_charsets){
+	    ret = compare_strlists_for_match(msg_charsets, charsets);
+	    free_strlist(&msg_charsets);
+	}
+    }
+
+    return(ret);
+}
+
+
+void
+collect_charsets_from_subj(env, listptr)
+    ENVELOPE *env;
+    STRLIST_S **listptr;
+{
+    STRLIST_S *newsl;
+    char      *text, *e;
+
+    if(listptr && env && env->subject){
+	/* find encoded word */
+	for(text = env->subject; *text; text++){
+	    if((*text == '=') && (text[1] == '?') && isalpha(text[2]) &&
+	       (e = strchr(text+2,'?'))){
+		*e = '\0';			/* tie off charset name */
+
+		newsl = new_strlist();
+		newsl->name = cpystr(text+2);
+		*e = '?';
+
+		if(compare_strlists_for_match(*listptr, newsl))
+		  free_strlist(&newsl);
+		else{
+		    newsl->next = *listptr;
+		    *listptr = newsl;
+		}
+	    }
+	}
+    }
+}
+
+
+/*
+ * Check for any of the charsets in any of the charset params in
+ * any of the text parts of the body of a message. Put them in the list
+ * pointed to by listptr.
+ */
+void
+collect_charsets_from_body(body, listptr)
+    BODY       *body;
+    STRLIST_S **listptr;
+{
+    PART      *part;
+    char      *cset;
+
+    if(listptr && body){
+	switch(body->type){
+          case TYPEMULTIPART:
+	    for(part = body->nested.part; part; part = part->next)
+	      collect_charsets_from_body(&part->body, listptr);
+
+	    break;
+
+          case TYPEMESSAGE:
+	    if(!strucmp(body->subtype, "RFC822")){
+	        collect_charsets_from_subj(body->nested.msg->env, listptr);
+		collect_charsets_from_body(body->nested.msg->body, listptr);
+		break;
+	    }
+	    /* else fall through to text case */
+
+	  case TYPETEXT:
+	    cset = rfc2231_get_param(body->parameter, "charset", NULL, NULL);
+	    if(cset){
+		STRLIST_S *newsl;
+
+		newsl = new_strlist();
+		newsl->name = cpystr(cset);
+
+		if(compare_strlists_for_match(*listptr, newsl))
+		  free_strlist(&newsl);
+		else{
+		    newsl->next = *listptr;
+		    *listptr = newsl;
+		}
+
+	        fs_give((void **) &cset);
+	    }
+
+	    break;
+
+	  default:			/* non-text terminal mode */
+	    break;
+	}
+    }
+}
+
+
+/*
+ * If any of the names in list1 is the same as any of the names in list2
+ * then return 1, else return 0. Comparison is case independent.
+ */
+int
+compare_strlists_for_match(list1, list2)
+    STRLIST_S *list1, *list2;
+{
+    int        ret = 0;
+    STRLIST_S *cs1, *cs2;
+
+    for(cs1 = list1; !ret && cs1; cs1 = cs1->next)
+      for(cs2 = list2; !ret && cs2; cs2 = cs2->next)
+        if(cs1->name && cs2->name && !strucmp(cs1->name, cs2->name))
+	  ret = 1;
+
+    return(ret);
 }
 
 
@@ -10089,8 +10584,14 @@ free_patgrp(patgrp)
 	if((*patgrp)->nick)
 	  fs_give((void **) &(*patgrp)->nick);
 
+	if((*patgrp)->comment)
+	  fs_give((void **) &(*patgrp)->comment);
+
 	if((*patgrp)->category_cmd)
 	  free_list_array(&(*patgrp)->category_cmd);
+
+	if((*patgrp)->charsets_list)
+	  free_strlist(&(*patgrp)->charsets_list);
 
 	free_pattern(&(*patgrp)->to);
 	free_pattern(&(*patgrp)->cc);
@@ -10103,6 +10604,7 @@ free_patgrp(patgrp)
 	free_pattern(&(*patgrp)->alltext);
 	free_pattern(&(*patgrp)->bodytext);
 	free_pattern(&(*patgrp)->keyword);
+	free_pattern(&(*patgrp)->charsets);
 	free_pattern(&(*patgrp)->folder);
 	free_arbhdr(&(*patgrp)->arbhdr);
 	free_intvl(&(*patgrp)->score);
@@ -10239,6 +10741,9 @@ copy_patgrp(patgrp)
 	if(patgrp->nick)
 	  new_patgrp->nick = cpystr(patgrp->nick);
 	
+	if(patgrp->comment)
+	  new_patgrp->comment = cpystr(patgrp->comment);
+	
 	if(patgrp->to){
 	    p = pattern_to_string(patgrp->to);
 	    new_patgrp->to = string_to_pattern(p);
@@ -10315,6 +10820,16 @@ copy_patgrp(patgrp)
 	    fs_give((void **)&p);
 	    new_patgrp->keyword->not = patgrp->keyword->not;
 	}
+	
+	if(patgrp->charsets){
+	    p = pattern_to_string(patgrp->charsets);
+	    new_patgrp->charsets = string_to_pattern(p);
+	    fs_give((void **)&p);
+	    new_patgrp->charsets->not = patgrp->charsets->not;
+	}
+
+	if(patgrp->charsets_list)
+	  new_patgrp->charsets_list = copy_strlist(patgrp->charsets_list);
 	
 	if(patgrp->arbhdr){
 	    ARBHDR_S *aa, *a, *new_a;
@@ -10512,9 +11027,9 @@ copy_action(action)
 	newaction->startup_rule = action->startup_rule;
 
 	if(action->from)
-	  newaction->from = copyaddr(action->from);
+	  newaction->from = copyaddrlist(action->from);
 	if(action->replyto)
-	  newaction->replyto = copyaddr(action->replyto);
+	  newaction->replyto = copyaddrlist(action->replyto);
 	if(action->cstm)
 	  newaction->cstm = copy_list_array(action->cstm);
 	if(action->smtp)
@@ -10577,6 +11092,29 @@ ACTION_S *
 combine_inherited_role(role)
     ACTION_S *role;
 {
+    PAT_STATE pstate;
+    PAT_S    *pat;
+
+    /*
+     * Protect against loops in the role inheritance.
+     */
+    if(role && role->is_a_role && nonempty_patterns(ROLE_DO_ROLES, &pstate))
+      for(pat = first_pattern(&pstate); pat; pat = next_pattern(&pstate))
+	if(pat->action){
+	    if(pat->action == role)
+	      pat->action->been_here_before = 1;
+	    else
+	      pat->action->been_here_before = 0;
+	}
+
+    return(combine_inherited_role_guts(role));
+}
+
+
+ACTION_S *
+combine_inherited_role_guts(role)
+    ACTION_S *role;
+{
     ACTION_S *newrole = NULL, *inherit_role = NULL;
     PAT_STATE pstate;
 
@@ -10601,21 +11139,37 @@ combine_inherited_role(role)
 		   pat->patgrp->nick &&
 		   !strucmp(role->inherit_nick, pat->patgrp->nick)){
 		    /* found it, if it has a role, use it */
-		    inherit_role = pat->action;
+		    if(!pat->action->been_here_before){
+			pat->action->been_here_before = 1;
+			inherit_role = pat->action;
+		    }
+
 		    break;
 		}
+	    }
+
+	    /*
+	     * inherit_role might inherit further from other roles.
+	     * In any case, we copy it so that we'll consistently have
+	     * an allocated copy.
+	     */
+	    if(inherit_role){
+		if(inherit_role->inherit_nick && inherit_role->inherit_nick[0])
+		  inherit_role = combine_inherited_role_guts(inherit_role);
+		else
+		  inherit_role = copy_action(inherit_role);
 	    }
 	}
 
 	if(role->from)
-	  newrole->from = copyaddr(role->from);
+	  newrole->from = copyaddrlist(role->from);
 	else if(inherit_role && inherit_role->from)
-	  newrole->from = copyaddr(inherit_role->from);
+	  newrole->from = copyaddrlist(inherit_role->from);
 
 	if(role->replyto)
-	  newrole->replyto = copyaddr(role->replyto);
+	  newrole->replyto = copyaddrlist(role->replyto);
 	else if(inherit_role && inherit_role->replyto)
-	  newrole->replyto = copyaddr(inherit_role->replyto);
+	  newrole->replyto = copyaddrlist(inherit_role->replyto);
 
 	if(role->fcc)
 	  newrole->fcc = cpystr(role->fcc);
@@ -10654,6 +11208,9 @@ combine_inherited_role(role)
 
 	if(role->nick)
 	  newrole->nick = cpystr(role->nick);
+
+	if(inherit_role)
+	  free_action(&inherit_role);
     }
 
     return(newrole);
@@ -10724,6 +11281,9 @@ free_list_sel(lsel)
 	free_list_sel(&(*lsel)->next);
 	if((*lsel)->item)
 	  fs_give((void **) &(*lsel)->item);
+
+	if((*lsel)->display_item)
+	  fs_give((void **) &(*lsel)->display_item);
 	
 	fs_give((void **) lsel);
     }

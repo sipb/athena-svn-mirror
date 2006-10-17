@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailcmd.c,v 1.7 2005-07-13 20:56:41 ghudson Exp $";
+static char rcsid[] = "$Id: mailcmd.c,v 1.8 2006-10-17 18:24:15 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -52,6 +52,7 @@ static char rcsid[] = "$Id: mailcmd.c,v 1.7 2005-07-13 20:56:41 ghudson Exp $";
 
 #include "headers.h"
 #include "../c-client/imap4r1.h"
+#include "../c-client/utf8.h"
 
 
 /*
@@ -792,7 +793,7 @@ nfolder:
 				    
 			    ret = radio_buttons(prompt, -FOOTER_ROWS(state),
 						next_opt, 'y', 'x', NO_HELP,
-						RB_NORM);
+						RB_NORM, NULL);
 			    if(ret == 'x'){
 				cmd_cancelled(NULL);
 				goto get_out;
@@ -954,7 +955,7 @@ nfolder:
 
 				ret = radio_buttons(prompt, -FOOTER_ROWS(state),
 						    inbox_opt, 'y', 'x',
-						    NO_HELP, RB_NORM);
+						    NO_HELP, RB_NORM, NULL);
 			    }
 
 			    /*
@@ -1052,7 +1053,7 @@ nfolder:
 
 			ret = radio_buttons(prompt, -FOOTER_ROWS(state),
 					    next_opt, 'y', 'x', NO_HELP,
-					    RB_NORM);
+					    RB_NORM, NULL);
 			if(ret == 'x'){
 			    cmd_cancelled(NULL);
 			    break;
@@ -1354,13 +1355,14 @@ get_out:
 		    were_viewing_a_thread = (THREADING()
 					     && sp_viewing_a_thread(stream));
 
-		    msgno_include(stream, msgmap, MI_NONE);
-		    clear_index_cache();
+		    if(msgno_include(stream, msgmap, MI_NONE)){
+			clear_index_cache();
 
-		    if(stream && stream->spare)
-		      erase_threading_info(stream, msgmap);
+			if(stream && stream->spare)
+			  erase_threading_info(stream, msgmap);
 
-		    refresh_sort(stream, msgmap, SRT_NON);
+			refresh_sort(stream, msgmap, SRT_NON);
+		    }
 
 		    if(were_viewing_a_thread){
 			if(save_cur_rawno > 0L)
@@ -1614,11 +1616,12 @@ menu_command(keystroke, menu)
       return(MC_UNKNOWN);
 
     /* Scan the list for any keystroke/command binding */
-    for(i = (menu->how_many * 12) - 1;  i >= 0; i--)
-      if(bitnset(i, menu->bitmap))
-	for(n = menu->keys[i].bind.nch - 1; n >= 0; n--)
-	  if(keystroke == menu->keys[i].bind.ch[n])
-	    return(menu->keys[i].bind.cmd);
+    if(keystroke != NO_OP_COMMAND)
+      for(i = (menu->how_many * 12) - 1;  i >= 0; i--)
+        if(bitnset(i, menu->bitmap))
+	  for(n = menu->keys[i].bind.nch - 1; n >= 0; n--)
+	    if(keystroke == menu->keys[i].bind.ch[n])
+	      return(menu->keys[i].bind.cmd);
 
     /*
      * If explicit mapping failed, check feature mappings and
@@ -2726,7 +2729,7 @@ cmd_flag_prompt(state, flags, allow_keyword_shortcuts)
     while(1){
 	r = radio_buttons(setflag ? ftext : ftext_not,
 			  -FOOTER_ROWS(state), ek, '*', SEQ_EXCEPTION-1,
-			  NO_HELP, RB_NORM | RB_SEQ_SENSITIVE);
+			  NO_HELP, RB_NORM | RB_SEQ_SENSITIVE, NULL);
 	/*
 	 * It is SEQ_EXCEPTION-1 just so that it is some value that isn't
 	 * being used otherwise. The keywords use up all the possible
@@ -2925,17 +2928,20 @@ cmd_save(state, stream, msgmap, agg, in_index)
 
     dprint(4, (debugfile, "\n - saving message -\n"));
 
+    if(agg && !pseudo_selected(msgmap))
+      return;
+
     state->ugly_consider_advancing_bit = 0;
     if(F_OFF(F_SAVE_PARTIAL_WO_CONFIRM, state)
        && msgno_any_deletedparts(stream, msgmap)
        && want_to("Saved copy will NOT include entire message!  Continue",
 		  'y', 'n', NO_HELP, WT_FLUSH_IN | WT_SEQ_SENSITIVE) != 'y'){
 	cmd_cancelled("Save message");
+	if(agg)
+	  restore_selected(msgmap);
+
 	return;
     }
-
-    if(agg && !pseudo_selected(msgmap))
-      return;
 
     raw = mn_m2raw(msgmap, mn_get_cur(msgmap));
 
@@ -3065,7 +3071,7 @@ role_compose(state)
 	if(nonempty_patterns(ROLE_DO_ROLES, &pstate) && first_pattern(&pstate)){
 	    action = radio_buttons("Compose, Forward, Reply, or Bounce? ",
 				   -FOOTER_ROWS(state), choose_action,
-				   'c', 'x', h_role_compose, RB_NORM);
+				   'c', 'x', h_role_compose, RB_NORM, NULL);
 	}
 	else{
 	    q_status_message(SM_ORDER, 0, 3,
@@ -3886,7 +3892,8 @@ save(state, stream, context, folder, msgmap, flgs)
 	 * the destination folder will need...
 	 */
 	context_apply(tmp, context, save_folder, sizeof(tmp));
-        save_stream = (stream->dtb->flags & DR_LOCAL) && !IS_REMOTE(tmp) ?
+        save_stream = (stream && stream->dtb
+		       && stream->dtb->flags & DR_LOCAL) && !IS_REMOTE(tmp) ?
 	  stream : context_same_stream(context, save_folder, stream);
     }
 
@@ -4184,7 +4191,7 @@ save(state, stream, context, folder, msgmap, flgs)
     if(preserve_keywords){
 	MAILSTREAM *dstn_stream = NULL;
 	int         already_open = 0;
-	int         we_locked_stream = 0;
+	int         we_blocked_reuse = 0;
 
 	if(sp_expunge_count(stream)){
 	    q_status_message(SM_ORDER, 3, 5,
@@ -4196,12 +4203,12 @@ save(state, stream, context, folder, msgmap, flgs)
 	 * Possible problem created by our stream re-use
 	 * strategy. If we are going to open a new stream
 	 * here, we want to be sure not to re-use the
-	 * stream we are saving _from_, so make sure it
-	 * is SP_LOCKED before calling context_open.
+	 * stream we are saving _from_, so take it out of the
+	 * re-use pool before we call open.
 	 */
-	if(!sp_flagged(stream, SP_LOCKED)){
-	    we_locked_stream++;
-	    sp_set_flags(stream, sp_flags(stream) | SP_LOCKED);
+	if(sp_flagged(stream, SP_USEPOOL)){
+	    we_blocked_reuse++;
+	    sp_unflag(stream, SP_USEPOOL);
 	}
 
 	/* see if there is a stream open already */
@@ -4242,8 +4249,8 @@ save(state, stream, context, folder, msgmap, flgs)
 	      pine_mail_close(dstn_stream);
 	}
 
-	if(we_locked_stream)
-	  sp_unflag(stream, SP_LOCKED);
+	if(we_blocked_reuse)
+	  sp_set_flags(stream, sp_flags(stream) | SP_USEPOOL);
     }
 
 get_out:
@@ -4395,8 +4402,12 @@ long save_fetch_append_cb (stream, data, flags, date, message)
 	if(size && mlen < size){
 	    char buf[128];
 
-	    sprintf(buf, "Message to save shrank!  (#%ld: %ld --> %ld)",
-		    raw, size, mlen);
+	    if(sp_dead_stream(pkg->stream))
+	      sprintf(buf, "Cannot save because current folder is Closed");
+	    else
+	      sprintf(buf, "Message to save shrank!  (#%ld: %ld --> %ld)",
+		      raw, size, mlen);
+
 	    q_status_message(SM_ORDER | SM_DING, 3, 4, buf);
 	    dprint(1, (debugfile, "BOTCH: %s\n", buf));
 	    return(0);
@@ -4607,8 +4618,12 @@ save_fetch_append(stream, raw, sect, save_stream, save_folder,
     if(size && mlen < size){
 	char buf[128];
 
-	sprintf(buf, "Message to save shrank!  (#%ld: %ld --> %ld)",
-		raw, size, mlen);
+	if(sp_dead_stream(stream))
+	  sprintf(buf, "Cannot save because current folder is Closed");
+	else
+	  sprintf(buf, "Message to save shrank!  (#%ld: %ld --> %ld)",
+		  raw, size, mlen);
+
 	q_status_message(SM_ORDER | SM_DING, 3, 4, buf);
 	dprint(1, (debugfile, "BOTCH: %s\n", buf));
 	return(0);
@@ -5527,7 +5542,7 @@ cmd_export(state, msgmap, qline, agg)
 	start_of_append = so_tell(store);
 	if(!bezerk_delimiter(env, mc, pc, leading_nl)
 	   || !format_message(mn_m2raw(msgmap, i), env, b, NULL,
-			      FM_NEW_MESS | FM_NOWRAP, pc)){
+			      FM_NEW_MESS | FM_NOWRAP | FM_WRAPFLOWED, pc)){
 	    orig_errno = errno;		/* save incase things are really bad */
 	    failure    = 1;		/* pop out of here */
 	    break;
@@ -5723,7 +5738,7 @@ cmd_export(state, msgmap, qline, agg)
 			    "%.200s message%.200s %.200s to file \"%.200s\"",
 			    long2string(count), plural(count),
 			    rflags & GER_OVER
-			      ? "overwrittten"
+			      ? "overwritten"
 			      : rflags & GER_APPEND ? "appended" : "exported",
 			    filename);
 	else
@@ -5731,7 +5746,7 @@ cmd_export(state, msgmap, qline, agg)
 			    "Message %.200s %.200s to file \"%.200s\"",
 			    long2string(mn_get_cur(msgmap)),
 			    rflags & GER_OVER
-			      ? "overwrittten"
+			      ? "overwritten"
 			      : rflags & GER_APPEND ? "appended" : "exported",
 			    filename);
     }
@@ -5849,7 +5864,7 @@ fini:
 	q_status_message3(SM_ORDER,0,2,"%.200s %.200s to \"%.200s\"",
 			  full_filename,
 			  rflags & GER_OVER
-			      ? "overwrittten"
+			      ? "overwritten"
 			      : rflags & GER_APPEND ? "appended" : "exported",
 			  filename);
 	break;
@@ -6477,7 +6492,7 @@ get_export_filename(ps, filename, deefault, full_filename, len, prompt_msg,
 		   sizeof(prompt_buf)-100,
 		   filename + ((r > 20) ? r - 20 : 0));
 	    switch(radio_buttons(prompt_buf, -FOOTER_ROWS(ps_global),
-				 access_opts, 'a', 'x', NO_HELP, rbflags)){
+				 access_opts, 'a', 'x', NO_HELP, rbflags,NULL)){
 	      case 'o' :
 		if(rflags)
 		  *rflags |= GER_OVER;
@@ -8746,6 +8761,7 @@ process_filter_patterns(stream, msgmap, recent)
     unsigned long uid;
     int           we_cancel = 0, any_msgs = 0, any_to_filter = 0;
     int		  exbits, nt = 0, pending_actions = 0, for_debugging = 0;
+    int           cleared_index_cache = 0;
     long          rflags = ROLE_DO_FILTER;
     char	 *charset = NULL, *nick = NULL;
     char          busymsg[80];
@@ -8785,7 +8801,8 @@ process_filter_patterns(stream, msgmap, recent)
 	 */
 	if(is_imap_stream(stream) && !modern_imap_stream(stream))
 	  flags |= SO_NOSERVER;
-	else if(stream->dtb && !strcmp(stream->dtb->name, "nntp"))
+	else if(stream->dtb && stream->dtb->name
+	        && !strcmp(stream->dtb->name, "nntp"))
 	  flags |= SO_OVERVIEW;
 
 	/*
@@ -9002,87 +9019,13 @@ process_filter_patterns(stream, msgmap, recent)
 		}
 
 		/* check for 8bit subject match or not */
-		if(pat->patgrp->stat_8bitsubj != PAT_STAT_EITHER){
-		    SEARCHSET *s, *ss = NULL;
+		if(pat->patgrp->stat_8bitsubj != PAT_STAT_EITHER)
+		  find_8bitsubj_in_messages(stream, srchset,
+					    pat->patgrp->stat_8bitsubj, 0);
 
-		    /*
-		     * Build a searchset so we can look at all the envelopes
-		     * we need to look at but only those we need to look at.
-		     * Everything with the searched bit set is still a
-		     * possibility, so restrict to that set.
-		     */
-
-		    for(i = 1; i <= stream->nmsgs; i++)
-		      if((mc = mail_elt(stream, i)) != NULL)
-		        mc->sequence = 0;
-
-		    for(s = srchset; s; s = s->next)
-		      for(i = s->first; i <= s->last; i++)
-			if(i <= stream->nmsgs
-			   && (mc=mail_elt(stream, i)) && mc->searched)
-			  mc->sequence = 1;
-
-		    ss = build_searchset(stream);
-
-		    for(s = ss; s; s = s->next)
-		      for(i = s->first; i <= s->last; i++){
-			  ENVELOPE   *e;
-			  SEARCHSET **sset;
-
-			  if(!stream || i <= 0L || i > stream->nmsgs)
-			    continue;
-
-			  /*
-			   * This causes the lookahead to fetch precisely
-			   * the messages we want (in the searchset) instead
-			   * of just fetching the next 20 sequential
-			   * messages. If the searching so far has caused
-			   * a sparse searchset in a large mailbox, the
-			   * difference can be substantial.
-			   */
-			  sset = (SEARCHSET **) mail_parameters(stream,
-							     GET_FETCHLOOKAHEAD,
-							     (void *) stream);
-			  if(sset)
-			    *sset = s;
-
-			  e = pine_mail_fetchenvelope(stream, i);
-			  if(pat->patgrp->stat_8bitsubj == PAT_STAT_YES){
-			      if(e && e->subject){
-				  char *p;
-
-				  for(p = e->subject; *p; p++)
-				    if(*p & 0x80)
-				      break;
-
-				  if(!*p && i > 0L && stream
-				     && i <= stream->nmsgs
-				     && (mc = mail_elt(stream, i)))
-				    mc->searched = NIL;
-			      }
-			      else if(i > 0L && stream && i <= stream->nmsgs
-				      && (mc = mail_elt(stream, i)))
-				mc->searched = NIL;
-			  }
-			  else if(pat->patgrp->stat_8bitsubj == PAT_STAT_NO){
-			      if(e && e->subject){
-				  char *p;
-
-				  for(p = e->subject; *p; p++)
-				    if(*p & 0x80)
-				      break;
-
-				  if(*p && i > 0L && stream
-				     && i <= stream->nmsgs
-				     && (mc = mail_elt(stream, i)))
-				    mc->searched = NIL;
-			      }
-			  }
-		      }
-
-		    if(ss)
-		      mail_free_searchset(&ss);
-		}
+		/* if there are still matches, check for charset matches */
+		if(pat->patgrp->charsets)
+		  find_charsets_in_messages(stream, srchset, pat->patgrp, 0);
 
 		if(pat->patgrp->abookfrom != AFRM_EITHER)
 		  from_or_replyto_in_abook(stream, srchset,
@@ -9311,9 +9254,9 @@ process_filter_patterns(stream, msgmap, recent)
 		       && stream && raw <= stream->nmsgs
 		       && (mc = mail_elt(stream, raw)) && mc->searched){
 		        dprint(5, (debugfile,
-			    "FILTER matching \"%s\": msg %ld\n",
+			    "FILTER matching \"%s\": msg %ld%s\n",
 			    nick ? nick : "unnamed",
-			    raw));
+			    raw, nt ? " (dont stop)" : ""));
 		        if(msgno_exceptions(stream, raw, "0", &exbits, FALSE))
 			  exbits |= (nt ? MSG_EX_FILTONCE : MSG_EX_FILTERED);
 		        else
@@ -9341,12 +9284,19 @@ process_filter_patterns(stream, msgmap, recent)
 		       && raw > 0L && stream && raw <= stream->nmsgs
 		       && (mc = mail_elt(stream, raw)) && mc->searched){
 		        dprint(5, (debugfile,
-			      "FILTER matching \"%s\": msg %ld %s\n",
+			      "FILTER matching \"%s\": msg %ld %s%s\n",
 			      nick ? nick : "unnamed",
-			      raw, pat->action->folder ? "filed" : "killed"));
+			      raw, pat->action->folder ? "filed" : "killed",
+			      nt ? " (dont stop)" : ""));
 			if(nt)
 			  i++;
 			else{
+			    if(!cleared_index_cache
+			       && stream == ps_global->mail_stream){
+				cleared_index_cache = 1;
+				clear_index_cache();
+			    }
+
 			    msgno_exclude(stream, msgmap, i, 1);
 			    /* 
 			     * If this message is new, decrement
@@ -9577,6 +9527,12 @@ process_filter_patterns(stream, msgmap, recent)
 		    raw = mn_m2raw(msgmap, i);
 		    if(msgno_exceptions(stream, raw, "0", &exbits, FALSE)){
 			if(exbits & MSG_EX_PEND_EXLD){
+			    if(!cleared_index_cache
+			       && stream == ps_global->mail_stream){
+				cleared_index_cache = 1;
+				clear_index_cache();
+			    }
+
 			    msgno_exclude(stream, msgmap, i, 1);
 			    if(msgno_exceptions(stream, raw, "0",
 						&exbits, FALSE)
@@ -9695,9 +9651,9 @@ reprocess_filter_patterns(stream, msgmap, flags)
 	long i;
 	int  exbits;
 
-	msgno_include(stream, msgmap, flags);
-
-	if(stream == ps_global->mail_stream && !(flags & MI_CLOSING)){
+	if(msgno_include(stream, msgmap, flags)
+	   && stream == ps_global->mail_stream
+	   && !(flags & MI_CLOSING)){
 	    clear_index_cache();
 	    refresh_sort(stream, msgmap, SRT_NON);
 	    ps_global->mangled_header = 1;
@@ -9759,6 +9715,9 @@ trivial_patgrp(patgrp)
 	  ret = 0;
 
 	if(ret && patgrp->stat_8bitsubj != PAT_STAT_EITHER)
+	  ret = 0;
+
+	if(ret && patgrp->charsets)
 	  ret = 0;
 
 	if(ret && patgrp->stat_bom != PAT_STAT_EITHER)
@@ -9909,7 +9868,7 @@ move_filtered_msgs(stream, msgmap, dstfldr, flags_for_save, nick)
 	  }
 
 	/* then re-incorporate them into folder they belong */
-	msgno_include(stream, sp_msgmap(stream), MI_NONE);
+	(void) msgno_include(stream, sp_msgmap(stream), MI_NONE);
 	clear_index_cache();
 	refresh_sort(stream, sp_msgmap(stream), SRT_NON);
 	ps_global->mangled_header = 1;
@@ -10470,7 +10429,7 @@ cmd_print(state, msgmap, agg, in_index)
 		(agg==2) ? "thread" : agg ? "selected" : "current", m);
 
 	    ans = radio_buttons(prompt, -FOOTER_ROWS(state), prt_opts, 'm', 'x',
-				NO_HELP, RB_NORM|RB_SEQ_SENSITIVE);
+				NO_HELP, RB_NORM|RB_SEQ_SENSITIVE, NULL);
 	}
 
 	switch(ans){
@@ -11206,7 +11165,7 @@ aggregate_select(state, msgmap, q_line, in_index, thrdindx)
 
 	sel_opts += 2;			/* disable extra options */
 	switch(q = radio_buttons(sel_pmt1, q_line, sel_opts1, 'c', 'x', NO_HELP,
-				 RB_NORM)){
+				 RB_NORM, NULL)){
 	  case 'f' :			/* flip selection */
 	    msgno = 0L;
 	    for(i = 1L; i <= mn_get_total(msgmap); i++){
@@ -11242,7 +11201,7 @@ aggregate_select(state, msgmap, q_line, in_index, thrdindx)
     if(!q){
 	while(1){
 	    q = radio_buttons(sel_pmt2, q_line, sel_opts, 'c', 'x',
-			      NO_HELP, RB_NORM|RB_RET_HELP);
+			      NO_HELP, RB_NORM|RB_RET_HELP, NULL);
 
 	    if(q == 3){
 		helper(h_index_cmd_select, "HELP FOR SELECT", HLPD_SIMPLE);
@@ -11629,7 +11588,7 @@ apply_command(state, stream, msgmap, preloadkeystroke, flags, q_line)
 
 	sprintf(prompt, "%.20s command : ",
 		(flags & AC_FROM_THREAD) ? "THREAD" : "APPLY");
-	cmd = double_radio_buttons(prompt, q_line, sel_opts3, 0, 'x', NO_HELP,
+	cmd = double_radio_buttons(prompt, q_line, sel_opts3, 'z', 'x', NO_HELP,
 				   RB_SEQ_SENSITIVE);
     }
     else
@@ -11706,6 +11665,12 @@ apply_command(state, stream, msgmap, preloadkeystroke, flags, q_line)
       case 'x' :			/* cancel */
 	cmd_cancelled((flags & AC_FROM_THREAD) ? "Thread command"
 					       : "Apply command");
+	rv = 0;
+	break;
+
+      case 'z' :			/* default */
+        q_status_message(SM_INFO, 0, 2,
+			 "Cancelled, there is no default command");
 	rv = 0;
 	break;
 
@@ -12314,7 +12279,7 @@ select_date(stream, msgmap, msgno, limitsrch)
 		    if(mc->day == 0){
 			char seq[20];
 
-			if(stream->dtb->flags & DR_NEWS){
+			if(stream->dtb && stream->dtb->flags & DR_NEWS){
 			    strncpy(seq,
 				    long2string(mail_uid(stream, rawno)),
 				    sizeof(seq));
@@ -12363,45 +12328,54 @@ select_date(stream, msgmap, msgno, limitsrch)
 	break;
     }
 
-    we_cancel = busy_alarm(1, "Busy Selecting", NULL, 0);
-
     if((pgm = mail_newsearchpgm()) != NULL){
 	MESSAGECACHE elt;
-	int          converted_date;
+	short          converted_date;
 
-	if(mail_parse_date(&elt, (unsigned char *) date))
-	  converted_date = mail_shortdate(elt.year, elt.month, elt.day);
+	if(mail_parse_date(&elt, (unsigned char *) date)){
+	    converted_date = mail_shortdate(elt.year, elt.month, elt.day);
 
-	switch(when){
-	  case 0:
-	    pgm->sentsince = converted_date;
-	    break;
-	  case 1:
-	    pgm->sentbefore = converted_date;
-	    break;
-	  case 2:
-	    pgm->senton = converted_date;
-	    break;
-	  case 3:
-	    pgm->since = converted_date;
-	    break;
-	  case 4:
-	    pgm->before = converted_date;
-	    break;
-	  case 5:
-	    pgm->on = converted_date;
-	    break;
+	    switch(when){
+	      case 0:
+		pgm->sentsince = converted_date;
+		break;
+	      case 1:
+		pgm->sentbefore = converted_date;
+		break;
+	      case 2:
+		pgm->senton = converted_date;
+		break;
+	      case 3:
+		pgm->since = converted_date;
+		break;
+	      case 4:
+		pgm->before = converted_date;
+		break;
+	      case 5:
+		pgm->on = converted_date;
+		break;
+	    }
+
+	    pgm->msgno = (limitsrch ? *limitsrch : NULL);
+
+	    we_cancel = busy_alarm(1, "Busy Selecting", NULL, 0);
+
+	    pine_mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+
+	    if(we_cancel)
+	      cancel_busy_alarm(0);
+
+	    /* we know this was freed in mail_search, let caller know */
+	    if(limitsrch)
+	      *limitsrch = NULL;
 	}
-
-	pgm->msgno = (limitsrch ? *limitsrch : NULL);
-	pine_mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
-	/* we know this was freed in mail_search, let caller know */
-	if(limitsrch)
-	  *limitsrch = NULL;
+	else{
+	    mail_free_searchpgm(&pgm);
+	    q_status_message1(SM_ORDER, 3, 3,
+			     "Invalid date entered: %.200s", date);
+	    return(1);
+	}
     }
-
-    if(we_cancel)
-      cancel_busy_alarm(0);
 
     return(0);
 }
@@ -12442,7 +12416,7 @@ select_text(stream, msgmap, msgno, limitsrch)
     while(1){
 	type = radio_buttons(not ? sel_not_text : sel_text,
 			     -FOOTER_ROWS(ps_global), sel_text_opt,
-			     's', 'x', NO_HELP, RB_NORM|RB_RET_HELP);
+			     's', 'x', NO_HELP, RB_NORM|RB_RET_HELP, NULL);
 	
 	if(type == '!')
 	  not = !not;
@@ -13097,7 +13071,7 @@ select_flagged(stream, limitsrch)
     while(1){
 	s = radio_buttons((not) ? sel_flag_not : sel_flag,
 			  -FOOTER_ROWS(ps_global), sel_flag_opt, '*', 'x',
-			  NO_HELP, RB_NORM|RB_RET_HELP);
+			  NO_HELP, RB_NORM|RB_RET_HELP, NULL);
 			  
 	if(s == 'x'){
 	    cmd_cancelled("Selection by status");
@@ -13527,6 +13501,193 @@ choose_list_of_keywords()
 
 
 /*
+ * Allow user to choose a list of character sets and/or scripts
+ *
+ * Returns allocated list.
+ */
+char **
+choose_list_of_charsets()
+{
+    LIST_SEL_S *listhead, *ls, *p;
+    char      **ret = NULL;
+    int         cnt, i, got_one;
+    CHARSET    *cs;
+    SCRIPT     *s;
+    char       *q, *t;
+    long 	width, limit;
+    char        buf[1024], *folded;
+
+    /*
+     * Build a list of charsets to choose from.
+     */
+
+    p = listhead = NULL;
+
+    /* this width is determined by select_from_list_screen() */
+    width = ps_global->ttyo->screen_cols - 4;
+
+    /* first comes a list of scripts (sets of character sets) */
+    for(s = utf8_script(NIL); s && s->name; s++){
+
+	limit = sizeof(buf)-1;
+	q = buf;
+	memset(q, 0, limit+1);
+
+	if(s->name)
+	  sstrncpy(&q, s->name, limit);
+
+	if(s->description){
+	    sstrncpy(&q, " (", limit-(q-buf));
+	    sstrncpy(&q, s->description, limit-(q-buf));
+	    sstrncpy(&q, ")", limit-(q-buf));
+	}
+
+	/* add the list of charsets that are in this script */
+	got_one = 0;
+	for(cs = utf8_charset(NIL);
+	    cs && cs->name && (q-buf) < limit; cs++){
+	    if(cs->script & s->script){
+		/*
+		 * Filter out some un-useful members of the list.
+		 * UTF-7 and UTF-8 weren't actually in the list at the
+		 * time this was written. Just making sure.
+		 */
+		if(!strucmp(cs->name, "ISO-2022-JP-2")
+		   || !strucmp(cs->name, "UTF-7")
+		   || !strucmp(cs->name, "UTF-8"))
+		  continue;
+
+		if(got_one)
+		  sstrncpy(&q, " ", limit-(q-buf));
+		else{
+		    got_one = 1;
+		    sstrncpy(&q, " {", limit-(q-buf));
+		}
+
+		sstrncpy(&q, cs->name, limit-(q-buf));
+	    }
+	}
+
+	if(got_one)
+	  sstrncpy(&q, "}", limit-(q-buf));
+
+	/* fold this line so that it can all be seen on the screen */
+	folded = fold(buf, width, width, 0, 0, "", "    ");
+	if(folded){
+	    t = folded;
+	    while(t && *t && (q = strindex(t, '\n')) != NULL){
+		*q = '\0';
+
+		ls = (LIST_SEL_S *) fs_get(sizeof(*ls));
+		memset(ls, 0, sizeof(*ls));
+		if(t == folded)
+		  ls->item = cpystr(s->name);
+		else
+		  ls->flags = SFL_NOSELECT;
+
+		ls->display_item = cpystr(t);
+
+		t = q+1;
+
+		if(p){
+		    p->next = ls;
+		    p = p->next;
+		}
+		else{
+		    /* add a heading */
+		    listhead = (LIST_SEL_S *) fs_get(sizeof(*ls));
+		    memset(listhead, 0, sizeof(*listhead));
+		    listhead->flags = SFL_NOSELECT;
+		    listhead->display_item =
+	   cpystr("Scripts representing groups of related character sets");
+		    listhead->next = (LIST_SEL_S *) fs_get(sizeof(*ls));
+		    memset(listhead->next, 0, sizeof(*listhead));
+		    listhead->next->flags = SFL_NOSELECT;
+		    listhead->next->display_item =
+	   cpystr(repeat_char(width, '-'));
+
+		    listhead->next->next = ls;
+		    p = ls;
+		}
+	    }
+
+	    fs_give((void **) &folded);
+	}
+    }
+
+    ls = (LIST_SEL_S *) fs_get(sizeof(*ls));
+    memset(ls, 0, sizeof(*ls));
+    ls->flags = SFL_NOSELECT;
+    if(p){
+	p->next = ls;
+	p = p->next;
+    }
+    else
+      listhead = p = ls;
+
+    ls = (LIST_SEL_S *) fs_get(sizeof(*ls));
+    memset(ls, 0, sizeof(*ls));
+    ls->flags = SFL_NOSELECT;
+    ls->display_item =
+               cpystr("Individual character sets, may be mixed with scripts");
+    p->next = ls;
+    p = p->next;
+
+    ls = (LIST_SEL_S *) fs_get(sizeof(*ls));
+    memset(ls, 0, sizeof(*ls));
+    ls->flags = SFL_NOSELECT;
+    ls->display_item =
+	       cpystr(repeat_char(width, '-'));
+    p->next = ls;
+    p = p->next;
+
+    /* then comes a list of individual character sets */
+    for(cs = utf8_charset(NIL); cs && cs->name; cs++){
+	/*
+	 * Filter out some un-useful members of the list.
+	 */
+	if(!strucmp(cs->name, "ISO-2022-JP-2")
+	   || !strucmp(cs->name, "UTF-7")
+	   || !strucmp(cs->name, "UTF-8"))
+	  continue;
+
+	ls = (LIST_SEL_S *) fs_get(sizeof(*ls));
+	memset(ls, 0, sizeof(*ls));
+	ls->item = cpystr(cs->name);
+
+	if(p){
+	    p->next = ls;
+	    p = p->next;
+	}
+	else
+	  listhead = p = ls;
+    }
+    
+    if(!listhead)
+      return(ret);
+    
+    if(!select_from_list_screen(listhead, SFL_ALLOW_LISTMODE,
+				"SELECT CHARACTER SETS", "character sets ",
+				h_select_multcharsets_screen,
+			        "HELP FOR SELECTING CHARACTER SETS")){
+	for(cnt = 0, p = listhead; p; p = p->next)
+	  if(p->selected)
+	    cnt++;
+
+	ret = (char **) fs_get((cnt+1) * sizeof(*ret));
+	memset(ret, 0, (cnt+1) * sizeof(*ret));
+	for(i = 0, p = listhead; p; p = p->next)
+	  if(p->selected)
+	    ret[i++] = cpystr(p->item ? p->item : "");
+    }
+
+    free_list_sel(&listhead);
+
+    return(ret);
+}
+
+
+/*
  * Allow user to choose a rule from their list of rules.
  *
  * Returns an allocated rule nickname on success, NULL otherwise.
@@ -13646,7 +13807,12 @@ select_sort(state, ql, sort, rev)
 
     /*----- String together the prompt ------*/
     tmp[1] = '\0';
-    strcpy(prompt, "Choose type of sort, or 'R' to reverse current sort : ");
+    if(F_ON(F_USE_FK,ps_global))
+      strncpy(prompt, "Choose type of sort : ", sizeof(prompt));
+    else
+      strncpy(prompt, "Choose type of sort, or 'R' to reverse current sort : ",
+	      sizeof(prompt));
+
     for(i = 0; state->sort_types[i] != EndofList; i++) {
 	sorts[i].rval	   = i;
 	p = sorts[i].label = sort_name(state->sort_types[i]);
@@ -13663,11 +13829,21 @@ select_sort(state, ql, sort, rev)
     sorts[i].ch     = 'r';
     sorts[i].rval   = 'r';
     sorts[i].name   = cpystr("R");
-    sorts[i].label  = "";
+    if(F_ON(F_USE_FK,ps_global))
+      sorts[i].label  = "Reverse";
+    else
+      sorts[i].label  = "";
+
     sorts[++i].ch   = -1;
     help = h_select_sort;
 
-    if((s = radio_buttons(prompt,ql,sorts,deefault,'x',help,RB_NORM)) != 'x'){
+    if((F_ON(F_USE_FK,ps_global)
+        && ((s = double_radio_buttons(prompt,ql,sorts,deefault,'x',
+				      help,RB_NORM)) != 'x'))
+       ||
+       (F_OFF(F_USE_FK,ps_global)
+        && ((s = radio_buttons(prompt,ql,sorts,deefault,'x',
+			       help,RB_NORM, NULL)) != 'x'))){
 	state->mangled_body = 1;		/* signal screen's changed */
 	if(s == 'r')
 	  *rev = !mn_get_revsort(state->msgmap);
@@ -13710,15 +13886,17 @@ display_folder_list(c, f, sublist, lister)
 {
     int	       rc;
     CONTEXT_S *tc;
+    TITLEBAR_STATE_S *tbstate = NULL;
     void (*redraw)() = ps_global->redrawer;
 
-    push_titlebar_state();
+    tbstate = save_titlebar_state();
     tc = *c;
     if(rc = (*lister)(ps_global, &tc, f, sublist))
       *c = tc;
 
     ClearScreen();
-    pop_titlebar_state();
+    restore_titlebar_state(tbstate);
+    free_titlebar_state(&tbstate);
     redraw_titlebar();
     if(ps_global->redrawer = redraw) /* reset old value, and test */
       (*ps_global->redrawer)();
@@ -14154,9 +14332,10 @@ file_lister(title, path, pathlen, file, filelen, newmail, flags)
 {
     PICO   pbf;
     int	   rv;
+    TITLEBAR_STATE_S *tbstate = NULL;
     void (*redraw)() = ps_global->redrawer;
 
-    push_titlebar_state();
+    tbstate = save_titlebar_state();
     standard_picobuf_setup(&pbf);
     if(!newmail)
       pbf.newmail = NULL;
@@ -14170,7 +14349,8 @@ file_lister(title, path, pathlen, file, filelen, newmail, flags)
     init_signals();		/* has it's own signal stuff */
 
     /* Restore display's titlebar and body */
-    pop_titlebar_state();
+    restore_titlebar_state(tbstate);
+    free_titlebar_state(&tbstate);
     redraw_titlebar();
     if(ps_global->redrawer = redraw)
       (*ps_global->redrawer)();
