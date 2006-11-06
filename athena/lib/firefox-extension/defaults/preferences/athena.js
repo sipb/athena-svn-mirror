@@ -1,7 +1,8 @@
 // Home page set-up
 pref("browser.startup.homepage", "chrome://athena/content/athena.properties");
 pref("browser.startup.homepage_reset", "chrome://athena/content/athena.properties");
-pref("startup.homepage_override_url", "chrome://athena/content/athena.properties");
+pref("startup.homepage_override_url", "");
+pref("startup.homepage_welcome_url", "");
 
 // Don't prompt the user for setting the default browser.
 pref("browser.shell.checkDefaultBrowser", false);
