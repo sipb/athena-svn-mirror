@@ -236,9 +236,6 @@ main(argc, argv)
 				(void) strcpy(message + msgsize, bfr);
 				msgsize += l;
 			}
-			message = (char *) realloc(message,
-						   (unsigned) (msgsize + 1));
-			message[msgsize+1] = '\0';
 		}
 		else {		/* Use read so you can send binary
 				 * messages... */
@@ -255,7 +252,7 @@ main(argc, argv)
 			/* end of msg */
 			message = (char *) realloc(message,
 						   (unsigned) (msgsize + 1));
-			message[msgsize+1] = '\0';
+			message[msgsize] = '\0';
 		}
 	}
 
