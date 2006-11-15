@@ -325,7 +325,7 @@ decode_notice(notice)
 	if (x) {
 		char *convtemp;
 		temp = xode_get_data(x);
-		if (!unicode_to_str(temp, &convtemp)) {
+		if (!temp || !unicode_to_str(temp, &convtemp)) {
 			convtemp = strdup("");
 		}
 		var_set_variable_then_free_value("show", convtemp);
@@ -338,10 +338,10 @@ decode_notice(notice)
 	if (x) {
 		char *convtemp;
 		temp = xode_get_data(x);
-		if (!unicode_to_str(temp, &convtemp)) {
-			convtemp = strdup("");
-		}
 		if (temp) {
+			if (!unicode_to_str(temp, &convtemp)) {
+				convtemp = strdup("");
+			}
 			var_set_variable_then_free_value("status", convtemp);
 		}
 		else {
