@@ -226,20 +226,6 @@ case "$1" in
 	fi && success nologin || failure nologin
 	echo
 
-	if [ "$PUBLIC" = true ] && modprobe imm 2> /dev/null; then
-		echo -n Adding ZIP250 support:
-		mkdir -p /mnt/zip
-		if ! grep -q ^/dev/sda /etc/fstab; then
-			cat << EOF >> /etc/fstab
-/dev/sda4		/mnt/zip		msdos	owner,noauto	0 0
-EOF
-		fi
-		if grep -q '^/dev/sda4[	 ]*/mnt/zip[	 ]' /etc/fstab; then
-			chmod 666 /dev/sda4
-		fi && success ZIP250
-	fi
-	echo
-
 	echo -n Updating panel menus:
 	local-menus && success local-menus || failure local-menus
 	echo
