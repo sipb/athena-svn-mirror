@@ -13,7 +13,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: auth-rh-rsa.c,v 1.34 2002/03/25 09:25:06 markus Exp $");
+RCSID("$OpenBSD: auth-rh-rsa.c,v 1.38 2005/07/17 07:17:54 djm Exp $");
 
 #include "packet.h"
 #include "uidswap.h"
@@ -52,18 +52,19 @@ auth_rhosts_rsa_key_allowed(struct passwd *pw, char *cuser, char *chost,
  * its host key.  Returns true if authentication succeeds.
  */
 int
-auth_rhosts_rsa(struct passwd *pw, char *cuser, Key *client_host_key)
+auth_rhosts_rsa(Authctxt *authctxt, char *cuser, Key *client_host_key)
 {
 	char *chost;
+	struct passwd *pw = authctxt->pw;
 
 	debug("Trying rhosts with RSA host authentication for client user %.100s",
 	    cuser);
 
-	if (pw == NULL || client_host_key == NULL ||
+	if (!authctxt->valid || client_host_key == NULL ||
 	    client_host_key->rsa == NULL)
 		return 0;
 
-	chost = (char *)get_canonical_hostname(options.verify_reverse_mapping);
+	chost = (char *)get_canonical_hostname(options.use_dns);
 	debug("Rhosts RSA authentication: canonical host %.900s", chost);
 
 	if (!PRIVSEP(auth_rhosts_rsa_key_allowed(pw, cuser, chost, client_host_key))) {
@@ -75,7 +76,7 @@ auth_rhosts_rsa(struct passwd *pw, char *cuser, Key *client_host_key)
 
 	/* Perform the challenge-response dialog with the client for the host key. */
 	if (!auth_rsa_challenge_dialog(client_host_key)) {
-		log("Client on %.800s failed to respond correctly to host authentication.",
+		logit("Client on %.800s failed to respond correctly to host authentication.",
 		    chost);
 		return 0;
 	}
@@ -85,7 +86,7 @@ auth_rhosts_rsa(struct passwd *pw, char *cuser, Key *client_host_key)
 	 */
 
 	verbose("Rhosts with RSA host authentication accepted for %.100s, %.100s on %.700s.",
-	   pw->pw_name, cuser, chost);
+	    pw->pw_name, cuser, chost);
 	packet_send_debug("Rhosts with RSA host authentication accepted.");
 	return 1;
 }

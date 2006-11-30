@@ -1,4 +1,4 @@
-SSH-RAND-HELPER(8)          System Manager's Manual         SSH-RAND-HELPER(8)
+SSH-RAND-HELPER(8)      OpenBSD System Manager's Manual     SSH-RAND-HELPER(8)
 
 NAME
      ssh-rand-helper - Random number gatherer for OpenSSH
@@ -27,7 +27,7 @@ DESCRIPTION
      random numbers from a EGD/PRNGd server via a unix domain or localhost tcp
      socket.
 
-     This program is not intended to be run by the end-user, so the few comM--
+     This program is not intended to be run by the end-user, so the few com-
      mandline options are for debugging purposes only.
 
      -b bytes
@@ -46,4 +46,4 @@ AUTHORS
 SEE ALSO
      ssh(1), ssh-add(1), ssh-keygen(1), sshd(8)
 
-BSD                             April 14, 2002                             BSD
+OpenBSD 3.8                     April 14, 2002                               1

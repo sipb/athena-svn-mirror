@@ -12,7 +12,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: buffer.c,v 1.16 2002/06/26 08:54:18 markus Exp $");
+RCSID("$OpenBSD: buffer.c,v 1.23 2005/03/14 11:46:56 markus Exp $");
 
 #include "xmalloc.h"
 #include "buffer.h"
@@ -23,8 +23,11 @@ RCSID("$OpenBSD: buffer.c,v 1.16 2002/06/26 08:54:18 markus Exp $");
 void
 buffer_init(Buffer *buffer)
 {
-	buffer->alloc = 4096;
-	buffer->buf = xmalloc(buffer->alloc);
+	const u_int len = 4096;
+
+	buffer->alloc = 0;
+	buffer->buf = xmalloc(len);
+	buffer->alloc = len;
 	buffer->offset = 0;
 	buffer->end = 0;
 }
@@ -34,8 +37,11 @@ buffer_init(Buffer *buffer)
 void
 buffer_free(Buffer *buffer)
 {
-	memset(buffer->buf, 0, buffer->alloc);
-	xfree(buffer->buf);
+	if (buffer->alloc > 0) {
+		memset(buffer->buf, 0, buffer->alloc);
+		buffer->alloc = 0;
+		xfree(buffer->buf);
+	}
 }
 
 /*
@@ -69,9 +75,10 @@ buffer_append(Buffer *buffer, const void *data, u_int len)
 void *
 buffer_append_space(Buffer *buffer, u_int len)
 {
+	u_int newlen;
 	void *p;
 
-	if (len > 0x100000)
+	if (len > BUFFER_MAX_CHUNK)
 		fatal("buffer_append_space: len %u not supported", len);
 
 	/* If the buffer is empty, start using it from the beginning. */
@@ -90,7 +97,7 @@ restart:
 	 * If the buffer is quite empty, but all data is at the end, move the
 	 * data to the beginning and retry.
 	 */
-	if (buffer->offset > buffer->alloc / 2) {
+	if (buffer->offset > MIN(buffer->alloc, BUFFER_MAX_CHUNK)) {
 		memmove(buffer->buf, buffer->buf + buffer->offset,
 			buffer->end - buffer->offset);
 		buffer->end -= buffer->offset;
@@ -98,11 +105,13 @@ restart:
 		goto restart;
 	}
 	/* Increase the size of the buffer and retry. */
-	buffer->alloc += len + 32768;
-	if (buffer->alloc > 0xa00000)
+
+	newlen = buffer->alloc + len + 32768;
+	if (newlen > BUFFER_MAX_LEN)
 		fatal("buffer_append_space: alloc %u not supported",
-		    buffer->alloc);
-	buffer->buf = xrealloc(buffer->buf, buffer->alloc);
+		    newlen);
+	buffer->buf = xrealloc(buffer->buf, newlen);
+	buffer->alloc = newlen;
 	goto restart;
 	/* NOTREACHED */
 }
@@ -117,34 +126,62 @@ buffer_len(Buffer *buffer)
 
 /* Gets data from the beginning of the buffer. */
 
+int
+buffer_get_ret(Buffer *buffer, void *buf, u_int len)
+{
+	if (len > buffer->end - buffer->offset) {
+		error("buffer_get_ret: trying to get more bytes %d than in buffer %d",
+		    len, buffer->end - buffer->offset);
+		return (-1);
+	}
+	memcpy(buf, buffer->buf + buffer->offset, len);
+	buffer->offset += len;
+	return (0);
+}
+
 void
 buffer_get(Buffer *buffer, void *buf, u_int len)
 {
-	if (len > buffer->end - buffer->offset)
-		fatal("buffer_get: trying to get more bytes %d than in buffer %d",
-		    len, buffer->end - buffer->offset);
-	memcpy(buf, buffer->buf + buffer->offset, len);
-	buffer->offset += len;
+	if (buffer_get_ret(buffer, buf, len) == -1)
+		fatal("buffer_get: buffer error");
 }
 
 /* Consumes the given number of bytes from the beginning of the buffer. */
 
+int
+buffer_consume_ret(Buffer *buffer, u_int bytes)
+{
+	if (bytes > buffer->end - buffer->offset) {
+		error("buffer_consume_ret: trying to get more bytes than in buffer");
+		return (-1);
+	}
+	buffer->offset += bytes;
+	return (0);
+}
+
 void
 buffer_consume(Buffer *buffer, u_int bytes)
 {
-	if (bytes > buffer->end - buffer->offset)
-		fatal("buffer_consume: trying to get more bytes than in buffer");
-	buffer->offset += bytes;
+	if (buffer_consume_ret(buffer, bytes) == -1)
+		fatal("buffer_consume: buffer error");
 }
 
 /* Consumes the given number of bytes from the end of the buffer. */
 
+int
+buffer_consume_end_ret(Buffer *buffer, u_int bytes)
+{
+	if (bytes > buffer->end - buffer->offset)
+		return (-1);
+	buffer->end -= bytes;
+	return (0);
+}
+
 void
 buffer_consume_end(Buffer *buffer, u_int bytes)
 {
-	if (bytes > buffer->end - buffer->offset)
+	if (buffer_consume_end_ret(buffer, bytes) == -1)
 		fatal("buffer_consume_end: trying to get more bytes than in buffer");
-	buffer->end -= bytes;
 }
 
 /* Returns a pointer to the first used byte in the buffer. */
@@ -160,7 +197,7 @@ buffer_ptr(Buffer *buffer)
 void
 buffer_dump(Buffer *buffer)
 {
-	int i;
+	u_int i;
 	u_char *ucp = buffer->buf;
 
 	for (i = buffer->offset; i < buffer->end; i++) {

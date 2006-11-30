@@ -1,4 +1,4 @@
-/*	$OpenBSD: packet.h,v 1.35 2002/06/19 18:01:00 markus Exp $	*/
+/*	$OpenBSD: packet.h,v 1.43 2005/07/25 11:59:40 markus Exp $	*/
 
 /*
  * Author: Tatu Ylonen <ylo@cs.hut.fi>
@@ -30,6 +30,8 @@ u_int	 packet_get_protocol_flags(void);
 void     packet_start_compression(int);
 void     packet_set_interactive(int);
 int      packet_is_interactive(void);
+void     packet_set_server(void);
+void     packet_set_authenticated(void);
 
 void     packet_start(u_char);
 void     packet_put_char(int ch);
@@ -52,7 +54,7 @@ u_int	 packet_get_char(void);
 u_int	 packet_get_int(void);
 void     packet_get_bignum(BIGNUM * value);
 void     packet_get_bignum2(BIGNUM * value);
-void	*packet_get_raw(int *length_ptr);
+void	*packet_get_raw(u_int *length_ptr);
 void	*packet_get_string(u_int *length_ptr);
 void     packet_disconnect(const char *fmt,...) __attribute__((format(printf, 1, 2)));
 void     packet_send_debug(const char *fmt,...) __attribute__((format(printf, 1, 2)));
@@ -62,8 +64,8 @@ int	 packet_get_keyiv_len(int);
 void	 packet_get_keyiv(int, u_char *, u_int);
 int	 packet_get_keycontext(int, u_char *);
 void	 packet_set_keycontext(int, u_char *);
-u_int32_t packet_get_seqnr(int);
-void	 packet_set_seqnr(int, u_int32_t);
+void	 packet_get_state(int, u_int32_t *, u_int64_t *, u_int32_t *);
+void	 packet_set_state(int, u_int32_t, u_int64_t, u_int32_t);
 int	 packet_get_ssh1_cipher(void);
 void	 packet_set_iv(int, u_char *);
 
@@ -81,8 +83,8 @@ void	 packet_add_padding(u_char);
 void	 tty_make_modes(int, struct termios *);
 void	 tty_parse_modes(int, int *);
 
-extern int max_packet_size;
-int      packet_set_maxsize(int);
+extern u_int max_packet_size;
+int	 packet_set_maxsize(u_int);
 #define  packet_get_maxsize() max_packet_size
 
 /* don't allow remaining bytes after the end of the message */
@@ -90,10 +92,13 @@ int      packet_set_maxsize(int);
 do { \
 	int _len = packet_remaining(); \
 	if (_len > 0) { \
-		log("Packet integrity error (%d bytes remaining) at %s:%d", \
+		logit("Packet integrity error (%d bytes remaining) at %s:%d", \
 		    _len ,__FILE__, __LINE__); \
 		packet_disconnect("Packet integrity error."); \
 	} \
 } while (0)
+
+int	 packet_need_rekeying(void);
+void	 packet_set_rekey_limit(u_int32_t);
 
 #endif				/* PACKET_H */

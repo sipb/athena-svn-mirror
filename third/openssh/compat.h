@@ -1,4 +1,4 @@
-/*	$OpenBSD: compat.h,v 1.33 2002/09/27 10:42:09 mickey Exp $	*/
+/*	$OpenBSD: compat.h,v 1.39 2005/03/01 10:09:52 djm Exp $	*/
 
 /*
  * Copyright (c) 1999, 2000, 2001 Markus Friedl.  All rights reserved.
@@ -27,7 +27,7 @@
 #ifndef COMPAT_H
 #define COMPAT_H
 
-#define	SSH_PROTO_UNKNOWN 	0x00
+#define	SSH_PROTO_UNKNOWN	0x00
 #define	SSH_PROTO_1		0x01
 #define	SSH_PROTO_1_PREFERRED	0x02
 #define	SSH_PROTO_2		0x04
@@ -53,8 +53,9 @@
 #define SSH_BUG_DERIVEKEY	0x00040000
 #define SSH_BUG_DUMMYCHAN	0x00100000
 #define SSH_BUG_EXTEOF		0x00200000
-#define SSH_BUG_K5USER		0x00400000
-#define SSH_BUG_PROBE		0x00800000
+#define SSH_BUG_PROBE		0x00400000
+#define SSH_BUG_FIRSTKEX	0x00800000
+#define SSH_OLD_FORWARD_ADDR	0x01000000
 
 void     enable_compat13(void);
 void     enable_compat20(void);

@@ -1,10 +1,12 @@
 #!/bin/sh
 #
 # inventory.sh
+# $Id: inventory.sh,v 1.1.1.2 2006-11-30 21:18:46 ghudson Exp $
 #
-# Originall written by Ben Lindstrom, modified by Darren Tucker to use perl
+# Originally written by Ben Lindstrom, modified by Darren Tucker to use perl
+# This file is placed into the public domain.
 #
-# This will produced and AIX package inventory file, which looks like:
+# This will produce an AIX package inventory file, which looks like:
 #
 # /usr/local/bin:
 #          class=apply,inventory,openssh
@@ -57,5 +59,5 @@ find . ! -name . -print | perl -ne '{
 	} elsif ( -d $_ ) {
 		# Entry is Directory
 		print "\ttype=DIRECTORY\n";
-	} 
+	}
 }'

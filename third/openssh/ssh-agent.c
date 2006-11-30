@@ -35,7 +35,7 @@
 
 #include "includes.h"
 #include "openbsd-compat/sys-queue.h"
-RCSID("$OpenBSD: ssh-agent.c,v 1.105 2002/10/01 20:34:12 markus Exp $");
+RCSID("$OpenBSD: ssh-agent.c,v 1.122 2004/10/29 22:53:56 djm Exp $");
 
 #include <openssl/evp.h>
 #include <openssl/md5.h>
@@ -50,9 +50,14 @@ RCSID("$OpenBSD: ssh-agent.c,v 1.105 2002/10/01 20:34:12 markus Exp $");
 #include "authfd.h"
 #include "compat.h"
 #include "log.h"
+#include "misc.h"
 
 #ifdef SMARTCARD
 #include "scard.h"
+#endif
+
+#if defined(HAVE_SYS_PRCTL_H)
+#include <sys/prctl.h>	/* For prctl() and PR_SET_DUMPABLE */
 #endif
 
 typedef enum {
@@ -77,6 +82,7 @@ typedef struct identity {
 	Key *key;
 	char *comment;
 	u_int death;
+	u_int confirm;
 } Identity;
 
 typedef struct {
@@ -100,11 +106,10 @@ char socket_dir[1024];
 int locked = 0;
 char *lock_passwd = NULL;
 
-#ifdef HAVE___PROGNAME
 extern char *__progname;
-#else
-char *__progname;
-#endif
+
+/* Default lifetime (0 == forever) */
+static int lifetime = 0;
 
 static void
 close_socket(SocketEntry *e)
@@ -157,6 +162,22 @@ lookup_identity(Key *key, int version)
 			return (id);
 	}
 	return (NULL);
+}
+
+/* Check confirmation of keysign request */
+static int
+confirm_key(Identity *id)
+{
+	char *p;
+	int ret = -1;
+
+	p = key_fingerprint(id->key, SSH_FP_MD5, SSH_FP_HEX);
+	if (ask_permission("Allow use of key %s?\nKey fingerprint %s.",
+	    id->comment, p))
+		ret = 0;
+	xfree(p);
+
+	return (ret);
 }
 
 /* send list of supported public keys to 'client' */
@@ -222,7 +243,7 @@ process_authentication_challenge1(SocketEntry *e)
 		goto failure;
 
 	id = lookup_identity(key, 1);
-	if (id != NULL) {
+	if (id != NULL && (!id->confirm || confirm_key(id) == 0)) {
 		Key *private = id->key;
 		/* Decrypt the challenge using the private key. */
 		if (rsa_private_decrypt(challenge, challenge, private->rsa) <= 0)
@@ -231,7 +252,7 @@ process_authentication_challenge1(SocketEntry *e)
 		/* The response is MD5 of decrypted challenge plus session id. */
 		len = BN_num_bytes(challenge);
 		if (len <= 0 || len > 32) {
-			log("process_authentication_challenge: bad challenge length %d", len);
+			logit("process_authentication_challenge: bad challenge length %d", len);
 			goto failure;
 		}
 		memset(buf, 0, 32);
@@ -282,7 +303,7 @@ process_sign_request2(SocketEntry *e)
 	key = key_from_blob(blob, blen);
 	if (key != NULL) {
 		Identity *id = lookup_identity(key, 2);
-		if (id != NULL)
+		if (id != NULL && (!id->confirm || confirm_key(id) == 0))
 			ok = key_sign(id->key, &signature, &slen, data, dlen);
 	}
 	key_free(key);
@@ -320,7 +341,7 @@ process_remove_identity(SocketEntry *e, int version)
 		buffer_get_bignum(&e->request, key->rsa->n);
 
 		if (bits != key_size(key))
-			log("Warning: identity keysize mismatch: actual %u, announced %u",
+			logit("Warning: identity keysize mismatch: actual %u, announced %u",
 			    key_size(key), bits);
 		break;
 	case 2:
@@ -402,7 +423,7 @@ static void
 process_add_identity(SocketEntry *e, int version)
 {
 	Idtab *tab = idtab_lookup(version);
-	int type, success = 0, death = 0;
+	int type, success = 0, death = 0, confirm = 0;
 	char *type_name, *comment;
 	Key *k = NULL;
 
@@ -453,6 +474,17 @@ process_add_identity(SocketEntry *e, int version)
 		}
 		break;
 	}
+	/* enable blinding */
+	switch (k->type) {
+	case KEY_RSA:
+	case KEY_RSA1:
+		if (RSA_blinding_on(k->rsa, NULL) != 1) {
+			error("process_add_identity: RSA_blinding_on failed");
+			key_free(k);
+			goto send;
+		}
+		break;
+	}
 	comment = buffer_get_string(&e->request, NULL);
 	if (k == NULL) {
 		xfree(comment);
@@ -464,15 +496,21 @@ process_add_identity(SocketEntry *e, int version)
 		case SSH_AGENT_CONSTRAIN_LIFETIME:
 			death = time(NULL) + buffer_get_int(&e->request);
 			break;
+		case SSH_AGENT_CONSTRAIN_CONFIRM:
+			confirm = 1;
+			break;
 		default:
 			break;
 		}
 	}
+	if (lifetime && !death)
+		death = time(NULL) + lifetime;
 	if (lookup_identity(k, version) == NULL) {
 		Identity *id = xmalloc(sizeof(Identity));
 		id->key = k;
 		id->comment = comment;
 		id->death = death;
+		id->confirm = confirm;
 		TAILQ_INSERT_TAIL(&tab->idlist, id, next);
 		/* Increment the number of identities. */
 		tab->nentries++;
@@ -533,13 +571,29 @@ static void
 process_add_smartcard_key (SocketEntry *e)
 {
 	char *sc_reader_id = NULL, *pin;
-	int i, version, success = 0;
+	int i, version, success = 0, death = 0, confirm = 0;
 	Key **keys, *k;
 	Identity *id;
 	Idtab *tab;
 
 	sc_reader_id = buffer_get_string(&e->request, NULL);
 	pin = buffer_get_string(&e->request, NULL);
+
+	while (buffer_len(&e->request)) {
+		switch (buffer_get_char(&e->request)) {
+		case SSH_AGENT_CONSTRAIN_LIFETIME:
+			death = time(NULL) + buffer_get_int(&e->request);
+			break;
+		case SSH_AGENT_CONSTRAIN_CONFIRM:
+			confirm = 1;
+			break;
+		default:
+			break;
+		}
+	}
+	if (lifetime && !death)
+		death = time(NULL) + lifetime;
+
 	keys = sc_get_keys(sc_reader_id, pin);
 	xfree(sc_reader_id);
 	xfree(pin);
@@ -555,8 +609,9 @@ process_add_smartcard_key (SocketEntry *e)
 		if (lookup_identity(k, version) == NULL) {
 			id = xmalloc(sizeof(Identity));
 			id->key = k;
-			id->comment = xstrdup("smartcard key");
-			id->death = 0;
+			id->comment = sc_get_key_label(k);
+			id->death = death;
+			id->confirm = confirm;
 			TAILQ_INSERT_TAIL(&tab->idlist, id, next);
 			tab->nentries++;
 			success = 1;
@@ -700,6 +755,7 @@ process_message(SocketEntry *e)
 		break;
 #ifdef SMARTCARD
 	case SSH_AGENTC_ADD_SMARTCARD_KEY:
+	case SSH_AGENTC_ADD_SMARTCARD_KEY_CONSTRAINED:
 		process_add_smartcard_key(e);
 		break;
 	case SSH_AGENTC_REMOVE_SMARTCARD_KEY:
@@ -719,10 +775,9 @@ process_message(SocketEntry *e)
 static void
 new_socket(sock_type type, int fd)
 {
-	u_int i, old_alloc;
+	u_int i, old_alloc, new_alloc;
 
-	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
-		error("fcntl O_NONBLOCK: %s", strerror(errno));
+	set_nonblock(fd);
 
 	if (fd > max_fd)
 		max_fd = fd;
@@ -730,29 +785,30 @@ new_socket(sock_type type, int fd)
 	for (i = 0; i < sockets_alloc; i++)
 		if (sockets[i].type == AUTH_UNUSED) {
 			sockets[i].fd = fd;
-			sockets[i].type = type;
 			buffer_init(&sockets[i].input);
 			buffer_init(&sockets[i].output);
 			buffer_init(&sockets[i].request);
+			sockets[i].type = type;
 			return;
 		}
 	old_alloc = sockets_alloc;
-	sockets_alloc += 10;
+	new_alloc = sockets_alloc + 10;
 	if (sockets)
-		sockets = xrealloc(sockets, sockets_alloc * sizeof(sockets[0]));
+		sockets = xrealloc(sockets, new_alloc * sizeof(sockets[0]));
 	else
-		sockets = xmalloc(sockets_alloc * sizeof(sockets[0]));
-	for (i = old_alloc; i < sockets_alloc; i++)
+		sockets = xmalloc(new_alloc * sizeof(sockets[0]));
+	for (i = old_alloc; i < new_alloc; i++)
 		sockets[i].type = AUTH_UNUSED;
-	sockets[old_alloc].type = type;
+	sockets_alloc = new_alloc;
 	sockets[old_alloc].fd = fd;
 	buffer_init(&sockets[old_alloc].input);
 	buffer_init(&sockets[old_alloc].output);
 	buffer_init(&sockets[old_alloc].request);
+	sockets[old_alloc].type = type;
 }
 
 static int
-prepare_select(fd_set **fdrp, fd_set **fdwp, int *fdl, int *nallocp)
+prepare_select(fd_set **fdrp, fd_set **fdwp, int *fdl, u_int *nallocp)
 {
 	u_int i, sz;
 	int n = 0;
@@ -883,7 +939,7 @@ after_select(fd_set *readset, fd_set *writeset)
 }
 
 static void
-cleanup_socket(void *p)
+cleanup_socket(void)
 {
 	if (socket_name[0])
 		unlink(socket_name);
@@ -891,17 +947,17 @@ cleanup_socket(void *p)
 		rmdir(socket_dir);
 }
 
-static void
+void
 cleanup_exit(int i)
 {
-	cleanup_socket(NULL);
-	exit(i);
+	cleanup_socket();
+	_exit(i);
 }
 
 static void
 cleanup_handler(int sig)
 {
-	cleanup_socket(NULL);
+	cleanup_socket();
 	_exit(2);
 }
 
@@ -914,7 +970,7 @@ check_parent_exists(int sig)
 		/* printf("Parent has died - Authentication agent exiting.\n"); */
 		cleanup_handler(sig); /* safe */
 	}
-	signal(SIGALRM, check_parent_exists);
+	mysignal(SIGALRM, check_parent_exists);
 	alarm(10);
 	errno = save_errno;
 }
@@ -930,22 +986,23 @@ usage(void)
 	fprintf(stderr, "  -k          Kill the current agent.\n");
 	fprintf(stderr, "  -d          Debug mode.\n");
 	fprintf(stderr, "  -a socket   Bind agent socket to given name.\n");
+	fprintf(stderr, "  -t life     Default identity lifetime (seconds).\n");
 	exit(1);
 }
 
 int
 main(int ac, char **av)
 {
-	int sock, c_flag = 0, d_flag = 0, k_flag = 0, s_flag = 0, ch, nalloc;
+	int c_flag = 0, d_flag = 0, k_flag = 0, s_flag = 0;
+	int sock, fd,  ch;
+	u_int nalloc;
 	char *shell, *format, *pidstr, *agentsocket = NULL;
 	fd_set *readsetp = NULL, *writesetp = NULL;
 	struct sockaddr_un sunaddr;
 #ifdef HAVE_SETRLIMIT
 	struct rlimit rlim;
 #endif
-#ifdef HAVE_CYGWIN
 	int prev_mask;
-#endif
 	extern int optind;
 	extern char *optarg;
 	pid_t pid;
@@ -955,13 +1012,18 @@ main(int ac, char **av)
 	setegid(getgid());
 	setgid(getgid());
 
+#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
+	/* Disable ptrace on Linux without sgid bit */
+	prctl(PR_SET_DUMPABLE, 0);
+#endif
+
 	SSLeay_add_all_algorithms();
 
-	__progname = get_progname(av[0]);
+	__progname = ssh_get_progname(av[0]);
 	init_rng();
 	seed_rng();
 
-	while ((ch = getopt(ac, av, "cdksa:")) != -1) {
+	while ((ch = getopt(ac, av, "cdksa:t:")) != -1) {
 		switch (ch) {
 		case 'c':
 			if (s_flag)
@@ -983,6 +1045,12 @@ main(int ac, char **av)
 			break;
 		case 'a':
 			agentsocket = optarg;
+			break;
+		case 't':
+			if ((lifetime = convtime(optarg)) == -1) {
+				fprintf(stderr, "Invalid lifetime\n");
+				usage();
+			}
 			break;
 		default:
 			usage();
@@ -1026,7 +1094,7 @@ main(int ac, char **av)
 
 	if (agentsocket == NULL) {
 		/* Create private directory for agent socket */
-		strlcpy(socket_dir, "/tmp/ssh-XXXXXXXX", sizeof socket_dir);
+		strlcpy(socket_dir, "/tmp/ssh-XXXXXXXXXX", sizeof socket_dir);
 		if (mkdtemp(socket_dir) == NULL) {
 			perror("mkdtemp: private socket dir");
 			exit(1);
@@ -1046,25 +1114,21 @@ main(int ac, char **av)
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sock < 0) {
 		perror("socket");
+		*socket_name = '\0'; /* Don't unlink any existing file */
 		cleanup_exit(1);
 	}
 	memset(&sunaddr, 0, sizeof(sunaddr));
 	sunaddr.sun_family = AF_UNIX;
 	strlcpy(sunaddr.sun_path, socket_name, sizeof(sunaddr.sun_path));
-#ifdef HAVE_CYGWIN
 	prev_mask = umask(0177);
-#endif
 	if (bind(sock, (struct sockaddr *) & sunaddr, sizeof(sunaddr)) < 0) {
 		perror("bind");
-#ifdef HAVE_CYGWIN
+		*socket_name = '\0'; /* Don't unlink any existing file */
 		umask(prev_mask);
-#endif
 		cleanup_exit(1);
 	}
-#ifdef HAVE_CYGWIN
 	umask(prev_mask);
-#endif
-	if (listen(sock, 128) < 0) {
+	if (listen(sock, SSH_LISTEN_BACKLOG) < 0) {
 		perror("listen");
 		cleanup_exit(1);
 	}
@@ -1116,9 +1180,14 @@ main(int ac, char **av)
 	}
 
 	(void)chdir("/");
-	close(0);
-	close(1);
-	close(2);
+	if ((fd = open(_PATH_DEVNULL, O_RDWR, 0)) != -1) {
+		/* XXX might close listen socket */
+		(void)dup2(fd, STDIN_FILENO);
+		(void)dup2(fd, STDOUT_FILENO);
+		(void)dup2(fd, STDERR_FILENO);
+		if (fd > 2)
+			close(fd);
+	}
 
 #ifdef HAVE_SETRLIMIT
 	/* deny core dumps, since memory contains unencrypted private keys */
@@ -1130,10 +1199,9 @@ main(int ac, char **av)
 #endif
 
 skip:
-	fatal_add_cleanup(cleanup_socket, NULL);
 	new_socket(AUTH_SOCKET, sock);
 	if (ac > 0) {
-		signal(SIGALRM, check_parent_exists);
+		mysignal(SIGALRM, check_parent_exists);
 		alarm(10);
 	}
 	idtab_init();

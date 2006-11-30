@@ -1,4 +1,4 @@
-/*	$OpenBSD: authfd.h,v 1.31 2002/09/11 18:27:25 stevesk Exp $	*/
+/*	$OpenBSD: authfd.h,v 1.34 2003/11/21 11:57:03 djm Exp $	*/
 
 /*
  * Author: Tatu Ylonen <ylo@cs.hut.fi>
@@ -49,8 +49,10 @@
 /* add key with constraints */
 #define SSH_AGENTC_ADD_RSA_ID_CONSTRAINED	24
 #define SSH2_AGENTC_ADD_ID_CONSTRAINED		25
+#define SSH_AGENTC_ADD_SMARTCARD_KEY_CONSTRAINED 26
 
 #define	SSH_AGENT_CONSTRAIN_LIFETIME		1
+#define	SSH_AGENT_CONSTRAIN_CONFIRM		2
 
 /* extended failure messages */
 #define SSH2_AGENT_FAILURE			30
@@ -76,11 +78,13 @@ int	 ssh_get_num_identities(AuthenticationConnection *, int);
 Key	*ssh_get_first_identity(AuthenticationConnection *, char **, int);
 Key	*ssh_get_next_identity(AuthenticationConnection *, char **, int);
 int	 ssh_add_identity(AuthenticationConnection *, Key *, const char *);
-int	 ssh_add_identity_constrained(AuthenticationConnection *, Key *, const char *, u_int);
+int	 ssh_add_identity_constrained(AuthenticationConnection *, Key *,
+    const char *, u_int, u_int);
 int	 ssh_remove_identity(AuthenticationConnection *, Key *);
 int	 ssh_remove_all_identities(AuthenticationConnection *, int);
 int	 ssh_lock_agent(AuthenticationConnection *, int, const char *);
-int	 ssh_update_card(AuthenticationConnection *, int, const char *, const char *);
+int	 ssh_update_card(AuthenticationConnection *, int, const char *,
+    const char *, u_int, u_int);
 
 int
 ssh_decrypt_challenge(AuthenticationConnection *, Key *, BIGNUM *, u_char[16],

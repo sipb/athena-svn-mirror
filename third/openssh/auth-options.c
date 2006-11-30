@@ -10,7 +10,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: auth-options.c,v 1.26 2002/07/30 17:03:55 markus Exp $");
+RCSID("$OpenBSD: auth-options.c,v 1.31 2005/03/10 22:40:38 deraadt Exp $");
 
 #include "xmalloc.h"
 #include "match.h"
@@ -173,7 +173,7 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 		if (strncasecmp(opts, cp, strlen(cp)) == 0) {
 			const char *remote_ip = get_remote_ipaddr();
 			const char *remote_host = get_canonical_hostname(
-			    options.verify_reverse_mapping);
+			    options.use_dns);
 			char *patterns = xmalloc(strlen(opts) + 1);
 
 			opts += strlen(cp);
@@ -201,7 +201,7 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 			if (match_host_and_ip(remote_host, remote_ip,
 			    patterns) != 1) {
 				xfree(patterns);
-				log("Authentication tried for %.100s with "
+				logit("Authentication tried for %.100s with "
 				    "correct key but not from a permitted "
 				    "host (host=%.200s, ip=%.200s).",
 				    pw->pw_name, remote_host, remote_ip);
@@ -217,7 +217,7 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 		}
 		cp = "permitopen=\"";
 		if (strncasecmp(opts, cp, strlen(cp)) == 0) {
-			char host[256], sport[6];
+			char *host, *p;
 			u_short port;
 			char *patterns = xmalloc(strlen(opts) + 1);
 
@@ -236,25 +236,29 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 			if (!*opts) {
 				debug("%.100s, line %lu: missing end quote",
 				    file, linenum);
-				auth_debug_add("%.100s, line %lu: missing end quote",
-				    file, linenum);
+				auth_debug_add("%.100s, line %lu: missing "
+				    "end quote", file, linenum);
 				xfree(patterns);
 				goto bad_option;
 			}
 			patterns[i] = 0;
 			opts++;
-			if (sscanf(patterns, "%255[^:]:%5[0-9]", host, sport) != 2 &&
-			    sscanf(patterns, "%255[^/]/%5[0-9]", host, sport) != 2) {
-				debug("%.100s, line %lu: Bad permitopen specification "
-				    "<%.100s>", file, linenum, patterns);
+			p = patterns;
+			host = hpdelim(&p);
+			if (host == NULL || strlen(host) >= NI_MAXHOST) {
+				debug("%.100s, line %lu: Bad permitopen "
+				    "specification <%.100s>", file, linenum,
+				    patterns);
 				auth_debug_add("%.100s, line %lu: "
-				    "Bad permitopen specification", file, linenum);
+				    "Bad permitopen specification", file,
+				    linenum);
 				xfree(patterns);
 				goto bad_option;
 			}
-			if ((port = a2port(sport)) == 0) {
-				debug("%.100s, line %lu: Bad permitopen port <%.100s>",
-				    file, linenum, sport);
+			host = cleanhostname(host);
+			if (p == NULL || (port = a2port(p)) == 0) {
+				debug("%.100s, line %lu: Bad permitopen port "
+				    "<%.100s>", file, linenum, p ? p : "");
 				auth_debug_add("%.100s, line %lu: "
 				    "Bad permitopen port", file, linenum);
 				xfree(patterns);
@@ -287,7 +291,7 @@ next_option:
 	return 1;
 
 bad_option:
-	log("Bad options in %.100s file, line %lu: %.50s",
+	logit("Bad options in %.100s file, line %lu: %.50s",
 	    file, linenum, opts);
 	auth_debug_add("Bad options in %.100s file, line %lu: %.50s",
 	    file, linenum, opts);

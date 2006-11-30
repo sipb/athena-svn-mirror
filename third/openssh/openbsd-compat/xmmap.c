@@ -1,4 +1,7 @@
 /*
+ * Copyright (c) 2002 Tim Rice.  All rights reserved.
+ * MAP_FAILED code by Solar Designer.
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -20,6 +23,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* $Id: xmmap.c,v 1.1.1.2 2006-11-30 21:19:40 ghudson Exp $ */
+
 #include "includes.h"
 
 #ifdef HAVE_SYS_MMAN_H
@@ -35,25 +40,28 @@ void *xmmap(size_t size)
 #ifdef HAVE_MMAP
 # ifdef MAP_ANON
 	address = mmap(NULL, size, PROT_WRITE|PROT_READ, MAP_ANON|MAP_SHARED,
-	    -1, 0);
+	    -1, (off_t)0);
 # else
 	address = mmap(NULL, size, PROT_WRITE|PROT_READ, MAP_SHARED,
-	    open("/dev/zero", O_RDWR), 0);
+	    open("/dev/zero", O_RDWR), (off_t)0);
 # endif
 
 #define MM_SWAP_TEMPLATE "/var/run/sshd.mm.XXXXXXXX"
-	if (address == MAP_FAILED) {
+	if (address == (void *)MAP_FAILED) {
 		char tmpname[sizeof(MM_SWAP_TEMPLATE)] = MM_SWAP_TEMPLATE;
 		int tmpfd;
+		mode_t old_umask;
 
+		old_umask = umask(0177);
 		tmpfd = mkstemp(tmpname);
+		umask(old_umask);
 		if (tmpfd == -1)
 			fatal("mkstemp(\"%s\"): %s",
 			    MM_SWAP_TEMPLATE, strerror(errno));
 		unlink(tmpname);
 		ftruncate(tmpfd, size);
 		address = mmap(NULL, size, PROT_WRITE|PROT_READ, MAP_SHARED,
-		    tmpfd, 0);
+		    tmpfd, (off_t)0);
 		close(tmpfd);
 	}
 

@@ -17,12 +17,12 @@
 #old cvs stuff.  please update before use.  may be deprecated.
 %define use_stable	1
 %if %{use_stable}
-  %define version 	3.5p1
+  %define version 	4.2p1
   %define cvs		%{nil}
-  %define release 	2
+  %define release 	1
 %else
-  %define version 	2.9.9p2
-  %define cvs		cvs20011009
+  %define version 	4.1p1
+  %define cvs		cvs20050315
   %define release 	0r1
 %endif
 %define xsa		x11-ssh-askpass		
@@ -60,7 +60,7 @@ Source0: see-above:/.../openssh-%{version}.tar.gz
 %if %{use_stable}
 Source1: see-above:/.../openssh-%{version}.tar.gz.sig
 %endif
-Source2: http://www.ntrnet.net/~jmknoble/software/%{xsa}/%{askpass}.tar.gz
+Source2: http://www.jmknoble.net/software/%{xsa}/%{askpass}.tar.gz
 Source3: http://www.openssh.com/faq.html
 
 %Package server
@@ -80,7 +80,7 @@ Summary(pt_BR) 	: Servidor do protocolo Secure Shell OpenSSH (sshd).
 %Package askpass
 Group       	: System/Network
 Requires    	: openssh = %{version}
-URL       	: http://www.ntrnet.net/~jmknoble/software/x11-ssh-askpass/
+URL       	: http://www.jmknoble.net/software/x11-ssh-askpass/
 Obsoletes   	: ssh-extras
 
 Summary     	: OpenSSH X11 pass-phrase dialog.
@@ -180,7 +180,6 @@ CFLAGS="$RPM_OPT_FLAGS" \
 %configure \
             --with-pam \
             --with-tcp-wrappers \
-            --with-ipv4-default \
 	    --with-privsep-path=%{_var}/empty/sshd \
 	    #leave this line for easy edits.
 
@@ -198,7 +197,7 @@ xmkmf
 %Install
 [ %{buildroot} != "/" ] && rm -rf %{buildroot}
 
-%makeinstall
+make install DESTDIR=%{buildroot}
 %makeinstall -C %{askpass} \
     BINDIR=%{_libexecdir} \
     MANPATH=%{_mandir} \
@@ -298,12 +297,7 @@ fi
 
 %PreUn server
 [ "$1" = 0 ] || exit 0
-
 ! %{SVIdir}/sshd status || %{SVIdir}/sshd stop
-: # to protect the rpm database
-
-
-%PostUn server
 if [ -x %{LSBinit}-remove ]; then
   %{LSBinit}-remove sshd
 else
@@ -311,13 +305,20 @@ else
 fi
 : # to protect the rpm database
 
-
 %Files 
 %defattr(-,root,root)
 %dir %{_sysconfdir}
 %config %{_sysconfdir}/ssh_config
-%{_bindir}/*
+%{_bindir}/scp
+%{_bindir}/sftp
+%{_bindir}/ssh
+%{_bindir}/slogin
+%{_bindir}/ssh-add
+%attr(2755,root,nobody) %{_bindir}/ssh-agent
+%{_bindir}/ssh-keygen
+%{_bindir}/ssh-keyscan
 %dir %{_libexecdir}
+%attr(4711,root,root) %{_libexecdir}/ssh-keysign
 %{_sbindir}/ssh-host-keygen
 %dir %{_defaultdocdir}/%{name}-%{version}
 %{_defaultdocdir}/%{name}-%{version}/CREDITS
@@ -328,10 +329,12 @@ fi
 %{_defaultdocdir}/%{name}-%{version}/TODO
 %{_defaultdocdir}/%{name}-%{version}/faq.html
 %{_mandir}/man1/*
+%{_mandir}/man8/ssh-keysign.8.gz
+%{_mandir}/man5/ssh_config.5.gz
  
 %Files server
 %defattr(-,root,root)
-%dir %attr(0700,root,root) %{_var}/empty/sshd
+%dir %{_var}/empty/sshd
 %config %{SVIdir}/sshd
 %config /etc/pam.d/sshd
 %config %{_sysconfdir}/moduli
@@ -339,6 +342,7 @@ fi
 %config %{SVIcdir}/sshd
 %{_libexecdir}/sftp-server
 %{_sbindir}/sshd
+%{_mandir}/man5/sshd_config.5.gz
 %{_mandir}/man8/sftp-server.8.gz
 %{_mandir}/man8/sshd.8.gz
  
@@ -353,4 +357,4 @@ fi
 * Mon Jan 01 1998 ...
 Template Version: 1.31
 
-$Id: openssh.spec,v 1.1.1.3 2003-02-05 19:04:49 zacheiss Exp $
+$Id: openssh.spec,v 1.1.1.4 2006-11-30 21:21:29 ghudson Exp $

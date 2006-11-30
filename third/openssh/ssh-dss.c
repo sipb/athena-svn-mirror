@@ -23,7 +23,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: ssh-dss.c,v 1.17 2002/07/04 10:41:47 markus Exp $");
+RCSID("$OpenBSD: ssh-dss.c,v 1.19 2003/11/10 16:23:41 jakob Exp $");
 
 #include <openssl/bn.h>
 #include <openssl/evp.h>
@@ -34,14 +34,13 @@ RCSID("$OpenBSD: ssh-dss.c,v 1.17 2002/07/04 10:41:47 markus Exp $");
 #include "compat.h"
 #include "log.h"
 #include "key.h"
-#include "ssh-dss.h"
 
 #define INTBLOB_LEN	20
 #define SIGBLOB_LEN	(2*INTBLOB_LEN)
 
 int
-ssh_dss_sign(Key *key, u_char **sigp, u_int *lenp,
-    u_char *data, u_int datalen)
+ssh_dss_sign(const Key *key, u_char **sigp, u_int *lenp,
+    const u_char *data, u_int datalen)
 {
 	DSA_SIG *sig;
 	const EVP_MD *evp_md = EVP_sha1();
@@ -102,8 +101,8 @@ ssh_dss_sign(Key *key, u_char **sigp, u_int *lenp,
 	return 0;
 }
 int
-ssh_dss_verify(Key *key, u_char *signature, u_int signaturelen,
-    u_char *data, u_int datalen)
+ssh_dss_verify(const Key *key, const u_char *signature, u_int signaturelen,
+    const u_char *data, u_int datalen)
 {
 	DSA_SIG *sig;
 	const EVP_MD *evp_md = EVP_sha1();
@@ -120,7 +119,8 @@ ssh_dss_verify(Key *key, u_char *signature, u_int signaturelen,
 
 	/* fetch signature */
 	if (datafellows & SSH_BUG_SIGBLOB) {
-		sigblob = signature;
+		sigblob = xmalloc(signaturelen);
+		memcpy(sigblob, signature, signaturelen);
 		len = signaturelen;
 	} else {
 		/* ietf-drafts */
@@ -160,10 +160,9 @@ ssh_dss_verify(Key *key, u_char *signature, u_int signaturelen,
 	BN_bin2bn(sigblob, INTBLOB_LEN, sig->r);
 	BN_bin2bn(sigblob+ INTBLOB_LEN, INTBLOB_LEN, sig->s);
 
-	if (!(datafellows & SSH_BUG_SIGBLOB)) {
-		memset(sigblob, 0, len);
-		xfree(sigblob);
-	}
+	/* clean up */
+	memset(sigblob, 0, len);
+	xfree(sigblob);
 
 	/* sha1 the data */
 	EVP_DigestInit(&md, evp_md);

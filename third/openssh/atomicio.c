@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2005 Anil Madhavapeddy. All rights reserved.
  * Copyright (c) 1995,1999 Theo de Raadt.  All rights reserved.
  * All rights reserved.
  *
@@ -24,22 +25,23 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: atomicio.c,v 1.10 2001/05/08 22:48:07 markus Exp $");
+RCSID("$OpenBSD: atomicio.c,v 1.13 2005/05/24 17:32:43 avsm Exp $");
 
 #include "atomicio.h"
 
 /*
- * ensure all of data on socket comes through. f==read || f==write
+ * ensure all of data on socket comes through. f==read || f==vwrite
  */
-ssize_t
+size_t
 atomicio(f, fd, _s, n)
-	ssize_t (*f) ();
+	ssize_t (*f) (int, void *, size_t);
 	int fd;
 	void *_s;
 	size_t n;
 {
 	char *s = _s;
-	ssize_t res, pos = 0;
+	size_t pos = 0;
+	ssize_t res;
 
 	while (n > pos) {
 		res = (f) (fd, s + pos, n - pos);
@@ -51,10 +53,12 @@ atomicio(f, fd, _s, n)
 			if (errno == EINTR || errno == EAGAIN)
 #endif
 				continue;
+			return 0;
 		case 0:
-			return (res);
+			errno = EPIPE;
+			return pos;
 		default:
-			pos += res;
+			pos += (u_int)res;
 		}
 	}
 	return (pos);

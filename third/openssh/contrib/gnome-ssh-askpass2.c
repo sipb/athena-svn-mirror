@@ -25,21 +25,24 @@
 /* GTK2 support by Nalin Dahyabhai <nalin@redhat.com> */
 
 /*
- * This is a simple GNOME SSH passphrase grabber. To use it, set the 
- * environment variable SSH_ASKPASS to point to the location of 
- * gnome-ssh-askpass before calling "ssh-add < /dev/null". 
+ * This is a simple GNOME SSH passphrase grabber. To use it, set the
+ * environment variable SSH_ASKPASS to point to the location of
+ * gnome-ssh-askpass before calling "ssh-add < /dev/null".
  *
  * There is only two run-time options: if you set the environment variable
  * "GNOME_SSH_ASKPASS_GRAB_SERVER=true" then gnome-ssh-askpass will grab
- * the X server. If you set "GNOME_SSH_ASKPASS_GRAB_POINTER=true", then the 
- * pointer will be grabbed too. These may have some benefit to security if 
+ * the X server. If you set "GNOME_SSH_ASKPASS_GRAB_POINTER=true", then the
+ * pointer will be grabbed too. These may have some benefit to security if
  * you don't trust your X server. We grab the keyboard always.
  */
+
+#define GRAB_TRIES	16
+#define GRAB_WAIT	250 /* milliseconds */
 
 /*
  * Compile with:
  *
- * cc `pkg-config --cflags gtk+-2.0` \
+ * cc -Wall `pkg-config --cflags gtk+-2.0` \
  *    gnome-ssh-askpass2.c -o gnome-ssh-askpass \
  *    `pkg-config --libs gtk+-2.0`
  *
@@ -48,6 +51,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include <X11/Xlib.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
@@ -84,13 +88,13 @@ passphrase_dialog(char *message)
 {
 	const char *failed;
 	char *passphrase, *local;
-	char **messages;
-	int result, i, grab_server, grab_pointer;
-	GtkWidget *dialog, *entry, *label;
+	int result, grab_tries, grab_server, grab_pointer;
+	GtkWidget *dialog, *entry;
 	GdkGrabStatus status;
 
 	grab_server = (getenv("GNOME_SSH_ASKPASS_GRAB_SERVER") != NULL);
 	grab_pointer = (getenv("GNOME_SSH_ASKPASS_GRAB_POINTER") != NULL);
+	grab_tries = 0;
 
 	dialog = gtk_message_dialog_new(NULL, 0,
 					GTK_MESSAGE_QUESTION,
@@ -99,7 +103,7 @@ passphrase_dialog(char *message)
 					message);
 
 	entry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), entry, FALSE, 
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), entry, FALSE,
 	    FALSE, 0);
 	gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
 	gtk_widget_grab_focus(entry);
@@ -117,23 +121,35 @@ passphrase_dialog(char *message)
 
 	/* Grab focus */
 	gtk_widget_show_now(dialog);
+	if (grab_pointer) {
+		for(;;) {
+			status = gdk_pointer_grab(
+			   (GTK_WIDGET(dialog))->window, TRUE, 0, NULL,
+			   NULL, GDK_CURRENT_TIME);
+			if (status == GDK_GRAB_SUCCESS)
+				break;
+			usleep(GRAB_WAIT * 1000);
+			if (++grab_tries > GRAB_TRIES) {
+				failed = "mouse";
+				goto nograb;
+			}
+		}
+	}
+	for(;;) {
+		status = gdk_keyboard_grab((GTK_WIDGET(dialog))->window,
+		   FALSE, GDK_CURRENT_TIME);
+		if (status == GDK_GRAB_SUCCESS)
+			break;
+		usleep(GRAB_WAIT * 1000);
+		if (++grab_tries > GRAB_TRIES) {
+			failed = "keyboard";
+			goto nograbkb;
+		}
+	}
 	if (grab_server) {
 		gdk_x11_grab_server();
 	}
-	if (grab_pointer) {
-		status =  gdk_pointer_grab((GTK_WIDGET(dialog))->window, TRUE,
-					   0, NULL, NULL, GDK_CURRENT_TIME);
-		if (status != GDK_GRAB_SUCCESS) {
-			failed = "mouse";
-			goto nograb;
-		}
-	}
-	status = gdk_keyboard_grab((GTK_WIDGET(dialog))->window, FALSE,
-				   GDK_CURRENT_TIME);
-	if (status != GDK_GRAB_SUCCESS) {
-		failed = "keyboard";
-		goto nograbkb;
-	}
+
 	result = gtk_dialog_run(GTK_DIALOG(dialog));
 
 	/* Ungrab */

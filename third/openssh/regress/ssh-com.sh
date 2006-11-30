@@ -1,4 +1,4 @@
-#	$OpenBSD: ssh-com.sh,v 1.3 2002/03/15 13:08:56 markus Exp $
+#	$OpenBSD: ssh-com.sh,v 1.7 2004/02/24 17:06:52 markus Exp $
 #	Placed in the Public Domain.
 
 tid="connect to ssh.com server"
@@ -14,18 +14,25 @@ VERSIONS="
 	2.1.0
 	2.2.0
 	2.3.0
-	2.3.1
 	2.4.0
 	3.0.0
-	3.1.0"
+	3.1.0
+	3.2.0
+	3.2.2
+	3.2.3
+	3.2.5
+	3.2.9
+	3.2.9.1
+	3.3.0"
 # 2.0.10 does not support UserConfigDirectory
+# 2.3.1 requires a config in $HOME/.ssh2
 
 SRC=`dirname ${SCRIPT}`
 
 # ssh.com
 cat << EOF > $OBJ/sshd2_config
-*:
-	# Port and ListenAdress are not used.
+#*:
+	# Port and ListenAddress are not used.
 	QuietMode			yes
 	Port				4343
 	ListenAddress			127.0.0.1
@@ -63,7 +70,7 @@ done
 
 # convert and append DSA hostkey
 (
-	echo -n 'ssh2-localhost-with-alias,127.0.0.1,::1 '
+	echon 'ssh2-localhost-with-alias,127.0.0.1,::1 '
 	${SSHKEYGEN} -if ${SRC}/dsa_ssh2.pub
 ) >> $OBJ/known_hosts
 

@@ -1,3 +1,5 @@
+/* OPENBSD ORIGINAL: lib/libc/stdlib/setenv.c */
+
 /*
  * Copyright (c) 1987 Regents of the University of California.
  * All rights reserved.
@@ -10,11 +12,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -32,14 +30,16 @@
  */
 
 #include "includes.h"
-#ifndef HAVE_SETENV
+#if !defined(HAVE_SETENV) || !defined(HAVE_UNSETENV)
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char *rcsid = "$OpenBSD: setenv.c,v 1.4 2001/07/09 06:57:45 deraadt Exp $";
+static char *rcsid = "$OpenBSD: setenv.c,v 1.6 2003/06/02 20:18:38 millert Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include <stdlib.h>
 #include <string.h>
+
+char *__findenv(const char *name, int *offset);
 
 /*
  * __findenv --
@@ -77,6 +77,7 @@ __findenv(name, offset)
 	return (NULL);
 }
 
+#ifndef HAVE_SETENV
 /*
  * setenv --
  *	Set the value of the environmental variable "name" to be
@@ -92,7 +93,6 @@ setenv(name, value, rewrite)
 	static int alloced;			/* if allocated space before */
 	register char *C;
 	int l_value, offset;
-	char *__findenv();
 
 	if (*value == '=')			/* no `=' in value */
 		++value;
@@ -139,7 +139,9 @@ setenv(name, value, rewrite)
 		;
 	return (0);
 }
+#endif /* HAVE_SETENV */
 
+#ifndef HAVE_UNSETENV
 /*
  * unsetenv(name) --
  *	Delete environmental variable "name".
@@ -158,5 +160,6 @@ unsetenv(name)
 			if (!(*P = *(P + 1)))
 				break;
 }
+#endif /* HAVE_UNSETENV */
 
-#endif /* HAVE_SETENV */
+#endif /* !defined(HAVE_SETENV) || !defined(HAVE_UNSETENV) */

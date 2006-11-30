@@ -35,7 +35,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: ssh-add.c,v 1.63 2002/09/19 15:51:23 markus Exp $");
+RCSID("$OpenBSD: ssh-add.c,v 1.72 2005/07/17 07:17:55 djm Exp $");
 
 #include <openssl/evp.h>
 
@@ -47,14 +47,7 @@ RCSID("$OpenBSD: ssh-add.c,v 1.63 2002/09/19 15:51:23 markus Exp $");
 #include "authfd.h"
 #include "authfile.h"
 #include "pathnames.h"
-#include "readpass.h"
 #include "misc.h"
-
-#ifdef HAVE___PROGNAME
-extern char *__progname;
-#else
-char *__progname;
-#endif
 
 /* argv0 */
 extern char *__progname;
@@ -69,6 +62,9 @@ static char *default_files[] = {
 
 /* Default lifetime (0 == forever) */
 static int lifetime = 0;
+
+/* User has to confirm key use */
+static int confirm = 0;
 
 /* we keep a cache of one passphrases */
 static char *pass = NULL;
@@ -149,7 +145,7 @@ add_file(AuthenticationConnection *ac, const char *filename)
 		/* clear passphrase since it did not work */
 		clear_pass();
 		snprintf(msg, sizeof msg, "Enter passphrase for %.200s: ",
-		   comment);
+		    comment);
 		for (;;) {
 			pass = read_passphrase(msg, RP_ALLOW_STDIN);
 			if (strcmp(pass, "") == 0) {
@@ -161,16 +157,21 @@ add_file(AuthenticationConnection *ac, const char *filename)
 			if (private != NULL)
 				break;
 			clear_pass();
-			strlcpy(msg, "Bad passphrase, try again: ", sizeof msg);
+			snprintf(msg, sizeof msg,
+			    "Bad passphrase, try again for %.200s: ", comment);
 		}
 	}
 
-	if (ssh_add_identity_constrained(ac, private, comment, lifetime)) {
+	if (ssh_add_identity_constrained(ac, private, comment, lifetime,
+	    confirm)) {
 		fprintf(stderr, "Identity added: %s (%s)\n", filename, comment);
 		ret = 0;
 		if (lifetime != 0)
-                        fprintf(stderr,
+			fprintf(stderr,
 			    "Lifetime set to %d seconds\n", lifetime);
+		if (confirm != 0)
+			fprintf(stderr,
+			    "The user has to confirm each use of the key\n");
 	} else if (ssh_add_identity(ac, private, comment)) {
 		fprintf(stderr, "Identity added: %s (%s)\n", filename, comment);
 		ret = 0;
@@ -188,20 +189,23 @@ static int
 update_card(AuthenticationConnection *ac, int add, const char *id)
 {
 	char *pin;
+	int ret = -1;
 
 	pin = read_passphrase("Enter passphrase for smartcard: ", RP_ALLOW_STDIN);
 	if (pin == NULL)
 		return -1;
 
-	if (ssh_update_card(ac, add, id, pin)) {
+	if (ssh_update_card(ac, add, id, pin, lifetime, confirm)) {
 		fprintf(stderr, "Card %s: %s\n",
 		    add ? "added" : "removed", id);
-		return 0;
+		ret = 0;
 	} else {
 		fprintf(stderr, "Could not %s card: %s\n",
 		    add ? "add" : "remove", id);
-		return -1;
+		ret = -1;
 	}
+	xfree(pin);
+	return ret;
 }
 
 static int
@@ -292,6 +296,7 @@ usage(void)
 	fprintf(stderr, "  -x          Lock agent.\n");
 	fprintf(stderr, "  -X          Unlock agent.\n");
 	fprintf(stderr, "  -t life     Set lifetime (in seconds) when adding identities.\n");
+	fprintf(stderr, "  -c          Require confirmation to sign using identities\n");
 #ifdef SMARTCARD
 	fprintf(stderr, "  -s reader   Add key in smartcard reader.\n");
 	fprintf(stderr, "  -e reader   Remove key in smartcard reader.\n");
@@ -307,7 +312,7 @@ main(int argc, char **argv)
 	char *sc_reader_id = NULL;
 	int i, ch, deleting = 0, ret = 0;
 
-	__progname = get_progname(argv[0]);
+	__progname = ssh_get_progname(argv[0]);
 	init_rng();
 	seed_rng();
 
@@ -319,7 +324,7 @@ main(int argc, char **argv)
 		fprintf(stderr, "Could not open a connection to your authentication agent.\n");
 		exit(2);
 	}
-	while ((ch = getopt(argc, argv, "lLdDxXe:s:t:")) != -1) {
+	while ((ch = getopt(argc, argv, "lLcdDxXe:s:t:")) != -1) {
 		switch (ch) {
 		case 'l':
 		case 'L':
@@ -332,6 +337,9 @@ main(int argc, char **argv)
 			if (lock_agent(ac, ch == 'x' ? 1 : 0) == -1)
 				ret = 1;
 			goto done;
+			break;
+		case 'c':
+			confirm = 1;
 			break;
 		case 'd':
 			deleting = 1;
@@ -381,7 +389,7 @@ main(int argc, char **argv)
 			goto done;
 		}
 
-		for(i = 0; default_files[i]; i++) {
+		for (i = 0; default_files[i]; i++) {
 			snprintf(buf, sizeof(buf), "%s/%s", pw->pw_dir,
 			    default_files[i]);
 			if (stat(buf, &st) < 0)
@@ -394,7 +402,7 @@ main(int argc, char **argv)
 		if (count == 0)
 			ret = 1;
 	} else {
-		for(i = 0; i < argc; i++) {
+		for (i = 0; i < argc; i++) {
 			if (do_file(ac, deleting, argv[i]) == -1)
 				ret = 1;
 		}

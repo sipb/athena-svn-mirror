@@ -1,4 +1,28 @@
-/* $Id: acconfig.h,v 1.1.1.3 2003-02-05 19:04:32 zacheiss Exp $ */
+/* $Id: acconfig.h,v 1.1.1.4 2006-11-30 21:20:57 ghudson Exp $ */
+
+/*
+ * Copyright (c) 1999-2003 Damien Miller.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #ifndef _CONFIG_H
 #define _CONFIG_H
@@ -8,12 +32,25 @@
 
 @TOP@
 
+/* Define if your platform breaks doing a seteuid before a setuid */
+#undef SETEUID_BREAKS_SETUID
+
+/* Define if your setreuid() is broken */
+#undef BROKEN_SETREUID
+
+/* Define if your setregid() is broken */
+#undef BROKEN_SETREGID
+
+/* Define if your setresuid() is broken */
+#undef BROKEN_SETRESUID
+
+/* Define if your setresgid() is broken */
+#undef BROKEN_SETRESGID
+
 /* Define to a Set Process Title type if your system is */
 /* supported by bsd-setproctitle.c */
 #undef SPT_TYPE
-
-/* setgroups() NOOP allowed */
-#undef SETGROUPS_NOOP
+#undef SPT_PADCHAR
 
 /* SCO workaround */
 #undef BROKEN_SYS_TERMIO_H
@@ -24,6 +61,9 @@
 /* If your header files don't define LOGIN_PROGRAM, then use this (detected) */
 /* from environment and PATH */
 #undef LOGIN_PROGRAM_FALLBACK
+
+/* Full path of your "passwd" program */
+#undef _PATH_PASSWD_PROG
 
 /* Define if your password has a pw_class field */
 #undef HAVE_PW_CLASS_IN_PASSWD
@@ -55,8 +95,14 @@
 /* Define if you have the getuserattr function.  */
 #undef HAVE_GETUSERATTR
 
+/* Define if you have the basename function. */
+#undef HAVE_BASENAME
+
 /* Work around problematic Linux PAM modules handling of PAM_TTY */
 #undef PAM_TTY_KLUDGE
+
+/* Define if pam_chauthtok wants real uid set to the unpriv'ed user */
+#undef SSHPAM_CHAUTHTOK_NEEDS_RUID
 
 /* Use PIPES instead of a socketpair() */
 #undef USE_PIPES
@@ -73,14 +119,17 @@
 /* Define if you are on NeXT */
 #undef HAVE_NEXT
 
-/* Define if you are on NEWS-OS */
-#undef HAVE_NEWS4
-
 /* Define if you want to enable PAM support */
 #undef USE_PAM
 
 /* Define if you want to enable AIX4's authenticate function */
 #undef WITH_AIXAUTHENTICATE
+
+/* Define if your AIX loginfailed() function takes 4 arguments (AIX >= 5.2) */
+#undef AIX_LOGINFAILED_4ARG
+
+/* Define if your skeychallenge() function takes 4 arguments (eg NetBSD) */
+#undef SKEYCHALLENGE_4ARG
 
 /* Define if you have/want arrays (cluster-wide session managment, not C arrays) */
 #undef WITH_IRIX_ARRAY
@@ -201,17 +250,17 @@
 /* Define if compiler implements __func__ */
 #undef HAVE___func__
 
+/* Define this is you want GSSAPI support in the version 2 protocol */
+#undef GSSAPI
+
 /* Define if you want Kerberos 5 support */
 #undef KRB5
 
 /* Define this if you are using the Heimdal version of Kerberos V5 */
 #undef HEIMDAL
 
-/* Define if you want Kerberos 4 support */
-#undef KRB4
-
-/* Define if you want AFS support */
-#undef AFS
+/* Define this if you want to use libkafs' AFS support */
+#undef USE_AFS
 
 /* Define if you want S/Key support */
 #undef SKEY
@@ -295,11 +344,11 @@
 /* Specify location of ssh.pid */
 #undef _PATH_SSH_PIDDIR
 
-/* Use IPv4 for connection by default, IPv6 can still if explicity asked */
-#undef IPV4_DEFAULT
-
 /* getaddrinfo is broken (if present) */
 #undef BROKEN_GETADDRINFO
+
+/* updwtmpx is broken (if present) */
+#undef BROKEN_UPDWTMPX
 
 /* Workaround more Linux IPv6 quirks */
 #undef DONT_TRY_OTHER_AF
@@ -327,6 +376,9 @@
 
 /* Define in your struct dirent expects you to allocate extra space for d_name */
 #undef BROKEN_ONE_BYTE_DIRENT_D_NAME
+
+/* Define if your system has /etc/default/login */
+#undef HAVE_ETC_DEFAULT_LOGIN
 
 /* Define if your getopt(3) defines and uses optreset */
 #undef HAVE_GETOPT_OPTRESET
@@ -363,6 +415,41 @@
 
 /* Define if your platform needs to skip post auth file descriptor passing */
 #undef DISABLE_FD_PASSING
+
+/* Silly mkstemp() */
+#undef HAVE_STRICT_MKSTEMP
+
+/* Some systems put this outside of libc */
+#undef HAVE_NANOSLEEP
+
+/* Define if sshd somehow reacquires a controlling TTY after setsid() */
+#undef SSHD_ACQUIRES_CTTY
+
+/* Define if cmsg_type is not passed correctly */
+#undef BROKEN_CMSG_TYPE
+
+/*
+ * Define to whatever link() returns for "not supported" if it doesn't
+ * return EOPNOTSUPP.
+ */
+#undef LINK_OPNOTSUPP_ERRNO
+
+/* Strings used in /etc/passwd to denote locked account */
+#undef LOCKED_PASSWD_STRING
+#undef LOCKED_PASSWD_PREFIX
+#undef LOCKED_PASSWD_SUBSTR
+
+/* Define if getrrsetbyname() exists */
+#undef HAVE_GETRRSETBYNAME
+
+/* Define if HEADER.ad exists in arpa/nameser.h */
+#undef HAVE_HEADER_AD
+
+/* Define if your resolver libs need this for getrrsetbyname */
+#undef BIND_8_COMPAT
+
+/* Define if you have /proc/$pid/fd */
+#undef HAVE_PROC_PID
 
 @BOTTOM@
 
