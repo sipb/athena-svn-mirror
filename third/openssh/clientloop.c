@@ -300,8 +300,6 @@ client_x11_get_proto(const char *display, const char *xauth_path,
 	if (!got_data) {
 		u_int32_t rnd = 0;
 
-		logit("Warning: No xauth data; "
-		    "using fake authentication data for X11 forwarding.");
 		strlcpy(proto, SSH_X11_PROTO, sizeof proto);
 		for (i = 0; i < 16; i++) {
 			if (i % 4 == 0)

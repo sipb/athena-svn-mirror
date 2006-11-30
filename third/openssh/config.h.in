@@ -1,5 +1,29 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
-/* $Id: config.h.in,v 1.5 2003-02-06 03:45:46 zacheiss Exp $ */
+/* $Id: config.h.in,v 1.6 2006-11-30 22:20:09 ghudson Exp $ */
+
+/*
+ * Copyright (c) 1999-2003 Damien Miller.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #ifndef _CONFIG_H
 #define _CONFIG_H
@@ -8,12 +32,25 @@
 /* Please make your changes there */
 
 
+/* Define if your platform breaks doing a seteuid before a setuid */
+#undef SETEUID_BREAKS_SETUID
+
+/* Define if your setreuid() is broken */
+#undef BROKEN_SETREUID
+
+/* Define if your setregid() is broken */
+#undef BROKEN_SETREGID
+
+/* Define if your setresuid() is broken */
+#undef BROKEN_SETRESUID
+
+/* Define if your setresgid() is broken */
+#undef BROKEN_SETRESGID
+
 /* Define to a Set Process Title type if your system is */
 /* supported by bsd-setproctitle.c */
 #undef SPT_TYPE
-
-/* setgroups() NOOP allowed */
-#undef SETGROUPS_NOOP
+#undef SPT_PADCHAR
 
 /* SCO workaround */
 #undef BROKEN_SYS_TERMIO_H
@@ -24,6 +61,9 @@
 /* If your header files don't define LOGIN_PROGRAM, then use this (detected) */
 /* from environment and PATH */
 #undef LOGIN_PROGRAM_FALLBACK
+
+/* Full path of your "passwd" program */
+#undef _PATH_PASSWD_PROG
 
 /* Define if your password has a pw_class field */
 #undef HAVE_PW_CLASS_IN_PASSWD
@@ -55,8 +95,14 @@
 /* Define if you have the getuserattr function.  */
 #undef HAVE_GETUSERATTR
 
+/* Define if you have the basename function. */
+#undef HAVE_BASENAME
+
 /* Work around problematic Linux PAM modules handling of PAM_TTY */
 #undef PAM_TTY_KLUDGE
+
+/* Define if pam_chauthtok wants real uid set to the unpriv'ed user */
+#undef SSHPAM_CHAUTHTOK_NEEDS_RUID
 
 /* Use PIPES instead of a socketpair() */
 #undef USE_PIPES
@@ -73,14 +119,17 @@
 /* Define if you are on NeXT */
 #undef HAVE_NEXT
 
-/* Define if you are on NEWS-OS */
-#undef HAVE_NEWS4
-
 /* Define if you want to enable PAM support */
 #undef USE_PAM
 
 /* Define if you want to enable AIX4's authenticate function */
 #undef WITH_AIXAUTHENTICATE
+
+/* Define if your AIX loginfailed() function takes 4 arguments (AIX >= 5.2) */
+#undef AIX_LOGINFAILED_4ARG
+
+/* Define if your skeychallenge() function takes 4 arguments (eg NetBSD) */
+#undef SKEYCHALLENGE_4ARG
 
 /* Define if you have/want arrays (cluster-wide session managment, not C arrays) */
 #undef WITH_IRIX_ARRAY
@@ -210,14 +259,8 @@
 /* Define this if you are using the Heimdal version of Kerberos V5 */
 #undef HEIMDAL
 
-/* Define if you want Kerberos 4 support */
-#undef KRB4
-
-/* Define if you want AFS support */
-#undef AFS
-
-/* Define if you want GSI/Globus authentication support */
-#undef GSI
+/* Define this if you want to use libkafs' AFS support */
+#undef USE_AFS
 
 /* Define if you want S/Key support */
 #undef SKEY
@@ -301,11 +344,14 @@
 /* Specify location of ssh.pid */
 #undef _PATH_SSH_PIDDIR
 
-/* Use IPv4 for connection by default, IPv6 can still if explicity asked */
-#undef IPV4_DEFAULT
-
 /* getaddrinfo is broken (if present) */
 #undef BROKEN_GETADDRINFO
+
+/* platform uses an in-memory credentials cache */
+#undef USE_CCAPI
+
+/* updwtmpx is broken (if present) */
+#undef BROKEN_UPDWTMPX
 
 /* Workaround more Linux IPv6 quirks */
 #undef DONT_TRY_OTHER_AF
@@ -333,6 +379,9 @@
 
 /* Define in your struct dirent expects you to allocate extra space for d_name */
 #undef BROKEN_ONE_BYTE_DIRENT_D_NAME
+
+/* Define if your system has /etc/default/login */
+#undef HAVE_ETC_DEFAULT_LOGIN
 
 /* Define if your getopt(3) defines and uses optreset */
 #undef HAVE_GETOPT_OPTRESET
@@ -370,15 +419,75 @@
 /* Define if your platform needs to skip post auth file descriptor passing */
 #undef DISABLE_FD_PASSING
 
+/* Silly mkstemp() */
+#undef HAVE_STRICT_MKSTEMP
+
+/* Some systems put this outside of libc */
+#undef HAVE_NANOSLEEP
+
+/* Define if sshd somehow reacquires a controlling TTY after setsid() */
+#undef SSHD_ACQUIRES_CTTY
+
+/* Define if cmsg_type is not passed correctly */
+#undef BROKEN_CMSG_TYPE
+
+/*
+ * Define to whatever link() returns for "not supported" if it doesn't
+ * return EOPNOTSUPP.
+ */
+#undef LINK_OPNOTSUPP_ERRNO
+
+/* Strings used in /etc/passwd to denote locked account */
+#undef LOCKED_PASSWD_STRING
+#undef LOCKED_PASSWD_PREFIX
+#undef LOCKED_PASSWD_SUBSTR
+
+/* Define if getrrsetbyname() exists */
+#undef HAVE_GETRRSETBYNAME
+
+/* Define if HEADER.ad exists in arpa/nameser.h */
+#undef HAVE_HEADER_AD
+
+/* Define if your resolver libs need this for getrrsetbyname */
+#undef BIND_8_COMPAT
+
+/* Define if you have /proc/$pid/fd */
+#undef HAVE_PROC_PID
+
+
+/* Define if you have a getaddrinfo that fails for the all-zeros IPv6 address
+   */
+#undef AIX_GETNAMEINFO_HACK
+
+/* getgroups(0,NULL) will return -1 */
+#undef BROKEN_GETGROUPS
+
+/* ia_uinfo routines not supported by OS yet */
+#undef BROKEN_LIBIAF
+
+/* Ultrix mmap can't map files */
+#undef BROKEN_MMAP
+
+/* LynxOS has broken setvbuf() implementation */
+#undef BROKEN_SETVBUF
 
 /* Define to 1 if the `getpgrp' function requires zero arguments. */
 #undef GETPGRP_VOID
 
+/* Conflicting defs for getspnam */
+#undef GETSPNAM_CONFLICTING_DEFS
+
 /* Define to 1 if you have the `arc4random' function. */
 #undef HAVE_ARC4RANDOM
 
+/* OpenBSD's gcc has sentinel */
+#undef HAVE_ATTRIBUTE__SENTINEL__
+
 /* Define to 1 if you have the `b64_ntop' function. */
 #undef HAVE_B64_NTOP
+
+/* Define to 1 if you have the `b64_pton' function. */
+#undef HAVE_B64_PTON
 
 /* Define to 1 if you have the `bcopy' function. */
 #undef HAVE_BCOPY
@@ -386,14 +495,65 @@
 /* Define to 1 if you have the `bindresvport_sa' function. */
 #undef HAVE_BINDRESVPORT_SA
 
+/* Define to 1 if you have the <bsm/audit.h> header file. */
+#undef HAVE_BSM_AUDIT_H
+
 /* Define to 1 if you have the <bstring.h> header file. */
 #undef HAVE_BSTRING_H
 
 /* Define to 1 if you have the `clock' function. */
 #undef HAVE_CLOCK
 
+/* Define to 1 if you have the `closefrom' function. */
+#undef HAVE_CLOSEFROM
+
+/* Define if gai_strerror() returns const char * */
+#undef HAVE_CONST_GAI_STRERROR_PROTO
+
 /* Define to 1 if you have the <crypt.h> header file. */
 #undef HAVE_CRYPT_H
+
+/* Define to 1 if you have the declaration of `authenticate', and to 0 if you
+   don't. */
+#undef HAVE_DECL_AUTHENTICATE
+
+/* Define to 1 if you have the declaration of `h_errno', and to 0 if you
+   don't. */
+#undef HAVE_DECL_H_ERRNO
+
+/* Define to 1 if you have the declaration of `loginfailed', and to 0 if you
+   don't. */
+#undef HAVE_DECL_LOGINFAILED
+
+/* Define to 1 if you have the declaration of `loginrestrictions', and to 0 if
+   you don't. */
+#undef HAVE_DECL_LOGINRESTRICTIONS
+
+/* Define to 1 if you have the declaration of `loginsuccess', and to 0 if you
+   don't. */
+#undef HAVE_DECL_LOGINSUCCESS
+
+/* Define to 1 if you have the declaration of `passwdexpired', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PASSWDEXPIRED
+
+/* Define to 1 if you have the declaration of `setauthdb', and to 0 if you
+   don't. */
+#undef HAVE_DECL_SETAUTHDB
+
+/* Define to 1 if you have the declaration of `_getlong', and to 0 if you
+   don't. */
+#undef HAVE_DECL__GETLONG
+
+/* Define to 1 if you have the declaration of `_getshort', and to 0 if you
+   don't. */
+#undef HAVE_DECL__GETSHORT
+
+/* Define to 1 if you have the <dirent.h> header file. */
+#undef HAVE_DIRENT_H
+
+/* Define to 1 if you have the `dirfd' function. */
+#undef HAVE_DIRFD
 
 /* Define to 1 if you have the `dirname' function. */
 #undef HAVE_DIRNAME
@@ -413,6 +573,9 @@
 /* Define to 1 if you have the `fchown' function. */
 #undef HAVE_FCHOWN
 
+/* Define to 1 if you have the <features.h> header file. */
+#undef HAVE_FEATURES_H
+
 /* Define to 1 if you have the <floatingpoint.h> header file. */
 #undef HAVE_FLOATINGPOINT_H
 
@@ -427,6 +590,12 @@
 
 /* Define to 1 if you have the `getaddrinfo' function. */
 #undef HAVE_GETADDRINFO
+
+/* Define to 1 if you have the `getaudit' function. */
+#undef HAVE_GETAUDIT
+
+/* Define to 1 if you have the `getaudit_addr' function. */
+#undef HAVE_GETAUDIT_ADDR
 
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
@@ -488,8 +657,26 @@
 /* Define to 1 if you have the <glob.h> header file. */
 #undef HAVE_GLOB_H
 
+/* Define to 1 if you have the <gssapi_generic.h> header file. */
+#undef HAVE_GSSAPI_GENERIC_H
+
+/* Define to 1 if you have the <gssapi/gssapi_generic.h> header file. */
+#undef HAVE_GSSAPI_GSSAPI_GENERIC_H
+
+/* Define to 1 if you have the <gssapi/gssapi.h> header file. */
+#undef HAVE_GSSAPI_GSSAPI_H
+
+/* Define to 1 if you have the <gssapi/gssapi_krb5.h> header file. */
+#undef HAVE_GSSAPI_GSSAPI_KRB5_H
+
 /* Define to 1 if you have the <gssapi.h> header file. */
 #undef HAVE_GSSAPI_H
+
+/* Define to 1 if you have the <gssapi_krb5.h> header file. */
+#undef HAVE_GSSAPI_KRB5_H
+
+/* Define to 1 if you have the <iaf.h> header file. */
+#undef HAVE_IAF_H
 
 /* Define to 1 if you have the <ia.h> header file. */
 #undef HAVE_IA_H
@@ -509,20 +696,17 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the <krb.h> header file. */
-#undef HAVE_KRB_H
+/* Define to 1 if the system has the type `in_addr_t'. */
+#undef HAVE_IN_ADDR_T
 
 /* Define to 1 if you have the <lastlog.h> header file. */
 #undef HAVE_LASTLOG_H
 
+/* Define to 1 if you have the `bsm' library (-lbsm). */
+#undef HAVE_LIBBSM
+
 /* Define to 1 if you have the `crypt' library (-lcrypt). */
 #undef HAVE_LIBCRYPT
-
-/* Define to 1 if you have the `des' library (-ldes). */
-#undef HAVE_LIBDES
-
-/* Define to 1 if you have the `des425' library (-ldes425). */
-#undef HAVE_LIBDES425
 
 /* Define to 1 if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
@@ -530,20 +714,14 @@
 /* Define to 1 if you have the <libgen.h> header file. */
 #undef HAVE_LIBGEN_H
 
-/* Define to 1 if you have the `krb' library (-lkrb). */
-#undef HAVE_LIBKRB
-
-/* Define to 1 if you have the `krb4' library (-lkrb4). */
-#undef HAVE_LIBKRB4
+/* Define to 1 if you have the `iaf' library (-liaf). */
+#undef HAVE_LIBIAF
 
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 #undef HAVE_LIBNSL
 
 /* Define to 1 if you have the `pam' library (-lpam). */
 #undef HAVE_LIBPAM
-
-/* Define to 1 if you have the `resolv' library (-lresolv). */
-#undef HAVE_LIBRESOLV
 
 /* Define to 1 if you have the `sectok' library (-lsectok). */
 #undef HAVE_LIBSECTOK
@@ -596,6 +774,9 @@
 /* Define to 1 if you have the `mmap' function. */
 #undef HAVE_MMAP
 
+/* Define to 1 if you have the <ndir.h> header file. */
+#undef HAVE_NDIR_H
+
 /* Define to 1 if you have the <netdb.h> header file. */
 #undef HAVE_NETDB_H
 
@@ -608,8 +789,14 @@
 /* Define to 1 if you have the `ngetaddrinfo' function. */
 #undef HAVE_NGETADDRINFO
 
+/* Define to 1 if you have the `nsleep' function. */
+#undef HAVE_NSLEEP
+
 /* Define to 1 if you have the `ogetaddrinfo' function. */
 #undef HAVE_OGETADDRINFO
+
+/* Define to 1 if you have the `openlog_r' function. */
+#undef HAVE_OPENLOG_R
 
 /* Define to 1 if you have the `openpty' function. */
 #undef HAVE_OPENPTY
@@ -617,11 +804,20 @@
 /* Define to 1 if you have the `pam_getenvlist' function. */
 #undef HAVE_PAM_GETENVLIST
 
+/* Define to 1 if you have the <pam/pam_appl.h> header file. */
+#undef HAVE_PAM_PAM_APPL_H
+
 /* Define to 1 if you have the `pam_putenv' function. */
 #undef HAVE_PAM_PUTENV
 
 /* Define to 1 if you have the <paths.h> header file. */
 #undef HAVE_PATHS_H
+
+/* Define to 1 if you have the `prctl' function. */
+#undef HAVE_PRCTL
+
+/* Define to 1 if you have the `pstat' function. */
+#undef HAVE_PSTAT
 
 /* Define to 1 if you have the <pty.h> header file. */
 #undef HAVE_PTY_H
@@ -659,6 +855,9 @@
 /* Define to 1 if you have the `sendmsg' function. */
 #undef HAVE_SENDMSG
 
+/* Define to 1 if you have the `setauthdb' function. */
+#undef HAVE_SETAUTHDB
+
 /* Define to 1 if you have the `setdtablesize' function. */
 #undef HAVE_SETDTABLESIZE
 
@@ -686,8 +885,14 @@
 /* Define to 1 if you have the `setproctitle' function. */
 #undef HAVE_SETPROCTITLE
 
+/* Define to 1 if you have the `setregid' function. */
+#undef HAVE_SETREGID
+
 /* Define to 1 if you have the `setresgid' function. */
 #undef HAVE_SETRESGID
+
+/* Define to 1 if you have the `setresuid' function. */
+#undef HAVE_SETRESUID
 
 /* Define to 1 if you have the `setreuid' function. */
 #undef HAVE_SETREUID
@@ -725,6 +930,9 @@
 /* Define to 1 if you have the `socketpair' function. */
 #undef HAVE_SOCKETPAIR
 
+/* Have PEERCRED socket option */
+#undef HAVE_SO_PEERCRED
+
 /* Define to 1 if you have the <stddef.h> header file. */
 #undef HAVE_STDDEF_H
 
@@ -733,6 +941,9 @@
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the `strdup' function. */
+#undef HAVE_STRDUP
 
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
@@ -755,14 +966,32 @@
 /* Define to 1 if you have the `strmode' function. */
 #undef HAVE_STRMODE
 
+/* Define to 1 if you have the `strnvis' function. */
+#undef HAVE_STRNVIS
+
 /* Define to 1 if you have the `strsep' function. */
 #undef HAVE_STRSEP
+
+/* Define to 1 if you have the `strtoll' function. */
+#undef HAVE_STRTOLL
+
+/* Define to 1 if you have the `strtonum' function. */
+#undef HAVE_STRTONUM
+
+/* Define to 1 if you have the `strtoul' function. */
+#undef HAVE_STRTOUL
 
 /* Define to 1 if `st_blksize' is member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_BLKSIZE
 
+/* Define to 1 if the system has the type `struct timespec'. */
+#undef HAVE_STRUCT_TIMESPEC
+
 /* Define to 1 if you have the `sysconf' function. */
 #undef HAVE_SYSCONF
+
+/* Define to 1 if you have the <sys/audit.h> header file. */
+#undef HAVE_SYS_AUDIT_H
 
 /* Define to 1 if you have the <sys/bitypes.h> header file. */
 #undef HAVE_SYS_BITYPES_H
@@ -773,8 +1002,23 @@
 /* Define to 1 if you have the <sys/cdefs.h> header file. */
 #undef HAVE_SYS_CDEFS_H
 
+/* Define to 1 if you have the <sys/dir.h> header file. */
+#undef HAVE_SYS_DIR_H
+
 /* Define to 1 if you have the <sys/mman.h> header file. */
 #undef HAVE_SYS_MMAN_H
+
+/* Define to 1 if you have the <sys/ndir.h> header file. */
+#undef HAVE_SYS_NDIR_H
+
+/* Define to 1 if you have the <sys/prctl.h> header file. */
+#undef HAVE_SYS_PRCTL_H
+
+/* Define to 1 if you have the <sys/pstat.h> header file. */
+#undef HAVE_SYS_PSTAT_H
+
+/* Define to 1 if you have the <sys/ptms.h> header file. */
+#undef HAVE_SYS_PTMS_H
 
 /* Define to 1 if you have the <sys/select.h> header file. */
 #undef HAVE_SYS_SELECT_H
@@ -782,11 +1026,23 @@
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
 
+/* Define to 1 if you have the <sys/stream.h> header file. */
+#undef HAVE_SYS_STREAM_H
+
 /* Define to 1 if you have the <sys/stropts.h> header file. */
 #undef HAVE_SYS_STROPTS_H
 
+/* Define to 1 if you have the <sys/strtio.h> header file. */
+#undef HAVE_SYS_STRTIO_H
+
+/* Force use of sys/syslog.h on Ultrix */
+#undef HAVE_SYS_SYSLOG_H
+
 /* Define to 1 if you have the <sys/sysmacros.h> header file. */
 #undef HAVE_SYS_SYSMACROS_H
+
+/* Define to 1 if you have the <sys/timers.h> header file. */
+#undef HAVE_SYS_TIMERS_H
 
 /* Define to 1 if you have the <sys/time.h> header file. */
 #undef HAVE_SYS_TIME_H
@@ -799,6 +1055,9 @@
 
 /* Define to 1 if you have the `tcgetpgrp' function. */
 #undef HAVE_TCGETPGRP
+
+/* Define to 1 if you have the `tcsendbreak' function. */
+#undef HAVE_TCSENDBREAK
 
 /* Define to 1 if you have the `time' function. */
 #undef HAVE_TIME
@@ -818,8 +1077,14 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* Define to 1 if you have the `unsetenv' function. */
+#undef HAVE_UNSETENV
+
 /* Define to 1 if you have the `updwtmp' function. */
 #undef HAVE_UPDWTMP
+
+/* Define to 1 if you have the `updwtmpx' function. */
+#undef HAVE_UPDWTMPX
 
 /* Define to 1 if you have the <usersec.h> header file. */
 #undef HAVE_USERSEC_H
@@ -848,17 +1113,38 @@
 /* Define to 1 if you have the `vhangup' function. */
 #undef HAVE_VHANGUP
 
+/* Define to 1 if you have the <vis.h> header file. */
+#undef HAVE_VIS_H
+
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
 
 /* Define to 1 if you have the `waitpid' function. */
 #undef HAVE_WAITPID
 
+/* Define to 1 if you have the `_getlong' function. */
+#undef HAVE__GETLONG
+
 /* Define to 1 if you have the `_getpty' function. */
 #undef HAVE__GETPTY
 
+/* Define to 1 if you have the `_getshort' function. */
+#undef HAVE__GETSHORT
+
 /* Define to 1 if you have the `__b64_ntop' function. */
 #undef HAVE___B64_NTOP
+
+/* Define to 1 if you have the `__b64_pton' function. */
+#undef HAVE___B64_PTON
+
+/* max value of long long calculated by configure */
+#undef LLONG_MAX
+
+/* min value of long long calculated by configure */
+#undef LLONG_MIN
+
+/* Need setpgrp to acquire controlling tty */
+#undef NEED_SETPRGP
 
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
@@ -875,6 +1161,9 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
+/* must supply username to passwd */
+#undef PASSWD_NEEDS_USERNAME
+
 /* The size of a `char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
@@ -890,8 +1179,23 @@
 /* The size of a `short int', as computed by sizeof. */
 #undef SIZEOF_SHORT_INT
 
+/* Use audit debugging module */
+#undef SSH_AUDIT_EVENTS
+
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* Support passwords > 8 chars */
+#undef UNIXWARE_LONG_PASSWORDS
+
+/* Use BSM audit module */
+#undef USE_BSM_AUDIT
+
+/* Use btmp to log bad logins */
+#undef USE_BTMP
+
+/* Use libedit for sftp */
+#undef USE_LIBEDIT
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
@@ -903,9 +1207,14 @@
 /* Define for large files, on AIX-style hosts. */
 #undef _LARGE_FILES
 
-/* Define as `__inline' if that's what the C compiler calls it, or to nothing
-   if it is not supported. */
+/* log for bad login attempts */
+#undef _PATH_BTMP
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
 #undef inline
+#endif
 
 /* type to use in place of socklen_t if not defined */
 #undef socklen_t

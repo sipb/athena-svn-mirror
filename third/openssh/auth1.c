@@ -10,14 +10,13 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: auth1.c,v 1.44 2002/09/26 11:38:43 markus Exp $");
+RCSID("$OpenBSD: auth1.c,v 1.62 2005/07/16 01:35:24 djm Exp $");
 
 #include "xmalloc.h"
 #include "rsa.h"
 #include "ssh1.h"
 #include "packet.h"
 #include "buffer.h"
-#include "mpaux.h"
 #include "log.h"
 #include "servconf.h"
 #include "compat.h"
@@ -26,6 +25,7 @@ RCSID("$OpenBSD: auth1.c,v 1.44 2002/09/26 11:38:43 markus Exp $");
 #include "session.h"
 #include "uidswap.h"
 #include "monitor_wrap.h"
+#include "buffer.h"
 #include "canohost.h"
 
 #include <al.h>
@@ -34,38 +34,185 @@ extern int is_local_acct;
 
 /* import */
 extern ServerOptions options;
+extern Buffer loginmsg;
 extern int debug_flag;
 
-#ifdef WITH_AIXAUTHENTICATE
-extern char *aixloginmsg;
-#endif /* WITH_AIXAUTHENTICATE */
+static int auth1_process_password(Authctxt *, char *, size_t);
+static int auth1_process_rsa(Authctxt *, char *, size_t);
+static int auth1_process_rhosts_rsa(Authctxt *, char *, size_t);
+static int auth1_process_tis_challenge(Authctxt *, char *, size_t);
+static int auth1_process_tis_response(Authctxt *, char *, size_t);
 
-/*
- * convert ssh auth msg type into description
- */
+static char *client_user = NULL;    /* Used to fill in remote user for PAM */
+
+struct AuthMethod1 {
+	int type;
+	char *name;
+	int *enabled;
+	int (*method)(Authctxt *, char *, size_t);
+};
+
+const struct AuthMethod1 auth1_methods[] = {
+	{
+		SSH_CMSG_AUTH_PASSWORD, "password",
+		&options.password_authentication, auth1_process_password
+	},
+	{
+		SSH_CMSG_AUTH_RSA, "rsa",
+		&options.rsa_authentication, auth1_process_rsa
+	},
+	{
+		SSH_CMSG_AUTH_RHOSTS_RSA, "rhosts-rsa",
+		&options.rhosts_rsa_authentication, auth1_process_rhosts_rsa
+	},
+	{
+		SSH_CMSG_AUTH_TIS, "challenge-response",
+		&options.challenge_response_authentication,
+		auth1_process_tis_challenge
+	},
+	{
+		SSH_CMSG_AUTH_TIS_RESPONSE, "challenge-response",
+		&options.challenge_response_authentication,
+		auth1_process_tis_response
+	},
+	{ -1, NULL, NULL, NULL}
+};
+
+static const struct AuthMethod1
+*lookup_authmethod1(int type)
+{
+	int i;
+
+	for(i = 0; auth1_methods[i].name != NULL; i++)
+		if (auth1_methods[i].type == type)
+			return (&(auth1_methods[i]));
+
+	return (NULL);
+}
+
 static char *
 get_authname(int type)
 {
-	static char buf[1024];
-	switch (type) {
-	case SSH_CMSG_AUTH_PASSWORD:
-		return "password";
-	case SSH_CMSG_AUTH_RSA:
-		return "rsa";
-	case SSH_CMSG_AUTH_RHOSTS_RSA:
-		return "rhosts-rsa";
-	case SSH_CMSG_AUTH_RHOSTS:
-		return "rhosts";
-	case SSH_CMSG_AUTH_TIS:
-	case SSH_CMSG_AUTH_TIS_RESPONSE:
-		return "challenge-response";
-#if defined(KRB4) || defined(KRB5)
-	case SSH_CMSG_AUTH_KERBEROS:
-		return "kerberos";
-#endif
+	const struct AuthMethod1 *a;
+	static char buf[64];
+
+	if ((a = lookup_authmethod1(type)) != NULL)
+		return (a->name);
+	snprintf(buf, sizeof(buf), "bad-auth-msg-%d", type);
+	return (buf);
+}
+
+static int
+auth1_process_password(Authctxt *authctxt, char *info, size_t infolen)
+{
+	int authenticated = 0;
+	char *password;
+	u_int dlen;
+
+	/*
+	 * Read user password.  It is in plain text, but was
+	 * transmitted over the encrypted channel so it is
+	 * not visible to an outside observer.
+	 */
+	password = packet_get_string(&dlen);
+	packet_check_eom();
+
+	/* Try authentication with the password. */
+	authenticated = PRIVSEP(auth_password(authctxt, password));
+
+	memset(password, 0, dlen);
+	xfree(password);
+
+	return (authenticated);
+}
+
+static int
+auth1_process_rsa(Authctxt *authctxt, char *info, size_t infolen)
+{
+	int authenticated = 0;
+	BIGNUM *n;
+
+	/* RSA authentication requested. */
+	if ((n = BN_new()) == NULL)
+		fatal("do_authloop: BN_new failed");
+	packet_get_bignum(n);
+	packet_check_eom();
+	authenticated = auth_rsa(authctxt, n);
+	BN_clear_free(n);
+
+	return (authenticated);
+}
+
+static int
+auth1_process_rhosts_rsa(Authctxt *authctxt, char *info, size_t infolen)
+{
+	int keybits, authenticated = 0;
+	u_int bits;
+	Key *client_host_key;
+	u_int ulen;
+
+	/*
+	 * Get client user name.  Note that we just have to
+	 * trust the client; root on the client machine can
+	 * claim to be any user.
+	 */
+	client_user = packet_get_string(&ulen);
+
+	/* Get the client host key. */
+	client_host_key = key_new(KEY_RSA1);
+	bits = packet_get_int();
+	packet_get_bignum(client_host_key->rsa->e);
+	packet_get_bignum(client_host_key->rsa->n);
+
+	keybits = BN_num_bits(client_host_key->rsa->n);
+	if (keybits < 0 || bits != (u_int)keybits) {
+		verbose("Warning: keysize mismatch for client_host_key: "
+		    "actual %d, announced %d",
+		    BN_num_bits(client_host_key->rsa->n), bits);
 	}
-	snprintf(buf, sizeof buf, "bad-auth-msg-%d", type);
-	return buf;
+	packet_check_eom();
+
+	authenticated = auth_rhosts_rsa(authctxt, client_user,
+	    client_host_key);
+	key_free(client_host_key);
+
+	snprintf(info, infolen, " ruser %.100s", client_user);
+
+	return (authenticated);
+}
+
+static int
+auth1_process_tis_challenge(Authctxt *authctxt, char *info, size_t infolen)
+{
+	char *challenge;
+
+	if ((challenge = get_challenge(authctxt)) == NULL)
+		return (0);
+
+	debug("sending challenge '%s'", challenge);
+	packet_start(SSH_SMSG_AUTH_TIS_CHALLENGE);
+	packet_put_cstring(challenge);
+	xfree(challenge);
+	packet_send();
+	packet_write_wait();
+
+	return (-1);
+}
+
+static int
+auth1_process_tis_response(Authctxt *authctxt, char *info, size_t infolen)
+{
+	int authenticated = 0;
+	char *response;
+	u_int dlen;
+
+	response = packet_get_string(&dlen);
+	packet_check_eom();
+	authenticated = verify_response(authctxt, response);
+	memset(response, 'r', dlen);
+	xfree(response);
+
+	return (authenticated);
 }
 
 /*
@@ -75,28 +222,27 @@ get_authname(int type)
 static void
 do_authloop(Authctxt *authctxt)
 {
-	int authenticated = 0, nonauthentication = 0;
-	u_int bits;
-	Key *client_host_key;
-	BIGNUM *n;
-	char *client_user, *password;
+	int authenticated = 0;
 	char info[1024];
-	u_int dlen;
-	u_int ulen;
-	int type = 0;
-	struct passwd *pw = authctxt->pw;
+	int prev = 0, type = 0;
+	const struct AuthMethod1 *meth;
 
 	debug("Attempting authentication for %s%.100s.",
-	    authctxt->valid ? "" : "illegal user ", authctxt->user);
+	    authctxt->valid ? "" : "invalid user ", authctxt->user);
 
 	/* If the user has no password, accept authentication immediately. */
 	if (options.password_authentication &&
-#if defined(KRB4) || defined(KRB5)
+#ifdef KRB5
 	    (!options.kerberos_authentication || options.kerberos_or_local_passwd) &&
 #endif
 	    PRIVSEP(auth_password(authctxt, ""))) {
-		auth_log(authctxt, 1, "without authentication", "");
-		return;
+#ifdef USE_PAM
+		if (options.use_pam && (PRIVSEP(do_pam_account())))
+#endif
+		{
+			auth_log(authctxt, 1, "without authentication", "");
+			return;
+		}
 	}
 
 	/* Indicate that authentication is needed. */
@@ -104,229 +250,42 @@ do_authloop(Authctxt *authctxt)
 	packet_send();
 	packet_write_wait();
 
-	client_user = NULL;
-
 	for (;;) {
 		/* default to fail */
 		authenticated = 0;
-		nonauthentication = 0;
 
 		info[0] = '\0';
 
 		/* Get a packet from the client. */
+		prev = type;
 		type = packet_read();
 
-		/* Process the packet. */
-		switch (type) {
+		/*
+		 * If we started challenge-response authentication but the
+		 * next packet is not a response to our challenge, release
+		 * the resources allocated by get_challenge() (which would
+		 * normally have been released by verify_response() had we
+		 * received such a response)
+		 */
+		if (prev == SSH_CMSG_AUTH_TIS &&
+		    type != SSH_CMSG_AUTH_TIS_RESPONSE)
+			abandon_challenge_response(authctxt);
 
-#if defined(KRB4) || defined(KRB5)
-		case SSH_CMSG_AUTH_KERBEROS:
-			if (!options.kerberos_authentication) {
-				verbose("Kerberos authentication disabled.");
-			} else {
-				char *kdata = packet_get_string(&dlen);
-				packet_check_eom();
-
-				if (kdata[0] == 4) { /* KRB_PROT_VERSION */
-#ifdef KRB4
-					KTEXT_ST tkt, reply;
-					tkt.length = dlen;
-					if (tkt.length < MAX_KTXT_LEN)
-						memcpy(tkt.dat, kdata, tkt.length);
-
-					if (PRIVSEP(auth_krb4(authctxt, &tkt,
-					    &client_user, &reply))) {
-						authenticated = 1;
-						snprintf(info, sizeof(info),
-						    " tktuser %.100s",
-						    client_user);
-
-						packet_start(
-						    SSH_SMSG_AUTH_KERBEROS_RESPONSE);
-						packet_put_string((char *)
-						    reply.dat, reply.length);
-						packet_send();
-						packet_write_wait();
-					}
-#endif /* KRB4 */
-				} else {
-#ifdef KRB5
-					krb5_data tkt, reply;
-					tkt.length = dlen;
-					tkt.data = kdata;
-
-					if (PRIVSEP(auth_krb5(authctxt, &tkt,
-					    &client_user, &reply))) {
-						authenticated = 1;
-						snprintf(info, sizeof(info),
-						    " tktuser %.100s",
-						    client_user);
- 
- 						/* Send response to client */
- 						packet_start(
-						    SSH_SMSG_AUTH_KERBEROS_RESPONSE);
- 						packet_put_string((char *)
-						    reply.data, reply.length);
- 						packet_send();
- 						packet_write_wait();
-
- 						if (reply.length)
- 							xfree(reply.data);
-					}
-#endif /* KRB5 */
-				}
-				xfree(kdata);
-			}
-			break;
-#endif /* KRB4 || KRB5 */
-
-#if defined(AFS) || defined(KRB5)
-		case SSH_CMSG_HAVE_KERBEROS_TGT: {
-		        /*
-			 * This is for backwards compatability with SSH.COM's
-			 * implementation, which passes the TGT before
-			 * authenticating.
-			 *
-			 * Perhaps this should be disallowed from other
-			 * client versions?
-			 */
-			int s;
-
-			s = do_auth1_kerberos_tgt_pass(authctxt, type);
-			packet_start(s ? SSH_SMSG_SUCCESS : SSH_SMSG_FAILURE);
-			packet_send();
-			packet_write_wait();
-			nonauthentication = 1;
+		if ((meth = lookup_authmethod1(type)) == NULL) {
+			logit("Unknown message during authentication: "
+			    "type %d", type);
+			goto skip;
 		}
-			break;
 
-#ifdef AFS
-		case SSH_CMSG_HAVE_AFS_TOKEN:
-			packet_send_debug("AFS token passing disabled before authentication.");
-			break;
-#endif /* AFS */
-#endif /* AFS || KRB5 */
-
-		case SSH_CMSG_AUTH_RHOSTS:
-			if (!options.rhosts_authentication) {
-				verbose("Rhosts authentication disabled.");
-				break;
-			}
-			/*
-			 * Get client user name.  Note that we just have to
-			 * trust the client; this is one reason why rhosts
-			 * authentication is insecure. (Another is
-			 * IP-spoofing on a local network.)
-			 */
-			client_user = packet_get_string(&ulen);
-			packet_check_eom();
-
-			/* Try to authenticate using /etc/hosts.equiv and .rhosts. */
-			authenticated = auth_rhosts(pw, client_user);
-
-			snprintf(info, sizeof info, " ruser %.100s", client_user);
-			break;
-
-		case SSH_CMSG_AUTH_RHOSTS_RSA:
-			if (!options.rhosts_rsa_authentication) {
-				verbose("Rhosts with RSA authentication disabled.");
-				break;
-			}
-			/*
-			 * Get client user name.  Note that we just have to
-			 * trust the client; root on the client machine can
-			 * claim to be any user.
-			 */
-			client_user = packet_get_string(&ulen);
-
-			/* Get the client host key. */
-			client_host_key = key_new(KEY_RSA1);
-			bits = packet_get_int();
-			packet_get_bignum(client_host_key->rsa->e);
-			packet_get_bignum(client_host_key->rsa->n);
-
-			if (bits != BN_num_bits(client_host_key->rsa->n))
-				verbose("Warning: keysize mismatch for client_host_key: "
-				    "actual %d, announced %d",
-				    BN_num_bits(client_host_key->rsa->n), bits);
-			packet_check_eom();
-
-			authenticated = auth_rhosts_rsa(pw, client_user,
-			    client_host_key);
-			key_free(client_host_key);
-
-			snprintf(info, sizeof info, " ruser %.100s", client_user);
-			break;
-
-		case SSH_CMSG_AUTH_RSA:
-			if (!options.rsa_authentication) {
-				verbose("RSA authentication disabled.");
-				break;
-			}
-			/* RSA authentication requested. */
-			if ((n = BN_new()) == NULL)
-				fatal("do_authloop: BN_new failed");
-			packet_get_bignum(n);
-			packet_check_eom();
-			authenticated = auth_rsa(pw, n);
-			BN_clear_free(n);
-			break;
-
-		case SSH_CMSG_AUTH_PASSWORD:
-			if (!options.password_authentication) {
-				verbose("Password authentication disabled.");
-				break;
-			}
-			/*
-			 * Read user password.  It is in plain text, but was
-			 * transmitted over the encrypted channel so it is
-			 * not visible to an outside observer.
-			 */
-			password = packet_get_string(&dlen);
-			packet_check_eom();
-
-			/* Try authentication with the password. */
-			authenticated = PRIVSEP(auth_password(authctxt, password));
-
-			memset(password, 0, strlen(password));
-			xfree(password);
-			break;
-
-		case SSH_CMSG_AUTH_TIS:
-			debug("rcvd SSH_CMSG_AUTH_TIS");
-			if (options.challenge_response_authentication == 1) {
-				char *challenge = get_challenge(authctxt);
-				if (challenge != NULL) {
-					debug("sending challenge '%s'", challenge);
-					packet_start(SSH_SMSG_AUTH_TIS_CHALLENGE);
-					packet_put_cstring(challenge);
-					xfree(challenge);
-					packet_send();
-					packet_write_wait();
-					continue;
-				}
-			}
-			break;
-		case SSH_CMSG_AUTH_TIS_RESPONSE:
-			debug("rcvd SSH_CMSG_AUTH_TIS_RESPONSE");
-			if (options.challenge_response_authentication == 1) {
-				char *response = packet_get_string(&dlen);
-				debug("got response '%s'", response);
-				packet_check_eom();
-				authenticated = verify_response(authctxt, response);
-				memset(response, 'r', dlen);
-				xfree(response);
-			}
-			break;
-
-		default:
-			/*
-			 * Any unknown messages will be ignored (and failure
-			 * returned) during authentication.
-			 */
-			log("Unknown message during authentication: type %d", type);
-			break;
+		if (!*(meth->enabled)) {
+			verbose("%s authentication disabled.", meth->name);
+			goto skip;
 		}
+
+		authenticated = meth->method(authctxt, info, sizeof(info));
+		if (authenticated == -1)
+			continue; /* "postponed" */
+
 #ifdef BSD_AUTH
 		if (authctxt->as) {
 			auth_close(authctxt->as);
@@ -338,8 +297,6 @@ do_authloop(Authctxt *authctxt)
 			    authctxt->user);
 
 #ifdef _UNICOS
-		if (type == SSH_CMSG_AUTH_PASSWORD && !authenticated)
-			cray_login_failure(authctxt->user, IA_UDBERR);
 		if (authenticated && cray_access_denied(authctxt->user)) {
 			authenticated = 0;
 			fatal("Access denied for user %s.",authctxt->user);
@@ -348,34 +305,45 @@ do_authloop(Authctxt *authctxt)
 
 #ifdef HAVE_CYGWIN
 		if (authenticated &&
-		    !check_nt_auth(type == SSH_CMSG_AUTH_PASSWORD, pw)) {
+		    !check_nt_auth(type == SSH_CMSG_AUTH_PASSWORD,
+		    authctxt->pw)) {
 			packet_disconnect("Authentication rejected for uid %d.",
-			pw == NULL ? -1 : pw->pw_uid);
+			    authctxt->pw == NULL ? -1 : authctxt->pw->pw_uid);
 			authenticated = 0;
 		}
 #else
 		/* Special handling for root */
-		if (!use_privsep &&
-		    authenticated && authctxt->pw->pw_uid == 0 &&
-		    !auth_root_allowed(get_authname(type)))
-			authenticated = 0;
+		if (authenticated && authctxt->pw->pw_uid == 0 &&
+		    !auth_root_allowed(meth->name)) {
+ 			authenticated = 0;
+# ifdef SSH_AUDIT_EVENTS
+			PRIVSEP(audit_event(SSH_LOGIN_ROOT_DENIED));
+# endif
+		}
 #endif
+
 #ifdef USE_PAM
-		if (!use_privsep && authenticated && 
-		    !do_pam_account(pw->pw_name, client_user))
-			authenticated = 0;
+		if (options.use_pam && authenticated &&
+		    !PRIVSEP(do_pam_account())) {
+			char *msg;
+			size_t len;
+
+			error("Access denied for user %s by PAM account "
+			    "configuration", authctxt->user);
+			len = buffer_len(&loginmsg);
+			buffer_append(&loginmsg, "\0", 1);
+			msg = buffer_ptr(&loginmsg);
+			/* strip trailing newlines */
+			if (len > 0)
+				while (len > 0 && msg[--len] == '\n')
+					msg[len] = '\0';
+			else
+				msg = "Access denied.";
+			packet_disconnect(msg);
+		}
 #endif
 
-		/*
-		 * If we received a non-authentication message, right now
-		 * only possible for Kerberos 5 TGT passing 
-		 * support for SSH.COM compatibility, assume that the
-		 * FAILURE/SUCCESS return has already been handled, skip
-		 * the logging, and restart the loop.
-		 */
-		if (nonauthentication)
-			continue;
-
+ skip:
 		/* Log before sending the reply */
 		auth_log(authctxt, authenticated, get_authname(type), info);
 
@@ -387,7 +355,10 @@ do_authloop(Authctxt *authctxt)
 		if (authenticated)
 			return;
 
-		if (authctxt->failures++ > AUTH_FAIL_MAX) {
+		if (authctxt->failures++ > options.max_authtries) {
+#ifdef SSH_AUDIT_EVENTS
+			PRIVSEP(audit_event(SSH_LOGIN_EXCEED_MAXTRIES));
+#endif
 			packet_disconnect(AUTH_FAIL_MSG, authctxt->user);
 		}
 
@@ -401,10 +372,9 @@ do_authloop(Authctxt *authctxt)
  * Performs authentication of an incoming connection.  Session key has already
  * been exchanged and encryption is enabled.
  */
-Authctxt *
-do_authentication(void)
+void
+do_authentication(Authctxt *authctxt)
 {
-	Authctxt *authctxt;
 	int status;
 	u_int ulen;
 	char *user, *style = NULL;
@@ -421,17 +391,6 @@ do_authentication(void)
 	if ((style = strchr(user, ':')) != NULL)
 		*style++ = '\0';
 
-#ifdef KRB5
-	/* XXX - SSH.com Kerberos v5 braindeath. */
-	if ((datafellows & SSH_BUG_K5USER) &&
-	    options.kerberos_authentication) {
-		char *p;
-		if ((p = strchr(user, '@')) != NULL)
-			*p = '\0';
-	}
-#endif
-
-	authctxt = authctxt_new();
 	authctxt->user = user;
 	authctxt->style = style;
 
@@ -453,8 +412,8 @@ do_authentication(void)
 		sprintf(buf, "You are not allowed to log in here: %s\n", err);
 	      }
 
-	    log("Login denied: attempted login as %s from %s: %s",
-		user, get_canonical_hostname(1), err);
+	    logit("Login denied: attempted login as %s from %s: %s",
+		  user, get_canonical_hostname(1), err);
 	    packet_disconnect(buf);
 	  }
 	if (!is_local_acct)
@@ -474,19 +433,22 @@ do_authentication(void)
 	/* Verify that the user is a valid user. */
 	if ((authctxt->pw = PRIVSEP(getpwnamallow(user))) != NULL)
 		authctxt->valid = 1;
-	else
-		debug("do_authentication: illegal user %s", user);
+	else {
+		debug("do_authentication: invalid user %s", user);
+		authctxt->pw = fakepw();
+	}
 
-	setproctitle("%s%s", authctxt->pw ? user : "unknown",
+	setproctitle("%s%s", authctxt->valid ? user : "unknown",
 	    use_privsep ? " [net]" : "");
 
 #ifdef USE_PAM
-	PRIVSEP(start_pam(authctxt->pw == NULL ? "NOUSER" : user));
+	if (options.use_pam)
+		PRIVSEP(start_pam(authctxt));
 #endif
 
 	/*
 	 * If we are not running as root, the user must have the same uid as
-	 * the server. (Unless you are running Windows)
+	 * the server.
 	 */
 #ifndef HAVE_CYGWIN
 	if (!use_privsep && getuid() != 0 && authctxt->pw &&
@@ -504,6 +466,4 @@ do_authentication(void)
 	packet_start(SSH_SMSG_SUCCESS);
 	packet_send();
 	packet_write_wait();
-
-	return (authctxt);
 }

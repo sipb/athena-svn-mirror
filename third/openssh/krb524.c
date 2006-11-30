@@ -1,6 +1,10 @@
+/* krb.h has some conflicts with the openssl des.h header, so we need
+   to contain its use to a separate file which doesn't need the
+   openssl headers.  This code is used from do_exec in session.c. */
+
 /* Convert the user's krb5 tickets to krb4 tickets. */
 #include "includes.h"
-RCSID("$Id: krb524.c,v 1.1 2002-02-16 22:47:12 zacheiss Exp $");
+RCSID("$Id: krb524.c,v 1.2 2006-11-30 22:20:11 ghudson Exp $");
 #include "xmalloc.h"
 #include "auth.h"
 #ifdef KRB5
@@ -15,7 +19,6 @@ do_krb524_conversion(Authctxt *authctxt)
   krb5_data *realm;
   CREDENTIALS v4creds;
 
-  krb524_init_ets(authctxt->krb5_ctx);
   realm = krb5_princ_realm(authctxt->krb5_ctx, authctxt->krb5_user);
   
   memset(&increds, 0, sizeof(increds));
@@ -33,8 +36,7 @@ do_krb524_conversion(Authctxt *authctxt)
 				      &v5creds)))
     return problem;
   
-  if ((problem = krb524_convert_creds_kdc(authctxt->krb5_ctx, v5creds,
-					  &v4creds)))
+  if ((problem = krb5_524_convert_creds(authctxt->krb5_ctx, v5creds, &v4creds)))
     return problem;
   
   sprintf(tktname, "KRBTKFILE=/tmp/tkt_p%d", getpid());
@@ -51,5 +53,11 @@ do_krb524_conversion(Authctxt *authctxt)
   
   chown(tkt_string(), authctxt->pw->pw_uid, authctxt->pw->pw_gid);
   return 0;
+}
+
+void
+krb_cleanup(void)
+{
+  dest_tkt();
 }
 #endif

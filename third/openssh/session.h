@@ -1,4 +1,4 @@
-/*	$OpenBSD: session.h,v 1.19 2002/06/30 21:59:45 deraadt Exp $	*/
+/*	$OpenBSD: session.h,v 1.25 2005/07/17 06:49:04 djm Exp $	*/
 
 /*
  * Copyright (c) 2000, 2001 Markus Friedl.  All rights reserved.
@@ -39,9 +39,6 @@ struct Session {
 	int	ptyfd, ttyfd, ptymaster;
 	u_int	row, col, xpixel, ypixel;
 	char	tty[TTYSZ];
-	/* last login */
-	char	hostname[MAXHOSTNAMELEN];
-	time_t	last_login_time;
 	/* X11 */
 	u_int	display_number;
 	char	*display;
@@ -52,24 +49,30 @@ struct Session {
 	int	single_connection;
 	/* proto 2 */
 	int	chanid;
+	int	*x11_chanids;
 	int	is_subsystem;
+	u_int	num_env;
+	struct {
+		char	*name;
+		char	*val;
+	}	*env;
 };
 
-int      do_auth1_kerberos_tgt_pass(Authctxt *, int);
 void	 do_authenticated(Authctxt *);
+void	 do_cleanup(Authctxt *);
 
 int	 session_open(Authctxt *, int);
 int	 session_input_channel_req(Channel *, const char *);
 void	 session_close_by_pid(pid_t, int);
 void	 session_close_by_channel(int, void *);
 void	 session_destroy_all(void (*)(Session *));
-void	 session_pty_cleanup2(void *);
+void	 session_pty_cleanup2(Session *);
 
 Session	*session_new(void);
 Session	*session_by_tty(char *);
 void	 session_close(Session *);
 void	 do_setusercontext(struct passwd *);
-
 void	 child_set_env(char ***envp, u_int *envsizep, const char *name,
 		       const char *value);
+
 #endif

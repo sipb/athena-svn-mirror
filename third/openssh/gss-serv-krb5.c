@@ -37,13 +37,14 @@
 #include "ssh-gss.h"
 
 extern ServerOptions options;
+extern int is_local_acct;
 
 #ifdef HEIMDAL
 # include <krb5.h>
 #else
-# ifdef HAVE_GSSAPI_KRB5
+# ifdef HAVE_GSSAPI_KRB5_H
 #  include <gssapi_krb5.h>
-# elif HAVE_GSSAPI_GSSAPI_KRB5
+# elif HAVE_GSSAPI_GSSAPI_KRB5_H
 #  include <gssapi/gssapi_krb5.h>
 # endif
 #endif
@@ -83,6 +84,13 @@ ssh_gssapi_krb5_userok(ssh_gssapi_client *client, char *name)
 	if (ssh_gssapi_krb5_init() == 0)
 		return 0;
 
+	/* If this isn't a local account and the user hasn't specified
+	 * ticket forwarding, fail through to password authentication.
+	 * The shell the user gets won't be useful without tickets anyway.
+	 */
+	if (!is_local_acct && !client->creds)
+		return 0;
+
 	if ((retval = krb5_parse_name(krb_context, client->exportedname.value,
 	    &princ))) {
 		logit("krb5_parse_name(): %.100s",
@@ -105,8 +113,9 @@ ssh_gssapi_krb5_userok(ssh_gssapi_client *client, char *name)
  * during userauth. Called after we have setuid to the user */
 
 static void
-ssh_gssapi_krb5_storecreds(ssh_gssapi_client *client)
+ssh_gssapi_krb5_storecreds(ssh_gssapi_client *client, void *arg)
 {
+	Authctxt *authctxt = arg;
 	krb5_ccache ccache;
 	krb5_error_code problem;
 	krb5_principal princ;
@@ -164,14 +173,29 @@ ssh_gssapi_krb5_storecreds(ssh_gssapi_client *client)
 	client->store.envvar = "KRB5CCNAME";
 	len = strlen(client->store.filename) + 6;
 	client->store.envval = xmalloc(len);
+#ifdef USE_CCAPI
+	snprintf(client->store.envval, len, "API:%s", client->store.filename);
+	xfree (client->store.filename);
+	client->store.filename = NULL;  /* don't unlink -- not a file */
+#else
 	snprintf(client->store.envval, len, "FILE:%s", client->store.filename);
+#endif
 
 #ifdef USE_PAM
 	if (options.use_pam)
 		do_pam_putenv(client->store.envvar, client->store.envval);
 #endif
 
-	krb5_cc_close(krb_context, ccache);
+	/* Populate the Kerberos specific members of the authctxt.
+	 * We'll need them later.
+	 */
+	authctxt->krb5_ctx = krb_context;
+	krb5_copy_principal(krb_context, princ, &authctxt->krb5_user);
+	krb5_free_principal(krb_context, princ);
+
+	authctxt->krb5_fwd_ccache = ccache;
+	authctxt->krb5_ticket_file = xstrdup(client->store.filename);
+	authctxt->krb5_ccname = xstrdup(client->store.envval);
 
 	return;
 }

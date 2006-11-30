@@ -1,5 +1,7 @@
+/*	$OpenBSD: gss-serv.c,v 1.8 2005/08/30 22:08:05 djm Exp $	*/
+
 /*
- * Copyright (c) 2001,2002 Simon Wilkinson. All rights reserved.
+ * Copyright (c) 2001-2003 Simon Wilkinson. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -26,591 +28,296 @@
 
 #ifdef GSSAPI
 
-#include "ssh.h"
-#include "ssh2.h"
-#include "xmalloc.h"
-#include "buffer.h"
 #include "bufaux.h"
-#include "packet.h"
 #include "compat.h"
-#include <openssl/evp.h>
-#include "cipher.h"
-#include "kex.h"
 #include "auth.h"
 #include "log.h"
 #include "channels.h"
 #include "session.h"
-#include "dispatch.h"
 #include "servconf.h"
-#include "compat.h"
 #include "monitor_wrap.h"
+#include "xmalloc.h"
+#include "getput.h"
 
 #include "ssh-gss.h"
 
 extern ServerOptions options;
-extern u_char *session_id2;
-extern int session_id2_len;
-extern int is_local_acct;
 
-typedef struct ssh_gssapi_cred_cache {
-	char *filename;
-	char *envvar;
-	char *envval;
-	void *data;
-} ssh_gssapi_cred_cache;
+static ssh_gssapi_client gssapi_client =
+    { GSS_C_EMPTY_BUFFER, GSS_C_EMPTY_BUFFER,
+    GSS_C_NO_CREDENTIAL, NULL, {NULL, NULL, NULL}};
 
-static struct ssh_gssapi_cred_cache gssapi_cred_store = {NULL,NULL,NULL};
+ssh_gssapi_mech gssapi_null_mech =
+    { NULL, NULL, {0, NULL}, NULL, NULL, NULL, NULL};
 
 #ifdef KRB5
-
-#ifdef HEIMDAL
-#include <krb5.h>
-#else
-#include <gssapi_krb5.h>
-#define krb5_get_err_text(context,code) error_message(code)
+extern ssh_gssapi_mech gssapi_kerberos_mech;
 #endif
 
-/* Initialise the krb5 library, so we can use it for those bits that
- * GSSAPI won't do */
+ssh_gssapi_mech* supported_mechs[]= {
+#ifdef KRB5
+	&gssapi_kerberos_mech,
+#endif
+	&gssapi_null_mech,
+};
 
-int ssh_gssapi_krb5_init(Authctxt *authctxt) {
-	krb5_error_code problem;
-	
-	if (authctxt->krb5_ctx != NULL)
-	  return 1;
+/* Unpriviledged */
+char *
+ssh_gssapi_server_mechanisms() {
+	gss_OID_set	supported;
 
-	problem = krb5_init_context(&authctxt->krb5_ctx);
-	if (problem) {
-		log("Cannot initialize krb5 context");
-		return 0;
-	}
+	ssh_gssapi_supported_oids(&supported);
+	return (ssh_gssapi_kex_mechs(supported, &ssh_gssapi_server_check_mech,
+	    NULL));
+}
 
-	return 1;	
-}			
-
-/* Check if this user is OK to login. This only works with krb5 - other 
- * GSSAPI mechanisms will need their own.
- * Returns true if the user is OK to log in, otherwise returns 0
- */
-
+/* Unpriviledged */
 int
-ssh_gssapi_krb5_userok(Authctxt *authctxt) {
-	krb5_principal princ;
-	int retval;
+ssh_gssapi_server_check_mech(gss_OID oid, void *data) {
+        Gssctxt * ctx = NULL;
+	int res;
 
-	if (ssh_gssapi_krb5_init(authctxt) == 0)
-		return 0;
+	res = !GSS_ERROR(PRIVSEP(ssh_gssapi_server_ctx(&ctx, oid)));
+	ssh_gssapi_delete_ctx(&ctx);
 
-	/* If this isn't a local account and the user hasn't specified
-	 * ticket forwarding, fail through to password authentication.
-	 * The shell the user gets won't be useful without tickets anyway.
-	 */
-	if (!is_local_acct && !gssapi_client_creds)
-	  	return 0;
-		
-	if ((retval=krb5_parse_name(authctxt->krb5_ctx,
-				    gssapi_client_name.value, 
-				    &princ))) {
-		log("krb5_parse_name(): %.100s", 
-			krb5_get_err_text(authctxt->krb5_ctx,retval));
-		return 0;
+	return (res);
+}
+
+/* Unpriviledged */
+void
+ssh_gssapi_supported_oids(gss_OID_set *oidset)
+{
+	int i = 0;
+	OM_uint32 min_status;
+	int present;
+	gss_OID_set supported;
+
+	gss_create_empty_oid_set(&min_status, oidset);
+	gss_indicate_mechs(&min_status, &supported);
+
+	while (supported_mechs[i]->name != NULL) {
+		if (GSS_ERROR(gss_test_oid_set_member(&min_status,
+		    &supported_mechs[i]->oid, supported, &present)))
+			present = 0;
+		if (present)
+			gss_add_oid_set_member(&min_status,
+			    &supported_mechs[i]->oid, oidset);
+		i++;
 	}
-	if (krb5_kuserok(authctxt->krb5_ctx, princ, authctxt->user)) {
-		retval = 1;
-		log("Authorized to %s, krb5 principal %s (krb5_kuserok)",
-		    authctxt->user, (char *)gssapi_client_name.value);
-	}
+}
+
+
+/* Wrapper around accept_sec_context
+ * Requires that the context contains:
+ *    oid
+ *    credentials	(from ssh_gssapi_acquire_cred)
+ */
+/* Priviledged */
+OM_uint32
+ssh_gssapi_accept_ctx(Gssctxt *ctx, gss_buffer_desc *recv_tok,
+    gss_buffer_desc *send_tok, OM_uint32 *flags)
+{
+	OM_uint32 status;
+	gss_OID mech;
+
+	ctx->major = gss_accept_sec_context(&ctx->minor,
+	    &ctx->context, ctx->creds, recv_tok,
+	    GSS_C_NO_CHANNEL_BINDINGS, &ctx->client, &mech,
+	    send_tok, flags, NULL, &ctx->client_creds);
+
+	if (GSS_ERROR(ctx->major))
+		ssh_gssapi_error(ctx);
+
+	if (ctx->client_creds)
+		debug("Received some client credentials");
 	else
-		retval = 0;
-	
-	krb5_free_principal(authctxt->krb5_ctx, princ);
-	return retval;
-}
-	
-/* Make sure that this is called _after_ we've setuid to the user */
+		debug("Got no client credentials");
 
-/* This writes out any forwarded credentials. Its specific to the Kerberos
- * GSSAPI mechanism
- *
- * We assume that our caller has made sure that the user has selected
- * delegated credentials, and that the client_creds structure is correctly
- * populated.
- */
+	status = ctx->major;
 
-void
-ssh_gssapi_krb5_storecreds(Authctxt *authctxt) {
-	krb5_ccache ccache;
-	krb5_error_code problem;
-	krb5_principal princ;
-	char ccname[35];
-	static char name[40];
-	int tmpfd;
-	OM_uint32 maj_status,min_status;
-
-
-	if (gssapi_client_creds==NULL) {
-		debug("No credentials stored"); 
-		return;
-	}
-		
-	if (ssh_gssapi_krb5_init(authctxt) == 0)
-		return;
-
-	if (options.gss_use_session_ccache) {
-        	snprintf(ccname,sizeof(ccname),"/tmp/krb5cc_p%d",getpid());
-       
-	        if (fchmod(tmpfd, S_IRUSR | S_IWUSR) == -1) {
-	               	log("fchmod(): %.100s", strerror(errno));
-	               	close(tmpfd);
-	               	return;
-	        }
-        } else {
-        	snprintf(ccname,sizeof(ccname),"/tmp/krb5cc_p%d",getpid());
-        	tmpfd = open(ccname, O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR);
-        	if (tmpfd == -1) {
-        		log("open(): %.100s", strerror(errno));
-        		return;
-        	}
-        }
-
-       	close(tmpfd);
-        snprintf(name, sizeof(name), "FILE:%s",ccname);
- 
-        if ((problem = krb5_cc_resolve(authctxt->krb5_ctx, name, &ccache))) {
-                log("krb5_cc_default(): %.100s", 
-                	krb5_get_err_text(authctxt->krb5_ctx,problem));
-                return;
-        }
-
-	if ((problem = krb5_parse_name(authctxt->krb5_ctx, gssapi_client_name.value, 
-				       &princ))) {
-		log("krb5_parse_name(): %.100s", 
-			krb5_get_err_text(authctxt->krb5_ctx,problem));
-		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
-		return;
-	}
-	
-	if ((problem = krb5_cc_initialize(authctxt->krb5_ctx, ccache, princ))) {
-		log("krb5_cc_initialize(): %.100s", 
-			krb5_get_err_text(authctxt->krb5_ctx,problem));
-		krb5_free_principal(authctxt->krb5_ctx,princ);
-		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
-		return;
-	}
-	
-	#ifdef HEIMDAL
-	if ((problem = krb5_cc_copy_cache(authctxt->krb5_ctx, 
-					   gssapi_client_creds->ccache,
-					   ccache))) {
-		log("krb5_cc_copy_cache(): %.100s", 
-			krb5_get_err_text(authctxt->krb5_ctx,problem));
-		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
-		return;
-	}
-	#else
-	if ((maj_status = gss_krb5_copy_ccache(&min_status, 
-					       gssapi_client_creds, 
-					       ccache))) {
-		log("gss_krb5_copy_ccache() failed");
-		ssh_gssapi_error(maj_status,min_status);
-		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
-		return;
-	}
-	#endif
-	
-#ifdef USE_PAM
-	do_pam_putenv("KRB5CCNAME",name);
-#else
-	setenv("KRB5CCNAME", name, 1);
-#endif
-
-	gssapi_cred_store.filename=strdup(ccname);
-	gssapi_cred_store.envvar="KRB5CCNAME";
-	gssapi_cred_store.envval=strdup(name);
-
-	/* Populate the Kerberos specific members of the authctxt.
-	 * We'll need them later.
+	/* Now, if we're complete and we have the right flags, then
+	 * we flag the user as also having been authenticated
 	 */
-	krb5_copy_principal(authctxt->krb5_ctx, princ, &authctxt->krb5_user);
-	krb5_free_principal(authctxt->krb5_ctx, princ);
 
-	authctxt->krb5_fwd_ccache = ccache;
-	authctxt->krb5_ticket_file = 
-	  (char *)krb5_cc_get_name(authctxt->krb5_ctx, 
-				   authctxt->krb5_fwd_ccache);
+	if (((flags == NULL) || ((*flags & GSS_C_MUTUAL_FLAG) &&
+	    (*flags & GSS_C_INTEG_FLAG))) && (ctx->major == GSS_S_COMPLETE)) {
+		if (ssh_gssapi_getclient(ctx, &gssapi_client))
+			fatal("Couldn't convert client name");
+	}
 
-	return;
-}
-
-#endif /* KRB5 */
-
-#ifdef GSI
-#include <globus_gss_assist.h>
-
-/*
- * Check if this user is OK to login under GSI. User has been authenticated
- * as identity in global 'client_name.value' and is trying to log in as passed
- * username in 'name'.
- *
- * Returns non-zero if user is authorized, 0 otherwise.
- */
-int
-ssh_gssapi_gsi_userok(char *name)
-{
-    int authorized = 0;
-    
-    /* This returns 0 on success */
-    authorized = (globus_gss_assist_userok(gssapi_client_name.value,
-					   name) == 0);
-    
-    debug("GSI user %s is%s authorized as target user %s",
-	  (char *) gssapi_client_name.value,
-	  (authorized ? "" : " not"),
-	  name);
-    
-    return authorized;
+	return (status);
 }
 
 /*
- * Handle setting up child environment for GSI.
- *
- * Make sure that this is called _after_ we've setuid to the user.
+ * This parses an exported name, extracting the mechanism specific portion
+ * to use for ACL checking. It verifies that the name belongs the mechanism
+ * originally selected.
  */
-void
-ssh_gssapi_gsi_storecreds()
+static OM_uint32
+ssh_gssapi_parse_ename(Gssctxt *ctx, gss_buffer_t ename, gss_buffer_t name)
 {
-	OM_uint32	major_status;
-	OM_uint32	minor_status;
-	
-	
-	if (gssapi_client_creds != NULL)
-	{
-		char *creds_env = NULL;
+	u_char *tok;
+	OM_uint32 offset;
+	OM_uint32 oidl;
 
-		/*
- 		 * This is the current hack with the GSI gssapi library to
-		 * export credentials to disk.
-		 */
+	tok=ename->value;
 
-		debug("Exporting delegated credentials");
-		
-		minor_status = 0xdee0;	/* Magic value */
-		major_status =
-			gss_inquire_cred(&minor_status,
-					 gssapi_client_creds,
-					 (gss_name_t *) &creds_env,
-					 NULL,
-					 NULL,
-					 NULL);
+	/*
+	 * Check that ename is long enough for all of the fixed length
+	 * header, and that the initial ID bytes are correct
+	 */
 
-		if ((major_status == GSS_S_COMPLETE) &&
-		    (minor_status == 0xdee1) &&
-		    (creds_env != NULL))
-		{
-			char		*value;
-				
-			/*
-			 * String is of the form:
-			 * X509_USER_DELEG_PROXY=filename
-			 * so we parse out the filename
-			 * and then set X509_USER_PROXY
-			 * to point at it.
-			 */
-			value = strchr(creds_env, '=');
-			
-			if (value != NULL)
-			{
-				*value = '\0';
-				value++;
-#ifdef USE_PAM
-				do_pam_putenv("X509_USER_PROXY",value);
-#endif
-			 	gssapi_cred_store.filename=NULL;
-				gssapi_cred_store.envvar="X509_USER_PROXY";
-				gssapi_cred_store.envval=strdup(value);
+	if (ename->length<6 || memcmp(tok,"\x04\x01", 2)!=0)
+		return GSS_S_FAILURE;
 
-				return;
-			}
-			else
-			{
-				log("Failed to parse delegated credentials string '%s'",
-				    creds_env);
-			}
-		}
-		else
-		{
-			log("Failed to export delegated credentials (error %ld)",
-			    major_status);
-		}
-	}	
+	/*
+	 * Extract the OID, and check it. Here GSSAPI breaks with tradition
+	 * and does use the OID type and length bytes. To confuse things
+	 * there are two lengths - the first including these, and the
+	 * second without.
+	 */
+
+	oidl = GET_16BIT(tok+2); /* length including next two bytes */
+	oidl = oidl-2; /* turn it into the _real_ length of the variable OID */
+
+	/*
+	 * Check the BER encoding for correct type and length, that the
+	 * string is long enough and that the OID matches that in our context
+	 */
+	if (tok[4] != 0x06 || tok[5] != oidl ||
+	    ename->length < oidl+6 ||
+	    !ssh_gssapi_check_oid(ctx,tok+6,oidl))
+		return GSS_S_FAILURE;
+
+	offset = oidl+6;
+
+	if (ename->length < offset+4)
+		return GSS_S_FAILURE;
+
+	name->length = GET_32BIT(tok+offset);
+	offset += 4;
+
+	if (ename->length < offset+name->length)
+		return GSS_S_FAILURE;
+
+	name->value = xmalloc(name->length+1);
+	memcpy(name->value,tok+offset,name->length);
+	((char *)name->value)[name->length] = 0;
+
+	return GSS_S_COMPLETE;
 }
 
-#endif /* GSI */
+/* Extract the client details from a given context. This can only reliably
+ * be called once for a context */
 
-void
-ssh_gssapi_cleanup_creds(void *ignored)
+/* Priviledged (called from accept_secure_ctx) */
+OM_uint32
+ssh_gssapi_getclient(Gssctxt *ctx, ssh_gssapi_client *client)
 {
-	if (gssapi_cred_store.filename!=NULL) {
+	int i = 0;
+
+	gss_buffer_desc ename;
+
+	client->mech = NULL;
+
+	while (supported_mechs[i]->name != NULL) {
+		if (supported_mechs[i]->oid.length == ctx->oid->length &&
+		    (memcmp(supported_mechs[i]->oid.elements,
+		    ctx->oid->elements, ctx->oid->length) == 0))
+			client->mech = supported_mechs[i];
+		i++;
+	}
+
+	if (client->mech == NULL)
+		return GSS_S_FAILURE;
+
+	if ((ctx->major = gss_display_name(&ctx->minor, ctx->client,
+	    &client->displayname, NULL))) {
+		ssh_gssapi_error(ctx);
+		return (ctx->major);
+	}
+
+	if ((ctx->major = gss_export_name(&ctx->minor, ctx->client,
+	    &ename))) {
+		ssh_gssapi_error(ctx);
+		return (ctx->major);
+	}
+
+	if ((ctx->major = ssh_gssapi_parse_ename(ctx,&ename,
+	    &client->exportedname))) {
+		return (ctx->major);
+	}
+
+	/* We can't copy this structure, so we just move the pointer to it */
+	client->creds = ctx->client_creds;
+	ctx->client_creds = GSS_C_NO_CREDENTIAL;
+	return (ctx->major);
+}
+
+/* As user - called on fatal/exit */
+void
+ssh_gssapi_cleanup_creds(void)
+{
+	if (gssapi_client.store.filename != NULL) {
 		/* Unlink probably isn't sufficient */
-		debug("removing gssapi cred file\"%s\"",gssapi_cred_store.filename);
-		unlink(gssapi_cred_store.filename);
+		debug("removing gssapi cred file\"%s\"", gssapi_client.store.filename);
+		unlink(gssapi_client.store.filename);
 	}
 }
 
-void 
-ssh_gssapi_storecreds(Authctxt *authctxt)
+/* As user */
+void
+ssh_gssapi_storecreds(void *authctxt)
 {
-	switch (gssapi_client_type) {
-#ifdef KRB5
-	case GSS_KERBEROS:
-		ssh_gssapi_krb5_storecreds(authctxt);
-		break;
-#endif
-#ifdef GSI
-	case GSS_GSI:
-		ssh_gssapi_gsi_storecreds();
-		break;
-#endif /* GSI */
-	case GSS_LAST_ENTRY:
-		/* GSSAPI not used in this authentication */
-		debug("No GSSAPI credentials stored");
-		break;
-	default:
-		log("ssh_gssapi_do_child: Unknown mechanism");
-	
-	}
-	
-	if (options.gss_cleanup_creds) {
-		fatal_add_cleanup(ssh_gssapi_cleanup_creds, NULL);
-	}
-
+	if (gssapi_client.mech && gssapi_client.mech->storecreds) {
+		(*gssapi_client.mech->storecreds)(&gssapi_client, authctxt);
+	} else
+		debug("ssh_gssapi_storecreds: Not a GSSAPI mechanism");
 }
 
 /* This allows GSSAPI methods to do things to the childs environment based
  * on the passed authentication process and credentials.
- *
- * Question: If we didn't use userauth_external for some reason, should we
- * still delegate credentials?
  */
-void 
-ssh_gssapi_do_child(char ***envp, u_int *envsizep) 
+/* As user */
+void
+ssh_gssapi_do_child(char ***envp, u_int *envsizep)
 {
 
-	if (gssapi_cred_store.envvar!=NULL && 
-	    gssapi_cred_store.envval!=NULL) {
-	    
-		debug("Setting %s to %s", gssapi_cred_store.envvar,
-					  gssapi_cred_store.envval);				  
-		child_set_env(envp, envsizep, gssapi_cred_store.envvar, 
-					      gssapi_cred_store.envval);
-	}
+	if (gssapi_client.store.envvar != NULL &&
+	    gssapi_client.store.envval != NULL) {
 
-	switch(gssapi_client_type) {
-#ifdef KRB5
-	case GSS_KERBEROS: break;
-#endif
-#ifdef GSI
-	case GSS_GSI: break;
-#endif
-	case GSS_LAST_ENTRY:
-		debug("No GSSAPI credentials stored");
-		break;
-	default:
-		log("ssh_gssapi_do_child: Unknown mechanism");
+		debug("Setting %s to %s", gssapi_client.store.envvar,
+		gssapi_client.store.envval);
+		child_set_env(envp, envsizep, gssapi_client.store.envvar,
+		    gssapi_client.store.envval);
 	}
 }
 
+/* Priviledged */
 int
-ssh_gssapi_userok(Authctxt *authctxt)
+ssh_gssapi_userok(char *user)
 {
-	if (gssapi_client_name.length==0 || 
-	    gssapi_client_name.value==NULL) {
+	OM_uint32 lmin;
+
+	if (gssapi_client.exportedname.length == 0 ||
+	    gssapi_client.exportedname.value == NULL) {
 		debug("No suitable client data");
 		return 0;
 	}
-	switch (gssapi_client_type) {
-#ifdef KRB5
-	case GSS_KERBEROS:
-		return(ssh_gssapi_krb5_userok(authctxt));
-		break; /* Not reached */
+	if (gssapi_client.mech && gssapi_client.mech->userok)
+		if ((*gssapi_client.mech->userok)(&gssapi_client, user))
+			return 1;
+		else {
+			/* Destroy delegated credentials if userok fails */
+			gss_release_buffer(&lmin, &gssapi_client.displayname);
+			gss_release_buffer(&lmin, &gssapi_client.exportedname);
+			gss_release_cred(&lmin, &gssapi_client.creds);
+			memset(&gssapi_client, 0, sizeof(ssh_gssapi_client));
+			return 0;
+		}
+	else
+		debug("ssh_gssapi_userok: Unknown GSSAPI mechanism");
+	return (0);
+}
+
 #endif
-#ifdef GSI
-	case GSS_GSI:
-		return(ssh_gssapi_gsi_userok(authctxt->user));
-		break; /* Not reached */
-#endif /* GSI */
-	case GSS_LAST_ENTRY:
-		debug("Client not GSSAPI");
-		break;
-	default:
-		debug("Unknown client authentication type");
-	}
-	return(0);
-}
-
-/* Stuff to play nicely with privsep */
-
-#if 0
-extern struct monitor *pmonitor;
-
-OM_uint32
-mm_ssh_gssapi_server_ctxt(Gssctxt **ctx, gss_OID oid) {
-	Buffer m;
-	
-	/* Client doesn't get to see the context */
- 	*ctx=NULL;
-
-	buffer_init(&m)
-  	buffer_put_string(&m,oid->elements,oid->length);
-  	
-	mm_request_send(pmonitor->m_recvfd, MONITOR_REQ_GSSSETUP, &m);
-
-	debug3("%s: waiting for MONITOR_ANS_GSSSIGN",__func__);
-	mm_request_receive_expect(pmonitor->m_recvfd, MONITOR_ANS_SIGN, &m);
-	major=buffer_get_int(&m);
-
-	return(major);
-}
-	
-int
-mm_answer_gss_server_ctxt(int socket, Buffer *m) {
-	gss_OID_desc oid;
-	OM_uint32 major;
-	
-	oid.elements=buffer_get_string(m,&oid.length);
-		
-	major=ssh_gssapi_server_ctxt(&gsscontext,&oid);
-
-	xfree(oid.elements);
-	
-	buffer_clear(m);
-	buffer_put_int(m,result);
-	
-	mm_request_send(socket,MONITOR_ANS_GSSSIGN,m);
-	
-	return(0);
-}
-
-OM_uint32
-mm_ssh_gssapi_accept_ctx(Gssctxt *ctx, gss_buffer_desc *in,
-			 gss_buffer_desc *out, OM_uint32 *flags) {
-
-	Buffer m;
-	OM_uint32, major;
-	
-	buffer_init(&m);
-	buffer_put_string(&m, in->value, in->length);
-	mm_request_send(pmonitor->m_recvfd, MONITOR_REQ_GSSSTEP, &m);
-	
-	debug3("%s: waiting for MONITOR_ANS_GSSSTEP", &m);
-	mm_request_receive_expect(pmonitor->m_recvfd, MONITOR_ANS_GSSSTEP, &m);
-	
-	major=buffer_get_int(&m);
-	*out->value=buffer->get_string(&m,&out->length);
-	flags=buffer_get_int(&m);
-
-	return(major);
-}
-
-int
-mm_answer_gss_accept_ctxt(int socket, Buffer *m) {
-	gss_buffer_desc	in,out;
-	OM_uint32 major;
-	OM_uint32 flags = 0; /* GSI needs this */
-	
-	in.value = buffer_get_string(m,&in.length);
-	major=ssh_gssapi_accept_ctxt(gsscontext,&in,&out,&flags);
-	xfree(in.value);
-	
-	buffer_clear(m);
-	buffer_put_int(m, major);
-	buffer_put_string(m, out.value, out.length);
-	buffer_put_int(m, flags);
-	mm_request_send(socket,MONITOR_ANS_STEP,m);
-	
-	gss_release_buffer(out);
-	
-	return(0);
-}
-
-int
-mm_ssh_gssapi_userok(char *user) {
-	Buffer m;
-	
-	buffer_init(&m);
-	mm_request_send(pmonitor->m_recvfd, MONITOR_REQ_GSSUSEROK, &m);
-	
-	debug3("%s: waiting for MONTIOR_ANS_GSSUSEROK", __func__);
-	mm_request_receive_expect(pmonitor->m_recvfd, MONITOR_ANS_GSSUSEROK),
-				  &m);
-	
-	authenticated = buffer_get_int(&m);
-	
-	buffer_free(&m);
-	debug3("%s: user %sauthetnicated",__func__, authenticated ? "" : "not ");
-	return(authenticated);
-}
-
-int
-mm_answer_gss_userok(int socket, Buffer *m) {
-	authenticated = authctxt->valid && ssh_gssapi_userok(authctxt);
-	
-	buffer_clear(m);
-	buffer_put_int(m, authenticated);
-	
-	debug3("%s: sending result %d", __func__, authenticated);
-	mm_request_send(socket, MONITOR_ANS_GSSUSEROK, m);
-	
-	/* Monitor loop will terminate if authenticated */
-	return(authenticated);
-}
-
-OM_uint32
-mm_ssh_gssapi_sign(Gssctxt *ctx, gss_buffer_desc *data, gss_buffer_desc *hash) {
-	Buffer m;
-	OM_uint32 major, minor;
-	
-	buffer_init(&m);
-	buffer_put_string(&m, data->value, data->length);
-	
-	mm_request_send(pmonitor->m_recvfd, MONITOR_REQ_GSSSIGN, &m);
-	
-	debug3("%s: waiting for MONITOR_ANS_GSSSIGN",__func__);
-	mm_request_receive_expect(pmonitor->m_recvfd, MONITOR_ANS_GSSSIGN, &m);
-	major=buffer_get_int(&m);
-	*hash->value = buffer_get_string(&m, &hash->length);
-	
-	return(major);
-}
-	
-int
-mm_answer_gss_sign(int socket, Buffer *m) {
-	gss_buffer_desc data,hash;
-	OM_uint32 major;
-	
-	data.value = buffer_get_string(m,&data.length);
-	if (data.length != 20)
-		fatal("%s: data length incorrect: %d", __func__, datlen);
-	
-	/* Save the session ID - only first time round */
-	if (session_id2_len == 0) {
-		session_id2_len=data.length;
-		session_id2 = xmalloc(session_id2_len);
-		memcpy(session_id2, data.value, session_id2_len);
-	}
-	major=ssh_gssapi_sign(gsscontext, &data, &hash);
-	
-	xfree(data.value);
-	
-	buffer_clear(m);
-	buffer_put_int(m, major);
-	buffer_put_string(m, hash.value, hash.length);
-
-        mm_request_send(socket,MONITOR_ANS_GSSSIGN,m);
-        	
-	gss_release_buffer(hash);
-	
-	return(0);
-}
-#endif
-#endif /* GSSAPI */
