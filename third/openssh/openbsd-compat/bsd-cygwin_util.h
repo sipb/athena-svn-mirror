@@ -1,8 +1,6 @@
-/* $Id: bsd-cygwin_util.h,v 1.1.1.2 2003-02-05 19:02:42 zacheiss Exp $ */
+/* $Id: bsd-cygwin_util.h,v 1.1.1.3 2006-11-30 21:19:34 ghudson Exp $ */
 
 /*
- * cygwin_util.c
- *
  * Copyright (c) 2000, 2001, Corinna Vinschen <vinschen@cygnus.com>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,13 +34,20 @@
 
 #ifdef HAVE_CYGWIN
 
+#undef ERROR
+#define is_winnt       (GetVersion() < 0x80000000)
+
+#include <windows.h>
+#include <sys/cygwin.h>
 #include <io.h>
 
-int binary_open(const char *filename, int flags, ...);
+int binary_open(const char *, int , ...);
 int binary_pipe(int fd[2]);
-int check_nt_auth(int pwd_authenticated, struct passwd *pw);
-int check_ntsec(const char *filename);
+int check_nt_auth(int, struct passwd *);
+int check_ntsec(const char *);
 void register_9x_service(void);
+char **fetch_windows_environment(void);
+void free_windows_environment(char **);
 
 #define open binary_open
 #define pipe binary_pipe

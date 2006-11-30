@@ -1,6 +1,4 @@
 /*
- * cygwin_util.c
- *
  * Copyright (c) 2000, 2001, Corinna Vinschen <vinschen@cygnus.com>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +29,7 @@
 
 #include "includes.h"
 
-RCSID("$Id: bsd-cygwin_util.c,v 1.1.1.2 2003-02-05 19:02:42 zacheiss Exp $");
+RCSID("$Id: bsd-cygwin_util.c,v 1.1.1.3 2006-11-30 21:20:29 ghudson Exp $");
 
 #ifdef HAVE_CYGWIN
 
@@ -40,9 +38,11 @@ RCSID("$Id: bsd-cygwin_util.c,v 1.1.1.2 2003-02-05 19:02:42 zacheiss Exp $");
 #include <sys/utsname.h>
 #include <sys/vfs.h>
 #include <windows.h>
+#include "xmalloc.h"
 #define is_winnt       (GetVersion() < 0x80000000)
 
 #define ntsec_on(c)	((c) && strstr((c),"ntsec") && !strstr((c),"nontsec"))
+#define ntsec_off(c)	((c) && strstr((c),"nontsec"))
 #define ntea_on(c)	((c) && strstr((c),"ntea") && !strstr((c),"nontea"))
 
 #if defined(open) && open == binary_open
@@ -52,7 +52,8 @@ RCSID("$Id: bsd-cygwin_util.c,v 1.1.1.2 2003-02-05 19:02:42 zacheiss Exp $");
 # undef pipe
 #endif
 
-int binary_open(const char *filename, int flags, ...)
+int 
+binary_open(const char *filename, int flags, ...)
 {
 	va_list ap;
 	mode_t mode;
@@ -60,21 +61,79 @@ int binary_open(const char *filename, int flags, ...)
 	va_start(ap, flags);
 	mode = va_arg(ap, mode_t);
 	va_end(ap);
-	return open(filename, flags | O_BINARY, mode);
+	return (open(filename, flags | O_BINARY, mode));
 }
 
-int binary_pipe(int fd[2])
+int 
+binary_pipe(int fd[2])
 {
 	int ret = pipe(fd);
 
 	if (!ret) {
-		setmode (fd[0], O_BINARY);
-		setmode (fd[1], O_BINARY);
+		setmode(fd[0], O_BINARY);
+		setmode(fd[1], O_BINARY);
 	}
-	return ret;
+	return (ret);
 }
 
-int check_nt_auth(int pwd_authenticated, struct passwd *pw)
+#define HAS_CREATE_TOKEN 1
+#define HAS_NTSEC_BY_DEFAULT 2
+#define HAS_CREATE_TOKEN_WO_NTSEC 3
+
+static int 
+has_capability(int what)
+{
+	static int inited;
+	static int has_create_token;
+	static int has_ntsec_by_default;
+	static int has_create_token_wo_ntsec;
+
+	/* 
+	 * has_capability() basically calls uname() and checks if
+	 * specific capabilities of Cygwin can be evaluated from that.
+	 * This simplifies the calling functions which only have to ask
+	 * for a capability using has_capability() instead of having
+	 * to figure that out by themselves.
+	 */
+	if (!inited) {
+		struct utsname uts;
+		
+		if (!uname(&uts)) {
+			int major_high = 0, major_low = 0, minor = 0;
+			int api_major_version = 0, api_minor_version = 0;
+			char *c;
+
+			sscanf(uts.release, "%d.%d.%d", &major_high,
+			    &major_low, &minor);
+			if ((c = strchr(uts.release, '(')) != NULL) {
+				sscanf(c + 1, "%d.%d", &api_major_version,
+				    &api_minor_version);
+			}
+			if (major_high > 1 ||
+			    (major_high == 1 && (major_low > 3 ||
+			    (major_low == 3 && minor >= 2))))
+				has_create_token = 1;
+			if (api_major_version > 0 || api_minor_version >= 56)
+				has_ntsec_by_default = 1;
+			if (major_high > 1 ||
+			    (major_high == 1 && major_low >= 5))
+				has_create_token_wo_ntsec = 1;
+			inited = 1;
+		}
+	}
+	switch (what) {
+	case HAS_CREATE_TOKEN:
+		return (has_create_token);
+	case HAS_NTSEC_BY_DEFAULT:
+		return (has_ntsec_by_default);
+	case HAS_CREATE_TOKEN_WO_NTSEC:
+		return (has_create_token_wo_ntsec);
+	}
+	return (0);
+}
+
+int
+check_nt_auth(int pwd_authenticated, struct passwd *pw)
 {
 	/*
 	* The only authentication which is able to change the user
@@ -93,42 +152,39 @@ int check_nt_auth(int pwd_authenticated, struct passwd *pw)
 		return 0;
 	if (is_winnt) {
 		if (has_create_token < 0) {
-			struct utsname uts;
-		        int major_high = 0, major_low = 0, minor = 0;
 			char *cygwin = getenv("CYGWIN");
 
 			has_create_token = 0;
-			if (ntsec_on(cygwin) && !uname(&uts)) {
-				sscanf(uts.release, "%d.%d.%d",
-				       &major_high, &major_low, &minor);
-				if (major_high > 1 ||
-				    (major_high == 1 && (major_low > 3 ||
-				     (major_low == 3 && minor >= 2))))
-					has_create_token = 1;
-			}
+			if (has_capability(HAS_CREATE_TOKEN) &&
+			    (ntsec_on(cygwin) ||
+			    (has_capability(HAS_NTSEC_BY_DEFAULT) &&
+			     !ntsec_off(cygwin)) ||
+			     has_capability(HAS_CREATE_TOKEN_WO_NTSEC)))
+				has_create_token = 1;
 		}
 		if (has_create_token < 1 &&
 		    !pwd_authenticated && geteuid() != pw->pw_uid)
-			return 0;
+			return (0);
 	}
-	return 1;
+	return (1);
 }
 
-int check_ntsec(const char *filename)
+int
+check_ntsec(const char *filename)
 {
 	char *cygwin;
-	int allow_ntea = 0;
-	int allow_ntsec = 0;
+	int allow_ntea = 0, allow_ntsec = 0;
 	struct statfs fsstat;
 
 	/* Windows 95/98/ME don't support file system security at all. */
 	if (!is_winnt)
-		return 0;
+		return (0);
 
 	/* Evaluate current CYGWIN settings. */
 	cygwin = getenv("CYGWIN");
 	allow_ntea = ntea_on(cygwin);
-	allow_ntsec = ntsec_on(cygwin);
+	allow_ntsec = ntsec_on(cygwin) ||
+	    (has_capability(HAS_NTSEC_BY_DEFAULT) && !ntsec_off(cygwin));
 
 	/*
 	 * `ntea' is an emulation of POSIX attributes. It doesn't support
@@ -137,14 +193,14 @@ int check_ntsec(const char *filename)
 	 * for security checks.
 	 */
 	if (allow_ntea)
-		return 1;
+		return (1);
 
 	/*
 	 * Retrieve file system flags. In Cygwin, file system flags are
 	 * copied to f_type which has no meaning in Win32 itself.
 	 */
 	if (statfs(filename, &fsstat))
-		return 1;
+		return (1);
 
 	/*
 	 * Only file systems supporting ACLs are able to set permissions.
@@ -152,12 +208,13 @@ int check_ntsec(const char *filename)
 	 * ACLs to support POSIX permissions on files.
 	 */
 	if (fsstat.f_type & FS_PERSISTENT_ACLS)
-		return allow_ntsec;
+		return (allow_ntsec);
 
-	return 0;
+	return (0);
 }
 
-void register_9x_service(void)
+void
+register_9x_service(void)
 {
         HINSTANCE kerneldll;
         DWORD (*RegisterServiceProcess)(DWORD, DWORD);
@@ -171,12 +228,63 @@ void register_9x_service(void)
 	 */
 	if (is_winnt)
 		return;
-	if (! (kerneldll = LoadLibrary("KERNEL32.DLL")))
+	if (!(kerneldll = LoadLibrary("KERNEL32.DLL")))
 		return;
-	if (! (RegisterServiceProcess = (DWORD (*)(DWORD, DWORD))
-			  GetProcAddress(kerneldll, "RegisterServiceProcess")))
+	if (!(RegisterServiceProcess = (DWORD (*)(DWORD, DWORD))
+		GetProcAddress(kerneldll, "RegisterServiceProcess")))
 		return;
 	RegisterServiceProcess(0, 1);
+}
+
+#define NL(x) x, (sizeof (x) - 1)
+#define WENV_SIZ (sizeof (wenv_arr) / sizeof (wenv_arr[0]))
+
+static struct wenv {
+	const char *name;
+	size_t namelen;
+} wenv_arr[] = {
+	{ NL("ALLUSERSPROFILE=") },
+	{ NL("COMMONPROGRAMFILES=") },
+	{ NL("COMPUTERNAME=") },
+	{ NL("COMSPEC=") },
+	{ NL("CYGWIN=") },
+	{ NL("NUMBER_OF_PROCESSORS=") },
+	{ NL("OS=") },
+	{ NL("PATH=") },
+	{ NL("PATHEXT=") },
+	{ NL("PROCESSOR_ARCHITECTURE=") },
+	{ NL("PROCESSOR_IDENTIFIER=") },
+	{ NL("PROCESSOR_LEVEL=") },
+	{ NL("PROCESSOR_REVISION=") },
+	{ NL("PROGRAMFILES=") },
+	{ NL("SYSTEMDRIVE=") },
+	{ NL("SYSTEMROOT=") },
+	{ NL("TMP=") },
+	{ NL("TEMP=") },
+	{ NL("WINDIR=") }
+};
+
+char **
+fetch_windows_environment(void)
+{
+	char **e, **p;
+	int i, idx = 0;
+
+	p = xmalloc((WENV_SIZ + 1) * sizeof(char *));
+	for (e = environ; *e != NULL; ++e) {
+		for (i = 0; i < WENV_SIZ; ++i) {
+			if (!strncmp(*e, wenv_arr[i].name, wenv_arr[i].namelen))
+				p[idx++] = *e;
+		}
+	}
+	p[idx] = NULL;
+	return p;
+}
+
+void
+free_windows_environment(char **p)
+{
+	xfree(p);
 }
 
 #endif /* HAVE_CYGWIN */

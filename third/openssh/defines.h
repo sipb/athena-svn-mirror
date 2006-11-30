@@ -1,7 +1,31 @@
+/*
+ * Copyright (c) 1999-2003 Damien Miller.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 #ifndef _DEFINES_H
 #define _DEFINES_H
 
-/* $Id: defines.h,v 1.1.1.3 2003-02-05 19:04:32 zacheiss Exp $ */
+/* $Id: defines.h,v 1.1.1.4 2006-11-30 21:21:27 ghudson Exp $ */
 
 
 /* Constants */
@@ -30,9 +54,23 @@ enum
 # ifdef PATH_MAX
 #  define MAXPATHLEN PATH_MAX
 # else /* PATH_MAX */
-#  define MAXPATHLEN 64 /* Should be safe */
+#  define MAXPATHLEN 64
+/* realpath uses a fixed buffer of size MAXPATHLEN, so force use of ours */
+#  ifndef BROKEN_REALPATH
+#   define BROKEN_REALPATH 1
+#  endif /* BROKEN_REALPATH */
 # endif /* PATH_MAX */
 #endif /* MAXPATHLEN */
+
+#ifndef PATH_MAX
+# ifdef _POSIX_PATH_MAX
+# define PATH_MAX _POSIX_PATH_MAX
+# endif
+#endif
+
+#ifndef MAXSYMLINKS
+# define MAXSYMLINKS 5
+#endif
 
 #ifndef STDIN_FILENO
 # define STDIN_FILENO    0
@@ -60,7 +98,7 @@ enum
 # define S_ISDIR(mode)	(((mode) & (_S_IFMT)) == (_S_IFDIR))
 #endif /* S_ISDIR */
 
-#ifndef S_ISREG 
+#ifndef S_ISREG
 # define S_ISREG(mode)	(((mode) & (_S_IFMT)) == (_S_IFREG))
 #endif /* S_ISREG */
 
@@ -103,6 +141,10 @@ including rpc/rpc.h breaks Solaris 6
 */
 #ifndef INADDR_LOOPBACK
 #define INADDR_LOOPBACK ((u_long)0x7f000001)
+#endif
+
+#ifndef __unused
+#define __unused
 #endif
 
 /* Types */
@@ -188,27 +230,20 @@ typedef unsigned long  u_int32_t;
 #ifndef HAVE_INT64_T
 # if (SIZEOF_LONG_INT == 8)
 typedef long int int64_t;
-#   define HAVE_INT64_T 1
 # else
 #  if (SIZEOF_LONG_LONG_INT == 8)
 typedef long long int int64_t;
-#   define HAVE_INT64_T 1
 #  endif
 # endif
 #endif
 #ifndef HAVE_U_INT64_T
 # if (SIZEOF_LONG_INT == 8)
 typedef unsigned long int u_int64_t;
-#   define HAVE_U_INT64_T 1
 # else
 #  if (SIZEOF_LONG_LONG_INT == 8)
 typedef unsigned long long int u_int64_t;
-#   define HAVE_U_INT64_T 1
 #  endif
 # endif
-#endif
-#if !defined(HAVE_LONG_LONG_INT) && (SIZEOF_LONG_LONG_INT == 8)
-# define HAVE_LONG_LONG_INT 1
 #endif
 
 #ifndef HAVE_U_CHAR
@@ -223,6 +258,7 @@ typedef unsigned char u_char;
 #ifndef HAVE_SIZE_T
 typedef unsigned int size_t;
 # define HAVE_SIZE_T
+# define SIZE_T_MAX UINT_MAX
 #endif /* HAVE_SIZE_T */
 
 #ifndef HAVE_SSIZE_T
@@ -266,6 +302,10 @@ struct	sockaddr_un {
 };
 #endif /* HAVE_SYS_UN_H */
 
+#ifndef HAVE_IN_ADDR_T
+typedef u_int32_t	in_addr_t;
+#endif
+
 #if defined(BROKEN_SYS_TERMIO_H) && !defined(_STRUCT_WINSIZE)
 #define _STRUCT_WINSIZE
 struct winsize {
@@ -302,6 +342,10 @@ struct winsize {
 
 #ifndef _PATH_STDPATH
 # define _PATH_STDPATH "/usr/bin:/bin:/usr/sbin:/sbin"
+#endif
+
+#ifndef SUPERUSER_PATH
+# define SUPERUSER_PATH	_PATH_STDPATH
 #endif
 
 #ifndef _PATH_DEVNULL
@@ -370,6 +414,20 @@ struct winsize {
    } while (0)
 #endif
 
+#ifndef TIMEVAL_TO_TIMESPEC
+#define	TIMEVAL_TO_TIMESPEC(tv, ts) {					\
+	(ts)->tv_sec = (tv)->tv_sec;					\
+	(ts)->tv_nsec = (tv)->tv_usec * 1000;				\
+}
+#endif
+
+#ifndef TIMESPEC_TO_TIMEVAL
+#define	TIMESPEC_TO_TIMEVAL(tv, ts) {					\
+	(tv)->tv_sec = (ts)->tv_sec;					\
+	(tv)->tv_usec = (ts)->tv_nsec / 1000;				\
+}
+#endif
+
 #ifndef __P
 # define __P(x) x
 #endif
@@ -383,6 +441,14 @@ struct winsize {
 #if !defined(__GNUC__) || (__GNUC__ < 2)
 # define __attribute__(x)
 #endif /* !defined(__GNUC__) || (__GNUC__ < 2) */
+
+#ifndef __dead
+# define __dead	__attribute__((noreturn))
+#endif
+
+#if !defined(HAVE_ATTRIBUTE__SENTINEL__) && !defined(__sentinel__)
+# define __sentinel__
+#endif
 
 /* *-*-nto-qnx doesn't define this macro in the system headers */
 #ifdef MISSING_HOWMANY
@@ -404,6 +470,26 @@ struct winsize {
 /* Length of the space taken up by a padded control message of length len */
 #ifndef CMSG_SPACE
 #define	CMSG_SPACE(len)	(__CMSG_ALIGN(sizeof(struct cmsghdr)) + __CMSG_ALIGN(len))
+#endif
+
+/* given pointer to struct cmsghdr, return pointer to data */
+#ifndef CMSG_DATA
+#define CMSG_DATA(cmsg) ((u_char *)(cmsg) + __CMSG_ALIGN(sizeof(struct cmsghdr)))
+#endif /* CMSG_DATA */
+
+/*
+ * RFC 2292 requires to check msg_controllen, in case that the kernel returns
+ * an empty list for some reasons.
+ */
+#ifndef CMSG_FIRSTHDR
+#define CMSG_FIRSTHDR(mhdr) \
+	((mhdr)->msg_controllen >= sizeof(struct cmsghdr) ? \
+	 (struct cmsghdr *)(mhdr)->msg_control : \
+	 (struct cmsghdr *)NULL)
+#endif /* CMSG_FIRSTHDR */
+
+#ifndef offsetof
+# define offsetof(type, member) ((size_t) &((type *)0)->member)
 #endif
 
 /* Function replacement / compatibility hacks */
@@ -450,6 +536,10 @@ struct winsize {
 # undef HAVE_GAI_STRERROR
 #endif
 
+#if defined(BROKEN_UPDWTMPX) && defined(HAVE_UPDWTMPX)
+# undef HAVE_UPDWTMPX
+#endif
+
 #if !defined(HAVE_MEMMOVE) && defined(HAVE_BCOPY)
 # define memmove(s1, s2, n) bcopy((s2), (s1), (n))
 #endif /* !defined(HAVE_MEMMOVE) && defined(HAVE_BCOPY) */
@@ -462,6 +552,11 @@ struct winsize {
 # define getpgrp() getpgrp(0)
 #endif
 
+#ifdef USE_BSM_AUDIT
+# define SSH_AUDIT_EVENTS
+# define CUSTOM_SSH_AUDIT_EVENTS
+#endif
+
 /* OPENSSL_free() is Free() in versions before OpenSSL 0.9.6 */
 #if !defined(OPENSSL_VERSION_NUMBER) || (OPENSSL_VERSION_NUMBER < 0x0090600f)
 # define OPENSSL_free(x) Free(x)
@@ -471,6 +566,41 @@ struct winsize {
 #  define __func__ __FUNCTION__
 #elif !defined(HAVE___func__)
 #  define __func__ ""
+#endif
+
+#if defined(KRB5) && !defined(HEIMDAL)
+#  define krb5_get_err_text(context,code) error_message(code)
+#endif
+
+#if defined(SKEYCHALLENGE_4ARG)
+# define _compat_skeychallenge(a,b,c,d) skeychallenge(a,b,c,d)
+#else
+# define _compat_skeychallenge(a,b,c,d) skeychallenge(a,b,c)
+#endif
+
+/* Maximum number of file descriptors available */
+#ifdef HAVE_SYSCONF
+# define SSH_SYSFDMAX sysconf(_SC_OPEN_MAX)
+#else
+# define SSH_SYSFDMAX 10000
+#endif
+
+#if defined(__Lynx__)
+ /*
+  * LynxOS defines these in param.h which we do not want to include since
+  * it will also pull in a bunch of kernel definitions.
+  */
+# define ALIGNBYTES (sizeof(int) - 1)
+# define ALIGN(p) (((unsigned)p + ALIGNBYTES) & ~ALIGNBYTES)
+  /* Missing prototypes on LynxOS */
+  int snprintf (char *, size_t, const char *, ...);
+  int mkstemp (char *);
+  char *crypt (const char *, const char *);
+  int seteuid (uid_t);
+  int setegid (gid_t);
+  char *mkdtemp (char *);
+  int rresvport_af (int *, sa_family_t);
+  int innetgr (const char *, const char *, const char *, const char *);
 #endif
 
 /*
@@ -516,6 +646,9 @@ struct winsize {
 #  endif
 #endif
 
+#if defined(HAVE_SHADOW_H) && !defined(DISABLE_SHADOW)
+# define USE_SHADOW
+#endif
 
 /* The login() library function in libutil is first choice */
 #if defined(HAVE_LOGIN) && !defined(DISABLE_LOGIN)
@@ -539,11 +672,43 @@ struct winsize {
 
 #endif
 
+#ifndef UT_LINESIZE
+# define UT_LINESIZE 8
+#endif
+
 /* I hope that the presence of LASTLOG_FILE is enough to detect this */
 #if defined(LASTLOG_FILE) && !defined(DISABLE_LASTLOG)
 #  define USE_LASTLOG
 #endif
 
+#ifdef HAVE_OSF_SIA
+# ifdef USE_SHADOW
+#  undef USE_SHADOW
+# endif
+# define CUSTOM_SYS_AUTH_PASSWD 1
+#endif
+
+#if defined(HAVE_LIBIAF)  &&  !defined(BROKEN_LIBIAF)
+# define CUSTOM_SYS_AUTH_PASSWD 1
+#endif
+
+/* HP-UX 11.11 */
+#ifdef BTMP_FILE
+# define _PATH_BTMP BTMP_FILE
+#endif
+
+#if defined(USE_BTMP) && defined(_PATH_BTMP)
+# define CUSTOM_FAILED_LOGIN
+#endif
+
 /** end of login recorder definitions */
+
+#ifdef BROKEN_GETGROUPS
+# define getgroups(a,b) ((a)==0 && (b)==NULL ? NGROUPS_MAX : getgroups((a),(b)))
+#endif
+
+#if defined(HAVE_MMAP) && defined(BROKEN_MMAP)
+# undef HAVE_MMAP
+#endif
 
 #endif /* _DEFINES_H */

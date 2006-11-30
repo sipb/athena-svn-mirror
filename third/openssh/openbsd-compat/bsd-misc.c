@@ -1,55 +1,58 @@
+
 /*
- * Copyright (c) 1999-2000 Damien Miller.  All rights reserved.
+ * Copyright (c) 1999-2004 Damien Miller <djm@mindrot.org>
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 #include "includes.h"
+#include "xmalloc.h"
 
-RCSID("$Id: bsd-misc.c,v 1.1.1.3 2003-02-05 19:03:30 zacheiss Exp $");
+RCSID("$Id: bsd-misc.c,v 1.1.1.4 2006-11-30 21:20:38 ghudson Exp $");
 
-char *get_progname(char *argv0)
+#ifndef HAVE___PROGNAME
+char *__progname;
+#endif
+
+/*
+ * NB. duplicate __progname in case it is an alias for argv[0]
+ * Otherwise it may get clobbered by setproctitle()
+ */
+char *ssh_get_progname(char *argv0)
 {
 #ifdef HAVE___PROGNAME
 	extern char *__progname;
 
-	return __progname;
+	return xstrdup(__progname);
 #else
 	char *p;
 
 	if (argv0 == NULL)
-		return "unknown";	/* XXX */
+		return ("unknown");	/* XXX */
 	p = strrchr(argv0, '/');
 	if (p == NULL)
 		p = argv0;
 	else
 		p++;
-	return p;
+
+	return (xstrdup(p));
 #endif
 }
 
 #ifndef HAVE_SETLOGIN
 int setlogin(const char *name)
 {
-	return(0);
+	return (0);
 }
 #endif /* !HAVE_SETLOGIN */
 
@@ -57,21 +60,21 @@ int setlogin(const char *name)
 int innetgr(const char *netgroup, const char *host, 
             const char *user, const char *domain)
 {
-	return(0);
+	return (0);
 }
 #endif /* HAVE_INNETGR */
 
 #if !defined(HAVE_SETEUID) && defined(HAVE_SETREUID)
 int seteuid(uid_t euid)
 {
-	return(setreuid(-1,euid));
+	return (setreuid(-1, euid));
 }
 #endif /* !defined(HAVE_SETEUID) && defined(HAVE_SETREUID) */
 
 #if !defined(HAVE_SETEGID) && defined(HAVE_SETRESGID)
 int setegid(uid_t egid)
 {
-	return(setresgid(-1,egid,-1));
+	return(setresgid(-1, egid, -1));
 }
 #endif /* !defined(HAVE_SETEGID) && defined(HAVE_SETRESGID) */
 
@@ -82,9 +85,9 @@ const char *strerror(int e)
 	extern char *sys_errlist[];
 	
 	if ((e >= 0) && (e < sys_nerr))
-		return(sys_errlist[e]);
-	else
-		return("unlisted error");
+		return (sys_errlist[e]);
+
+	return ("unlisted error");
 }
 #endif
 
@@ -96,36 +99,134 @@ int utimes(char *filename, struct timeval *tvp)
 	ub.actime = tvp[0].tv_sec;
 	ub.modtime = tvp[1].tv_sec;
 	
-	return(utime(filename, &ub));
+	return (utime(filename, &ub));
 }
 #endif 
 
 #ifndef HAVE_TRUNCATE
-int truncate (const char *path, off_t length)
+int truncate(const char *path, off_t length)
 {
 	int fd, ret, saverrno;
 
 	fd = open(path, O_WRONLY);
 	if (fd < 0)
-		return -1;
+		return (-1);
 
 	ret = ftruncate(fd, length);
 	saverrno = errno;
-	(void) close (fd);
+	close(fd);
 	if (ret == -1)
 		errno = saverrno;
+
 	return(ret);
 }
 #endif /* HAVE_TRUNCATE */
 
-#if !defined(HAVE_SETGROUPS) && defined(SETGROUPS_NOOP)
-/*
- * Cygwin setgroups should be a noop.
- */
-int
-setgroups(size_t size, const gid_t *list)
+#if !defined(HAVE_NANOSLEEP) && !defined(HAVE_NSLEEP)
+int nanosleep(const struct timespec *req, struct timespec *rem)
 {
-	return 0;
-}
-#endif 
+	int rc, saverrno;
+	extern int errno;
+	struct timeval tstart, tstop, tremain, time2wait;
 
+	TIMESPEC_TO_TIMEVAL(&time2wait, req)
+	(void) gettimeofday(&tstart, NULL);
+	rc = select(0, NULL, NULL, NULL, &time2wait);
+	if (rc == -1) {
+		saverrno = errno;
+		(void) gettimeofday (&tstop, NULL);
+		errno = saverrno;
+		tremain.tv_sec = time2wait.tv_sec - 
+			(tstop.tv_sec - tstart.tv_sec);
+		tremain.tv_usec = time2wait.tv_usec - 
+			(tstop.tv_usec - tstart.tv_usec);
+		tremain.tv_sec += tremain.tv_usec / 1000000L;
+		tremain.tv_usec %= 1000000L;
+	} else {
+		tremain.tv_sec = 0;
+		tremain.tv_usec = 0;
+	}
+	TIMEVAL_TO_TIMESPEC(&tremain, rem)
+
+	return(rc);
+}
+#endif
+
+#ifndef HAVE_TCGETPGRP
+pid_t
+tcgetpgrp(int fd)
+{
+	int ctty_pgrp;
+
+	if (ioctl(fd, TIOCGPGRP, &ctty_pgrp) == -1)
+		return(-1);
+	else
+		return(ctty_pgrp);
+}
+#endif /* HAVE_TCGETPGRP */
+
+#ifndef HAVE_TCSENDBREAK
+int
+tcsendbreak(int fd, int duration)
+{
+# if defined(TIOCSBRK) && defined(TIOCCBRK)
+	struct timeval sleepytime;
+
+	sleepytime.tv_sec = 0;
+	sleepytime.tv_usec = 400000;
+	if (ioctl(fd, TIOCSBRK, 0) == -1)
+		return (-1);
+	(void)select(0, 0, 0, 0, &sleepytime);
+	if (ioctl(fd, TIOCCBRK, 0) == -1)
+		return (-1);
+	return (0);
+# else
+	return -1;
+# endif
+}
+#endif /* HAVE_TCSENDBREAK */
+
+mysig_t
+mysignal(int sig, mysig_t act)
+{
+#ifdef HAVE_SIGACTION
+	struct sigaction sa, osa;
+
+	if (sigaction(sig, NULL, &osa) == -1)
+		return (mysig_t) -1;
+	if (osa.sa_handler != act) {
+		memset(&sa, 0, sizeof(sa));
+		sigemptyset(&sa.sa_mask);
+		sa.sa_flags = 0;
+#ifdef SA_INTERRUPT
+		if (sig == SIGALRM)
+			sa.sa_flags |= SA_INTERRUPT;
+#endif
+		sa.sa_handler = act;
+		if (sigaction(sig, &sa, NULL) == -1)
+			return (mysig_t) -1;
+	}
+	return (osa.sa_handler);
+#else
+	#undef signal
+	return (signal(sig, act));
+#endif
+}
+
+#ifndef HAVE_STRDUP
+char *
+strdup(const char *str)
+{
+	size_t len;
+	char *cp;
+
+	len = strlen(str) + 1;
+	cp = malloc(len);
+	if (cp != NULL)
+		if (strlcpy(cp, str, len) != len) {
+			free(cp);
+			return NULL;
+		}
+	return cp;
+}
+#endif

@@ -1,4 +1,6 @@
-/*	$OpenBSD: queue.h,v 1.22 2001/06/23 04:39:35 angelos Exp $	*/
+/* OPENBSD ORIGINAL: sys/sys/queue.h */
+
+/*	$OpenBSD: queue.h,v 1.25 2004/04/08 16:08:21 henning Exp $	*/
 /*	$NetBSD: queue.h,v 1.11 1996/05/16 05:17:14 mycroft Exp $	*/
 
 /*
@@ -13,11 +15,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -40,12 +38,13 @@
 #define	_FAKE_QUEUE_H_
 
 /*
- * Ignore all <sys/queue.h> since older platforms have broken/incomplete
- * <sys/queue.h> that are too hard to work around.
+ * Require for OS/X and other platforms that have old/broken/incomplete
+ * <sys/queue.h>.
  */
 #undef SLIST_HEAD
 #undef SLIST_HEAD_INITIALIZER
 #undef SLIST_ENTRY
+#undef SLIST_FOREACH_PREVPTR
 #undef SLIST_FIRST
 #undef SLIST_END
 #undef SLIST_EMPTY
@@ -56,6 +55,7 @@
 #undef SLIST_INSERT_HEAD
 #undef SLIST_REMOVE_HEAD
 #undef SLIST_REMOVE
+#undef SLIST_REMOVE_NEXT
 #undef LIST_HEAD
 #undef LIST_HEAD_INITIALIZER
 #undef LIST_ENTRY
@@ -196,6 +196,11 @@ struct {								\
 	    (var) != SLIST_END(head);					\
 	    (var) = SLIST_NEXT(var, field))
 
+#define	SLIST_FOREACH_PREVPTR(var, varp, head, field)			\
+	for ((varp) = &SLIST_FIRST((head));				\
+	    ((var) = *(varp)) != SLIST_END(head);			\
+	    (varp) = &SLIST_NEXT((var), field))
+
 /*
  * Singly-linked List functions.
  */
@@ -211,6 +216,10 @@ struct {								\
 #define	SLIST_INSERT_HEAD(head, elm, field) do {			\
 	(elm)->field.sle_next = (head)->slh_first;			\
 	(head)->slh_first = (elm);					\
+} while (0)
+
+#define	SLIST_REMOVE_NEXT(head, elm, field) do {			\
+	(elm)->field.sle_next = (elm)->field.sle_next->field.sle_next;	\
 } while (0)
 
 #define	SLIST_REMOVE_HEAD(head, field) do {				\
@@ -402,7 +411,7 @@ struct {								\
 	    (var) != TAILQ_END(head);					\
 	    (var) = TAILQ_NEXT(var, field))
 
-#define TAILQ_FOREACH_REVERSE(var, head, field, headname)		\
+#define TAILQ_FOREACH_REVERSE(var, head, headname, field)		\
 	for((var) = TAILQ_LAST(head, headname);				\
 	    (var) != TAILQ_END(head);					\
 	    (var) = TAILQ_PREV(var, headname, field))

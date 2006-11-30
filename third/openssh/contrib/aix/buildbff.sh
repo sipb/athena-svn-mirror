@@ -1,20 +1,23 @@
 #!/bin/sh
 #
 # buildbff.sh: Create AIX SMIT-installable OpenSSH packages
+# $Id: buildbff.sh,v 1.1.1.2 2006-11-30 21:20:21 ghudson Exp $
 #
 # Author: Darren Tucker (dtucker at zip dot com dot au)
 # This file is placed in the public domain and comes with absolutely
 # no warranty.
-# 
+#
 # Based originally on Ben Lindstrom's buildpkg.sh for Solaris
 #
 
 #
 # Tunable configuration settings
-# 	create a "config.local" in your build directory to override these.
+# 	create a "config.local" in your build directory or set
+#	environment variables to override these.
 #
-PERMIT_ROOT_LOGIN=no
-X11_FORWARDING=no
+[ -z "$PERMIT_ROOT_LOGIN" ] && PERMIT_ROOT_LOGIN=no
+[ -z "$X11_FORWARDING" ] && X11_FORWARDING=no
+[ -z "$AIX_SRC" ] && AIX_SRC=no
 
 umask 022
 
@@ -29,7 +32,7 @@ else
 fi
 
 #
-# We still support running from contrib/aix, but this is depreciated
+# We still support running from contrib/aix, but this is deprecated
 #
 if pwd | egrep 'contrib/aix$'
 then
@@ -42,7 +45,7 @@ fi
 if [ ! -f Makefile ]
 then
 	echo "Makefile not found (did you run configure?)"
-	exit 1 
+	exit 1
 fi
 
 #
@@ -93,12 +96,12 @@ then
 	PRIVSEP_PATH=/var/empty
 fi
 
-# Clean package build directory 
+# Clean package build directory
 rm -rf $objdir/$PKGDIR
 FAKE_ROOT=$objdir/$PKGDIR/root
 mkdir -p $FAKE_ROOT
 
-# Start by faking root install 
+# Start by faking root install
 echo "Faking root install..."
 cd $objdir
 make install-nokeys DESTDIR=$FAKE_ROOT
@@ -119,7 +122,7 @@ cp $srcdir/README* $objdir/$PKGDIR/
 # Extract common info requires for the 'info' part of the package.
 #	AIX requires 4-part version numbers
 #
-VERSION=`./ssh -V 2>&1 | sed -e 's/,.*//' | cut -f 2 -d _`
+VERSION=`./ssh -V 2>&1 | cut -f 1 -d , | cut -f 2 -d _`
 MAJOR=`echo $VERSION | cut -f 1 -d p | cut -f 1 -d .`
 MINOR=`echo $VERSION | cut -f 1 -d p | cut -f 2 -d .`
 PATCH=`echo $VERSION | cut -f 1 -d p | cut -f 3 -d .`
@@ -133,15 +136,15 @@ echo "Building BFF for $PKGNAME $VERSION (package version $BFFVERSION)"
 #
 # Set ssh and sshd parameters as per config.local
 #
-if [ "${PERMIT_ROOT_LOGIN}" = no ] 
+if [ "${PERMIT_ROOT_LOGIN}" = no ]
 then
-        perl -p -i -e "s/#PermitRootLogin yes/PermitRootLogin no/" \
-                $FAKE_ROOT/${sysconfdir}/sshd_config
+	perl -p -i -e "s/#PermitRootLogin yes/PermitRootLogin no/" \
+		$FAKE_ROOT/${sysconfdir}/sshd_config
 fi
 if [ "${X11_FORWARDING}" = yes ]
 then
-        perl -p -i -e "s/#X11Forwarding no/X11Forwarding yes/" \
-                $FAKE_ROOT/${sysconfdir}/sshd_config
+	perl -p -i -e "s/#X11Forwarding no/X11Forwarding yes/" \
+		$FAKE_ROOT/${sysconfdir}/sshd_config
 fi
 
 
@@ -167,6 +170,18 @@ For the full text of the license, see /usr/lpp/openssh/LICENCE
 EOD
 
 #
+# openssh.size file allows filesystem expansion as required
+# generate list of directories containing files
+# then calculate disk usage for each directory and store in openssh.size
+#
+files=`find . -type f -print`
+dirs=`for file in $files; do dirname $file; done | sort -u`
+for dir in $dirs
+do
+	du $dir
+done > ../openssh.size
+
+#
 # Create postinstall script
 #
 cat <<EOF >>../openssh.post_i
@@ -175,13 +190,13 @@ cat <<EOF >>../openssh.post_i
 echo Creating configs from defaults if necessary.
 for cfgfile in ssh_config sshd_config ssh_prng_cmds
 do
-        if [ ! -f $sysconfdir/\$cfgfile ]
-        then
-                echo "Creating \$cfgfile from default"
-                cp $sysconfdir/\$cfgfile.default $sysconfdir/\$cfgfile
-        else
-                echo "\$cfgfile already exists."
-        fi
+	if [ ! -f $sysconfdir/\$cfgfile ]
+	then
+		echo "Creating \$cfgfile from default"
+		cp $sysconfdir/\$cfgfile.default $sysconfdir/\$cfgfile
+	else
+		echo "\$cfgfile already exists."
+	fi
 done
 echo
 
@@ -204,7 +219,7 @@ else
 	fi
 
 	# Create user if required
-	if cut -f1 -d: /etc/passwd | egrep '^'$SSH_PRIVSEP_USER'\$' >/dev/null
+	if lsuser "$SSH_PRIVSEP_USER" >/dev/null
 	then
 		echo "PrivSep user $SSH_PRIVSEP_USER already exists."
 	else
@@ -229,30 +244,58 @@ echo
 # Generate keys unless they already exist
 echo Creating host keys if required.
 if [ -f "$sysconfdir/ssh_host_key" ] ; then
-        echo "$sysconfdir/ssh_host_key already exists, skipping."
+	echo "$sysconfdir/ssh_host_key already exists, skipping."
 else
-        $bindir/ssh-keygen -t rsa1 -f $sysconfdir/ssh_host_key -N ""
+	$bindir/ssh-keygen -t rsa1 -f $sysconfdir/ssh_host_key -N ""
 fi
 if [ -f $sysconfdir/ssh_host_dsa_key ] ; then
-        echo "$sysconfdir/ssh_host_dsa_key already exists, skipping."
+	echo "$sysconfdir/ssh_host_dsa_key already exists, skipping."
 else
-        $bindir/ssh-keygen -t dsa -f $sysconfdir/ssh_host_dsa_key -N ""
+	$bindir/ssh-keygen -t dsa -f $sysconfdir/ssh_host_dsa_key -N ""
 fi
 if [ -f $sysconfdir/ssh_host_rsa_key ] ; then
-        echo "$sysconfdir/ssh_host_rsa_key already exists, skipping."
-else 
-        $bindir/ssh-keygen -t rsa -f $sysconfdir/ssh_host_rsa_key -N ""
+	echo "$sysconfdir/ssh_host_rsa_key already exists, skipping."
+else
+	$bindir/ssh-keygen -t rsa -f $sysconfdir/ssh_host_rsa_key -N ""
 fi
 echo
 
-# Add to system startup if required
-if grep $sbindir/sshd /etc/rc.tcpip >/dev/null
+# Set startup command depending on SRC support
+if [ "$AIX_SRC" = "yes" ]
 then
-        echo "sshd found in rc.tcpip, not adding."
+	echo Creating SRC sshd subsystem.
+	rmssys -s sshd 2>&1 >/dev/null
+	mkssys -s sshd -p "$sbindir/sshd" -a '-D' -u 0 -S -n 15 -f 9 -R -G tcpip
+	startupcmd="start $sbindir/sshd \\\"\\\$src_running\\\""
+	oldstartcmd="$sbindir/sshd"
 else
-        echo >>/etc/rc.tcpip
-        echo "echo Starting sshd" >>/etc/rc.tcpip
-        echo "$sbindir/sshd" >>/etc/rc.tcpip
+	startupcmd="$sbindir/sshd"
+	oldstartcmd="start $sbindir/sshd \\\"$src_running\\\""
+fi
+
+# If migrating to or from SRC, change previous startup command
+# otherwise add to rc.tcpip
+if egrep "^\$oldstartcmd" /etc/rc.tcpip >/dev/null
+then
+	if sed "s|^\$oldstartcmd|\$startupcmd|g" /etc/rc.tcpip >/etc/rc.tcpip.new
+	then
+		chmod 0755 /etc/rc.tcpip.new
+		mv /etc/rc.tcpip /etc/rc.tcpip.old && \
+		mv /etc/rc.tcpip.new /etc/rc.tcpip
+	else
+		echo "Updating /etc/rc.tcpip failed, please check."
+	fi
+else
+	# Add to system startup if required
+	if grep "^\$startupcmd" /etc/rc.tcpip >/dev/null
+	then
+		echo "sshd found in rc.tcpip, not adding."
+	else
+		echo "Adding sshd to rc.tcpip"
+		echo >>/etc/rc.tcpip
+		echo "# Start sshd" >>/etc/rc.tcpip
+		echo "\$startupcmd" >>/etc/rc.tcpip
+	fi
 fi
 EOF
 
@@ -262,7 +305,7 @@ EOF
 echo Creating liblpp.a
 (
 	cd ..
-	for i in openssh.al openssh.copyright openssh.inventory openssh.post_i LICENCE README*
+	for i in openssh.al openssh.copyright openssh.inventory openssh.post_i openssh.size LICENCE README*
 	do
 		ar -r liblpp.a $i
 		rm $i
@@ -326,7 +369,7 @@ echo Creating $PKGNAME-$VERSION.bff with backup...
 rm -f $PKGNAME-$VERSION.bff
 (
 	echo "./lpp_name"
-	find . ! -name lpp_name -a ! -name . -print 
+	find . ! -name lpp_name -a ! -name . -print
 ) | backup  -i -q -f ../$PKGNAME-$VERSION.bff $filelist
 
 #

@@ -24,16 +24,21 @@ else
   fi
 fi
 
-if [ -z "`eval $GET_ID`" -a -r "${ID_FILE}" ] ; then
+if [ -z "`eval $GET_ID`" ] && [ -r "${ID_FILE}" ] ; then
   GET_ID="cat ${ID_FILE}"
 fi
 
 if [ -z "`eval $GET_ID`" ]; then
-  echo "$0: ERROR: No identities found"
+  echo "$0: ERROR: No identities found" >&2
   exit 1
 fi
 
-{ eval "$GET_ID" ; } | ssh $1 "umask 077; test -d .ssh || mkdir .ssh ; cat >> .ssh/authorized_keys"
+if [ "$#" -lt 1 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+  echo "Usage: $0 [-i [identity_file]] [user@]machine" >&2
+  exit 1
+fi
+
+{ eval "$GET_ID" ; } | ssh $1 "umask 077; test -d .ssh || mkdir .ssh ; cat >> .ssh/authorized_keys" || exit 1
 
 cat <<EOF
 Now try logging into the machine, with "ssh '$1'", and check in:

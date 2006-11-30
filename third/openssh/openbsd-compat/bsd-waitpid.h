@@ -1,4 +1,8 @@
+/* $Id: bsd-waitpid.h,v 1.1.1.2 2006-11-30 21:18:25 ghudson Exp $ */
+
 /*
+ * Copyright (c) 2000 Ben Lindstrom.  All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -21,8 +25,6 @@
  *
  */
 
-/* $Id: bsd-waitpid.h,v 1.1.1.1 2001-11-15 19:24:15 ghudson Exp $ */
-
 #ifndef _BSD_WAITPID_H
 #define _BSD_WAITPID_H
 
@@ -43,7 +45,7 @@
 #define WCOREDUMP(w) 	((_W_INT(w)) & WCOREFLAG)
 
 /* Prototype */
-pid_t waitpid(int pid, int *stat_loc, int options);
+pid_t waitpid(int, int *, int);
 
 #endif /* !HAVE_WAITPID */
 #endif /* _BSD_WAITPID_H */

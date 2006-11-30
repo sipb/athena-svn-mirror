@@ -1,11 +1,10 @@
-/*
- * Modified for OpenSSH by Kevin Steves
- * October 2000
- */
+/* Based on conf.c from UCB sendmail 8.8.8 */
 
 /*
- * Copyright (c) 1994, 1995 Christopher G. Demetriou
- * All rights reserved.
+ * Copyright 2003 Damien Miller
+ * Copyright (c) 1983, 1995-1997 Eric P. Allman
+ * Copyright (c) 1988, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -15,88 +14,144 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *      This product includes software developed by Christopher G. Demetriou
- *	for the NetBSD Project.
- * 4. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission
+ * 3. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  */
-
-#if defined(LIBC_SCCS) && !defined(lint)
-static char rcsid[] = "$OpenBSD: setproctitle.c,v 1.8 2001/11/06 19:21:40 art Exp $";
-#endif /* LIBC_SCCS and not lint */
 
 #include "includes.h"
 
 #ifndef HAVE_SETPROCTITLE
 
-#define SPT_NONE	0
-#define SPT_PSTAT	1
-
-#ifndef SPT_TYPE
-#define SPT_TYPE	SPT_NONE
+#include <unistd.h>
+#ifdef HAVE_SYS_PSTAT_H
+#include <sys/pstat.h>
 #endif
 
-#if SPT_TYPE == SPT_PSTAT
-#include <sys/param.h>
-#include <sys/pstat.h>
-#endif /* SPT_TYPE == SPT_PSTAT */
+#define SPT_NONE	0	/* don't use it at all */
+#define SPT_PSTAT	1	/* use pstat(PSTAT_SETCMD, ...) */
+#define SPT_REUSEARGV	2	/* cover argv with title information */
 
-#define	MAX_PROCTITLE	2048
+#ifndef SPT_TYPE
+# define SPT_TYPE	SPT_NONE
+#endif
 
-extern char *__progname;
+#ifndef SPT_PADCHAR
+# define SPT_PADCHAR	'\0'
+#endif
 
-/*
- * Set Process Title (SPT) defines.  Modeled after sendmail's
- * SPT type definition strategy.
- *
- * SPT_TYPE:
- *
- * SPT_NONE:	Don't set the process title.  Default.
- * SPT_PSTAT:	Use pstat(PSTAT_SETCMD).  HP-UX specific.
- */
+#if SPT_TYPE == SPT_REUSEARGV
+static char *argv_start = NULL;
+static size_t argv_env_len = 0;
+#endif
 
+#endif /* HAVE_SETPROCTITLE */
+
+void
+compat_init_setproctitle(int argc, char *argv[])
+{
+#if defined(SPT_TYPE) && SPT_TYPE == SPT_REUSEARGV
+	extern char **environ;
+	char *lastargv = NULL;
+	char **envp = environ;
+	int i;
+
+	/*
+	 * NB: This assumes that argv has already been copied out of the
+	 * way. This is true for sshd, but may not be true for other 
+	 * programs. Beware.
+	 */
+
+	if (argc == 0 || argv[0] == NULL)
+		return;
+
+	/* Fail if we can't allocate room for the new environment */
+	for (i = 0; envp[i] != NULL; i++)
+		;
+	if ((environ = malloc(sizeof(*environ) * (i + 1))) == NULL) {
+		environ = envp;	/* put it back */
+		return;
+	}
+
+	/*
+	 * Find the last argv string or environment variable within 
+	 * our process memory area.
+	 */
+	for (i = 0; i < argc; i++) {
+		if (lastargv == NULL || lastargv + 1 == argv[i])
+			lastargv = argv[i] + strlen(argv[i]);
+	}
+	for (i = 0; envp[i] != NULL; i++) {
+		if (lastargv + 1 == envp[i])
+			lastargv = envp[i] + strlen(envp[i]);
+	}
+
+	argv[1] = NULL;
+	argv_start = argv[0];
+	argv_env_len = lastargv - argv[0] - 1;
+
+	/* 
+	 * Copy environment 
+	 * XXX - will truncate env on strdup fail
+	 */
+	for (i = 0; envp[i] != NULL; i++)
+		environ[i] = strdup(envp[i]);
+	environ[i] = NULL;
+#endif /* SPT_REUSEARGV */
+}
+
+#ifndef HAVE_SETPROCTITLE
 void
 setproctitle(const char *fmt, ...)
 {
 #if SPT_TYPE != SPT_NONE
 	va_list ap;
-	
-	char buf[MAX_PROCTITLE];
-	size_t used;
-
+	char buf[1024];
+	size_t len;
+	extern char *__progname;
 #if SPT_TYPE == SPT_PSTAT
 	union pstun pst;
-#endif /* SPT_TYPE == SPT_PSTAT */
+#endif
+
+#if SPT_TYPE == SPT_REUSEARGV
+	if (argv_env_len <= 0)
+		return;
+#endif
+
+	strlcpy(buf, __progname, sizeof(buf));
 
 	va_start(ap, fmt);
 	if (fmt != NULL) {
-		used = snprintf(buf, MAX_PROCTITLE, "%s: ", __progname);
-		if (used >= MAX_PROCTITLE)
-			used = MAX_PROCTITLE - 1;
-		(void)vsnprintf(buf + used, MAX_PROCTITLE - used, fmt, ap);
-	} else
-		(void)snprintf(buf, MAX_PROCTITLE, "%s", __progname);
+		len = strlcat(buf, ": ", sizeof(buf));
+		if (len < sizeof(buf))
+			vsnprintf(buf + len, sizeof(buf) - len , fmt, ap);
+	}
 	va_end(ap);
-	used = strlen(buf);
 
 #if SPT_TYPE == SPT_PSTAT
 	pst.pst_command = buf;
-	pstat(PSTAT_SETCMD, pst, used, 0, 0);
-#endif /* SPT_TYPE == SPT_PSTAT */
+	pstat(PSTAT_SETCMD, pst, strlen(buf), 0, 0);
+#elif SPT_TYPE == SPT_REUSEARGV
+/*	debug("setproctitle: copy \"%s\" into len %d", 
+	    buf, argv_env_len); */
+	len = strlcpy(argv_start, buf, argv_env_len);
+	for(; len < argv_env_len; len++)
+		argv_start[len] = SPT_PADCHAR;
+#endif
 
-#endif /* SPT_TYPE != SPT_NONE */
+#endif /* SPT_NONE */
 }
+
 #endif /* HAVE_SETPROCTITLE */

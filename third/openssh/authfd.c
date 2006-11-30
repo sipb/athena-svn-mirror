@@ -35,7 +35,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: authfd.c,v 1.57 2002/09/11 18:27:26 stevesk Exp $");
+RCSID("$OpenBSD: authfd.c,v 1.66 2005/06/17 02:44:32 djm Exp $");
 
 #include <openssl/evp.h>
 
@@ -114,7 +114,7 @@ ssh_get_authentication_socket(void)
 static int
 ssh_request_reply(AuthenticationConnection *auth, Buffer *request, Buffer *reply)
 {
-	int l, len;
+	u_int l, len;
 	char buf[1024];
 
 	/* Get the length of the message, and format it in the buffer. */
@@ -122,8 +122,8 @@ ssh_request_reply(AuthenticationConnection *auth, Buffer *request, Buffer *reply
 	PUT_32BIT(buf, len);
 
 	/* Send the length and then the packet to the agent. */
-	if (atomicio(write, auth->fd, buf, 4) != 4 ||
-	    atomicio(write, auth->fd, buffer_ptr(request),
+	if (atomicio(vwrite, auth->fd, buf, 4) != 4 ||
+	    atomicio(vwrite, auth->fd, buffer_ptr(request),
 	    buffer_len(request)) != buffer_len(request)) {
 		error("Error writing to authentication socket.");
 		return 0;
@@ -132,22 +132,15 @@ ssh_request_reply(AuthenticationConnection *auth, Buffer *request, Buffer *reply
 	 * Wait for response from the agent.  First read the length of the
 	 * response packet.
 	 */
-	len = 4;
-	while (len > 0) {
-		l = read(auth->fd, buf + 4 - len, len);
-		if (l == -1 && (errno == EAGAIN || errno == EINTR))
-			continue;
-		if (l <= 0) {
-			error("Error reading response length from authentication socket.");
-			return 0;
-		}
-		len -= l;
+	if (atomicio(read, auth->fd, buf, 4) != 4) {
+	    error("Error reading response length from authentication socket.");
+	    return 0;
 	}
 
 	/* Extract the length, and check it for sanity. */
 	len = GET_32BIT(buf);
 	if (len > 256 * 1024)
-		fatal("Authentication response too long: %d", len);
+		fatal("Authentication response too long: %u", len);
 
 	/* Read the rest of the response in to the buffer. */
 	buffer_clear(reply);
@@ -155,10 +148,7 @@ ssh_request_reply(AuthenticationConnection *auth, Buffer *request, Buffer *reply
 		l = len;
 		if (l > sizeof(buf))
 			l = sizeof(buf);
-		l = read(auth->fd, buf, l);
-		if (l == -1 && (errno == EAGAIN || errno == EINTR))
-			continue;
-		if (l <= 0) {
+		if (atomicio(read, auth->fd, buf, l) != l) {
 			error("Error reading response from authentication socket.");
 			return 0;
 		}
@@ -292,7 +282,7 @@ ssh_get_num_identities(AuthenticationConnection *auth, int version)
 
 	/* Get the number of entries in the response and check it for sanity. */
 	auth->howmany = buffer_get_int(&auth->identities);
-	if (auth->howmany > 1024)
+	if ((u_int)auth->howmany > 1024)
 		fatal("Too many identities in authentication reply: %d",
 		    auth->howmany);
 
@@ -311,6 +301,7 @@ ssh_get_first_identity(AuthenticationConnection *auth, char **comment, int versi
 Key *
 ssh_get_next_identity(AuthenticationConnection *auth, char **comment, int version)
 {
+	int keybits;
 	u_int bits;
 	u_char *blob;
 	u_int blen;
@@ -331,8 +322,9 @@ ssh_get_next_identity(AuthenticationConnection *auth, char **comment, int versio
 		buffer_get_bignum(&auth->identities, key->rsa->e);
 		buffer_get_bignum(&auth->identities, key->rsa->n);
 		*comment = buffer_get_string(&auth->identities, NULL);
-		if (bits != BN_num_bits(key->rsa->n))
-			log("Warning: identity keysize mismatch: actual %d, announced %u",
+		keybits = BN_num_bits(key->rsa->n);
+		if (keybits < 0 || bits != (u_int)keybits)
+			logit("Warning: identity keysize mismatch: actual %d, announced %u",
 			    BN_num_bits(key->rsa->n), bits);
 		break;
 	case 2:
@@ -373,7 +365,7 @@ ssh_decrypt_challenge(AuthenticationConnection *auth,
 	if (key->type != KEY_RSA1)
 		return 0;
 	if (response_type == 0) {
-		log("Compatibility with ssh protocol version 1.0 no longer supported.");
+		logit("Compatibility with ssh protocol version 1.0 no longer supported.");
 		return 0;
 	}
 	buffer_init(&buffer);
@@ -392,7 +384,7 @@ ssh_decrypt_challenge(AuthenticationConnection *auth,
 	type = buffer_get_char(&buffer);
 
 	if (agent_failed(type)) {
-		log("Agent admitted failure to authenticate using the key.");
+		logit("Agent admitted failure to authenticate using the key.");
 	} else if (type != SSH_AGENT_RSA_RESPONSE) {
 		fatal("Bad authentication response: %d", type);
 	} else {
@@ -441,7 +433,7 @@ ssh_agent_sign(AuthenticationConnection *auth,
 	}
 	type = buffer_get_char(&msg);
 	if (agent_failed(type)) {
-		log("Agent admitted failure to sign using the key.");
+		logit("Agent admitted failure to sign using the key.");
 	} else if (type != SSH2_AGENT_SIGN_RESPONSE) {
 		fatal("Bad authentication response: %d", type);
 	} else {
@@ -499,10 +491,10 @@ ssh_encode_identity_ssh2(Buffer *b, Key *key, const char *comment)
 
 int
 ssh_add_identity_constrained(AuthenticationConnection *auth, Key *key,
-    const char *comment, u_int life)
+    const char *comment, u_int life, u_int confirm)
 {
 	Buffer msg;
-	int type, constrained = (life != 0);
+	int type, constrained = (life || confirm);
 
 	buffer_init(&msg);
 
@@ -532,6 +524,8 @@ ssh_add_identity_constrained(AuthenticationConnection *auth, Key *key,
 			buffer_put_char(&msg, SSH_AGENT_CONSTRAIN_LIFETIME);
 			buffer_put_int(&msg, life);
 		}
+		if (confirm != 0)
+			buffer_put_char(&msg, SSH_AGENT_CONSTRAIN_CONFIRM);
 	}
 	if (ssh_request_reply(auth, &msg, &msg) == 0) {
 		buffer_free(&msg);
@@ -545,7 +539,7 @@ ssh_add_identity_constrained(AuthenticationConnection *auth, Key *key,
 int
 ssh_add_identity(AuthenticationConnection *auth, Key *key, const char *comment)
 {
-	return ssh_add_identity_constrained(auth, key, comment, 0);
+	return ssh_add_identity_constrained(auth, key, comment, 0, 0);
 }
 
 /*
@@ -587,16 +581,33 @@ ssh_remove_identity(AuthenticationConnection *auth, Key *key)
 }
 
 int
-ssh_update_card(AuthenticationConnection *auth, int add, const char *reader_id, const char *pin)
+ssh_update_card(AuthenticationConnection *auth, int add,
+    const char *reader_id, const char *pin, u_int life, u_int confirm)
 {
 	Buffer msg;
-	int type;
+	int type, constrained = (life || confirm);
+
+	if (add) {
+		type = constrained ?
+		    SSH_AGENTC_ADD_SMARTCARD_KEY_CONSTRAINED :
+		    SSH_AGENTC_ADD_SMARTCARD_KEY;
+	} else
+		type = SSH_AGENTC_REMOVE_SMARTCARD_KEY;
 
 	buffer_init(&msg);
-	buffer_put_char(&msg, add ? SSH_AGENTC_ADD_SMARTCARD_KEY :
-	    SSH_AGENTC_REMOVE_SMARTCARD_KEY);
+	buffer_put_char(&msg, type);
 	buffer_put_cstring(&msg, reader_id);
 	buffer_put_cstring(&msg, pin);
+
+	if (constrained) {
+		if (life != 0) {
+			buffer_put_char(&msg, SSH_AGENT_CONSTRAIN_LIFETIME);
+			buffer_put_int(&msg, life);
+		}
+		if (confirm != 0)
+			buffer_put_char(&msg, SSH_AGENT_CONSTRAIN_CONFIRM);
+	}
+
 	if (ssh_request_reply(auth, &msg, &msg) == 0) {
 		buffer_free(&msg);
 		return 0;
@@ -639,7 +650,7 @@ decode_reply(int type)
 	case SSH_AGENT_FAILURE:
 	case SSH_COM_AGENT2_FAILURE:
 	case SSH2_AGENT_FAILURE:
-		log("SSH_AGENT_FAILURE");
+		logit("SSH_AGENT_FAILURE");
 		return 0;
 	case SSH_AGENT_SUCCESS:
 		return 1;

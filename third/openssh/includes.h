@@ -1,4 +1,4 @@
-/*	$OpenBSD: includes.h,v 1.17 2002/01/26 16:44:22 stevesk Exp $	*/
+/*	$OpenBSD: includes.h,v 1.19 2005/05/19 02:42:26 djm Exp $	*/
 
 /*
  * Author: Tatu Ylonen <ylo@cs.hut.fi>
@@ -17,10 +17,11 @@
 #define INCLUDES_H
 
 #define RCSID(msg) \
-static /**/const char *const rcsid[] = { (char *)rcsid, "\100(#)" msg }
+static /**/const char *const rcsid[] = { (const char *)rcsid, "\100(#)" msg }
 
 #include "config.h"
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
@@ -33,6 +34,7 @@ static /**/const char *const rcsid[] = { (char *)rcsid, "\100(#)" msg }
 #include <grp.h>
 #include <time.h>
 #include <dirent.h>
+#include <stddef.h>
 
 #ifdef HAVE_LIMITS_H
 # include <limits.h> /* For PATH_MAX */
@@ -50,9 +52,6 @@ static /**/const char *const rcsid[] = { (char *)rcsid, "\100(#)" msg }
 #ifdef HAVE_NETGROUP_H
 # include <netgroup.h>
 #endif
-#if defined(HAVE_NETDB_H)
-# include <netdb.h>
-#endif
 #ifdef HAVE_ENDIAN_H
 # include <endian.h>
 #endif
@@ -68,6 +67,7 @@ static /**/const char *const rcsid[] = { (char *)rcsid, "\100(#)" msg }
 #ifdef HAVE_NEXT
 #  include <libc.h>
 #endif
+#define __USE_GNU /* before unistd.h, activate extra prototypes for glibc */
 #include <unistd.h> /* For STDIN_FILENO, etc */
 #include <termios.h> /* Struct winsize */
 
@@ -133,17 +133,33 @@ static /**/const char *const rcsid[] = { (char *)rcsid, "\100(#)" msg }
 #ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h> /* for MAP_ANONYMOUS */
 #endif
+#ifdef HAVE_SYS_STRTIO_H
+#include <sys/strtio.h>	/* for TIOCCBRK on HP-UX */
+#endif
+#if defined(HAVE_SYS_PTMS_H) && defined(HAVE_DEV_PTMX)
+# if defined(HAVE_SYS_STREAM_H)
+#  include <sys/stream.h>	/* reqd for queue_t on Solaris 2.5.1 */
+# endif
+#include <sys/ptms.h>	/* for grantpt() and friends */
+#endif
 
 #include <netinet/in_systm.h> /* For typedefs */
 #include <netinet/in.h> /* For IPv6 macros */
 #include <netinet/ip.h> /* For IPTOS macros */
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
+#if defined(HAVE_NETDB_H)
+# include <netdb.h>
+#endif
 #ifdef HAVE_RPC_TYPES_H
 # include <rpc/types.h> /* For INADDR_LOOPBACK */
 #endif
 #ifdef USE_PAM
+#if defined(HAVE_SECURITY_PAM_APPL_H)
 # include <security/pam_appl.h>
+#elif defined (HAVE_PAM_PAM_APPL_H)
+# include <pam/pam_appl.h>
+#endif
 #endif
 #ifdef HAVE_READPASSPHRASE_H
 # include <readpassphrase.h>
@@ -153,8 +169,35 @@ static /**/const char *const rcsid[] = { (char *)rcsid, "\100(#)" msg }
 # include <ia.h>
 #endif
 
+#ifdef HAVE_IAF_H
+# include <iaf.h>
+#endif
+
 #ifdef HAVE_TMPDIR_H
 # include <tmpdir.h>
+#endif
+
+#ifdef HAVE_LIBUTIL_H
+# include <libutil.h> /* Openpty on FreeBSD at least */
+#endif
+
+#if defined(KRB5) && defined(USE_AFS)
+# include <krb5.h>
+# include <kafs.h>
+#endif
+
+#if defined(HAVE_SYS_SYSLOG_H)
+# include <sys/syslog.h>
+#endif
+
+/*
+ * On HP-UX 11.11, shadow.h and prot.h provide conflicting declarations
+ * of getspnam when _INCLUDE__STDC__ is defined, so we unset it here.
+ */
+#ifdef GETSPNAM_CONFLICTING_DEFS
+# ifdef _INCLUDE__STDC__
+#  undef _INCLUDE__STDC__
+# endif
 #endif
 
 #include <openssl/opensslv.h> /* For OPENSSL_VERSION_NUMBER */
@@ -163,7 +206,6 @@ static /**/const char *const rcsid[] = { (char *)rcsid, "\100(#)" msg }
 
 #include "version.h"
 #include "openbsd-compat/openbsd-compat.h"
-#include "openbsd-compat/bsd-cygwin_util.h"
 #include "openbsd-compat/bsd-nextstep.h"
 
 #include "entropy.h"
