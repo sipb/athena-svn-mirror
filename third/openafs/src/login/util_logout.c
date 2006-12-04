@@ -19,7 +19,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/login/util_logout.c,v 1.1.1.2 2005-03-10 20:38:30 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/login/util_logout.c,v 1.1.1.3 2006-12-04 18:40:17 rbasch Exp $");
 
 #include <sys/types.h>
 #include <sys/file.h>

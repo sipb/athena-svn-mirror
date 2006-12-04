@@ -19,7 +19,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dauth/dpass.c,v 1.1.1.2 2005-03-10 20:30:20 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dauth/dpass.c,v 1.1.1.3 2006-12-04 18:39:49 rbasch Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
