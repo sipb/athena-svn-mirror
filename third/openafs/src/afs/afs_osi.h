@@ -220,7 +220,7 @@ typedef struct timeval osi_timeval_t;
 
 #ifdef AFS_GLOBAL_SUNLOCK
 #define AFS_ASSERT_GLOCK() \
-    (ISAFS_GLOCK() || (osi_Panic("afs global lock not held at %s:%d\n", __FILE__, __LINE__), 0))
+    do { if (!ISAFS_GLOCK()) osi_Panic("afs global lock not held at %s:%d\n", __FILE__, __LINE__); } while (0)
 #endif /* AFS_GLOBAL_SUNLOCK */
 
 #ifdef RX_ENABLE_LOCKS
@@ -397,7 +397,7 @@ typedef struct timeval osi_timeval_t;
 #endif /* AFS_GLOBAL_SUNLOCK */
 
 #ifdef AFS_DARWIN80_ENV
-#define AFS_UIO_OFFSET(uio) (int)uio_offset(uio)
+#define AFS_UIO_OFFSET(uio) uio_offset(uio)
 #define AFS_UIO_RESID(uio) (int)uio_resid(uio)
 #define AFS_UIO_SETOFFSET(uio, off) uio_setoffset(uio, off)
 #define AFS_UIO_SETRESID(uio, val) uio_setresid(uio, val)

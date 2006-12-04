@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butc/tcudbprocs.c,v 1.1.1.4 2005-05-04 17:45:09 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butc/tcudbprocs.c,v 1.1.1.5 2006-12-04 18:57:16 rbasch Exp $");
 
 #include <sys/types.h>
 #ifdef AFS_NT40_ENV
@@ -1168,7 +1168,7 @@ restoreDbHeader(tapeInfo, rstTapeInfoPtr, nextHeader)
 
     /* Add the database header to the database */
     code =
-	ubik_Call(BUDB_RestoreDbHeader, udbHandle.uh_client, 0,
+	ubik_BUDB_RestoreDbHeader(udbHandle.uh_client, 0,
 		  &hostDbHeader);
     if (code) {
 	ErrorLog(0, rstTapeInfoPtr->taskId, code, 0,

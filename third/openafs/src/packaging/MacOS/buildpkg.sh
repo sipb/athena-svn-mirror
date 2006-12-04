@@ -53,13 +53,19 @@ fi
 
 if [ $firstpass = yes ]; then
     if [ -x /usr/bin/curl ]; then
-#    /usr/bin/curl -f -O http://www.central.org/dl/cellservdb/CellServDB
 	/usr/bin/curl -f -O http://dl.central.org/dl/cellservdb/CellServDB
     fi
 
     if [ ! -f CellServDB ]; then
        echo "A CellServDB file must be placed in the working directory"
        die=1
+    else
+       if grep -q 'GCO Public CellServDB' CellServDB ; then
+         touch CellServDB
+       else
+          echo "A proper CellServDB file must be placed in the working directory"
+          die=1
+       fi
     fi
     FILES="ReadMe.rtf License.rtf CellServDB.list OpenAFS.info OpenAFS.post_install OpenAFS.pre_upgrade csrvdbmerge.pl 2.0.txt"
     for f in $FILES; do
@@ -111,8 +117,7 @@ if [ $firstpass = yes ]; then
     echo openafs.org > $PKGROOT/private/var/db/openafs/etc/ThisCell.sample
     if [ $majorvers -ge 7 ]; then
 	echo /afs:/var/db/openafs/cache:30000 > $PKGROOT/private/var/db/openafs/etc/cacheinfo.sample
-	(cd $CURDIR && \
-	cp afssettings $PKGROOT/private/var/db/openafs/etc/config )
+        cp -RP $PKGROOT/Library/OpenAFS/Tools/etc/afssettings $PKGROOT/private/var/db/openafs/etc/config
 	cp settings.plist $PKGROOT/private/var/db/openafs/etc/config/settings.plist.orig
     else
 	echo /Network/afs:/var/db/openafs/cache:30000 > $PKGROOT/private/var/db/openafs/etc/cacheinfo.sample
@@ -131,20 +136,25 @@ if [ $firstpass = yes ]; then
     mkdir -p $PKGROOT/usr/bin $PKGROOT/usr/sbin
 
     BINLIST="fs klog klog.krb pagsh pagsh.krb pts sys tokens tokens.krb unlog unlog.krb aklog"
+    ETCLIST="vos"
 
 # Should these be linked into /usr too?
     OTHER_BINLIST="bos cmdebug rxgen translate_et udebug xstat_cm_test xstat_fs_test"
-    OTHER_ETCLIST="vos rxdebug"
+    OTHER_ETCLIST="rxdebug"
 
     for f in $BINLIST; do
        ln -s ../../Library/OpenAFS/Tools/bin/$f $PKGROOT/usr/bin/$f
     done
+    for f in $ETCLIST; do
+       ln -s ../../Library/OpenAFS/Tools/etc/$f $PKGROOT/usr/sbin/$f
+    done
+
     ln -s ../../Library/OpenAFS/Tools/bin/kpasswd $PKGROOT/usr/bin/kpasswd.afs
 
     ln -s ../../Library/OpenAFS/Tools/root.client/usr/vice/etc/afsd $PKGROOT/usr/sbin/afsd
 
-    mkdir -p $PKGROOT/Library/Kerberos\ Plug-Ins
-    ln -s ../../Library/OpenAFS/Tools/root.client/Library/Kerberos\ Plug-Ins/aklog.loginLogout $PKGROOT/Library/Kerberos\ Plug-Ins/
+#    mkdir -p $PKGROOT/Library/Kerberos\ Plug-Ins
+#    ln -s ../../Library/OpenAFS/Tools/root.client/Library/Kerberos\ Plug-Ins/aklog.loginLogout $PKGROOT/Library/Kerberos\ Plug-Ins/
 
     chown -R root${SEP}wheel $PKGROOT/usr
     chmod -R og-w $PKGROOT/usr
@@ -159,6 +169,7 @@ if [ $secondpass = yes ]; then
 	cp OpenAFS.post_install $PKGRES/postinstall
 	cp OpenAFS.pre_upgrade $PKGRES/preupgrade
 	cp OpenAFS.post_install $PKGRES/postupgrade
+	cp background.jpg $PKGRES/background.jpg
 	if [ $majorvers -ge 8 ]; then
 	    cp InstallationCheck $PKGRES
 	    mkdir -p $PKGRES/English.lproj
@@ -199,7 +210,14 @@ if [ $secondpass = yes ]; then
     mkdir $CURDIR/dmg
     mv $CURDIR/OpenAFS.pkg $CURDIR/dmg
     rm -rf $CURDIR/OpenAFS.dmg
-    hdiutil create -srcfolder $CURDIR/dmg -volname OpenAFS -anyowners $CURDIR/OpenAFS.dmg
+    cp Uninstall $CURDIR/dmg/Uninstall.command
+    cp DS_Store $CURDIR/dmg/.DS_Store
+    mkdir $CURDIR/dmg/.background
+    cp afslogo.jpg $CURDIR/dmg/.background
+#    hdiutil create -srcfolder $CURDIR/dmg -volname OpenAFS -anyowners $CURDIR/OpenAFS.dmg
+    hdiutil makehybrid -hfs -hfs-volume-name OpenAFS -hfs-openfolder $CURDIR/dmg $CURDIR/dmg -o $CURDIR/TMP.dmg
+    hdiutil convert -format UDZO TMP.dmg -o $CURDIR/OpenAFS.dmg
+    rm $CURDIR/TMP.dmg
     rm -rf $CURDIR/dmg
     # Unfortunately, sudo sets $USER to root, so I can't chown the 
     #.pkg dir back to myself

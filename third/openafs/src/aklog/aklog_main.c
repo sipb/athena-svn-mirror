@@ -1,5 +1,5 @@
 /* 
- * $Id: aklog_main.c,v 1.1.1.3 2006-05-10 19:43:57 zacheiss Exp $
+ * $Id: aklog_main.c,v 1.1.1.4 2006-12-04 18:58:08 rbasch Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
@@ -7,7 +7,7 @@
 
 #if !defined(lint) && !defined(SABER)
 static char *rcsid =
-	"$Id: aklog_main.c,v 1.1.1.3 2006-05-10 19:43:57 zacheiss Exp $";
+	"$Id: aklog_main.c,v 1.1.1.4 2006-12-04 18:58:08 rbasch Exp $";
 #endif /* lint || SABER */
 
 #include <afsconfig.h>
@@ -60,17 +60,16 @@ u_long ntohl(u_long x)
 /* #include <krb.h> */
 #endif /* 0 */
 
+#include <afs/stds.h>
 #include <krb5.h>
 
 #ifdef WINDOWS
 
-#include <afs/stds.h>
 #include <afs/auth.h>
 #include <rx/rxkad.h>
 #include <afs/dirpath.h>
 
 #else /* !WINDOWS */
-#include <afs/stds.h>
 #ifndef HAVE_KERBEROSV_HEIM_ERR_H
 #include <afs/com_err.h>
 #endif
@@ -571,7 +570,7 @@ static int auth_to_cell(krb5_context context, char *cell, char *realm)
 	status = get_credv5(context, name, primary_instance, realm_of_cell,
 			    &v5cred);
 
-	if (status == KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN) {
+	if (status == KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN || status == KRB5KRB_ERR_GENERIC) {
 	    if (try_secondary) {
 		if (dflag) {
 		    printf("Principal not found, trying alternate "

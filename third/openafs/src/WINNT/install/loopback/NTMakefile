@@ -1,4 +1,4 @@
-# rcsid : $Id: NTMakefile,v 1.1.1.1 2005-03-10 20:39:02 zacheiss Exp $
+# rcsid : $Id: NTMakefile,v 1.1.1.2 2006-12-04 18:56:26 rbasch Exp $
 
 RELDIR=WINNT\install\loopback
 !INCLUDE ..\..\..\config\NTMakefile.$(SYS_NAME)
@@ -57,3 +57,4 @@ $(EXEFILE): $(EXEOBJFILES)
 install:  $(DLLFILE) $(EXEFILE)
 
 clean	::
+	$(DEL) *.pdb

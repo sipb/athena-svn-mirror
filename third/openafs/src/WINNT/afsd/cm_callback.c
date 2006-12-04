@@ -1595,7 +1595,7 @@ long cm_GetCallback(cm_scache_t *scp, struct cm_user *userp,
                     struct cm_req *reqp, long flags)
 {
     long code;
-    cm_conn_t *connp;
+    cm_conn_t *connp = NULL;
     AFSFetchStatus afsStatus;
     AFSVolSync volSync;
     AFSCallBack callback;
@@ -1604,7 +1604,7 @@ long cm_GetCallback(cm_scache_t *scp, struct cm_user *userp,
     int mustCall;
     long sflags;
     cm_fid_t sfid;
-    struct rx_connection * callp;
+    struct rx_connection * callp = NULL;
 
     osi_Log4(afsd_logp, "GetCallback scp 0x%x cell %d vol %d flags %lX", 
              scp, scp->fid.cell, scp->fid.volume, flags);
@@ -1662,7 +1662,7 @@ long cm_GetCallback(cm_scache_t *scp, struct cm_user *userp,
 
         /* otherwise, we have to make an RPC to get the status */
         sflags = CM_SCACHESYNC_FETCHSTATUS | CM_SCACHESYNC_GETCALLBACK;
-        cm_SyncOp(scp, NULL, NULL, NULL, 0, sflags);
+        cm_SyncOp(scp, NULL, userp, reqp, 0, sflags);
         cm_StartCallbackGrantingCall(scp, &cbr);
         sfid = scp->fid;
         lock_ReleaseMutex(&scp->mx);

@@ -19,7 +19,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/clone.c,v 1.1.1.3 2005-03-10 20:48:35 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/clone.c,v 1.1.1.4 2006-12-04 18:58:42 rbasch Exp $");
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -256,7 +256,8 @@ DoCloneIndex(Volume * rwvp, Volume * clvp, VnodeClass class, int reclone)
 		    Log("IH_INC failed: %x, %s, %u errno %d\n",
 			V_linkHandle(rwvp), PrintInode(NULL, rwinode),
 			V_parentId(rwvp), errno);
-		    assert(0);
+		    VForceOffline_r(rwvp);
+		    ERROR_EXIT(EIO);
 		}
 		inodeinced = 1;
 	    }
@@ -308,7 +309,8 @@ DoCloneIndex(Volume * rwvp, Volume * clvp, VnodeClass class, int reclone)
 		    Log("IH_DEC failed: %x, %s, %u errno %d\n",
 			V_linkHandle(rwvp), PrintInode(NULL, rwinode),
 			V_parentId(rwvp), errno);
-		    assert(0);
+		    VForceOffline_r(rwvp);
+		    ERROR_EXIT(EIO);
 		}
 	    }
 	    /* And if the directory was marked clone, unmark it */

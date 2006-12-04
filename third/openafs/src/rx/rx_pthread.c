@@ -19,7 +19,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_pthread.c,v 1.1.1.6 2005-11-07 17:34:13 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_pthread.c,v 1.1.1.7 2006-12-04 18:56:47 rbasch Exp $");
 
 #include <sys/types.h>
 #include <errno.h>
@@ -87,7 +87,9 @@ rxi_Delay(int sec)
 void
 rxi_InitializeThreadSupport(void)
 {
-    listeners_started = 0;
+	/* listeners_started must only be reset if
+	 * the listener thread terminates */
+	/* listeners_started = 0; */
     clock_GetTime(&rxi_clockNow);
 }
 
@@ -321,6 +323,9 @@ rxi_StartListener(void)
 {
     pthread_attr_t tattr;
     AFS_SIGSET_DECL;
+
+	if (listeners_started)
+		return;
 
     if (pthread_attr_init(&tattr) != 0) {
 	dpf

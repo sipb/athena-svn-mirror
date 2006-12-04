@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/volmain.c,v 1.1.1.5 2006-03-06 20:44:33 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/volmain.c,v 1.1.1.6 2006-12-04 18:58:18 rbasch Exp $");
 
 #include <sys/types.h>
 #ifdef AFS_NT40_ENV
@@ -73,6 +73,7 @@ RCSID
 #define VolserVersion "2.0"
 #define N_SECURITY_OBJECTS 3
 
+extern struct Lock localLock;
 extern struct volser_trans *TransList();
 #ifndef AFS_PTHREAD_ENV
 extern int (*vol_PollProc) ();
@@ -94,7 +95,10 @@ int DoLogging = 0;
 int lwps = 9;
 int udpBufSize = 0;		/* UDP buffer size for receive */
 
-int Testing = 0;		/* for ListViceInodes */
+int rxBind = 0;
+
+#define ADDRSPERSITE 16         /* Same global is in rx/rx_user.c */
+afs_uint32 SHostAddrs[ADDRSPERSITE];
 
 #define VS_EXIT(code)  {                                          \
                           osi_audit(VS_ExitEvent, code, AUD_END); \
@@ -244,6 +248,7 @@ main(int argc, char **argv)
     int rxJumbograms = 1;	/* default is to send and receive jumbograms. */
     int rxMaxMTU = -1;
     int bufSize = 0;		/* temp variable to read in udp socket buf size */
+    afs_uint32 host = ntohl(INADDR_ANY);
 
 #ifdef	AFS_AIX32_ENV
     /*
@@ -288,6 +293,8 @@ main(int argc, char **argv)
 	    DoLogging = 1;
 	} else if (strcmp(argv[code], "-help") == 0) {
 	    goto usage;
+	} else if (strcmp(argv[code], "-rxbind") == 0) {
+	    rxBind = 1;
 	} else if (strcmp(argv[code], "-p") == 0) {
 	    lwps = atoi(argv[++code]);
 	    if (lwps > MAXLWP) {
@@ -379,7 +386,7 @@ main(int argc, char **argv)
 #ifndef AFS_NT40_ENV
 	    printf("Usage: volserver [-log] [-p <number of processes>] "
 		   "[-auditlog <log path>] "
-		   "[-nojumbo] [-rxmaxmtu <bytes>] "
+		   "[-nojumbo] [-rxmaxmtu <bytes>] [-rxbind] "
 		   "[-udpsize <size of socket buffer in bytes>] "
 		   "[-syslog[=FACILITY]] "
 		   "[-enable_peer_stats] [-enable_process_stats] "
@@ -387,7 +394,7 @@ main(int argc, char **argv)
 #else
 	    printf("Usage: volserver [-log] [-p <number of processes>] "
 		   "[-auditlog <log path>] "
-		   "[-nojumbo] [-rxmaxmtu <bytes>] "
+		   "[-nojumbo] [-rxmaxmtu <bytes>] [-rxbind] "
 		   "[-udpsize <size of socket buffer in bytes>] "
 		   "[-enable_peer_stats] [-enable_process_stats] "
 		   "[-help]\n");
@@ -416,6 +423,8 @@ main(int argc, char **argv)
     }
 #endif
     VInitVolumePackage(volumeUtility, 0, 0, CONNECT_FS, 0);
+    /* For nuke() */
+    Lock_Init(&localLock);
     DInit(40);
 #ifndef AFS_PTHREAD_ENV
     vol_PollProc = IOMGR_Poll;	/* tell vol pkg to poll io system periodically */
@@ -426,7 +435,26 @@ main(int argc, char **argv)
     rx_nPackets = rxpackets;	/* set the max number of packets */
     if (udpBufSize)
 	rx_SetUdpBufSize(udpBufSize);	/* set the UDP buffer size for receive */
-    code = rx_Init((int)htons(AFSCONF_VOLUMEPORT));
+    if (rxBind) {
+	afs_int32 ccode;
+#ifndef AFS_NT40_ENV
+        if (AFSDIR_SERVER_NETRESTRICT_FILEPATH || 
+            AFSDIR_SERVER_NETINFO_FILEPATH) {
+            char reason[1024];
+            ccode = parseNetFiles(SHostAddrs, NULL, NULL,
+                                           ADDRSPERSITE, reason,
+                                           AFSDIR_SERVER_NETINFO_FILEPATH,
+                                           AFSDIR_SERVER_NETRESTRICT_FILEPATH);
+        } else 
+#endif	
+	{
+            ccode = rx_getAllAddr(SHostAddrs, ADDRSPERSITE);
+        }
+        if (ccode == 1) 
+            host = SHostAddrs[0];
+    }
+
+    code = rx_InitHost(host, (int)htons(AFSCONF_VOLUMEPORT));
     if (code) {
 	fprintf(stderr, "rx init failed on socket AFSCONF_VOLUMEPORT %u\n",
 		AFSCONF_VOLUMEPORT);
@@ -478,7 +506,7 @@ main(int argc, char **argv)
     if (securityObjects[0] == (struct rx_securityClass *)0)
 	Abort("rxnull_NewServerSecurityObject");
     service =
-	rx_NewService(0, VOLSERVICE_ID, "VOLSER", securityObjects, 3,
+	rx_NewServiceHost(host, 0, VOLSERVICE_ID, "VOLSER", securityObjects, 3,
 		      AFSVolExecuteRequest);
     if (service == (struct rx_service *)0)
 	Abort("rx_NewService");

@@ -51,7 +51,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ptserver/ptprocs.c,v 1.1.1.5 2005-08-02 21:14:47 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ptserver/ptprocs.c,v 1.1.1.6 2006-12-04 18:57:19 rbasch Exp $");
 
 #include <afs/stds.h>
 #include <ctype.h>
@@ -103,7 +103,6 @@ afs_int32 listElements(), listOwned(), isAMemberOf(), idToName();
 afs_int32 listSuperGroups();
 #endif
 
-static stolower();
 extern int IDCmp();
 
 extern int prp_group_default;
@@ -2227,19 +2226,6 @@ isAMemberOf(call, uid, gid, flag, cid)
     *flag = IsAMemberOf(tt, uid, gid);
     code = ubik_EndTrans(tt);
     return code;
-}
-
-
-static
-stolower(s)
-     register char *s;
-{
-    register int tc;
-    while ((tc = *s)) {
-	if (isupper(tc))
-	    *s = tolower(tc);
-	s++;
-    }
 }
 
 #if IP_WILDCARDS

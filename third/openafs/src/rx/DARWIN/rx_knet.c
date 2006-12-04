@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/DARWIN/rx_knet.c,v 1.1.1.4 2006-03-06 20:43:27 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/DARWIN/rx_knet.c,v 1.1.1.5 2006-12-04 18:58:29 rbasch Exp $");
 
 #include "rx/rx_kcommon.h"
 
@@ -127,7 +127,9 @@ osi_NetReceive(osi_socket so, struct sockaddr_in *addr, struct iovec *dvec,
 		*addr = *(struct sockaddr_in *)sa;
 	} else
 	    printf("Unknown socket family %d in NetReceive\n", sa->sa_family);
+#ifndef AFS_DARWIN80_ENV
 	FREE(sa, M_SONAME);
+#endif
     }
     return code;
 }

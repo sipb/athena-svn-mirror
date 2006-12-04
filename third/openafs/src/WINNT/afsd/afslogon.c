@@ -35,7 +35,6 @@ DWORD TraceOption = 0;
 
 HANDLE hDLL;
 
-WSADATA WSAjunk;
 #define AFS_LOGON_EVENT_NAME TEXT("AFS Logon")
 
 void DebugEvent0(char *a) 
@@ -79,11 +78,19 @@ BOOLEAN APIENTRY DllEntryPoint(HANDLE dll, DWORD reason, PVOID reserved)
     switch (reason) {
     case DLL_PROCESS_ATTACH:
         /* Initialization Mutex */
-        hInitMutex = CreateMutex(NULL, FALSE, NULL);
+	if (!bInit) {
+	    hInitMutex = CreateMutex(NULL, FALSE, NULL);
+	    SetEnvironmentVariable(DO_NOT_REGISTER_VARNAME, "");
+	}
         break;
 
     case DLL_PROCESS_DETACH:
-        CloseHandle(hInitMutex);
+	/* do nothing on unload because we might 
+	 * be reloaded.
+	 */
+	CloseHandle(hInitMutex);
+	hInitMutex = NULL;
+	bInit = FALSE;
         break;
 
     case DLL_THREAD_ATTACH:
@@ -100,14 +107,28 @@ void AfsLogonInit(void)
 {
     if ( bInit == FALSE ) {
         if ( WaitForSingleObject( hInitMutex, INFINITE ) == WAIT_OBJECT_0 ) {
-            if ( bInit == FALSE ) {
-                rx_Init(0);
-                initAFSDirPath();
-                ka_Init(0);
-                bInit = TRUE;
-            }
-            ReleaseMutex(hInitMutex);
-        }
+	    /* initAFSDirPath() initializes an array and sets a 
+	     * flag so that the initialization can only occur
+	     * once.  No cleanup will be done when the DLL is 
+	     * unloaded so the initialization will not be 
+	     * performed again on a subsequent reload
+	     */
+	    initAFSDirPath();
+
+	    /* ka_Init initializes a number of error tables.
+	     * and then calls ka_CellConfig() which grabs 
+	     * an afsconf_dir structure via afsconf_Open().
+	     * Upon a second attempt to call ka_CellConfig()
+	     * the structure will be released with afsconf_Close()
+	     * and then re-opened.  Could this corrupt memory?
+	     * 
+	     * We only need this if we are not using KFW.
+	     */
+	    if (!KFW_is_available())
+		ka_Init(0);
+	    bInit = TRUE;
+	}
+	ReleaseMutex(hInitMutex);
     }
 }
 
@@ -377,7 +398,7 @@ GetDomainLogonOptions( PLUID lpLogonId, char * username, char * domain, LogonOpt
             hkDoms = NULL;
         }
     } else
-        DebugEvent("Not opening domain key for [%s]", effDomain);
+        DebugEvent("Not opening domain key");
 
     /* Each individual can either be specified on the domain key, the domains key or in the
        net provider key.  They fail over in that order.  If none is found, we just use the 
@@ -649,8 +670,8 @@ UnicodeStringToANSI(UNICODE_STRING uInputString, LPSTR lpszOutputString, int nOu
         lpszOutputString[min(uInputString.Length/2,nOutStringLen-1)] = '\0';
         return TRUE;
     }
-    else
-        lpszOutputString[0] = '\0';
+      
+    lpszOutputString[0] = '\0';
     return FALSE;
 }  // UnicodeStringToANSI
 
@@ -729,9 +750,10 @@ DWORD APIENTRY NPLogonNotify(
     /* Convert from Unicode to ANSI */
 
     /*TODO: Use SecureZeroMemory to erase passwords */
-    UnicodeStringToANSI(IL->UserName, uname, MAX_USERNAME_LENGTH);
-    UnicodeStringToANSI(IL->Password, password, MAX_PASSWORD_LENGTH);
-    UnicodeStringToANSI(IL->LogonDomainName, logonDomain, MAX_DOMAIN_LENGTH);
+    if (!UnicodeStringToANSI(IL->UserName, uname, MAX_USERNAME_LENGTH) ||
+	 !UnicodeStringToANSI(IL->Password, password, MAX_PASSWORD_LENGTH) ||
+	 !UnicodeStringToANSI(IL->LogonDomainName, logonDomain, MAX_DOMAIN_LENGTH))
+ 	return 0;
 
     /* Make sure AD-DOMANS sent from login that is sent to us is striped */
     ctemp = strchr(uname, '@');
@@ -915,7 +937,7 @@ DWORD APIENTRY NPLogonNotify(
     /* remove any kerberos 5 tickets currently held by the SYSTEM account
      * for this user 
      */
-    if ( KFW_is_available() ) {
+    if (ISLOGONINTEGRATED(opt.LogonOption) && KFW_is_available()) {
         sprintf(szLogonId,"%d.%d",lpLogonId->HighPart, lpLogonId->LowPart);
         KFW_AFS_copy_cache_to_system_file(uname, szLogonId);
 
@@ -1275,10 +1297,12 @@ VOID KFW_Logon_Event( PWLX_NOTIFICATION_INFO pInfo )
     char szPath[MAX_PATH] = "";
     char szLogonId[128] = "";
     DWORD count;
-    char filename[256];
-    char commandline[512];
+    char filename[MAX_PATH] = "";
+    char newfilename[MAX_PATH] = "";
+    char commandline[MAX_PATH+256] = "";
     STARTUPINFO startupinfo;
     PROCESS_INFORMATION procinfo;
+    HANDLE hf = INVALID_HANDLE_VALUE;
 
     LUID LogonId = {0, 0};
     PSECURITY_LOGON_SESSION_DATA pLogonSessionData = NULL;
@@ -1308,14 +1332,56 @@ VOID KFW_Logon_Event( PWLX_NOTIFICATION_INFO pInfo )
         GetWindowsDirectory(filename, sizeof(filename));
     }
 
-    if ( strlen(filename) + strlen(szLogonId) + 2 <= sizeof(filename) ) {
-        strcat(filename, "\\");
-        strcat(filename, szLogonId);    
+    count = GetEnvironmentVariable("TEMP", filename, sizeof(filename));
+    if ( count > sizeof(filename) || count == 0 ) {
+        GetWindowsDirectory(filename, sizeof(filename));
+    }
 
-        sprintf(commandline, "afscpcc.exe \"%s\"", filename);
+    if ( strlen(filename) + strlen(szLogonId) + 2 > sizeof(filename) ) {
+        DebugEvent0("KFW_Logon_Event - filename too long");
+	return;
+    }
 
-        GetStartupInfo(&startupinfo);
-        if (CreateProcessAsUser( pInfo->hToken,
+    strcat(filename, "\\");
+    strcat(filename, szLogonId);    
+
+    hf = CreateFile(filename, FILE_ALL_ACCESS, 0, NULL, OPEN_EXISTING, 
+		     FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hf == INVALID_HANDLE_VALUE) {
+	DebugEvent0("KFW_Logon_Event - file cannot be opened");
+ 	return;
+    }
+    CloseHandle(hf);
+ 
+    if (KFW_AFS_set_file_cache_dacl(filename, pInfo->hToken)) {
+	DebugEvent0("KFW_Logon_Event - unable to set dacl");
+ 	DeleteFile(filename);
+ 	return;
+    }
+ 
+    if (KFW_AFS_obtain_user_temp_directory(pInfo->hToken, newfilename, sizeof(newfilename))) {
+	DebugEvent0("KFW_Logon_Event - unable to obtain temp directory");
+ 	return;
+    }
+
+    if ( strlen(newfilename) + strlen(szLogonId) + 2 > sizeof(newfilename) ) {
+        DebugEvent0("KFW_Logon_Event - new filename too long");
+	return;
+    }
+
+    strcat(newfilename, "\\");
+    strcat(newfilename, szLogonId);    
+
+    if (!MoveFileEx(filename, newfilename, 
+		     MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)) {
+        DebugEvent("KFW_Logon_Event - MoveFileEx failed GLE = 0x%x", GetLastError());
+	return;
+    }
+
+    sprintf(commandline, "afscpcc.exe \"%s\"", newfilename);
+
+    GetStartupInfo(&startupinfo);
+    if (CreateProcessAsUser( pInfo->hToken,
                              "afscpcc.exe",
                              commandline,
                              NULL,
@@ -1326,12 +1392,15 @@ VOID KFW_Logon_Event( PWLX_NOTIFICATION_INFO pInfo )
                              NULL,
                              &startupinfo,
                              &procinfo)) 
-        {
-            WaitForSingleObject(procinfo.hProcess, 30000);
+    {
+	DebugEvent("KFW_Logon_Event - CommandLine %s", commandline);
 
-            CloseHandle(procinfo.hThread);
-            CloseHandle(procinfo.hProcess);
-        }
+	WaitForSingleObject(procinfo.hProcess, 30000);
+
+	CloseHandle(procinfo.hThread);
+	CloseHandle(procinfo.hProcess);
+    } else {
+	DebugEvent0("KFW_Logon_Event - CreateProcessFailed");
     }
 
     DeleteFile(filename);

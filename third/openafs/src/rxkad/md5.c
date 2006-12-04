@@ -69,12 +69,12 @@
 #include "rxkad.h"
 #endif /* defined(UKERNEL) */
 
-RCSID("$Id: md5.c,v 1.1.1.1 2005-03-10 20:48:31 zacheiss Exp $");
+RCSID("$Id: md5.c,v 1.1.1.2 2006-12-04 18:57:39 rbasch Exp $");
 
-#undef WORDS_BIGENDIAN
-#ifdef AFSBIG_ENDIAN
-#define WORDS_BIGENDIAN 1
-#endif
+
+
+
+
 
 #include "md5.h"
 #include "hash.h"

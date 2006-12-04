@@ -20,7 +20,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/volume.c,v 1.1.1.6 2005-06-02 19:43:58 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/volume.c,v 1.1.1.7 2006-12-04 18:58:03 rbasch Exp $");
 
 #include <rx/xdr.h>
 #include <afs/afsint.h>
@@ -185,7 +185,6 @@ int LogLevel;			/* Vice loglevel--not defined as extern so that it will be
 				 * defined when not linked with vice, XXXX */
 ProgramType programType;	/* The type of program using the package */
 
-
 #define VOLUME_BITMAP_GROWSIZE	16	/* bytes, => 128vnodes */
 					/* Must be a multiple of 4 (1 word) !! */
 #define VOLUME_HASH_TABLE_SIZE 128	/* Must be a power of 2!! */
@@ -272,6 +271,7 @@ VInitVolumePackage(ProgramType pt, int nLargeVnodes, int nSmallVnodes,
 #endif /* AFS_PTHREAD_ENV */
     Lock_Init(&vol_listLock);
     Lock_Init(&FSYNC_handler_lock);
+
     srandom(time(0));		/* For VGetVolumeInfo */
     gettimeofday(&tv, &tz);
     TimeZoneCorrection = tz.tz_minuteswest * 60;

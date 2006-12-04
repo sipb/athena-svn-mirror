@@ -46,11 +46,138 @@ void cm_AdjustLRU(cm_scache_t *scp)
 {
     if (scp == cm_data.scacheLRULastp)
         cm_data.scacheLRULastp = (cm_scache_t *) osi_QPrev(&scp->q);
-    osi_QRemove((osi_queue_t **) &cm_data.scacheLRUFirstp, &scp->q);
+    osi_QRemoveHT((osi_queue_t **) &cm_data.scacheLRUFirstp, (osi_queue_t **) &cm_data.scacheLRULastp, &scp->q);
     osi_QAdd((osi_queue_t **) &cm_data.scacheLRUFirstp, &scp->q);
     if (!cm_data.scacheLRULastp) 
         cm_data.scacheLRULastp = scp;
 }
+
+/* called with cm_scacheLock write-locked; recycles an existing scp. */
+long cm_RecycleSCache(cm_scache_t *scp, afs_int32 flags)
+{
+    cm_scache_t **lscpp;
+    cm_scache_t *tscp;
+    int i;
+
+    if (scp->flags & CM_SCACHEFLAG_INHASH) {
+	/* hash it out first */
+	i = CM_SCACHE_HASH(&scp->fid);
+	for (lscpp = &cm_data.hashTablep[i], tscp = cm_data.hashTablep[i];
+	      tscp;
+	      lscpp = &tscp->nextp, tscp = tscp->nextp) {
+	    if (tscp == scp) {
+		*lscpp = scp->nextp;
+		scp->flags &= ~CM_SCACHEFLAG_INHASH;
+		break;
+	    }
+	}
+	osi_assertx(tscp, "afsd: scache hash screwup");
+    }
+
+    if (flags & CM_SCACHE_RECYCLEFLAG_DESTROY_BUFFERS) {
+	osi_queueData_t *qdp;
+	cm_buf_t *bufp;
+
+	while(qdp = scp->bufWritesp) {
+            bufp = osi_GetQData(qdp);
+	    osi_QRemove((osi_queue_t **) &scp->bufWritesp, &qdp->q);
+	    osi_QDFree(qdp);
+	    if (bufp) {
+		lock_ObtainMutex(&bufp->mx);
+		bufp->cmFlags &= ~CM_BUF_CMSTORING;
+		bufp->flags &= ~CM_BUF_DIRTY;
+		bufp->dataVersion = -1; /* bad */
+		bufp->dirtyCounter++;
+		if (bufp->flags & CM_BUF_WAITING) {
+		    osi_Log2(afsd_logp, "CM RecycleSCache Waking [scp 0x%x] bufp 0x%x", scp, bufp);
+		    osi_Wakeup((long) &bufp);
+		}
+		lock_ReleaseMutex(&bufp->mx);
+		buf_Release(bufp);
+	    }
+        }
+	while(qdp = scp->bufReadsp) {
+            bufp = osi_GetQData(qdp);
+	    osi_QRemove((osi_queue_t **) &scp->bufReadsp, &qdp->q);
+	    osi_QDFree(qdp);
+	    if (bufp) {
+		lock_ObtainMutex(&bufp->mx);
+		bufp->cmFlags &= ~CM_BUF_CMFETCHING;
+		bufp->flags &= ~CM_BUF_DIRTY;
+		bufp->dataVersion = -1; /* bad */
+		bufp->dirtyCounter++;
+		if (bufp->flags & CM_BUF_WAITING) {
+		    osi_Log2(afsd_logp, "CM RecycleSCache Waking [scp 0x%x] bufp 0x%x", scp, bufp);
+		    osi_Wakeup((long) &bufp);
+		}
+		lock_ReleaseMutex(&bufp->mx);
+		buf_Release(bufp);
+	    }
+        }
+    } else {
+	/* look for things that shouldn't still be set */
+	osi_assert(scp->bufWritesp == NULL);
+	osi_assert(scp->bufReadsp == NULL);
+    }
+
+    /* invalidate so next merge works fine;
+     * also initialize some flags */
+    scp->flags &= ~(CM_SCACHEFLAG_STATD
+		     | CM_SCACHEFLAG_RO
+		     | CM_SCACHEFLAG_PURERO
+		     | CM_SCACHEFLAG_OVERQUOTA
+		     | CM_SCACHEFLAG_OUTOFSPACE);
+    scp->serverModTime = 0;
+    scp->dataVersion = 0;
+    scp->bulkStatProgress = hzero;
+    scp->waitCount = 0;
+
+    scp->fid.vnode = 0;
+    scp->fid.volume = 0;
+    scp->fid.unique = 0;
+    scp->fid.cell = 0;
+
+    /* discard callback */
+    if (scp->cbServerp) {
+	cm_PutServer(scp->cbServerp);
+	scp->cbServerp = NULL;
+    }
+    scp->cbExpires = 0;
+
+    /* remove from dnlc */
+    cm_dnlcPurgedp(scp);
+    cm_dnlcPurgevp(scp);
+
+    /* discard cached status; if non-zero, Close
+     * tried to store this to server but failed */
+    scp->mask = 0;
+
+    /* drop held volume ref */
+    if (scp->volp) {
+	cm_PutVolume(scp->volp);
+	scp->volp = NULL;
+    }
+
+    /* discard symlink info */
+    scp->mountPointStringp[0] = 0;
+    memset(&scp->mountRootFid, 0, sizeof(cm_fid_t));
+    memset(&scp->dotdotFid, 0, sizeof(cm_fid_t));
+
+    /* reset locking info */
+    scp->fileLocksH = NULL;
+    scp->fileLocksT = NULL;
+    scp->serverLock = (-1);
+    scp->exclusiveLocks = 0;
+    scp->sharedLocks = 0;
+
+    /* not locked, but there can be no references to this guy
+     * while we hold the global refcount lock.
+     */
+    cm_FreeAllACLEnts(scp);
+
+    return 0;
+}
+
 
 /* called with cm_scacheLock write-locked; find a vnode to recycle.
  * Can allocate a new one if desperate, or if below quota (cm_data.maxSCaches).
@@ -58,10 +185,8 @@ void cm_AdjustLRU(cm_scache_t *scp)
 cm_scache_t *cm_GetNewSCache(void)
 {
     cm_scache_t *scp;
-    int i;
-    cm_scache_t **lscpp;
-    cm_scache_t *tscp;
 
+  start:
     if (cm_data.currentSCaches >= cm_data.maxSCaches) {
         for (scp = cm_data.scacheLRULastp;
               scp;
@@ -72,88 +197,21 @@ cm_scache_t *cm_GetNewSCache(void)
                 
         if (scp) {
             osi_assert(scp >= cm_data.scacheBaseAddress && scp < (cm_scache_t *)cm_data.hashTablep);
-            /* we found an entry, so return it */
-            if (scp->flags & CM_SCACHEFLAG_INHASH) {
-                /* hash it out first */
-                i = CM_SCACHE_HASH(&scp->fid);
-                for (lscpp = &cm_data.hashTablep[i], tscp = cm_data.hashTablep[i];
-                      tscp;
-                      lscpp = &tscp->nextp, tscp = tscp->nextp) {
-                    if (tscp == scp) {
-                        *lscpp = scp->nextp;
-                        scp->flags &= ~CM_SCACHEFLAG_INHASH;
-                        break;
-                    }
-                }
-                osi_assertx(tscp, "afsd: scache hash screwup");
-            }
 
-            /* look for things that shouldn't still be set */
-            osi_assert(scp->bufWritesp == NULL);
-            osi_assert(scp->bufReadsp == NULL);
+	    if (!cm_RecycleSCache(scp, 0)) {
+	    
+		/* we found an entry, so return it */
+		/* now remove from the LRU queue and put it back at the
+		 * head of the LRU queue.
+		 */
+		cm_AdjustLRU(scp);
 
-            /* invalidate so next merge works fine;
-            * also initialize some flags */
-            scp->flags &= ~(CM_SCACHEFLAG_STATD
-                             | CM_SCACHEFLAG_RO
-                             | CM_SCACHEFLAG_PURERO
-                             | CM_SCACHEFLAG_OVERQUOTA
-                             | CM_SCACHEFLAG_OUTOFSPACE);
-            scp->serverModTime = 0;
-            scp->dataVersion = 0;
-            scp->bulkStatProgress = hzero;
-            scp->waitCount = 0;
-
-            scp->fid.vnode = 0;
-            scp->fid.volume = 0;
-            scp->fid.unique = 0;
-            scp->fid.cell = 0;
-
-            /* discard callback */
-            if (scp->cbServerp) {
-                cm_PutServer(scp->cbServerp);
-                scp->cbServerp = NULL;
-            }
-            scp->cbExpires = 0;
-
-            /* remove from dnlc */
-            cm_dnlcPurgedp(scp);
-            cm_dnlcPurgevp(scp);
-
-            /* discard cached status; if non-zero, Close
-             * tried to store this to server but failed */
-            scp->mask = 0;
-
-            /* drop held volume ref */
-            if (scp->volp) {
-                cm_PutVolume(scp->volp);
-                scp->volp = NULL;
-            }
-
-            /* discard symlink info */
-            scp->mountPointStringp[0] = 0;
-            memset(&scp->mountRootFid, 0, sizeof(cm_fid_t));
-            memset(&scp->dotdotFid, 0, sizeof(cm_fid_t));
-
-            /* reset locking info */
-            scp->fileLocksH = NULL;
-            scp->fileLocksT = NULL;
-            scp->serverLock = (-1);
-            scp->exclusiveLocks = 0;
-            scp->sharedLocks = 0;
-
-            /* not locked, but there can be no references to this guy
-             * while we hold the global refcount lock.
-             */
-            cm_FreeAllACLEnts(scp);
-
-            /* now remove from the LRU queue and put it back at the
-             * head of the LRU queue.
-             */
-            cm_AdjustLRU(scp);
-
-            /* and we're done */
-            return scp;
+		/* and we're done */
+		return scp;
+	    } else {
+		/* We don't like this entry, choose another one. */
+		goto start;
+	    }
         }
     }
         
@@ -599,15 +657,15 @@ cm_scache_t * cm_FindSCacheParent(cm_scache_t * scp)
     parent_fid.unique = scp->parentUnique;
 
     if (cm_FidCmp(&scp->fid, &parent_fid)) {
-	for (i=0; i<cm_data.hashTableSize; i++) {
-	    for (pscp = cm_data.hashTablep[i]; pscp; pscp = pscp->nextp) {
-		if (!cm_FidCmp(&pscp->fid, &parent_fid)) {
-		    cm_HoldSCacheNoLock(pscp);
-		    break;
-		}
+        i = CM_SCACHE_HASH(&parent_fid);
+	for (pscp = cm_data.hashTablep[i]; pscp; pscp = pscp->nextp) {
+	    if (!cm_FidCmp(&pscp->fid, &parent_fid)) {
+	        cm_HoldSCacheNoLock(pscp);
+		break;
 	    }
 	}
     }
+
     lock_ReleaseWrite(&cm_scacheLock);
 
     return pscp;
@@ -854,7 +912,8 @@ long cm_SyncOp(cm_scache_t *scp, cm_buf_t *bufp, cm_user_t *up, cm_req_t *reqp,
             if (!cm_HaveCallback(scp)) {
                 osi_Log1(afsd_logp, "CM SyncOp getting callback on scp %x",
                           (long) scp);
-                if (bufLocked) lock_ReleaseMutex(&bufp->mx);
+                if (bufLocked) 
+		    lock_ReleaseMutex(&bufp->mx);
                 code = cm_GetCallback(scp, up, reqp, 0);
                 if (bufLocked) {
                     lock_ReleaseMutex(&scp->mx);
@@ -881,13 +940,13 @@ long cm_SyncOp(cm_scache_t *scp, cm_buf_t *bufp, cm_user_t *up, cm_req_t *reqp,
                 /* we don't know the required access rights */
                 if (bufLocked) lock_ReleaseMutex(&bufp->mx);
                 code = cm_GetAccessRights(scp, up, reqp);
-                if (code) 
-                    return code;
                 if (bufLocked) {
                     lock_ReleaseMutex(&scp->mx);
                     lock_ObtainMutex(&bufp->mx);
                     lock_ObtainMutex(&scp->mx);
                 }
+                if (code) 
+                    return code;
                 continue;
             }
         }
@@ -917,6 +976,9 @@ long cm_SyncOp(cm_scache_t *scp, cm_buf_t *bufp, cm_user_t *up, cm_req_t *reqp,
         if (bufLocked) 
             lock_ReleaseMutex(&bufp->mx);
         osi_SleepM((long) &scp->flags, &scp->mx);
+
+	smb_UpdateServerPriority();
+
         if (bufLocked) 
             lock_ObtainMutex(&bufp->mx);
         lock_ObtainMutex(&scp->mx);
@@ -1017,12 +1079,13 @@ void cm_SyncOpDone(cm_scache_t *scp, cm_buf_t *bufp, long flags)
         /* ensure that the buffer isn't already in the I/O list */
         for(qdp = scp->bufReadsp; qdp; qdp = (osi_queueData_t *) osi_QNext(&qdp->q)) {
             tbufp = osi_GetQData(qdp);
-            if (tbufp == bufp) break;
+            if (tbufp == bufp) 
+		break;
         }
-        osi_assert(qdp != NULL);
-        osi_assert(osi_GetQData(qdp) == bufp);
-        osi_QRemove((osi_queue_t **) &scp->bufReadsp, &qdp->q);
-        osi_QDFree(qdp);
+	if (qdp) {
+	    osi_QRemove((osi_queue_t **) &scp->bufReadsp, &qdp->q);
+	    osi_QDFree(qdp);
+	}
         if (bufp) {
             bufp->cmFlags &= ~(CM_BUF_CMFETCHING | CM_BUF_CMFULLYFETCHED);
             if (bufp->flags & CM_BUF_WAITING) {
@@ -1038,12 +1101,13 @@ void cm_SyncOpDone(cm_scache_t *scp, cm_buf_t *bufp, long flags)
         /* ensure that the buffer isn't already in the I/O list */
         for(qdp = scp->bufWritesp; qdp; qdp = (osi_queueData_t *) osi_QNext(&qdp->q)) {
             tbufp = osi_GetQData(qdp);
-            if (tbufp == bufp) break;
+            if (tbufp == bufp) 
+		break;
         }
-        osi_assert(qdp != NULL);
-        osi_assert(osi_GetQData(qdp) == bufp);
-        osi_QRemove((osi_queue_t **) &scp->bufWritesp, &qdp->q);
-        osi_QDFree(qdp);
+	if (qdp) {
+	    osi_QRemove((osi_queue_t **) &scp->bufWritesp, &qdp->q);
+	    osi_QDFree(qdp);
+	}
         if (bufp) {
             bufp->cmFlags &= ~CM_BUF_CMSTORING;
             if (bufp->flags & CM_BUF_WAITING) {

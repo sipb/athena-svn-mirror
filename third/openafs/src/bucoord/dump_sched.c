@@ -17,7 +17,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/dump_sched.c,v 1.1.1.3 2005-05-04 17:45:09 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/dump_sched.c,v 1.1.1.4 2006-12-04 18:57:15 rbasch Exp $");
 
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
@@ -579,7 +579,7 @@ bc_UpdateDumpSchedule()
 
     /* fetch the version number */
     code =
-	ubik_Call(BUDB_GetTextVersion, uhptr->uh_client, 0, ctPtr->textType,
+	ubik_BUDB_GetTextVersion(uhptr->uh_client, 0, ctPtr->textType,
 		  &ctPtr->textVersion);
     if (code)
 	ERROR(code);
