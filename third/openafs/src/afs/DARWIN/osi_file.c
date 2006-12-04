@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/osi_file.c,v 1.1.1.3 2006-03-06 20:44:28 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/osi_file.c,v 1.1.1.4 2006-12-04 18:57:54 rbasch Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -292,7 +292,7 @@ afs_osi_Read(register struct osi_file *afile, int offset, void *aptr,
 	     afs_int32 asize)
 {
     struct AFS_UCRED *oldCred;
-    unsigned int resid;
+    afs_size_t resid;
     register afs_int32 code;
 #ifdef AFS_DARWIN80_ENV
     uio_t uio;
@@ -343,7 +343,7 @@ afs_osi_Write(register struct osi_file *afile, afs_int32 offset, void *aptr,
 	      afs_int32 asize)
 {
     struct AFS_UCRED *oldCred;
-    unsigned int resid;
+    afs_size_t resid;
     register afs_int32 code;
 #ifdef AFS_DARWIN80_ENV
     uio_t uio;

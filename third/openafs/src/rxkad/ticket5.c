@@ -62,7 +62,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/ticket5.c,v 1.1.1.4 2006-03-06 20:44:35 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/ticket5.c,v 1.1.1.5 2006-12-04 18:56:42 rbasch Exp $");
 
 #if defined(UKERNEL)
 #include "../afs/sysincludes.h"
@@ -284,7 +284,7 @@ tkt_DecodeTicket5(char *ticket, afs_int32 ticket_len,
 	v5_comp1 = decr_part.cname.name_string.val[1];
 	p = sconv_list;
 	while (p->v4_str) {
-	    if (strncmp(p->v5_str, v5_comp0, p->len) == 0) {
+	    if (strcmp(p->v5_str, v5_comp0) == 0) {
 		/*
 		 * It is, so set the new name now, and chop off
 		 * instance's domain name if requested.

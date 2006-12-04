@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleGetInfoString</key>
-	<string>OpenAFS 1.4.1</string>
+	<string>OpenAFS 1.4.2</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.openafs.OpenAFS.pkg</string>
 	<key>CFBundleName</key>
 	<string>OpenAFS</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4.1</string>
+	<string>1.4.2</string>
 	<key>IFMajorVersion</key>
 	<integer>1</integer>
 	<key>IFMinorVersion</key>
@@ -18,6 +18,10 @@
 	<false/>
 	<key>IFPkgFlagAuthorizationAction</key>
 	<string>RootAuthorization</string>
+	<key>IFPkgFlagBackgroundAlignment</key>
+	<string>bottomright</string>
+	<key>IfPkgFlagBackgroundScaling</key>
+	<string>proportional</string>
 	<key>IFPkgFlagDefaultLocation</key>
 	<string>/</string>
 	<key>IFPkgFlagInstallFat</key>
@@ -27,7 +31,7 @@
 	<key>IFPkgFlagRelocatable</key>
 	<false/>
 	<key>IFPkgFlagRestartAction</key>
-	<string>RecommendedRestart</string>
+	<string>NoRestart</string>
 	<key>IFPkgFlagRootVolumeOnly</key>
 	<true/>
 	<key>IFPkgFlagUpdateInstalledLanguages</key>

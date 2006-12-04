@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ubik/uinit.c,v 1.1.1.1 2005-03-10 20:49:28 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ubik/uinit.c,v 1.1.1.2 2006-12-04 18:58:28 rbasch Exp $");
 
 #include <afs/stds.h>
 #ifdef AFS_NT40_ENV
@@ -87,6 +87,7 @@ ugen_ClientInit(int noAuthFlag, char *confDir, char *cellName, afs_int32 sauth,
 	}
 	code = afsconf_ClientAuth(tdir, &sc, &scIndex);	/* sets sc,scIndex */
 	if (code) {
+	    afsconf_Close(tdir);
 	    fprintf(stderr,
 		    "%s: Could not get security object for -localAuth\n",
 		    funcName);
@@ -96,6 +97,7 @@ ugen_ClientInit(int noAuthFlag, char *confDir, char *cellName, afs_int32 sauth,
 	    afsconf_GetCellInfo(tdir, tdir->cellName, serviceid,
 				&info);
 	if (code) {
+	    afsconf_Close(tdir);
 	    fprintf(stderr,
 		    "%s: can't find cell %s's hosts in %s/%s\n",
 		    funcName, cellName, AFSDIR_SERVER_ETC_DIRPATH,

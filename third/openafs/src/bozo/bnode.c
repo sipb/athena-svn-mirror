@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bnode.c,v 1.1.1.4 2005-08-02 21:14:31 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bnode.c,v 1.1.1.5 2006-12-04 18:57:48 rbasch Exp $");
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -738,12 +738,12 @@ hdl_notifier(struct bnode_proc *tp)
 
 #if defined(AFS_HPUX_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_SGI51_ENV)
 	ec = setsid();
-#else
-#ifdef AFS_LINUX20_ENV
+#elif defined(AFS_DARWIN90_ENV)
+	ec = setpgid(0, 0);
+#elif defined(AFS_LINUX20_ENV) || defined(AFS_AIX_ENV) 
 	ec = setpgrp();
 #else
 	ec = setpgrp(0, 0);
-#endif
 #endif
 	fout = popen(tb->notifier, "w");
 	if (fout == NULL) {

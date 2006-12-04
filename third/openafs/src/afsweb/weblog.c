@@ -25,7 +25,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsweb/weblog.c,v 1.1.1.2 2005-03-10 20:29:59 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsweb/weblog.c,v 1.1.1.3 2006-12-04 18:57:14 rbasch Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -666,7 +666,7 @@ getDFScreds(char *name, char *realm, char *passwd, afs_uint32 lifetime,
      */
     reply_p = (adk_reply_ptr) 0;
     error_p = (adk_error_ptr) 0;
-    code = ubik_Call(ADK_GetTicket, ubik_handle, 0,	/* Ubik flags */
+    code = ubik_ADK_GetTicket(ubik_handle, 0,	/* Ubik flags */
 		     name,	/* IN:  Principal: must be exact DCE principal */
 		     nonce,	/* IN:  Input nonce */
 		     lifetime,	/* IN:  lifetime */

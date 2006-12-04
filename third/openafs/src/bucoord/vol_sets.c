@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/vol_sets.c,v 1.1.1.3 2005-05-04 17:45:09 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/vol_sets.c,v 1.1.1.4 2006-12-04 18:57:15 rbasch Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -708,7 +708,7 @@ bc_UpdateVolumeSet()
 
     /* fetch the version number */
     code =
-	ubik_Call(BUDB_GetTextVersion, uhptr->uh_client, 0, ctPtr->textType,
+	ubik_BUDB_GetTextVersion(uhptr->uh_client, 0, ctPtr->textType,
 		  &ctPtr->textVersion);
     if (code)
 	ERROR(code);

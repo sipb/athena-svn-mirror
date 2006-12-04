@@ -114,7 +114,7 @@ afsi_log(char *pattern, ...)
     if ( afsi_log_useTimestamp ) {
         GetTimeFormat(LOCALE_SYSTEM_DEFAULT, 0, NULL, NULL, t, sizeof(t));
         GetDateFormat(LOCALE_SYSTEM_DEFAULT, 0, NULL, NULL, d, sizeof(d));
-        StringCbPrintfA(u, sizeof(u), "%s %s: %s\n", d, t, s);
+        StringCbPrintfA(u, sizeof(u), "%s %s: %s\r\n", d, t, s);
         if (afsi_file != INVALID_HANDLE_VALUE)
             WriteFile(afsi_file, u, strlen(u), &zilch, NULL);
 #ifdef NOTSERVICE
@@ -268,7 +268,7 @@ configureBackConnectionHostNames(void)
     HKEY hkMSV10;
     HKEY hkClient;
     DWORD dwType;
-    DWORD dwSize;
+    DWORD dwSize = 0, dwAllocSize = 0;
     DWORD dwValue;
     PBYTE pHostNames = NULL, pName = NULL;
     BOOL  bNameFound = FALSE;   
@@ -280,12 +280,16 @@ configureBackConnectionHostNames(void)
                        &hkMSV10) == ERROR_SUCCESS )
     {
 	if (RegQueryValueEx( hkMSV10, "BackConnectionHostNames", 0, 
-			     &dwType, NULL, &dwSize) == ERROR_SUCCESS) {
-	    dwSize += strlen(cm_NetbiosName) + 1;
-	    pHostNames = malloc(dwSize);
+			     &dwType, NULL, &dwAllocSize) == ERROR_SUCCESS) {
+	    dwAllocSize += 1 /* in case the source string is not nul terminated */
+		+ strlen(cm_NetbiosName) + 2;
+	    pHostNames = malloc(dwAllocSize);
+	    dwSize = dwAllocSize;
 	    if (RegQueryValueEx( hkMSV10, "BackConnectionHostNames", 0, &dwType, 
 				 pHostNames, &dwSize) == ERROR_SUCCESS) {
-		for (pName = pHostNames; *pName ; pName += strlen(pName) + 1)
+		for (pName = pHostNames; 
+		     (pName - pHostNames < dwSize) && *pName; 
+		     pName += strlen(pName) + 1)
 		{
 		    if ( !stricmp(pName, cm_NetbiosName) ) {
 			bNameFound = TRUE;
@@ -299,7 +303,6 @@ configureBackConnectionHostNames(void)
             int size = strlen(cm_NetbiosName) + 2;
             if ( !pHostNames ) {
                 pHostNames = malloc(size);
-                dwSize = size;
 		pName = pHostNames;
             }
             StringCbCopyA(pName, size, cm_NetbiosName);
@@ -307,7 +310,7 @@ configureBackConnectionHostNames(void)
             *pName = '\0';  /* add a second nul terminator */
 
             dwType = REG_MULTI_SZ;
-            dwSize += strlen(cm_NetbiosName) + 1;
+            dwSize = pName - pHostNames + 1;
             RegSetValueEx( hkMSV10, "BackConnectionHostNames", 0, dwType, pHostNames, dwSize);
 
             if ( RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
@@ -1184,6 +1187,13 @@ int afsd_InitCM(char **reasonP)
     return 0;
 }
 
+int afsd_ShutdownCM(void)
+{
+    cm_ReleaseSCache(cm_data.rootSCachep);
+
+    return 0;
+}
+
 int afsd_InitDaemons(char **reasonP)
 {
     long code;
@@ -1194,11 +1204,15 @@ int afsd_InitDaemons(char **reasonP)
     /* this should really be in an init daemon from here on down */
 
     if (!cm_freelanceEnabled) {
+	int attempts = 10;
+
         osi_Log0(afsd_logp, "Loading Root Volume from cell");
-        code = cm_GetVolumeByName(cm_data.rootCellp, cm_rootVolumeName, cm_rootUserp,
-                                  &req, CM_FLAG_CREATE, &cm_data.rootVolumep);
-        afsi_log("cm_GetVolumeByName code %x root vol %x", code,
-                 (code ? (cm_volume_t *)-1 : cm_data.rootVolumep));
+	do {
+	    code = cm_GetVolumeByName(cm_data.rootCellp, cm_rootVolumeName, cm_rootUserp,
+				       &req, CM_FLAG_CREATE, &cm_data.rootVolumep);
+	    afsi_log("cm_GetVolumeByName code %x root vol %x", code,
+		      (code ? (cm_volume_t *)-1 : cm_data.rootVolumep));
+	} while (code && --attempts);
         if (code != 0) {
             *reasonP = "can't find root volume in root cell";
             return -1;

@@ -1,4 +1,6 @@
-# $Id: buildpkg.sh,v 1.1.1.1 2005-03-10 20:37:14 zacheiss Exp $
+# $Id: buildpkg.sh,v 1.1.1.2 2006-12-04 18:56:38 rbasch Exp $
+
+# This doesn't actually build a package any more
 
 SRC=../../../../..
 umask 022
@@ -30,4 +32,6 @@ ln -s $SRC/afsd/afs.rc.obsd usr/vice/etc/rc.securelevel.afs
 
 echo '/afs:/usr/vice/cache:96000' >usr/vice/etc/cacheinfo
 
-pkg_create -v -h -f packinglist -c -OpenAFS -d desc -p / -s $PWD openafs-client
+tar chfvz openafs-client.tgz usr/vice
+
+#pkg_create -v -h -f packinglist -c -OpenAFS -d desc -p / -s $PWD openafs-client

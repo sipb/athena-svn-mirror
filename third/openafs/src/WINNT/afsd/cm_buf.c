@@ -110,7 +110,7 @@ void buf_IncrSyncer(long parm)
     bp = cm_data.buf_allp;
     bp->refCount++;
     lock_ReleaseWrite(&buf_globalLock);
-    nAtOnce = (long)sqrt(cm_data.buf_nbuffers);
+    nAtOnce = cm_data.buf_nbuffers/10;
     while (buf_ShutdownFlag == 0) {
 #ifndef DJGPP
         i = SleepEx(5000, 1);
@@ -439,6 +439,8 @@ void buf_Release(cm_buf_t *bp)
  */
 void buf_WaitIO(cm_scache_t * scp, cm_buf_t *bp)
 {
+    int release = 0;
+
     if (scp)
         osi_assert(scp->magic == CM_SCACHE_MAGIC);
     osi_assert(bp->magic == CM_BUF_MAGIC);
@@ -462,6 +464,9 @@ void buf_WaitIO(cm_scache_t * scp, cm_buf_t *bp)
             bp->waitCount = bp->waitRequests = 1;
         }
         osi_SleepM((long) bp, &bp->mx);
+
+	smb_UpdateServerPriority();
+
         lock_ObtainMutex(&bp->mx);
         osi_Log1(afsd_logp, "buf_WaitIO conflict wait done for 0x%x", bp);
         bp->waitCount--;
@@ -472,7 +477,8 @@ void buf_WaitIO(cm_scache_t * scp, cm_buf_t *bp)
         }
 
         if ( !scp ) {
-            scp = cm_FindSCache(&bp->fid);
+            if (scp = cm_FindSCache(&bp->fid))
+		 release = 1;
         }
         if ( scp ) {
             lock_ObtainMutex(&scp->mx);
@@ -492,6 +498,9 @@ void buf_WaitIO(cm_scache_t * scp, cm_buf_t *bp)
         osi_Wakeup((long) bp);
     }
     osi_Log1(afsd_logp, "WaitIO finished wait for bp 0x%x", (long) bp);
+
+    if (scp && release)
+        cm_ReleaseSCache(scp);
 }
 
 /* code to drop reference count while holding buf_globalLock */
@@ -877,7 +886,7 @@ long buf_GetNew(struct cm_scache *scp, osi_hyper_t *offsetp, cm_buf_t **bufpp)
      */
     lock_ReleaseMutex(&bp->mx);
     *bufpp = bp;
-    osi_Log3(buf_logp, "buf_GetNew returning bp 0x%x for file 0x%x, offset 0x%x",
+    osi_Log3(buf_logp, "buf_GetNew returning bp 0x%x for scp 0x%x, offset 0x%x",
               bp, (long) scp, offsetp->LowPart);
     return 0;
 }
@@ -1024,7 +1033,7 @@ long buf_Get(struct cm_scache *scp, osi_hyper_t *offsetp, cm_buf_t **bufpp)
     }
     lock_ReleaseWrite(&buf_globalLock);
 
-    osi_Log3(buf_logp, "buf_Get returning bp 0x%x for file 0x%x, offset 0x%x",
+    osi_Log3(buf_logp, "buf_Get returning bp 0x%x for scp 0x%x, offset 0x%x",
               bp, (long) scp, offsetp->LowPart);
 #ifdef TESTING
     buf_ValidateBufQueues();

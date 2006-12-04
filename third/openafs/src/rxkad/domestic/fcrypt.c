@@ -20,7 +20,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/domestic/fcrypt.c,v 1.1.1.5 2006-03-06 20:44:44 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/domestic/fcrypt.c,v 1.1.1.6 2006-12-04 18:57:39 rbasch Exp $");
 
 #define DEBUG 0
 #ifdef KERNEL
@@ -120,7 +120,7 @@ fc_ecb_encrypt(void * clear, void * cipher,
     volatile unsigned char *Schar = (unsigned char *)&S;
     int i;
 
-#if defined(vax) || (defined(mips) && defined(MIPSEL)) || defined(AFSLITTLE_ENDIAN)
+#ifndef WORDS_BIGENDIAN
 #define Byte0 3
 #define Byte1 2
 #define Byte2 1

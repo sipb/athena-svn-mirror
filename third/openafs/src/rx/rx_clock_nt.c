@@ -14,7 +14,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_clock_nt.c,v 1.1.1.4 2006-05-10 19:42:37 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_clock_nt.c,v 1.1.1.5 2006-12-04 18:57:26 rbasch Exp $");
 
 #ifdef AFS_NT40_ENV
 #include <stdio.h>
@@ -23,15 +23,14 @@ RCSID
 #include <winbase.h>
 #include "rx_clock.h"
 
-void clock_UpdateTime(void);	/* forward reference */
-
 struct clock clock_now;		/* The last elapsed time ready by clock_GetTimer */
 
 /* This is set to 1 whenever the time is read, and reset to 0 whenever
  * clock_NewTime is called.  This is to allow the caller to control the
  * frequency with which the actual time is re-evaluated.
  */
-int clock_haveCurrentTime;
+#undef clock_haveCurrentTime
+int clock_haveCurrentTime = 0;
 
 int clock_nUpdates;		/* The actual number of clock updates */
 static int clockInitialized = 0;
@@ -43,6 +42,7 @@ LARGE_INTEGER rxi_clockFreq;
 #undef clock_UpdateTime
 void clock_UpdateTime(void);
 
+#undef clock_Init
 void
 clock_Init(void)
 {

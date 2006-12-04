@@ -15,7 +15,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_kcommon.c,v 1.1.1.10 2006-05-10 19:42:40 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_kcommon.c,v 1.1.1.11 2006-12-04 18:58:15 rbasch Exp $");
 
 #include "rx/rx_kcommon.h"
 
@@ -124,6 +124,7 @@ rxi_GetUDPSocket(u_short port)
     return rxi_GetHostUDPSocket(htonl(INADDR_ANY), port);
 }
 
+#if !defined(AFS_LINUX26_ENV)
 void
 osi_Panic(msg, a1, a2, a3)
      char *msg;
@@ -132,7 +133,7 @@ osi_Panic(msg, a1, a2, a3)
 	msg = "Unknown AFS panic";
 
     printf(msg, a1, a2, a3);
-#ifdef AFS_LINUX24_ENV
+#ifdef AFS_LINUX20_ENV
     * ((char *) 0) = 0; 
 #else
     panic(msg);
@@ -261,6 +262,13 @@ osi_AssertFailK(const char *expr, const char *file, int line)
 
     osi_Panic(buf);
 }
+#else
+void
+osi_AssertFailK(const char *expr, const char *file, int line)
+{
+    printk(KERN_CRIT "assertion failed: %s, file: %s, line: %d\n", expr, file, line);
+}
+#endif
 
 #ifndef UKERNEL
 /* This is the server process request loop. Kernel server
@@ -1142,9 +1150,7 @@ rxk_ReadPacket(osi_socket so, struct rx_packet *p, int *host, int *port)
     if (!code) {
 	p->length = nbytes - RX_HEADER_SIZE;;
 	if ((nbytes > tlen) || (p->length & 0x8000)) {	/* Bogus packet */
-	    if (nbytes > 0)
-		rxi_MorePackets(rx_initSendWindow);
-	    else {
+	    if (nbytes <= 0) {
 		MUTEX_ENTER(&rx_stats_mutex);
 		rx_stats.bogusPacketOnRead++;
 		rx_stats.bogusHost = from.sin_addr.s_addr;

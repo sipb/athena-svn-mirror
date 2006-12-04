@@ -27,7 +27,7 @@
 #include <stdlib.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/pam/afs_util.c,v 1.1.1.2 2005-03-10 20:38:39 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/pam/afs_util.c,v 1.1.1.3 2006-12-04 18:59:02 rbasch Exp $");
 
 #include "afs_util.h"
 

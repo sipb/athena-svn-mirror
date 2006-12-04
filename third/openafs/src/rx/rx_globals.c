@@ -26,14 +26,16 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_globals.c,v 1.1.1.2 2005-03-10 20:50:06 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_globals.c,v 1.1.1.3 2006-12-04 18:57:26 rbasch Exp $");
 
 /* Enable data initialization when the header file is included */
 #define INIT(stuff) = stuff
 #if defined(AFS_NT40_ENV) && defined(AFS_PTHREAD_ENV)
 #define EXT __declspec(dllexport)
+#define EXT2 __declspec(dllexport)
 #else
 #define EXT
+#define EXT2 
 #endif
 
 #ifdef KERNEL

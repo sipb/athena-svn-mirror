@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vfsops.c,v 1.1.1.8 2006-03-06 20:42:54 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vfsops.c,v 1.1.1.9 2006-12-04 18:58:45 rbasch Exp $");
 
 #define __NO_VERSION__		/* don't define kernel_version in module.h */
 #include <linux/module.h> /* early to avoid printf->printk mapping */
@@ -49,7 +49,6 @@ static void iattr2vattr(struct vattr *vattrp, struct iattr *iattrp);
 static int afs_root(struct super_block *afsp);
 struct super_block *afs_read_super(struct super_block *sb, void *data, int silent);
 int afs_fill_super(struct super_block *sb, void *data, int silent);
-static struct super_block *afs_get_sb(struct file_system_type *fs_type, int flags, const char *dev_name, void *data);
 
 /* afs_file_system
  * VFS entry for Linux - installed in init_module
@@ -58,11 +57,29 @@ static struct super_block *afs_get_sb(struct file_system_type *fs_type, int flag
  * 2) Mount call comes to us via do_mount -> read_super -> afs_read_super.
  *    We are expected to setup the super_block. See afs_read_super.
  */
+
+
+/* afs_read_super
+ * read the "super block" for AFS - roughly eguivalent to struct vfs.
+ * dev, covered, s_rd_only, s_dirt, and s_type will be set by read_super.
+ */
 #if defined(AFS_LINUX26_ENV)
-struct backing_dev_info afs_backing_dev_info = {
-	.ra_pages	= (VM_MAX_READAHEAD * 1024) / PAGE_CACHE_SIZE,
-	.state		= 0,
-};
+static struct super_block *
+#ifdef GET_SB_HAS_STRUCT_VFSMOUNT
+afs_get_sb(struct file_system_type *fs_type, int flags,
+	   const char *dev_name, void *data, struct vfsmount *mnt)
+#else
+afs_get_sb(struct file_system_type *fs_type, int flags,
+	   const char *dev_name, void *data)
+#endif
+{
+#ifdef GET_SB_HAS_STRUCT_VFSMOUNT
+    return get_sb_nodev(fs_type, flags, data, afs_fill_super, mnt);
+#else
+    return get_sb_nodev(fs_type, flags, data, afs_fill_super);
+#endif
+}
+
 
 struct file_system_type afs_fs_type = {
     .owner = THIS_MODULE,
@@ -83,16 +100,11 @@ struct file_system_type afs_fs_type = {
 };
 #endif
 
-/* afs_read_super
- * read the "super block" for AFS - roughly eguivalent to struct vfs.
- * dev, covered, s_rd_only, s_dirt, and s_type will be set by read_super.
- */
 #if defined(AFS_LINUX26_ENV)
-static struct super_block *
-afs_get_sb(struct file_system_type *fs_type, int flags, const char *dev_name, void *data)
-{
-    return get_sb_nodev(fs_type, flags, data, afs_fill_super);
-}
+struct backing_dev_info afs_backing_dev_info = {
+	.ra_pages	= (VM_MAX_READAHEAD * 1024) / PAGE_CACHE_SIZE,
+	.state		= 0,
+};
 
 int
 afs_fill_super(struct super_block *sb, void *data, int silent)
@@ -300,8 +312,7 @@ afs_init_inodecache(void)
 void
 afs_destroy_inodecache(void)
 {
-    if (kmem_cache_destroy(afs_inode_cachep))
-	printk(KERN_INFO "afs_inode_cache: not all structures were freed\n");
+    (void) kmem_cache_destroy(afs_inode_cachep);
 }
 #else
 int
@@ -330,25 +341,6 @@ afs_clear_inode(struct inode *ip)
 #if !defined(STRUCT_SUPER_HAS_ALLOC_INODE)
     afs_osi_Free(ip->u.generic_ip, sizeof(struct vcache));
 #endif
-}
-
-/* afs_put_inode
- * Linux version of inactive.  When refcount == 2, we are about to
- * decrement to 1 and the only reference remaining should be for
- * the VLRU
- */
-
-static void
-afs_put_inode(struct inode *ip)
-{
-    struct vcache *vcp = VTOAFS(ip);
-
-    AFS_GLOCK();
-    if (VREFCOUNT(vcp) == 2) {
-	if (VREFCOUNT(vcp) == 2)
-	    afs_InactiveVCache(vcp, NULL);
-    }
-    AFS_GUNLOCK();
 }
 
 /* afs_put_super
@@ -436,7 +428,6 @@ struct super_operations afs_sops = {
   .destroy_inode =	afs_destroy_inode,
 #endif
   .clear_inode =	afs_clear_inode,
-  .put_inode =		afs_put_inode,
   .put_super =		afs_put_super,
   .statfs =		afs_statfs,
 #if !defined(AFS_LINUX24_ENV)
@@ -496,7 +487,9 @@ vattr2inode(struct inode *ip, struct vattr *vp)
     ip->i_ino = vp->va_nodeid;
     ip->i_nlink = vp->va_nlink;
     ip->i_blocks = vp->va_blocks;
+#ifdef STRUCT_INODE_HAS_I_BLKSIZE
     ip->i_blksize = vp->va_blocksize;
+#endif
     ip->i_rdev = vp->va_rdev;
     ip->i_mode = vp->va_mode;
     ip->i_uid = vp->va_uid;

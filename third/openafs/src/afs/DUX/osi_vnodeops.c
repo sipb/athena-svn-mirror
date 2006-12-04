@@ -15,7 +15,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DUX/osi_vnodeops.c,v 1.1.1.3 2005-03-10 20:43:09 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DUX/osi_vnodeops.c,v 1.1.1.4 2006-12-04 18:48:13 rbasch Exp $");
 
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */

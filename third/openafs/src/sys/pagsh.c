@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/pagsh.c,v 1.1.1.2 2005-03-10 20:39:19 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/pagsh.c,v 1.1.1.3 2006-12-04 18:58:44 rbasch Exp $");
 
 #ifdef	AFS_AIX32_ENV
 #include <signal.h>

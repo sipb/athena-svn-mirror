@@ -58,7 +58,8 @@ void cm_IpAddrDaemon(long parm)
 	if (Result == NO_ERROR && daemon_ShutdownFlag == 0) {
 	    osi_Log0(afsd_logp, "cm_IpAddrDaemon CheckDownServers");
 	    Sleep(2500);
-            cm_CheckServers(CM_FLAG_CHECKDOWNSERVERS, NULL);
+	    cm_ForceNewConnectionsAllServers();
+            cm_CheckServers(CM_FLAG_CHECKUPSERVERS | CM_FLAG_CHECKDOWNSERVERS, NULL);
 	    smb_CheckVCs();
 	}	
     }
@@ -141,7 +142,13 @@ IsWindowsFirewallPresent(void)
     if (!scm) return FALSE;
 
     /* Open Windows Firewall service */
-    svc = OpenService(scm, "SharedAccess", SERVICE_QUERY_CONFIG);
+    svc = OpenService(scm, "MpsSvc", SERVICE_QUERY_CONFIG);
+    if (!svc) {
+	afsi_log("MpsSvc Service could not be opened for query: 0x%x", GetLastError());
+	svc = OpenService(scm, "SharedAccess", SERVICE_QUERY_CONFIG);
+	if (!svc)
+	    afsi_log("SharedAccess Service could not be opened for query: 0x%x", GetLastError());
+    }
     if (!svc)
         goto close_scm;
 
@@ -159,10 +166,13 @@ IsWindowsFirewallPresent(void)
 
     /* Query Windows Firewall service config, this time for real */
     flag = QueryServiceConfig(svc, pConfig, BufSize, &BufSize);
-    if (!flag)
+    if (!flag) {
+	afsi_log("QueryServiceConfig failed: 0x%x", GetLastError());
         goto free_pConfig;
+    }
 
     /* Is it autostart? */
+    afsi_log("AutoStart 0x%x", pConfig->dwStartType);
     if (pConfig->dwStartType < SERVICE_DEMAND_START)
         result = TRUE;
 
@@ -191,6 +201,10 @@ void cm_Daemon(long parm)
     struct hostent *thp;
     HMODULE hHookDll;
     int configureFirewall = IsWindowsFirewallPresent();
+
+    if (!configureFirewall) {
+	afsi_log("No Windows Firewall detected");
+    }
 
     /* ping all file servers, up or down, with unauthenticated connection,
      * to find out whether we have all our callbacks from the server still.
@@ -243,7 +257,7 @@ void cm_Daemon(long parm)
 	    default:
 		afsi_log("Unknown Windows Firewall Configuration error");
 	    }
-	}
+	} 
 
         /* find out what time it is */
         now = osi_Time();

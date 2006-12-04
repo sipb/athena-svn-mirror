@@ -288,7 +288,9 @@ afsd_ServiceControlHandlerEx(
         /* XXX handle pause & continue */
     case SERVICE_CONTROL_POWEREVENT:                                              
         { 
-            afsi_log("SERVICE_CONTROL_POWEREVENT");
+#ifdef DEBUG
+	    afsi_log("SERVICE_CONTROL_POWEREVENT");
+#endif
             /*                                                                                
             **	dwEventType of this notification == WPARAM of WM_POWERBROADCAST               
             **	Return NO_ERROR == return TRUE for that message, i.e. accept request          
@@ -337,11 +339,15 @@ afsd_ServiceControlHandlerEx(
                     dwRet = NO_ERROR;                       
                     break;                                  
                 case PBT_APMPOWERSTATUSCHANGE:                                                    
-                    afsi_log("SERVICE_CONTROL_APMPOWERSTATUSCHANGE"); 
+#ifdef DEBUG
+		    afsi_log("SERVICE_CONTROL_APMPOWERSTATUSCHANGE");
+#endif
                     dwRet = NO_ERROR;                       
                     break;                                  
                 case PBT_APMOEMEVENT:                                                             
+#ifdef DEBUG
                     afsi_log("SERVICE_CONTROL_APMOEMEVENT"); 
+#endif
                     dwRet = NO_ERROR;                       
                     break;                                  
                 case PBT_APMRESUMEAUTOMATIC:                                                      
@@ -1339,7 +1345,9 @@ afsd_Main(DWORD argc, LPTSTR *argv)
                                          
     cm_DaemonShutdown();                 
     afsi_log("Daemon shutdown complete");
-                                         
+    
+    afsd_ShutdownCM();
+
     buf_Shutdown();                      
     afsi_log("Buffer shutdown complete");
                                          

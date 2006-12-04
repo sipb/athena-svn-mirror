@@ -138,12 +138,6 @@
                 </Component>
 
                 <Directory Id="dirCommon_en_US" Name="en_US" src="$(var.SrcDir)\WINNT\doc\help\en_US\">
-                    <Component Id="cmf_afs_nt_HLP_en_US" Guid="A59FF1E3-984F-47E0-8A65-590A01B6E1C4">
-                        <File Id="fileafs_nt_HLP_en_US" Name="afs-nt.hlp" LongName="afs-nt.hlp" KeyPath="yes" DiskId="1">
-							<Shortcut Id="scClientHelp_en_US" Directory="dirShortCut" Name="CliHelp.lnk" LongName="Client Help.lnk" Description="$(loc.StrHlpFileDesc)" Icon="ico_Help" IconIndex="0" Show="normal" WorkingDirectory="dirCommon" />
-                        </File>
-                        <File Id="fileafs_nt2_CNT_en_US" Name="afs-nt.cnt" LongName="afs-nt.cnt" DiskId="1"  />
-                    </Component>
 
                     <Component Id="cmp_Lang_en_US" Guid="9B6B5AB2-8BD1-402D-BFC0-63255740A653">
                         <File Id="filetaafssvrmgr_CNT_en_US" Name="taafs.cnt" LongName="taafssvrmgr.cnt" DiskId="1" />
@@ -748,23 +742,14 @@
                                 <File Id="fileawrns005_HTM_$(var.Language)" Name="awrns~5.htm" LongName="awrns005.htm" DiskId="1" />
                                 <File Id="fileawrns006_HTM_$(var.Language)" Name="awrns~6.htm" LongName="awrns006.htm" DiskId="1" />
                                 <File Id="fileawrns007_HTM_$(var.Language)" Name="awrns~7.htm" LongName="awrns007.htm" DiskId="1" />
-                                <File Id="fileframes_HTM_$(var.Language)" Name="frames.htm" LongName="frames.htm" DiskId="1" />
+                                <File Id="fileframes_HTM_$(var.Language)" Name="relnot~2.htm" LongName="relnotes-frames.htm" DiskId="1" />
                                 <File Id="filelogo_HTM_$(var.Language)" Name="logo.htm" LongName="logo.htm" DiskId="1" />
                                 <File Id="filerelnotes_HTM_$(var.Language)" Name="relnotes.htm" LongName="relnotes.htm" DiskId="1" />
                                 <File Id="filetoc_HTM_$(var.Language)" Name="toc.htm" LongName="toc.htm" DiskId="1" />
                             </Component>
-                            <Directory Id="dirrelnotes_files_$(var.Language)" Name="relnotes" LongName="relnotes_files" src="$(var.SrcDir)\WINNT\doc\install\Documentation\$(var.Language)\html\ReleaseNotes\relnotes_files\">
-                                <Component Id="cmp_relnotes_files_$(var.Language)" Guid="$(var.DocHtmlRelnotesFilesGuid)">
-                                    <File Id="filernfilelist_XML_$(var.Language)" Name="filelist.xml" LongName="filelist.xml" DiskId="1"/>
-                                    <File Id="filernheader_HTM_$(var.Language)" Name="header.htm" LongName="header.htm" DiskId="1"/>
-                                    <File Id="filernpreview_WMF_$(var.Language)" Name="preview.wmf" LongName="preview.wmf" DiskId="1"/>
-                                </Component>
-                            </Directory> <!-- relnotes_files -->
                             <Directory Id="dirlogo_files_$(var.Language)" Name="logo" LongName="logo_files" src="$(var.SrcDir)\WINNT\doc\install\Documentation\$(var.Language)\html\ReleaseNotes\logo_files\">
                                 <Component Id="cmp_logo_files_$(var.Language)" Guid="$(var.DocHtmlLogoFilesGuid)">
-                                    <File Id="filelffilelist_XML_$(var.Language)" Name="filelist.xml" LongName="filelist.xml" DiskId="1"/>
                                     <File Id="filelfimage001_JPG_$(var.Language)" Name="image001.jpg" LongName="image001.jpg" DiskId="1"/>
-                                    <File Id="filelfimage002_JPG_$(var.Language)" Name="image002.jpg" LongName="image002.jpg" DiskId="1"/>
                                 </Component>
                             </Directory> <!-- logo_files -->
                         </Directory> <!-- Release Notes -->
@@ -778,7 +763,7 @@
                 </Component>
                 <Component Id="cpf_CellServDB" Guid="D5BA4C15-DBEC-4292-91FC-B54C30F24F2A">
 					<Registry Root="HKLM" Key="SOFTWARE\OpenAFS\Client" Name="CellServDBMoved" Type="integer" Value="1" Id="reg_OldCellDB" KeyPath="yes" />
-                    <CopyFile Id="copy_CellServDB" Delete="yes" DestinationDirectory="dirClient" DestinationName="CellServ|CellServDB" SourceDirectory="WindowsFolder" SourceName="afsdcell.ini" />
+                    <CopyFile Id="copy_CellServDB" Delete="yes" DestinationDirectory="dirClient" DestinationName="CelSrvDB" SourceDirectory="WindowsFolder" SourceName="afsdcell.ini" />
                     <Condition>OLDCELLSERVDB &lt;&gt; ""</Condition>
                 </Component>
                 <Directory Id="dirProgram" Name="Program" src="$(var.ClientDir)">
@@ -806,6 +791,14 @@
                     <Component Id="cmf_afsdacl_EXE" Guid="215DBC86-A5E8-4622-8A95-0E5830B04D0B">
                         <File Id="fileafsdacl_EXE" Name="afsdacl.exe" KeyPath="yes" DiskId="1" />
                     </Component>
+
+                    <Component Id="cmf_afs_nt_HLP_en_US" Guid="E9CAF872-E71B-466E-9560-9E6F542128E4">
+                        <File Id="fileafs_nt_HLP_en_US" Name="afs-nt.hlp" LongName="afs-nt.hlp" KeyPath="yes" DiskId="1" src="$(var.SrcDir)WINNT\doc\help\en_US\afs-nt.hlp">
+							<Shortcut Id="scClientHelp_en_US" Directory="dirShortCut" Name="CliHelp.lnk" LongName="Client Help.lnk" Description="$(loc.StrHlpFileDesc)" Icon="ico_Help" IconIndex="0" Show="normal" WorkingDirectory="dirCommon" />
+                        </File>
+                        <File Id="fileafs_nt2_CNT_en_US" Name="afs-nt.cnt" LongName="afs-nt.cnt" DiskId="1" src="$(var.SrcDir)WINNT\doc\help\en_US\afs-nt.cnt" />
+                    </Component>
+
                     <Component Id="cmf_afscreds_EXE" Guid="A17567CF-866E-49AF-A717-0B4F17CA88D4">
                         <File Id="fileafscreds_EXE" Name="afscreds.exe" LongName="afscreds.exe" KeyPath="yes" DiskId="1">
 							<Shortcut Id="scAfsCreds" Directory="dirShortCut" Name="Auth.lnk" LongName="Authentication.lnk" Description="$(loc.StrAfsCredsDesc)" Arguments="[CREDSAUTOINIT] [CREDSRENEWDRMAP] [CREDSIPCHDET] [CREDSQUIET] [CREDSSHOW]" Icon="ico_afscreds" IconIndex="0" Show="normal" WorkingDirectory="dirCommon" />

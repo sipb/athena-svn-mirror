@@ -15,9 +15,12 @@
  */
 #include <afsconfig.h>
 #include "afs/param.h"
+#ifdef LINUX_KEYRING_SUPPORT
+#include <linux/seq_file.h>
+#endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_groups.c,v 1.1.1.5 2005-09-08 18:02:43 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_groups.c,v 1.1.1.6 2006-12-04 18:58:38 rbasch Exp $");
 
 #include "afs/sysincludes.h"
 #include "afsincludes.h"
@@ -148,18 +151,16 @@ set_pag_in_parent(int pag, int g0, int g1)
 }
 #endif
 
-int
-setpag(cred_t ** cr, afs_uint32 pagvalue, afs_uint32 * newpag,
-       int change_parent)
-{
 #if defined(AFS_LINUX26_ENV)
+int
+__setpag(cred_t **cr, afs_uint32 pagvalue, afs_uint32 *newpag,
+         int change_parent)
+{
     struct group_info *group_info;
     gid_t g0, g1;
     struct group_info *tmp;
     int i;
     int need_space = 0;
-
-    AFS_STATCNT(setpag);
 
     group_info = afs_getgroups(*cr);
     if (group_info->ngroups < 2
@@ -185,12 +186,74 @@ setpag(cred_t ** cr, afs_uint32 pagvalue, afs_uint32 * newpag,
     put_group_info(group_info);
 
     return 0;
+}
+
+#ifdef LINUX_KEYRING_SUPPORT
+static struct key_type *__key_type_keyring;
+
+static int
+install_session_keyring(struct task_struct *task, struct key *keyring)
+{
+    struct key *old;
+    char desc[20];
+    unsigned long not_in_quota;
+    int code = -EINVAL;
+
+    if (!__key_type_keyring)
+	return code;
+
+    if (!keyring) {
+
+	/* create an empty session keyring */
+	not_in_quota = KEY_ALLOC_IN_QUOTA;
+	sprintf(desc, "_ses.%u", task->tgid);
+
+#ifdef KEY_ALLOC_NEEDS_STRUCT_TASK
+	keyring = key_alloc(__key_type_keyring, desc,
+			    task->uid, task->gid, task,
+			    (KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_ALL,
+			    not_in_quota);
 #else
+	keyring = key_alloc(__key_type_keyring, desc,
+			    task->uid, task->gid,
+			    (KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_ALL,
+			    not_in_quota);
+#endif
+	if (IS_ERR(keyring)) {
+	    code = PTR_ERR(keyring);
+	    goto out;
+	}
+    }
+
+    code = key_instantiate_and_link(keyring, NULL, 0, NULL, NULL);
+    if (code < 0) {
+	key_put(keyring);
+	goto out;
+    }
+
+    /* install the keyring */
+    spin_lock_irq(&task->sighand->siglock);
+    old = task->signal->session_keyring;
+    smp_wmb();
+    task->signal->session_keyring = keyring;
+    spin_unlock_irq(&task->sighand->siglock);
+
+    if (old)
+	    key_put(old);
+
+out:
+    return code;
+}
+#endif /* LINUX_KEYRING_SUPPORT */
+
+#else
+int
+__setpag(cred_t **cr, afs_uint32 pagvalue, afs_uint32 *newpag,
+         int change_parent)
+{
     gid_t *gidset;
     afs_int32 ngroups, code = 0;
     int j;
-
-    AFS_STATCNT(setpag);
 
     gidset = (gid_t *) osi_Alloc(NGROUPS * sizeof(gidset[0]));
     ngroups = afs_getgroups(*cr, gidset);
@@ -219,7 +282,48 @@ setpag(cred_t ** cr, afs_uint32 pagvalue, afs_uint32 * newpag,
 
     osi_Free((char *)gidset, NGROUPS * sizeof(int));
     return code;
+}
 #endif
+
+
+int
+setpag(cred_t **cr, afs_uint32 pagvalue, afs_uint32 *newpag,
+       int change_parent)
+{
+    int code;
+
+    AFS_STATCNT(setpag);
+
+    code = __setpag(cr, pagvalue, newpag, change_parent);
+
+#ifdef LINUX_KEYRING_SUPPORT
+    if (code == 0) {
+
+	(void) install_session_keyring(current, NULL);
+
+	if (current->signal->session_keyring) {
+	    struct key *key;
+	    key_perm_t perm;
+
+	    perm = KEY_POS_VIEW | KEY_POS_SEARCH;
+	    perm |= KEY_USR_VIEW | KEY_USR_SEARCH;
+
+#ifdef KEY_ALLOC_NEEDS_STRUCT_TASK
+	    key = key_alloc(&key_type_afs_pag, "_pag", 0, 0, current, perm, 1);
+#else
+	    key = key_alloc(&key_type_afs_pag, "_pag", 0, 0, perm, 1);
+#endif
+
+	    if (!IS_ERR(key)) {
+		key_instantiate_and_link(key, (void *) newpag, sizeof(afs_uint32),
+					 current->signal->session_keyring, NULL);
+		key_put(key);
+	    }
+	}
+    }
+#endif /* LINUX_KEYRING_SUPPORT */
+
+    return code;
 }
 
 
@@ -247,7 +351,7 @@ afs_xsetgroups(int gidsetsize, gid_t * grouplist)
     cr = crref();
     if (old_pag != NOPAG && PagInCred(cr) == NOPAG) {
 	/* re-install old pag if there's room. */
-	code = setpag(&cr, old_pag, &junk, 0);
+	code = __setpag(&cr, old_pag, &junk, 0);
     }
     crfree(cr);
     unlock_kernel();
@@ -282,7 +386,7 @@ afs_xsetgroups32(int gidsetsize, gid_t * grouplist)
     cr = crref();
     if (old_pag != NOPAG && PagInCred(cr) == NOPAG) {
 	/* re-install old pag if there's room. */
-	code = setpag(&cr, old_pag, &junk, 0);
+	code = __setpag(&cr, old_pag, &junk, 0);
     }
     crfree(cr);
     unlock_kernel();
@@ -316,7 +420,7 @@ asmlinkage long afs32_xsetgroups(int gidsetsize, gid_t *grouplist)
     cr = crref();
     if (old_pag != NOPAG && PagInCred(cr) == NOPAG) {
 	/* re-install old pag if there's room. */
-	code = setpag(&cr, old_pag, &junk, 0);
+	code = __setpag(&cr, old_pag, &junk, 0);
     }
     crfree(cr);
     unlock_kernel();
@@ -351,7 +455,7 @@ afs32_xsetgroups(int gidsetsize, u16 * grouplist)
     cr = crref();
     if (old_pag != NOPAG && PagInCred(cr) == NOPAG) {
 	/* re-install old pag if there's room. */
-	code = setpag(&cr, old_pag, &junk, 0);
+	code = __setpag(&cr, old_pag, &junk, 0);
     }
     crfree(cr);
     unlock_kernel();
@@ -385,7 +489,7 @@ afs32_xsetgroups32(int gidsetsize, gid_t * grouplist)
     cr = crref();
     if (old_pag != NOPAG && PagInCred(cr) == NOPAG) {
 	/* re-install old pag if there's room. */
-	code = setpag(&cr, old_pag, &junk, 0);
+	code = __setpag(&cr, old_pag, &junk, 0);
     }
     crfree(cr);
     unlock_kernel();
@@ -396,3 +500,106 @@ afs32_xsetgroups32(int gidsetsize, gid_t * grouplist)
 #endif
 #endif
 
+
+#ifdef LINUX_KEYRING_SUPPORT
+static void afs_pag_describe(const struct key *key, struct seq_file *m)
+{
+    seq_puts(m, key->description);
+
+    seq_printf(m, ": %u", key->datalen);
+}
+
+static int afs_pag_instantiate(struct key *key, const void *data, size_t datalen)
+{
+    int code;
+    afs_uint32 *userpag, pag = NOPAG;
+    int g0, g1;
+
+    if (key->uid != 0 || key->gid != 0)
+	return -EPERM;
+
+    code = -EINVAL;
+    get_group_info(current->group_info);
+
+    if (datalen != sizeof(afs_uint32) || !data)
+	goto error;
+
+    if (current->group_info->ngroups < 2)
+	goto error;
+
+    /* ensure key being set matches current pag */
+
+    g0 = GROUP_AT(current->group_info, 0);
+    g1 = GROUP_AT(current->group_info, 1);
+
+    pag = afs_get_pag_from_groups(g0, g1);
+    if (pag == NOPAG)
+	goto error;
+
+    userpag = (afs_uint32 *) data;
+    if (*userpag != pag)
+	goto error;
+
+    key->payload.value = (unsigned long) *userpag;
+    key->datalen = sizeof(afs_uint32);
+    code = 0;
+
+error:
+    put_group_info(current->group_info);
+    return code;
+}
+
+static int afs_pag_match(const struct key *key, const void *description)
+{
+	return strcmp(key->description, description) == 0;
+}
+
+static void afs_pag_destroy(struct key *key)
+{
+    afs_uint32 pag = key->payload.value;
+    struct unixuser *pu;
+
+    pu = afs_FindUser(pag, -1, READ_LOCK);
+    if (pu) {
+	pu->ct.EndTimestamp = 0;
+	pu->tokenTime = 0;
+	afs_PutUser(pu, READ_LOCK);
+    }
+}
+
+struct key_type key_type_afs_pag =
+{
+    .name        = "afs_pag",
+    .describe    = afs_pag_describe,
+    .instantiate = afs_pag_instantiate,
+    .match       = afs_pag_match,
+    .destroy     = afs_pag_destroy,
+};
+
+void osi_keyring_init(void)
+{
+    struct task_struct *p;
+
+    p = find_task_by_pid(1);
+    if (p && p->user->session_keyring)
+	__key_type_keyring = p->user->session_keyring->type;
+
+    register_key_type(&key_type_afs_pag);
+}
+
+void osi_keyring_shutdown(void)
+{
+    unregister_key_type(&key_type_afs_pag);
+}
+
+#else
+void osi_keyring_init(void)
+{
+	return;
+}
+
+void osi_keyring_shutdown(void)
+{
+	return;
+}
+#endif

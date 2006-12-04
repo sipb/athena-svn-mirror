@@ -22,7 +22,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.1.1.9 2006-03-06 20:43:21 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.1.1.10 2006-12-04 18:59:08 rbasch Exp $");
 
 #include "afs/sysincludes.h"
 #include "afsincludes.h"
@@ -75,7 +75,11 @@ afs_linux_read(struct file *fp, char *buf, size_t count, loff_t * offp)
     else {
 	    osi_FlushPages(vcp, credp);	/* ensure stale pages are gone */
 	    AFS_GUNLOCK();
+#ifdef DO_SYNC_READ
+	    code = do_sync_read(fp, buf, count, offp);
+#else
 	    code = generic_file_read(fp, buf, count, offp);
+#endif
 	    AFS_GLOCK();
     }
 
@@ -121,7 +125,11 @@ afs_linux_write(struct file *fp, const char *buf, size_t count, loff_t * offp)
 	code = -code;
     else {
 	    AFS_GUNLOCK();
+#ifdef DO_SYNC_READ
+	    code = do_sync_write(fp, buf, count, offp);
+#else
 	    code = generic_file_write(fp, buf, count, offp);
+#endif
 	    AFS_GLOCK();
     }
 
@@ -463,6 +471,27 @@ afs_linux_lock(struct file *fp, int cmd, struct file_lock *flp)
     code = afs_lockctl(vcp, &flock, cmd, credp);
     AFS_GUNLOCK();
 
+#ifdef AFS_LINUX24_ENV
+    if (code == 0 && (cmd == F_SETLK || cmd == F_SETLKW)) {
+#ifdef AFS_LINUX26_ENV
+       struct file_lock flp2;
+       flp2 = *flp;
+       flp2.fl_flags &=~ FL_SLEEP;
+       code = posix_lock_file(fp, &flp2);
+#else
+       code = posix_lock_file(fp, flp, 0);
+#endif 
+       osi_Assert(code != -EAGAIN); /* there should be no conflicts */
+       if (code) {
+           struct AFS_FLOCK flock2;
+           flock2 = flock;
+           flock2.l_type = F_UNLCK;
+           AFS_GLOCK();
+           afs_lockctl(vcp, &flock2, F_SETLK, credp);
+           AFS_GUNLOCK();
+       }
+    }
+#endif
     /* Convert flock back to Linux's file_lock */
     flp->fl_type = flock.l_type;
     flp->fl_pid = flock.l_pid;
@@ -544,6 +573,10 @@ struct file_operations afs_dir_fops = {
 struct file_operations afs_file_fops = {
   .read =	afs_linux_read,
   .write =	afs_linux_write,
+#ifdef GENERIC_FILE_AIO_READ
+  .aio_read =	generic_file_aio_read,
+  .aio_write =	generic_file_aio_write,
+#endif
 #ifdef HAVE_UNLOCKED_IOCTL
   .unlocked_ioctl = afs_unlocked_xioctl,
 #else
@@ -788,8 +821,7 @@ afs_dentry_iput(struct dentry *dp, struct inode *ip)
     struct vcache *vcp = VTOAFS(ip);
 
     AFS_GLOCK();
-    if (vcp->states & CUnlinked)
-	(void) afs_InactiveVCache(vcp, NULL);
+    (void) afs_InactiveVCache(vcp, NULL);
     AFS_GUNLOCK();
 
     iput(ip);

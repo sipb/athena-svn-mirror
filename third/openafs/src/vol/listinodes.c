@@ -21,7 +21,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/listinodes.c,v 1.1.1.5 2006-03-06 20:42:41 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/listinodes.c,v 1.1.1.6 2006-12-04 18:58:18 rbasch Exp $");
 
 #ifndef AFS_NAMEI_ENV
 #if defined(AFS_LINUX20_ENV) || defined(AFS_SUN4_ENV)
@@ -135,7 +135,7 @@ extern off_t afs_lseek(int FD, off_t O, int F);
 
 #define	ROOTINODE	2
 static char *partition;
-extern int Testing;
+int Testing=0;
 int pfd;
 
 #ifdef	AFS_AIX32_ENV

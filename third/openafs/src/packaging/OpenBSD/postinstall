@@ -1,9 +1,17 @@
-# $Id: postinstall,v 1.1.1.1 2005-03-10 20:44:52 zacheiss Exp $
+# $Id: postinstall,v 1.1.1.2 2006-12-04 18:56:38 rbasch Exp $
+
+if [ `id -u` != "0" ]; then
+  echo "Must be root; current id="`id -u`
+  exit 1
+fi
 
 umask 022
 if [ ! -d /afs ]; then
   mkdir /afs
 fi
+
+chown root.bin /usr/vice /usr/vice/cache
+chown -R root.bin /usr/vice/bin /usr/vice/etc
 
 strip -x /usr/vice/bin/*
 

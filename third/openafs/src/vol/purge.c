@@ -17,7 +17,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/purge.c,v 1.1.1.2 2005-03-10 20:48:35 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/purge.c,v 1.1.1.3 2006-12-04 18:56:56 rbasch Exp $");
 
 #include <stdio.h>
 #ifdef AFS_NT40_ENV
@@ -58,8 +58,11 @@ RCSID
 void PurgeIndex_r(Volume * vp, VnodeClass class);
 void PurgeHeader_r(Volume * vp);
 
+/* No lock needed. Only the volserver will call this, and only one transaction
+ * can have a given volume (volid/partition pair) in use at a time 
+ */
 void
-VPurgeVolume_r(Error * ec, Volume * vp)
+VPurgeVolume(Error * ec, Volume * vp)
 {
     struct DiskPartition *tpartp = vp->partition;
     char purgePath[MAXPATHLEN];
@@ -79,14 +82,6 @@ VPurgeVolume_r(Error * ec, Volume * vp)
      * Call the fileserver to break all call backs for that volume
      */
     FSYNC_askfs(V_id(vp), tpartp->name, FSYNC_RESTOREVOLUME, 0);
-}
-
-void
-VPurgeVolume(Error * ec, Volume * vp)
-{
-    VOL_LOCK;
-    VPurgeVolume_r(ec, vp);
-    VOL_UNLOCK;
 }
 
 #define MAXOBLITATONCE	200
