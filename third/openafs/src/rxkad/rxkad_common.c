@@ -23,7 +23,7 @@
 #define INCLUDE_RXKAD_PRIVATE_DECLS
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_common.c,v 1.3 2006-03-06 21:25:08 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_common.c,v 1.4 2006-12-04 22:36:34 rbasch Exp $");
 
 #ifdef KERNEL
 #ifndef UKERNEL
@@ -68,7 +68,7 @@ RCSID
 #include <strings.h>
 #endif
 #endif
-
+#include <afs/afsutil.h>
 #endif /* KERNEL */
 
 #include <des/stats.h>
@@ -311,7 +311,8 @@ FreeObject(struct rx_securityClass *aobj)
     tcp = (struct rxkad_cprivate *)aobj->privateData;
     rxi_Free(aobj, sizeof(struct rx_securityClass));
     if (tcp->type & rxkad_client) {
-	rxi_Free(tcp, sizeof(struct rxkad_cprivate));
+	afs_int32 psize = PDATA_SIZE(tcp->ticketLen);
+	rxi_Free(tcp, psize);
     } else if (tcp->type & rxkad_server) {
 	rxi_Free(tcp, sizeof(struct rxkad_sprivate));
     } else {

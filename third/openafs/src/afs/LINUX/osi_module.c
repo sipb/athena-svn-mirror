@@ -15,7 +15,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_module.c,v 1.12 2006-05-10 20:23:22 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_module.c,v 1.13 2006-12-04 22:36:31 rbasch Exp $");
 
 #include <linux/module.h> /* early to avoid printf->printk mapping */
 #include "afs/sysincludes.h"
@@ -374,6 +374,9 @@ init_module(void)
 	return err;
     register_filesystem(&afs_fs_type);
     osi_sysctl_init();
+#ifdef LINUX_KEYRING_SUPPORT
+    osi_keyring_init();
+#endif
 #ifdef AFS_LINUX24_ENV
     afsproc_init();
 #endif
@@ -389,6 +392,7 @@ void
 cleanup_module(void)
 #endif
 {
+    osi_keyring_shutdown();
     osi_sysctl_clean();
     osi_syscall_clean();
     unregister_filesystem(&afs_fs_type);

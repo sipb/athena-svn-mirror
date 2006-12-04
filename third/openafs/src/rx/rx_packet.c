@@ -15,7 +15,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packet.c,v 1.8 2006-03-06 21:25:06 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packet.c,v 1.9 2006-12-04 22:36:33 rbasch Exp $");
 
 #ifdef KERNEL
 #if defined(UKERNEL)
@@ -1394,13 +1394,11 @@ rxi_ReadPacket(osi_socket socket, register struct rx_packet *p, afs_uint32 * hos
 
     p->length = (nbytes - RX_HEADER_SIZE);
     if ((nbytes > tlen) || (p->length & 0x8000)) {	/* Bogus packet */
-	if (nbytes > 0)
-	    rxi_MorePackets(rx_initSendWindow);
-	else if (nbytes < 0 && errno == EWOULDBLOCK) {
+	if (nbytes < 0 && errno == EWOULDBLOCK) {
 	    MUTEX_ENTER(&rx_stats_mutex);
 	    rx_stats.noPacketOnRead++;
 	    MUTEX_EXIT(&rx_stats_mutex);
-	} else {
+	} else if (nbytes <= 0) {
 	    MUTEX_ENTER(&rx_stats_mutex);
 	    rx_stats.bogusPacketOnRead++;
 	    rx_stats.bogusHost = from.sin_addr.s_addr;

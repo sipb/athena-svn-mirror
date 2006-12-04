@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_flock.c,v 1.6 2006-03-06 21:24:57 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_flock.c,v 1.7 2006-12-04 22:36:31 rbasch Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -24,6 +24,7 @@ RCSID
 #include "afs/afs_cbqueue.h"
 #include "afs/nfsclient.h"
 #include "afs/afs_osidnlc.h"
+#include "afs/unified_afs.h"
 
 /* Static prototypes */
 static int HandleGetLock(register struct vcache *avc,
@@ -422,7 +423,8 @@ HandleFlock(register struct vcache *avc, int acom, struct vrequest *areq,
 		break;
 	    }
 	    /* now, if we got EWOULDBLOCK, and we're supposed to wait, we do */
-	    if (((code == EWOULDBLOCK) || (code == EAGAIN))
+	    if (((code == EWOULDBLOCK) || (code == EAGAIN) || 
+		 (code == UAEWOULDBLOCK) || (code == UAEAGAIN))
 		&& !(acom & LOCK_NB)) {
 		/* sleep for a second, allowing interrupts */
 		ReleaseWriteLock(&avc->lock);

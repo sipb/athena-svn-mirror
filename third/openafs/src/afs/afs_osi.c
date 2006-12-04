@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_osi.c,v 1.6 2006-03-06 21:24:53 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_osi.c,v 1.7 2006-12-04 22:36:30 rbasch Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -71,7 +71,6 @@ osi_Init(void)
     /* Linux initialization in osi directory. Should move the others. */
     mutex_init(&afs_global_lock, "afs_global_lock", MUTEX_DEFAULT, NULL);
 #endif
-    /* afs_rxglobal_lock is initialized in rx_Init. */
 #endif /* AFS_GLOBAL_SUNLOCK */
 #endif /* AFS_HPUX_ENV */
 
@@ -806,13 +805,20 @@ afs_osi_TraverseProcTable(void)
 #endif
 
 #if defined(AFS_LINUX22_ENV)
-extern rwlock_t tasklist_lock __attribute__((weak));
 void
 afs_osi_TraverseProcTable()
 {
+#if !defined(LINUX_KEYRING_SUPPORT)
+    extern rwlock_t tasklist_lock __attribute__((weak));
     struct task_struct *p;
+
     if (&tasklist_lock)
        read_lock(&tasklist_lock);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16)
+    else
+	rcu_read_lock();
+#endif
+
 #ifdef DEFINED_FOR_EACH_PROCESS
     for_each_process(p) if (p->pid) {
 #ifdef STRUCT_TASK_STRUCT_HAS_EXIT_STATE
@@ -838,6 +844,11 @@ afs_osi_TraverseProcTable()
 #endif
     if (&tasklist_lock)
        read_unlock(&tasklist_lock);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16)
+    else
+	rcu_read_unlock();
+#endif
+#endif
 }
 #endif
 

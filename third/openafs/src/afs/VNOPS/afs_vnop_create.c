@@ -17,7 +17,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_create.c,v 1.6 2006-03-06 21:24:57 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_create.c,v 1.7 2006-12-04 22:36:31 rbasch Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -25,6 +25,7 @@ RCSID
 #include "afs/afs_cbqueue.h"
 #include "afs/nfsclient.h"
 #include "afs/afs_osidnlc.h"
+#include "afs/unified_afs.h"
 
 /* question: does afs_create need to set CDirty in the adp or the avc?
  * I think we can get away without it, but I'm not sure.  Note that
@@ -305,7 +306,7 @@ afs_create(OSI_VC_DECL(adp), char *aname, struct vattr *attrs,
 	     (tc, code, &adp->fid, &treq, AFS_STATS_FS_RPCIDX_CREATEFILE,
 	      SHARED_LOCK, NULL));
 
-    if (code == EEXIST &&
+    if ((code == EEXIST || code == UAEEXIST) &&
 #ifdef AFS_SGI64_ENV
     !(flags & VEXCL)
 #else /* AFS_SGI64_ENV */
