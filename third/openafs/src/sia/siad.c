@@ -15,7 +15,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sia/siad.c,v 1.1.1.2 2005-03-10 20:39:17 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sia/siad.c,v 1.1.1.3 2006-12-04 18:40:56 rbasch Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>

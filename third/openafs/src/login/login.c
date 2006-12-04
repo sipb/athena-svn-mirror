@@ -40,7 +40,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/login/login.c,v 1.1.1.3 2005-03-10 20:38:30 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/login/login.c,v 1.1.1.4 2006-12-04 18:40:17 rbasch Exp $");
 
 #include <unistd.h>
 #include <stdlib.h>

@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/package/lex.l,v 1.1.1.2 2005-03-10 20:35:09 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/package/lex.l,v 1.1.1.3 2006-12-04 18:37:38 rbasch Exp $");
 
 #include <stdio.h>
 #include <sys/types.h>

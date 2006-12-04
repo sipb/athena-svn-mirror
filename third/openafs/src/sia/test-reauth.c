@@ -13,7 +13,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sia/test-reauth.c,v 1.1.1.2 2005-03-10 20:39:18 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sia/test-reauth.c,v 1.1.1.3 2006-12-04 18:40:57 rbasch Exp $");
 
 #include <afs/stds.h>
 #include <stdio.h>
