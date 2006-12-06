@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.27 2005-04-19 18:58:52 rbasch Exp $
+# $Id: makeroot.sh,v 1.28 2006-12-06 17:51:55 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -22,7 +22,7 @@ linux)
   list=`awk '{ x = $2; } END { print x; }' "$syscontrol"`
   rpms=`awk '/\/athena-/ { next; } { print $1; }' $list`
 
-  mkdir -p "$root/var/lib/rpm" "$root/etc"
+  mkdir -p "$root/var/lib/rpm"  "$root/var/lock/rpm" "$root/etc"
   touch "$root/etc/fstab"
   rpm --root "$root" --initdb
   rpm --root "$root" -ivh $rpms
@@ -116,6 +116,7 @@ esac
 # at least on Solaris.
 mkdir -p "$root/bin/athena"
 cp /bin/athena/tcsh "$root/bin/athena/tcsh"
+cp /bin/athena/bash "$root/bin/athena/tcsh"
 
 # Make sure there is no smmsp user in the passwd file; Solaris has one
 # by default, and it confuses sendmail.
