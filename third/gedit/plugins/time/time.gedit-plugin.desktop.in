@@ -1,6 +1,0 @@
-[Gedit Plugin]
-Location=time
-_Name=Insert Date/Time
-_Description=Inserts current date and time at the cursor position.
-Author=Paolo Maggi <paolo.maggi@polito.it>, Lee Mallabone <gnome@fonicmonkey.net>
-Copyright=Copyright © 2002-2003 Paolo Maggi

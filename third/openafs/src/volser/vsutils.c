@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/vsutils.c,v 1.1.1.3 2006-12-04 18:57:18 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/vsutils.c,v 1.4 2006-12-04 22:36:37 rbasch Exp $");
 
 #include <afs/stds.h>
 #ifdef AFS_NT40_ENV
@@ -418,7 +418,7 @@ vsu_ClientInit(noAuthFlag, confDir, cellName, sauth, uclientp, secproc)
 
     return ugen_ClientInit(noAuthFlag, confDir, cellName, sauth, uclientp, 
 			   secproc, "vsu_ClientInit", vsu_rxkad_level,
-			   VLDB_MAXSERVERS, AFSCONF_VLDBSERVICE, 90,
+			   VLDB_MAXSERVERS, AFSCONF_VLDBSERVICE, 210,
 			   0, 0, USER_SERVICE_ID);
 }
 

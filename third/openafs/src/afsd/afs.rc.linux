@@ -9,24 +9,11 @@
 # AFS	Start and stop AFS components
 # 
 # 
-# chkconfig: 35 60 20
+# chkconfig: 35 46 20
 # description:  AFS is a distributed file system which provides location
 #		transparency, caching and secure authentication.
 #		Additional configuration can be done in the /etc/sysconfig/afs
 #		file. Read the documentation in that file for more information.
-#
-# The following section is used at least by SuSE insserv(8)
-### BEGIN INIT INFO
-# Provides: afs
-# Required-Start: $network
-# Required-Stop: $network
-# Default-Start: 3 5
-# Default-Stop: 0 1 2 6
-# Description:  AFS is a distributed file system which provides location
-#              transparency, caching and secure authentication.
-#              Additional configuration can be done in the /etc/sysconfig/afs
-#              file. Read the documentation in that file for more information.
-### END INIT INFO
 #
 # Note that AFS does not use a pid file in /var/run. It is turned off by
 # unmounting /afs.
@@ -58,8 +45,8 @@ runcmd() {
    echo
 }
 
-SYSCNF=/etc/sysconfig/afs
-KERNEL_VERSION=`uname -r`
+SYSCNF=/etc/sysconfig/openafs
+KERNEL_VERSION=`uname -r | sed -e 's/smp$//'`
 
 # Gather up options and post startup script name, if present
 if [ -f $SYSCNF ] ; then
@@ -69,6 +56,26 @@ fi
 CACHEINFO=${CACHEINFO:-/usr/vice/etc/cacheinfo}
 CACHE=${CACHEDIR:-/usr/vice/cache}
 AFS=${AFSDIR:-/afs}
+# Athena additions
+if [ "${OPTIONS+set}" != set ]; then
+	OPTIONS="-stat 10000 -daemons 4 -volumes 200 -afsdb -dynroot -fakestat"
+fi
+AFS_POST_INIT=/etc/athena/config_afs
+athena_afsadjust () {    # Assumes /etc/athena/rc.conf has been read
+        if [ "true" = "$AFSADJUST" -o "true" = "$PUBLIC" ] ; then
+                df -k /usr/vice/cache | awk '
+                  (NR == 2) {
+                    printf "/afs:/usr/vice/cache:";
+                    print int($2 * 3 / 4);
+                  }' > /usr/vice/etc/cacheinfo.new
+                  
+                if df -k /usr/vice/cache | grep -q /usr/vice/cache ; then
+                        mv /usr/vice/etc/cacheinfo.new /usr/vice/etc/cacheinfo
+                else
+                        rm /usr/vice/etc/cacheinfo.new
+                fi
+        fi
+}
 
 # is_on returns 1 if value of arg is "on"
 is_on() {
@@ -100,17 +107,31 @@ choose_client() {
 
 	set X `uname -v`; shift
 	case $2 in
-	SMP) MP=.mp ;;	# MP system
-	*)   MP= ;;	# SP system
+	SMP) MP=.mp
+	     KPKG=kernel-smp
+	     ;;
+	*)   MP=
+	     KPKG=kernel
+	     ;;
 	esac
 
-	# For now, just use uname -r to get the module version. 
+	# Kernels compiled for different machine types may have
+	# different symbol versions.  Yay Linux.
+	MACHINE=`rpm -q --queryformat='%{ARCH}\n' $KPKG-$KERNEL_VERSION | tail -n 1`
+	case $MACHINE in
+        i?86) 
+              ;;
+        *)
+              MACHINE=`uname -m`
+              ;;
+        esac
+
 	case $KERNEL_VERSION in
 	  [1-2].[0-5].*)
-		LIBAFS=libafs-$KERNEL_VERSION$MP.o
+		LIBAFS=libafs-$KERNEL_VERSION.$MACHINE$MP.o
 		;;
 	  *)
-		LIBAFS=libafs-$KERNEL_VERSION$MP.ko
+		LIBAFS=libafs-$KERNEL_VERSION.$MACHINE$MP.ko
 		;;
 	esac
 }
@@ -264,12 +285,49 @@ choose_afsdoptions() {
 	fi
 }
 
+# On disconnectable systems, don't start AFS until the first net-up
+# event.  The AFS system net-event script will call us with
+# "netevent-start" when that happens.
+. /etc/athena/rc.conf
+if [ "$1" = start -a "$DISCONNECTABLE" = true ]; then
+  exit 0
+fi
+
 case "$1" in 
-  start)
-    if [ ! "$afs_rh" -o ! -f /var/lock/subsys/afs ]; then
-        if [ `echo "$OPTIONS" | grep -c dynroot` = 0 ]; then
-            on_network || exit 1
-        fi
+  start|netevent-start)
+    # Check and mount afs cache partition.
+    d=`grep '^/dev[^ 	]*[ 	]*/usr/vice/cache[ 	]*ext2[	 ]*' /etc/fstab \
+	|sed -e 's/[ 	].*//'`
+    # Check the cache filesystem.
+    # If check succeeds, mount it.
+    # If check fails, rebuild filesystem if findable, otherwise punt.
+    if ! grep -q " /usr/vice/cache " /proc/mounts ; then
+	fsck -p /usr/vice/cache
+	case $? in
+	  0|1|2) # fsck succeeded
+	    mount /usr/vice/cache
+	    ;;
+	  *) # fsck failed
+	    if [ -n "$d" ] && grep -q " ${d##*/}$" /proc/partitions ; then
+		echo "AFS cache filesystem ($d) check failed; rebuilding."
+		mkfs.ext2 $d
+		mount /usr/vice/cache
+	    else
+		echo "Warning: AFS cache partition not detected and not mounted."
+	    fi
+	    ;;
+	esac
+    else
+	echo "Warning: AFS cache partition already mounted at init time."
+    fi
+    if [ ! "$afs_rh" -o ! -f /var/lock/subsys/openafs ]; then
+	if [ `echo "$OPTIONS" | grep -c dynroot` = 0 ]; then
+	    on_network || exit 1
+	fi
+
+	athena_afsadjust
+	choose_afsdoptions
+
 	# Load kernel extensions
 	if  load_client  ; then :
 	else
@@ -281,7 +339,7 @@ case "$1" in
 	# Start bosserver, it if exists
 	if  is_on $AFS_SERVER && test -x /usr/afs/bin/bosserver  ; then
 		/usr/afs/bin/bosserver 
-		test "$afs_rh" && touch /var/lock/subsys/afs
+		test "$afs_rh" && touch /var/lock/subsys/openafs
 		if is_on $WAIT_FOR_SALVAGE; then
 			# wait for fileserver to finish salvaging
 			sleep 10
@@ -294,17 +352,22 @@ case "$1" in
 
 	# Start AFS client
 	if  is_on $AFS_CLIENT && test -x /usr/vice/etc/afsd  ; then
-		generate_cacheinfo
-		choose_afsdoptions
 		/usr/vice/etc/afsd ${AFSD_OPTIONS}
-		test "$afs_rh" && touch /var/lock/subsys/afs
+		test "$afs_rh" && touch /var/lock/subsys/openafs
 		$AFS_POST_INIT
+		if [ -f /afs/athena.mit.edu/system/config/afs/encrypt ]; then
+			/bin/athena/fs setcrypt on
+		else
+			/bin/athena/fs setcrypt off
+		fi
+		/bin/athena/fs sysname `/bin/athena/machtype -S` \
+			`/bin/athena/machtype -C | sed -e 's/:/ /g'`
 	fi
     fi
 	;;
 
   stop)
-    if [ ! "$afs_rh" -o -f /var/lock/subsys/afs ]; then
+    if [ ! "$afs_rh" -o -f /var/lock/subsys/openafs ]; then
 	# Stop AFS
 	echo "Stopping AFS services..... "
 
@@ -328,7 +391,7 @@ case "$1" in
 		/sbin/rmmod $LIBAFS
 	fi
 
-	rm -f /var/lock/subsys/afs
+	rm -f /var/lock/subsys/openafs
     fi
 	;;
 

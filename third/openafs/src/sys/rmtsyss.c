@@ -16,7 +16,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsyss.c,v 1.1.1.3 2005-03-10 20:39:19 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsyss.c,v 1.3 2005-03-10 22:16:57 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <sys/ioctl.h>

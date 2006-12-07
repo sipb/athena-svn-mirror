@@ -23,7 +23,7 @@
 #define INCLUDE_RXKAD_PRIVATE_DECLS
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_common.c,v 1.1.1.8 2006-12-04 18:56:18 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_common.c,v 1.4 2006-12-04 22:36:34 rbasch Exp $");
 
 #ifdef KERNEL
 #ifndef UKERNEL

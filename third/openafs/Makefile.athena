@@ -1,0 +1,349 @@
+# $Id: Makefile.athena,v 1.19 2006-12-07 21:02:10 rbasch Exp $
+
+SHELL=/bin/sh
+ATHRBINDIR=/bin/athena
+ATHBINDIR=/usr/athena/bin
+WS=/usr/afsws
+VICE=/usr/vice/etc
+AFS_SYSNAME=`src/util/sys`
+
+dist:
+	cp "$$CONFIG_SITE" config.site.athena
+
+prepare:
+	rm -f config.cache
+	case $$ATHENA_HOSTTYPE in \
+	linux) \
+	   LINUX_VERS=`ls -tr /boot/vmlinuz*|tail -1 \
+		|sed -e 's/.*vmlinuz-//' -e 's/smp$$//'`; \
+	   . ./compiler && CONFIG_SITE=`pwd`/config.site.athena CC=$$cc \
+	   ./configure --enable-transarc-paths --enable-redhat-buildsys \
+	   --with-linux-kernel-headers=/lib/modules/$${LINUX_VERS}/build \
+	   --without-krb5 \
+	   ;; \
+	*) \
+	   . ./compiler && CONFIG_SITE=`pwd`/config.site.athena CC=$$cc \
+	   ./configure --enable-transarc-paths --without-krb5 \
+	   ;; \
+	esac
+
+clean:
+	${MAKE} clean
+
+all:
+	case $$ATHENA_HOSTTYPE in \
+	linux) \
+	   LINUX_VERS=`ls -tr /boot/vmlinuz*|tail -1 \
+		|sed -e 's/.*vmlinuz-//' -e 's/smp$$//'`; \
+	   ${MAKE} dest_nolibafs ; \
+	   ${MAKE} only_libafs_tree ; \
+	   for mp in SP MP; do \
+		for arch in i686 athlon; do \
+			./redhat-fix $$arch $$mp src/config/redhat-fix.h ; \
+			if [ "$$mp" = MP ]; then \
+				${MAKE} dest_only_libafs LOCAL_SMP_DEF=-DREDHAT_FIX \
+					LINUX_KERNEL_PATH=/lib/modules/$${LINUX_VERS}smp/build \
+					LINUX_MODULE_NAME=".$$arch" MPS="$$mp" ; \
+			else \
+				${MAKE} dest_only_libafs LOCAL_SMP_DEF=-DREDHAT_FIX \
+					LINUX_MODULE_NAME=".$$arch" MPS="$$mp" ; \
+			fi ; \
+		done ; \
+	   done \
+	   ;; \
+	*) \
+	   . ./compiler && ${MAKE} dest CC=$$cc MT_CC=$$cc CCOBJ=$$cc \
+	   ;; \
+	esac
+
+check:
+
+install:
+	mkdir -p $$SRVD${ATHRBINDIR}
+	mkdir -p $$SRVD${ATHBINDIR}
+	mkdir -p $$SRVD${WS}
+	mkdir -p $$SRVD${WS}/include
+	mkdir -p $$SRVD${WS}/include/afs
+	mkdir -p $$SRVD${WS}/include/rx
+	mkdir -p $$SRVD${WS}/lib
+	mkdir -p $$SRVD${WS}/lib/afs
+	mkdir -p $$SRVD${VICE}
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/acl.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_Admin.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_args.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_atomlist.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_bosAdmin.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_cfgAdmin.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_clientAdmin.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_kasAdmin.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_lhash.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_ptsAdmin.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_stats.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_sysnames.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_utilAdmin.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afs_vosAdmin.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afscbint.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afsint.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afssyscalls.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afsutil.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afsutil_prototypes.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/assert.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/audit.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/auth.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/bnode.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/bosint.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/bubasics.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/budb.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/budb_client.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/budb_errs.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/bumon.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/butc.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/butm.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/butx.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/cellconfig.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/cmd.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/cnvldb.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/com_err.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/debug.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/dir.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/dirpath.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/error_table.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/errors.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/exporter.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/fileutil.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/fs_stats.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/fsprobe.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/fssync.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxX11win.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxcurseswin.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxdumbwin.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxframe.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxinput.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxkeymap.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxlightobj.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxobjdict.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxobjects.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxtextcb.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxtextobj.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/gtxwindows.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/icl.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/ihandle.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/kaport.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/kauth.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/kautils.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/keys.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/ktc.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/ktime.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/mit-sipb-cr.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/namei_ops.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/netutils.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/nfs.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/nfsclient.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/osi_inode.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/packages.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/param.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/partition.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/prclient.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/prerror.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/print.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/procmgmt.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/prs_fs.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/prserver.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/ptclient.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/pterror.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/pthread_glock.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/pthread_nosigs.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/ptint.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/ptserver.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/ptuser.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/remote.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/rxgen_consts.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/softsig.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/stds.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/sysctl.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/tcdata.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/unified_afs.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/usd.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/venus.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/vice.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/viceinode.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/vl_opcodes.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/vldbint.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/vlserver.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/vnode.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/voldefs.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/volint.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/volser.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/volume.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/xfsattrs.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/xstat_cm.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/xstat_fs.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/fcrypt.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_clock.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_event.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_globals.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_lwp.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_misc.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_multi.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_null.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_packet.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_prototypes.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_pthread.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_queue.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_user.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rxkad.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rxkad_prototypes.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rxstat.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/xdr.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/xdr_prototypes.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/des.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/des_conf.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/des_odd.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/des_prototypes.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/lock.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/lwp.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/mit-cpyright.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/potpourri.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/preempt.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/timer.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/ubik.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/ubik_int.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libacl.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libafsadminutil.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libafsint.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libafsutil.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libaudit.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libauth.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libauth.krb.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libbos.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libbosadmin.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libbubasics.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libbudb.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libbutm.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libbxdb.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libcfgadmin.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libclientadmin.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libcmd.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libcom_err.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libdir.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libfsprobe.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libgtx.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libkasadmin.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libkauth.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libkauth.krb.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libnull.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libprocmgmt.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libprot.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libptsadmin.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libsys.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libusd.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libvldb.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libvlib.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libvolser.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libvosadmin.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libxstat_cm.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/libxstat_fs.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/util.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/afs/vlib.a $$SRVD${WS}/lib/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/libafsauthent.a $$SRVD${WS}/lib
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/libafsrpc.a $$SRVD${WS}/lib
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/libdes.a $$SRVD${WS}/lib
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/liblwp.a $$SRVD${WS}/lib
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/librx.a $$SRVD${WS}/lib
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/librxkad.a $$SRVD${WS}/lib
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/librxstat.a $$SRVD${WS}/lib
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/libubik.a $$SRVD${WS}/lib
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/pam_afs.krb.so.1 $$SRVD${WS}/lib
+	install -c -m 444 ${AFS_SYSNAME}/dest/lib/pam_afs.so.1 $$SRVD${WS}/lib
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/bos $$SRVD${ATHRBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/fs $$SRVD${ATHRBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/klog $$SRVD${ATHRBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/pts $$SRVD${ATHRBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/tokens $$SRVD${ATHRBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/unlog $$SRVD${ATHRBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/vos $$SRVD${ATHRBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/afsmonitor $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/cmdebug $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/dlog $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/dpass $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/klog.krb $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/knfs $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/kpwvalid $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/livesys $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/pagsh $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/pagsh.krb $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/rxgen $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/scout $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/sys $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/udebug $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/up $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/xstat_cm_test $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/bin/xstat_fs_test $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/backup $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/butc $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/copyauth $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/fms $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/fstrace $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/kadb_check $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/kas $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/kdb $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/kdump $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/kpwvalid $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/kseal $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/prdb_check $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/read_tape $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/restorevol $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/rmtsysd $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/rxdebug $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/uss $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/vldb_check $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/vldb_convert $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/etc/vsys $$SRVD${ATHBINDIR}
+	install -c -m 555 ${AFS_SYSNAME}/dest/root.client${VICE}/afsd $$SRVD${VICE}
+	# Platform specific grot.
+	case $$ATHENA_HOSTTYPE in \
+	linux) \
+	   LINUX_VERS=`ls -tr /boot/vmlinuz*|tail -1 \
+		|sed -e 's/.*vmlinuz-//' -e 's/smp$$//'`; \
+	   mkdir -p $$SRVD${VICE}/modload ; \
+	   mkdir -p $$SRVD/etc/sysconfig ; \
+	   mkdir -p $$SRVD/usr/vice/cache ; \
+	   chmod 700 $$SRVD/usr/vice/cache ; \
+	   mkdir -p $$SRVD/etc/rc.d/init.d ; \
+           install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/osi_vfs.h \
+		$$SRVD${WS}/include/afs ; \
+	   install -c -m 555 ${AFS_SYSNAME}/dest/etc/kdump-$${LINUX_VERS} \
+		$$SRVD${ATHBINDIR} ; \
+	   install -c -m 555 ${AFS_SYSNAME}/dest/root.client${VICE}/afs.rc \
+		$$SRVD/etc/rc.d/init.d/openafs ; \
+	   install -c -m 555 ${AFS_SYSNAME}/dest/root.client${VICE}/afs.conf \
+		$$SRVD/etc/sysconfig/openafs ; \
+	   for arch in i686 athlon; do \
+		install -c -m 444 ${AFS_SYSNAME}/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.ko $$SRVD${VICE}/modload ; \
+		install -c -m 444 ${AFS_SYSNAME}/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.ko $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.ko ; \
+	   done ; \
+	   ;; \
+	sun4) \
+	   mkdir -p $$SRVD/kernel/fs/sparcv9 ; \
+	   mkdir -p $$SRVD/usr/vice/cache ; \
+	   chmod 700 $$SRVD/usr/vice/cache ; \
+	   mkdir -p $$SRVD/etc/init.d ; \
+	   mkdir -p $$SRVD/etc/rc0.d ; \
+	   mkdir -p $$SRVD/etc/rc2.d ; \
+	   install -c -m 555 ${AFS_SYSNAME}/dest/etc/kdump32 \
+		$$SRVD${ATHBINDIR} ; \
+	   install -c -m 555 ${AFS_SYSNAME}/dest/etc/kdump64 \
+		$$SRVD${ATHBINDIR} ; \
+	   install -c -m 444 ${AFS_SYSNAME}/dest/root.client${VICE}/modload/libafs64.nonfs.o \
+	   	$$SRVD/kernel/fs/sparcv9/afs ; \
+	   install -c -m 555 ${AFS_SYSNAME}/dest/root.client${VICE}/modload/afs.rc $$SRVD/etc/init.d/afs ; \
+	   rm -f $$SRVD/etc/rc0.d/K66afs ; \
+	   ln -s ../init.d/afs $$SRVD/etc/rc0.d/K66afs ; \
+	   rm -f $$SRVD/etc/rc2.d/S70afs ; \
+	   ln -s ../init.d/afs $$SRVD/etc/rc2.d/S70afs \
+	   ;; \
+	esac
+
+

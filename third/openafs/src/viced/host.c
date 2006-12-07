@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/host.c,v 1.1.1.9 2006-12-04 18:58:22 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/host.c,v 1.14 2006-12-04 22:36:36 rbasch Exp $");
 
 #include <stdio.h>
 #include <errno.h>

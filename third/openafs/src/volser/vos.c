@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/vos.c,v 1.1.1.8 2006-12-04 18:57:07 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/vos.c,v 1.9 2006-12-04 22:36:36 rbasch Exp $");
 
 #include <sys/types.h>
 #ifdef AFS_NT40_ENV

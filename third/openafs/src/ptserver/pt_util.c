@@ -1,4 +1,4 @@
-/* $Id: pt_util.c,v 1.1.1.5 2005-08-02 21:14:55 zacheiss Exp $ */
+/* $Id: pt_util.c,v 1.5 2005-08-02 21:47:30 zacheiss Exp $ */
 
 /*
  *
@@ -23,7 +23,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ptserver/pt_util.c,v 1.1.1.5 2005-08-02 21:14:55 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ptserver/pt_util.c,v 1.5 2005-08-02 21:47:30 zacheiss Exp $");
 
 #include <afs/cmd.h>		/*Command line parsing */
 #include <errno.h>
