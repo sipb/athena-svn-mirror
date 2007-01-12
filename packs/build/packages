@@ -1,4 +1,4 @@
-# $Id: packages,v 1.322 2006-07-25 23:17:00 ghudson Exp $
+# $Id: packages,v 1.323 2007-01-12 17:52:16 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -84,7 +84,6 @@ athena/bin/mitmailrename	requires cyrus-imapd,perl
 athena/bin/mitmailscan		requires cyrus-imapd,perl
 athena/bin/mitmailshow		requires cyrus-imapd,perl
 athena/bin/newpag		requires openafs
-athena/bin/olc			requires krb5,hesiod,zephyr,et,Mu,wcl
 athena/bin/passwd		requires krb5,al
 athena/bin/quota		requires locker,openafs
 athena/bin/revert-to-dash
