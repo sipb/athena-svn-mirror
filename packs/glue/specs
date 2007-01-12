@@ -46,3 +46,10 @@ psroff		psutils
 realplay	infoagents
 ivview		inventor
 freewrl		freewrl
+
+olc		olc
+olc_browser	olc
+olcr		olc
+olist		olc
+oreplay		olc
+oshow		olc

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.63 2006-08-08 21:05:22 rbasch Exp $
+# $Id: Makefile,v 1.64 2007-01-12 17:51:49 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -10,7 +10,8 @@ ATTACHRUN=acroread addusr blanche chfn chpobox chsh dcmmaint gs gv lastlog \
 	stella usermaint show-application show-audio show-binhex show-excel \
 	show-image show-msword show-pdf show-postscript show-text show-video \
 	store-binhex afmdit pscat pscatmap psdit psdraft pslpr psnup psplot \
-	psrev psroff realplay ivview freewrl
+	psrev psroff realplay ivview freewrl olc olc_browser olcr olist \
+	oreplay oshow
 MOIRA=/afs/athena.mit.edu/system/moira
 MKSERV=/afs/athena.mit.edu/system/mkserv
 TELLME=/afs/athena.mit.edu/system/config/tellme
@@ -166,6 +167,12 @@ install:
 	install -c -m 555 realplay ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 ivview ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 freewrl ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 olc ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 olc_browser ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 olcr ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 olist ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 oreplay ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 oshow ${DESTDIR}${ATHBINDIR}
 	@set ${SYMLINKS}; while [ $$# -ne 0 ]; do \
 		echo rm -f ${DESTDIR}$$2; \
 		rm -f ${DESTDIR}$$2; \
