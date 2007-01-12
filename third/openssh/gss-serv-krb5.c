@@ -160,11 +160,10 @@ ssh_gssapi_krb5_storecreds(ssh_gssapi_client *client, void *arg)
 		return;
 	}
 
-	krb5_free_principal(krb_context, princ);
-
 	if ((maj_status = gss_krb5_copy_ccache(&min_status,
 	    client->creds, ccache))) {
 		logit("gss_krb5_copy_ccache() failed");
+		krb5_free_principal(krb_context, princ);
 		krb5_cc_destroy(krb_context, ccache);
 		return;
 	}
