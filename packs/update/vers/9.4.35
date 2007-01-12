@@ -1,0 +1,50 @@
+#!/bin/sh
+
+remove_pkg() {
+  pkg=$1
+  pkginfo -q $pkg && pkgrm -a "$LIBDIR/admin-update" -n "$pkg.*"
+}
+
+if [ "`uname -r`" = 5.10 ]; then
+  # If we are currently running Solaris 10, remove the old packages
+  # now, so that the updated versions can be installed properly.
+  echo "Removing old OS packages prior to update..."
+  remove_pkg MOZfirefox
+  remove_pkg SUNWj3dmx
+  remove_pkg SUNWj5man
+  remove_pkg SUNWj5dvx
+  remove_pkg SUNWj5dmx
+  remove_pkg SUNWj5rtx
+  remove_pkg SUNWj5dmo
+  remove_pkg SUNWj5dev
+  remove_pkg SUNWj5cfg
+  remove_pkg SUNWj3man
+  remove_pkg SUNWj3dvx
+  remove_pkg SUNWj3rtx
+  remove_pkg SUNWj3dmo
+  remove_pkg SUNWj3cfg
+  remove_pkg SUNWj5rt
+  remove_pkg SUNWj3dev
+  remove_pkg SUNWj3rt
+
+  # Add the updated versions to the packages list.
+  echo "SUNWj3rt"					>> $PACKAGES
+  echo "SUNWj3dev"					>> $PACKAGES
+  echo "SUNWj5rt"					>> $PACKAGES
+  echo "SUNWj3cfg"					>> $PACKAGES
+  echo "SUNWj3dmo"					>> $PACKAGES
+  echo "SUNWj3rtx"					>> $PACKAGES
+  echo "SUNWj3dvx"					>> $PACKAGES
+  echo "SUNWj3man"					>> $PACKAGES
+  echo "SUNWj5cfg"					>> $PACKAGES
+  echo "SUNWj5dev"					>> $PACKAGES
+  echo "SUNWj5dmo"					>> $PACKAGES
+  echo "SUNWj5rtx"					>> $PACKAGES
+  echo "SUNWj5dmx"					>> $PACKAGES
+  echo "SUNWj5dvx"					>> $PACKAGES
+  echo "SUNWj5man"					>> $PACKAGES
+  echo "SUNWj3dmx"					>> $PACKAGES
+  echo "MOZfirefox"					>> $PACKAGES
+
+  echo "OSCHANGES=true"					>> $CONFVARS
+fi
