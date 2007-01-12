@@ -211,6 +211,50 @@ camel_imap_folder_get_type (void)
 	return camel_imap_folder_type;
 }
 
+/* Athena local helper function: choose a cache directory based on
+ * folder_dir, but try to avoid putting it in AFS.  If folder_dir is
+ * not in AFS or if anything goes wrong, return NULL and we'll use
+ * folder_dir unmodified. */
+static char *
+choose_cache_dir (const char *folder_dir)
+{
+	const char *home, *user;
+	char *tdir, *cdir;
+	struct stat st;
+
+	if (strncmp (folder_dir, "/afs/", 5) != 0 && strncmp (folder_dir, "/mit/", 5) != 0)
+		return NULL;
+
+	/* Sanity check: we expect folder_dir to start with homedir.
+	 * If it doesn't, leave it alone. */
+	home = g_get_home_dir ();
+	if (strncmp (folder_dir, home, strlen (home) != 0))
+		return NULL;
+
+	user = g_get_user_name ();
+	tdir = g_strdup_printf ("/var/tmp/evolution-%s", user);
+	mkdir (tdir, S_IRWXU);
+	if (lstat (tdir, &st) == -1 || st.st_uid != getuid()
+	    || !S_ISDIR (st.st_mode) || (st.st_mode & 07777) != S_IRWXU) {
+		/* Something fishy going on; avoid using it. */
+		g_free (tdir);
+		return NULL;
+	}
+
+	/* To get the cache directory, replace the homedir part of
+	 * folder_dir with our new temporary directory. */
+	cdir = g_build_filename (tdir, folder_dir + strlen (home), (char *) NULL);
+	g_free (tdir);
+
+	/* Now we just have to make it exist. */
+	if (camel_mkdir (cdir, S_IRWXU) == -1) {
+		g_free (cdir);
+		return NULL;
+	}
+
+	return cdir;
+}
+
 CamelFolder *
 camel_imap_folder_new (CamelStore *parent, const char *folder_name,
 		       const char *folder_dir, CamelException *ex)
@@ -219,7 +263,7 @@ camel_imap_folder_new (CamelStore *parent, const char *folder_name,
 	CamelFolder *folder;
 	CamelImapFolder *imap_folder;
 	const char *short_name;
-	char *summary_file, *state_file;
+	char *summary_file, *state_file, *cache_dir;
 
 	if (camel_mkdir (folder_dir, S_IRWXU) != 0) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -254,7 +298,14 @@ camel_imap_folder_new (CamelStore *parent, const char *folder_name,
 	camel_object_state_read(folder);
 
 	imap_folder = CAMEL_IMAP_FOLDER (folder);
-	imap_folder->cache = camel_imap_message_cache_new (folder_dir, folder->summary, ex);
+
+	/* Athena local change: Put the message cache in /var/tmp if
+	   it would otherwise go into an AFS homedir. */
+	cache_dir = choose_cache_dir (folder_dir);
+	if (cache_dir == NULL)
+		cache_dir = g_strdup (folder_dir);
+	imap_folder->cache = camel_imap_message_cache_new (cache_dir, folder->summary, ex);
+	g_free (cache_dir);
 	if (!imap_folder->cache) {
 		camel_object_unref (CAMEL_OBJECT (folder));
 		return NULL;
