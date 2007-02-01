@@ -1,7 +1,7 @@
 #
-# $Id: Makefile,v 1.4 1999-08-09 20:37:10 ghudson Exp $
+# $Id: Makefile,v 1.5 2007-02-01 19:58:05 ghudson Exp $
 #
-# Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+# Copyright 1992, 1993, 1999, 2001, 2005, Geoff Kuenning, Claremont, CA
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -17,10 +17,8 @@
 #    such.  Binary redistributions based on modified source code
 #    must be clearly marked as modified versions in the documentation
 #    and/or other materials provided with the distribution.
-# 4. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgment:
-#      This product includes software developed by Geoff Kuenning and
-#      other unpaid contributors.
+# 4. The code that causes the 'ispell -v' command to display a prominent
+#    link to the official ispell Web site may not be removed.
 # 5. The name of Geoff Kuenning may not be used to endorse or promote
 #    products derived from this software without specific prior
 #    written permission.
@@ -47,16 +45,94 @@
 #   buildhash <dictfile> <affix-file> <outfile>
 
 # $Log: not supported by cvs2svn $
-# Revision 1.3  1999/03/01 18:30:26  ghudson
-# MAKE=make is bad for gmake.
+# Revision 1.1.1.2  2007/02/01 19:50:33  ghudson
+# Import ispell 3.3.02.
 #
-# Revision 1.2  1997/09/29 08:52:35  ghudson
-# Treat ispell.info as a source file, like everyone else.  (I would have
-# left things the way they were, but the emacs command for generating
-# the info file doesn't work with 19.34b.)
+# Revision 1.124  2005/05/25 13:56:32  geoff
+# Make language subdirectories in reverse order so that the English
+# makefiles can install a default dictionary linked to the first-mentioned
+# language.
 #
-# Revision 1.1.1.1  1997/09/03 21:08:11  ghudson
-# Import of ispell 3.1.20
+# Revision 1.123  2005/05/25 13:22:33  geoff
+# Bug fix: make sure HASHSUFFIX set before using it during installation.
+#
+# Revision 1.122  2005/05/01 23:19:12  geoff
+# Make constructed files depend on the Makefile
+#
+# Revision 1.121  2005/05/01 23:07:59  geoff
+# Add EXTEXT usage (courtesy of Eli Zaretskii).
+#
+# Revision 1.120  2005/05/01 22:35:00  geoff
+# Get rid of references to fixispell-a in the installation process (but
+# blow away any previously installed copies).  Add BAKEXT to the stuff
+# that's in config.sh and that's substituted when editing .X files.
+# Sort the list of edit substitutions.  When generating DEFHASH, use the
+# configurable has suffix.
+#
+# Revision 1.119  2005/04/28 01:03:11  geoff
+# Improve the generation of defhash.h to set up DEFLANG and to allow all
+# definitions to be overridden by local.h.  Clean up defhash.h in "make
+# clean".
+#
+# Revision 1.118  2005/04/28 00:26:06  geoff
+# Dynamically generate MASTERHASH and DEFHASH from the first dictionary
+# name specified in LANGUAGES.
+#
+# Revision 1.117  2005/04/27 01:18:34  geoff
+# Work around idiotic POSIX incompatibilies in tail.  Proactively use
+# the -e switch to sed against the day when they decide to make sed
+# incompatible as well.
+#
+# Revision 1.116  2005/04/21 14:08:58  geoff
+# Insert a missing "silencing at".  Change the name of the sample
+# local.h file.
+#
+# Revision 1.115  2005/04/14 15:19:37  geoff
+# Fix typos in the special term.o rule.
+#
+# Revision 1.114  2005/04/14 14:38:23  geoff
+# Update license.  Integrate Ed Avis's changes.  Add fixispell-a (broken
+# though it is).  Generate ispell.5 dynamically.  Put term.o first to
+# improve detection of misconfigurations, and generate a special message
+# if it won't compile.  Play funny games with y.tab.c to deal with
+# MS-DOS stupidity.
+#
+# Revision 1.113  2002/06/20 23:46:15  geoff
+# Put sq/unsq back, since some dictionaries are still distributed in sq
+# format.  Add code to make directory paths when necessary.
+#
+# Revision 1.112  2001/09/06 00:30:28  geoff
+# Many changes from Eli Zaretskii to support DJGPP compilation.
+#
+# Revision 1.111  2001/07/25 21:51:45  geoff
+# Minor license update.
+#
+# Revision 1.110  2001/07/23 20:24:02  geoff
+# Update the copyright and the license.
+#
+# Revision 1.109  2001/06/07 19:06:33  geoff
+# When creating local.h, make it user-writable.
+#
+# Revision 1.108  2001/06/07 08:02:18  geoff
+# Add the deformatters to the default dependencies.
+#
+# Revision 1.107  1999/01/13 01:34:15  geoff
+# Get rid of some leftover references to emacs stuff.
+#
+# Revision 1.106  1999/01/08  04:32:31  geoff
+# Don't try to build or install ispell.el and ispell.info.
+#
+# Revision 1.105  1999/01/07  01:22:29  geoff
+# Update the copyright.  Get rid of old shar-based dictionary building.
+#
+# Revision 1.104  1995/11/08  05:09:06  geoff
+# When invoking "showversion", ignore any errors that happen.  Fix a
+# place where I forgot to double a dollar sign in install-languages.
+#
+# Revision 1.103  1995/10/25  03:35:38  geoff
+# Don't assume the presence of "head" in the showversion dependency; use
+# old reliable sed instead.  Also make showversion depend on ispell
+# itself, since it uses it.
 #
 # Revision 1.102  1995/10/11  04:30:25  geoff
 # Allow DEFHASH and MASTERHASH to be the same.
@@ -181,126 +257,122 @@ SHELL = /bin/sh
 #
 SHELLDEBUG = +vx
 
-all:	unpacked
 all:	config.sh
-all:	programs showversion ispell.1
+all:	programs defmt-programs showversion ispell.1 ispell.5
 all:	all-languages
 
 programs: buildhash findaffix tryaffix ispell
 programs: icombine ijoin munchlist
-programs: subset sq unsq zapdups
+programs: subset zapdups
 
-showversion:
-	./ispell -v | head -1
+defmt-programs:
+	cd deformatters; $(MAKE) all
+
+showversion:	ispell
+	-./ispell -v | sed -e 1q
 
 .c.o:
 	@. ./config.sh; \
 	  set -x; \
 	  $$CC $$CFLAGS -c $<
 
+#
+# The funny business with y_tab.c is necessary for MS-DOS systems,
+# where filenames can't have multiple periods.
+#
 .y.o:
 	@. ./config.sh; \
 	  set -x; \
 	  $$YACC $<; \
-	  $$CC $$CFLAGS -c y.tab.c; \
-	  mv y.tab.o $@; \
-	  rm -f y.tab.c
+	  [ -f y_tab.c ]  ||  mv y.tab.c y_tab.c; \
+	  $$CC $$CFLAGS -c y_tab.c; \
+	  mv y_tab.o $@; \
+	  rm -f y_tab.c
 
 all-languages:	munchable
 	$(MAKE) LANGUAGE_TARGET=all SHELLDEBUG=$(SHELLDEBUG) language-subdirs
 
-install: config.sh all install-basic install-dictbuild install-languages
+install: config.sh all install-basic install-deformatters
+install: install-dictbuild install-languages
 
 partial-install: config.sh all install-basic install-languages
 
 install-basic:
 	@. ./config.sh; \
 	  set -x; \
-	  [ -d $$BINDIR ]  ||  (mkdir $$BINDIR; chmod 755 $$BINDIR); \
+	  [ -d $$BINDIR ]  ||  $(MAKE) NEWDIR=$$BINDIR mkdirpath; \
 	  cd $$BINDIR; \
-	  rm -f ispell
+	  rm -f ispell$$EXEEXT
 	@. ./config.sh; \
 	  set -x; \
-	  $$INSTALL ispell $$BINDIR
+	  $$INSTALL ispell$$EXEEXT $$BINDIR
 	@. ./config.sh; \
 	  set -x; \
 	  cd $$BINDIR; \
-	  strip ispell; \
-	  chmod 755 ispell
+	  strip ispell$$EXEEXT; \
+	  chmod 755 ispell$$EXEEXT
 	@. ./config.sh; \
 	  set -x; \
-	  [ -d $$MAN1DIR ]  ||  (mkdir $$MAN1DIR; chmod 755 $$MAN1DIR); \
-	  [ -d $$MAN4DIR ]  ||  (mkdir $$MAN4DIR; chmod 755 $$MAN4DIR); \
+	  [ -d $$MAN1DIR ]  ||  $(MAKE) NEWDIR=$$MAN1DIR mkdirpath; \
+	  [ -d $$MAN45DIR ]  ||  $(MAKE) NEWDIR=$$MAN45DIR mkdirpath; \
 	  cd $$MAN1DIR; \
 	    rm -f ispell$$MAN1EXT; \
-	  cd $$MAN4DIR; \
-	    rm -f ispell$$MAN4EXT
+	  cd $$MAN45DIR; \
+	    rm -f ispell$$MAN45EXT
 	@. ./config.sh; \
 	  set -x; \
 	  $$INSTALL ispell.1 $$MAN1DIR/ispell$$MAN1EXT; \
-	  $$INSTALL ispell.4 $$MAN4DIR/ispell$$MAN4EXT
+	  $$INSTALL ispell.5 $$MAN45DIR/ispell$$MAN45EXT
 	@. ./config.sh; \
 	  set -x; \
 	  cd $$MAN1DIR; \
 	  chmod 644 ispell$$MAN1EXT; \
-	  cd $$MAN4DIR; \
-	  chmod 644 ispell$$MAN4EXT
-	@set +e; \
-	  . ./config.sh; \
-	  set $(SHELLDEBUG); \
-	  if [ -d $$TEXINFODIR -a -r ispell.info ]; then \
-	    set -ex; \
-	    rm -f $$TEXINFODIR/ispell; \
-	    $$INSTALL ispell.info $$TEXINFODIR/ispell; \
-	    chmod 644 $$TEXINFODIR/ispell; \
-	  else \
-	    : ; \
-	  fi
-	@set +e; \
-	  . ./config.sh; \
-	  set $(SHELLDEBUG); \
-	  if [ -d $$ELISPDIR ]; then \
-	    set -ex; \
-	    rm -f $$ELISPDIR/ispell.el; \
-	    $$INSTALL ispell.el $$ELISPDIR; \
-	    if sh iwhich $$EMACS >/dev/null; then \
-		echo '(byte-compile-file "'"$$ELISPDIR/ispell.el"'")' \
-		  > /tmp/emi$$$$; \
-		$$EMACS -batch -l /tmp/emi$$$$; \
-		rm -f /tmp/emi$$$$; \
-		chmod 644 $$ELISPDIR/ispell.el $$ELISPDIR/ispell.elc; \
-	    else \
-		chmod 644 $$ELISPDIR/ispell.el; \
+	  cd $$MAN45DIR; \
+	  chmod 644 ispell$$MAN45EXT
+
+mkdirpath:
+	@[ "X$(NEWDIR)" = X ]  &&  (echo NEWDIR unset 1>&2; exit 1); exit 0
+	@path=; \
+	  umask 22; \
+	  for i in `echo $(NEWDIR) | tr / ' '`; do \
+	    path="$$path/$$i"; \
+	    if [ ! -d $$path ]; then \
+		echo mkdir $$path; \
+		mkdir $$path; \
 	    fi; \
-	  else \
-	    : ; \
-	  fi
+	  done
+
+install-deformatters:
+	@. ./config.sh; \
+	  set -x; \
+	  cd deformatters; \
+	  $(MAKE) EXEEXT=$$EXEEXT install
 
 install-dictbuild:
 	@. ./config.sh; \
 	  set -x; \
-	  [ -d $$BINDIR ]  ||  (mkdir $$BINDIR; chmod 755 $$BINDIR); \
+	  [ -d $$BINDIR ]  ||  $(MAKE) NEWDIR=$$BINDIR mkdirpath; \
 	  cd $$BINDIR; \
 	  rm -f buildhash icombine ijoin \
-	    munchlist findaffix tryaffix sq unsq; \
+	    munchlist findaffix fixispell-a tryaffix sq unsq; \
 	  rm -f $$LIBDIR/icombine
 	@. ./config.sh; \
 	  set -x; \
-	  $$INSTALL buildhash icombine ijoin munchlist findaffix tryaffix \
-	      sq unsq \
+	  $$INSTALL buildhash icombine ijoin munchlist findaffix \
+	      tryaffix \
 	    $$BINDIR
 	@. ./config.sh; \
 	  set -x; \
 	  cd $$BINDIR; \
-	  strip buildhash icombine ijoin sq unsq; \
-	  chmod 755 buildhash icombine ijoin \
-	    munchlist findaffix tryaffix sq unsq
+	  strip buildhash$$EXEEXT icombine$$EXEEXT ijoin$$EXEEXT; \
+	  chmod 755 buildhash$$EXEEXT icombine$$EXEEXT ijoin$$EXEEXT \
+	    munchlist findaffix tryaffix
 	@. ./config.sh; \
 	  set -x; \
-	  [ -d $$MAN1DIR ]  ||  (mkdir $$MAN1DIR; chmod 755 $$MAN1DIR); \
-	  [ -d $$MAN4DIR ]  ||  (mkdir $$MAN4DIR; chmod 755 $$MAN4DIR); \
+	  [ -d $$MAN1DIR ]  ||  $(MAKE) NEWDIR=$$MAN1DIR mkdirpath; \
+	  [ -d $$MAN45DIR ]  ||  $(MAKE) NEWDIR=$$MAN45DIR mkdirpath; \
 	  cd $$MAN1DIR; \
-	    rm -f sq$$MAN1EXT
+	    rm -f fixispell-a$$MAN1EXT
 	@. ./config.sh; \
 	  set -x; \
 	  $$INSTALL sq.1 $$MAN1DIR/sq$$MAN1EXT; \
@@ -313,24 +385,23 @@ install-dictbuild:
 	@. ./config.sh; \
 	  set -x; \
 	  cd $$MAN1DIR; \
-	  chmod 644 sq$$MAN1EXT buildhash$$MAN1EXT \
+	  chmod 644 buildhash$$MAN1EXT \
 	    munchlist$$MAN1EXT findaffix$$MAN1EXT tryaffix$$MAN1EXT
 
 install-languages:
 	$(MAKE) LANGUAGE_TARGET=install SHELLDEBUG=$(SHELLDEBUG) \
 	  language-subdirs
 	. ./config.sh; \
-	  [ -d $$LIBDIR ]  ||  (mkdir $$LIBDIR; chmod 755 $$LIBDIR); \
+	  [ -d $$LIBDIR ]  ||  $(MAKE) NEWDIR=$$LIBDIR mkdirpath; \
 	  set -x; \
 	  cd $$LIBDIR; \
-	  if [ $$MASTERHASH != $DEFHASH ]; then \
+	  if [ $$MASTERHASH != $$DEFHASH ]; then \
 	    rm -f $$DEFHASH; \
-	    ln $$MASTERHASH $$DEFHASH; \
+	    $$LINK $$MASTERHASH $$DEFHASH; \
 	  fi
 
 munchable:	findaffix tryaffix munchlist buildhash ispell icombine
 munchable:	ijoin
-munchable:	sq unsq
 
 #
 #	The following auxiliary dependency is used to make targets in
@@ -349,17 +420,18 @@ language-subdirs:	config.sh
 	    while [ "X$$LANGUAGES" != X ]; do \
 		( \
 		descriptor=`echo "$$LANGUAGES" \
-		  | sed 's/[^{]*{\([^}]*\)}.*/\1/'`; \
-		dir=`echo "$$descriptor" | sed 's/\([^,]*\).*/\1/'`; \
+		  | sed -e 's/.*{\([^}]*\)}[^{]*$$/\1/'`; \
+		dir=`echo "$$descriptor" | sed -e 's/\([^,]*\).*/\1/'`; \
 		descriptor=`echo "$$descriptor" \
-		  | sed 's/[^,]*,*\(.*\).*/\1/'`; \
+		  | sed -e 's/[^,]*,*\(.*\).*/\1/'`; \
 		makeargs=''; \
 		while [ "X$$descriptor" != X ]; \
 		do \
-		    nextvar=`echo "$$descriptor" | sed 's/\([^,]*\).*/\1/'`; \
+		    nextvar=`echo "$$descriptor" \
+		      | sed -e 's/\([^,]*\).*/\1/'`; \
 		    makeargs="$$makeargs '$$nextvar'"; \
 		    descriptor=`echo "$$descriptor" \
-		      | sed 's/[^,]*,*\(.*\).*/\1/'`; \
+		      | sed -e 's/[^,]*,*\(.*\).*/\1/'`; \
 		done; \
 		set -x; \
 		cd languages/$$dir; \
@@ -368,7 +440,7 @@ language-subdirs:	config.sh
 		    ||  exit 1; \
 		)  ||  exit 1; \
 		LANGUAGES=`echo "$$LANGUAGES" \
-		  | sed 's/[^{]*{[^}]*}[^{]*\(.*\)$$/\1/'`; \
+		  | sed -e 's/\(.*\){[^{]*$$/\1/'`; \
 		case "$$LANGUAGES" in \
 		    ''|*{*}*) \
 			;; \
@@ -380,7 +452,7 @@ language-subdirs:	config.sh
 		esac; \
 	    done; \
 	    exit 0
-	    
+
 buildhash: config.sh buildhash.o hash.o makedent.o parse.o
 	@. ./config.sh; \
 	  set -x; \
@@ -388,7 +460,7 @@ buildhash: config.sh buildhash.o hash.o makedent.o parse.o
 	    $$LIBES
 
 icombine: config.sh icombine.o makedent.o parse.o
-	. ./config.sh; \
+	@. ./config.sh; \
 	  set -x; \
 	  $$CC $$CFLAGS -o icombine icombine.o makedent.o parse.o \
 	    $$LIBES
@@ -401,19 +473,52 @@ ijoin: config.sh ijoin.o fields.o
 EDITFILE	=	notthere
 OUTFILE		=	/dev/null
 
-config.sh:  config.X local.h
+#
+# Note: we use "sed -n -e $$p" to achieve "tail -1" here because some
+# idiot decided to break backwards compatibility in some versions of
+# tail.  I have nothing but contempt for such fools.
+#
+defhash.h:  config.X local.h Makefile
 	set $(SHELLDEBUG); \
-	for var in BINDIR CC CFLAGS COUNTSUFFIX DEFDICT DEFHASH DEFLANG \
-	  ELISPDIR EMACS HASHSUFFIX INSTALL \
-	  LANGUAGES LIBDIR LIBES LINT LINTFLAGS \
-	  MAKE_SORTTMP MAN1DIR MAN1EXT MAN4DIR MAN4EXT MASTERHASH \
-	  MSGLANG REGLIB STATSUFFIX \
-	  TERMLIB TEXINFODIR YACC \
+	MASTERHASH=`cat config.X local.h \
+	  | sed -n -e \
+	    's/^#define[ 	]*LANGUAGES[ 	][^}]*HASHFILES=\([^,}]*\).*$$/\1/p' \
+	  | sed -n -e '$$p'`; \
+	HASHSUFFIX=`cat config.X local.h \
+	  | sed -n -e \
+	    's/^#define[ 	]*HASHSUFFIX[ 	]*"\(.*\)"/\1/p' \
+	  | sed -n -e '$$p'`; \
+	case "$$MASTERHASH" in \
+	    american*|british*) DEFHASH="english$$HASHSUFFIX";; \
+	    *) DEFHASH="$$MASTERHASH";; \
+	esac; \
+	DEFLANG=`expr "$$DEFHASH" : '\(.*\)\..*$$'`.aff; \
+	echo "/* This file is generated by the Makefile.  Don't edit it! */" \
+	  > defhash.h; \
+	echo '' >> defhash.h; \
+	echo '#ifndef MASTERHASH' >> defhash.h; \
+	echo '#define MASTERHASH "'"$$MASTERHASH"'"' >> defhash.h; \
+	echo '#endif' >> defhash.h; \
+	echo '#ifndef DEFHASH' >> defhash.h; \
+	echo '#define DEFHASH "'"$$DEFHASH"'"' >> defhash.h; \
+	echo '#endif' >> defhash.h; \
+	echo '#ifndef DEFLANG' >> defhash.h; \
+	echo '#define DEFLANG "'"$$DEFLANG"'"' >> defhash.h; \
+	echo '#endif' >> defhash.h
+
+config.sh:  config.X defhash.h local.h Makefile
+	set $(SHELLDEBUG); \
+	for var in BAKEXT BINDIR CC CFLAGS COUNTSUFFIX DEFDICT DEFHASH \
+	  DEFLANG EXEEXT HASHSUFFIX INSTALL \
+	  LANGUAGES LIBDIR LIBES LINK LINT LINTFLAGS LOOK_XREF \
+	  MAKE_SORTTMP MAN1DIR MAN1EXT MAN45DIR MAN45EXT MAN45SECT MASTERHASH \
+	  MSGLANG POUNDBANG REGLIB STATSUFFIX \
+	  SPELL_XREF TERMLIB TIB_XREF WORDS YACC \
 	  ; do \
-	    cat config.X local.h \
+	    cat config.X defhash.h local.h \
 	      | sed -n -e "s/^#define[ 	]*$$var[ 	]*"'"'"/$$var=/p" \
-	      | sed -e 's/".*$$/'"'/" -e "s/=/='/" \
-	      | tail -1; \
+	      | sed -e 's/"[^"]*$$/'"'/" -e "s/=/='/" -e 's/\\"/"/g' \
+	      | sed -n -e '$$p'; \
 	  done > config.sh; \
 	echo 'case "$$MAKE_SORTTMP" in "") \
 	  SORTTMP="-e /!!SORTTMP!!/s/=.*$$/=/";; *) SORTTMP=;; esac' \
@@ -421,11 +526,20 @@ config.sh:  config.X local.h
 
 doedit:
 	. ./config.sh; \
-	  sed -e "s@!!LIBDIR!!@$$LIBDIR@" -e "s@!!DEFDICT!!@$$DEFDICT@" \
-	    -e "s@!!DEFHASH!!@$$DEFHASH@" -e "s@!!DEFLANG!!@$$DEFLANG@" \
+	  set $(SHELLDEBUG); \
+	  sed \
+	    -e "s@!!BAKEXT!!@$$BAKEXT@g" \
 	    -e "s@!!COUNTSUFFIX!!@$$COUNTSUFFIX@g" \
+	    -e "s@!!DEFHASH!!@$$DEFHASH@" -e "s@!!DEFLANG!!@$$DEFLANG@" \
 	    -e "s@!!HASHSUFFIX!!@$$HASHSUFFIX@g" \
+	    -e "s@!!LIBDIR!!@$$LIBDIR@" -e "s@!!DEFDICT!!@$$DEFDICT@" \
+	    -e "s@!!LOOK_XREF!!@$$LOOK_XREF@g" \
+	    -e "s@!!MAN45SECT!!@$$MAN45SECT@g" \
+	    -e "s@!!POUNDBANG!!@$$POUNDBANG@g" \
+	    -e "s@!!SPELL_XREF!!@$$SPELL_XREF@g" \
 	    -e "s@!!STATSUFFIX!!@$$STATSUFFIX@g" \
+	    -e "s@!!TIB_XREF!!@$$TIB_XREF@g" \
+	    -e "s@!!WORDS!!@$$WORDS@g" \
 	    $$SORTTMP < $(EDITFILE) > $(OUTFILE)
 
 findaffix:	findaffix.X config.sh
@@ -434,6 +548,10 @@ findaffix:	findaffix.X config.sh
 
 ispell.1:	ispell.1X config.sh
 	@$(MAKE) EDITFILE=ispell.1X OUTFILE=ispell.1 SHELLDEBUG=$(SHELLDEBUG) \
+	  doedit
+
+ispell.5:	ispell.5X config.sh
+	@$(MAKE) EDITFILE=ispell.5X OUTFILE=ispell.5 SHELLDEBUG=$(SHELLDEBUG) \
 	  doedit
 
 munchlist:	munchlist.X config.sh
@@ -456,29 +574,48 @@ zapdups:	zapdups.X config.sh
 	  doedit
 	chmod +x zapdups
 
-OBJS	=	term.o ispell.o correct.o defmt.o dump.o good.o lookup.o \
-		hash.o makedent.o tgood.o tree.o xgets.o
+#
+# We put term.o first because it is the most common cause of
+# compilation errors.  Ispell.o is listed second because it's the main
+# program.  The remainder of the object files are listed
+# alphabetically.
+#
+OBJS	=	term.o ispell.o correct.o defmt.o dump.o exp_table.o fields.o \
+		good.o lookup.o hash.o makedent.o tgood.o tree.o xgets.o
+
+#
+# A special rule for term.o to suggest configuration changes
+#
+term.o:	term.c
+	@. ./config.sh; \
+	  echo $$CC $$CFLAGS -c term.c 1>&2; \
+	  $$CC $$CFLAGS -c term.c \
+	    ||  (echo \
+		   "term.c wouldn't compile.  Try inverting USG in local.h" \
+		    1>&2; \
+		exit 1)
 
 ispell: config.sh $(OBJS)
 	@. ./config.sh; \
 	  set -x; \
 	  $$CC $$CFLAGS -o ispell $(OBJS) $$TERMLIB $$REGLIB $$LIBES
 
-#	Since some makes don't have appropriate built-in rules, here are
-#	dependencies for sq and unsq.  Sigh.
 sq:	config.sh msgs.h sq.c
-	@. ./config.sh; \
+	@@. ./config.sh; \
 	  set -x; \
 	  $$CC $$CFLAGS -o sq sq.c
 
 unsq:	config.sh msgs.h unsq.c
-	@. ./config.sh; \
+	@@. ./config.sh; \
 	  set -x; \
 	  $$CC $$CFLAGS -o unsq unsq.c
 
 $(OBJS) buildhash.o icombine.o hash.o parse.o: config.h ispell.h local.h
-$(OBJS) buildhash.o icombine.o hash.o parse.o: proto.h msgs.h
-ijoin.o: config.h ispell.h local.h
+$(OBJS) buildhash.o icombine.o hash.o parse.o: proto.h msgs.h config.sh
+$(OBJS) buildhash.o icombine.o hash.o parse.o: defhash.h
+exp_table.o tgood.o: exp_table.h
+fields.o: fields.h
+ijoin.o: config.sh config.h ispell.h local.h
 ijoin.o: proto.h fields.h
 buildhash.o correct.o ispell.o: version.h
 
@@ -498,7 +635,8 @@ config.h:	config.X local.h
 
 #	Create a sample local.h if no such file currently exists
 local.h:
-	set +e; [ -r local.h ]  ||  cp local.h.samp local.h
+	set +e; \
+	  [ -r local.h ]  ||  (cp local.h.generic local.h; chmod u+w local.h)
 
 msgs.h:	config.sh FRC
 	@. ./config.sh; \
@@ -513,7 +651,7 @@ msgs.h:	config.sh FRC
 	    :; \
 	  else \
 	    set -x; \
-	    rm -f msgs.h; ln $$msgs msgs.h  ||  cp $$msgs msgs.h; \
+	    rm -f msgs.h; $$LINK $$msgs msgs.h  ||  cp $$msgs msgs.h; \
 	  fi
 
 FRC:
@@ -528,53 +666,39 @@ TAGS:	config.h *.[chy]
 	sed -e s/config.h/config.X/ TAGS > NTAGS
 	mv NTAGS TAGS
 
+#
+# The funny business with y_tab.c is necessary for MS-DOS systems,
+# where filenames can't have multiple periods.
+#
 lint:	languages/*/msgs.h
 lint:	config.sh config.h ispell.h proto.h *.[cy]
 	@. ./config.sh; \
-	  $$LINT $$LINTFLAGS ispell.c correct.c defmt.c dump.c good.c \
-	    hash.c lookup.c makedent.c tgood.c term.c tree.c xgets.c; \
+	  $$LINT $$LINTFLAGS ispell.c correct.c defmt.c dump.c exp_table.c \
+	    good.c hash.c lookup.c makedent.c tgood.c term.c tree.c xgets.c; \
 	  $$YACC parse.y; \
-	  $$LINT $$LINTFLAGS buildhash.c hash.c makedent.c y.tab.c; \
-	  $$LINT $$LINTFLAGS icombine.c makedent.c y.tab.c; \
+	  [ -f y_tab.c ] || mv y.tab.c y_tab.c; \
+	  $$LINT $$LINTFLAGS buildhash.c hash.c makedent.c y_tab.c; \
+	  $$LINT $$LINTFLAGS icombine.c makedent.c y_tab.c; \
 	  $$LINT $$LINTFLAGS ijoin.c fields.c
-	@rm -f y.tab.c
+	@rm -f y_tab.c
 
-clean:	config.sh clean-languages
+clean:	config.sh clean-deformatters clean-languages
 	@. ./config.sh; \
 	  set -x; \
 	  rm -f $$DEFHASH $$FOREIGNHASHES
-	rm -f *.o core a.out mon.out hash.out y.tab.c *.stat *.cnt \
-		config.h msgs.h
+	rm -f *.o core a.out mon.out hash.out y.tab.c y_tab.c *.stat *.cnt \
+		config.h defhash.h msgs.h unpacked
 	rm -f buildhash findaffix tryaffix ispell icombine ijoin \
-		munchlist subset sq unsq zapdups ispell.1
+		munchlist subset sq unsq zapdups ispell.1 ispell.5 ispell.info
+
+clean-deformatters:
+	cd deformatters; $(MAKE) clean
 
 clean-languages:
 	$(MAKE) LANGUAGE_TARGET=clean SHELLDEBUG=$(SHELLDEBUG) language-subdirs
 
 realclean veryclean:	clean dictclean
 	rm -f config.sh
-
-#
-#	The following dependency can be executed when ispell is unpacked,
-#	to unpack the dictionaries.
-#
-unpack:	unsq
-	$(MAKE) LANGUAGE_TARGET=unpack SHELLDEBUG=$(SHELLDEBUG) \
-	  language-subdirs
-
-unpacked:
-	$(MAKE) SHELLDEBUG=$(SHELLDEBUG) unpack
-	touch unpacked
-
-#
-#	The following target allows you to clean out the leftover raw
-#	files gotten from unpacking the kit.  It makes sure that you
-#	have the combined files first, so it may take a little while
-#	to run.
-#
-kitclean:	unsq
-	$(MAKE) LANGUAGE_TARGET=kitclean SHELLDEBUG=$(SHELLDEBUG) \
-	  language-subdirs
 
 #
 #	The following target allows you to clean out the combined

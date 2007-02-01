@@ -1,8 +1,9 @@
-: Use /bin/sh
+!!POUNDBANG!!
 #
-# $Id: munchlist.X,v 1.2 1997-12-13 16:07:36 ghudson Exp $
+# $Id: munchlist.X,v 1.3 2007-02-01 19:58:05 ghudson Exp $
 #
-# Copyright 1987, 1988, 1989, 1992, 1993, Geoff Kuenning, Granada Hills, CA
+# Copyright 1987, 1988, 1989, 1992, 1993, 1999, 2001, 2005, Geoff Kuenning,
+# Claremont, CA.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -18,10 +19,8 @@
 #    such.  Binary redistributions based on modified source code
 #    must be clearly marked as modified versions in the documentation
 #    and/or other materials provided with the distribution.
-# 4. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgment:
-#      This product includes software developed by Geoff Kuenning and
-#      other unpaid contributors.
+# 4. The code that causes the 'ispell -v' command to display a prominent
+#    link to the official ispell Web site may not be removed.
 # 5. The name of Geoff Kuenning may not be used to endorse or promote
 #    products derived from this software without specific prior
 #    written permission.
@@ -88,8 +87,61 @@
 #		2/28/87
 #
 # $Log: not supported by cvs2svn $
-# Revision 1.1.1.1  1997/09/03 21:08:12  ghudson
-# Import of ispell 3.1.20
+# Revision 1.1.1.2  2007/02/01 19:50:23  ghudson
+# Import ispell 3.3.02.
+#
+# Revision 1.69  2005/04/28 14:46:51  geoff
+# Remove references to the now-obsolete count file.
+#
+# Revision 1.68  2005/04/27 01:18:34  geoff
+# Work around idiotic POSIX incompatibilities in sort.  Add secure
+# temp-file handling.
+#
+# Revision 1.67  2005/04/14 23:11:36  geoff
+# Pass the -w switch to icombine.
+#
+# Revision 1.66  2005/04/14 21:25:52  geoff
+# Make the temporary-file handling safer (using mktemp, if it exists).
+#
+# Revision 1.65  2005/04/14 14:39:33  geoff
+# Use /tmp as the default temp directory
+#
+# Revision 1.64  2005/04/14 14:38:23  geoff
+# Update license.  Protect against modernized (i.e., incompatible) and
+# internationalized sort commands.  Change the debugging names of the
+# minimal-affixes count and stat files.
+#
+# Revision 1.63  2002/06/20 23:46:16  geoff
+# Add yet more locale definitions so that we won't run into bugs caused
+# by sorting inconsistencies.
+#
+# Revision 1.62  2001/09/06 00:30:28  geoff
+# Many changes from Eli Zaretskii to support DJGPP compilation.
+#
+# Revision 1.61  2001/07/25 21:51:46  geoff
+# Minor license update.
+#
+# Revision 1.60  2001/07/23 20:24:04  geoff
+# Update the copyright and the license.
+#
+# Revision 1.59  2001/06/07 08:02:18  geoff
+# Fix a copule of typos in comments.
+#
+# Revision 1.58  2000/11/14 07:27:04  geoff
+# Don't generate an extra dot when attempting to preserve the count
+# files in -D mode.
+#
+# Revision 1.57  2000/10/06 23:59:48  geoff
+# Don't assume dot is in the path
+#
+# Revision 1.56  1999/01/07 01:22:42  geoff
+# Update the copyright.
+#
+# Revision 1.55  1997/12/02  06:25:01  geoff
+# Start the cross-expansions loop count at 1, not zero.
+#
+# Revision 1.54  1997/12/01  00:53:52  geoff
+# Abort the munchlist cross-product loop if it goes over 100 passes.
 #
 # Revision 1.53  1995/01/08  23:23:36  geoff
 # Support variable hashfile suffixes for DOS purposes.
@@ -124,27 +176,105 @@
 # Get rid of all old RCS log lines in preparation for the 3.1 release.
 #
 #
+
+LIBDIR=!!LIBDIR!!
+TDIR=${TMPDIR-/tmp}
+MUNCHDIR=`mktemp -d ${TDIR}/munchXXXXXXXXXX 2>/dev/null`  ||  MUNCHDIR="$TDIR"
+TMP=${MUNCHDIR}/munch$$
+if [ "$MUNCHDIR" = "$TDIR" ]
+then
+    TOREMOVE="${TMP}*"
+else
+    TOREMOVE="$MUNCHDIR"
+fi
+MAILDEBUGDIR=${MUNCHDIR-/tmp}
 if [ "X$MUNCHMAIL" != X ]
 then
-    exec 2> /tmp/munchlist.mail
+    exec 2> ${MAILDEBUGDIR}/munchlist.mail
     echo "munchlist $*" 1>&2
     set -vx
 fi
-LIBDIR=!!LIBDIR!!
-TDIR=${TMPDIR-/var/tmp}
-TMP=${TDIR}/munch$$
 SORTTMP="-T ${TDIR}"			# !!SORTTMP!!
-if [ -r ./icombine ]
+
+DBDIR=${MUNCHDEBUGDIR-$MAILDEBUGDIR}
+
+# Detect MS-DOS systems and arrange to use their silly suffix system
+if [ -z "$COMSPEC$ComSpec" ]
 then
-    COMBINE=./icombine
+    EXE=""
+else
+    EXE=".exe"
+fi
+
+#
+# Set up some program names.  This prefers the versions that are in
+# the same directory as munchlist was run from; if that can't be
+# figured out, it prefers local versions and finally ones chosen from
+# $PATH.
+#
+# This code could be simplified by using the dirname command, but it's
+# not available everywhere.  For the same reason, we use -r rather than
+# -x to test for executable files.
+#
+case "$0" in
+    */*)
+	bindir=`expr "$0" : '\(.*\)/[^/]*'`
+	;;
+    *)
+	bindir='.'
+	;;
+esac
+if [ -r $bindir/buildhash$EXE ]
+then
+    BUILDHASH=$bindir/buildhash$EXE
+elif [ -r ./buildhash$EXE ]
+then
+    BUILDHASH=./buildhash$EXE
+else
+    BUILDHASH=buildhash
+fi
+if [ -r $bindir/icombine$EXE ]
+then
+    COMBINE=$bindir/icombine$EXE
+elif [ -r ./icombine$EXE ]
+then
+    COMBINE=./icombine$EXE
 else
     COMBINE=icombine
 fi
-if [ -r ./ijoin ]
+if [ -r $bindir/ijoin$EXE ]
 then
-    JOIN=./ijoin
+    JOIN=$bindir/ijoin$EXE
+elif [ -r ./ijoin$EXE ]
+then
+    JOIN=./ijoin$EXE
 else
     JOIN=ijoin
+fi
+if [ -r $bindir/ispell$EXE ]
+then
+    ISPELL=$bindir/ispell$EXE
+elif [ -r ./ispell$EXE ]
+then
+    ISPELL=./ispell$EXE
+else
+    ISPELL=ispell
+fi
+
+# In one of the most incredibly stupid decisions of all time, some
+# genius decided to break backwards compatibility by "deprecating" the
+# old-style sort switches even though it was trivial to recognize both
+# styles.  The result is that that thousands of people (like me) will
+# have to rewrite shell scripts to tolerate that stupidity.  (It's not
+# that the new syntax is bad--it's definitely easier to understand.
+# But that doesn't excuse breaking compatibility.)
+#
+# Detect whether sort accepts old-style switches.
+if sort +0 -1 /dev/null >/dev/null 2>&1
+then
+    CRETIN_SORT=false
+else
+    CRETIN_SORT=true
 fi
 
 #
@@ -153,8 +283,19 @@ fi
 #
 LANG=C
 LOCALE=C
+LC_ALL=C
+LC_COLLATE=C
 LC_CTYPE=C
-export LANG LOCALE LC_CTYPE
+export LANG LOCALE LC_COLLATE LC_CTYPE
+#
+# The following aren't strictly necessary, but I've been made paranoid
+# by problems with the stuff above.  It can't hurt to set them to a
+# sensible value.
+LC_MESSAGES=C
+LC_MONETARY=C
+LC_NUMERIC=C
+LC_TIME=C
+export LC_MESSAGES LC_MONETARY LC_NUMERIC LC_TIME
 
 debug=no
 dictopt=
@@ -187,6 +328,7 @@ do
 	    if [ ! -r "$langtabs" ]
 	    then
 		echo "Can't open language table '$2'" 1>&2
+		rm -rf $TOREMOVE
 		exit 1
 	    fi
 	    shift
@@ -200,6 +342,7 @@ do
 		convtabs="${LIBDIR}/$2"
 	    else
 		echo "Can't open conversion language table '$2'" 1>&2
+		rm -rf $TOREMOVE
 		exit 1
 	    fi
 	    shift
@@ -233,6 +376,7 @@ do
 	-*)
 	    echo 'Usage: munchlist [-l lang] [-c lang] [-T suff] [-s hashfile] [-D] [-w chars] [-v] [file] ...' \
 	      1>&2
+	    rm -rf $TOREMOVE
 	    exit 2
 	    ;;
 	*)
@@ -246,7 +390,7 @@ then
     verbose=true
     debug=yes
 fi
-trap "/bin/rm -f ${TMP}*; exit 1" 1 2 13 15
+trap "rm -rf $TOREMOVE; exit 1" 1 2 13 15
 #
 # Names of temporary files.  This is just to make the code a little easier
 # to read.
@@ -274,29 +418,30 @@ then
       $EXPANDEDPAIRS $LEGALFLAGLIST $JOINEDPAIRS $MINIMALAFFIXES \
       $CROSSROOTS $CROSSEXPANDED $CROSSPAIRS $CROSSILLEGAL $ILLEGALCOMBOS \
       $FAKEDICT $FAKEHASH $AWKSCRIPT
-    rm -f ${TDIR}/EXPANDEDINPUT ${TDIR}/STRIPPEDINPUT ${TDIR}/CRUNCHEDINPUT \
-      ${TDIR}/PRODUCTLIST ${TDIR}/EXPANDEDPAIRS ${TDIR}/LEGALFLAGLIST \
-      ${TDIR}/JOINEDPAIRS ${TDIR}/MINIMALAFFIXES ${TDIR}/CROSSROOTS \
-      ${TDIR}/CROSSEXPANDED ${TDIR}/CROSSPAIRS ${TDIR}/CROSSILLEGAL \
-      ${TDIR}/ILLEGALCOMBOS ${TDIR}/FAKEDICT ${TDIR}/FAKEHASH!!HASHSUFFIX!! \
-      ${TDIR}/AWKSCRIPT ${TDIR}/CROSSROOTS.[0-9]* ${TDIR}/CROSSEXP.[0-9]* \
-      ${TDIR}/CROSSPAIRS.[0-9]* ${TDIR}/CROSSILLEGAL.[0-9]*
-    ln $EXPANDEDINPUT ${TDIR}/EXPANDEDINPUT
-    ln $STRIPPEDINPUT ${TDIR}/STRIPPEDINPUT
-    ln $CRUNCHEDINPUT ${TDIR}/CRUNCHEDINPUT
-    ln $PRODUCTLIST ${TDIR}/PRODUCTLIST
-    ln $EXPANDEDPAIRS ${TDIR}/EXPANDEDPAIRS
-    ln $LEGALFLAGLIST ${TDIR}/LEGALFLAGLIST
-    ln $JOINEDPAIRS ${TDIR}/JOINEDPAIRS
-    ln $MINIMALAFFIXES ${TDIR}/MINIMALAFFIXES
-    ln $CROSSROOTS ${TDIR}/CROSSROOTS
-    ln $CROSSEXPANDED ${TDIR}/CROSSEXPANDED
-    ln $CROSSPAIRS ${TDIR}/CROSSPAIRS
-    ln $CROSSILLEGAL ${TDIR}/CROSSILLEGAL
-    ln $ILLEGALCOMBOS ${TDIR}/ILLEGALCOMBOS
-    ln $FAKEDICT ${TDIR}/FAKEDICT
-    ln $FAKEHASH ${TDIR}/FAKEHASH!!HASHSUFFIX!!
-    ln $AWKSCRIPT ${TDIR}/AWKSCRIPT
+    rm -f ${DBDIR}/EXPANDEDINPUT ${DBDIR}/STRIPPEDINPUT \
+      ${DBDIR}/CRUNCHEDINPUT ${DBDIR}/PRODUCTLIST ${DBDIR}/EXPANDEDPAIRS \
+      ${DBDIR}/LEGALFLAGLIST ${DBDIR}/JOINEDPAIRS ${DBDIR}/MINIMALAFFIXES \
+      ${DBDIR}/CROSSROOTS ${DBDIR}/CROSSEXPANDED ${DBDIR}/CROSSPAIRS \
+      ${DBDIR}/CROSSILLEGAL ${DBDIR}/ILLEGALCOMBOS ${DBDIR}/FAKEDICT \
+      ${DBDIR}/FAKEHASH!!HASHSUFFIX!! ${DBDIR}/AWKSCRIPT \
+      ${DBDIR}/CROSSROOTS.[0-9]* ${DBDIR}/CROSSEXP.[0-9]* \
+      ${DBDIR}/CROSSPAIRS.[0-9]* ${DBDIR}/CROSSILLEGAL.[0-9]*
+    ln $EXPANDEDINPUT ${DBDIR}/EXPANDEDINPUT
+    ln $STRIPPEDINPUT ${DBDIR}/STRIPPEDINPUT
+    ln $CRUNCHEDINPUT ${DBDIR}/CRUNCHEDINPUT
+    ln $PRODUCTLIST ${DBDIR}/PRODUCTLIST
+    ln $EXPANDEDPAIRS ${DBDIR}/EXPANDEDPAIRS
+    ln $LEGALFLAGLIST ${DBDIR}/LEGALFLAGLIST
+    ln $JOINEDPAIRS ${DBDIR}/JOINEDPAIRS
+    ln $MINIMALAFFIXES ${DBDIR}/MINIMALAFFIXES
+    ln $CROSSROOTS ${DBDIR}/CROSSROOTS
+    ln $CROSSEXPANDED ${DBDIR}/CROSSEXPANDED
+    ln $CROSSPAIRS ${DBDIR}/CROSSPAIRS
+    ln $CROSSILLEGAL ${DBDIR}/CROSSILLEGAL
+    ln $ILLEGALCOMBOS ${DBDIR}/ILLEGALCOMBOS
+    ln $FAKEDICT ${DBDIR}/FAKEDICT
+    ln $FAKEHASH ${DBDIR}/FAKEHASH!!HASHSUFFIX!!
+    ln $AWKSCRIPT ${DBDIR}/AWKSCRIPT
 fi
 #
 # Create a dummy dictionary to hold a compiled copy of the language
@@ -308,8 +453,8 @@ case "X$convtabs" in
 	;;
 esac
 echo 'QQQQQQQQ' > $FAKEDICT
-buildhash -s $FAKEDICT $convtabs $FAKEHASH \
-  ||  (echo "Couldn't create fake hash file" 1>&2; /bin/rm -f ${TMP}*; exit 1) \
+$BUILDHASH -s $FAKEDICT $convtabs $FAKEHASH \
+  ||  (echo "Couldn't create fake hash file" 1>&2; rm -rf $TOREMOVE; exit 1) \
   ||  exit 1
 #
 # Figure out how 'sort' sorts signed fields, for arguments to ijoin.
@@ -318,7 +463,7 @@ buildhash -s $FAKEDICT $convtabs $FAKEHASH \
 # without, and "-u" if the reverse is true.  How does it work?  The
 # first "tr" step generates two lines, one containing "-u", the other
 # with the same but with the high-order bit set.  The second "tr"
-# changesthe high-bit "-u" back to "-s".  If the high-bit "-u" was
+# changes the high-bit "-u" back to "-s".  If the high-bit "-u" was
 # sorted first, the sed step will select "-s" for SIGNED; otherwise
 # it'll pick "-u".  We have to be careful about backslash quoting
 # conventions, because some systems differ.
@@ -333,25 +478,31 @@ do
     backslash="$backslash$backslash"
 done
 SIGNED=`echo '-s
--u' | tr s "${backslash}365" | sort | tr "${backslash}365" s | sed 1q`
+-u' | tr s "${backslash}365" | sort | tr "${backslash}365" s | sed -e 1q`
 #
-# Collect all the input and expand all the affix options (ispell -e),
+# Collect all the input and expand all the affix options ($ISPELL -e),
 # and preserve (sorted) for later joining in EXPANDEDINPUT.  The icombine
 # step is to make sure that unneeded capitalizations (e.g., Farmer and farmer)
 # are weeded out.  The first sort must be folded for icombine;  the second
 # must be unfolded for join.
 #
 $verbose  &&  echo "Collecting input." 1>&2
+if $CRETIN_SORT
+then
+    sortopts='-k 1f,1 -k 1'
+else
+    sortopts='+0f -1 +0'
+fi
 if [ $# -eq 0 ]
 then
-    ispell "$wchars" -e1 -d $FAKEHASH -p /dev/null | tr " " '
+    $ISPELL "$wchars" -e1 -d $FAKEHASH -p /dev/null | tr " " '
 '
 else
-    cat "$@" | ispell "$wchars" -e1 -d $FAKEHASH -p /dev/null | tr " " '
+    cat "$@" | $ISPELL "$wchars" -e1 -d $FAKEHASH -p /dev/null | tr " " '
 '
 fi \
-  | sort $SORTTMP -u +0f -1 +0 \
-  | $COMBINE $icflags $langtabs \
+  | sort $SORTTMP -u $sortopts \
+  | $COMBINE $icflags "$wchars" $langtabs \
   | sort $SORTTMP -u > $EXPANDEDINPUT
 #
 # If a conversion table existed, recreate the fake hash file with the
@@ -361,13 +512,13 @@ case "$convtabs" in
     $langtabs)
 	;;
     *)
-	buildhash -s $FAKEDICT $langtabs $FAKEHASH \
+	$BUILDHASH -s $FAKEDICT $langtabs $FAKEHASH \
 	  ||  (echo "Couldn't create fake hash file" 1>&2; \
-		/bin/rm -f ${TMP}*; exit 1) \
+		rm -rf $TOREMOVE; exit 1) \
 	  ||  exit 1
 	;;
 esac
-/bin/rm -f ${FAKEDICT}*
+rm -f ${FAKEDICT}*
 #
 # If the -s (strip) option was specified, remove all
 # expanded words that are covered by the dictionary.  This produces
@@ -380,37 +531,43 @@ then
     ln $EXPANDEDINPUT $STRIPPEDINPUT
     if [ "$debug" = yes ]
     then
-	rm -f ${TDIR}/STRIPPEDINPUT
-	ln $STRIPPEDINPUT ${TDIR}/STRIPPEDINPUT
+	rm -f ${DBDIR}/STRIPPEDINPUT
+	ln $STRIPPEDINPUT ${DBDIR}/STRIPPEDINPUT
     fi
 else
     $verbose  &&  echo "Stripping words already in the dictionary." 1>&2
-    ispell "$wchars" -l $dictopt -p /dev/null < $EXPANDEDINPUT \
+    $ISPELL "$wchars" -l $dictopt -p /dev/null < $EXPANDEDINPUT \
       > $STRIPPEDINPUT
 fi
 #
 # Figure out what the flag-marking character is.
 #
 $verbose  &&  echo "Finding flag marker." 1>&2
-flagmarker=`ispell -D -d $FAKEHASH \
-  | sed -n '/^flagmarker/s/flagmarker //p'`
+flagmarker=`$ISPELL -D -d $FAKEHASH \
+  | sed -n -e '/^flagmarker/s/flagmarker //p'`
 case "$flagmarker" in
     \\*)
 	flagmarker=`expr "$flagmarker" : '.\(.\)'`
 	;;
 esac    
 #
-# Munch the input to generate roots and affixes (ispell -c).  We are
+# Munch the input to generate roots and affixes ($ISPELL -c).  We are
 # only interested in words that have at least one affix (egrep $flagmarker);
 # the next step will pick up the rest.  Some of the roots are illegal.  We
 # use join to restrict the output to those root words that are found
 # in the original dictionary.
 #
 $verbose  &&  echo "Generating roots and affixes." 1>&2
-ispell "$wchars" -c -W0 -d $FAKEHASH -p /dev/null < $STRIPPEDINPUT \
+if $CRETIN_SORT
+then
+    sortopts='-k 1,1 -k 2'
+else
+    sortopts='+0 -1 +1'
+fi
+$ISPELL "$wchars" -c -W0 -d $FAKEHASH -p /dev/null < $STRIPPEDINPUT \
   | tr " " '
 ' \
-  | egrep "$flagmarker" | sort $SORTTMP -u "-t$flagmarker" +0 -1 +1 \
+  | egrep "$flagmarker" | sort $SORTTMP -u "-t$flagmarker" $sortopts \
   | $JOIN $SIGNED "-t$flagmarker" - $EXPANDEDINPUT > $CRUNCHEDINPUT
 #
 # We now have a list of legal roots, and of affixes that apply to the
@@ -425,7 +582,7 @@ ispell "$wchars" -c -W0 -d $FAKEHASH -p /dev/null < $STRIPPEDINPUT \
 # wrong (in this case, though it's good English).
 #
 # To cure this problem, we first have to know which flags generate which
-# expansions.  We use ispell -e3 to expand the flags (the second e causes
+# expansions.  We use $ISPELL -e3 to expand the flags (the second e causes
 # the root and flag to be included in the output), and get pairs
 # suitable for joining.  In the example above, we would get
 #
@@ -435,8 +592,14 @@ ispell "$wchars" -c -W0 -d $FAKEHASH -p /dev/null < $STRIPPEDINPUT \
 # We save this in EXPANDEDPAIRS for the next step.
 #
 $verbose  &&  echo 'Expanding dictionary into EXPANDEDPAIRS.' 1>&2
-ispell "$wchars" -e3 -d $FAKEHASH -p /dev/null < $CRUNCHEDINPUT \
-  | sort $SORTTMP +1 > $EXPANDEDPAIRS
+if $CRETIN_SORT
+then
+    sortopts='-k 2'
+else
+    sortopts='+1'
+fi
+$ISPELL "$wchars" -e3 -d $FAKEHASH -p /dev/null < $CRUNCHEDINPUT \
+  | sort $SORTTMP $sortopts > $EXPANDEDPAIRS
 #
 # Now we want to extract the lines in EXPANDEDPAIRS in which the second field
 # is *not* listed in the original dictionary EXPANDEDINPUT;  these illegal
@@ -460,12 +623,18 @@ sort $SORTTMP -o $EXPANDEDPAIRS $EXPANDEDPAIRS
 sort $SORTTMP -o $CRUNCHEDINPUT $CRUNCHEDINPUT
 
 $verbose  &&  echo 'Creating list of legal roots/flags.' 1>&2
+if $CRETIN_SORT
+then
+    sortopts='-k 1f,1 -k 1'
+else
+    sortopts='+0f -1 +0'
+fi
 comm -13 $JOINEDPAIRS $EXPANDEDPAIRS \
-  | (sed -e 's; .*$;;' ; /bin/rm -f $JOINEDPAIRS $EXPANDEDPAIRS) \
+  | (sed -e 's; .*$;;' ; rm -f $JOINEDPAIRS $EXPANDEDPAIRS) \
   | uniq \
-  | (comm -13 - $CRUNCHEDINPUT ; /bin/rm -f $CRUNCHEDINPUT) \
-  | sort $SORTTMP -u "-t$flagmarker" +0f -1 +0 \
-  | $COMBINE $langtabs > $LEGALFLAGLIST
+  | (comm -13 - $CRUNCHEDINPUT ; rm -f $CRUNCHEDINPUT) \
+  | sort $SORTTMP -u "-t$flagmarker" $sortopts \
+  | $COMBINE "$wchars" $langtabs > $LEGALFLAGLIST
 
 #
 # LEGALFLAGLIST now contains root/flag combinations that, when expanded,
@@ -486,15 +655,21 @@ comm -13 $JOINEDPAIRS $EXPANDEDPAIRS \
 #
 $verbose \
   &&  echo 'Creating list of flags that participate in cross-products.' 1>&2
-ispell -D -d $FAKEHASH \
-  | sed -n '1,$s/:.*$//
+if $CRETIN_SORT
+then
+    sortopts='-k 1rn,1 -k 3'
+else
+    sortopts='+0rn -1 +2'
+fi
+$ISPELL -D -d $FAKEHASH \
+  | sed -n -e '1,$s/:.*$//
     /^flagmarker/d
     /^prefixes/,/^suffixes/s/^  flag \*/p /p
     /^suffixes/,$s/^  flag \*/s /p' \
   | sort $SORTTMP \
   | uniq -c \
   | tr '	' ' ' \
-  | sort $SORTTMP +0rn -1 +2 > $PRODUCTLIST
+  | sort $SORTTMP $sortopts > $PRODUCTLIST
 
 if [ `egrep ' p ' $PRODUCTLIST | wc -l` -gt 0 \
   -a `egrep ' s ' $PRODUCTLIST | wc -l` -gt 0 ]
@@ -504,9 +679,9 @@ then
     # any roots with multiple cross-product flags.  Put them in CROSSROOTS.
     #
     $verbose  &&  echo 'Finding prefix and suffix flags.' 1>&2
-    preflags=`sed -n 's/^[ 0-9]*p //p' $PRODUCTLIST | tr -d '
+    preflags=`sed -n -e 's/^[ 0-9]*p //p' $PRODUCTLIST | tr -d '
 '`
-    sufflags=`sed -n 's/^[ 0-9]*s //p' $PRODUCTLIST | tr -d '
+    sufflags=`sed -n -e 's/^[ 0-9]*s //p' $PRODUCTLIST | tr -d '
 '`
     egrep "$flagmarker.*[$preflags].*[$sufflags]|$flagmarker.*[$sufflags].*[$preflags]" \
       $LEGALFLAGLIST \
@@ -597,7 +772,7 @@ then
 	    }
 ENDOFAWKSCRIPT
     : > $ILLEGALCOMBOS
-    dbnum=0
+    dbnum=1
     while [ -s $CROSSROOTS ]
     do
 	#
@@ -608,8 +783,14 @@ ENDOFAWKSCRIPT
 	# to EXPANDEDPAIRS.
 	#
 	$verbose  &&  echo "Creating cross expansions (pass $dbnum)." 1>&2
-	ispell "$wchars" -e3 -d $FAKEHASH -p /dev/null < $CROSSROOTS \
-	  | sort $SORTTMP +1 > $CROSSEXPANDED
+	if $CRETIN_SORT
+	then
+	    sortopts='-k 2'
+	else
+	    sortopts='+1'
+	fi
+	$ISPELL "$wchars" -e3 -d $FAKEHASH -p /dev/null < $CROSSROOTS \
+	  | sort $SORTTMP $sortopts > $CROSSEXPANDED
 	#
 	# Now we join CROSSEXPANDED against EXPANDEDINPUT to produce
 	# CROSSPAIRS, and then comm that against CROSSEXPANDED to
@@ -629,10 +810,10 @@ ENDOFAWKSCRIPT
 
 	if [ "$debug" = yes ]
 	then
-	    mv $CROSSROOTS $TDIR/CROSSROOTS.$dbnum
-	    ln $CROSSEXPANDED $TDIR/CROSSEXP.$dbnum
-	    ln $CROSSPAIRS $TDIR/CROSSPAIRS.$dbnum
-	    ln $CROSSILLEGAL $TDIR/CROSSILLEGAL.$dbnum
+	    mv $CROSSROOTS $DBDIR/CROSSROOTS.$dbnum
+	    ln $CROSSEXPANDED $DBDIR/CROSSEXP.$dbnum
+	    ln $CROSSPAIRS $DBDIR/CROSSPAIRS.$dbnum
+	    ln $CROSSILLEGAL $DBDIR/CROSSILLEGAL.$dbnum
 	fi
 	#
 	# Now it is time to try to clear up the illegalities.  For 
@@ -653,11 +834,25 @@ ENDOFAWKSCRIPT
 	awk "-F$flagmarker" -f $AWKSCRIPT $CROSSILLEGAL > $CROSSROOTS
 	if [ "$debug" = yes ]
 	then
-	    /bin/rm -f $CROSSEXPANDED $CROSSPAIRS $CROSSILLEGAL
+	    rm -f $CROSSEXPANDED $CROSSPAIRS $CROSSILLEGAL
 	fi
 	dbnum=`expr $dbnum + 1`
+	if [ $dbnum -gt 100 ]
+	then
+	    echo "Too many passes, aborting cross-product loop.  Munchlist failed." 1>&2
+	    if [ "X$MUNCHMAIL" != X ]
+	    then
+		(
+		ls -ld ${DBDIR}/[A-Z]*
+		cat ${MAILDEBUGDIR}/munchlist.mail
+		) | mail -s 'Munchlist debug output' "$MUNCHMAIL"
+		rm -f ${MAILDEBUGDIR}/munchlist.mail
+	    fi
+	    rm -rf $TOREMOVE
+	    exit 1
+	fi
     done
-    /bin/rm -f $CROSSEXPANDED $CROSSPAIRS $CROSSILLEGAL $AWKSCRIPT
+    rm -f $CROSSEXPANDED $CROSSPAIRS $CROSSILLEGAL $AWKSCRIPT
     #
     # Now we have, in ILLEGALCOMBOS, a list of root/flag combinations
     # that must be removed from LEGALFLAGLIST to get the final list
@@ -671,25 +866,31 @@ ENDOFAWKSCRIPT
     then
 	sort $SORTTMP -u -o $ILLEGALCOMBOS $ILLEGALCOMBOS
 	$verbose  &&  echo 'Finding roots of cross expansions.' 1>&2
+	if $CRETIN_SORT
+	then
+	    sortopts='-k 1f,1 -k 1'
+	else
+	    sortopts='+0f -1 +0'
+	fi
 	sort $SORTTMP $LEGALFLAGLIST \
-	  | sed '/\/../{
+	  | sed -e '/\/../{
 	      s;^\(.*\)/\(.\)\(.*\);\1/\2\
 \1/\3;
 	      P
 	      D
 	      }' \
 	  | comm -23 - $ILLEGALCOMBOS \
-	  | sort $SORTTMP -u "-t$flagmarker" +0f -1 +0 \
-	  | $COMBINE $langtabs > $CROSSROOTS
+	  | sort $SORTTMP -u "-t$flagmarker" $sortopts \
+	  | $COMBINE "$wchars" $langtabs > $CROSSROOTS
 	mv $CROSSROOTS $LEGALFLAGLIST
 	if [ "$debug" = yes ]
 	then
-	    rm -f ${TDIR}/LEGALFLAGLIST1
-	    ln $LEGALFLAGLIST ${TDIR}/LEGALFLAGLIST1
+	    rm -f ${DBDIR}/LEGALFLAGLIST1
+	    ln $LEGALFLAGLIST ${DBDIR}/LEGALFLAGLIST1
 	fi
     fi
 fi
-/bin/rm -f $PRODUCTLIST $CROSSROOTS $ILLEGALCOMBOS $EXPANDEDINPUT
+rm -f $PRODUCTLIST $CROSSROOTS $ILLEGALCOMBOS $EXPANDEDINPUT
 #
 
 # We now have (in LEGALFLAGLIST) a list of roots and flags which will
@@ -701,7 +902,7 @@ fi
 # hash file as well.  The solution is to list the various ways of
 # getting a given word and choose exactly one.  All other things being
 # equal, we want to choose the one with the highest expansion length
-# to root length ratio.  The ispell -e4 option takes care of this by
+# to root length ratio.  The $ISPELL -e4 option takes care of this by
 # providing us with a field to sort on.
 #
 # The ispell/awk combination is similar to the ispell/sed pipe used to
@@ -714,50 +915,64 @@ fi
 # EXPANDEDINPUT.
 #
 $verbose  &&  echo 'Eliminating non-optimal affixes.' 1>&2
-ispell "$wchars" -e4 -d $FAKEHASH -p /dev/null < $LEGALFLAGLIST \
-  | sort $SORTTMP +1 -2 +2rn -3 +0 -1 \
-  | sort $SORTTMP -um +1 -2 \
+if $CRETIN_SORT
+then
+    sortopts1='-k 2,2 -k 2rn,3 -k 1,1'
+    sortopts2='-k 2,2'
+    sortopts3='-k 1f,1 -k 1'
+else
+    sortopts1='+1 -2 +2rn -3 +0 -1'
+    sortopts2='+1 -2'
+    sortopts3='+0f -1 +0'
+fi
+$ISPELL "$wchars" -e4 -d $FAKEHASH -p /dev/null < $LEGALFLAGLIST \
+  | sort $SORTTMP $sortopts1 \
+  | sort $SORTTMP -um $sortopts2 \
   | sed -e 's; .*$;;' \
-  | sort $SORTTMP -u "-t$flagmarker" +0f -1 +0 > $MINIMALAFFIXES
-/bin/rm -f $LEGALFLAGLIST
+  | sort $SORTTMP -u "-t$flagmarker" $sortopts3 > $MINIMALAFFIXES
+rm -f $LEGALFLAGLIST
 #
 # Now we're almost done.  MINIMALAFFIXES covers some (with luck, most)
 # of the words in STRIPPEDINPUT.  Now we must create a list of the remaining
 # words (those omitted by MINIMALAFFIXES) and add it to MINIMALAFFIXES.
 # The best way to do this is to actually build a partial dictionary from
-# MINIMALAFFIXES in FAKEHASH, and then use ispell -l to list the words that
+# MINIMALAFFIXES in FAKEHASH, and then use $ISPELL -l to list the words that
 # are not covered by this dictionary.  This must then be combined with the
 # reduced version of MINIMALAFFIXES and sorted to produce the final result.
 #
 $verbose  &&  echo "Generating output word list." 1>&2
+if $CRETIN_SORT
+then
+    sortopts='-k 1f,1 -k 1'
+else
+    sortopts='+0f -1 +0'
+fi
 if [ -s $MINIMALAFFIXES ]
 then
-    buildhash -s $MINIMALAFFIXES $langtabs $FAKEHASH > /dev/null \
+    $BUILDHASH -s $MINIMALAFFIXES $langtabs $FAKEHASH > /dev/null \
       ||  (echo "Couldn't create intermediate hash file" 1>&2;
-	/bin/rm -f ${TMP}*;
+	rm -rf $TOREMOVE;
 	exit 1) \
       ||  exit 1
     if [ "$debug" = yes ]
     then
-	rm -f ${TDIR}/MINAFFIXES.!!COUNTSUFFIX!! \
-	  ${TDIR}/MINAFFIXES!!STATSUFFIX!!
-	ln $MINIMALAFFIXES.!!COUNTSUFFIX!! ${TDIR}/MINAFFIXES.!!COUNTSUFFIX!!
-	ln $MINIMALAFFIXES!!STATSUFFIX!! ${TDIR}/MINAFFIXES!!STATSUFFIX!!
+	rm -f ${DBDIR}/MINIMALAFFIXES!!STATSUFFIX!!
+	ln $MINIMALAFFIXES!!STATSUFFIX!! ${DBDIR}/MINIMALAFFIXES.!!STATSUFFIX!!
     fi
-    (ispell "$wchars" -l -d $FAKEHASH -p /dev/null < $STRIPPEDINPUT; \
-	$COMBINE $langtabs < $MINIMALAFFIXES) \
-      | sort $SORTTMP "-t$flagmarker" -u +0f -1 +0
+    ($ISPELL "$wchars" -l -d $FAKEHASH -p /dev/null < $STRIPPEDINPUT; \
+	$COMBINE "$wchars" $langtabs < $MINIMALAFFIXES) \
+      | sort $SORTTMP "-t$flagmarker" -u $sortopts
 else
     # MINIMALAFFIXES is empty;  just produce a sorted version of STRIPPEDINPUT
-    sort $SORTTMP "-t$flagmarker" -u +0f -1 +0 $STRIPPEDINPUT
+    sort $SORTTMP "-t$flagmarker" -u $sortopts $STRIPPEDINPUT
 fi
-/bin/rm -f ${TMP}*
 if [ "X$MUNCHMAIL" != X ]
 then
     (
-    ls -ld ${TDIR}/[A-Z]*
-    cat /tmp/munchlist.mail
-    ) | mail "$MUNCHMAIL"
-    /bin/rm -f /tmp/munchlist.mail
+    ls -ld ${DBDIR}/[A-Z]*
+    cat ${MAILDEBUGDIR}/munchlist.mail
+    ) | mail -s 'Munchlist debug output' "$MUNCHMAIL"
+    rm -f ${MAILDEBUGDIR}/munchlist.mail
 fi
+rm -rf $TOREMOVE
 exit 0
