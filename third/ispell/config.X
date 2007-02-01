@@ -52,9 +52,12 @@
  */
 
 /*
- * $Id: config.X,v 1.3 2007-02-01 19:58:05 ghudson Exp $
+ * $Id: config.X,v 1.4 2007-02-01 20:29:21 ghudson Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2007/02/01 19:58:05  ghudson
+ * Merge with ispell 3.3.02.
+ *
  * Revision 1.1.1.2  2007/02/01 19:50:34  ghudson
  * Import ispell 3.3.02.
  *
@@ -277,7 +280,7 @@
 ** -lcurses, or -lncurses on most systems.
 */
 #ifndef TERMLIB
-#define TERMLIB	"-lncurses"
+#define TERMLIB	"-ltermcap"
 #endif
 
 /*
@@ -424,7 +427,7 @@
 ** the file pc/local.djgpp for details.
 */
 #ifndef LANGUAGES
-#define LANGUAGES "{american,MASTERDICTS=american.med,HASHFILES=americanmed.hash,EXTRADICT=}"
+#define LANGUAGES "{american,MASTERDICTS=american.med+,HASHFILES=americanmed+.hash,EXTRADICT=/usr/dict/words}"
 #endif /* LANGUAGES */
 
 /*
@@ -437,7 +440,7 @@
 ** because it will automatically be extracted from LANGUAGES, above.
 */
 #ifndef MASTERHASH
-#define MASTERHASH      "americanmed.hash"
+#define MASTERHASH      "americanmed+.hash"
 #endif
 
 /*
