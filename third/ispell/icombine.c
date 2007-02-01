@@ -1,6 +1,6 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: icombine.c,v 1.1.1.1 1997-09-03 21:08:08 ghudson Exp $";
+    "$Id: icombine.c,v 1.1.1.2 2007-02-01 19:50:06 ghudson Exp $";
 #endif
 
 #define MAIN
@@ -15,7 +15,7 @@ static char Rcs_Id[] =
  * to buildhash and ispell, we can be sure that the rules for combining
  * capitalizations are compatible.
  *
- * Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1992, 1993, 1999, 2001, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,10 +31,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -54,6 +52,33 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.33  2005/04/20 23:16:32  geoff
+ * Rename some variables to make them more meaningful.
+ *
+ * Revision 2.32  2005/04/14 23:11:36  geoff
+ * Add the -w switch.
+ *
+ * Revision 2.31  2005/04/14 14:38:23  geoff
+ * Update license.
+ *
+ * Revision 2.30  2001/07/25 21:51:46  geoff
+ * Minor license update.
+ *
+ * Revision 2.29  2001/07/23 20:24:03  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 2.28  2000/08/22 10:52:25  geoff
+ * Fix some compiler warnings.
+ *
+ * Revision 2.27  1999/01/07 01:22:44  geoff
+ * Update the copyright.
+ *
+ * Revision 2.26  1999/01/03  01:46:30  geoff
+ * Add support for sgml and plain deformatter types.
+ *
+ * Revision 2.25  1997/12/02  06:24:45  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
  * Revision 2.24  1994/01/25  07:11:35  geoff
  * Get rid of all old RCS log lines in preparation for the 3.1 release.
  *
@@ -82,6 +107,7 @@ int main (argc, argv)
     {
     char *	argp;
     char *	preftype = NULL;
+    char *	wchars = NULL;
 
     while (argc > 1  &&  argv[1][0] == '-')
 	{
@@ -100,6 +126,18 @@ int main (argc, argv)
 		    }
 		preftype = argp;
 		break;
+	    case 'w':
+		wchars = (*argv) + 2;
+		if (*wchars == '\0')
+		    {
+		    argv++;
+		    argc--;
+		    if (argc == 0)
+			usage ();
+		    wchars = *argv;
+		    }
+		break;
+		break;
 	    default:
 		usage ();
 		break;
@@ -117,19 +155,23 @@ int main (argc, argv)
     if (yyparse ())			/* Parse the language tables */
 	exit (1);
 
+    initckch (wchars);
+
     if (preftype != NULL)
 	{
-	defdupchar = findfiletype (preftype, 1, (int *) NULL);
-	if (defdupchar < 0
+	defstringgroup = findfiletype (preftype, 1, (int *) NULL);
+	if (defstringgroup < 0
+	  &&  strcmp (preftype, "plain") != 0
 	  &&  strcmp (preftype, "tex") != 0
-	  &&  strcmp (preftype, "nroff") != 0)
+	  &&  strcmp (preftype, "nroff") != 0
+	  &&  strcmp (preftype, "sgml") != 0)
 	    {
 	    (void) fprintf (stderr, ICOMBINE_C_BAD_TYPE, preftype);
 	    exit (1);
 	    }
 	}
-    if (defdupchar < 0)
-	defdupchar = 0;
+    if (defstringgroup < 0)
+	defstringgroup = 0;
 
     combinedict ();			/* Combine words */
 
@@ -169,7 +211,7 @@ static void combinedict ()
     {
     struct dent		d;
     register struct dent * dp;
-    char		lbuf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
+    unsigned char	lbuf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
     ichar_t		ucbuf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
     ichar_t		lastbuf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
 
@@ -177,7 +219,7 @@ static void combinedict ()
     hashtbl = (struct dent *) mymalloc (sizeof (struct dent));
     hashtbl->flagfield = 0;
     hashtbl->word = 0;
-    while (fgets (lbuf, sizeof lbuf, stdin) != NULL)
+    while (fgets ((char *) lbuf, sizeof lbuf, stdin) != NULL)
 	{
 	if (ichartostr (lbuf, strtosichar (lbuf, 0), sizeof lbuf, 1))
 	    (void) fprintf (stderr, WORD_TOO_LONG (lbuf));
@@ -202,7 +244,6 @@ static void combinedict ()
 	if ((dp->flagfield & USED) == 0)
 	    {
 	    *dp = d;
-#ifndef NO_CAPITALIZATION_SUPPORT
 	    /*
 	    ** If it's a followcase word, we need to make this a
 	    ** special dummy entry, and add a second with the
@@ -213,7 +254,6 @@ static void combinedict ()
 		if (addvheader (dp))
 		  exit (1);
 		}
-#endif
 	    }
 	else
 	    {
@@ -244,7 +284,6 @@ static void combineout ()
 	    toutent (stdout, tdp, 0);
 	    myfree (tdp->word);
 	    ndp = tdp->next;
-#ifndef NO_CAPITALIZATION_SUPPORT
 	    while (tdp->flagfield & MOREVARIANTS)
 		{
 		if (tdp != hashtbl)
@@ -254,7 +293,6 @@ static void combineout ()
 		    myfree (tdp->word);
 		ndp = tdp->next;
 		}
-#endif
 	    if (tdp != hashtbl)
 		myfree ((char *) tdp);
 	    }

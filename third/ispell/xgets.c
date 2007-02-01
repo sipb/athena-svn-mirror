@@ -1,10 +1,11 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: xgets.c,v 1.1.1.1 1997-09-03 21:08:10 ghudson Exp $";
+    "$Id: xgets.c,v 1.1.1.2 2007-02-01 19:49:55 ghudson Exp $";
 #endif
 
 /*
- * Copyright 1987, 1988, 1989, 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1987, 1988, 1989, 1992, 1993, 1999, 2001, Geoff Kuenning,
+ * Claremont, CA.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,10 +21,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -43,6 +42,24 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/04/14 14:38:23  geoff
+ * Update license.
+ *
+ * Revision 1.27  2002/02/06 05:58:03  geoff
+ * Janos Mandli: trim trailing whitespace from include-file names
+ *
+ * Revision 1.26  2001/07/25 21:51:46  geoff
+ * Minor license update.
+ *
+ * Revision 1.25  2001/07/23 20:24:04  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.24  1999/01/18 03:28:47  geoff
+ * Get of a warning message caused by poor style.
+ *
+ * Revision 1.23  1999/01/07  01:23:01  geoff
+ * Update the copyright.
+ *
  * Revision 1.22  1994/09/16  04:48:34  geoff
  * Be sure to deliver newlines to the caller, so that it can tell whether
  * or not a complete line was read.
@@ -55,6 +72,7 @@ static char Rcs_Id[] =
 #include "config.h"
 #include "ispell.h"
 #include "proto.h"
+#include <ctype.h>
 
 char *		xgets P ((char * string, int size, FILE * stream));
 
@@ -129,12 +147,21 @@ char * xgets (str, size, stream)
 	  &&  strncmp (str, Include_File, (unsigned int) Include_Len) == 0)
 	    {
 	    char *	file_name = str + Include_Len;
-
-	    if (current_F - F < MAXINCLUDEFILES  &&  strlen (file_name) != 0)
+	    
+	    if (*file_name != '\0')
+		{
+		char*	p = file_name + strlen (file_name) - 1;
+		while (p >= file_name  &&  isspace (*p))
+		    {
+		    *p = '\0';
+		    --p;
+		    }
+		}
+	    if (current_F - F < MAXINCLUDEFILES  &&  *file_name != '\0')
 		{
 		FILE *	f;
 
-		if (f = fopen (file_name, "r"))
+		if ((f = fopen (file_name, "r")) != NULL)
 		    *(++current_F) = f;
 		}
 	    s = str;

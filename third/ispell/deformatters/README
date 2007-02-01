@@ -1,0 +1,5 @@
+The enclosed programs are sample deformatters provided primarily to
+show how to write filters for use with ispell's -F switch.  They allow
+ispell to be used to check C and C++ programs as well as shell scripts
+(and any other languages that use # for comments and both quote styles
+for strings).

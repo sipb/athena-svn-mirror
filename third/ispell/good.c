@@ -1,6 +1,6 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: good.c,v 1.1.1.1 1997-09-03 21:08:10 ghudson Exp $";
+    "$Id: good.c,v 1.1.1.2 2007-02-01 19:49:55 ghudson Exp $";
 #endif
 
 /*
@@ -9,7 +9,7 @@ static char Rcs_Id[] =
  *
  * Pace Willisson, 1983
  *
- * Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1992, 1993, 1999, 2001, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -48,6 +46,33 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.51  2005/04/14 14:38:23  geoff
+ * Update license.
+ *
+ * Revision 1.50  2001/07/25 21:51:45  geoff
+ * Minor license update.
+ *
+ * Revision 1.49  2001/07/23 20:24:03  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.48  2000/08/22 10:52:25  geoff
+ * Fix some compiler warnings.
+ *
+ * Revision 1.47  1999/01/18 03:28:33  geoff
+ * Turn some char declarations into unsigned char, so that we won't have
+ * sign-extension problems.
+ *
+ * Revision 1.46  1999/01/07  01:22:36  geoff
+ * Update the copyright.
+ *
+ * Revision 1.45  1997/12/03  06:08:38  geoff
+ * In crunch mode, print the root capitalized if a prefix was stripped
+ * from a capitalized word.  For example, if the input word was
+ * "Uncapitalized" in English, print "Capitalized/U".
+ *
+ * Revision 1.44  1997/12/02  06:24:42  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
  * Revision 1.43  1994/11/02  06:56:05  geoff
  * Remove the anyword feature, which I've decided is a bad idea.
  *
@@ -74,37 +99,24 @@ static char Rcs_Id[] =
 
 int		good P ((ichar_t * word, int ignoreflagbits, int allhits,
 		  int pfxopts, int sfxopts));
-#ifndef NO_CAPITALIZATION_SUPPORT
 int		cap_ok P ((ichar_t * word, struct success * hit, int len));
 static int	entryhasaffixes P ((struct dent * dent, struct success * hit));
-#endif /* NO_CAPITALIZATION_SUPPORT */
 void		flagpr P ((ichar_t * word, int preflag, int prestrip,
 		  int preadd, int sufflag, int sufadd));
 
 static ichar_t *	orig_word;
 
-#ifndef NO_CAPITALIZATION_SUPPORT
 int good (w, ignoreflagbits, allhits, pfxopts, sfxopts)
     ichar_t *		w;		/* Word to look up */
     int			ignoreflagbits;	/* NZ to ignore affix flags in dict */
     int			allhits;	/* NZ to ignore case, get every hit */
     int			pfxopts;	/* Options to apply to prefixes */
     int			sfxopts;	/* Options to apply to suffixes */
-#else
-/* ARGSUSED */
-int good (w, ignoreflagbits, dummy, pfxopts, sfxopts)
-    ichar_t *		w;		/* Word to look up */
-    int			ignoreflagbits;	/* NZ to ignore affix flags in dict */
-    int			dummy;
-#define allhits	0	/* Never actually need more than one hit */
-    int			pfxopts;	/* Options to apply to prefixes */
-    int			sfxopts;	/* Options to apply to suffixes */
-#endif
     {
     ichar_t		nword[INPUTWORDLEN + MAXAFFIXLEN];
     register ichar_t *	p;
     register ichar_t *	q;
-    register		n;
+    register int	n;
     register struct dent * dp;
 
     /*
@@ -119,7 +131,7 @@ int good (w, ignoreflagbits, dummy, pfxopts, sfxopts)
 
     if (cflag)
 	{
-	(void) printf ("%s", ichartosstr (w, 0));
+	(void) printf ("%s", (char *) ichartosstr (w, 0));
 	orig_word = w;
 	}
     else if ((dp = lookup (nword, 1)) != NULL)
@@ -127,12 +139,8 @@ int good (w, ignoreflagbits, dummy, pfxopts, sfxopts)
 	hits[0].dictent = dp;
 	hits[0].prefix = NULL;
 	hits[0].suffix = NULL;
-#ifndef NO_CAPITALIZATION_SUPPORT
 	if (allhits  ||  cap_ok (w, &hits[0], n))
 	    numhits = 1;
-#else
-	numhits = 1;
-#endif
 	/*
 	 * If we're looking for compounds, and this root doesn't
 	 * participate in compound formation, undo the hit.
@@ -148,16 +156,6 @@ int good (w, ignoreflagbits, dummy, pfxopts, sfxopts)
 
     /* try stripping off affixes */
 
-#if 0
-    numchars = icharlen (nword);
-    if (numchars < 4)
-	{
-	if (cflag)
-	    (void) putchar ('\n');
-	return numhits  ||  (numchars == 1);
-	}
-#endif
-
     chk_aff (w, nword, n, ignoreflagbits, allhits, pfxopts, sfxopts);
 
     if (cflag)
@@ -166,7 +164,6 @@ int good (w, ignoreflagbits, dummy, pfxopts, sfxopts)
     return numhits;
     }
 
-#ifndef NO_CAPITALIZATION_SUPPORT
 int cap_ok (word, hit, len)
     register ichar_t *		word;
     register struct success *	hit;
@@ -310,7 +307,6 @@ static int entryhasaffixes (dent, hit)
 	return 0;
     return 1;			/* Yes, these affixes are legal */
     }
-#endif
 
 /*
  * Print a word and its flag, making sure the case of the output matches
@@ -324,6 +320,7 @@ void flagpr (word, preflag, prestrip, preadd, sufflag, sufadd)
     int			sufflag;	/* Suffix flag (if any) */
     int			sufadd;		/* Length of suffix added to w */
     {
+    register int	i;		/* Handy loop counter */
     register ichar_t *	origp;		/* Pointer into orig_word */
     int			orig_len;	/* Length of orig_word */
 
@@ -332,14 +329,16 @@ void flagpr (word, preflag, prestrip, preadd, sufflag, sufadd)
      * We refuse to print if the cases outside the modification
      * points don't match those just inside.  This prevents things
      * like "OEM's" from being turned into "OEM/S" which expands
-     * only to "OEM'S".
+     * only to "OEM'S".  But for prefix flags, we ignore the case of
+     * the first character of the word, because capitalization of the
+     * root is legal.
      */
     if (preflag > 0)
 	{
 	origp = orig_word + preadd;
 	if (myupper (*origp))
 	    {
-	    for (origp = orig_word;  origp < orig_word + preadd;  origp++)
+	    for (origp = orig_word + 1;  origp < orig_word + preadd;  origp++)
 		{
 		if (mylower (*origp))
 		    return;
@@ -347,7 +346,7 @@ void flagpr (word, preflag, prestrip, preadd, sufflag, sufadd)
 	    }
 	else
 	    {
-	    for (origp = orig_word;  origp < orig_word + preadd;  origp++)
+	    for (origp = orig_word + 1;  origp < orig_word + preadd;  origp++)
 		{
 		if (myupper (*origp))
 		    return;
@@ -384,20 +383,33 @@ void flagpr (word, preflag, prestrip, preadd, sufflag, sufadd)
     origp = orig_word + preadd;
     if (myupper (*origp))
 	{
-	while (--prestrip >= 0)
+	for (i = prestrip;  --i >= 0;  )
 	    (void) fputs (printichar ((int) *word++), stdout);
 	}
     else
 	{
-	while (--prestrip >= 0)
+	i = prestrip;
+	if (i > 0  &&  myupper (orig_word[0]))
+	    {
+	    --i;
+	    (void) fputs (printichar ((int) mytoupper (*word++)), stdout);
+	    }
+	while (--i >= 0)
 	    (void) fputs (printichar ((int) mytolower (*word++)), stdout);
 	}
-    for (prestrip = orig_len - preadd - sufadd;  --prestrip >= 0;  word++)
+    i = orig_len - preadd - sufadd;
+    if (prestrip == 0  &&  myupper (orig_word[0]))
+	{
+	--i;
+	(void) fputs (printichar ((int) mytoupper (*origp++)), stdout);
+	word++;
+	}
+    for (  ;  --i >= 0;  word++)
 	(void) fputs (printichar ((int) *origp++), stdout);
     if (origp > orig_word)
 	origp--;
     if (myupper (*origp))
-	(void) fputs (ichartosstr (word, 0), stdout);
+	(void) fputs ((char *) ichartosstr (word, 0), stdout);
     else
 	{
 	while (*word)

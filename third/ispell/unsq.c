@@ -1,10 +1,10 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: unsq.c,v 1.1.1.1 1997-09-03 21:08:09 ghudson Exp $";
+    "$Id: unsq.c,v 1.1.1.2 2007-02-01 19:49:55 ghudson Exp $";
 #endif
 
 /*
- * Copyright 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1993, 1999, 2001, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,10 +20,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -43,6 +41,18 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/04/14 14:38:23  geoff
+ * Update license.
+ *
+ * Revision 1.17  2001/07/25 21:51:47  geoff
+ * Minor license update.
+ *
+ * Revision 1.16  2001/07/23 20:24:04  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.15  1999/01/07 01:58:02  geoff
+ * Update the copyright.
+ *
  * Revision 1.14  1994/01/25  07:12:19  geoff
  * Get rid of all old RCS log lines in preparation for the 3.1 release.
  *

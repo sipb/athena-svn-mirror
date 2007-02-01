@@ -1,6 +1,6 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: correct.c,v 1.1.1.1 1997-09-03 21:08:10 ghudson Exp $";
+    "$Id: correct.c,v 1.1.1.2 2007-02-01 19:50:23 ghudson Exp $";
 #endif
 
 /*
@@ -11,7 +11,7 @@ static char Rcs_Id[] =
  *
  * Copyright (c), 1983, by Pace Willisson
  *
- * Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1992, 1993, 1999, 2001, 2005, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -50,6 +48,90 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.82  2005/04/28 14:46:51  geoff
+ * Add code to log all corrections and replacements.
+ *
+ * Revision 1.81  2005/04/20 23:16:32  geoff
+ * Add inpossibilities, and use it to deal with the case where uppercase
+ * SS in German causes ambiguities.  Rename some variables to make them
+ * more meaningful.
+ *
+ * Revision 1.80  2005/04/14 14:38:23  geoff
+ * Update license.  Use i-prefixed names for terminal access functions to
+ * prevent conflicts with libraries.  Fix a bug that caused a hang when
+ * using external deformatters.
+ *
+ * Revision 1.79  2001/09/06 00:40:44  geoff
+ * In ask mode, when extending long lines to ensure that a word hasn't
+ * been broken, remember to do the extension inside both the context and
+ * the filtered buffer.
+ *
+ * Revision 1.78  2001/09/06 00:30:29  geoff
+ * Many changes from Eli Zaretskii to support DJGPP compilation.
+ *
+ * Revision 1.77  2001/07/25 21:51:47  geoff
+ * Minor license update.
+ *
+ * Revision 1.76  2001/07/23 20:24:03  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.75  2001/06/14 09:11:11  geoff
+ * Use a non-conflicting macro for bcopy to avoid compilation problems on
+ * smarter compilers.
+ *
+ * Revision 1.74  2001/06/10 23:54:56  geoff
+ * Fix an ask-mode bug that could cause hangs.
+ *
+ * Revision 1.73  2001/06/07 08:02:18  geoff
+ * When copying out, be sure to use the information from contextbufs[0]
+ * (the original file) rather then filteredbuf (the deformatted
+ * information).
+ *
+ * Revision 1.72  2000/08/24 06:47:16  geoff
+ * Fix a dumb error in merging the correct_verbose_mode patch
+ *
+ * Revision 1.71  2000/08/22 10:52:25  geoff
+ * Fix a whole bunch of signed/unsigned compiler warnings.
+ *
+ * Revision 1.70  2000/08/22 00:11:25  geoff
+ * Add support for correct_verbose_mode.
+ *
+ * Revision 1.69  1999/11/04 07:51:05  geoff
+ * In verbose ask mode, put out a newline after the EOF so the TTY looks
+ * nice.
+ *
+ * Revision 1.68  1999/11/04 07:19:59  geoff
+ * Add "oktochange" to inserttoken, and set it to false on the first of
+ * each paired call.
+ *
+ * Revision 1.67  1999/10/05 05:49:56  geoff
+ * When processing the ~ command, don't pass a newline by accident!
+ *
+ * Revision 1.66  1999/01/18 03:28:24  geoff
+ * Turn many char declarations into unsigned char, so that we won't have
+ * sign-extension problems.
+ *
+ * Revision 1.65  1999/01/07  01:57:51  geoff
+ * Update the copyright.
+ *
+ * Revision 1.64  1999/01/03  01:46:25  geoff
+ * Add support for external deformatters.  Also display tab characters
+ * correctly when showing context.
+ *
+ * Revision 1.63  1997/12/02  06:24:38  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
+ * Revision 1.62  1997/12/01  00:53:43  geoff
+ * Don't strip out the newline at the end of contextbufs on long lines.
+ *
+ * Revision 1.61  1995/11/08  05:09:26  geoff
+ * Add the new interactive mode ("askverbose").  Modify the deformatting
+ * support to allow html/sgml as a full equal of nroff and TeX.
+ *
+ * Revision 1.60  1995/10/25  04:05:28  geoff
+ * Line added by Gerry Tierney to reset insidehtml flag for each new file
+ * in case a tag was left open by a previous file.  10/14/95.
+ *
  * Revision 1.59  1995/08/05  23:19:43  geoff
  * Fix a bug that caused offsets for long lines to be confused if the
  * line started with a quoting uparrow.
@@ -127,20 +209,22 @@ static char Rcs_Id[] =
 
 void		givehelp P ((int interactive));
 void		checkfile P ((void));
-void		correct P ((char * ctok, int ctokl, ichar_t * itok, int itokl,
-		  char ** curchar));
-static void	show_line P ((char * line, char * invstart, int invlen));
-static int	show_char P ((char ** cp, int linew, int output, int maxw));
-static int	line_size P ((char * buf, char * bufend));
-static void	inserttoken P ((char * buf, char * start, char * tok,
-		  char ** curchar));
-static int	posscmp P ((char * a, char * b));
-int		casecmp P ((char * a, char * b, int canonical));
+void		correct P ((unsigned char * ctok, int ctokl, ichar_t * itok,
+		  int itokl, unsigned char ** curchar));
+static void	show_line P ((unsigned char * line, unsigned char * invstart,
+		  int invlen));
+static int	show_char P ((unsigned char ** cp, int linew, int output,
+		  int maxw));
+static int	line_size P ((unsigned char * buf, unsigned char * bufend));
+static void	inserttoken P ((unsigned char * buf, unsigned char * start,
+		  unsigned char * tok, unsigned char ** curchar,
+		  int oktochange));
+static int	posscmp P ((unsigned char * a, unsigned char * b));
+int		casecmp P ((unsigned char * a, unsigned char * b, int canonical));
 void		makepossibilities P ((ichar_t * word));
+int		inpossibilities P ((unsigned char * ctok));
 static int	insert P ((ichar_t * word));
-#ifndef NO_CAPITALIZATION_SUPPORT
 static void	wrongcapital P ((ichar_t * word));
-#endif /* NO_CAPITALIZATION_SUPPORT */
 static void	wrongletter P ((ichar_t * word));
 static void	extraletter P ((ichar_t * word));
 static void	missingletter P ((ichar_t * word));
@@ -161,10 +245,10 @@ static void	save_root_cap P ((ichar_t * word, ichar_t * pattern,
 		  struct flagent * sufent,
 		  ichar_t savearea[MAX_CAPS][INPUTWORDLEN + MAXAFFIXLEN],
 		  int * nsaved));
-static char *	getline P ((char * buf));
+static char *	getline P ((char * buf, int bufsize));
 void		askmode P ((void));
-void		copyout P ((char ** cc, int cnt));
-static void	lookharder P ((char * string));
+void		copyout P ((unsigned char ** cc, int cnt));
+static void	lookharder P ((unsigned char * string));
 #ifdef REGEX_LOOKUP
 static void	regex_dict_lookup P ((char * cmd, char * grepstr));
 #endif /* REGEX_LOOKUP */
@@ -179,41 +263,45 @@ void givehelp (interactive)
 
     if (interactive)
 	{
-	erase ();
+	ierase ();
 	helpout = stdout;
 	}
     else
 	helpout = stderr;
 
-    (void) fprintf (helpout, CORR_C_HELP_1);
-    (void) fprintf (helpout, CORR_C_HELP_2);
-    (void) fprintf (helpout, CORR_C_HELP_3);
-    (void) fprintf (helpout, CORR_C_HELP_4);
-    (void) fprintf (helpout, CORR_C_HELP_5);
-    (void) fprintf (helpout, CORR_C_HELP_6);
-    (void) fprintf (helpout, CORR_C_HELP_7);
-    (void) fprintf (helpout, CORR_C_HELP_8);
-    (void) fprintf (helpout, CORR_C_HELP_9);
+    (void) fprintf (helpout, CORR_C_HELP_1, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_2, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_3, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_4, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_5, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_6, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_7, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_8, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_9, MAYBE_CR (helpout));
 
-    (void) fprintf (helpout, CORR_C_HELP_COMMANDS);
+    (void) fprintf (helpout, CORR_C_HELP_COMMANDS, MAYBE_CR (helpout),
+      MAYBE_CR (helpout), MAYBE_CR (helpout));
 
-    (void) fprintf (helpout, CORR_C_HELP_R_CMD);
-    (void) fprintf (helpout, CORR_C_HELP_BLANK);
-    (void) fprintf (helpout, CORR_C_HELP_A_CMD);
-    (void) fprintf (helpout, CORR_C_HELP_I_CMD);
-    (void) fprintf (helpout, CORR_C_HELP_U_CMD);
-    (void) fprintf (helpout, CORR_C_HELP_0_CMD);
-    (void) fprintf (helpout, CORR_C_HELP_L_CMD);
-    (void) fprintf (helpout, CORR_C_HELP_X_CMD);
-    (void) fprintf (helpout, CORR_C_HELP_Q_CMD);
-    (void) fprintf (helpout, CORR_C_HELP_BANG);
-    (void) fprintf (helpout, CORR_C_HELP_REDRAW);
-    (void) fprintf (helpout, CORR_C_HELP_SUSPEND);
-    (void) fprintf (helpout, CORR_C_HELP_HELP);
+    (void) fprintf (helpout, CORR_C_HELP_R_CMD, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_BLANK, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_A_CMD, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_I_CMD, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_U_CMD, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_0_CMD, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_L_CMD, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_X_CMD, MAYBE_CR (helpout),
+      MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_Q_CMD, MAYBE_CR (helpout),
+      MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_BANG, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_REDRAW, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_SUSPEND, MAYBE_CR (helpout));
+    (void) fprintf (helpout, CORR_C_HELP_HELP, MAYBE_CR (helpout));
 
     if (interactive)
 	{
-	(void) fprintf (helpout, "\r\n\r\n");
+	(void) fprintf (helpout, "\r\n");
+	imove (li - 1, 0);  /* bottom line, no matter what screen size is */
 	(void) fprintf (helpout, CORR_C_HELP_TYPE_SPACE);
 	(void) fflush (helpout);
 #ifdef COMMANDFORSPACE
@@ -230,8 +318,12 @@ void givehelp (interactive)
 void checkfile ()
     {
     int		bufno;
-    int		bufsize;
+    unsigned int bufsize;
     int		ch;
+
+    insidehtml = 0;
+    math_mode = 0;
+    LaTeX_Mode = 'P';
 
     for (bufno = 0;  bufno < contextsize;  bufno++)
 	contextbufs[bufno][0] = '\0';
@@ -239,22 +331,34 @@ void checkfile ()
     for (  ;  ;  )
 	{
 	for (bufno = contextsize;  --bufno > 0;  )
-	    (void) strcpy (contextbufs[bufno],
-	      contextbufs[bufno - 1]);
+	    (void) strcpy ((char *) contextbufs[bufno],
+	      (char *) contextbufs[bufno - 1]);
 	if (quit)	/* quit can't be set in l mode */
 	    {
-	    while (fgets (contextbufs[0],
-	      sizeof contextbufs[0], infile) != NULL)
-		(void) fputs (contextbufs[0], outfile);
+	    if (sourcefile == NULL)
+		sourcefile = infile;
+	    while (fgets ((char *) contextbufs[0], sizeof contextbufs[0],
+		sourcefile)
+	      != NULL)
+		(void) fputs ((char *) contextbufs[0], outfile);
 	    break;
 	    }
 	/*
 	 * Only read in enough characters to fill half this buffer so that any
 	 * corrections we make are not likely to cause an overflow.
 	 */
-	if (fgets (contextbufs[0], (sizeof contextbufs[0]) / 2, infile)
+	if (fgets ((char *) filteredbuf, sizeof filteredbuf / 2, infile)
 	  == NULL)
+	    {
+	    if (sourcefile != NULL)
+		{
+		while (fgets ((char *) contextbufs[0], sizeof contextbufs[0],
+		    sourcefile)
+		  != NULL)
+		    (void) fputs ((char *) contextbufs[0], outfile);
+		}
 	    break;
+	    }
 	/*
 	 * If we didn't read to end-of-line, we may have ended the
 	 * buffer in the middle of a word.  So keep reading until we
@@ -262,40 +366,61 @@ void checkfile ()
 	 * word. (or until the buffer is full, which fortunately isn't
 	 * all that likely).
 	 */
-	bufsize = strlen (contextbufs[0]);
-	if (bufsize == (sizeof contextbufs[0]) / 2 - 1)
+	bufsize = strlen ((char *) filteredbuf);
+	if (bufsize == sizeof filteredbuf / 2 - 1)
 	    {
-	    ch = (unsigned char) contextbufs[0][bufsize - 1];
-	    while (bufsize < sizeof contextbufs[0] - 1
+	    ch = (unsigned char) filteredbuf[bufsize - 1];
+	    while (bufsize < sizeof filteredbuf - 1
 	      &&  (iswordch ((ichar_t) ch)  ||  isboundarych ((ichar_t) ch)
 	      ||  isstringstart (ch)))
 		{
 		ch = getc (infile);
 		if (ch == EOF)
 		    break;
-		contextbufs[0][bufsize++] = (char) ch;
-		contextbufs[0][bufsize] = '\0';
+		filteredbuf[bufsize++] = (char) ch;
+		filteredbuf[bufsize] = '\0';
 		}
+	    }
+	/*
+	 * If we're not filtering, make a duplicate of filteredbuf in
+	 * contextbufs[0].  Otherwise, read the same number of
+	 * characters into contextbufs[0] from sourcefile.
+	 */
+	if (sourcefile == NULL)
+	    (void) strcpy ((char *) contextbufs[0], (char *) filteredbuf);
+	else
+	    {
+	    if (fread (contextbufs[0], 1, bufsize, sourcefile) != bufsize)
+		{
+		(void) fprintf (stderr, CORR_C_SHORT_SOURCE,
+		  MAYBE_CR (stderr));
+		(void) sleep ((unsigned) 2);
+		xflag = 0;		/* Preserve file backup */
+		break;
+		}
+	    contextbufs[0][bufsize] = '\0';
 	    }
 	checkline (outfile);
 	}
     }
 
 void correct (ctok, ctokl, itok, itokl, curchar)
-    char *		ctok;
+    unsigned char *	ctok;
     int			ctokl;
     ichar_t *		itok;
     int			itokl;
-    char **		curchar;
+    unsigned char **	curchar;    /* Pointer into filteredbuf */
     {
     register int	c;
     register int	i;
     int			col_ht;
+    unsigned char *	curcontextchar; /* Pointer into contextbufs[0] */
     int			ncols;
-    char *		start_l2;
-    char *		begintoken;
+    unsigned char *	start_l2;
+    unsigned char *	begintoken;
 
-    begintoken = *curchar - strlen (ctok);
+    curcontextchar = contextbufs[0] + (*curchar - filteredbuf);
+    begintoken = curcontextchar - strlen ((char *) ctok);
 
     if (icharlen (itok) <= minword)
 	return;			/* Accept very short words */
@@ -304,15 +429,17 @@ checkagain:
     if (good (itok, 0, 0, 0, 0)  ||  compoundgood (itok, 0))
 	return;
 
-    erase ();
-    (void) printf ("    %s", ctok);
+    makepossibilities (itok);
+    if (inpossibilities (ctok))	/* Kludge for German and similar languages */
+	return;
+
+    ierase ();
+    (void) printf ("    %s", (char *) ctok);
     if (currentfile)
 	(void) printf (CORR_C_FILE_LABEL, currentfile);
     if (readonly)
 	(void) printf (" %s", CORR_C_READONLY);
     (void) printf ("\r\n\r\n");
-
-    makepossibilities (itok);
 
     /*
      * Make sure we have enough room on the screen to hold the
@@ -338,9 +465,9 @@ checkagain:
     for (i = 0; i < pcount; i++)
 	{
 #ifdef BOTTOMCONTEXT
-	move (2 + (i % col_ht), (maxposslen + 8) * (i / col_ht));
+	imove (2 + (i % col_ht), (maxposslen + 8) * (i / col_ht));
 #else /* BOTTOMCONTEXT */
-	move (3 + contextsize + (i % col_ht), (maxposslen + 8) * (i / col_ht));
+	imove (3 + contextsize + (i % col_ht), (maxposslen + 8) * (i / col_ht));
 #endif /* BOTTOMCONTEXT */
 	if (i >= easypossibilities)
 	    (void) printf ("??: %s", possibilities[i]);
@@ -351,20 +478,20 @@ checkagain:
 	}
 
 #ifdef BOTTOMCONTEXT
-    move (li - contextsize - 1 - minimenusize, 0);
+    imove (li - contextsize - 1 - minimenusize, 0);
 #else /* BOTTOMCONTEXT */
-    move (2, 0);
+    imove (2, 0);
 #endif /* BOTTOMCONTEXT */
     for (i = contextsize;  --i > 0;  )
 	show_line (contextbufs[i], contextbufs[i], 0);
 
     start_l2 = contextbufs[0];
-    if (line_size (contextbufs[0], *curchar) > co - (sg << 1) - 1)
+    if (line_size (contextbufs[0], curcontextchar) > co - (sg << 1) - 1)
 	{
 	start_l2 = begintoken - (co / 2);
 	while (start_l2 < begintoken)
 	    {
-	    i = line_size (start_l2, *curchar) + 1;
+	    i = line_size (start_l2, curcontextchar) + 1;
 	    if (i + (sg << 1) <= co)
 		break;
 	    start_l2 += i - co;
@@ -374,25 +501,25 @@ checkagain:
 	if (start_l2 < contextbufs[0])
 	    start_l2 = contextbufs[0];
 	}
-    show_line (start_l2, begintoken, (int) strlen (ctok));
+    show_line (start_l2, begintoken, (int) strlen ((char *) ctok));
 
     if (minimenusize != 0)
 	{
-	move (li - 2, 0);
+	imove (li - 2, 0);
 	(void) printf (CORR_C_MINI_MENU);
 	}
 
     for (  ;  ;  )
 	{
 	(void) fflush (stdout);
-	switch (c = (GETKEYSTROKE () & NOPARITY))
+	switch (c = GETKEYSTROKE ())
 	    {
 	    case 'Z' & 037:
 		stop ();
-		erase ();
+		ierase ();
 		goto checkagain;
 	    case ' ':
-		erase ();
+		ierase ();
 		(void) fflush (stdout);
 		return;
 	    case 'q': case 'Q':
@@ -400,21 +527,22 @@ checkagain:
 		    {
 		    (void) printf (CORR_C_CONFIRM_QUIT);
 		    (void) fflush (stdout);
-		    c = (GETKEYSTROKE () & NOPARITY);
+		    c = GETKEYSTROKE ();
 		    }
 		else
 		    c = 'y';
 		if (c == 'y' || c == 'Y')
 		    {
-		    erase ();
+		    ierase ();
 		    (void) fflush (stdout);
+		    fclose (outfile);	/* So `done' may unlink it safely */
 		    done (0);
 		    }
 		goto checkagain;
 	    case 'i': case 'I':
 		treeinsert (ichartosstr (strtosichar (ctok, 0), 1),
 		 ICHARTOSSTR_SIZE, 1);
-		erase ();
+		ierase ();
 		(void) fflush (stdout);
 		changes = 1;
 		return;
@@ -422,14 +550,14 @@ checkagain:
 		itok = strtosichar (ctok, 0);
 		lowcase (itok);
 		treeinsert (ichartosstr (itok, 1), ICHARTOSSTR_SIZE, 1);
-		erase ();
+		ierase ();
 		(void) fflush (stdout);
 		changes = 1;
 		return;
 	    case 'a': case 'A':
 		treeinsert (ichartosstr (strtosichar (ctok, 0), 1),
 		  ICHARTOSSTR_SIZE, 0);
-		erase ();
+		ierase ();
 		(void) fflush (stdout);
 		return;
 	    case 'L' & 037:
@@ -439,36 +567,36 @@ checkagain:
 		goto checkagain;
 	    case '!':
 		{
-		char	buf[200];
+		unsigned char	buf[200];
 
-		move (li - 1, 0);
+		imove (li - 1, 0);
 		(void) putchar ('!');
-		if (getline (buf) == NULL)
+		if (getline ((char *) buf, sizeof buf) == NULL)
 		    {
 		    (void) putchar (7);
-		    erase ();
+		    ierase ();
 		    (void) fflush (stdout);
 		    goto checkagain;
 		    }
 		(void) printf ("\r\n");
 		(void) fflush (stdout);
 #ifdef	USESH
-		shescape (buf);
+		shescape ((char *) buf);
 #else
-		(void) shellescape (buf);
+		(void) shellescape ((char *) buf);
 #endif
-		erase ();
+		ierase ();
 		goto checkagain;
 		}
 	    case 'r': case 'R':
-		move (li - 1, 0);
+		imove (li - 1, 0);
 		if (readonly)
 		    {
 		    (void) putchar (7);
 		    (void) printf ("%s ", CORR_C_READONLY);
 		    }
 		(void) printf (CORR_C_REPLACE_WITH);
-		if (getline (ctok) == NULL)
+		if (getline ((char *) ctok, ctokl) == NULL)
 		    {
 		    (void) putchar (7);
 		    /* Put it back */
@@ -477,15 +605,18 @@ checkagain:
 		else
 		    {
 		    inserttoken (contextbufs[0],
-		      begintoken, ctok, curchar);
+		      begintoken, ctok, &curcontextchar, 0);
+		    inserttoken (filteredbuf,
+		      filteredbuf + (begintoken - contextbufs[0]),
+		      ctok, curchar, 1);
 		    if (strtoichar (itok, ctok, itokl, 0))
 			{
 			(void) putchar (7);
-			(void) printf (WORD_TOO_LONG (ctok));
+			(void) printf (WORD_TOO_LONG ((char *) ctok));
 			}
 		    changes = 1;
 		    }
-		erase ();
+		ierase ();
 		if (icharlen (itok) <= minword)
 		    return;		/* Accept very short replacements */
 		goto checkagain;
@@ -494,7 +625,7 @@ checkagain:
 		i = c - '0';
 		if (easypossibilities >= 10)
 		    {
-		    c = GETKEYSTROKE () & NOPARITY;
+		    c = GETKEYSTROKE ();
 		    if (c >= '0'  &&  c <= '9')
 			i = i * 10 + c - '0';
 		    else if (c != '\r'  &&  c != '\n')
@@ -505,14 +636,17 @@ checkagain:
 		    }
 		if (i < easypossibilities)
 		    {
-		    (void) strcpy (ctok, possibilities[i]);
+		    (void) strcpy ((char *) ctok, possibilities[i]);
 		    changes = 1;
 		    inserttoken (contextbufs[0],
-			begintoken, ctok, curchar);
-		    erase ();
+			begintoken, ctok, &curcontextchar, 0);
+		    inserttoken (filteredbuf,
+		      filteredbuf + (begintoken - contextbufs[0]),
+		      ctok, curchar, 1);
+		    ierase ();
 		    if (readonly)
 			{
-			move (li - 1, 0);
+			imove (li - 1, 0);
 			(void) putchar (7);
 			(void) printf ("%s", CORR_C_READONLY);
 			(void) fflush (stdout);
@@ -527,24 +661,24 @@ checkagain:
 		break;
 	    case 'l': case 'L':
 		{
-		char	buf[100];
-		move (li - 1, 0);
+		unsigned char	buf[100];
+		imove (li - 1, 0);
 		(void) printf (CORR_C_LOOKUP_PROMPT);
-		if (getline (buf) == NULL)
+		if (getline ((char *) buf, sizeof buf) == NULL)
 		    {
 		    (void) putchar (7);
-		    erase ();
+		    ierase ();
 		    goto checkagain;
 		    }
 		(void) printf ("\r\n");
 		(void) fflush (stdout);
 		lookharder (buf);
-		erase ();
+		ierase ();
 		goto checkagain;
 		}
 	    case 'x': case 'X':
 		quit = 1;
-		erase ();
+		ierase ();
 		(void) fflush (stdout);
 		return;
 	    default:
@@ -555,30 +689,34 @@ checkagain:
     }
 
 static void show_line (line, invstart, invlen)
-    char *		line;
-    register char *	invstart;
+    unsigned char *	line;
+    register unsigned char *
+			invstart;
     register int	invlen;
     {
-    register int	width;
+    register int	width = 0;
+    int			maxwidth = co - 1;
 
-    width = invlen ? (sg << 1) : 0;
-    while (line < invstart  &&  width < co - 1)
+    if (invlen != 0)
+	maxwidth -= sg << 1;
+    while (line < invstart  &&  width < maxwidth)
 	width += show_char (&line, width, 1, invstart - line);
     if (invlen)
 	{
 	inverse ();
 	invstart += invlen;
-	while (line < invstart  &&  width < co - 1)
+	while (line < invstart  &&  width < maxwidth)
 	    width += show_char (&line, width, 1, invstart - line);
 	normal ();
 	}
-    while (*line  &&  width < co - 1)
+    while (*line  &&  width < maxwidth)
 	width += show_char (&line, width, 1, 0);
     (void) printf ("\r\n");
     }
 
 static int show_char (cp, linew, output, maxw)
-    register char **	cp;
+    register unsigned char **
+			cp;
     int			linew;
     int			output;		/* NZ to actually do output */
     int			maxw;		/* NZ to limit width shown */
@@ -589,7 +727,7 @@ static int show_char (cp, linew, output, maxw)
     ichar_t		ichar;
     register int	width;
 
-    ch = (unsigned char) **cp;
+    ch = **cp;
     if (l1_isstringch (*cp, len, 0))
 	ichar = SET_SIZE + laststringch;
     else
@@ -604,7 +742,10 @@ static int show_char (cp, linew, output, maxw)
     if (ch == '\t')
 	{
 	if (output)
-	    (void) putchar ('\t');
+	    {
+	    for (i = 8 - (linew & 0x07);  --i >= 0;  )
+		(void) putchar (' ');
+	    }
 	(*cp)++;
 	return 8 - (linew & 0x07);
 	}
@@ -652,8 +793,9 @@ static int show_char (cp, linew, output, maxw)
     }
 
 static int line_size (buf, bufend)
-    char *		buf;
-    register char *	bufend;
+    unsigned char *	buf;
+    register unsigned char *
+			bufend;
     {
     register int	width;
 
@@ -662,22 +804,35 @@ static int line_size (buf, bufend)
     return width;
     }
 
-static void inserttoken (buf, start, tok, curchar)
-    char *		buf;
-    char *		start; 
-    register char *	tok;
-    char **		curchar;
+static void inserttoken (buf, start, tok, curchar, oktochange)
+    unsigned char *	buf;
+    unsigned char *	start; 
+    register unsigned char *
+			tok;
+    unsigned char **	curchar;	/* Where to do insertion (updated) */
+    int			oktochange;	/* NZ if OK to modify tok */
     {
-    char		copy[BUFSIZ];
-    register char *	p;
-    register char *	q;
-    char *		ew;
+    unsigned char	copy[BUFSIZ];
+    register unsigned char *
+			p;
+    register unsigned char *
+			q;
+    unsigned char *	ew;
 
-    (void) strcpy (copy, buf);
+    if (!oktochange  &&  logfile != NULL)
+	{
+	for (p = start;  p != *curchar;  p++)
+	    (void) putc (*p, logfile);
+	(void) putc (' ', logfile);
+	(void) fputs (tok, logfile);
+	(void) putc ('\n', logfile);
+	(void) fflush (logfile);
+	}
 
-    for (p = buf, q = copy; p != start; p++, q++)
-	*p = *q;
-    q += *curchar - start;
+    (void) strcpy ((char *) copy, (char *) buf);
+
+    p = start;
+    q = copy + (*curchar - buf);
     ew = skipoverword (tok);
     while (tok < ew)
 	*p++ = *tok++;
@@ -691,7 +846,9 @@ static void inserttoken (buf, start, tok, curchar)
 	*/
 
 	*p++ = *tok;
-	*tok++ = '\0';
+	if (oktochange)
+	    *tok = '\0';
+	tok++;
 	while (*tok)
 	    *p++ = *tok++;
 	}
@@ -700,16 +857,16 @@ static void inserttoken (buf, start, tok, curchar)
     }
 
 static int posscmp (a, b)
-    char *		a;
-    char *		b;
+    unsigned char *	a;
+    unsigned char *	b;
     {
 
     return casecmp (a, b, 0);
     }
 
 int casecmp (a, b, canonical)
-    char *		a;
-    char *		b;
+    unsigned char *	a;
+    unsigned char *	b;
     int			canonical;	/* NZ for canonical string chars */
     {
     register ichar_t *	ap;
@@ -763,9 +920,7 @@ void makepossibilities (word)
     maxposslen = 0;
     easypossibilities = 0;
 
-#ifndef NO_CAPITALIZATION_SUPPORT
     wrongcapital (word);
-#endif
 
 /* 
  * according to Pollock and Zamora, CACM April 1984 (V. 27, No. 4),
@@ -805,21 +960,94 @@ void makepossibilities (word)
 	}
     }
 
+int inpossibilities (ctok)
+    register unsigned char *	ctok;
+    {
+    register int		i;
+
+    /*
+     * This function is a horrible kludge, necessitated by a problem
+     * that shows up in German (and possibly other languages).  The
+     * problem in German is that the character "ess-zed" (which I'm
+     * going to write as "|3" in these comments so I don't have to use
+     * the ISO Latin-1 character set) doesn't have an uppercase
+     * equivalent.  Instead, words that contain |3 are uppercased by
+     * converting the character to SS.
+     *
+     * For ispell, this presents a problem.  Consider the two German
+     * words "gro|3" (large) and "nass" (wet).  In lowercase, they are
+     * represented differently both externally and internally.
+     * Internally, the "ss" gets converted to a single ichar_t (for a
+     * couple of good reasons I won't go into right now).  Internally,
+     * there is also an uppercase representation for |3.  So when we
+     * do things like dictionary lookups (which are in uppercase for
+     * historical reasons) we can distinguish the correct "gro|3" and
+     * "nass" from the incorrect "gross" and "na|3", even when they're
+     * converted to uppercase.
+     *
+     * The problem arises when the user writes the words in uppercase:
+     * "GROSS" and "NASS".  When parsing the character strings, ispell
+     * would like to convert the "SS" sequence into the correct
+     * ichar_t for the word.  However, the ichar_t that is needed for
+     * the two S's in "GROSS" (uppercase version of |3) is different
+     * from the ichar_t needed for the two S's in "NASS" (SS).  There
+     * is no solution to the problem that can be based purely on
+     * lexical information; the character representation simply
+     * doesn't have the information needed.
+     *
+     * What ispell really needs is to base the chose of ichar_t
+     * representation on the correct spelling of the word.  For
+     * "GROSS" it should pick uppercase |3 because "gro|3" is in the
+     * dictionary, and for "NASS" it should pick SS for the same
+     * reason.
+     *
+     * That brings us to this function.  Lexically, ispell will always
+     * choose one or the other of the internal representations.  (The
+     * choice is fairly unpredictable; it depends on which one the
+     * binary search happens to hit upon first.)  If good() says that
+     * the spelling is OK, we must have chosen the right
+     * representation (and we'll never get into this function.  But if
+     * good() fails, makepossibilities() will wind up substituting the
+     * correct character for the incorrect one in wrongletter().  Then
+     * the reconversion to external string format will wind up
+     * generating exactly the word that was originally spell-checked.
+     *
+     * So this function searches the possibilities list to see if the
+     * requested word is found in the list.  If so, the caller will
+     * accept the word just as if good() had succeeded.
+     *
+     * This is a pretty ugly solution.  It's also only partial.  If a
+     * word contains TWO ambiguous characters, it won't find a
+     * solution because wrongletter() can only correct a single error.
+     * Fortunately, at least in German, that's not a huge problem.
+     * The most popular German dictionary contains only three words
+     * that have more than one ess-zed: Ku|3tengewa|3ser,
+     * Vergro|3Serungsgla|3er, and gro|3Senordnungsma|3Sig/A.
+     */
+    for (i = 0;  i < pcount;  i++)
+	{
+	if (strcmp ((char *) ctok, possibilities[i]) == 0)
+	    return 1;
+	}
+    return 0;
+    }
+
 static int insert (word)
     register ichar_t *	word;
     {
     register int	i;
-    register char *	realword;
+    register unsigned char *
+			realword;
 
     realword = ichartosstr (word, 0);
     for (i = 0; i < pcount; i++)
 	{
-	if (strcmp (possibilities[i], realword) == 0)
+	if (strcmp (possibilities[i], (char *) realword) == 0)
 	    return (0);
 	}
 
-    (void) strcpy (possibilities[pcount++], realword);
-    i = strlen (realword);
+    (void) strcpy (possibilities[pcount++], (char *) realword);
+    i = strlen ((char *) realword);
     if (i > maxposslen)
 	maxposslen = i;
     if (pcount >= MAXPOSSIBLE)
@@ -828,7 +1056,6 @@ static int insert (word)
 	return (0);
     }
 
-#ifndef NO_CAPITALIZATION_SUPPORT
 static void wrongcapital (word)
     register ichar_t *	word;
     {
@@ -846,7 +1073,6 @@ static void wrongcapital (word)
 	(void) ins_cap (newword, word);
 	}
     }
-#endif
 
 static void wrongletter (word)
     register ichar_t *	word;
@@ -859,9 +1085,7 @@ static void wrongletter (word)
 
     n = icharlen (word);
     (void) icharcpy (newword, word);
-#ifndef NO_CAPITALIZATION_SUPPORT
     upcase (newword);
-#endif
 
     for (i = 0; i < n; i++)
 	{
@@ -1190,42 +1414,18 @@ static void save_root_cap (word, pattern, prestrip, preadd, sufstrip, sufadd,
 					/* Room to save words */
     int *		nsaved;		/* Number saved so far (updated) */
     {
-#ifndef NO_CAPITALIZATION_SUPPORT
     register struct dent * dent;
-#endif /* NO_CAPITALIZATION_SUPPORT */
     int			firstisupper;
     ichar_t		newword[INPUTWORDLEN + 4 * MAXAFFIXLEN + 4];
-#ifndef NO_CAPITALIZATION_SUPPORT
     register ichar_t *	p;
     int			len;
     int			i;
     int			limit;
-#endif /* NO_CAPITALIZATION_SUPPORT */
 
     if (*nsaved >= MAX_CAPS)
 	return;
     (void) icharcpy (newword, word);
     firstisupper = myupper (pattern[0]);
-#ifdef NO_CAPITALIZATION_SUPPORT
-    /*
-    ** Apply the old, simple-minded capitalization rules.
-    */
-    if (firstisupper)
-	{
-	if (myupper (pattern[1]))
-	    upcase (newword);
-	else
-	    {
-	    lowcase (newword);
-	    newword[0] = mytoupper (newword[0]);
-	    }
-	}
-    else
-	lowcase (newword);
-    (void) icharcpy (savearea[*nsaved], newword);
-    (*nsaved)++;
-    return;
-#else /* NO_CAPITALIZATION_SUPPORT */
 #define flagsareok(dent)    \
     ((pfxent == NULL \
 	||  TSTMASKBIT (dent->mask, pfxent->flagbit)) \
@@ -1344,7 +1544,7 @@ static void save_root_cap (word, pattern, prestrip, preadd, sufstrip, sufadd,
 		{
 		/* Followcase is the tough one. */
 		p = strtosichar (dent->word, 1);
-		(void) bcopy ((char *) (p + prestrip),
+		(void) BCOPY ((char *) (p + prestrip),
 		  (char *) (newword + preadd),
 		  (len - prestrip - sufstrip) * sizeof (ichar_t));
 		if (myupper (p[prestrip]))
@@ -1381,11 +1581,11 @@ static void save_root_cap (word, pattern, prestrip, preadd, sufstrip, sufadd,
 	dent = dent->next;
 	}
     return;
-#endif /* NO_CAPITALIZATION_SUPPORT */
     }
 
-static char * getline (s)
+static char * getline (s, len)
     register char *	s;
+    register int	len;
     {
     register char *	p;
     register int	c;
@@ -1395,12 +1595,20 @@ static char * getline (s)
     for (  ;  ;  )
 	{
 	(void) fflush (stdout);
-	c = (GETKEYSTROKE () & NOPARITY);
+	c = GETKEYSTROKE ();
+	/*
+	** Don't let them overflow the buffer.
+	*/
+	if (p >= s + len - 1)
+	    {
+	    *p = 0;
+	    return s;
+	    }
 	if (c == '\\')
 	    {
 	    (void) putchar ('\\');
 	    (void) fflush (stdout);
-	    c = (GETKEYSTROKE () & NOPARITY);
+	    c = GETKEYSTROKE ();
 	    backup ();
 	    (void) putchar (c);
 	    *p++ = (char) c;
@@ -1442,10 +1650,12 @@ static char * getline (s)
 
 void askmode ()
     {
-    int			bufsize;	/* Length of contextbufs[0] */
+    unsigned int	bufsize;	/* Length of contextbufs[0] */
     int			ch;		/* Next character read from input */
-    register char *	cp1;
-    register char *	cp2;
+    register unsigned char *
+			cp1;
+    register unsigned char *
+			cp2;
     ichar_t *		itok;		/* Ichar version of current word */
     int			hadnl;		/* NZ if \n was at end of line */
 
@@ -1453,7 +1663,8 @@ void askmode ()
 	{
 	if (freopen (askfilename, "w", stdout) == NULL)
 	    {
-	    (void) fprintf (stderr, CANT_CREATE, askfilename);
+	    (void) fprintf (stderr, CANT_CREATE, askfilename,
+	      MAYBE_CR (stderr));
 	    exit (1);
 	    }
 	}
@@ -1463,6 +1674,8 @@ void askmode ()
     contextoffset = 0;
     while (1)
 	{
+	if (askverbose)
+	    (void) printf ("word: ");
 	(void) fflush (stdout);
 	/*
 	 * Only read in enough characters to fill half this buffer so that any
@@ -1470,16 +1683,20 @@ void askmode ()
 	 */
 	if (contextoffset == 0)
 	    {
-	    if (xgets (contextbufs[0], (sizeof contextbufs[0]) / 2, stdin)
+	    if (xgets ((char *) filteredbuf, (sizeof filteredbuf) / 2, stdin)
 	      == NULL)
 		break;
 	    }
 	else
 	    {
-	    if (fgets (contextbufs[0], (sizeof contextbufs[0]) / 2, stdin)
+	    if (fgets ((char *) filteredbuf, (sizeof filteredbuf) / 2, stdin)
 	      == NULL)
 		break;
 	    }
+	/*
+	 * Make a copy of the line in contextbufs[0] so copyout works.
+	 */
+	(void) strcpy ((char *) contextbufs[0], (char *) filteredbuf);
 	/*
 	 * If we didn't read to end-of-line, we may have ended the
 	 * buffer in the middle of a word.  So keep reading until we
@@ -1487,26 +1704,22 @@ void askmode ()
 	 * word. (or until the buffer is full, which fortunately isn't
 	 * all that likely).
 	 */
-	bufsize = strlen (contextbufs[0]);
-	if (contextbufs[0][bufsize - 1] == '\n')
+	bufsize = strlen ((char *) filteredbuf);
+	hadnl = filteredbuf[bufsize - 1] == '\n';
+	if (bufsize == (sizeof filteredbuf) / 2 - 1)
 	    {
-	    hadnl = 1;
-	    contextbufs[0][--bufsize] = '\0';
-	    }
-	else
-	    hadnl = 0;
-	if (bufsize == (sizeof contextbufs[0]) / 2 - 1)
-	    {
-	    ch = (unsigned char) contextbufs[0][bufsize - 1];
-	    while (bufsize < sizeof contextbufs[0] - 1
+	    ch = (unsigned char) filteredbuf[bufsize - 1];
+	    while (bufsize < sizeof filteredbuf - 1
 	      &&  (iswordch ((ichar_t) ch)  ||  isboundarych ((ichar_t) ch)
 	      ||  isstringstart (ch)))
 		{
 		ch = getc (stdin);
 		if (ch == EOF)
 		    break;
-		contextbufs[0][bufsize++] = (char) ch;
+		contextbufs[0][bufsize] = (char) ch;
+		filteredbuf[bufsize++] = (char) ch;
 		contextbufs[0][bufsize] = '\0';
+		filteredbuf[bufsize] = '\0';
 		}
 	    }
 	/*
@@ -1517,55 +1730,81 @@ void askmode ()
 	** `~' followed by a filename sets parameters according to file name
 	** `^' causes rest of line to be checked after stripping 1st char
 	*/
-	if (contextoffset != 0)
+	if (askverbose  ||  contextoffset != 0)
 	    checkline (stdout);
 	else
 	    {
-	    if (contextbufs[0][0] == '*'  ||  contextbufs[0][0] == '@')
-		treeinsert(ichartosstr (strtosichar (contextbufs[0] + 1, 0), 1),
+	    if (filteredbuf[0] == '*'  ||  filteredbuf[0] == '@')
+		treeinsert(ichartosstr (strtosichar (filteredbuf + 1, 0), 1),
 		  ICHARTOSSTR_SIZE,
-		  contextbufs[0][0] == '*');
-	    else if (contextbufs[0][0] == '&')
+		  filteredbuf[0] == '*');
+	    else if (filteredbuf[0] == '&')
 		{
-		itok = strtosichar (contextbufs[0] + 1, 0);
+		itok = strtosichar (filteredbuf + 1, 0);
 		lowcase (itok);
 		treeinsert (ichartosstr (itok, 1), ICHARTOSSTR_SIZE, 1);
 		}
-	    else if (contextbufs[0][0] == '#')
+	    else if (filteredbuf[0] == '#')
 		{
 		treeoutput ();
+		insidehtml = 0;
 		math_mode = 0;
 		LaTeX_Mode = 'P';
 		}
-	    else if (contextbufs[0][0] == '!')
+	    else if (filteredbuf[0] == '!')
 		terse = 1;
-	    else if (contextbufs[0][0] == '%')
+	    else if (filteredbuf[0] == '%')
+		{
 		terse = 0;
-	    else if (contextbufs[0][0] == '-')
+		correct_verbose_mode = 0;
+		}
+	    else if (filteredbuf[0] == '-')
 		{
+		insidehtml = 0;
 		math_mode = 0;
 		LaTeX_Mode = 'P';
-		tflag = 0;
+		tflag = DEFORMAT_NROFF;
 		}
-	    else if (contextbufs[0][0] == '+')
+	    else if (filteredbuf[0] == '+')
 		{
+		insidehtml = 0;
 		math_mode = 0;
 		LaTeX_Mode = 'P';
-		tflag = strcmp (&contextbufs[0][1], "nroff") != 0
-		  &&  strcmp (&contextbufs[0][1], "troff") != 0;
+		if (strcmp ((char *) &filteredbuf[1], "plain") == 0
+		  ||  strcmp ((char *) &filteredbuf[1], "none") == 0)
+		    tflag = DEFORMAT_NONE;
+		else if (strcmp ((char *) &filteredbuf[1], "nroff") == 0
+		  ||  strcmp ((char *) &filteredbuf[1], "troff") == 0)
+		    tflag = DEFORMAT_NROFF;
+		else if (strcmp ((char *) &filteredbuf[1], "tex") == 0
+		  ||  strcmp ((char *) &filteredbuf[1], "latex") == 0
+		  ||  filteredbuf[1] == '\0') /* Backwards compatibility */
+		    tflag = DEFORMAT_TEX;
+		else if (strcmp ((char *) &filteredbuf[1], "html") == 0
+		  ||  strcmp ((char *) &filteredbuf[1], "sgml") == 0)
+		    tflag = DEFORMAT_SGML;
+		else
+		    tflag = DEFORMAT_TEX;	/* Backwards compatibility */
 		}
-	    else if (contextbufs[0][0] == '~')
+	    else if (filteredbuf[0] == '~')
 		{
-		defdupchar = findfiletype (&contextbufs[0][1], 1, (int *) NULL);
-		if (defdupchar < 0)
-		    defdupchar = 0;
+		if (hadnl)
+		    filteredbuf[bufsize - 1] = '\0';
+		defstringgroup =
+		  findfiletype ((char *) &filteredbuf[1], 1, (int *) NULL);
+		if (defstringgroup < 0)
+		    defstringgroup = 0;
+		if (hadnl)
+		    filteredbuf[bufsize - 1] = '\n';
 		}
+	    else if (filteredbuf[0] == '`')
+		correct_verbose_mode = 1;
 	    else
 		{
-		if (contextbufs[0][0] == '^')
+		if (filteredbuf[0] == '^')
 		    {
 		    /* Strip off leading uparrow */
-		    for (cp1 = contextbufs[0], cp2 = contextbufs[0] + 1;
+		    for (cp1 = filteredbuf, cp2 = filteredbuf + 1;
 		      (*cp1++ = *cp2++) != '\0';
 		      )
 			;
@@ -1591,31 +1830,45 @@ void askmode ()
 	    }
 #endif
 	}
+    if (askverbose)
+	(void) printf ("\n");
     }
 
-/* Copy/ignore "cnt" number of characters pointed to by *cc. */
+/*
+ * Copy up to "cnt" characters to the output file.  For historical
+ * reasons, cc points to a characer in "filteredbuf", but the copying
+ * must be done from "contextbufs[0]".  As a side effect this function
+ * advances cc by the number of characters actually copied.
+ */
 void copyout (cc, cnt)
-    register char **	cc;
-    register int	cnt;
+    unsigned char **	cc;		/* Char in filteredbuf to start at */
+    register int	cnt;		/* Number of chars to copy */
     {
-
+    register char *	cp;		/* Char in contextbufs[0] to copy */
+    
+    cp = (char *) &contextbufs[0][*cc - filteredbuf];
+    *cc += cnt;
     while (--cnt >= 0)
 	{
-	if (**cc == '\0')
+	if (*cp == '\0')
+	    {
+	    *cc -= cnt + 1;		/* Compensate for short copy */
 	    break;
+	    }
 	if (!aflag && !lflag)
-	    (void) putc (**cc, outfile);
-	(*cc)++;
+	    (void) putc (*cp, outfile);
+	cp++;
 	}
     }
 
 static void lookharder (string)
-    char *		string;
+    unsigned char *	string;
     {
     char		cmd[150];
     char		grepstr[100];
     register char *	g;
-    register char *	s;
+    register unsigned char *
+			s;
 #ifndef REGEX_LOOKUP
     register int	wild = 0;
 #ifdef LOOK

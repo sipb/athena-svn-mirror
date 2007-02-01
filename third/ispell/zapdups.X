@@ -1,8 +1,8 @@
-: Use /bin/sh
+!!POUNDBANG!!
 #
-# $Id: zapdups.X,v 1.1.1.1 1997-09-03 21:08:13 ghudson Exp $
+# $Id: zapdups.X,v 1.1.1.2 2007-02-01 19:50:19 ghudson Exp $
 #
-# Copyright 1993, Geoff Kuenning, Granada Hills, CA
+# Copyright 1993, 1999, 2001, 2005, Geoff Kuenning, Claremont, CA
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -18,10 +18,8 @@
 #    such.  Binary redistributions based on modified source code
 #    must be clearly marked as modified versions in the documentation
 #    and/or other materials provided with the distribution.
-# 4. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgment:
-#      This product includes software developed by Geoff Kuenning and
-#      other unpaid contributors.
+# 4. The code that causes the 'ispell -v' command to display a prominent
+#    link to the official ispell Web site may not be removed.
 # 5. The name of Geoff Kuenning may not be used to endorse or promote
 #    products derived from this software without specific prior
 #    written permission.
@@ -60,6 +58,26 @@
 # the specified file; otherwise they come from $LIBDIR/!!DEFLANG!!.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.12  2005/04/27 01:18:35  geoff
+# Work around idiotic POSIX incompatibilities in sort.  Add secure
+# temp-file handling.
+#
+# Revision 1.11  2005/04/14 14:38:23  geoff
+# Update license.  Protect against modernized (i.e., incompatible) and
+# internationalized sort commands.  Don't use /usr/tmp.
+#
+# Revision 1.10  2001/09/06 00:30:29  geoff
+# Changes from Eli Zaretskii to support DJGPP compilation.
+#
+# Revision 1.9  2001/07/25 21:51:47  geoff
+# Minor license update.
+#
+# Revision 1.8  2001/07/23 20:24:04  geoff
+# Update the copyright and the license.
+#
+# Revision 1.7  1999/01/07 01:58:10  geoff
+# Update the copyright.
+#
 # Revision 1.6  1995/01/08  23:23:58  geoff
 # Support variable hashfile suffixes for DOS purposes.
 #
@@ -67,9 +85,36 @@
 # Get rid of all old RCS log lines in preparation for the 3.1 release.
 #
 #
+
+#
+# The following is necessary so that some internationalized versions of
+# sort(1) don't confuse things by sorting into a nonstandard order.
+#
+LANG=C
+LOCALE=C
+LC_ALL=C
+LC_COLLATE=C
+LC_CTYPE=C
+export LANG LOCALE LC_COLLATE LC_CTYPE
+#
+# The following aren't strictly necessary, but I've been made paranoid
+# by problems with the stuff above.  It can't hurt to set them to a
+# sensible value.
+LC_MESSAGES=C
+LC_MONETARY=C
+LC_NUMERIC=C
+LC_TIME=C
+export LC_MESSAGES LC_MONETARY LC_NUMERIC LC_TIME
 LIBDIR=!!LIBDIR!!
-TDIR=${TMPDIR-/usr/tmp}
-TMP=${TDIR}/zd$$
+TDIR=${TMPDIR-/tmp}
+TEMPDIR=`mktemp -d ${TDIR}/zapdXXXXXXXXXX 2>/dev/null`  ||  TEMPDIR="$TDIR"
+TMP=${TEMPDIR}/zapd$$
+if [ "$TEMPDIR" = "$TDIR" ]
+then
+    TOREMOVE="${TMP}*"
+else
+    TOREMOVE="$TEMPDIR"
+fi
 SORTTMP="-T ${TDIR}"			# !!SORTTMP!!
 USAGE="zapdups [-d [-n]] [-l langfile] dict-0 dict-1 ..."
 
@@ -107,14 +152,14 @@ then
     exit 1
 fi
 
-FAKEHASH=$TMP.a!!HASHSUFFIX!!
+FAKEHASH=${TMP}!!HASHSUFFIX!!
 FAKEDICT=$TMP.b
 SEEN=$TMP.c
 LATEST=$TMP.d
 DUPS=$TMP.e
 
-trap "rm -f $TMP.*; exit 1" 1 2 15
-trap "rm -f $TMP.*; exit 0" 13
+trap "rm -rf $TOREMOVE; exit 1" 1 2 15
+trap "rm -rf $TOREMOVE; exit 0" 13
 
 #
 # Create a dummy dictionary to hold a compiled copy of the language
@@ -122,7 +167,7 @@ trap "rm -f $TMP.*; exit 0" 13
 #
 echo 'QQQQQQQQ' > $FAKEDICT
 buildhash -s $FAKEDICT $langtabs $FAKEHASH \
-  ||  (echo "Couldn't create fake hash file" 1>&2; rm -f $TMP.*; exit 1) \
+  ||  (echo "Couldn't create fake hash file" 1>&2; rm -rf $TOREMOVE; exit 1) \
   ||  exit 1
 rm -f ${FAKEDICT}*
 
@@ -134,7 +179,7 @@ nl='
 ispell -e -d $FAKEHASH < "$1" \
   | tr ' ' "$nl" \
   | sort $SORTTMP -u \
-  | sed 's@$@	'"$1@" \
+  | sed -e 's@$@	'"$1@" \
   > $SEEN
 shift
 
@@ -152,7 +197,7 @@ do
     ispell -e -d $FAKEHASH < "$dict" \
       | tr ' ' "$nl" \
       | sort $SORTTMP -u \
-      | sed 's@$@	'"$dict@" \
+      | sed -e 's@$@	'"$dict@" \
       > $LATEST
     join '-t	' $SEEN $LATEST > $DUPS
     if [ -s $DUPS ]
@@ -160,9 +205,9 @@ do
 	cat $DUPS
 	if [ $delete = yes ]
 	then
-	    sed "s@	.*	$dict@	$dict@" $DUPS \
+	    sed -e "s@	.*	$dict@	$dict@" $DUPS \
 	      | comm -23 $LATEST - \
-	      | sed "s@	$dict@@" \
+	      | sed -e "s@	$dict@@" \
 	      | if [ $munchit = yes ]
 		then
 		    munchlist -l "$langtabs" > "$dict"
@@ -179,4 +224,4 @@ do
     fi
 done \
   | sort -u
-rm -f $TMP.*
+rm -rf $TOREMOVE

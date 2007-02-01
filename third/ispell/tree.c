@@ -1,6 +1,6 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: tree.c,v 1.1.1.1 1997-09-03 21:08:12 ghudson Exp $";
+    "$Id: tree.c,v 1.1.1.2 2007-02-01 19:49:56 ghudson Exp $";
 #endif
 
 /*
@@ -9,7 +9,8 @@ static char Rcs_Id[] =
  * Pace Willisson, 1983
  * Hash support added by Geoff Kuenning, 1987
  *
- * Copyright 1987, 1988, 1989, 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1987-1989, 1992, 1993, 1999, 2001, 2005, Geoff Kuenning,
+ * Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,10 +26,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -48,6 +47,40 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.66  2005/04/14 14:43:46  geoff
+ * Update copyright
+ *
+ * Revision 1.65  2005/04/14 14:38:23  geoff
+ * Update license.  Don't segfault if HOME is unset in the environment
+ * and PDICTHOME isn't set in config.X
+ *
+ * Revision 1.64  2001/09/06 00:30:29  geoff
+ * Many changes from Eli Zaretskii to support DJGPP compilation.
+ *
+ * Revision 1.63  2001/07/25 21:51:46  geoff
+ * Minor license update.
+ *
+ * Revision 1.62  2001/07/23 20:24:04  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.61  2000/08/22 10:52:25  geoff
+ * Fix some compiler warnings.
+ *
+ * Revision 1.60  2000/06/26 20:43:50  geoff
+ * Fix a minor lint bug.  If HOME is unset, still attempt to find the
+ * personal dictionary using all ways that don't depend on HOME (in
+ * particular, the -p switch).
+ *
+ * Revision 1.59  1999/01/18 03:28:45  geoff
+ * Turn many char declarations into unsigned char, so that we won't have
+ * sign-extension problems.
+ *
+ * Revision 1.58  1999/01/07  01:57:46  geoff
+ * Update the copyright.
+ *
+ * Revision 1.57  1997/12/02  06:25:11  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
  * Revision 1.56  1995/01/08  23:23:49  geoff
  * Support PDICTHOME for DOS purposes.
  *
@@ -70,7 +103,7 @@ void		treeinit P ((char * p, char * LibDict));
 static FILE *	trydict P ((char * dictname, char * home,
 		  char * prefix, char * suffix));
 static void	treeload P ((FILE * dictf));
-void		treeinsert P ((char * word, int wordlen, int keep));
+void		treeinsert P ((unsigned char * word, int wordlen, int keep));
 static struct dent * tinsert P ((struct dent * proto));
 struct dent *	treelookup P ((ichar_t * word));
 #if SORTPERSONAL != 0
@@ -101,7 +134,7 @@ static int goodsizes[] =
 
 static char		personaldict[MAXPATHLEN];
 static FILE *		dictf;
-static			newwords = 0;
+static int		newwords = 0;
 
 void treeinit (p, LibDict)
     char *		p;		/* Value specified in -p switch */
@@ -122,16 +155,15 @@ void treeinit (p, LibDict)
     if (p == NULL)
 	p = getenv (PDICTVAR);
     /*
-    ** if p exists and begins with '/' we don't really need HOME,
-    ** but it's not very likely that HOME isn't set anyway (on non-DOS
-    ** systems).
+    ** Figure out the user's home.  If HOME is unset (which can happen
+    ** if ispell is invoked unusually, such as from a daemon), we
+    ** won't look for any HOME personal dictionaries.  Exception:  If
+    ** PDICTHOME is set, we use it as a default for HOME.
     */
     if ((h = getenv (HOME)) == NULL)
 	{
 #ifdef PDICTHOME
 	h = PDICTHOME;
-#else /* PDICTHOME */
-	return;
 #endif /* PDICTHOME */
 	}
 
@@ -157,28 +189,35 @@ void treeinit (p, LibDict)
 	 *     file.
 	 */
 	dictf = trydict (personaldict, (char *) NULL, DEFPDICT, LibDict);
-	secondf = trydict (seconddict, h, DEFPDICT, LibDict);
+	if (h == NULL)
+	    secondf = NULL;
+	else
+	    secondf = trydict (seconddict, h, DEFPDICT, LibDict);
 	if (dictf == NULL  &&  secondf == NULL)
 	    {
 	    dictf = trydict (personaldict, (char *) NULL, DEFPDICT, DEFPAFF);
-	    secondf = trydict (seconddict, h, DEFPDICT, DEFPAFF);
+	    if (h != NULL)
+		secondf = trydict (seconddict, h, DEFPDICT, DEFPAFF);
 	    }
 	if (dictf == NULL  &&  secondf == NULL)
 	    {
 	    dictf = trydict (personaldict, (char *) NULL, OLDPDICT, LibDict);
-	    secondf = trydict (seconddict, h, OLDPDICT, LibDict);
+	    if (h != NULL)
+		secondf = trydict (seconddict, h, OLDPDICT, LibDict);
 	    }
 	if (dictf == NULL  &&  secondf == NULL)
 	    {
 	    dictf = trydict (personaldict, (char *) NULL, OLDPDICT, OLDPAFF);
-	    secondf = trydict (seconddict, h, OLDPDICT, OLDPAFF);
+	    if (h != NULL)
+		secondf = trydict (seconddict, h, OLDPDICT, OLDPAFF);
 	    }
 	if (personaldict[0] == '\0')
 	    {
 	    if (seconddict[0] != '\0')
 		(void) strcpy (personaldict, seconddict);
 	    else
-		(void) sprintf (personaldict, "%s/%s%s", h, DEFPDICT, LibDict);
+		(void) sprintf (personaldict, "%s/%s%s", h == NULL ? "" : h,
+		  DEFPDICT, LibDict);
 	    }
 	if (dictf != NULL)
 	    {
@@ -198,8 +237,16 @@ void treeinit (p, LibDict)
 	** with "./" and "../" is considered an absolute path, since this
 	** still means we can't prepend HOME.
 	*/
-	abspath = (*p == '/'  ||  strncmp (p, "./", 2) == 0
-	  ||  strncmp (p, "../", 3) == 0);
+	abspath = IS_SLASH (*p)  ||  strncmp (p, "./", 2) == 0
+	  ||  strncmp (p, "../", 3) == 0;
+#ifdef MSDOS
+	/*
+	** DTRT with drive-letter braindamage and with backslashes.
+	*/
+	abspath |= strncmp (p, ".\\", 2) == 0
+	  || strncmp (p, "..\\", 3) == 0
+	  || (p[0] != '\0'  &&  p[1] == ':');
+#endif
 	if (abspath)
 	    {
 	    (void) strcpy (personaldict, p);
@@ -215,7 +262,9 @@ void treeinit (p, LibDict)
 	    ** The user gave us a relative pathname.  We will try it
 	    ** locally, and if that doesn't work, we'll try the home
 	    ** directory.  If neither exists, it will be created in
-	    ** the home directory if words are added.
+	    ** the home directory if words are added, unless HOME was
+	    ** unset, in which case the relative pathname will be used
+	    ** as a creation point.
 	    */
 	    (void) strcpy (personaldict, p);
 	    if ((dictf = fopen (personaldict, "r")) != NULL)
@@ -223,7 +272,7 @@ void treeinit (p, LibDict)
 		treeload (dictf);
 		(void) fclose (dictf);
 		}
-	    else if (!abspath)
+	    else if (!abspath  &&  h != NULL)
 		{
 		/* Try the home */
 		(void) sprintf (personaldict, "%s/%s", h, p);
@@ -239,7 +288,7 @@ void treeinit (p, LibDict)
 	     */
 	    if (dictf == NULL)
 		{
-		(void) fprintf (stderr, CANT_OPEN, p);
+		(void) fprintf (stderr, CANT_OPEN, p, MAYBE_CR (stderr));
 		perror ("");
 		return;
 		}
@@ -247,9 +296,10 @@ void treeinit (p, LibDict)
 	}
 
     if (!lflag  &&  !aflag
-      &&  access (personaldict, 2) < 0  &&  errno != ENOENT)
+      &&  access (personaldict, W_OK) < 0  &&  errno != ENOENT)
 	{
-	(void) fprintf (stderr, TREE_C_CANT_UPDATE, personaldict);
+	(void) fprintf (stderr, TREE_C_CANT_UPDATE, personaldict,
+	  MAYBE_CR (stderr));
 	(void) sleep ((unsigned) 2);
 	}
     }
@@ -283,28 +333,24 @@ static void treeload (loadfile)
     char		buf[BUFSIZ];	/* Buffer for reading pers dict */
 
     while (fgets (buf, sizeof buf, loadfile) != NULL)
-	treeinsert (buf, sizeof buf, 1);
+	treeinsert ((unsigned char *) buf, sizeof buf, 1);
     newwords = 0;
     }
 
 void treeinsert (word, wordlen, keep)
-    char *		word;	/* Word to insert - must be canonical */
+    unsigned char *	word;	/* Word to insert - must be canonical */
     int			wordlen; /* Length of the word buffer */
     int			keep;
     {
-    register int	i;
+    register unsigned int i;
     struct dent		wordent;
     register struct dent * dp;
     struct dent *	olddp;
-#ifndef NO_CAPITALIZATION_SUPPORT
     struct dent *	newdp;
-#endif
     struct dent *	oldhtab;
-    int			oldhsize;
+    unsigned int	oldhsize;
     ichar_t		nword[INPUTWORDLEN + MAXAFFIXLEN];
-#ifndef NO_CAPITALIZATION_SUPPORT
     int			isvariant;
-#endif
 
     /*
      * Expand hash table when it is MAXPCT % full.
@@ -326,7 +372,7 @@ void treeinsert (word, wordlen, keep)
 	  (struct dent *) calloc ((unsigned) pershsize, sizeof (struct dent));
 	if (pershtab == NULL)
 	    {
-	    (void) fprintf (stderr, TREE_C_NO_SPACE);
+	    (void) fprintf (stderr, TREE_C_NO_SPACE, MAYBE_CR (stderr));
 	    /*
 	     * Try to continue anyway, since our overflow
 	     * algorithm can handle an overfull (100%+) table,
@@ -336,7 +382,7 @@ void treeinsert (word, wordlen, keep)
 	     */
 	    if (oldhtab == NULL)
 		exit (1);		/* No old table, can't go on */
-	    (void) fprintf (stderr, TREE_C_TRY_ANYWAY);
+	    (void) fprintf (stderr, TREE_C_TRY_ANYWAY, MAYBE_CR (stderr));
 	    cantexpand = 1;		/* Suppress further messages */
 	    pershsize = oldhsize;	/* Put things back */
 	    pershtab = oldhtab;		/* ... */
@@ -352,22 +398,9 @@ void treeinsert (word, wordlen, keep)
 		dp = &oldhtab[i];
 		if (dp->flagfield & USED)
 		    {
-#ifdef NO_CAPITALIZATION_SUPPORT
-		    (void) tinsert (dp);
-#else
 		    newdp = tinsert (dp);
 		    isvariant = (dp->flagfield & MOREVARIANTS);
-#endif
 		    dp = dp->next;
-#ifdef NO_CAPITALIZATION_SUPPORT
-		    while (dp != NULL)
-			{
-			(void) tinsert (dp);
-			olddp = dp;
-			dp = dp->next;
-			free ((char *) olddp);
-			}
-#else
 		    while (dp != NULL)
 			{
 			if (isvariant)
@@ -388,7 +421,6 @@ void treeinsert (word, wordlen, keep)
 			    free ((char *) olddp);
 			    }
 			}
-#endif
 		    }
 		}
 	    if (oldhtab != NULL)
@@ -423,10 +455,8 @@ void treeinsert (word, wordlen, keep)
 	{
 	/* It's new. Insert the word. */
 	dp = tinsert (&wordent);
-#ifndef NO_CAPITALIZATION_SUPPORT
 	if (captype (dp->flagfield) == FOLLOWCASE)
 	   (void) addvheader (dp);
-#endif
 	}
     newwords |= keep;
     }
@@ -440,10 +470,7 @@ static struct dent * tinsert (proto)
     register struct dent * php;		/* Prev. value of hp, for chaining */
 
     if (strtoichar (iword, proto->word, sizeof iword, 1))
-	(void) fprintf (stderr, WORD_TOO_LONG (proto->word));
-#ifdef NO_CAPITALIZATION_SUPPORT
-    upcase (iword);
-#endif
+	(void) fprintf (stderr, WORD_TOO_LONG ((char *) proto->word));
     hcode = hash (iword, pershsize);
     php = NULL;
     hp = &pershtab[hcode];
@@ -457,7 +484,7 @@ static struct dent * tinsert (proto)
 	hp = (struct dent *) calloc (1, sizeof (struct dent));
 	if (hp == NULL)
 	    {
-	    (void) fprintf (stderr, TREE_C_NO_SPACE);
+	    (void) fprintf (stderr, TREE_C_NO_SPACE, MAYBE_CR (stderr));
 	    exit (1);
 	    }
 	}
@@ -477,17 +504,15 @@ struct dent * treelookup (word)
 
     if (pershsize <= 0)
 	return NULL;
-    (void) ichartostr (chword, word, sizeof chword, 1);
+    (void) ichartostr ((unsigned char *) chword, word, sizeof chword, 1);
     hcode = hash (word, pershsize);
     hp = &pershtab[hcode];
     while (hp != NULL  &&  (hp->flagfield & USED))
 	{
-	if (strcmp (chword, hp->word) == 0)
+	if (strcmp (chword, (char *) hp->word) == 0)
 	    break;
-#ifndef NO_CAPITALIZATION_SUPPORT
 	while (hp->flagfield & MOREVARIANTS)
 	    hp = hp->next;
-#endif
 	hp = hp->next;
 	}
     if (hp != NULL  &&  (hp->flagfield & USED))
@@ -528,7 +553,7 @@ void treeoutput ()
 
     if ((dictf = fopen (personaldict, "w")) == NULL)
 	{
-	(void) fprintf (stderr, CANT_CREATE, personaldict);
+	(void) fprintf (stderr, CANT_CREATE, personaldict, MAYBE_CR (stderr));
 	return;
 	}
 
@@ -550,10 +575,8 @@ void treeoutput ()
 		{
 		if ((lent->flagfield & (USED | KEEP)) == (USED | KEEP))
 		    pdictsize++;
-#ifndef NO_CAPITALIZATION_SUPPORT
 		while (lent->flagfield & MOREVARIANTS)
 		  lent = lent->next;
-#endif
 		}
 	    }
 	for (cent = hashtbl, ehtab = hashtbl + hashsize;
@@ -569,10 +592,8 @@ void treeoutput ()
 		** test below.  This test will appear
 		** several more times in this routine.
 		*/
-#ifndef NO_CAPITALIZATION_SUPPORT
 		if (captype (cent->flagfield) != FOLLOWCASE
 		  &&  cent->word != NULL)
-#endif
 		    pdictsize++;
 		}
 	    }
@@ -590,10 +611,8 @@ void treeoutput ()
 		if ((lent->flagfield & (USED | KEEP)) == (USED | KEEP))
 		    {
 		    toutent (dictf, lent, 1);
-#ifndef NO_CAPITALIZATION_SUPPORT
 		    while (lent->flagfield & MOREVARIANTS)
 			lent = lent->next;
-#endif
 		    }
 		}
 	    }
@@ -603,10 +622,8 @@ void treeoutput ()
 	    {
 	    if ((cent->flagfield & (USED | KEEP)) == (USED | KEEP))
 		{
-#ifndef NO_CAPITALIZATION_SUPPORT
 		if (captype (cent->flagfield) != FOLLOWCASE
 		  &&  cent->word != NULL)
-#endif
 		    toutent (dictf, cent, 1);
 		}
 	    }
@@ -628,10 +645,8 @@ void treeoutput ()
 	    if ((lent->flagfield & (USED | KEEP)) == (USED | KEEP))
 		{
 		*sortptr++ = lent;
-#ifndef NO_CAPITALIZATION_SUPPORT
 		while (lent->flagfield & MOREVARIANTS)
 		    lent = lent->next;
-#endif
 		}
 	    }
 	}
@@ -639,10 +654,8 @@ void treeoutput ()
 	{
 	if ((cent->flagfield & (USED | KEEP)) == (USED | KEEP))
 	    {
-#ifndef NO_CAPITALIZATION_SUPPORT
 	    if (captype (cent->flagfield) != FOLLOWCASE
 	      &&  cent->word != NULL)
-#endif
 		*sortptr++ = cent;
 	    }
 	}
@@ -671,8 +684,8 @@ VOID * mymalloc (size)
 void myfree (ptr)
     VOID * ptr;
     {
-    if (hashstrings != NULL  &&  (char *) ptr >= hashstrings
-      &&  (char *) ptr <= hashstrings + hashheader.stringsize)
+    if (hashstrings != NULL  &&  (unsigned char *) ptr >= hashstrings
+      &&  (unsigned char *) ptr <= hashstrings + hashheader.stringsize)
 	return;			/* Can't free stuff in hashstrings */
     free (ptr);
     }
@@ -690,7 +703,7 @@ char * do_regex_lookup (expr, whence)
     static int		    curindex;
     static struct dent *    curpersent;
     static int		    curpersindex;
-    static char *	    cmp_expr;
+    static REGCTYPE	    cmp_expr = (REGCTYPE) NULL;
     char		    dummy[INPUTWORDLEN + MAXAFFIXLEN];
     ichar_t *		    is;
 
@@ -699,7 +712,8 @@ char * do_regex_lookup (expr, whence)
 	is = strtosichar (expr, 0);
 	upcase (is);
 	expr = ichartosstr (is, 1);
-        cmp_expr = REGCMP (expr);
+	REGFREE (cmp_expr);	/* free previous compiled pattern, if any */
+        cmp_expr = REGCMP (cmp_expr, expr);
         curent = hashtbl;
         curindex = 0;
         curpersent = pershtab;
@@ -710,11 +724,11 @@ char * do_regex_lookup (expr, whence)
     for (  ; curindex < hashsize;  curent++, curindex++)
 	{
         if (curent->word != NULL
-          &&  REGEX (cmp_expr, curent->word, dummy) != NULL)
+          &&  REGEX (cmp_expr, (char *) curent->word, dummy) != NULL)
 	    {
 	    curindex++;
 	    /* Everybody's gotta write a wierd expression once in a while! */
-	    return curent++->word;
+	    return (char *) curent++->word;
 	    }
 	}
     /* Try the personal dictionary too */
@@ -722,7 +736,7 @@ char * do_regex_lookup (expr, whence)
 	{
         if ((curpersent->flagfield & USED) != 0
           &&  curpersent->word != NULL
-          &&  REGEX (cmp_expr, curpersent->word, dummy) != NULL)
+          &&  REGEX (cmp_expr, (char *) curpersent->word, dummy) != NULL)
 	    {
 	    curpersindex++;
 	    /* Everybody's gotta write a wierd expression once in a while! */

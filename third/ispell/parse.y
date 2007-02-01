@@ -1,11 +1,11 @@
 %{
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: parse.y,v 1.1.1.1 1997-09-03 21:08:10 ghudson Exp $";
+    "$Id: parse.y,v 1.1.1.2 2007-02-01 19:50:06 ghudson Exp $";
 #endif
 
 /*
- * Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1992, 1993, 1999, 2001, 2005, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,10 +21,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -44,6 +42,52 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.65  2005/04/20 23:16:32  geoff
+ * Rename some variables to make them more meaningful.  Add (disabled)
+ * code to detect cases where not all alternate string characters are
+ * defined.  Add (disabled) code to detect duplicate alternate string
+ * character definitions.  Rewrite the code that assigns group numbers to
+ * string chracters, making it faster and more robust.
+ *
+ * Revision 1.64  2005/04/14 14:38:23  geoff
+ * Update license.  Get rid of a stray semicolon that's been there for
+ * over a decade.  For 64 mask bits, allow the non-alphabetic flag
+ * characters that fall between 'Z' and 'a'.
+ *
+ * Revision 1.63  2002/06/20 23:46:16  geoff
+ * Fix a bug in flag checking when using 64 mask bits.
+ *
+ * Revision 1.62  2001/09/06 00:30:29  geoff
+ * Changes from Eli Zaretskii to support DJGPP compilation.
+ *
+ * Revision 1.61  2001/07/25 21:51:46  geoff
+ * Minor license update.
+ *
+ * Revision 1.60  2001/07/23 20:24:04  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.59  2000/08/22 10:52:25  geoff
+ * Fix a whole bunch of signed/unsigned discrepancies.
+ *
+ * Revision 1.58  2000/02/07 22:16:53  geoff
+ * Fix a minor typo in a synonym
+ *
+ * Revision 1.57  1999/01/18 03:28:40  geoff
+ * Turn many char declarations into unsigned char, so that we won't have
+ * sign-extension problems.
+ *
+ * Revision 1.56  1999/01/07  01:23:11  geoff
+ * Update the copyright.
+ *
+ * Revision 1.55  1999/01/03  01:46:41  geoff
+ * Add support for the "plain" deformatters.
+ *
+ * Revision 1.54  1997/12/02  06:25:04  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
+ * Revision 1.53  1995/11/08  05:09:22  geoff
+ * Allow html/sgml as a deformatter type.
+ *
  * Revision 1.52  1994/11/21  07:03:03  geoff
  * Get rid of the last vestiges of the "+" flag option.
  *
@@ -93,7 +137,7 @@ static char Rcs_Id[] =
     int			simple;		/* Simple char or lval from yylex */
     struct
 	{
-	char *		set;		/* Character set */
+	unsigned char *	set;		/* Character set */
 	int		complement;	/* NZ if it is a complement set */
 	}
 			charset;
@@ -126,16 +170,16 @@ static int	precmp P ((struct flagent * flag1, struct flagent * flag2));
 				/* Compare prefix flags for qsort */
 static int	addstringchar P ((unsigned char * str, int lower, int upper));
 				/* Add a string character to the table */
-static int	stringcharcmp P ((char * a, char * b));
+static int	stringcharcmp P ((unsigned char * a, unsigned char * b));
 				/* Strcmp() done right, for Sun 4's */
 #ifdef TBLDEBUG
 static void	tbldump P ((struct flagent * flagp, int numflags));
 				/* Dump a flag table */
 static void	entdump P ((struct flagent * flagp));
 				/* Dump one flag entry */
-static void	setdump P ((char * setp, int mask));
+static void	setdump P ((unsigned char * setp, int mask));
 				/* Dump a set specification */
-static void	subsetdump P ((char * setp, int mask, int dumpval));
+static void	subsetdump P ((unsigned char * setp, int mask, int dumpval));
 				/* Dump part of a set spec */
 #endif
 
@@ -157,6 +201,7 @@ static struct flagent * curents;	/* Current flag entry collection */
 static char *		fname = "(stdin)"; /* Current file name */
 static char		lexungrab[MAXSTRINGCHARLEN * 2]; /* Spc for ungrabch */
 static int		lineno = 1;	/* Current line number in file */
+static int		nbasestrings = 0; /* Number of base stringchars */
 static struct flagent * table;		/* Current table being built */
 static int		tblnum;		/* Numer of entries in table */
 static int		tblsize = 0;	/* Size of the flag table */
@@ -236,15 +281,52 @@ option_group	:	option_stmt
 		;
 
 charset_group	:	deftype_stmt charset_stmt
+			    {
+			    nbasestrings = hashheader.nstrchars;
+			    }
 		|	charset_stmt
+			    {
+			    nbasestrings = hashheader.nstrchars;
+			    }
 		|	charset_group charset_stmt
+			    {
+			    nbasestrings = hashheader.nstrchars;
+			    }
 		;
 
 deftype_stmt	:	DEFSTRINGTYPE stringtype_info
 		;
 
 altchar_group	:	altchar_stmt
+			    /*
+			     * The following error message is disabled (if 0)
+			     * because (a) the test doesn't work right with
+			     * PARSE_Y_MULTIPLE_STRINGS disabled, and (b) I'm
+			     * not convinced that it's always a mistake to
+			     * leave some alternates undefined.
+			     */
+			    {
+#if 0
+			    if (hashheader.nstrchars
+			      != ctypenum * nbasestrings)
+				yyerror (PARSE_Y_WRONG_STRING_COUNT);
+#endif /* 0 */
+			    }
 		|	altchar_group altchar_stmt
+			    /*
+			     * The following error message is disabled (if 0)
+			     * because (a) the test doesn't work right with
+			     * PARSE_Y_MULTIPLE_STRINGS disabled, and (b) I'm
+			     * not convinced that it's always a mistake to
+			     * leave some alternates undefined.
+			     */
+			    {
+#if 0
+			    if (hashheader.nstrchars
+			      != ctypenum * nbasestrings)
+				yyerror (PARSE_Y_WRONG_STRING_COUNT);
+#endif /* 0 */
+			    }
 		;
 
 charset_stmt 	:	WORDCHARS char_set char_set
@@ -439,7 +521,7 @@ charset_stmt 	:	WORDCHARS char_set char_set
 		|	STRINGCHAR STRING STRING
 			    {
 			    int lcslot;
-			    int len;
+			    unsigned int len;
 			    int ucslot;
 
 			    len = strlen ((char *) $2);
@@ -481,22 +563,30 @@ altchar_stmt	:	ALTSTRINGTYPE stringtype_info
 
 stringtype_info	:	STRING STRING filesuf_list
 			    {
-			    chartypes[ctypenum].name = (char *) $1;
+			    chartypes[ctypenum].name = (unsigned char *) $1;
 			    chartypes[ctypenum].deformatter = (char *) $2;
 			    /*
 			     * Implement a few common synonyms.  This should
 			     * be generalized.
 			     */
-			    if (strcmp ((char *) $2, "TeX") == 0)
+			    if (strcmp ((char *) $2, "none") == 0)
+				(void) strcpy ((char *) $2, "plain");
+			    else if (strcmp ((char *) $2, "TeX") == 0)
 				(void) strcpy ((char *) $2, "tex");
 			    else if (strcmp ((char *) $2, "troff") == 0)
 				(void) strcpy ((char *) $2, "nroff");
+			    else if (strcmp ((char *) $2, "HTML") == 0
+			      ||  strcmp ((char *) $2, "html") == 0
+			      ||  strcmp ((char *) $2, "SGML") == 0)
+				(void) strcpy ((char *) $2, "sgml");
 			    /*
 			     * Someday, we'll accept generalized deformatters.
 			     * Then we can get rid of this test.
 			     */
-			    if (strcmp ((char *) $2, "nroff") != 0
-			      &&  strcmp ((char *) $2, "tex") != 0)
+			    if (strcmp ((char *) $2, "plain") != 0
+			      &&  strcmp ((char *) $2, "nroff") != 0
+			      &&  strcmp ((char *) $2, "tex") != 0
+			      &&  strcmp ((char *) $2, "sgml") != 0)
 				yyerror (PARSE_Y_BAD_DEFORMATTER);
 			    ctypenum++;
 			    hashheader.nstrchartype = ctypenum;
@@ -581,10 +671,10 @@ altchar_spec_group
 
 altchar_spec	:	ALTSTRINGCHAR STRING STRING
 			    {
-			    int i;
-			    int len;
+			    unsigned int len;
 			    int slot;
 
+			    defstringgroup = ctypenum - 1;
 			    len = strlen ((char *) $2);
 			    if (len > MAXSTRINGCHARLEN)
 				yyerror (PARSE_Y_LONG_STRING);
@@ -592,28 +682,25 @@ altchar_spec	:	ALTSTRINGCHAR STRING STRING
 				yyerror (PARSE_Y_NULL_STRING);
 			    else if (hashheader.nstrchars >= MAXSTRINGCHARS)
 				yyerror (PARSE_Y_MANY_STRINGS);
-			    else if (!isstringch ((char *) $3, 1))
+#if 0
+			    /*
+			     * The following error message is disabled (if 0)
+			     * because it turns out some languages (e.g.,
+			     * German) actually need to have multiple
+			     * alternate stringchars mapping to the same base
+			     * stringchar.
+			     */
+			    else if (isstringch ($2, 0))
+				yyerror (PARSE_Y_MULTIPLE_STRINGS);
+#endif /* 0 */
+			    else if (!isstringch ($3, 1))
 				yyerror (PARSE_Y_NO_SUCH_STRING);
 			    else
 				{
 				slot = addstringchar ($2, 0, 0) - SET_SIZE;
-				if (laststringch >= slot)
+				if (laststringch >= (unsigned int) slot)
 				    laststringch++;
 				hashheader.stringdups[slot] = laststringch;
-				for (i = hashheader.nstrchars;  --i >= 0;  )
-				    {
-				    if (hashheader.stringdups[i]
-				      == laststringch)
-					hashheader.dupnos[slot]++;
-				    }
-				/*
-				 * The above code sets dupnos one too high,
-				 * because it counts the character itself.
-				 */
-				if (hashheader.dupnos[slot]
-				  != hashheader.nstrchartype)
-				    yyerror (PARSE_Y_MULTIPLE_STRINGS);
-				hashheader.dupnos[slot]--;
 				}
 			    free ((char *) $2);
 			    free ((char *) $3);
@@ -630,7 +717,6 @@ option_stmt	:	NROFFCHARS STRING
 				yyerror (PARSE_Y_WRONG_NROFF);
 			    free ((char *) $2);
 			    }
-		;
 		|	TEXCHARS STRING
 			    {
 			    if (strlen ((char *) $2)
@@ -677,7 +763,8 @@ option_stmt	:	NROFFCHARS STRING
 				      toupper (hashheader.compoundbit);
 #endif /* MASKBITS */
 #if MASKBITS <= 64
-				if (!isalpha (hashheader.compoundbit))
+				if (hashheader.compoundbit < 'A'
+				  ||  hashheader.compoundbit > 'z')
 				    yyerror (PARSE_Y_BAD_FLAG);
 #endif /* MASKBITS */
 				hashheader.compoundbit =
@@ -702,9 +789,11 @@ option_stmt	:	NROFFCHARS STRING
 char_set	:	'.'
 			    {
 			    int		i;
-			    char *	set;
+			    unsigned char *
+					set;
 
-			    set = malloc (SET_SIZE + MAXSTRINGCHARS);
+			    set = (unsigned char *)
+			      malloc (SET_SIZE + MAXSTRINGCHARS);
 			    if (set == NULL)
 				{
 				yyerror (PARSE_Y_NO_SPACE);
@@ -717,16 +806,17 @@ char_set	:	'.'
 			    }
 		|	STRING
 			    {
-			    int		setlen;
+			    unsigned int	setlen;
 
-			    $$.set = malloc (SET_SIZE + MAXSTRINGCHARS);
+			    $$.set = (unsigned char *)
+			      malloc (SET_SIZE + MAXSTRINGCHARS);
 			    if ($$.set == NULL)
 				{
 				yyerror (PARSE_Y_NO_SPACE);
 				exit (1);
 				}
 			    (void) bzero ($$.set, SET_SIZE + MAXSTRINGCHARS);
-			    if (l1_isstringch ((char *) $1, setlen, 1))
+			    if (l1_isstringch ($1, setlen, 1))
 				{
 				if (setlen != strlen ((char *) $1))
 				    yyerror (PARSE_Y_NEED_BLANK);
@@ -870,7 +960,7 @@ flagdef		:	FLAG STRING ':' rules
 				flagbit = toupper (flagbit);
 #endif /* MASKBITS */
 #if MASKBITS <= 64
-			    if (!isalpha (flagbit))
+			    if (flagbit < 'A'  ||  flagbit > 'z')
 				yyerror (PARSE_Y_BAD_FLAG);
 #endif /* MASKBITS */
 			    flagbit = CHARTOBIT (flagbit);
@@ -902,7 +992,7 @@ flagdef		:	FLAG STRING ':' rules
 				flagbit = toupper (flagbit);
 #endif /* MASKBITS */
 #if MASKBITS <= 64
-			    if (!isalpha (flagbit))
+			    if (flagbit < 'A'  ||  flagbit > 'z')
 				yyerror (PARSE_Y_BAD_FLAG);
 #endif /* MASKBITS */
 			    flagbit = CHARTOBIT (flagbit);
@@ -1191,7 +1281,7 @@ ichar_string	:	STRING
 			    {
 			    ichar_t *tichar;
 
-			    tichar = strtosichar ((char *) $1, 1);
+			    tichar = strtosichar ($1, 1);
 			    $$ = (ichar_t *) malloc (sizeof (ichar_t)
 			      * (icharlen (tichar) + 1));
 			    if ($$ == NULL)
@@ -1285,7 +1375,7 @@ static int yylex ()
 	    case '\\':
 		backslashed = 1;
 		ch = backch ();
-		*lexp++ = (char) ch;
+		*lexp++ = (unsigned char) ch;
 		break;
 	    case ' ':
 	    case '\t':
@@ -1304,11 +1394,7 @@ static int yylex ()
 		*lexp = '\0';
 		return kwanalyze (backslashed, lexstring);
 	    default:
-		*lexp++ = (char) ch;
-#ifdef NO8BIT
-		if (ch & 0x80)
-		    yyerror (PARSE_Y_8_BIT);
-#endif /* NO8BIT */
+		*lexp++ = (unsigned char) ch;
 		break;
 	    }
 	ch = grabchar ();
@@ -1340,13 +1426,6 @@ static int kwanalyze (backslashed, str)
 	exit (1);
 	}
     (void) strcpy ((char *) yylval.string, (char *) str);
-#ifdef NO8BIT
-    while (*str != '\0')
-	{
-	if (*str++ & 0x80)
-	    yyerror (PARSE_Y_8_BIT);
-	}
-#endif /* NO8BIT */
     return STRING;
     }
 
@@ -1367,7 +1446,7 @@ static void getqstring ()
 	{
 	if (ch == '\\')
 	    ch = backch ();
-	*lexp++ = (char) ch;
+	*lexp++ = (unsigned char) ch;
 	}
     *lexp++ = '\0';
     if (ch == EOF)
@@ -1387,14 +1466,7 @@ static void getqstring ()
 	yyerror (PARSE_Y_NO_SPACE);
 	exit (1);
 	}
-    (void) strcpy ((char *) yylval.string, lexstring);
-#ifdef NO8BIT
-    for (lexp = lexstring;  *lexp != '\0';  )
-	{
-	if (*lexp++ & 0x80)
-	    yyerror (PARSE_Y_8_BIT);
-	}
-#endif /* NO8BIT */
+    (void) strcpy ((char *) yylval.string, (char *) lexstring);
     }
 
 /*
@@ -1405,7 +1477,7 @@ static void getrange ()			/* Parse a range set */
     {
     register int	ch;		/* Next character read */
     register int	lastch;		/* Previous char, for ranges */
-    char		stringch[MAXSTRINGCHARLEN];
+    unsigned char	stringch[MAXSTRINGCHARLEN];
     int			stringchlen;
 
     yylval.charset.set = malloc (SET_SIZE + MAXSTRINGCHARS);
@@ -1440,7 +1512,7 @@ static void getrange ()			/* Parse a range set */
 	{
 	if (isstringstart (ch))		/* Handle a possible string character */
 	    {
-	    stringch[0] = (char) ch;
+	    stringch[0] = (unsigned char) ch;
 	    for (stringchlen = 1;
 	      stringchlen < MAXSTRINGCHARLEN;
 	      stringchlen++)
@@ -1456,7 +1528,7 @@ static void getrange ()			/* Parse a range set */
 		if (ch == EOF)
 		    break;
 		else
-		    stringch[stringchlen] = (char) ch;
+		    stringch[stringchlen] = (unsigned char) ch;
 		}
 	    if (stringchlen == 0)
 		{
@@ -1476,13 +1548,6 @@ static void getrange ()			/* Parse a range set */
 	    yylval.charset.set[ch] = 1;
 	    continue;
 	    }
-#ifdef NO8BIT
-	if (ch & 0x80)
-	    {
-	    yyerror (PARSE_Y_8_BIT);
-	    ch &= 0x7F;
-	    }
-#endif /* NO8BIT */
 	if (ch == '-')			/* Handle a range */
 	    {
 	    if (lastch == -1)
@@ -1503,13 +1568,6 @@ static void getrange ()			/* Parse a range set */
 		    }
 		else
 		    {
-#ifdef NO8BIT
-		    if (ch & 0x80)
-			{
-			yyerror (PARSE_Y_8_BIT);
-			ch &= 0x7F;
-			}
-#endif /* NO8BIT */
 		    if (ch == '\\')
 			ch = backch ();
 		    while (lastch <= ch)
@@ -1612,13 +1670,6 @@ static int backch ()			/* Process post-backslash characters */
 		break;
 	    }
 	}
-#ifdef NO8BIT
-    if (ch & 0x80)
-	{
-	yyerror (PARSE_Y_8_BIT);
-	ch &= 0x7F;
-	}
-#endif /* NO8BIT */
     return ch;
     }
 
@@ -1643,7 +1694,7 @@ int yyopen (file)
     aff_file = fopen (file, "r");
     if (aff_file == NULL)
 	{
-	(void) fprintf (stderr, CANT_OPEN, file);
+	(void) fprintf (stderr, CANT_OPEN, file, MAYBE_CR (stderr));
 	perror ("");
 	return 1;
 	}
@@ -1677,7 +1728,7 @@ void yyinit ()
     for (i = 0;  i < MAXSTRINGCHARS;  i++)
 	{
 	hashheader.stringdups[i] = i;
-	hashheader.dupnos[i] = 0;
+	hashheader.groupnos[i] = 0;
 	}
     
     hashheader.sortval = 1;	/* This is so 0 can mean uninitialized */
@@ -1763,7 +1814,11 @@ static int precmp (flag1, flag2)	/* Compare prefix flags for qsort */
 	return icharcmp (flag1->affix, flag2->affix);
     }
 
-static int addstringchar (str, lower, upper) /* Add a string character */
+/* 
+ * Add a string character to the table, inserting it in order and
+ * updating the table of duplicate string characters.
+ */
+static int addstringchar (str, lower, upper)
     register unsigned char *	str;	/* String character to be added */
     int				lower;	/* NZ if a lower string */
     int				upper;	/* NZ if an upper string */
@@ -1793,7 +1848,7 @@ static int addstringchar (str, lower, upper) /* Add a string character */
      */
     for (slot = 0;  slot < hashheader.nstrchars;  slot++)
 	{
-	if (stringcharcmp (&hashheader.stringchars[slot][0], (char *) str) > 0)
+	if (stringcharcmp (&hashheader.stringchars[slot][0], str) > 0)
 	    break;
 	}
     /*
@@ -1822,8 +1877,9 @@ static int addstringchar (str, lower, upper) /* Add a string character */
      */
     for (mslot = hashheader.nstrchars + SET_SIZE;  --mslot >= slot;  )
 	{
-	(void) strcpy (&hashheader.stringchars[mslot + 1 - SET_SIZE][0],
-	  &hashheader.stringchars[mslot - SET_SIZE][0]);
+	(void) strcpy (
+	  (char *) &hashheader.stringchars[mslot + 1 - SET_SIZE][0],
+	  (char *) &hashheader.stringchars[mslot - SET_SIZE][0]);
 	hashheader.lowerchars[mslot + 1] = hashheader.lowerchars[mslot];
 	hashheader.upperchars[mslot + 1] = hashheader.upperchars[mslot];
 	hashheader.wordchars[mslot + 1] = hashheader.wordchars[mslot];
@@ -1837,23 +1893,24 @@ static int addstringchar (str, lower, upper) /* Add a string character */
 	hashheader.sortorder[mslot + 1] = hashheader.sortorder[mslot];
 	hashheader.stringdups[mslot + 1 - SET_SIZE] =
 	  hashheader.stringdups[mslot - SET_SIZE];
-	hashheader.dupnos[mslot + 1 - SET_SIZE] =
-	  hashheader.dupnos[mslot - SET_SIZE];
+	hashheader.groupnos[mslot + 1 - SET_SIZE] =
+	  hashheader.groupnos[mslot - SET_SIZE];
 	}
     /*
      * Insert the new string character into the slot we made.  The
      * caller may choose to change the case-conversion field.
      */
-    (void) strcpy (&hashheader.stringchars[slot - SET_SIZE][0], (char *) str);
-    hashheader.lowerchars[slot] = (char) lower;
-    hashheader.upperchars[slot] = (char) upper;
+    (void) strcpy ((char *) &hashheader.stringchars[slot - SET_SIZE][0],
+      (char *) str);
+    hashheader.lowerchars[slot] = (unsigned char) lower;
+    hashheader.upperchars[slot] = (unsigned char) upper;
     hashheader.wordchars[slot] = 1;
     hashheader.boundarychars[slot] = 0;
     hashheader.sortorder[slot] = hashheader.sortval++;
     hashheader.lowerconv[slot] = (ichar_t) slot;
     hashheader.upperconv[slot] = (ichar_t) slot;
     hashheader.stringdups[slot - SET_SIZE] = slot - SET_SIZE;
-    hashheader.dupnos[slot - SET_SIZE] = 0;
+    hashheader.groupnos[slot - SET_SIZE] = ctypenum - 1;
     /*
      * Add the first character of the string to the string-starts table, and
      * bump the count.
@@ -1864,34 +1921,23 @@ static int addstringchar (str, lower, upper) /* Add a string character */
     }
 
 /*
- * This routine is a reimplemention of strcmp(), needed because the
- * idiots at Sun managed to screw up the implementation of strcmp on
- * Sun 4's (they used unsigned comparisons, even though characters
- * default to signed).  I hate hate HATE putting in this routine just
- * to support the stupidity of one programmer who ought to find a new
- * career digging ditches, but there are a lot of Sun 4's out there,
- * so I don't really have a lot of choice.
+ * This routine is a reimplemention of strcmp(), needed because we use
+ * unsigned characters internally.  (Actually, the idiots at Sun thought
+ * that this would be a good idea for the default strcmp, which is really,
+ * really stupid.  But I can't count on using their broken implementation,
+ * so I have to do it myself in any case.)
  */
 static int stringcharcmp (a,  b)
-    register char *		a;
-    register char *		b;
+    register unsigned char *	a;
+    register unsigned char *	b;
     {
 
-#ifdef NO8BIT
-    while (*a != '\0')
-	{
-	if (((*a++ ^ *b++) & NOPARITY) != 0)
-	    return (*--a & NOPARITY) - (*--b & NOPARITY);
-	}
-    return (*a & NOPARITY) - (*b & NOPARITY);
-#else /* NO8BIT */
     while (*a != '\0')
 	{
 	if (*a++ != *b++)
 	    return *--a - *--b;
 	}
     return *a - *b;
-#endif /* NO8BIT */
     }
 
 #ifdef TBLDEBUG
@@ -1928,7 +1974,7 @@ static void entdump (flagp)		/* Dump one flag entry */
     }
 
 static void setdump (setp, mask)	/* Dump a set specification */
-    register char *		setp;	/* Set to be dumped */
+    register unsigned char *	setp;	/* Set to be dumped */
     register int		mask;	/* Mask for bit to be dumped */
     {
     register int		cnum;	/* Next character's number */
@@ -1949,7 +1995,8 @@ static void setdump (setp, mask)	/* Dump a set specification */
 	if (cnum < SET_SIZE)
 	    (void) putc (firstnz, stderr);
 	else
-	    (void) fputs (hashheader.stringchars[cnum - SET_SIZE], stderr);
+	    (void) fputs ((char *) hashheader.stringchars[cnum - SET_SIZE],
+	      stderr);
 	}
     else if (numnz == SET_SIZE)
 	(void) putc ('.', stderr);
@@ -1968,7 +2015,7 @@ static void setdump (setp, mask)	/* Dump a set specification */
     }
 
 static void subsetdump (setp, mask, dumpval) /* Dump part of a set spec */
-    register char *		setp;	/* Set to be dumped */
+    register unsigned char *	setp;	/* Set to be dumped */
     register int		mask;	/* Mask for bit to be dumped */
     register int		dumpval; /* Value to be printed */
     {
@@ -2001,7 +2048,8 @@ static void subsetdump (setp, mask, dumpval) /* Dump part of a set spec */
     for (  ;  cnum < SET_SIZE + hashheader.nstrchars;  setp++, cnum++)
 	{
 	if (((*setp ^ dumpval) & mask) == 0)
-	    (void) fputs (hashheader.stringchars[cnum - SET_SIZE], stderr);
+	    (void) fputs ((char *) hashheader.stringchars[cnum - SET_SIZE],
+	      stderr);
 	}
     }
 #endif

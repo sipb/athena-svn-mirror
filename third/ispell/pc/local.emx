@@ -1,0 +1,80 @@
+/*
+ *         Local.h for MSDOS emx
+*/
+
+#define CC       "gcc"
+
+#define MSDOS
+
+#define BINDIR  "c:/ispell/bin"
+#define LIBDIR  "c:/ispell/lib"
+#define ELISPDIR "c:/ispell/lib/emacs/site-el"
+#define TEXINFODIR "c:/ispell/info"
+#define MAN1DIR "c:/ispell/man"
+#define MAN4DIR "c:/ispell/man"
+
+#define LANGUAGES "{american,MASTERDICTS=american.med+,HASHFILES=amerimed+.has,EXTRADICT=c:/ispell/dict/words} {deutsch,DICTALWAYS=deutsch.sml,DICTOPTIONS=}"
+/* above only for Makefiles not for ispell! */
+
+#define SORTTMP "-e '/!!SORTTMP!!/s/=.*$/=/'"
+#define MAKE_SORTTMP ""
+
+
+#include <fcntl.h>
+#include <conio.h>
+#include <regexp.h>
+
+#undef NO8BIT
+
+#define HAS_RENAME
+
+#define REGLIB   "-lregexp"
+
+#define DEFPDICT "_"
+#define DEFPAFF "words"
+#define OLDPDICT "_"
+#define OLDPAFF "words"
+#define TEMPNAME  "isXXXXXX"
+#define REGEX_LOOKUP
+#define REGCTYPE		char *
+#define REGCMP(re,str)          regcomp (str,(char *) 0)
+#define REGEX(re, str, dummy)   regexec (re, str, dummy, dummy, dummy, dummy, \
+                                    dummy, dummy, dummy, dummy, dummy, dummy)
+#define REGFREE(re)             (void)0
+#define EGREPCMD "grep386 -E"
+
+#define WORDS   "c:/ispell/dict/words"
+#define MAXNAMLEN       12    /* basename + "." + extension            */
+
+#ifdef MSDOS
+#define MAXEXTLEN        4    /* max. extension length including '.'   */
+#define MAXBASENAMELEN   8    /* max. base filename length without ext */
+#define MAXARGS        100    /* max. number of arguments passed to
+                               * ispell by OPTIONVAR
+                               */
+#endif  /* MSDOS */
+
+#define TRUNCATEBAK
+
+#define INPUTWORDLEN    100  /* word accepted from a file + 1;     dflt: 100 */
+#define MAXAFFIXLEN      20  /* amount a word might be extended;   dflt: 20  */
+#define MASKBITS         32  /* # of affix flags;                  dflt: 32  */
+#define MAXSTRINGCHARS  100  /* # of "string" chars in affix file; dflt: 100 */
+#define MAXSTRINGCHARLEN 10  /* max. length of a "string" char;    dflt: 10  */
+
+#define USESH
+#define DEFTEXFLAG      1
+#define MINIMENU
+#define PIECEMEAL_HASH_WRITES
+#define GETKEYSTROKE()  getch ()
+
+#define HOME              "ISPELL_HOME"
+#define OPTIONVAR         "ISPELL_OPTIONS"
+#define LIBRARYVAR        "ISPELL_DICTDIR"
+#define PDICTHOME         "c:"
+#define HASHSUFFIX        ".has"
+#define STATSUFFIX        ".stt"
+#define COUNTSUFFIX       ".cnt"
+
+#define MASKTYPE_STRING "long"
+#define SIGNAL_TYPE_STRING "void"

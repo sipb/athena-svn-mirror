@@ -1,6 +1,6 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: term.c,v 1.1.1.1 1997-09-03 21:08:10 ghudson Exp $";
+    "$Id: term.c,v 1.1.1.2 2007-02-01 19:50:05 ghudson Exp $";
 #endif
 
 /*
@@ -8,7 +8,8 @@ static char Rcs_Id[] =
  *
  * Pace Willisson, 1983
  *
- * Copyright 1987, 1988, 1989, 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1987, 1988, 1989, 1992, 1993, 1999, 2001, 2005, Geoff Kuenning,
+ * Claremont, CA.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +25,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -47,6 +46,29 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.54  2005/04/14 23:11:36  geoff
+ * Correctly handle control-Z, including resetting the terminal.  The
+ * only remaining problem is that the screen isn't automatically
+ * refreshed. (Doing the latter would either require major changes to
+ * make the screen-refresh code callable from the signal handler, or
+ * fixing GETKEYSTROKE to fail on signals.  That's probably not hugely
+ * hard but doing it portably probably is.)
+ *
+ * Revision 1.53  2005/04/14 14:38:23  geoff
+ * Update license.  Rename move/erase to avoid library conflicts.
+ *
+ * Revision 1.52  2001/09/06 00:30:28  geoff
+ * Many changes from Eli Zaretskii to support DJGPP compilation.
+ *
+ * Revision 1.51  2001/07/25 21:51:46  geoff
+ * Minor license update.
+ *
+ * Revision 1.50  2001/07/23 20:24:04  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.49  1999/01/07 01:22:53  geoff
+ * Update the copyright.
+ *
  * Revision 1.48  1994/10/25  05:46:11  geoff
  * Fix a couple of places where ifdefs were omitted, though apparently
  * harmlessly.
@@ -67,16 +89,18 @@ static char Rcs_Id[] =
 #ifdef USG
 #include <termio.h>
 #else
+#ifndef __DJGPP__
 #include <sgtty.h>
+#endif
 #endif
 #include <signal.h>
 
-void		erase P ((void));
-void		move P ((int row, int col));
+void		ierase P ((void));
+void		imove P ((int row, int col));
 void		inverse P ((void));
 void		normal P ((void));
 void		backup P ((void));
-static int	putch P ((int c));
+static int	iputch P ((int c));
 void		terminit P ((void));
 SIGNAL_TYPE	done P ((int signo));
 #ifdef SIGTSTP
@@ -88,47 +112,53 @@ int		shellescape P ((char * buf));
 void		shescape P ((char * buf));
 #endif /* USESH */
 
-void erase ()
+static int	termchanged = 0;
+
+#ifdef __DJGPP__
+#include "pc/djterm.c"
+#endif
+
+void ierase ()
     {
 
     if (cl)
-	tputs (cl, li, putch);
+	tputs (cl, li, iputch);
     else
 	{
 	if (ho)
-	    tputs (ho, 100, putch);
+	    tputs (ho, 100, iputch);
 	else if (cm)
-	    tputs (tgoto (cm, 0, 0), 100, putch);
-	tputs (cd, li, putch);
+	    tputs (tgoto (cm, 0, 0), 100, iputch);
+	tputs (cd, li, iputch);
 	}
     }
 
-void move (row, col)
+void imove (row, col)
     int		row;
     int		col;
     {
-    tputs (tgoto (cm, col, row), 100, putch);
+    tputs (tgoto (cm, col, row), 100, iputch);
     }
 
 void inverse ()
     {
-    tputs (so, 10, putch);
+    tputs (so, 10, iputch);
     }
 
 void normal ()
     {
-    tputs (se, 10, putch);
+    tputs (se, 10, iputch);
     }
 
 void backup ()
     {
     if (BC)
-	tputs (BC, 1, putch);
+	tputs (BC, 1, iputch);
     else
 	(void) putchar ('\b');
     }
 
-static int putch (c)
+static int iputch (c)
     int			c;
     {
 
@@ -146,7 +176,6 @@ static struct ltchars	ltc;
 static struct ltchars	oltc;
 #endif
 #endif
-static int		termchanged = 0;
 static SIGNAL_TYPE	(*oldint) ();
 static SIGNAL_TYPE	(*oldterm) ();
 #ifdef SIGTSTP
@@ -330,7 +359,7 @@ retry:
 	(void) signal (SIGTSTP, onstop);
 #endif
     if (ti)
-	tputs (ti, 1, putch);
+	tputs (ti, 1, iputch);
     }
 
 /* ARGSUSED */
@@ -342,7 +371,7 @@ SIGNAL_TYPE done (signo)
     if (termchanged)
 	{
 	if (te)
-	    tputs (te, 1, putch);
+	    tputs (te, 1, iputch);
 #ifdef USG
 	(void) ioctl (0, TCSETAW, (char *) &osbuf);
 #else
@@ -359,57 +388,74 @@ SIGNAL_TYPE done (signo)
 static SIGNAL_TYPE onstop (signo)
     int		signo;
     {
+    if (termchanged)
+	{
+	imove (li - 1, 0);
+	if (te)
+	    tputs (te, 1, iputch);
 #ifdef USG
-    (void) ioctl (0, TCSETAW, (char *) &osbuf);
+	(void) ioctl (0, TCSETAW, (char *) &osbuf);
 #else
-    (void) ioctl (0, TIOCSETP, (char *) &osbuf);
+	(void) ioctl (0, TIOCSETP, (char *) &osbuf);
 #ifdef TIOCSLTC
-    (void) ioctl (0, TIOCSLTC, (char *) &oltc);
+	(void) ioctl (0, TIOCSLTC, (char *) &oltc);
 #endif
 #endif
+	}
+    (void) fflush (stdout);
     (void) signal (signo, SIG_DFL);
 #ifndef USG
     (void) sigsetmask (sigblock (0) & ~(1 << (signo - 1)));
 #endif
-    (void) kill (0, signo);
+    (void) kill (0, SIGSTOP);
     /* stop here until continued */
     (void) signal (signo, onstop);
+    if (termchanged)
+	{
 #ifdef USG
-    (void) ioctl (0, TCSETAW, (char *) &sbuf);
+	(void) ioctl (0, TCSETAW, (char *) &sbuf);
 #else
-    (void) ioctl (0, TIOCSETP, (char *) &sbuf);
+	(void) ioctl (0, TIOCSETP, (char *) &sbuf);
 #ifdef TIOCSLTC
-    (void) ioctl (0, TIOCSLTC, (char *) &ltc);
+	(void) ioctl (0, TIOCSLTC, (char *) &ltc);
 #endif
 #endif
+	if (ti)
+	    tputs (ti, 1, iputch);
+	}
     }
 #endif
 
-void stop ()
-    {
-#ifdef SIGTSTP
-    onstop (SIGTSTP);
-#else
-    /* for System V */
-    move (li - 1, 0);
-    (void) fflush (stdout);
-    if (getenv ("SHELL"))
-	(void) shellescape (getenv ("SHELL"));
-    else
-	(void) shellescape ("sh");
-#endif
-    }
-
-/* Fork and exec a process.  Returns NZ if command found, regardless of
-** command's return status.  Returns zero if command was not found.
-** Doesn't use a shell.
-*/
 #ifndef USESH
 #define NEED_SHELLESCAPE
 #endif /* USESH */
 #ifndef REGEX_LOOKUP
 #define NEED_SHELLESCAPE
 #endif /* REGEX_LOOKUP */
+
+void stop ()
+    {
+#ifdef SIGTSTP
+    onstop (SIGTSTP);
+#else
+    /* for System V and MSDOS */
+    imove (li - 1, 0);
+    (void) fflush (stdout);
+#ifdef NEED_SHELLESCAPE
+    if (getenv ("SHELL"))
+	(void) shellescape (getenv ("SHELL"));
+    else
+	(void) shellescape ("sh");
+#else
+    shescape ("");
+#endif /* NEED_SHELLESCAPE */
+#endif /* SIGTSTP */
+    }
+
+/* Fork and exec a process.  Returns NZ if command found, regardless of
+** command's return status.  Returns zero if command was not found.
+** Doesn't use a shell.
+*/
 #ifdef NEED_SHELLESCAPE
 int shellescape	(buf)
     char *	buf;
@@ -462,7 +508,7 @@ int shellescape	(buf)
 	}
     else
 	{
-	(void) printf (TERM_C_CANT_FORK);
+	(void) printf (TERM_C_CANT_FORK, MAYBE_CR (stderr));
 	termstat = -1;		/* Couldn't fork */
 	}
 
@@ -512,6 +558,9 @@ void shescape (buf)
 #ifdef COMMANDFORSPACE
     int		ch;
 #endif
+#ifdef __DJGPP__
+    char	curdir[MAXPATHLEN];
+#endif
 
 #ifdef USG
     (void) ioctl (0, TCSETAW, (char *) &osbuf);
@@ -520,6 +569,17 @@ void shescape (buf)
 #ifdef TIOCSLTC
     (void) ioctl (0, TIOCSLTC, (char *) &oltc);
 #endif
+#endif
+#ifdef __DJGPP__
+    /* Don't erase the screen if they want to run a single command,
+     * otherwise they will be unable to see its output.
+     */
+    if (buf[0] == '\0')
+	djgpp_restore_screen ();
+    /* Change and restore the current directory, because it's a global
+     * notion on MS-DOS/MS-Windows.
+     */
+    getcwd (curdir, MAXPATHLEN);
 #endif
     (void) signal (SIGINT, oldint);
     (void) signal (SIGTERM, oldterm);
@@ -543,6 +603,11 @@ void shescape (buf)
 	(void) signal (SIGTTOU, onstop);
     if (oldtstp != SIG_IGN)
 	(void) signal (SIGTSTP, onstop);
+#endif
+#ifdef __DJGPP__
+    if (buf[0] == '\0')
+	djgpp_ispell_screen ();
+    chdir (curdir);
 #endif
 
 #ifdef USG

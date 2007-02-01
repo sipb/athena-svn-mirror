@@ -1,16 +1,16 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: buildhash.c,v 1.1.1.1 1997-09-03 21:08:11 ghudson Exp $";
+    "$Id: buildhash.c,v 1.1.1.2 2007-02-01 19:50:22 ghudson Exp $";
 #endif
 
 #define MAIN
 
 /*
- * buildhash.c - make a hash table for okspell
+ * buildhash.c - make a hash table for ispell
  *
  * Pace Willisson, 1983
  *
- * Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1992, 1993, 1999, 2001, 2005, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -49,6 +47,47 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.74  2005/04/28 00:26:06  geoff
+ * Re-count the dictionary file every time, rather than depending on a
+ * file to hold the correct count.  This is necessary because the changes
+ * for MS-DOS support caused us to generate non-unique count-file names,
+ * which in turn could cause buildhash to fail.  There really isn't a
+ * need for count files any more; they were only a performance
+ * improvement and modern computers are fast enough that it doesn't
+ * matter.
+ *
+ * Revision 1.73  2005/04/14 21:25:52  geoff
+ * Declare ints-that-hold-pointers as unsigned, just for safety.
+ *
+ * Revision 1.72  2005/04/14 14:38:23  geoff
+ * Update license and copyright.  Fix a count-file-naming bug introduced
+ * in a recent delta.  Regenerate the count file if it has the same mtime
+ * as the dictionary (otherwise you can have bugs on fast machines).  Fix
+ * some small type bugs.
+ *
+ * Revision 1.71  2001/09/06 00:30:28  geoff
+ * Many changes from Eli Zaretskii to support DJGPP compilation.
+ *
+ * Revision 1.70  2001/07/25 21:51:45  geoff
+ * Minor license update.
+ *
+ * Revision 1.69  2001/07/23 20:24:02  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.68  2001/06/14 09:11:11  geoff
+ * Use a non-conflicting macro for bcopy to avoid compilation problems on
+ * smarter compilers.
+ *
+ * Revision 1.67  2000/08/22 10:52:25  geoff
+ * Fix a whole bunch of signed/unsigned compiler warnings.
+ *
+ * Revision 1.66  1999/01/07 01:22:32  geoff
+ * Update the copyright.
+ *
+ * Revision 1.65  1997/12/02  06:24:33  geoff
+ * Get rid of an obsolete reference to "okspell".  Get rid of some
+ * compile options that really shouldn't be optional.
+ *
  * Revision 1.64  1995/01/08  23:23:26  geoff
  * Make the various file suffixes configurable for DOS purposes.
  *
@@ -82,18 +121,15 @@ VOID *		myrealloc P ((VOID * ptr, unsigned int size,
 		  unsigned int oldsize));
 void		myfree P ((VOID * ptr));
 static void	readdict P ((void));
-static void	newcount P ((void));
+static unsigned int
+		newcount P ((void));
 
 #define NSTAT	100		/* Size probe-statistics table */
-
-struct stat	dstat;		/* Result of stat-ing dict file */
-struct stat	cstat;		/* Result of stat-ing count file */
 
 char *		Dfile;		/* Name of dictionary file */
 char *		Hfile;		/* Name of hash (output) file */
 char *		Lfile;		/* Name of language file */
 
-char		Cfile[MAXPATHLEN]; /* Name of count file */
 char		Sfile[MAXPATHLEN]; /* Name of statistics file */
 
 static int silent = 0;		/* NZ to suppress count reports */
@@ -103,10 +139,10 @@ int main (argc, argv)
     char *	argv[];
     {
     int		avg;
-    FILE *	countf;
+    char *	lastdot;
     FILE *	statf;
     int		stats[NSTAT];
-    int		i;
+    unsigned int i;
     int		j;
 
     while (argc > 1  &&  *argv[1] == '-')
@@ -138,28 +174,29 @@ int main (argc, argv)
     if (yyparse ())			/* Parse the language tables */
 	exit (1);
 
-    (void) sprintf (Cfile, "%s%s", Dfile, COUNTSUFFIX);
-    (void) sprintf (Sfile, "%s%s", Dfile, STATSUFFIX);
+    strcpy (Sfile, Dfile);
+    lastdot = rindex (Sfile, '.');
+    if (lastdot != NULL)
+	*lastdot = '\0';
+    strcat (Sfile, STATSUFFIX);
+#ifdef MSDOS
+    /*
+    ** MS-DOS doesn't allow more than one dot in the filename part.
+    ** If we have more than that, convert all the dots but the last into
+    ** underscores.  The OS will truncate excess characters beyond 8+3.
+    */
+    lastdot = rindex (Sfile, '.');
+    if (lastdot != NULL  &&  lastdot > Sfile)
+	{
+	while  (--lastdot >= Sfile)
+	    {
+	    if (*lastdot == '.')
+		*lastdot = '_';
+	    }
+	}
+#endif /* MSDOS */
 
-    if (stat (Dfile, &dstat) < 0)
-	{
-	(void) fprintf (stderr, BHASH_C_NO_DICT, Dfile);
-	    exit (1);
-	}
-    if (stat (Cfile, &cstat) < 0 || dstat.st_mtime > cstat.st_mtime)
-	newcount ();
-
-    if ((countf = fopen (Cfile, "r")) == NULL)
-	{
-	(void) fprintf (stderr, BHASH_C_NO_COUNT);
-	exit (1);
-	}
-    hashsize = 0;
-    if (fscanf (countf, "%d", &hashsize) != 1  ||  fclose (countf) == EOF)
-	{
-	(void) fprintf (stderr, BHASH_C_BAD_COUNT);
-	exit (1);
-	}
+    hashsize = newcount ();
     if (hashsize == 0)
 	{
 	(void) fprintf (stderr, BHASH_C_ZERO_COUNT);
@@ -169,7 +206,7 @@ int main (argc, argv)
 
     if ((statf = fopen (Sfile, "w")) == NULL)
 	{
-	(void) fprintf (stderr, CANT_CREATE, Sfile);
+	(void) fprintf (stderr, CANT_CREATE, Sfile, MAYBE_CR (stderr));
 	exit (1);
 	}
 
@@ -211,16 +248,16 @@ static void output ()
     {
     register FILE *		houtfile;
     register struct dent *	dp;
-    int				strptr;
+    unsigned long		strptr;
     int				n;
-    int				i;
+    unsigned int		i;
     int				maxplen;
     int				maxslen;
     struct flagent *		fentry;
 
     if ((houtfile = fopen (Hfile, "wb")) == NULL)
 	{
-	(void) fprintf (stderr, CANT_CREATE, Hfile);
+	(void) fprintf (stderr, CANT_CREATE, Hfile, MAYBE_CR (stderr));
 	return;
 	}
     hashheader.stringsize = 0;
@@ -231,11 +268,13 @@ static void output ()
     /*
     ** Put out the strings from the flags table.  This code assumes that
     ** the size of the hash header is a multiple of the size of ichar_t,
-    ** and that any integer can be converted to an (ichar_t *) and back
-    ** without damage.
+    ** and that any long can be converted to an (ichar_t *) and back
+    ** without damage (or, more accurately, without damaging those
+    ** low-order bits necessary to represent the largest offset in the
+    ** string table).
     */
     maxslen = 0;
-    for (i = numsflags, fentry = sflaglist;  --i >= 0;  fentry++)
+    for (i = 0, fentry = sflaglist;  i < numsflags;  i++, fentry++)
 	{
 	if (fentry->stripl)
 	    {
@@ -258,7 +297,7 @@ static void output ()
 	    maxslen = n;
 	}
     maxplen = 0;
-    for (i = numpflags, fentry = pflaglist;  --i >= 0;  fentry++)
+    for (i = 0, fentry = pflaglist;  i < numpflags;  i++, fentry++)
 	{
 	if (fentry->stripl)
 	    {
@@ -286,8 +325,8 @@ static void output ()
     hashheader.strtypestart = strptr;
     for (i = 0;  i < hashheader.nstrchartype;  i++)
 	{
-	n = strlen (chartypes[i].name) + 1;
-	(void) fwrite (chartypes[i].name, n, 1, houtfile);
+	n = strlen ((char *) chartypes[i].name) + 1;
+	(void) fwrite ((char *) chartypes[i].name, n, 1, houtfile);
 	strptr += n;
 	n = strlen (chartypes[i].deformatter) + 1;
 	(void) fwrite (chartypes[i].deformatter, n, 1, houtfile);
@@ -313,12 +352,12 @@ static void output ()
     for (i = 0, dp = hashtbl;  i < hashsize;  i++, dp++)
 	{
 	if (dp->word == NULL)
-	    dp->word = (char *) -1;
+	    dp->word = (unsigned char *) -1;
 	else
 	    {
-	    n = strlen (dp->word) + 1;
+	    n = strlen ((char *) dp->word) + 1;
 	    (void) fwrite (dp->word, n, 1, houtfile);
-	    dp->word = (char *) strptr;
+	    dp->word = (unsigned char *) strptr;
 	    strptr += n;
 	    }
 	}
@@ -336,7 +375,7 @@ static void output ()
 	{
 	if (dp->next != 0)
 	    {
-	    int		x;
+	    unsigned long	x;
 	    x = dp->next - hashtbl;
 	    dp->next = (struct dent *)x;
 	    }
@@ -439,7 +478,7 @@ VOID * mymalloc (size)		/* Fast, unfree-able variant of malloc */
     unsigned int	size;
     {
     VOID *		retval;
-    static int		bytesleft = 0;
+    static unsigned int	bytesleft = 0;
     static VOID *	nextspace;
 
     if (size < 4)
@@ -471,7 +510,7 @@ VOID * myrealloc (ptr, size, oldsize)
     nptr = mymalloc (size);
     if (nptr == NULL)
 	return NULL;
-    (void) bcopy (ptr, nptr, oldsize);
+    (void) BCOPY (ptr, nptr, oldsize);
     return nptr;
     }
 
@@ -487,8 +526,8 @@ static void readdict ()
     struct dent		d;
     register struct dent * dp;
     struct dent *	lastdp;
-    char		lbuf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
-    char		ucbuf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
+    unsigned char	lbuf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
+    unsigned char	ucbuf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
     FILE *		dictf;
     int			i;
     int			h;
@@ -508,7 +547,7 @@ static void readdict ()
 	}
 
     i = 0;
-    while (fgets (lbuf, sizeof lbuf, dictf) != NULL)
+    while (fgets ((char *) lbuf, sizeof lbuf, dictf) != NULL)
 	{
 	if (!silent  &&  (i % 1000) == 0)
 	    {
@@ -526,7 +565,6 @@ static void readdict ()
 	if ((dp->flagfield & USED) == 0)
 	    {
 	    *dp = d;
-#ifndef NO_CAPITALIZATION_SUPPORT
 	    /*
 	    ** If it's a followcase word, we need to make this a
 	    ** special dummy entry, and add a second with the
@@ -537,7 +575,6 @@ static void readdict ()
 		if (addvheader (dp))
 		  exit (1);
 		}
-#endif
 	    }
 	else
 	    {
@@ -548,16 +585,14 @@ static void readdict ()
 	    ** word.  Note that d.word always exists at
 	    ** this point.
 	    */
-	    (void) strcpy (ucbuf, d.word);
+	    (void) strcpy ((char *) ucbuf, (char *) d.word);
 	    chupcase (ucbuf);
 	    while (dp != NULL)
 		{
-		if (strcmp (dp->word, ucbuf) == 0)
+		if (strcmp ((char *) dp->word, (char *) ucbuf) == 0)
 		    break;
-#ifndef NO_CAPITALIZATION_SUPPORT
 		while (dp->flagfield & MOREVARIANTS)
 		    dp = dp->next;
-#endif /* NO_CAPITALIZATION_SUPPORT */
 		dp = dp->next;
 		}
 	    if (dp != NULL)
@@ -584,7 +619,6 @@ static void readdict ()
 		*dp = d;
 		lastdp->next = dp;
 		dp->next = NULL;
-#ifndef NO_CAPITALIZATION_SUPPORT
 		/*
 		** If it's a followcase word, we need to make this a
 		** special dummy entry, and add a second with the
@@ -595,7 +629,6 @@ static void readdict ()
 		    if (addvheader (dp))
 		      exit (1);
 		    }
-#endif
 		}
 	    }
 	}
@@ -604,20 +637,17 @@ static void readdict ()
     (void) fclose (dictf);
     }
 
-static void newcount ()
+static unsigned int newcount ()
     {
-    char		buf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
-#ifndef NO_CAPITALIZATION_SUPPORT
+    unsigned char	buf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
+    register unsigned int
+			count;
     ichar_t		ibuf[INPUTWORDLEN + MAXAFFIXLEN + 2 * MASKBITS];
-#endif
     register FILE *	d;
-    register int	i;
-#ifndef NO_CAPITALIZATION_SUPPORT
     ichar_t		lastibuf[sizeof ibuf / sizeof (ichar_t)];
     int			headercounted;
     int			followcase;
     register char *	cp;
-#endif
 
     if (!silent)
 	(void) fprintf (stderr, BHASH_C_COUNTING);
@@ -628,19 +658,16 @@ static void newcount ()
 	exit (1);
 	}
 
-#ifndef NO_CAPITALIZATION_SUPPORT
     headercounted = 0;
     lastibuf[0] = 0;
-#endif
-    for (i = 0;  fgets (buf, sizeof buf, d);  )
+    for (count = 0;  fgets ((char *) buf, sizeof buf, d);  )
 	{
-	if ((++i % 1000) == 0  &&  !silent)
+	if ((++count % 1000) == 0  &&  !silent)
 	    {
-	    (void) fprintf (stderr, "%d ", i);
+	    (void) fprintf (stderr, "%d ", count);
 	    (void) fflush (stdout);
 	    }
-#ifndef NO_CAPITALIZATION_SUPPORT
-	cp = index (buf, hashheader.flagmarker);
+	cp = index ((char *) buf, hashheader.flagmarker);
 	if (cp != NULL)
 	    *cp = '\0';
 	if (strtoichar (ibuf, buf, INPUTWORDLEN * sizeof (ichar_t), 1))
@@ -652,9 +679,9 @@ static void newcount ()
 	else if (!headercounted)
 	    {
 	    /* First duplicate will take two entries */
-	    if ((++i % 1000) == 0  &&  !silent)
+	    if ((++count % 1000) == 0  &&  !silent)
 		{
-		(void) fprintf (stderr, "%d ", i);
+		(void) fprintf (stderr, "%d ", count);
 		(void) fflush (stdout);
 		}
 	    headercounted = 1;
@@ -662,24 +689,18 @@ static void newcount ()
 	if (!headercounted  &&  followcase)
 	    {
 	    /* It's followcase and the first entry -- count again */
-	    if ((++i % 1000) == 0  &&  !silent)
+	    if ((++count % 1000) == 0  &&  !silent)
 		{
-		(void) fprintf (stderr, "%d ", i);
+		(void) fprintf (stderr, "%d ", count);
 		(void) fflush (stdout);
 		}
 	    headercounted = 1;
 	    }
 	(void) icharcpy (lastibuf, ibuf);
-#endif
 	}
     (void) fclose (d);
     if (!silent)
-	(void) fprintf (stderr, BHASH_C_WORD_COUNT, i);
-    if ((d = fopen (Cfile, "w")) == NULL)
-	{
-	(void) fprintf (stderr, CANT_CREATE, Cfile);
-	exit (1);
-	}
-    (void) fprintf (d, "%d\n", i);
-    (void) fclose (d);
+	(void) fprintf (stderr, BHASH_C_WORD_COUNT, count);
+
+    return count;
     }

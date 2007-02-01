@@ -1,0 +1,193 @@
+Version 3.3.02
+==============
+
+ - A Makefile bug has been corrected which caused the default hash
+   file to be created under the wrong name.  If you installed 3.3.01,
+   you should remove the file /usr/local/lib/ispell/english (or
+   whatever your default language is, and in the appropriate
+   directory) to clean up from the effects of this bug.
+
+ - A bug has been corrected that caused ispell to allocate space for
+   zero elements when initializing the expansion tables.
+
+ - Hash files are now installed in reverse order of how they are
+   listed in LANGUAGES.  As a result, the default american or british
+   hash file is now that first listed in LANGUAGES, rather than the
+   last.
+
+ - A misspelling in config.X has been corrected.  This would only have
+   affected Windows systems that didn't use the supplied local.h
+   files.
+
+ - EXEEXT is now printed by "ispell -vv".
+
+ - The local.h.macos file now correctly leaves USG undefined.
+
+ - There is now a local.h.cygwin file.
+
+Version 3.3.01
+==============
+
+ - The default dictionary is now the first dictionary defined in
+   LANGUAGES.  It is no longer necessary to define MASTERHASH,
+   DEFHASH, and DEFLANG.  However, if you define those variables
+   there, your definitions will be respected.
+
+ - Count files are no longer used for dictionaries; this corrects
+   problems with hash table overflows for some users who build
+   multiple dictionaries.
+
+ - If there is a directory named ~/.ispell_logs, ispell in
+   command-line mode will create logs of your spelling corrections
+   there.  These logs may be useful in identifying your common
+   errors.  Someday, they may also be used for research into better
+   methods of spelling correction.
+
+ - A bug has been fixed that caused installation to fail because it
+   referred to the nonexistent file "fixispell-a".
+
+ - The pc/local.* files have been updated to choose consistent
+   hash-file names.
+
+ - A tiny portability problem in ispell.1X has been corrected.
+
+ - DJGPP updates from Eli Zaretskii <eliz@gnu.org>:
+
+	* deformatters/Makefile (PROGRAMS): Use $EXEEXT.
+
+	* config.X (LINK): Define only if undefined.
+	(EXEXT): New variable.
+
+	* Makefile (install-basic, install-dictbuild): Use $$EXEEXT for
+	systems where executable files have special extensions.
+	(install-deformatters): Run config.sh and pass EXEEXT to sub-Make.
+	(config.sh): Add EXEEXT to the list of variables put into
+	config.sh.
+
+	* pc/make-dj.bat: Sync with the new files and build commands.
+	* pc/makeemx.bat: Ditto.
+
+	* pc/djterm.c (tputs, tgetent): Fix return value according to
+	prototypes on proto.h.
+
+	* pc/cfglang.sed (PATH_SEPARATOR): Set to ":", since
+	english/Makefile prepends to PATH using the ":" separator.
+
+	* pc/README: Update DJGPP repository URL, versions of utilities,
+	and other relevant information.
+
+	* pc/local.djgpp: Update Eli Zaretskii's email address.
+	(LINK): Set to "cp -p".
+	(MAN4DIR): Delete.
+	(MAN45DIR): New; define to point to DJGPP's man5.
+	(INSTALL): Define to invoke `ginstall'.
+	(OPTIONVAR, LIBRARYVAR): Remove, they are handled by config.X.
+	(EXEEXT): New; define to ".exe".
+
+ - Constructed files (config.sh and defhash.h) now depend on the
+   Makefile, since changes in the latter often affect the contents of
+   the former.  This is primarily of importance to the developer.
+
+Version 3.3.00
+==============
+
+ - Item 4 in the license, which some people found objectionable, has
+   been modified.
+
+ - Ispell and the scripts now handle temporary files securely.
+
+ - Sample local.h files are now distributed for several popular systems.
+ 
+ - Support has been added for compiling under DOS/Windows.  See
+   pc/README for information.  Note that Windows is still an
+   unsupported operating system because I don't have a Windows
+   development environment.  I will happily accept patches to correct
+   problems under Windows, but cannot solve bugs myself.
+
+ - External deformatters now work.
+
+ - The two supplied deformatters have been renamed to defmt-c and
+   defmt-sh.  This change is necessary to allow them to be built on
+   stupid MS-DOS systems with limits on filename lengths.
+
+ - A bug that could cause infinite loops when long lines were fed to
+  ispell in "-a" mode has been corrected.
+
+ - A number of misspellings have been removed from the English
+   dictionaries, and new words have been added.
+
+ - Command-line options can now be passed in the ISPELL_OPTIONS
+   environment variable.
+
+ - A CHANGES file is now being distributed.
+
+ - A number of configuration options have been added.  See config.X if
+   something isn't to your liking.
+
+ - Workarounds have been added for POSIX stupidity that broke
+   backwards compatibility.
+
+ - Obsolete notes about special systems have been removed from the
+   README.
+
+ - A number of configuration options have been changed to have
+   defaults that are more appropriate to modern systems.
+
+ - TeX deformatting has been slightly improved.
+
+ - A kludge has been added to deal with the fact that the German
+   "ess-zed" character has no uppercase equivalent.  Previously, when
+   ispell was presented with an all-uppercase word such as GROSS, it
+   would suggest that same word as a correction.  It now accepts such
+   constructs without complaint.
+
+ - A number of portability improvements have been added.
+
+ - Most ispell support programs and scripts now support the -w switch
+   where appropriate.
+
+ - A new expand option, -e5, has been added.
+
+ - A new deformatting flag, -o ("ordinary" file) has been added.
+
+ - The shell scripts now use /tmp for temporary files by default,
+   since some systems (Mac OS X) don't have /usr/tmp and modern
+   machines have plenty of space in /tmp.
+
+ - An ancient syntax error in parse.y, long undetected by older
+   versions of both yacc and bison, has been corrected.
+
+ - When MASKBITS is set to 64, the characters "[\]^_`" are now allowed
+   as flag characters.
+
+ - On 64-bit machines, MASKBITS will always be at least 64.
+
+ - The defaults for various constants (in particular, the maximum size
+   and number of string characters) have been expanded so that ispell
+   can support most European languages at the default settings.
+
+ - The English dictionary now supports all the ISO Latin-1 characters,
+   so that words borrowed from other languages can be spell-checked.
+
+ - The English affix file contains sample declarations for accented
+   characters encoded in HTML and UTF-8.
+
+ - A bug has been corrected that caused ispell to hang when control-Z
+   was typed.  Ispell also now correctly resets the terminal when
+   suspended.  However, it still doesn't refresh the screen when
+   resumed; fixing the latter problem is not easy.
+
+ - Thanks to Ed Avis, the code in tgood.c has been improved a lot.
+   (Many of the other changes, such as the -e5 switch, are also due to
+   Ed.)
+
+ - Ispell will no longer segfault under certain conditions if HOME is
+   not in the environment.
+
+ - Trailing whitespace is now trimmed from the names of files included
+   by the &Include_File& feature.
+
+Version 3.2.06
+==============
+
+Changes prior to version 3.2.06 are not itemized.

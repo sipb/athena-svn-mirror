@@ -1,0 +1,329 @@
+                How to build Ispell on MS-DOS
+		-----------------------------
+
+This directory includes files necessary to build Ispell on MS-DOS and
+MS-Windows systems.  Two environments are supported: EMX/GCC and
+DJGPP; they both generate 32-bit protected-mode programs and therefore
+aren't afflicted by most of the MS-DOS memory-related limitations.
+The EMX setup does not currently support building the dictionaries, so
+you will need to either build the dictionaries with DJGPP tools or get
+them elsewhere.  The DJGPP executables will also run on all versions
+of MS-Windows (3.x, 9x, ME, W2K, XP, and NT4) as DOS console applications.
+
+
+1.  Building Ispell with EMX/GCC
+    ----------------------------
+
+    You will only need the basic EMX development tools to compile
+    Ispell.  After unzipping the source archive, invoke the
+    MAKEEMX.BAT batch file, like so:
+
+	   pc\makeemx
+
+    This generates ispell.exe and the following auxiliary programs:
+
+	   buildhas.exe icombine.exe ijoin.exe
+
+    Install the programs anywhere along your PATH.  See the section
+    named "Environment Variables" for information on environment
+    variables used by the MS-DOS port of Ispell.
+
+
+2.  Building Ispell (no dictionaries) with DJGPP
+    --------------------------------------------
+
+    If you only need to compile Ispell without building the
+    dictionaries, use the MAKE-DJ.BAT batch file:
+
+	   pc\make-dj
+
+    You will need the standard DJGPP development environment
+    (djdevNNN.zip, gccNNNNb.zip, bnuNNNb.zip) and the DJGPP port of
+    GNU Bison (bsnNNNb.zip) for the above to work.  After the build is
+    finished, read the section below about environment variables and
+    install the executables and the dictionaries as you see fit.
+
+
+3.  Building Ispell and the dictionaries with DJGPP
+    -----------------------------------------------
+
+    In addition to the standard development environment, you will need
+    additional tools to build Ispell and the dictionaries.  If you are
+    building on Windows 2000 or XP, make sure to download and install
+    the latest djdevNNN.zip and the latest ports of all the utilities
+    mentioned below; old binaries might be incompatible with the DOS
+    emulation that is part of Windows 2K/XP.
+
+    Here's the list of packages you will need:
+
+    a. A port of Unix-like shell.  The only shell that was used
+       successfully to build Ispell on MS-DOS is the port of Bash,
+       which should be available from DJGPP archives:
+
+	ftp://ftp.delorie.com/pub/djgpp/current/v2gnu/bshNNNb.zip
+
+       If you are thinking about using Stewartson's `ms_sh', don't:
+       its method of passing long command lines is incompatible with
+       DJGPP, and it will crash and burn on complex shell scripts.
+
+    b. A DJGPP port of GNU Make 3.79 or later.
+       This is available from DJGPP archives at the following URL:
+
+	ftp://ftp.delorie.com/pub/djgpp/current/v2gnu/makNNNb.zip
+
+       Note that ports of GNU Make prior to 3.75 didn't support a
+       Unix-like shell, so you won't be able to build Ispell with them.
+
+    c. A DJGPP port of GNU Fileutils, GNU Textutils and GNU Sh-utils,
+       also available from DJGPP archives:
+
+	ftp://ftp.delorie.com/pub/djgpp/current/v2gnu/filNNNb.zip
+	ftp://ftp.delorie.com/pub/djgpp/current/v2gnu/txtNNNb.zip
+	ftp://ftp.delorie.com/pub/djgpp/current/v2gnu/shlNNNb.zip
+
+       In all of these URLs, NNN is a version number.  If there is
+       more than one ported version, get the latest one.
+
+       The build process doesn't need *all* of the programs from these
+       packages, so if you are short on disk space, you should be able
+       to get away with these programs (I hope I didn't forget some):
+
+	 Fileutils: rm, mv, chmod, install, mkdir, ln, cp, touch, ls
+	 Textutils: cat, head, tail, sort, comm, wc, join, uniq
+	 Sh-utils:  echo, expr, false, true
+
+    d. GNU Sed (sedNNNb.zip from the DJGPP archives).
+
+    e. GNU Awk (or any other port of Awk).  Gawk is available from the
+       DJGPP site above (v2gnu/gwkNNNb.zip).
+
+    f. GNU Bison (bsnNNNb.zip from the DJGPP site).
+
+    g. GNU Grep (grepNNb.zip from the DJGPP site).
+
+    h. ctags and etags (for the `TAGS' and `tags' targets of the
+       Makefile).  These are available from the Emacs distribution,
+       also on the DJGPP archive site above (v2gnu/emNNNNb.zip).
+
+    While you probably can find quite a few different ports of the
+    above utilities, I would generally advise against using anything
+    but the DJGPP ports, since the Makefiles and the shell scripts
+    depend on long command lines and will most probably break
+    otherwise.  DJGPP ports are a coherent set of tools which will
+    work together well and ensure that the Makefiles and the scripts
+    work as advertised.
+
+    Here is what you should do to build Ispell:
+
+    1) Install the above utilities anywhere along your PATH.  Make
+       sure that you don't have any other executable called `sh'
+       either in /bin (if you have such a directory) or anywhere else
+       along your PATH *prior* to the directory where you installed
+       the bash port.  When Make runs, it will invoke the first
+       program named `sh' that it finds in /bin or along the PATH, and
+       you need to ensure that the right program is called.
+
+    2) Review the options set in pc/local.djgpp and change them as you
+       see fit.  Some things that you might consider changing are the
+       pathnames of the standard directories, the dictionaries that
+       will be built (see below), the backup extension ("~" by
+       default), and the dictionaries you want to build.
+
+    3) By default, the American medium dictionary is built.  I
+       recommend building the ``plus'' version, but it requires an
+       extra dictionary that is copyrighted.  However, you should be
+       able to find it on any Unix or GNU/Linux box, usually in the file
+       /usr/dict/words or /usr/share/dict/words.  If you do decide to
+       build a ``plus'' version of the dictionary, be sure to put its
+       full path in the EXTRADICTS variable in the file local.djgpp
+       (default: "c:/usr/lib/words".
+
+    4) Set the TMPDIR environment variable to point to a place that has
+       at least 20MB of free space, for the temporary files produced
+       by the dictionary build process.  This is especially important
+       to those who point TMPDIR to a RAM drive, since these tend to
+       be much smaller than 20MB.
+
+    5) Type these commands:
+
+	    pc\configdj
+	    make
+
+       This will run for some time, depending on the dictionaries that
+       you've chosen to build.  The default setup builds a non-plus
+       version of a medium-sized american dictionary, and should take
+       about 1/2 a minute on a reasonably fast PC.  Note that on MS-DOS
+       the build time does not depend so much on the dictionary size as
+       it does on Unix: it takes less than 2 minutes for a 2.4GHz PC to
+       build the extra-large plus version with a 200KB /usr/dict/words
+       file.  I believe the reason for this is that the build process is
+       much more I/O-bound on MS-DOS than it is on Unix, since MS-DOS
+       pipes are simulated with disk files.
+
+       If pc/configdj.bat complains that it runs out of environment
+       space, enlarge the environment available to COMMAND.COM (or
+       whatever your interactive command processor is).
+
+       When the dictionaries are built, you might see error messages,
+       about ``Improper links'', like so:
+
+         c:/djgpp/bin/ln: cannot create symbolic link `./english.0' \
+		to `../english/english.0': Improper link (EXDEV)
+
+       You can safely disregard these messages: they are due to the
+       fact that MS-DOS doesn't support symbolic links. The Makefile
+       already has a provision for alternative methods, which are
+       automatically used in case of failures and which do work on
+       MS-DOS.
+
+       Another error message that you might see is something like
+       this:
+
+         Word 'U.S.A' contains illegal characters
+
+       This means that some of the words in the EXTRADICT dictionary
+       are incompatible with Ispell, and Ispell is ignoring them when
+       it builds hashed dictionary.  (The file `/usr/dict/words' from
+       Solaris machines is known to have this problem.)  The rest of
+       the words are OK and will be used by Ispell, so here, too, you
+       don't have to do anything about the error message.
+
+    6) After Make finishes, install the programs and the dictionaries
+       as you see fit.  The dictionary files you need to install are
+       the files with a .hash extension in the subdirectories of
+       languages/ directory (e.g. languages/american/amermedx.hash),
+       the file languages/english/english.aff, and the documentation
+       files ispell.1, ispell.5, fields.3, and english.5.  If you say
+       "make install", Make should do this automatically.
+
+    7) If you need to use some of the shell scripts (such as iwhich
+       and Makekit), you will need to edit them to replace the first
+       which says:
+
+	   : Use /bin/sh
+
+       to say this instead:
+
+	   #!/bin/sh
+
+
+4.  Dictionary names
+    ----------------
+
+    The filenames used for the dictionaries on Unix are too long for
+    MS-DOS, and will cause filename clashes or failed programs.
+    Therefore, the MS-DOS configuration script for DJGPP edits the
+    Makefiles to change these names as follows:
+
+         americansml   -> amersml
+	 americanmed   -> amermed
+	 americanlrg   -> amerlrg
+	 americanxlg   -> amerxlg
+	 altamersml    -> altasml
+	 altamermed    -> altamed
+	 altamerlrg    -> altalrg
+	 altamerxlg    -> altaxlg
+	 britishsml    -> britsml
+	 britishmed    -> britmed
+	 britishlrg    -> britlrg
+	 britishxlg    -> britxlg
+
+    In addition, the `+' character (which is invalid in MS-DOS
+    filenames) is converted into an `x', and if the `+' is at the end
+    of the extension, it is moved into the first 8 characters of the
+    basename.  Thus, americanlrg+.hash is converted into amerlrgx.hash
+    and american.sml+ into americax.sml:
+
+	 american.sml+ -> americax.sml
+	 american.med+ -> americax.med
+	 american.lrg+ -> americax.lrg
+	 american.xlg+ -> americax.xlg
+	 british.sml+  -> britishx.sml
+	 british.med+  -> britishx.med
+	 british.lrg+  -> britishx.lrg
+	 british.xlg+  -> britishx.xlg
+
+    These DOSified filenames are the ones that you should use if you
+    decide to change the dictionaries generated by the build process.
+    The easiest way to know what are the DOS names of the different
+    dictionaries is to look at the edited Makefiles in languages/
+    subdirectories after you build Ispell once for the default
+    dictionaries.
+
+
+5.  Environment variables
+    ---------------------
+
+    Ispell uses environment variables to make it easier to support
+    different installations.  Most of these variables tell Ispell
+    where to look for its hashed and private dictionaries.  These
+    variables are documented on the ispell.1 man page and in the Info
+    docs for Ispell.  Below is the list of DOS-specific environment
+    variables that are not covered by the Ispell docs:
+
+	ISPELL_OPTIONS - the default options to pass to Ispell.  These
+			 are passed to Ispell as if they were typed by
+			 you before all the options you actually
+			 mentioned on the Ispell command line.  Since
+			 Ispell parses options left to right,
+			 options from the command line may override
+			 those in `ISPELL_OPTIONS' variable.
+
+	ISPELL_DICTDIR - the directory where Ispell will look for the
+			 alternate hashed dictionary file.  The
+			 default dictionary pathname is built into
+			 Ispell when it is compiled (see the
+			 definition of LIBDIR and DEFHASH on local.h
+			 file, local.djgpp or local.emx), but you can
+			 set this variable, which will allow you to
+			 name alternate dictionaries relative to the
+			 directory named by it, avoiding a long
+			 pathname.
+
+	ISPELL_HOME    - replaces HOME on Unix systems.  This is where
+			 Ispell looks for a personal dictionary if it
+			 is given as a relative pathname.
+
+	ISPELL_COLORS -  the colors which will be used by Ispell for
+			 the normal and "standout" text.  By default,
+			 these are the normal and inverse video
+			 colors, but you may set them to any colors
+			 you like.  The color descriptor is a pair of
+			 numbers separated by a dot; the first number
+			 is the color text attribute that will be set
+			 for the normal text, and the second is the
+			 attribute for the "standout" text (the
+			 misspelled words).  The text color attributes
+			 are the usual PC background/foreground
+			 definitions.  My favorite setting is this:
+
+			    set ISPELL_COLORS=0x1e.0x74
+
+			 which sets the normal colors to yellow on
+			 blue and the "standout" colors to red on
+			 white.  The color descriptor is parsed by a
+			 call to `strtoul' library function, so you
+			 can use octal and hex numbers as well as
+			 decimal ones.
+
+			 This color feature is only supported by the
+			 DJGPP port of Ispell.
+
+	LINES	      -  the size of the screen to be used by Ispell.
+			 Although this is not a DOS-specific variable,
+			 it does have a DOS-specific effect on the
+			 DJGPP port of Ispell: if the value of this
+			 variable is different from the current screen
+			 size, Ispell will set the screen size to the
+			 size given by LINES (and restore the original
+			 size when it exits or shells out to DOS).
+			 The following sizes are supported by the
+			 DJGPP port on a standard VGA display: 25, 28,
+			 35, 40, 43 and 50 lines.  If you want to run
+			 Ispell in some other non-standard screen
+			 size, set the display to that size before
+			 running Ispell and set LINES to that size.
+
+
+Enjoy,
+                                   Eli Zaretskii <eliz@gnu.org>

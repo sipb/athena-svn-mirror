@@ -1,7 +1,9 @@
+#ifndef PROTO_H_INCLUDED
+#define PROTO_H_INCLUDED
 /*
- * $Id: proto.h,v 1.1.1.1 1997-09-03 21:08:10 ghudson Exp $
+ * $Id: proto.h,v 1.1.1.2 2007-02-01 19:50:10 ghudson Exp $
  *
- * Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1992, 1993, 1999, 2001, 2005, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -17,10 +19,8 @@
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -41,6 +41,48 @@
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/04/26 22:40:08  geoff
+ * Add double-inclusion protection.  Include ispell.h for the definition of P.
+ *
+ * Revision 1.27  2005/04/20 23:16:32  geoff
+ * Add inpossibilities.
+ *
+ * Revision 1.26  2005/04/14 23:11:36  geoff
+ * Prototype initckch.
+ *
+ * Revision 1.25  2005/04/14 14:38:23  geoff
+ * Update license.  Rename some functions to avoid collisions with
+ * libraries.  Add a couple of "const" declarations.
+ *
+ * Revision 1.24  2001/07/25 21:51:47  geoff
+ * Minor license update.
+ *
+ * Revision 1.23  2001/07/23 20:24:04  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.22  2001/04/04 06:50:00  geoff
+ * Add unistd.h to work around a problem in Mac OSX
+ *
+ * Revision 1.21  1999/01/18 02:14:11  geoff
+ * Change most char declarations to unsigned char, to avoid
+ * sign-extension problems with 8-bit characters.
+ *
+ * Revision 1.20  1999/01/07  01:58:12  geoff
+ * Update the copyright.
+ *
+ * Revision 1.19  1999/01/03  01:46:44  geoff
+ * Add a declaration for "dup".
+ *
+ * Revision 1.18  1998/07/06  06:55:21  geoff
+ * Rename sethtmltags to init_keyword_table, and simplify the argument
+ * list.
+ *
+ * Revision 1.17  1997/12/02  06:25:07  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
+ * Revision 1.16  1997/12/01  00:53:54  geoff
+ * Add HTML declarations.
+ *
  * Revision 1.15  1994/10/25  05:46:38  geoff
  * Protoize bzero the way 4.1.1 does it (which I hope is the standard).
  *
@@ -73,31 +115,33 @@
  *
  */
 
+#include "ispell.h"		/* For definition of P */
+
 extern int	addvheader P ((struct dent * ent));
 extern void	askmode P ((void));
 extern void	backup P ((void));
-#ifndef NO_CAPITALIZATION_SUPPORT
 extern int	cap_ok P ((ichar_t * word, struct success * hit, int len));
-#endif /* NO_CAPITALIZATION_SUPPORT */
-extern int	casecmp P ((char * a, char * b, int canonical));
-extern void	chupcase P ((char * s));
+extern int	casecmp P ((unsigned char * a, unsigned char * b,
+		  int canonical));
+extern void	chupcase P ((unsigned char * s));
 extern void	checkfile P ((void));
 extern void	checkline P ((FILE * ofile));
 extern void	chk_aff P ((ichar_t * word, ichar_t * ucword, int len,
 		  int ignoreflagbits, int allhits, int pfxopts, int sfxopts));
 extern int	combinecaps P ((struct dent * hdr, struct dent * newent));
 extern int	compoundgood P ((ichar_t * word, int pfxopts));
-extern void	copyout P ((char ** cc, int cnt));
-extern void	correct P ((char * ctok, int ctokl, ichar_t * itok, int itokl,
-		  char ** curchar));
+extern void	copyout P ((unsigned char ** cc, int cnt));
+extern void	correct P ((unsigned char * ctok, int ctokl, ichar_t * itok,
+		  int itokl, unsigned char ** curchar));
 extern char *	do_regex_lookup P ((char * expr, int whence));
 extern SIGNAL_TYPE done P ((int));
 extern void	dumpmode P ((void));
-extern void	erase P ((void));
-extern int	expand_pre P ((char * croot, ichar_t * rootword,
-		  MASKTYPE mask[], int option, char *extra));
-extern int	expand_suf P ((char * croot, ichar_t * rootword,
-		  MASKTYPE mask[], int crossonly, int option, char * extra));
+extern void	ierase P ((void));
+extern int	expand_pre P ((unsigned char * croot, ichar_t * rootword,
+		  MASKTYPE mask[], int option, unsigned char *extra));
+extern int	expand_suf P ((unsigned char * croot, ichar_t * rootword,
+		  MASKTYPE mask[], int crossonly, int option,
+		  unsigned char * extra));
 extern int	findfiletype P ((char * name, int searchnames,
 		  int * deformatter));
 extern void	flagpr P ((ichar_t * word, int preflag, int prestrip,
@@ -112,9 +156,11 @@ extern ichar_t * icharcpy P ((ichar_t * out, ichar_t * in));
 extern int	icharlen P ((ichar_t * str));
 extern int	icharncmp P ((ichar_t * s1, ichar_t * s2, int n));
 #endif /* ICHAR_IS_CHAR */
-extern int	ichartostr P ((char * out, ichar_t * in, int outlen,
-		  int canonical));
-extern char *	ichartosstr P ((ichar_t * in, int canonical));
+extern int	ichartostr P ((unsigned char * out, const ichar_t * in,
+		  int outlen, int canonical));
+extern unsigned char *
+		ichartosstr P ((const ichar_t * in, int canonical));
+extern void	initckch P ((const char * wchars));
 extern int	ins_root_cap P ((ichar_t * word, ichar_t * pattern,
 		  int prestrip, int preadd, int sufstrip, int sufadd,
 		  struct dent * firstdent, struct flagent * pfxent,
@@ -123,11 +169,15 @@ extern void	inverse P ((void));
 extern int	linit P ((void));
 extern struct dent * lookup P ((ichar_t * word, int dotree));
 extern void	lowcase P ((ichar_t * string));
-extern int	makedent P ((char * lbuf, int lbuflen, struct dent * d));
+extern int	makedent P ((unsigned char * lbuf, int lbuflen,
+		  struct dent * d));
 extern void	makepossibilities P ((ichar_t * word));
-extern void	move P ((int row, int col));
+extern int	inpossibilities P ((unsigned char * ctok));
+extern void	imove P ((int row, int col));
 extern void	normal P ((void));
 extern char *	printichar P ((int in));
+extern int	init_keyword_table P ((char * rawtags, char * envvar,
+		  char * deftags, int ignorecase, struct kwtable * keywords));
 #ifdef USESH
 extern int	shellescape P ((char * buf));
 extern void	shescape P ((char * buf));
@@ -136,23 +186,22 @@ extern void	shescape P ((char * buf));
 extern int	shellescape P ((char * buf));
 #endif /* REGEX_LOOKUP */
 #endif /* USESH */
-extern char *	skipoverword P ((char * bufp));
+extern unsigned char *
+		skipoverword P ((unsigned char * bufp));
 extern void	stop P ((void));
-extern int	stringcharlen P ((char * bufp, int canonical));
-extern int	strtoichar P ((ichar_t * out, char * in, int outlen,
+extern int	stringcharlen P ((unsigned char * bufp, int canonical));
+extern int	strtoichar P ((ichar_t * out, unsigned char * in, int outlen,
 		  int canonical));
-extern ichar_t * strtosichar P ((char * in, int canonical));
+extern ichar_t * strtosichar P ((unsigned char * in, int canonical));
 extern void	terminit P ((void));
 extern void	toutent P ((FILE * outfile, struct dent * hent,
 		  int onlykeep));
 extern void	treeinit P ((char * persdict, char * LibDict));
-extern void	treeinsert P ((char * word, int wordlen, int keep));
+extern void	treeinsert P ((unsigned char * word, int wordlen, int keep));
 extern struct dent * treelookup P ((ichar_t * word));
 extern void	treeoutput P ((void));
 extern void	upcase P ((ichar_t * string));
-#ifndef NO_CAPITALIZATION_SUPPORT
 extern long	whatcap P ((ichar_t * word));
-#endif
 extern char *	xgets P ((char * string, int size, FILE * stream));
 extern void	yyinit P ((void));
 extern int	yyopen P ((char * file));
@@ -192,6 +241,7 @@ extern int	chmod P ((const char * file, unsigned long mode));
 #endif /* POSIX_SOURCE */
 extern int	close P ((int fd));
 extern int	creat P ((const char * file, int mode));
+extern int	dup P ((int fd));
 extern int	execvp P ((const char * name, const char * argv[]));
 extern void	_exit P ((int status));
 extern void	exit P ((int status));
@@ -244,6 +294,7 @@ extern unsigned	int
 		strlen P ((const char * str));
 extern int	strncmp P ((const char * s1, const char * s2,
 		  unsigned int len));
+extern char *	strncpy P ((char * dest, const char * src, unsigned int len));
 #ifdef USG
 extern char *	strrchr P ((const char * string, int ch));
 #endif /* USG */
@@ -253,6 +304,7 @@ extern int	wait P ((int * statusp));
 #else /* NO_STDLIB_H */
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #endif /* NO_STDLIB_H */
 
 #ifndef USG
@@ -280,3 +332,5 @@ extern char *	tputs P ((const char * str, int pad, int (*func) (int ch)));
 #define P(x)	x
 #endif /* __STDC__ */
 #endif /* GENERATE_LIBRARY_PROTOS */
+
+#endif /* PROTO_H_INCLUDED */

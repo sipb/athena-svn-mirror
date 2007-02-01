@@ -1,9 +1,11 @@
+#ifndef ISPELL_H_INCLUDED
+#define ISPELL_H_INCLUDED
 /*
- * $Id: ispell.h,v 1.1.1.1 1997-09-03 21:08:12 ghudson Exp $
+ * $Id: ispell.h,v 1.1.1.2 2007-02-01 19:50:23 ghudson Exp $
  */
 
 /*
- * Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1992, 1993, 1999, 2001, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -19,10 +21,8 @@
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -42,6 +42,59 @@
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.84  2005/04/28 14:46:51  geoff
+ * Add support for a correction log file.
+ *
+ * Revision 1.83  2005/04/26 22:40:07  geoff
+ * Add double-inclusion protection.  Include config.h to be sure it's
+ * available.
+ *
+ * Revision 1.82  2005/04/20 23:16:32  geoff
+ * Rename some variables to make them more meaningful.
+ *
+ * Revision 1.81  2005/04/14 14:38:23  geoff
+ * Update license.
+ *
+ * Revision 1.80  2001/07/25 21:51:46  geoff
+ * Minor license update.
+ *
+ * Revision 1.79  2001/07/23 20:24:03  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.78  2000/08/22 10:52:25  geoff
+ * Fix a whole bunch of signed/unsigned discrepancies.
+ *
+ * Revision 1.77  2000/08/22 00:11:25  geoff
+ * Add support for correct_verbose_mode.
+ *
+ * Revision 1.76  1999/01/18 02:14:09  geoff
+ * Change most char declarations to unsigned char, to avoid
+ * sign-extension problems with 8-bit characters.
+ *
+ * Revision 1.75  1999/01/07  01:23:05  geoff
+ * Update the copyright.
+ *
+ * Revision 1.74  1999/01/03  01:46:37  geoff
+ * Add support for external deformatters.
+ *
+ * Revision 1.73  1998/07/06  06:55:19  geoff
+ * Add struct kwtable and some new variables, to support the new
+ * generalized keyword-lookup stuff.
+ *
+ * Revision 1.72  1997/12/02  06:24:54  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
+ * Revision 1.71  1997/12/01  00:53:49  geoff
+ * Add HTML support variables.
+ *
+ * Revision 1.70  1995/11/08  05:09:18  geoff
+ * Add the DEFORMAT_xxx constants and askverbose.  Improve the stylistic
+ * consistency of the HTML support.
+ *
+ * Revision 1.69  1995/10/25  04:05:26  geoff
+ * Patch by Gerry Tierney <gtierney@nova.ucd.ie> 1995/10/14.  Added
+ * variables htmlflag and insidehtml for use in html-mode.
+ *
  * Revision 1.68  1995/03/06  02:42:41  geoff
  * Be vastly more paranoid about parenthesizing macro arguments.  This
  * fixes a bug in defmt.c where a complex argument was passed to
@@ -88,6 +141,7 @@
  *
  */
 
+#include "config.h"
 #include <stdio.h>
 
 #ifdef __STDC__
@@ -99,11 +153,7 @@
 #define const
 #endif /* __STDC__ */
 
-#ifdef NO8BIT
-#define SET_SIZE	128
-#else
 #define SET_SIZE	256
-#endif
 
 #define MASKSIZE	(MASKBITS / MASKTYPE_WIDTH)
 
@@ -189,7 +239,7 @@ typedef unsigned short	ichar_t;	/* Internal character */
 struct dent
     {
     struct dent *	next;
-    char *		word;
+    unsigned char *	word;
     MASKTYPE		mask[MASKSIZE];
 #ifdef FULLMASKSET
     char		flags;
@@ -200,7 +250,6 @@ struct dent
 ** Flags in the directory entry.  If FULLMASKSET is undefined, these are
 ** stored in the highest bits of the last longword of the mask field.  If
 ** FULLMASKSET is defined, they are stored in the extra "flags" field.
-#ifndef NO_CAPITALIZATION_SUPPORT
 **
 ** If a word has only one capitalization form, and that form is not
 ** FOLLOWCASE, it will have exactly one entry in the dictionary.  The
@@ -260,7 +309,6 @@ struct dent
 ** (KEEP flag set) and the user adds "alpha" with the KEEP flag clear, a
 ** multiple-variant entry will be created so that "alpha" will be accepted
 ** but only "ALPHA" will actually be kept.
-#endif
 */
 #ifdef FULLMASKSET
 #define flagfield	flags
@@ -269,9 +317,6 @@ struct dent
 #endif
 #define USED		((MASKTYPE) 1 << (FLAGBASE + 0))
 #define KEEP		((MASKTYPE) 1 << (FLAGBASE + 1))
-#ifdef NO_CAPITALIZATION_SUPPORT
-#define ALLFLAGS	(USED | KEEP)
-#else /* NO_CAPITALIZATION_SUPPORT */
 #define ANYCASE		((MASKTYPE) 0 << (FLAGBASE + 2))
 #define ALLCAPS		((MASKTYPE) 1 << (FLAGBASE + 2))
 #define CAPITALIZED	((MASKTYPE) 2 << (FLAGBASE + 2))
@@ -280,7 +325,6 @@ struct dent
 #define MOREVARIANTS	((MASKTYPE) 1 << (FLAGBASE + 4))
 #define ALLFLAGS	(USED | KEEP | CAPTYPEMASK | MOREVARIANTS)
 #define captype(x)	((x) & CAPTYPEMASK)
-#endif /* NO_CAPITALIZATION_SUPPORT */
 
 /*
  * Language tables used to encode prefix and suffix information.
@@ -320,7 +364,7 @@ struct flagptr
  */
 struct strchartype
     {
-    char *		name;			/* Name of the type */
+    unsigned char *	name;			/* Name of the type */
     char *		deformatter;		/* Deformatter to use */
     char *		suffixes;		/* File suffixes, null seps */
     };
@@ -332,19 +376,19 @@ struct hashheader
     {
     unsigned short magic;    	    	    	/* Magic number for ID */
     unsigned short compileoptions;		/* How we were compiled */
-    short maxstringchars;			/* Max # strchrs we support */
-    short maxstringcharlen;			/* Max strchr len supported */
-    short compoundmin;				/* Min lth of compound parts */
+    unsigned short maxstringchars;		/* Max # strchrs we support */
+    unsigned short maxstringcharlen;		/* Max strchr len supported */
+    unsigned short compoundmin;			/* Min lth of compound parts */
     short compoundbit;				/* Flag 4 compounding roots */
-    int stringsize;				/* Size of string table */
-    int lstringsize;				/* Size of lang. str tbl */
-    int tblsize;				/* No. entries in hash tbl */
-    int stblsize;				/* No. entries in sfx tbl */
-    int ptblsize;				/* No. entries in pfx tbl */
-    int sortval;				/* Largest sort ID assigned */
-    int nstrchars;				/* No. strchars defined */
-    int nstrchartype;				/* No. strchar types */
-    int strtypestart;				/* Start of strtype table */
+    unsigned int stringsize;			/* Size of string table */
+    unsigned int lstringsize;			/* Size of lang. str tbl */
+    unsigned int tblsize;			/* No. entries in hash tbl */
+    unsigned int stblsize;			/* No. entries in sfx tbl */
+    unsigned int ptblsize;			/* No. entries in pfx tbl */
+    unsigned int sortval;			/* Largest sort ID assigned */
+    unsigned int nstrchars;			/* No. strchars defined */
+    unsigned int nstrchartype;			/* No. strchar types */
+    unsigned int strtypestart;			/* Start of strtype table */
     char nrchars[5];				/* Nroff special characters */
     char texchars[13];				/* TeX special characters */
     char compoundflag;				/* Compund-word handling */
@@ -358,9 +402,10 @@ struct hashheader
     char lowerchars[SET_SIZE + MAXSTRINGCHARS]; /* NZ for lowercase chars */
     char boundarychars[SET_SIZE + MAXSTRINGCHARS]; /* NZ for boundary chars */
     char stringstarts[SET_SIZE];		/* NZ if char can start str */
-    char stringchars[MAXSTRINGCHARS][MAXSTRINGCHARLEN + 1]; /* String chars */
+    unsigned char stringchars[MAXSTRINGCHARS][MAXSTRINGCHARLEN + 1];
+						/* String chars */
     unsigned int stringdups[MAXSTRINGCHARS];	/* No. of "base" char */
-    int dupnos[MAXSTRINGCHARS];			/* Dup char ID # */
+    int groupnos[MAXSTRINGCHARS];		/* Group char is in # */
     unsigned short magic2;			/* Second magic for dbl chk */
     };
 
@@ -368,16 +413,8 @@ struct hashheader
 #define MAGIC			0x9602
 
 /* compile options, put in the hash header for consistency checking */
-#ifdef NO8BIT
-# define MAGIC8BIT		0x01
-#else
-# define MAGIC8BIT		0x00
-#endif
-#ifdef NO_CAPITALIZATION_SUPPORT
-# define MAGICCAPITALIZATION	0x00
-#else
-# define MAGICCAPITALIZATION	0x02
-#endif
+# define MAGICNOTUSED1		0x01		/* No longer used */
+# define MAGICNOTUSED2		0x02		/* No longer used */
 #if MASKBITS <= 32
 # define MAGICMASKSET		0x00
 #else
@@ -392,7 +429,7 @@ struct hashheader
 # endif
 #endif
 
-#define COMPILEOPTIONS	(MAGIC8BIT | MAGICCAPITALIZATION | MAGICMASKSET)
+#define COMPILEOPTIONS	(MAGICNOTUSED1 | MAGICNOTUSED2 | MAGICMASKSET)
 
 /*
  * Structure used to record data about successful lookups; these values
@@ -403,6 +440,21 @@ struct success
     struct dent *	dictent;	/* Header of dict entry chain for wd */
     struct flagent *	prefix;		/* Prefix flag used, or NULL */
     struct flagent *	suffix;		/* Suffix flag used, or NULL */
+    };
+
+/*
+ * Structure used to describe keyword-lookup tables.  The lookup
+ * routine uses binary search on the keyword array.  Maxlen and minlen
+ * are just optimizations: if the string length isn't in this range,
+ * the lookup routine can fail immediately.
+ */
+struct kwtable
+    {
+    unsigned char **	kwlist;		/* Sorted array of keywords */
+    unsigned int	numkw;		/* Number of keywords in array */
+    unsigned int	minlen;		/* Length of shortest keyword */
+    unsigned int	maxlen;		/* Length of longest keyword */
+    int			forceupper;	/* NZ to force uppercase in match */
     };
 
 /*
@@ -431,12 +483,27 @@ struct success
 #define TEXDOT		hashheader.texchars[11]
 #define TEXPERCENT	hashheader.texchars[12]
 
+#define HTMLTAGSTART	'<'
+#define HTMLTAGEND	'>'
+#define HTMLSLASH	'/'
+#define HTMLSPECSTART	'&'
+#define HTMLSPECEND   	';'
+#define HTMLQUOTE	'"'
+
 /*
 ** Values for compoundflag
 */
 #define COMPOUND_NEVER		0	/* Compound words are never good */
 #define COMPOUND_ANYTIME	1	/* Accept run-together words */
 #define COMPOUND_CONTROLLED	2	/* Compounds controlled by afx flags */
+
+/*
+** Values for deftflag and tflag (deformatting style)
+*/
+#define DEFORMAT_NONE		0	/* No deformatting (or external) */
+#define DEFORMAT_NROFF		1	/* Nroff/troff-style deformatting */
+#define DEFORMAT_TEX		2	/* TeX/LaTeX-style deformatting */
+#define DEFORMAT_SGML		3	/* SGML/HTML-style deformatting */
 
 /*
 ** The isXXXX macros normally only check ASCII range, and don't support
@@ -523,10 +590,15 @@ EXTERN int	li;	/* lines */
 EXTERN int	co;	/* columns */
 
 EXTERN int	contextsize;	/* number of lines of context to show */
-EXTERN char	contextbufs[MAXCONTEXT][BUFSIZ]; /* Context of current line */
+EXTERN unsigned char
+		contextbufs[MAXCONTEXT][BUFSIZ]; /* Context of current line */
 EXTERN int	contextoffset;	/* Offset of line start in contextbufs[0] */
-EXTERN char *	currentchar;	/* Location in contextbufs */
-EXTERN char	ctoken[INPUTWORDLEN + MAXAFFIXLEN]; /* Current token as char */
+EXTERN unsigned char *
+		currentchar;	/* Location in contextbufs */
+EXTERN unsigned char
+		ctoken[INPUTWORDLEN + MAXAFFIXLEN]; /* Current token as char */
+EXTERN unsigned char
+		filteredbuf[BUFSIZ]; /* Filtered line */
 EXTERN ichar_t	itoken[INPUTWORDLEN + MAXAFFIXLEN]; /* Ctoken as ichar_t str */
 
 EXTERN char	termcap[2048];	/* termcap entry */
@@ -537,12 +609,14 @@ EXTERN int	numhits;	/* number of hits in dictionary lookups */
 EXTERN struct success
 		hits[MAX_HITS]; /* table of hits gotten in lookup */
 
-EXTERN char *	hashstrings;	/* Strings in hash table */
+EXTERN unsigned char *
+		hashstrings;	/* Strings in hash table */
 EXTERN struct hashheader
 		hashheader;	/* Header of hash table */
 EXTERN struct dent *
 		hashtbl;	/* Main hash table, for dictionary */
-EXTERN int	hashsize;	/* Size of main hash table */
+EXTERN unsigned int
+		hashsize;	/* Size of main hash table */
 
 EXTERN char	hashname[MAXPATHLEN]; /* Name of hash table file */
 
@@ -556,10 +630,12 @@ EXTERN int	uerasechar;	/* User's erase character, from stty */
 EXTERN int	ukillchar;	/* User's kill character */
 
 EXTERN unsigned int laststringch; /* Number of last string character */
-EXTERN int	defdupchar;	/* Default duplicate string type */
+EXTERN int	defstringgroup;	/* Default string character group type */
 
-EXTERN int	numpflags;		/* Number of prefix flags in table */
-EXTERN int	numsflags;		/* Number of suffix flags in table */
+EXTERN unsigned int
+		numpflags;		/* Number of prefix flags in table */
+EXTERN unsigned int
+		numsflags;		/* Number of suffix flags in table */
 EXTERN struct flagptr pflagindex[SET_SIZE + MAXSTRINGCHARS];
 					/* Fast index to pflaglist */
 EXTERN struct flagent *	pflaglist;	/* Prefix flag control list */
@@ -572,6 +648,8 @@ EXTERN struct strchartype *		/* String character type collection */
 
 EXTERN FILE *	infile;			/* File being corrected */
 EXTERN FILE *	outfile;		/* Corrected copy of infile */
+EXTERN FILE *	sourcefile;		/* File with full input data */
+EXTERN FILE *	logfile;		/* File for logging corrections */
 
 EXTERN char *	askfilename;		/* File specified in -f option */
 
@@ -596,6 +674,14 @@ EXTERN int	Trynum;		/* Size of "Try" array */
 EXTERN ichar_t	Try[SET_SIZE + MAXSTRINGCHARS];
 
 /*
+ * Tables of keywords, used in defmt.c
+ */
+EXTERN struct kwtable htmlchecklist;	/* List of HTML tags to always check */
+EXTERN struct kwtable htmlignorelist;	/* List of HTML tags to be ignored */
+EXTERN struct kwtable texskip1list;	/* List of TEX tags to skip 1 arg */
+EXTERN struct kwtable texskip2list;	/* List of TEX tags to skip 2 args */
+
+/*
  * Initialized variables.  These are generated using macros so that they
  * may be consistently declared in all programs.  Numerous examples of
  * usage are given below.
@@ -612,7 +698,9 @@ INIT (int minimenusize, 2);		/* MUST be either 2 or zero */
 INIT (int minimenusize, 0);		/* MUST be either 2 or zero */
 #endif /* MINIMENU */
 
+INIT (int askverbose, 0);		/* NZ for verbose ask mode */
 INIT (int eflag, 0);			/* NZ for expand mode */
+INIT (char * defmtpgm, NULL);		/* Filter to use for deformatting */
 INIT (int dumpflag, 0);			/* NZ to do dump mode */
 INIT (int fflag, 0);			/* NZ if -f specified */
 #ifndef USG
@@ -620,11 +708,26 @@ INIT (int sflag, 0);			/* NZ to stop self after EOF */
 #endif
 INIT (int vflag, 0);			/* NZ to display characters as M-xxx */
 INIT (int xflag, DEFNOBACKUPFLAG);	/* NZ to suppress backups */
-INIT (int deftflag, -1);		/* NZ for TeX mode by default */
-INIT (int tflag, DEFTEXFLAG);		/* NZ for TeX mode in current file */
+INIT (int deftflag, -1);		/* Default deformatting mode, chosen */
+					/* ..from DEFORMAT_* values */
+INIT (int tflag, DEFTEXFLAG);		/* Deformatting for current file */
 INIT (int prefstringchar, -1);		/* Preferred string character type */
 
+INIT (int insidehtml, 0);		/* Flag to indicate we're amid HTML */
+					/*   0 = normal text */
+#define HTML_IN_TAG	0x01		/*   in <...> tag */
+#define HTML_IN_ENDTAG	0x02		/*   in </...> tag */
+#define HTML_IN_SPEC	0x04		/*   in &...; special-char sequence */
+#define HTML_IN_QUOTE	0x08		/*   in quoted text within tag */
+#define HTML_CHECKING_QUOTE 0x10	/*   checking quoted text within tag */
+#define HTML_IGNORE	0x20		/*   in text to be ignored */
+					/*   ...must be last, because we use */
+					/*   ...the higher bits as a nesting */
+					/*   ...counter */
+#define HTML_ISIGNORED	(~(HTML_IGNORE - 1)) /* Mask for testing ignore bits */
+
 INIT (int terse, 0);			/* NZ for "terse" mode */
+INIT (int correct_verbose_mode, 0);	/* NZ for "verbose" -a mode */
 
 INIT (char tempfile[MAXPATHLEN], "");	/* Name of file we're spelling into */
 
@@ -644,3 +747,5 @@ INIT (int math_mode, 0);
  * m -- looking for a \begin{minipage} argument.
  */
 INIT (char LaTeX_Mode, 'P');
+
+#endif /* ISPELL_H_INCLUDED */

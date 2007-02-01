@@ -1,7 +1,15 @@
+#ifndef FIELDS_H_INCLUDED
+#define FIELDS_H_INCLUDED
 /*
- * $Id: fields.h,v 1.1.1.1 1997-09-03 21:08:08 ghudson Exp $
+ * $Id: fields.h,v 1.1.1.2 2007-02-01 19:50:09 ghudson Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/04/26 22:40:07  geoff
+ * Add double-inclusion protection.  Include ispell.h for the definition of P.
+ *
+ * Revision 1.5  2005/04/14 14:38:23  geoff
+ * Make maxf unsigned.
+ *
  * Revision 1.4  1994/01/05  20:13:43  geoff
  * Add the maxf parameter
  *
@@ -20,9 +28,11 @@
  * Structures used by the field-access package.
  */
 
+#include "ispell.h"
+
 typedef struct
     {
-    int		nfields;	/* Number of fields in the line */
+    unsigned int nfields;	/* Number of fields in the line */
     int		hadnl;		/* NZ if line ended with a newline */
     char *	linebuf;	/* Malloc'ed buffer containing the line */
     char **	fields;		/* Malloc'ed array of pointers to fields */
@@ -49,9 +59,9 @@ typedef struct
 #endif /* __STDC__ */
 
 extern field_t *	fieldread P ((FILE * file, char * delims,
-			  int flags, int maxf));
+			  int flags, unsigned int maxf));
 extern field_t *	fieldmake P ((char * line, int allocated,
-			  char * delims, int flags, int maxf));
+			  char * delims, int flags, unsigned int maxf));
 extern int		fieldwrite P ((FILE * file, field_t * fieldp,
 			  int delim));
 extern void		fieldfree P ((field_t * fieldp));
@@ -60,3 +70,5 @@ extern unsigned int	field_field_inc;
 				/* Increment for expanding fields */
 extern unsigned int	field_line_inc;
 				/* Increment for expanding lines */
+
+#endif /* FIELDS */
