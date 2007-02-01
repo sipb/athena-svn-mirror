@@ -1,5 +1,7 @@
+#ifndef CONFIG_H_INCLUDED
+#define CONFIG_H_INCLUDED
 /*
- * Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1992, 1993, 1999, 2001, 2005, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,10 +17,8 @@
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -52,9 +52,114 @@
  */
 
 /*
- * $Id: config.X,v 1.1.1.1 1997-09-03 21:08:11 ghudson Exp $
+ * $Id: config.X,v 1.1.1.2 2007-02-01 19:50:34 ghudson Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.99  2005/05/25 14:13:53  geoff
+ * Correct the spelling of the default for EXEEXT.
+ *
+ * Revision 1.98  2005/05/01 23:07:59  geoff
+ * Add #ifndef around the definition of LINK (how the heck did I blow
+ * THAT one?  Thanks to Eli Zaretskii for fixing it).  Add EXTEXT (again
+ * courtesy of Eli) to support MS-DOS and similar systems.
+ *
+ * Revision 1.97  2005/04/28 14:46:51  geoff
+ * Add DEFLOGDIR.
+ *
+ * Revision 1.96  2005/04/28 01:03:11  geoff
+ * Include defhash.h after local.h so local.h can override its
+ * definitions.  Put back the definitions of MASTERHASH, DEFHASH, and
+ * DEFLANG so they'll be documented.
+ *
+ * Revision 1.95  2005/04/28 00:26:06  geoff
+ * Get hash-file names from defhash.h (but let local.h override them).
+ * Document the fact that the master hash file is the first language in
+ * the language list.
+ *
+ * Revision 1.94  2005/04/26 22:40:07  geoff
+ * Add double-inclusion protection.
+ *
+ * Revision 1.93  2005/04/21 14:08:58  geoff
+ * Don't put an explicit path on egrep, and assume that it takes the -i
+ * switch (since that's true on most modern systems).
+ *
+ * Revision 1.92  2005/04/14 21:25:52  geoff
+ * Add a prominent warning against using symbolic links.  Add
+ * DICTIONARYVAR and CHARESETVAR.  Fix a typo in determining word size
+ * for masks.  Try to get the masktype width from the system word size if
+ * possible.
+ *
+ * Revision 1.91  2005/04/14 15:19:37  geoff
+ * Add shortcite to both versions of TEXSKIP1.
+ *
+ * Revision 1.90  2005/04/14 14:38:23  geoff
+ * Update license.  Integrate Ed Avis's changes.  Make "ln" configurable.
+ * Use -lncurses by default, rather than -ltermcap.  Make manual
+ * extensions configures.  Also make some of the manual contents
+ * configurable.  Make words default to /usr/share/dict.  Add a warning
+ * against /usr/share/dict/web2.  Make the determination of MAXPATHLEN
+ * and MAXNAMLEN smarter.  Increase a bunch of parameters to reflect the
+ * increased power of modern machines.  Add support for 64-bit word size.
+ * Expand the known TeX keywords.  Add DEFAULT_FILE_MODE.
+ *
+ * Revision 1.89  2001/09/06 00:30:28  geoff
+ * Many changes from Eli Zaretskii to support DJGPP compilation.
+ *
+ * Revision 1.88  2001/07/25 21:51:45  geoff
+ * Minor license update.
+ *
+ * Revision 1.87  2001/07/23 20:24:02  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.86  2001/06/14 09:11:11  geoff
+ * Use non-conflicting macros for bcopy and bzero to avoid compilation
+ * problems on smarter compilers.
+ *
+ * Revision 1.85  2001/05/30 21:14:47  geoff
+ * Invert the fcntl/mkstemp options so they will default to being used.
+ *
+ * Revision 1.84  2001/05/30 21:04:25  geoff
+ * Add HAS_FCNTL_H and HAS_MKSTEMP.
+ *
+ * Revision 1.83  2001/01/24 01:18:27  geoff
+ * Don't build the + dictionaries by default any more, because too many
+ * distributions no longer supply /usr/dict/words.
+ *
+ * Revision 1.82  2000/08/22 10:52:25  geoff
+ * Fix a spelling error in an ifdef, improve comments on TERMLIB, and
+ * bump MAXSTRINGCHARS to 512 to reflect the increased number used in the
+ * english.aff file (and presumably others).
+ *
+ * Revision 1.81  2000/06/30 08:32:47  geoff
+ * Bump the default MAXSTRINGCHARS to handle more complex languages
+ *
+ * Revision 1.80  2000/01/21 06:57:38  geoff
+ * Add a bunch of new TeX keywords
+ *
+ * Revision 1.79  1999/01/13  01:34:18  geoff
+ * Get rid of EMACS, which is now obsolete.
+ *
+ * Revision 1.78  1999/01/08  04:34:11  geoff
+ * Get rid of ELISPDIR and TEXINFODIR
+ *
+ * Revision 1.77  1999/01/07  01:22:34  geoff
+ * Update the copyright.
+ *
+ * Revision 1.76  1998/07/12  20:42:12  geoff
+ * Switch the sense of IGNOREBIB for TEXSKIP1.
+ *
+ * Revision 1.75  1998/07/06  06:55:11  geoff
+ * Add TEXSKIP1/2 and associated variables.
+ *
+ * Revision 1.74  1997/12/02  06:24:35  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
+ * Revision 1.73  1997/12/01  00:53:41  geoff
+ * Add HTML support variables.
+ *
+ * Revision 1.72  1995/11/08  05:09:09  geoff
+ * Use symbolic values for DEFTEXFLAG.
+ *
  * Revision 1.71  1995/01/08  23:23:28  geoff
  * Add some more configuration variables: HAS_RENAME, MSDOS_BINARY_OPEN,
  * HOME, PDICTHOME, HASHSUFFIX, STATSUFFIX, and COUNTSUFFIX.  These are
@@ -97,6 +202,8 @@
 
 #include "local.h"	/* local definitions for options */
 
+#include "defhash.h"	/* Automatically generated options */
+
 /*
 ** Major-differences selection.  The default system is BSD;  for USG
 ** or non-UNIX systems you should add the appropriate #define to local.h.
@@ -121,9 +228,6 @@
 #ifndef CC
 #define CC	"cc"
 #endif /* CC */
-#ifndef EMACS
-#define EMACS	"emacs"
-#endif /* EMACS */
 #ifndef LINT
 #define LINT	"lint"
 #endif /* LINT */
@@ -138,6 +242,26 @@
 #endif /* YACC */
 
 /*
+** For some systems, it might be better to use symbolic links rather
+** than traditional hard links.  Usually hard links are better,
+** because they are more efficient.  However, hard links don't work
+** across physical devices.  In such cases, you may prefer to set LINK
+** to "ln -s" to work around that deficiency.
+**
+** NOTE TO PERSONS WHO FIRST LEARNED UNIX AFTER 1980: many Unix
+** novices seem to think that symbolic links are the only kind of
+** links, and seem to use them reflexively.  Remember that symbolic
+** links are inferior to hard links in almost every way.  The
+** exception is when you're dealing either with (a) links to
+** directories or (b) cross-device links.  Ispell uses neither.  Don't
+** change LINK to "ln -s" unless you are working on a system that
+** simply doesn't support hard links.
+*/
+#ifndef LINK
+#define LINK	"ln"
+#endif
+
+/*
 ** Libraries that may need to be added to the cc line to get ispell to
 ** link.  Normally, this should be null.
 */
@@ -146,11 +270,11 @@
 #endif
 
 /*
-** TERMLIB - where to get the termcap library.  Should be -ltermcap or
-** -lcurses on most systems.
+** TERMLIB - where to get the termcap library.  Should be -ltermcap,
+** -lcurses, or -lncurses on most systems.
 */
 #ifndef TERMLIB
-#define TERMLIB	"-ltermcap"
+#define TERMLIB	"-lncurses"
 #endif
 
 /*
@@ -164,10 +288,7 @@
 
 /*
 ** Where to install various components of ispell.  BINDIR contains
-** binaries.  LIBDIR contains hash tables and affix files.  ELISPDIR
-** contains emacs lisp files (if any) and TEXINFODIR contains emacs
-** TeXinfo files.  MAN1DIR and MAN4DIR will hold the chapter-1 and
-** chapter-4 manual pages, respectively.
+** binaries.  LIBDIR contains hash tables and affix files.
 **
 ** If you intend to use multiple dictionary files, I would suggest
 ** LIBDIR be a directory which will contain nothing else, so sensible
@@ -179,27 +300,65 @@
 #ifndef LIBDIR
 #define LIBDIR	"/usr/local/lib"
 #endif
-#ifndef ELISPDIR
-#define ELISPDIR "/usr/local/lib/emacs/site-lisp"
-#endif
-#ifndef TEXINFODIR
-#define TEXINFODIR "/usr/local/info"
-#endif
+
+/*
+** MAN1DIR and MAN1EXT control installing the section 1 (executable
+** programs) manual pages.  There are also manual pages for file
+** formats, but there seems to be some controversy over whether these
+** belong in section 4 or section 5 of the manual.  To make the
+** cross-references correct you also need to change MAN45SECT.  (The
+** built files are always called .5X and .5; the extension changes
+** only when it's finally installed.)
+** 
+** If your system likes to use ".1l" and such for local manual pages,
+** you can change MAN1EXT and MAN45EXT appropriately.
+*/
 #ifndef MAN1DIR
 #define MAN1DIR	"/usr/local/man/man1"
 #endif
-#ifndef MAN4DIR
-#define MAN4DIR	"/usr/local/man/man4"
-#endif
-
-/*
-** Extensions to put on manual pages.  Usually these are ".1" or ".1l".
-*/
 #ifndef MAN1EXT
 #define MAN1EXT	".1"
 #endif
-#ifndef MAN4EXT
-#define MAN4EXT	".4"
+
+#ifndef MAN45DIR
+#define MAN45DIR "/usr/local/man/man5"
+#endif
+#ifndef MAN45EXT
+#define MAN45EXT ".5"
+#endif
+#ifndef MAN45SECT
+#define MAN45SECT "5"
+#endif
+
+/*
+** Ispell's manual page refers to some programs, look, spell, and tib, that
+** may be absent on some systems.  Look used to be optional; spell
+** used to be a part of standard Unix, but has been obsoleted by
+** ispell; tib is part of a rarely used TeX package that is not
+** available on most systems.  To avoid having a cross reference to a
+** manual page that doesn't exist, they are changeable here.
+**
+** If you have either on your system, define these as follows:
+**
+** #define SPELL_XREF ".IR spell (1),"
+** #define TIB_XREF ".IR tib (1),"
+**
+** By default, SPELL_XREF is defined as a special string that
+** evaluates to nothing in a manual page, because the program is not
+** otherwise mentioned in the ispell manaul.  Since tib is mentioned
+** elsewhere, its default definition is more complex.
+**
+** Incidentally, there is no need to do the same for sort, join, and
+** so on, since they are standard on any Unix-like system.
+*/
+#ifndef LOOK_XREF
+#define LOOK_XREF ".IR look (1),"
+#endif
+#ifndef SPELL_XREF
+#define SPELL_XREF	".\\\""
+#endif
+#ifndef TIB_XREF
+#define TIB_XREF	".IR tib \" (if available on your system)\","
 #endif
 
 /*
@@ -221,7 +380,7 @@
 **
 ** For example, if LANGUAGES is:
 **
-**	"{american,MASTERDICTS=american.med+,HASHFILES=americanmed+.hash,EXTRADICT=/usr/dict/words /usr/dict/web2} {deutsch,DICTALWAYS=deutsch.sml,DICTOPTIONS=}"
+**	"{american,MASTERDICTS=american.med+,HASHFILES=americanmed+.hash,EXTRADICT=/usr/share/dict/words /usr/share/dict/web2} {deutsch,DICTALWAYS=deutsch.sml,DICTOPTIONS=}"
 **
 ** then the American-English and Deutsch (German) languages will be supported,
 ** and the following variable settings will be passed to the two Makefiles:
@@ -230,12 +389,17 @@
 **
 **	    MASTERDICTS='american.med+'
 **	    HASHFILES='americanmed+.hash'
-**	    EXTRADICT='/usr/dict/words /usr/dict/web2'
+**	    EXTRADICT='/usr/share/dict/words /usr/share/dict/web2'
 **
 **	Deutsch:
 **
 **	    DICTALWAYS='deutsch.sml'
 **	    DICTOPTIONS=''
+**
+** Incidentally, it is rarely a good idea to include /usr/share/dict/web2
+** in an ispell dictionary even if the file exists on your system,
+** because it contains obscure words that may mask misspellings of
+** more common words.
 **
 ** Notes on the syntax: The makefile is not very robust.  If you have
 ** make problems, or if make seems to fail in the language-subdirs
@@ -243,24 +407,21 @@
 ** the individual variables in the LANGUAGES specification, so don't
 ** use quotes of any kind.
 **
-** In the future, the first language listed in this variable will
-** become the default, and the DEFHASH, DEFLANG, and DEFPAFF,
-** variables will all become obsolete.  So be sure to put your default
-** language first, to make later conversion easier!
+** The first language listed in this variable MUST contain a HASHFILES
+** declaration.  That language will become the default for
+** spell-checking if no dictionary is explicitly specified.  As a
+** special (and kludgey) feature, if that language begins with
+** "american" or "british", it will also be aliased to "english", and
+** "english" will become the default dictionary.  (All of these
+** defaults can be overridden by defining MASTERHASH, DEFHASH, and
+** DEFLANG, but that should rarely be necessary.)
 **
-** Notes on options for the various languages will be found in the
-** Makefiles for those languages.  Some of those languages may require
-** you to also change various limits limits like MASKBITS or the
-** length parameters.
-**
-** A special note on the English language: because the British and
-** American dialects use different spelling, you should usually select
-** one or the other of these.  If you select both, the setting of
-** MASTERHASH will determine which becomes the language linked to
-** DEFHASH (which will usually be named english.hash).
+** On MSDOS systems, you must use names that are consistent with the
+** 8+3 filename restrictions, or you will risk filename collision.  See
+** the file pc/local.djgpp for details.
 */
 #ifndef LANGUAGES
-#define LANGUAGES "{american,MASTERDICTS=american.med+,HASHFILES=americanmed+.hash,EXTRADICT=/usr/dict/words}"
+#define LANGUAGES "{american,MASTERDICTS=american.med,HASHFILES=americanmed.hash,EXTRADICT=}"
 #endif /* LANGUAGES */
 
 /*
@@ -268,15 +429,21 @@
 ** built by a language Makefile.  It should be the most-popular hash
 ** file on your system, because it is the one that will be used by
 ** default.  It must be listed in LANGUAGES, above.
+**
+** Normally, it is not necessary to define this variable in local.h,
+** because it will automatically be extracted from LANGUAGES, above.
 */
 #ifndef MASTERHASH
-#define MASTERHASH	"americanmed+.hash"
+#define MASTERHASH      "americanmed.hash"
 #endif
 
 /*
 ** Default native-language hash file.  This is the name given to the
 ** hash table that will be used if no language is specified to
 ** ispell.  It is a link to MASTERHASH, above.
+**
+** Normally, it is not necessary to define this variable in local.h,
+** because it will automatically be extracted from LANGUAGES, above.
 */
 #ifndef DEFHASH
 #define DEFHASH "english.hash"
@@ -286,11 +453,13 @@
 ** Language tables for the default language.  This must be the name of
 ** the affix file that was used to generate the MASTERHASH/DEFHASH,
 ** above.
+**
+** Normally, it is not necessary to define this variable in local.h,
+** because it will automatically be extracted from LANGUAGES, above.
 */
 #ifndef DEFLANG
-#define DEFLANG	"english.aff"
+#define DEFLANG "english.aff"
 #endif
-
 /*
 ** Language to use for error messages.  If there are no messages in this
 ** language, English will be used instead.
@@ -315,8 +484,18 @@
 ** space.  Otherwise make it the null string.
 */
 #ifndef MAKE_SORTTMP
-#define MAKE_SORTTMP "-T ${TMPDIR-/usr/tmp}"
+#define MAKE_SORTTMP "-T ${TMPDIR-/tmp}"
 #endif
+
+/*
+** Sequence that indicates the beginning of a shell script.  Most
+** systems use "#!/bin/sh" here.  Some very old machines, however,
+** need ": Use /bin/sh".
+*/
+#ifndef POUNDBANG
+#define POUNDBANG "#!/bin/sh"
+#endif
+
 
 /*
 ** INSTALL program. Could be a copy program like cp or something fancier
@@ -336,12 +515,30 @@
 #undef HAS_RENAME
 #endif /* HAS_RENAME */
 
+/*
+** If your system doesn't have the fcntl.h header file (most modern
+** systems do), define this.
+*/
+#ifndef NO_FCNTL_H
+#undef NO_FCNTL_H
+#endif /* NO_FCNTL_H */
+
+/*
+** If your system doesn't have the mkstemp library call, define this.
+*/
+#ifndef NO_MKSTEMP
+#undef NO_MKSTEMP
+#endif /* NO_MKSTEMP */
+
 /* Aliases for some routines */
 #ifdef USG
-#define bcopy(s, d, n)	(void) memcpy (d, s, n)
-#define bzero(d, n)	(void) memset (d, 0, n)
+#define BCOPY(s, d, n)	memcpy (d, s, n)
+#define BZERO(d, n)	memset (d, 0, n)
 #define index strchr
 #define rindex strrchr
+#else
+#define BCOPY(s, d, n)	bcopy (s, d, n)
+#define BZERO(d, n)	bzero (d, n)
 #endif
 
 /* type given to signal() by signal.h */
@@ -374,6 +571,9 @@
 #define OLDPAFF "words"
 #endif /* OLDPAFF */
 
+/* where to put log files (inside home */
+#define DEFLOGDIR ".ispell_logs"
+
 /* environment variable for include file string */
 #ifndef INCSTRVAR
 #define INCSTRVAR "INCLUDE_STRING"
@@ -382,6 +582,22 @@
 /* default include string */
 #ifndef DEFINCSTR
 #define DEFINCSTR "&Include_File&"
+#endif
+
+/* Environment variable for getting extra ispell options */
+#define OPTIONVAR         "ISPELL_OPTIONS"
+
+/* Environment variable for controlling where to look for dictionaries */
+#define LIBRARYVAR        "ISPELL_DICTDIR"
+
+/* environment variable for preferred dictionary */
+#ifndef DICTIONARYVAR
+#define DICTIONARYVAR "DICTIONARY"
+#endif
+
+/* environment variable for preferred character set */
+#ifndef CHARSETVAR
+#define CHARSETVAR "ISPELL_CHARSET"
 #endif
 
 /* mktemp template for temporary file - MUST contain 6 consecutive X's */
@@ -415,15 +631,57 @@
 ** Choose the proper type of regular-expression routines here.  BSD
 ** and public-domain systems have routines called re_comp and re_exec;
 ** System V uses regcmp and regex.
+**
+** REGCTYPE             is the type of a variable to hold the compiled regexp
+** REGCMP(re,str)	is the function that compiles a regexp in `str' into
+**		        a compiled regexp `re' declared as REGCTYPE and
+**			returns `re'.
+** REGEX(re, str, dummy) is a function that matches `str' against a compiled
+**			regexp in `re' and returns a non-NULL pointer if it
+**			matches, NULL otherwise.
+** REGFREE(re)		is anything that should be done when the compiled
+**			regexp `re' is no longer needed.  It can be also used
+**			to allocate any structures required to compile a
+**			regexp, since it is called *before* compiling a new
+**			regexp (that's where we know that the old one will no
+**			longer be used).
+**
+** Here is one way of defining these if you have POSIX regexp functions:
+**
+**  #include <sys/types.h>
+**  #include <regex.h>
+**  #define REGCTYPE		regex_t *
+**  #define REGCMP(re,str)	(regcomp (re, str, 0), re)
+**  #define REGEX(re, str, dummy) \
+**    (re != 0 && regexec (re, str, 0, 0, 0) == 0 ? (char *) 1 : NULL)
+**  #define REGFREE(re) \
+**    do							\
+**	  { 							\
+**        if (re == 0)						\
+**            re = (regex_t *) calloc (1, sizeof (regex_t));	\
+**        else							\
+**            regfree (re);					\
+**	  } while (0)
+**
 */
 #ifdef REGEX_LOOKUP
 #ifndef REGCMP
 #ifdef USG
-#define REGCMP(str)		regcmp (str, (char *) 0)
+#define REGCTYPE		char *
+#define REGCMP(re, str)		regcmp (str, (char *) 0)
 #define REGEX(re, str, dummy)	regex (re, str, dummy, dummy, dummy, dummy, \
 				    dummy, dummy, dummy, dummy, dummy, dummy)
+#define REGFREE(re)		do \
+				    { \
+				    if (re != NULL) \
+					free (re); \
+				    re = NULL; \
+				    } \
+				while (0)
 #else /* USG */
-#define REGCMP(str)		re_comp (str)
+#define REGCTYPE		char *
+#define REGFREE(re)		/* Do nothing */
+#define REGCMP(re, str)		re_comp (str)
 #define REGEX(re, str, dummy)	re_exec (str)
 #endif /* USG */
 #endif /* REGCMP */
@@ -438,27 +696,37 @@
 
 /* path to egrep (use speeded up version if available) */
 #ifndef EGREPCMD
-#ifdef	USG
-#define EGREPCMD "/bin/egrep"
-#else
-#define EGREPCMD "/usr/bin/egrep -i"
-#endif
+#define EGREPCMD "egrep -i"
 #endif
 
-/* path to wordlist for Lookup command (typically /usr/dict/{words|web2}) */
-/* note that /usr/dict/web2 is usually a bad idea due to obscure words */
+/*
+** Path to wordlist for Lookup command (typically /usr/dict/words,
+** /usr/dict/web2, or /usr/share/dict/words or web2).
+**
+** Note that it is usually a bad idea to specify the web2 dictionary
+** because it contains obscure words.
+*/
+/* note that /usr/share/dict/web2 is usually a bad idea due to obscure words */
 #ifndef WORDS
-#define WORDS	"/usr/dict/words"
+#define WORDS	"/usr/share/dict/words"
 #endif
 
 /* buffer size to use for file names if not in sys/param.h */
 #ifndef MAXPATHLEN
+#ifdef PATH_MAX
+#define MAXPATHLEN PATH_MAX
+#else
 #define MAXPATHLEN 240
+#endif
 #endif
 
 /* max file name length (will truncate to fit BAKEXT) if not in sys/param.h */
 #ifndef MAXNAMLEN
+#ifdef NAME_MAX
+#define MAXNAMLEN NAME_MAX
+#else
 #define MAXNAMLEN 14
+#endif
 #endif
 
 /* define if you want .bak file names truncated to MAXNAMLEN characters */
@@ -473,27 +741,8 @@
 
 /* largest amount that a word might be extended by adding affixes */
 #ifndef MAXAFFIXLEN
-#define MAXAFFIXLEN 20
+#define MAXAFFIXLEN 40
 #endif
-
-/*
-** Define the following to suppress the 8-bit character feature.
-** Unfortunately, this doesn't work as well as it might, because ispell
-** only strips the 8th bit in some places.  For example, it calls strcmp()
-** quite often without first stripping parity.  However, I really wonder
-** about the utility of this option, so I haven't bothered to fix it.  If
-** you think the stripping feature of NO8BIT is useful, you might let me
-** (Geoff Kuenning) know.
-**
-** Nevertheless, NO8BIT is a useful option for other reasons.  If NO8BIT
-** is defined, ispell will probably use 8-bit characters internally;
-** this improves time efficiency and saves a small amount of space
-** in the hash file.  Thus, I recommend you specify NO8BIT unless you
-** actually expect to be spelling files which use a 256-character set.
-*/ 
-#ifndef NO8BIT
-#undef NO8BIT
-#endif /* NO8BIT */
 
 /*
 ** Number of mask bits (affix flags) supported.  Must be 32, 64, 128, or
@@ -506,12 +755,14 @@
 ** respectively, are theoretically available, though a few (newline, slash,
 ** null byte) are pretty hard to actually use successfully.
 **
-** Note that a number of non-English affix files depend on having a
-** larger value for MASKBITS.  See the affix files for more
-** information.
+** Note that most non-English affix files depend on having MASKBITS
+** equal to 64 or larger.  It is for this reason that MASKBITS
+** defaults to 64.  If you are only going to be using ispell for
+** English, and you are very tight on memory space, you might want to
+** reduce MASKBITS to 32.
 */
 #ifndef MASKBITS
-#define MASKBITS	32
+#define MASKBITS	64
 #endif
 
 /*
@@ -527,16 +778,30 @@
 ** division-by-zero errors! 
 */
 #ifndef MASKTYPE
+#ifdef __WORDSIZE
+#if __WORDSIZE == 64
+#define MASKTYPE long
+#define MASKTYPE_WIDTH 64
+#else
+#define MASKTYPE int
+#define MASKTYPE_WIDTH __WORDSIZE
+#endif
+#else
 #define MASKTYPE	long
 #endif
-#ifndef MASKTYPE_WIDTH
-#define MASKTYPE_WIDTH	32
 #endif
+
+#ifndef MASKTYPE_WIDTH
+#ifdef __WORDSIZE
+#define MASKTYPE_WIDTH __WORDSIZE
+#else
+#define MASKTYPE_WIDTH	32
+#endif /* __WORDSIZE */
+#endif /* MASKTYPE_WIDTH */
 #if MASKBITS < MASKTYPE_WIDTH
 #undef MASKBITS
 #define MASKBITS	MASKTYPE_WIDTH
 #endif /* MASKBITS < MASKTYPE_WIDTH */
-
 
 /* maximum number of include files supported by xgets;  set to 0 to disable */
 #ifndef MAXINCLUDEFILES
@@ -557,7 +822,7 @@
 ** character counts as two!
 */
 #ifndef MAXSTRINGCHARS
-#define MAXSTRINGCHARS 100
+#define MAXSTRINGCHARS 512
 #endif /* MAXSTRINGCHARS */
 
 /*
@@ -567,17 +832,6 @@
 #ifndef MAXSTRINGCHARLEN
 #define MAXSTRINGCHARLEN 10
 #endif /* MAXSTRINGCHARLEN */
-
-/*
-** the NOPARITY mask is applied to user input characters from the terminal
-** in order to mask out the parity bit.
-*/
-#ifdef NO8BIT
-#define NOPARITY 0x7f
-#else
-#define NOPARITY 0xff
-#endif
-
 
 /*
 ** the terminal mode for ispell, set to CBREAK or RAW
@@ -603,30 +857,20 @@
 #endif
 
 /*
-** Define this if you want to suppress the capitalization-checking
-** feature.  This will reduce the size of the hashed dictionary on
-** most 16-bit and some 32-bit machines.  This option is not
-** recommended.
-*/
-#ifndef NO_CAPITALIZATION_SUPPORT
-#undef NO_CAPITALIZATION_SUPPORT
-#endif /* NO_CAPITALIZATION_SUPPORT */
-
-/*
 ** Define this if you want your personal dictionary sorted.  This may take
 ** a long time for very large dictionaries.  Dictionaries larger than
 ** SORTPERSONAL words will not be sorted.  Define SORTPERSONAL as zero
 ** to disable this feature.
 */
 #ifndef SORTPERSONAL
-#define SORTPERSONAL	1000
+#define SORTPERSONAL	4000
 #endif
 
 /*
 ** Define this if you want to use the shell for interpretation of commands
 ** issued via the "L" command, "^Z" under System V, and "!".  If this is
 ** not defined then a direct fork()/exec() will be used in place of the
-** normal system().  This may speed up these operations greately on some
+** normal system().  This may speed up these operations greatly on some
 ** systems.
 */
 #ifndef USESH
@@ -707,13 +951,71 @@
 #endif
 
 /*
+** Default tags after which TeX mode ignores one (skip1) and two (skip2)
+** arguments
+*/
+#ifndef TEXSKIP1
+#ifdef IGNOREBIB
+#define TEXSKIP1	"end,vspace,hspace,cite,shortcite,ref,eqref,parbox,label,input,nocite,include,includeonly,documentstyle,documentclass,usepackage,selectlanguage,pagestyle,thispagestyle,pagenumbering,value,arabic,roman,Roman,alph,Alph,fnsymbol,stepcounter,refstepcounter,newcounter,addtocontents,newenvironment,renewenvironment,newtheorem,theoremstyle,color,colorbox,textcolor,pagecolor,enlargethispage,stretch,scalebox,rotatebox,includegraphics,symbol,settowidth,settoheight,settodepth,bibliography,bibitem,hyphenation,pageref,psfig"
+#else /* IGNOREBIB */
+#define TEXSKIP1	"end,vspace,hspace,cite,shortcite,ref,eqref,parbox,label,input,nocite,include,includeonly,documentstyle,documentclass,usepackage,selectlanguage,pagestyle,thispagestyle,pagenumbering,value,arabic,roman,Roman,alph,Alph,fnsymbol,stepcounter,refstepcounter,newcounter,addtocontents,newenvironment,renewenvironment,newtheorem,theoremstyle,color,colorbox,textcolor,pagecolor,enlargethispage,stretch,scalebox,rotatebox,includegraphics,symbol,settowidth,settoheight,settodepth,hyphenation,pageref,psfig"
+#endif /* IGNOREBIB */
+#endif /* TEXSKIP1 */
+#ifndef TEXSKIP2
+#define TEXSKIP2	"rule,setcounter,addtocounter,setlength,addtolength,settowidth"
+#endif /* TEXSKIP2 */
+
+/*
+** Environment variables used to override TEXSKIP1 and TEXSKIP2
+*/
+#ifndef TEXSKIP1VAR
+#define TEXSKIP1VAR	"TEXSKIP1"
+#endif /* TEXSKIP1VAR */
+#ifndef TEXSKIP2VAR
+#define TEXSKIP2VAR	"TEXSKIP2"
+#endif /* TEXSKIP2VAR */
+
+/*
+** Default tags between which HTML mode ignores text
+*/
+#ifndef HTMLIGNORE
+#define HTMLIGNORE	"code,samp,kbd,pre,listing,address"
+#endif
+
+/*
+** Variable used to override HTMLIGNORE
+*/
+#ifndef HTMLIGNOREVAR
+#define HTMLIGNOREVAR	"HTMLIGNORE"
+#endif /* HTMLIGNOREVAR */
+
+/*
+** Default tag fields which HTML mode always checks
+*/
+#ifndef HTMLCHECK
+#define HTMLCHECK	"alt"
+#endif /* HTMLCHECK */
+
+/*
+** Variable used to override HTMLCHECK
+*/
+#ifndef HTMLCHECKVAR
+#define HTMLCHECKVAR	"HTMLCHECK"
+#endif /* HTMLCHECKVAR */
+
+/*
 ** Defaults for certain command-line flags.
 */
 #ifndef DEFNOBACKUPFLAG
 #define DEFNOBACKUPFLAG	0		    /* Don't suppress backup file */
 #endif
+
+/*
+** DEFTEXFLAG should really be named DEFAULT_DEFORMATTER, but isn't for
+** historical reasons.
+**/
 #ifndef DEFTEXFLAG
-#define DEFTEXFLAG	0		    /* Default to nroff mode */
+#define DEFTEXFLAG	DEFORMAT_NROFF	    /* Default to nroff mode */
 #endif
 
 /*
@@ -797,14 +1099,35 @@
 #endif /* NO_STDLIB_H */
 
 /*
+** Not all systems have the same definitions for R_OK and W_OK
+** flags for calling `access'.  If the defaults below are not
+** good for your system, define different values in "local.h".
+** Usually, the system header <unistd.h> defines these.
+*/
+#ifndef R_OK
+#define R_OK 4
+#endif
+#ifndef W_OK
+#define W_OK 2
+#endif
+
+/*
+** Default mode to give to output files if the mode of the input file
+** cannot be determined.  There should be no need to change this.
+*/
+#ifndef DEFAULT_FILE_MODE
+#define DEFAULT_FILE_MODE 0644
+#endif /* DEFAULT_FILE_MODE */
+
+/*
 ** The following define is used by the ispell developer to help
 ** double-check the software.  Leave it undefined on other systems
 ** unless you are especially fond of warning messages, or are pursuing
 ** an inexplicable bug that might be related to a type mismatch.
 */
-#ifndef GENERATE_LIBARARY_PROTOS
-#undef GENERATE_LIBARARY_PROTOS
-#endif /* GENERATE_LIBARARY_PROTOS */
+#ifndef GENERATE_LIBRARY_PROTOS
+#undef GENERATE_LIBRARY_PROTOS
+#endif /* GENERATE_LIBRARY_PROTOS */
 
 /*
 ** Symbols below this point are generally intended to cater to
@@ -813,7 +1136,9 @@
 ** MS-DOS users should also define HAS_RENAME, above, if appropriate.
 **
 ** Define PIECEMEAL_HASH_WRITES if your system can't handle huge write
-** operations.  This is known to be a problem on some MS-DOS systems.
+** operations.  This is known to be a problem on MS-DOS systems when
+** a 16-bit compiler is used to compile Ispell (but not with DJGPP or
+** EMX).
 */
 #ifndef PIECEMEAL_HASH_WRITES
 #undef PIECEMEAL_HASH_WRITES
@@ -861,8 +1186,10 @@
 /*
 ** On MS-DOS systems, you can rename the following variables so that
 ** ispell's files have 3-character suffixes.  Note that, if you do
-** this, you will have to redefine any variable above that
-** incorporates one of the suffixes.
+** this, you will have to redefine any variable above that incorporates
+** one of the suffixes.  (Most MS-DOS environments will silently truncate
+** excess characters beyond the 8+3 limit, so you usually don't need to
+** change the suffixes just because they are longer than 3 characters.)
 */
 #ifndef HASHSUFFIX
 #define HASHSUFFIX	".hash"
@@ -870,6 +1197,21 @@
 #ifndef STATSUFFIX
 #define STATSUFFIX	".stat"
 #endif /* STATSUFFIX */
-#ifndef COUNTSUFFIX
-#define COUNTSUFFIX	".cnt"
-#endif /* COUNTSUFFIX */
+
+/*
+** MS-DOS and MS-Windows systems can use either '/' or '\\' for
+** a directory separator in file names.
+*/
+#ifndef IS_SLASH
+#ifdef MSDOS
+#define IS_SLASH(c)	((c) == '/'  ||  (c) == '\\')
+#else /* MSDOS */
+#define IS_SLASH(c)	((c) == '/')
+#endif /* MSDOS */
+#endif /* IS_SLASH */
+
+#ifndef EXEEXT
+#define EXEEXT ""
+#endif
+
+#endif /* CONFIG_H_INCLUDED */

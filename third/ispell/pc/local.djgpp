@@ -1,0 +1,356 @@
+/*
+ * Written by Eli Zaretskii <eliz@gnu.org>
+ *
+ * This is local.h file suitable for compiling Ispell on MS-DOS systems
+ * with version 2.x of DJGPP port of GNU C/C++ compiler.
+ *
+ * $Id: local.djgpp,v 1.1.1.1 2007-02-01 19:50:31 ghudson Exp $
+ *
+ */
+
+/*
+ * WARNING WARNING WARNING
+ *
+ * This file is *NOT* a normal C header file!  Although it uses C
+ * syntax and is included in C programs, it is also processed by shell
+ * scripts that are very stupid about format.
+ *
+ * Do not try to use #if constructs to configure this file for more
+ * than one configuration.  Do not place whitespace after the "#" in
+ * "#define".  Do not attempt to disable lines by commenting them out.
+ * Do not use backslashes to reduce the length of long lines.
+ * None of these things will work the way you expect them to.
+ *
+ * WARNING WARNING WARNING
+ */
+
+/*
+** Things that normally go in a Makefile.  Define these just like you
+** might in the Makefile, except you should use #define instead of
+** make's assignment syntax.  Everything must be double-quoted, and
+** (unlike make) you can't use any sort of $-syntax to pick up the
+** values of other definitions.
+*/
+
+#define CC      "gcc"
+#define CFLAGS  "-O2 -g"
+#define YACC    "bison -y"
+
+/*
+** LINK - MS-DOS generally doesn't support links, so use copy instead.
+*/
+#define LINK "cp -p"
+
+/*
+** TERMLIB - DJGPP doesn't have one, it uses direct screen writes.
+*/
+#define TERMLIB ""
+
+/*
+** Where to install various components of ispell.  BINDIR contains
+** binaries.  LIBDIR contains hash tables and affix files.  MAN1DIR
+** and MAN4DIR will hold the chapter-1 and chapter-4 manual pages,
+** respectively.
+**
+** If you intend to use multiple dictionary files, I would suggest
+** LIBDIR be a directory that will contain nothing else, so sensible
+** names can be constructed for the -d option without conflict.
+**
+** The magic string "/dev/env/FOO" expands at run time into the value
+** of the environment variable FOO.  DJDIR is defined by the startup
+** code of every DJGPP program to point to the root of the DJGPP
+** installation tree.
+*/
+#define BINDIR      "/dev/env/DJDIR/bin"
+#define LIBDIR      "/dev/env/DJDIR/lib"
+#define MAN1DIR     "/dev/env/DJDIR/man/man1"
+#define MAN45DIR    "/dev/env/DJDIR/man/man5"
+
+/*
+** List of all hash files (languages) which will be supported by ispell.
+**
+** This variable has a complex format so that many options can be
+** specified.  The format is as follows:
+**
+**	<language>[,<make-options>...] [<language> [,<make-options> ...] ...]
+**
+** where
+**
+**	language	is the name of a subdirectory of the
+**			"languages" directory
+**	make-options	are options that are to be passed to "make" in
+**			the specified directory.  The make-options
+**			should not, in general, specify a target, as
+**			this will be provided by the make process.
+**
+** For example, if LANGUAGES is:
+**
+**	"{american,MASTERDICTS=american.med+,HASHFILES=americanmed+.hash,EXTRADICT=/usr/dict/words /usr/dict/web2} {deutsch,DICTALWAYS=deutsch.sml,DICTOPTIONS=}"
+**
+** then the American-English and Deutsch (German) languages will be supported,
+** and the following variable settings will be passed to the two Makefiles:
+**
+**	American:
+**
+**	    MASTERDICTS='american.med+'
+**	    HASHFILES='americanmed+.hash'
+**	    EXTRADICT='/usr/dict/words /usr/dict/web2'
+**
+**	Deutsch:
+**
+**	    DICTALWAYS='deutsch.sml'
+**	    DICTOPTIONS=''
+**
+** Notes on the syntax: The makefile is not very robust.  If you have
+** make problems, or if make seems to to fail in the language-subdirs
+** dependency, check your syntax.  The makefile adds single quotes to
+** the individual variables in the LANGUAGES specification, so don't
+** use quotes of any kind.
+**
+** In the future, the first language listed in this variable will
+** become the default, and the DEFHASH, DEFLANG, and DEFPAFF,
+** variables will all become obsolete.  So be sure to put your default
+** language first, to make later conversion easier!
+**
+** Notes on options for the various languages will be found in the
+** Makefiles for those languages.  Some of those languages may require
+** you to also change various limits limits like MASKBITS or the
+** length parameters.
+**
+** A special note on the English language: because the British and
+** American dialects use different spelling, you should usually select
+** one or the other of these.  If you select both, the setting of
+** MASTERHASH will determine which becomes the language linked to
+** DEFHASH (which will usually be named english.hash).
+**
+** !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+** !!! Note the pathname for the `words' file: it might be different !!!
+** !!! If you don't have this file, make EXTRADICT empty             !!!
+** !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*/
+
+#define LANGUAGES "{american,MASTERDICTS=american.med,HASHFILES=amermed.hash,EXTRADICT=}"
+
+
+
+/*
+** If you have acces to a /usr/dict/words file, and wish to check
+** British spelling in addition to American, you may wish to use this:
+**
+*/
+/*
+** #define LANGUAGES "{american,MASTERDICTS=americax.med americax.lrg american.xlg,HASHFILES=amermedx.hash amerlrgx.hash amerxlg.hash,EXTRADICT=c:/usr/lib/words} {british,MASTERDICTS=british.med british.lrg british.xlg,HASHFILES=britmed.hash britlrg.hash britxlg.hash}"
+**
+**
+*/
+
+/*
+** If your sort command accepts the -T switch to set temp file
+** locations (try it out; on some systems it exists but is
+** undocumented), make the following variable the null string.
+** Otherwise leave it as the sed script.
+**
+** With DJGPP, you will probably use GNU Sort which accepts -T, so:
+*/
+#define SORTTMP ""
+
+/*
+** INSTALL program. Could be a copy program like cp or something fancier
+** like /usr/ucb/install -c
+*/
+#define INSTALL		"ginstall -c"
+
+/*
+** If your system has the rename(2) system call, define HAS_RENAME and
+** ispell will use that call to rename backup files.  Otherwise, it
+** will use link/unlink.  There is no harm in this except on MS-DOS,
+** which might not support link/unlink (DJGPP does, but also has rename).
+*/
+#define HAS_RENAME 1
+
+/* environment variable for user's word list */
+#ifndef PDICTVAR
+#define PDICTVAR "WORDLIST"
+#endif
+
+/*
+** Prefix part of default private dictionary.  Under MS-DOS 8.3
+** filename limitation, we are in trouble...
+*/
+#define DEFPDICT "_isp_"
+
+/* old place to look for default word list */
+#define OLDPDICT   "_isp_"
+
+/*
+** mktemp template for temporary file - MUST contain 6 consecutive X's.
+**
+** If this is a relative name, Ispell will try to determine the directory
+** by checking the environment variables TMPDIR, TEMP, and TMP (in that
+** order).
+*/
+#define TEMPNAME "isXXXXXX"
+
+/*
+** If REGEX_LOOKUP is NOT defined, the lookup command (L) will use the look(1)
+** command (if available) or the egrep command.  If REGEX_LOOKUP is defined,
+** the lookup command will use the internal dictionary and the
+** regular-expression library (which you must supply separately.
+** DJGPP v2 has POSIX regexp functions.
+*/
+#define REGEX_LOOKUP    1
+
+/*
+** Choose the proper type of regular-expression routines here.  BSD
+** and public-domain systems have routines called re_comp and re_exec;
+** System V uses regcmp and regex.
+*/
+#include <sys/types.h>
+#include <regex.h>
+#define REGCTYPE		regex_t *
+#define REGCMP(re,str)		(regcomp (re, str, 0), re)
+#define REGEX(re, str, dummy) \
+  (re != 0 && regexec (re, str, 0, 0, 0) == 0 ? (char *)1 : NULL)
+#define REGFREE(re) \
+  do { 							\
+      if (re == 0)					\
+        re = (regex_t *)calloc (1, sizeof (regex_t));	\
+      else						\
+	regfree(re);					\
+  } while (0)
+
+/*
+**
+** The 2 following definitions are only meaningfull if you don't use
+** any regex library.
+*/
+/* path to egrep (use speeded up version if available);
+   defined without explicit path, since there are no
+   standard places for programs on MS-DOS.  */
+#define  EGREPCMD "egrep -i"
+
+/* path to wordlist for Lookup command (typically /usr/dict/{words|web2}) */
+/* note that /usr/dict/web2 is usually a bad idea due to obscure words */
+#undef WORDS
+
+/*
+** FIXME: The filename truncation below is not flexible enough for DJGPP
+**	  which can support long filenames on some platforms, since we
+**	  will only know if the support is available at runtime.
+*/
+
+/* max file name length (will truncate to fit BAKEXT) if not in sys/param.h */
+#ifdef NAME_MAX
+#define MAXNAMLEN NAME_MAX
+#else
+#define MAXNAMLEN 12
+#endif
+
+#define MAXEXTLEN        4    /* max. extension length including '.'   */
+#define MAXBASENAMELEN   8    /* max. base filename length without ext */
+
+/* define if you want .bak file names truncated to MAXNAMLEN characters */
+/* On MS-DOS, we really have no choice... */
+#define TRUNCATEBAK 1
+
+/*
+** This is the extension that will be added to backup files.
+** On MS-DOS, it makes sense to use the shortest possible extension.
+*/
+#define	BAKEXT	"~"
+
+/*
+** Define this if you want to use the shell for interpretation of commands
+** issued via the "L" command, "^Z" under System V, and "!".  If this is
+** not defined then a direct spawnvp() will be used in place of the
+** normal system().  This may speed up these operations if the SHELL
+** environment variable points to a Unix-like shell (such as `sh' or `bash').
+**
+** However, if you undefine USESH, commands which use pipes, redirection
+** and shell wildcards won't work, and you will need support for the SIGTSTP
+** signal, for the above commands to work at all.
+*/
+
+#define USESH	1
+
+/*
+** Define this if you want to be able to type any command at a "type space
+** to continue" prompt.
+*/
+#define COMMANDFORSPACE 1
+
+/*
+** The next three variables are used to provide a variable-size context
+** display at the bottom of the screen.  Normally, the user will see
+** a number of lines equal to CONTEXTPCT of his screen, rounded down
+** (thus, with CONTEXTPCT == 10, a 24-line screen will produce two lines
+** of context).  The context will never be greater than MAXCONTEXT or
+** less than MINCONTEXT.  To disable this feature entirely, set MAXCONTEXT
+** and MINCONTEXT to the same value.  To round context percentages up,
+** define CONTEXTROUNDUP.
+**
+** Warning: don't set MAXCONTEXT ridiculously large.  There is a
+** static buffer of size MAXCONTEXT*BUFSIZ; since BUFSIZ is frequently
+** 1K or larger, this can create a remarkably large executable.
+*/
+#define CONTEXTPCT	20	/* Use 20% of the screen for context */
+#define MINCONTEXT	2	/* Always show at least 2 lines of context */
+#define MAXCONTEXT	10	/* Never show more than 10 lines of context */
+#define CONTEXTROUNDUP	1       /* Round context up */
+
+/*
+** Define this if you want the "mini-menu," which gives the most important
+** options at the bottom of the screen, to be the default (in any case, it
+** can be controlled with the "-M" switch).
+*/
+#define MINIMENU
+
+/*
+** Redefine GETKEYSTROKE() to whatever appropriate on some MS-DOS systems
+** where getchar() doesn't operate properly in raw mode.
+*/
+#ifdef __DJGPP__
+#include <pc.h>
+#include <keys.h>
+#define GETKEYSTROKE()	getxkey()
+#else
+#define GETKEYSTROKE()	getch()
+#endif
+
+/*
+** We include <fcntl.h> to have the definition of O_BINARY.  The
+** configuration script will notice this and define MSDOS_BINARY_OPEN.
+*/
+#include <fcntl.h>
+
+/*
+** We include <unistd.h> to get the definitions of R_OK and W_OK.
+*/
+#include <unistd.h>
+
+/*
+** Environment variable to use to locate the home directory.  On DOS
+** systems we set this to ISPELL_HOME to avoid conflicts with
+** other programs that look for a HOME environment variable.
+*/
+#define HOME              "ISPELL_HOME"
+#define PDICTHOME         "c:"
+
+/*
+** On MS-DOS systems, we define the following variables so that
+** ispell's files have legal suffixes.  Note that these suffixes
+** must agree with the way you've defined dictionary files which
+** incorporate these suffixes.
+**
+** Actually, it is not recommended at all to change the suffixes,
+** since they are hardwired in the Makefile's under languages/
+** subdirectory, and MS-DOS will silently truncate excess letters anyway.
+*/
+#define HASHSUFFIX	".hash"
+#define STATSUFFIX	".stat"
+#define COUNTSUFFIX	".cnt"
+
+/*
+** The extension of executable files.
+*/
+#define EXEEXT	".exe"

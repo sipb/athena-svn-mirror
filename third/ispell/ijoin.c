@@ -1,10 +1,10 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: ijoin.c,v 1.1.1.1 1997-09-03 21:08:09 ghudson Exp $";
+    "$Id: ijoin.c,v 1.1.1.2 2007-02-01 19:49:55 ghudson Exp $";
 #endif
 
 /*
- * Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1992, 1993, 1999, 2001, 2005, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,10 +20,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -78,6 +76,34 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/04/14 14:38:23  geoff
+ * Update license.  Integrate Ed Avis's changes (making certain things
+ * unsigned).
+ *
+ * Revision 1.11.1.1  2002/06/21 00:35:54  geoff
+ * Edward Avis's changes
+ *
+ * Revision 1.2  2001/10/05 14:22:25  epa98
+ * Imported 3.2.06.epa1 release.  This was previously developed using
+ * sporadic RCS for certain files, but I'm not really bothered about
+ * rolling back beyond this release.
+ *
+ * Revision 1.11  2001/07/25 21:51:47  geoff
+ * Minor license update.
+ *
+ * Revision 1.10  2001/07/23 20:24:03  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.9  2001/06/07 19:06:33  geoff
+ * Add a workaround for the strcmp-as-macro problem found on recent
+ * releases of gcc.
+ *
+ * Revision 1.8  2000/08/22 10:52:25  geoff
+ * Fix some compiler warnings.
+ *
+ * Revision 1.7  1999/01/07 01:58:00  geoff
+ * Update the copyright.
+ *
  * Revision 1.6  1994/10/18  04:03:21  geoff
  * Fix a couple of bugs, one where the last field on a line could be
  * output incorrectly, and one where fields from the wrong file could be
@@ -115,17 +141,27 @@ static int	strucmp P ((unsigned char * a, unsigned char * b));
 typedef struct
     {
     int		file;			/* Number of file to output from */
-    int		field;			/* Number of field to output */
+    unsigned int field;			/* Number of field to output */
     }
 		outlist_t;		/* Output description list */
+
+/*
+ * Some excessively "smart" compilers (for which you are welcome to
+ * read "stupid compiler implementers") try to get clever about
+ * strcmp, turning it into a macro in some circumstances.  That breaks
+ * things, since you then can't take the address of what is supposed
+ * to be a library function.  To be safe, we'll #undef any possible
+ * macro here to get around that particular lack of foresight.
+ */
+#undef strcmp
 
 static int		(*compare) () = strcmp; /* Comparison function */
 static char *		emptyfield = ""; /* Use this to replace empty fields */
 static FILE *		file1;		/* First file to join */
 static FILE *		file2;		/* Second file to join */
-static int		join1field = 0;	/* Field to join file 1 on */
-static int		join2field = 0;	/* Field to join file 2 on */
-static int		maxf[2] = {0, 0}; /* Max field to parse in each file */
+static unsigned int	join1field = 0;	/* Field to join file 1 on */
+static unsigned int	join2field = 0;	/* Field to join file 2 on */
+static unsigned int	maxf[2] = {0, 0}; /* Max field to parse in each file */
 static outlist_t *	outlist = NULL;	/* List of fields to write */
 static int		outlistsize;	/* Number of elements in outlist */
 static int		runs = FLD_RUNS; /* Set if runs of tabchar same as 1 */
@@ -382,7 +418,8 @@ static void full_output (line1, line2)	/* Output everything from both lines */
     register field_t *	line1;		/* Line from file 1 */
     register field_t *	line2;		/* Line from file 2 */
     {
-    register int	fieldno;	/* Number of field being handled */
+    register unsigned int
+			fieldno;	/* Number of field being handled */
 
     (void) fputs (line1->fields[join1field], stdout);
     for (fieldno = 0;  fieldno < line1->nfields;  fieldno++)

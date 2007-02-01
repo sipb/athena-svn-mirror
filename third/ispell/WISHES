@@ -12,17 +12,6 @@ Things remaining to be done to ispell:
 	  improved startup time, at a slight running-time penalty, by
 	  eliminating the mass conversion of string indexes to pointers
 	  and just using the indexes as such whenever a string is accessed.
-	- (Peter Wan) Ispell should have a "server mode" for large sites, to
-	  get rid of the time needed to read in the dictionary.  On System V,
-	  this could be accomplished by having the first execution of ispell
-	  read the dictionary into a shared-memory region.  Later incarnations
-	  would then get the dictionary by just attaching to the region.
-	  One problem would be that the dictionary gets modified during
-	  the run, so you might still have to do a memory-to-memory copy
-	  after the attach.  The size of having two copies of the dictionary
-	  might prohibit this on many machines.  Another approach is a
-	  message-based "good.c server", but this too would have to deal
-	  with the possibility of modifying the dictionary.
 	- The findaffix script takes ridiculous amounts of time and disk
 	  space.  It desperately needs to be rewritten in C, which would
 	  also allow it to correctly support string characters and to
@@ -41,11 +30,6 @@ Things remaining to be done to ispell:
 	  be found by ispell's algorithm.  It would be nice to be able
 	  to explicitly specify misspelling/correction pairs for such
 	  words (e.g., "lite->light").
-	- Ispell has too much knowledge of particular text formatters
-	  (i.e., nroff and TeX) wired into it.  It would be nice if
-	  ispell were more flexible about this, so that it could be
-	  used with some of the other file formats (e.g., Rich Text
-	  Format) that are occasionally used with Unix.
 	- Several people, notably Peter Mutsaers, have asked if the
 	  affix file format could be extended to allow limited
 	  variables, so that you could specify things like

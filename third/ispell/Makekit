@@ -1,8 +1,8 @@
 : Use /bin/sh
 #
-# $Id: Makekit,v 1.1.1.1 1997-09-03 21:08:11 ghudson Exp $
+# $Id: Makekit,v 1.1.1.2 2007-02-01 19:50:37 ghudson Exp $
 #
-# Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+# Copyright 1992, 1993, 2001, 2005, Geoff Kuenning, Claremont, CA
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -18,10 +18,8 @@
 #    such.  Binary redistributions based on modified source code
 #    must be clearly marked as modified versions in the documentation
 #    and/or other materials provided with the distribution.
-# 4. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgment:
-#      This product includes software developed by Geoff Kuenning and
-#      other unpaid contributors.
+# 4. The code that causes the 'ispell -v' command to display a prominent
+#    link to the official ispell Web site may not be removed.
 # 5. The name of Geoff Kuenning may not be used to endorse or promote
 #    products derived from this software without specific prior
 #    written permission.
@@ -43,7 +41,7 @@
 #
 #	Usage:
 #
-#	Makekit [-c] [-d destdir] [-e]
+USAGE="Usage:  Makekit [-d destdir] [-e]"
 #
 #	destdir is the directory in which the kits will be made;  you will
 #	want to pick someplace that has lots of space.
@@ -51,9 +49,52 @@
 #	If -e is specified, the list of files in the kit is echoed to
 #	stdout and no kit is made.
 #
-#	If -c is specified, the intermediate dictionary files are cleaned up.
-#
 # $Log: not supported by cvs2svn $
+# Revision 1.52  2005/05/25 16:17:57  geoff
+# Add local.h.cygwin to the kit.
+#
+# Revision 1.51  2005/04/27 01:18:34  geoff
+# Add the CHANGES file.
+#
+# Revision 1.50  2005/04/27 00:17:35  geoff
+# Add a sample local.h for BSD systems.
+#
+# Revision 1.49  2005/04/26 22:41:07  geoff
+# Remove fixispell-a, since it really doesn't do the job
+#
+# Revision 1.48  2005/04/14 14:38:23  geoff
+# Update license.  Add several new files, notably Eli Zaretskii's
+# changes to support DOS/Windows systems.
+#
+# Revision 1.47  2002/06/21 00:19:30  geoff
+# Fix the names of the deformatters.  Generate RCS version tags when
+# building a kit.
+#
+# Revision 1.46  2002/06/20 23:46:15  geoff
+# Put sq/unsq back, since some dictionaries are still distributed in sq
+# format.
+#
+# Revision 1.45  2001/07/25 21:51:46  geoff
+# Minor license update.
+#
+# Revision 1.44  2001/07/23 20:24:02  geoff
+# Update the copyright and the license.
+#
+# Revision 1.43  2001/06/07 08:02:18  geoff
+# Change the kit to use my deformatters.
+#
+# Revision 1.42  2001/06/06 23:08:23  geoff
+# Add some sample deformatters.
+#
+# Revision 1.41  1999/01/18 03:40:32  geoff
+# Build tar file from a version-numbered directory
+#
+# Revision 1.40  1999/01/07  01:23:03  geoff
+# Update the copyright.  Make the kit into a gzipped tar file rather
+# than shars.  Get rid of the -c switch.  Remove the following files
+# from the kit: ishar, ispell.el, ispell.texinfo, makeshar, splitdict,
+# sq.1, sq.c, unsq.c, and all foreign-language affix files.
+#
 # Revision 1.39  1995/10/11  04:58:07  geoff
 # Add the Portuguese language files
 #
@@ -73,21 +114,14 @@
 # Get rid of all old RCS log lines in preparation for the 3.1 release.
 #
 #
-posting=3.1
 maxsize=60000		# This leaves room for some headers
-clean=false
 destdir=kits
 echolist=false
 PATH=`pwd`:$PATH; export PATH
-USAGE="Usage:  Makekit [-c] [-d destdir] [-e]"
 
 while [ $# -gt 0 ]
 do
     case "$1" in
-	-c)
-	    clean=true
-	    shift
-	    ;;
 	-d)
 	    destdir="$2"
 	    shift; shift
@@ -112,6 +146,7 @@ case "$destdir" in
 esac
 
 flist='
+CHANGES
 Contributors
 README
 Magiclines
@@ -124,6 +159,8 @@ config.X
 correct.c
 defmt.c
 dump.c
+exp_table.c
+exp_table.h
 fields.3
 fields.c
 fields.h
@@ -132,23 +169,23 @@ good.c
 hash.c
 icombine.c
 ijoin.c
-ishar
 ispell.1X
-ispell.4
+ispell.5X
 ispell.c
-ispell.el
 ispell.h
-ispell.texinfo
 iwhich
-local.h.samp
+local.h.bsd
+local.h.cygwin
+local.h.generic
+local.h.linux
+local.h.macos
+local.h.solaris
 lookup.c
 makedict.sh
 makedent.c
-makeshar
 munchlist.X
 parse.y
 proto.h
-splitdict
 sq.1
 sq.c
 subset.X
@@ -167,28 +204,30 @@ languages/altamer/Makefile
 languages/american/Makefile
 languages/british/Makefile
 languages/dansk/Makefile
-languages/dansk/dansk.7bit
 languages/deutsch/Makefile
-languages/deutsch/deutsch.7bit
-languages/deutsch/deutsch-alt.7bit
 languages/english/Makefile
-languages/english/english.4l
+languages/english/altamer.0
+languages/english/altamer.1
+languages/english/altamer.2
+languages/english/american.0
+languages/english/american.1
+languages/english/american.2
+languages/english/british.0
+languages/english/british.1
+languages/english/british.2
+languages/english/english.0
+languages/english/english.1
+languages/english/english.2
+languages/english/english.3
+languages/english/english.5X
 languages/english/english.aff
 languages/english/msgs.h
 languages/espanol/Makefile
-languages/espanol/castellano.7bit
-languages/espanol/espanol.7bit
 languages/francais/Makefile
-languages/francais/francais.7bit
-languages/francais/francais-alt.7bit
 languages/nederlands/Makefile
-languages/nederlands/nederlands.7bit
 languages/norsk/Makefile
-languages/norsk/norsk.7bit
 languages/portugues/Makefile
-languages/portugues/portugues.aff
 languages/svenska/Makefile
-languages/svenska/svenska.7bit
 addons/nextispell/Makefile
 addons/nextispell/README
 addons/nextispell/configure
@@ -197,72 +236,43 @@ addons/nextispell/configureTeX
 addons/nextispell/nextispell.m
 addons/nextispell/services.template
 addons/xspell.shar
+deformatters/Makefile
+deformatters/README
+deformatters/defmt-c.c
+deformatters/defmt-sh.c
+pc/README
+pc/cfglang.sed
+pc/cfgmain.sed
+pc/configdj.bat
+pc/djterm.c
+pc/local.djgpp
+pc/local.emx
+pc/make-dj.bat
+pc/makeemx.bat
 '
 
 if $echolist
 then
     echo $flist
-    echo languages/english/*.[0-3]
     exit 0
 fi
 
 [ -d "$destdir" ]  ||  mkdir "$destdir"
-rm -f $destdir/Post${posting}.??.shar
+version=`egrep 'International Ispell' version.h | awk '{print $5;exit}'`
+rcsversion=`echo $version | tr . _`
 
-#
-# Make the main shar files
-#
-cursize=0
-files=
-chmod +x makeshar ishar
-sharno=`makeshar -n -m $maxsize -o $destdir/Post${posting}. -pX $flist`
+TMP=$destdir/ispell-$version
+rm -rf $TMP
+trap "rm -rf $TMP; exit 1" 1 2 15
+trap "rm -rf $TMP; exit 0" 13
 
-#
-# Set up to make dictionary files
-#
+rcs -NV${rcsversion}: $flist
 
-chmod +x splitdict
-[ -d "$destdir/languages" ]  ||  mkdir "$destdir/languages"
+mkdir $TMP
+tar cf - $flist | (cd $TMP; tar xf -)
 
-#
-# Make the English dictionaries
-#
-[ -d "$destdir/languages/english" ]  ||  mkdir "$destdir/languages/english"
-rm -f $destdir/languages/english/*.?.??
+tarfile=$destdir/ispell-$version.tar.gz
 
-./splitdict $maxsize languages/english/english.0 \
-  $destdir/languages/english/eng.0.
-./splitdict $maxsize languages/english/english.1 \
-  $destdir/languages/english/eng.1.
-./splitdict $maxsize languages/english/english.2 \
-  $destdir/languages/english/eng.2.
-./splitdict $maxsize languages/english/english.3 \
-  $destdir/languages/english/eng.3.
-./splitdict $maxsize languages/english/american.0 \
-  $destdir/languages/english/amer.0.
-./splitdict $maxsize languages/english/american.1 \
-  $destdir/languages/english/amer.1.
-./splitdict $maxsize languages/english/american.2 \
-  $destdir/languages/english/amer.2.
-./splitdict $maxsize languages/english/altamer.0 \
-  $destdir/languages/english/altamer.0.
-./splitdict $maxsize languages/english/altamer.1 \
-  $destdir/languages/english/altamer.1.
-./splitdict $maxsize languages/english/altamer.2 \
-  $destdir/languages/english/altamer.2.
-./splitdict $maxsize languages/english/british.0 \
-  $destdir/languages/english/brit.0.
-./splitdict $maxsize languages/english/british.1 \
-  $destdir/languages/english/brit.1.
-./splitdict $maxsize languages/english/british.2 \
-  $destdir/languages/english/brit.2.
-
-sharno=`expr $sharno + 1`
-cd $destdir
-makeshar -f $sharno -m $maxsize -o $destdir/Post${posting}. -pX \
-  languages/english/eng.?.?? languages/english/amer.?.?? \
-  languages/english/altamer.?.?? languages/english/brit.?.??
-if $clean
-then
-    rm -f $destdir/languages/english/*.?.??
-fi
+rm -f $tarfile
+(cd $destdir; tar cvf - ispell-$version) | gzip -v -9 > $tarfile
+rm -rf $TMP

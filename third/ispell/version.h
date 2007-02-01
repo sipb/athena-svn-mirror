@@ -1,3 +1,5 @@
+#ifndef VERSION_H_INCLUDED
+#define VERSION_H_INCLUDED
 /*
  * Since the strings in this file are printed out when the "-v" switch is
  * given to ispell, you may want to translate them into your native language.
@@ -8,10 +10,21 @@
  */
 
 static char * Version_ID[] = {
-    "@(#) International Ispell Version 3.1.20 10/10/95",
+    "@(#) International Ispell Version 3.3.02 12 Jun 2005",
     "@(#) Copyright (c), 1983, by Pace Willisson",
-    "@(#) International version Copyright (c) 1987, 1988, 1990-1995,",
-    "@(#) by Geoff Kuenning, Granada Hills, CA.  All rights reserved.",
+    "@(#) International version Copyright (c) 1987, 1988, 1990-1995, 1999,",
+    "@(#) 2001, 2002, 2005 by Geoff Kuenning, Claremont, CA.",
+    "@(#) All rights reserved.",
+    "@(#)",
+    "@(#) The official ispell Web site is at:",
+    "@(#)",
+    "@(#)     http://www.lasr.cs.ucla.edu/geoff/ispell.html",
+    "@(#)",
+    "@(#) You should always check that site to see whether you have the",
+    "@(#) latest version of ispell.",
+    "@(#)",
+    "@(#) Report bugs to ispell-bugs@itcorp.com.  Report Emacs-related bugs",
+    "@(#) to ispell-el-bugs@itcorp.com.",
     "@(#)",
     "@(#) Redistribution and use in source and binary forms, with or without",
     "@(#) modification, are permitted provided that the following conditions",
@@ -27,10 +40,9 @@ static char * Version_ID[] = {
     "@(#)    such.  Binary redistributions based on modified source code",
     "@(#)    must be clearly marked as modified versions in the documentation",
     "@(#)    and/or other materials provided with the distribution.",
-    "@(#) 4. All advertising materials mentioning features or use of this",
-    "@(#)    software must display the following acknowledgment:",
-    "@(#)      This product includes software developed by Geoff Kuenning and",
-    "@(#)      other unpaid contributors.",
+    "@(#) 4. The code that causes the 'ispell -v' command to display a",
+    "@(#)    prominent link to the official ispell Web site may not be",
+    "@(#)    removed.",
     "@(#) 5. The name of Geoff Kuenning may not be used to endorse or promote",
     "@(#)    products derived from this software without specific prior",
     "@(#)    written permission.",
@@ -51,74 +63,6 @@ static char * Version_ID[] = {
 };
 
 static char RCS_Version_ID[] =
-    "$Id: version.h,v 1.1.1.1 1997-09-03 21:08:13 ghudson Exp $";
+    "$Id: version.h,v 1.1.1.2 2007-02-01 19:50:40 ghudson Exp $";
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.44  1995/10/11  05:03:28  geoff
- * Upgrade to patch level 20
- *
- * Revision 1.43  1995/10/11  04:58:26  geoff
- * Upgrade to patch 19
- *
- * Revision 1.42  1995/01/15  01:23:26  geoff
- * Upgrade to patch level 18
- *
- * Revision 1.41  1995/01/15  01:14:30  geoff
- * Upgrade to patch level 17
- *
- * Revision 1.40  1995/01/15  01:03:55  geoff
- * Upgrade to patch level 16
- *
- * Revision 1.39  1995/01/15  01:01:01  geoff
- * Upgrade to patch level 15
- *
- * Revision 1.38  1995/01/15  00:54:19  geoff
- * Upgrade to patch level 14
- *
- * Revision 1.37  1994/11/21  07:03:01  geoff
- * Update to patch level 13.
- *
- * Revision 1.36  1994/11/01  06:28:31  geoff
- * Update to patch level 12
- *
- * Revision 1.35  1994/11/01  06:12:42  geoff
- * Update to patch level 11
- *
- * Revision 1.34  1994/11/01  06:01:15  geoff
- * Update to patch level 10
- *
- * Revision 1.33  1994/11/01  05:36:43  geoff
- * Update to patch level 9
- *
- * Revision 1.32  1994/05/25  04:38:59  geoff
- * Update to patch level 8
- *
- * Revision 1.31  1994/05/18  03:07:26  geoff
- * Update to patch level 7
- *
- * Revision 1.30  1994/05/17  06:21:05  geoff
- * Version update for ispell.el release
- *
- * Revision 1.29  1994/04/27  04:14:18  geoff
- * Update to patch level 5
- *
- * Revision 1.28  1994/03/21  02:00:50  geoff
- * Update to patch level 4
- *
- * Revision 1.27  1994/02/23  04:52:31  geoff
- * Update to latest version.
- *
- * Revision 1.26  1994/02/08  05:59:20  geoff
- * Update version
- *
- * Revision 1.25  1994/02/07  08:58:28  geoff
- * Get rid of a comma that confuses patch
- *
- * Revision 1.24  1994/02/07  08:24:23  geoff
- * Upate patch level
- *
- * Revision 1.23  1994/01/25  07:12:21  geoff
- * Get rid of all old RCS log lines in preparation for the 3.1 release.
- *
- */
+#endif /* VERSION_H_INCLUDED */

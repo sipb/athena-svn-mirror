@@ -1,6 +1,6 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: defmt.c,v 1.1.1.1 1997-09-03 21:08:11 ghudson Exp $";
+    "$Id: defmt.c,v 1.1.1.2 2007-02-01 19:50:06 ghudson Exp $";
 #endif
 
 /*
@@ -11,7 +11,7 @@ static char Rcs_Id[] =
  *
  * Copyright (c), 1983, by Pace Willisson
  *
- * Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1992, 1993, 1999, 2001, Geoff Kuenning, Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -54,6 +52,84 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.62  2005/04/20 23:16:32  geoff
+ * Use inpossibilities to deal with the case where uppercase SS in German
+ * causes ambiguities.
+ *
+ * Revision 1.61  2005/04/14 14:38:23  geoff
+ * Update license.
+ *
+ * Revision 1.60  2001/11/28 22:39:26  geoff
+ * Add Ken Stevens's fix for newlines in \verb
+ *
+ * Revision 1.59  2001/09/06 00:30:29  geoff
+ * Many changes from Eli Zaretskii to support DJGPP compilation.
+ *
+ * Revision 1.58  2001/08/01 22:15:56  geoff
+ * When processing quoted strings inside HTML tags, don't handle
+ * ampersand sequences unless the quoted string is being spell-checked.
+ * That way, ampersands inside HREF links won't confuse the deformatter,
+ * but ampersand sequence inside ALT= tags will be handled correctly.
+ * Also, when skipping ampersand sequences inside quoted strings, give up
+ * the search for the semicolon if the closing quote is hit.  This change
+ * makes us a bit more robust in the fact of HTML syntax errors.
+ *
+ * Revision 1.57  2001/07/25 21:51:47  geoff
+ * Minor license update.
+ *
+ * Revision 1.56  2001/07/23 20:24:03  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.55  2000/08/22 10:52:25  geoff
+ * Fix a whole bunch of signed/unsigned compiler warnings.
+ *
+ * Revision 1.54  2000/08/22 00:11:25  geoff
+ * Add support for correct_verbose_mode.
+ *
+ * Revision 1.53  1999/11/04 08:16:54  geoff
+ * Add a few more special TeX sequences
+ *
+ * Revision 1.52  1999/01/18  03:28:27  geoff
+ * Turn many char declarations into unsigned char, so that we won't have
+ * sign-extension problems.
+ *
+ * Revision 1.51  1999/01/07  01:57:53  geoff
+ * Update the copyright.
+ *
+ * Revision 1.50  1999/01/03  01:46:28  geoff
+ * Add support for external deformatters.
+ *
+ * Revision 1.49  1998/07/07  02:30:53  geoff
+ * Implement the plus notation for adding to keyword lists
+ *
+ * Revision 1.48  1998/07/06  06:55:13  geoff
+ * Generalize the HTML tag routines to be handy keyword lookup routines,
+ * and fix some (but by no means all) of the TeX deformatting to take
+ * advantage of these routines to allow a bit more flexibility in
+ * processing private TeX commands.
+ *
+ * Revision 1.47  1998/07/06  05:34:10  geoff
+ * Add a few more TeX commands
+ *
+ * Revision 1.46  1997/12/01  00:53:47  geoff
+ * Add HTML support.  Fix the "\ " bug again, this time (hopefully) right.
+ *
+ * Revision 1.45  1995/11/08  05:09:29  geoff
+ * Add the new interactive mode ("askverbose").
+ *
+ * Revision 1.44  1995/11/08  04:32:51  geoff
+ * Modify the HTML support to be stylistically more consistent and to
+ * interoperate more cleanly with the nroff and TeX modes.
+ *
+ * Revision 1.43  1995/10/25  04:05:31  geoff
+ * html-mode code added by Gerry Tierney <gtierney@nova.ucd.ie> 14th of
+ * Oct '95.
+ *
+ * Revision 1.42  1995/10/25  03:35:42  geoff
+ * After skipping over a backslash sequence, make sure that we don't skip
+ * over the first character of the following word.  Also, support the
+ * verbatim environment of LaTex.
+ *
  * Revision 1.41  1995/08/05  23:19:47  geoff
  * Get rid of an obsolete comment.  Add recognition of documentclass and
  * usepackage for Latex2e support.
@@ -127,19 +203,25 @@ static char Rcs_Id[] =
 #include "proto.h"
 #include "msgs.h"
 
-static char *	skiptoword P ((char * bufp));
-char *		skipoverword P ((char * bufp));
+static unsigned char *
+		skiptoword P ((unsigned char * bufp));
+unsigned char *	skipoverword P ((unsigned char * bufp));
 void		checkline P ((FILE * ofile));
-static int	TeX_math_end P ((char ** bufp));
-static int	TeX_math_begin P ((char ** bufp));
-static int	TeX_LR_begin P ((char ** bufp));
-static int	TeX_LR_check P ((int begin_p, char ** bufp));
-static void	TeX_skip_args P ((char ** bufp));
-static int	TeX_math_check P ((int cont_char, char ** bufp));
-static void	TeX_skip_parens P ((char ** bufp));
-static void	TeX_open_paren P ((char ** bufp));
-static void	TeX_skip_check P ((char ** bufp));
-static int	TeX_strncmp P ((char * a, char * b, int n));
+static int	TeX_math_end P ((unsigned char ** bufp));
+static int	TeX_math_begin P ((unsigned char ** bufp));
+static int	TeX_LR_begin P ((unsigned char ** bufp));
+static int	TeX_LR_check P ((int begin_p, unsigned char ** bufp));
+static void	TeX_skip_args P ((unsigned char ** bufp));
+static int	TeX_math_check P ((int cont_char, unsigned char ** bufp));
+static void	TeX_skip_parens P ((unsigned char ** bufp));
+static void	TeX_open_paren P ((unsigned char ** bufp));
+static void	TeX_skip_check P ((unsigned char ** bufp));
+static int	TeX_strncmp P ((unsigned char * a, char * b, int n));
+int		init_keyword_table P ((char * rawtags, char * envvar,
+		  char * deftags, int ignorecase, struct kwtable * keywords));
+static int	keyword_in_list P ((unsigned char * string,
+		  unsigned char * stringend, struct kwtable * keywords));
+static int	tagcmp P ((unsigned char ** a, unsigned char ** b));
 
 #define ISTEXTERM(c)   (((c) == TEXLEFTCURLY) || \
 			((c) == TEXRIGHTCURLY) || \
@@ -156,27 +238,164 @@ static int	    TeX_comment = 0;
  * processing comments.  This allows comments to be parsed without
  * affecting the overall nesting.
  */
-
 static int save_math_mode;
 static char save_LaTeX_Mode;
 
-static char * skiptoword (bufp)		/* Skip to beginning of a word */
-    char *	bufp;
+/*
+ * The following variables are used by the deformatter to keep
+ * track of keywords that may indicate text to be ignored.
+ */
+static unsigned char *
+		keywordbuf;	/* Scratch buffer for keyword comparison */
+static unsigned int
+		maxkeywordlen;	/* Length of longest keyword */
+
+static unsigned char * skiptoword (bufp) /* Skip to beginning of a word */
+    unsigned char *	bufp;
     {
+    unsigned char *	htmltagstart;	/* Beginning of an HTML tag */
+    unsigned char *	htmlsubfield = bufp;
+					/* Ptr to start of subfield name */
 
     while (*bufp
       &&  ((!isstringch (bufp, 0)  &&  !iswordch (chartoichar (*bufp)))
 	||  isboundarych (chartoichar (*bufp))
-	||  (tflag  &&  (math_mode & 1)))
+	||  (tflag == DEFORMAT_TEX  &&  ((math_mode & 1) || LaTeX_Mode != 'P'))
+	||  (insidehtml & (HTML_IN_SPEC | HTML_ISIGNORED)) != 0
+	||  ((insidehtml & HTML_IN_TAG) != 0
+	  &&  (insidehtml
+		& (HTML_IN_QUOTE | HTML_CHECKING_QUOTE))
+	      != (HTML_IN_QUOTE | HTML_CHECKING_QUOTE))
+	)
       )
 	{
-	/* check paren necessity... */
-	if (tflag) /* TeX or LaTeX stuff */
+	/* 
+	 * HTML deformatting
+	 */
+	if (tflag == DEFORMAT_SGML)
+	    {
+	    if ((insidehtml & HTML_IN_TAG) != 0  &&  *bufp == HTMLQUOTE)
+		{
+		if (insidehtml & HTML_IN_QUOTE)
+		    insidehtml &= ~(HTML_IN_QUOTE | HTML_CHECKING_QUOTE);
+		else
+		    insidehtml |= HTML_IN_QUOTE;
+		htmlsubfield = NULL;
+		}
+	    else if ((insidehtml & (HTML_IN_TAG | HTML_IN_QUOTE))
+		== HTML_IN_TAG
+	      &&  *bufp == HTMLTAGEND)
+		insidehtml &=
+		  ~(HTML_IN_TAG | HTML_IN_ENDTAG | HTML_CHECKING_QUOTE);
+	    /*
+	     * If we are checking an HTML file, we want to ignore any HTML
+	     * tags.  These should start with a '<' and end with a '>', so
+	     * we simply skip over anything between these two symbols.  If
+	     * we reach the end of the line before finding a matching '>',
+	     * we set 'insidehtml' appropriately.
+	     */
+	    else if ((insidehtml & HTML_IN_TAG) == 0
+	      &&  *bufp == HTMLTAGSTART)
+		{
+		insidehtml |= HTML_IN_TAG;
+		bufp++;
+		if (*bufp == HTMLSLASH)
+		    {
+		    bufp++;
+		    insidehtml |= HTML_IN_ENDTAG;
+		    }
+		htmltagstart = bufp;
+		/*
+		 * We found the start of an HTML tag.  Skip to the end
+		 * of the tag.  We assume that all tags are made up of
+		 * purely alphabetic characters.
+		 */
+		while (isalpha (*bufp))
+		    bufp++;
+		/*
+		 * Check to see if this is an ignored tag, and set
+		 * HTML_IGNORE properly.
+		 */
+		if (keyword_in_list (htmltagstart, bufp, &htmlignorelist))
+		    {
+		    /*
+		     * Note that we use +/- here, rather than Boolean
+		     * operators.  This is quite deliberate, because
+		     * it allows us to properly handle nested HTML
+		     * constructs that are supposed to be ignored.
+		     */
+		    if (insidehtml & HTML_IN_ENDTAG)
+			insidehtml -= HTML_IGNORE;
+		    else
+			insidehtml += HTML_IGNORE;
+		    }
+		htmlsubfield = NULL;
+		if (bufp > htmltagstart)
+		    bufp--;
+		}
+	    else if ((insidehtml & (HTML_IN_TAG | HTML_IN_QUOTE))
+	     == HTML_IN_TAG)
+		{
+		if (htmlsubfield == NULL  &&  isalpha (*bufp))
+		    htmlsubfield = bufp;
+		else if (htmlsubfield != NULL  &&  !isalpha (*bufp))
+		    {
+		    if (bufp != htmlsubfield
+		      &&  keyword_in_list (htmlsubfield, bufp, &htmlchecklist))
+			insidehtml |= HTML_CHECKING_QUOTE;
+		    htmlsubfield = NULL;
+		    }
+		}
+	    /*
+	     * Skip over quoted entities such as "&quot;".  These all
+	     * start with an ampersand and end with a semi-colon.  We
+	     * do not need to worry about them extending over more
+	     * than one line.  We also don't need to worry about them
+	     * being string characters, because the isstringch() test
+	     * above would have already broken us out of the enclosing
+	     * loop in that case.
+	     *
+	     * A complication is that quoted entities are only
+	     * interpreted in some quoted strings.  For example,
+	     * they're valid in ALT= tags but not in HREF tags, where
+	     * ampersands have an entirely different meaning.  We deal
+	     * with the problem by only interpreting HTMLSPECSTART if
+	     * we are checking the quoted string.
+	     */
+	    else if ((insidehtml & HTML_IN_SPEC) != 0
+	      ||  (*bufp == HTMLSPECSTART
+		&&  ((insidehtml & HTML_CHECKING_QUOTE)
+		  ||  (insidehtml & HTML_IN_QUOTE) == 0)))
+		{
+		while (*bufp != HTMLSPECEND  &&  *bufp != '\0')
+		    {
+		    if ((insidehtml & HTML_IN_QUOTE)  &&  *bufp == HTMLQUOTE)
+			{
+			/*
+			 * The quoted string ended before the
+			 * ampersand sequence finished.  The HTML is
+			 * probably incorrect, but it would be a
+			 * mistake to keep skipping until we reach the
+			 * next random semicolon.  Instead, just stop
+			 * skipping right here.
+			 */
+			insidehtml &= ~(HTML_IN_QUOTE | HTML_CHECKING_QUOTE);
+			break;
+			}
+		    bufp++;
+		    }
+		if (*bufp == '\0')
+		    insidehtml |= HTML_IN_SPEC;
+		else
+		    insidehtml &= ~HTML_IN_SPEC;
+		}
+	    }
+	else if (tflag == DEFORMAT_TEX) /* TeX or LaTeX stuff */
 	    {
 	    /* Odd numbers mean we are in "math mode" */
 	    /* Even numbers mean we are in LR or */
 	    /* paragraph mode */
-	    if (*bufp == TEXPERCENT)
+	    if (*bufp == TEXPERCENT  &&  LaTeX_Mode != 'v')
 		{
 		if (!TeX_comment)
 		    {
@@ -203,8 +422,8 @@ static char * skiptoword (bufp)		/* Skip to beginning of a word */
 		    }
 		if (math_mode < 0)
 		    {
-		    (void) fprintf (stderr,
-		     DEFMT_C_TEX_MATH_ERROR);
+		    (void) fprintf (stderr, DEFMT_C_TEX_MATH_ERROR,
+		      MAYBE_CR (stderr));
 		    math_mode = 0;
 		    }
 		}
@@ -233,6 +452,14 @@ static char * skiptoword (bufp)		/* Skip to beginning of a word */
 		    TeX_skip_parens(&bufp);
 		    LaTeX_Mode = 'P';
 		    }
+		else if (LaTeX_Mode == 'v')
+		    {
+		    /* continued "verb" */
+		    while (*bufp != save_LaTeX_Mode  &&  *bufp != '\0')
+			bufp++;
+		    if (*bufp != 0)
+			LaTeX_Mode = 'P';
+		    }
 		else if (TeX_math_begin(&bufp))
 		    /* checks references and */
 		    /* skips \ commands */
@@ -241,7 +468,7 @@ static char * skiptoword (bufp)		/* Skip to beginning of a word */
 	    if (*bufp == 0)
 		break;
 	    }
-	else			/* formatting escape sequences */
+	else if (tflag == DEFORMAT_NROFF)	/* nroff deformatting */
 	    {
 	    if (*bufp == NRBACKSLASH)
 		{
@@ -320,10 +547,12 @@ static char * skiptoword (bufp)		/* Skip to beginning of a word */
     return bufp;
     }
 
-char * skipoverword (bufp)	/* Return pointer to end of a word */
-    register char *	bufp;	/* Start of word -- MUST BE A REAL START */
+unsigned char * skipoverword (bufp) /* Return pointer to end of a word */
+    register unsigned char *
+			bufp;	/* Start of word -- MUST BE A REAL START */
     {
-    register char *	lastboundary;
+    register unsigned char *
+			lastboundary;
     register int	scharlen; /* Length of a string character */
 
     lastboundary = NULL;
@@ -376,25 +605,30 @@ char * skipoverword (bufp)	/* Return pointer to end of a word */
 void checkline (ofile)
     FILE *		ofile;
     {
-    register char *	p;
-    register char *	endp;
+    register unsigned char *
+			p;
+    register unsigned char *
+			endp;
     int			hadlf;
     register int	len;
     register int	i;
     int			ilen;
 
-    currentchar = contextbufs[0];
-    len = strlen (contextbufs[0]) - 1;
-    hadlf = contextbufs[0][len] == '\n';
+    currentchar = filteredbuf;
+    len = strlen ((char *) filteredbuf) - 1;
+    hadlf = filteredbuf[len] == '\n';
     if (hadlf)
-	contextbufs[0][len] = 0;
+	{
+	filteredbuf[len] = '\0';
+	contextbufs[0][len] = '\0';
+	}
 
-    if (!tflag)
+    if (tflag == DEFORMAT_NROFF)
 	{
 	/* skip over .if */
 	if (*currentchar == NRDOT
-	  &&  (strncmp (currentchar + 1, "if t", 4) == 0
-	    ||  strncmp (currentchar + 1, "if n", 4) == 0))
+	  &&  (strncmp ((char *) currentchar + 1, "if t", 4) == 0
+	    ||  strncmp ((char *) currentchar + 1, "if n", 4) == 0))
 	    {
 	    copyout (&currentchar,5);
 	    while (*currentchar
@@ -404,9 +638,9 @@ void checkline (ofile)
 
 	/* skip over .ds XX or .nr XX */
 	if (*currentchar == NRDOT
-	  &&  (strncmp (currentchar + 1, "ds ", 3) == 0 
-	    ||  strncmp (currentchar + 1, "de ", 3) == 0
-	    ||  strncmp (currentchar + 1, "nr ", 3) == 0))
+	  &&  (strncmp ((char *) currentchar + 1, "ds ", 3) == 0 
+	    ||  strncmp ((char *) currentchar + 1, "de ", 3) == 0
+	    ||  strncmp ((char *) currentchar + 1, "nr ", 3) == 0))
 	    {
 	    copyout (&currentchar, 4);
 	    while (*currentchar
@@ -417,16 +651,15 @@ void checkline (ofile)
 		copyout(&currentchar, 1);
 	    if (*currentchar == 0)
 		{
-		if (!lflag  &&  (aflag  ||  hadlf))
+		if (!lflag  &&  hadlf)
 		    (void) putc ('\n', ofile);
 		return;
 		}
 	    }
 	}
 
-
     /* if this is a formatter command, skip over it */
-    if (!tflag && *currentchar == NRDOT)
+    if (tflag == DEFORMAT_NROFF  &&  *currentchar == NRDOT)
 	{
 	while (*currentchar  &&  !myspace (chartoichar (*currentchar)))
 	    {
@@ -436,12 +669,12 @@ void checkline (ofile)
 	    }
 	if (*currentchar == 0)
 	    {
-	    if (!lflag  &&  (aflag  ||  hadlf))
+	    if (!lflag  &&  hadlf)
 		(void) putc ('\n', ofile);
 	    return;
 	    }
 	}
-
+	
     for (  ;  ;  )
 	{
 	p = skiptoword (currentchar);
@@ -457,7 +690,7 @@ void checkline (ofile)
 	    *p++ = *currentchar++;
 	*p = 0;
 	if (strtoichar (itoken, ctoken, INPUTWORDLEN * sizeof (ichar_t), 0))
-	    (void) fprintf (stderr, WORD_TOO_LONG (ctoken));
+	    (void) fprintf (stderr, WORD_TOO_LONG ((char *) ctoken));
 	ilen = icharlen (itoken);
 
 	if (lflag)
@@ -465,7 +698,7 @@ void checkline (ofile)
 	    if (ilen > minword
 	      &&  !good (itoken, 0, 0, 0, 0)
 	      &&  !cflag  &&  !compoundgood (itoken, 0))
-		(void) fprintf (ofile, "%s\n", ctoken);
+		(void) fprintf (ofile, "%s\n", (char *) ctoken);
 	    }
 	else
 	    {
@@ -475,7 +708,17 @@ void checkline (ofile)
 		    {
 		    /* matched because of minword */
 		    if (!terse)
-			(void) fprintf (ofile, "*\n");
+			{
+			if (askverbose)
+			    (void) fprintf (ofile, "ok\n");
+			else
+			    {
+			    if (correct_verbose_mode)
+				(void) fprintf (ofile, "* %s\n", ctoken );
+			    else
+				(void) fprintf (ofile, "*\n");
+			    }
+			}
 		    continue;
 		    }
 		if (good (itoken, 0, 0, 0, 0))
@@ -485,37 +728,87 @@ void checkline (ofile)
 			{
 			/* perfect match */
 			if (!terse)
-			    (void) fprintf (ofile, "*\n");
+			    {
+			    if (askverbose)
+				(void) fprintf (ofile, "ok\n");
+			    else
+				{
+				if (correct_verbose_mode)
+				    (void) fprintf (ofile, "* %s\n", ctoken );
+				else
+				    (void) fprintf (ofile, "*\n");
+				}
+			    }
 			}
 		    else if (!terse)
 			{
 			/* matched because of root */
-			(void) fprintf (ofile, "+ %s\n",
-			  hits[0].dictent->word);
+			if (askverbose)
+			    (void) fprintf (ofile,
+			      "ok (derives from root %s)\n",
+			      (char *) hits[0].dictent->word);
+			else
+			    {
+			    if (correct_verbose_mode)
+				(void) fprintf (ofile, "+ %s %s\n",
+				  ctoken, hits[0].dictent->word);
+			    else
+				(void) fprintf (ofile, "+ %s\n",
+				  hits[0].dictent->word);
+			    }
 			}
 		    }
 		else if (compoundgood (itoken, 0))
 		    {
 		    /* compound-word match */
 		    if (!terse)
-			(void) fprintf (ofile, "-\n");
+			{
+			if (askverbose)
+			    (void) fprintf (ofile, "ok (compound word)\n");
+			else
+			    {
+			    if (correct_verbose_mode)
+				(void) fprintf (ofile, "- %s\n", ctoken);
+			    else
+				(void) fprintf (ofile, "-\n");
+			    }
+			}
 		    }
 		else
 		    {
 		    makepossibilities (itoken);
-		    if (pcount)
+		    if (inpossibilities (ctoken)) /* Kludge for German, etc. */
+			{
+			/* might not be perfect match, but we'll lie */
+			if (!terse)
+			    {
+			    if (askverbose)
+				(void) fprintf (ofile, "ok\n");
+			    else
+				{
+				if (correct_verbose_mode)
+				    (void) fprintf (ofile, "* %s\n", ctoken );
+				else
+				    (void) fprintf (ofile, "*\n");
+				}
+			    }
+			}
+		    else if (pcount)
 			{
 			/*
 			** print &  or ?, ctoken, then
 			** character offset, possibility
 			** count, and the possibilities.
 			*/
-			(void) fprintf (ofile, "%c %s %d %d",
-			  easypossibilities ? '&' : '?',
-			  ctoken,
-			  easypossibilities,
-			  (int) ((currentchar - contextbufs[0])
-			    - strlen (ctoken)) + contextoffset);
+			if (askverbose)
+			    (void) fprintf (ofile, "how about");
+			else
+			    (void) fprintf (ofile, "%c %s %d %d",
+			      easypossibilities ? '&' : '?',
+			      (char *) ctoken,
+			      easypossibilities,
+			      (int) ((currentchar - filteredbuf)
+				- strlen ((char *) ctoken)) + contextoffset);
 			for (i = 0;  i < MAXPOSSIBLE;  i++)
 			    {
 			    if (possibilities[i][0] == 0)
@@ -530,10 +823,13 @@ void checkline (ofile)
 			/*
 			** No possibilities found for word TOKEN
 			*/
-			(void) fprintf (ofile, "# %s %d\n",
-			  ctoken,
-			  (int) ((currentchar - contextbufs[0])
-			    - strlen (ctoken)) + contextoffset);
+			if (askverbose)
+			    (void) fprintf (ofile, "not found\n");
+			else
+			    (void) fprintf (ofile, "# %s %d\n",
+			      (char *) ctoken,
+			      (int) ((currentchar - filteredbuf)
+				- strlen ((char *) ctoken)) + contextoffset);
 			}
 		    }
 		}
@@ -545,16 +841,16 @@ void checkline (ofile)
 		}
 	    }
 	if (!aflag  &&  !lflag)
-	   (void) fprintf (ofile, "%s", ctoken);
+	   (void) fprintf (ofile, "%s", (char *) ctoken);
 	}
 
-    if (!lflag  &&  (aflag  ||  hadlf))
+    if (!lflag  &&  hadlf)
        (void) putc ('\n', ofile);
    }
 
 /* must check for \begin{mbox} or whatever makes new text region. */
 static int TeX_math_end (bufp)
-    char **	bufp;
+    unsigned char **	bufp;
     {
 
     if (**bufp == TEXDOLLAR)
@@ -589,8 +885,9 @@ static int TeX_math_end (bufp)
     }
 
 static int TeX_math_begin (bufp)
-    char **	bufp;
+    unsigned char **	bufp;
     {
+    int			didskip = 0;
 
     if (**bufp == TEXDOLLAR)
 	{
@@ -600,6 +897,7 @@ static int TeX_math_begin (bufp)
 	}
     while (**bufp == TEXBACKSLASH)
 	{
+	didskip = 1;
 	(*bufp)++; /* check for null char here? */
 	if (**bufp == TEXLEFTPAREN  ||  **bufp == TEXLEFTSQUARE)
 	    return 1;
@@ -641,21 +939,32 @@ static int TeX_math_begin (bufp)
 	    }
 	return 0;
 	}
-    else
-	return 0;
+    else if (didskip)
+	{
+	/*
+	 * If we've skipped over anything, it's possible that we are
+	 * pointing at an important character.  If so, we need to back up
+	 * one byte, because our caller will increment bufp.  Yes,
+	 * this is a kludge.  This whole TeX deformatter is a mess.
+	 */
+	(*bufp)--;
+	}
+    return 0;
     }
 
 static int TeX_LR_begin (bufp)
-    char **	bufp;
+    unsigned char **	bufp;
     {
 
     if ((TeX_strncmp (*bufp, "mbox", 4) == 0)
       ||  (TeX_strncmp (*bufp, "makebox", 7) == 0)
+      ||  (TeX_strncmp (*bufp, "text", 4) == 0)
+      ||  (TeX_strncmp (*bufp, "intertext", 9) == 0)
       ||  (TeX_strncmp (*bufp, "fbox", 4) == 0)
       || (TeX_strncmp (*bufp, "framebox", 8) == 0))
 	math_mode += 2;
-    else if ((TeX_strncmp(*bufp, "parbox", 6) == 0)
-      || (TeX_strncmp(*bufp, "raisebox", 8) == 0))
+    else if ((TeX_strncmp (*bufp, "parbox", 6) == 0)
+      || (TeX_strncmp (*bufp, "raisebox", 8) == 0))
 	{
 	math_mode += 2;
 	TeX_open_paren (bufp);
@@ -664,7 +973,7 @@ static int TeX_LR_begin (bufp)
 	else
 	    LaTeX_Mode = 'r'; /* same as reference -- skip {} */
 	}
-    else if (TeX_strncmp(*bufp, "begin", 5) == 0)
+    else if (TeX_strncmp (*bufp, "begin", 5) == 0)
 	return TeX_LR_check (1, bufp);	/* minipage */
     else
 	return 0;
@@ -675,8 +984,8 @@ static int TeX_LR_begin (bufp)
     }
 
 static int TeX_LR_check (begin_p, bufp)
-    int		begin_p;
-    char **	bufp;
+    int			begin_p;
+    unsigned char **	bufp;
     {
 
     TeX_open_paren (bufp);
@@ -687,7 +996,7 @@ static int TeX_LR_check (begin_p, bufp)
 	}
     else
 	LaTeX_Mode = 'P';
-    if (strncmp (++(*bufp), "minipage", 8) == 0)
+    if (strncmp ((char *) ++(*bufp), "minipage", 8) == 0)
 	{
 	TeX_skip_parens (bufp);
 	if (**bufp)
@@ -704,7 +1013,8 @@ static int TeX_LR_check (begin_p, bufp)
 	    math_mode -= (math_mode & 127) * 128;
 	    if (math_mode < 0)
 		{
-		(void) fprintf (stderr, DEFMT_C_LR_MATH_ERROR);
+		(void) fprintf (stderr, DEFMT_C_LR_MATH_ERROR,
+		  MAYBE_CR (stderr));
 		math_mode = 1;
 		}
 	    }
@@ -718,14 +1028,14 @@ static int TeX_LR_check (begin_p, bufp)
  *  the begin if they are required.  However, Only skips if on this line.
  */
 static void TeX_skip_args (bufp)
-    char **	bufp;
+    unsigned char **	bufp;
     {
     register int skip_cnt = 0; /* Max of 2. */
 
-    if (strncmp(*bufp, "tabular", 7) == 0
-      ||  strncmp(*bufp, "minipage", 8) == 0)
+    if (strncmp((char *) *bufp, "tabular", 7) == 0
+      ||  strncmp((char *) *bufp, "minipage", 8) == 0)
 	skip_cnt++;
-    if (strncmp(*bufp, "tabular*", 8) == 0)
+    if (strncmp((char *) *bufp, "tabular*", 8) == 0)
 	skip_cnt++;
     TeX_skip_parens (bufp);	/* Skip to the end of the \begin{} parens */
     if (**bufp)
@@ -745,8 +1055,8 @@ static void TeX_skip_args (bufp)
     }
 
 static int TeX_math_check (cont_char, bufp)
-    int		cont_char;
-    char **	bufp;
+    int			cont_char;
+    unsigned char **	bufp;
     {
 
     TeX_open_paren (bufp);
@@ -759,14 +1069,20 @@ static int TeX_math_check (cont_char, bufp)
     else
 	LaTeX_Mode = 'P';
 
-    if (strncmp (++(*bufp), "equation", 8) == 0
-      ||  strncmp (*bufp, "eqnarray", 8) == 0
-      ||  strncmp (*bufp, "displaymath", 11) == 0
-      ||  strncmp (*bufp, "picture", 7) == 0
+    if (strncmp ((char *) ++(*bufp), "equation", 8) == 0
+      ||  strncmp ((char *) *bufp, "eqnarray", 8) == 0
+      ||  strncmp ((char *) *bufp, "displaymath", 11) == 0
+      ||  strncmp ((char *) *bufp, "picture", 7) == 0
+      ||  strncmp ((char *) *bufp, "gather", 6) == 0
+      ||  strncmp ((char *) *bufp, "align", 5) == 0
+      ||  strncmp ((char *) *bufp, "multline", 8) == 0
+      ||  strncmp ((char *) *bufp, "flalign", 7) == 0
+      ||  strncmp ((char *) *bufp, "alignat", 7) == 0
 #ifdef IGNOREBIB
-      ||  strncmp (*bufp, "thebibliography", 15) == 0
+      ||  strncmp ((char *) *bufp, "thebibliography", 15) == 0
 #endif
-      ||  strncmp (*bufp, "math", 4) == 0)
+      ||  strncmp ((char *) *bufp, "verbatim", 8) == 0
+      ||  strncmp ((char *) *bufp, "math", 4) == 0)
 	{
 	(*bufp)--;
 	TeX_skip_parens (bufp);
@@ -780,7 +1096,7 @@ static int TeX_math_check (cont_char, bufp)
     }
 
 static void TeX_skip_parens (bufp)
-    char **	bufp;
+    unsigned char **	bufp;
     {
 
     while (**bufp  &&  **bufp != TEXRIGHTCURLY  &&  **bufp != TEXDOLLAR)
@@ -788,50 +1104,27 @@ static void TeX_skip_parens (bufp)
     }
 
 static void TeX_open_paren (bufp)
-    char **	bufp;
+    unsigned char **	bufp;
     {
     while (**bufp  &&  **bufp != TEXLEFTCURLY  &&  **bufp != TEXDOLLAR)
 	(*bufp)++;
     }
 
 static void TeX_skip_check (bufp)
-    char **	bufp;
+    unsigned char **	bufp;
     {
-    int		skip_ch;
+    unsigned char *	endp;
+    int			skip_ch;
 
-    if (TeX_strncmp(*bufp, "end", 3) == 0
-      ||  TeX_strncmp(*bufp, "vspace", 6) == 0
-      ||  TeX_strncmp(*bufp, "hspace", 6) == 0
-      ||  TeX_strncmp(*bufp, "cite", 4) == 0
-      ||  TeX_strncmp(*bufp, "ref", 3) == 0
-      ||  TeX_strncmp(*bufp, "parbox", 6) == 0
-      ||  TeX_strncmp(*bufp, "label", 5) == 0
-      ||  TeX_strncmp(*bufp, "input", 5) == 0
-      ||  TeX_strncmp(*bufp, "nocite", 6) == 0
-      ||  TeX_strncmp(*bufp, "include", 7) == 0
-      ||  TeX_strncmp(*bufp, "includeonly", 11) == 0
-      ||  TeX_strncmp(*bufp, "documentstyle", 13) == 0
-      ||  TeX_strncmp(*bufp, "documentclass", 13) == 0
-      ||  TeX_strncmp(*bufp, "usepackage", 10) == 0
-      ||  TeX_strncmp(*bufp, "pagestyle", 9) == 0
-      ||  TeX_strncmp(*bufp, "pagenumbering", 13) == 0
-#ifndef IGNOREBIB
-      ||  TeX_strncmp(*bufp, "bibliography", 12) == 0
-      ||  TeX_strncmp(*bufp, "bibitem", 7) == 0
-#endif
-      ||  TeX_strncmp(*bufp, "hyphenation", 11) == 0
-      ||  TeX_strncmp(*bufp, "pageref", 7) == 0)
+    for (endp = *bufp;  isalpha(*endp)  ||  *endp == '@';  endp++)
+	;
+    if (keyword_in_list (*bufp, endp, &texskip1list))
 	{
 	TeX_skip_parens (bufp);
 	if (**bufp == 0)
 	    LaTeX_Mode = 'r';
 	}
-    else if (TeX_strncmp(*bufp, "rule", 4) == 0		/* skip two args. */
-      ||  TeX_strncmp(*bufp, "setcounter", 10) == 0
-      ||  TeX_strncmp(*bufp, "addtocounter", 12) == 0
-      ||  TeX_strncmp(*bufp, "setlength", 9) == 0
-      ||  TeX_strncmp(*bufp, "addtolength", 11) == 0
-      ||  TeX_strncmp(*bufp, "settowidth", 10) == 0)
+    else if (keyword_in_list (*bufp, endp, &texskip2list)) /* skip two args. */
 	{
 	TeX_skip_parens (bufp);
 	if (**bufp == 0)	/* Only skips one {} if not on same line. */
@@ -850,6 +1143,12 @@ static void TeX_skip_check (bufp)
 	*bufp += 5;
 	while (**bufp != skip_ch  &&  **bufp != '\0')
 	    (*bufp)++;
+	/* skip to end of verb field when not in a comment or math field */
+	if (**bufp == 0 && !TeX_comment  &&  !(math_mode & 1))
+	    {
+	    LaTeX_Mode = 'v';
+	    save_LaTeX_Mode = skip_ch;
+	    }
 	}
     else
 	{
@@ -883,19 +1182,240 @@ static void TeX_skip_check (bufp)
  * Properly speaking, the @ sign should be settable in the hash file
  * header, but I doubt that it varies, and I don't want to change the
  * syntax of affix files right now.
+ *
+ * Incidentally, TeX_strncmp uses unequal signedness for its arguments
+ * because that's how it's always called, and it's easier to do one
+ * typecast here than lots of casts in the calls.
  */
 static int TeX_strncmp (a, b, n)
-    char *	a;		/* Strings to compare */
-    char *	b;		/* ... */
-    int		n;		/* Number of characters to compare */
+    unsigned char *	a;		/* Strings to compare */
+    char *		b;		/* ... */
+    int			n;		/* Number of characters to compare */
     {
-    int		cmpresult;	/* Result of calling strncmp */
+    int			cmpresult;	/* Result of calling strncmp */
 
-    cmpresult = strncmp (a, b, n);
+    cmpresult = strncmp ((char *) a, b, n);
     if (cmpresult == 0)
 	{
 	if (isascii (a[n])  &&  isalpha (a[n]))
 	    return 1;		/* Force inequality if alpha follows */
 	}
     return cmpresult;
+    }
+
+/*
+ * Set up a table of keywords to be treated specially.  The input is
+ * "rawtags", which is a comma-separated list of keywords to be
+ * inserted into the table.  If rawtags is null, the environment
+ * variable "envvar" is consulted; if this isn't set, the list in
+ * "deftags" is used instead.
+ *
+ * If either rawtags or the contents of envvar begins with a + sign,
+ * then this value is appended to the string in deftags, rather than
+ * replacing it.  This effect is cumulative.  Thus, there are the
+ * following possibilities:
+ *
+ *  rawtags envvar deftags  result
+ *  xxx	    *	    *	    xxx
+ *  +xxx    yyy	    *	    xxx,yyy
+ *  +xxx    +yyy    zzz	    xxx,yyy,zzz
+ *  null    yyy	    *	    yyy
+ *  null    +yyy    zzz	    yyy,zzz
+ *  null    null    zzz	    zzz
+ *
+ * The result of this routine is the initialization of a "struct
+ * kwtable" that can be passed to keyword_in_list for lookup purposes.
+ * Before the first time this routine is called, the "kwlist" pointer
+ * in the struct kwtable must be set to NULL, to indicate that the
+ * structure is uninitialized.
+ *
+ * Returns nonzero if the list has already been initialized, zero if
+ * all is well.
+ */
+int init_keyword_table (rawtags, envvar, deftags, ignorecase, keywords)
+    char *	rawtags;	/* Comma-separated list of tags to look up */
+    char *	envvar;		/* Environment variable containing tag list */
+    char *	deftags;	/* Default tag list */
+    int		ignorecase;	/* NZ to ignore case in keyword matching */
+    struct kwtable *
+		keywords;	/* Where to put the keyword table */
+    {
+    char *	end;		/* End of current tag */
+    char *	envtags;	/* Tags from envvar */
+    unsigned char **
+		nextkw;		/* Next keyword-table entry */
+    char *	start;		/* Start of current tag */
+    char *	wlist;		/* Modifiable copy of raw list */
+    unsigned int wsize;		/* Size of wlist */
+
+    if (keywords->kwlist != NULL)
+	return 1;
+    envtags = (envvar == NULL) ? NULL : getenv (envvar);
+    if (rawtags != NULL  &&  rawtags[0] != '+')
+	{
+	envtags = NULL;
+	deftags = NULL;
+	}
+    if (envtags != NULL  &&  envtags[0] != '+')
+	deftags = NULL;
+
+    /*
+     * Allocate space for the modifiable tag list.  This may
+     * over-allocate by up to 2 bytes if the "+" notation is used.
+     */
+    wsize = 0;
+    if (rawtags != NULL)
+	wsize += strlen (rawtags) + 1;
+    if (envtags != NULL)
+	wsize += strlen (envtags) + 1;
+    if (deftags != NULL)
+	wsize += strlen (deftags) + 1;
+    wlist = malloc (wsize);
+    if (wlist == NULL)
+	{
+	(void) fprintf (stderr, DEFMT_C_NO_SPACE, MAYBE_CR (stderr));
+	exit (1);
+	}
+    wlist[0] = '\0';
+    if (rawtags != NULL)
+	{
+	if (rawtags[0] == '+')
+	    rawtags++;
+	strcpy (wlist, rawtags);
+	}
+    if (envtags != NULL)
+	{
+	if (envtags[0] == '+')
+	    envtags++;
+	if (wlist[0] != '\0')
+	    strcat (wlist, ",");
+	strcat (wlist, envtags);
+	}
+    if (deftags != NULL)
+	{
+	if (wlist[0] != '\0')
+	    strcat (wlist, ",");
+	strcat (wlist, deftags);
+	}
+
+    /*
+     * Count the keywords and allocate space for the pointers.
+     */
+    keywords->numkw = 1;
+    keywords->forceupper = ignorecase;
+    for (end = wlist;  *end != '\0';  ++end)
+	{
+	if (*end == ','  ||  *end == ':')
+	    ++keywords->numkw;
+	}
+    keywords->kwlist =
+      (unsigned char **) malloc (keywords->numkw * sizeof keywords->kwlist[0]);
+    if (keywords->kwlist == NULL)
+	{
+	fprintf (stderr, DEFMT_C_NO_SPACE, MAYBE_CR (stderr));
+	exit (1);
+	}
+
+    end = wlist;
+    nextkw = keywords->kwlist;
+    keywords->maxlen = 0;
+    keywords->minlen = 0;
+    while (nextkw < keywords->kwlist + keywords->numkw)
+	{
+	for (start = end;
+	  *end != '\0'  &&  *end != ','  &&  *end != ':';
+	  end++)
+	    ;
+	*end = '\0';
+	if (ignorecase)
+	    chupcase ((unsigned char *) start);
+	if (end == start)
+	    --keywords->numkw;
+	else
+	    {
+	    *nextkw++ = (unsigned char *) start;
+	    if ((unsigned) (end - start) > keywords->maxlen)
+		keywords->maxlen = end - start;
+	    if (keywords->minlen == 0
+	      ||  (unsigned) (end - start) < keywords->minlen)
+		keywords->minlen = end - start;
+	    }
+	end++;
+	}
+    qsort ((char *) keywords->kwlist, keywords->numkw,
+      sizeof keywords->kwlist[0],
+      (int (*) P ((const void *, const void *))) tagcmp);
+  
+    if (keywords->maxlen > maxkeywordlen)
+	{
+	maxkeywordlen = keywords->maxlen;
+	if (keywordbuf != NULL)
+	    free (keywordbuf);
+	keywordbuf = (unsigned char *)
+	  malloc ((maxkeywordlen + 1) * sizeof keywordbuf[0]);
+	if (keywordbuf == NULL)
+	    {
+	    fprintf (stderr, DEFMT_C_NO_SPACE, MAYBE_CR (stderr));
+	    exit(1);
+	    }
+	}
+    return 0;
+    }
+
+/*
+ * Decide whether a given keyword is in a list of those that need
+ * special treatment.  The list of tags is so small that there's
+ * little point in being fancy, but the code given to me used a binary
+ * search and it seemed silly to throw it away.
+ *
+ * Returns nonzero if the keyword is in the chosen list.
+ */
+static int keyword_in_list (str, strend, keywords)
+    unsigned char *
+		str;		/* String to be tested (not null-terminated) */
+    unsigned char *
+		strend;		/* Character following end of test string */
+    struct kwtable *
+		keywords;	/* Table of keywords to be searched */
+    {
+    int		cmpresult;	/* Result of string comparison */
+    unsigned int i;		/* Current binary-search position */
+    int		imin;		/* Bottom of binary search */
+    int		imax;		/* Top of binary search */
+
+    i = strend - str;
+    if (i < keywords->minlen  ||  i > keywords->maxlen)
+	return 0;
+    strncpy ((char *) keywordbuf, (char *) str, i);
+    keywordbuf[i] = '\0';
+    if (keywords->forceupper)
+	chupcase (keywordbuf);
+
+    /*
+     * Binary search through the tags list
+     */
+    imin = 0;
+    imax = keywords->numkw - 1;
+    while (imin <= imax)
+	{
+	i = (imin + imax) >> 1;
+	cmpresult = strcmp ((char *) keywordbuf, (char *) keywords->kwlist[i]);
+	if (cmpresult == 0)
+	    return 1;
+	else if (cmpresult > 0 )
+	    imin = i + 1;
+	else
+	    imax = i - 1;
+	}
+    return 0;			/* Not a tag to be ignored */
+    }
+
+/*
+ * Compare two pointed-to strings
+ */
+static int tagcmp (a, b)
+    unsigned char **	a;	    /* Strings to be compared */
+    unsigned char **	b;	    /* ... */
+    {
+    return strcmp ((char *) *a, (char *) *b);
     }

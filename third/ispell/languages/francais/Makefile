@@ -1,7 +1,7 @@
 #
-# $Id: Makefile,v 1.1.1.1 1997-09-03 21:08:15 ghudson Exp $
+# $Id: Makefile,v 1.1.1.2 2007-02-01 19:49:49 ghudson Exp $
 #
-# Copyright 1993, Geoff Kuenning, Granada Hills, CA
+# Copyright 1993, 2001, Geoff Kuenning, Claremont, CA
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -17,10 +17,8 @@
 #    such.  Binary redistributions based on modified source code
 #    must be clearly marked as modified versions in the documentation
 #    and/or other materials provided with the distribution.
-# 4. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgment:
-#      This product includes software developed by Geoff Kuenning and
-#      other unpaid contributors.
+# 4. The code that causes the 'ispell -v' command to display a prominent
+#    link to the official ispell Web site may not be removed.
 # 5. The name of Geoff Kuenning may not be used to endorse or promote
 #    products derived from this software without specific prior
 #    written permission.
@@ -42,7 +40,16 @@
 # an example of a complex makefile, look at the makefile for English.
 #
 # $Log: not supported by cvs2svn $
-# Revision 1.8  1994/08/31  05:58:58  geoff
+# Revision 1.11  2005/04/14 00:06:51  geoff
+# Update license.  Drop unsq.  Allow LIBDIR to be a relative path.
+#
+# Revision 1.10  2001/07/25 21:51:48  geoff
+# *** empty log message ***
+#
+# Revision 1.9  2001/07/23 20:43:38  geoff
+# *** empty log message ***
+#
+# Revision 1.8  1994/08/31 05:58:58  geoff
 # Create directories before installing into them.
 #
 # Revision 1.7  1994/02/22  06:09:14  geoff
@@ -62,7 +69,6 @@ MAKE = make
 CONFIG		=	../../config.sh
 PATHADDER	=	../..
 BUILDHASH	=	../../buildhash
-UNSQ		=	../../unsq
 FIX8BIT		=	../fix8bit
 
 #
@@ -90,14 +96,17 @@ all:	$(HASHFILE)
 install: all $(CONFIG)
 	@. $(CONFIG); \
 	  set -x; \
-	  [ -d $$LIBDIR ]  ||  (mkdir $$LIBDIR; chmod 755 $$LIBDIR); \
+	  cd ../..; \
+	  [ -d $$LIBDIR ]  || \
+	    $(MAKE) -f ../../Makefile NEWDIR=$$LIBDIR mkdirpath; \
 	  cd $$LIBDIR; rm -f $(LANGUAGE).aff $(HASHFILE)
 	@. $(CONFIG); \
 	  set -x; \
-	  cp $(LANGUAGE).aff $(HASHFILE) $$LIBDIR
+	  cp $(LANGUAGE).aff $(HASHFILE) \
+	    `cd ../..; cd $$LIBDIR; pwd`
 	@. $(CONFIG); \
 	  set -x; \
-	  cd $$LIBDIR; \
+	  cd ../..; cd $$LIBDIR; \
 	  chmod 644 $(LANGUAGE).aff $(HASHFILE)
 
 $(HASHFILE):	$(BUILDHASH) $(AFFIXES) $(DICTIONARY)
@@ -118,18 +127,6 @@ $(FIX8BIT):	../fix8bit.c
 #	to unpack the dictionaries.
 #
 unpack:	$(AFFIXES)
-
-$(UNSQ):
-	set +e; \
-	set $(SHELLDEBUG); \
-	if [ ! -x $(UNSQ) ]; \
-	then \
-	    set -e; \
-	    cd ../..; \
-	    $(MAKE) unsq; \
-	else \
-	    : ; \
-	fi
 
 clean:
 	rm -f core *.hash *.stat *.cnt

@@ -1,8 +1,8 @@
-: Use /bin/sh
+!!POUNDBANG!!
 #
-# $Id: findaffix.X,v 1.1.1.1 1997-09-03 21:08:08 ghudson Exp $
+# $Id: findaffix.X,v 1.1.1.2 2007-02-01 19:50:18 ghudson Exp $
 #
-# Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+# Copyright 1992, 1993, 1999, 2001, 2005, Geoff Kuenning, Claremont, CA
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -18,10 +18,8 @@
 #    such.  Binary redistributions based on modified source code
 #    must be clearly marked as modified versions in the documentation
 #    and/or other materials provided with the distribution.
-# 4. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgment:
-#      This product includes software developed by Geoff Kuenning and
-#      other unpaid contributors.
+# 4. The code that causes the 'ispell -v' command to display a prominent
+#    link to the official ispell Web site may not be removed.
 # 5. The name of Geoff Kuenning may not be used to endorse or promote
 #    products derived from this software without specific prior
 #    written permission.
@@ -112,12 +110,80 @@
 #	should be translated to lowercase before being fed to this script.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.22  2005/04/27 01:18:34  geoff
+# Work around idiotic POSIX incompatibilities in sort.  Add secure
+# temp-file handling.
+#
+# Revision 1.21  2005/04/14 14:39:33  geoff
+# Use /tmp as the default temp directory
+#
+# Revision 1.20  2005/04/14 14:38:23  geoff
+# Update license.  Protect against modernized (i.e., incompatible) and
+# internationalized sort commands.
+#
+# Revision 1.19  2001/09/06 00:30:28  geoff
+# Many changes from Eli Zaretskii to support DJGPP compilation.
+#
+# Revision 1.18  2001/07/25 21:51:46  geoff
+# Minor license update.
+#
+# Revision 1.17  2001/07/23 20:24:03  geoff
+# Update the copyright and the license.
+#
+# Revision 1.16  1999/01/07 01:22:55  geoff
+# Update the copyright.
+#
 # Revision 1.15  1994/01/25  07:11:29  geoff
 # Get rid of all old RCS log lines in preparation for the 3.1 release.
 #
 #
-TDIR=${TMPDIR-/usr/tmp}
-TMP=${TDIR}/faff$$
+
+# In one of the most incredibly stupid decisions of all time, some
+# genius decided to break backwards compatibility by "deprecating" the
+# old-style sort switches even though it was trivial to recognize both
+# styles.  The result is that that thousands of people (like me) will
+# have to rewrite shell scripts to tolerate that stupidity.  (It's not
+# that the new syntax is bad--it's definitely easier to understand.
+# But that doesn't excuse breaking compatibility.)
+#
+# Detect whether sort accepts old-style switches.
+if sort +0 -1 /dev/null >/dev/null 2>&1
+then
+    CRETIN_SORT=false
+else
+    CRETIN_SORT=true
+fi
+
+#
+# The following is necessary so that some internationalized versions of
+# sort(1) don't confuse things by sorting into a nonstandard order.
+#
+LANG=C
+LOCALE=C
+LC_ALL=C
+LC_COLLATE=C
+LC_CTYPE=C
+export LANG LOCALE LC_COLLATE LC_CTYPE
+#
+# The following aren't strictly necessary, but I've been made paranoid
+# by problems with the stuff above.  It can't hurt to set them to a
+# sensible value.
+LC_MESSAGES=C
+LC_MONETARY=C
+LC_NUMERIC=C
+LC_TIME=C
+export LC_MESSAGES LC_MONETARY LC_NUMERIC LC_TIME
+
+TDIR=${TMPDIR-/tmp}
+TEMPDIR=`mktemp -d ${TDIR}/faffXXXXXXXXXX 2>/dev/null`  ||  TEMPDIR="$TDIR"
+TMP=${TEMPDIR}/faff$$
+if [ "$TEMPDIR" = "$TDIR" ]
+then
+    TOREMOVE="${TMP}*"
+else
+    TOREMOVE="$TEMPDIR"
+fi
+
 SORTTMP="-T ${TDIR}"			# !!SORTTMP!!
 USAGE='Usage:  findaffix [-p | -s] [-f] [-c] [-e elim] [-m min] [-M max] [-l low] [-t tabch] [files]'
 LOOP='
@@ -137,7 +203,12 @@ minstem=3
 elimlen=1
 lowcount=10
 cleanout=no
-finalsortopts='+3rn -4 +2rn -3 +1 -2 +0 -1'
+if $CRETIN_SORT
+then
+    finalsortopts='-k 4rn,4 -k 3rn,3 -k 2,2 -k 1,1'
+else
+    finalsortopts='+3rn -4 +2rn -3 +1 -2 +0 -1'
+fi
 tabch=/
 while :
 do
@@ -162,7 +233,12 @@ do
 	    shift
 	    ;;
 	-f)
-	    finalsortopts='+2rn -3 +3rn -4 +1 -2 +0 -1'
+	    if $CRETIN_SORT
+	    then
+		finalsortopts='-k 3rn,3 -k 4rn,4 -k 2,2 -k 1,1'
+	    else
+		finalsortopts='+2rn -3 +3rn -4 +1 -2 +0 -1'
+	    fi
 	    shift
 	    ;;
 	-c)
@@ -198,8 +274,8 @@ do
 	    ;;
     esac
 done
-trap "/bin/rm -f ${TMP}*; exit 1" 1 2 15
-trap "/bin/rm -f ${TMP}*; exit 0" 13
+trap "rm -rf $TOREMOVE; exit 1" 1 2 15
+trap "rm -rf $TOREMOVE; exit 0" 13
 #
 # We are ready to do the work.  First, we collect all input, translate it
 # to lowercase, sort it (dropping duplications), and save it for later.
@@ -234,6 +310,14 @@ fi \
 # Finally, the third sort ($finalsortopts) rearranges the list in the chosen
 # sort order.
 #
+if $CRETIN_SORT
+then
+    sortopts1='-k 1,1 -k 2'
+    sortopts2='-k 2,2 -k 1,1'
+else
+    sortopts1='+0 -1 +1'
+    sortopts2='+1 -2 +0 -1'
+fi
 awk "BEGIN{minstem=$minstem; maxlim=$maxlim; tabch="'"'"$tabch"'"}
     {
     len = length ($0)
@@ -241,10 +325,10 @@ awk "BEGIN{minstem=$minstem; maxlim=$maxlim; tabch="'"'"$tabch"'"}
 	next
     '"$LOOP"'
     }' < ${TMP}a \
-  | sort "-t$tabch" +0 -1 +1 $SORTTMP -o ${TMP}a
+  | sort "-t$tabch" $sortopts1 $SORTTMP -o ${TMP}a
 join "-t$tabch" -o 1.2 2.2 2.3 ${TMP}a ${TMP}a \
   | awk "-F$tabch" "BEGIN{elimlen=$elimlen}$ELIM" \
-  | sort "-t$tabch" +1 -2 +0 -1 $SORTTMP \
+  | sort "-t$tabch" $sortopts2 $SORTTMP \
   | awk "-F$tabch" 'BEGIN{tabch="'"$tabch"'"; lowcount='"$lowcount"'}
 	{
 	if ($1 == last1  &&  $2 == last2)
@@ -289,4 +373,4 @@ join "-t$tabch" -o 1.2 2.2 2.3 ${TMP}a ${TMP}a \
     else
 	exec cat
     fi
-/bin/rm -f ${TMP}?
+rm -rf $TOREMOVE

@@ -1,7 +1,7 @@
 #
-# $Id: Makefile,v 1.1.1.1 1997-09-03 21:08:15 ghudson Exp $
+# $Id: Makefile,v 1.1.1.2 2007-02-01 19:50:11 ghudson Exp $
 #
-# Copyright 1993, Geoff Kuenning, Granada Hills, CA
+# Copyright 1993, 2001, Geoff Kuenning, Claremont, CA
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -17,10 +17,8 @@
 #    such.  Binary redistributions based on modified source code
 #    must be clearly marked as modified versions in the documentation
 #    and/or other materials provided with the distribution.
-# 4. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgment:
-#      This product includes software developed by Geoff Kuenning and
-#      other unpaid contributors.
+# 4. The code that causes the 'ispell -v' command to display a prominent
+#    link to the official ispell Web site may not be removed.
 # 5. The name of Geoff Kuenning may not be used to endorse or promote
 #    products derived from this software without specific prior
 #    written permission.
@@ -49,6 +47,26 @@
 # simple Makefiles for another language distributed with ispell.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.29  2005/04/26 22:55:07  geoff
+# Add code to protect against POSIX's astoundingly stupid decision to break
+# backwards compatibility for the sort command.
+#
+# Revision 1.28  2005/04/13 22:58:43  geoff
+# Update license.  Allow section-5 manuals to go into section 4 on
+# systems that prefer it that way.
+#
+# Revision 1.27  2002/06/06 23:21:30  geoff
+# Don't assume munchlist is in the PATH
+#
+# Revision 1.26  2001/07/25 21:51:47  geoff
+# *** empty log message ***
+#
+# Revision 1.25  2001/07/23 20:43:37  geoff
+# *** empty log message ***
+#
+# Revision 1.24  1999/01/07 01:23:16  geoff
+# Update the copyright.  Get rid of the old shar-based dictioary building.
+#
 # Revision 1.23  1995/08/05  23:19:50  geoff
 # Add tests to detect and suppress accidentally-generated zero-length
 # dictionaries.
@@ -99,7 +117,7 @@ MAKE = make
 CONFIG		=	../../config.sh
 PATHADDER	=	../..
 BUILDHASH	=	../../buildhash
-UNSQ		=	../../unsq
+MUNCHLIST	=	../../munchlist
 
 # The following variables should be set by the superior Makefile,
 # based on the LANGUAGES variable in config.X.
@@ -109,7 +127,7 @@ UNSQ		=	../../unsq
 # and english.xlg.  For each of these, you can also build a "plus"
 # version (english.sml+, etc.)  which is created by combining the
 # distributed version with an "extra" dictionary defined by EXTRADICT,
-# usually /usr/dict/words.  The "plus" versions of dictionaries
+# usually /usr/share/dict/words.  The "plus" versions of dictionaries
 # require lots of time and temporary file space; make sure you have
 # set TMPDIR appropriately.
 #
@@ -148,7 +166,7 @@ AFFIXES	=	english.aff
 #
 SHELLDEBUG = +vx
 
-all:  $(CONFIG)
+all:  $(CONFIG) english.5
 	@set $(SHELLDEBUG); \
 	if [ ! -r english.0 ]; \
 	then \
@@ -169,27 +187,37 @@ all:  $(CONFIG)
 	done
 	$(MAKE) SHELLDEBUG=$(SHELLDEBUG) $(HASHFILES)
 
+# Note the fooling around with LIBDIR.  It might be a relative path,
+# relative to the top of the ispell source tree.  So we have to cd to
+# ../.. before referring to $LIBDIR.  There must be a better way...
+# 
 install: all $(CONFIG)
 	@. $(CONFIG); \
 	  set -x; \
-	  [ -d $$LIBDIR ]  ||  (mkdir $$LIBDIR; chmod 755 $$LIBDIR); \
+	  cd ../..; \
+	  [ -d $$LIBDIR ]  || \
+	    $(MAKE) -f ../../Makefile NEWDIR=$$LIBDIR mkdirpath; \
 	  cd $$LIBDIR; rm -f english.aff $(HASHFILES)
 	@. $(CONFIG); \
 	  set -x; \
-	  cp english.aff $(HASHFILES) $$LIBDIR
+	  cp english.aff $(HASHFILES) \
+	    `cd ../..; cd $$LIBDIR; pwd`
 	@. $(CONFIG); \
 	  set -x; \
-	  cd $$LIBDIR; \
+	  cd ../..; cd $$LIBDIR; \
 	  chmod 644 english.aff $(HASHFILES)
 	@. $(CONFIG); \
 	  set -x; \
-	  cd $$MAN4DIR; \
-	  [ -d $$MAN4DIR ]  ||  (mkdir $$MAN4DIR; chmod 755 $$MAN4DIR); \
-	    rm -f english$$MAN4EXT
+	  cd ../..;
+	  [ -d $$MAN45DIR ]  || \
+	    $(MAKE) -f ../../Makefile NEWDIR=$$MAN45DIR mkdirpath; \
+	  cd $$MAN45DIR; \
+	    rm -f english$$MAN45EXT
 	@. $(CONFIG); \
 	  set -x; \
-	  cp english.4l $$MAN4DIR/english$$MAN4EXT; \
-	  chmod 644 $$MAN4DIR/english$$MAN4EXT
+	  cp english.5 `cd ../..; cd $$MAN45DIR; pwd`/english$$MAN45EXT; \
+	  cd ../..; \
+	  chmod 644 $$MAN45DIR/english$$MAN45EXT
 
 #
 #	Dependencies to build extra hash files
@@ -307,61 +335,7 @@ plusdicts:	$(DBUILD)english.med+
 plusdicts:	$(DBUILD)english.lrg+
 plusdicts:	$(DBUILD)english.xlg+
 
-dictcomponents:	$(CBUILD)english.0
-dictcomponents:	$(CBUILD)english.1
-dictcomponents:	$(CBUILD)english.2
-dictcomponents:	$(CBUILD)english.3
-dictcomponents: $(CBUILD)american.0
-dictcomponents: $(CBUILD)american.1
-dictcomponents:	$(CBUILD)american.2
-dictcomponents: $(CBUILD)altamer.0
-dictcomponents:	$(CBUILD)altamer.1
-dictcomponents:	$(CBUILD)altamer.2
-dictcomponents: $(CBUILD)british.0
-dictcomponents:	$(CBUILD)british.1
-dictcomponents:	$(CBUILD)british.2
-
-$(CBUILD)english.0:	$(UNSQ) eng.0.??
-	cat eng.0.?? | $(UNSQ) > english.0
-
-$(CBUILD)english.1:	$(UNSQ) eng.1.??
-	cat eng.1.?? | $(UNSQ) > english.1
-
-$(CBUILD)english.2:	$(UNSQ) eng.2.??
-	cat eng.2.?? | $(UNSQ) > english.2
-
-$(CBUILD)english.3:	$(UNSQ) eng.3.??
-	cat eng.3.?? | $(UNSQ) > english.3
-
-$(CBUILD)american.0:	$(UNSQ) amer.0.??
-	cat amer.0.?? | $(UNSQ) > american.0
-
-$(CBUILD)american.1:	$(UNSQ) amer.1.??
-	cat amer.1.?? | $(UNSQ) > american.1
-
-$(CBUILD)american.2:	$(UNSQ) amer.2.??
-	cat amer.2.?? | $(UNSQ) > american.2
-
-$(CBUILD)altamer.0:	$(UNSQ) altamer.0.??
-	cat altamer.0.?? | $(UNSQ) \
-	  > altamer.0
-
-$(CBUILD)altamer.1:	$(UNSQ) altamer.1.??
-	cat altamer.1.?? | $(UNSQ) \
-	  > altamer.1
-
-$(CBUILD)altamer.2:	$(UNSQ) altamer.2.??
-	cat altamer.2.?? | $(UNSQ) \
-	  > altamer.2
-
-$(CBUILD)british.0:	$(UNSQ) brit.0.??
-	cat brit.0.?? | $(UNSQ) > british.0
-
-$(CBUILD)british.1:	$(UNSQ) brit.1.??
-	cat brit.1.?? | $(UNSQ) > british.1
-
-$(CBUILD)british.2:	$(UNSQ) brit.2.??
-	cat brit.2.?? | $(UNSQ) > british.2
+dictcomponents:
 
 $(DBUILD)english.sml:	$(CONFIG)
 $(DBUILD)english.sml:	english.0
@@ -376,7 +350,10 @@ $(DBUILD)english.sml:	british.0
 	    done; \
 	    trap "rm -f english.sml" 1 2 15; \
 	    set -x; \
-	    eval sort -u -t/ +0f -1 +0 $$MAKE_SORTTMP -o english.sml $$dicts
+	    (eval sort -u -t/ +0f -1 +0 $$MAKE_SORTTMP -o english.sml $$dicts \
+		2> /dev/null \
+	      ||  eval sort -u -t/ -k 1f,1 -k 1 $$MAKE_SORTTMP -o english.sml \
+		$$dicts)
 
 $(DBUILD)english.sml+:	$(CONFIG) $(EXTRADICT)
 $(DBUILD)english.sml+:	english.0
@@ -392,7 +369,7 @@ $(DBUILD)english.sml+:	british.0
 	set -x; \
 	PATH=$(PATHADDER):$$PATH; \
 	export PATH; \
-	munchlist -v -l $(AFFIXES) $$dicts \
+	$(MUNCHLIST) -v -l $(AFFIXES) $$dicts \
 	  > english.sml+ \
 	    ||  rm -f english.sml+
 	test -s english.sml+ \
@@ -416,7 +393,10 @@ $(DBUILD)english.med:	british.1
 	    done; \
 	    trap "rm -f english.med" 1 2 15; \
 	    set -x; \
-	    eval sort -u -t/ +0f -1 +0 $$MAKE_SORTTMP -o english.med $$dicts
+	    (eval sort -u -t/ +0f -1 +0 $$MAKE_SORTTMP -o english.med $$dicts \
+		2> /dev/null \
+	      ||  eval sort -u -t/ -k 1f,1 -k 1 $$MAKE_SORTTMP -o english.med \
+		$$dicts)
 
 $(DBUILD)english.med+:	$(CONFIG) $(EXTRADICT)
 $(DBUILD)english.med+:	english.0
@@ -436,7 +416,7 @@ $(DBUILD)english.med+:	british.1
 	set -x; \
 	PATH=$(PATHADDER):$$PATH; \
 	export PATH; \
-	munchlist -v -l $(AFFIXES) $$dicts \
+	$(MUNCHLIST) -v -l $(AFFIXES) $$dicts \
 	  > english.med+ \
 	    ||  rm -f english.med+
 	test -s english.med+ \
@@ -464,7 +444,10 @@ $(DBUILD)english.lrg:	british.2
 	    done; \
 	    trap "rm -f english.lrg" 1 2 15; \
 	    set -x; \
-	    eval sort -u -t/ +0f -1 +0 $$MAKE_SORTTMP -o english.lrg $$dicts
+	    (eval sort -u -t/ +0f -1 +0 $$MAKE_SORTTMP -o english.lrg $$dicts \
+		2> /dev/null \
+	      ||  eval sort -u -t/ -k 1f,1 -k 1 $$MAKE_SORTTMP -o english.lrg \
+		$$dicts)
 
 $(DBUILD)english.lrg+:	$(CONFIG) $(EXTRADICT)
 $(DBUILD)english.lrg+:	english.0
@@ -488,7 +471,7 @@ $(DBUILD)english.lrg+:	british.2
 	set -x; \
 	PATH=$(PATHADDER):$$PATH; \
 	export PATH; \
-	munchlist -v -l $(AFFIXES) $$dicts \
+	$(MUNCHLIST) -v -l $(AFFIXES) $$dicts \
 	  > english.lrg+ \
 	    ||  rm -f english.lrg+
 	test -s english.lrg+ \
@@ -517,7 +500,10 @@ $(DBUILD)english.xlg:	english.3
 	    done; \
 	    trap "rm -f english.xlg" 1 2 15; \
 	    set -x; \
-	    eval sort -u -t/ +0f -1 +0 $$MAKE_SORTTMP -o english.xlg $$dicts
+	    (eval sort -u -t/ +0f -1 +0 $$MAKE_SORTTMP -o english.xlg $$dicts \
+		2> /dev/null \
+	      ||  eval sort -u -t/ -k 1f,1 -k 1 $$MAKE_SORTTMP -o english.xlg \
+		$$dicts)
 
 $(DBUILD)english.xlg+:	$(CONFIG) $(EXTRADICT)
 $(DBUILD)english.xlg+:	english.0
@@ -542,45 +528,15 @@ $(DBUILD)english.xlg+:	english.3
 	set -x; \
 	PATH=$(PATHADDER):$$PATH; \
 	export PATH; \
-	munchlist -v -l $(AFFIXES) $$dicts \
+	$(MUNCHLIST) -v -l $(AFFIXES) $$dicts \
 	  > english.xlg+ \
 	    ||  rm -f english.xlg+
 	test -s english.xlg+ \
 	  ||  (echo 'error: zero-length dictionary generated'; \
 	    rm -f english.xlg+; exit 1)
 
-#
-#	The following dependency can be executed when ispell is unpacked,
-#	to unpack the dictionaries.
-#
-unpack:	$(UNSQ)
-	$(MAKE) CBUILD= SHELLDEBUG=$(SHELLDEBUG) dictcomponents
-	$(MAKE) SHELLDEBUG=$(SHELLDEBUG) kitclean
-
-$(UNSQ):
-	set +e; \
-	set $(SHELLDEBUG); \
-	if [ ! -x $(UNSQ) ]; \
-	then \
-	    set -e; \
-	    cd ../..; \
-	    $(MAKE) unsq; \
-	else \
-	    : ; \
-	fi
-
 clean:
-	rm -f core *.hash *.stat *.cnt
-
-#
-#	The following target allows you to clean out the leftover raw
-#	files gotten from unpacking the kit.  It makes sure that you
-#	have the combined files first, so it may take a little while
-#	to run.
-#
-kitclean:	$(UNSQ)
-	$(MAKE) CBUILD= SHELLDEBUG=$(SHELLDEBUG) dictcomponents
-	rm -f eng.[0123].?? amer.[012].?? altamer.[012].?? brit.[012].??
+	rm -f core *.hash *.stat *.cnt english.5 *.words
 
 #
 #	The following target allows you to clean out the combined
@@ -589,3 +545,12 @@ kitclean:	$(UNSQ)
 dictclean:
 	rm -f english.sml english.sml+ english.med english.med+
 	rm -f english.lrg english.lrg+ english.xlg english.xlg+
+
+#
+#	Manual page (apply substitutions).
+#
+english.5:	english.5X $(CONFIG)
+	cd ../..; \
+	$(MAKE) EDITFILE=languages/english/english.5X \
+	  OUTFILE=languages/english/english.5 SHELLDEBUG=$(SHELLDEBUG) \
+	  doedit

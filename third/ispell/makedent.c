@@ -1,10 +1,11 @@
 #ifndef lint
 static char Rcs_Id[] =
-	"$Id: makedent.c,v 1.1.1.1 1997-09-03 21:08:12 ghudson Exp $";
+	"$Id: makedent.c,v 1.1.1.2 2007-02-01 19:50:06 ghudson Exp $";
 #endif
 
 /*
- * Copyright 1988, 1989, 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1988, 1989, 1992, 1993, 1999, 2001, 2005, Geoff Kuenning,
+ * Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,10 +21,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -43,6 +42,50 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.59  2005/04/20 23:16:32  geoff
+ * Rename some variables to make them more meaningful.
+ *
+ * Revision 1.58  2005/04/14 23:11:36  geoff
+ * Move initck from ispell.c.
+ *
+ * Revision 1.57  2005/04/14 15:19:37  geoff
+ * Stick in a couple of strategic const declarations.
+ *
+ * Revision 1.56  2001/09/06 00:30:28  geoff
+ * Many changes from Eli Zaretskii to support DJGPP compilation.
+ *
+ * Revision 1.55  2001/07/25 21:51:46  geoff
+ * Minor license update.
+ *
+ * Revision 1.54  2001/07/23 20:24:04  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.53  2001/06/14 09:11:11  geoff
+ * Use a non-conflicting macro for bzero to avoid compilation problems on
+ * smarter compilers.
+ *
+ * Revision 1.52  2000/08/22 10:52:25  geoff
+ * Fix a whole bunch of signed/unsigned discrepancies.
+ *
+ * Revision 1.51  1999/01/18 03:28:37  geoff
+ * Turn many char declarations into unsigned char, so that we won't have
+ * sign-extension problems.
+ *
+ * Revision 1.50  1999/01/07  01:23:09  geoff
+ * Update the copyright.
+ *
+ * Revision 1.49  1999/01/03  01:46:39  geoff
+ * Add support for the "plain" deformatters.
+ *
+ * Revision 1.48  1998/07/06  05:03:39  geoff
+ * Don't issue bad-flag messages in -a mode; it confuses emacs
+ *
+ * Revision 1.47  1997/12/02  06:24:58  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
+ * Revision 1.46  1995/11/08  05:09:20  geoff
+ * Allow sgml as a deformatter type.
+ *
  * Revision 1.45  1994/12/27  23:08:52  geoff
  * Add code to makedent to reject words that contain non-word characters.
  * This helps protect people who use ISO 8-bit characters when ispell
@@ -66,37 +109,35 @@ static char Rcs_Id[] =
 #include "ispell.h"
 #include "proto.h"
 #include "msgs.h"
+#include <ctype.h>
 
-int		makedent P ((char * lbuf, int lbuflen, struct dent * ent));
-#ifndef NO_CAPITALIZATION_SUPPORT
+int		makedent P ((unsigned char * lbuf, int lbuflen,
+		  struct dent * ent));
 long		whatcap P ((ichar_t * word));
-#endif
 int		addvheader P ((struct dent * ent));
 int		combinecaps P ((struct dent * hdr, struct dent * newent));
-#ifndef NO_CAPITALIZATION_SUPPORT
 static void	forcevheader P ((struct dent * hdrp, struct dent * oldp,
 		  struct dent * newp));
-#endif /* NO_CAPITALIZATION_SUPPORT */
 static int	combine_two_entries P ((struct dent * hdrp,
 		  struct dent * oldp, struct dent * newp));
 static int	acoversb P ((struct dent * enta, struct dent * entb));
 void		upcase P ((ichar_t * string));
 void		lowcase P ((ichar_t * string));
-void		chupcase P ((char * s));
+void		chupcase P ((unsigned char * s));
 static int	issubset P ((struct dent * ent1, struct dent * ent2));
 static void	combineaffixes P ((struct dent * ent1, struct dent * ent2));
 void		toutent P ((FILE * outfile, struct dent * hent,
 		  int onlykeep));
-static void	toutword P ((FILE * outfile, char * word,
+static void	toutword P ((FILE * outfile, unsigned char * word,
 		  struct dent * cent));
 static void	flagout P ((FILE * outfile, int flag));
-int		stringcharlen P ((char * bufp, int canonical));
-int		strtoichar P ((ichar_t * out, char * in, int outlen,
+int		stringcharlen P ((unsigned char * bufp, int canonical));
+int		strtoichar P ((ichar_t * out, unsigned char * in, int outlen,
 		  int canonical));
-int		ichartostr P ((char * out, ichar_t * in, int outlen,
-		  int canonical));
-ichar_t *	strtosichar P ((char * in, int canonical));
-char *		ichartosstr P ((ichar_t * in, int canonical));
+int		ichartostr P ((unsigned char * out, const ichar_t * in,
+		  int outlen, int canonical));
+ichar_t *	strtosichar P ((unsigned char * in, int canonical));
+unsigned char *	ichartosstr P ((const ichar_t * in, int canonical));
 char *		printichar P ((int in));
 #ifndef ICHAR_IS_CHAR
 ichar_t *	icharcpy P ((ichar_t * out, ichar_t * in));
@@ -106,6 +147,7 @@ int		icharncmp P ((ichar_t * s1, ichar_t * s2, int n));
 #endif /* ICHAR_IS_CHAR */
 int		findfiletype P ((char * name, int searchnames,
 		  int * deformatter));
+void		initckch P ((const char * wchars));
 
 static int  	has_marker;
 
@@ -116,29 +158,29 @@ static int  	has_marker;
  */
 
 int makedent (lbuf, lbuflen, d)
-    char *		lbuf;
+    unsigned char *	lbuf;
     int			lbuflen;
     struct dent *	d;
     {
     ichar_t		ibuf[INPUTWORDLEN + MAXAFFIXLEN];
     ichar_t *		ip;
-    char *		p;
+    unsigned char *	p;
     int			bit;
     int			len;
 
-    /* Strip off any trailing newline */
-    len = strlen (lbuf) - 1;
-    if (lbuf[len] == '\n')
-	lbuf[len] = '\0';
+    /* Strip off any trailing newlines and returns */
+    len = (int) strlen ((char *) lbuf) - 1;
+    while (len >= 0  &&  (lbuf[len] == '\n'  ||  lbuf[len] == '\r'))
+	lbuf[len--] = '\0';
 
     d->next = NULL;
     /* WARNING:  flagfield might be the same as mask! See ispell.h. */
     d->flagfield = 0;
-    (void) bzero ((char *) d->mask, sizeof (d->mask));
+    (void) BZERO ((char *) d->mask, sizeof (d->mask));
     d->flagfield |= USED;
     d->flagfield &= ~KEEP;
 
-    p = index (lbuf, hashheader.flagmarker);
+    p = (unsigned char *) index ((char *) lbuf, hashheader.flagmarker);
     if (p != NULL)
 	*p = 0;
 
@@ -149,7 +191,7 @@ int makedent (lbuf, lbuflen, d)
     if (strtoichar (ibuf, lbuf, INPUTWORDLEN * sizeof (ichar_t), 1)
       ||  ichartostr (lbuf, ibuf, lbuflen, 1))
 	{
-	(void) fprintf (stderr, WORD_TOO_LONG (lbuf));
+	(void) fprintf (stderr, WORD_TOO_LONG ((char *) lbuf));
 	return (-1);
 	}
     /*
@@ -163,40 +205,36 @@ int makedent (lbuf, lbuflen, d)
 	    if (!isboundarych (*ip)
 	      ||  ip == ibuf  ||  ip[1] == 0)
 		{
-		(void) fprintf (stderr, MAKEDENT_C_BAD_WORD_CHAR, lbuf);
+		(void) fprintf (stderr, MAKEDENT_C_BAD_WORD_CHAR,
+		  MAYBE_CR (stderr), (char *) lbuf, MAYBE_CR (stderr));
 		return -1;
 		}
 	    }
 	}
-    len = strlen (lbuf);
-#ifndef NO_CAPITALIZATION_SUPPORT
+    len = (int) strlen ((char *) lbuf);
     /*
     ** Figure out the capitalization rules from the capitalization of
     ** the sample entry.
     */
     d->flagfield |= whatcap (ibuf);
-#endif
 
     if (len > INPUTWORDLEN - 1)
 	{
-	(void) fprintf (stderr, WORD_TOO_LONG (lbuf));
+	(void) fprintf (stderr, WORD_TOO_LONG ((char *) lbuf));
 	return (-1);
 	}
 
     d->word = mymalloc ((unsigned) len + 1);
     if (d->word == NULL)
 	{
-	(void) fprintf (stderr, MAKEDENT_C_NO_WORD_SPACE, lbuf);
+	(void) fprintf (stderr, MAKEDENT_C_NO_WORD_SPACE,
+			MAYBE_CR (stderr), (char *) lbuf, MAYBE_CR (stderr));
 	return -1;
 	}
 
-    (void) strcpy (d->word, lbuf);
-#ifdef NO_CAPITALIZATION_SUPPORT
-    chupcase (d->word);
-#else /* NO_CAPITALIZATION_SUPPORT */
+    (void) strcpy ((char *) d->word, (char *) lbuf);
     if (captype (d->flagfield) != FOLLOWCASE)
 	chupcase (d->word);
-#endif /* NO_CAPITALIZATION_SUPPORT */
     if (p == NULL)
 	return (0);
 
@@ -206,8 +244,9 @@ int makedent (lbuf, lbuflen, d)
 	bit = CHARTOBIT ((unsigned char) *p);
 	if (bit >= 0  &&  bit <= LARGESTFLAG)
 	    SETMASKBIT (d->mask, bit);
-	else
-	    (void) fprintf (stderr, BAD_FLAG, (unsigned char) *p);
+	else if (!aflag)
+	    (void) fprintf (stderr, BAD_FLAG,
+	      MAYBE_CR (stderr), (unsigned char) *p, MAYBE_CR (stderr));
 	p++;
 	if (*p == hashheader.flagmarker)
 	    p++;		/* Handle old-format dictionaries too */
@@ -215,7 +254,6 @@ int makedent (lbuf, lbuflen, d)
     return (0);
     }
 
-#ifndef NO_CAPITALIZATION_SUPPORT
 /*
 ** Classify the capitalization of a sample entry.  Returns one of the
 ** four capitalization codes ANYCASE, ALLCAPS, CAPITALIZED, or FOLLOWCASE.
@@ -284,7 +322,8 @@ int addvheader (dp)
     tdent = (struct dent *) mymalloc (sizeof (struct dent));
     if (tdent == NULL)
 	{
-	(void) fprintf (stderr, MAKEDENT_C_NO_WORD_SPACE, dp->word);
+	(void) fprintf (stderr, MAKEDENT_C_NO_WORD_SPACE,
+	  MAYBE_CR (stderr), (char *) dp->word, MAYBE_CR (stderr));
 	return -1;
 	}
     *tdent = *dp;
@@ -293,14 +332,16 @@ int addvheader (dp)
     else
 	{
 	/* Followcase words need a copy of the capitalization */
-	tdent->word = mymalloc ((unsigned int) strlen (tdent->word) + 1);
+	tdent->word =
+	  mymalloc ((unsigned int) strlen ((char *) tdent->word) + 1);
 	if (tdent->word == NULL)
 	    {
-	    (void) fprintf (stderr, MAKEDENT_C_NO_WORD_SPACE, dp->word);
+	    (void) fprintf (stderr, MAKEDENT_C_NO_WORD_SPACE,
+	      MAYBE_CR (stderr), (char *) dp->word, MAYBE_CR (stderr));
 	    myfree ((char *) tdent);
 	    return -1;
 	    }
-	(void) strcpy (tdent->word, dp->word);
+	(void) strcpy ((char *) tdent->word, (char *) dp->word);
 	}
     chupcase (dp->word);
     dp->next = tdent;
@@ -308,7 +349,6 @@ int addvheader (dp)
     dp->flagfield |= (ALLCAPS | MOREVARIANTS);
     return 0;
     }
-#endif /* NO_CAPITALIZATION_SUPPORT */
 
 /*
 ** Combine and resolve the entries describing two capitalizations of the same
@@ -336,7 +376,6 @@ int addvheader (dp)
 **	(1) Add newp's affixes and KEEP flag to oldp, and discard newp.
 **	(2) Add oldp's affixes and KEEP flag to newp, replace oldp with
 **	    newp, and discard newp.
-#ifndef NO_CAPITALIZATION_SUPPORT
 **	(3) Insert newp as a new entry in the variants list.  If there is
 **	    currently no variant header, this requires adding one.  Adding a
 **	    header splits into two sub-cases:
@@ -349,7 +388,6 @@ int addvheader (dp)
 **
 **	    After newp has been added as a variant, its affixes and KEEP
 **	    flag are OR-ed into the variant header.
-#endif
 **
 ** So how to choose which?  The default is always case (3), which adds newp
 ** as a new entry in the variants list.  Cases (1) and (2) are symmetrical
@@ -367,13 +405,11 @@ int addvheader (dp)
 **	    (4c) If the words are FOLLOWCASE, the capitalizations match
 **		exactly.
 **
-#ifndef NO_CAPITALIZATION_SUPPORT
 **	(5) For entries with mismatched capitalization types, A covers B
 **	    if (4a) and (4b) are true, and:
 **
 **	    (5a) B is ALLCAPS, or
 **	    (5b) A is ANYCASE, and B is CAPITALIZED.
-#endif
 **
 ** For any "hdrp" without variants, oldp is the same as hdrp.  Otherwise,
 ** the above tests are applied using each variant in turn for oldp.
@@ -385,10 +421,8 @@ int combinecaps (hdrp, newp)
     {
     register struct dent *
 			oldp;	/* Current "oldp" entry */
-#ifndef NO_CAPITALIZATION_SUPPORT
     register struct dent *
 			tdent; /* Entry we'll add to the dictionary */
-#endif /* NO_CAPITALIZATION_SUPPORT */
     register int	retval = 0; /* Return value from combine_two_entries */
 
     /*
@@ -397,9 +431,6 @@ int combinecaps (hdrp, newp)
     ** it will return zero.
     */
     oldp = hdrp;
-#ifdef NO_CAPITALIZATION_SUPPORT
-    retval = combine_two_entries (hdrp, oldp, newp);
-#else /* NO_CAPITALIZATION_SUPPORT */
     if ((oldp->flagfield & (CAPTYPEMASK | MOREVARIANTS))
       == (ALLCAPS | MOREVARIANTS))
 	{
@@ -424,7 +455,8 @@ int combinecaps (hdrp, newp)
 	tdent = (struct dent *) mymalloc (sizeof (struct dent));
 	if (tdent == NULL)
 	    {
-	    (void) fprintf (stderr, MAKEDENT_C_NO_WORD_SPACE, newp->word);
+	    (void) fprintf (stderr, MAKEDENT_C_NO_WORD_SPACE,
+	      MAYBE_CR (stderr), (char *) newp->word, MAYBE_CR (stderr));
 	    return -1;
 	    }
 	*tdent = *newp;
@@ -442,11 +474,9 @@ int combinecaps (hdrp, newp)
 	    myfree (newp->word);		/* newp->word isn't needed */
 	    }
 	}
-#endif /* NO_CAPITALIZATION_SUPPORT */
     return retval;
     }
 
-#ifndef NO_CAPITALIZATION_SUPPORT
 /*
 ** The following routine implements steps 3a and 3b in the commentary
 ** for "combinecaps".
@@ -464,7 +494,6 @@ static void forcevheader (hdrp, oldp, newp)
       != (ALLCAPS | MOREVARIANTS))
 	(void) addvheader (hdrp);
     }
-#endif /* NO_CAPITALIZATION_SUPPORT */
 
 /*
 ** This routine implements steps 4 and 5 of the commentary for "combinecaps".
@@ -495,11 +524,7 @@ static int combine_two_entries (hdrp, oldp, newp)
 	** the keep flag.
 	*/
 	combineaffixes (newp, oldp);
-#ifdef NO_CAPITALIZATION_SUPPORT
-	newp->flagfield |= (oldp->flagfield & KEEP);
-#else /* NO_CAPITALIZATION_SUPPORT */
 	newp->flagfield |= (oldp->flagfield & (KEEP | MOREVARIANTS));
-#endif /* NO_CAPITALIZATION_SUPPORT */
 	hdrp->flagfield |= (newp->flagfield & KEEP);
 	newp->next = oldp->next;
 	/*
@@ -509,17 +534,15 @@ static int combine_two_entries (hdrp, oldp, newp)
 	** that both words are the same length.
 	*/
 	if (oldp->word != NULL)
-	    (void) strcpy (oldp->word, newp->word);
+	    (void) strcpy ((char *) oldp->word, (char *) newp->word);
 	myfree (newp->word);	/* No longer needed */
 	newp->word = oldp->word;
 	*oldp = *newp;
-#ifndef NO_CAPITALIZATION_SUPPORT
 	/* We may need to add a header if newp is followcase */
 	if (captype (newp->flagfield) == FOLLOWCASE
 	  &&  (hdrp->flagfield & (CAPTYPEMASK | MOREVARIANTS))
 	    != (ALLCAPS | MOREVARIANTS))
 	    (void) addvheader (hdrp);
-#endif /* NO_CAPITALIZATION_SUPPORT */
 	return 1;
 	}
     else
@@ -551,17 +574,10 @@ static int acoversb (enta, entb)
 	}
 
     /* Rules (4a) and (4b) are satisfied;  check for capitalization match */
-#ifdef NO_CAPITALIZATION_SUPPORT
-#ifdef lint
-    return subset;				/* Just so it gets used */
-#else /* lint */
-    return 1;					/* All words match */
-#endif /* lint */
-#else /* NO_CAPITALIZATION_SUPPORT */
     if (((enta->flagfield ^ entb->flagfield) & CAPTYPEMASK) == 0)
 	{
 	if (captype (enta->flagfield) != FOLLOWCASE	/* Condition (4c) */
-	  ||  strcmp (enta->word, entb->word) == 0)
+	  ||  strcmp ((char *) enta->word, (char *) entb->word) == 0)
 	    return 1;				/* Perfect match */
 	else
 	    return 0;
@@ -575,7 +591,6 @@ static int acoversb (enta, entb)
 	return 1;
     else
 	return 0;
-#endif /* NO_CAPITALIZATION_SUPPORT */
     }
 
 void upcase (s)
@@ -605,13 +620,13 @@ void lowcase (s)
  * slower than the normal upcase.  The input must be in canonical form.
  */
 void chupcase (s)
-    char *	s;
+    unsigned char *	s;
     {
-    ichar_t *	is;
+    ichar_t *		is;
 
     is = strtosichar (s, 1);
     upcase (is);
-    (void) ichartostr (s, is, strlen (s) + 1, 1);
+    (void) ichartostr (s, is, strlen ((char *) s) + 1, 1);
     }
 
 /*
@@ -682,16 +697,12 @@ void toutent (toutfile, hent, onlykeep)
     struct dent *	hent;
     register int	onlykeep;
     {
-#ifdef NO_CAPITALIZATION_SUPPORT
-    if (!onlykeep  ||  (hent->flagfield & KEEP))
-	toutword (toutfile, hent->word, hent);
-#else
     register struct dent * cent;
     ichar_t		wbuf[INPUTWORDLEN + MAXAFFIXLEN];
 
     cent = hent;
     if (strtoichar (wbuf, cent->word, INPUTWORDLEN, 1))
-	(void) fprintf (stderr, WORD_TOO_LONG (cent->word));
+	(void) fprintf (stderr, WORD_TOO_LONG ((char *) cent->word));
     for (  ;  ;  )
 	{
 	if (!onlykeep  ||  (cent->flagfield & KEEP))
@@ -725,18 +736,17 @@ void toutent (toutfile, hent, onlykeep)
 	else
 	    break;
 	}
-#endif
     }
 		
 static void toutword (toutfile, word, cent)
     register FILE *	toutfile;
-    char *		word;
+    unsigned char *	word;
     register struct dent * cent;
     {
     register int	bit;
 
     has_marker = 0;
-    (void) fprintf (toutfile, "%s", word);
+    (void) fprintf (toutfile, "%s", (char *) word);
     for (bit = 0;  bit < LARGESTFLAG;  bit++)
 	{
 	if (TSTMASKBIT (cent->mask, bit))
@@ -766,15 +776,18 @@ static void flagout (toutfile, flag)
  * as case conversion.
  */
 int stringcharlen (bufp, canonical)
-    char *		bufp;
+    unsigned char *	bufp;
     int			canonical;	/* NZ if input is in canonical form */
     {
 #ifdef SLOWMULTIPLY
-    static char *	sp[MAXSTRINGCHARS];
+    static unsigned char *
+			sp[MAXSTRINGCHARS];
     static int		inited = 0;
 #endif /* SLOWMULTIPLY */
-    register char *	bufcur;
-    register char *	stringcur;
+    register unsigned char *
+			bufcur;
+    register unsigned char *
+			stringcur;
     register int	stringno;
     register int	lowstringno;
     register int	highstringno;
@@ -790,7 +803,7 @@ int stringcharlen (bufp, canonical)
 #endif /* SLOWMULTIPLY */
     lowstringno = 0;
     highstringno = hashheader.nstrchars - 1;
-    dupwanted = canonical ? 0 : defdupchar;
+    dupwanted = canonical ? 0 : defstringgroup;
     while (lowstringno <= highstringno)
 	{
 	stringno = (lowstringno + highstringno) >> 1;
@@ -802,11 +815,7 @@ int stringcharlen (bufp, canonical)
 	bufcur = bufp;
 	while (*stringcur)
 	    {
-#ifdef NO8BIT
-	    if (((*bufcur++ ^ *stringcur) & 0x7F) != 0)
-#else /* NO8BIT */
 	    if (*bufcur++ != *stringcur)
-#endif /* NO8BIT */
 		break;
 	    /*
 	    ** We can't use autoincrement above because of the
@@ -816,7 +825,7 @@ int stringcharlen (bufp, canonical)
 	    }
 	if (*stringcur == '\0')
 	    {
-	    if (hashheader.dupnos[stringno] == dupwanted)
+	    if (hashheader.groupnos[stringno] == dupwanted)
 		{
 		/* We have a match */
 		laststringch = hashheader.stringdups[stringno];
@@ -830,18 +839,11 @@ int stringcharlen (bufp, canonical)
 		--stringcur;
 	    }
 	/* No match - choose which side to search on */
-#ifdef NO8BIT
-	if ((*--bufcur & 0x7F) < (*stringcur & 0x7F))
-	    highstringno = stringno - 1;
-	else if ((*bufcur & 0x7F) > (*stringcur & 0x7F))
-	    lowstringno = stringno + 1;
-#else /* NO8BIT */
 	if (*--bufcur < *stringcur)
 	    highstringno = stringno - 1;
 	else if (*bufcur > *stringcur)
 	    lowstringno = stringno + 1;
-#endif /* NO8BIT */
-	else if (dupwanted < hashheader.dupnos[stringno])
+	else if (dupwanted < hashheader.groupnos[stringno])
 	    highstringno = stringno - 1;
 	else
 	    lowstringno = stringno + 1;
@@ -851,14 +853,14 @@ int stringcharlen (bufp, canonical)
     }
 
 /*
- * Convert an external string to an ichar_t string.  If necessary, the parity
- * bit is stripped off as part of the process.
+ * Convert an external string to an ichar_t string.
  *
  * Returns NZ if the output string overflowed.
  */
 int strtoichar (out, in, outlen, canonical)
     register ichar_t *	out;		/* Where to put result */
-    register char *	in;		/* String to convert */
+    register unsigned char *
+			in;		/* String to convert */
     int			outlen;		/* Size of output buffer, *BYTES* */
     int			canonical;	/* NZ if input is in canonical form */
     {
@@ -870,7 +872,7 @@ int strtoichar (out, in, outlen, canonical)
 	if (l1_isstringch (in, len, canonical))
 	    *out++ = SET_SIZE + laststringch;
 	else
-	    *out++ = *in & NOPARITY;
+	    *out++ = *in;
 	}
     *out = 0;
     return outlen <= 0;
@@ -887,16 +889,20 @@ int strtoichar (out, in, outlen, canonical)
  * Returns NZ if the output string overflowed.
  */
 int ichartostr (out, in, outlen, canonical)
-    register char *	out;		/* Where to put result */
-    register ichar_t *	in;		/* String to convert */
+    register unsigned char *
+			out;		/* Where to put result */
+    register const ichar_t *
+			in;             /* String to convert */
     int			outlen;		/* Size of output buffer, bytes */
     int			canonical;	/* NZ for canonical form */
     {
-    register int	ch;		/* Next character to store */
+    register unsigned int
+			ch;		/* Next character to store */
     register int	i;		/* Index into duplicates list */
-    register char *	scharp;		/* Pointer into a string char */
+    register unsigned char *
+			scharp;		/* Pointer into a string char */
 
-    while (--outlen > 0  &&  (ch = *in++) != 0)
+    while (--outlen > 0  &&  (ch = *in++) != '\0')
 	{
 	if (ch < SET_SIZE)
 	    *out++ = (char) ch;
@@ -907,7 +913,7 @@ int ichartostr (out, in, outlen, canonical)
 		{
 		for (i = hashheader.nstrchars;  --i >= 0;  )
 		    {
-		    if (hashheader.dupnos[i] == defdupchar
+		    if (hashheader.groupnos[i] == defstringgroup
 		      &&  hashheader.stringdups[i] == ch)
 			{
 			ch = i;
@@ -926,27 +932,28 @@ int ichartostr (out, in, outlen, canonical)
     }
 
 /*
- * Convert a string to an ichar_t, storing the result in a static area.
+ * Convert a string to an ichar_t *, storing the result in a static area.
  */
 ichar_t * strtosichar (in, canonical)
-    char *		in;		/* String to convert */
+    unsigned char *	in;		/* String to convert */
     int			canonical;	/* NZ if input is in canonical form */
     {
     static ichar_t	out[STRTOSICHAR_SIZE / sizeof (ichar_t)];
 
     if (strtoichar (out, in, sizeof out, canonical))
-	(void) fprintf (stderr, WORD_TOO_LONG (in));
+	(void) fprintf (stderr, WORD_TOO_LONG ((char *) in));
     return out;
     }
 
 /*
- * Convert an ichar_t to a string, storing the result in a static area.
+ * Convert an ichar_t * to a string, storing the result in a static area.
  */
-char * ichartosstr (in, canonical)
-    ichar_t *		in;		/* Internal string to convert */
+unsigned char * ichartosstr (in, canonical)
+    const ichar_t *	in;		/* Internal string to convert */
     int			canonical;	/* NZ for canonical conversion */
     {
-    static char		out[ICHARTOSSTR_SIZE];
+    static unsigned char
+			out[ICHARTOSSTR_SIZE];
 
     if (ichartostr (out, in, sizeof out, canonical))
 	(void) fprintf (stderr, WORD_TOO_LONG (out));
@@ -968,7 +975,8 @@ char * printichar (in)
 	out[1] = '\0';
 	}
     else
-	(void) strcpy (out, hashheader.stringchars[(unsigned) in - SET_SIZE]);
+	(void) strcpy (out,
+	  (char *) hashheader.stringchars[(unsigned) in - SET_SIZE]);
     return out;
     }
 
@@ -1046,24 +1054,28 @@ int findfiletype (name, searchnames, deformatter)
     {
     char *		cp;		/* Pointer into suffix list */
     int			cplen;		/* Length of current suffix */
-    register int	i;		/* Index into type table */
+    register unsigned int
+			i;		/* Index into type table */
     int			len;		/* Length of the name */
 
-    /*
-     * Note:  for now, the deformatter is set to 1 for tex, 0 for nroff.
-     * Further, we assume that it's one or the other, so that a test
-     * for tex is sufficient.  This needs to be generalized.
-     */
     len = strlen (name);
     if (searchnames)
 	{
 	for (i = 0;  i < hashheader.nstrchartype;  i++)
 	    {
-	    if (strcmp (name, chartypes[i].name) == 0)
+	    if (strcmp (name, (char *) chartypes[i].name) == 0)
 		{
 		if (deformatter != NULL)
-		    *deformatter =
-		      (strcmp (chartypes[i].deformatter, "tex") == 0);
+		    {
+		    if (strcmp (chartypes[i].deformatter, "plain") == 0)
+			*deformatter = DEFORMAT_NONE;
+		    else if (strcmp (chartypes[i].deformatter, "tex") == 0)
+			*deformatter = DEFORMAT_TEX;
+		    else if (strcmp (chartypes[i].deformatter, "sgml") == 0)
+			*deformatter = DEFORMAT_SGML;
+		    else
+			*deformatter = DEFORMAT_NROFF;
+		    }
 		return i;
 		}
 	    }
@@ -1076,13 +1088,102 @@ int findfiletype (name, searchnames, deformatter)
 	    if (len >= cplen  &&  strcmp (&name[len - cplen], cp) == 0)
 		{
 		if (deformatter != NULL)
-		    *deformatter =
-		      (strcmp (chartypes[i].deformatter, "tex") == 0);
+		    {
+		    if (strcmp (chartypes[i].deformatter, "tex") == 0)
+			*deformatter = DEFORMAT_TEX;
+		    else if (strcmp (chartypes[i].deformatter, "sgml") == 0)
+			*deformatter = DEFORMAT_SGML;
+		    else
+			*deformatter = DEFORMAT_NROFF;
+		    }
 		return i;
 		}
 	    }
 	}
     return -1;
+    }
+
+void initckch (wchars)
+    const char *	wchars;		/* Characters in -w option, if any */
+    {
+    register ichar_t	c;
+    char		num[4];
+
+    for (c = 0; c < (ichar_t) (SET_SIZE + hashheader.nstrchars); ++c)
+	{
+	if (iswordch (c))
+	    {
+	    if (!mylower (c))
+		{
+		Try[Trynum] = c;
+		++Trynum;
+		}
+	    }
+	else if (isboundarych (c))
+	    {
+	    Try[Trynum] = c;
+	    ++Trynum;
+	    }
+	}
+    if (wchars != NULL)
+	{
+	while (Trynum < SET_SIZE + MAXSTRINGCHARS  &&  *wchars != '\0')
+	    {
+	    if (*wchars != 'n'  &&  *wchars != '\\')
+		{
+		c = *wchars;
+		++wchars;
+		}
+	    else
+		{
+		++wchars;
+		num[0] = '\0'; 
+		num[1] = '\0'; 
+		num[2] = '\0'; 
+		num[3] = '\0';
+		if (isdigit (wchars[0]))
+		    {
+		    num[0] = wchars[0];
+		    if (isdigit (wchars[1]))
+			{
+			num[1] = wchars[1];
+			if (isdigit (wchars[2]))
+			    num[2] = wchars[2];
+			}
+		    }
+		if (wchars[-1] == 'n')
+		    {
+		    wchars += strlen (num);
+		    c = atoi (num);
+		    }
+		else
+		    {
+		    wchars += strlen (num);
+		    c = 0;
+		    if (num[0])
+			c = num[0] - '0';
+		    if (num[1])
+			{
+			c <<= 3;
+			c += num[1] - '0';
+			}
+		    if (num[2])
+			{
+			c <<= 3;
+			c += num[2] - '0';
+			}
+		    }
+		}
+	    c &= 0xFF;
+	    if (!hashheader.wordchars[c])
+		{
+		hashheader.wordchars[c] = 1;
+		hashheader.sortorder[c] = hashheader.sortval++;
+		Try[Trynum] = c;
+		++Trynum;
+		}
+	    }
+	}
     }
 
 /*

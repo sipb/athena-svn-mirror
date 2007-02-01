@@ -1,7 +1,7 @@
 .\"
-.\" $Id: ispell.1X,v 1.1.1.1 1997-09-03 21:08:11 ghudson Exp $
+.\" $Id: ispell.1X,v 1.1.1.2 2007-02-01 19:50:27 ghudson Exp $
 .\"
-.\" Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
+.\" Copyright 1992, 1993, 1999, 2001, 2005, Geoff Kuenning, Claremont, CA
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -17,10 +17,8 @@
 .\"    such.  Binary redistributions based on modified source code
 .\"    must be clearly marked as modified versions in the documentation
 .\"    and/or other materials provided with the distribution.
-.\" 4. All advertising materials mentioning features or use of this software
-.\"    must display the following acknowledgment:
-.\"      This product includes software developed by Geoff Kuenning and
-.\"      other unpaid contributors.
+.\" 4. The code that causes the 'ispell -v' command to display a prominent
+.\"    link to the official ispell Web site may not be removed.
 .\" 5. The name of Geoff Kuenning may not be used to endorse or promote
 .\"    products derived from this software without specific prior
 .\"    written permission.
@@ -38,6 +36,61 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $Log: not supported by cvs2svn $
+.\" Revision 1.97  2005/05/01 22:35:00  geoff
+.\" Make the backup-file extension configurable.
+.\"
+.\" Revision 1.96  2005/04/26 22:42:22  geoff
+.\" Remove fixispell-a, since it doesn't really do the job
+.\"
+.\" Revision 1.95  2005/04/14 23:11:36  geoff
+.\" Document the -w switch to icombine.
+.\"
+.\" Revision 1.94  2005/04/14 21:25:52  geoff
+.\" Document MUNCHDEBUGDIR and ISPELL_CHARSET.
+.\"
+.\" Revision 1.93  2005/04/14 14:38:23  geoff
+.\" Update license.  Incorporate Ed Avis's changes.  Document fixispell-a.
+.\" Add the -o flag.  Make certain external references configurable.
+.\" Document -e5.
+.\"
+.\" Revision 1.92  2001/10/01 23:32:07  geoff
+.\" Remove an obsolete reference to sq.
+.\"
+.\" Revision 1.91  2001/07/25 21:51:46  geoff
+.\" Minor license update.
+.\"
+.\" Revision 1.90  2001/07/23 20:24:03  geoff
+.\" Update the copyright and the license.
+.\"
+.\" Revision 1.89  2001/07/23 19:36:49  geoff
+.\" Document that -w doesn't work with /
+.\"
+.\" Revision 1.88  2000/08/24 06:48:40  geoff
+.\" Document correct_verbose_mode.
+.\"
+.\" Revision 1.87  1999/01/07 01:22:40  geoff
+.\" Update the copyright.
+.\"
+.\" Revision 1.86  1999/01/05  20:40:26  geoff
+.\" Improve the documentation of -F
+.\"
+.\" Revision 1.85  1999/01/03  01:46:31  geoff
+.\" Document the -F (external deformatter) switch.
+.\"
+.\" Revision 1.84  1998/07/12  20:42:15  geoff
+.\" Document the -k switch and associated environment variables.  Fix a
+.\" couple of places where ispell wasn't italicized.
+.\"
+.\" Revision 1.83  1995/11/08  05:09:12  geoff
+.\" Document the new ispell-4-like interactive mode.
+.\"
+.\" Revision 1.82  1995/11/08  04:53:34  geoff
+.\" Change the HTML-mode documentation to reflect the compatibility
+.\" improvements and flag renaming I did.
+.\"
+.\" Revision 1.81  1995/10/25  04:05:20  geoff
+.\" Documentation for html-mode added by Gerry Tierney 10/14/1995.
+.\"
 .\" Revision 1.80  1995/01/08  23:23:31  geoff
 .\" Document the new personal-dictionary behavior (dictionary named after
 .\" the hash file is preferred).
@@ -84,7 +137,7 @@ files
 .RB [ \-f
 file]
 .RB [ \-s ]
-.RB { \-a | \-A }
+.RB [ \-a | \-A ]
 .br
 .B ispell
 .RB [ \-d
@@ -110,6 +163,8 @@ file]
 .IP \fIcommon-flags\fP:
 .RB [ \-t ]
 .RB [ \-n ]
+.RB [ \-H ]
+.RB [ \-o ]
 .RB [ \-b ]
 .RB [ \-x ]
 .RB [ \-B ]
@@ -127,6 +182,10 @@ file]
 .IR n ]
 .RB [ \-T
 .IR type ]
+.RB [ \-k\fIname\fP
+.IR list ]
+.RB [ \-F
+.IR program ]
 .PP
 .B buildhash
 .RB [ \-s ]
@@ -183,6 +242,8 @@ count affix-file
 .B icombine
 .RB [ \-T
 .IR type ]
+.RB [ \-w
+.IR chars ]
 .RI [ aff-file ]
 .PP
 .B ijoin
@@ -289,18 +350,26 @@ string characters for the chosen file type.
 .BR \-a ,
 and
 .B \-A
-options (see below) also
+options and interactive mode (see below) also
 accepts the following "common" flags on the command line:
 .RS
 .IP \fB\-t\fR
 The input file is in TeX or LaTeX format.
 .IP \fB\-n\fR
 The input file is in nroff/troff format.
+.IP \fB\-H\fR
+The input file is in SGML/HTML format.
+(This should really be
+.BR \-s ,
+but for historical reasons that flag was already taken.)
+.IP \fB\-o\fR
+The input file should be treated as ordinary text.  (This could be used
+to override DEFTEXFLAG.)
 .IP \fB\-b\fR
-Create a backup file by appending ".bak"
+Create a backup file by appending "!!BAKEXT!!"
 to the name of the input file.
 .IP \fB\-x\fR
-Don't create a backup file.
+Delete the backup file after spell-checking is finished.
 .IP \fB\-B\fR
 Report run-together words with missing blanks as spelling errors.
 .IP \fB\-C\fR
@@ -328,21 +397,35 @@ Assume a given formatter type for all files.
 .RE
 .PP
 The
-.B \-n
+.BR \-H ,
+.BR \-n ,
+.BR \-t ,
 and
-.B \-t
+.B \-o
 options select whether
 .I ispell
-runs in nroff/troff
-.RB ( \-n )
-or TeX/LaTeX
-.RB ( \-t )
+runs in
+HTML
+.RB ( \-H ),
+nroff/troff
+.RB ( \-n ),
+TeX/LaTeX
+.RB ( \-t ),
+or ordinary text
+.RB ( \-o )
 input mode.
-(The default is controlled by the DEFTEXFLAG installation option.)
-TeX/LaTeX mode is also automatically selected if an input file has
-the extension ".tex", unless overridden by the
-.B \-n
-switch.
+mode.
+(The default mode is controlled by the DEFTEXFLAG installation option,
+but is normally nroff/troff mode for historical reasons.)
+Unless overridden by one of the mode-selection switches,
+TeX/LaTeX mode is automatically selected if an input file has
+the extension ".tex", and HTML mode is automatically selected if an
+input file has the extension ".html" or ".htm".
+.PP
+In HTML mode, HTML tags delimited by <> signs are skipped, except that
+the "ALT=" construct is recognized if it appears with no spaces around
+the equals sign, and the text inside is spell-checked.
+.PP
 In TeX/LaTeX mode, whenever a backslash ("\e") is found,
 .I ispell
 will skip to the next whitespace or TeX/LaTeX delimiter.  Certain commands
@@ -373,7 +456,7 @@ defined.  Otherwise, the bibliography will be checked but the reference
 key will not.
 .PP
 References for the
-.IR tib (1)
+.IR !!TIB_XREF!!
 bibliography system, that is, text between a ``[.'' or ``<.'' and
 ``.]'' or ``.>'' will always be ignored in TeX/LaTeX mode.
 .PP
@@ -383,10 +466,10 @@ and
 .B \-x
 options control whether
 .I ispell
-leaves a backup (.bak) file for each input file.
-The .bak file contains
+leaves a backup (!!BAKEXT!!) file for each input file.
+The !!BAKEXT!! file contains
 the pre-corrected text.  If there are file opening / writing errors,
-the .bak file may be left for recovery purposes even with the
+the !!BAKEXT!! file may be left for recovery purposes even with the
 .B \-x
 option.
 The default for this option is controlled by the DEFNOBACKUPFLAG
@@ -532,6 +615,12 @@ parity for possible 8 bit characters from the input text is OK.  If you
 specify the -l option, and actually type text from the terminal, this may
 create problems if your stty settings preserve parity.
 .PP
+It is not possible to use
+.B \-w
+with certain characters.
+In particular, the flag-marker character for the language (defined in
+the affix file, but usually "/") can never be made into a word character.
+.PP
 The
 .B \-W
 option may be used to change the length of words that
@@ -576,6 +665,93 @@ If no
 option appears and no type can be determined from the file name, the default
 string character type declared in the
 language affix file will be used.
+.PP
+The
+.B \-k
+option is used to enhance the behavior of certain deformatters.
+The
+.I name
+parameter gives the name of a deformatter keyword set (see below), and the
+.I list
+parameter gives a list of one or more keywords that are to be treated
+specially.
+If
+.I list
+begins with a plus (+) sign, it is added to the existing keywords;
+otherwise it replaces the existing keyword list.
+For example,
+.B "\-ktexskip1 +bibliographystyle"
+adds "bibliographystyle" to the TeX skip-1 list, while
+.B "\-khtmlignore pre,strong"
+replaces the HTML ignore list with "pre" and "strong".
+The lists available are:
+.IP texskip1
+TeX/LaTeX commands that take a single argument that should not be
+spell-checked, such as "bibliographystyle".  The default is
+"end", "vspace", "hspace", "cite", "ref", "parbox", "label", "input",
+"nocite", "include", "includeonly", "documentstyle", "documentclass",
+"usepackage", "selectlanguage", "pagestyle", "pagenumbering",
+"hyphenation", "pageref", and "psfig", plus "bibliography" in some
+installations.
+These keywords are case-sensitive.
+.IP texskip2
+TeX/LaTeX commands that take two arguments that should not be
+spell-checked, such as "setlength".  The default is
+"rule", "setcounter", "addtocounter", "setlength", "addtolength", and
+"settowidth".
+These keywords are case-sensitive.
+.IP htmlignore
+HTML tags that delimit text that should not be spell-checked until the
+matching end tag is reached.  The default is
+"code", "samp", "kbd", "pre", "listing", and "address".
+These keywords are case-insensitive.
+(Note that the content inside HTML tags, such as HREF=, is not normally
+checked.)
+.IP htmlcheck
+Subfields that should be spell-checked even inside HTML tags.  The
+default is "alt", so that the ALT= portion of IMG tags will be
+spell-checked.
+These keywords are case-insensitive.
+.PP
+All of the above keyword lists can also be modified by environment
+variables whose names are the same as above, except in uppercase,
+e.g., TEXSKIP1.
+The
+.B \-k
+switch overrides (or adds to) the environment variables, and the
+environment variables override or add to the built-in defaults.
+.PP
+The
+.B \-F
+switch specifies an external deformatter program.
+This program should read data from its standard input and write to its
+standard output.
+The program
+.I must
+produce exactly one character of output for each character of input,
+or ispell will lose synchronization and corrupt the output file.
+Whitespace characters (especially blanks, tabs, and newlines) and
+characters that should be spell-checked should be passed through
+unchanged.
+Characters that should not be spell-checked should be converted into
+blanks or other non-word characters.
+For example, an HTML deformatter might turn all HTML tags into
+blanks, and also blank out all text delimited by tags such as "code"
+or "kbd".
+.PP
+The
+.B \-F
+switch is the preferred way to deformat files for ispell, and
+eventually will become the only way.
+.PP
+If
+.I ispell
+is invoked without any filenames or mode switches, it enters an
+interactive mode designed to let the user check the spelling of
+individual words.
+The program repeatedly prompts on standard output with "word:" and
+responds with either "ok" (possibly with commentary), "not found", or
+"how about" followed by a list of suggestions.
 .PP
 The
 .B \-l
@@ -692,7 +868,7 @@ When in the
 mode,
 .I ispell
 will also accept lines of single words prefixed with any
-of '*', '&', '@', '+', '-', '~', '#', '!', '%', or '^'.
+of '*', '&', '@', '+', '-', '~', '#', '!', '%', '`', or '^'.
 A line starting with '*' tells
 .I ispell
 to insert the word into the user's dictionary (similar to the I command).
@@ -717,7 +893,7 @@ in TeX/LaTeX mode (similar to the
 option) and '-' returns
 .I ispell
 to nroff/troff mode (but these commands are obsolete).
-However, string character type is
+However, the string character type is
 .I not
 changed;
 the '~' command must be used to do this.
@@ -738,8 +914,11 @@ A line prefixed with '!' will turn on
 mode (see below), and a line prefixed with '%' will return
 .I ispell
 to normal (non-terse) mode.
+A line prefixed with '`' will turn on verbose-correction mode (see below);
+this mode can only be disabled by turning on terse mode with '%'.
+.PP
 Any input following the prefix
-characters '+', '-', '#', '!', or '%' is ignored, as is any input
+characters '+', '-', '#', '!', '%', or '`' is ignored, as is any input
 following the filename on a '~' line.
 To allow spell-checking of lines beginning with these characters, a
 line starting with '^' has that character removed before it is passed
@@ -767,6 +946,8 @@ Exit TeX mode
 Enter terse mode
 .IP %
 Exit terse mode
+.IP "`"
+Enter verbose-correction mode
 .IP ^
 Spell-check rest of line
 .fi
@@ -780,6 +961,14 @@ will not print lines beginning with '*', '+', or '\-', all of which
 indicate correct words.
 This significantly improves running speed when the driving program is
 going to ignore correct words anyway.
+.PP
+In
+.I verbose-correction
+mode,
+.I ispell
+includes the original word immediately after the indicator character
+in output lines beginning with '*', '+', and '\-', which simplifies
+interaction for some programs.
 .PP
 The
 .B \-s
@@ -823,7 +1012,7 @@ will also print the options that it was compiled with.
 .PP
 The
 .BR \-c ,
-.BR \-e [ 1-4 ],
+.BR \-e [ 1-5 ],
 and
 .B \-D
 options of
@@ -910,13 +1099,27 @@ BOTH/R BOTHER 2.500000
 .fi
 .RE
 .PP
+A level of 5 causes multiple lines to be output, one for each
+generated word.
+If the generated word did not use any affixes, the
+line is just that word.
+If one or more affixes were used,
+the original root and the affixes actually used are printed, joined by
+a plus sign; then the generated word is printed:
+.PP
+.RS
+.nf
+BOTH
+BOTH+R BOTHER
+.fi
+.RE
+.PP
 Finally, the
 .B \-D
 flag causes the affix tables from the dictionary file
 to be dumped to standard output.
 .PP
-Unless your system administrator has suppressed the feature to save space,
-.I ispell
+.I Ispell
 is aware of the correct capitalizations of words in the dictionary and
 in your personal dictionary.
 As well as recognizing words that must be capitalized (e.g., George) and
@@ -967,7 +1170,7 @@ and the the affix flags are defined by
 The hashed output is written to
 .IR hash-file .
 The formats of the two input files are described in
-.IR ispell (4).
+.IR ispell (!!MAN45SECT!!).
 The
 .B \-s
 (silent) option suppresses the usual status messages that are written
@@ -994,8 +1197,10 @@ The
 .B \-D
 (debug) option leaves temporary files around under standard names instead
 of deleting them, so that the script can be debugged.
-Warning:
-this option can eat up an enormous amount of temporary file space.
+Warning: on a multiuser system, this can be a security hole.
+To avoid possible destruction of important files, don't run the script
+as root, and set MUNCHDEBUGDIR to the name of a directory that only
+you can access.
 .PP
 The
 .B \-v
@@ -1275,6 +1480,10 @@ switch can be used to select among alternative string character types
 by giving a dummy suffix that can be found in an
 .B altstringtype
 statement.
+The
+.B \-w
+switch is identical to the same switch in
+.IR ispell .
 .SS ijoin
 The
 .I ijoin
@@ -1307,6 +1516,9 @@ manual page for more information.
 Default dictionary to use, if no
 .B \-d
 flag is given.
+.IP ISPELL_CHARSET
+Formatter type or character encoding to use, if none is chosen by a
+flag option.
 .IP WORDLIST
 Personal dictionary file name
 .IP INCLUDE_STRING
@@ -1315,6 +1527,24 @@ Code for file inclusion under the
 option
 .IP TMPDIR
 Directory used for some of munchlist's temporary files
+.IP MUNCHDEBUGDIR
+Directory used to hold the output of munchlists'
+.B \-D
+option.
+.IP TEXSKIP1
+List of single-argument TeX keywords that
+.I ispell
+should ignore.
+.IP TEXSKIP2
+List of two-argument TeX keywords that
+.I ispell
+should ignore.
+.IP HTMLIGNORE
+List of HTML keywords that delimit text that should not be
+spell-checked.
+.IP HTMLCHECK
+List of HTML fields that should always be spell-checked, even inside a
+tag.
 .SH FILES
 .IP !!LIBDIR!!/!!DEFHASH!!
 Hashed dictionary (may be found in some other local directory,
@@ -1322,24 +1552,24 @@ depending on the system).
 .IP !!LIBDIR!!/!!DEFLANG!!
 Affix-definition file for
 .I munchlist
-.IP "/usr/dict/web2 or /usr/dict/words"
-For the Lookup function (depending on the WORDS compilation option).
+.IP !!WORDS!!
+For the Lookup function.
 .IP $HOME/.ispell_\fIhashfile\fP
 User's private dictionary
 .IP .ispell_\fIhashfile\fP
 Directory-specific private dictionary
 .SH SEE ALSO
-.IR spell (1),
 .IR egrep (1),
-.IR look (1),
+!!LOOK_XREF!!
 .IR join (1),
 .IR sort (1),
-.IR sq (1L),
-.IR tib (1L),
-.IR ispell (4L),
-.IR english (4L)
+!!SPELL_XREF!!
+.IR sq (1),
+!!TIB_XREF!!
+.IR ispell (!!MAN45SECT!!),
+.IR english (!!MAN45SECT!!)
 .SH BUGS
-It takes several to many seconds for
+On some machines it takes too long for
 .I ispell
 to read in the hash table, depending on size.
 .sp
@@ -1364,9 +1594,13 @@ When the
 .B \-x
 flag is specified,
 .I ispell
-will unlink any existing .bak file.
+will unlink any existing !!BAKEXT!! file.
 .sp
 There are too many flags, and many of them have non-mnemonic names.
+.sp
+The
+.B \-e
+flag should accept mnemonic arguments instead of numeric ones.
 .sp
 .I Munchlist
 does not deal very gracefully with dictionaries which contain
@@ -1422,7 +1656,11 @@ Table-driven multi-lingual version by Geoff Kuenning, 1987-88.
 Large dictionaries provided by Bob Devine (vianet!devine).
 .P
 A complete list of contributors is too large to list here, but is
-distributed with the ispell sources in the file "Contributors".
+distributed with the
+.I ispell
+sources in the file "Contributors".
 .SH VERSION
-The version of ispell described by this manual page is
-International Ispell Version 3.1.00, 10/08/93.
+The version of
+.I ispell
+described by this manual page is
+International Ispell Version 3.1.20, 10/10/95.

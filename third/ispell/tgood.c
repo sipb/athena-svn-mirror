@@ -1,10 +1,11 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: tgood.c,v 1.1.1.1 1997-09-03 21:08:10 ghudson Exp $";
+    "$Id: tgood.c,v 1.1.1.2 2007-02-01 19:49:55 ghudson Exp $";
 #endif
 
 /*
- * Copyright 1987, 1988, 1989, 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1987-1989, 1992, 1993, 1999, 2001, 2005, Geoff Kuenning,
+ * Claremont, CA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,10 +21,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -49,6 +48,56 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2005/04/14 14:38:23  geoff
+ * Update license.  Incorporate Ed Avis's changes, which primarily
+ * involve making the expansion table a proper structure (almost a
+ * C++-style object) and moving the code to handle it into a separate
+ * file.
+ *
+ * Revision 1.42  2001/07/25 21:51:46  geoff
+ * Minor license update.
+ *
+ * Revision 1.41  2001/07/23 22:09:15  geoff
+ * Change the expansion code so that the scratch table is allocated
+ * dynamically.  This cures a bug that caused munchlist to fail for
+ * languages that used affixes to encode parts of speech, rather than
+ * string transformations, and generated huge numbers of affixes.  While
+ * fixing this bug, I also eliminated an obsolete unused parameter from
+ * several functions.
+ *
+ * Revision 1.40  2001/07/23 20:24:04  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.39  2000/11/14 07:27:04  geoff
+ * Use messages from msgs.h for the "too many expansions" errors.
+ *
+ * Revision 1.38  2000/08/22 10:52:25  geoff
+ * Fix a whole bunch of signed/unsigned discrepancies.
+ *
+ * Revision 1.37  1999/01/18 03:28:43  geoff
+ * Turn many char declarations into unsigned char, so that we won't have
+ * sign-extension problems.
+ *
+ * Revision 1.36  1999/01/07  01:57:43  geoff
+ * Update the copyright.
+ *
+ * Revision 1.35  1997/12/21  23:10:24  geoff
+ * Fix the generation of expansions so that only one unique expansion is
+ * produced for any given root/affix combination.  For example, if both
+ * the A and the N flags can add "n" to the end of a word (as in the
+ * deutsch.aff file), expanding foo/AN will produce "foon" only once.
+ * This has the side effect that the "-e4" option will generate a more
+ * accurate ratio for flag productivity, which in turn means that
+ * munchlist will do a better job of choosing an optimal set of roots and
+ * flags.
+ *
+ * Revision 1.34  1997/12/03  05:28:13  geoff
+ * Fix a bug that caused suffix expansions to be printed with the wrong
+ * capitalization when all but one character of the root was stripped.
+ *
+ * Revision 1.33  1997/12/02  06:25:09  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
  * Revision 1.32  1994/11/02  06:56:16  geoff
  * Remove the anyword feature, which I've decided is a bad idea.
  *
@@ -73,7 +122,9 @@ static char Rcs_Id[] =
 #include <ctype.h>
 #include "config.h"
 #include "ispell.h"
+#include "msgs.h"
 #include "proto.h"
+#include "exp_table.h"
 
 void		chk_aff P ((ichar_t * word, ichar_t * ucword, int len,
 		  int ignoreflagbits, int allhits, int pfxopts, int sfxopts));
@@ -86,16 +137,24 @@ static void	chk_suf P ((ichar_t * word, ichar_t * ucword, int len,
 static void	suf_list_chk P ((ichar_t * word, ichar_t * ucword, int len,
 		  struct flagptr * ind, int optflags, struct flagent * pfxent,
 		  int ignoreflagbits, int allhits));
-int		expand_pre P ((char * croot, ichar_t * rootword,
-		  MASKTYPE mask[], int option, char * extra));
-static int	pr_pre_expansion P ((char * croot, ichar_t * rootword,
-		  struct flagent * flent, MASKTYPE mask[], int option,
-		  char * extra));
-int		expand_suf P ((char * croot, ichar_t * rootword,
-		  MASKTYPE mask[], int optflags, int option, char * extra));
-static int	pr_suf_expansion P ((char * croot, ichar_t * rootword,
-		  struct flagent * flent, int option, char * extra));
+int		expand_pre P ((unsigned char * croot, ichar_t * rootword,
+		  MASKTYPE mask[], int option, unsigned char * extra));
+static void	gen_pre_expansion P ((ichar_t * rootword,
+		  struct flagent * flent, MASKTYPE mask[],
+		  struct exp_table * exptable));
+int		expand_suf P ((unsigned char * croot, ichar_t * rootword,
+		  MASKTYPE mask[], int optflags, int option,
+		  unsigned char * extra));
+static void	expand_suf_into_table P ((ichar_t * rootword,
+		  MASKTYPE mask[], int optflags,
+		  struct exp_table * exptable, MASKTYPE existing_flags[]));
+static void	gen_suf_expansion P ((ichar_t * rootword,
+		  struct flagent * flent, struct exp_table * exptable,
+		  MASKTYPE existing_flags[]));
 static void	forcelc P ((ichar_t * dst, int len));
+static char *	flags_str P ((MASKTYPE flags));
+static int	output_expansions P ((struct exp_table * exptable, int option,
+		  unsigned char * croot, unsigned char * extra));
 
 /* Check possible affixes */
 void chk_aff (word, ucword, len, ignoreflagbits, allhits, pfxopts, sfxopts)
@@ -245,13 +304,9 @@ static void pfx_list_chk (word, ucword, len, optflags, sfxopts, ind,
 			}
 		    if (!allhits)
 			{
-#ifndef NO_CAPITALIZATION_SUPPORT
 			if (cap_ok (word, &hits[0], len))
 			    return;
 			numhits = 0;
-#else /* NO_CAPITALIZATION_SUPPORT */
-			return;
-#endif /* NO_CAPITALIZATION_SUPPORT */
 			}
 		    }
 		/*
@@ -443,13 +498,9 @@ static void suf_list_chk (word, ucword, len, ind, optflags, pfxent,
 			}
 		    if (!allhits)
 			{
-#ifndef NO_CAPITALIZATION_SUPPORT
 			if (cap_ok (word, &hits[0], len))
 			    return;
 			numhits = 0;
-#else /* NO_CAPITALIZATION_SUPPORT */
-			return;
-#endif /* NO_CAPITALIZATION_SUPPORT */
 			}
 		    }
 		}
@@ -461,53 +512,56 @@ static void suf_list_chk (word, ucword, len, ind, optflags, pfxent,
  * Expand a dictionary prefix entry
  */
 int expand_pre (croot, rootword, mask, option, extra)
-    char *			croot;		/* Char version of rootword */
+    unsigned char *		croot;		/* Char version of rootword */
     ichar_t *			rootword;	/* Root word to expand */
     register MASKTYPE		mask[];		/* Mask bits to expand on */
     int				option;		/* Option, see expandmode */
-    char *			extra;		/* Extra info to add to line */
+    unsigned char *		extra;		/* Extra info to add to line */
     {
     int				entcount;	/* No. of entries to process */
     int				explength;	/* Length of expansions */
+    static struct exp_table     exptable;       /* Table of expansions */
     register struct flagent *
 				flent;		/* Current table entry */
 
-    for (flent = pflaglist, entcount = numpflags, explength = 0;
-      entcount > 0;
-      flent++, entcount--)
+    exp_table_init(&exptable, rootword);
+    for (flent = pflaglist, entcount = numpflags;
+	 entcount > 0;
+	 flent++, entcount--)
 	{
 	if (TSTMASKBIT (mask, flent->flagbit))
-	    explength +=
-	      pr_pre_expansion (croot, rootword, flent, mask, option, extra);
+	    gen_pre_expansion (rootword, flent, mask, &exptable);
 	}
+    explength = output_expansions (&exptable, option, croot, extra);
+    (void) exp_table_empty (&exptable);
     return explength;
     }
 
-/* Print a prefix expansion */
-static int pr_pre_expansion (croot, rootword, flent, mask, option, extra)
-    char *			croot;		/* Char version of rootword */
+/* Generate a prefix expansion, modifying the table passed in */
+static void gen_pre_expansion (rootword, flent, mask, exptable)
     register ichar_t *		rootword;	/* Root word to expand */
     register struct flagent *	flent;		/* Current table entry */
     MASKTYPE			mask[];		/* Mask bits to expand on */
-    int				option;		/* Option, see	expandmode */
-    char *			extra;		/* Extra info to add to line */
+    struct exp_table *          exptable;	/* Ptr to tbl of expansions */
     {
+    MASKTYPE                    applied[MASKSIZE]; /* Flag being applied */
     int				cond;		/* Current condition number */
     register ichar_t *		nextc;		/* Next case choice */
+    register unsigned char *	result;		/* Result of expansion */
     int				tlen;		/* Length of tword */
     ichar_t			tword[INPUTWORDLEN + MAXAFFIXLEN]; /* Temp */
 
     tlen = icharlen (rootword);
     if (flent->numconds > tlen)
-	return 0;
+	return;
     tlen -= flent->stripl;
     if (tlen <= 0)
-	return 0;
+	return;
     tlen += flent->affl;
     for (cond = 0, nextc = rootword;  cond < flent->numconds;  cond++)
 	{
 	if ((flent->conds[mytoupper (*nextc++)] & (1 << cond)) == 0)
-	    return 0;
+	    return;
 	}
     /*
      * The conditions are satisfied.  Copy the word, add the prefix,
@@ -563,34 +617,61 @@ static int pr_pre_expansion (croot, rootword, flent, mask, option, extra)
 	if (!myupper (*nextc))
 	    forcelc (tword, flent->affl);
 	}
-    if (option == 3)
-	(void) printf ("\n%s", croot);
-    if (option != 4)
-	(void) printf (" %s%s", ichartosstr (tword, 1), extra);
+    /*
+     * We've generated the result.  If it's not already in the
+     * expansion table, add it at the end.
+     */
+    result = ichartosstr (tword, 1);
+    BZERO (applied, sizeof applied);
+    SETMASKBIT (applied, flent->flagbit);
+    add_expansion_copy(exptable, (char *) result, applied);
+
     if (flent->flagflags & FF_CROSSPRODUCT)
-	return tlen
-	  + expand_suf (croot, tword, mask, FF_CROSSPRODUCT, option, extra);
-    else
-	return tlen;
+      expand_suf_into_table (tword, mask, FF_CROSSPRODUCT, exptable,
+			     applied);
     }
 
 /*
  * Expand a dictionary suffix entry
  */
 int expand_suf (croot, rootword, mask, optflags, option, extra)
-    char *			croot;		/* Char version of rootword */
+    unsigned char *		croot;		/* Char version of rootword */
     ichar_t *			rootword;	/* Root word to expand */
     register MASKTYPE		mask[];		/* Mask bits to expand on */
     int				optflags;	/* Affix option flags */
     int				option;		/* Option, see expandmode */
-    char *			extra;		/* Extra info to add to line */
+    unsigned char *		extra;		/* Extra info to add to line */
+    {
+    int				explength;	/* Length of expansions */
+    struct exp_table            exptable;       /* Table of expansions */
+    int				i;		/* For zeroing flags */
+    MASKTYPE                    nullflags[MASKSIZE]; /* Flag being applied */
+
+    for (i = 0;  i < MASKSIZE;  i++)
+	nullflags[i] = 0;
+    exp_table_init (&exptable, rootword);
+    expand_suf_into_table(rootword, mask, optflags, &exptable, nullflags);
+    explength = output_expansions (&exptable, option, croot, extra);
+    (void) exp_table_empty (&exptable);
+    return explength;
+    }
+
+/*
+ * Expand a dictionary suffix entry and insert it into an expansion table
+ */
+static void expand_suf_into_table (rootword, mask, optflags, exptable,
+				   existing_flags)
+    ichar_t *			rootword;	/* Root word to expand */
+    register MASKTYPE		mask[];		/* Mask bits to expand on */
+    int				optflags;	/* Affix option flags */
+    struct exp_table *          exptable;	/* Table of expansions */
+    MASKTYPE                    existing_flags[]; /* Flags already applied */
     {
     int				entcount;	/* No. of entries to process */
-    int				explength;	/* Length of expansions */
     register struct flagent *
 				flent;		/* Current table entry */
 
-    for (flent = sflaglist, entcount = numsflags, explength = 0;
+    for (flent = sflaglist, entcount = numsflags;
       entcount > 0;
       flent++, entcount--)
 	{
@@ -598,57 +679,76 @@ int expand_suf (croot, rootword, mask, optflags, option, extra)
 	    {
 	    if ((optflags & FF_CROSSPRODUCT) == 0
 	      ||  (flent->flagflags & FF_CROSSPRODUCT))
-		explength +=
-		  pr_suf_expansion (croot, rootword, flent, option, extra);
+		(void) gen_suf_expansion (rootword, flent, exptable,
+					  existing_flags);
 	    }
 	}
-    return explength;
     }
 
-/* Print a suffix expansion */
-static int pr_suf_expansion (croot, rootword, flent, option, extra)
-    char *			croot;		/* Char version of rootword */
+/* Generate a suffix expansion */
+static void gen_suf_expansion (rootword, flent, exptable, existing_flags)
     register ichar_t *		rootword;	/* Root word to expand */
     register struct flagent *	flent;		/* Current table entry */
-    int				option;		/* Option, see expandmode */
-    char *			extra;		/* Extra info to add to line */
+    struct exp_table *		exptable;	/* Table of expansions */
+    MASKTYPE *			existing_flags; /* Flags already applied */
     {
     int				cond;		/* Current condition number */
     register ichar_t *		nextc;		/* Next case choice */
+    register unsigned char *	result;		/* Result of expansion */
     int				tlen;		/* Length of tword */
     ichar_t			tword[INPUTWORDLEN + MAXAFFIXLEN]; /* Temp */
+    int				wascapitalized;	/* NZ if capitalized root */
 
     tlen = icharlen (rootword);
     cond = flent->numconds;
     if (cond > tlen)
-	return 0;
+	return;
     if (tlen - flent->stripl <= 0)
-	return 0;
+	return;
+    wascapitalized = myupper (rootword[0]);
     for (nextc = rootword + tlen;  --cond >= 0;  )
 	{
 	if ((flent->conds[mytoupper (*--nextc)] & (1 << cond)) == 0)
-	    return 0;
+	    return;
+	if (nextc > rootword  &&  myupper (*nextc))
+	    wascapitalized = 0;
+	}
+    while (--nextc > rootword)
+	{
+	if (myupper (*nextc))
+	    wascapitalized = 0;
 	}
     /*
      * The conditions are satisfied.  Copy the word, add the suffix,
      * and make it match the case of the last remaining character of the
      * root.  Again, this code carefully matches ins_cap and cap_ok.
+     *
+     * There is one tricky case to watch out for here.  If the root
+     * was simply capitalized, and the stripping removed all but the
+     * initial character of the root, the above algorithm will
+     * generate an all-caps result.  However, ins_cap and cap_ok would
+     * generate a simple capitalization, because a captype of
+     * CAPITALIZED would override FOLLOWCASE and ALLCAPS.  So we have
+     * to deal with this as a special case.
      */
     (void) icharcpy (tword, rootword);
     nextc = tword + tlen - flent->stripl;
     if (flent->affl)
 	{
 	(void) icharcpy (nextc, flent->affix);
-	if (!myupper (nextc[-1]))
+	if ((nextc == tword + 1  &&  wascapitalized)
+	  ||  !myupper (nextc[-1]))
 	    forcelc (nextc, flent->affl);
 	}
     else
 	*nextc = 0;
-    if (option == 3)
-	(void) printf ("\n%s", croot);
-    if (option != 4)
-	(void) printf (" %s%s", ichartosstr (tword, 1), extra);
-    return tlen + flent->affl - flent->stripl;
+    /*
+     * We've generated the result.  If it's not already in the
+     * expansion table, add it at the end.
+     */
+    result = ichartosstr (tword, 1);
+    SETMASKBIT (existing_flags, flent->flagbit);
+    (void) add_expansion_copy(exptable, (char *) result, existing_flags);
     }
 
 static void forcelc (dst, len)			/* Force to lowercase */
@@ -658,4 +758,74 @@ static void forcelc (dst, len)			/* Force to lowercase */
 
     for (  ;  --len >= 0;  dst++)
 	*dst = mytolower (*dst);
+    }
+
+/*
+ * Convert a mask of flags to a string of flag chars, using a static
+ * buffer. 
+ *
+ * Assume 26 letters in the alphabet :-).  In practice you probably
+ * won't get more than two flags at once.
+ */
+static char * flags_str (flags)
+    MASKTYPE			flags;
+    {
+    static char			flags_str_buf[MASKSIZE + 1];
+    int				i;
+    int				length = 0;
+
+    for (i = 0;  i < MASKSIZE;  i++)
+	{
+	if (TSTMASKBIT (&flags, i))
+	    flags_str_buf[length++] = BITTOCHAR (i);
+	}
+
+    flags_str_buf[length] = '\0';
+    return flags_str_buf;
+    }
+
+
+/*
+ * Print an expansion table in the manner required by ispell's various
+ * -e options (or at least do some of the printing required).  Returns
+ * the total length of all expansions.
+ *
+ * P.S. Yes, I'm embarrassed by the magic numbers.
+ */
+static int output_expansions (exptable, option, croot, extra)
+    struct exp_table *		exptable;	/* Expansions to print */
+    int				option;		/* Num. of -e option */
+    unsigned char *		croot;		/* Original "word/flags" */
+    unsigned char *		extra;		/* Extra info to add to line */
+    {
+    int				explength = 0;	/* Expansion size (chars) */
+    int				i;		/* Loop index */
+    const ichar_t *		rootword;	/* Root of the expansion */
+
+    rootword = get_orig_word (exptable);
+
+    /* Print in reverse order to match old behavior */
+    for (i = num_expansions (exptable);  --i >= 0;  )
+	{
+	const char * expansion = get_expansion (exptable, i);
+
+	if (option == 3)
+	    (void) printf ("\n%s", (char *) croot);
+	else if (option == 5)
+	    {
+	    char * fs = flags_str (get_flags (exptable, i));
+
+	    if (strlen (fs) != 0)
+		(void) printf ("\n%s+%s", ichartosstr (rootword, 1), fs);
+	    else
+		(void) printf ("\n%s", ichartosstr (rootword, 1));
+	    }
+
+	if (option != 4)
+	    (void) printf (" %s%s", expansion, (char *) extra);
+
+	explength += strlen (expansion);
+	}
+
+    return explength;
     }

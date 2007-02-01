@@ -1,10 +1,22 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: fields.c,v 1.1.1.1 1997-09-03 21:08:08 ghudson Exp $";
+    "$Id: fields.c,v 1.1.1.2 2007-02-01 19:49:55 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/04/14 14:38:23  geoff
+ * Make maxf unsigned.
+ *
+ * Revision 1.10  1999/01/06 20:57:19  geoff
+ * Include ispell.h so proto.h will work
+ *
+ * Revision 1.9  1999/01/05  20:46:38  geoff
+ * Get declarations from proto.h
+ *
+ * Revision 1.8  1998/07/06  04:56:19  geoff
+ * Make strlen return an unsigned int
+ *
  * Revision 1.7  1994/01/06  05:26:37  geoff
  * Get rid of all references to System V string routines, for portability
  * (sigh).
@@ -34,15 +46,17 @@ static char Rcs_Id[] =
 #include <stdio.h>
 #include "config.h"
 #include "fields.h"
+#include "ispell.h"
+#include "proto.h"
 
 field_t *	fieldread P ((FILE * file, char * delims,
-				  int flags, int maxf));
+				  int flags, unsigned int maxf));
 				/* Read a line with fields from a file */
 field_t *	fieldmake P ((char * line, int allocated, char * delims,
-				  int flags, int maxf));
+				  int flags, unsigned int maxf));
 				/* Make a field structure from a line */
 static field_t * fieldparse P ((field_t * fieldp, char * line, char * delims,
-				  int flags, int maxf));
+				  int flags, unsigned int maxf));
 				/* Parse the fields in a line */
 static int	fieldbackch P ((char * str, char ** out, int strip));
 				/* Process backslash sequences */
@@ -58,12 +72,6 @@ unsigned int	field_line_inc = 512; /* Incr to increase line length by */
 #define strchr	index
 #endif /* USG */
 
-extern void	free ();
-extern char *	malloc ();
-extern char *	realloc ();
-extern char *	strchr ();
-extern int	strlen ();
-
 /*
  * Read one line of the given file into a buffer, break it up into
  * fields, and return them to the caller.  The field_t structure
@@ -73,7 +81,7 @@ field_t * fieldread (file, delims, flags, maxf)
     FILE *		file;	/* File to read lines from */
     char *		delims;	/* Characters to use for field delimiters */
     int			flags;	/* Option flags;  see fields.h */
-    int			maxf;	/* Maximum number of fields to parse */
+    unsigned int	maxf;	/* Maximum number of fields to parse */
     {
     register char *	linebuf; /* Buffer to hold the line read in */
     int			linemax; /* Maximum line buffer size */
@@ -114,7 +122,7 @@ field_t * fieldmake (line, allocated, delims, flags, maxf)
     int			allocated; /* NZ if line allocated with malloc */
     char *		delims;	/* Characters to use for field delimiters */
     int			flags;	/* Option flags;  see fields.h */
-    int			maxf;	/* Maximum number of fields to parse */
+    unsigned int	maxf;	/* Maximum number of fields to parse */
     {
     register field_t *	fieldp;	/* Structure describing the fields */
     int			linesize; /* Current line buffer size */
@@ -153,9 +161,9 @@ static field_t * fieldparse (fieldp, line, delims, flags, maxf)
     register char *	line;	/* Line to be parsed */
     char *		delims;	/* Characters to use for field delimiters */
     int			flags;	/* Option flags;  see fields.h */
-    int			maxf;	/* Maximum number of fields to parse */
+    unsigned int	maxf;	/* Maximum number of fields to parse */
     {
-    int			fieldmax; /* Max size of fields array */
+    unsigned int	fieldmax; /* Max size of fields array */
     char *		lineout; /* Where to store xlated char in line */
     char		quote;	/* Quote character in use */
 
@@ -403,7 +411,8 @@ int fieldwrite (file, fieldp, delim)
     int			delim;	/* Delimiter to place between fields */
     {
     int			error;	/* NZ if an error occurs */
-    register int	fieldno; /* Number of field being written */
+    register unsigned int
+			fieldno; /* Number of field being written */
 
     error = 0;
     for (fieldno = 0;  fieldno < fieldp->nfields;  fieldno++)

@@ -1,6 +1,6 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: lookup.c,v 1.1.1.1 1997-09-03 21:08:12 ghudson Exp $";
+    "$Id: lookup.c,v 1.1.1.2 2007-02-01 19:50:00 ghudson Exp $";
 #endif
 
 /*
@@ -8,7 +8,8 @@ static char Rcs_Id[] =
  *
  * Pace Willisson, 1983
  *
- * Copyright 1987, 1988, 1989, 1992, 1993, Geoff Kuenning, Granada Hills, CA
+ * Copyright 1987, 1988, 1989, 1992, 1993, 1999, 2001, 2005, Geoff Kuenning,
+ * Claremont, CA.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +25,8 @@ static char Rcs_Id[] =
  *    such.  Binary redistributions based on modified source code
  *    must be clearly marked as modified versions in the documentation
  *    and/or other materials provided with the distribution.
- * 4. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *      This product includes software developed by Geoff Kuenning and
- *      other unpaid contributors.
+ * 4. The code that causes the 'ispell -v' command to display a prominent
+ *    link to the official ispell Web site may not be removed.
  * 5. The name of Geoff Kuenning may not be used to endorse or promote
  *    products derived from this software without specific prior
  *    written permission.
@@ -47,6 +46,37 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.52  2005/04/14 21:25:52  geoff
+ * Fix a couple of tiny formatting inconsistencies.
+ *
+ * Revision 1.51  2005/04/14 14:38:23  geoff
+ * Update license.  Improve some typecasting.
+ *
+ * Revision 1.50  2001/09/06 00:30:28  geoff
+ * Many changes from Eli Zaretskii to support DJGPP compilation.
+ *
+ * Revision 1.49  2001/07/25 21:51:46  geoff
+ * Minor license update.
+ *
+ * Revision 1.48  2001/07/23 20:24:04  geoff
+ * Update the copyright and the license.
+ *
+ * Revision 1.47  2000/08/22 10:52:25  geoff
+ * Fix a whole bunch of signed/unsigned discrepancies.
+ *
+ * Revision 1.46  1999/01/18 03:28:35  geoff
+ * Turn some char declarations into unsigned char, so that we won't have
+ * sign-extension problems.
+ *
+ * Revision 1.45  1999/01/07  01:22:51  geoff
+ * Update the copyright.
+ *
+ * Revision 1.44  1998/07/06  05:44:47  geoff
+ * Use off_t in lseeks, for 64-bit and NetBSD machines
+ *
+ * Revision 1.43  1997/12/02  06:24:56  geoff
+ * Get rid of some compile options that really shouldn't be optional.
+ *
  * Revision 1.42  1995/01/08  23:23:42  geoff
  * Support MSDOS_BINARY_OPEN when opening the hash file to read it in.
  *
@@ -66,7 +96,7 @@ static void	dumpindex P ((struct flagptr * indexp, int depth));
 #endif /* INDEXDUMP */
 struct dent *	lookup P ((ichar_t * word, int dotree));
 
-static		inited = 0;
+static int	inited = 0;
 
 int linit ()
     {
@@ -84,35 +114,37 @@ int linit ()
 
     if ((hashfd = open (hashname, 0 | MSDOS_BINARY_OPEN)) < 0)
 	{
-	(void) fprintf (stderr, CANT_OPEN, hashname);
+	(void) fprintf (stderr, CANT_OPEN, hashname, MAYBE_CR (stderr));
 	return (-1);
 	}
 
     hashsize = read (hashfd, (char *) &hashheader, sizeof hashheader);
     if (hashsize < sizeof hashheader)
 	{
-	if (hashsize < 0)
-	    (void) fprintf (stderr, LOOKUP_C_CANT_READ, hashname);
+	if (hashsize == (unsigned int) -1)
+	    (void) fprintf (stderr, LOOKUP_C_CANT_READ, hashname,
+	      MAYBE_CR (stderr));
 	else if (hashsize == 0)
-	    (void) fprintf (stderr, LOOKUP_C_NULL_HASH, hashname);
+	    (void) fprintf (stderr, LOOKUP_C_NULL_HASH, hashname,
+	      MAYBE_CR (stderr));
 	else
 	    (void) fprintf (stderr,
 	      LOOKUP_C_SHORT_HASH (hashname, hashsize,
-	        (int) sizeof hashheader));
+	        (int) sizeof hashheader), MAYBE_CR (stderr));
 	return (-1);
 	}
     else if (hashheader.magic != MAGIC)
 	{
 	(void) fprintf (stderr,
 	  LOOKUP_C_BAD_MAGIC (hashname, (unsigned int) MAGIC,
-	    (unsigned int) hashheader.magic));
+	    (unsigned int) hashheader.magic), MAYBE_CR (stderr));
 	return (-1);
 	}
     else if (hashheader.magic2 != MAGIC)
 	{
 	(void) fprintf (stderr,
 	  LOOKUP_C_BAD_MAGIC2 (hashname, (unsigned int) MAGIC,
-	    (unsigned int) hashheader.magic2));
+	    (unsigned int) hashheader.magic2), MAYBE_CR (stderr));
 	return (-1);
 	}
     else if (hashheader.compileoptions != COMPILEOPTIONS
@@ -122,7 +154,8 @@ int linit ()
 	(void) fprintf (stderr,
 	  LOOKUP_C_BAD_OPTIONS ((unsigned int) hashheader.compileoptions,
 	    hashheader.maxstringchars, hashheader.maxstringcharlen,
-	    (unsigned int) COMPILEOPTIONS, MAXSTRINGCHARS, MAXSTRINGCHARLEN));
+	    (unsigned int) COMPILEOPTIONS, MAXSTRINGCHARS, MAXSTRINGCHARLEN),
+	    MAYBE_CR (stderr));
 	return (-1);
 	}
     if (nodictflag)
@@ -138,14 +171,15 @@ int linit ()
 	hashtbl = (struct dent *) calloc (1, sizeof (struct dent));
 	if (hashtbl == NULL)
 	    {
-	    (void) fprintf (stderr, LOOKUP_C_NO_HASH_SPACE);
+	    (void) fprintf (stderr, LOOKUP_C_NO_HASH_SPACE, MAYBE_CR (stderr));
 	    return (-1);
 	    }
 	hashtbl[0].word = NULL;
 	hashtbl[0].next = NULL;
 	hashtbl[0].flagfield &= ~(USED | KEEP);
 	/* The flag bits don't matter, but calloc cleared them. */
-	hashstrings = (char *) malloc ((unsigned) hashheader.lstringsize);
+	hashstrings =
+	  (unsigned char *) malloc ((unsigned) hashheader.lstringsize);
 	}
     else
 	{
@@ -153,7 +187,8 @@ int linit ()
 	 (struct dent *)
 	    malloc ((unsigned) hashheader.tblsize * sizeof (struct dent));
 	hashsize = hashheader.tblsize;
-	hashstrings = (char *) malloc ((unsigned) hashheader.stringsize);
+	hashstrings =
+	  (unsigned char *) malloc ((unsigned) hashheader.stringsize);
 	}
     numsflags = hashheader.stblsize;
     numpflags = hashheader.ptblsize;
@@ -161,7 +196,7 @@ int linit ()
       malloc ((numsflags + numpflags) * sizeof (struct flagent));
     if (hashtbl == NULL  ||  hashstrings == NULL  ||  sflaglist == NULL)
 	{
-	(void) fprintf (stderr, LOOKUP_C_NO_HASH_SPACE);
+	(void) fprintf (stderr, LOOKUP_C_NO_HASH_SPACE, MAYBE_CR (stderr));
 	return (-1);
 	}
     pflaglist = sflaglist + numsflags;
@@ -174,33 +209,33 @@ int linit ()
 	 * hash table.
 	 */
 	if (read (hashfd, hashstrings, (unsigned) hashheader.lstringsize)
-	  != hashheader.lstringsize)
+	  != (int) hashheader.lstringsize)
 	    {
-	    (void) fprintf (stderr, LOOKUP_C_BAD_FORMAT);
+	    (void) fprintf (stderr, LOOKUP_C_BAD_FORMAT, MAYBE_CR (stderr));
 	    return (-1);
 	    }
 	(void) lseek (hashfd,
-	  (long) hashheader.stringsize - (long) hashheader.lstringsize
-	    + (long) hashheader.tblsize * (long) sizeof (struct dent),
+	  (off_t) hashheader.stringsize - (off_t) hashheader.lstringsize
+	    + (off_t) hashheader.tblsize * (off_t) sizeof (struct dent),
 	  1);
 	}
     else
 	{
 	if (read (hashfd, hashstrings, (unsigned) hashheader.stringsize)
-	    != hashheader.stringsize
+	    != (int) hashheader.stringsize
 	  ||  read (hashfd, (char *) hashtbl,
 	      (unsigned) hashheader.tblsize * sizeof (struct dent))
-	    != hashheader.tblsize * sizeof (struct dent))
+	    != (int) (hashheader.tblsize * sizeof (struct dent)))
 	    {
-	    (void) fprintf (stderr, LOOKUP_C_BAD_FORMAT);
+	    (void) fprintf (stderr, LOOKUP_C_BAD_FORMAT, MAYBE_CR (stderr));
 	    return (-1);
 	    }
 	}
-    if (read (hashfd, (char *) sflaglist,
+    if ((unsigned) read (hashfd, (char *) sflaglist,
 	(unsigned) (numsflags + numpflags) * sizeof (struct flagent))
       != (numsflags + numpflags) * sizeof (struct flagent))
 	{
-	(void) fprintf (stderr, LOOKUP_C_BAD_FORMAT);
+	(void) fprintf (stderr, LOOKUP_C_BAD_FORMAT, MAYBE_CR (stderr));
 	return (-1);
 	}
     (void) close (hashfd);
@@ -209,25 +244,27 @@ int linit ()
 	{
 	for (i = hashsize, dp = hashtbl;  --i >= 0;  dp++)
 	    {
-	    if (dp->word == (char *) -1)
+	    if (dp->word == (unsigned char *) -1)
 		dp->word = NULL;
 	    else
-		dp->word = &hashstrings [ (int)(dp->word) ];
+		dp->word = &hashstrings[(unsigned long) dp->word];
 	    if (dp->next == (struct dent *) -1)
 		dp->next = NULL;
 	    else
-		dp->next = &hashtbl [ (int)(dp->next) ];
+		dp->next = &hashtbl[(unsigned long) dp->next];
 	    }
 	}
 
     for (i = numsflags + numpflags, entry = sflaglist; --i >= 0; entry++)
 	{
 	if (entry->stripl)
-	    entry->strip = (ichar_t *) &hashstrings[(int) entry->strip];
+	    entry->strip =
+	      (ichar_t *) &hashstrings[(unsigned long) entry->strip];
 	else
 	    entry->strip = NULL;
 	if (entry->affl)
-	    entry->affix = (ichar_t *) &hashstrings[(int) entry->affix];
+	    entry->affix =
+	      (ichar_t *) &hashstrings[(unsigned long) entry->affix];
 	else
 	    entry->affix = NULL;
 	}
@@ -288,7 +325,8 @@ int linit ()
 		  sizeof (struct flagptr));
 	    if (ind->pu.fp == NULL)
 		{
-		(void) fprintf (stderr, LOOKUP_C_NO_LANG_SPACE);
+		(void) fprintf (stderr, LOOKUP_C_NO_LANG_SPACE,
+		  MAYBE_CR (stderr));
 		return (-1);
 		}
 	    ind->numents = 0;
@@ -350,7 +388,8 @@ int linit ()
 	        sizeof (struct flagptr));
 	    if (ind->pu.fp == NULL)
 		{
-		(void) fprintf (stderr, LOOKUP_C_NO_LANG_SPACE);
+		(void) fprintf (stderr, LOOKUP_C_NO_LANG_SPACE,
+		  MAYBE_CR (stderr));
 		return (-1);
 		}
 	    ind->numents = 0;
@@ -370,20 +409,20 @@ int linit ()
 	  malloc (hashheader.nstrchartype * sizeof (struct strchartype));
 	if (chartypes == NULL)
 	    {
-	    (void) fprintf (stderr, LOOKUP_C_NO_LANG_SPACE);
+	    (void) fprintf (stderr, LOOKUP_C_NO_LANG_SPACE, MAYBE_CR (stderr));
 	    return (-1);
 	    }
 	for (i = 0, nextchar = hashheader.strtypestart;
-	  i < hashheader.nstrchartype;
+	  i < (int) hashheader.nstrchartype;
 	  i++)
 	    {
 	    chartypes[i].name = &hashstrings[nextchar];
-	    nextchar += strlen (chartypes[i].name) + 1;
-	    chartypes[i].deformatter = &hashstrings[nextchar];
+	    nextchar += strlen ((char *) chartypes[i].name) + 1;
+	    chartypes[i].deformatter = (char *) &hashstrings[nextchar];
 	    nextchar += strlen (chartypes[i].deformatter) + 1;
-	    chartypes[i].suffixes = &hashstrings[nextchar];
+	    chartypes[i].suffixes = (char *) &hashstrings[nextchar];
 	    while (hashstrings[nextchar] != '\0')
-		nextchar += strlen (&hashstrings[nextchar]) + 1;
+		nextchar += strlen ((char *) &hashstrings[nextchar]) + 1;
 	    nextchar++;
 	    }
 	}
@@ -453,8 +492,8 @@ struct dent * lookup (s, dotree)
     int				dotree;
     {
     register struct dent *	dp;
-    register char *		s1;
-    char			schar[INPUTWORDLEN + MAXAFFIXLEN];
+    register unsigned char *	s1;
+    unsigned char		schar[INPUTWORDLEN + MAXAFFIXLEN];
 
     dp = &hashtbl[hash (s, hashsize)];
     if (ichartostr (schar, s, sizeof schar, 1))
@@ -463,12 +502,11 @@ struct dent * lookup (s, dotree)
 	{
 	/* quick strcmp, but only for equality */
 	s1 = dp->word;
-	if (s1  &&  s1[0] == schar[0]  &&  strcmp (s1 + 1, schar + 1) == 0)
+	if (s1  &&  s1[0] == schar[0]
+	  &&  strcmp ((char *) s1 + 1, (char *) schar + 1) == 0)
 	    return dp;
-#ifndef NO_CAPITALIZATION_SUPPORT
 	while (dp->flagfield & MOREVARIANTS)	/* Skip variations */
 	    dp = dp->next;
-#endif
 	}
     if (dotree)
 	{

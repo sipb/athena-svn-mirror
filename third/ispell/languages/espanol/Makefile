@@ -1,7 +1,7 @@
 #
-# $Id: Makefile,v 1.1.1.1 1997-09-03 21:08:22 ghudson Exp $
+# $Id: Makefile,v 1.1.1.2 2007-02-01 19:49:54 ghudson Exp $
 #
-# Copyright 1993, Geoff Kuenning, Granada Hills, CA
+# Copyright 1993, 2001, Geoff Kuenning, Claremont, CA
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -17,10 +17,8 @@
 #    such.  Binary redistributions based on modified source code
 #    must be clearly marked as modified versions in the documentation
 #    and/or other materials provided with the distribution.
-# 4. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgment:
-#      This product includes software developed by Geoff Kuenning and
-#      other unpaid contributors.
+# 4. The code that causes the 'ispell -v' command to display a prominent
+#    link to the official ispell Web site may not be removed.
 # 5. The name of Geoff Kuenning may not be used to endorse or promote
 #    products derived from this software without specific prior
 #    written permission.
@@ -42,8 +40,9 @@
 # an example of a complex makefile, look at the makefile for English.
 #
 # $Log: not supported by cvs2svn $
-# Revision 1.1  1994/12/28  01:03:54  geoff
-# Initial revision
+# Revision 1.4  2005/04/14 13:27:40  geoff
+# Update license.  Allow LIBDIR to be relative.  Be sure to get copies
+# of buildhash and fix8bit from the source tree.  Drop unsq.
 #
 # Revision 1.6  1994/02/07  06:07:57  geoff
 # Add a dummy else clause to shell if-test for Ultrix
@@ -56,10 +55,10 @@
 SHELL = /bin/sh
 MAKE = make
 
+CONFIG		=	../../config.sh
 PATHADDER	=	../..
-BUILDHASH	=	buildhash
-UNSQ		=	unsq
-FIX8BIT		=	fix8bit
+BUILDHASH	=	../../buildhash
+FIX8BIT		=	../fix8bit
 
 #
 # The following variables make it easy to adapt this Makefile to
@@ -73,11 +72,33 @@ HASHFILE	=	$(LANGUAGE).hash
 # The following variables may be overridden by the superior Makefile,
 # based on the LANGUAGES variable in config.X.
 #
-AFFIXES	=	./$(LANGUAGE).aff
+AFFIXES	=	$(LANGUAGE).aff
+
+#
+#	Set this to "-vx" in the make command line if you need to
+#	debug the complex shell commands.
+#
+SHELLDEBUG = +vx
 
 all:	$(HASHFILE)
 
-$(HASHFILE):	$(AFFIXES) $(DICTIONARY)
+install: all $(CONFIG)
+	@. $(CONFIG); \
+	  set -x; \
+	  cd ../..; \
+	  [ -d $$LIBDIR ]  || \
+	    $(MAKE) -f ../../Makefile NEWDIR=$$LIBDIR mkdirpath; \
+	  cd $$LIBDIR; rm -f $(LANGUAGE).aff $(HASHFILE)
+	@. $(CONFIG); \
+	  set -x; \
+	  cp $(LANGUAGE).aff $(HASHFILE) \
+	    `cd ../..; cd $$LIBDIR; pwd`
+	@. $(CONFIG); \
+	  set -x; \
+	  cd ../..; cd $$LIBDIR; \
+	  chmod 644 $(LANGUAGE).aff $(HASHFILE)
+
+$(HASHFILE):	$(BUILDHASH) $(AFFIXES) $(DICTIONARY)
 	rm -f $(HASHFILE)
 	munchlist -v -l $(AFFIXES) $(DICTIONARY) > $(LANGUAGE).words+
 	$(BUILDHASH) $(LANGUAGE).words+ $(AFFIXES) $(HASHFILE)
@@ -88,22 +109,14 @@ build:
 $(LANGUAGE)-alt.aff:	$(LANGUAGE)-alt.7bit $(FIX8BIT)
 	$(FIX8BIT) -8 < $(LANGUAGE)-alt.7bit > $(LANGUAGE)-alt.aff
 
+$(FIX8BIT):	../fix8bit.c
+	cd ..; $(MAKE) fix8bit
+
 #
 #	The following dependency can be executed when ispell is unpacked,
 #	to unpack the dictionaries.
 #
 unpack:	$(AFFIXES)
-
-$(UNSQ):
-	set +e; \
-	if [ ! -x $(UNSQ) ]; \
-	then \
-	    set -e; \
-	    cd ../..; \
-	    $(MAKE) unsq; \
-	else \
-	    : ; \
-	fi
 
 clean:
 	rm -f core *.hash *.stat *.cnt
