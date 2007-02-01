@@ -1,8 +1,7 @@
-# $Id: Makefile.athena,v 1.4 2001-04-03 16:06:47 ghudson Exp $
+# $Id: Makefile.athena,v 1.5 2007-02-01 20:27:13 ghudson Exp $
 
 SHELL=/bin/sh
 IMAN=buildhash.1 findaffix.1 munchlist.1 tryaffix.1
-SMAN=unsq.1
 ATHBINDIR=/usr/athena/bin
 ATHSHAREDIR=/usr/athena/share
 ATHMANDIR=/usr/athena/man
@@ -16,18 +15,14 @@ prepare:
 
 clean:
 	${MAKE} clean
-	rm -f ${IMAN} ${SMAN}
+	rm -f ${IMAN}
 
-all: ${IMAN} ${SMAN}
+all: ${IMAN}
 	${MAKE} all
 
 ${IMAN}:
 	rm -f $@
 	echo ".so man1/ispell.1" > $@
-
-${SMAN}:
-	rm -f $@
-	echo ".so man1/sq.1" > $@
 
 check:
 
@@ -38,7 +33,7 @@ install:
 	-mkdir -p "$$SRVD${ATHBINDIR}"
 	-mkdir -p "$$SRVD${ATHSHAREDIR}"
 	-mkdir -p "$$SRVD${ATHMANDIR}/man1"
-	-mkdir -p "$$SRVD${ATHMANDIR}/man4"
+	-mkdir -p "$$SRVD${ATHMANDIR}/man5"
 	-mkdir -p "$$SRVD${ATHINFODIR}"
 	install -c -m 555 buildhash "$$SRVD${ATHBINDIR}"
 	install -c -m 555 findaffix "$$SRVD${ATHBINDIR}"
@@ -46,9 +41,9 @@ install:
 	install -c -m 555 ijoin "$$SRVD${ATHBINDIR}"
 	install -c -m 555 ispell "$$SRVD${ATHBINDIR}"
 	install -c -m 555 munchlist "$$SRVD${ATHBINDIR}"
-	install -c -m 555 sq "$$SRVD${ATHBINDIR}"
 	install -c -m 555 tryaffix "$$SRVD${ATHBINDIR}"
-	install -c -m 555 unsq "$$SRVD${ATHBINDIR}"
+	install -c -m 555 deformatters/defmt-c "$$SRVD${ATHBINDIR}"
+	install -c -m 555 deformatters/defmt-sh "$$SRVD${ATHBINDIR}"
 	install -c -m 444 languages/english/english.aff "$$SRVD${ATHSHAREDIR}"
 	install -c -m 444 languages/american/americanmed+.hash \
 		"$$SRVD${ATHSHAREDIR}"
@@ -60,10 +55,8 @@ install:
 	install -c -m 444 findaffix.1 "$$SRVD${ATHMANDIR}/man1"
 	install -c -m 444 ispell.1 "$$SRVD${ATHMANDIR}/man1"
 	install -c -m 444 munchlist.1 "$$SRVD${ATHMANDIR}/man1"
-	install -c -m 444 sq.1 "$$SRVD${ATHMANDIR}/man1"
 	install -c -m 444 tryaffix.1 "$$SRVD${ATHMANDIR}/man1"
-	install -c -m 444 unsq.1 "$$SRVD${ATHMANDIR}/man1"
-	install -c -m 444 ispell.4 "$$SRVD${ATHMANDIR}/man4"
-	install -c -m 444 languages/english/english.4l \
-		"$$SRVD${ATHMANDIR}/man4"
+	install -c -m 444 ispell.5 "$$SRVD${ATHMANDIR}/man5"
+	install -c -m 444 languages/english/english.5X \
+		"$$SRVD${ATHMANDIR}/man5"
 	install -c -m 444 ispell.info "$$SRVD${ATHINFODIR}/ispell"
