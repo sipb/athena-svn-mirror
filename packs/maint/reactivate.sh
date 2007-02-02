@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.80 2005-07-07 15:19:02 ghudson Exp $
+# $Id: reactivate.sh,v 1.81 2007-02-02 22:07:18 rbasch Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -17,6 +17,17 @@ afsconfig=/afs/athena.mit.edu/system/config/afs
 
 umask 22
 . /etc/athena/rc.conf
+
+case "$HOSTTYPE" in
+sun4)
+	# Quit now if the multi-user milestone has not been reached,
+	# i.e. we have not completed booting.
+	multi_user=`svcs -H -o state /milestone/multi-user 2>/dev/null`
+	if [ -n "$multi_user" -a "$multi_user" != online ]; then
+		exit 0
+	fi
+	;;
+esac
 
 # Quit now if in the middle of an update.
 if [ -f /var/athena/update.running ]; then
