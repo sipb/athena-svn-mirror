@@ -1667,7 +1667,8 @@ static int envvarok(varp)
 	    strncmp(varp, "LC_", strlen("LC_")) && /* locale stuff */
 	    strcmp(varp, "HES_DOMAIN") &&  /* hesiod */
 	    strcmp(varp, "HESIOD_CONFIG") && /* hesiod */
-	    strcmp(varp, "IFS")) {
+	    strcmp(varp, "IFS") &&
+	    !strchr(varp, '-')) {
 		return 1;
 	} else {
 		syslog(LOG_INFO, "Rejected the attempt to modify the environment variable \"%s\"", varp);
