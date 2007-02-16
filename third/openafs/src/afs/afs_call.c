@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_call.c,v 1.1.1.9 2006-12-04 18:59:12 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_call.c,v 1.1.1.10 2007-02-16 19:35:47 rbasch Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -279,6 +279,9 @@ afs_DaemonOp(long parm, long parm2, long parm3, long parm4, long parm5,
 
 #if defined(AFS_LINUX24_ENV) && defined(COMPLETION_H_EXISTS)
 struct afsd_thread_info {
+#if defined(AFS_LINUX26_ENV) && !defined(INIT_WORK_HAS_DATA)
+    struct work_struct tq;
+#endif
     unsigned long parm;
     struct completion *complete;
 };
@@ -411,9 +414,17 @@ afsd_thread(void *rock)
 }
 
 void
+#if defined(AFS_LINUX26_ENV) && !defined(INIT_WORK_HAS_DATA)
+afsd_launcher(struct work_struct *work)
+#else
 afsd_launcher(void *rock)
+#endif
 {
-    if (!kernel_thread(afsd_thread, rock, CLONE_VFORK | SIGCHLD))
+#if defined(AFS_LINUX26_ENV) && !defined(INIT_WORK_HAS_DATA)
+    struct afsd_thread_info *rock = container_of(work, struct afsd_thread_info, tq);
+#endif
+
+    if (!kernel_thread(afsd_thread, (void *)rock, CLONE_VFORK | SIGCHLD))
 	printf("kernel_thread failed. afs startup will not complete\n");
 }
 
@@ -452,8 +463,13 @@ afs_DaemonOp(long parm, long parm2, long parm3, long parm4, long parm5,
     info.complete = &c;
     info.parm = parm;
 #if defined(AFS_LINUX26_ENV)
+#if !defined(INIT_WORK_HAS_DATA)
+    INIT_WORK(&info.tq, afsd_launcher);
+    schedule_work(&info.tq);
+#else
     INIT_WORK(&tq, afsd_launcher, &info);
     schedule_work(&tq);
+#endif
 #else
     tq.sync = 0;
     INIT_LIST_HEAD(&tq.list);

@@ -19,20 +19,18 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/dsvs.c,v 1.1.1.4 2005-05-04 17:45:09 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/dsvs.c,v 1.1.1.5 2007-02-16 19:35:21 rbasch Exp $");
 
 #include <sys/types.h>
 #include <afs/cmd.h>
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
 #else
-#include <strings.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/param.h>
 #endif
-#include <stdio.h>
 #include <afs/com_err.h>
 
 #include <afs/bubasics.h>

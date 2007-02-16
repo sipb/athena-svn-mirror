@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/commands.c,v 1.1.1.6 2006-12-04 18:57:12 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/commands.c,v 1.1.1.7 2007-02-16 19:35:20 rbasch Exp $");
 
 #include <afs/stds.h>
 #if defined(AFS_LINUX24_ENV)
@@ -28,7 +28,6 @@ RCSID
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <strings.h>
 #endif
 #include <errno.h>
 #include <afs/com_err.h>
@@ -41,7 +40,6 @@ RCSID
 #include <afs/ktime.h>		/* PA */
 #include <time.h>
 
-#include <string.h>
 #include <lock.h>
 #include <afs/butc.h>
 #include <afs/tcdata.h>

@@ -14,7 +14,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_user.c,v 1.1.1.4 2005-03-10 20:29:42 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_user.c,v 1.1.1.5 2007-02-16 19:35:03 rbasch Exp $");
 
 #include "afs/stds.h"
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
@@ -598,6 +598,8 @@ afs_GCPAGs_perproc_func(AFS_PROC * pproc)
     pag = PagInCred(pcred);
 #if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD40_ENV) || defined(AFS_LINUX22_ENV)
     uid = (pag != NOPAG ? pag : pcred->cr_uid);
+#elif defined(AFS_SUN510_ENV)
+    uid = (pag != NOPAG ? pag : crgetruid(pcred));
 #else
     uid = (pag != NOPAG ? pag : pcred->cr_ruid);
 #endif

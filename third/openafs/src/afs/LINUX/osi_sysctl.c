@@ -1,7 +1,7 @@
 /*
  * osi_sysctl.c: Linux sysctl interface to OpenAFS
  *
- * $Id: osi_sysctl.c,v 1.1.1.4 2005-08-02 21:13:32 zacheiss Exp $
+ * $Id: osi_sysctl.c,v 1.1.1.5 2007-02-16 19:34:33 rbasch Exp $
  *
  * Written Jan 30, 2002 by Kris Van Hees (Sine Nomine Associates)
  */
@@ -14,7 +14,9 @@
 #include "afs/afs_stats.h"	/* afs statistics */
 
 #include <linux/sysctl.h>
+#ifdef CONFIG_H_EXISTS
 #include <linux/config.h>
+#endif
 
 /* From afs_analyze.c */
 extern afs_int32 hm_retry_RO;

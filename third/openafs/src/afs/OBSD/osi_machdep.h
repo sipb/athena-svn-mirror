@@ -16,7 +16,7 @@
  * afs_osi.h.
  */
 
-/* $Id: osi_machdep.h,v 1.1.1.4 2006-12-04 18:56:38 rbasch Exp $ */
+/* $Id: osi_machdep.h,v 1.1.1.5 2007-02-16 19:34:42 rbasch Exp $ */
 
 #ifndef _OSI_MACHDEP_H_
 #define _OSI_MACHDEP_H_
@@ -85,7 +85,6 @@
 #ifndef iodone
 #define iodone biodone
 #endif
-#define PAGESIZE	8192
 #define printk		printf	/* for RX version of xdr_* */
 #define setgroups	sys_setgroups
 #define UVM

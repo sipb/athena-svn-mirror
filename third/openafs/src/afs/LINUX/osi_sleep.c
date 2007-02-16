@@ -11,11 +11,15 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_sleep.c,v 1.1.1.7 2005-11-07 17:34:15 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_sleep.c,v 1.1.1.8 2007-02-16 19:35:15 rbasch Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
 #include "afs/afs_stats.h"	/* afs statistics */
+
+#if defined(FREEZER_H_EXISTS)
+#include <linux/freezer.h>
+#endif
 
 static int osi_TimedSleep(char *event, afs_int32 ams, int aintok);
 
@@ -198,7 +202,11 @@ afs_osi_SleepSig(void *event)
 #ifdef PF_FREEZE
 	    current->flags & PF_FREEZE
 #else
+#if defined(STRUCT_TASK_STRUCT_HAS_TODO)
 	    !current->todo
+#else
+            test_ti_thread_flag(current->thread_info, TIF_FREEZE)
+#endif
 #endif
 	    )
 #ifdef LINUX_REFRIGERATOR_TAKES_PF_FREEZE
@@ -292,7 +300,11 @@ osi_TimedSleep(char *event, afs_int32 ams, int aintok)
 #ifdef PF_FREEZE
 	    current->flags & PF_FREEZE
 #else
+#if defined(STRUCT_TASK_STRUCT_HAS_TODO)
 	    !current->todo
+#else
+            test_ti_thread_flag(current->thread_info, TIF_FREEZE)
+#endif
 #endif
 	    )
 #ifdef LINUX_REFRIGERATOR_TAKES_PF_FREEZE

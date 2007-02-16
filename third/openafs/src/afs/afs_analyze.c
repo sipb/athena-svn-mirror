@@ -14,7 +14,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_analyze.c,v 1.1.1.4 2005-03-10 20:32:38 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_analyze.c,v 1.1.1.5 2007-02-16 19:35:30 rbasch Exp $");
 
 #include "afs/stds.h"
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
@@ -636,28 +636,40 @@ afs_Analyze(register struct conn *aconn, afs_int32 acode,
 
 	tu = afs_FindUser(areq->uid, tsp->cell->cellNum, READ_LOCK);
 	if (tu) {
-	    if ((acode == VICETOKENDEAD) || (acode == RXKADEXPIRED))
+	    if (acode == VICETOKENDEAD) {
+		aconn->forceConnectFS = 1;
+	    } else if (acode == RXKADEXPIRED) {
+		aconn->forceConnectFS = 0;	/* don't check until new tokens set */
+		aconn->user->states |= UTokensBad;
 		afs_warnuser
 		    ("afs: Tokens for user of AFS id %d for cell %s have expired\n",
 		     tu->vid, aconn->srvr->server->cell->cellName);
-	    else
+	    } else {
+		aconn->forceConnectFS = 0;	/* don't check until new tokens set */
+		aconn->user->states |= UTokensBad;
 		afs_warnuser
 		    ("afs: Tokens for user of AFS id %d for cell %s are discarded (rxkad error=%d)\n",
 		     tu->vid, aconn->srvr->server->cell->cellName, acode);
+	    }
 	    afs_PutUser(tu, READ_LOCK);
 	} else {
 	    /* The else case shouldn't be possible and should probably be replaced by a panic? */
-	    if ((acode == VICETOKENDEAD) || (acode == RXKADEXPIRED))
+	    if (acode == VICETOKENDEAD) {
+		aconn->forceConnectFS = 1;
+	    } else if (acode == RXKADEXPIRED) {
+		aconn->forceConnectFS = 0;	/* don't check until new tokens set */
+		aconn->user->states |= UTokensBad;
 		afs_warnuser
 		    ("afs: Tokens for user %d for cell %s have expired\n",
 		     areq->uid, aconn->srvr->server->cell->cellName);
-	    else
+	    } else {
+		aconn->forceConnectFS = 0;	/* don't check until new tokens set */
+		aconn->user->states |= UTokensBad;
 		afs_warnuser
 		    ("afs: Tokens for user %d for cell %s are discarded (rxkad error = %d)\n",
 		     areq->uid, aconn->srvr->server->cell->cellName, acode);
+	    }
 	}
-	aconn->forceConnectFS = 0;	/* don't check until new tokens set */
-	aconn->user->states |= UTokensBad;
 	shouldRetry = 1;	/* Try again (as root). */
     }
     /* Check for access violation. */

@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bosserver.c,v 1.1.1.7 2006-12-04 18:56:32 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bosserver.c,v 1.1.1.8 2007-02-16 19:35:06 rbasch Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -419,7 +419,7 @@ ReadBozoFile(char *aname)
 	code =
 	    bnode_Create(typep, instp, &tb, parms[0], parms[1], parms[2],
 			 parms[3], parms[4], notifier,
-			 goal ? BSTAT_NORMAL : BSTAT_SHUTDOWN);
+			 goal ? BSTAT_NORMAL : BSTAT_SHUTDOWN, 0);
 	if (code)
 	    goto fail;
 

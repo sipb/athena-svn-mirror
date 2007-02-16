@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/expire.c,v 1.1.1.2 2005-03-10 20:30:10 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/expire.c,v 1.1.1.3 2007-02-16 19:35:21 rbasch Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -21,7 +21,6 @@ RCSID
 #include <afs/cmd.h>
 #include <ctype.h>
 #include "bc.h"
-#include <strings.h>
 
 
 #define	MAX_YEAR_VALUE	0

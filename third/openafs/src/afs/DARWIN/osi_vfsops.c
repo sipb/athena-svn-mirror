@@ -5,7 +5,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/osi_vfsops.c,v 1.1.1.6 2006-03-06 20:43:25 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/osi_vfsops.c,v 1.1.1.7 2007-02-16 19:35:17 rbasch Exp $");
 
 #include <afs/sysincludes.h>	/* Standard vendor system headers */
 #include <afsincludes.h>	/* Afs-based standard headers */
@@ -381,7 +381,13 @@ afs_statfs(struct mount *mp, STATFS_TYPE *abp, CTX_TYPE ctx)
      * storing something there.
      */
     abp->f_blocks = abp->f_bfree = abp->f_bavail = abp->f_files =
-	abp->f_ffree = 2000000;
+	abp->f_ffree = 
+#ifdef AFS_DARWIN80_ENV
+	2147483648
+#else
+	2000000
+#endif
+	;
 
     if (abp != sysstat) {
         abp->f_fsid.val[0] = sysstat->f_fsid.val[0];

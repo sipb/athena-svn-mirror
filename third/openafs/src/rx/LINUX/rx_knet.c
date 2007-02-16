@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_knet.c,v 1.1.1.8 2006-12-04 18:58:35 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_knet.c,v 1.1.1.9 2007-02-16 19:35:08 rbasch Exp $");
 
 #include <linux/version.h>
 #ifdef AFS_LINUX22_ENV
@@ -170,7 +170,11 @@ osi_NetReceive(osi_socket so, struct sockaddr_in *from, struct iovec *iov,
 #ifdef PF_FREEZE
 	    current->flags & PF_FREEZE
 #else
+#if defined(STRUCT_TASK_STRUCT_HAS_TODO)
 	    !current->todo
+#else
+            test_ti_thread_flag(current->thread_info, TIF_FREEZE)
+#endif
 #endif
 	    )
 #ifdef LINUX_REFRIGERATOR_TAKES_PF_FREEZE

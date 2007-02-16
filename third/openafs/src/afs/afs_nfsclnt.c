@@ -11,7 +11,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_nfsclnt.c,v 1.1.1.4 2005-05-04 17:44:50 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_nfsclnt.c,v 1.1.1.5 2007-02-16 19:35:03 rbasch Exp $");
 
 #if !defined(AFS_NONFSTRANS) || defined(AFS_AIX_IAUTH_ENV)
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
@@ -176,6 +176,7 @@ afs_nfsclient_reqhandler(exporter, cred, host, pagparam, outexporter)
     extern struct unixuser *afs_FindUser(), *afs_GetUser();
     register struct unixuser *au = 0;
     afs_int32 pag, code = 0;
+    uid_t uid;
 
     AFS_ASSERT_GLOCK();
     AFS_STATCNT(afs_nfsclient_reqhandler);
@@ -206,9 +207,14 @@ afs_nfsclient_reqhandler(exporter, cred, host, pagparam, outexporter)
 		pag = NOPAG;	/*  No unixuser struct so pag not trusted  */
 	}
     }
-    np = afs_FindNfsClientPag((*cred)->cr_uid, host, 0);
+#if defined(AFS_SUN510_ENV)
+    uid = crgetuid(*cred);
+#else
+    uid = (*cred)->cr_uid;
+#endif
+    np = afs_FindNfsClientPag(uid, host, 0);
     afs_Trace4(afs_iclSetp, CM_TRACE_NFSREQH, ICL_TYPE_INT32, pag,
-	       ICL_TYPE_LONG, (*cred)->cr_uid, ICL_TYPE_INT32, host,
+	       ICL_TYPE_LONG, uid, ICL_TYPE_INT32, host,
 	       ICL_TYPE_POINTER, np);
     if (!np) {
 	/* Even if there is a "good" pag coming in we don't accept it if no nfsclientpag struct exists for the user since that would mean that the translator rebooted and therefore we ignore all older pag values */

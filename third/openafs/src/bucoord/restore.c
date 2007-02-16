@@ -15,7 +15,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/restore.c,v 1.1.1.3 2005-05-04 17:44:56 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/restore.c,v 1.1.1.4 2007-02-16 19:35:21 rbasch Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -23,7 +23,6 @@ RCSID
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
 #else
-#include <strings.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>

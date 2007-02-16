@@ -11,7 +11,7 @@
 
 #ifndef lint
 static char rcsid_send_to_kdc_c[] =
-"$Id: krb_util.c,v 1.1.1.2 2005-08-02 21:14:54 zacheiss Exp $";
+"$Id: krb_util.c,v 1.1.1.3 2007-02-16 19:35:56 rbasch Exp $";
 #endif /* lint */
 
 #if 0
@@ -40,7 +40,7 @@ static char rcsid_send_to_kdc_c[] =
 
 #define S_AD_SZ sizeof(struct sockaddr_in)
 
-char *afs_realm_of_cell(krb5_context context, struct afsconf_cell *cellconfig)
+char *afs_realm_of_cell(krb5_context context, struct afsconf_cell *cellconfig, int fallback)
 {
     static char krbrlm[REALM_SZ+1];
 	char **hrealms = 0;
@@ -48,13 +48,26 @@ char *afs_realm_of_cell(krb5_context context, struct afsconf_cell *cellconfig)
 
     if (!cellconfig)
 	return 0;
-    if (retval = krb5_get_host_realm(context,
-				cellconfig->hostName[0], &hrealms))
-		return 0; 
+
+    if (fallback) {
+	char * p;
+	p = strchr(cellconfig->hostName[0], '.');
+	if (p++)
+	    strcpy(krbrlm, p);
+	else
+	    strcpy(krbrlm, cellconfig->name);
+	for (p=krbrlm; *p; p++) {
+	    if (islower(*p)) 
+		*p = toupper(*p);
+	}
+    } else {
+	if (retval = krb5_get_host_realm(context,
+					 cellconfig->hostName[0], &hrealms))
+	    return 0; 
 	if(!hrealms[0]) return 0;
 	strcpy(krbrlm, hrealms[0]);
 
 	if (hrealms) krb5_free_host_realm(context, hrealms);
-    
+    }
     return krbrlm;
 }
