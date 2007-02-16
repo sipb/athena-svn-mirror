@@ -697,6 +697,7 @@ RHCONFIG_SP
 RHCONFIG_MP
 MPS
 PTHREAD_LIBS
+USE_UNIX_SOCKETS
 XBSA_CFLAGS
 HAVE_PAM
 BUILD_LOGIN
@@ -780,7 +781,6 @@ KRB5_CONFIG
 BUILD_KRB5
 KRB5CFLAGS
 KRB5LIBS
-ASETKEY
 HELPER_SPLINT
 HELPER_SPLINTCFG
 LIBOBJS
@@ -1385,6 +1385,7 @@ Optional Features:
   --enable-supergroups 		enable support for nested pts groups
   --enable-fast-restart 		enable fast startup of file server without salvaging
   --enable-bitmap-later 		enable fast startup of file server by not reading bitmap till needed
+  --enable-unix-sockets               enable use of unix domain sockets for fssync
   --disable-full-vos-listvol-switch    disable vos full listvol switch for formatted output
   --disable-kernel-module             	disable compilation of the kernel module (defaults to enabled)
   --enable-redhat-buildsys		enable compilation of the redhat build system kernel (defaults to disabled)
@@ -2168,7 +2169,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=openafs
- VERSION=1.4.2
+ VERSION=1.4.3rc2
 
 
 cat >>confdefs.h <<_ACEOF
@@ -4695,6 +4696,13 @@ else
   enable_bitmap_later="no"
 fi
 
+# Check whether --enable-unix-sockets was given.
+if test "${enable_unix_sockets+set}" = set; then
+  enableval=$enable_unix_sockets;
+else
+  enable_unix_sockets="yes"
+fi
+
 # Check whether --enable-full-vos-listvol-switch was given.
 if test "${enable_full_vos_listvol_switch+set}" = set; then
   enableval=$enable_full_vos_listvol_switch;
@@ -6484,6 +6492,9 @@ echo $ECHO_N "checking your AFS sysname... $ECHO_C" >&6; }
 		sparc-sun-solaris2.10)
 			AFS_SYSNAME="sun4x_510"
 			;;
+		sparc-sun-solaris2.11)
+			AFS_SYSNAME="sun4x_511"
+			;;
 		sparc-sun-sunos4*)
 			AFS_SYSNAME="sun4_413"
 			enable_login="yes"
@@ -6499,6 +6510,9 @@ echo $ECHO_N "checking your AFS sysname... $ECHO_C" >&6; }
 			;;
 		i386-pc-solaris2.10)
 			AFS_SYSNAME="sunx86_510"
+			;;
+		i386-pc-solaris2.11)
+			AFS_SYSNAME="sunx86_511"
 			;;
 		alpha*-dec-osf4.0*)
 			AFS_SYSNAME="alpha_dux40"
@@ -7069,6 +7083,243 @@ cp  $tmpldir/osi_vfs.hin $outputdir/osi_vfs.h
 
 
 
+  { echo "$as_me:$LINENO: checking for linux kernel module build works" >&5
+echo $ECHO_N "checking for linux kernel module build works... $ECHO_C" >&6; }
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+#include <linux/sched.h>
+#include <linux/fs.h>
+
+void conftest(void)
+{
+
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then :
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+    { { echo "$as_me:$LINENO: error: Fix problem or use --disable-kernel-module...
+See \`config.log' for more details." >&5
+echo "$as_me: error: Fix problem or use --disable-kernel-module...
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/sched.h>
+#include <linux/fs.h>
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  :
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	{ echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+    { { echo "$as_me:$LINENO: error: Fix problem or use --disable-kernel-module...
+See \`config.log' for more details." >&5
+echo "$as_me: error: Fix problem or use --disable-kernel-module...
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
+  { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
+
+  { echo "$as_me:$LINENO: checking for linux/config.h existance" >&5
+echo $ECHO_N "checking for linux/config.h existance... $ECHO_C" >&6; }
+  if test "${ac_cv_linux_config_h_exists+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+#include <linux/config.h>
+
+void conftest(void)
+{
+return;
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_config_h_exists=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_config_h_exists=no
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/config.h>
+int
+main ()
+{
+return;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_config_h_exists=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_linux_config_h_exists=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
+fi
+
+  { echo "$as_me:$LINENO: result: $ac_cv_linux_config_h_exists" >&5
+echo "${ECHO_T}$ac_cv_linux_config_h_exists" >&6; }
+  if test "x$ac_cv_linux_config_h_exists" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define CONFIG_H_EXISTS 1
+_ACEOF
+
+  fi
+
   { echo "$as_me:$LINENO: checking for linux/completion.h existance" >&5
 echo $ECHO_N "checking for linux/completion.h existance... $ECHO_C" >&6; }
   if test "${ac_cv_linux_completion_h_exists+set}" = set; then
@@ -7076,17 +7327,20 @@ echo $ECHO_N "checking for linux/completion.h existance... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/version.h>
 #include <linux/completion.h>
@@ -7101,19 +7355,17 @@ lose
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_completion_h_exists=yes
-else
-  ac_cv_linux_completion_h_exists=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_completion_h_exists=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_completion_h_exists=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -7194,17 +7446,20 @@ echo $ECHO_N "checking for defined for_each_process... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -7217,19 +7472,17 @@ void conftest(void)
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_defines_for_each_process=yes
-else
-  ac_cv_linux_defines_for_each_process=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_defines_for_each_process=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_defines_for_each_process=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -7308,17 +7561,20 @@ echo $ECHO_N "checking for defined prev_task... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -7331,19 +7587,17 @@ void conftest(void)
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_defines_prev_task=yes
-else
-  ac_cv_linux_defines_prev_task=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_defines_prev_task=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_defines_prev_task=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -7422,17 +7676,20 @@ echo $ECHO_N "checking for alloc_inode in struct super_operations... $ECHO_C" >&
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -7444,19 +7701,17 @@ printk("%p\n", _super.alloc_inode);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_super_has_alloc_inode=yes
-else
-  ac_cv_linux_fs_struct_super_has_alloc_inode=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_super_has_alloc_inode=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_super_has_alloc_inode=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -7534,17 +7789,20 @@ echo $ECHO_N "checking for page_lock in struct address_space... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -7556,19 +7814,17 @@ printk("%x\n", _a_s.page_lock);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_address_space_has_page_lock=yes
-else
-  ac_cv_linux_fs_struct_address_space_has_page_lock=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_address_space_has_page_lock=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_address_space_has_page_lock=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -7646,17 +7902,20 @@ echo $ECHO_N "checking for gfp_mask in struct address_space... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -7668,19 +7927,17 @@ printk("%d\n", _a.gfp_mask);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_address_space_has_gfp_mask=yes
-else
-  ac_cv_linux_fs_struct_address_space_has_gfp_mask=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_address_space_has_gfp_mask=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_address_space_has_gfp_mask=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -7758,17 +8015,20 @@ echo $ECHO_N "checking for i_alloc_sem in struct inode... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -7780,19 +8040,17 @@ printk("%x\n", _i.i_alloc_sem);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_i_alloc_sem=yes
-else
-  ac_cv_linux_fs_struct_inode_has_i_alloc_sem=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_i_alloc_sem=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_i_alloc_sem=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -7863,6 +8121,126 @@ fi
   { echo "$as_me:$LINENO: result: $ac_cv_linux_fs_struct_inode_has_i_alloc_sem" >&5
 echo "${ECHO_T}$ac_cv_linux_fs_struct_inode_has_i_alloc_sem" >&6; }
 
+  { echo "$as_me:$LINENO: checking for i_blkbits in struct inode" >&5
+echo $ECHO_N "checking for i_blkbits in struct inode... $ECHO_C" >&6; }
+  if test "${ac_cv_linux_fs_struct_inode_has_i_blkbits+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+#include <linux/fs.h>
+
+void conftest(void)
+{
+struct inode _inode;
+printk("%d\n", _inode.i_blkbits);
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_i_blkbits=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_i_blkbits=no
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/fs.h>
+int
+main ()
+{
+struct inode _inode;
+printk("%d\n", _inode.i_blkbits);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_fs_struct_inode_has_i_blkbits=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_linux_fs_struct_inode_has_i_blkbits=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
+fi
+
+  { echo "$as_me:$LINENO: result: $ac_cv_linux_fs_struct_inode_has_i_blkbits" >&5
+echo "${ECHO_T}$ac_cv_linux_fs_struct_inode_has_i_blkbits" >&6; }
+  if test "x$ac_cv_linux_fs_struct_inode_has_i_blkbits" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define STRUCT_INODE_HAS_I_BLKBITS 1
+_ACEOF
+
+  fi
+
   { echo "$as_me:$LINENO: checking for i_blksize in struct inode" >&5
 echo $ECHO_N "checking for i_blksize in struct inode... $ECHO_C" >&6; }
   if test "${ac_cv_linux_fs_struct_inode_has_i_blksize+set}" = set; then
@@ -7870,17 +8248,20 @@ echo $ECHO_N "checking for i_blksize in struct inode... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -7892,19 +8273,17 @@ printk("%d\n", _inode.i_blksize);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_i_blksize=yes
-else
-  ac_cv_linux_fs_struct_inode_has_i_blksize=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_i_blksize=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_i_blksize=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -7982,17 +8361,20 @@ echo $ECHO_N "checking for i_truncate_sem in struct inode... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -8004,19 +8386,17 @@ printk("%x\n", _i.i_truncate_sem);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_i_truncate_sem=yes
-else
-  ac_cv_linux_fs_struct_inode_has_i_truncate_sem=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_i_truncate_sem=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_i_truncate_sem=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -8094,17 +8474,20 @@ echo $ECHO_N "checking for i_dirty_data_buffers in struct inode... $ECHO_C" >&6;
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -8116,19 +8499,17 @@ printk("%d\n", _inode.i_dirty_data_buffers);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_i_dirty_data_buffers=yes
-else
-  ac_cv_linux_fs_struct_inode_has_i_dirty_data_buffers=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_i_dirty_data_buffers=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_i_dirty_data_buffers=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -8206,17 +8587,20 @@ echo $ECHO_N "checking for i_devices in struct inode... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -8228,19 +8612,17 @@ printk("%d\n", _inode.i_devices);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_i_devices=yes
-else
-  ac_cv_linux_fs_struct_inode_has_i_devices=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_i_devices=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_i_devices=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -8318,17 +8700,20 @@ echo $ECHO_N "checking for i_mmap_shared in struct inode... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -8340,19 +8725,17 @@ printk("%d\n", _inode.i_mmap_shared);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_i_mmap_shared=yes
-else
-  ac_cv_linux_fs_struct_inode_has_i_mmap_shared=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_i_mmap_shared=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_i_mmap_shared=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -8430,17 +8813,20 @@ echo $ECHO_N "checking for i_mutex in struct inode... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -8452,19 +8838,17 @@ printk("%d\n", _inode.i_mutex);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_i_mutex=yes
-else
-  ac_cv_linux_fs_struct_inode_has_i_mutex=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_i_mutex=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_i_mutex=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -8542,17 +8926,20 @@ echo $ECHO_N "checking for i_sb_list in struct inode... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -8564,19 +8951,17 @@ printk("%d\n", _inode.i_sb_list);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_i_sb_list=yes
-else
-  ac_cv_linux_fs_struct_inode_has_i_sb_list=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_i_sb_list=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_i_sb_list=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -8654,17 +9039,20 @@ echo $ECHO_N "checking for i_security in struct inode... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -8676,19 +9064,17 @@ printk("%d\n", _inode.i_security);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_i_security=yes
-else
-  ac_cv_linux_fs_struct_inode_has_i_security=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_i_security=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_i_security=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -8766,17 +9152,20 @@ echo $ECHO_N "checking for inotify_lock in struct inode... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -8788,19 +9177,17 @@ printk("%d\n", _inode.inotify_lock);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_inotify_lock=yes
-else
-  ac_cv_linux_fs_struct_inode_has_inotify_lock=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_inotify_lock=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_inotify_lock=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -8878,17 +9265,20 @@ echo $ECHO_N "checking for inotify_sem in struct inode... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -8900,19 +9290,17 @@ printk("%x\n", _inode.inotify_sem);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_fs_struct_inode_has_inotify_sem=yes
-else
-  ac_cv_linux_fs_struct_inode_has_inotify_sem=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_inode_has_inotify_sem=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_inode_has_inotify_sem=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -8990,17 +9378,20 @@ echo $ECHO_N "checking for inode_setattr return type... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -9014,19 +9405,17 @@ i = inode_setattr(&_inode, &_iattr);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_func_inode_setattr_returns_int=yes
-else
-  ac_cv_linux_func_inode_setattr_returns_int=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_func_inode_setattr_returns_int=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_func_inode_setattr_returns_int=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -9106,17 +9495,20 @@ echo $ECHO_N "checking for write_inode return type... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -9130,19 +9522,17 @@ i = _sops.write_inode(&_inode, 0);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_func_write_inode_returns_int=yes
-else
-  ac_cv_linux_func_write_inode_returns_int=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_func_write_inode_returns_int=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_func_write_inode_returns_int=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -9222,17 +9612,20 @@ echo $ECHO_N "checking whether inode_operations.create takes a nameidata... $ECH
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/namei.h>
@@ -9247,19 +9640,17 @@ struct nameidata _nameidata;
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_func_i_create_takes_nameidata=yes
-else
-  ac_cv_linux_func_i_create_takes_nameidata=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_func_i_create_takes_nameidata=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_func_i_create_takes_nameidata=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -9340,17 +9731,20 @@ echo $ECHO_N "checking whether inode_operations.lookup takes a nameidata... $ECH
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/namei.h>
@@ -9365,19 +9759,17 @@ struct nameidata _nameidata;
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_func_i_lookup_takes_nameidata=yes
-else
-  ac_cv_linux_func_i_lookup_takes_nameidata=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_func_i_lookup_takes_nameidata=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_func_i_lookup_takes_nameidata=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -9458,17 +9850,20 @@ echo $ECHO_N "checking whether inode_operations.permission takes a nameidata... 
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/namei.h>
@@ -9483,19 +9878,17 @@ struct nameidata _nameidata;
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_func_i_permission_takes_nameidata=yes
-else
-  ac_cv_linux_func_i_permission_takes_nameidata=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_func_i_permission_takes_nameidata=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_func_i_permission_takes_nameidata=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -9576,17 +9969,20 @@ echo $ECHO_N "checking whether dentry_operations.d_revalidate takes a nameidata.
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/namei.h>
@@ -9600,19 +9996,17 @@ struct nameidata _nameidata;
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_func_d_revalidate_takes_nameidata=yes
-else
-  ac_cv_linux_func_d_revalidate_takes_nameidata=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_func_d_revalidate_takes_nameidata=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_func_d_revalidate_takes_nameidata=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -9692,17 +10086,20 @@ echo $ECHO_N "checking whether address_space_operations.writepage takes a writeb
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/mm.h>
@@ -9718,19 +10115,17 @@ struct writeback_control _writeback_control;
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_func_a_writepage_takes_writeback_control=yes
-else
-  ac_cv_linux_func_a_writepage_takes_writeback_control=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_func_a_writepage_takes_writeback_control=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_func_a_writepage_takes_writeback_control=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -9804,6 +10199,119 @@ fi
 
   { echo "$as_me:$LINENO: result: $ac_cv_linux_func_a_writepage_takes_writeback_control" >&5
 echo "${ECHO_T}$ac_cv_linux_func_a_writepage_takes_writeback_control" >&6; }
+
+  { echo "$as_me:$LINENO: checking for flock in struct file_operations" >&5
+echo $ECHO_N "checking for flock in struct file_operations... $ECHO_C" >&6; }
+  if test "${ac_cv_linux_fs_struct_fop_has_flock+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+#include <linux/fs.h>
+
+void conftest(void)
+{
+struct file_operations _fop;
+_fop.flock(NULL, 0, NULL);
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_fs_struct_fop_has_flock=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_fs_struct_fop_has_flock=no
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/fs.h>
+int
+main ()
+{
+struct file_operations _fop;
+_fop.flock(NULL, 0, NULL);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_fs_struct_fop_has_flock=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_linux_fs_struct_fop_has_flock=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
+fi
+
+  { echo "$as_me:$LINENO: result: $ac_cv_linux_fs_struct_fop_has_flock" >&5
+echo "${ECHO_T}$ac_cv_linux_fs_struct_fop_has_flock" >&6; }
 
   { echo "$as_me:$LINENO: checking for linux/syscall.h in kernel" >&5
 echo $ECHO_N "checking for linux/syscall.h in kernel... $ECHO_C" >&6; }
@@ -9912,17 +10420,20 @@ echo $ECHO_N "checking for 5th argument in sock_create found in some SELinux ker
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/net.h>
 
@@ -9933,19 +10444,17 @@ sock_create(0,0,0,0,0);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_kernel_sock_create_v=yes
-else
-  ac_cv_linux_kernel_sock_create_v=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_kernel_sock_create_v=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_kernel_sock_create_v=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -10024,17 +10533,20 @@ else
     save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$CPPFLAGS -Werror-implicit-function-declaration"
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -10045,19 +10557,17 @@ page_follow_link(0,0);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_kernel_page_follow_link=yes
-else
-  ac_cv_linux_kernel_page_follow_link=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_kernel_page_follow_link=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_kernel_page_follow_link=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -10163,17 +10673,20 @@ echo $ECHO_N "checking for recalc_sigpending arg type... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -10184,19 +10697,17 @@ recalc_sigpending();
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_func_recalc_sigpending_takes_void=yes
-else
-  ac_cv_linux_func_recalc_sigpending_takes_void=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_func_recalc_sigpending_takes_void=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_func_recalc_sigpending_takes_void=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -10273,17 +10784,20 @@ echo $ECHO_N "checking for parent in struct task_struct... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -10295,19 +10809,17 @@ printk("%d\n", _tsk.parent);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_sched_struct_task_struct_has_parent=yes
-else
-  ac_cv_linux_sched_struct_task_struct_has_parent=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_sched_struct_task_struct_has_parent=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_sched_struct_task_struct_has_parent=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -10385,17 +10897,20 @@ echo $ECHO_N "checking for real_parent in struct task_struct... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -10407,19 +10922,17 @@ printk("%d\n", _tsk.real_parent);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_sched_struct_task_struct_has_real_parent=yes
-else
-  ac_cv_linux_sched_struct_task_struct_has_real_parent=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_sched_struct_task_struct_has_real_parent=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_sched_struct_task_struct_has_real_parent=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -10497,17 +11010,20 @@ echo $ECHO_N "checking for sig in struct task_struct... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -10519,19 +11035,17 @@ printk("%d\n", _tsk.sig);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_sched_struct_task_struct_has_sig=yes
-else
-  ac_cv_linux_sched_struct_task_struct_has_sig=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_sched_struct_task_struct_has_sig=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_sched_struct_task_struct_has_sig=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -10609,17 +11123,20 @@ echo $ECHO_N "checking for sighand in struct task_struct... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -10631,19 +11148,17 @@ printk("%d\n", _tsk.sighand);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_sched_struct_task_struct_has_sighand=yes
-else
-  ac_cv_linux_sched_struct_task_struct_has_sighand=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_sched_struct_task_struct_has_sighand=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_sched_struct_task_struct_has_sighand=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -10721,17 +11236,20 @@ echo $ECHO_N "checking for sigmask_lock in struct task_struct... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -10743,19 +11261,17 @@ printk("%d\n", _tsk.sigmask_lock);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_sched_struct_task_struct_has_sigmask_lock=yes
-else
-  ac_cv_linux_sched_struct_task_struct_has_sigmask_lock=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_sched_struct_task_struct_has_sigmask_lock=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_sched_struct_task_struct_has_sigmask_lock=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -10833,17 +11349,20 @@ echo $ECHO_N "checking for rlim in struct task_struct... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -10855,19 +11374,17 @@ printk("%d\n", _tsk.rlim);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_sched_struct_task_struct_has_rlim=yes
-else
-  ac_cv_linux_sched_struct_task_struct_has_rlim=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_sched_struct_task_struct_has_rlim=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_sched_struct_task_struct_has_rlim=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -10945,17 +11462,20 @@ echo $ECHO_N "checking for signal->rlim in struct task_struct... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -10967,19 +11487,17 @@ printk("%d\n", _tsk.signal->rlim);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_sched_struct_task_struct_has_signal_rlim=yes
-else
-  ac_cv_linux_sched_struct_task_struct_has_signal_rlim=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_sched_struct_task_struct_has_signal_rlim=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_sched_struct_task_struct_has_signal_rlim=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -11057,17 +11575,20 @@ echo $ECHO_N "checking for exit_state in struct task_struct... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
 
@@ -11079,19 +11600,17 @@ printk("%d\n", _tsk.exit_state);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_sched_struct_task_struct_has_exit_state=yes
-else
-  ac_cv_linux_sched_struct_task_struct_has_exit_state=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_sched_struct_task_struct_has_exit_state=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_sched_struct_task_struct_has_exit_state=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -11162,6 +11681,349 @@ fi
   { echo "$as_me:$LINENO: result: $ac_cv_linux_sched_struct_task_struct_has_exit_state" >&5
 echo "${ECHO_T}$ac_cv_linux_sched_struct_task_struct_has_exit_state" >&6; }
 
+  { echo "$as_me:$LINENO: checking for tgid in struct task_struct" >&5
+echo $ECHO_N "checking for tgid in struct task_struct... $ECHO_C" >&6; }
+  if test "${ac_cv_linux_sched_struct_task_struct_has_tgid+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+#include <linux/sched.h>
+
+void conftest(void)
+{
+struct task_struct _tsk;
+printk("%d\n", _tsk.tgid);
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_sched_struct_task_struct_has_tgid=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_sched_struct_task_struct_has_tgid=no
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/sched.h>
+int
+main ()
+{
+struct task_struct _tsk;
+printk("%d\n", _tsk.tgid);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_sched_struct_task_struct_has_tgid=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_linux_sched_struct_task_struct_has_tgid=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
+fi
+
+  { echo "$as_me:$LINENO: result: $ac_cv_linux_sched_struct_task_struct_has_tgid" >&5
+echo "${ECHO_T}$ac_cv_linux_sched_struct_task_struct_has_tgid" >&6; }
+
+  { echo "$as_me:$LINENO: checking for todo in struct task_struct" >&5
+echo $ECHO_N "checking for todo in struct task_struct... $ECHO_C" >&6; }
+  if test "${ac_cv_linux_sched_struct_task_struct_has_todo+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+#include <linux/sched.h>
+
+void conftest(void)
+{
+struct task_struct _tsk;
+printk("%d\n", _tsk.todo);
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_sched_struct_task_struct_has_todo=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_sched_struct_task_struct_has_todo=no
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/sched.h>
+int
+main ()
+{
+struct task_struct _tsk;
+printk("%d\n", _tsk.todo);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_sched_struct_task_struct_has_todo=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_linux_sched_struct_task_struct_has_todo=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
+fi
+
+  { echo "$as_me:$LINENO: result: $ac_cv_linux_sched_struct_task_struct_has_todo" >&5
+echo "${ECHO_T}$ac_cv_linux_sched_struct_task_struct_has_todo" >&6; }
+
+  { echo "$as_me:$LINENO: checking for exported tasklist_lock" >&5
+echo $ECHO_N "checking for exported tasklist_lock... $ECHO_C" >&6; }
+  if test "${ac_cv_linux_exports_tasklist_lock+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+
+#include <linux/sched.h>
+
+void conftest(void)
+{
+
+extern rwlock_t tasklist_lock __attribute__((weak));
+
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_exports_tasklist_lock=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_exports_tasklist_lock=no
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+#include <linux/sched.h>
+int
+main ()
+{
+
+extern rwlock_t tasklist_lock __attribute__((weak));
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_exports_tasklist_lock=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_linux_exports_tasklist_lock=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
+fi
+
+  { echo "$as_me:$LINENO: result: $ac_cv_linux_exports_tasklist_lock" >&5
+echo "${ECHO_T}$ac_cv_linux_exports_tasklist_lock" >&6; }
+
   { echo "$as_me:$LINENO: checking for struct vfsmount * in get_sb_nodev()" >&5
 echo $ECHO_N "checking for struct vfsmount * in get_sb_nodev()... $ECHO_C" >&6; }
   if test "${ac_cv_linux_get_sb_has_struct_vfsmount+set}" = set; then
@@ -11169,17 +12031,20 @@ echo $ECHO_N "checking for struct vfsmount * in get_sb_nodev()... $ECHO_C" >&6; 
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -11190,19 +12055,17 @@ get_sb_nodev(0,0,0,0,0);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_get_sb_has_struct_vfsmount=yes
-else
-  ac_cv_linux_get_sb_has_struct_vfsmount=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_get_sb_has_struct_vfsmount=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_get_sb_has_struct_vfsmount=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -11272,6 +12135,248 @@ fi
   { echo "$as_me:$LINENO: result: $ac_cv_linux_get_sb_has_struct_vfsmount" >&5
 echo "${ECHO_T}$ac_cv_linux_get_sb_has_struct_vfsmount" >&6; }
 
+  { echo "$as_me:$LINENO: checking for dentry in statfs" >&5
+echo $ECHO_N "checking for dentry in statfs... $ECHO_C" >&6; }
+  if test "${ac_cv_linux_statfs_takes_dentry+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+#include <linux/fs.h>
+#include <linux/statfs.h>
+
+void conftest(void)
+{
+
+extern int vfs_statfs(struct dentry *, struct kstatfs *);
+
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_statfs_takes_dentry=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_statfs_takes_dentry=no
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/fs.h>
+#include <linux/statfs.h>
+int
+main ()
+{
+
+extern int vfs_statfs(struct dentry *, struct kstatfs *);
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_statfs_takes_dentry=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_linux_statfs_takes_dentry=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
+fi
+
+  { echo "$as_me:$LINENO: result: $ac_cv_linux_statfs_takes_dentry" >&5
+echo "${ECHO_T}$ac_cv_linux_statfs_takes_dentry" >&6; }
+
+  { echo "$as_me:$LINENO: checking for linux/freezer.h existance" >&5
+echo $ECHO_N "checking for linux/freezer.h existance... $ECHO_C" >&6; }
+  if test "${ac_cv_linux_freezer_h_exists+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+#include <linux/freezer.h>
+
+void conftest(void)
+{
+return;
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_freezer_h_exists=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_freezer_h_exists=no
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/freezer.h>
+int
+main ()
+{
+return;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_freezer_h_exists=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_linux_freezer_h_exists=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
+fi
+
+  { echo "$as_me:$LINENO: result: $ac_cv_linux_freezer_h_exists" >&5
+echo "${ECHO_T}$ac_cv_linux_freezer_h_exists" >&6; }
+  if test "x$ac_cv_linux_freezer_h_exists" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define FREEZER_H_EXISTS 1
+_ACEOF
+
+  fi
+		 if test "x$ac_cv_linux_freezer_h_exists" = "xyes" ; then
+
+cat >>confdefs.h <<\_ACEOF
+#define FREEZER_H_EXISTS 1
+_ACEOF
+
+		 fi
+
   { echo "$as_me:$LINENO: checking whether refrigerator takes PF_FREEZE" >&5
 echo $ECHO_N "checking whether refrigerator takes PF_FREEZE... $ECHO_C" >&6; }
   if test "${ac_cv_linux_func_refrigerator_takes_pf_freeze+set}" = set; then
@@ -11279,19 +12384,25 @@ echo $ECHO_N "checking whether refrigerator takes PF_FREEZE... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/sched.h>
+#ifdef FREEZER_H_EXISTS
+#include <linux/freezer.h>
+#endif
 
 void conftest(void)
 {
@@ -11300,19 +12411,17 @@ refrigerator(PF_FREEZE);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_func_refrigerator_takes_pf_freeze=yes
-else
-  ac_cv_linux_func_refrigerator_takes_pf_freeze=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_func_refrigerator_takes_pf_freeze=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_func_refrigerator_takes_pf_freeze=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -11324,6 +12433,9 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <linux/sched.h>
+#ifdef FREEZER_H_EXISTS
+#include <linux/freezer.h>
+#endif
 int
 main ()
 {
@@ -11389,17 +12501,20 @@ echo $ECHO_N "checking for linux kernel keyring support... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/rwsem.h>
 #include <linux/key.h>
@@ -11409,8 +12524,8 @@ void conftest(void)
 {
 #ifdef CONFIG_KEYS
 request_key(NULL, NULL, NULL);
-#if !defined(KEY_POS_VIEW) || !defined(KEY_POS_SEARCH)
-#error "Your linux/key.h does not contain KEY_POS_VIEW or KEY_POS_SEARCH"
+#if !defined(KEY_POS_VIEW) || !defined(KEY_POS_SEARCH) || !defined(KEY_POS_SETATTR)
+#error "Your linux/key.h does not contain KEY_POS_VIEW or KEY_POS_SEARCH or KEY_POS_SETATTR"
 #endif
 #else
 #error rebuild your kernel with CONFIG_KEYS
@@ -11419,19 +12534,17 @@ request_key(NULL, NULL, NULL);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_keyring_support=yes
-else
-  ac_cv_linux_keyring_support=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_keyring_support=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_keyring_support=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -11450,8 +12563,8 @@ main ()
 {
 #ifdef CONFIG_KEYS
 request_key(NULL, NULL, NULL);
-#if !defined(KEY_POS_VIEW) || !defined(KEY_POS_SEARCH)
-#error "Your linux/key.h does not contain KEY_POS_VIEW or KEY_POS_SEARCH"
+#if !defined(KEY_POS_VIEW) || !defined(KEY_POS_SEARCH) || !defined(KEY_POS_SETATTR)
+#error "Your linux/key.h does not contain KEY_POS_VIEW or KEY_POS_SEARCH or KEY_POS_SETATTR"
 #endif
 #else
 #error rebuild your kernel with CONFIG_KEYS
@@ -11524,17 +12637,20 @@ echo $ECHO_N "checking if key_alloc() takes a struct task *... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/rwsem.h>
 #include <linux/key.h>
@@ -11547,19 +12663,17 @@ void conftest(void)
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_key_alloc_needs_struct_task=yes
-else
-  ac_cv_key_alloc_needs_struct_task=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_key_alloc_needs_struct_task=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_key_alloc_needs_struct_task=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -11647,17 +12761,20 @@ else
     save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$CPPFLAGS -Werror-implicit-function-declaration"
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -11668,19 +12785,17 @@ do_sync_read(NULL, NULL, 0, NULL);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_do_sync_read=yes
-else
-  ac_cv_linux_do_sync_read=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_do_sync_read=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_do_sync_read=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -11767,17 +12882,20 @@ else
     save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$CPPFLAGS -Werror-implicit-function-declaration"
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/fs.h>
 
@@ -11788,19 +12906,17 @@ generic_file_aio_read(NULL, NULL, 0, 0);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_generic_file_aio_read=yes
-else
-  ac_cv_linux_generic_file_aio_read=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_generic_file_aio_read=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_generic_file_aio_read=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -11878,6 +12994,127 @@ _ACEOF
 
   fi
 
+  { echo "$as_me:$LINENO: checking whether INIT_WORK has a _data argument" >&5
+echo $ECHO_N "checking whether INIT_WORK has a _data argument... $ECHO_C" >&6; }
+  if test "${ac_cv_linux_init_work_has_data+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/workqueue.h>
+
+void conftest(void)
+{
+
+void f(struct work_struct *w) {}
+struct work_struct *w;
+int *i;
+INIT_WORK(w,f,i);
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_init_work_has_data=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_init_work_has_data=no
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <linux/kernel.h>
+#include <linux/workqueue.h>
+int
+main ()
+{
+
+void f(struct work_struct *w) {}
+struct work_struct *w;
+int *i;
+INIT_WORK(w,f,i);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_linux_init_work_has_data=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_linux_init_work_has_data=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
+fi
+
+  { echo "$as_me:$LINENO: result: $ac_cv_linux_init_work_has_data" >&5
+echo "${ECHO_T}$ac_cv_linux_init_work_has_data" >&6; }
+
   { echo "$as_me:$LINENO: checking for exported sys_chdir" >&5
 echo $ECHO_N "checking for exported sys_chdir... $ECHO_C" >&6; }
   if test "${ac_cv_linux_exports_sys_chdir+set}" = set; then
@@ -11885,17 +13122,20 @@ echo $ECHO_N "checking for exported sys_chdir... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 extern asmlinkage long sys_chdir(void) __attribute__((weak));
 
@@ -11907,19 +13147,17 @@ printk("%p\n", address);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_exports_sys_chdir=yes
-else
-  ac_cv_linux_exports_sys_chdir=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_exports_sys_chdir=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_exports_sys_chdir=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -11997,17 +13235,20 @@ echo $ECHO_N "checking for exported sys_close... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 extern asmlinkage long sys_close(void) __attribute__((weak));
 
@@ -12019,19 +13260,17 @@ printk("%p\n", address);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_exports_sys_close=yes
-else
-  ac_cv_linux_exports_sys_close=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_exports_sys_close=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_exports_sys_close=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -12109,17 +13348,20 @@ echo $ECHO_N "checking for exported sys_open... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 extern asmlinkage long sys_open(void) __attribute__((weak));
 
@@ -12131,19 +13373,17 @@ printk("%p\n", address);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_exports_sys_open=yes
-else
-  ac_cv_linux_exports_sys_open=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_exports_sys_open=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_exports_sys_open=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -12221,17 +13461,20 @@ echo $ECHO_N "checking for exported sys_wait4... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 extern asmlinkage long sys_wait4(void) __attribute__((weak));
 
@@ -12243,19 +13486,17 @@ printk("%p\n", address);
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_exports_sys_wait4=yes
-else
-  ac_cv_linux_exports_sys_wait4=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_exports_sys_wait4=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_exports_sys_wait4=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -12333,6 +13574,9 @@ else
   CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $RHCONFIG_SP $CPPFLAGS"
   { echo "$as_me:$LINENO: checking which kernel modules to build" >&5
 echo $ECHO_N "checking which kernel modules to build... $ECHO_C" >&6; }
+  if test "x$ac_cv_linux_config_h_exists" = "xyes"; then
+    CPPFLAGS="-DCONFIG_H_EXISTS $CPPFLAGS"
+  fi
   if test "x$ac_linux_rhconfig" = "xyes"; then
       MPS="MP SP"
   else
@@ -12340,13 +13584,61 @@ echo $ECHO_N "checking which kernel modules to build... $ECHO_C" >&6; }
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
 
+
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
+CFLAGS += $CPPFLAGS
+
+obj-m += conftest.o
+_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
+#include <linux/module.h>
+#ifdef CONFIG_H_EXISTS
+#include <linux/config.h>
+#endif
+
+
+void conftest(void)
+{
+#ifndef CONFIG_SMP
+lose;
+#endif
+
+}
+
+MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
+_ACEOF
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_config_smp=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_config_smp=no
+  fi; rm -fr conftest.err conftest.dir
+  else
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="-I$LINUX_KERNEL_PATH/include -D__KERNEL__ $CPPFLAGS"
   cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+#ifdef CONFIG_H_EXISTS
 #include <linux/config.h>
+#endif
 
 int
 main ()
@@ -12402,6 +13694,8 @@ sed 's/^/| /' conftest.$ac_ext >&5
 fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  fi
 fi
 
         if test "x$ac_cv_linux_config_smp" = "xyes"; then
@@ -12432,17 +13726,20 @@ echo $ECHO_N "checking for exported init_mm... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/modversions.h>
 
@@ -12455,19 +13752,17 @@ void conftest(void)
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_exports_init_mm=yes
-else
-  ac_cv_linux_exports_init_mm=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_exports_init_mm=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_exports_init_mm=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -12546,17 +13841,20 @@ echo $ECHO_N "checking for exported kallsyms_address_to_symbol... $ECHO_C" >&6; 
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/modversions.h>
 
@@ -12569,19 +13867,17 @@ void conftest(void)
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_exports_kallsyms_address=yes
-else
-  ac_cv_linux_exports_kallsyms_address=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_exports_kallsyms_address=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_exports_kallsyms_address=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -12660,17 +13956,20 @@ echo $ECHO_N "checking for exported kallsyms_symbol_to_address... $ECHO_C" >&6; 
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/modversions.h>
 
@@ -12683,19 +13982,17 @@ void conftest(void)
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_exports_kallsyms_symbol=yes
-else
-  ac_cv_linux_exports_kallsyms_symbol=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_exports_kallsyms_symbol=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_exports_kallsyms_symbol=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -12774,17 +14071,20 @@ echo $ECHO_N "checking for exported sys_call_table... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/modversions.h>
 
@@ -12797,19 +14097,17 @@ void conftest(void)
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_exports_sys_call_table=yes
-else
-  ac_cv_linux_exports_sys_call_table=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_exports_sys_call_table=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_exports_sys_call_table=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -12888,17 +14186,20 @@ echo $ECHO_N "checking for exported ia32_sys_call_table... $ECHO_C" >&6; }
 else
 
 
-  if test -f $LINUX_KERNEL_PATH/scripts/Makefile.build; then
-
-  rm -fr conftest.dir
-  if mkdir conftest.dir; then
-  cd conftest.dir
-    cat >Makefile <<_ACEOF
+  if test $AFS_SYSKVERS -ge 26 ; then
+      rm -fr conftest.dir
+  if mkdir conftest.dir &&
+    cat >conftest.dir/Makefile <<_ACEOF &&
 CFLAGS += $CPPFLAGS
 
 obj-m += conftest.o
 _ACEOF
-    cat >conftest.c <<\_ACEOF
+    cat >conftest.dir/conftest.c <<\_ACEOF &&
+/* confdefs.h */
+_ACEOF
+    cat confdefs.h >>conftest.dir/conftest.c &&
+    cat >>conftest.dir/conftest.c <<\_ACEOF &&
+/* end confdefs.h */
 #include <linux/module.h>
 #include <linux/modversions.h>
 
@@ -12911,19 +14212,17 @@ void conftest(void)
 
 MODULE_LICENSE("http://www.openafs.org/dl/license10.html");
 _ACEOF
-    cd ..
-  fi
-  if { (echo "$as_me:$LINENO: make -C \$LINUX_KERNEL_PATH M=\`pwd\`/conftest.dir modules > /dev/null") >&5
-  (make -C $LINUX_KERNEL_PATH M=`pwd`/conftest.dir modules > /dev/null) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; then
-  ac_cv_linux_exports_ia32_sys_call_table=yes
-else
-  ac_cv_linux_exports_ia32_sys_call_table=no
-fi
-
-  rm -fr conftest.dir
+    echo make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5
+    make -C $LINUX_KERNEL_PATH M=$SRCDIR_PARENT/conftest.dir modules KBUILD_VERBOSE=1 >&5 2>conftest.err
+    then ac_cv_linux_exports_ia32_sys_call_table=yes
+    else
+      sed '/^ *+/d' conftest.err >&5
+      echo "$as_me: failed using Makefile:" >&5
+      sed 's/^/| /' conftest.dir/Makefile >&5
+      echo "$as_me: and program was:" >&5
+      sed 's/^/| /' conftest.dir/conftest.c >&5
+      ac_cv_linux_exports_ia32_sys_call_table=no
+  fi; rm -fr conftest.err conftest.dir
   else
 
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -13089,6 +14388,13 @@ _ACEOF
 
 cat >>confdefs.h <<\_ACEOF
 #define COMPLETION_H_EXISTS 1
+_ACEOF
+
+		 fi
+		 if test "x$ac_cv_linux_config_h_exists" = "xyes" ; then
+
+cat >>confdefs.h <<\_ACEOF
+#define CONFIG_H_EXISTS 1
 _ACEOF
 
 		 fi
@@ -13309,10 +14615,31 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 		 fi
+		 if test "x$ac_cv_linux_sched_struct_task_struct_has_tgid" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define STRUCT_TASK_STRUCT_HAS_TGID 1
+_ACEOF
+
+		 fi
+		 if test "x$ac_cv_linux_sched_struct_task_struct_has_todo" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define STRUCT_TASK_STRUCT_HAS_TODO 1
+_ACEOF
+
+		 fi
 		 if test "x$ac_cv_linux_get_sb_has_struct_vfsmount" = "xyes"; then
 
 cat >>confdefs.h <<\_ACEOF
 #define GET_SB_HAS_STRUCT_VFSMOUNT 1
+_ACEOF
+
+		 fi
+		 if test "x$ac_cv_linux_statfs_takes_dentry" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define STATFS_TAKES_DENTRY 1
 _ACEOF
 
 		 fi
@@ -13355,6 +14682,23 @@ _ACEOF
 
 cat >>confdefs.h <<\_ACEOF
 #define DOP_REVALIDATE_TAKES_NAMEIDATA 1
+_ACEOF
+
+		 fi
+		 if test "x$ac_cv_linux_init_work_has_data" = "xyes" ; then
+
+cat >>confdefs.h <<\_ACEOF
+#define INIT_WORK_HAS_DATA 1
+_ACEOF
+
+		 fi
+		 if test "x$ac_cv_linux_fs_struct_fop_has_flock" = "xyes" ; then
+		  echo flock support is currently disabled in OpenAFS 1.4 for Linux
+		 fi
+		 if test "x$ac_cv_linux_exports_tasklist_lock" = "xyes" ; then
+
+cat >>confdefs.h <<\_ACEOF
+#define EXPORTED_TASKLIST_LOCK 1
 _ACEOF
 
 		 fi
@@ -14910,6 +16254,18 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 fi
+
+if test "$enable_unix_sockets" = "yes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_UNIX_SOCKETS 1
+_ACEOF
+
+       USE_UNIX_SOCKETS="yes"
+else
+       USE_UNIX_SOCKETS="no"
+fi
+
 
 if test "$enable_full_vos_listvol_switch" = "yes"; then
 
@@ -19442,6 +20798,28 @@ case $AFS_SYSNAME in
 		LWP_OPTMZ="-g"
 		;;
 
+	sun4x_511)
+		CC="/opt/SUNWspro/bin/cc"
+		CCOBJ="/opt/SUNWspro/bin/cc"
+		LEX="lex"
+		LD="/usr/ccs/bin/ld"
+		MT_CC="/opt/SUNWspro/bin/cc"
+		MT_CFLAGS='-mt -DAFS_PTHREAD_ENV ${XCFLAGS}'
+		MT_LIBS="-lpthread -lsocket"
+		PAM_CFLAGS="-KPIC"
+		PAM_LIBS="-lc -lpam -lsocket -lnsl -lm"
+		SHLIB_CFLAGS="-KPIC"
+		SHLIB_LDFLAGS="-G -Bsymbolic"
+		TXLIBS="-lcurses"
+		XCFLAGS64='${XCFLAGS} -xarch=v9'
+		XCFLAGS="-dy -Bdynamic"
+		XLIBELFA="-lelf"
+		XLIBKVM="-lkvm"
+		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
+		SHLIB_LINKER="${CC} -G -dy -Bsymbolic -z text"
+		LWP_OPTMZ="-g"
+		;;
+
 	sunx86_57)
 		CC="/opt/SUNWspro/bin/cc"
 		CCOBJ="/opt/SUNWspro/bin/cc"
@@ -19524,6 +20902,27 @@ case $AFS_SYSNAME in
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
 		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		;;
+
+	sunx86_511)
+		CC="/opt/SUNWspro/bin/cc"
+		CCOBJ="/opt/SUNWspro/bin/cc"
+		LEX="lex"
+		LD="/usr/ccs/bin/ld"
+		MT_CC="/opt/SUNWspro/bin/cc"
+		MT_CFLAGS='-mt -DAFS_PTHREAD_ENV ${XCFLAGS}'
+		MT_LIBS="-lpthread -lsocket"
+		PAM_CFLAGS="-KPIC"
+		PAM_LIBS="-lc -lpam -lsocket -lnsl -lm"
+		SHLIB_CFLAGS="-KPIC"
+		SHLIB_LDFLAGS="-G -Bsymbolic"
+		TXLIBS="-lcurses"
+		XCFLAGS64='${XCFLAGS} -xarch=amd64'
+		XCFLAGS="-dy -Bdynamic"
+		XLIBELFA="-lelf"
+		XLIBKVM="-lkvm"
+		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
+		SHLIB_LINKER="${CC} -G -dy -Bsymbolic -z text"
 		;;
 esac
 
@@ -20737,13 +22136,6 @@ fi
 	LIBS="$save_LIBS"
 fi
 
-if test "$ac_cv_header_kerberosV_heim_err_h" = "yes"; then
-    ASETKEY=
-else
-    ASETKEY=asetkey
-fi
-
-
 
 
 
@@ -21667,6 +23059,7 @@ for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
 MPS!$MPS$ac_delim
 PTHREAD_LIBS!$PTHREAD_LIBS$ac_delim
+USE_UNIX_SOCKETS!$USE_UNIX_SOCKETS$ac_delim
 XBSA_CFLAGS!$XBSA_CFLAGS$ac_delim
 HAVE_PAM!$HAVE_PAM$ac_delim
 BUILD_LOGIN!$BUILD_LOGIN$ac_delim
@@ -21750,7 +23143,6 @@ KRB5_CONFIG!$KRB5_CONFIG$ac_delim
 BUILD_KRB5!$BUILD_KRB5$ac_delim
 KRB5CFLAGS!$KRB5CFLAGS$ac_delim
 KRB5LIBS!$KRB5LIBS$ac_delim
-ASETKEY!$ASETKEY$ac_delim
 HELPER_SPLINT!$HELPER_SPLINT$ac_delim
 HELPER_SPLINTCFG!$HELPER_SPLINTCFG$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
