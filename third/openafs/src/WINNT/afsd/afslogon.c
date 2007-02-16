@@ -74,20 +74,22 @@ static BOOL bInit = FALSE;
 
 BOOLEAN APIENTRY DllEntryPoint(HANDLE dll, DWORD reason, PVOID reserved)
 {
+    WSADATA wsaData;
     hDLL = dll;
+    
     switch (reason) {
     case DLL_PROCESS_ATTACH:
         /* Initialization Mutex */
-	if (!bInit) {
-	    hInitMutex = CreateMutex(NULL, FALSE, NULL);
-	    SetEnvironmentVariable(DO_NOT_REGISTER_VARNAME, "");
-	}
+	hInitMutex = CreateMutex(NULL, FALSE, NULL);
+
+	WSAStartup( MAKEWORD(2,2), &wsaData );
         break;
 
     case DLL_PROCESS_DETACH:
 	/* do nothing on unload because we might 
 	 * be reloaded.
 	 */
+        WSACleanup();
 	CloseHandle(hInitMutex);
 	hInitMutex = NULL;
 	bInit = FALSE;
@@ -839,7 +841,9 @@ DWORD APIENTRY NPLogonNotify(
 	    if (ISLOGONINTEGRATED(opt.LogonOption))
 	    {			
 		if ( KFW_is_available() ) {
+		    SetEnvironmentVariable(DO_NOT_REGISTER_VARNAME, "");
 		    code = KFW_AFS_get_cred(uname, cell, password, 0, opt.smbName, &reason);
+		    SetEnvironmentVariable(DO_NOT_REGISTER_VARNAME, NULL);
 		    DebugEvent("KFW_AFS_get_cred  uname=[%s] smbname=[%s] cell=[%s] code=[%d]",
 				uname,opt.smbName,cell,code);
 		    if (code == 0 && opt.theseCells) { 
@@ -864,7 +868,9 @@ DWORD APIENTRY NPLogonNotify(
 
 			    p = opt.theseCells;
 			    while ( *p ) {
+				SetEnvironmentVariable(DO_NOT_REGISTER_VARNAME, "");
 				code2 = KFW_AFS_get_cred(principal, p, 0, 0, opt.smbName, &reason);
+				SetEnvironmentVariable(DO_NOT_REGISTER_VARNAME, NULL);
 				DebugEvent("KFW_AFS_get_cred  uname=[%s] smbname=[%s] cell=[%s] code=[%d]",
 					    principal,opt.smbName,p,code2);
 				p += strlen(p) + 1;

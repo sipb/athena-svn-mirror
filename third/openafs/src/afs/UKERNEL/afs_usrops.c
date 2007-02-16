@@ -15,7 +15,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/UKERNEL/afs_usrops.c,v 1.1.1.5 2005-05-04 17:45:41 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/UKERNEL/afs_usrops.c,v 1.1.1.6 2007-02-16 19:34:45 rbasch Exp $");
 
 
 #ifdef	UKERNEL
@@ -854,7 +854,6 @@ afs_osi_Stat(struct osi_file *fp, struct osi_stat *stp)
 	return -1;
     }
     stp->size = st.st_size;
-    stp->blksize = st.st_blksize;
     stp->mtime = st.st_mtime;
     stp->atime = st.st_atime;
     AFS_GLOCK();

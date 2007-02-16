@@ -17,7 +17,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_inode.c,v 1.1.1.3 2005-03-10 20:39:05 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_inode.c,v 1.1.1.4 2007-02-16 19:35:14 rbasch Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -158,7 +158,7 @@ afs_syscall_icreate(dev, near_inode, param1, param2, param3, param4, rvp,
 
     AFS_STATCNT(afs_syscall_icreate);
 
-    if (!afs_suser(credp))
+    if (!afs_osi_suser(credp))
 	return (EPERM);
 
     /** Code to convert a 32 bit dev_t into a 64 bit dev_t
@@ -254,7 +254,7 @@ afs_syscall_iopen(dev, inode, usrmod, rvp, credp)
 
     AFS_STATCNT(afs_syscall_iopen);
 
-    if (!afs_suser(credp))
+    if (!afs_osi_suser(credp))
 	return (EPERM);
 
     /** Code to convert a 32 bit dev_t into a 64 bit dev_t
@@ -319,7 +319,7 @@ afs_syscall_iincdec(dev, inode, inode_p1, amount, rvp, credp)
     register afs_int32 code;
     dev_t newdev;
 
-    if (!afs_suser(credp))
+    if (!afs_osi_suser(credp))
 	return (EPERM);
 
 	/** Code to convert a 32 bit dev_t into a 64 bit dev_t

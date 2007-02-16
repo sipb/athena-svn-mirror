@@ -8,18 +8,16 @@
  */
 
 #include <afsconfig.h>
-#include <afs/param.h>
+#include <afs/stds.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/bc_status.c,v 1.1.1.2 2005-03-10 20:35:55 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/bc_status.c,v 1.1.1.3 2007-02-16 19:35:20 rbasch Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
-#include <stdio.h>
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
 #else
-#include <strings.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>

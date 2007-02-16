@@ -15,7 +15,7 @@
 #endif
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/ticket.c,v 1.1.1.3 2005-03-10 20:39:11 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/ticket.c,v 1.1.1.4 2007-02-16 19:34:32 rbasch Exp $");
 
 #if defined(UKERNEL)
 #include "afs/sysincludes.h"
@@ -148,7 +148,13 @@ tkt_DecodeTicket(char *asecret, afs_int32 ticketLen,
 
     if (code)
 	return RXKADBADTICKET;
-    if (tkt_CheckTimes(*start, *end, time(0)) < -1)
+
+    code = tkt_CheckTimes(*start, *end, time(0));
+    if (code == 0)
+	return RXKADNOAUTH;
+    else if (code == -1)
+	return RXKADEXPIRED;
+    else if (code < -1)
 	return RXKADBADTICKET;
 
     return 0;
