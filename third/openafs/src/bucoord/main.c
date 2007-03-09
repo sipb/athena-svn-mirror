@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/main.c,v 1.1.1.3 2007-02-16 19:35:21 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/main.c,v 1.2 2007-03-09 17:16:28 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -544,6 +544,8 @@ main(argc, argv)
 		"date from which to restore");
     cmd_AddParm(ts, "-portoffset", CMD_LIST, CMD_OPTIONAL, "TC port offsets");
     cmd_AddParm(ts, "-n", CMD_FLAG, CMD_OPTIONAL, "don't really execute it");
+    cmd_AddParm(ts, "-usedump", CMD_SINGLE, CMD_OPTIONAL,
+		"specify the dumpID to restore from");
     if (!interact)
 	add_std_args(ts);
 

@@ -15,7 +15,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/restore.c,v 1.5 2007-02-16 20:31:44 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/restore.c,v 1.6 2007-03-09 17:16:28 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -214,26 +214,52 @@ bc_Restorer(aindex)
     for (tvol = dumpTaskPtr->volumes; tvol; tvol = tvol->next) {	/*tvol */
 	strcpy(vname, tvol->name);
 	dumpDescr = &dumpDescr1;
-	code = bcdb_FindDump(vname, dumpTaskPtr->fromDate, dumpDescr);
-
-	if (!BackupName(vname)) {	/* See if backup volume is there */
-	    strcat(vname, ".backup");
-	    dumpDescr = &dumpDescr2;
-	    tcode = code;
+	if (dumpTaskPtr->parentDumpID > 0) /* Told which dump to try */
+	  {
+	    /* Right now, this assumes that all volumes listed will be
+	     * from the given dumpID.  FIXME
+	     */
+	    code = bcdb_FindDumpByID(dumpTaskPtr->parentDumpID, dumpDescr);
+	    if (code)
+	      {
+		com_err(whoami, "Couldn't look up info for dump %d\n",
+			dumpTaskPtr->parentDumpID);
+		continue;
+	      }
+	    code = bcdb_FindVolumes(dumpTaskPtr->parentDumpID, vname, volumeEntries,
+				    last, &next, MAXTAPESATONCE, &vecount);
+	    if (code)
+	      {
+		if (!BackupName(vname))
+		  {
+		    strcat(vname, ".backup");
+		    code = bcdb_FindVolumes(dumpTaskPtr->parentDumpID, vname, volumeEntries,
+					    last, &next, MAXTAPESATONCE, &vecount);
+		  }
+	      }
+	  }
+	else
+	  {
 	    code = bcdb_FindDump(vname, dumpTaskPtr->fromDate, dumpDescr);
+	    if (!BackupName(vname)) {	/* See if backup volume is there */
+	      strcat(vname, ".backup");
+	      dumpDescr = &dumpDescr2;
+	      tcode = code;
+	      code = bcdb_FindDump(vname, dumpTaskPtr->fromDate, dumpDescr);
 
-	    if (code) {		/* Can't find backup, go with first results */
+	      if (code) {	/* Can't find backup, go with first results */
 		strcpy(vname, tvol->name);
 		dumpDescr = &dumpDescr1;
 		code = tcode;
-	    } else if (!tcode) {	/* Both found an entry, go with latest result */
+	      } else if (!tcode) {	/* Both found an entry, go with latest result */
 		if (dumpDescr1.created > dumpDescr2.created) {
-		    strcpy(vname, tvol->name);
-		    dumpDescr = &dumpDescr1;
-		    code = tcode;
+		  strcpy(vname, tvol->name);
+		  dumpDescr = &dumpDescr1;
+		  code = tcode;
 		}
+	      }
 	    }
-	}
+	  }
 
 	if (code) {		/* If FindDump took an error */
 	    com_err(whoami, code, "; Can't find any dump for volume %s",
