@@ -29,7 +29,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.1.1.10 2006-12-04 18:58:36 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.1.1.11 2007-03-26 20:05:55 rbasch Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7481,6 +7481,8 @@ init_sys_error_to_et(void)
     sys2et[EDQUOT] = UAEDQUOT;
     sys2et[ENOMEDIUM] = UAENOMEDIUM;
     sys2et[EMEDIUMTYPE] = UAEMEDIUMTYPE;
+
+    sys2et[EIO] = UAEIO;
 }
 
 /* NOTE:  2006-03-01

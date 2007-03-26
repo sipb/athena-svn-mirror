@@ -403,6 +403,9 @@
 /* define if your recalc_sigpending takes void */
 #undef RECALC_SIGPENDING_TAKES_VOID
 
+/* define if register_sysctl_table has no insert_at head flag */
+#undef REGISTER_SYSCTL_TABLE_NOFLAG
+
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
@@ -411,7 +414,7 @@
    release 3. */
 #undef SETVBUF_REVERSED
 
-/* The size of `long', as computed by sizeof. */
+/* The size of a `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
 /* define if your statfs takes a dentry argument */
@@ -537,7 +540,7 @@
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t
 
-/* Define to `unsigned int' if <sys/types.h> does not define. */
+/* Define to `unsigned' if <sys/types.h> does not define. */
 #undef size_t
 
 /* Define to `int' if <sys/types.h> does not define. */
