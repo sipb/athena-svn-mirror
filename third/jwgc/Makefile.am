@@ -1,3 +1,0 @@
-SUBDIRS = lib clients
-
-EXTRA_DIST = sysdep.h BUILDINFO LICENSE

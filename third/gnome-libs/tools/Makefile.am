@@ -1,2 +1,0 @@
-SUBDIRS = convertrgb gnome-doc
-
