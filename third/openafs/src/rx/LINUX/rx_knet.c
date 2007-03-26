@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_knet.c,v 1.10 2007-02-16 20:31:45 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_knet.c,v 1.11 2007-03-26 21:33:15 rbasch Exp $");
 
 #include <linux/version.h>
 #ifdef AFS_LINUX22_ENV
@@ -204,24 +204,34 @@ osi_NetReceive(osi_socket so, struct sockaddr_in *from, struct iovec *iov,
 
     return code;
 }
+#ifdef EXPORTED_TASKLIST_LOCK
 extern rwlock_t tasklist_lock __attribute__((weak));
+#endif
 void
 osi_StopListener(void)
 {
     struct task_struct *listener;
     extern int rxk_ListenerPid;
 
+#ifdef EXPORTED_TASKLIST_LOCK
     if (&tasklist_lock)
       read_lock(&tasklist_lock);
+#endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16)
+#ifdef EXPORTED_TASKLIST_LOCK
     else
+#endif
       rcu_read_lock();
 #endif
     listener = find_task_by_pid(rxk_ListenerPid);
+#ifdef EXPORTED_TASKLIST_LOCK
     if (&tasklist_lock)
        read_unlock(&tasklist_lock);
+#endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16)
+#ifdef EXPORTED_TASKLIST_LOCK
     else
+#endif
       rcu_read_unlock();
 #endif
     while (rxk_ListenerPid) {

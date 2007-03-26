@@ -16,7 +16,7 @@
 #include "afs/param.h"
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_flock.c,v 1.8 2007-02-16 20:31:44 rbasch Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_flock.c,v 1.9 2007-03-26 21:33:14 rbasch Exp $");
 
 #include "afs/sysincludes.h"	/* Standard vendor system headers */
 #include "afsincludes.h"	/* Afs-based standard headers */
@@ -25,6 +25,10 @@ RCSID
 #include "afs/nfsclient.h"
 #include "afs/afs_osidnlc.h"
 #include "afs/unified_afs.h"
+
+
+
+
 
 /* Static prototypes */
 static int HandleGetLock(register struct vcache *avc,
@@ -549,7 +553,7 @@ int afs_lockctl(struct vcache * avc, struct AFS_FLOCK * af, int acmd,
 #endif
     /* Java VMs ask for l_len=(long)-1 regardless of OS/CPU; bottom 32 bits
      * sometimes get masked off by OS */
-    if ((af->l_len >> 32) == 0x7fffffff)
+    if ((sizeof(af->l_len) == 8) && (af->l_len == 0x7ffffffffffffffe))
 	af->l_len = 0;
     /* next line makes byte range locks always succeed,
      * even when they should block */

@@ -6,6 +6,7 @@ AC_DEFUN([LINUX_EXPORTS_TASKLIST_LOCK], [
 #include <linux/sched.h>],
 [
 extern rwlock_t tasklist_lock __attribute__((weak)); 
+read_lock(&tasklist_lock);
 ],
       ac_cv_linux_exports_tasklist_lock=yes,
       ac_cv_linux_exports_tasklist_lock=no)])
@@ -798,3 +799,15 @@ _fop.flock(NULL, 0, NULL);],
       ac_cv_linux_fs_struct_fop_has_flock=yes,
       ac_cv_linux_fs_struct_fop_has_flock=no)])
   AC_MSG_RESULT($ac_cv_linux_fs_struct_fop_has_flock)])
+
+AC_DEFUN([LINUX_REGISTER_SYSCTL_TABLE_NOFLAG], [
+  AC_MSG_CHECKING([whether register_sysctl_table has an insert_at_head flag argument])
+  AC_CACHE_VAL([ac_cv_linux_register_sysctl_table_noflag], [
+    AC_TRY_KBUILD(
+[#include <linux/sysctl.h>],
+[ctl_table *t;
+register_sysctl_table (t);],
+      ac_cv_linux_register_sysctl_table_noflag=yes,
+      ac_cv_linux_register_sysctl_table_noflag=no)])
+  AC_MSG_RESULT($ac_cv_linux_register_sysctl_table_noflag)])
+
