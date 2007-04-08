@@ -403,7 +403,7 @@ libpixbufloader_xbm_la_OBJECTS =  io-xbm.lo
 noinst_PROGRAMS =  test-gdk-pixbuf$(EXEEXT) testpixbuf$(EXEEXT) \
 testpixbuf-drawable$(EXEEXT) testanimation$(EXEEXT) \
 testpixbuf-scale$(EXEEXT)
-PROGRAMS =  $(noinst_PROGRAMS)
+PROGRAMS =
 
 test_gdk_pixbuf_SOURCES = test-gdk-pixbuf.c
 test_gdk_pixbuf_OBJECTS =  test-gdk-pixbuf.$(OBJEXT)
