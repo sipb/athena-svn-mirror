@@ -148,7 +148,7 @@ To set up a build machine, follow these instructions after installing:
     make this happen at boot.
   * On Solaris, install the Sun compiler locally.  Run:
       cd /afs/dev.mit.edu/reference/sunpro8/packages
-      pkgadd -R /rel -a /usr/athena/lib/update/noask \
+      pkgadd -R /rel -a /srvd/usr/athena/lib/update/noask -d . \
         `cat ../installed-packages`
     and follow the directions in
     /afs/dev.mit.edu/reference/sunpro8/README.  Repeat for /rel/wash.
