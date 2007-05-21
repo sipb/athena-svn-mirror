@@ -3,5 +3,15 @@ Summary: GStreamer streaming-media framework plugins, for athena
 License: LGPL
 Group: Libraries/Multimedia
 
+Requires: athena-gstreamer
+
 %description
 Contains a set of plugins for GStreamer.
+
+%post
+umask 022
+DISPLAY= /usr/athena/bin/gst-register > /dev/null 2>&1
+
+%postun
+umask 022
+DISPLAY= /usr/athena/bin/gst-register > /dev/null 2>&1 || true
