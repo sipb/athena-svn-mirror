@@ -10,3 +10,7 @@ from real-time sound processing to playing videos, and just about anything
 else media-related.  Its plugin-based architecture means that new data
 types or processing capabilities can be added simply by installing new 
 plugins.
+
+%post
+umask 022
+DISPLAY= /usr/athena/bin/gst-register > /dev/null 2>&1
