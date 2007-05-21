@@ -267,8 +267,8 @@ audio_properties_view_new ()
 	//gtk_widget_show (view->vbox);
 
 	/* initialize GStreamer and media info reader */
-        gst_media_info_init ();
 	gst_init (NULL, NULL);
+        gst_media_info_init ();
 	view->media_info = gst_media_info_new (&error);
 	//FIXME: handle possible error
 	if (!gst_media_info_set_source (view->media_info, "gnomevfssrc", &error))
