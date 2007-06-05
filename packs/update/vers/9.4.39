@@ -1,0 +1,22 @@
+#!/bin/sh
+
+remove_pkg() {
+  pkg=$1
+  pkginfo -q $pkg && pkgrm -a "$LIBDIR/admin-update" -n "$pkg.*"
+}
+
+# Remove the old Firefox package now.
+echo "Removing the old Firefox package prior to update..."
+# Remove the link to the Athena firefox extension, if any.
+# (It will be recreated by oschanges).
+rm -rf /opt/sfw/lib/firefox/extensions/athena@mit.edu
+remove_pkg MOZfirefox
+
+# Add the new firefox version to the packages list.
+echo "MOZfirefox"					>> $PACKAGES
+
+# Apply Sun patches.
+echo "119059-25"					>> $PATCHES
+echo "119812-03"					>> $PATCHES
+
+echo "OSCHANGES=true"					>> $CONFVARS
