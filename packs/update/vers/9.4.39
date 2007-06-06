@@ -18,5 +18,6 @@ echo "MOZfirefox"					>> $PACKAGES
 # Apply Sun patches.
 echo "119059-25"					>> $PATCHES
 echo "119812-03"					>> $PATCHES
+echo "121288-03"					>> $PATCHES
 
 echo "OSCHANGES=true"					>> $CONFVARS
