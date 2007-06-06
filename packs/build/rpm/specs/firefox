@@ -2,8 +2,10 @@ Name: firefox
 Summary: Mozilla Firefox Web browser
 License: MPL
 Group: Applications/Internet
-Version: 1.5.0.4
-Release: 1
+Version: 2.0.0.4
+Release: 0
+
+Requires: linc
 
 %description
 Mozilla Firefox is an open-source web browser, designed for standards
@@ -24,3 +26,8 @@ if [ $1 = 0 ]; then
   rm -rf %{ffdir}/components
   rm -rf %{ffdir}/extensions
 fi
+
+%triggerin -- linc
+# Force an auto-registration to ensure GNOME integration is
+# functional, per mozilla.org's release notes.
+touch %{ffdir}/.autoreg
