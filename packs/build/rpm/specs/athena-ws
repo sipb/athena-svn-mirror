@@ -345,6 +345,34 @@ if [ "${buildext3}" == true ] ; then
   fi
 fi
 
+%triggerin -- kernel
+# Turn off kernel APIC timekeeping on the S50, because it's broken.
+# See Redhat bugzilla #203818 for the gory details.
+if /usr/sbin/dmidecode |\
+  awk '{ if ($2 == "IBM") i=1 ; else {i=0 ; if ($3 ~ /^8183/) print "true";}}' \
+	|grep -q true ; then
+  echo "Turning off APIC kernel timing for IBM S50 machines."
+  if test -f /boot/grub/grub.conf ; then
+    awk '{if (($0 ~ /kernel/) && ($0 !~ /apic/)) 
+	{ print $0 " noapic"} else { print $0}}' \
+	< /boot/grub/grub.conf > /boot/grub/grub.conf.new
+    mv -f /boot/grub/grub.conf.new /boot/grub/grub.conf
+  fi
+  if test -f /etc/lilo.conf ; then
+    awk '
+	BEGIN {b=0; a=0}
+	/^\t/ { print $0; if ( b == 1 && $0 ~ /apic/) {a=1} }
+	! /^\t/ {
+	  if (b == 1) {b=0; if (a == 0) {print "\tappend = \"noapic\""}};
+	  b=0; print $0}
+	/^image=/ {b=1; a=0}
+	END {
+	  if (b == 1 && a == 0) {print "\tappend = \"noapic\""}}' \
+	< /etc/lilo.conf > /etc/lilo.conf.new
+    mv -f /etc/lilo.conf.new /etc/lilo.conf
+  fi
+fi
+
 %post
 chkconfig --add athena-ws
 chkconfig --add athena-verify
