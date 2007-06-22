@@ -1,0 +1,44 @@
+#!/bin/sh
+
+remove_pkg() {
+  pkg=$1
+  pkginfo -q $pkg && pkgrm -a "$LIBDIR/admin-update" -n "$pkg.*"
+}
+
+# Remove the old Java 3D package now; it was built incorrectly.
+# The newly-built package will be installed automatically.
+echo "Removing the old Java 3D package prior to update..."
+remove_pkg MIT-java3d
+
+# If we are running Solaris 10, reinstall the JDK 1.5 packages to
+# get the latest updates; remove the existing packages now so that
+# the updated versions can be installed properly.
+if [ "`uname -r`" = 5.10 ]; then
+  echo "Removing old JDK packages prior to update..."
+  remove_pkg SUNWj5man
+  remove_pkg SUNWj5dvx
+  remove_pkg SUNWj5dmx
+  remove_pkg SUNWj5rtx
+  remove_pkg SUNWj5dmo
+  remove_pkg SUNWj5dev
+  remove_pkg SUNWj5cfg
+  remove_pkg SUNWj5rt
+
+  # Add the updated versions to the packages list.
+  echo "SUNWj5rt"					>> $PACKAGES
+  echo "SUNWj5cfg"					>> $PACKAGES
+  echo "SUNWj5dev"					>> $PACKAGES
+  echo "SUNWj5dmo"					>> $PACKAGES
+  echo "SUNWj5rtx"					>> $PACKAGES
+  echo "SUNWj5dmx"					>> $PACKAGES
+  echo "SUNWj5dvx"					>> $PACKAGES
+  echo "SUNWj5man"					>> $PACKAGES
+fi
+
+# Install the new Flash plugin package.
+echo "SUNWflash-player-plugin"				>> $PACKAGES
+
+# Apply a Sun patch to the Flash plugin.
+echo "125332-01"					>> $PATCHES
+
+echo "OSCHANGES=true"					>> $CONFVARS
