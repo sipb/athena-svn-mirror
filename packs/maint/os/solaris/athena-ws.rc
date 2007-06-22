@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athena-ws.rc,v 1.14 2006-03-07 21:43:24 rbasch Exp $
+# $Id: athena-ws.rc,v 1.15 2007-06-22 15:03:50 rbasch Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -210,11 +210,6 @@ start)
     fi
 
   echo "Ending public workstation cleanup"
-  fi
-
-  if [ ! -h /usr/java -a ! -d /usr/java ]; then
-    logger -p user.notice "Replacing /usr/java symlink"
-    ln -s java1.2 /usr/java
   fi
 
   if [ "$PUBLIC" = true ]; then
