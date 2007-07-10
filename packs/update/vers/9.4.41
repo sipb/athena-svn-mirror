@@ -41,4 +41,8 @@ echo "SUNWflash-player-plugin"				>> $PACKAGES
 # Apply a Sun patch to the Flash plugin.
 echo "125332-01"					>> $PATCHES
 
+# Apply other Sun security patches.
+echo "124922-03"					>> $PATCHES
+echo "125279-02"					>> $PATCHES
+
 echo "OSCHANGES=true"					>> $CONFVARS
