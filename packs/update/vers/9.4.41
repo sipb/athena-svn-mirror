@@ -35,6 +35,16 @@ if [ "`uname -r`" = 5.10 ]; then
   echo "SUNWj5man"					>> $PACKAGES
 fi
 
+# Remove the old Firefox package now.
+echo "Removing the old Firefox package prior to update..."
+# Remove the link to the Athena firefox extension, if any.
+# (It will be recreated by oschanges).
+rm -rf /opt/sfw/lib/firefox/extensions/athena@mit.edu
+remove_pkg MOZfirefox
+
+# Add the new firefox version to the packages list.
+echo "MOZfirefox"					>> $PACKAGES
+
 # Install the new Flash plugin package.
 echo "SUNWflash-player-plugin"				>> $PACKAGES
 
