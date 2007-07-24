@@ -2,7 +2,7 @@ Name: firefox
 Summary: Mozilla Firefox Web browser
 License: MPL
 Group: Applications/Internet
-Version: 2.0.0.4
+Version: 2.0.0.5
 Release: 0
 
 Requires: linc
