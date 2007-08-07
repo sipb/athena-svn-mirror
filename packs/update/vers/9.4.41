@@ -54,5 +54,6 @@ echo "125332-01"					>> $PATCHES
 # Apply other Sun security patches.
 echo "124922-03"					>> $PATCHES
 echo "125279-02"					>> $PATCHES
+echo "119059-30"					>> $PATCHES
 
 echo "OSCHANGES=true"					>> $CONFVARS
