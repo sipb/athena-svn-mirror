@@ -25,6 +25,9 @@ pref("font.mathfont-family", "CMSY10, CMEX10, Math1, Math2, Math4, MT Extra, Sta
 // Use the Athena GSSAPI library.
 pref("network.negotiate-auth.gsslib", "/usr/athena/lib/libgssapi_krb5.so");
 
+// Trust the MIT IdP for HTTP/SPNEGO.
+pref("network.negotiate-auth.trusted-uris", "https://idp.mit.edu");
+
 // Do not delete files downloaded for helper applications upon exit,
 // to give users a chance to retrieve them if desired.
 pref("browser.helperApps.deleteTempFileOnExit", false);
