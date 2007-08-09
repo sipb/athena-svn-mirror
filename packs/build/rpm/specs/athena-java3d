@@ -3,7 +3,7 @@ Summary: Java3D API, for Athena
 License: JRL
 Group: Development/Tools
 Version: 1.5.0
-Release: 1
+Release: 2
 
 %description
 This is a repackaging of the Java3D binary release from
