@@ -161,6 +161,12 @@ case "$1" in
 		fi
 	fi
 
+	echo -n Proprietary X driver maintenance
+	install-proprietary-x-drivers \
+	    && success "X driver setup" \
+	    || failure "X driver setup"
+	echo
+
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
 
