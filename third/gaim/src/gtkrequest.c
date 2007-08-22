@@ -988,16 +988,12 @@ create_list_field(GaimRequestField *field)
 
 	/* Create the tree view */
 	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(treeview), TRUE);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
 
 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
 
 	if (gaim_request_field_list_get_multi_select(field))
 		gtk_tree_selection_set_mode(sel, GTK_SELECTION_MULTIPLE);
-
-	g_signal_connect(G_OBJECT(sel), "changed",
-					 G_CALLBACK(list_field_select_changed_cb), field);
 
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_insert_column(GTK_TREE_VIEW(treeview), column, -1);
@@ -1020,6 +1016,9 @@ create_list_field(GaimRequestField *field)
 		if (gaim_request_field_list_is_selected(field, text))
 			gtk_tree_selection_select_iter(sel, &iter);
 	}
+
+	g_signal_connect(G_OBJECT(sel), "changed",
+					 G_CALLBACK(list_field_select_changed_cb), field);
 
 	gtk_container_add(GTK_CONTAINER(sw), treeview);
 	gtk_widget_show(treeview);
