@@ -1,6 +1,0 @@
-# Display Manager Configuration File
-
-#prog   command line
-X       /usr/lpp/X11/bin/X -n :0 -c 0 -a 2
-console /etc/athena/console -f /etc/athena/login/Console -display unix:0
-login   /etc/athena/xlogin -fp /etc/athena/login/fonts/,/usr/lpp/fonts/,/usr/lpp/fonts/100dpi/,/usr/lpp/fonts/75dpi/,/usr/andrew/X11fonts/,/usr/lpp/info/X11fonts/ -config /etc/athena/login -display unix:0 -tty
