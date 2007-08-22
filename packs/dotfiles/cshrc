@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.11 2005-05-31 14:13:14 rbasch Exp $
+# $Id: cshrc,v 1.12 2007-08-22 18:12:33 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -110,9 +110,12 @@ if (! $?ENV_SET) then
   # of the directory, we help it by resetting its "cwd" variable.  We
   # do error checking just in case the path somehow disappears.
 
-  set x=`/bin/pwd`
+  set x=`(cd && /bin/pwd)`
   if ("$x" != "") then
-    set home=$x cwd=$x
+    set home=$x
+    if ("$x" == "`/bin/pwd`") then
+      set cwd=$x
+    endif
   endif
   unset x
 
