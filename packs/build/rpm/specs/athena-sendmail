@@ -3,7 +3,7 @@ Summary: The Sendmail Mail Transport Agent, for Athena
 License: BSD
 Group: System Environment/Daemons
 
-Requires: athena-hesiod
+Requires: athena-hesiod athena-krb5
 
 %description
 The Mail Transfer Agent for Athena.
