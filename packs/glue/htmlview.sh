@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: htmlview.sh,v 1.8 2005-05-31 14:02:09 rbasch Exp $
+# $Id: htmlview.sh,v 1.9 2007-10-10 22:42:47 rbasch Exp $
 
 # htmlview script adapted from the infoagents locker to take advantage
 # of the local netscape, if present.
@@ -82,18 +82,23 @@ gconftool=/usr/athena/bin/gconftool-2
 http_key=/desktop/gnome/url-handlers/http
 terminal_key=/desktop/gnome/applications/terminal
 if [ -x $gconftool ]; then
+  cmd=
   http_command=`$gconftool -g $http_key/command 2>/dev/null`
-  case $http_command in
-  "")
-    cmd=
-    ;;
-  *%s*)
-    cmd=`echo "$http_command" | sed -e "s|%s|$url|"`
-    ;;
-  *)
-    cmd="$http_command $url"    
-    ;;
-  esac
+  if [ -n "$http_command" ]; then
+    set -- $http_command
+    got_url=false
+    for arg in "$@" ; do
+      if [ "$arg" = "%s" ]; then
+        cmd="$cmd $url"
+        got_url=true
+      else
+        cmd="$cmd $arg"
+      fi
+    done
+    if [ "$got_url" != "true" ]; then
+      cmd="$cmd $url"
+    fi
+  fi
   if [ -n "$cmd" ]; then
     # Prevent infinite recursion, in case the user mistakenly sets
     # the handler to htmlview or gnome-open.
