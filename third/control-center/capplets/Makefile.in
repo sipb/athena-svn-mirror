@@ -200,9 +200,13 @@ XF86MISC_LIBS = @XF86MISC_LIBS@
 always_built_SUBDIRS = \
 	common accessibility				\
 	default-applications desktop-links font		\
-	background keyboard mouse sound			\
+	background mouse sound				\
 	theme-switcher ui-properties			\
 	keybindings network windows
+
+ifneq ($(OS), solaris)
+always_built_SUBDIRS += keyboard
+endif
 
 @HAVE_RANDR_TRUE@randr_SUBDIRS = @HAVE_RANDR_TRUE@display
 @HAVE_RANDR_FALSE@randr_SUBDIRS = 
