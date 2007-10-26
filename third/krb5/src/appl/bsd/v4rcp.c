@@ -73,15 +73,28 @@ static char sccsid[] = "@(#)rcp.c	5.10 (Berkeley) 9/20/88";
 #include <netdb.h>
 #endif
 #include <errno.h>
+#ifdef HAVE_STDARG_H
+#include <stdarg.h>
+#else
+#include <varargs.h>
+#endif
+
+#include "port-sockets.h"
+
 #ifdef KERBEROS
 #include <krb.h>
 #include <krbports.h>
 
 
-void sink(), source(), rsource(), usage();
+void sink(int, char **), source(int, char **), 
+    rsource(char *, struct stat *), usage(void);
 /*VARARGS*/
-void	error();
-int	response();
+void 	error (char *fmt, ...)
+#if !defined (__cplusplus) && (__GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7))
+       __attribute__ ((__format__ (__printf__, 1, 2)))
+#endif
+     ;
+int	response(void);
 #if !defined(HAVE_UTIMES)
 int	utimes();
 #endif
@@ -107,12 +120,12 @@ typedef struct {
   int returned;
 } *kstream;
 
-kstream kstream_create_rcp_from_fd(read_fd, write_fd, sched, ivec)
+static kstream kstream_create_rcp_from_fd(read_fd, write_fd, sched, ivec)
      int read_fd, write_fd;
      des_key_schedule *sched;
      des_cblock *ivec;
 {
-  kstream tmp = (kstream)malloc(sizeof(kstream*));
+  kstream tmp = (kstream)malloc(sizeof(*tmp));
   tmp->encrypting = 1;
   tmp->read_fd = read_fd;
   tmp->write_fd = write_fd;
@@ -129,13 +142,13 @@ kstream kstream_create_rcp_from_fd(read_fd, write_fd, sched, ivec)
   return tmp;
 }
 
-kstream kstream_create_from_fd(read_fd, write_fd, sched, session)
+static kstream kstream_create_from_fd(read_fd, write_fd, sched, session)
      int read_fd, write_fd;
      Key_schedule *sched;
      des_cblock *session;
 {
   /* just set it up... */
-  kstream tmp = (kstream)malloc(sizeof(kstream*));
+  kstream tmp = (kstream)malloc(sizeof(*tmp));
   tmp->encrypting = 0;
   tmp->read_fd = read_fd;
   tmp->write_fd = write_fd;
@@ -146,10 +159,10 @@ kstream kstream_create_from_fd(read_fd, write_fd, sched, session)
 /* always set to 0 here anyway */
 #define kstream_set_buffer_mode(x,y)
 
-int kstream_read(krem, buf, len)
+static int kstream_read(krem, buf, len)
      kstream krem;
      char *buf;
-     int len;
+     unsigned int len;
 {
   if(krem->encrypting) {
     /* when we get a length, we have to read the whole block. However,
@@ -178,7 +191,7 @@ int kstream_read(krem, buf, len)
       int cc;
       unsigned char clen[4];
       unsigned int x = 0;
-      int sz, off;
+      unsigned int sz, off;
 
       cc = read(krem->read_fd, clen, 4);
       if (cc != 4) return cc;
@@ -186,7 +199,7 @@ int kstream_read(krem, buf, len)
       x <<= 8; x += clen[1] & 0xff;
       x <<= 8; x += clen[2] & 0xff;
       x <<= 8; x += clen[3] & 0xff;
-      sz = (x + 7) & ~7;
+      sz = (x + 7) & (~7U);
 
       if (krem->retbuflen < sz) {
 	if (krem->retbuflen == 0) 
@@ -208,7 +221,7 @@ int kstream_read(krem, buf, len)
       /* decrypt it */
       des_pcbc_encrypt ((des_cblock *)krem->retbuf, 
 			(des_cblock *)krem->retbuf, 
-			sz, *krem->sched, *krem->ivec, 
+			(int) sz, *krem->sched, krem->ivec, 
 			DECRYPT);
 
       /* now retbuf has sz bytes, return len or x of them to the user */
@@ -228,15 +241,15 @@ int kstream_read(krem, buf, len)
   }
 }
 
-int kstream_write(krem, buf, len)
+static int kstream_write(krem, buf, len)
      kstream krem;
      char *buf;
-     int len;
+     unsigned int len;
 {
   if (krem->encrypting) {
     unsigned long x;
     int st;
-    int outlen = (len + 7) & (~7);
+    unsigned int outlen = (len + 7) & (~7U);
 
     if (krem->writelen < outlen) {
       if (krem->writelen == 0) {
@@ -250,7 +263,7 @@ int kstream_write(krem, buf, len)
       krem->writelen = outlen;
     }
 
-    outlen = (len + 7) & (~7);
+    outlen = (len + 7) & (~7U);
 
     memcpy(krem->inbuf, buf, len);
     krb5_random_confounder(outlen-len, krem->inbuf+len);
@@ -264,8 +277,9 @@ int kstream_write(krem, buf, len)
     if (x)
       abort ();
     /* memset(outbuf+4+4, 0x42, BUFSIZ); */
-    st = des_pcbc_encrypt ((des_cblock *)buf, (des_cblock *)(krem->outbuf+4+4), outlen,
-			   *krem->sched, *krem->ivec, ENCRYPT);
+    st = des_pcbc_encrypt ((des_cblock *)buf, (des_cblock *)(krem->outbuf+4+4),
+			   (int) outlen,
+			   *krem->sched, krem->ivec, ENCRYPT);
 
     if (st) abort();
     return write(krem->write_fd, krem->outbuf+4, 4+outlen);
@@ -301,15 +315,15 @@ KTEXT_ST ticket;
 AUTH_DAT kdata;
 static des_cblock crypt_session_key;
 char	krb_realm[REALM_SZ];
-char	**save_argv(), *krb_realmofhost();
+char	**save_argv(int, char **), *krb_realmofhost();
 #ifndef HAVE_STRSAVE
-static char *strsave();
+static char *strsave(char *);
 #endif
 #ifdef NOENCRYPTION
 #define	des_read	read
 #define	des_write	write
 #else /* !NOENCRYPTION */
-void	send_auth(), answer_auth();
+void	answer_auth(void);
 int	encryptflag = 0;
 #endif /* NOENCRYPTION */
 #include "rpaths.h"
@@ -320,7 +334,7 @@ int	encryptflag = 0;
 
 kstream krem;
 int	errs;
-krb5_sigtype lostconn();
+krb5_sigtype lostconn(int);
 int	iamremote, targetshouldbedirectory;
 int	iamrecursive;
 int	pflag;
@@ -334,7 +348,7 @@ char	*getenv();
 struct buffer {
 	int	cnt;
 	char	*buf;
-} *allocbuf();
+} *allocbuf(struct buffer *, int, int);
 
 #define	NULLBUF	(struct buffer *) 0
 
@@ -400,6 +414,7 @@ int main(argc, argv)
 			if (argc == 0) 
 			  usage();
 			strncpy(krb_realm,*argv,REALM_SZ);
+			krb_realm[REALM_SZ-1] = 0;
 			sprintf(realmarg, " -k %s", krb_realm);
 			goto next_arg;
 #endif /* KERBEROS */
@@ -452,7 +467,7 @@ int main(argc, argv)
 	return 1;
 }
 
-void verifydir(cp)
+static void verifydir(cp)
 	char *cp;
 {
 	struct stat stb;
@@ -474,7 +489,8 @@ void source(argc, argv)
 	struct stat stb;
 	static struct buffer buffer;
 	struct buffer *bp;
-	int x, readerr, f, amt;
+	int x, readerr, f;
+	unsigned int amt;
 	off_t i;
 	char buf[BUFSIZ];
 
@@ -523,7 +539,7 @@ notreg:
 			}
 		}
 		(void) sprintf(buf, "C%04o %ld %s\n",
-		    (unsigned int) stb.st_mode&07777, stb.st_size, last);
+		    (unsigned int) stb.st_mode&07777, (long) stb.st_size, last);
 		kstream_write (krem, buf, strlen (buf));
 		if (response() < 0) {
 			(void) close(f);
@@ -619,7 +635,7 @@ int response()
 	char resp, c, rbuf[BUFSIZ], *cp = rbuf;
 
 	if (kstream_read (krem, &resp, 1) != 1)
-		lostconn();
+		lostconn(0);
 	switch (resp) {
 
 	case 0:				/* ok */
@@ -632,11 +648,11 @@ int response()
 	case 2:				/* fatal error, "" */
 		do {
 			if (kstream_read (krem, &c, 1) != 1)
-				lostconn();
+				lostconn(0);
 			*cp++ = c;
 		} while (cp < &rbuf[BUFSIZ] && c != '\n');
 		if (iamremote == 0)
-			(void) write(2, rbuf, cp - rbuf);
+			(void) write(2, rbuf, (unsigned) (cp - rbuf));
 		errs++;
 		if (resp == 1)
 			return (-1);
@@ -646,7 +662,8 @@ int response()
 	return -1;
 }
 
-krb5_sigtype lostconn()
+krb5_sigtype lostconn(signum)
+    int signum;
 {
 
 	if (iamremote == 0)
@@ -682,13 +699,15 @@ void sink(argc, argv)
 {
 	off_t i, j;
 	char *targ, *whopp, *cp;
-	int of, mode, wrerr, exists, first, count, amt;
+	int of, wrerr, exists, first, amt;
+	mode_t mode;
+	unsigned int count;
 	off_t size;
 	struct buffer *bp;
 	static struct buffer buffer;
 	struct stat stb;
 	int targisdir = 0;
-	int mask = umask(0);
+	mode_t mask = umask(0);
 	char *myargv[1];
 	char cmdbuf[BUFSIZ], nambuf[BUFSIZ];
 	int setimes = 0;
@@ -782,11 +801,20 @@ void sink(argc, argv)
 			size = size * 10 + (*cp++ - '0');
 		if (*cp++ != ' ')
 			SCREWUP("size not delimited");
-		if (targisdir)
-			(void) sprintf(nambuf, "%s%s%s", targ,
-			    *targ ? "/" : "", cp);
-		else
-			(void) strcpy(nambuf, targ);
+		if (targisdir) {
+			if (strlen(targ) + strlen(cp) + 1 < sizeof(nambuf)) {
+				(void) sprintf(nambuf, "%s%s%s", targ,
+				    *targ ? "/" : "", cp);
+			} else {
+				SCREWUP("target directory name too long");
+			}
+		} else {
+		    if (strlen(targ) + 1 < sizeof(nambuf))
+			(void) strncpy(nambuf, targ, sizeof(nambuf)-1);
+		    else
+			SCREWUP("target pathname too long");
+		}
+		nambuf[sizeof(nambuf)-1] = '\0';
 		exists = stat(nambuf, &stb) == 0;
 		if (cmdbuf[0] == 'D') {
 			if (exists) {
@@ -910,20 +938,34 @@ allocbuf(bp, fd, blksize)
 	return (bp);
 }
 
+void
+#ifdef HAVE_STDARG_H
+error(char *fmt, ...)
+#else
 /*VARARGS1*/
-void error(fmt, a1, a2, a3, a4, a5)
-	char *fmt;
-	int a1, a2, a3, a4, a5;
+error(fmt, va_alist)
+     char *fmt;
+     va_dcl
+#endif
 {
-	char buf[BUFSIZ], *cp = buf;
+    va_list ap;
+    char buf[BUFSIZ], *cp = buf;
+    
+#ifdef HAVE_STDARG_H
+    va_start(ap, fmt);
+#else
+    va_start(ap);
+#endif
 
-	errs++;
-	*cp++ = 1;
-	(void) sprintf(cp, fmt, a1, a2, a3, a4, a5);
-	if (krem)
-	  (void) kstream_write(krem, buf, strlen(buf));
-	if (iamremote == 0)
-		(void) write(2, buf+1, strlen(buf+1));
+    errs++;
+    *cp++ = 1;
+    (void) vsprintf(cp, fmt, ap);
+    va_end(ap);
+
+    if (krem)
+	(void) kstream_write(krem, buf, strlen(buf));
+    if (iamremote == 0)
+	(void) write(2, buf+1, strlen(buf+1));
 }
 
 void usage()
@@ -1003,7 +1045,8 @@ answer_auth()
 	  local.sin_addr.s_addr = inet_addr(envaddr);
 #endif
 	  local.sin_family = AF_INET;
-	  if (envaddr = getenv("KRB5LOCALPORT"))
+	  envaddr = getenv("KRB5LOCALPORT");
+	  if (envaddr)
 	    local.sin_port = htons(atoi(envaddr));
 	  else
 	    local.sin_port = 0;
@@ -1018,7 +1061,8 @@ answer_auth()
 	  foreign.sin_addr.s_addr = inet_addr(envaddr);
 #endif
 	  foreign.sin_family = AF_INET;
-	  if (envaddr = getenv("KRB5REMOTEPORT"))
+	  envaddr = getenv("KRB5REMOTEPORT");
+	  if (envaddr)
 	    foreign.sin_port = htons(atoi(envaddr));
 	  else
 	    foreign.sin_port = 0;

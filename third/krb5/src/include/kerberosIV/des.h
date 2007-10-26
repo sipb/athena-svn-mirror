@@ -1,8 +1,8 @@
 /*
  * include/kerberosIV/des.h
  *
- * Copyright 1987, 1988, 1994 by the Massachusetts Institute of Technology.
- * All Rights Reserved.
+ * Copyright 1987, 1988, 1994, 2002 by the Massachusetts Institute of
+ * Technology.  All Rights Reserved.
  *
  * Export of this software from the United States of America may
  *   require a specific license from the United States Government.
@@ -26,73 +26,101 @@
  * Include file for the Data Encryption Standard library.
  */
 
-/* only do the whole thing once	 */
-#ifndef DES_DEFS
-#define DES_DEFS
-
-#if defined(_WIN32) && !defined(_WINDOWS)
-#define _WINDOWS
+#if defined(__MACH__) && defined(__APPLE__)
+#	include <TargetConditionals.h>
+#	if TARGET_RT_MAC_CFM
+#		error "Use KfM 4.0 SDK headers for CFM compilation."
+#	endif
 #endif
 
-#if defined(_WINDOWS)
+#ifdef __cplusplus
+#ifndef KRBINT_BEGIN_DECLS
+#define KRBINT_BEGIN_DECLS	extern "C" {
+#define KRBINT_END_DECLS	}
+#endif
+#else
+#define KRBINT_BEGIN_DECLS
+#define KRBINT_END_DECLS
+#endif
+
+#ifndef KRB5INT_DES_TYPES_DEFINED
+#define KRB5INT_DES_TYPES_DEFINED
+
+#include <limits.h>
+
+KRBINT_BEGIN_DECLS
+
+#if TARGET_OS_MAC
+#	pragma options align=mac68k
+#endif
+
+#if UINT_MAX >= 0xFFFFFFFFUL
+#define DES_INT32 int
+#define DES_UINT32 unsigned int
+#else
+#define DES_INT32 long
+#define DES_UINT32 unsigned long
+#endif
+
+typedef unsigned char des_cblock[8];	/* crypto-block size */
+/*
+ * Key schedule.
+ *
+ * This used to be
+ *
+ * typedef struct des_ks_struct {
+ *     union { DES_INT32 pad; des_cblock _;} __;
+ * } des_key_schedule[16];
+ *
+ * but it would cause trouble if DES_INT32 were ever more than 4
+ * bytes.  The reason is that all the encryption functions cast it to
+ * (DES_INT32 *), and treat it as if it were DES_INT32[32].  If
+ * 2*sizeof(DES_INT32) is ever more than sizeof(des_cblock), the
+ * caller-allocated des_key_schedule will be overflowed by the key
+ * scheduling functions.  We can't assume that every platform will
+ * have an exact 32-bit int, and nothing should be looking inside a
+ * des_key_schedule anyway.
+ */
+typedef struct des_ks_struct {  DES_INT32 _[2]; } des_key_schedule[16];
+
+#if TARGET_OS_MAC
+#	pragma options align=reset
+#endif
+
+KRBINT_END_DECLS
+
+#endif /* KRB5INT_DES_TYPES_DEFINED */
+
+/* only do the whole thing once	 */
+#ifndef DES_DEFS
+/*
+ * lib/crypto/des/des_int.h defines KRB5INT_CRYPTO_DES_INT temporarily
+ * to avoid including the defintions and declarations below.  The
+ * reason that the crypto library needs to include this file is that
+ * it needs to have its types aligned with krb4's types.
+ */
+#ifndef KRB5INT_CRYPTO_DES_INT
+#define DES_DEFS
+
+#if defined(_WIN32)
 #ifndef KRB4
 #define KRB4 1
 #endif
 #include <win-mac.h>
+#endif
+#include <stdio.h> /* need FILE for des_cblock_print_file */
+
+KRBINT_BEGIN_DECLS
+
+#if TARGET_OS_MAC
+#	pragma options align=mac68k
 #endif
 
 /* Windows declarations */
 #ifndef KRB5_CALLCONV
 #define KRB5_CALLCONV
 #define KRB5_CALLCONV_C
-#define KRB5_DLLIMP
-#define GSS_DLLIMP
-#define KRB5_EXPORTVAR
 #endif
-#ifndef FAR
-#define FAR
-#define NEAR
-#endif
-
-#ifndef __alpha
-#define KRB4_32	long
-#else
-#define KRB4_32	int
-#endif
-
-
-#ifndef PROTOTYPE
-#if (defined(__STDC__) || defined(_WINDOWS)) && !defined(KRB5_NO_PROTOTYPES)
-#define PROTOTYPE(x) x
-#else
-#define PROTOTYPE(x) ()
-#endif
-#endif
-
-
-
-typedef unsigned char des_cblock[8];	/* crypto-block size */
-
-/* Key schedule */
-/* Ick.  We need this in here unfortunately... */
-#ifndef DES_INT32
-#ifdef SIZEOF_INT
-#if SIZEOF_INT >= 4
-#define DES_INT32 int
-#else
-#define DES_INT32 long
-#endif
-#else /* !defined(SIZEOF_INT) */
-#include <limits.h>
-#if (UINT_MAX >= 0xffffffff)
-#define DES_INT32 int
-#else
-#define DES_INT32 long
-#endif
-#endif /* !defined(SIZEOF_INT) */
-#endif /* !defined(DES_INT32) */
-
-typedef struct des_ks_struct {  DES_INT32 _[2]; } des_key_schedule[16];
 
 #define DES_KEY_SZ 	(sizeof(des_cblock))
 #define DES_ENCRYPT	1
@@ -118,26 +146,50 @@ typedef struct des_ks_struct bit_64;
 
 #define des_cblock_print(x) des_cblock_print_file(x, stdout)
 
-
 /*
  * Function Prototypes
  */
 
-KRB5_DLLIMP int KRB5_CALLCONV
-des_key_sched
-	PROTOTYPE((C_Block, Key_schedule));
+int KRB5_CALLCONV des_key_sched (C_Block, Key_schedule);
 
-KRB5_DLLIMP int KRB5_CALLCONV
-des_pcbc_encrypt
-	PROTOTYPE((C_Block FAR *in, C_Block FAR *out, long length,
-		   Key_schedule schedule, C_Block FAR *ivec, int encrypt));
+int KRB5_CALLCONV
+des_pcbc_encrypt (C_Block *in, C_Block *out, long length,
+		  const des_key_schedule schedule, C_Block *ivec,
+		  int enc);
 
-KRB5_DLLIMP unsigned long KRB5_CALLCONV
-des_quad_cksum
-	PROTOTYPE((unsigned char FAR *in, unsigned KRB4_32 FAR *out,
-		   long length, int out_count, C_Block FAR *seed));
+unsigned long KRB5_CALLCONV
+des_quad_cksum (const unsigned char *in, unsigned DES_INT32 *out,
+		long length, int out_count, C_Block *seed);
+/*
+ * XXX ABI change: used to return void; also, cns/kfm have signed long
+ * instead of unsigned long length.
+ */
+unsigned long KRB5_CALLCONV
+des_cbc_cksum(const des_cblock *, des_cblock *, unsigned long,
+	      const des_key_schedule, const des_cblock *);
+int KRB5_CALLCONV des_string_to_key (const char *, C_Block);
+void afs_string_to_key(char *, char *, des_cblock);
 
-KRB5_DLLIMP int KRB5_CALLCONV
-des_string_to_key
-	PROTOTYPE((char FAR *, C_Block));
+/* XXX ABI change: used to return krb5_error_code */
+int KRB5_CALLCONV des_read_password(des_cblock *, char *, int);
+int KRB5_CALLCONV des_ecb_encrypt(des_cblock *, des_cblock *,
+				  const des_key_schedule, int);
+/* XXX kfm/cns have signed long length */
+int des_cbc_encrypt(des_cblock *, des_cblock *, unsigned long,
+		    const des_key_schedule, const des_cblock *, int);
+void des_fixup_key_parity(des_cblock);
+int des_check_key_parity(des_cblock);
+int KRB5_CALLCONV des_new_random_key(des_cblock);
+void des_init_random_number_generator(des_cblock);
+int des_random_key(des_cblock *);
+int des_is_weak_key(des_cblock);
+void des_cblock_print_file(des_cblock *, FILE *fp);
+
+#if TARGET_OS_MAC
+#	pragma options align=reset
+#endif
+
+KRBINT_END_DECLS
+
+#endif /* KRB5INT_CRYPTO_DES_INT */
 #endif	/* DES_DEFS */

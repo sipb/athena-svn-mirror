@@ -33,6 +33,35 @@
  *	@(#)ftp_var.h	5.9 (Berkeley) 6/1/90
  */
 
+#ifdef _WIN32
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
+#ifdef _WIN32
+int fclose_socket(FILE* f);
+FILE* fdopen_socket(SOCKET s, char* mode);
+#define FCLOSE_SOCKET(f) fclose_socket(f)
+#define FDOPEN_SOCKET(s, mode) fdopen_socket(s, mode)
+#define SOCKETNO(fd) _get_osfhandle(fd)
+#define PERROR_SOCKET(str) do { errno = SOCKET_ERRNO; perror(str); } while(0)
+#else
+#define FCLOSE_SOCKET(f) fclose(f)
+#define FDOPEN_SOCKET(s, mode) fdopen(s, mode)
+#define SOCKETNO(fd) (fd)
+#define PERROR_SOCKET(str) perror(str)
+#endif
+
+#ifdef _WIN32
+typedef void (*sig_t)(int);
+typedef void sigtype;
+#else
+#define sig_t my_sig_t
+#define sigtype krb5_sigtype
+typedef sigtype (*sig_t)();
+#endif
+
 /*
  * FTP global variables.
  */
@@ -74,7 +103,13 @@ extern int	passivemode;	/* passive mode enabled */
 extern char	*altarg;	/* argv[1] with no shell-like preprocessing  */
 extern char	ntin[17];	/* input translation table */
 extern char	ntout[17];	/* output translation table */
+#ifdef _WIN32
+#ifndef MAXPATHLEN
+#define MAXPATHLEN MAX_PATH
+#endif
+#else
 #include <sys/param.h>
+#endif
 extern char	mapin[MAXPATHLEN];	/* input map template */
 extern char	mapout[MAXPATHLEN];	/* output map template */
 extern int	clevel;		/* command channel protection level */
@@ -96,9 +131,9 @@ extern struct	servent *sp;	/* service spec for tcp/ftp */
 #include <setjmp.h>
 extern jmp_buf	toplevel;	/* non-local goto stuff for cmd scanner */
 
-extern char	line[200];	/* input line buffer */
+extern char	line[500];	/* input line buffer */
 extern char	*stringbase;	/* current scan point in line buffer */
-extern char	argbuf[200];	/* argument storage buffer */
+extern char	argbuf[500];	/* argument storage buffer */
 extern char	*argbase;	/* current storage point in arg buffer */
 extern int	margc;		/* count of arguments on input line */
 extern char	*margv[20];	/* args parsed from input line */
@@ -116,7 +151,7 @@ struct cmd {
 	char	c_bell;		/* give bell when command completes */
 	char	c_conn;		/* must be connected to use command */
 	char	c_proxy;	/* proxy server may execute */
-	int	(*c_handler)();	/* function to call */
+	void	(*c_handler)();	/* function to call */
 };
 
 struct macel {
@@ -134,10 +169,116 @@ extern char macbuf[4096];
 #endif
 
 extern	char *tail();
-extern	char *remglob();
-extern	int errno;
+#ifndef _WIN32
 extern	char *mktemp();
-
-#if (defined(STDARG) || (defined(__STDC__) && ! defined(VARARGS))) || defined(HAVE_STDARG_H)
-extern command(char *, ...);
 #endif
+
+extern int command(char *, ...);
+
+char *remglob (char **, int);
+int another (int *, char ***, char *);
+void makeargv (void);
+void setpeer (int, char **);
+void setclevel (int, char **);
+void setdlevel (int, char **);
+void ccc (void);
+void setclear (void);
+void setsafe (void);
+void setprivate (void);
+void settype (int, char **);
+void changetype (int, int);
+void setbinary (void);
+void setascii (void);
+void settenex (void);
+void set_mode  (int, char **);
+void setform  (int, char **);
+void setstruct  (int, char **);
+void siteidle  (int, char **);
+void put  (int, char **);
+void mput  (int, char **);
+void reget  (int, char **);
+void get  (int, char **);
+void mget  (int, char **);
+void status  (int, char **);
+void setbell (void);
+void settrace (void);
+void sethash (void);
+void setverbose (void);
+void setport (void);
+void setprompt (void);
+void setglob (void);
+void setdebug (int, char **);
+void cd (int, char **);
+void lcd (int, char **);
+void delete_file (int, char **);
+void mdelete (int, char **);
+void renamefile (int, char **);
+void ls (int, char **);
+void mls (int, char **);
+void shell (int, char **);
+void user (int, char **);
+void pwd (void);
+void makedir (int, char **);
+void removedir (int, char **);
+void quote (int, char **);
+void site (int, char **);
+void do_chmod (int, char **);
+void do_umask (int, char **);
+void setidle (int, char **);
+void rmthelp (int, char **);
+void quit (void);
+void disconnect (void);
+void fatal (char *);
+void account (int, char **);
+void doproxy (int, char **);
+void setcase (void);
+void setcr (void);
+void setntrans (int, char **);
+void setnmap (int, char **);
+void setsunique (void);
+void setrunique (void);
+void cdup (void);
+void restart (int, char **);
+void syst (void);
+void macdef (int, char **);
+void sizecmd (int, char **);
+void modtime (int, char **);
+void rmtstatus (int, char **);
+void newer (int, char **);
+void setpassive (void);
+
+/* ftp.c */
+void sendrequest (char *, char *, char *, int);
+void recvrequest (char *, char *volatile, char *, char *, int, int);
+int login (char *);
+void setpbsz (unsigned int);
+void pswitch (int);
+int getreply (int);
+void reset (void);
+char *hookup (char *, int);
+int do_auth (void);
+
+/* glob.c */
+void blkfree (char **);
+
+/* domacro.c */
+void domacro (int, char **);
+
+
+/* main.c */
+void help (int, char **);
+struct cmd *getcmd (char *);
+
+
+/* ruserpass.c */
+int ruserpass (char *, char **, char **, char **);
+
+/* radix.h */
+int radix_encode (unsigned char *, unsigned char *, int *, int);
+char *radix_error (int);
+
+/* getpass.c */
+char *mygetpass (char *);
+
+/* glob.c */
+char **ftpglob (char *);

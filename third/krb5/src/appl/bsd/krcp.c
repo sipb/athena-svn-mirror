@@ -65,11 +65,18 @@ char copyright[] =
 #else
 #include <varargs.h>
 #endif
+#include <sys/wait.h>
 
 #ifdef KERBEROS
 #include <krb5.h>
 #include <k5-util.h>
 #include <com_err.h>
+
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+#endif
+
+#include "defines.h"
 
 #define RCP_BUFSIZ 4096
      
@@ -82,21 +89,23 @@ krb5_encrypt_block eblock;         /* eblock for encrypt/decrypt */
 krb5_context bsd_context;
 
 #ifdef KRB5_KRB4_COMPAT
-#include <kerberosIV/krb.h>
 Key_schedule v4_schedule;
 CREDENTIALS v4_cred;
 KTEXT_ST v4_ticket;
 MSG_DAT v4_msg_data;
 #endif
 
-void	v4_send_auth(), try_normal();
-char	**save_argv();
+void	v4_send_auth(char *, char *), try_normal(char **);
+char	**save_argv(int, char **);
 #ifndef HAVE_STRSAVE
 char	*strsave();
 #endif
 int	rcmd_stream_write(), rcmd_stream_read();
-void 	usage(), sink(), source(), rsource(), verifydir(), answer_auth();
-int	response(), hosteq(), okname(), susystem();
+void 	usage(void), sink(int, char **),
+    source(int, char **), rsource(char *, struct stat *), verifydir(char *), 
+    answer_auth(char *, char *);
+int	response(void), hosteq(char *, char *), okname(char *), 
+    susystem(char *);
 int	encryptflag = 0;
 
 #ifndef UCB_RCP
@@ -106,9 +115,9 @@ int	encryptflag = 0;
 #endif /* KERBEROS */
 
 int	rem;
-char	*colon();
+char	*colon(char *);
 int	errs;
-krb5_sigtype	lostconn();
+krb5_sigtype	lostconn(int);
 int	iamremote, targetshouldbedirectory;
 int	iamrecursive;
 int	pflag;
@@ -118,20 +127,21 @@ int	userid;
 int	port = 0;
 
 struct buffer {
-    int	cnt;
+    unsigned int cnt;
     char	*buf;
-} *allocbuf();
+};
+
+struct buffer *allocbuf(struct buffer *, int, int);
 
 #define	NULLBUF	(struct buffer *) 0
   
-#ifdef HAVE_STDARG_H
-void 	error KRB5_STDARG_P((char *fmt, ...));
-#else
-/*VARARGS*/
-void	error KRB5_STDARG_P((char *, va_list));
+void 	error (char *fmt, ...)
+#if !defined (__cplusplus) && (__GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7))
+       __attribute__ ((__format__ (__printf__, 1, 2)))
 #endif
+     ;
 
-#define	ga()	 	(void) rcmd_stream_write(rem, "", 1)
+#define	ga()	 	(void) rcmd_stream_write(rem, "", 1, 0)
 
 int main(argc, argv)
      int argc;
@@ -140,7 +150,7 @@ int main(argc, argv)
     char *targ, *host, *src;
     char *suser, *tuser, *thost;
     int i;
-    int cmdsiz = 30;
+    unsigned int cmdsiz = 30;
     char buf[RCP_BUFSIZ], cmdbuf[30];
     char *cmd = cmdbuf;
     struct servent *sp;
@@ -153,6 +163,8 @@ int main(argc, argv)
     krb5_error_code status;	
     int euid;
     char **orig_argv = save_argv(argc, argv);
+    krb5_auth_context auth_context;
+    enum kcmd_proto kcmd_proto = KCMD_PROTOCOL_COMPAT_HACK;
 
     status = krb5_init_context(&bsd_context);
     if (status) {
@@ -223,6 +235,14 @@ int main(argc, argv)
 		exit(1);
 	    }
 	    strcpy(krb_config, *argv);	
+	    goto next_arg;
+	  case 'P':
+	    if (!strcmp (*argv, "O"))
+		kcmd_proto = KCMD_OLD_PROTOCOL;
+	    else if (!strcmp (*argv, "N"))
+		kcmd_proto = KCMD_NEW_PROTOCOL;
+	    else
+		usage ();
 	    goto next_arg;
 #endif /* KERBEROS */
 	    /* The rest of these are not for users. */
@@ -376,20 +396,22 @@ int main(argc, argv)
 		      suser = pwd->pw_name;
 		    else if (!okname(suser))
 		      continue;
+		    (void) sprintf(buf,
 #if defined(hpux) || defined(__hpux)
-		    (void) sprintf(buf, "remsh %s -l %s -n %s %s '%s%s%s:%s'",
+				   "remsh %s -l %s -n %s %s '%s%s%s:%s'",
 #else
-		    (void) sprintf(buf, "rsh %s -l %s -n %s %s '%s%s%s:%s'",
+				   "rsh %s -l %s -n %s %s '%s%s%s:%s'",
 #endif
 				   host, suser, cmd, src,
 				   tuser ? tuser : "",
 				   tuser ? "@" : "",
 				   thost, targ);
 	       } else
+		   (void) sprintf(buf,
 #if defined(hpux) || defined(__hpux)
-		   (void) sprintf(buf, "remsh %s -n %s %s '%s%s%s:%s'",
+				  "remsh %s -n %s %s '%s%s%s:%s'",
 #else
-		    (void) sprintf(buf, "rsh %s -n %s %s '%s%s%s:%s'",
+				  "rsh %s -n %s %s '%s%s%s:%s'",
 #endif
 				   argv[i], cmd, src,
 				   tuser ? tuser : "",
@@ -397,7 +419,7 @@ int main(argc, argv)
 				   thost, targ);
 		(void) susystem(buf);
 	    } else {		/* local to remote */
-krb5_creds *cred;
+		krb5_creds *cred;
 		if (rem == -1) {
 		    (void) sprintf(buf, "%s -t %s",
 				   cmd, targ);
@@ -418,10 +440,14 @@ krb5_creds *cred;
 				  0,  /* No server seq # */
 				  &local,
 				  &foreign,
-				  authopts,
+				  &auth_context, authopts,
 				  0, /* Not any port # */
-				  0);
+				  0,
+				  &kcmd_proto);
 		    if (status) {
+			if (kcmd_proto == KCMD_NEW_PROTOCOL)
+			    /* Don't fall back to less safe methods.  */
+			    exit (1);
 #ifdef KRB5_KRB4_COMPAT
 			fprintf(stderr, "Trying krb4 rcp...\n");
 			if (strncmp(buf, "-x rcp", 6) == 0)
@@ -442,8 +468,30 @@ krb5_creds *cred;
 			try_normal(orig_argv);
 #endif
 		    }
-		    else
-			rcmd_stream_init_krb5(&cred->keyblock, encryptflag, 0);
+		    else {
+			krb5_boolean similar;
+			krb5_keyblock *key = &cred->keyblock;
+
+			status = krb5_c_enctype_compare(bsd_context,
+							ENCTYPE_DES_CBC_CRC,
+							cred->keyblock.enctype,
+							&similar);
+			if (status)
+			    try_normal(orig_argv); /* doesn't return */
+
+			if (!similar) {
+			    status = krb5_auth_con_getsendsubkey (bsd_context,
+								  auth_context,
+								  &key);
+			    if ((status || !key) && encryptflag)
+				try_normal(orig_argv);
+			}
+			if (key == 0)
+			    key = &cred->keyblock;
+
+			rcmd_stream_init_krb5(key, encryptflag, 0, 1,
+					      kcmd_proto);
+		    }
 		    rem = sock;
 #else
 		    rem = rcmd(&host, port, pwd->pw_name,
@@ -521,10 +569,14 @@ krb5_creds *cred;
 			      0,  /* No server seq # */
 			      (struct sockaddr_in *) 0,
 			      &foreign,
-			      authopts,
+			      &auth_context, authopts,
 			      0, /* Not any port # */
-			      0);
+			      0,
+			      &kcmd_proto);
 		if (status) {
+			if (kcmd_proto == KCMD_NEW_PROTOCOL)
+			    /* Don't fall back to less safe methods.  */
+			    exit (1);
 #ifdef KRB5_KRB4_COMPAT
 			fprintf(stderr, "Trying krb4 rcp...\n");
 			if (strncmp(buf, "-x rcp", 6) == 0)
@@ -543,8 +595,27 @@ krb5_creds *cred;
 #else
 			try_normal(orig_argv);
 #endif
-		} else
-		    rcmd_stream_init_krb5(&cred->keyblock, encryptflag, 0);
+		} else {
+		    krb5_keyblock *key = &cred->keyblock;
+
+		    if (kcmd_proto == KCMD_NEW_PROTOCOL) {
+			status = krb5_auth_con_getsendsubkey (bsd_context,
+							      auth_context,
+							      &key);
+			if (status) {
+			    com_err (argv[0], status,
+				     "determining subkey for session");
+			    exit (1);
+			}
+			if (!key) {
+			    com_err (argv[0], 0,
+				     "no subkey negotiated for connection");
+			    exit (1);
+			}
+		    }
+
+		    rcmd_stream_init_krb5(key, encryptflag, 0, 1, kcmd_proto);
+		}
 		rem = sock; 
 				   
 		euid = geteuid();
@@ -699,7 +770,8 @@ void source(argc, argv)
     struct stat stb;
     static struct buffer buffer;
     struct buffer *bp;
-    int x, readerr, f, amt;
+    int x, readerr, f;
+    unsigned int amt;
     off_t i;
     char buf[RCP_BUFSIZ];
     
@@ -741,7 +813,7 @@ void source(argc, argv)
 	     */
 	    (void) sprintf(buf, "T%ld 0 %ld 0\n",
 			   stb.st_mtime, stb.st_atime);
-	    (void) rcmd_stream_write(rem, buf, strlen(buf));
+	    (void) rcmd_stream_write(rem, buf, strlen(buf), 0);
 	    if (response() < 0) {
 		(void) close(f);
 		continue;
@@ -749,7 +821,7 @@ void source(argc, argv)
 	}
 	(void) sprintf(buf, "C%04o %ld %s\n",
 		       (int) stb.st_mode&07777, (long ) stb.st_size, last);
-	(void) rcmd_stream_write(rem, buf, strlen(buf));
+	(void) rcmd_stream_write(rem, buf, strlen(buf), 0);
 	if (response() < 0) {
 	    (void) close(f);
 	    continue;
@@ -765,7 +837,7 @@ void source(argc, argv)
 	      amt = stb.st_size - i;
 	    if (readerr == 0 && read(f, bp->buf, amt) != amt)
 	      readerr = errno;
-	    (void) rcmd_stream_write(rem, bp->buf, amt);
+	    (void) rcmd_stream_write(rem, bp->buf, amt, 0);
 	}
 	(void) close(f);
 	if (readerr == 0)
@@ -810,19 +882,20 @@ void rsource(name, statp)
     if (pflag) {
 	(void) sprintf(buf, "T%ld 0 %ld 0\n",
 		       statp->st_mtime, statp->st_atime);
-	(void) rcmd_stream_write(rem, buf, strlen(buf));
+	(void) rcmd_stream_write(rem, buf, strlen(buf), 0);
 	if (response() < 0) {
 	    closedir(d);
 	    return;
 	}
     }
-    (void) sprintf(buf, "D%04o %d %s\n", statp->st_mode&07777, 0, last);
-    (void) rcmd_stream_write(rem, buf, strlen(buf));
+    (void) sprintf(buf, "D%04lo %d %s\n", (long) statp->st_mode&07777, 0, 
+		   last);
+    (void) rcmd_stream_write(rem, buf, strlen(buf), 0);
     if (response() < 0) {
 	closedir(d);
 	return;
     }
-    while (dp = readdir(d)) {
+    while ((dp = readdir(d)) != NULL) {
 	if (dp->d_ino == 0)
 	  continue;
 	if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, ".."))
@@ -836,7 +909,7 @@ void rsource(name, statp)
 	source(1, bufv);
     }
     closedir(d);
-    (void) rcmd_stream_write(rem, "E\n", 2);
+    (void) rcmd_stream_write(rem, "E\n", 2, 0);
     (void) response();
 }
 
@@ -845,8 +918,8 @@ void rsource(name, statp)
 int response()
 {
     char resp, c, rbuf[RCP_BUFSIZ], *cp = rbuf;
-    if (rcmd_stream_read(rem, &resp, 1) != 1)
-      lostconn();
+    if (rcmd_stream_read(rem, &resp, 1, 0) != 1)
+      lostconn(0);
     switch (resp) {
 	
       case 0:				/* ok */
@@ -858,12 +931,12 @@ int response()
       case 1:				/* error, followed by err msg */
       case 2:				/* fatal error, "" */
 	do {
-	    if (rcmd_stream_read(rem, &c, 1) != 1)
-	      lostconn();
+	    if (rcmd_stream_read(rem, &c, 1, 0) != 1)
+	      lostconn(0);
 	    *cp++ = c;
 	} while (cp < &rbuf[RCP_BUFSIZ] && c != '\n');
 	if (iamremote == 0)
-	  (void) write(2, rbuf, cp - rbuf);
+	  (void) write(2, rbuf, (unsigned) (cp - rbuf));
 	errs++;
 	if (resp == 1)
 	  return (-1);
@@ -875,7 +948,8 @@ int response()
 
 
 krb5_sigtype
-  lostconn()
+  lostconn(signumber)
+    int signumber;
 {
     if (iamremote == 0)
       fprintf(stderr, "rcp: lost connection\n");
@@ -914,7 +988,9 @@ void sink(argc, argv)
     mode_t mask = umask(0);
     off_t i, j;
     char *targ, *whopp, *cp;
-    int of, wrerr, exists, first, count, amt, size;
+    int of, wrerr, exists, first;
+    off_t size;
+    unsigned int amt, count;
     struct buffer *bp;
     static struct buffer buffer;
     struct stat stb;
@@ -941,12 +1017,12 @@ void sink(argc, argv)
       targisdir = 1;
     for (first = 1; ; first = 0) {
 	cp = cmdbuf;
-	if (rcmd_stream_read(rem, cp, 1) <= 0)
+	if (rcmd_stream_read(rem, cp, 1, 0) <= 0)
 	  return;
 	if (*cp++ == '\n')
 	  SCREWUP("unexpected '\\n'");
 	do {
-	    if (rcmd_stream_read(rem, cp, 1) != 1)
+	    if (rcmd_stream_read(rem, cp, 1, 0) != 1)
 	      SCREWUP("lost connection");
 	} while (*cp++ != '\n');
 	*cp = 0;
@@ -965,7 +1041,7 @@ void sink(argc, argv)
 	    return;
 	}
 	
-#define getnum(t) (t) = 0; while (isdigit(*cp)) (t) = (t) * 10 + (*cp++ - '0');
+#define getnum(t) (t) = 0; while (isdigit((int) *cp)) (t) = (t) * 10 + (*cp++ - '0');
 	if (*cp == 'T') {
 	    setimes++;
 	    cp++;
@@ -1008,15 +1084,21 @@ void sink(argc, argv)
 	if (*cp++ != ' ')
 	  SCREWUP("mode not delimited");
 	size = 0;
-	while (isdigit(*cp))
+	while (isdigit((int) *cp))
 	  size = size * 10 + (*cp++ - '0');
 	if (*cp++ != ' ')
 	  SCREWUP("size not delimited");
-	if (targisdir)
+	if (targisdir) {
+          if(strlen(targ) + strlen(cp) + 2 >= sizeof(nambuf))
+	    SCREWUP("target name too long");
 	  (void) sprintf(nambuf, "%s%s%s", targ,
 			 *targ ? "/" : "", cp);
-	else
-	  (void) strcpy(nambuf, targ);
+	} else {
+	  if (strlen(targ) + 1 >= sizeof (nambuf))
+	    SCREWUP("target name too long");
+	  (void) strncpy(nambuf, targ, sizeof(nambuf) - 1);
+	}
+	nambuf[sizeof(nambuf) - 1] = '\0';
 	exists = stat(nambuf, &stb) == 0;
 	if (cmdbuf[0] == 'D') {
 	    if (exists) {
@@ -1064,7 +1146,7 @@ void sink(argc, argv)
 	      amt = size - i;
 	    count += amt;
 	    do {
-		j = rcmd_stream_read(rem, cp, amt);
+		j = rcmd_stream_read(rem, cp, amt, 0);
 		if (j <= 0) {
 		    if (j == 0)
 		      error("rcp: dropped connection");
@@ -1159,7 +1241,7 @@ error(fmt, va_alist)
     va_end(ap);
 
     if (iamremote)
-      (void) rcmd_stream_write(rem, buf, strlen(buf));
+      (void) rcmd_stream_write(rem, buf, strlen(buf), 0);
     else
       (void) write(2, buf+1, strlen(buf+1));
 }
@@ -1170,7 +1252,7 @@ void usage()
 {
 #ifdef KERBEROS
     fprintf(stderr,
-	    "Usage: \trcp [-p] [-x] [-k realm] f1 f2; or:\n\trcp [-r] [-p] [-x] [-k realm] f1 ... fn d2\n");
+	    "Usage: \trcp [-PN | -PO] [-p] [-x] [-k realm] f1 f2; or:\n\trcp [-PN | -PO] [-r] [-p] [-x] [-k realm] f1 ... fn d2\n");
 #else
     fputs("usage: rcp [-p] f1 f2; or: rcp [-rp] f1 ... fn d2\n", stderr);
 #endif
@@ -1315,7 +1397,8 @@ void
 	exit(1);
     }
     
-    rcmd_stream_init_krb5(&new_creds->keyblock, encryptflag, 0);
+    rcmd_stream_init_krb5(&new_creds->keyblock, encryptflag, 0, 0,
+			  KCMD_OLD_PROTOCOL);
     
     /* cleanup */
     krb5_free_cred_contents(bsd_context, &creds);

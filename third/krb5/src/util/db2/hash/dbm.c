@@ -47,6 +47,7 @@ static char sccsid[] = "@(#)dbm.c	8.6 (Berkeley) 11/7/95";
 #include <string.h>
 
 #include "db-ndbm.h"
+#include "db-dbm.h"
 #include "hash.h"
 
 /* If the two size fields of datum and DBMT are not equal, then
@@ -168,8 +169,9 @@ kdb2_dbm_open(file, flags, mode)
 	info.cachesize = 0;
 	info.hash = NULL;
 	info.lorder = 0;
-	(void)strcpy(path, file);
-	(void)strcat(path, DBM_SUFFIX);
+	(void)strncpy(path, file, sizeof(path) - 1);
+	path[sizeof(path) - 1] = '\0';
+	(void)strncat(path, DBM_SUFFIX, sizeof(path) - 1 - strlen(path));
 	return ((DBM *)__hash_open(path, flags, mode, &info, 0));
 }
 
@@ -225,7 +227,7 @@ kdb2_dbm_firstkey(db)
 	DBM *db;
 {
 	int status;
-	datum retdata, retkey;
+	datum retkey;
 
 #ifdef NEED_COPY
 	DBT k, r;
@@ -234,6 +236,8 @@ kdb2_dbm_firstkey(db)
 	retkey.dptr = k.data;
 	retkey.dsize = k.size;
 #else
+	datum retdata;
+
 	status = (db->seq)(db, (DBT *)&retkey, (DBT *)&retdata, R_FIRST);
 #endif
 	if (status)
@@ -251,7 +255,7 @@ kdb2_dbm_nextkey(db)
 	DBM *db;
 {
 	int status;
-	datum retdata, retkey;
+	datum retkey;
 
 #ifdef NEED_COPY
 	DBT k, r;
@@ -260,6 +264,8 @@ kdb2_dbm_nextkey(db)
 	retkey.dptr = k.data;
 	retkey.dsize = k.size;
 #else
+	datum retdata;
+
 	status = (db->seq)(db, (DBT *)&retkey, (DBT *)&retdata, R_NEXT);
 #endif
 	if (status)

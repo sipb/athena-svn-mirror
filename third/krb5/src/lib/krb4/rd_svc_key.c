@@ -10,13 +10,13 @@
 
 #include "mit-copyright.h"
 #include "krb.h"
+#include "krb4int.h"
 #include <stdio.h>
 #include <string.h>
 
 #include "k5-int.h"
 #include <krb54proto.h>
-
-extern char *krb__get_srvtabname();
+#include "prot.h"
 
 /*
  * The private keys for servers on a given host are stored in a
@@ -121,12 +121,12 @@ int vxworks_srvtab_read(fd, s, n)
  */
 extern krb5_error_code
 krb54_get_service_keyblock(service,instance,realm,kvno,file,keyblock)
-    char FAR *service;		/* Service Name */
-    char FAR *instance;		/* Instance name or "*" */
-    char FAR *realm;		/* Realm */
+    char *service;		/* Service Name */
+    char *instance;		/* Instance name or "*" */
+    char *realm;		/* Realm */
     int kvno;			/* Key version number */
-    char FAR *file;		/* Filename */
-    krb5_keyblock FAR * keyblock;
+    char *file;		/* Filename */
+    krb5_keyblock * keyblock;
 {
     krb5_error_code retval;
     krb5_principal princ = NULL;
@@ -183,7 +183,7 @@ krb54_get_service_keyblock(service,instance,realm,kvno,file,keyblock)
     
     if ((retval = krb5_kt_resolve(krb5__krb4_context, keytabname, &kt_id)))
 	    goto errout;
-    
+
     if ((retval = krb5_kt_get_entry(krb5__krb4_context, kt_id, princ, kvno,
 				    0, &kt_entry))) {
 	krb5_kt_close(krb5__krb4_context, kt_id);
@@ -192,8 +192,14 @@ krb54_get_service_keyblock(service,instance,realm,kvno,file,keyblock)
 
     retval = krb5_copy_keyblock_contents(krb5__krb4_context,
 					 &kt_entry.key, keyblock);
+    /* Bash types */
+    /* KLUDGE! If it's a non-raw des3 key, bash its enctype */
+    /* See kdc/kerberos_v4.c */
+    if (keyblock->enctype == ENCTYPE_DES3_CBC_SHA1 )
+      keyblock->enctype = ENCTYPE_DES3_CBC_RAW;
     
     krb5_kt_free_entry(krb5__krb4_context, &kt_entry);
+    krb5_kt_close (krb5__krb4_context, kt_id);
 
 errout:
     if (princ)
@@ -203,14 +209,14 @@ errout:
 #endif
 
 
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 read_service_key(service,instance,realm,kvno,file,key)
-    char FAR *service;		/* Service Name */
-    char FAR *instance;		/* Instance name or "*" */
-    char FAR *realm;		/* Realm */
+    char *service;		/* Service Name */
+    char *instance;		/* Instance name or "*" */
+    char *realm;		/* Realm */
     int kvno;			/* Key version number */
-    char FAR *file;		/* Filename */
-    char FAR *key;		/* Pointer to key to be filled in */
+    char *file;		/* Filename */
+    char *key;		/* Pointer to key to be filled in */
 {
     int kret;
     
@@ -254,14 +260,14 @@ errout:
 /* kvno is passed by reference, so that if it is zero, and we find a match,
    the match gets written back into *kvno so the caller can find it.
  */
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 get_service_key(service,instance,realm,kvno,file,key)
-    char FAR *service;              /* Service Name */
-    char FAR *instance;             /* Instance name or "*" */
-    char FAR *realm;                /* Realm */
-    int  FAR *kvno;                 /* Key version number */
-    char FAR *file;                 /* Filename */
-    char FAR *key;                  /* Pointer to key to be filled in */
+    char *service;              /* Service Name */
+    char *instance;             /* Instance name or "*" */
+    char *realm;                /* Realm */
+    int *kvno;                 /* Key version number */
+    char *file;                 /* Filename */
+    char *key;                  /* Pointer to key to be filled in */
 {
     char serv[SNAME_SZ];
     char inst[INST_SZ];
