@@ -1,4 +1,4 @@
-case $CONFIG in
+case $PERL_CONFIG_SH in
 '')
 	if test -f config.sh; then TOP=.;
 	elif test -f ../config.sh; then TOP=..;
@@ -34,7 +34,7 @@ $spitshell >cflags <<!GROK!THIS!
 
 : In the following dollars and backticks do not need the extra backslash.
 $spitshell >>cflags <<'!NO!SUBS!'
-case $CONFIG in
+case $PERL_CONFIG_SH in
 '')
 	if test -f config.sh; then TOP=.;
 	elif test -f ../config.sh; then TOP=..;
@@ -48,6 +48,13 @@ case $CONFIG in
 	;;
 esac
 
+case "X$1" in
+Xoptimize=*|X"optimize=*")
+        eval "$1"
+        shift
+        ;;
+esac
+
 also=': '
 case $# in
 1) also='echo 1>&2 "	  CCCMD = "'
@@ -57,7 +64,7 @@ case $# in
 0) set *.c; echo "The current C flags are:" ;;
 esac
 
-set `echo "$* " | sed -e 's/\.[oc] / /g' -e 's/\.obj / /g'`
+set `echo "$* " | sed -e 's/\.[oc] / /g' -e 's/\.obj / /g' -e "s/\\$obj_ext / /g"`
 
 for file do
 
@@ -84,8 +91,8 @@ for file do
 
     ccflags="`echo $ccflags | sed -e 's/-DMULTIPLICITY//'`"
 
-    echo "$cc -c $ccflags $optimize $large $split"
-    eval "$also "'"$cc -c $ccflags $optimize $large $split"'
+    echo "$cc -c $ccflags $optimize"
+    eval "$also "'"$cc -c $ccflags $optimize"'
 
     . $TOP/config.sh
 
