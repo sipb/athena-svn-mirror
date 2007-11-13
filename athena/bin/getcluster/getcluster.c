@@ -36,6 +36,9 @@ static void *emalloc(size_t size);
  * option is not given, read cluster information from it as well.
  * Variables in localfile override variables obtained from Hesiod, and
  * variables obtained from Hesiod override those in fallbackfile.
+ * Under linux, the hesiod lookup is retried for generic cluster info
+ * if no fallback cluster info is present.
+ * 
  * "Override" means that the presence of any instances of variable "foo"
  * in one source will prevent any instances from a source being overridden.
  * Example 1:
@@ -159,6 +162,16 @@ int main(int argc, char **argv)
 	  hp = hesiod_resolve(hescontext, hostname, "cluster");
 	  if (hp == NULL && errno != ENOENT)
 	    perror("hesiod_resolve");
+#ifdef linux
+	  if (hp == NULL && errno == ENOENT && fp == NULL) {
+	    /* Fetch generic hesiod data only in the case of an explicit ENOENT
+	     * and no local fallback data.
+	     */
+	    hp = hesiod_resolve(hescontext, "public-linux", "cluster");
+	    if (hp == NULL && errno != ENOENT)
+	      perror("hesiod_resolve");
+	  }
+#endif
 	}
     }
 
