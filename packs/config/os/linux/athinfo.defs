@@ -12,6 +12,7 @@ machtype	/bin/athena/machtype
 sysname		/bin/athena/machtype -S
 cputype		/bin/athena/machtype -v -c
 display		/bin/athena/machtype -v -d
+xconf		. /etc/athena/rc.conf && test true = "$PUBLIC" && cat /etc/X11/xorg.conf
 disks		/bin/athena/machtype -v -r
 memory		/bin/athena/machtype -v -M
 swap		swapon -s
