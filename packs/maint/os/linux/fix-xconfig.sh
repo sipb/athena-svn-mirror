@@ -53,6 +53,15 @@ fi
 runsed "/^${optwsp}Modes$wsp\"1600x1200\"$optwsp\$/s/1600x1200/1280x1024/"
 runsed "/^[ 	]*Modes/s/\"1600x1200\"$optwsp//"
 
+# Machines with a Dell 2007WFP monitor (especially cluster gx7[45]5s)
+# and the proprietary ATI driver really want to run at 1680x1050 instead
+# of 1280x1024.
+if echo "$edid" | grep -iq 'Identifier "DELL 2007WFP"' \
+    && grep -q 'Driver.*fglrx' $cfg \
+    && ! grep -q 'Modes.*1680x1050' $cfg ; then
+  runsed "/^[ 	]*Modes/s/\(Modes$optwsp\)/\1\"1680x1050\" /"
+fi
+
 # Add a ServerFlags section with the DontZap flag set, if not already present.
 if ! grep -qi "^${optwsp}Section${wsp}\"ServerFlags\"${optwsp}$" $cfg ; then
   cat >> $cfg <<EOF
