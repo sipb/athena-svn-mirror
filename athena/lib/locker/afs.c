@@ -557,7 +557,6 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
     strncpy(client.name, user, MAXKTCNAMELEN - 1);
   else
     sprintf(client.name, "AFS ID %ld", (long) vice_id);
-  free(user);
   strcpy(client.instance, "");
   strncpy(client.cell, crealm, MAXKTCREALMLEN - 1);
   client.cell[MAXKTCREALMLEN - 1] = '\0';
@@ -575,11 +574,17 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
 	{
 	  /* Don't get tokens as another user. */
 	  if (strcmp(xclient.name, client.name))
-	    return LOCKER_SUCCESS;
+	    {
+	      free(user);
+	      return LOCKER_SUCCESS;
+	    }
 
 	  /* Don't get tokens that won't last longer than existing tokens. */
 	  if (token.endTime <= xtoken.endTime)
-	    return LOCKER_SUCCESS;
+	    {
+	      free(user);
+	      return LOCKER_SUCCESS;
+	    }
 	}
     }
 
@@ -589,9 +594,11 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
     {
       locker__error(context, "%s: Could not obtain %s tokens for cell "
 		    "%s:\n%s.\n", name, user, cell, error_message(status));
+      free(user);
       return LOCKER_EAUTH;
     }
 
+  free(user);
   return LOCKER_SUCCESS;
 }
 
