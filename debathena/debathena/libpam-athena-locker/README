@@ -1,0 +1,12 @@
+This is the README for pam_athena_locker, a PAM session module which 
+attaches the user's home directory in pam_open_session.  This is useful 
+for handling Athena home directories that are not in the home cell of 
+the machine.
+
+One uses the module by adding the line
+
+session    optional   pam_athena_locker.so 
+
+in /etc/pam.d/common-session after pam_krb5.so.
+
+It supports the debug option.

@@ -1,0 +1,12 @@
+libpam-debathena-home-type (1.1-0debathena1) unstable; urgency=low
+
+  * zero sigaction struct before using it.
+  * move sigaction end to after our waitpid() call.
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 10 Dec 2007 00:49:37 -0500
+
+libpam-debathena-home-type (1.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 14 Nov 2007 18:57:47 -0500
