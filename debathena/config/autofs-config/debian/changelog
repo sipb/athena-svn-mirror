@@ -1,0 +1,29 @@
+debathena-autofs-config (1.1debathena3) unstable; urgency=low
+
+  * Rebuild against debathena-config-build-common 3.4.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 21:56:59 -0400
+
+debathena-autofs-config (1.1debathena2) unstable; urgency=low
+
+  * Don't undivert /etc/default/autofs on a clean install.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 03 Aug 2007 17:31:28 -0400
+
+debathena-autofs-config (1.1debathena1) unstable; urgency=low
+
+  * Rebuild with debathena-config-build-common 3.1.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 02:12:06 -0400
+
+debathena-autofs-config (1.1) unstable; urgency=low
+
+  * Don't divert /etc/default/autofs.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 15:37:24 -0400
+
+debathena-autofs-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 16:04:23 -0400

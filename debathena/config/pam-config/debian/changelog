@@ -1,0 +1,50 @@
+debathena-pam-config (1.3debathena2) unstable; urgency=low
+
+  * Add /etc/security/access.conf default to no remote access.
+  * Use pam_xauthority.so by default.
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 12 Dec 2007 22:41:02 -0500
+
+debathena-pam-config (1.3debathena1) unstable; urgency=low
+
+  * Make /etc/pam.d/{login,ssh,gdm} include pam_access.so
+  * Add pam_debathena_home_type.so /etc/pam.d/common-session
+
+ -- Tim Abbott <tabbott@mit.edu>  Tue, 13 Nov 2007 01:19:19 -0500
+
+debathena-pam-config (1.2debathena2) unstable; urgency=low
+
+  * Base original configuration on libpam-runtime templates.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 06 Sep 2007 01:57:27 -0400
+
+debathena-pam-config (1.2debathena1) unstable; urgency=low
+
+  * Rebuild against debathena-config-build-common 3.4.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 21:57:15 -0400
+
+debathena-pam-config (1.2) unstable; urgency=low
+
+  * Renamed libpam-krb4 to libpam-krb524.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 24 Jul 2007 21:59:08 -0400
+
+debathena-pam-config (1.1debathena1) unstable; urgency=low
+
+  * Rebuild with debathena-config-build-common 3.1.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 02:14:52 -0400
+
+debathena-pam-config (1.1) unstable; urgency=low
+
+  * Updated to use libpam-krb4 and libpam-athena-locker, rather than
+    debathena-libpam-krb5 and debathena-libpam-openafs-session
+
+ -- Tim Abbott <tabbott@mit.edu>  Fri, 13 Jul 2007 17:34:34 -0400
+
+debathena-pam-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 16:04:50 -0400

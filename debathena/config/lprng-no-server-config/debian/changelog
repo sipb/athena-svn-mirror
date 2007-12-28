@@ -1,0 +1,5 @@
+debathena-lprng-no-server-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 19 Sep 2007 03:06:43 -0400

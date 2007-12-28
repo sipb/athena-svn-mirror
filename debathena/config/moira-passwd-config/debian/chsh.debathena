@@ -1,0 +1,26 @@
+#!/bin/sh
+
+get_user ()
+{
+    OPTS=$(getopt -q -o 'wudb:' --long "winshell,unixshell,database:" -- "$@") || return 1
+    eval set -- "$OPTS"
+    while true; do
+	case "$1" in
+	    --) shift; break;;
+	    *) shift;;
+	esac
+    done
+    if [ -n "$1" ]; then
+	echo "$1"
+    else
+	id -un
+    fi
+}
+
+if ! user=$(get_user "$@") ||
+    grep -q "^$user:" /etc/passwd ||
+    ! (echo c; echo qy gpob "$user") | mrtest -q | grep -q '1 tuple'; then
+    exec "$(dirname "$0")/chsh.debathena-orig" "$@"
+else
+    exec "$(dirname "$0")/chsh.moira" "$@"
+fi

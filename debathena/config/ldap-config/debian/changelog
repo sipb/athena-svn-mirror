@@ -1,0 +1,5 @@
+debathena-ldap-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 13 Aug 2007 17:02:56 -0400

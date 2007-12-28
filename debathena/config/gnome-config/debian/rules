@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
+DEBATHENA_DIVERT_FILES_debathena-gnome-config += \
+	/etc/hesiod.conf.debathena
+PIXMAPDIR=/usr/share/pixmaps
+GNOMEATHDIR=/usr/share/gnome
+SCHEMASDIR=/etc/gconf/schemas/2
+# relevant?
+AFSMENUS=/afs/athena.mit.edu/system/config/panel/menus
+APPLICATIONS=/usr/share/applications
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/debathena-divert.mk

@@ -1,0 +1,2 @@
+debian/gdm.conf.debathena etc/gdm
+debian/debathena.png usr/share/pixmaps

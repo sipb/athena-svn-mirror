@@ -1,0 +1,13 @@
+Source: debathena-config-build-common
+Section: debathena/devel
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-config-build-common
+Architecture: all
+Depends: cdbs, ${misc:Depends}
+Description: Support files for building Debian-Athena packages
+ This package includes support files needed to build some
+ Debian-Athena configuration pacakges.

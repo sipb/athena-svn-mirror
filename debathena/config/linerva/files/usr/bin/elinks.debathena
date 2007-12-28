@@ -1,0 +1,3 @@
+#!/bin/bash
+# Workaround script to make elinks put its UNIX sockets not in AFS.  
+ELINKS_CONFDIR=$ATHENA_SESSION_TMPDIR elinks.debathena-orig "$@"

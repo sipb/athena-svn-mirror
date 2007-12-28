@@ -1,0 +1,15 @@
+Source: debathena-ssh-client-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, debathena-ssh-client | openssh-client | ssh-krb5
+Standards-Version: 3.7.2
+
+Package: debathena-ssh-client-config
+Architecture: all
+Depends: debathena-kerberos-config, openssh-client | ssh-krb5, ${misc:Depends}
+Conflicts: debathena-ssh-config (<< 1.0)
+Replaces: debathena-ssh-config (<< 1.0)
+Description: SSH client configuration for Debian-Athena
+ This package configures the SSH client to automatically forward
+ Kerberos credentials.

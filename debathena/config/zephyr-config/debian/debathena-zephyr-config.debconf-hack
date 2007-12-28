@@ -1,0 +1,3 @@
+zephyr-clients	zephyr-clients/read_conf	boolean	true
+zephyr-clients	zephyr-clients/need-servers	note	
+zephyr-clients	zephyr-clients/servers	string	z1.mit.edu z2.mit.edu

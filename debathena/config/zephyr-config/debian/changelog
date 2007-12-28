@@ -1,0 +1,36 @@
+debathena-zephyr-config (1.1debathena3) unstable; urgency=low
+
+  * Stop zhm before restarting it, to work around Debian #448459.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 29 Oct 2007 23:37:08 -0400
+
+debathena-zephyr-config (1.1debathena2) unstable; urgency=low
+
+  * Rebuild against debathena-config-build-common 3.4.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 21:57:23 -0400
+
+debathena-zephyr-config (1.1debathena1) unstable; urgency=low
+
+  * Hack debconf in preinst and postinst so that zephyr doesn't start
+    before it is configured.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 24 Jul 2007 20:44:28 -0400
+
+debathena-zephyr-config (1.0debathena2) unstable; urgency=low
+
+  * Depend debathena-kerberos-config.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 03:24:43 -0400
+
+debathena-zephyr-config (1.0debathena1) unstable; urgency=low
+
+  * Rebuild with debathena-config-build-common 3.1.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 01:21:08 -0400
+
+debathena-zephyr-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 16:04:54 -0400

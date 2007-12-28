@@ -1,0 +1,2 @@
+usr/share/debathena-ssl-certificates/mitCA.pem etc/ssl/certs/mitCA.pem
+usr/share/debathena-ssl-certificates/mitCAclient.pem etc/ssl/certs/mitCAclient.pem

@@ -1,0 +1,3 @@
+debian/bash.bashrc.debathena /etc/
+debian/profile.debathena /etc/
+debian/bashrc.debathena /usr/share/debathena-bash-config/

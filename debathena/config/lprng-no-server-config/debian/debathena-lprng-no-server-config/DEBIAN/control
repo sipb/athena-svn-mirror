@@ -1,0 +1,10 @@
+Package: debathena-lprng-no-server-config
+Version: 1.0
+Section: debathena-config/net
+Priority: extra
+Architecture: all
+Depends: debathena-lprng-config
+Installed-Size: 19
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Description: Remove lprng's cron job and init script
+ This package makes lprng not run a server.

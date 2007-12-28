@@ -1,0 +1,11 @@
+debathena-linerva (1.1) unstable; urgency=low
+
+  * updated motd
+
+ -- Tim Abbott <tabbott@mit.edu>  Sun,  9 Dec 2007 17:07:41 -0500
+
+debathena-linerva (1.0) unstable; urgency=low
+
+  * Rewritten using dpkg-statoveride
+
+ -- Tim Abbott <tabbott@mit.edu>  Fri, 13 Jul 2007 15:04:51 -0400

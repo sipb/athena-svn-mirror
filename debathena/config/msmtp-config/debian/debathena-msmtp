@@ -1,0 +1,10 @@
+#!/bin/sh
+if ! klist -s; then
+	echo "pine-sendmail: no valid Kerberos tickets found." >&2
+fi
+kuser=$(klist | sed -n 's/^Default principal: \(.*\)@.*/\1/ p')
+if [ -z "$kuser" ]; then
+	echo "pine-sendmail: no Kerberos tickets found." >&2
+	exit 1
+fi
+exec msmtp --host=outgoing.mit.edu --port=587 --auth=gssapi --user="$kuser" --debug --auto-from=on --maildomain=mit.edu -t "$@"

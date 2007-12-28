@@ -1,0 +1,3 @@
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: grsec: From [1234567890.]*: denied resource overstep by requesting 4096 for RLIMIT_CORE
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: afs: failed to store file 
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: afs: byte-range lock/unlock ignored 

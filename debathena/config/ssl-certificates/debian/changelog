@@ -1,0 +1,12 @@
+debathena-ssl-certificates (1.1) unstable; urgency=low
+
+  * Link certificates from /usr/share/debathena-ssl-certificates instead
+    of installing them directly into /etc/ssl/certs.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 19 Jul 2007 14:46:52 -0400
+
+debathena-ssl-certificates (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 17:46:55 -0400

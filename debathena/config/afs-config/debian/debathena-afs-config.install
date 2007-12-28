@@ -1,0 +1,7 @@
+debian/afs.conf.debathena etc/openafs
+debian/afs.conf.client.debathena etc/openafs
+debian/CellAlias.debathena etc/openafs
+debian/CellServDB.debathena etc/openafs
+debian/SuidCells.debathena etc/openafs
+debian/ThisCell.debathena etc/openafs
+debian/cacheinfo.debathena etc/openafs

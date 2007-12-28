@@ -1,0 +1,15 @@
+Source: debathena-linerva
+Section: linerva/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, debathena-config-build-common
+Standards-Version: 3.7.2
+
+Package: debathena-linerva
+Architecture: i386
+Pre-Depends: logcheck, screen, elinks
+Recommends:
+Description: Special Configuration for Linerva
+ This package does all the special stuff needed for Linerva's security
+ setup.  It should be idempotent, though we do not guarantee that it
+ undoes changes when uninstalled.

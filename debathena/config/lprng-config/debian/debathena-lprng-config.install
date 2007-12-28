@@ -1,0 +1,3 @@
+debian/lpd.conf.debathena etc/lprng
+debian/get_hesiod_pcap usr/lib
+

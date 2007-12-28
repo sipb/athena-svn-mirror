@@ -1,0 +1,16 @@
+Source: debathena-kerberos-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, krb5-config, krb4-config
+Standards-Version: 3.7.2
+
+Package: debathena-kerberos-config
+Architecture: all
+Depends: krb5-config, krb4-config, krb5-user, krb5-clients, ntp-server | time-daemon, ntpdate | time-daemon, ${misc:Depends}
+Description: Kerberos configuration for Debian-Athena
+ This packages configures Kerberos to use the Athena realm, and adds a
+ few other MIT realms to the Kerberos configuration files, by
+ diverting aside the Kerberos configuration files and replacing them
+ with those appropriate for Debian-Athena.
+

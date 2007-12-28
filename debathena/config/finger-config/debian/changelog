@@ -1,0 +1,29 @@
+debathena-finger-config (1.0debathena4) unstable; urgency=low
+
+  * Changed section to net.
+
+ -- Tim Abbott <tabbott@mit.edu>  Fri, 10 Aug 2007 01:24:58 -0400
+
+debathena-finger-config (1.0debathena3) unstable; urgency=low
+
+  * Actually don't divert manpage.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 21:24:25 -0400
+
+debathena-finger-config (1.0debathena2) unstable; urgency=low
+
+  * Don't divert manpage because we don't provide one.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 21:08:20 -0400
+
+debathena-finger-config (1.0debathena1) unstable; urgency=low
+
+  * Rebuild with debathena-config-build-common 3.1.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 01:20:51 -0400
+
+debathena-finger-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 16:04:27 -0400

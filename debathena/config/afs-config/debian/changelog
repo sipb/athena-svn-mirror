@@ -1,0 +1,62 @@
+debathena-afs-config (1.2debathena2) unstable; urgency=low
+
+  * Remove dependency on openafs-modules2
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 28 Nov 2007 18:54:36 -0500
+
+debathena-afs-config (1.2debathena1) unstable; urgency=low
+
+  * Don't restart AFS because it doesn't actually work anyway
+
+ -- Tim Abbott <tabbott@mit.edu>  Sun, 25 Nov 2007 21:16:25 -0500
+
+debathena-afs-config (1.2debathena0) unstable; urgency=low
+
+  * Default to 6 daemons, 200 volumes, 10000 stats.
+  * Divert /etc/openafs/cacheinfo to default to 250MB cache
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 19 Sep 2007 02:58:56 -0400
+
+debathena-afs-config (1.1debathena5) unstable; urgency=low
+
+  * Use new check-conffiles interface from debathena-config-build-common 
+    3.5.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 15 Aug 2007 02:51:14 -0400
+
+debathena-afs-config (1.1debathena4) unstable; urgency=low
+
+  * Rebuild against debathena-config-build-common 3.4.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 21:56:56 -0400
+
+debathena-afs-config (1.1debathena3) unstable; urgency=low
+
+  * Depend machtype.
+  * More robust config file creation.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 02:00:48 -0400
+
+debathena-afs-config (1.1debathena2) unstable; urgency=low
+
+  * Move conffiles test to config-build-common.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 03 Aug 2007 20:32:32 -0400
+
+debathena-afs-config (1.1debathena1) unstable; urgency=low
+
+  * Rebuild with debathena-config-build-common 3.1.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 02:09:27 -0400
+
+debathena-afs-config (1.1) unstable; urgency=low
+
+  * Install afs.conf.client.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 00:38:57 -0400
+
+debathena-afs-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 16:05:24 -0400

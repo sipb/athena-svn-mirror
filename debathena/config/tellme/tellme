@@ -1,0 +1,10 @@
+#!/bin/sh
+
+tellme_dir=$(ATHENA_SYS=$(machtype -S) ATHENA_SYS_COMPAT=$(machtype -C) \
+    athdir /afs/athena.mit.edu/system/config/tellme)
+if [ $? -ne 0 ]; then
+    echo "$0: could not get tellme directory; check your AFS tokens." >&2
+    exit 1
+fi
+
+exec "$tellme_dir/tellme" "$@"

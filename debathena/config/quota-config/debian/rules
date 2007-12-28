@@ -1,0 +1,8 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
+DEBATHENA_DIVERT_FILES_debathena-quota-config += \
+	/usr/bin/quota.debathena \
+	/usr/share/man/man1/quota.debathena.1.gz
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/debathena-divert.mk

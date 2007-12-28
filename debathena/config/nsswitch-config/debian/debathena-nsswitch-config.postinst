@@ -1,0 +1,48 @@
+#!/bin/sh
+# postinst script for debathena-nsswitch-config
+#
+# see: dh_installdeb(1)
+
+set -e
+
+# summary of how this script can be called:
+#        * <postinst> `configure' <most-recently-configured-version>
+#        * <old-postinst> `abort-upgrade' <new version>
+#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
+#          <new-version>
+#        * <postinst> `abort-remove'
+#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
+#          <failed-install-package> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see http://www.debian.org/doc/debian-policy/ or
+# the debian-policy package
+
+
+#DEBHELPER#
+
+case "$1" in
+    configure)
+	if [ -x /var/lib/dpkg/info/libnss-mdns.postinst ]; then
+	    /var/lib/dpkg/info/libnss-mdns.postinst configure
+	fi
+	if ! [ -L /etc/nsswitch.conf ]; then
+	    echo "warning: /etc/nsswitch.conf is no longer a symbolic link!  Fixing." >&2
+	    if [ -s /etc/nsswitch.conf ]; then
+		mv /etc/nsswitch.conf /etc/nsswitch.conf.debathena
+	    fi
+	    ln -sf nsswitch.conf.debathena /etc/nsswitch.conf
+	fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0
+
+

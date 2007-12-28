@@ -1,0 +1,44 @@
+debathena-config-build-common (3.5) unstable; urgency=low
+
+  * Change check-conffiles interface to make it work properly with 
+    dpkg-diverted files.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 13 Aug 2007 17:59:43 -0400
+
+debathena-config-build-common (3.4) unstable; urgency=low
+
+  * Need [ -e ] || [ -L ] to check for existence, instead of just [ -e ].
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 06:57:18 -0400
+
+debathena-config-build-common (3.3) unstable; urgency=low
+
+  * Add check-conffiles script.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 03 Aug 2007 17:50:20 -0400
+
+debathena-config-build-common (3.2) unstable; urgency=low
+
+  * Add debconf-hack script.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 24 Jul 2007 20:41:13 -0400
+
+debathena-config-build-common (3.1) unstable; urgency=low
+
+  * Divert with the current package name, not the empty string.
+  * Add this package as an automatic build dependency of anything that 
+    uses it.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 01:13:40 -0400
+
+debathena-config-build-common (3.0debathena1) unstable; urgency=low
+
+  * Fix divert script version.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 15:57:19 -0400
+
+debathena-config-build-common (3.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 06 Jul 2007 19:30:41 -0400

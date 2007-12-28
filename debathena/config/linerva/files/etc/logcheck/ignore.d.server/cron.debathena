@@ -1,0 +1,11 @@
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ crontab\[[0-9]+\]: \([[:alnum:]-]+\) LIST \([[:alnum:]-]+\)$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ crontab\[[0-9]+\]: \([[:alnum:]-]+\) REPLACE \([[:alnum:]-]+\)$
+
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ CRON\[[0-9]+\]: pam_krb5: pam_sm_setcred(cron logcheck): entry:
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ CRON\[[0-9]+\]: pam_krb5: pam_sm_setcred(cron logcheck): Break-in Attempt by: logcheck
+
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ CRON\[[0-9]+\]: pam_krb5: pam_sm_setcred\(cron root\): entry:
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ CRON\[[0-9]+\]: pam_krb5: pam_sm_setcred\(cron root\): PAMDATA:: (null)
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ CRON\[[0-9]+\]: pam_krb5: pam_sm_setcred\(cron root\): pam_get_data(): No module specific data is present
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ CRON\[[0-9]+\]: Authentication service cannot retrieve user credentials
+

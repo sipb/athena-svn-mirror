@@ -1,0 +1,13 @@
+# This is the Debathena /etc/profile configuration.
+# It is only necessary if you are not using debathena-login.
+
+# It sources a bash script that creates the add and renew commands,
+# sets ATHENA_SYS is set correctly, and other similar tasks.
+# To remove this feature, uninstall the debathena-bash-config package.
+DEBATHENA_BASHRC=/usr/share/debathena-bash-config/bashrc.debathena
+if [ -e "$DEBATHENA_BASHRC" ]; then
+    . "$DEBATHENA_BASHRC"
+fi
+
+# Now source the normal profile (afterwards, to allow overrides)
+. /etc/profile.debathena-orig

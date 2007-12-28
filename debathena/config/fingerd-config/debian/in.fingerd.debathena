@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/sbin/in.fingerd.debathena-orig -p /usr/share/debathena-fingerd-config/finger-wrapper "$@"

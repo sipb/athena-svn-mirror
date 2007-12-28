@@ -1,0 +1,20 @@
+Source: debathena-nsswitch-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), debathena-config-build-common, debathena-config-build-common (>= 3.5~)
+Standards-Version: 3.7.2
+
+Package: debathena-nsswitch-config
+Architecture: all
+Depends: debathena-hesiod-config, debathena-autofs-config, libnss-nonlocal, libnss-afspag, ${misc:Depends}
+Description: nsswitch configuration for Debian-Athena
+ This packages configures nsswitch to get passwd information from
+ Athena Hesiod, using libnss-nonlocal, which prevents network users
+ from authenticating to the same uid as a local user (and similarly
+ for network groups).  It also configures libnss-afspag, which gives
+ names to AFS pag gids.
+ .
+ Installing this package results in all Athena account holders having
+ an account on your system.  Be sure to consider the relevant security
+ consequences of doing so if you install this package.

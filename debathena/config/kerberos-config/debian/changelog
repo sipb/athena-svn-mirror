@@ -1,0 +1,36 @@
+debathena-kerberos-config (1.0debathena5) unstable; urgency=low
+
+  * Use new check-conffiles interface from debathena-config-build-common
+    3.5.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 15 Aug 2007 02:52:54 -0400
+
+debathena-kerberos-config (1.0debathena4) unstable; urgency=low
+
+  * Rebuild against debathena-config-build-common 3.4.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 21:57:07 -0400
+
+debathena-kerberos-config (1.0debathena3) unstable; urgency=low
+
+  * More robust perl for constructing config files.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 01:50:14 -0400
+
+debathena-kerberos-config (1.0debathena2) unstable; urgency=low
+
+  * Move conffiles test to config-build-common.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 03 Aug 2007 19:20:45 -0400
+
+debathena-kerberos-config (1.0debathena1) unstable; urgency=low
+
+  * Rebuild with debathena-config-build-common 3.1.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 01:20:57 -0400
+
+debathena-kerberos-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 16:04:38 -0400

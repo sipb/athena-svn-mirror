@@ -1,0 +1,14 @@
+Source: debathena-gdm-config
+Section: debathena-config/gnome
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, gdm
+Standards-Version: 3.7.2
+
+Package: debathena-gdm-config
+Architecture: all
+Depends: gdm, ${misc:Depends}
+Description: GDM configuration for Debian-Athena
+ This packages configures gdm to use the Debathena logo, store
+ xauthority files in /tmp, and welcome the user to Debian-Athena.
+

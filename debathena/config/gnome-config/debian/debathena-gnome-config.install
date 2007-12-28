@@ -1,0 +1,8 @@
+debian/browser.desktop usr/share/gnome/athena
+debian/editor.desktop usr/share/gnome/athena
+debian/logout.desktop usr/share/gnome/athena
+debian/mail.desktop usr/share/gnome/athena
+debian/terminal.desktop usr/share/gnome/athena
+debian/logout-script usr/share/gnome/athena
+debian/mail-script usr/share/gnome/athena
+debian/browser-icon.png usr/share/pixmaps

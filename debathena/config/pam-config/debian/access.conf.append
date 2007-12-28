@@ -1,0 +1,15 @@
+
+#DEBATHENA BEGIN
+#DEBATHENA EXAMPLES
+## Only root and tabbott can log in.
+#-:ALL EXCEPT root tabbott:ALL
+## Only andersk and tabbott can log in remotely.
+#-:ALL EXCEPT andersk tabbott:ALL EXCEPT LOCAL
+## Only root and users in group gsipb can log in.
+#-:ALL EXCEPT root gsipb:ALL
+# Note that you can use Moira NFS groups here
+# See http://debathena.mit.edu/access-controls for details
+
+#DEFAULT forbid remote access
+-:ALL:ALL EXCEPT LOCAL
+#DEBATHENA END

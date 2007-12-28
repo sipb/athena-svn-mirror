@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
+DEBATHENA_DIVERT_FILES_debathena-gdm-config += \
+	/etc/gdm/gdm.conf.debathena
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/debathena-divert.mk
+include /usr/share/cdbs/1/rules/debathena-check-conffiles.mk
+
+common-build-indep:: debian/gdm.conf.debathena
+
+debian/gdm.conf.debathena: $(call debathena_check_conffiles,/etc/gdm/gdm.conf)
+	perl -0pe ' \
+	    s/(\[daemon\]\n)/\1UserAuthDir=\/tmp\n/ and \
+	    s/(\[daemon\]\n)/\1Greeter=\/usr\/lib\/gdm\/gdmlogin\n/ and \
+	    s/(\[greeter\]\n)/\1Logo=\/usr\/share\/pixmaps\/debathena.png\n/ and \
+	    s/(\[greeter\]\n)/\1DefaultWelcome=false\n/ and \
+	    s/(\[greeter\]\n)/\1Welcome=Welcome to Debian-Athena\n/ or die;' $< > $@
+
+clean::
+	rm -f debian/gdm.conf.debathena

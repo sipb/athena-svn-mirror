@@ -1,0 +1,19 @@
+debathena-tellme (1.2) unstable; urgency=low
+
+  * Give a more useful error if athdir fails.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 03 Aug 2007 20:15:56 -0400
+
+debathena-tellme (1.1) unstable; urgency=low
+
+  * Replace tellme symlink with a wrapper script to work around dpkg
+    bug.
+  * Depend debathena-afs-config, debathena-machtype, debathena-athdir.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 03 Aug 2007 16:09:17 -0400
+
+debathena-tellme (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 12 Jul 2007 21:49:07 -0400

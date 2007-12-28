@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
+DEBATHENA_DIVERT_FILES_debathena-finger-config += \
+	/usr/bin/finger.debathena
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/debathena-divert.mk

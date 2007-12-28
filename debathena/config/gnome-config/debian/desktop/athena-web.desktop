@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Web Browser
+Comment=Browse the web
+MimeType=text/html;
+Exec=htmlview %u
+Type=Application
+Terminal=false

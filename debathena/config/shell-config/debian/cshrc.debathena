@@ -1,0 +1,14 @@
+#!/usr/bin/tcsh
+# Global cshrc file for Debathena
+
+setenv HOSTTYPE "`/bin/athena/machtype`"
+setenv ATHENA_SYS `/bin/athena/machtype -S`
+if ( $ATHENA_SYS == "" ) then
+  setenv ATHENA_SYS @sys
+endif
+setenv ATHENA_SYS_COMPAT `/bin/athena/machtype -C`
+
+alias renew 'kinit -54 $USER && fsid -a && zctl load /dev/null'
+
+set add_flags
+alias add 'eval `/bin/athena/attach -Padd $add_flags \!:*`'

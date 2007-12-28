@@ -1,0 +1,2 @@
+debian/in.fingerd.debathena /usr/sbin
+debian/finger-wrapper /usr/share/debathena-fingerd-config

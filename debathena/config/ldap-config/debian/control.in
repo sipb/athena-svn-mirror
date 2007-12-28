@@ -1,0 +1,13 @@
+Source: debathena-ldap-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, libldap2
+Standards-Version: 3.7.2
+
+Package: debathena-ldap-config
+Architecture: all
+Depends: debathena-ssl-certificates, libsasl2-modules-gssapi-mit | libsasl2-gssapi-mit, libldap2, ${misc:Depends}
+Description: LDAP configuration for Debian-Athena
+ This package configures your system to use ldap.mit.edu as its
+ default LDAP server.

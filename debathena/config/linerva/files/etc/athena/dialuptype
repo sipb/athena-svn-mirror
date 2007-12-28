@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# should be one of: normal, express, X, test
+# is linerva to be able to distinguish our machine
+echo linerva

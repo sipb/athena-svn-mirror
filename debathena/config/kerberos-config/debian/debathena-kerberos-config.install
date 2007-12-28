@@ -1,0 +1,3 @@
+debian/krb5.conf.debathena etc
+debian/krb.conf.debathena etc
+debian/krb.realms.debathena etc

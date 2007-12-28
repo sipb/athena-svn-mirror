@@ -1,0 +1,13 @@
+Source: debathena-afs-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, wget, openafs-client
+Standards-Version: 3.7.2
+
+Package: debathena-afs-config
+Architecture: all
+Depends: openafs-client, debathena-kerberos-config, debathena-machtype, openafs-krb5, ${misc:Depends}
+Recommends: debathena-autofs-config
+Description: AFS configuration for Debian-Athena
+ This packages configures OpenAFS to access the Athena AFS cell.

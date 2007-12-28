@@ -1,0 +1,29 @@
+debathena-lprng-config (1.2debathena1) unstable; urgency=low
+
+  * Update get_hesiod_pcap to handle auth=none.
+
+ -- Tim Abbott <tabbott@mit.edu>  Thu,  8 Nov 2007 21:07:34 -0500
+
+debathena-lprng-config (1.1debathena2) unstable; urgency=low
+
+  * Rebuild against debathena-config-build-common 3.4.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 21:57:10 -0400
+
+debathena-lprng-config (1.1debathena1) unstable; urgency=low
+
+  * Remove /etc/printcap from lpd.conf, because it may not exist.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 26 Jul 2007 16:51:27 -0400
+
+debathena-lprng-config (1.0debathena1) unstable; urgency=low
+
+  * Rebuild with debathena-config-build-common 3.1.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 01:20:59 -0400
+
+debathena-lprng-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 16:04:41 -0400

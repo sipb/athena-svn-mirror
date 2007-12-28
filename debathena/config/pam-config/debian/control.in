@@ -1,0 +1,13 @@
+Source: debathena-pam-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, libpam-runtime, gdm, debathena-ssh-server
+Standards-Version: 3.7.2
+
+Package: debathena-pam-config
+Architecture: all
+Depends: debathena-kerberos-config, libpam-runtime, libpam-krb5, libpam-krb524, libpam-athena-locker, ${misc:Depends}, libpam-debathena-home-type, debathena-dotfiles
+Description: PAM configuration for Debian-Athena
+ This package configures PAM to use the Athena Kerberos realm to
+ manage authentication, get AFS tokens on login, etc.

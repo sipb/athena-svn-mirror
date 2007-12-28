@@ -1,0 +1,3 @@
+#auth        sufficient  pam_unix.so nullok_secure debug
+#auth        required    pam_krb5.so forwardable use_first_pass debug
+auth        required    pam_krb5.so forwardable debug

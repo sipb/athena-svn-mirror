@@ -1,0 +1,14 @@
+#!/bin/bash
+# Global bash.bashrc file for Debathena machines
+
+export HOSTTYPE="`/bin/athena/machtype`"
+export ATHENA_SYS=`/bin/athena/machtype -S`
+export ATHENA_SYS_COMPAT=`/bin/athena/machtype -C`
+if [ -z "$ATHENA_SYS" ]; then
+    export ATHENA_SYS=@sys
+fi
+
+renew () { kinit $USER -54 && fsid -a && zctl load /dev/null ; }
+
+add_flags=
+add () { eval "$( /bin/athena/attach -Padd -b $add_flags "$@" )" ; }

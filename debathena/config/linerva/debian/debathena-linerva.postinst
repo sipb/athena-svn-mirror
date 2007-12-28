@@ -1,0 +1,151 @@
+#!/bin/sh
+# postinst script for debathena-afs-config
+#
+# see: dh_installdeb(1)
+
+set -e
+
+# summary of how this script can be called:
+#        * <postinst> `configure' <most-recently-configured-version>
+#        * <old-postinst> `abort-upgrade' <new version>
+#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
+#          <new-version>
+#        * <postinst> `abort-remove'
+#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
+#          <failed-install-package> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see http://www.debian.org/doc/debian-policy/ or
+# the debian-policy package
+
+
+#DEBHELPER#
+
+divert_symlink()
+{
+    # Use to symlink e.g /bin/fs -> /usr/bin/fs
+    file=$1
+    if [ ! -e "${file}" ]; then
+	ln -s "/usr${file}" "${file}"
+    fi
+}
+
+lose_setuid()
+{
+    file=$1
+    dpkg-statoverride --update --add root root 755 "$file"
+}
+
+case "$1" in
+    configure)
+    	chmod 700 /root
+	if [ -e /srv/old ]; then
+	    chmod 700 /srv/old
+	fi
+ 
+	# Get rid of unecessary print daemon
+	update-rc.d -f lpd remove
+	update-rc.d -f lprng remove
+	rm -f /etc/cron.daily/lprng
+
+	# Make /srv/tmp exists so we can symlink to it.
+	mkdir -p /srv/tmp
+# 	# Make sure /tmp is setup correctly.
+# 	ln -s /srv/tmp/ /tmp
+# 	chmod 777 /srv/tmp/
+# 	chmod +t /srv/tmp/
+
+	# make motd not change on reboot
+	sed -i 's/EDITMOTD=yes/EDITMOTD=no/' /etc/default/rcS
+
+	# Deal with binaries that are in /bin/athena on Athena and not
+	# /bin in Debian
+	# Commented so that people will fix their scripts.  --andersk
+	#divert_symlink /bin/aklog
+	#divert_symlink /bin/bos
+	#divert_symlink /bin/detach
+	#divert_symlink /bin/fs
+	#divert_symlink /bin/getcluster
+	#divert_symlink /bin/hesinfo
+	#divert_symlink /bin/klog
+	#divert_symlink /bin/pts
+	#divert_symlink /bin/tokens
+	#divert_symlink /bin/unlog
+	#divert_symlink /bin/vos
+
+	# install /compat
+	# fix-compat-suid
+	# install discuss
+
+	# replace logcheck config
+	# make logcheck able to read its stuff and run every minute
+	sed -i 's/. \* \* \* \*/* * * * */' /etc/cron.d/logcheck
+	/etc/init.d/cron reload
+	chown logcheck /var/lib/logcheck/
+	chown logcheck /var/lock/logcheck/
+	chmod 750 /etc/logcheck
+
+	lose_setuid /usr/bin/newgrp
+	lose_setuid /usr/bin/chage
+	lose_setuid /usr/bin/expiry
+	lose_setuid /usr/bin/dotlockfile
+	lose_setuid /usr/bin/lockfile
+	lose_setuid /usr/bin/ksu
+	lose_setuid /usr/bin/sudo
+	lose_setuid /usr/lib/pt_chown
+	lose_setuid /usr/lib/emacs/21.4/i386-linux/movemail
+	lose_setuid /usr/lib/ssh-keysign
+	lose_setuid /usr/sbin/pppd
+	lose_setuid /usr/sbin/pppoe
+	lose_setuid /usr/sbin/utempter
+	lose_setuid /usr/X11R6/bin/X
+	lose_setuid /bin/su
+	lose_setuid /bin/ping6
+	lose_setuid /sbin/unix_chkpwd
+	lose_setuid /usr/bin/crontab
+	lose_setuid /usr/bin/procmail
+	lose_setuid /usr/bin/at
+
+	# Fix chfn, chsh to no longer be setuid.  
+	lose_setuid /usr/bin/chfn.debathena-orig
+	lose_setuid /usr/bin/chfn
+	lose_setuid /usr/bin/chsh.debathena-orig
+	lose_setuid /usr/bin/chsh
+
+        # lose_setuid is for making programs no longer setuid
+	lose_setuid /usr/bin/passwd
+	lose_setuid /usr/bin/bsd-write
+	lose_setuid /usr/lib/libfakeroot-tcp.so.0.0.1
+	lose_setuid /usr/lib/libfakeroot-sysv.so.0.0.1
+	lose_setuid /usr/bin/gpg
+	lose_setuid /usr/bin/screen
+	chmod a=rwx,o+t /var/run/screen  # So that screen works without setuid.
+	lose_setuid /usr/bin/gpasswd
+	lose_setuid /bin/mount
+	lose_setuid /bin/umount
+	lose_setuid /usr/bin/ssh-agent
+	lose_setuid /bin/login
+	lose_setuid /usr/X11R6/bin/xterm
+	lose_setuid /usr/bin/wall
+
+	echo ""
+	echo "Displaying Current set*id binaries:"
+	find / -xdev -type f -perm +6000 -print 2> /dev/null
+
+
+	if hash invoke-rc.d; then
+	    invoke-rc.d openafs-client restart
+	else
+	    /etc/init.d/openafs-client restart
+	fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

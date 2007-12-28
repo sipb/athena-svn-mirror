@@ -1,0 +1,29 @@
+debathena-ssh-server-config (1.0debathena4) unstable; urgency=low
+
+  * Restart ssh on installation.
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 10 Dec 2007 01:36:26 -0500
+
+debathena-ssh-server-config (1.0debathena3) unstable; urgency=low
+
+  * Rebuild against debathena-config-build-common 3.4.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 21:57:21 -0400
+
+debathena-ssh-server-config (1.0debathena2) unstable; urgency=low
+
+  * Proper extraction of sshd_config.debathena-orig for sarge and dapper.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 01:40:11 -0400
+
+debathena-ssh-server-config (1.0debathena1) unstable; urgency=low
+
+  * Rebuild with debathena-config-build-common 3.1.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 01:21:07 -0400
+
+debathena-ssh-server-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Tim Abbott <tabbott@mit.edu>  Fri, 13 Jul 2007 17:43:39 -0400

@@ -1,0 +1,35 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
+DEBATHENA_DIVERT_FILES_debathena-ssh-server-config += \
+	/etc/ssh/sshd_config.debathena
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/debathena-divert.mk
+
+ifeq ($(shell dpkg --compare-versions \
+	"`dpkg-query --showformat='$${Version}' --show openssh-server`" ">=" 1:4.3 && echo y),y)
+
+PRIVSEP = yes
+debian/sshd_config.debathena-orig: /var/lib/dpkg/info/openssh-server.postinst
+	perl -0pe 's/^.*<<EOF[^\n]*\n(.*\n)EOF\n.*$$/$$1/s or die;' $< > $@
+
+else
+
+PRIVSEP = no
+debian/sshd_config.debathena-orig: /var/lib/dpkg/info/ssh-krb5.postinst
+	perl -0pe 's/^.*<<EOF[^\n]*\n(.*\n)EOF\n.*<<EOF[^\n]*\n.*\nEOF\n.*<<EOF[^\n]*\n(.*\n)EOF\n.*<<EOF[^\n]*\n(.*\n)EOF\n.*$$/$$1$$2$$3/s or die;' $< > $@
+
+endif
+
+common-build-indep:: debian/sshd_config.debathena
+
+debian/sshd_config.debathena: debian/sshd_config.debathena-orig
+	perl -0pe ' \
+	    s/^#?GSSAPIAuthentication .*$$/GSSAPIAuthentication yes\nGSSAPIKeyExchange yes/m and \
+	    s/^#?GSSAPICleanupCredentials .*$$/GSSAPICleanupCredentials yes/m and \
+	    s/^#?ChallengeResponseAuthentication .*$$/ChallengeResponseAuthentication yes/m and \
+	    s/^#?UsePrivilegeSeparation .*$$/UsePrivilegeSeparation $(PRIVSEP)/m and \
+	    s/^#?PasswordAuthentication .*$$/PasswordAuthentication no/m or die;' $< > $@
+
+clean::
+	rm -f debian/sshd_config.debathena debian/sshd_config.debathena-orig

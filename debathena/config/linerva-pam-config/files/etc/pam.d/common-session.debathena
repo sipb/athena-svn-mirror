@@ -1,0 +1,4 @@
+session     required    pam_unix.so debug
+session     optional    pam_krb5.so debug
+session     optional    pam_krb524.so debug
+session     optional    pam_athena_locker.so debug
