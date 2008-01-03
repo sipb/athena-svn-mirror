@@ -1,0 +1,94 @@
+This hierarchy contains Debian/Ubuntu-specific materials, also known
+as "Debathena".  The contents are:
+
+* debathena - Debathena-specific software packages such as PAM and NSS
+  modules.
+
+* config - Packages for configuring native system software in a manner
+  appropriate for Athena.
+
+* meta - Packages which contain nothing but dependencies on other
+  packages and serve as an installation convenience.
+
+* scripts - Build scripts and supporting materials.
+
+Debathena is a SIPB project, and its infrastructure and procedures
+will need to be adapted for Athena 10.  For the moment this file will
+document the Debathena procedures as they are, not as they will be.
+The current procedures do not even use this svn repository yet.
+
+Debian software used by Debathena:
+
+  * schroot - Used to manage build chroot environments for each
+    Debian/Ubuntu version.  We use the lvm-snapshot schroot type,
+    which allows rapid construction of ephemeral copies of template
+    "source" chroots, so that every binary package build is done in a
+    clean environment.
+
+  * debuild - Used to create Debian source packages from package
+    source directories.
+
+  * sbuild - Used to build binary packages from source packages inside
+    schroot environments.
+
+  * equivs - Used to create packages which only contain dependency
+    information.  Somewhat of a dirty hack, since it doesn't keep
+    proper changelogs, but it reduces overhead.
+
+  * CDBS (Common Debian Build System) - Referenced by debian/rules
+    files in packages.  Contains standard build rules to cut down on
+    per-package boilerplate.
+
+  * reprepro - Used to upload packages into the apt repositories.
+
+  * approx - Used to create a local cache of Debian packages on the
+    build server.  This cache is referenced by the build chroots for
+    improved performance.
+
+Procedures used by Debathena for handling day-to-day package changes
+for regular packages:
+
+  * To prepare a change to a regular package, the contents are edited
+    directly in the /mit/debathena/packages subdir.
+
+  * To record the prepared change in the changelog:
+    (From inside the package source directory)
+    dadch
+
+  * To build and deploy the changed package for all environments:
+    (From inside the package source directory, on debuild.mit.edu)
+    debuild -S
+    cd ..
+    da sbuildhack <filename>.dsc
+
+  * Generally the package is tested by manually installing it on test
+    machines with dpkg -i.
+
+  * To deploy the package to the repository:
+    (From the package source parent directory, on debuild.mit.edu as
+    the debuild user)
+    daupload-release <filename>_source.changes
+
+  * If the package is architecture-independent, the -A option is
+    passed to da and daupload-release.
+
+For an equivs-built package, the process is simpler since there is no
+source package and only one binary package:
+
+  * To prepare a change to the control file, the contents are edited
+    directly in the /mit/debathena/packages subdir.
+
+  * To build the binary package:
+    (From the package directory, on debuild.mit.edu)
+    equivs-build --full <filename>.equivs
+
+  * To deploy the package to the repository:
+    daequivsupload <filename>.changes
+
+Adding a new distribution:
+
+  <not yet written>
+
+Setting up a build server:
+
+  <not yet written>
