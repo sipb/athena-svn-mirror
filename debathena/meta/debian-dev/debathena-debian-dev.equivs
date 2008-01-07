@@ -1,0 +1,33 @@
+Section: debathena/utils
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-debian-dev
+Version: 0.2.1
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Depends: apt-file,
+ apt-rdepends,
+ apt-show-versions,
+ build-essential,
+ cdbs,
+ debhelper,
+ debian-el,
+ devscripts,
+ devscripts-el,
+ dh-make,
+ dpatch,
+ dpkg-awk,
+ dpkg-dev,
+ dpkg-dev-el,
+ equivs,
+ fakeroot,
+ linda,
+ lintian,
+ pbuilder,
+ quilt,
+ sbuild
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Metapackage providing tools for Debian-Athena development
+ This metapackage installs a collection of tools used for development
+ of Debian-Athena.

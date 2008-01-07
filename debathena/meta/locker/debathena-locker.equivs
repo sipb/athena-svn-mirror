@@ -1,0 +1,32 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-locker
+Version: 0.2.5
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Depends: debathena-afs-config,
+ debathena-athdir,
+ debathena-athrun,
+ debathena-attach,
+ debathena-attachandrun,
+ debathena-autofs-config,
+ debathena-base,
+ debathena-bash-config,
+ debathena-delete,
+ debathena-hesiod-config,
+ debathena-kerberos-config,
+ debathena-lert,
+ debathena-machtype,
+ debathena-quota,
+ debathena-quota-config,
+ debathena-tcsh-config,
+ debathena-tellme,
+ debathena-zephyr-config
+Recommends: debathena-bash,
+ debathena-tcsh
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Metapackage providing Athena locker support
+ This package installs support for accessing MIT AFS lockers and
+ running software from them.

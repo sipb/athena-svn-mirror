@@ -1,0 +1,14 @@
+Section: libdevel
+Priority: optional
+Standards-Version: 3.6.2
+
+Package: debathena-libreadline-dev
+Version: 0.1
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Depends: libreadline5-dev (>= 5.1) | libreadline4-dev
+Conflicts: libreadline5-dev (<< 5.1)
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Dummy package for libreadline-dev
+ This package only exists to depend on the right version of 
+ libreadline-dev for building Debian-Athena packages such as Discuss.

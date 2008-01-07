@@ -1,0 +1,11 @@
+debathena-athena-libraries (1.0debathena1) unstable; urgency=low
+
+  * Only recommend libgl1 instead of its three conflicting flavors.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 29 Oct 2007 04:07:15 -0400
+
+debathena-athena-libraries (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat, 18 Aug 2007 04:18:58 -0400

@@ -1,0 +1,38 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-clients
+Version: 0.2.7
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Depends: athena-jot,
+ debathena-athinfo,
+ debathena-discuss,
+ debathena-discuss-emacs,
+ debathena-finger,
+ debathena-finger-config,
+ debathena-from,
+ debathena-from-config,
+ debathena-getcluster,
+ debathena-get-message,
+ debathena-hesiod-config,
+ debathena-just,
+ debathena-kerberos-config,
+ debathena-ldap-config,
+ debathena-mitmailutils,
+ debathena-moira-clients,
+ debathena-nmh,
+ debathena-pine,
+ debathena-ssh-client-config,
+ debathena-ssl-certificates,
+ debathena-xcluster,
+ debathena-xdsc,
+ debathena-zephyr-config,
+ owl,
+ pine,
+ tzc
+Recommends: debathena-lprng-config
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Metapackage providing clients for Athena services
+ This package depends on clients for various Athena services.

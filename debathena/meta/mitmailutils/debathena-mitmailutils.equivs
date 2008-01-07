@@ -1,0 +1,22 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-mitmailutils
+Version: 9.4.0debathena2
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Depends: debathena-mailquota,
+ debathena-mailusage,
+ debathena-mitmailappend,
+ debathena-mitmailcreate,
+ debathena-mitmaildel,
+ debathena-mitmailexp,
+ debathena-mitmailmove,
+ debathena-mitmailrename,
+ debathena-mitmailscan,
+ debathena-mitmailshow
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Utilities for manipulating MIT mail
+ The mitmail* suite of tools for manipulating MIT mail in IMAP in a
+ scriptable manner.

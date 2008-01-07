@@ -1,0 +1,54 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+APT_CACHE = $(CURDIR)/debian/apt-cache
+APTITUDE_LOCKFILE = $(CURDIR)/debian/aptitude-lockfile
+APT_STATE = $(CURDIR)/debian/apt-state
+APTITUDE_STATE = $(CURDIR)/debian/aptitude-state
+#APTITUDE = aptitude -o 'Aptitude::LockFile=$(APTITUDE_LOCKFILE)' -o 'Dir::State=$(APT_STATE)' -o 'Dir::Cache=$(APT_CACHE)' -o 'Dir::Aptitude::state=$(APTITUDE_STATE)' -o "Debug::NoLocking=yes"
+APTITUDE = aptitude -o 'Aptitude::LockFile=$(APTITUDE_LOCKFILE)' -o 'Debug::NoLocking=yes'
+
+$(APT_CACHE):
+	mkdir -p $@ $@/archives $@/archives/partial
+
+$(APT_STATE):
+	mkdir -p $@ $@/lists $@/lists/partial
+
+$(APTITUDE_STATE):
+	mkdir -p $@
+
+DEBATHENA_REPOSITORY_SECTIONS = debathena
+
+common-build-indep:: debian/deps
+
+debian/deps: check-debathena-repository-added
+	echo -n "debathena-build-depends:Depends=" > $@
+	$(APTITUDE) search $(patsubst %,~s^%/,$(DEBATHENA_REPOSITORY_SECTIONS)) -F '%p' | \
+	    xargs apt-cache showsrc | \
+	    dpkg-awk 'Section:^debathena' -f - -- Build-Depends | \
+	    sed -n 's/^Build-Depends: \(.*\)$$/\1/p' | \
+	    sed 's/, /\n/g' | \
+	    sort -u | \
+	    grep -v '\[' | \
+	    grep -v tetex | \
+	    tr '\n' ',' >> $@;
+	echo >> $@
+
+# evil exception: bash build-depends on tetex-bin
+
+binary-predeb/debathena-build-depends:: add-deps/debathena-build-depends
+
+add-deps/debathena-build-depends: debian/deps
+	cat $< >> debian/$(cdbs_curpkg).substvars
+
+# $(APT_CACHE) $(APT_STATE) $(APTITUDE_STATE)
+check-debathena-repository-added:
+	for i in $(DEBATHENA_REPOSITORY_SECTIONS); do \
+	    $(APTITUDE) search ~s^$$i/ | grep -q ^ || exit 1; \
+	done
+
+clean::
+	rm -f $(APTITUDE_LOCKFILE) debian/deps
+	rm -rf $(APT_CACHE) $(APT_STATE) $(APTITUDE_STATE)
