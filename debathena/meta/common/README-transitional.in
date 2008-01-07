@@ -1,0 +1,10 @@
+@packagename@ for Debian-Athena
+
+This is a transitional dummy package.  It provides no files, and its 
+only purpose is to cause the installation or removal of other packages.  
+After these operations have been completed, this dummy package may be 
+safely removed.
+
+The special dependencies used in this package are:
+
+@depends@
