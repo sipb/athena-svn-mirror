@@ -1,2 +1,0 @@
-. $topsrcdir/browser/config/mozconfig
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj

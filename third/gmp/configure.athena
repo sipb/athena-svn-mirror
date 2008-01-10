@@ -1,2 +1,0 @@
-TARGET=`./config.guess | sed 's/\(ultra\)*sparc[^-]*-/sparcv8-/'`
-CC=$sprobin/cc CFLAGS="-xtarget=native -xarch=v8 -xO4" ./configure "$@" --build=$TARGET

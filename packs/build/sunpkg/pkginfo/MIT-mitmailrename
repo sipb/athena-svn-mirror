@@ -1,3 +1,0 @@
-PKG=MIT-mitmailrename
-NAME=Rename an IMAP mailbox
-DESC=The mitmailrename program renames a mailbox on an IMAP server.

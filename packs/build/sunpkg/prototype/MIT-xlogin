@@ -1,6 +1,0 @@
-#!/bin/sh
-
-# Add the Athena sessions directory.
-cat && cat <<\EOF
-d none var/athena/sessions 0700 root other
-EOF

@@ -1,9 +1,0 @@
-# $Id: configure.athena,v 1.3 2007-04-09 17:08:33 ghudson Exp $
-case $OS in
-linux)
-  ./configure "$@" --enable-prefer-db1
-  ;;
-*)
-  ./configure "$@" --disable-gtk-doc
-  ;;
-esac

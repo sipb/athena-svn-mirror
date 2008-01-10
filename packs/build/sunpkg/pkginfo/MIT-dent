@@ -1,3 +1,0 @@
-PKG=MIT-dent
-NAME=An Athena utility to indent files
-DESC=The dent utility indents files by a fixed number of spaces.
