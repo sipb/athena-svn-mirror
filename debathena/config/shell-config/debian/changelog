@@ -1,3 +1,10 @@
+debathena-shell-config (1.2debathena1) unstable; urgency=low
+
+  * Eschew /bin/athena paths.
+  * Trivial argument order change for consistency.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat, 12 Jan 2008 00:31:29 -0500
+
 debathena-shell-config (1.2) unstable; urgency=low
 
   * New version doing tcsh too
