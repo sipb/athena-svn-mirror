@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+name=krb5
+daversionappend=debathena3
+
+hack_package () {
+    perl -0pe 's/CFLAGS="/CPPFLAGS="-DKRB5_KRB4_COMPAT -DKINIT_DEFAULT_BOTH" CFLAGS="/m or die' -i debian/rules
+    append_description <<EOF
+ .
+ This package was rebuilt for the Debian-Athena project to default
+ kinit to -54.
+EOF
+    add_changelog 'Default kinit to -54.'
+    add_debathena_provides
+    munge_sections
+}
+
+. ../common/debathenificator.sh

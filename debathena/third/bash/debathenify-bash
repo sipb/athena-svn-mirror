@@ -1,0 +1,25 @@
+#!/bin/sh
+set -e
+
+name=bash
+daversionappend=debathena5
+
+dir=$(cd "$(dirname "$0")"; pwd)
+
+hack_package () {
+    cp -a "$dir/hesiod.dpatch" debian/patches/
+    perl -0pe 's/^(debian_patches = \\)$/$1\n\thesiod \\/m or die' -i debian/rules
+    perl -0pe 's/^(conf_args = \\)$/$1\n\t--with-afs CPPFLAGS=-DHESIOD LIBS='"'\/usr\/lib\/libhesiod.a -lresolv'"' \\/m or die' -i debian/rules
+    add_build_depends libhesiod-dev
+    append_description <<EOF
+ .
+ This package was rebuilt for the Debian-Athena project to add Hesiod
+ and AFS support.
+EOF
+    add_changelog 'Add hesiod support.'
+    add_changelog 'Configure --with-afs.'
+    add_debathena_provides
+    munge_sections
+}
+
+. ../common/debathenificator.sh

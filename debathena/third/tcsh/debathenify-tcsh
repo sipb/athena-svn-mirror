@@ -1,0 +1,29 @@
+#!/bin/sh
+set -e
+
+name=tcsh
+daversionappend=debathena4
+
+dir=$(cd "$(dirname "$0")"; pwd)
+
+hack_package () {
+    cp -a "$dir/hesiod.dpatch" debian/patches/
+    echo hesiod.dpatch >> debian/patches/00list
+    if dpkg --compare-versions "$version" '<' '6.14.00-6'; then
+	perl -0pe 's/^(# FOR AUTOCONF)/CONFFLAGS += --with-hesiod --with-afs\n\n$1/m or die' -i debian/rules
+    else
+	cat debian/rules
+	perl -0pe 's/^(.*--prefix=\/usr)/\t    --with-hesiod --with-afs \\\n$1/m or die' -i debian/rules
+    fi
+    add_build_depends libhesiod-dev
+    append_description <<EOF
+ .
+ This package was rebuilt for the Debian-Athena project to add Hesiod
+ and AFS support.
+EOF
+    add_changelog 'Configure --with-hesiod --with-afs.'
+    add_debathena_provides
+    munge_sections
+}
+
+. ../common/debathenificator.sh
