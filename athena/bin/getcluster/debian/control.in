@@ -1,0 +1,16 @@
+Source: debathena-getcluster
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, libhesiod-dev
+Standards-Version: 3.7.2
+
+Package: debathena-getcluster
+Architecture: any
+Provides: getcluster
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Retrieve service cluster info from Hesiod for Athena workstations
+ The getcluster program is used on all Athena workstations to find the 
+ service cluster information for the workstation and writes a list of 
+ environment variable assignments which can be used to initialize a 
+ shell accordingly.

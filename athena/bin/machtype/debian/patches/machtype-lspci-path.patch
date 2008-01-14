@@ -1,0 +1,22 @@
+Index: debathena-machtype-9.4.0/machtype_linux.sh
+===================================================================
+--- debathena-machtype-9.4.0.orig/machtype_linux.sh	2007-01-30 22:38:29.000000000 -0500
++++ debathena-machtype-9.4.0/machtype_linux.sh	2007-01-30 22:46:18.000000000 -0500
+@@ -19,7 +19,7 @@
+ #  -P     : print out Athena System packs (from /srvd/.rvdinfo)
+ #  -S     : Print out the Athena System name
+ 
+-PATH=/bin:/usr/bin:/usr/sbin
++PATH=/bin:/usr/bin:/sbin:/usr/sbin
+ 
+ while getopts cdk:m:rvACELMNPS i; do
+ 	case "$i" in
+@@ -133,7 +133,7 @@
+ fi
+ 
+ if [ $display ] ; then
+-        /sbin/lspci | awk -F: '/VGA/ {print $3}' | sed -n -e 's/^ //' -e p
++	lspci | awk -F: '/VGA/ {print $3}' | sed -n -e 's/^ //' -e p
+ 	printed=1
+ fi
+ 

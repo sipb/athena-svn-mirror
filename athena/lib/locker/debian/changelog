@@ -1,0 +1,73 @@
+debathena-liblocker (9.4.28-0debathena12) unstable; urgency=low
+
+  * Set ownercheck on and explicit-mntpt off in attach.conf.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 15 Aug 2007 22:52:29 -0400
+
+debathena-liblocker (9.4.28-0debathena11) unstable; urgency=low
+
+  * Create /var/run/attachtab on boot.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 13 Aug 2007 19:06:01 -0400
+
+debathena-liblocker (9.4.28-0debathena10) unstable; urgency=low
+
+  * Conflicts old debathena-attach.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sun, 05 Aug 2007 04:53:03 -0400
+
+debathena-liblocker (9.4.28-0debathena9) unstable; urgency=low
+
+  * Trivial cleanup.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 07:20:06 -0400
+
+debathena-liblocker (9.4.28-0debathena8) unstable; urgency=low
+
+  * Fix postinst to not recursively chown.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 16 Jul 2007 21:01:28 -0400
+
+debathena-liblocker (9.4.28-0debathena7) unstable; urgency=low
+
+  * Build with -fPIC on amd64.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 18:36:37 -0400
+
+debathena-liblocker (9.4.28-0debathena6) unstable; urgency=low
+
+  * Add missing dependencies to liblocker-dev.
+  * Section: debathena/libs.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 13 Jul 2007 18:17:04 -0400
+
+debathena-liblocker (9.4.28-0debathena5) unstable; urgency=low
+
+  * Add /etc/athena/attach.conf.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 26 Jun 2007 17:54:57 -0400
+
+debathena-liblocker (9.4.28-0debathena4) unstable; urgency=low
+
+  * Oops.  Fix empty packages.
+  * Depend adduser.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat, 28 Apr 2007 22:52:25 -0400
+
+debathena-liblocker (9.4.28-0debathena3) unstable; urgency=low
+
+  * Configure the attachtab directory.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 28 Apr 2007 22:20:40 -0400
+
+debathena-liblocker (9.4.28-0debathena2) unstable; urgency=low
+
+  * Apply nelhage's setgid patch.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 24 Apr 2007 19:38:22 -0400
+
+debathena-liblocker (9.4.28-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 29 Jan 2007 23:58:50 -0500

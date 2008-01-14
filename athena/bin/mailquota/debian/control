@@ -1,0 +1,14 @@
+Source: debathena-mailquota
+Section: debathena/mail
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), autotools-dev, debhelper (>= 4.2.0), autoconf, quilt, patchutils (>= 0.2.25), cdbs (>= 0.4.27-1)
+Standards-Version: 3.7.2
+
+Package: debathena-mailquota
+Architecture: all
+Provides: mailquota
+Depends: ${shlibs:Depends}, ${misc:Depends}, libcyrus-imap-perl22 | debathena-libcyrus-imap-perl, libsasl2-krb4-mit, hesiod
+Description: Display post office resource usage and limits
+ The mailquota program prints out a user's mail resource usage and 
+ limits on the post office server.

@@ -1,0 +1,16 @@
+Source: debathena-finger
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, comerr-dev, libkrb5-dev, libhesiod-dev, libzephyr-dev, libzephyr3-krb
+Standards-Version: 3.7.2
+
+Package: debathena-finger
+Architecture: any
+Provides: finger
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: The Athena version of the normal finger utility
+ The finger command displays information about local and remote users in 
+ a convenient format.  The Athena version contains improvements to 
+ locate Athena users and knows about the Athena-specific user database 
+ features.

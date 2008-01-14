@@ -1,0 +1,24 @@
+debathena-libgms (9.4.24-0debathena4) unstable; urgency=low
+
+  * Move message cache to /var/cache/debathena-libgms/messages.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 16 Aug 2007 01:09:31 -0400
+
+debathena-libgms (9.4.24-0debathena3) unstable; urgency=low
+
+  * Fix conflicts/replaces.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 02:46:45 -0400
+
+debathena-libgms (9.4.24-0debathena2) unstable; urgency=low
+
+  * libgms-dev requires comerr-dev.
+  * Section: debathena/libs.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:33:49 -0400
+
+debathena-libgms (9.4.24-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 29 Jan 2007 23:58:16 -0500

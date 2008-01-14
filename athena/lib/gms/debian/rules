@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
+DEB_AUTO_UPDATE_AUTOCONF = 1
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/rules/patchsys-quilt.mk
+
+DEB_DH_INSTALL_SOURCEDIR = $(DEB_DESTDIR)
+DEB_FIXPERMS_EXCLUDE += \
+	var/cache/debathena-libgms/messages
+
+common-install-indep::
+	mkdir -p $(DEB_DESTDIR)/var/cache/debathena-libgms
+	touch $(DEB_DESTDIR)/var/cache/debathena-libgms/messages
+	chmod a=rw $(DEB_DESTDIR)/var/cache/debathena-libgms/messages
+
+clean::
+	rm -f configure

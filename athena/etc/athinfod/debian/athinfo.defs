@@ -1,0 +1,37 @@
+# This file defines the queries understood by the athinfo daemon.
+# Blank lines and lines beginning with a '#' are ignored.  Each line
+# consists of a query name and a shell command to answer the query.
+# The shell command will not receive input and, for security reasons,
+# should not depend on a network filesystem.
+
+# Query		Command
+
+queries		cat /etc/athena/athinfo.defs
+uname		uname -a
+machtype	/bin/machtype
+sysname		/bin/machtype -S
+cputype		/bin/machtype -v -c
+display		/bin/machtype -v -d
+disks		/bin/machtype -v -r
+memory		/bin/machtype -v -M
+swap		swapon -s
+rc.conf		cat /etc/athena/rc.conf
+version		cat /etc/athena/version
+clusterinfo	test -r /var/athena/clusterinfo && cat /var/athena/clusterinfo 
+clusterinfo.bsh	test -r /var/athena/clusterinfo.bsh && cat /var/athena/clusterinfo.bsh 
+update.desync	test -r /var/athena/update.desync && cat /var/athena/update.desync
+services	test -r /var/server/.services && cat /var/server/.services
+update.log	. /etc/athena/rc.conf && test true = "$PUBLIC" && test -r /var/athena/update.log && cat /var/athena/update.log
+install.log	test -r /var/athena/install.log && cat /var/athena/install.log
+verify.log	test -r /var/athena/verify.log && cat /var/athena/verify.log
+date		date
+uptime		uptime
+partitions	fdisk -l
+df		df -k -t ext2 -t ext3
+interfaces	netstat -in
+routes		netstat -rn
+listeners	netstat -lnt
+login		test -f /etc/nologin; echo $?
+cpuspeed	grep MHz /proc/cpuinfo
+packages	dpkg-query -W
+modules  	lsmod

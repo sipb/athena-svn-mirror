@@ -1,0 +1,39 @@
+debathena-machtype (9.4.0-0debathena6) unstable; urgency=low
+
+  * Get disk and memory information from /sys and /proc instead of
+    /var/log/dmesg.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 05 Nov 2007 16:18:58 -0500
+
+debathena-machtype (9.4.0-0debathena5) unstable; urgency=low
+
+  * Compute Debian version from the version of base-files instead of
+    /etc/debian_version.  This has the side effect that dapper and edgy 
+    no longer have a deb40 sysname.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 18:29:55 -0400
+
+debathena-machtype (9.4.0-0debathena4) unstable; urgency=low
+
+  * Section: debathena/net.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:33:53 -0400
+
+debathena-machtype (9.4.0-0debathena3) unstable; urgency=low
+
+  * Slight fix for conditional logic.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 10 Jul 2007 18:29:13 -0400
+
+debathena-machtype (9.4.0-0debathena2) unstable; urgency=low
+
+  * Pass ATHENA_SYS, ATHENA_SYS_COMPAT, ATHENA_MAJOR_VERSION, 
+    ATHENA_MINOR_VERSION to configure.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 19 Apr 2007 22:00:55 -0400
+
+debathena-machtype (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 01:36:52 -0500

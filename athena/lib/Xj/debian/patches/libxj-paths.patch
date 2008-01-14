@@ -1,0 +1,14 @@
+Index: debathena-libxj-9.4.0/Makefile.in
+===================================================================
+--- debathena-libxj-9.4.0.orig/Makefile.in	2007-08-06 03:03:26.000000000 -0400
++++ debathena-libxj-9.4.0/Makefile.in	2007-08-06 03:03:53.000000000 -0400
+@@ -14,7 +14,8 @@
+ datadir=@datadir@
+ libdir=@libdir@
+ includedir=@includedir@
+-appdefdir=${libdir}/X11/app-defaults
++sysconfdir=@sysconfdir@
++appdefdir=${sysconfdir}/X11/app-defaults
+ bitmapdir=${includedir}/X11/bitmaps
+ 
+ CC=@CC@

@@ -1,0 +1,14 @@
+Source: debathena-athrun
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-athrun
+Architecture: all
+Provides: athrun
+Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-attachandrun
+Description: An Athena utility for users to run a program from a locker
+ The athrun utility allows a user to robustly run a program from a 
+ specified Athena locker.

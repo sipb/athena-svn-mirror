@@ -1,0 +1,31 @@
+debathena-finger (9.4.10-0debathena5) unstable; urgency=low
+
+  * Changed finger to assume the -m option, since trying to match against
+    the users in the passwd file is nearly useless on Debian-Athena.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sun, 12 Aug 2007 01:45:34 -0400
+
+debathena-finger (9.4.10-0debathena4) unstable; urgency=low
+
+  * Don't undivert manpage because it was never diverted.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 21:42:21 -0400
+
+debathena-finger (9.4.10-0debathena3) unstable; urgency=low
+
+  * Undivert finger binary and manpage on upgrade from pre-9.4 versions.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 02:24:12 -0400
+
+debathena-finger (9.4.10-0debathena2) unstable; urgency=low
+
+  * Move finger to finger.debathena.
+  * Silence errors on failure to zlocate users.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 12 Jul 2007 22:53:41 -0400
+
+debathena-finger (9.4.10-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 01:07:48 -0500

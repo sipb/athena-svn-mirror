@@ -1,0 +1,14 @@
+Source: debathena-attachandrun
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), autotools-dev, debhelper (>= 4.2.0), autoconf, quilt, patchutils (>= 0.2.25), cdbs (>= 0.4.27-1), debathena-libathdir-dev
+Standards-Version: 3.7.2
+
+Package: debathena-attachandrun
+Architecture: any
+Provides: attachandrun
+Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-attach
+Description: An Athena utility for scripts to run a program from a locker
+ The attachandrun utility allows a script to robustly run a program from 
+ a specified locker.

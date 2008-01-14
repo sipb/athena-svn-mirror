@@ -1,0 +1,30 @@
+debathena-from (9.4.0-0debathena5) unstable; urgency=low
+
+  * Actually depend libcyrus-imap-perl and libsasl2-krb4-mit.
+  * Section: debathena/mail.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:33:42 -0400
+
+debathena-from (9.4.0-0debathena4) unstable; urgency=low
+
+  * Depend libcyrus-imap-perl and libsasl2-krb4-mit.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 16 Jul 2007 20:45:54 -0400
+
+debathena-from (9.4.0-0debathena3) unstable; urgency=low
+
+  * Suggest debathena-from-config.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 12 Jul 2007 17:06:24 -0400
+
+debathena-from (9.4.0-0debathena2) feisty; urgency=low
+
+  * Move from to from.debathena so we don't conflict bsdmainutils.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 19 Mar 2007 23:12:23 -0400
+
+debathena-from (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 01:08:06 -0500

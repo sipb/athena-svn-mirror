@@ -1,0 +1,5 @@
+debathena-gathlogout (9.4.0+cvs20050407-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 15 Aug 2007 22:45:09 -0400

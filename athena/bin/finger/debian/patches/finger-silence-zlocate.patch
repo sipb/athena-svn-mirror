@@ -1,0 +1,13 @@
+Index: debathena-finger-9.4.10/finger.c
+===================================================================
+--- debathena-finger-9.4.10.orig/finger.c	2007-07-12 22:49:34.000000002 -0400
++++ debathena-finger-9.4.10/finger.c	2007-07-12 22:50:58.000000002 -0400
+@@ -499,8 +499,6 @@
+ 			(void) strcat(curname, ZGetRealm());
+ 
+ 			if ((state = ZLocateUser(curname, &znloc,ZAUTH)) != ZERR_NONE) {
+-				com_err("finger", state, "\nFailure in \
+-ZLocateUser");
+ 				break;
+ 			}
+ 			q->zlocation = 1;

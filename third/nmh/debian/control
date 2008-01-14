@@ -1,0 +1,13 @@
+Source: debathena-nmh
+Section: debathena/mail
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), quilt, patchutils (>= 0.2.25), cdbs (>= 0.4.27-1), libkrb5-dev, libhesiod-dev, libncurses-dev, libdb-dev
+Standards-Version: 3.7.2
+
+Package: debathena-nmh
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-attachandrun, debianutils
+Conflicts: nmh
+Description: The NMH mail handling system
+ NMH used to be the standard mail handling system on Athena.

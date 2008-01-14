@@ -1,0 +1,42 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          attachtab
+# Required-Start:    $local_fs
+# Required-Stop:
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Creates attachtab.
+# Description:       Creates /var/run/attachtab.
+### END INIT INFO
+
+if [ -e /lib/lsb/init-functions ]; then
+    . /lib/lsb/init-functions
+else
+    alias log_action_begin_msg="echo -n"
+    log_action_end_msg () {
+	echo .
+    }
+fi
+
+case "$1" in
+    start)
+	for dir in /var/run/attachtab \
+	    /var/run/attachtab/directory \
+	    /var/run/attachtab/locker \
+	    /var/run/attachtab/mountpoint; do
+	    if ! [ -e "$dir" ]; then
+		mkdir "$dir"
+		chown root:attach "$dir"
+		chmod a=rwx,g+t "$dir"
+	    fi
+	done
+	;;
+    restart|stop|force-reload)
+	;;
+    *)
+	echo "Usage: $0 {start}" >&2
+	exit 3
+	;;
+esac
+
+:

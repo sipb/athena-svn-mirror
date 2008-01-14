@@ -1,0 +1,2 @@
+debian/athinfo.access	/etc/athena
+debian/athinfo.defs	/etc/athena

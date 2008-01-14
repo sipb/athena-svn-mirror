@@ -1,0 +1,15 @@
+Source: debathena-mitmailshow
+Section: debathena/mail
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-mitmailshow
+Architecture: all
+Provides: mitmailshow
+Depends: ${shlibs:Depends}, ${misc:Depends}, libcyrus-imap-perl22 | debathena-libcyrus-imap-perl, libsasl2-krb4-mit, hesiod
+Conflicts: debathena-mitmailutils (<< 9.4)
+Description: Show messages in an IMAP folder
+ The mitmailshow program displays messages from a folder on an IMAP 
+ server.

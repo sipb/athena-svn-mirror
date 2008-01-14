@@ -1,0 +1,14 @@
+Index: debathena-xcluster-9.4.0/Makefile.in
+===================================================================
+--- debathena-xcluster-9.4.0.orig/Makefile.in	2007-01-30 04:01:44.000000000 -0500
++++ debathena-xcluster-9.4.0/Makefile.in	2007-01-30 04:02:09.000000000 -0500
+@@ -12,7 +12,8 @@
+ libdir=@libdir@
+ mandir=@mandir@
+ datadir=@datadir@
+-appdefsdir=${libdir}/X11/app-defaults
++sysconfdir=@sysconfdir@
++appdefsdir=${sysconfdir}/X11/app-defaults
+ 
+ CC=@CC@
+ DEFS=@DEFS@

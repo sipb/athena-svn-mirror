@@ -1,0 +1,11 @@
+debathena-just (9.4.0-0debathena2) unstable; urgency=low
+
+  * Section: debathena/text.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:33:46 -0400
+
+debathena-just (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 01:19:29 -0500

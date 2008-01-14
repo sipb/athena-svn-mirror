@@ -1,0 +1,27 @@
+debathena-quota (9.4.0-0debathena4) unstable; urgency=low
+
+  * Link against libcom_err from openafs so that the package builds on
+    lenny.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 01 Jan 2008 18:57:17 -0500
+
+debathena-quota (9.4.0-0debathena3) unstable; urgency=low
+
+  * Depend debathena-liblocker.
+  * Install quota setgid attach.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 18 Jul 2007 03:35:14 -0400
+
+debathena-quota (9.4.0-0debathena2) unstable; urgency=low
+
+  * Move quota to quota.debathena to avoid conflicting with BSD quota, 
+    and suggest debathena-quota-config.
+  * Section: debathena/utils.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 16 Jul 2007 20:33:29 -0400
+
+debathena-quota (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 03:36:59 -0500

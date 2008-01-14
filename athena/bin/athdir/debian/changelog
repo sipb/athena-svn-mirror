@@ -1,0 +1,11 @@
+debathena-athdir (9.4.0-0debathena2) unstable; urgency=low
+
+  * Section: debathena/net.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:32:59 -0400
+
+debathena-athdir (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 00:33:05 -0500

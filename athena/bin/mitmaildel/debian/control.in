@@ -1,0 +1,15 @@
+Source: debathena-mitmaildel
+Section: debathena/mail
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-mitmaildel
+Architecture: all
+Provides: mitmaildel
+Depends: ${shlibs:Depends}, ${misc:Depends}, libcyrus-imap-perl22 | debathena-libcyrus-imap-perl, libsasl2-krb4-mit, hesiod
+Conflicts: debathena-mitmailutils (<< 9.4)
+Description: Delete messages in an IMAP folder
+ The mitmaildel program marks messages in a folder on an IMAP server for 
+ deletion.

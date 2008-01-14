@@ -1,0 +1,23 @@
+debathena-lert (9.4.24+cvs20060313-0debathena4) unstable; urgency=low
+
+  * Use any libdb instead of just libdb3.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 29 Oct 2007 02:26:51 -0400
+
+debathena-lert (9.4.24+cvs20060313-0debathena3) unstable; urgency=low
+
+  * Fix conflicts/replaces.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 02:29:59 -0400
+
+debathena-lert (9.4.24+cvs20060313-0debathena2) unstable; urgency=low
+
+  * Section: debathena/net.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:33:47 -0400
+
+debathena-lert (9.4.24+cvs20060313-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 01:20:04 -0500

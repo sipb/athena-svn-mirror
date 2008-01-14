@@ -1,0 +1,5 @@
+debathena-session (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 15 Aug 2007 22:49:06 -0400

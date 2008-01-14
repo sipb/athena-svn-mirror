@@ -1,0 +1,11 @@
+debathena-delete (9.4.0-0debathena2) unstable; urgency=low
+
+  * Section: debathena/utils.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:33:40 -0400
+
+debathena-delete (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon,  5 Feb 2007 20:28:16 -0500

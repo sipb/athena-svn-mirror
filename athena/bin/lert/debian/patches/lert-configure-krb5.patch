@@ -1,0 +1,24 @@
+Index: debathena-lert-9.4.24+cvs20060313/Makefile.in
+===================================================================
+--- debathena-lert-9.4.24+cvs20060313.orig/Makefile.in	2007-01-30 01:22:02.000000000 -0500
++++ debathena-lert-9.4.24+cvs20060313/Makefile.in	2007-01-30 01:22:12.000000000 -0500
+@@ -17,7 +17,7 @@
+ CPPFLAGS=@CPPFLAGS@
+ CFLAGS=@CFLAGS@
+ LDFLAGS=@LDFLAGS@
+-LIBS=@KRB4_LIBS@ -lhesiod @LIBS@
++LIBS=@KRB4_LIBS@ @KRB5_LIBS@ -lhesiod @LIBS@
+ ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+ 
+ all: lert lertload lertdump lertstop lertsaid lertused lertsrv
+Index: debathena-lert-9.4.24+cvs20060313/configure.in
+===================================================================
+--- debathena-lert-9.4.24+cvs20060313.orig/configure.in	2007-01-30 01:21:46.000000000 -0500
++++ debathena-lert-9.4.24+cvs20060313/configure.in	2007-01-30 01:21:56.000000000 -0500
+@@ -8,5 +8,6 @@
+ AC_CHECK_FUNC(dbm_open, :, AC_CHECK_LIB(db, dbm_open))
+ ATHENA_HESIOD
+ ATHENA_KRB4
++ATHENA_KRB5
+ 
+ AC_OUTPUT(Makefile)

@@ -1,0 +1,4 @@
+etc/athena
+var/run/attachtab/directory
+var/run/attachtab/mountpoint
+var/run/attachtab/locker

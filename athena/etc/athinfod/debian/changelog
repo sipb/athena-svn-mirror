@@ -1,0 +1,33 @@
+debathena-athinfod (9.4.0-0debathena5) unstable; urgency=low
+
+  * Depends: openbsd-inetd | inet-superserver
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 10 Dec 2007 02:24:45 -0500
+
+debathena-athinfod (9.4.0-0debathena4) unstable; urgency=low
+
+  * Remove the old athinfo line from /etc/inetd.conf, to fix upgrades 
+    from pre-9.4 packages.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 02:55:50 -0400
+
+debathena-athinfod (9.4.0-0debathena3) unstable; urgency=low
+
+  * Fix some stupid regex.
+  * Section: debathena/net.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:33:27 -0400
+
+debathena-athinfod (9.4.0-0debathena2) unstable; urgency=low
+
+  * Add athinfo.access.
+  * Add athinfo to /etc/inetd.conf.
+  * Add athinfo to /etc/services.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat, 28 Apr 2007 21:00:13 -0400
+
+debathena-athinfod (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 00:33:35 -0500

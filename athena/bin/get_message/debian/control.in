@@ -1,0 +1,14 @@
+Source: debathena-get-message
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, comerr-dev, libhesiod-dev, debathena-libgms-dev
+Standards-Version: 3.7.2
+
+Package: debathena-get-message
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-libgms (>= 9.4.24-0debathena4~)
+Description: A program to display the global Athena message of the day
+ The get_message utility locates the Athena Global Message server,
+ retrieves the current message of the day, and displays it if
+ necessary.

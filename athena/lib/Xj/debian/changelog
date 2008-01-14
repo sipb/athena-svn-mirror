@@ -1,0 +1,25 @@
+debathena-libxj (9.4.0-0debathena4) unstable; urgency=low
+
+  * Set app-defaults directory to /etc/X11/app-defaults.
+  * Fix conflicts/replaces.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 03:06:17 -0400
+
+debathena-libxj (9.4.0-0debathena3) unstable; urgency=low
+
+  * Depend libxext-dev.
+  * Section: debathena/libs.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:33:51 -0400
+
+debathena-libxj (9.4.0-0debathena2) unstable; urgency=low
+
+  * Depend libx11-dev.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat,  7 Apr 2007 15:55:15 -0400
+
+debathena-libxj (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 00:06:25 -0500

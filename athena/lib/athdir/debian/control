@@ -1,0 +1,18 @@
+Source: debathena-libathdir
+Section: debathena/libs
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), autotools-dev, debhelper (>= 4.2.0), autoconf
+Standards-Version: 3.7.2
+
+Package: debathena-libathdir-dev
+Section: debathena/libdevel
+Architecture: any
+Provides: libathdir-dev, debathena-libathdir
+Conflicts: debathena-libathdir (<< 9.4)
+Replaces: debathena-libathdir (<< 9.4)
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Development files for the Athena directory location library
+ A library to implement machine-specific directory location on Athena.
+ .
+ This package contains headers and static libraries for development.

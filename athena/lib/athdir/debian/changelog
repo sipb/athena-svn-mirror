@@ -1,0 +1,17 @@
+debathena-libathdir (9.4.0+cvs20050915-0debathena3) unstable; urgency=low
+
+  * Fix conflicts/replaces.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 02:32:10 -0400
+
+debathena-libathdir (9.4.0+cvs20050915-0debathena2) unstable; urgency=low
+
+  * Section: debathena/libs.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:33:48 -0400
+
+debathena-libathdir (9.4.0+cvs20050915-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 29 Jan 2007 23:57:37 -0500

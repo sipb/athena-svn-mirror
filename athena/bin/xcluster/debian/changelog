@@ -1,0 +1,30 @@
+debathena-xcluster (9.4.0-0debathena5) unstable; urgency=low
+
+  * Fix conflicts/replaces.
+  * Rebuild against new libXj.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 06 Aug 2007 04:12:31 -0400
+
+debathena-xcluster (9.4.0-0debathena4) unstable; urgency=low
+
+  * Section: debathena/net.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:34:09 -0400
+
+debathena-xcluster (9.4.0-0debathena3) unstable; urgency=low
+
+  * Depends: netbase.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 26 Jun 2007 16:35:01 -0400
+
+debathena-xcluster (9.4.0-0debathena2) unstable; urgency=low
+
+  * Add cview to /etc/services.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat, 28 Apr 2007 20:42:31 -0400
+
+debathena-xcluster (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 03:50:04 -0500

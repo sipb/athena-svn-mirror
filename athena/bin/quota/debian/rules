@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
+DEB_AUTO_UPDATE_AUTOCONF = 1
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/autotools.mk
+
+DEB_CONFIGURE_EXTRA_FLAGS += --with-afs=/usr --with-krb4=$(shell krb5-config --prefix krb4) --with-hesiod --with-zephyr LIBS=/usr/lib/afs/libcom_err.a
+CPPFLAGS += -D_LINUX_QUOTA_VERSION=1
+
+common-install-impl::
+	mv $(DEB_DESTDIR)/usr/bin/quota $(DEB_DESTDIR)/usr/bin/quota.debathena
+	mv $(DEB_DESTDIR)/usr/share/man/man1/quota.1 \
+	    $(DEB_DESTDIR)/usr/share/man/man1/quota.debathena.1
+
+clean::
+	rm -f configure

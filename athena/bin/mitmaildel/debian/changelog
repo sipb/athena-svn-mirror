@@ -1,0 +1,24 @@
+debathena-mitmaildel (9.4.0-0debathena4) unstable; urgency=low
+
+  * Conflicts old debathena-mitmailutils.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sun, 05 Aug 2007 04:39:02 -0400
+
+debathena-mitmaildel (9.4.0-0debathena3) unstable; urgency=low
+
+  * Section: debathena/mail.
+  * Add missing dependency on hesiod.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:34:00 -0400
+
+debathena-mitmaildel (9.4.0-0debathena2) unstable; urgency=low
+
+  * Correct libcyrus-imap-perl dependency.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 26 Jun 2007 18:22:04 -0400
+
+debathena-mitmaildel (9.4.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 02:50:05 -0500

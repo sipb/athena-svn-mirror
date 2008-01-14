@@ -1,0 +1,19 @@
+Index: debathena-athrun-9.4.0+cvs20060725/athrun.sh
+===================================================================
+--- debathena-athrun-9.4.0+cvs20060725.orig/athrun.sh	2007-02-04 01:42:47.000000000 -0500
++++ debathena-athrun-9.4.0+cvs20060725/athrun.sh	2007-02-04 01:43:27.000000000 -0500
+@@ -11,12 +11,12 @@
+   exit 1
+   ;;
+ 1)
+-  exec /bin/athena/attachandrun "$1" "$1" "$1"
++  exec /bin/attachandrun "$1" "$1" "$1"
+   ;;
+ *)
+   locker=$1
+   program=$2
+   shift 2;
+-  exec /bin/athena/attachandrun "$locker" "$program" "$program" "$@"
++  exec /bin/attachandrun "$locker" "$program" "$program" "$@"
+   ;;
+ esac

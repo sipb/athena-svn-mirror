@@ -1,0 +1,11 @@
+debathena-athrun (9.4.0+cvs20060725-0debathena2) unstable; urgency=low
+
+  * Section: debathena/net.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Jul 2007 06:33:33 -0400
+
+debathena-athrun (9.4.0+cvs20060725-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 30 Jan 2007 00:34:00 -0500
