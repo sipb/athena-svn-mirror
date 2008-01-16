@@ -1,0 +1,6 @@
+@packagename@ for Debian-Athena
+
+This is a Debian-Athena manual configuration package.  It satisfy any
+dependencies on the corresponding automatic configuration package
+without actually doing any configuration.  You will need to do any
+such configuration yourself.

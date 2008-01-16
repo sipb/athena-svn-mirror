@@ -1,0 +1,11 @@
+#!/bin/sh
+set -xe
+
+queue=upload-queue
+while [ -s "$queue" ]; do
+    read -r file <"$queue"
+    daequivsupload "$file"
+    cat "$queue" | (read file; cat) > "$queue.tmp"
+    mv "$queue.tmp" "$queue"
+done
+rm "$queue"

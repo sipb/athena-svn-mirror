@@ -1,0 +1,10 @@
+#!/bin/bash
+
+(
+echo . make-manual-config.sh
+echo 'package <<EOF'
+dpkg-awk --rec_sep $'EOF\npackage <<EOF\n' -f <(
+    zcat /mit/debathena/apt/dists/etch/debathena-config/binary-i386/Packages.gz
+) 'Package:^debathena-.*-config$' -- Package Version Architecture Depends Recommends Suggests Priority Section | \
+    head -n -2
+) | bash
