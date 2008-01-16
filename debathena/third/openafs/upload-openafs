@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+for i in */; do
+    (
+	cd $i
+	diff -U0 \
+	    <(ls *.deb 2>/dev/null | sort) \
+	    <(cd /mit/debathena/apt/pool/openafs/o/openafs && ls *.deb | sort) | \
+	    sed -n 's/^-\(.*\)\.deb$/\1/ p' | \
+	    xargs -t -n1 -I@ reprepro --ignore=wrongdistribution -Vb /mit/debathena/apt -C openafs include "$(echo "$i" | sed 's/-[^-]*$//')" @.changes
+    )
+done
