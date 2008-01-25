@@ -1,3 +1,15 @@
+debathena-shell-config (1.3) unstable; urgency=low
+
+  * Have renew aklog rather than "fsid -a" so that it works even if the
+    user's home directory is not attached.
+  * Have renew kinit for whatever principal one has tickets for, if
+    tickets exist; defaulting to ATHENA_USER if one has no tickets,
+    and defaulting to USER if ATHENA_USER is not set.  This should
+    make it easier to deal with usernames not matching the Athena
+    username.
+
+ -- Tim Abbott <tabbott@mit.edu>  Thu, 24 Jan 2008 22:44:26 -0500
+
 debathena-shell-config (1.2debathena1) unstable; urgency=low
 
   * Eschew /bin/athena paths.

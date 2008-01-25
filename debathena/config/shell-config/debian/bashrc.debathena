@@ -8,7 +8,10 @@ if [ -z "$ATHENA_SYS" ]; then
     export ATHENA_SYS=@sys
 fi
 
-renew () { kinit -54 $USER && fsid -a && zctl load /dev/null ; }
+renew () {
+    principal=`klist -5 2>/dev/null | sed -n 's/^Default principal: // p'`
+    kinit -54 "${principal:-${ATHENA_USER:-$USER}}" && aklog && zctl load /dev/null ;
+}
 
 add_flags=
 add () { eval "$( /bin/attach -Padd -b $add_flags "$@" )" ; }
