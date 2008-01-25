@@ -11,7 +11,7 @@ common-build-indep:: debian/ssh_config.debathena
 
 debian/ssh_config.debathena: $(call debathena_check_conffiles,/etc/ssh/ssh_config)
 	perl -0pe ' \
-	    s/^\s*#?\s*GSSAPIAuthentication.*\n//m; \
+	    s/^\s*#?\s*GSSAPIAuthentication.*\n//mg; \
 	    s/$$/\n    GSSAPIAuthentication yes/ or die;' $< > $@
 
 clean::

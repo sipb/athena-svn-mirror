@@ -1,3 +1,10 @@
+debathena-ssh-client-config (1.0debathena6) unstable; urgency=low
+
+  * Eliminate all GSSAPIAuthentication lines in /etc/ssh/ssh_config before
+    adding the right version, to avoid duplicates.
+
+ -- Tim Abbott <tabbott@mit.edu>  Fri, 25 Jan 2008 15:53:06 -0500
+
 debathena-ssh-client-config (1.0debathena5) unstable; urgency=low
 
   * Use new check-conffiles interface from debathena-config-build-common
