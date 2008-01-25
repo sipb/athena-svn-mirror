@@ -1,3 +1,10 @@
+debathena-afs-config (1.2debathena3) unstable; urgency=low
+
+  * Restart AFS so AFS comes up correctly at installation, but don't let
+    installation fail if AFS can't restart because it was already running.
+
+ -- Tim Abbott <tabbott@mit.edu>  Fri, 25 Jan 2008 15:24:24 -0500
+
 debathena-afs-config (1.2debathena2) unstable; urgency=low
 
   * Remove dependency on openafs-modules2
