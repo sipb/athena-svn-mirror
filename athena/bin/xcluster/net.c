@@ -6,6 +6,8 @@
 #include <netdb.h>
 #include <hesiod.h>
 
+#define CVIEW_FALLBACK_PORT 3704
+
 int net(progname, num, names)
      char *progname;
      int num;
@@ -51,16 +53,11 @@ int net(progname, num, names)
 	}
 
       sp = getservbyname("cview", "tcp");
-      if (sp == 0) 
-	{
-	  fprintf(stderr, "%s: Unknown service 'tcp/cview'.\n", progname);
-	  return(-1);
-	}
 
       memset(&sin, 0, sizeof (sin));
       memcpy(&sin.sin_addr, hp->h_addr, hp->h_length);
       sin.sin_family = hp->h_addrtype;
-      sin.sin_port = sp->s_port;
+      sin.sin_port = (sp) ? sp->s_port : htons(CVIEW_FALLBACK_PORT);
 
       init = 1;
     }
