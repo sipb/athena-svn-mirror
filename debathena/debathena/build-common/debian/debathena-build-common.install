@@ -1,0 +1,4 @@
+athena.mk usr/share/cdbs/1/class/
+aclocal.m4 usr/share/debathena-build-common/
+mkinstalldirs usr/share/debathena-build-common/
+install-sh usr/share/debathena-build-common/

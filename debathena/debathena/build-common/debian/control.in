@@ -1,0 +1,12 @@
+Source: debathena-build-common
+Section: debathena/devel
+Priority: extra
+Maintainer: Athena Release Team <release-team@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.3
+
+Package: debathena-build-common
+Architecture: all
+Depends: cdbs, autotools-dev, libtool, autoconf
+Description: Support files for building Athena sources
+ This package includes support files needed to build Athena sources.

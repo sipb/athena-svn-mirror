@@ -1,0 +1,5 @@
+debathena-build-common (1.0.0) unstable; urgency=low
+
+  * New package containing CDBS rules to build Athena sources.
+
+ -- Greg Hudson <ghudson@mit.edu>  Thu, 24 Jan 2008 14:42:30 -0500
