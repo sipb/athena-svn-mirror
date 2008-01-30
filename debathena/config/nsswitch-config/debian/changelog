@@ -1,3 +1,9 @@
+debathena-nsswitch-config (1.3) unstable; urgency=low
+
+  * require libnss-nonlocal (>=1.3~) for the nss-local-users group.
+
+ -- Tim Abbott <tabbott@mit.edu>  Thu, 17 Jan 2008 16:21:19 -0500
+
 debathena-nsswitch-config (1.2debathena5) unstable; urgency=low
 
   * Use afspag before nonlocal, so that local accounts work more 

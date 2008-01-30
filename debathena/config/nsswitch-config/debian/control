@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-nsswitch-config
 Architecture: all
-Depends: debathena-hesiod-config, debathena-autofs-config, libnss-nonlocal, libnss-afspag, ${misc:Depends}
+Depends: debathena-hesiod-config, debathena-autofs-config, libnss-nonlocal (>= 1.3~), libnss-afspag, ${misc:Depends}
 Description: nsswitch configuration for Debian-Athena
  This packages configures nsswitch to get passwd information from
  Athena Hesiod, using libnss-nonlocal, which prevents network users
