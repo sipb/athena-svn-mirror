@@ -1,2 +1,3 @@
-debian/gdm.conf.debathena etc/gdm
+debian/gdm.conf-custom.debathena etc/gdm
 debian/debathena.png usr/share/pixmaps
+debathena /usr/share/gdm/themes/
