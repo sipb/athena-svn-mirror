@@ -2,16 +2,16 @@
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEBATHENA_DIVERT_FILES_debathena-afs-config += \
-	/etc/openafs/afs.conf.debathena \
 	/etc/openafs/afs.conf.client.debathena \
 	/etc/openafs/CellAlias.debathena \
 	/etc/openafs/CellServDB.debathena \
 	/etc/openafs/SuidCells.debathena \
 	/etc/openafs/ThisCell.debathena \
 	/etc/openafs/cacheinfo.debathena
+DEBATHENA_REPLACE_CONFFILES_debathena-afs-config += \
+	/etc/openafs/afs.conf.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
-include /usr/share/cdbs/1/rules/debathena-check-conffiles.mk
+include /usr/share/cdbs/1/rules/debathena-replace-conffiles.mk
 
 FROM_ATHENA = debian/CellAlias.debathena debian/CellServDB.debathena
 
@@ -27,16 +27,6 @@ $(FROM_ATHENA) : %.debathena: %.athena %.debathena-extra
 	cat $^ >| $@.tmp
 	diff -q $@.tmp $@ || mv $@.tmp $@
 	rm -f $@.tmp
-
-common-build-indep:: debian/afs.conf.debathena
-
-debian/afs.conf.debathena: $(call debathena_check_conffiles,/etc/openafs/afs.conf)
-	if fgrep -q AFS_SYSNAME $< 2>/dev/null; then \
-	    perl -0pe 's/^.*AFS_SYSNAME=.*$$/AFS_SYSNAME="\$$(machtype -S) \$$(machtype -C | sed "s\/:\/ \/g")"/m or die;' $< >$@; \
-	else \
-	    perl -0pe 's/^AFS_POST_INIT=.*$$/AFS_POST_INIT="fs sysname \$$(machtype -S) \$$(machtype -C | sed "s\/:\/ \/g")"/m or die' $< >$@; \
-	fi
-	perl -i -0pe 's/^OPTIONS=(AUTOMATIC|\$$MEDIUM)$$/OPTIONS="-stat 10000 -daemons 6 -volumes 200"/m or die;' $@
 
 FORCE:
 

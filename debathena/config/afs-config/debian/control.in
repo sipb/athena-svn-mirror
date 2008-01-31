@@ -9,5 +9,7 @@ Package: debathena-afs-config
 Architecture: all
 Depends: openafs-client, debathena-kerberos-config, debathena-machtype, openafs-krb5, ${misc:Depends}
 Recommends: debathena-autofs-config
+Provides: ${divert:Diverted}
+Conflicts: ${divert:Diverted}
 Description: AFS configuration for Debian-Athena
  This packages configures OpenAFS to access the Athena AFS cell.

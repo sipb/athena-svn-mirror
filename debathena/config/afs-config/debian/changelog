@@ -1,3 +1,10 @@
+debathena-afs-config (1.2debathena4) unstable; urgency=low
+
+  * Use new debathena-replace-conffiles system.
+  * Correctly remove afs.conf.debathena on clean.
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 30 Jan 2008 20:40:24 -0500
+
 debathena-afs-config (1.2debathena3) unstable; urgency=low
 
   * Restart AFS so AFS comes up correctly at installation, but don't let
