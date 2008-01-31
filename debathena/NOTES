@@ -90,5 +90,58 @@ Adding a new distribution:
   <not yet written>
 
 Setting up a build server:
+(Adapted for Athena 10)
 
-  <not yet written>
+  1. The build server must be installed with free space in an LVM
+     volume group.  The build chroots consume 2GB each.
+
+  1. Install debathena-standard as per the the instructions in
+     http://debathena.mit.edu/install.
+
+  2. Install the packages listed in
+     scripts/build-server/packages (using "aptitude install")
+
+  3. Install debathena-login, debathena-ssh-server, and
+     debathena-build-depends (using "aptitude install").
+
+     (Depending on how recently debathena-build-depends was rebuilt,
+     additional packages might need to be installed to satisfy the
+     build-depends of newer packages.  This can be taken care of later
+     when an error occurs building a source package.)
+
+  4. Edit /etc/security/access.conf and add a first line:
+     -:ALL EXCEPT root <developer usernames>:ALL
+
+  5. Edit /etc/group and add the developers to the sbuild group.
+
+  6. Create /etc/passwd entries for each developer with "hesinfo
+     username passwd >> /etc/passwd" and then run pwconv.
+
+     (This is not necessary for the login system on the main root
+     environment, but is for the chroot environments.)
+
+  7. Append to /etc/approx.conf the contents of
+     scripts/build-server/approx.conf.tail
+
+  8. For each supported dist and arch (see scripts/all-schroots) run:
+
+       VG=/dev/blah scripts/build-server/make-chroot dist arch
+
+     substituting the name of the volume group for blah.
+
+     Example: VG=/dev/dink scripts/build-server/make-chroot gutsy i386
+
+Removing a build chroot on the build server:
+
+  1. Run VG=/dev/blah scripts/clean-schroots to make sure that the
+     build chroot is not mounted, substituting the name of the volume
+     group for blah.
+
+  2. Edit /etc/schroot/schroot.conf and delete the section
+     corresponding to the chroot.
+
+  3. Run lvchange -an blah/chrootname
+     substituting the name of the volume group for blah and the chroot
+     name for chroot.  Example: lvchange -an dink/gutsy-i386-sbuild
+
+  4. Run lvremove -an blah/chrootname
