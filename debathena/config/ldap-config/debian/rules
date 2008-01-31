@@ -1,18 +1,8 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-ldap-config += \
+DEBATHENA_REPLACE_CONFFILES_debathena-ldap-config += \
 	/etc/ldap/ldap.conf.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
-include /usr/share/cdbs/1/rules/debathena-check-conffiles.mk
+include /usr/share/cdbs/1/rules/debathena-replace-conffiles.mk
 
-common-build-indep:: debian/ldap.conf.debathena
-
-debian/ldap.conf.debathena: $(call debathena_check_conffiles,/etc/ldap/ldap.conf)
-	perl -0pe ' \
-	    s/^#BASE.*$$/BASE\tdc=mit, dc=edu/m and \
-	    s/^#URI.*$$/URI\tldap:\/\/ldap.mit.edu\nTLS_CACERT\t\/usr\/share\/debathena-ssl-certificates\/mitCA.pem/m or die' $< > $@
-
-clean::
-	rm -f debian/ldap.conf.debathena
