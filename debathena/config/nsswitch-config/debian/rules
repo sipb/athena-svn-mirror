@@ -1,24 +1,16 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-nsswitch-config += \
-	/etc/nsswitch.conf.debathena
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
-include /usr/share/cdbs/1/rules/debathena-check-conffiles.mk
-
-common-build-indep:: debian/nsswitch.conf.debathena
-
 ifneq ($(wildcard /usr/share/base-files/nsswitch.conf),)
-    NSSWITCH_CONF = /usr/share/base-files/nsswitch.conf
+    DEBATHENA_REPLACE_CONFFILES_debathena-nsswitch-config += \
+	/usr/share/base-files/nsswitch.conf.debathena
+    DEBATHENA_CONFFILE_DEST_/usr/share/base-files/nsswitch.conf.debathena = \
+	/etc/nsswitch.conf.debathena
 else
-    NSSWITCH_CONF = $(call debathena_check_conffiles,/etc/nsswitch.conf)
+    DEBATHENA_REPLACE_CONFFILES_debathena-nsswitch-config += \
+	/etc/nsswitch.conf.debathena
 endif
 
-debian/nsswitch.conf.debathena: $(NSSWITCH_CONF)
-	perl -0pe ' \
-	    s/^(passwd: .*)$$/$$1 nonlocal\npasswd_nonlocal: hesiod/m and \
-	    s/^(group: .*)$$/$$1 afspag nonlocal\ngroup_nonlocal: hesiod/m or die' $< > $@
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/debathena-replace-conffiles.mk
 
-clean::
-	rm -f debian/nsswitch.conf.debathena
