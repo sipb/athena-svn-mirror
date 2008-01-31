@@ -36,9 +36,11 @@ $(call debathena_check_conffiles_tmp,%): package = $(shell dpkg -S $(name) | gre
 $(call debathena_check_conffiles_tmp,%): $(truename)
 	mkdir -p $(@D)
 	cp "$(truename)" $@
-	dpkg-query --showformat='$${Conffiles}\n' --show $(package) | \
+	(dpkg-query --showformat='$${Conffiles}\n' --show $(package); \
+	cat /var/lib/dpkg/info/$(package).md5sums | \
+	    awk '{ print " /" $$2 " " $$1 }' | grep $(name)) | \
 	    sed -n 's,^ $(name) \(.*\)$$,\1  $@, p' | \
-	    md5sum -c  # Check that the file has not been modified.
+	    md5sum -c # Check that the file has not been modified.
 
 clean::
 	rm -rf $(DEBATHENA_CHECK_CONFFILES_DIR)

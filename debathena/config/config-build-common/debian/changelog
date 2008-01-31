@@ -1,3 +1,19 @@
+debathena-config-build-common (3.6) unstable; urgency=low
+
+  * Add new debathena-replace-conffiles.mk, a more user-friendly wrapper
+    for debathena-check-conffiles.mk and debathena-divert.mk.
+  * Change debathena-check-conffiles.mk to allow checking md5sums of
+    packaged files which are not marked as configuration files
+    (e.g. /etc/adduser/adduser.conf).
+  * Change debathena-divert.mk to not set DEBATHENA_DIVERT_SUFFIX unless
+    it is not already set.
+  * Change debathena-divert.mk to support adding Provides: and Conflicts:
+    lines for each diverted configuration file.
+  * Change debathena-divert.mk to divert everything in
+    DEBATHENA_REPLACE_CONFFILES.
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 30 Jan 2008 20:03:36 -0500
+
 debathena-config-build-common (3.5) unstable; urgency=low
 
   * Change check-conffiles interface to make it work properly with 

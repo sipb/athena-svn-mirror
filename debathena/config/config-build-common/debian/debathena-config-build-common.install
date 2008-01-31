@@ -1,5 +1,7 @@
 debathena-divert.mk usr/share/cdbs/1/rules/
 debathena-debconf-hack.mk usr/share/cdbs/1/rules/
 debathena-check-conffiles.mk usr/share/cdbs/1/rules/
+debathena-replace-conffiles.mk usr/share/cdbs/1/rules/
+encode usr/share/debathena-config-build-common/
 divert.sh.in usr/share/debathena-config-build-common/
 debconf-hack.sh usr/share/debathena-config-build-common/
