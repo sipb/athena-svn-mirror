@@ -1,3 +1,9 @@
+debathena-pam-config (1.3debathena5) unstable; urgency=low
+
+  * Make access.conf.append mimic Athena workstations more closely.
+
+ -- Tim Abbott <tabbott@mit.edu>  Fri,  1 Feb 2008 18:21:09 -0500
+
 debathena-pam-config (1.3debathena4) unstable; urgency=low
 
   * Only set XAUTHORITY in /etc/pam.d/ssh due to gdm problems.

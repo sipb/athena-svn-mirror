@@ -31,7 +31,6 @@ debian/common-password.debathena: /usr/share/pam/common-password
 
 debian/gdm.debathena: $(call debathena_check_conffiles,/etc/pam.d/gdm)
 	perl -0pe 's/^(\@include common-account)/account\trequired\tpam_access.so\n$$1/m or die' $< > $@
-#and \		  s/^(\@include common-session)/session\trequired\tpam_env.so readenv=0 conffile=\/etc\/security\/gdm-xauth-hack.conf\n$$1/m
 
 debian/ssh.debathena: $(call debathena_check_conffiles,/etc/pam.d/ssh)
 	perl -0pe '(s/^\#[\t ]+(account[ \t]+required[ \t]+pam_access.so)/$$1/m or s/^(?=\@include[ \t]+common-account)/account    required     pam_access.so\n/m) and s/^(\@include[ \t]+common-session)/$$1\nsession\toptional\tpam_mktemp.so var=XAUTHORITY prefix=\/var\/run\/athena-sessions\/xauth/m or die' $< > $@

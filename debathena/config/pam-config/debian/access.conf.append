@@ -10,8 +10,10 @@
 # Note that you can use Moira NFS groups here
 # See http://debathena.mit.edu/access-controls for details
 
-# DEFAULT only allow access for users who have local accounts on the
-# machine (i.e. are in /etc/passwd).
+# DEFAULT only allow remote access for users who have local accounts
+# on the machine (i.e. are in /etc/passwd).  Allow all other users to
+# login only locally.
+
 +:nss-local-users:ALL
--:ALL:ALL
+-:ALL:ALL EXCEPT LOCAL
 #DEBATHENA END
