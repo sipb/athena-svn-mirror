@@ -16,28 +16,32 @@ endif
 
 DEBATHENA_DIVERT_ENCODER = /usr/share/debathena-config-build-common/encode
 
+debathena-divert/%: package = $(subst debathena-divert/,,$@)
+debathena-divert/%: replace_inputs = $(DEBATHENA_REPLACE_CONFFILES_$(package))
+debathena-divert/%: replace_files = $(foreach file,$(replace_inputs),$(call debathena_conffile_dest,$(file)))
+debathena-divert/%: divert_files = $(DEBATHENA_DIVERT_FILES) $(replace_files)
 $(patsubst %,debathena-divert/%,$(DEBATHENA_DIVERT_PACKAGES)) :: debathena-divert/%:
 	( \
 	    sed 's/#PACKAGE#/$(cdbs_curpkg)/g; s/#DEBATHENA_DIVERT_SUFFIX#/$(DEBATHENA_DIVERT_SUFFIX)/g' $(DEBATHENA_DIVERT_SCRIPT); \
-	    $(if $(DEBATHENA_DIVERT_FILES_$(cdbs_curpkg)), \
+	    $(if $($(divert_files)), \
 		echo 'if [ "$$1" = "configure" ]; then'; \
-		$(foreach file,$(DEBATHENA_DIVERT_FILES_$(cdbs_curpkg)), \
+		$(foreach file,$($(divert_files)), \
 		    echo "    divert_link $(subst $(DEBATHENA_DIVERT_SUFFIX), ,$(file))";) \
 		echo 'fi'; \
 	    ) \
 	) >> $(CURDIR)/debian/$(cdbs_curpkg).postinst.debhelper
 	( \
 	    sed 's/#PACKAGE#/$(cdbs_curpkg)/g; s/#DEBATHENA_DIVERT_SUFFIX#/$(DEBATHENA_DIVERT_SUFFIX)/g' $(DEBATHENA_DIVERT_SCRIPT); \
-	    $(if $(DEBATHENA_DIVERT_FILES_$(cdbs_curpkg)), \
+	    $(if $($(divert_files)), \
 		echo 'if [ "$$1" = "remove" ]; then'; \
-		$(foreach file,$(DEBATHENA_DIVERT_FILES_$(cdbs_curpkg)), \
+		$(foreach file,$($(divert_files)), \
 		    echo "    undivert_unlink $(subst $(DEBATHENA_DIVERT_SUFFIX), ,$(file))";) \
 		echo 'fi'; \
 	    ) \
 	) >> $(CURDIR)/debian/$(cdbs_curpkg).prerm.debhelper
 	( \
 	    echo -n "divert:Diverted="; \
-	    $(foreach file,$(DEBATHENA_DIVERT_FILES_$(cdbs_curpkg)),\
+	    $(foreach file,$($(divert_files)),\
 		${DEBATHENA_DIVERT_ENCODER} "$(subst $(DEBATHENA_DIVERT_SUFFIX),,$(file))"; \
 		echo -n ", ";) \
 	    echo \
