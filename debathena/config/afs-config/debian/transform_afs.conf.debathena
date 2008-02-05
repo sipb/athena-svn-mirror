@@ -1,0 +1,7 @@
+#!/usr/bin/perl -0p
+if (m/AFS_SYSNAME/) {
+    s/^.*AFS_SYSNAME=.*$/AFS_SYSNAME="\$(machtype -S) \$(machtype -C | sed "s\/:\/ \/g")"/m or die;
+} else {
+    s/^AFS_POST_INIT=.*$/AFS_POST_INIT="fs sysname \$(machtype -S) \$(machtype -C | sed "s\/:\/ \/g")"/m or die;
+}
+s/^OPTIONS=(AUTOMATIC|\$MEDIUM)$/OPTIONS="-stat 10000 -daemons 6 -volumes 200"/m or die;
