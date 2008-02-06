@@ -1,3 +1,9 @@
+debathena-getcluster (10.0.0-0debathena1) unstable; urgency=low
+
+  * Man page section fixed in upstream source, remove patch.
+
+ -- Greg Hudson <ghudson@equal-rites.mit.edu>  Wed, 06 Feb 2008 13:21:38 -0500
+
 debathena-getcluster (9.4.0-0debathena2) unstable; urgency=low
 
   * Section: debathena/net.
