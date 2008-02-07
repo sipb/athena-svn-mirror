@@ -1,0 +1,15 @@
+Source: debathena-authwatch
+Section: debathena/gnome
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, libkrb5-dev
+Standards-Version: 3.7.2
+
+Package: debathena-authwatch
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Warn user of expiring authentication
+ This program runs in the background and warns the user if their
+ Kerberos authentication is about to expire.
+
+
