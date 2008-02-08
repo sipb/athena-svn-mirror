@@ -95,13 +95,15 @@ Setting up a build server:
   1. The build server must be installed with free space in an LVM
      volume group.  The build chroots consume 2GB each.
 
-  1. Install debathena-standard as per the the instructions in
+  2. Install debathena-standard as per the the instructions in
      http://debathena.mit.edu/install.
 
-  2. Install the packages listed in
+  3. apt-key add /afs/dev.mit.edu/system/athena10/apt/athena10-archive.asc
+
+  4. Install the packages listed in
      scripts/build-server/packages (using "aptitude install")
 
-  3. Install debathena-login, debathena-ssh-server, and
+  5. Install debathena-login, debathena-ssh-server, and
      debathena-build-depends (using "aptitude install").
 
      (Depending on how recently debathena-build-depends was rebuilt,
@@ -109,27 +111,31 @@ Setting up a build server:
      build-depends of newer packages.  This can be taken care of later
      when an error occurs building a source package.)
 
-  4. Edit /etc/security/access.conf and add a first line:
+  6. Edit /etc/security/access.conf and add a first line:
      -:ALL EXCEPT root <developer usernames>:ALL
 
-  5. Edit /etc/group and add the developers to the sbuild group.
+  7. Edit /etc/group and add the developers to the sbuild group.
 
-  6. Create /etc/passwd entries for each developer with "hesinfo
+  8. Create /etc/passwd entries for each developer with "hesinfo
      username passwd >> /etc/passwd" and then run pwconv.
 
      (This is not necessary for the login system on the main root
      environment, but is for the chroot environments.)
 
-  7. Append to /etc/approx.conf the contents of
-     scripts/build-server/approx.conf.tail
+  9. Append to /etc/approx.conf the contents of
+     scripts/build-server/approx.conf.tail.  Change the last line from
+     http://debathena.mit.edu/apt to
+     http://stuff.mit.edu/afs/dev.mit.edu/system/athena10/apt.
 
-  8. For each supported dist and arch (see scripts/all-schroots) run:
+  10. For each supported DIST (see scripts/debian-versions.sh) run:
 
-       VG=/dev/blah scripts/build-server/make-chroot dist arch
+        VG=/dev/blah scripts/build-server/make-chroot DIST i386
+        VG=/dev/blah scripts/build-server/make-chroot DIST amd64
 
-     substituting the name of the volume group for blah.
+      substituting the name of the volume group for blah.  Omit the
+      amd64 line if DIST is sarge.
 
-     Example: VG=/dev/dink scripts/build-server/make-chroot gutsy i386
+      Example: VG=/dev/dink scripts/build-server/make-chroot gutsy i386
 
 Removing a build chroot on the build server:
 
