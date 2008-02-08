@@ -127,7 +127,9 @@ Setting up a build server:
      http://debathena.mit.edu/apt to
      http://stuff.mit.edu/afs/dev.mit.edu/system/athena10/apt.
 
-  10. For each supported DIST (see scripts/debian-versions.sh) run:
+  10. Apply scripts/build-server/10mount.patch.
+
+  11. For each supported DIST (see scripts/debian-versions.sh) run:
 
         VG=/dev/blah scripts/build-server/make-chroot DIST i386
         VG=/dev/blah scripts/build-server/make-chroot DIST amd64
