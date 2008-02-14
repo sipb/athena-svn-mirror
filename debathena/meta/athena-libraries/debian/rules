@@ -32,8 +32,8 @@ $(APT_CACHE): $(ATHENA_SHLIBS) $(APT_FILE_CACHE) $(APTITUDE_STATE)
 	))" | \
 	    sort -u | \
 	    perl -pe 'chomp; s/(\W)/\\$$1/g; s/^(.*)$$/~n^$$1\$$!~Rconflicts:(~Dreplaces:(~n^$$1\$$~VCANDIDATE)~Dconflicts:(~n^$$1\$$~VCANDIDATE))/; s/$$/\0/' | \
-	    xargs -0 -t $(APTITUDE) -F '%p' search | \
-	    (cd $@/archives; xargs -t $(APTITUDE) download)
+	    xargs -0 -r -t $(APTITUDE) -F '%p' search | \
+	    (cd $@/archives; xargs -r -t $(APTITUDE) download)
 
 $(APTITUDE_STATE):
 	mkdir -p $@
