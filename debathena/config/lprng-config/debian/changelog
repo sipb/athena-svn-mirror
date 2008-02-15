@@ -1,3 +1,9 @@
+debathena-lprng-config (1.3debathena1) unstable; urgency=low
+
+  * Update lpd.conf to pass KRB5CCNAME environment variable
+
+ -- Tim Abbott <tabbott@mit.edu>  Fri, 15 Feb 2008 18:14:26 -0500
+
 debathena-lprng-config (1.2debathena1) unstable; urgency=low
 
   * Update get_hesiod_pcap to handle auth=none.
