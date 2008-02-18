@@ -1,3 +1,17 @@
+debathena-config-build-common (3.7) unstable; urgency=low
+
+  * Fix debathena-divert.mk to correctly divert files.
+  * Fix debathena-conffiles.mk to print a warning when md5sums don't
+    exist, rather than failing.
+  * Replace DEBATHENA_CONFFILE_DEST with
+    DEBATHENA_REPLACE_FILES_SOURCE, a more natural concept with the
+    same purpose.
+  * Shift DEBATHENA_REPLACE_FILES_SOURCE logic into
+    debathena-check-files.mk, which now depends on
+    debathena-divert.mk; use this to simplify our CDBS dependencies.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sun, 17 Feb 2008 23:06:49 -0500
+
 debathena-config-build-common (3.6) unstable; urgency=low
 
   * Add new debathena-replace-conffiles.mk, a more user-friendly wrapper

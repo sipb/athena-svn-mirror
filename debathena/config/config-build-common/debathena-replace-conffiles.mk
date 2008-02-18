@@ -1,26 +1,29 @@
 # -*- mode: makefile; coding: utf-8 -*-
 
 include /usr/share/cdbs/1/rules/debathena-check-conffiles.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
 
 DEBATHENA_REPLACE_CONFFILES = $(foreach package,$(DEB_ALL_PACKAGES),$(DEBATHENA_REPLACE_CONFFILES_$(package)))
 
-CDBS_BUILD_DEPENDS := $(CDBS_BUILD_DEPENDS), debathena-config-build-common (>= 3.6~)
+DEBATHENA_REPLACE_CONFFILES_DIR=debian/replace_file_copies
 
-debathena_conffile_dest = $(if $(DEBATHENA_CONFFILE_DEST_$(1)),$(DEBATHENA_CONFFILE_DEST_$(1)),$(1))
+debathena_replace_conffiles = $(patsubst %,$(DEBATHENA_REPLACE_CONFFILES_DIR)%,$(1))
+undebathena_replace_conffiles = $(patsubst $(DEBATHENA_REPLACE_CONFFILES_DIR)%,%,$(1))
 
-common-build-indep:: $(foreach file,$(DEBATHENA_REPLACE_CONFFILES),debian/conffile-new$(file))
+common-build-indep:: $(foreach file,$(DEBATHENA_REPLACE_CONFFILES),$(call debathena_replace_conffiles,$(file)))
 
-debian/conffile-new%$(DEBATHENA_DIVERT_SUFFIX): $(call debathena_check_conffiles,%)
-	debian/transform_$(notdir $(call debathena_conffile_dest,$(subst debian/conffile-new,,$@))) < $< \
-	    > debian/$(notdir $(call debathena_conffile_dest,$(subst debian/conffile-new,,$@)))
+$(call debathena_replace_conffiles,%): $(call debathena_check_conffiles,%)
+	mkdir -p $(@D)
+	$(if $(DEBATHENA_TRANSFORM_SCRIPT_$(call undebathena_replace_conffiles,$@)), \
+	    $(DEBATHENA_TRANSFORM_SCRIPT_$(call undebathena_replace_conffiles,$@)), \
+	    debian/transform_$(notdir $(call undebathena_replace_conffiles,$@))) < $< > $@
 
 $(patsubst %,binary-install/%,$(DEB_ALL_PACKAGES)) :: binary-install/%:
 	$(foreach file,$(DEBATHENA_REPLACE_CONFFILES_$(cdbs_curpkg)), \
-		install -d $(DEB_DESTDIR)/$(dir $(call debathena_conffile_dest,$(file))); \
-		cp -a debian/$(notdir $(call debathena_conffile_dest,$(file))) \
-		    $(DEB_DESTDIR)/$(dir $(call debathena_conffile_dest,$(file)));)
+		install -d $(DEB_DESTDIR)/$(dir $(file)); \
+		cp -a $(DEBATHENA_REPLACE_CONFFILES_DIR)$(file) \
+		    $(DEB_DESTDIR)/$(dir $(file));)
 
 clean::
 	$(foreach file,$(DEBATHENA_REPLACE_CONFFILES),rm -f debian/$(notdir $(file)))
+	rm -rf $(DEBATHENA_REPLACE_CONFFILES_DIR)
 
