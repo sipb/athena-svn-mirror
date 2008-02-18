@@ -33,13 +33,22 @@ debian/gdm.debathena: $(call debathena_check_conffiles,/etc/pam.d/gdm)
 	perl -0pe 's/^(\@include common-account)/account\trequired\tpam_access.so\n$$1/m or die' $< > $@
 
 debian/ssh.debathena: $(call debathena_check_conffiles,/etc/pam.d/ssh)
-	perl -0pe '(s/^\#[\t ]+(account[ \t]+required[ \t]+pam_access.so)/$$1/m or s/^(?=\@include[ \t]+common-account)/account    required     pam_access.so\n/m) and s/^(\@include[ \t]+common-session)/$$1\nsession\toptional\tpam_mktemp.so var=XAUTHORITY prefix=\/var\/run\/athena-sessions\/xauth/m or die' $< > $@
+	perl -0pe '(s/^\#[\t ]+(account[ \t]+required[ \t]+pam_access.so)/$$1/m or s/^(?=\@include[ \t]+common-account)/account    required     pam_access.so\n/m) and s/^(\@include[ \t]+common-session)/$$1\nsession    optional     pam_mktemp.so var=XAUTHORITY prefix=\/var\/run\/athena-sessions\/xauth/m or die' $< > $@
 
 debian/login.debathena: $(call debathena_check_conffiles,/etc/pam.d/login)
 	perl -0pe 's/^\#[\t ]+(account[ \t]+required[ \t]+pam_access.so)/$$1/m or die' $< > $@
 
+LSB_ID = $(shell lsb_release --short --id)
 debian/access.conf.debathena: $(call debathena_check_conffiles,/etc/security/access.conf)
+ifeq ($(LSB_ID), Debian)
+	(cat $<; sed 's/root admin /root /' debian/access.conf.append) > $@
+else
+    ifeq ($(LSB_ID), Ubuntu)
 	cat $< debian/access.conf.append > $@
+    else
+	$(error Unrecognized distribution ID $(LSB_ID).)
+    endif
+endif
 
 clean::
 	rm -f $(patsubst %,debian/common-%.debathena,$(pam_types)) debian/gdm.debathena debian/login.debathena debian/ssh.debathena debian/access.conf.debathena
