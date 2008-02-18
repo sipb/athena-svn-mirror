@@ -1,5 +1,8 @@
 # -*- mode: makefile; coding: utf-8 -*-
 
+ifndef _cdbs_rules_debathena_debconf_hack
+_cdbs_rules_debathena_debconf_hack = 1
+
 CDBS_BUILD_DEPENDS := $(CDBS_BUILD_DEPENDS), debathena-config-build-common (>= 3.2~)
 
 DEBATHENA_DEBCONF_HACK_SCRIPT = /usr/share/debathena-config-build-common/debconf-hack.sh
@@ -33,3 +36,5 @@ $(patsubst %,debathena-debconf-hack/%,$(DEBATHENA_DEBCONF_HACK_PACKAGES)) :: deb
 	) >> $(CURDIR)/debian/$(cdbs_curpkg).postrm.debhelper
 
 $(patsubst %,binary-fixup/%,$(DEBATHENA_DEBCONF_HACK_PACKAGES)) :: binary-fixup/%: debathena-debconf-hack/%
+
+endif

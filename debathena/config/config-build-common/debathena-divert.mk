@@ -1,5 +1,8 @@
 # -*- mode: makefile; coding: utf-8 -*-
 
+ifndef _cdbs_rules_debathena_divert
+_cdbs_rules_debathena_divert = 1
+
 CDBS_BUILD_DEPENDS := $(CDBS_BUILD_DEPENDS), debathena-config-build-common (>= 3.7~)
 
 DEBATHENA_DIVERT_SCRIPT = /usr/share/debathena-config-build-common/divert.sh.in
@@ -41,10 +44,12 @@ $(patsubst %,debathena-divert/%,$(DEBATHENA_DIVERT_PACKAGES)) :: debathena-diver
 	) >> $(CURDIR)/debian/$(cdbs_curpkg).prerm.debhelper
 	( \
 	    echo -n "divert:Diverted="; \
-	    $(foreach file,$(divert_files),\
-		${DEBATHENA_DIVERT_ENCODER} "$(subst $(DEBATHENA_DIVERT_SUFFIX),,$(file))"; \
+	    $(foreach file,$(divert_files), \
+		$(DEBATHENA_DIVERT_ENCODER) "$(subst $(DEBATHENA_DIVERT_SUFFIX),,$(file))"; \
 		echo -n ", ";) \
 	    echo \
 	) >> $(CURDIR)/debian/$(cdbs_curpkg).substvars
 
 $(patsubst %,binary-fixup/%,$(DEBATHENA_DIVERT_PACKAGES)) :: binary-fixup/%: debathena-divert/%
+
+endif

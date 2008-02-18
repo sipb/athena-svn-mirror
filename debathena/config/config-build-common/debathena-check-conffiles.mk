@@ -1,5 +1,8 @@
 # -*- mode: makefile; coding: utf-8 -*-
 
+ifndef _cdbs_rules_debathena_check_conffiles
+_cdbs_rules_debathena_check_conffiles = 1
+
 ifneq ($(DEBATHENA_CHECK_CONFFILES),)
 # Deprecated interface.
 
@@ -56,5 +59,7 @@ $(call debathena_check_conffiles_tmp,%): $(truename)
 
 clean::
 	rm -rf $(DEBATHENA_CHECK_CONFFILES_DIR)
+
+endif
 
 endif

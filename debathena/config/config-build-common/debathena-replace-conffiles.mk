@@ -1,10 +1,13 @@
 # -*- mode: makefile; coding: utf-8 -*-
 
+ifndef _cdbs_rules_debathena_replace_conffiles
+_cdbs_rules_debathena_replace_conffiles = 1
+
 include /usr/share/cdbs/1/rules/debathena-check-conffiles.mk
 
 DEBATHENA_REPLACE_CONFFILES = $(foreach package,$(DEB_ALL_PACKAGES),$(DEBATHENA_REPLACE_CONFFILES_$(package)))
 
-DEBATHENA_REPLACE_CONFFILES_DIR=debian/replace_file_copies
+DEBATHENA_REPLACE_CONFFILES_DIR = debian/replace_file_copies
 
 debathena_replace_conffiles = $(patsubst %,$(DEBATHENA_REPLACE_CONFFILES_DIR)%,$(1))
 undebathena_replace_conffiles = $(patsubst $(DEBATHENA_REPLACE_CONFFILES_DIR)%,%,$(1))
@@ -27,3 +30,4 @@ clean::
 	$(foreach file,$(DEBATHENA_REPLACE_CONFFILES),rm -f debian/$(notdir $(file)))
 	rm -rf $(DEBATHENA_REPLACE_CONFFILES_DIR)
 
+endif
