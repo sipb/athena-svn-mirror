@@ -1,3 +1,10 @@
+debathena-nsswitch-config (1.3debathena2) unstable; urgency=low
+
+  * Use debathena-replace-conffiles interface from config-build-common
+    3.7.  This should make this actually build.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sun, 17 Feb 2008 23:13:42 -0500
+
 debathena-nsswitch-config (1.3debathena1) unstable; urgency=low
 
   * Use debathena-replace-conffiles interface.

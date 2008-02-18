@@ -3,9 +3,9 @@
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 ifneq ($(wildcard /usr/share/base-files/nsswitch.conf),)
     DEBATHENA_REPLACE_CONFFILES_debathena-nsswitch-config += \
-	/usr/share/base-files/nsswitch.conf.debathena
-    DEBATHENA_CONFFILE_DEST_/usr/share/base-files/nsswitch.conf.debathena = \
 	/etc/nsswitch.conf.debathena
+    DEBATHENA_REPLACE_CONFFILES_SOURCE_/etc/nsswitch.conf.debathena = \
+	/usr/share/base-files/nsswitch.conf
 else
     DEBATHENA_REPLACE_CONFFILES_debathena-nsswitch-config += \
 	/etc/nsswitch.conf.debathena
