@@ -1,3 +1,9 @@
+debathena-authwatch (9.4.12-0debathena2) unstable; urgency=low
+
+  * Specify libgtk2.0-dev and pkg-config in build-depends.
+
+ -- Greg Hudson <ghudson@equal-rites.mit.edu>  Tue, 19 Feb 2008 15:29:24 -0500
+
 debathena-authwatch (9.4.12-0debathena1) unstable; urgency=low
 
   * Initial release.
