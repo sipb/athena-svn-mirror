@@ -89,6 +89,37 @@ Adding a new distribution:
 
   <not yet written>
 
+Bootstrapping a build area, build server, and apt repository:
+(Adapted for Athena 10)
+
+  1. Create the package repository (detailed instructions on this
+     pending).  Set the DEBATHENA_APT environment variable to point to
+     the package repository.  Put a copy of the debathena "scripts"
+     subdir in your path.
+
+  2. Create the build area.
+
+  3. Build each equivs package under meta/ using "equivs-build --full
+     *.equivs" and upload each with "daequivsupload *.changes".  This
+     has the side-effect of creating the basic structure of the
+     package repository.
+
+  4. Set up the build server.  The basic structure of the apt
+     repository must work for make-chroot to succeed, so this must
+     happen after step 3.
+
+  5. For each normal Debian package in dependency order, cd into its
+     directory in the build area and run "da sbuildhack *.dsc" and
+     "daupload-release *_source.changes".
+
+     The all-packages script can generate an approximation of the
+     package list in dependency order, but it doesn't work right yet,
+     and ideally it would be possible to do several builds in parallel
+     using a Makefile like the one in scripts/build-server/build-all.
+     Improvements to this machinery are pending.
+
+  6. Build the packages under third (instructions pending).
+
 Setting up a build server:
 (Adapted for Athena 10)
 
@@ -122,10 +153,14 @@ Setting up a build server:
      (This is not necessary for the login system on the main root
      environment, but is for the chroot environments.)
 
-  9. Append to /etc/approx.conf the contents of
-     scripts/build-server/approx.conf.tail.  Change the last line from
-     http://debathena.mit.edu/apt to
-     http://stuff.mit.edu/afs/dev.mit.edu/system/athena10/apt.
+  9. Append to /etc/approx/approx.conf the contents of
+      scripts/build-server/approx.conf.tail.
+     Change the last line from http://debathena.mit.edu/apt to
+      file:///afs/dev.mit.edu/system/athena10/apt
+     Add "$interval 0" above the repository lines (only necessary if
+      the version of approx as reported by "dpkg -l approx" is less
+      than 3.0)
+     Run: /etc/init.d/approx restart
 
   10. Apply scripts/build-server/10mount.patch.
 
@@ -152,4 +187,25 @@ Removing a build chroot on the build server:
      substituting the name of the volume group for blah and the chroot
      name for chroot.  Example: lvchange -an dink/gutsy-i386-sbuild
 
-  4. Run lvremove -an blah/chrootname
+  4. Run lvremove blah/chrootname
+
+Setting up a build area:
+(Adapted for Athena 10)
+
+  1. Create an empty directory and cd into it.  The canonical build
+     area lives in /afs/dev.mit.edu/project/release/10/build.
+
+  2. Run scripts/gen-packages to create the table of normal Debian
+     packages.
+
+  3. Run scripts/dasource to create subdirs and source packages for
+     each normal Debian package.
+
+  4. Create checkouts of the meta and third directories:
+
+     svn co svn+ssh://svn.mit.edu/athena/trunk/debathena/meta
+     svn co svn+ssh://svn.mit.edu/athena/trunk/debathena/third
+
+     (A couple of subdirectories of debathena/meta are normal Debian
+     packages, so this will create redundant copies of those.  Ignore
+     them; they won't be used.)
