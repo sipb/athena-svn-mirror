@@ -3,6 +3,8 @@
 
 set -e
 
+: ${DEBATHENA_APT=/mit/debathena/apt}
+
 munge_sections () {
     perl -0pe 's/^Section: /Section: debathena-system\//gm or die' -i debian/control
 }
@@ -82,7 +84,7 @@ v () {
 }
 
 cmd_upload () {
-    REPREPRO="v reprepro -Vb /mit/debathena/apt"
+    REPREPRO="v reprepro -Vb $DEBATHENA_APT"
     REPREPROI="$REPREPRO --ignore=wrongdistribution"
     
     case "$dist" in
@@ -132,7 +134,7 @@ version=$(
     )
 daversion=$version$daversionappend
 
-if zcat "/mit/debathena/apt/dists/$dist/debathena-system/binary-$arch/Packages.gz" | \
+if zcat "$DEBATHENA_APT/dists/$dist/debathena-system/binary-$arch/Packages.gz" | \
     dpkg-awk -f - "Source:^$name\$" "Version:^$daversion~" -- Architecture | \
     if [ "$a" = "-A" ]; then cat; else fgrep -vx 'Architecture: all'; fi | \
     grep -q .; then
