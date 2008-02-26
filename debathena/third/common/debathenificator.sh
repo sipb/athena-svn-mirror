@@ -56,7 +56,11 @@ cmd_source () {
 	    dch_done=
 	    hack_package
 	    [ -n "$dch_done" ]
-	    schroot -c "$chroot" -u root -- sh -c "apt-get -q -y build-dep '$name' && apt-get -q -y install devscripts && su '$USER' --shell=/bin/sh -c 'debuild -S -sa -us -uc -i -I.svn'"
+	    sid=$(schroot -b -c "$chroot")
+	    trap 'schroot -e -c "$sid"' EXIT
+	    schroot -r -c "$sid" -u root -- apt-get -q -y build-dep "$name"
+	    schroot -r -c "$sid" -u root -- apt-get -q -y install devscripts
+	    schroot -r -c "$sid" -- debuild -S -sa -us -uc -i -I.svn
 	)
 	[ $? -eq 0 ] || {
 	    bash -c "diff -u <(xxd '${name}_$origversion.orig.tar.gz') <(xxd '$tmpdir/${name}_$origversion.orig.tar.gz')"
