@@ -1,3 +1,40 @@
 #!/usr/bin/perl
-$ENV{'NSS_NONLOCAL_IGNORE'} = 'ignore';
+use Getopt::Long;
+
+my $nop;
+my @names;
+my @save_names=@names;
+my @SAVE_ARGV=@ARGV;
+# Parse adduser options
+GetOptions ("quiet|q" => \$nop,
+            "force-badname" => \$nop,
+	    "help|h" => \$nop,
+	    "version|v" => \$nop,
+	    "system" => \$nop,
+	    "group" => \$nop,
+	    "ingroup=s" => \$nop,
+	    "home=s" => \$nop,
+	    "gecos=s" => \$nop,
+	    "shell=s" => \$nop,
+	    "disabled-password" => \$nop,
+	    "disabled-login" => \$nop,
+	    "uid=i" => \$nop,
+	    "firstuid=i" => \$nop,
+	    "lastuid=i" => \$nop,
+	    "gid=i" => \$nop,
+	    "conf=s" => \$nop,
+	    "no-create-home" => \$nop,
+            "add_extra_groups" => \$nop,
+	    "debug" => \$nop);
+
+while (defined(my $arg = shift(@ARGV))) {
+  push (@names, $arg);
+}
+
+if (@names != 2) {
+    $ENV{'NSS_NONLOCAL_IGNORE'} = 'ignore';
+}
+
+@ARGV=@SAVE_ARGV;
+@names=@save_names;
 do '/usr/sbin/adduser.debathena-orig';
