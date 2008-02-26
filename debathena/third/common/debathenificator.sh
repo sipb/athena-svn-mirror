@@ -85,7 +85,7 @@ v () {
 
 cmd_upload () {
     REPREPRO="v reprepro -Vb $DEBATHENA_APT"
-    REPREPROI="$REPREPRO --ignore=wrongdistribution"
+    REPREPROI="$REPREPRO --ignore=wrongdistribution --ignore=missingfield"
     
     case "$dist" in
 	sarge) tag='~debian3.1' ;;
