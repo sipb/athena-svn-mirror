@@ -1,3 +1,10 @@
+debathena-nsswitch-config (1.4debathena1) unstable; urgency=low
+
+  * Divert dpkg, adduser, useradd, addgroup, groupadd to wrap them with
+    setting NSS_NONLOCAL_IGNORE=ignore
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 25 Feb 2008 19:49:38 -0500
+
 debathena-nsswitch-config (1.3debathena2) unstable; urgency=low
 
   * Use debathena-replace-conffiles interface from config-build-common

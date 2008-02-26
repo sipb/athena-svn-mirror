@@ -1,0 +1,3 @@
+#!/usr/bin/perl
+$ENV{'NSS_NONLOCAL_IGNORE'} = 'ignore';
+do '/usr/sbin/adduser.debathena-orig';

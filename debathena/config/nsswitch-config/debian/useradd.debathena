@@ -1,0 +1,3 @@
+#!/bin/sh
+export NSS_NONLOCAL_IGNORE=ignore
+/usr/sbin/useradd.debathena-orig "$@"
