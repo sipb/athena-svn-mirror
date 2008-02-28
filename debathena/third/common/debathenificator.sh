@@ -46,18 +46,18 @@ cmd_source () {
 	tmpdir=$(mktemp -td "debathenify.$$.XXXXXXXXXX")
 	trap 'rm -rf "$tmpdir"' EXIT
 	origversion=$(echo "$version" | sed 's/-[^-]*$//')
-	cp -a "${name}_$origversion.orig.tar.gz" "$tmpdir/"
 	#echo "! [ -e '$tmpdir/${name}_$origversion.orig.tar.gz' ] || diff -u <(xxd '${name}_$origversion.orig.tar.gz') <(xxd '$tmpdir/${name}_$origversion.orig.tar.gz')" >| /tmp/wtf
-	dpkg-source -x "${name}_$version.dsc" "$tmpdir/$name-$origversion"
 	
 	(
+	    sid=$(schroot -b -c "$chroot")
+	    trap 'schroot -e -c "$sid"' EXIT
 	    set -x
+	    cp -a "${name}_$origversion.orig.tar.gz" "$tmpdir/"
+	    dpkg-source -x "${name}_$version.dsc" "$tmpdir/$name-$origversion"
 	    cd "$tmpdir/$name-$origversion"
 	    dch_done=
 	    hack_package
 	    [ -n "$dch_done" ]
-	    sid=$(schroot -b -c "$chroot")
-	    trap 'schroot -e -c "$sid"' EXIT
 	    schroot -r -c "$sid" -u root -- apt-get -q -y build-dep "$name"
 	    schroot -r -c "$sid" -u root -- apt-get -q -y install devscripts
 	    schroot -r -c "$sid" -- debuild -S -sa -us -uc -i -I.svn
