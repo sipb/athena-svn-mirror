@@ -22,9 +22,6 @@ pref("print.printer_list", "default duplex 2upduplex");
 // Font set-up for MathML
 pref("font.mathfont-family", "CMSY10, CMEX10, Math1, Math2, Math4, MT Extra, Standard Symbols L");
 
-// Use the Athena GSSAPI library.
-pref("network.negotiate-auth.gsslib", "/usr/athena/lib/libgssapi_krb5.so");
-
 // Trust the MIT IdP for HTTP/SPNEGO.
 pref("network.negotiate-auth.trusted-uris", "https://idp.mit.edu");
 
