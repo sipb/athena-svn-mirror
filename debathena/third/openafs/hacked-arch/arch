@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ "$KPKG_ARCH" = "amd64" ]; then
+	echo "x86_64"
+else
+	exec /bin/arch "$@"
+fi

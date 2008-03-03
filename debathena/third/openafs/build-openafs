@@ -9,6 +9,7 @@ while read dist kernels; do
 	kversion=$(echo "$kernel" | sed 's/^.*-headers-//')
 	echo "Building for kernel $kversion..."
 	mkdir -p "$tmpdir/$dist/$kversion"
+	here=$(pwd)
 	schroot -c "$dist-sbuild" -u root -- sh -xec "
 	    #echo 'deb http://localhost:9999/ubuntu edgy-backports main restricted universe multiverse' >> /etc/apt/sources.list
 	    #echo 'deb-src http://localhost:9999/ubuntu edgy-backports main restricted universe multiverse' >> /etc/apt/sources.list
@@ -24,19 +25,19 @@ while read dist kernels; do
 		type linux64 >/dev/null || apt-get -y install linux32
 		export KPKG_ARCH=amd64
 		export PERSONALITY=linux64
-		export PATH=/afs/sipb.mit.edu/project/debathena/packages/third/openafs/hacked-arch:\$PATH
+		export PATH=$here/hacked-arch:\$PATH
 	    fi
 	    if ! [ -e /usr/src/modules/openafs/debian/genchanges* ]; then
-		install -m a=rx,u+w /afs/sipb.mit.edu/project/debathena/packages/third/openafs/genchanges.sh /usr/src/modules/openafs/debian/		
+		install -m a=rx,u+w $here/genchanges.sh /usr/src/modules/openafs/debian/		
 	    fi
-            if [ \"$dist\" = \"lenny-i386\" || \"$dist\" = \"lenny-amd64\" ]; then
-		install -m a=rx,u+w /afs/sipb.mit.edu/project/debathena/packages/third/openafs/genchanges.sh /usr/src/modules/openafs/debian/genchanges
+            if [ \"$dist\" = \"lenny-i386\" -o \"$dist\" = \"lenny-amd64\" ]; then
+		install -m a=rx,u+w $here/genchanges.sh /usr/src/modules/openafs/debian/genchanges
             fi
             $PERSONALITY SIGNCHANGES=1 module-assistant -i -t -l '$kversion' auto-build openafs
             mv /usr/src/openafs-modules* '$tmpdir/$dist/$kversion'" \
             </dev/null
 	if [ $? -ne 0 ]; then
-	    echo "$dist $kernel" >> /mit/debathena/packages/third/openafs/failed.log
+	    echo "$dist $kernel" >> $here/failed.log
 	fi
 	mkdir -p "$dist"
 	mv "$tmpdir/$dist/$kversion"/* "$dist"/
