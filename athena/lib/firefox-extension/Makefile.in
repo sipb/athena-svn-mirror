@@ -14,17 +14,22 @@ ffextdir=/usr/lib/firefox/extensions
 
 ATHEXTDIR = ${ffextdir}/athena@mit.edu
 CHROMEDIR = ${ATHEXTDIR}/chrome
-CHROMESUBDIRS = content skin
 COMPONENTS_DIR = ${ATHEXTDIR}/components
 COMPONENTS_FILES = athenaService.js
 DEFAULTS_DIR = ${ATHEXTDIR}/defaults
 PREFS_DIR = ${DEFAULTS_DIR}/preferences
 PREFS_FILES = athena.js
+CHROME_FILES = \
+  content/athena.dtd \
+  content/athena.properties \
+  content/athena.xul \
+  content/mitca.pem \
+  skin/icon.png
 
 all: athena.jar chrome.manifest
 
 athena.jar:
-	cd chrome && jar -cf athena.jar ${CHROMESUBDIRS}
+	cd chrome && rm -f athena.jar && zip -0 -r athena.jar ${CHROME_FILES}
 
 chrome.manifest: chrome.manifest.in
 	sed -e 's|chrome/\([^/]*\)/|jar:chrome/athena.jar!/\1/|' \
