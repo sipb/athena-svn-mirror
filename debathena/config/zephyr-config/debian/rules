@@ -6,3 +6,11 @@ DEBATHENA_DIVERT_FILES_debathena-zephyr-config += \
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/debathena-divert.mk
 include /usr/share/cdbs/1/rules/debathena-debconf-hack.mk
+
+common-install-indep::
+	if hash dh_installifupdown; then \
+	    dh_installifupdown; \
+	else \
+	    dh_installdirs etc/network/if-up.d; \
+	    install -p debian/debathena-zephyr-config.if-up $(DEB_DESTDIR)/etc/network/if-up.d/debathena-zephyr-config; \
+	fi
