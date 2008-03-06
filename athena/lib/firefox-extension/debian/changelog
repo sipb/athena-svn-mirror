@@ -1,0 +1,5 @@
+debathena-firefox-extension (9.4.34-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 19 Jul 2007 16:00:22 -0400
