@@ -1,3 +1,9 @@
+debathena-firefox-extension (10.0.0-0debathena1) unstable; urgency=low
+
+  * Patches folded into main source.
+
+ -- Greg Hudson <ghudson@equal-rites.mit.edu>  Fri, 07 Mar 2008 10:52:24 -0500
+
 debathena-firefox-extension (9.4.34-0debathena1) unstable; urgency=low
 
   * Initial release.

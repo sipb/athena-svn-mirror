@@ -4,8 +4,6 @@
   <script src="chrome://global/content/globalOverlay.js"/>
   <script src="chrome://browser/content/utilityOverlay.js"/>
 
-  <window id="main-window" titlemodifier="&mainWindow.titlemodifier;"/>
-
   <menupopup id="menu_HelpPopup">
     <menuseparator insertafter="aboutSeparator"/>
     <menuitem label="&athenaHelp.label;" insertafter="aboutSeparator"
