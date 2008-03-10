@@ -45,52 +45,96 @@ Debian software used by Debathena:
     build server.  This cache is referenced by the build chroots for
     improved performance.
 
-Procedures used by Debathena for handling day-to-day package changes
-for regular packages:
+The remainder of this file documents procedures useful to Athena 10
+developers and the release engineer.
 
-  * To prepare a change to a regular package, the contents are edited
-    directly in the /mit/debathena/packages subdir.
+Developers: Preferences setup
+-----------------------------
 
-  * To record the prepared change in the changelog:
-    (From inside the package source directory)
-    dadch
+You will probably want a $HOME/.devscripts file containing the
+following:
 
-  * To build and deploy the changed package for all environments:
-    (From inside the package source directory, on debuild.mit.edu)
-    debuild -S
-    cd ..
-    da sbuildhack <filename>.dsc
+DEBUILD_DPKG_BUILDPACKAGE_OPTS="-sa -us -uc -i -I.svn"
 
-  * Generally the package is tested by manually installing it on test
-    machines with dpkg -i.
+This will save you from having to specify those options every time you
+run debuild.  Athena 10 scripts do not assume the above preferences,
+but the instructions in this file do.  The options mean:
 
-  * To deploy the package to the repository:
-    (From the package source parent directory, on debuild.mit.edu as
-    the debuild user)
-    daupload-release <filename>_source.changes
+  * Look for original source as a tarfile or create one.
+  * Do not sign the source package.
+  * Do not sign the changes file.
+  * Ignore common version control metadata files when creating diffs.
+  * Ignore .svn paths when creating tarballs.
 
-  * If the package is architecture-independent, the -A option is
-    passed to da and daupload-release.
+You should also set the environment variable DEBATHENA_APT to
+"/afs/dev.mit.edu/system/athena10/apt".
 
-For an equivs-built package, the process is simpler since there is no
-source package and only one binary package:
+Developers: Preparing a change
+------------------------------
 
-  * To prepare a change to the control file, the contents are edited
-    directly in the /mit/debathena/packages subdir.
+To prepare a change to a regular package (a source tree containing a
+debian/ subdir), make the edits in a checkout and record a changelog
+entry.  You can either edit debian/changelog using emacs changelog
+mode (C-c C-v to add a new version entry, C-c C-a to add a change
+entry, C-c C-f to finalize the entry) or you can run "dadch".
 
-  * To build the binary package:
-    (From the package directory, on debuild.mit.edu)
-    equivs-build --full <filename>.equivs
+When creating a new version entry, bump the upstream version number
+(to 10.0.0 if it was not already that high) if you are changing the
+main package source.  Otherwise, just bump the Debian version
+component (change 0debathena1 to 0debathena2, for instance).
 
-  * To deploy the package to the repository:
-    daequivsupload <filename>.changes
+Developers: Building a package for test purposes on one platform
+----------------------------------------------------------------
 
-Adding a new distribution:
+After you have prepared a change, you will want to test that it builds
+and perhaps that it works before committing it.  First, if it is an
+Athena source directory using autoconf, run "daconfiscate" to set up
+the autoconf boilerplate which we don't check in.  Second, run
+"daorig" to copy or create an orig tarball in the parent directory if
+necessary.  Third, run "debuild".  The resulting package will be
+placed in the parent directory.
 
-  <not yet written>
+In order to test if the package works, you can install it with "dpkg
+-i filename.deb".
 
-Bootstrapping a build area, build server, and apt repository:
-(Adapted for Athena 10)
+Developers: Building a package for test purposes on all platforms
+-----------------------------------------------------------------
+
+If the package you are working on interacts with the native OS in ways
+that might vary from platform to platform, you may want to do a test
+build for all platforms.  You will need to do this on
+linux-build-10.mit.edu or another machine which has been set up with
+build schroots.
+
+As above, run daconfiscate (if necessary) and then daorig.  Then run
+"debuild -S" to create a source package.  Now cd into the parent
+directory and identify the .dsc file created by debuild -S; it will
+have a name like debathena-just_9.4.0-0debathena2.dsc.  Run "da
+sbuildhack filename.dsc" to perform the package builds.  Each build
+will take place inside an ephemeral chroot based on a snapshot of a
+template for a particular Debian or Ubuntu version.  If a build fails
+and it's not obvious from the build log why, you may need to create
+your own ephemeral chroot session with a command like "schroot -c
+gutsy-amd64-sbuild /bin/sh" and then run debuild from within the
+package sources.
+
+If the build is successful, it will create a set of packages with
+names like debathena-just_9.4.0-0debathena2~ubuntu6.06_amd64.deb.
+
+Developers: Building an equivs package
+--------------------------------------
+
+Most of the packages under debathena/meta are faked up using equivs.
+To build one, just run:
+
+  equivs-build --full filename.equivs
+
+These equivs files make reference to ../common, so you must have a
+checkout of debathena/meta/common alongside the particular
+meta-package you are building.
+
+Release engineer: Bootstrapping the project infrastructure
+----------------------------------------------------------
 
   1. Create the package repository (detailed instructions on this
      pending).  Set the DEBATHENA_APT environment variable to point to
@@ -110,7 +154,9 @@ Bootstrapping a build area, build server, and apt repository:
 
   5. For each normal Debian package in dependency order, cd into its
      directory in the build area and run "da sbuildhack *.dsc" and
-     "daupload-release *_source.changes".
+     "daupload-release *_source.changes".  If the package contains
+     only an "Architecture: all" binary package, pass the -A option to
+     both commands.
 
      The all-packages script can generate an approximation of the
      package list in dependency order, but it doesn't work right yet,
@@ -118,13 +164,19 @@ Bootstrapping a build area, build server, and apt repository:
      using a Makefile like the one in scripts/build-server/build-all.
      Improvements to this machinery are pending.
 
-  6. Build the packages under third (instructions pending).
+  6. For each package under third, run "da ./debathenify-PKG source
+     binary upload".  This infrastructure depends on the chroots being
+     up to date, so run "all-schroots upgrade-schroot" beforehand if
+     substantial time has passed since they were created.
 
-Setting up a build server:
-(Adapted for Athena 10)
+Release engineer: Setting up a build server
+-------------------------------------------
 
   1. The build server must be installed with free space in an LVM
-     volume group.  The build chroots consume 2GB each.
+     volume group.  The build chroots consume 2GB each.  There is a
+     known memory corruption issue with LVM snapshots in the kernel
+     used in Ubuntu Gutsy (which is based on 2.6.22), so use a newer
+     kernel such as the one in Ubuntu Hardy (based on 2.6.24) instead.
 
   2. Install debathena-standard as per the the instructions in
      http://debathena.mit.edu/install.
@@ -145,26 +197,32 @@ Setting up a build server:
   6. Edit /etc/security/access.conf and add a first line:
      -:ALL EXCEPT root <developer usernames>:ALL
 
-  7. Edit /etc/group and add the developers to the sbuild group.
+  7. Edit /etc/pam.d/session, comment out "@include common-session",
+     and add:
 
-  8. Create /etc/passwd entries for each developer with "hesinfo
+       # Basic pam_unix session module in place of common-session.
+       session required		pam_unix.so
+
+  8. Edit /etc/group and add the developers to the sbuild group.
+
+  9. Create /etc/passwd entries for each developer with "hesinfo
      username passwd >> /etc/passwd" and then run pwconv.
 
      (This is not necessary for the login system on the main root
      environment, but is for the chroot environments.)
 
-  9. Append to /etc/approx/approx.conf the contents of
-      scripts/build-server/approx.conf.tail.
-     Change the last line from http://debathena.mit.edu/apt to
-      file:///afs/dev.mit.edu/system/athena10/apt
-     Add "$interval 0" above the repository lines (only necessary if
-      the version of approx as reported by "dpkg -l approx" is less
-      than 3.0)
-     Run: /etc/init.d/approx restart
+  10. Append to /etc/approx/approx.conf the contents of
+       scripts/build-server/approx.conf.tail.
+      Change the last line from http://debathena.mit.edu/apt to
+       file:///afs/dev.mit.edu/system/athena10/apt
+      Add "$interval 0" above the repository lines (only necessary if
+       the version of approx as reported by "dpkg -l approx" is less
+       than 3.0)
+      Run: /etc/init.d/approx restart
 
-  10. Apply scripts/build-server/10mount.patch.
+  11. Apply scripts/build-server/10mount.patch.
 
-  11. For each supported DIST (see scripts/debian-versions.sh) run:
+  12. For each supported DIST (see scripts/debian-versions.sh) run:
 
         VG=/dev/blah scripts/build-server/make-chroot DIST i386
         VG=/dev/blah scripts/build-server/make-chroot DIST amd64
@@ -174,11 +232,12 @@ Setting up a build server:
 
       Example: VG=/dev/dink scripts/build-server/make-chroot gutsy i386
 
-Removing a build chroot on the build server:
+Release engineer: Removing a build chroot on the build server
+-------------------------------------------------------------
 
-  1. Run VG=/dev/blah scripts/clean-schroots to make sure that the
-     build chroot is not mounted, substituting the name of the volume
-     group for blah.
+  1. Run VG=/dev/blah scripts/clean-schroots as root to make sure that
+     the build chroot is not mounted, substituting the name of the
+     volume group for blah.
 
   2. Edit /etc/schroot/schroot.conf and delete the section
      corresponding to the chroot.
@@ -189,17 +248,16 @@ Removing a build chroot on the build server:
 
   4. Run lvremove blah/chrootname
 
-Setting up a build area:
-(Adapted for Athena 10)
+Release engineer: Setting up a canonical build area
+---------------------------------------------------
 
   1. Create an empty directory and cd into it.  The canonical build
      area lives in /afs/dev.mit.edu/project/release/10/build.
 
-  2. Run scripts/gen-packages to create the table of normal Debian
-     packages.
+  2. Run gen-packages to create the table of normal Debian packages.
 
-  3. Run scripts/dasource to create subdirs and source packages for
-     each normal Debian package.
+  3. Run dasource to create subdirs and source packages for each
+     normal Debian package.
 
   4. Create checkouts of the meta and third directories:
 
