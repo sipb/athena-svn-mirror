@@ -197,7 +197,7 @@ Release engineer: Setting up a build server
   6. Edit /etc/security/access.conf and add a first line:
      -:ALL EXCEPT root <developer usernames>:ALL
 
-  7. Edit /etc/pam.d/session, comment out "@include common-session",
+  7. Edit /etc/pam.d/schroot, comment out "@include common-session",
      and add:
 
        # Basic pam_unix session module in place of common-session.
