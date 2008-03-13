@@ -33,8 +33,8 @@ add_debathena_provides () {
 
 cmd_source () {
     if [ "$a" != "-A" ]; then
-	echo "Nothing to do for $dist_arch." >&2
-	exit 0
+	echo "Not building source package for $dist_arch." >&2
+	return
     fi
     echo "Building source for $name-$daversion on $dist_arch" >&2
     
