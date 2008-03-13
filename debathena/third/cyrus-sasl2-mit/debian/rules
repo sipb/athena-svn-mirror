@@ -1,0 +1,98 @@
+#!/usr/bin/make -f
+
+export DH_COMPAT := 4
+
+# DBS options
+
+package         := cyrus-sasl2
+PWD             := $(shell pwd)
+
+SCRIPT_DIR     = /usr/share/dbs
+
+# the dbs rules
+TAR_DIR := @TARDIR@
+include $(SCRIPT_DIR)/dbs-build.mk
+
+# dpkg-arch rules
+ifeq (,$(DEB_BUILD_GNU_TYPE))
+  include $(SCRIPT_DIR)/dpkg-arch.mk
+endif
+
+
+AUTOTOOLS=rm -f acinclude.m4 aclocal.m4 config/config.sub \
+	config/config.guess config/ltmain.sh config/libtool.m4; \
+	libtoolize --force; \
+	aclocal-1.7 -I $(PWD)/$(BUILD_TREE)/cmulocal -I $(PWD)/$(BUILD_TREE)/config; \
+	autoheader; \
+	autoconf; \
+	automake-1.7 --add-missing --include-deps; \
+	touch stamp-h.in
+
+b := $(shell pwd)/debian/tmp
+
+arrange: $(STAMP_DIR)/arrange-stamp
+$(STAMP_DIR)/arrange-stamp: install
+	dh_testdir
+	dh_movefiles -plibsasl2-krb4-mit
+
+	touch $@
+
+binary: $(STAMP_DIR)/binary-stamp
+$(STAMP_DIR)/binary-stamp: binary-indep binary-arch
+	dh_testdir
+	touch $@
+
+binary-arch: $(STAMP_DIR)/binary-arch-stamp
+$(STAMP_DIR)/binary-arch-stamp: arrange
+	dh_testdir
+	dh_testroot
+	dh_installdocs debian/changelog.debian_non_mit
+	dh_installchangelogs $(BUILD_TREE)/ChangeLog 
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+	touch $@
+
+binary-indep: 
+$(STAMP_DIR)/binary-indep-stamp: arrange
+	dh_testdir
+	touch $@
+
+build: $(STAMP_DIR)/build-stamp
+$(STAMP_DIR)/build-stamp: config
+	dh_testdir
+	$(MAKE) -C $(BUILD_TREE)
+	touch $@
+
+clean:
+	dh_testdir
+	rm -rf $(STAMP_DIR) $(SOURCE_DIR)
+	perl $(SCRIPT_DIR)/dbs_split clean
+	dh_clean
+
+config: $(STAMP_DIR)/config-stamp
+$(STAMP_DIR)/config-stamp: $(patched)
+	dh_testdir
+	cd $(BUILD_TREE) && ( \
+	$(AUTOTOOLS); \
+	./configure --prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man \
+		--enable-static \
+		--enable-krb4 CPPFLAGS='-I/usr/include/kerberosIV' \
+		--with-saslauthd=no --disable-sample --with-dblib=none \
+		--disable-checkapop --disable-cram --disable-digest \
+		--disable-gssapi --disable-otp --disable-plain --disable-anon)
+
+	touch $@
+
+install: $(STAMP_DIR)/install-stamp
+$(STAMP_DIR)/install-stamp: build
+	dh_testdir
+	$(MAKE) -C $(BUILD_TREE) install DESTDIR=$(b)
+	touch $@
+
+.PHONY: build clean binary-indep binary-arch binary install
