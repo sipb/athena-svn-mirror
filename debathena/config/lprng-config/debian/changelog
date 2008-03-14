@@ -1,3 +1,9 @@
+debathena-lprng-config (1.3debathena2) unstable; urgency=low
+
+  * Add debathena-lprng-no-server-config as a Recommends:
+
+ -- Tim Abbott <tabbott@mit.edu>  Fri, 14 Mar 2008 18:01:49 -0400
+
 debathena-lprng-config (1.3debathena1) unstable; urgency=low
 
   * Update lpd.conf to pass KRB5CCNAME environment variable

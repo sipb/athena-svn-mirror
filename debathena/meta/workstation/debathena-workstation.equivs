@@ -9,8 +9,7 @@ Depends: debathena-login,
  debathena-build-depends,
  debathena-gdm-config,
  debathena-firefox-extension,
- debathena-firefox-wrapper,
- debathena-lprng-no-server-config
+ debathena-firefox-wrapper
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena Workstation configuration for Debian
