@@ -1,0 +1,235 @@
+# Global bashrc file
+#
+# $Id: bashrc,v 1.39 2006-07-17 23:14:07 rbasch Exp $
+
+# This file is sourced by default user file ~/.bashrc
+
+initdir=/usr/athena/lib/init
+
+
+
+# *******************   ENVIRONMENT SETUP   *******************
+
+
+
+# Set up standard system/user environment configuration (including setup of
+# environment variables, attachment of lockers, and setting of search path)
+
+# If we see ENV_SET set to empty, we could be a tcsh user who has
+# decided to run bash, or we could be a bash user suffering from the
+# misfeature that the standard xsession script runs the tcsh dotfiles
+# for all users.  Running the environment setup for the former
+# category of user would be unfriendly (it resets the homedir and
+# path), so for now, only run environment setup for bash users.  If
+# the xsession problem is ever fixed, change this conditional to check
+# for '"${ENV_SET+set}" != set' and eliminate the shell check.
+if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
+
+	export ENV_SET=t			# Avoid unnecessary repeat
+	export HOSTTYPE="`/bin/athena/machtype`"
+
+	umask 077				# Strictly protect files
+						#  (does not apply in AFS)
+	ulimit -S -c 0				# Don't allow coredumps
+	export EDITOR=emacs			# Set default editor
+	export VISUAL=emacs			# Set default screen editor
+	export MM_CHARSET=iso-8859-1
+
+	# Set standard Athena path variables (generic path for all users).
+	# PATH will get set later after .bash_environment is run.
+	case "$HOSTTYPE" in
+	sgi)
+		athena_path=/usr/athena/bin:/usr/athena/etc:
+		athena_path=$athena_path:/bin/athena:/usr/sbin:/usr/bsd:/sbin
+		athena_path=$athena_path:/usr/bin:/bin:/usr/bin/X11:/usr/etc
+		MANPATH=/usr/athena/man:/usr/freeware/catman:/usr/share/catman
+		MANPATH=$MANPATH:/usr/share/man:/usr/catman:/usr/man
+		;;
+	sun4)
+		athena_path=/srvd/patch:/usr/athena/bin:/usr/athena/etc
+		athena_path=$athena_path:/bin/athena:/usr/openwin/bin
+		athena_path=$athena_path:/usr/openwin/demo:/usr/dt/bin:/usr/bin
+		athena_path=$athena_path:/usr/ccs/bin:/usr/sbin:/sbin
+		athena_path=$athena_path:/usr/sfw/bin:/usr/ucb
+		MANPATH=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
+		MANPATH=$MANPATH:/usr/sfw/man
+		;;
+	linux)
+		athena_path=/usr/athena/bin:/usr/athena/etc
+		athena_path=$athena_path:/bin/athena:/usr/bin:/bin
+		athena_path=$athena_path:/usr/X11R6/bin:/usr/athena/etc
+		athena_path=$athena_path:/usr/sbin:/sbin
+		MANPATH=/usr/athena/man:/usr/share/man:/usr/X11R6/man
+		;;
+	*)
+		echo "Standard dotfiles do not support system type $HOSTTYPE."
+	esac
+	export MANPATH
+
+	# Default "more" behavior
+	case $HOSTTYPE in
+	sgi)
+		MORE=-se
+		;;
+	*)
+		MORE=-s
+		;;
+	esac
+	export MORE
+
+	# Set miscellaneous system-dependent variables.
+	case $HOSTTYPE in
+	sgi)
+		# The following set the default error message format
+		# to omit the label and severity components, per the
+		# standard IRIX /etc/profile.
+		export MSGVERB=text:action
+		export NOMSGLABEL=1
+		export NOMSGSEVERITY=1
+		;;
+	sun4)
+		export OPENWINHOME=/usr/openwin
+		;;
+	linux)
+		# This is to ensure that native programs use the Athena
+		# gconf, ORBit, bonobo-activation, etc. libraries
+		# rather than the native ones.  GNOME programs outside
+		# of /usr/athena/bin may not function properly if it is
+		# not set.
+		export LD_LIBRARY_PATH=/usr/athena/lib
+		;;
+	esac
+	
+	export ATHENA_SYS=`/bin/athena/machtype -S`
+	export ATHENA_SYS_COMPAT=`/bin/athena/machtype -C`
+
+	if [ -z "$ATHENA_SYS" ]; then
+		export ATHENA_SYS=@sys
+	fi
+
+	if [ "${PRINTER+set}" != set -a -e /var/athena/clusterinfo ]; then
+		PRINTER=`awk '/LPR/ { print $3 }' /var/athena/clusterinfo`
+		if [ -n "$PRINTER" ]; then export PRINTER; fi
+	fi
+
+	export XDG_DATA_DIRS=/usr/athena/share:/usr/share
+
+	# Reset the HOME variable to correspond to the actual location
+	# of the user's home directory.  This will avoid having long
+	# pathnames being printed when /mit/<user> is a symlink to a
+	# path within AFS.
+
+	x=`(cd && /bin/pwd) 2>/dev/null`
+	if [ -n "$x" ]; then
+		export HOME=$x
+		if [ "$x" = "`/bin/pwd`" ]; then
+			cd "$HOME"
+		fi
+	fi
+	unset x
+
+	# Special version of ADD for the .bash_environment file.
+
+	add () {
+		eval "$( /bin/athena/attach -Padd -b -P"$athena_path" "$@" )"
+	}
+
+	# Run user environment customizations identified in your
+	# ~/.bash_environment file.  This is the place to include your
+	# own environment variables, attach commands, and other system
+	# wide setup commands.  You can also cancel default behaviors
+	# listed above.
+	# ~/.bash_environment is not sourced if NOCALLS is set (i.e.,
+	# if you selected the xlogin "Ignore your customizations"
+	# option when you logged in).
+
+	if [ "${NOCALLS+set}" != set -a -r ~/.bash_environment ]; then
+		. ~/.bash_environment
+	fi
+	
+	# On IRIX, limits are reset on exec of a setuid program, e.g.
+	# xterm. So record now what the user wanted coredumpsize to
+	# be so we can fix it later.
+	export COREDUMPSIZE_LIMIT=`ulimit -c`
+
+	# Standard Athena path
+	athena_home_bin=$( /usr/athena/bin/athdir "$HOME" )
+	PATH=${athena_home_bin:+$athena_home_bin:}$athena_path:.
+	unset athena_path athena_home_bin
+
+	# Make sure applications can properly find their appdefs, etc.
+
+	if [ "${XUSERFILESEARCHPATH+set}" != set ]; then
+		XUSERFILESEARCHPATH=/usr/athena/lib/X11/app-defaults/%N
+	else
+		XUSERFILESEARCHPATH=$XUSERFILESEARCHPATH:/usr/athena/lib/X11/app-defaults/%N
+	fi
+
+	if [ sgi = "$HOSTTYPE" -a "${skip_sgi+set}" != set -a "${NOCALLS+set}" != set ]; then
+		XUSERFILESEARCHPATH="$HOME/.desktop-$host/%N:$HOME/.desktop-$host/0.0/%N:$XUSERFILESEARCHPATH"
+	fi
+
+	export XUSERFILESEARCHPATH
+
+fi
+	
+
+# *******************  BASH SETUP   *******************
+
+# Set up standard bash shell initializations
+
+set -o noclobber		# Don't overwrite files with redirection
+
+if [ "${PS1+set}" = set ]; then
+	if [ sgi = "$HOSTTYPE" -a -t 0 ]; then
+		# Have no better way to do this at the moment.
+		stty sane intr ^C
+	fi
+	case $HOME in
+	/var/athena/tmphomedir/*)
+		PS1="athena (temporary homedir)\$ "
+		;;
+	*)
+		PS1="athena\$ "
+		;;
+	esac
+	CDPATH=.:~
+fi
+
+# Fix coredumpsize limit in case it was reset
+[ -n "$COREDUMPSIZE_LIMIT" ] && ulimit -S -c $COREDUMPSIZE_LIMIT
+
+#   alias for re-establishing authentication
+renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
+
+#   alias for a convenient way to change terminal type
+term () { set -f; unset TERMCAP; eval "$( tset -s -I -Q "$@" )"; set +f; }
+
+#   aliases dealing with x window system
+xresize () { set -f; eval "$( resize -u )"; set +f ; }
+
+if [ "${XSESSION+set}" = set ]; then
+	if [ -z "$XSESSION" ]; then
+		logout () { end_session && exit; }		# logout for X
+	else
+		logout () { kill -HUP $XSESSION && exit; }	# logout for X
+	fi
+fi
+
+#   aliases dealing with adding locker programs
+
+add_flags=
+add () { eval "$( /bin/athena/attach -Padd -b $add_flags "$@" )" ; }
+
+alias setup='echo "setup is not supported in bash yet"'
+
+
+# All of the bash initializing commands above can be overridden by using
+# "unset" or "unalias" commands (or by changing things using "set" or
+# "alias" again) in your ~/.bashrc.mine file, which is sourced here.
+# ~/.bashsrc.mine is not sourced if the xlogin "Ignore your customizations"
+# option was selected to begin the session.
+
+if [ "${NOCALLS+set}" != set -a -r ~/.bashrc.mine ]; then
+	. ~/.bashrc.mine
+fi

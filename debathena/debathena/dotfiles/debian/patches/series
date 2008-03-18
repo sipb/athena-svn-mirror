@@ -1,0 +1,4 @@
+dotfiles-paths.patch
+dotfiles-no-dialup-zwgc.patch
+dotfiles-kinit-54.patch
+dotfiles-athena-session-tmpdir.patch

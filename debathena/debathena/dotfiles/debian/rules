@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/makefile.mk
+include /usr/share/cdbs/1/rules/patchsys-quilt.mk
+
+OS = linux
+ATHENA_MAJOR_VERSION = 9
+ATHENA_MINOR_VERSION = 4
+
+DEB_MAKE_INSTALL_TARGET = install DESTDIR=$(DEB_DESTDIR)
+DEB_MAKE_INVOKE += OS=$(OS) ATHENA_MAJOR_VERSION=$(ATHENA_MAJOR_VERSION) ATHENA_MINOR_VERSION=$(ATHENA_MINOR_VERSION)
+DEB_DESTDIR = $(CURDIR)/debian/tmp/
+DEB_DH_INSTALL_SOURCEDIR = $(DEB_DESTDIR)
+DEB_DH_INSTALLINIT_ARGS = --no-start
+DEB_UPDATE_RCD_PARAMS = "start 65 S ."
+
+common-install::
+	chmod a=rwx,o+t $(DEB_DESTDIR)/var/run/athena-sessions
+
+clean::
+	rm -f gnome/athena.schemas

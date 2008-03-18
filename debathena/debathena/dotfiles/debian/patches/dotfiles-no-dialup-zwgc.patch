@@ -1,0 +1,36 @@
+Index: debathena-dotfiles-9.4.34+cvs20070823/bash_login
+===================================================================
+--- debathena-dotfiles-9.4.34+cvs20070823.orig/bash_login	2007-11-15 00:50:02.000000000 -0500
++++ debathena-dotfiles-9.4.34+cvs20070823/bash_login	2007-11-15 00:50:04.000000000 -0500
+@@ -101,7 +101,11 @@
+ 
+ if [ "${ZEPHYR_CLIENT+set}" != set ]; then
+ 	export ZEPHYR_CLIENT
+-	ZEPHYR_CLIENT=zwgc
++	if [ ! -f /etc/athena/dialuptype ]; then
++		ZEPHYR_CLIENT=zwgc
++	else
++		ZEPHYR_CLIENT='echo This is a dialup, so zwgc is not being run on login.'
++	fi
+ fi
+ 
+ if [ "${skip_tty_startup+set}" != set ]; then
+Index: debathena-dotfiles-9.4.34+cvs20070823/login
+===================================================================
+--- debathena-dotfiles-9.4.34+cvs20070823.orig/login	2007-11-15 00:50:02.000000000 -0500
++++ debathena-dotfiles-9.4.34+cvs20070823/login	2007-11-15 00:50:04.000000000 -0500
+@@ -88,7 +88,13 @@
+ # Run default system startup activities.  To skip these, put the command
+ # "set skip_tty_startup" in your ~/.environment file.
+ 
+-if (! $?ZEPHYR_CLIENT) setenv ZEPHYR_CLIENT zwgc
++if (! $?ZEPHYR_CLIENT) then
++	if (! -f /etc/athena/dialuptype) then
++		setenv ZEPHYR_CLIENT zwgc
++	else
++		setenv ZEPHYR_CLIENT 'echo This is a dialup, so zwgc is not being run on login.'
++	endif
++endif
+ 
+ if (! $?skip_tty_startup) then
+ 	if ($?verbose_login) echo "Running standard startup activities ..."

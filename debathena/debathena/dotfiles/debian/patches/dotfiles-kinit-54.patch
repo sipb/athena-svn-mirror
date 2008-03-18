@@ -1,0 +1,39 @@
+Index: debathena-dotfiles-9.4.34+cvs20070823/bashrc
+===================================================================
+--- debathena-dotfiles-9.4.34+cvs20070823.orig/bashrc	2007-11-15 00:50:01.000000000 -0500
++++ debathena-dotfiles-9.4.34+cvs20070823/bashrc	2007-11-15 00:50:07.000000000 -0500
+@@ -197,7 +197,7 @@
+ [ -n "$COREDUMPSIZE_LIMIT" ] && ulimit -S -c $COREDUMPSIZE_LIMIT
+ 
+ #   alias for re-establishing authentication
+-renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
++renew () { kinit -54 $USER && fsid -a && zctl load /dev/null ; }
+ 
+ #   alias for a convenient way to change terminal type
+ term () { set -f; unset TERMCAP; eval "$( tset -s -I -Q "$@" )"; set +f; }
+Index: debathena-dotfiles-9.4.34+cvs20070823/cshrc
+===================================================================
+--- debathena-dotfiles-9.4.34+cvs20070823.orig/cshrc	2007-11-15 00:50:02.000000000 -0500
++++ debathena-dotfiles-9.4.34+cvs20070823/cshrc	2007-11-15 00:50:07.000000000 -0500
+@@ -208,7 +208,7 @@
+ # Set up standard C shell aliases
+ 
+ #   alias for re-establishing authentication
+-alias renew 'kinit $USER && fsid -a && zctl load /dev/null'
++alias renew 'kinit -54 $USER && fsid -a && zctl load /dev/null'
+ 
+ #   alias for a convenient way to change terminal type
+ alias term 'set noglob; unsetenv TERMCAP; eval `tset -s -I -Q \!*`'
+Index: debathena-dotfiles-9.4.34+cvs20070823/renew.1
+===================================================================
+--- debathena-dotfiles-9.4.34+cvs20070823.orig/renew.1	2007-11-15 00:49:25.000000000 -0500
++++ debathena-dotfiles-9.4.34+cvs20070823/renew.1	2007-11-15 00:50:07.000000000 -0500
+@@ -15,7 +15,7 @@
+ of commands:
+ 
+ .ti 12
+-kinit $USER && fsid -a && zctl load /dev/null
++kinit -54 $USER && fsid -a && zctl load /dev/null
+ 
+ "USER" is an environment variable that is set to your username.
+ \fIkinit\fR prompts you for your password and gets you a new kerberos

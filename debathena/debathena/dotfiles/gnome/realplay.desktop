@@ -1,0 +1,29 @@
+[Desktop Entry]
+Name=RealPlayer 10
+Name[de]=RealPlayer 10
+Name[es]=RealPlayer 10
+Name[fr]=RealPlayer 10
+Name[it]=RealPlayer 10
+Name[ja]=RealPlayer 10
+Name[ko]=RealPlayer 10
+Name[pt_BR]=RealPlayer 10
+Name[zh_CN]=RealPlayer 10
+Name[zh_TW]=RealPlayer 10
+Comment=RealNetworks' open source media player
+Comment[de]=Open-Source-Medien-Player der RealNetworks
+Comment[es]=Reproductor de medios de código abierto de la RealNetworks
+Comment[fr]=Lecteur média de code source libre de la RealNetworks
+Comment[it]=Il lettore multimediale open source della RealNetworks
+Comment[ja]=RealNetworks オープンソース メディアプレーヤー
+Comment[ko]=RealNetworks 오픈소스 미디어 플레이어
+Comment[pt_BR]=Player de mídia de código-fonte aberto da RealNetworks
+Comment[zh_CN]=RealNetworks 开放原始码媒体播放器
+Comment[zh_TW]=RealNetworks 開放原始碼媒體播放程式
+GenericName=Media Player
+Exec=realplay
+Type=Application
+Encoding=UTF-8
+Icon=realplay.png
+Categories=GNOME;Application;AudioVideo;Audio;Video;Player
+MimeType=application/x-ogg;application/ogg;audio/mp3;audio/x-mp3;audio/mpeg;audio/mpg;audio/x-mpeg;audio/x-mpg;audio/mpegurl;audio/x-mpegurl;audio/wav;audio/x-wav;audio/x-pn-wav;audio/x-pn-windows-acm;audio/x-pn-windows-pcm;text/vnd.rn-realtext;application/vnd.rn-realmedia-secure;application/vnd.rn-realaudio-secure;audio/x-realaudio-secure;video/vnd.rn-realvideo-secure;audio/vnd.rn-realaudio;audio/x-realaudio;application/vnd.rn-realmedia;application/vnd.rn-realmedia-vbr;image/vnd.rn-realpix;audio/x-pn-realaudio;video/vnd.rn-realvideo;application/vnd.rn-realsystem-rmj;application/vnd.rn-realsystem-rmx;audio/aac;audio/x-aac;audio/m4a;audio/x-m4a;audio/mp2;audio/x-mp2;audio/mp1;audio/x-mp1;audio/rn-mpeg;audio/scpls;audio/x-scpls;application/smil;application/x-smil;application/streamingmedia;application/x-streamingmedia;application/sdp;audio/basic;audio/x-pn-au;audio/aiff;audio/x-aiff;audio/x-pn-aiff;video/3gpp;video/3gpp-encrypted;audio/3gpp;audio/3gpp-encrypted;audio/amr;audio/amr-encrypted;audio/amr-wb;audio/amr-wb-encrypted;audio/x-rn-3gpp-amr;audio/x-rn-3gpp-amr-encrypted;audio/x-rn-3gpp-amr-wb;audio/x-rn-3gpp-amr-wb-encrypted;video/3gpp2;audio/x-3gpp2
+

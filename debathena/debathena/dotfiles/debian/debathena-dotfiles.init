@@ -1,0 +1,49 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          athena-sessions-clean
+# Required-Start:    $local_fs
+# Required-Stop:
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Clean old Athena sessions.
+# Description:       Clean old Athena sessions from /var/run/athena-sessions.
+### END INIT INFO
+
+if [ -e /lib/lsb/init-functions ]; then
+    . /lib/lsb/init-functions
+else
+    alias log_action_begin_msg="echo -n"
+    log_action_end_msg () {
+	echo .
+    }
+fi
+
+clean_athena_sessions () {
+    cd /var/run/athena-sessions || return 1
+    find . -depth -xdev ! -type d \
+	-print0 | xargs -0r rm -f -- \
+	|| return 1
+    find . -depth -xdev -type d ! -name . -empty \
+	-exec rmdir \{\} \; \
+	|| return 1
+}
+
+case "$1" in
+    start)
+	if ! [ -e /var/run/athena-sessions ]; then
+	    mkdir /var/run/athena-sessions
+	    chmod a=rwx,u+t /var/run/athena-sessions
+	fi
+	log_action_begin_msg "Cleaning old Athena sessions"
+	clean_athena_sessions
+	log_action_end_msg $?
+	;;
+    restart|stop|force-reload)
+	;;
+    *)
+	echo "Usage: $0 {start}" >&2
+	exit 3
+	;;
+esac
+
+:

@@ -1,0 +1,22 @@
+Source: debathena-dotfiles
+Section: debathena/base
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-dotfiles
+Architecture: all
+Depends: tcsh, debathena-base, debathena-attach, debathena-machtype, debathena-athdir, debathena-get-message, debathena-mailquota, debathena-from (>= 9.4.0-0debathena2~), debathena-lert, debathena-quota (>= 9.4.0-0debathena2~), debathena-afs-config, debathena-autofs-config, debathena-kerberos-config, debathena-zephyr-config, ${misc:Depends}
+Recommends: debathena-bash, debathena-tcsh
+Replaces: debathena-athena-files (<< 0.2)
+Conflicts: debathena-athena-files (<< 0.2)
+Description: User template and system standard shell dotfiles for Athena
+ This package contains user template and system standard shell
+ dotfiles that are used for a non-graphical Athena environment.
+
+Package: debathena-dotfiles-x11
+Architecture: all
+Description: System dotfiles for graphical Athena
+ This package contains user template and system standard shell
+ dotfiles that are used for a graphical Athena environment.

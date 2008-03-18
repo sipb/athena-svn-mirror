@@ -1,0 +1,35 @@
+# Prototype user .bash_login file
+#
+# $Id: dot.bash_login,v 1.1 1999-06-11 15:28:09 tb Exp $
+
+# This file sources a system-wide .bash_login file, which:
+#      - sources the ~/.bashrc file
+#      - performs standard setups appropriate for tty session
+#      - runs standard startup activities (e.g., check mail)
+#      - source user file ~/.startup.tty, if it exists
+
+initdir=/usr/athena/lib/init
+
+if [ -r $initdir/bash_login ]; then
+        . $initdir/bash_login
+else
+	echo "Warning: System-wide initialization files not found."
+       	echo "Login initialization has not been performed."
+fi
+
+
+# If you want to ADJUST the login initialization sequence, create a
+# .startup.tty file in your home directory, with commands to run activities
+# once the environment has been set up (znol, emacs, etc.).
+
+# To adjust the environment initialization sequence, see the instructions in
+# the .bashrc file.
+
+# If you want to CHANGE the login initialization sequence, revise this
+# .bash_login file (the one you're reading now).  You may want to copy
+# the contents of the system-wide bash_login file as a starting point.
+# 
+# WARNING: If you revise this .bash_login file, you will not
+# automatically get any changes that Athena may make to the
+# system-wide file at a later date.  Be sure you know what you are
+# doing.
