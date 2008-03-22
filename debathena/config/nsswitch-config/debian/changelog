@@ -1,3 +1,9 @@
+debathena-nsswitch-config (1.6) unstable; urgency=low
+
+  * Remove incorrect manpage symlinks from rules file.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 22 Mar 2008 15:46:54 -0400
+
 debathena-nsswitch-config (1.5) unstable; urgency=low
 
   * Divert invoke-rc.d to unset NSS_NONLOCAL_IGNORE so that daemons
