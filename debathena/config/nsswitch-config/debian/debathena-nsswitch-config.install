@@ -3,3 +3,4 @@ debian/addgroup.debathena usr/sbin
 debian/groupadd.debathena usr/sbin
 debian/useradd.debathena usr/sbin
 debian/dpkg.debathena usr/bin
+debian/invoke-rc.d.debathena usr/sbin

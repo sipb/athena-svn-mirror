@@ -1,0 +1,3 @@
+#!/bin/sh
+unset NSS_NONLOCAL_IGNORE
+exec /usr/sbin/invoke-rc.d.debathena-orig "$@"

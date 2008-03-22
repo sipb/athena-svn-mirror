@@ -1,3 +1,10 @@
+debathena-nsswitch-config (1.5) unstable; urgency=low
+
+  * Divert invoke-rc.d to unset NSS_NONLOCAL_IGNORE so that daemons
+    restarted by dpkg don't run in the NSS_NONLOCAL_IGNORE environment.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 22 Mar 2008 14:07:12 -0400
+
 debathena-nsswitch-config (1.4debathena1) unstable; urgency=low
 
   * Divert dpkg, adduser, useradd, addgroup, groupadd to wrap them with

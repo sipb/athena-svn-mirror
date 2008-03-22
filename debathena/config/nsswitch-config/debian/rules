@@ -8,21 +8,22 @@ ifneq ($(wildcard /usr/share/base-files/nsswitch.conf),)
 	/usr/share/base-files/nsswitch.conf
 endif
 DEBATHENA_DIVERT_FILES_debathena-nsswitch-config += \
-	/usr/sbin/adduser \
-	/usr/sbin/groupadd \
-	/usr/sbin/addgroup \
-	/usr/sbin/useradd \
-	/usr/bin/dpkg
-DEB_DH_LINK_ARGS += /usr/share/man/man8/adduser.8.gz /usr/share/man/man8/adduser.debathena.8.gz \
-		    /usr/share/man/man8/adduser.8.gz /usr/share/man/man8/adduser.debathena-orig.8.gz \
-		    /usr/share/man/man8/addgroup.8.gz /usr/share/man/man8/addgroup.debathena.8.gz \
-		    /usr/share/man/man8/addgroup.8.gz /usr/share/man/man8/addgroup.debathena-orig.8.gz \
-		    /usr/share/man/man8/useradd.8.gz /usr/share/man/man8/useradd.debathena.8.gz \
-		    /usr/share/man/man8/useradd.8.gz /usr/share/man/man8/useradd.debathena-orig.8.gz \
-		    /usr/share/man/man8/groupadd.8.gz /usr/share/man/man8/groupadd.debathena.8.gz \
-		    /usr/share/man/man8/groupadd.8.gz /usr/share/man/man8/groupadd.debathena-orig.8.gz \
-		    /usr/share/man/man8/dpkg.8.gz /usr/share/man/man8/dpkg.debathena.8.gz \
-		    /usr/share/man/man8/dpkg.8.gz /usr/share/man/man8/dpkg.debathena-orig.8.gz
+	/usr/sbin/adduser.debathena \
+	/usr/sbin/groupadd.debathena \
+	/usr/sbin/addgroup.debathena \
+	/usr/sbin/useradd.debathena \
+	/usr/bin/dpkg.debathena \
+	/usr/sbin/invoke-rc.d.debathena
+# DEB_DH_LINK_ARGS += /usr/share/man/man8/adduser.8.gz /usr/share/man/man8/adduser.debathena.8.gz \
+# 		    /usr/share/man/man8/adduser.8.gz /usr/share/man/man8/adduser.debathena-orig.8.gz \
+# 		    /usr/share/man/man8/addgroup.8.gz /usr/share/man/man8/addgroup.debathena.8.gz \
+# 		    /usr/share/man/man8/addgroup.8.gz /usr/share/man/man8/addgroup.debathena-orig.8.gz \
+# 		    /usr/share/man/man8/useradd.8.gz /usr/share/man/man8/useradd.debathena.8.gz \
+# 		    /usr/share/man/man8/useradd.8.gz /usr/share/man/man8/useradd.debathena-orig.8.gz \
+# 		    /usr/share/man/man8/groupadd.8.gz /usr/share/man/man8/groupadd.debathena.8.gz \
+# 		    /usr/share/man/man8/groupadd.8.gz /usr/share/man/man8/groupadd.debathena-orig.8.gz \
+# 		    /usr/share/man/man8/dpkg.8.gz /usr/share/man/man8/dpkg.debathena.8.gz \
+# 		    /usr/share/man/man8/dpkg.8.gz /usr/share/man/man8/dpkg.debathena-orig.8.gz
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/debathena-replace-conffiles.mk
 
