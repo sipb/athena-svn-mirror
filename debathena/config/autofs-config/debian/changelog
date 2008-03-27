@@ -1,3 +1,15 @@
+debathena-autofs-config (1.3) unstable; urgency=low
+
+  * Don't run our the stop command in our init script on package removal.
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 24 Mar 2008 16:52:41 -0400
+
+debathena-autofs-config (1.2) unstable; urgency=low
+
+  * Add an init script to stop autofs before openafs stops.
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 24 Mar 2008 16:52:39 -0400
+
 debathena-autofs-config (1.1debathena3) unstable; urgency=low
 
   * Rebuild against debathena-config-build-common 3.4.

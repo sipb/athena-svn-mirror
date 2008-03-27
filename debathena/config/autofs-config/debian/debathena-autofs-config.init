@@ -1,0 +1,33 @@
+#! /bin/sh -e
+### BEGIN INIT INFO
+# Provides:             debathena-autofs-config
+# Required-Start:
+# Required-Stop:        openafs-client
+# Should-Start:         $local_fs $network
+# Default-Start:
+# Default-Stop:         S 0 1 6
+# Short-Description:    Debathena /mit automounter
+# Description:          Stops the debathena /mit automounter before OpenAFS stops.
+### END INIT INFO
+
+NAME=debathena-autofs-config
+
+case "$1" in
+  start)
+	;;
+  stop)
+	/etc/init.d/autofs stop
+	;;
+  force-reload)
+	;;
+  restart)
+	;;
+  *)
+	N=/etc/init.d/$NAME
+	# echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
+	echo "Usage: $N {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

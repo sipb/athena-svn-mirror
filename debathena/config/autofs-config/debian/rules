@@ -5,3 +5,5 @@ DEBATHENA_DIVERT_FILES_debathena-autofs-config += \
 	/etc/auto.master.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/debathena-divert.mk
+DEB_UPDATE_RCD_PARAMS = "defaults 26 17"
+DEB_DH_INSTALLINIT_ARGS = "--no-start"
