@@ -1,0 +1,29 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-cluster-software
+Version: 0.1
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Depends: build-essential, gnome-devel,
+  enscript, psutils,
+  emacs, emacs-intl-fonts,
+  athena-jot,
+  hesiod,
+  ispell, iamerican,
+  aspell, aspell-en,
+  pidgin | gaim, pidgin-encryption | gaim-encryption,
+  libsasl2-modules-gssapi-mit | libsasl2-gssapi-mit,
+  texlive | tetex-bin,
+  gv,
+  openoffice.org,
+  thunderbird | mozilla-thunderbird | icedove
+Recommends: ckermit,
+  sun-java6-jdk | sun-java5-jdk,
+  x3270
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Athena cluster software set
+ This package is contains a set of Debian software packages to include
+ on Athena cluster machines.  It may not be desirable for
+ privately-owned machines.
