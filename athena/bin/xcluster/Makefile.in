@@ -12,7 +12,8 @@ bindir=@bindir@
 libdir=@libdir@
 mandir=@mandir@
 datadir=@datadir@
-appdefsdir=${libdir}/X11/app-defaults
+sysconfdir=@sysconfdir@
+appdefsdir=${sysconfdir}/X11/app-defaults
 
 CC=@CC@
 DEFS=@DEFS@
