@@ -1,3 +1,10 @@
+debathena-hesiod-config (1.1) unstable; urgency=low
+
+  * Convert to the new config-package-dev interface
+  * Remove seemingly irrelevant autofs.debathena file.
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 18:25:29 -0400
+
 debathena-hesiod-config (1.0debathena3) unstable; urgency=low
 
   * Rebuild against debathena-config-build-common 3.4.

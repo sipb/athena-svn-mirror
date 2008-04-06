@@ -2,11 +2,13 @@ Source: debathena-hesiod-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debian-Athena Project <debathena@mit.edu>
-Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), debathena-config-build-common
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), config-package-dev
 Standards-Version: 3.7.2
 
 Package: debathena-hesiod-config
 Architecture: all
 Depends: hesiod, libhesiod0, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
 Description: Hesiod configuration for Debian-Athena
  This packages configures Hesiod to access the Athena Hesiod domain.
