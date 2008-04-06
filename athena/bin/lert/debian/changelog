@@ -1,3 +1,9 @@
+debathena-lert (10.0.0-1) unstable; urgency=low
+
+  * Merged quilt patches into mainline Athena tree
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 16:11:20 -0400
+
 debathena-lert (9.4.24+cvs20060313-0debathena4) unstable; urgency=low
 
   * Use any libdb instead of just libdb3.

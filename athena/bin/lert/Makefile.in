@@ -17,7 +17,7 @@ DEFS=@DEFS@
 CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@
 LDFLAGS=@LDFLAGS@
-LIBS=@KRB4_LIBS@ -lhesiod @LIBS@
+LIBS=@KRB4_LIBS@ @KRB5_LIBS@ -lhesiod @LIBS@
 ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
 
 all: lert lertload lertdump lertstop lertsaid lertused lertsrv
