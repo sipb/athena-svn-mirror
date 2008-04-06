@@ -14,7 +14,8 @@ exec_prefix=@exec_prefix@
 datadir=@datadir@
 libdir=@libdir@
 includedir=@includedir@
-appdefdir=${libdir}/X11/app-defaults
+sysconfdir=@sysconfdir@
+appdefdir=${sysconfdir}/X11/app-defaults
 bitmapdir=${includedir}/X11/bitmaps
 
 CC=@CC@
