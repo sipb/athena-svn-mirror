@@ -1,3 +1,9 @@
+debathena-machtype (10.0.0-1) unstable; urgency=low
+
+  * Merged quilt patches into mainline Athena tree
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 16:13:25 -0400
+
 debathena-machtype (9.4.0-0debathena6) unstable; urgency=low
 
   * Get disk and memory information from /sys and /proc instead of

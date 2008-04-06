@@ -19,7 +19,7 @@
 #  -P     : print out Athena System packs (from /srvd/.rvdinfo)
 #  -S     : Print out the Athena System name
 
-PATH=/bin:/usr/bin:/usr/sbin
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 while getopts cdk:m:rvACELMNPS i; do
 	case "$i" in
@@ -133,27 +133,27 @@ if [ $cpu ] ; then
 fi
 
 if [ $display ] ; then
-        /sbin/lspci | awk -F: '/VGA/ {print $3}' | sed -n -e 's/^ //' -e p
+	lspci | awk -F: '/VGA/ {print $3}' | sed -n -e 's/^ //' -e p
 	printed=1
 fi
 
 if [ $rdsk ]; then
-	awk '/^SCSI device/ { print; }
-	     /^hd[a-z]:/ { print; }
-	     /^Floppy/ { for (i=3; i <= NF; i += 3) print $i ": " $(i+2); }' \
-	     /var/log/dmesg
+	for d in /sys/block/[fhs]d*; do
+	    echo $(basename "$d"): \
+		$(xargs -I @ expr @ '*' 8 / 15625 < "$d/size")MB \
+		$(cat "$d/device/model" ||
+		  cat "/proc/ide/$(basename "$d")/model")
+	done 2>/dev/null
 	printed=1
 fi
 
 if [ $memory ] ; then
 	if [ $verbose ]; then
-		awk 'BEGIN { FS="[^0-9]+" }
-		     /^Memory:/ { printf "user=%d, phys=%d (%d M)\n",
-				         $2*1.024, $3*1.024, $3/1000; }' \
-		    /var/log/dmesg
+		awk '/^MemTotal:/ { printf "user=%d, phys=%d (%d M)\n",
+					   $2, $2, $2/1024 }' \
+		    /proc/meminfo
 	else
-		awk 'BEGIN { FS="[^0-9]+" }
-		     /^Memory:/ { printf "%d\n", $3*1.024; }' /var/log/dmesg
+		awk '/^MemTotal:/ { printf "%d\n", $2 }' /proc/meminfo
 	fi
 	printed=1
 fi
