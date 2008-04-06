@@ -3,13 +3,13 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-standard
-Version: 0.2.1
+Version: 0.2.2
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: debathena-athena-libraries,
- debathena-bash,
  debathena-clients,
  debathena-dotfiles,
  debathena-locker,
+Recommends: debathena-bash,
  debathena-tcsh
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
