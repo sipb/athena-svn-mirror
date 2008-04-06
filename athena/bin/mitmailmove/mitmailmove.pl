@@ -1,4 +1,4 @@
-#!/usr/athena/bin/perl -w
+#!/usr/bin/perl -w
 
 # $Id: mitmailmove.pl,v 1.3 2004-08-31 16:00:16 rbasch Exp $
 
