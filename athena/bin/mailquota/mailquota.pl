@@ -1,4 +1,4 @@
-#!/usr/athena/bin/perl -w
+#!/usr/bin/perl -w
 
 # $Id: mailquota.pl,v 1.4 2004-07-29 19:11:52 rbasch Exp $
 
