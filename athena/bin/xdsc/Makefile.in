@@ -13,10 +13,11 @@ sbindir=@sbindir@
 libdir=@libdir@
 mandir=@mandir@
 datadir=@datadir@
-appdefsdir=${libdir}/X11/app-defaults
+sysconfdir=@sysconfdir@
+appdefsdir=${sysconfdir}/X11/app-defaults
 
 CC=@CC@
-DEFS=@DEFS@ -DEDSC_PATH=\"$(sbindir)/edsc\"
+DEFS=@DEFS@ -DEDSC_PATH=\"${libdir}/debathena-discuss/edsc\"
 CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@
 X_CFLAGS=@X_CFLAGS@

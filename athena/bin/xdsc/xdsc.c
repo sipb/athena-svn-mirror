@@ -729,7 +729,7 @@ XtPointer	call_data;
 	}
 }
 
-static void
+void
 BotSelect(w, client_data, call_data)
 Widget	w;				/*IGNORED*/
 XtPointer	client_data;
