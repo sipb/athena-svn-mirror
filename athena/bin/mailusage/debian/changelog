@@ -1,3 +1,9 @@
+debathena-mailusage (10.0.0-1) unstable; urgency=low
+
+  * Merged quilt patches into mainline Athena tree
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 16:16:06 -0400
+
 debathena-mailusage (9.4.0-0debathena2) unstable; urgency=low
 
   * Correct libcyrus-imap-perl dependency.
