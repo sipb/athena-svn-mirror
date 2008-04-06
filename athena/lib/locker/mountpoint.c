@@ -444,13 +444,16 @@ static int get_dirlock(locker_context context, locker_attachent *at, int type)
   int status;
   char *lock;
   struct flock fl;
+  mode_t o_umask;
 
   lock = locker__attachtab_pathname(context, LOCKER_LOCK, ".dirlock");
   if (!lock)
     return LOCKER_ENOMEM;
 
-  at->dirlockfd = open(lock, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR);
+  o_umask = umask(0);
+  at->dirlockfd = open(lock, O_CREAT | O_RDWR, S_IWUSR | S_IRUSR | S_IWGRP | S_IRGRP);
   free(lock);
+  umask(o_umask);
   if (at->dirlockfd < 0)
     {
       at->dirlockfd = 0;

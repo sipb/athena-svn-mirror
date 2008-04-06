@@ -1,3 +1,9 @@
+debathena-liblocker (10.0.0-1) unstable; urgency=low
+
+  * Merged quilt patches into mainline Athena tree
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 16:12:27 -0400
+
 debathena-liblocker (9.4.28-0debathena12) unstable; urgency=low
 
   * Set ownercheck on and explicit-mntpt off in attach.conf.

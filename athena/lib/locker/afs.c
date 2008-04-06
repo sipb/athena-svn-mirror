@@ -267,26 +267,20 @@ static int afs_attach(locker_context context, locker_attachent *at,
 
   /* Make sure nothing is already mounted on our mountpoint. */
   status = stat(at->mountpoint, &st2);
-  if (!status && st1.st_dev == st2.st_dev && st1.st_ino == st2.st_ino)
+  if (!status)
     {
-      locker__error(context, "%s: Locker is already attached.\n",
-		    at->name);
-      return LOCKER_EALREADY;
+      /* Assume the automounter took care of it */
     }
-  else if (!status || errno != ENOENT)
+  else
     {
-      locker__error(context, "%s: Could not attach locker:\n"
-		    "Mountpoint %s is busy.\n", at->name, at->mountpoint);
-      return LOCKER_EMOUNTPOINTBUSY;
-    }
-
-  status = symlink(at->hostdir, at->mountpoint);
-  if (status < 0)
-    {
-      locker__error(context, "%s: Could not attach locker:\n%s while "
+    status = symlink(at->hostdir, at->mountpoint);
+    if (status < 0)
+      {
+        locker__error(context, "%s: Could not attach locker:\n%s while "
 		    "symlinking %s to %s\n", at->name, strerror(errno),
 		    at->hostdir, at->mountpoint);
-      return LOCKER_EATTACH;
+        return LOCKER_EATTACH;
+      }
     }
 
   /* Find host that the locker is on, and update the attachent. */
@@ -311,7 +305,8 @@ static int afs_detach(locker_context context, locker_attachent *at)
 {
   int status;
 
-  status = unlink(at->mountpoint);
+  /* Let the automounter manage the symlink */
+  /* status = unlink(at->mountpoint);
   if (status < 0)
     {
       if (errno == ENOENT)
@@ -327,6 +322,7 @@ static int afs_detach(locker_context context, locker_attachent *at)
 	  return LOCKER_EDETACH;
 	}
     }
+  */
   return LOCKER_SUCCESS;
 }
 

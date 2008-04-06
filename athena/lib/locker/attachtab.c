@@ -514,7 +514,7 @@ static int get_attachent(locker_context context, char *name,
     return LOCKER_ENOMEM;
 
   omask = umask(0);
-  fd = open(path, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+  fd = open(path, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
   umask(omask);
   if (fd == -1)
     {
@@ -909,6 +909,7 @@ static int lock_attachtab(locker_context context, int *lock)
   int status;
   char *path;
   struct flock fl;
+  mode_t o_umask;
 
   /* If the attachtab is already locked (because we're reading a
    * subcomponent of a MUL locker, for instance), just record an
@@ -927,8 +928,10 @@ static int lock_attachtab(locker_context context, int *lock)
       return LOCKER_ENOMEM;
     }
 
-  *lock = open(path, O_CREAT | O_TRUNC | O_RDWR, S_IRUSR | S_IWUSR);
+  o_umask = umask(0);
+  *lock = open(path, O_CREAT | O_TRUNC | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
   free (path);
+  umask(o_umask);
   if (*lock < 0)
     {
       locker__error(context, "Could not open attachtab lock file: %s.\n",

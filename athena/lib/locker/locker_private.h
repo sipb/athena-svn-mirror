@@ -19,7 +19,7 @@
 #include <regex.h>
 #include <stdarg.h>
 
-#define LOCKER_PATH_ATTACHTAB "/var/athena/attachtab"
+#define LOCKER_PATH_ATTACHTAB "/var/run/attachtab"
 #define LOCKER_PATH_ATTACH_CONF "/etc/athena/attach.conf"
 #define LOCKER_PATH_LOCAL "/var/athena/local-validated"
 

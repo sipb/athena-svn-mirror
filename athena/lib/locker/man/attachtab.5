@@ -18,26 +18,26 @@
 .SH NAME
 attachtab \- Files used by liblocker
 .SH SYNOPSIS
-.B /var/athena/attachtab/
+.B /var/run/attachtab/
 .SH DESCRIPTION
 The attachtab directory contains two files and three directories used
 by liblocker to keep track of attached filesystems.
 .PP
 .TP 8
-.B /var/athena/attachtab/.lock
+.B /var/run/attachtab/.lock
 This is used as a lock file to synchronize access to the
 .B locker
 and
 .B mountpoint
 directories, which record attached lockers.
 .TP 8
-.B /var/athena/attachtab/.dirlock
+.B /var/run/attachtab/.dirlock
 This is used to synchronize access to the
 .B directory
 subdirectory, which records directories that have been created by
 liblocker.
 .TP 8
-.B /var/athena/attachtab/mountpoint
+.B /var/run/attachtab/mountpoint
 This directory contains a file for each locker that has been attached.
 The files each consist of 9 lines containing the following data:
 .PP
@@ -55,7 +55,7 @@ flags (from the locker_attachent \fIflags\fP field)
 .fi
 .RE
 .TP 8
-.B /var/athena/attachtab/locker
+.B /var/run/attachtab/locker
 This directory contains symlinks to the
 .B mountpoint
 directory; for each named locker which is attached on its normal
@@ -65,7 +65,7 @@ directory to the locker mountpoint in the
 .B mountpoint
 directory.
 .TP 8
-.B /var/athena/attachtab/directory
+.B /var/run/attachtab/directory
 This directory contains an empty file for each directory which
 liblocker has created. This information is used to ensure that created
 directories are later removed when all of the filesystems mounted in
