@@ -33,7 +33,7 @@ typedef int Code_t;
 #define GMS_SERV_NAME "globalmessage"
 #define GMS_SERV_PROTO "udp"
 
-#define GMS_MESSAGE_NAME "/usr/tmp/.messages"
+#define GMS_MESSAGE_NAME "/var/cache/debathena-libgms/messages"
 
 #define GMS_USERFILE_NAME "/.message_times"
 #define GMS_USERFILE_NAME_LEN (sizeof(GMS_USERFILE_NAME)-1)

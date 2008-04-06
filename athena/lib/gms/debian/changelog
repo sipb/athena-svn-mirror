@@ -1,3 +1,9 @@
+debathena-libgms (10.0.0-1) unstable; urgency=low
+
+  * Merged quilt patches into mainline Athena tree
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 16:10:16 -0400
+
 debathena-libgms (9.4.24-0debathena4) unstable; urgency=low
 
   * Move message cache to /var/cache/debathena-libgms/messages.
