@@ -1,3 +1,9 @@
+debathena-from-config (1.1) unstable; urgency=low
+
+  * Convert to the new config-package-dev interface
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 18:23:40 -0400
+
 debathena-from-config (1.0debathena2) unstable; urgency=low
 
   * Rebuild against debathena-config-build-common 3.4.
