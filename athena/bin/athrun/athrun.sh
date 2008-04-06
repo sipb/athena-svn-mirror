@@ -11,12 +11,12 @@ case $# in
   exit 1
   ;;
 1)
-  exec /bin/athena/attachandrun "$1" "$1" "$1"
+  exec /bin/attachandrun "$1" "$1" "$1"
   ;;
 *)
   locker=$1
   program=$2
   shift 2;
-  exec /bin/athena/attachandrun "$locker" "$program" "$program" "$@"
+  exec /bin/attachandrun "$locker" "$program" "$program" "$@"
   ;;
 esac

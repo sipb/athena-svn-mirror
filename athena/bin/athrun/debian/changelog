@@ -1,3 +1,9 @@
+debathena-athrun (10.0.0-1) unstable; urgency=low
+
+  * Merged quilt patches into mainline Athena tree
+  
+  -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 15:57:06 -0400
+
 debathena-athrun (9.4.0+cvs20060725-0debathena2) unstable; urgency=low
 
   * Section: debathena/net.
