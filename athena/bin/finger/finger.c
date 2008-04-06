@@ -181,7 +181,7 @@ int header = 1;			/* -f option default */
 int hack = 1;			/* -h option default */
 int idlep = 0;			/* -i option default */
 int large = 0;			/* -l option default */
-int match = 1;			/* -m option default */
+int match = 0;			/* -m option default */
 int plan = 1;			/* -p option default */
 int unquick = 1;		/* -q option default */
 int small = 0;			/* -s option default */
@@ -499,8 +499,6 @@ initialization");
 			(void) strcat(curname, ZGetRealm());
 
 			if ((state = ZLocateUser(curname, &znloc,ZAUTH)) != ZERR_NONE) {
-				com_err("finger", state, "\nFailure in \
-ZLocateUser");
 				break;
 			}
 			q->zlocation = 1;
