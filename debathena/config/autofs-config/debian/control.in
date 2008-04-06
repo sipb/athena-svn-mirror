@@ -8,6 +8,8 @@ Standards-Version: 3.7.2
 Package: debathena-autofs-config
 Architecture: all
 Depends: autofs-hesiod, debathena-afs-config, debathena-hesiod-config, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
 Description: Automounter configuration for Debian-Athena
  This packages configures autofs to automatically mount Athena lockers
  using the Hesiod directory information.  It also configures autofs to

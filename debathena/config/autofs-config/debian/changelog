@@ -1,3 +1,9 @@
+debathena-autofs-config (1.4) unstable; urgency=low
+
+  * Convert rules and control files to new config-package-dev interface.
+
+ -- Michael Y McCanna <acrefoot@mit.edu>  Sun,  6 Apr 2008 16:22:51 -0400
+
 debathena-autofs-config (1.3) unstable; urgency=low
 
   * Don't run our the stop command in our init script on package removal.
