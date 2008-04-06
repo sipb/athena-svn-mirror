@@ -1,17 +1,18 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-afs-config += \
+DEB_DIVERT_EXTENSION = .debathena
+DEB_DIVERT_FILES_debathena-afs-config += \
 	/etc/openafs/afs.conf.client.debathena \
 	/etc/openafs/CellAlias.debathena \
 	/etc/openafs/CellServDB.debathena \
 	/etc/openafs/SuidCells.debathena \
 	/etc/openafs/ThisCell.debathena \
 	/etc/openafs/cacheinfo.debathena
-DEBATHENA_REPLACE_CONFFILES_debathena-afs-config += \
+DEB_REPLACE_FILES_debathena-afs-config += \
 	/etc/openafs/afs.conf.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-replace-conffiles.mk
+include /usr/share/cdbs/1/rules/replace-files.mk
 
 FROM_ATHENA = debian/CellAlias.debathena debian/CellServDB.debathena
 
