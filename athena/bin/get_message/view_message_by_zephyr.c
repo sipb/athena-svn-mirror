@@ -50,7 +50,7 @@ void view_message_by_zephyr(char *message)
   /* check that there is *something* after the headers */
   if(*ptr) {
     /* don't even fork... this just exits anyway... */
-    execl("/usr/athena/bin/zwrite",
+    execl("/usr/bin/zwrite",
 	  "zwrite", "-d", "-q", "-n",  whoami, "-m", ptr, 0);
     /* put logging here in case the exec fails. */
     syslog(LOG_INFO, "GMS client execl of zwrite failed [%s]",
