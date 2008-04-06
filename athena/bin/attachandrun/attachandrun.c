@@ -123,7 +123,7 @@ static char *run_attach(const char *locker)
       dup2(fds[1], STDOUT_FILENO);
       if (fds[1] != STDOUT_FILENO)
 	close(fds[1]);
-      execl("/bin/athena/attach", "attach", "-p", locker, (char *) NULL);
+      execl("/bin/attach", "attach", "-p", locker, (char *) NULL);
       fprintf(stderr, "%s: execl failed: %s\n", progname, strerror(errno));
       _exit(1);
     }
