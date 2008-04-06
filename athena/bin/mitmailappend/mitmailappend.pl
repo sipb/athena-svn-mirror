@@ -1,4 +1,4 @@
-#!/usr/athena/bin/perl -w
+#!/usr/bin/perl -w
 
 # $Id: mitmailappend.pl,v 1.1 2004-09-03 20:44:43 rbasch Exp $
 
