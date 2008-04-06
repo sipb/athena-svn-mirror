@@ -1,3 +1,9 @@
+debathena-moira-passwd-config (1.1) unstable; urgency=low
+
+  * Convert to the new config-package-dev interface
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 18:28:51 -0400
+
 debathena-moira-passwd-config (1.0debathena5) unstable; urgency=low
 
   * Make chsh and chfn wrappers support empty argument lists.

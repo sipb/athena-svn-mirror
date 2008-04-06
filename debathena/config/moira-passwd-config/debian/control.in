@@ -8,7 +8,8 @@ Standards-Version: 3.7.2
 Package: debathena-moira-passwd-config
 Architecture: all
 Depends: debathena-moira-clients (>= 4.0.0+cvs20070129), ${misc:Depends}, adduser
-Conflicts: debathena-moira-user-tools (<= 4.0.0-3)
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}, debathena-moira-user-tools (<= 4.0.0-3)
 Replaces: debathena-moira-user-tools (<= 4.0.0-3)
 Description: Set Athena chsh and chfn as default
  This package makes /usr/bin/chsh and /usr/bin/chfn point to the
