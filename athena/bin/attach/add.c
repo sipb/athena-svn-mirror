@@ -152,7 +152,7 @@ int add_main(int argc, char **argv)
   if (manpath)
     manpath = strdup(manpath);
   else
-    manpath = strdup("");
+    manpath = strdup(":");
 
   infopath = getenv("INFOPATH");
   if (infopath)

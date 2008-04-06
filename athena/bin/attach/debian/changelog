@@ -1,3 +1,9 @@
+debathena-attach (10.0.0-1) unstable; urgency=low
+
+  * Merged quilt patches into mainline Athena tree
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 15:46:07 -0400
+
 debathena-attach (9.4.30-0debathena6) unstable; urgency=low
 
   * Link against libcom_err from openafs so that the package builds on
