@@ -1,4 +1,4 @@
-#!/usr/athena/bin/perl -w
+#!/usr/bin/perl -w
 
 # $Id: from.pl,v 1.6 2004-07-29 19:11:51 rbasch Exp $
 

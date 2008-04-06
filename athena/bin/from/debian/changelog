@@ -1,3 +1,9 @@
+debathena-from (10.0.0-1); urgency=low
+
+  * Merged quilt patches into mainline Athena tree
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 15:57:54 -0400
+
 debathena-from (9.4.0-0debathena5) unstable; urgency=low
 
   * Actually depend libcyrus-imap-perl and libsasl2-krb4-mit.
