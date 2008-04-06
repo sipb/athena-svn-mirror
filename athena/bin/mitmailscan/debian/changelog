@@ -1,3 +1,9 @@
+debathena-mitmailscan (10.0.0-1) unstable; urgency=low
+
+  * Merged quilt patches into mainline Athena tree
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 16:21:13 -0400
+
 debathena-mitmailscan (9.4.0-0debathena4) unstable; urgency=low
 
   * Conflicts old debathena-mitmailutils.

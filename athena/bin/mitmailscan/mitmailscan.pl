@@ -1,4 +1,4 @@
-#!/usr/athena/bin/perl -w
+#!/usr/bin/perl -w
 
 # $Id: mitmailscan.pl,v 1.5 2004-10-26 20:56:30 rbasch Exp $
 
