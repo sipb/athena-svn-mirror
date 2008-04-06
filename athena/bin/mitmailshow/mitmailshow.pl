@@ -1,4 +1,4 @@
-#!/usr/athena/bin/perl -w
+#!/usr/bin/perl -w
 
 # $Id: mitmailshow.pl,v 1.3 2004-07-29 19:11:54 rbasch Exp $
 
