@@ -1,4 +1,4 @@
-#!/usr/athena/bin/perl -w
+#!/usr/bin/perl -w
 
 # $Id: mitmailexp.pl,v 1.3 2004-07-29 19:11:53 rbasch Exp $
 
