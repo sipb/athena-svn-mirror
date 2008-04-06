@@ -1,3 +1,9 @@
+debathena-gdm-config (1.2) unstable; urgency=low
+
+  * Convert to the new config-package-dev interface
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 18:25:01 -0400
+
 debathena-gdm-config (1.1) unstable; urgency=low
 
   * New version using graphical theme.

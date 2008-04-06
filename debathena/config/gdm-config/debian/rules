@@ -7,20 +7,13 @@ else
 endif
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-gdm-config += \
+DEB_DIVERT_EXTENSION = .debathena
+DEB_REPLACE_FILES_debathena-gdm-config += \
 	${GDM_CONFFILE}.debathena
+
+DEB_TRANSFORM_SCRIPT_${GDM_CONFFILE} = transform_gdm.conf.debathena
+
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
-include /usr/share/cdbs/1/rules/debathena-check-conffiles.mk
+include /usr/share/cdbs/1/rules/replace-files.mk
 
 DEB_DH_LINK_ARGS=/etc/gdm/gdm.conf-custom.debathena /etc/gdm/gdm.conf.debathena
-
-common-build-indep:: debian/gdm.conf-custom.debathena
-
-debian/gdm.conf-custom.debathena: $(call debathena_check_conffiles,${GDM_CONFFILE})
-	perl -0pe ' \
-	    s/(\[daemon\]\n)/\1UserAuthDir=\/tmp\n/ and \
-	    s/(\[greeter\]\n)/\1GraphicalTheme=debathena\n/ or die;' $< > $@
-
-clean::
-	rm -f debian/gdm.conf-custom.debathena
