@@ -2,6 +2,7 @@
 
 ifneq ($(wildcard /etc/gdm/gdm.conf-custom),)
     GDM_CONFFILE = /etc/gdm/gdm.conf-custom
+    DEB_DH_LINK_ARGS=/etc/gdm/gdm.conf-custom.debathena /etc/gdm/gdm.conf.debathena
 else
     GDM_CONFFILE = /etc/gdm/gdm.conf
 endif
@@ -10,10 +11,7 @@ DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_DIVERT_EXTENSION = .debathena
 DEB_REPLACE_FILES_debathena-gdm-config += \
 	${GDM_CONFFILE}.debathena
-
 DEB_TRANSFORM_SCRIPT_${GDM_CONFFILE} = transform_gdm.conf.debathena
-
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/replace-files.mk
 
-DEB_DH_LINK_ARGS=/etc/gdm/gdm.conf-custom.debathena /etc/gdm/gdm.conf.debathena
