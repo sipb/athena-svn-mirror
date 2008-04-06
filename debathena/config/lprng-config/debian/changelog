@@ -1,3 +1,9 @@
+debathena-lprng-config (1.4) unstable; urgency=low
+
+  * Convert to the new config-package-dev interface
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 18:21:22 -0400
+
 debathena-lprng-config (1.3debathena2) unstable; urgency=low
 
   * Add debathena-lprng-no-server-config as a Recommends:

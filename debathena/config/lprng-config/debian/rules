@@ -1,7 +1,9 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-lprng-config += \
+DEB_DIVERT_EXTENSION = .debathena
+DEB_DIVERT_FILES_debathena-lprng-config += \
 	/etc/lprng/lpd.conf.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
+include /usr/share/cdbs/1/rules/replace-files.mk
+

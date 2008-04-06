@@ -8,6 +8,8 @@ Standards-Version: 3.7.2
 Package: debathena-lprng-config
 Architecture: all
 Depends: lprng, debathena-hesiod-config, debathena-kerberos-config, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
 Recommends: debathena-lprng-no-server-config
 Description: Printing configuration for Debian-Athena
  This packages configures lprng to get printer information from
