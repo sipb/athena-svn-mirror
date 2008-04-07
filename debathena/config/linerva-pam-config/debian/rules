@@ -1,14 +1,12 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-linerva-pam-config += \
-	/etc/pam.d/common-account.debathena \
-	/etc/pam.d/common-auth.debathena \
-	/etc/pam.d/common-password.debathena \
-	/etc/pam.d/common-session.debathena \
+DEB_DIVERT_EXTENSION = .debathena
+DEB_DIVERT_FILES_debathena-linerva-pam-config += \
+	/etc/pam.d/common-auth.debathena.debathena \
+	/etc/pam.d/common-password.debathena.debathena \
 	/etc/pam.d/cron.debathena \
-	/etc/pam.d/login.debathena \
-	/etc/pam.d/ssh.debathena 
+	/etc/pam.d/login.debathena.debathena
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
+include /usr/share/cdbs/1/rules/replace-files.mk

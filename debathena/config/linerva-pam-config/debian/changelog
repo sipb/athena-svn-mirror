@@ -1,3 +1,10 @@
+debathena-linerva-pam-config (1.1) unstable; urgency=low
+
+  * Repackage with new config-package-dev interface.
+  * Build on top of debathena-pam-config rather than replacing it.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sun, 06 Apr 2008 23:47:39 -0400
+
 debathena-linerva-pam-config (1.0) unstable; urgency=low
 
   * New package using CDBS

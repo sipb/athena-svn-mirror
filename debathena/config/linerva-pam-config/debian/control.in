@@ -7,9 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-linerva-pam-config
 Architecture: all
-Provides: debathena-pam-config
-Depends: debathena-kerberos-config, libpam-runtime, libpam-krb5, libpam-athena-locker, libpam-krb524, libpam-xauthority
-Conflicts: debathena-pam-config
+Depends: debathena-pam-config
 Description: PAM configuration for Debian-Athena Dialups
  This package configures pam so that the machine uses kerberos for
  authentication and gets AFS tokens on login.  It modifies the common

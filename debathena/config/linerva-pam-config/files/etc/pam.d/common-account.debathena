@@ -1,2 +1,0 @@
-account     sufficient  pam_unix.so debug
-account     required    pam_krb5.so use_first_pass debug
