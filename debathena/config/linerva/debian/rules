@@ -1,7 +1,8 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-linerva += \
+DEB_DIVERT_EXTENSION = .debathena
+DEB_DIVERT_FILES_debathena-linerva += \
 	/etc/logcheck/logcheck.conf.debathena \
 	/etc/logcheck/ignore.d.server/kernel.debathena \
 	/etc/logcheck/ignore.d.server/perl.debathena \
@@ -28,4 +29,4 @@ DEBATHENA_DIVERT_FILES_debathena-linerva += \
 
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
+include /usr/share/cdbs/1/rules/replace-files.mk
