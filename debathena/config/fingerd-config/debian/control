@@ -2,11 +2,13 @@ Source: debathena-fingerd-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debian-Athena Project <debathena@mit.edu>
-Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), debathena-config-build-common
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), config-package-dev
 Standards-Version: 3.7.2
 
 Package: debathena-fingerd-config
 Architecture: all
 Depends: debathena-finger-config, fingerd, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
 Description: fingerd configuration for Debian-Athena
  This package makes the finger daemon call finger.debathena-orig -m.
