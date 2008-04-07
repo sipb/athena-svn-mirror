@@ -1,3 +1,9 @@
+debathena-nsswitch-config (1.7) unstable; urgency=low
+
+  * Convert to the new config-package-dev interface
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 18:52:24 -0400
+
 debathena-nsswitch-config (1.6) unstable; urgency=low
 
   * Remove incorrect manpage symlinks from rules file.

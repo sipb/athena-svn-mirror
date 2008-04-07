@@ -1,13 +1,14 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_REPLACE_CONFFILES_debathena-nsswitch-config += \
+DEB_DIVERT_EXTENSION = .debathena
+DEB_REPLACE_FILES_debathena-nsswitch-config += \
 	/etc/nsswitch.conf.debathena
 ifneq ($(wildcard /usr/share/base-files/nsswitch.conf),)
-    DEBATHENA_CHECK_CONFFILES_SOURCE_/etc/nsswitch.conf.debathena = \
+    DEB_CHECK_FILES_SOURCE_/etc/nsswitch.conf.debathena = \
 	/usr/share/base-files/nsswitch.conf
 endif
-DEBATHENA_DIVERT_FILES_debathena-nsswitch-config += \
+DEB_DIVERT_FILES_debathena-nsswitch-config += \
 	/usr/sbin/adduser.debathena \
 	/usr/sbin/groupadd.debathena \
 	/usr/sbin/addgroup.debathena \
@@ -16,5 +17,5 @@ DEBATHENA_DIVERT_FILES_debathena-nsswitch-config += \
 	/usr/sbin/invoke-rc.d.debathena
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-replace-conffiles.mk
+include /usr/share/cdbs/1/rules/replace-files.mk
 
