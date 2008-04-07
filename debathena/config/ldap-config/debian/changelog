@@ -1,3 +1,10 @@
+debathena-ldap-config (1.3) unstable; urgency=low
+
+  * Replace libldap2 build-dependency with libldap2-dev, which is more
+    stable over new releases of libldap.
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 07 Apr 2008 00:25:30 -0400
+
 debathena-ldap-config (1.2) unstable; urgency=low
 
   * Use new config-package-dev interface.
