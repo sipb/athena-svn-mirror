@@ -7,10 +7,17 @@ pam_krb5_passwd_opts = use_authtok
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_DIVERT_EXTENSION = .debathena
 
+ifneq ($(wildcard /etc/pam.d/sshd),)
+    PAM_SSHD = /etc/pam.d/sshd.debathena
+    DEB_TRANSFORM_SCRIPT_$(PAM_SSHD) = debian/transform_ssh.debathena
+else
+    PAM_SSHD = /etc/pam.d/ssh.debathena
+endif
+
 DEB_REPLACE_FILES_debathena-pam-config += \
 	$(patsubst %,/etc/pam.d/common-%.debathena,$(pam_types)) \
 	/etc/pam.d/gdm.debathena \
-	/etc/pam.d/ssh.debathena \
+	$(PAM_SSHD) \
 	/etc/pam.d/login.debathena
 
 DEB_DIVERT_FILES_debathena-pam-config += \
@@ -18,6 +25,13 @@ DEB_DIVERT_FILES_debathena-pam-config += \
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/replace-files.mk
+
+ifneq ($(wildcard /etc/pam.d/sshd),)
+debian-divert/debathena-pam-config::
+	(echo "if [ \"\$$1\" = configure ] && [ -n \"\$$2\" ]; then"; \
+	echo "    undivert_unlink /etc/pam.d/ssh"; \
+	echo "fi") >> $(CURDIR)/debian/$(cdbs_curpkg).postinst.debhelper
+endif
 
 common-build-indep:: debian/access.conf.debathena
 
