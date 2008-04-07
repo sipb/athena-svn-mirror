@@ -1,50 +1,12 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-kerberos-config += \
+DEB_DIVERT_EXTENSION = .debathena
+DEB_REPLACE_FILES_debathena-kerberos-config += \
 	/etc/krb5.conf.debathena \
 	/etc/krb.conf.debathena \
 	/etc/krb.realms.debathena
+DEB_CHECK_FILES_SOURCE_krb5.conf = /usr/share/kerberos-configs/krb5.conf.template
+DEB_CHECK_FILES_SOURCE_krb.conf = /usr/share/kerberos-configs/krb.conf.template
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
-include /usr/share/cdbs/1/rules/debathena-check-conffiles.mk
-
-common-build-indep:: debian/krb5.conf.debathena debian/krb.conf.debathena debian/krb.realms.debathena
-
-debian/krb5.conf.debathena: /usr/share/kerberos-configs/krb5.conf.template
-	perl -0pe ' \
-	    s/^([ \t]*default_realm *=).*$$/\1 ATHENA.MIT.EDU/m or die; \
-	    s/(\[realms\][^[]*\n)[ \t]*NUMENOR\.MIT\.EDU\s*=\s*\{[^}]*\}\s*\n/\1/; \
-	    s/(\[realms\]\n)/\1\tNUMENOR.MIT.EDU = {\n\t\tkdc = numenor.mit.edu\n\t\tadmin_server = numenor.mit.edu\n\t}\n/ or die; \
-	    s/(\[realms\][^[]*\n)[ \t]*CSAIL\.MIT\.EDU\s*=\s*\{[^}]*\}\s*\n/\1/; \
-	    s/(\[realms\]\n)/\1\tCSAIL.MIT.EDU = {\n\t\tkdc = kerberos-1.csail.mit.edu\n\t\tkdc = kerberos-2.csail.mit.edu\n\t\tadmin_server = kerberos.csail.mit.edu\n\t\tdefault_domain = csail.mit.edu\n\t\tkrb524_server = krb524.csail.mit.edu\n\t}\n/ or die; \
-	    s/(\[realms\][^[]*\n)[ \t]*ATHENA\.MIT\.EDU\s*=\s*\{[^}]*\}\s*\n/\1/; \
-	    s/(\[realms\]\n)/\1\tATHENA.MIT.EDU = {\n\t\tkdc = kerberos.mit.edu:88\n\t\tkdc = kerberos-1.mit.edu:88\n\t\tkdc = kerberos-2.mit.edu:88\n\t\tadmin_server = kerberos.mit.edu\n\t\tdefault_domain = mit.edu\n\t}\n/ or die; \
-	    s/(\[domain_realm\][^[]*\n)[ \t]*numenor\.mit\.edu\s*=[^\n]*\n/\1/; \
-	    s/(\[domain_realm\]\n)/\1\tnumenor.mit.edu = NUMENOR.MIT.EDU\n/ or die; \
-	    s/(\[domain_realm\][^[]*\n)[ \t]*csail\.mit\.edu\s*=[^\n]*\n/\1/; \
-	    s/(\[domain_realm\]\n)/\1\tcsail.mit.edu = CSAIL.MIT.EDU\n/ or die; \
-	    s/(\[domain_realm\][^[]*\n)[ \t]*\.csail\.mit\.edu\s*=[^\n]*\n/\1/; \
-	    s/(\[domain_realm\]\n)/\1\t.csail.mit.edu = CSAIL.MIT.EDU\n/ or die; \
-	    s/(\[domain_realm\][^[]*\n)[ \t]*mit\.edu\s*=[^\n]*\n/\1/; \
-	    s/(\[domain_realm\]\n)/\1\tmit.edu = ATHENA.MIT.EDU\n/ or die; \
-	    s/(\[domain_realm\][^[]*\n)[ \t]*\.mit\.edu\s*=[^\n]*\n/\1/; \
-	    s/(\[domain_realm\]\n)/\1\t.mit.edu = ATHENA.MIT.EDU\n/ or die;' \
-	    $< > $@
-
-debian/krb.conf.debathena: /usr/share/kerberos-configs/krb.conf.template
-	perl -0pe ' \
-	    s/^ATHENA\.MIT\.EDU[ \t]*.*\n//mg; \
-	    s/^NUMENOR\.MIT\.EDU[ \t]*.*\n//mg; \
-	    s/^\@defaultrealm\n/ATHENA.MIT.EDU\nATHENA.MIT.EDU kerberos.mit.edu admin server\nATHENA.MIT.EDU kerberos-1.mit.edu\nATHENA.MIT.EDU kerberos-2.mit.edu\nNUMENOR.MIT.EDU numenor.mit.edu admin server\n/ or die;' \
-	    $< > $@
-
-debian/krb.realms.debathena: $(call debathena_check_conffiles,/etc/krb.realms)
-	perl -0pe ' \
-	    s/^.*[ \t]*ATHENA\.MIT\.EDU\n//mg; \
-	    s/^.*[ \t]*NUMENOR\.MIT\.EDU\n//mg; \
-	    s/^/.mit.edu ATHENA.MIT.EDU\nmit.edu ATHENA.MIT.EDU\nnumenor.mit.edu NUMENOR.MIT.EDU\n/ or die;' \
-	    $< > $@
-
-clean::
-	rm -f debian/krb5.conf.debathena debian/krb.conf.debathena debian/krb.realms.debathena
+include /usr/share/cdbs/1/rules/replace-files.mk

@@ -1,3 +1,10 @@
+debathena-kerberos-config (1.1) unstable; urgency=low
+
+  * Changed rules and control files to use new config-package-dev interface.
+    Put 3 transforms in seperate transform files.
+
+ -- Michael Y McCanna <acrefoot@mit.edu>  Sun,  6 Apr 2008 18:56:49 -0400
+
 debathena-kerberos-config (1.0debathena5) unstable; urgency=low
 
   * Use new check-conffiles interface from debathena-config-build-common
