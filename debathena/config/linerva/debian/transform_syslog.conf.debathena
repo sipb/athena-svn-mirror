@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s/^(\*\.emerg.*)/# $1/m or die;
