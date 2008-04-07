@@ -25,8 +25,10 @@ DEB_DIVERT_FILES_debathena-linerva += \
 	/etc/resolv.conf.debathena \
 	/usr/bin/id.debathena \
 	/etc/security/limits.conf.debathena \
-	/usr/share/man/man1/id.debathena.1.gz
-
+	/etc/ssh/sshd_config \
+	/etc/openafs/cacheinfo.debathena.debathena
+DEB_REPLACE_FILES_debathena-linerva += \
+	/etc/syslog.conf.debathena
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/replace-files.mk
