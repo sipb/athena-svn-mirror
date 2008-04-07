@@ -1,3 +1,9 @@
+debathena-ldap-config (1.2) unstable; urgency=low
+
+  * Use new config-package-dev interface.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sun,  6 Apr 2008 21:02:41 -0400
+
 debathena-ldap-config (1.1) unstable; urgency=low
 
   * Use new debathena-replace-conffiles interface.
