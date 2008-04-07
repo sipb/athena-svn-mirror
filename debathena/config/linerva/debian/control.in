@@ -6,9 +6,8 @@ Build-Depends: @cdbs@
 Standards-Version: 3.7.2
 
 Package: debathena-linerva
-Architecture: i386
-Pre-Depends: logcheck, screen, elinks
-Recommends:
+Architecture: all
+Depends: logcheck, screen, elinks
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Special Configuration for Linerva

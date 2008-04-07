@@ -1,8 +1,11 @@
 debathena-linerva (1.2) unstable; urgency=low
 
   * Repackage with new config-package-dev system.
+  * Remove Athena emacs file (those belong in their own package)
+  * Change architecture field to all.
+  * Replace unecessary Pre-Depends with Depends.
 
- -- Tim Abbott <tabbott@mit.edu>  Sun,  6 Apr 2008 22:40:22 -0400
+ -- Tim Abbott <tabbott@mit.edu>  Sun, 06 Apr 2008 22:48:05 -0400
 
 debathena-linerva (1.1) unstable; urgency=low
 
