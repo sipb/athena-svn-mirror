@@ -1,0 +1,2 @@
+debian/10debathena-xdg-override etc/X11/Xsession.d
+debian/user-dirs.defaults etc/xdg.debathena

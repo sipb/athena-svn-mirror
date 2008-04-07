@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ "$DEBATHENA_HOME_TYPE" = "afs" ]; then
+    if [ -n "$XDG_CONFIG_DIRS" ]; then
+	export XDG_CONFIG_DIRS=/etc/xdg.debathena:$XDG_CONFIG_DIRS
+    else
+	export XDG_CONFIG_DIRS=/etc/xdg.debathena:/etc/xdg
+    fi
+fi
