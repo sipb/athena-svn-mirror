@@ -1,0 +1,3 @@
+#!/usr/bin/perl -0p
+s/^\s*#?\s*GSSAPIAuthentication.*\n//mg;
+s/$/\n    GSSAPIAuthentication yes/ or die;

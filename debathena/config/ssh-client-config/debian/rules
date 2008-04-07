@@ -1,18 +1,9 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-ssh-client-config += \
+DEB_DIVERT_EXTENSION = .debathena
+
+DEB_REPLACE_FILES_debathena-ssh-client-config += \
 	/etc/ssh/ssh_config.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
-include /usr/share/cdbs/1/rules/debathena-check-conffiles.mk
-
-common-build-indep:: debian/ssh_config.debathena
-
-debian/ssh_config.debathena: $(call debathena_check_conffiles,/etc/ssh/ssh_config)
-	perl -0pe ' \
-	    s/^\s*#?\s*GSSAPIAuthentication.*\n//mg; \
-	    s/$$/\n    GSSAPIAuthentication yes/ or die;' $< > $@
-
-clean::
-	rm -f debian/ssh_config.debathena
+include /usr/share/cdbs/1/rules/replace-files.mk

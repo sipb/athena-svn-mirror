@@ -8,7 +8,8 @@ Standards-Version: 3.7.2
 Package: debathena-ssh-client-config
 Architecture: all
 Depends: debathena-kerberos-config, openssh-client | ssh-krb5, ${misc:Depends}
-Conflicts: debathena-ssh-config (<< 1.0)
+Provides: ${diverted-files}
+Conflicts: debathena-ssh-config (<< 1.0), ${diverted-files}
 Replaces: debathena-ssh-config (<< 1.0)
 Description: SSH client configuration for Debian-Athena
  This package configures the SSH client to automatically forward
