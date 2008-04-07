@@ -8,6 +8,8 @@ Standards-Version: 3.7.2
 Package: debathena-finger-config
 Architecture: all
 Depends: debathena-finger (>= 9.4), ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
 Description: Set Athena finger as default
  This package makes /usr/bin/finger point to the Debian-Athena
  version.

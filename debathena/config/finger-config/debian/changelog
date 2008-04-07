@@ -1,3 +1,9 @@
+debathena-finger-config (1.1) unstable; urgency=low
+
+  * Convert to the new config-package-dev interface
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 19:56:46 -0400
+
 debathena-finger-config (1.0debathena4) unstable; urgency=low
 
   * Changed section to net.
