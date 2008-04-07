@@ -1,0 +1,3 @@
+#!/usr/bin/perl -0p
+s/^\#[\t ]+(account[ \t]+required[ \t]+pam_access.so)/$1/m or s/^(?=\@include[ \t]+common-account)/account    required     pam_access.so\n/m or die;
+s|^(\@include[ \t]+common-session)|$1\nsession    optional     pam_mktemp.so var=XAUTHORITY prefix=/var/run/athena-sessions/xauth|m or die;

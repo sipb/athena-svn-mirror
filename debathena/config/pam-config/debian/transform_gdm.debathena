@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s/^(\@include common-account)/account\trequired\tpam_access.so\n$1/m or die;

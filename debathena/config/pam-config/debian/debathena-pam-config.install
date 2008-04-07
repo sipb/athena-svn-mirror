@@ -1,8 +1,1 @@
-debian/common-account.debathena etc/pam.d
-debian/common-auth.debathena etc/pam.d
-debian/common-password.debathena etc/pam.d
-debian/common-session.debathena etc/pam.d
-debian/gdm.debathena etc/pam.d
-debian/ssh.debathena etc/pam.d
-debian/login.debathena etc/pam.d
 debian/access.conf.debathena etc/security

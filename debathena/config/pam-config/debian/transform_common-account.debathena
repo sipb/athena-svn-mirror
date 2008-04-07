@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s/^(account[ \t]+)required( ? ?)([ \t]+)(pam_unix\.so([ \t]+.*)?)\n/$1sufficient$3$4\n$1required$2$3pam_krb5.so\n/m or die;

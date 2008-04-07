@@ -1,3 +1,9 @@
+debathena-pam-config (1.4) unstable; urgency=low
+
+  * Convert (partially) to the new config-package-dev interface
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 20:51:08 -0400
+
 debathena-pam-config (1.3debathena5) unstable; urgency=low
 
   * Make access.conf.append mimic Athena workstations more closely.

@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s/^\#[\t ]+(account[ \t]+required[ \t]+pam_access.so)/$1/m or die;

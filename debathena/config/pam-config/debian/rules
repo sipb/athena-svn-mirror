@@ -5,41 +5,24 @@ pam_krb5_auth_opts = use_authtok
 pam_krb5_passwd_opts = use_authtok
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-pam-config += \
+DEB_DIVERT_EXTENSION = .debathena
+
+DEB_REPLACE_FILES_debathena-pam-config += \
 	$(patsubst %,/etc/pam.d/common-%.debathena,$(pam_types)) \
 	/etc/pam.d/gdm.debathena \
 	/etc/pam.d/ssh.debathena \
-	/etc/pam.d/login.debathena \
+	/etc/pam.d/login.debathena
+
+DEB_DIVERT_FILES_debathena-pam-config += \
 	/etc/security/access.conf.debathena
+
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-check-conffiles.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
+include /usr/share/cdbs/1/rules/replace-files.mk
 
-common-build-indep:: $(patsubst %,debian/common-%.debathena,$(pam_types)) debian/gdm.debathena debian/login.debathena debian/ssh.debathena debian/access.conf.debathena
-
-debian/common-account.debathena: /usr/share/pam/common-account
-	perl -0pe 's/^(account[ \t]+)required( ? ?)([ \t]+)(pam_unix\.so([ \t]+.*)?)\n/$$1sufficient$$3$$4\n$$1required$$2$$3pam_krb5.so\n/m or die' $< > $@
-
-debian/common-auth.debathena: /usr/share/pam/common-auth
-	perl -0pe 's/^(auth[ \t]+)required( ? ?)([ \t]+)(pam_unix\.so([ \t]+.*)?)\n/$$1sufficient$$3$$4\n$$1required$$2$$3pam_krb5.so use_first_pass\n/m or die' $< > $@
-
-debian/common-session.debathena: /usr/share/pam/common-session
-	perl -0pe 's/^(session[ \t]+)required([ \t]+)(pam_unix\.so([ \t]+.*)?)\n/$$1required$$2$$3\n$$1optional$$2pam_krb5.so\n$$1optional$$2pam_krb524.so\n$$1optional$$2pam_athena_locker.so\n$$1optional$$2pam_debathena_home_type.so\n$$1optional$$2pam_mktemp.so var=ATHENA_SESSION_TMPDIR prefix=\/var\/run\/athena-sessions\/session dir\n/m or die' $< > $@
-
-debian/common-password.debathena: /usr/share/pam/common-password
-	perl -0pe 's/^(password[ \t]+)required( ? ?)([ \t]+)(pam_unix\.so([ \t]+.*)?)\n/$$1sufficient$$3$$4\n$$1required$$2$$3pam_krb5.so use_first_pass\n/m or die' $< > $@
-
-debian/gdm.debathena: $(call debathena_check_conffiles,/etc/pam.d/gdm)
-	perl -0pe 's/^(\@include common-account)/account\trequired\tpam_access.so\n$$1/m or die' $< > $@
-
-debian/ssh.debathena: $(call debathena_check_conffiles,/etc/pam.d/ssh)
-	perl -0pe '(s/^\#[\t ]+(account[ \t]+required[ \t]+pam_access.so)/$$1/m or s/^(?=\@include[ \t]+common-account)/account    required     pam_access.so\n/m) and s/^(\@include[ \t]+common-session)/$$1\nsession    optional     pam_mktemp.so var=XAUTHORITY prefix=\/var\/run\/athena-sessions\/xauth/m or die' $< > $@
-
-debian/login.debathena: $(call debathena_check_conffiles,/etc/pam.d/login)
-	perl -0pe 's/^\#[\t ]+(account[ \t]+required[ \t]+pam_access.so)/$$1/m or die' $< > $@
+common-build-indep:: debian/access.conf.debathena
 
 LSB_ID = $(shell lsb_release --short --id)
-debian/access.conf.debathena: $(call debathena_check_conffiles,/etc/security/access.conf)
+debian/access.conf.debathena: $(call debian_check_files,/etc/security/access.conf)
 ifeq ($(LSB_ID), Debian)
 	(cat $<; sed 's/root admin /root /' debian/access.conf.append) > $@
 else
@@ -51,4 +34,4 @@ else
 endif
 
 clean::
-	rm -f $(patsubst %,debian/common-%.debathena,$(pam_types)) debian/gdm.debathena debian/login.debathena debian/ssh.debathena debian/access.conf.debathena
+	rm -f debian/access.conf.debathena
