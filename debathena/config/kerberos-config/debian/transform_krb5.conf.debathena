@@ -1,5 +1,5 @@
 #!/usr/bin/perl -p0
-s/^([ \t]*default_realm *=).*$$/\1 ATHENA.MIT.EDU/m or die;
+s/^([ \t]*default_realm *=).*$/\1 ATHENA.MIT.EDU/m or die;
 s/(\[realms\][^[]*\n)[ \t]*NUMENOR\.MIT\.EDU\s*=\s*\{[^}]*\}\s*\n/\1/;
 s/(\[realms\]\n)/\1\tNUMENOR.MIT.EDU = {\n\t\tkdc = numenor.mit.edu\n\t\tadmin_server = numenor.mit.edu\n\t}\n/ or die;
 s/(\[realms\][^[]*\n)[ \t]*CSAIL\.MIT\.EDU\s*=\s*\{[^}]*\}\s*\n/\1/;
