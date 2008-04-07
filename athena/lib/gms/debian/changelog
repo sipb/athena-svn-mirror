@@ -1,3 +1,9 @@
+debathena-libgms (10.0.0-0debathena2) unstable; urgency=low
+
+  * Remove reference to Debathena-specific patch
+
+ -- Evan Broder <broder@mit.edu>  Sun, 06 Apr 2008 21:08:41 -0400
+
 debathena-libgms (10.0.0-0debathena1) unstable; urgency=low
 
   * Merged quilt patches into mainline Athena tree
