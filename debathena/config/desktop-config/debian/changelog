@@ -1,3 +1,9 @@
+debathena-desktop-config (1.1) unstable; urgency=low
+
+  * Remove a "include [...]divert.mk" line
+
+ -- Shreevatsa R <vatsa@mit.edu>  Sun,  6 Apr 2008 21:09:39 -0400
+
 debathena-desktop-config (1.0) unstable; urgency=low
 
   * Initial release.
