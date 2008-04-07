@@ -1,10 +1,11 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-bash-config += \
+DEB_DIVERT_EXTENSION = .debathena
+DEB_DIVERT_FILES_debathena-bash-config += \
 	/etc/bash.bashrc.debathena \
 	/etc/profile.debathena
-DEBATHENA_DIVERT_FILES_debathena-tcsh-config += \
+DEB_DIVERT_FILES_debathena-tcsh-config += \
 	/etc/csh.cshrc.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
+include /usr/share/cdbs/1/rules/replace-files.mk
