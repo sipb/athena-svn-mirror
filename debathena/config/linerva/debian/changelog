@@ -1,3 +1,9 @@
+debathena-linerva (1.2) unstable; urgency=low
+
+  * Repackage with new config-package-dev system.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sun,  6 Apr 2008 22:40:22 -0400
+
 debathena-linerva (1.1) unstable; urgency=low
 
   * updated motd
