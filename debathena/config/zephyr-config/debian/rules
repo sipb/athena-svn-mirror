@@ -1,14 +1,15 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-DEBATHENA_DIVERT_FILES_debathena-zephyr-config += \
+DEB_DIVERT_EXTENSION = .debathena
+DEB_DIVERT_FILES_debathena-zephyr-config += \
 	/etc/default/zephyr-clients.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
-include /usr/share/cdbs/1/rules/debathena-debconf-hack.mk
+include /usr/share/cdbs/1/rules/replace-files.mk
+include /usr/share/cdbs/1/rules/debconf-divert.mk
 
 common-install-indep::
-	if hash dh_installifupdown; then \
+	if hash dh_installifupdown 2>/dev/null; then \
 	    dh_installifupdown; \
 	else \
 	    dh_installdirs etc/network/if-up.d; \
