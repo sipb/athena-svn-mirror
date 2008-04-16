@@ -10,7 +10,7 @@ fi
 
 renew () {
     principal=`klist -5 2>/dev/null | sed -n 's/^Default principal: // p'`
-    kinit -54 "${principal:-${ATHENA_USER:-$USER}}" && aklog && zctl load /dev/null ;
+    kinit -54 "${principal:-${ATHENA_USER:-$USER}}" && aklog ;
 }
 
 add_flags=

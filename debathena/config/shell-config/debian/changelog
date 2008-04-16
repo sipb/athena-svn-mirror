@@ -1,3 +1,9 @@
+debathena-shell-config (1.5) unstable; urgency=low
+
+  * Remove zctl load /dev/null from renew alias.
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 16 Apr 2008 18:09:50 -0400
+
 debathena-shell-config (1.4) unstable; urgency=low
 
   * Convert to the new config-package-dev interface

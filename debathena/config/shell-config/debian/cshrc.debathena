@@ -8,7 +8,7 @@ if ( $ATHENA_SYS == "" ) then
 endif
 setenv ATHENA_SYS_COMPAT `/bin/machtype -C`
 
-alias renew 'kinit -54 $USER && aklog && zctl load /dev/null'
+alias renew 'kinit -54 $USER && aklog'
 
 set add_flags
 alias add 'eval `/bin/attach -Padd $add_flags \!:*`'
