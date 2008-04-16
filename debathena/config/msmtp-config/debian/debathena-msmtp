@@ -1,6 +1,6 @@
 #!/bin/sh
 if [ -z "$DEBATHENA_SENDMAIL_AUTH" ]; then
-    if klist -s 2&>/dev/null; then
+    if klist -s 2>/dev/null; then
 	DEBATHENA_SENDMAIL_AUTH=yes
     fi
 fi
