@@ -1,3 +1,9 @@
+debathena-linerva (1.6) unstable; urgency=low
+
+  * Clean up the postinst script somewhat.
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 16 Apr 2008 18:51:31 -0400
+
 debathena-linerva (1.5) unstable; urgency=low
 
   * Repackage with new config-package-dev system.
