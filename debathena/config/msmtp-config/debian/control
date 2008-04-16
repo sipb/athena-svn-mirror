@@ -21,3 +21,6 @@ Conflicts: mail-transport-agent
 Description: msmtp sendmail wrapper for Debian-Athena
  This package configures the debathena-msmtp wrapper as the system's
  sendmail program.
+ .
+ Note that this package will result in your machine have an effective
+ mailname of .mit.edu
