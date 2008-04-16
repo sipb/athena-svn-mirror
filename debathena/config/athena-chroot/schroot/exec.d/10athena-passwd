@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ $1 = "exec-start" ] && echo $CHROOT_NAME | grep -q ^athena-; then
+    LINE=`getent passwd ${AUTH_USER}`
+    if grep -q ^${AUTH_USER}: ${CHROOT_PATH}/etc/passwd; then
+	# one probably should check that | is not in the passwd entry
+	sed -i "s|^$AUTH_USER:.*\$|$LINE|" ${CHROOT_PATH}/etc/passwd
+    else
+	echo $LINE >> ${CHROOT_PATH}/etc/passwd
+    fi
+fi

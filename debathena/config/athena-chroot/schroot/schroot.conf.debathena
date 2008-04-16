@@ -1,0 +1,9 @@
+[athena]
+description=Athena Linux
+location=/srv/chroot/athena
+priority=3
+groups=mit
+type=directory
+run-setup-scripts=true
+run-exec-scripts=true
+script-config=athena.conf

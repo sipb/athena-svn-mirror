@@ -1,0 +1,5 @@
+debathena-athena-chroot (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 12 Jul 2007 21:49:07 -0400

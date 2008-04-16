@@ -1,0 +1,308 @@
+#!/installer/root/bin/sh
+
+echo "[Starting phase 2 installer.]"
+cd $SYSTEM
+
+# clear up some space in /
+rm -f /tmp/syslog
+
+#### Important environment variables inherited from the miniroot are:
+#### SYSTEM, IPADDR, NETMASK, GATEWAY
+#### The latter three will not be set if DHCP addressing was used.
+
+#### Set defaults and useful environment variables.
+export TZ=US/Eastern
+umask 022
+installer=$SYSTEM/installer
+instroot=${installer}/root
+root=/sysimage
+PATH=${instroot}/bin:${instroot}/usr/bin:${instroot}/sbin:${instroot}/usr/sbin:${root}/bin:${root}/usr/bin:${root}/sbin:${root}/usr/sbin:/bin:/sbin:/usr/bin:/etc/athena:/usr/X11R6/bin:$PATH
+LD_LIBRARY_PATH=${instroot}/lib:${instroot}/usr/lib:/lib:/usr/lib:/usr/X11R6/lib:
+export PATH
+export LD_LIBRARY_PATH
+export ATHENA_LOGIN_SESSION=$$
+defaultboot=linux
+forcentfsresize=""
+lilotimeout=100
+grubtimeout=$((${lilotimeout} / 10))
+bootoptions=linux
+fstype=ext2
+disk_setup=public
+create_hibernation_partition=false
+rc_public=false
+rc_autoupdate=true
+retain_tty_logins=false
+lba32=false
+extraliloopts=""
+finalshell=false
+convert_sata=auto
+bootloadertarget=""
+smp=false
+dhcp=false
+disk=none
+diskset=""
+hostname=""
+# Default filesystem sizes, in MB:
+bootsize=30
+# Swapsize is determined dynamically; see below.
+cachesize=512
+mincachesize=128
+rootsize=4000
+minrootsize=3400
+moduleconf=""
+xdriver=""
+
+athenaversion=`tail -1 $CONTROL | awk '{ print $1 }'`
+athrel="${athenaversion%.*}"
+passwd=${SYSTEM}/config/${athenaversion}/etc
+
+# Introduce ourselves.
+echo "Installing Linux Athena ${athenaversion}."
+echo "Install source: ${SYSTEM}/${CONTROL}."
+echo "Install started at `date`."
+
+# Set various other variables based on the Athena version.
+case ${athrel} in
+  9.4)
+    rpmopts="--nodeps"
+    displayconf=system-config-display
+    xconf=/etc/X11/xorg.conf
+    moduleconf=/etc/modprobe.conf
+    ;;
+  *)
+    rpmopts=""
+    displayconf=redhat-config-xfree86
+    xconf=/etc/X11/XF86Config
+    moduleconf=/etc/modules.conf
+    ;;
+esac
+
+# Create the mount point for the install target filesystems.
+mkdir ${root} 2> /dev/null
+
+### Mount filesystems in preparation for the install.
+mkdir -p ${root}
+mkdir ${root}/boot
+mkdir -p ${root}/usr/vice/cache
+mkdir ${root}/proc
+mount -t proc proc ${root}/proc
+mkdir ${root}/etc
+mkdir -p ${root}/var/athena
+
+
+#### Fetch some important files out of the installer and install them
+#### in the miniroot.
+if test -f /usr/ATHINSTALL ; then
+  # Extract the install miniroot's version number.
+  instversion=`cat /usr/ATHINSTALL`
+  echo "[Installer miniroot version ${instversion}.]"
+  # Put the rpm library stuff where rpm can find it; in the (static) /lib
+  # in the miniroot; /usr/lib/rpm points to /usrlibrpm, which we can
+  # actually create.
+  ln -sf ${instroot}/usr/lib/rpm /usrlibrpm
+else
+  # Assume we're running the old etherboot-based installer;
+  # create symlinks for some required libraries (not on the corresponding
+  # miniroot) which are needed for various install tools.
+  # We don't warn the users here, because now it's done above.
+  ln -sf ${instroot}/bin/bash /bin/bash
+  ln -sf ${instroot}/lib/libtermcap.so.2.0.8 /usr/lib/libtermcap.so.2
+  ln -sf ${instroot}/lib/libext2fs.so.2.4 /lib/libext2fs.so.2
+  ln -sf ${instroot}/lib/libcom_err.so.2.0 /lib/libcom_err.so.2
+  ln -sf ${instroot}/lib/libuuid.so.1.2 /lib/libuuid.so.1
+  ln -sf ${instroot}/lib/libnss* /lib
+  ln -sf ${instroot}/lib/libm.so.6 /lib/libm.so.6
+  ln -sf ${instroot}/lib/libpthread.so.0 /lib/libpthread.so.0
+  ln -sf ${instroot}/lib/ld-linux.so.2 /lib/ld-linux.so.2
+  ln -sf ${instroot}/lib/libe2p.so.2 /lib/libe2p.so.2
+  ln -sf ${instroot}/lib/libdl.so.2 /lib/libdl.so.2
+  ln -sf ${instroot}/usr/lib/rpm /usr/lib/rpm
+fi
+
+# The rest we need regardless.
+cp ${instroot}/etc/passwd /etc/passwd
+cp ${instroot}/etc/group /etc/group
+cp ${installer}/nsswitch.conf /etc/nsswitch.conf
+
+
+RPMLIST=`tail -1 $CONTROL | awk '{ print $2 }'`
+cp $RPMLIST ${root}/var/athena/release-rpms
+awk '{print $1}' $RPMLIST > ${root}/var/athena/install-rpms
+
+### Other Athena setup.
+mkdir -p ${root}/usr/athena/info
+mkdir -p ${root}/var/lib/rpm
+
+
+#### The following account for missing dependencies in some packages
+#### post-install scripts.
+#### These will just get stomped on when the real RPMS install.
+
+mkdir -p ${root}/bin
+mkdir -p ${root}/sbin
+mkdir -p ${root}/usr/bin
+cp ${instroot}/bin/cat ${root}/bin/cat
+cp ${instroot}/bin/date ${root}/bin/date
+cp ${instroot}/bin/rm ${root}/bin/rm
+cp ${instroot}/bin/ln ${root}/bin/ln
+cp ${instroot}/bin/sed ${root}/bin/sed
+cp ${instroot}/bin/cp ${root}/bin/cp
+cp ${instroot}/bin/mv ${root}/bin/mv
+cp ${instroot}/bin/grep ${root}/bin/grep
+cp ${instroot}/bin/egrep ${root}/bin/egrep
+cp ${instroot}/bin/mkdir ${root}/bin/mkdir
+cp ${instroot}/usr/bin/env ${root}/usr/bin/env
+cp ${instroot}/usr/bin/wc ${root}/usr/bin/wc
+cp ${instroot}/usr/bin/find ${root}/usr/bin/find
+cp ${instroot}/sbin/install-info ${root}/sbin/install-info
+cp ${instroot}/sbin/pidof ${root}/sbin/pidof
+# This next bit is a temporary hack until 9.4.25 is out and
+# includes the relevant dependency.
+# mkdir -p ${root}/usr/sbin
+# cp /afs/dev/user/amb/tmp/groupadd ${root}/usr/sbin/groupadd
+
+####
+#### Check the processor type, and downgrade the rpm list appropriately
+#### if necessary.
+RPMLIST=`tail -1 $CONTROL | awk '{ print $2 }'`
+cp $RPMLIST ${root}/var/athena/release-rpms
+awk '{print $1}' $RPMLIST > ${root}/var/athena/install-rpms
+cpufamily=`grep -i '^cpu family' < /proc/cpuinfo | head -1 | \
+    sed 's/^.*:[ 	]*//'`
+case "$cpufamily" in
+3|386*)
+  echo "Downgrading RPM list to i386 and below."
+  validcputypes="i386"
+  ;;
+4|486*)
+  echo "Downgrading RPM list to i486 and below."
+  validcputypes="i486 i386"
+  ;;
+5|586*)
+  echo "Downgrading RPM list to i586 and below."
+  validcputypes="i586 i486 i386"
+  ;;
+esac
+
+if [ "$validcputypes" ] ; then
+  rm -f ${root}/var/athena/install-rpms.new
+  touch ${root}/var/athena/install-rpms.new
+  for rpm in `cat ${root}/var/athena/install-rpms` ; do
+    for arch in ${validcputypes} ; do
+      crpm=`echo $rpm|sed -e 's/.i[3456]86.rpm$/.'${arch}'.rpm/'`
+      if [ -f "${crpm}" ] ; then
+        echo ${crpm} >> ${root}/var/athena/install-rpms.new
+	break
+      fi
+    done
+  done
+  mv -f ${root}/var/athena/install-rpms.new ${root}/var/athena/install-rpms
+fi
+
+
+####
+#### Set up RPM and install the package list.
+
+# Some scripts depend on /dev/null (and maybe other things) so make
+# sure they exist even before the dev package is installed.
+mkdir ${root}/dev
+${instroot}/dev/MAKEDEV -c ${instroot}/etc/makedev.d -d ${root}/dev \
+    std cdrom hd sd
+
+echo "Installing rpms..."
+# rpm --root ${root} --initdb
+if ! rpm --root ${root} -Uvh  ${rpmopts} \
+    `cat ${root}/var/athena/install-rpms` ; then
+  echo "The installation of the Linux Athena rpms has produced an error."
+  echo "This is probably due to insuffient space or other filesystem"
+  echo "errors, but may be due to harmless problems, especially if this"
+  echo "was an Athena 9.4 install."
+  if [ "${athrel}" != 9.4 ] ; then
+    echo ; echo "Press return to try continuing the install anyway."
+    read response
+  fi
+fi
+if [ "${smp}" = true ] ; then
+  echo "Installing SMP kernel..."
+  smpkernel=`grep kernel-[0-9] ${root}/var/athena/install-rpms| \
+      sed -e 's/kernel-/kernel-smp-/'`
+  if ! rpm --root ${root} -Uvh ${smpkernel} ${rpmopts}; then
+    echo "SMP kernel install failed."
+    smp=false
+  fi
+fi
+
+# Initialize passwd and shadow files
+cp ${passwd}/passwd ${root}/etc/passwd.local
+cp ${root}/etc/passwd.local ${root}/etc/passwd
+cp ${passwd}/shadow ${root}/etc/shadow.local
+cp ${root}/etc/shadow.local ${root}/etc/shadow
+cp ${passwd}/group ${root}/etc/group.local
+cp ${root}/etc/group.local ${root}/etc/group
+chmod 644 ${root}/etc/passwd.local ${root}/etc/passwd
+chmod 600 ${root}/etc/shadow.local ${root}/etc/shadow
+chmod 644 ${root}/etc/group.local ${root}/etc/group
+
+# Obtain and check hostname; prompt if necessary.
+if [ "${dhcp}" = false ] ; then
+  hostname=`chroot ${root} /usr/athena/bin/host $IPADDR | \
+        sed 's#^.*domain name pointer \(.*\)$#\1#' | sed 's;\.*$;;' | \
+        tr '[A-Z]' '[a-z]'`
+  if echo $hostname|grep -q "not found" ; then
+    hostname=""
+    printf "\a"; sleep 1 ; printf "\a"; sleep 1 ;printf "\a"
+    echo "The IP address you selected, $IPADDR, does not have an associated"
+    echo "hostname.  Please confirm that you're using the correct address."
+    while [ -z "$hostname" ] ; do
+      echo -n "Enter hostname [no default]: "
+      read hostname
+    done
+  fi
+fi
+
+cat > ${root}/etc/sysconfig/network <<EOF
+NETWORKING=yes
+FORWARD_IPV4=false
+HOSTNAME=$hostname
+EOF
+
+if [ "${dhcp}" = false ] ; then
+  echo "GATEWAY=$GATEWAY" >> ${root}/etc/sysconfig/network
+fi
+
+cat > ${root}/etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
+DEVICE=eth0
+IPADDR=$IPADDR
+NETMASK=$NETMASK
+ONBOOT=yes
+EOF
+if [ "${dhcp}" = false ] ; then
+  echo "BOOTPROTO=static" >> ${root}/etc/sysconfig/network-scripts/ifcfg-eth0
+else
+  echo "BOOTPROTO=dhcp" >> ${root}/etc/sysconfig/network-scripts/ifcfg-eth0
+fi
+
+echo -n "Athena Workstation (linux) Version " > ${root}/etc/athena/version
+echo -n "$athenaversion " >> ${root}/etc/athena/version
+date >> ${root}/etc/athena/version
+
+MACHINE=`uname -m`
+OS=`uname -s`
+
+# Update various settings in /etc/athena/rc.conf.
+sed -e "s/localhost.localdomain/${hostname}/" \
+    -e "s/PUBLIC=false/PUBLIC=${rc_public}/" \
+    -e "s/ADDR=[\.0-9]*/ADDR=${IPADDR}/" \
+    -e "s/AUTOUPDATE=true/AUTOUPDATE=${rc_autoupdate}/" \
+    ${root}/etc/athena/rc.conf > /tmp/rc.conf
+mv /tmp/rc.conf ${root}/etc/athena/rc.conf
+
+# Copy AFS config files from AFS, since we don't know if the ones we got
+# from the AFS RPM are the most up to date ones available.
+for file in CellAlias CellServDB SuidCells; do
+  cp /afs/athena.mit.edu/service/${file} ${root}/usr/vice/etc/${file}
+  chown root:root ${root}/usr/vice/etc/${file}
+  chmod a+r ${root}/usr/vice/etc/${file}
+done
+
+echo "Install finished at `date`."

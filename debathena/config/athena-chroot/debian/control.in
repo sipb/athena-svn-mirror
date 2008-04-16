@@ -1,0 +1,27 @@
+Source: debathena-athena-chroot
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-athena-chroot
+Architecture: all
+Depends: ${misc:Depends}, schroot (>= 1.1.6), mtools
+Recommends: debathena-nsswitch-config
+Provides: debathena-athmode
+Conflicts: debathena-athmode
+Replaces: debathena-athmode
+Description: schroot configuration for an Athena chroot
+ This package configures schroot to access an Athena 9.4 chroot, and
+ provides the scripts needed to install Athena into such a chroot.
+ .
+ You probably don't want to install this package unless you know what
+ you are doing.
+
+Package: debathena-athmode-lastlog
+Architecture: all
+Depends: debathena-athena-chroot
+Description: This provides lastlog via the Athena build chroot
+ This package has a script that provides lastlog by running it out of
+ an Athena chroot.

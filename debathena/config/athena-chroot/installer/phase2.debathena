@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#### Important environment variables inherited from the miniroot are:
+#### SYSTEM, IPADDR, NETMASK
+
+ln -s $SYSTEM/installer /installer
+cd /installer
+#export LD_LIBRARY_PATH=root/lib
+#SHELL=/afs/sipb.mit.edu/project/debathena/packages/config/athena-chroot/phase2.backend.debathena root/usr/bin/script /tmp/ramfs/install.log
+/phase2.backend.debathena
+echo -n "Cleaning up and saving the install.log file... "
+root/bin/sed -f install-log.sed /tmp/ramfs/install.log \
+  > /sysimage/var/athena/install.log
+/installer/root/bin/chmod 644 /sysimage/var/athena/install.log
+echo "done."
+echo "Rebooting..."

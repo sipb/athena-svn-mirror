@@ -1,0 +1,3 @@
+#!/bin/sh
+unset ENV_SET
+exec schroot -qpc athena "$@"

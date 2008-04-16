@@ -1,0 +1,77 @@
+#!/bin/sh
+set -e
+
+sysimage=/srv/chroot/athena
+
+export SYSTEM=/afs/athena.mit.edu/system/rhlinux
+export CONTROL=control/control-current
+export IPADDR=127.0.0.1
+
+tmpdir=$(mktemp -td)
+chroot="$tmpdir/chroot"
+
+maybe_umount ()
+{
+    grep -q "^[^ ]* $1 " /proc/mounts || return 0
+    umount "$@"
+}
+
+maybe_umount "$chroot/sysimage/proc"
+maybe_umount "$chroot/sysimage"
+maybe_umount "$chroot/mnt/runtime"
+maybe_umount "$chroot/tmp/ramfs"
+maybe_umount "$chroot/tmp"
+maybe_umount "$chroot/dev/pts"
+maybe_umount "$chroot/proc"
+maybe_umount "$chroot/sys"
+maybe_umount "$chroot/afs"
+maybe_umount "$chroot"
+
+rm -rf "$tmpdir"
+mkdir -p "$tmpdir"
+
+mcopy -i /mit/bootkit/rhlinux/athena.img ::/initrd.img "$tmpdir/initrd.img.gz"
+gunzip "$tmpdir/initrd.img.gz"
+mkdir "$chroot"
+mount -t ext2 -o rw,loop "$tmpdir/initrd.img" "$chroot"
+
+mount -t ramfs none "$chroot/tmp"
+mkdir "$chroot/tmp/ramfs"
+mount -t ramfs none "$chroot/tmp/ramfs"
+wget -N http://tae-kwon-leap.mit.edu/linux/rhlinux5a.img -O "$chroot/tmp/ramfs/rhlinux5a.img"
+mkdir -p "$chroot/mnt/runtime"
+mount -t cramfs -o ro,loop "$chroot/tmp/ramfs/rhlinux5a.img" "$chroot/mnt/runtime"
+
+mount -t proc proc "$chroot/proc"
+mount -t devpts devpts "$chroot/dev/pts"
+
+ln -s mnt/runtime/lib mnt/runtime/usr "$chroot/"
+mkdir "$chroot/afs"
+mount --bind /afs "$chroot/afs"
+
+mkdir -p "$sysimage"
+mkdir "$chroot/sysimage"
+mount --bind "$sysimage" "$chroot/sysimage"
+
+mkdir -p "$chroot/sys"
+mount -t sysfs sysfs "$chroot/sys"
+mkdir -p "$sysimage/etc" "$chroot/etc"
+cp -a /etc/fstab "$chroot/etc"
+cp -a /etc/fstab "$sysimage/etc"
+
+cp -a /usr/share/debathena-athena-chroot/installer/phase2.debathena "$chroot"
+cp -a /usr/share/debathena-athena-chroot/installer/phase2.backend.debathena "$chroot"
+chroot "$chroot" /phase2.debathena
+mkdir -p "$sysimage/dev/pts"
+mkdir -p "$sysimage/dev/shm"
+
+maybe_umount "$chroot/sysimage/proc"
+maybe_umount "$chroot/sysimage"
+maybe_umount "$chroot/mnt/runtime"
+maybe_umount "$chroot/tmp/ramfs"
+maybe_umount "$chroot/tmp"
+maybe_umount "$chroot/dev/pts"
+maybe_umount "$chroot/proc"
+maybe_umount "$chroot/sys"
+maybe_umount "$chroot/afs"
+maybe_umount "$chroot"
