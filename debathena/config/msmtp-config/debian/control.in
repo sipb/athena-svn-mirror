@@ -8,6 +8,16 @@ Standards-Version: 3.7.2
 Package: debathena-msmtp-config
 Architecture: all
 Depends: msmtp, debathena-kerberos-config, ${misc:Depends}
+Conflicts: debathena-pine (<= 4.64-3debathena3)
 Description: msmtp configuration for Debian-Athena
  This packages provides a script to send authenticated outgoing mail via 
  outgoing.mit.edu on Athena.
+
+Package: debathena-msmtp-sendmail
+Architecture: all
+Depends: debathena-msmtp-config (>= 1.1~)
+Provides: mail-transport-agent
+Conflicts: mail-transport-agent
+Description: msmtp sendmail wrapper for Debian-Athena
+ This package configures the debathena-msmtp wrapper as the system's
+ sendmail program.

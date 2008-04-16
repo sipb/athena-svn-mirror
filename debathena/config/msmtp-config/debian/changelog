@@ -1,3 +1,12 @@
+debathena-msmtp-config (1.1) unstable; urgency=low
+
+  * New debathena-msmtp script without -t and --debug and with better
+    handling of missing tickets.
+  * Include a debathena-msmtp-sendmail package that configures the
+    machine to use debathena-msmtp as its sendmail solution.
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 16 Apr 2008 16:06:04 -0400
+
 debathena-msmtp-config (1.0debathena2) unstable; urgency=low
 
   * Section debathena/net.
