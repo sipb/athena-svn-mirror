@@ -1,3 +1,10 @@
+debathena-saferm (10.0.0-0debathena2) unstable; urgency=low
+
+  * Add debian/compat file to set debhelper compatability to 4.
+  * Regenerate debian/control.
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 16 Apr 2008 16:32:12 -0400
+
 debathena-saferm (10.0.0-0debathena1) unstable; urgency=low
 
   * Initial release.
