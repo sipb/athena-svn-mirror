@@ -64,6 +64,12 @@ cp -a /usr/share/debathena-athena-chroot/installer/phase2.backend.debathena "$ch
 chroot "$chroot" /phase2.debathena
 mkdir -p "$sysimage/dev/pts"
 mkdir -p "$sysimage/dev/shm"
+# setup Athena machine to use NSS for naming information
+# This code currently is an awful hack that assumes a 32-bit host.
+cp -a /etc/hesiod.conf "$sysimage/etc"
+cp -a /etc/nsswitch.conf.debathena "$sysimage/etc/nsswitch.conf"
+cp -a /lib/libnss_nonlocal* "$sysimage/lib"
+cp -a /lib/libnss_afspag* "$sysimage/lib"
 
 maybe_umount "$chroot/sysimage/proc"
 maybe_umount "$chroot/sysimage"

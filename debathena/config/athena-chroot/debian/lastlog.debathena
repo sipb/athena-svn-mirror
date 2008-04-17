@@ -1,4 +1,3 @@
 #!/bin/sh
 unset ENV_SET
-shift
-exec schroot -qpc athena /usr/athena/bin/lastlog "$@"
+exec schroot -qpc athena /usr/athena/bin/lastlog -- "$@"

@@ -22,8 +22,10 @@ set -e
 case "$1" in
     configure)
 	# schroot doesn't deal with symlinks; see bug #476332
-	rm -f /etc/schroot/schroot.conf
-	mv /etc/schroot/schroot.conf.debathena /etc/schroot/schroot.conf
+	if [ -z "$2" ]; then
+	    rm -f /etc/schroot/schroot.conf
+	    ln /etc/schroot/schroot.conf.debathena /etc/schroot/schroot.conf
+	fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

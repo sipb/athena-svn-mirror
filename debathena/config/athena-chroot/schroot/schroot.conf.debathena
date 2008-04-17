@@ -7,3 +7,4 @@ type=directory
 run-setup-scripts=true
 run-exec-scripts=true
 script-config=athena.conf
+personality=linux32
