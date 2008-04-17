@@ -3,7 +3,8 @@
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_DIVERT_EXTENSION=.debathena
 DEB_DIVERT_FILES_debathena-athena-chroot += \
-	/etc/schroot/schroot.conf.debathena
+	/etc/schroot/schroot.conf.debathena \
+	/etc/pam.d/schroot.debathena
 DEB_DIVERT_FILES_debathena-lastlog += \
 	/usr/bin/lastlog.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
