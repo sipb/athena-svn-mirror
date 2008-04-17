@@ -1,0 +1,40 @@
+#! /bin/sh -e
+### BEGIN INIT INFO
+# Provides:             debathena-afuse-automounter
+# Required-Start:	openafs-client
+# Required-Stop:        openafs-client
+# Should-Start:         $local_fs $network
+# Default-Start:	2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    Debathena /mit afuse-based automounter
+# Description:          Automounts /mit/locker to point to AFS using Hesiod lookups.
+### END INIT INFO
+
+NAME=debathena-afuse-automounter
+COMMAND='afuse /mit -o mount_template="/usr/lib/debathena-afuse-automounter/mount %m %r" -o unmount_template="/usr/lib/debathena-afuse-config/ummount %m %r" -o allow_other'
+case "$1" in
+  start)
+	modprobe fuse
+	eval $COMMAND
+	;;
+  stop)
+	# afuse doesn't quite support start-stop-daemon, but we can approximate.
+	if pgrep -xf "$(echo $COMMAND | sed 's/\"//g')" >/dev/null; then
+	    fusermount -z -u /mit
+	else
+	    echo "afuse automounter for /mit not running" >&2
+	fi
+	;;
+  force-reload|restart)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	N=/etc/init.d/$NAME
+	# echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
+	echo "Usage: $N {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

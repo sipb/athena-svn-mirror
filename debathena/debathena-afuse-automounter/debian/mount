@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+my ($mountpoint, $name) = @ARGV;
+my %filsys;
+open(HESINFO, '-|', 'hesinfo', '--', $name, 'filsys') or die "can't exec hesinfo: $!";
+while (<HESINFO>) {
+    chomp;
+    my %f; @f{qw(type path rw mount order)} = split / /;
+    %filsys = %f if (($f{order} || 9999) <= ($filsys{order} || 9999));
+}
+close(HESINFO);
+%filsys or die "no locker $name";
+$filsys{type} eq 'AFS' or die "bad type $filsys{type} for locker $name";
+$filsys{path} =~ m|^/afs/| or die "bad path $filsys{path} for locker $name";
+rmdir($mountpoint);
+symlink($filsys{path}, $mountpoint) or die "can't symlink $mountpoint to $filsys{path}: $!";

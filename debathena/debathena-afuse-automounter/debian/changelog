@@ -1,0 +1,5 @@
+debathena-afuse-automounter (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Tim Abbott <tabbott@mit.edu>  Fri, 28 Mar 2008 17:30:45 -0400

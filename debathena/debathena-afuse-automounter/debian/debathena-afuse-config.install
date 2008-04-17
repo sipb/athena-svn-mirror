@@ -1,0 +1,2 @@
+debian/mount /usr/lib/debathena-afuse-automounter/
+debian/unmount /usr/lib/debathena-afuse-automounter/

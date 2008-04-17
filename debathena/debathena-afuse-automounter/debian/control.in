@@ -1,0 +1,15 @@
+Source: debathena-afuse-automounter
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-afuse-automounter
+Architecture: all
+Depends: afuse, fuse-utils, debathena-afs-config, debathena-hesiod-config, ${misc:Depends}
+Conflicts: debathena-autofs-config
+Replaces: debathena-autofs-config
+Description: Afuse-based Automounter configuration for Debian-Athena
+ This packages configures afuse to automatically mount Athena lockers
+ using the Hesiod directory information.
