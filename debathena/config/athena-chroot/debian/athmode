@@ -1,3 +1,4 @@
 #!/bin/sh
 unset ENV_SET
+export PATH="/usr/athena/bin:/usr/athena/etc:/bin/athena:/usr/bin:/bin:/usr/X11R6/bin:/usr/sbin:/sbin"
 exec schroot -qpc athena -- "$@"
