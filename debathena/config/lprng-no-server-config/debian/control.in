@@ -8,6 +8,8 @@ Standards-Version: 3.7.2
 Package: debathena-lprng-no-server-config
 Architecture: all
 Depends: debathena-lprng-config
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
 Description: Remove lprng's cron job and init script
  This package makes lprng not run a server.
 
