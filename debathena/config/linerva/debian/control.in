@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-linerva
 Architecture: all
-Depends: logcheck, screen, elinks, sysklogd
+Depends: logcheck, screen, elinks, sysklogd, linux32
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Special Configuration for Linerva

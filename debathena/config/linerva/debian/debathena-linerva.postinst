@@ -84,6 +84,7 @@ case "$1" in
 	lose_setuid /usr/bin/sudo
 	lose_setuid /usr/lib/pt_chown
 	lose_setuid /usr/lib/emacs/21.4/i386-linux/movemail
+	lose_setuid /usr/lib/openssh/ssh-keysign
 	lose_setuid /usr/lib/ssh-keysign
 	lose_setuid /usr/sbin/pppd
 	lose_setuid /usr/sbin/pppoe

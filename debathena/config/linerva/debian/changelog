@@ -1,3 +1,28 @@
+debathena-linerva (1.9) unstable; urgency=low
+
+  * Add /etc/ssh/sshd_config (for port 8080 sshd)
+  * Add /etc/apt/preferences and /etc/apt/sources.list.d/backports.
+  * Convert to use config-package.mk interface, new in config-package-
+    dev 4.5
+  * Replace DEB_REPLACE_FILES with DEB_TRANSFORM_FILES, as this was
+    renamed in config-package-dev 4.5
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 21 Apr 2008 19:23:36 -0400
+
+debathena-linerva (1.8) unstable; urgency=low
+
+  * Add init.debathena, which causes /sbin/init to be executed in the 32-bit
+    personality
+  * There's no longer a sshd_config file - get rid of that
+
+ -- Evan Broder <broder@mit.edu>  Sun, 20 Apr 2008 17:53:16 -0400
+
+debathena-linerva (1.7) unstable; urgency=low
+
+  * Add linerva-install
+
+ -- Nelson Elhage <nelhage@mit.edu>  Sun, 20 Apr 2008 17:01:30 -0400
+
 debathena-linerva (1.6) unstable; urgency=low
 
   * Clean up the postinst script somewhat.

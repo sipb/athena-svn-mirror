@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/linux32 /sbin/init.debathena-orig "$@"

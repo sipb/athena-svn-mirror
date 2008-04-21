@@ -1,0 +1,28 @@
+#!/bin/sh
+if [ "$1" = "install" ];
+then
+	shift;
+fi
+
+apt-get -y -d install "$@" >/dev/null 2>&1
+if [ $? -ne 0 ];
+then
+	echo "Error fetching packages..." 1>&2
+	exit -1
+fi
+
+aptitude install "$@"
+
+export KRB5CCNAME=/tmp/krb5cc.linerva-install
+
+kinit -k -t /etc/krb5.keytab
+aklog sipb.mit.edu
+
+cd /mit/debathena/packages/meta/linerva-master
+for i in "$@"; do
+	echo "$i" >> debathena-linerva-master.equivs-add
+done
+
+unlog
+kdestroy
+
