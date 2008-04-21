@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-dotfiles
 Architecture: all
-Depends: tcsh, debathena-base, debathena-attach, debathena-machtype, debathena-athdir, debathena-get-message, debathena-mailquota, debathena-from (>= 9.4.0-0debathena2~), debathena-lert, debathena-quota (>= 9.4.0-0debathena2~), debathena-afs-config, debathena-autofs-config, debathena-kerberos-config, debathena-zephyr-config, ${misc:Depends}
+Depends: tcsh, debathena-base, debathena-attach, debathena-machtype, debathena-athdir, debathena-get-message, debathena-mailquota, debathena-from (>= 9.4.0-0debathena2~), debathena-lert, debathena-quota (>= 9.4.0-0debathena2~), debathena-afs-config, debathena-afuse-automounter, debathena-kerberos-config, debathena-zephyr-config, ${misc:Depends}
 Recommends: debathena-bash, debathena-tcsh
 Replaces: debathena-athena-files (<< 0.2)
 Conflicts: debathena-athena-files (<< 0.2)

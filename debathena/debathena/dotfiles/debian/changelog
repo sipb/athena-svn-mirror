@@ -31,8 +31,9 @@ debathena-dotfiles (10.0.0-0debathena1) unstable; urgency=low
     character change, since there's a lot of documentation that uses it.
   * Stop configuring tcsh to not stat /afs/* when tab-completing; fakestat handles this.
   * Remove tcsh warning for "bind" alias.
+  * Transition from debathena-autofs-config to debathena-afuse-automounter.
 
- -- Tim Abbott <tabbott@mit.edu>  Mon, 21 Apr 2008 16:06:04 -0400
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 21 Apr 2008 16:18:24 -0400
 
 debathena-dotfiles (9.4.43-0debathena2) unstable; urgency=low
 
