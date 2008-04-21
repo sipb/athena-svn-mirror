@@ -3,7 +3,7 @@
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_DIVERT_EXTENSION = .debathena
 
-DEB_REPLACE_FILES_debathena-ssh-client-config += \
+DEB_TRANSFORM_FILES_debathena-ssh-client-config += \
 	/etc/ssh/ssh_config.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/replace-files.mk
+include /usr/share/cdbs/1/rules/config-package.mk

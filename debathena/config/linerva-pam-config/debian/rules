@@ -9,4 +9,4 @@ DEB_DIVERT_FILES_debathena-linerva-pam-config += \
 	/etc/pam.d/login.debathena.debathena
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/replace-files.mk
+include /usr/share/cdbs/1/rules/config-package.mk

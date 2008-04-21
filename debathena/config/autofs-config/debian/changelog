@@ -1,3 +1,10 @@
+debathena-autofs-config (1.5) unstable; urgency=low
+
+  * Convert to use config-package.mk interface, new in config-package-
+    dev 4.5
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 21 Apr 2008 19:02:46 -0400
+
 debathena-autofs-config (1.4) unstable; urgency=low
 
   * Convert rules and control files to new config-package-dev interface.

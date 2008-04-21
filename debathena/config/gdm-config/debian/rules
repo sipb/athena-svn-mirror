@@ -9,9 +9,9 @@ endif
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_DIVERT_EXTENSION = .debathena
-DEB_REPLACE_FILES_debathena-gdm-config += \
+DEB_TRANSFORM_FILES_debathena-gdm-config += \
 	${GDM_CONFFILE}
 DEB_TRANSFORM_SCRIPT_${GDM_CONFFILE} = debian/transform_gdm.conf.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/replace-files.mk
+include /usr/share/cdbs/1/rules/config-package.mk
 

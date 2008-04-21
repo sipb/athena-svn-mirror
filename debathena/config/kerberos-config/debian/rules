@@ -2,7 +2,7 @@
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_DIVERT_EXTENSION = .debathena
-DEB_REPLACE_FILES_debathena-kerberos-config += \
+DEB_TRANSFORM_FILES_debathena-kerberos-config += \
 	/etc/krb5.conf.debathena \
 	/etc/krb.conf.debathena \
 	/etc/krb.realms.debathena
@@ -11,4 +11,4 @@ DEB_CHECK_FILES_SOURCE_/etc/krb5.conf.debathena = \
 DEB_CHECK_FILES_SOURCE_/etc/krb.conf.debathena = \
 	/usr/share/kerberos-configs/krb.conf.template
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/replace-files.mk
+include /usr/share/cdbs/1/rules/config-package.mk

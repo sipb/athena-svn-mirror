@@ -1,3 +1,10 @@
+debathena-config-build-common (3.8) unstable; urgency=low
+
+  * Convert to use config-package.mk interface, new in config-package-
+    dev 4.5
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 21 Apr 2008 19:02:47 -0400
+
 debathena-config-build-common (3.7) unstable; urgency=low
 
   * Fix debathena-divert.mk to correctly divert files.

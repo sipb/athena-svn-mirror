@@ -1,3 +1,12 @@
+debathena-finger-config (1.3) unstable; urgency=low
+
+  * Convert to use config-package.mk interface, new in config-package-
+    dev 4.5
+  * Replace DEB_UNDIVERT_FILES_VERSION with DEB_UNDIVERT_VERSION, as
+    this was renamed in config-package-dev 4.5
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 21 Apr 2008 19:08:21 -0400
+
 debathena-finger-config (1.2) unstable; urgency=low
 
   * Use DEB_REMOVE_FILES interface from config-package-dev 4.4.

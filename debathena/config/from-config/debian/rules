@@ -6,5 +6,5 @@ DEB_DIVERT_FILES_debathena-from-config += \
 	/usr/bin/from.debathena \
 	/usr/share/man/man1/from.debathena.1.gz
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/replace-files.mk
+include /usr/share/cdbs/1/rules/config-package.mk
 

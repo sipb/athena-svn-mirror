@@ -14,7 +14,7 @@ else
     PAM_SSHD = /etc/pam.d/ssh.debathena
 endif
 
-DEB_REPLACE_FILES_debathena-pam-config += \
+DEB_TRANSFORM_FILES_debathena-pam-config += \
 	$(patsubst %,/etc/pam.d/common-%.debathena,$(pam_types)) \
 	/etc/pam.d/gdm.debathena \
 	$(PAM_SSHD) \
@@ -24,7 +24,7 @@ DEB_DIVERT_FILES_debathena-pam-config += \
 	/etc/security/access.conf.debathena
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/replace-files.mk
+include /usr/share/cdbs/1/rules/config-package.mk
 
 ifneq ($(wildcard /etc/pam.d/sshd),)
 debian-divert/debathena-pam-config::
