@@ -1,3 +1,9 @@
+debathena-finger-config (1.2) unstable; urgency=low
+
+  * Use DEB_REMOVE_FILES interface from config-package-dev 4.4.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 19 Apr 2008 21:10:53 -0400
+
 debathena-finger-config (1.1) unstable; urgency=low
 
   * Convert to the new config-package-dev interface
