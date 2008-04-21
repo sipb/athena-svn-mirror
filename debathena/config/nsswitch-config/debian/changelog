@@ -1,3 +1,9 @@
+debathena-nsswitch-config (1.8) unstable; urgency=low
+
+  * Transition to the new debathean-afuse-automounter.
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 21 Apr 2008 16:23:37 -0400
+
 debathena-nsswitch-config (1.7) unstable; urgency=low
 
   * Convert to the new config-package-dev interface
