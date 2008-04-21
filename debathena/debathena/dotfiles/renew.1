@@ -15,7 +15,7 @@ Typing "alias renew" will reveal that renew simply executes the series
 of commands:
 
 .ti 12
-kinit $USER && fsid -a && zctl load /dev/null
+kinit -54 $USER && fsid -a && zctl load /dev/null
 
 "USER" is an environment variable that is set to your username.
 \fIkinit\fR prompts you for your password and gets you a new kerberos

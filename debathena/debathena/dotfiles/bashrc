@@ -4,8 +4,11 @@
 
 # This file is sourced by default user file ~/.bashrc
 
-initdir=/usr/athena/lib/init
+initdir=/usr/lib/init
 
+# add alias moved here to avoid having two copies of it.
+
+add () { eval "$( /bin/attach -Padd -b "$@" )" ; }
 
 
 # *******************   ENVIRONMENT SETUP   *******************
@@ -26,7 +29,7 @@ initdir=/usr/athena/lib/init
 if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 
 	export ENV_SET=t			# Avoid unnecessary repeat
-	export HOSTTYPE="`/bin/athena/machtype`"
+	export HOSTTYPE="`/bin/machtype`"
 
 	umask 077				# Strictly protect files
 						#  (does not apply in AFS)
@@ -35,73 +38,10 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	export VISUAL=emacs			# Set default screen editor
 	export MM_CHARSET=iso-8859-1
 
-	# Set standard Athena path variables (generic path for all users).
-	# PATH will get set later after .bash_environment is run.
-	case "$HOSTTYPE" in
-	sgi)
-		athena_path=/usr/athena/bin:/usr/athena/etc:
-		athena_path=$athena_path:/bin/athena:/usr/sbin:/usr/bsd:/sbin
-		athena_path=$athena_path:/usr/bin:/bin:/usr/bin/X11:/usr/etc
-		MANPATH=/usr/athena/man:/usr/freeware/catman:/usr/share/catman
-		MANPATH=$MANPATH:/usr/share/man:/usr/catman:/usr/man
-		;;
-	sun4)
-		athena_path=/srvd/patch:/usr/athena/bin:/usr/athena/etc
-		athena_path=$athena_path:/bin/athena:/usr/openwin/bin
-		athena_path=$athena_path:/usr/openwin/demo:/usr/dt/bin:/usr/bin
-		athena_path=$athena_path:/usr/ccs/bin:/usr/sbin:/sbin
-		athena_path=$athena_path:/usr/sfw/bin:/usr/ucb
-		MANPATH=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
-		MANPATH=$MANPATH:/usr/sfw/man
-		;;
-	linux)
-		athena_path=/usr/athena/bin:/usr/athena/etc
-		athena_path=$athena_path:/bin/athena:/usr/bin:/bin
-		athena_path=$athena_path:/usr/X11R6/bin:/usr/athena/etc
-		athena_path=$athena_path:/usr/sbin:/sbin
-		MANPATH=/usr/athena/man:/usr/share/man:/usr/X11R6/man
-		;;
-	*)
-		echo "Standard dotfiles do not support system type $HOSTTYPE."
-	esac
-	export MANPATH
+	export MORE=-s
 
-	# Default "more" behavior
-	case $HOSTTYPE in
-	sgi)
-		MORE=-se
-		;;
-	*)
-		MORE=-s
-		;;
-	esac
-	export MORE
-
-	# Set miscellaneous system-dependent variables.
-	case $HOSTTYPE in
-	sgi)
-		# The following set the default error message format
-		# to omit the label and severity components, per the
-		# standard IRIX /etc/profile.
-		export MSGVERB=text:action
-		export NOMSGLABEL=1
-		export NOMSGSEVERITY=1
-		;;
-	sun4)
-		export OPENWINHOME=/usr/openwin
-		;;
-	linux)
-		# This is to ensure that native programs use the Athena
-		# gconf, ORBit, bonobo-activation, etc. libraries
-		# rather than the native ones.  GNOME programs outside
-		# of /usr/athena/bin may not function properly if it is
-		# not set.
-		export LD_LIBRARY_PATH=/usr/athena/lib
-		;;
-	esac
-	
-	export ATHENA_SYS=`/bin/athena/machtype -S`
-	export ATHENA_SYS_COMPAT=`/bin/athena/machtype -C`
+	export ATHENA_SYS=`/bin/machtype -S`
+	export ATHENA_SYS_COMPAT=`/bin/machtype -C`
 
 	if [ -z "$ATHENA_SYS" ]; then
 		export ATHENA_SYS=@sys
@@ -111,8 +51,6 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 		PRINTER=`awk '/LPR/ { print $3 }' /var/athena/clusterinfo`
 		if [ -n "$PRINTER" ]; then export PRINTER; fi
 	fi
-
-	export XDG_DATA_DIRS=/usr/athena/share:/usr/share
 
 	# Reset the HOME variable to correspond to the actual location
 	# of the user's home directory.  This will avoid having long
@@ -128,12 +66,6 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	fi
 	unset x
 
-	# Special version of ADD for the .bash_environment file.
-
-	add () {
-		eval "$( /bin/athena/attach -Padd -b -P"$athena_path" "$@" )"
-	}
-
 	# Run user environment customizations identified in your
 	# ~/.bash_environment file.  This is the place to include your
 	# own environment variables, attach commands, and other system
@@ -146,33 +78,14 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	if [ "${NOCALLS+set}" != set -a -r ~/.bash_environment ]; then
 		. ~/.bash_environment
 	fi
-	
-	# On IRIX, limits are reset on exec of a setuid program, e.g.
-	# xterm. So record now what the user wanted coredumpsize to
-	# be so we can fix it later.
-	export COREDUMPSIZE_LIMIT=`ulimit -c`
 
 	# Standard Athena path
-	athena_home_bin=$( /usr/athena/bin/athdir "$HOME" )
-	PATH=${athena_home_bin:+$athena_home_bin:}$athena_path:.
-	unset athena_path athena_home_bin
-
-	# Make sure applications can properly find their appdefs, etc.
-
-	if [ "${XUSERFILESEARCHPATH+set}" != set ]; then
-		XUSERFILESEARCHPATH=/usr/athena/lib/X11/app-defaults/%N
-	else
-		XUSERFILESEARCHPATH=$XUSERFILESEARCHPATH:/usr/athena/lib/X11/app-defaults/%N
-	fi
-
-	if [ sgi = "$HOSTTYPE" -a "${skip_sgi+set}" != set -a "${NOCALLS+set}" != set ]; then
-		XUSERFILESEARCHPATH="$HOME/.desktop-$host/%N:$HOME/.desktop-$host/0.0/%N:$XUSERFILESEARCHPATH"
-	fi
-
-	export XUSERFILESEARCHPATH
+	athena_home_bin=$( /usr/bin/athdir "$HOME" )
+	PATH=${athena_home_bin:+$athena_home_bin:}$PATH:.
+	unset athena_home_bin
 
 fi
-	
+
 
 # *******************  BASH SETUP   *******************
 
@@ -180,27 +93,8 @@ fi
 
 set -o noclobber		# Don't overwrite files with redirection
 
-if [ "${PS1+set}" = set ]; then
-	if [ sgi = "$HOSTTYPE" -a -t 0 ]; then
-		# Have no better way to do this at the moment.
-		stty sane intr ^C
-	fi
-	case $HOME in
-	/var/athena/tmphomedir/*)
-		PS1="athena (temporary homedir)\$ "
-		;;
-	*)
-		PS1="athena\$ "
-		;;
-	esac
-	CDPATH=.:~
-fi
-
-# Fix coredumpsize limit in case it was reset
-[ -n "$COREDUMPSIZE_LIMIT" ] && ulimit -S -c $COREDUMPSIZE_LIMIT
-
 #   alias for re-establishing authentication
-renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
+renew () { kinit -54 $USER && fsid -a && zctl load /dev/null ; }
 
 #   alias for a convenient way to change terminal type
 term () { set -f; unset TERMCAP; eval "$( tset -s -I -Q "$@" )"; set +f; }
@@ -217,9 +111,6 @@ if [ "${XSESSION+set}" = set ]; then
 fi
 
 #   aliases dealing with adding locker programs
-
-add_flags=
-add () { eval "$( /bin/athena/attach -Padd -b $add_flags "$@" )" ; }
 
 alias setup='echo "setup is not supported in bash yet"'
 

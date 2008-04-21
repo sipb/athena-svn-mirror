@@ -6,7 +6,7 @@
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
-initlib="/usr/athena/lib/init"
+initlib="/usr/lib/init"
 defsession=$1
 defsessioncmd="$2"
 
@@ -48,23 +48,15 @@ fi
 
 # Make random Athena modifications to keymap if required.
 
-test -f /usr/athena/lib/X11/keymaps/AthenaMods && \
-  xmodmap /usr/athena/lib/X11/keymaps/AthenaMods
+test -f /usr/lib/X11/keymaps/AthenaMods && \
+  xmodmap /usr/lib/X11/keymaps/AthenaMods
 
 # Set X screensaver to noblanking to avoid power saving.
 xset s noblank
 
-# Create a unique temporary directory for the session, and remember
-# the directory name in the environment.
-sessiondir="`$initlib/mksessiondir -s $$`"
-if [ -n "$sessiondir" ]; then
-	ATHENA_SESSION_TMPDIR="$sessiondir"
-	export ATHENA_SESSION_TMPDIR
-fi
-
 # Only attempt using bugme if packs are actually available.
-if [ -x /usr/athena/bin/bugme ]; then
-	/usr/athena/bin/bugme $session
+if [ -x /usr/bin/bugme ]; then
+	/usr/bin/bugme $session
 else
 	$session
 fi

@@ -8,34 +8,17 @@
 # explicitly.
 . ~/.bashrc
 
-# SGI xwsh runs shells as login shells. We don't want this.
-if [ "${XSESSION+set}" = set ]; then
-	exit 0
-fi
-
-initdir=/usr/athena/lib/init
+initdir=/usr/lib/init
 
 # Remember the pid of the login shell; used by dustbuster.
 ATHENA_LOGIN_SESSION=$$
 export ATHENA_LOGIN_SESSION
-
-# Create a unique temporary directory for the session, and remember
-# the directory name in the environment.
-sessiondir="`$initdir/mksessiondir -s $$`"
-if [ -n "$sessiondir" ]; then
-  ATHENA_SESSION_TMPDIR="$sessiondir"
-  export ATHENA_SESSION_TMPDIR
-fi
 
 if [ ! -r ~/.hushlogin ]; then
 	verbose_login=t		# Echo messages unless user has ~/.hushlogin.
 fi
 
 /bin/stty sane			# Use sane control characters
-
-if [ sgi = "$HOSTTYPE" ]; then
-	/bin/stty intr ^C
-fi
 
 # *******************   ENVIRONMENT SETUP   *******************
 
@@ -44,38 +27,7 @@ fi
 
 # Check that user home directory is available
 
-if [ "${TMPHOME+set}" = set ]; then
-	echo "WARNING:"
-	echo ""
-	echo "Your home directory is currently unavailable."
-	echo "This is probably due to a problem with the"
-	echo "fileserver on which your directory is stored."
-	echo ""
-	echo "You may use a temporary directory for this session."
-	echo "If you do, any files you create and any mail you"
-	echo "incorporate will be DELETED when you logout and lost forever."
-	echo ""
-	echo "Would you like to continue this session, using a TEMPORARY"
-	echo -n "directory? (yes,no) [The default is no] "
-	read answer
-	case $answer in
-	[yY]*)
-		echo "Continuing with temporary directory..."
-		mkdir ~/Mail
-		;;
-	*)
-		kill -HUP $$
-		;;
-	esac
-fi
-	
-
 # *******************   DEVICE SETUP   *******************
-
-# On IRIX, the terminal type may not be set yet.
-if [ "${TERM+set}" != set ]; then
-	eval `tset -s -Q`
-fi
 
 # Set device type if interactive session (e.g., dialup)
 
@@ -101,7 +53,11 @@ esac
 
 if [ "${ZEPHYR_CLIENT+set}" != set ]; then
 	export ZEPHYR_CLIENT
-	ZEPHYR_CLIENT=zwgc
+	if [ ! -f /etc/athena/dialuptype ]; then
+		ZEPHYR_CLIENT=zwgc
+	else
+		ZEPHYR_CLIENT='echo This is a dialup, so zwgc is not being run on login.'
+	fi
 fi
 
 if [ "${skip_tty_startup+set}" != set ]; then
@@ -112,7 +68,7 @@ if [ "${skip_tty_startup+set}" != set ]; then
 	$ZEPHYR_CLIENT			# Start Zephyr client
 	get_message -new -login		# Display current motd
 	mailquota -n			# Check quota on post office server
-	from -t -n			# Check for mail
+	from.debathena -t -n		# Check for mail
 fi
 
 

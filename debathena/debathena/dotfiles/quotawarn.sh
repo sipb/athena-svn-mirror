@@ -3,7 +3,7 @@
 # $Id: quotawarn.sh,v 1.4 2007-04-09 17:13:19 ghudson Exp $
 
 # Determine the user's home directory usage and quota.
-qline=`quota -v -f "$USER" | awk '/^\// {print}'`
+qline=`quota.debathena -v -f "$USER" | awk '/^\// {print}'`
 usage=`echo "$qline" | awk '{print $2}'`
 quota=`echo "$qline" | awk '{print $3}'`
 quota90=`expr "${quota:-0}" \* 9 / 10`

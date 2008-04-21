@@ -1,3 +1,39 @@
+debathena-dotfiles (10.0.0-0debathena1) unstable; urgency=low
+
+  * Merge in quilt patches.  These and other changes are summarized below.
+  * Remove platform-specific code for non-Linux architectures.
+  * Remove mksessiondirs and other ATHENA_SESSION_TMPDIr code; this is now
+    handled by pam_mktemp
+  * Run from.debathena and quota.debathena rather than from/quota in case
+    debathena-from-config/debathena-quota-config are not installed
+  * Remove unecessary athena/ from paths, except in prototype files which
+    should remain unchanged for compatability.
+  * Remove ancient extend alias from tcsh dotfiles.
+  * Set ZEPHYR_CLIENT to not run zwgc on dialups; this avoids problems
+    with zephyr in Debian automatically gaining focus.
+  * Remove code for handling temporary home directories, since those can't
+    happen anymore.
+  * Stop setting XDG_DATA_DIRS; this is now controlled by debathena-desktop-config.
+  * Stop setting COREDUMPSIZE; this was an IRIX workaround
+  * Stop setting LD_LIBRARY_PATH to /usr/athena/lib; this breaks building
+    things when /usr/athena is a symlink.
+  * Stop setting XUSERFILESEARCHPATH to a directory that doesn't exist.
+  * Change renew alias to use 'kinit -54' so we no longer require modified
+    Kerberos.
+  * Stop setting MANPATH, since we'd be setting it to the default anyway.
+  * Remove athena_path logic, since athena_path would be PATH.
+  * Only have one copy of the add alias, now that athena_path is gone.
+  * Remove add_flags since it is always empty.
+  * Don't temporarily remove add in cshrc.
+  * Stop setting CDPATH.
+  * Stop changing the default prompt for bash; the Debian default is better.
+  * Stop changing the default prompt for tcsh, but leave the prompt
+    character change, since there's a lot of documentation that uses it.
+  * Stop configuring tcsh to not stat /afs/* when tab-completing; fakestat handles this.
+  * Remove tcsh warning for "bind" alias.
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 21 Apr 2008 16:06:04 -0400
+
 debathena-dotfiles (9.4.43-0debathena2) unstable; urgency=low
 
   * Don't create ATHENA_SESSION_TMPDIR, since it is now managed by PAM

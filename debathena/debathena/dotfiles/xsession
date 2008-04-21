@@ -1,4 +1,4 @@
-#!/bin/athena/tcsh -f
+#!/bin/tcsh -f
 # Global xsession file
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
@@ -7,8 +7,8 @@
 
 # Note: This shell script deliberately uses the -f flag.
 
-set initdir=/usr/athena/lib/init
-set gconftool=/usr/athena/bin/gconftool-2
+set initdir=/usr/lib/init
+set gconftool=/usr/bin/gconftool-2
 
 # Determine whether to use user customizations:  use no customization files
 # ONLY if the single argument "nocalls" was provided to xsession (e.g., if
@@ -23,7 +23,7 @@ case 1:
     echo -n "xsession: Running standard xsession "
     echo "with NO user configuration files..."
     setenv NOCALLS
-    setenv SHELL /bin/athena/tcsh
+    setenv SHELL /bin/tcsh
   else if ($1 == dash) then
     echo -n "xsession: Running standard xsession "
     echo "with dash-based interface..."
@@ -237,7 +237,7 @@ if (! $?skip_x_startup) then
   # the day as windowgram
   if (! $?ZEPHYR_CLIENT) setenv ZEPHYR_CLIENT zwgc
   if ($?NOCALLS) then
-    zwgc -f /usr/athena/share/zephyr/zwgc.desc -subfile /dev/null && \
+    zwgc -f /etc/zephyr/zwgc.desc -subfile /dev/null && \
       get_message -new -zephyr
   else
     $ZEPHYR_CLIENT && get_message -new -zephyr
@@ -245,7 +245,7 @@ if (! $?skip_x_startup) then
   if (! $?skip_quotawarn) then
     ($initdir/quotawarn &)	# Display warning dialogs if near quota
   endif
-  from -t -n			# Check for mail
+  from.debathena -t -n		# Check for mail
   if (! $?skip_xss) then
     (xscreensaver -no-splash &)
   endif

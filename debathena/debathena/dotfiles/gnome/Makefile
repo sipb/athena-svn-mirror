@@ -1,10 +1,10 @@
 # $Id: Makefile,v 1.6 2006-08-09 15:42:50 rbasch Exp $
 
-PIXMAPDIR=/usr/athena/share/pixmaps
-GNOMEATHDIR=/usr/athena/share/gnome/athena
-SCHEMASDIR=/etc/athena/gconf/schemas
+PIXMAPDIR=/usr/share/pixmaps
+GNOMEATHDIR=/usr/share/gnome/athena
+SCHEMASDIR=/usr/share/gconf/schemas
 AFSMENUS=/afs/athena.mit.edu/system/config/panel/menus
-APPLICATIONS=/usr/athena/share/applications
+APPLICATIONS=/usr/share/applications
 
 all: athena.schemas
 

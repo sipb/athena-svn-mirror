@@ -5,7 +5,7 @@
 # This file is sourced by default user file ~/.cshrc
 
 
-set initdir=/usr/athena/lib/init
+set initdir=/usr/lib/init
 
 # *******************   ENVIRONMENT SETUP   *******************
 
@@ -16,35 +16,17 @@ if ($?tcsh) then
   bindkey "^Z" complete-word
   bindkey " " magic-space
 
-  if ($tcsh:r:e > 7 || $tcsh:r:r > 6) then
-    alias bind 'echo The \"bind\" command is no longer supported in tcsh 6.08. Use the; echo \"bindkey\" command instead. See the tcsh man page for more information.; ( echo \!* > /dev/null )'
-  endif
 endif
 
 # Set host type and hostname variables.
-if (! $?ATHENA_HOSTTYPE) setenv ATHENA_HOSTTYPE "`/bin/athena/machtype`"
+if (! $?ATHENA_HOSTTYPE) setenv ATHENA_HOSTTYPE "`/bin/machtype`"
 if (! $?HOST) setenv HOST "`hostname`"
 setenv HOSTTYPE "$ATHENA_HOSTTYPE"
 set hosttype=$HOSTTYPE
 set host=$HOST
 
-switch ("$HOSTTYPE")
-case sun4:
-  set athena_path=( /srvd/patch /usr/athena/bin /usr/athena/etc /bin/athena \
-		    /usr/openwin/bin /usr/openwin/demo /usr/dt/bin /usr/bin \
-                    /usr/ccs/bin /usr/sbin /sbin /usr/sfw/bin /usr/ucb )
-  set athena_manpath=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
-  set athena_manpath=${athena_manpath}:/usr/sfw/man
-  breaksw
-case linux:
-  set athena_path=( /usr/athena/bin /usr/athena/etc /bin/athena /usr/bin \
-		    /bin /usr/X11R6/bin /usr/sbin /sbin )
-  set athena_manpath=/usr/athena/man:/usr/share/man:/usr/X11R6/man
-  breaksw
-default:
-  echo "Standard dotfiles do not support system type $HOSTTYPE."
-  breaksw
-endsw
+# add alias for attaching lockers
+alias add 'eval `/bin/attach -Padd \!:*`'
 
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and setting of search path)
@@ -66,27 +48,11 @@ if (! $?ENV_SET) then
   # Set standard Athena path variables.  Actual $path (and thus $PATH)
   # are set later, after ~/.environment is sourced.
 
-  setenv MANPATH "$athena_manpath"
-
-  # Set other miscellaneous OS-specific environment variables
-  switch ("$HOSTTYPE")
-  case sun4:
-    setenv OPENWINHOME /usr/openwin
-    breaksw
-  case linux:
-    # This is to ensure that native programs use the Athena gconf, ORBit,
-    # bonobo-activation, etc. libraries rather than the native ones.
-    # GNOME programs outside of /usr/athena/bin may not function properly
-    # if it is not set.
-    setenv LD_LIBRARY_PATH /usr/athena/lib
-    breaksw
-  endsw
-
-  setenv ATHENA_SYS `/bin/athena/machtype -S`
+  setenv ATHENA_SYS `/bin/machtype -S`
   if ( $ATHENA_SYS == "" ) then
     setenv ATHENA_SYS @sys
   endif
-  setenv ATHENA_SYS_COMPAT `/bin/athena/machtype -C`
+  setenv ATHENA_SYS_COMPAT `/bin/machtype -C`
 
   set bindir=arch/${ATHENA_SYS}/bin
 
@@ -94,8 +60,6 @@ if (! $?ENV_SET) then
     setenv PRINTER `awk '/LPR/ { print $3 }' /var/athena/clusterinfo`
     if ( $PRINTER == "" ) unsetenv PRINTER
   endif
-
-  setenv XDG_DATA_DIRS /usr/athena/share:/usr/share
 
   # Reset the "home" and HOME variables to correspond to the actual
   # location of the user's home directory.  This will avoid having
@@ -119,28 +83,6 @@ if (! $?ENV_SET) then
   endif
   unset x
 
-  # Special version of add alias that will work in your ~/.environment
-  # file.  This is replaced further down with the version that works
-  # when you are logged in.
-
-  # This "extend" alias and friends have been left in for backwards
-  # compatibility with old .environment files, just in case. The new
-  # add alias does not use them.
-  alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
-  if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
-  if ($?extendyes) setenv \!:1 ${\!:1}:\!:2 && \\
-  unset extendyes'
-  alias sextend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
-  if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
-  if ($?extendyes) set \!:1=(${\!:1} \!:2) && \\
-  unset extendyes'
-  alias textend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
-  if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
-  if ($?extendyes) set \!:1=${\!:1}:\!:2 && \\
-  unset extendyes'
-
-  alias add 'eval `/bin/athena/attach -Padd -P "$athena_path" \!:*`'
-
   # Run user environment customizations identified in your
   # ~/.environment file.  This is the place to include your own
   # environment variables, attach commands, and other system wide
@@ -150,14 +92,6 @@ if (! $?ENV_SET) then
   # customizations" option when you logged in).
 
   if ((! $?NOCALLS) && (-r ~/.environment)) source ~/.environment
-	
-  # remove temporary version of add
-  unalias extend sextend textend add
-  alias add 'echo Use add in your ~/.environment, not your ~/.path.'
-
-  # Reset athena_manpath in case .path uses it (.path should just use
-  # $MANPATH, but using $athena_manpath has worked historically).
-  set athena_manpath=$MANPATH
 
   # Set up default search path, if not yet set.  Use your ~/.path file
   # to provide an alternative path -- this file should be of the form
@@ -172,16 +106,9 @@ if (! $?ENV_SET) then
     source ~/.path
   else
     # Standard Athena path
-    set path=(`/usr/athena/bin/athdir $HOME` $athena_path .)
+    set path=(`/usr/bin/athdir $HOME` $PATH .)
   endif
 
-  # Make sure applications can properly find their appdefs, etc.
-
-  if (! $?XUSERFILESEARCHPATH) then
-    setenv XUSERFILESEARCHPATH "/usr/athena/lib/X11/app-defaults/%N"
-  else
-    setenv XUSERFILESEARCHPATH "${XUSERFILESEARCHPATH}:/usr/athena/lib/X11/app-defaults/%N"
-  endif
 endif
 
 # Set appropriate bin directory variable for this platform
@@ -198,21 +125,13 @@ set noclobber			# Don't overwrite files with redirection
 if ($?prompt) then		# For interactive shells only (i.e., NOT rsh):
   # Set prompt.
   set promptchars="%#"
-  if ($home =~ /var/athena/tmphomedir/*) then
-    set prompt = "athena (temporary homedir)%# "
-  else
-    set prompt = "athena%# "
-  endif
-
-  set cdpath = (~)		#   Path to search for directory changes
   set interactive		#   Provide shell variable for compatability
-  set nostat = (/afs/)		#   Don't stat when completing in /afs
 endif
 
 # Set up standard C shell aliases
 
 #   alias for re-establishing authentication
-alias renew 'kinit $USER && fsid -a && zctl load /dev/null'
+alias renew 'kinit -54 $USER && fsid -a && zctl load /dev/null'
 
 #   alias for a convenient way to change terminal type
 alias term 'set noglob; unsetenv TERMCAP; eval `tset -s -I -Q \!*`'
@@ -227,16 +146,6 @@ if ($?XSESSION) then
     alias logout	'exit && kill -HUP $XSESSION'	# logout for X
   endif
 endif
-
-#   aliases dealing with adding locker programs
-#   extend remains for other software; add no longer uses the extend alias
-alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
-	if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
-	if ($?extendyes) setenv \!:1 ${\!:1}:\!:2 && \\
-	unset extendyes'
-
-set add_flags
-alias add 'eval `/bin/athena/attach -Padd $add_flags \!:*`'
 
 #   aliases dealing with subjects
 alias setup_X '( setenv SUBJECT \!:1 ; ( xterm -title \!* & ) )'

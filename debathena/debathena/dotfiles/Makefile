@@ -2,9 +2,9 @@
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
-PROTOTMP=/usr/athena/lib/prototype_tmpuser
-SYSTEM=/usr/athena/lib/init
-ATHMANDIR=/usr/athena/man
+PROTOTMP=/usr/lib/prototype_tmpuser
+SYSTEM=/usr/lib/init
+ATHMANDIR=/usr/share/man
 ATHRETCDIR=/etc/athena
 ATHLOGINDIR=${ATHRETCDIR}/login
 
@@ -41,7 +41,6 @@ install:
 	install -c -m 0755 gnome-panel-1-to-2 ${DESTDIR}${SYSTEM}
 	install -c -m 0444 lockers.7 ${DESTDIR}${ATHMANDIR}/man7
 	install -c -m 0644 login ${DESTDIR}${SYSTEM}
-	install -c -m 0755 mksessiondir.sh ${DESTDIR}${SYSTEM}/mksessiondir
 	install -c -m 0755 quotawarn.sh ${DESTDIR}${SYSTEM}/quotawarn
 	install -c -m 0644 bashrc ${DESTDIR}${SYSTEM}
 	install -c -m 0644 bash_login ${DESTDIR}${SYSTEM}

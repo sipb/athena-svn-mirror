@@ -8,7 +8,7 @@ alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
 	unset extendyes'
 
 echo "Attaching $SUBJECT ... "
-set setup_dir = `/bin/athena/attach -p $SUBJECT`
+set setup_dir = `/bin/attach -p $SUBJECT`
 
 if (! $status) then
 
