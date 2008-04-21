@@ -15,6 +15,7 @@ COMMAND='afuse /mit -o mount_template="/usr/lib/debathena-afuse-automounter/moun
 case "$1" in
   start)
 	modprobe fuse
+	mkdir -p /mit
 	eval $COMMAND
 	;;
   stop)

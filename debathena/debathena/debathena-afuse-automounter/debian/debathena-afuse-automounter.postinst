@@ -22,7 +22,11 @@ case "$1" in
     configure)
 	# Need to be clever with removing debathena-autofs-config.
 	if [ -n "$2" ] || pgrep -xf "/usr/sbin/automount --pid-file=/var/run/autofs/_mit.pid --timeout=86400 /mit hesiod" > /dev/null; then
-	    echo "This is an upgrade; not starting afuse automounter"
+	    if [ -n "$2" ]; then
+		echo "This is an upgrade from version $2; not restarting afuse automounter"
+	    else
+		echo "Upgrade from autofs which has failed to stop; not starting afuse automounter"
+	    fi
 	    update-rc.d debathena-afuse-automounter defaults 26 17 >/dev/null
 	else
 	    #DEBHELPER#
