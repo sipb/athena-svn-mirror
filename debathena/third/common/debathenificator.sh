@@ -92,7 +92,7 @@ cmd_upload () {
     REPREPROI="$REPREPRO --ignore=wrongdistribution --ignore=missingfield"
 
     . /mit/debathena/bin/debian-versions.sh
-    tag=gettag $dist
+    tag=$(gettag $dist)
 
     if [ "$a" = "-A" ]; then
 	$REPREPROI include "$dist" "${name}_${daversion}_source.changes"
