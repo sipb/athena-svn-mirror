@@ -90,17 +90,10 @@ v () {
 cmd_upload () {
     REPREPRO="v reprepro -Vb $DEBATHENA_APT"
     REPREPROI="$REPREPRO --ignore=wrongdistribution --ignore=missingfield"
-    
-    case "$dist" in
-	sarge) tag='~debian3.1' ;;
-	etch) tag='~debian4.0' ;;
-	lenny) tag='~debian4.1~0.1' ;;
-	dapper) tag='~ubuntu6.06' ;;
-	edgy) tag='~ubuntu6.10' ;;
-	feisty) tag='~ubuntu7.04' ;;
-	gutsy) tag='~ubuntu7.10' ;;
-    esac
-    
+
+    . /mit/debathena/bin/debian-versions.sh
+    tag=gettag $dist
+
     if [ "$a" = "-A" ]; then
 	$REPREPROI include "$dist" "${name}_${daversion}_source.changes"
     fi
