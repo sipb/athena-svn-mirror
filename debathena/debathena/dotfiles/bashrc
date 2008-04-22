@@ -23,9 +23,10 @@ add () { eval "$( /bin/attach -Padd -b "$@" )" ; }
 # misfeature that the standard xsession script runs the tcsh dotfiles
 # for all users.  Running the environment setup for the former
 # category of user would be unfriendly (it resets the homedir and
-# path), so for now, only run environment setup for bash users.  If
-# the xsession problem is ever fixed, change this conditional to check
-# for '"${ENV_SET+set}" != set' and eliminate the shell check.
+# changes the path), so for now, only run environment setup for bash
+# users.  If the xsession problem is ever fixed, change this
+# conditional to check for '"${ENV_SET+set}" != set' and eliminate the
+# shell check.
 if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 
 	export ENV_SET=t			# Avoid unnecessary repeat
@@ -79,7 +80,7 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 		. ~/.bash_environment
 	fi
 
-	# Standard Athena path
+	# Standard Athena path modifications
 	athena_home_bin=$( /usr/bin/athdir "$HOME" )
 	PATH=${athena_home_bin:+$athena_home_bin:}$PATH:.
 	unset athena_home_bin

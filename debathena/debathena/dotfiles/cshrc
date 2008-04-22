@@ -29,7 +29,7 @@ set host=$HOST
 alias add 'eval `/bin/attach -Padd \!:*`'
 
 # Set up standard system/user environment configuration (including setup of
-# environment variables, attachment of lockers, and setting of search path)
+# environment variables, attachment of lockers, and additions to search path)
 
 if (! $?ENV_SET) then
 
@@ -44,9 +44,6 @@ if (! $?ENV_SET) then
   setenv EDITOR emacs			# Set default editor
   setenv VISUAL emacs			# Set default screen editor
   setenv MM_CHARSET iso-8859-1
-
-  # Set standard Athena path variables.  Actual $path (and thus $PATH)
-  # are set later, after ~/.environment is sourced.
 
   setenv ATHENA_SYS `/bin/machtype -S`
   if ( $ATHENA_SYS == "" ) then
@@ -65,14 +62,6 @@ if (! $?ENV_SET) then
   # location of the user's home directory.  This will avoid having
   # long pathnames being printed when /mit/<user> is a symlink to a
   # path within AFS.
-  #
-  # This code has been optimized to run as quickly as possible.  Since
-  # it is being invoked only at the beginning of the session, and
-  # prior to the inclusion of any of the user's other dotfiles, we can
-  # assume that the current directory is the user's home directory.
-  # Also, to avoid having the shell re-evaluate the current contents
-  # of the directory, we help it by resetting its "cwd" variable.  We
-  # do error checking just in case the path somehow disappears.
 
   set x=`(cd && /bin/pwd)`
   if ("$x" != "") then
@@ -93,19 +82,12 @@ if (! $?ENV_SET) then
 
   if ((! $?NOCALLS) && (-r ~/.environment)) source ~/.environment
 
-  # Set up default search path, if not yet set.  Use your ~/.path file
-  # to provide an alternative path -- this file should be of the form
-  # "set path=...", and can refer to the shell variable $athena_path,
-  # defined above. The ~/.path file should list a complete path, since
-  # the path identified there will be used INSTEAD of the default
-  # path, not appended.  ~/.path is not sourced if the xlogin "Ignore
-  # your customizations" option was selected to begin the session.
-
   if ((! $?NOCALLS) && (-r ~/.path)) then
-    # User-specified path
+    # Support .path files for compatibility.
+    set athena_path=$path
     source ~/.path
   else
-    # Standard Athena path
+    # Standard Athena path additions.
     set path=(`/usr/bin/athdir $HOME` $path .)
   endif
 

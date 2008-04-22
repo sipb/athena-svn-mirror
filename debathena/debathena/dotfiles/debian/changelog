@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.2-0debathena1) unstable; urgency=low
+
+  * Fix a bug introduced in the handling of ~/.path files.
+  * Update several comments.
+
+ -- Greg Hudson <ghudson@equal-rites.mit.edu>  Tue, 22 Apr 2008 16:17:13 -0400
+
 debathena-dotfiles (10.0.1-0debathena1) unstable; urgency=low
 
   * Fix bug introduced in cshrc PATH handling.
