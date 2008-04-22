@@ -681,6 +681,8 @@ output_content_file (CT ct, int appending)
 	    return NOTOK;
 	if (!strcmp (file, ct->c_storage)) {
 	    (*ct->c_ceclosefnx) (ct);
+	    fclose (ct->c_fp);
+	    ct->c_fp = NULL;
 	    return OK;
 	}
 
