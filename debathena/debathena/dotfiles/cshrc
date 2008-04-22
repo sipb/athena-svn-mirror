@@ -106,7 +106,7 @@ if (! $?ENV_SET) then
     source ~/.path
   else
     # Standard Athena path
-    set path=(`/usr/bin/athdir $HOME` $PATH .)
+    set path=(`/usr/bin/athdir $HOME` $path .)
   endif
 
 endif
