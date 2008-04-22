@@ -1,3 +1,9 @@
+debathena-afuse-automounter (1.2) unstable; urgency=low
+
+  * More robust upgrade handling.
+
+ -- Tim Abbott <tabbott@mit.edu>  Tue, 22 Apr 2008 16:23:23 -0400
+
 debathena-afuse-automounter (1.1) unstable; urgency=low
 
   * Fix transition from autofs to afuse -- /mit gets deleted for some
