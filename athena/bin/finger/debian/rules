@@ -2,11 +2,8 @@
 
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_AUTO_UPDATE_AUTOCONF = 1
-DEBATHENA_DIVERT_PACKAGES += \
-	debathena-finger
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
-include /usr/share/cdbs/1/rules/debathena-divert.mk
 
 DEB_CONFIGURE_EXTRA_FLAGS += --with-krb4=$(shell krb5-config --prefix krb4) --with-hesiod --with-zephyr
 
