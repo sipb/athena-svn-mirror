@@ -13,7 +13,7 @@ Description: msmtp configuration for Debian-Athena
  This packages provides a script to send authenticated outgoing mail via 
  outgoing.mit.edu on Athena.
 
-Package: debathena-msmtp-sendmail
+Package: debathena-msmtp-mta
 Architecture: all
 Depends: debathena-msmtp-config (>= 1.1~)
 Provides: mail-transport-agent
