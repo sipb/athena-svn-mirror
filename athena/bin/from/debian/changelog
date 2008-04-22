@@ -1,4 +1,4 @@
-debathena-from (10.0.0-0debathena1); urgency=low
+debathena-from (10.0.0-0debathena1) unstable; urgency=low
 
   * Merged quilt patches into mainline Athena tree
 
