@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-debian-dev
-Version: 0.2.2
+Version: 0.2.3
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: apt-file,
  apt-rdepends,
@@ -21,7 +21,6 @@ Depends: apt-file,
  dpkg-dev-el,
  equivs,
  fakeroot,
- linda,
  lintian,
  pbuilder,
  quilt,
