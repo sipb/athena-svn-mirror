@@ -1,3 +1,10 @@
+debathena-pam-config (1.6) unstable; urgency=low
+
+  * Check if common-* templates are available in /usr/share/pam/
+  * Handle pam_unix.so in temlate being requisitie instead of required.
+
+ -- Tim Abbott <tabbott@mit.edu>  Thu, 01 May 2008 12:46:42 -0400
+
 debathena-pam-config (1.5) unstable; urgency=low
 
   * Convert to use config-package.mk interface, new in config-package-

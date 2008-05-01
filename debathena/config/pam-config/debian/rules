@@ -14,6 +14,13 @@ else
     PAM_SSHD = /etc/pam.d/ssh.debathena
 endif
 
+ifneq ($(wildcard /usr/share/pam/common-auth),)
+    DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-auth.debathena = /usr/share/pam/common-auth
+    DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-session.debathena = /usr/share/pam/common-session
+    DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-account.debathena = /usr/share/pam/common-account
+    DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-password.debathena = /usr/share/pam/common-password
+endif
+
 DEB_TRANSFORM_FILES_debathena-pam-config += \
 	$(patsubst %,/etc/pam.d/common-%.debathena,$(pam_types)) \
 	/etc/pam.d/gdm.debathena \
