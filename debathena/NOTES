@@ -275,42 +275,49 @@ This process is rarely performed and the infrastructure for it is
 imperfect.  Substitute the name of the new suite for "newdist" in all
 steps below.
 
-  1. Create the new distribution in the apt repository's configuration
+  1. Make sure the apt repository is up to date with respect to the
+     source tree for the existing dists.
+
+  2. Add the new dist to scripts/debian-versions.sh.  (It is not
+     necessary to add the new dist to codes at this point, but it must
+     be present in the gettag conditional.)
+
+  3. Create the new distribution in the apt repository's configuration
      file.  Create the skeleton of the dist by installing at least one
      equivs package from meta/ with "reprepro -Vb $DEBATHENA_APT
      include newdistname file.changes".
 
-  2. On the build server, create a chroot for the new distribution as
+  4. On the build server, create a chroot for the new distribution as
      documented above.  This may require downloading and installing a
      more recent version of the debootstrap package from the
      -backports dist corresponding to the build server's OS.
 
-  3. Set the DEBATHENA_BUILD_AREA environment variable to point to the
+  5. Set the DEBATHENA_BUILD_AREA environment variable to point to the
      build area.
 
-  4. Fire up screen.
+  6. Fire up screen.
 
-  5. mkdir $DEBATHENA_BUILD_AREA/stamps.newdist.
+  7. mkdir $DEBATHENA_BUILD_AREA/stamps.newdist.
 
-  6. cd into a checkout of debathena/scripts/build-server/build-all.
+  8. cd into a checkout of debathena/scripts/build-server/build-all.
 
-  7. Edit Makefile (and check in the edit) so that suite is the new
+  9. Edit Makefile (and check in the edit) so that suite is the new
      distribution and psuite is the previously most recent Debian or
      Ubuntu distribution.
 
-  8. Run "make deps.mk".
+  10. Run "make deps.mk".
 
-  9. Run "make all STAMPS=$DEBATHENA_BUILD_AREA/stamps.newdist".  You
-     can watch the builds happen in the other windows of the screen
-     session.  It's possible to do several builds at once with make -j
-     N.
+  11. Run "make -k all STAMPS=$DEBATHENA_BUILD_AREA/stamps.newdist".
+      You can watch the builds happen in the other windows of the
+      screen session.  It's possible to do several builds at once with
+      make -j N.
 
-  10. debathenify packages will fail out; they must be built by hand.
+  12. debathenify packages will fail out; they must be built by hand.
       When the build fails on one, cd into third/packagename in the
       build area and run "./debathenify newdist-amd64 -A source binary
       upload" and "./debathenify newdist-i386 binary upload".  Then
       touch $DEBATHENA_BUILD_AREA/stamps.newdist/packagename.done" and
       restart the build.
 
-  11. Go into third/openafs in the build area and build AFS modules
+  13. Go into third/openafs in the build area and build AFS modules
       for the new suite's kernels.  (Instructions pending.)
