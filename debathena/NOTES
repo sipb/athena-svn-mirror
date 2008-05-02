@@ -267,3 +267,50 @@ Release engineer: Setting up a canonical build area
      (A couple of subdirectories of debathena/meta are normal Debian
      packages, so this will create redundant copies of those.  Ignore
      them; they won't be used.)
+
+Release engineer: Adding a new suite
+------------------------------------
+
+This process is rarely performed and the infrastructure for it is
+imperfect.  Substitute the name of the new suite for "newdist" in all
+steps below.
+
+  1. Create the new distribution in the apt repository's configuration
+     file.  Create the skeleton of the dist by installing at least one
+     equivs package from meta/ with "reprepro -Vb $DEBATHENA_APT
+     include newdistname file.changes".
+
+  2. On the build server, create a chroot for the new distribution as
+     documented above.  This may require downloading and installing a
+     more recent version of the debootstrap package from the
+     -backports dist corresponding to the build server's OS.
+
+  3. Set the DEBATHENA_BUILD_AREA environment variable to point to the
+     build area.
+
+  4. Fire up screen.
+
+  5. mkdir $DEBATHENA_BUILD_AREA/stamps.newdist.
+
+  6. cd into a checkout of debathena/scripts/build-server/build-all.
+
+  7. Edit Makefile (and check in the edit) so that suite is the new
+     distribution and psuite is the previously most recent Debian or
+     Ubuntu distribution.
+
+  8. Run "make deps.mk".
+
+  9. Run "make all STAMPS=$DEBATHENA_BUILD_AREA/stamps.newdist".  You
+     can watch the builds happen in the other windows of the screen
+     session.  It's possible to do several builds at once with make -j
+     N.
+
+  10. debathenify packages will fail out; they must be built by hand.
+      When the build fails on one, cd into third/packagename in the
+      build area and run "./debathenify newdist-amd64 -A source binary
+      upload" and "./debathenify newdist-i386 binary upload".  Then
+      touch $DEBATHENA_BUILD_AREA/stamps.newdist/packagename.done" and
+      restart the build.
+
+  11. Go into third/openafs in the build area and build AFS modules
+      for the new suite's kernels.  (Instructions pending.)
