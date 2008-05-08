@@ -1,3 +1,10 @@
+debathena-shell-config (1.7) unstable; urgency=low
+
+  * Add Recommends: bash-completion, since programmable bash completion
+    has been moved there in Lenny and Hardy.
+
+ -- Tim Abbott <tabbott@mit.edu>  Thu, 08 May 2008 01:52:19 -0400
+
 debathena-shell-config (1.6) unstable; urgency=low
 
   * Convert to use config-package.mk interface, new in config-package-
