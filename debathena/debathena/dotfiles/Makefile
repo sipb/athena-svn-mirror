@@ -53,6 +53,7 @@ install:
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTMP}
 	install -c -m 0755 xkill-mozilla.sh ${DESTDIR}${SYSTEM}/xkill-mozilla
 	install -c -m 0755 xsession ${DESTDIR}${SYSTEM}
+	install -c -m 0755 xsession.bash ${DESTDIR}${SYSTEM}
 	cd os/${OS} && ${MAKE} $@
 	cd gnome && ${MAKE} $@
 

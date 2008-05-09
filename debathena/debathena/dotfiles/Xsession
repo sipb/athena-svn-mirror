@@ -14,12 +14,18 @@ if [ -f .noignore ]; then
 	defsession=1;
 fi
 
+if [ "`basename $SHELL`" = bash ]; then
+	default_session=$initlib/xsession.bash
+else
+	default_session=$initlib/xsession
+fi
+
 case $defsession in
 1|4|7)
 	if [ -f .xsession ]; then
-		session=".xsession"
+		session=.xsession
 	else
-		session="$initlib/xsession"
+		session=$default_session
 	fi
 	case $defsession in
 	7)
@@ -28,7 +34,7 @@ case $defsession in
 	esac
 	;;
 2)
-	session="$initlib/xsession -nocalls"
+	session="$default_session -nocalls"
 	;;
 3)
 	session="xterm -ls -geometry 80x24+280+220 -display :0.0"
