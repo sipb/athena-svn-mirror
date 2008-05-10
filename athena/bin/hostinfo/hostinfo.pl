@@ -22,7 +22,7 @@
 $hostprog = "/usr/athena/bin/host";
 
 $long_output = $show_host = $show_addr = $show_hinfo = $show_mx = 1;
-$server = "localhost";
+$server = "";
 
 sub usage {
     print STDERR "Usage: hostinfo <options> <host-names-or-addresses>\n";
@@ -62,15 +62,15 @@ while (@ARGV) {
 	$show_hinfo = $show_mx = 0;
 	next;
     } elsif ($arg eq "-ns") {
-	if ($arg =~ /[^a-zA-Z0-9.-]/) {
-	    print STDERR "Bad hostname '$arg'.\n";
-	    next;
+	$server = shift(@ARGV) || &usage();
+	if ($server =~ /[^a-zA-Z0-9.-]/) {
+	    print STDERR "Bad hostname '$server'.\n";
+	    &usage();
 	}
-	$server = shift(@ARGV);
 	system "$hostprog -t a $server > /dev/null 2>&1";
 	if ($?) {
 	    print STDERR "No such host '$server'.\n\n";
-	    $server = "localhost";
+	    $server = "";
 	}
 	next;
     } elsif ($arg =~ /^-/) {
@@ -86,7 +86,7 @@ while (@ARGV) {
     @addr = @mx = ();
 
     if ($show_mx) {
-	open(HOST, "$hostprog -t mx '$arg' '$server' 2>&1 |");
+	open(HOST, "$hostprog -t mx '$arg' $server 2>&1 |");
 	while (<HOST>) {
 	    if (/mail is handled .*by [ \d]*([^ ]*)$/) {
 		push(@mx, $1);
@@ -96,7 +96,7 @@ while (@ARGV) {
     }
     chomp (@mx);
 
-    open(HOST, "$hostprog -t a '$arg' '$server' 2>&1 |");
+    open(HOST, "$hostprog -t a '$arg' $server 2>&1 |");
     while (<HOST>) {
 	if (/(.*) has address (.*)$/) {
 	    $host = $1;
@@ -124,7 +124,7 @@ while (@ARGV) {
     }
 
     if ($show_hinfo) {
-	open(HOST, "$hostprog -t hinfo '$host' '$server' 2>&1 |");
+	open(HOST, "$hostprog -t hinfo '$host' $server 2>&1 |");
 	while (<HOST>) {
 	    if (/host information (.*)$/) {
 		$hinfo = $1;
