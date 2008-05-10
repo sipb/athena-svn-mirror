@@ -1,4 +1,4 @@
-#!/usr/athena/bin/perl
+#!/usr/bin/perl
 # $Id: hostinfo.pl,v 1.5 2002-06-11 21:12:59 jweiss Exp $
 
 # Copyright 1998 by the Massachusetts Institute of Technology.
@@ -19,7 +19,7 @@
 # C, but has been rewritten as a wrapper around "host" in the BIND
 # distribution.
 
-$hostprog = "/usr/athena/bin/host";
+$hostprog = "/usr/bin/host";
 
 $long_output = $show_host = $show_addr = $show_hinfo = $show_mx = 1;
 $server = "";
