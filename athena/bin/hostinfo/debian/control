@@ -1,0 +1,14 @@
+Source: debathena-hostinfo
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), autoconf
+Standards-Version: 3.7.2
+
+Package: debathena-hostinfo
+Architecture: all
+Provides: hostinfo
+Depends: ${misc:Depends}, bind9-host
+Description: A utility to ask an Internet nameserver for host information
+ The hostinfo utility fetches the Domain Name System records for the
+ specified host name and prints them.

@@ -1,0 +1,5 @@
+debathena-hostinfo (10.0.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Robert Basch <rbasch@mit.edu>  Sat, 10 May 2008 13:00:03 -0400
