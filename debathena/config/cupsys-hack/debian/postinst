@@ -20,11 +20,13 @@ set -e
 
 case "$1" in
     configure)
+	file="/etc/cups/cupsd.conf"
+	truename="$(/usr/sbin/dpkg-divert --truename "$file")"
 	dpkg-query --showformat='${Conffiles}\n' --show "cupsys" | \
-	    grep -F " /etc/cups/cupsd.conf " | \
-	    sed 's/^ \(.*\) \(.*\)$/\2  \1/' | \
+	    grep -F " $truename " | \
+	    sed -n "s,^ $file \([0-9a-f]*\)$,\2  $truename, p" | \
 	    md5sum -c
-	chmod o+r /etc/cups/cupsd.conf
+	chmod o+r $file
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
