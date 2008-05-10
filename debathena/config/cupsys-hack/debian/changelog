@@ -1,0 +1,7 @@
+debathena-cupsys-hack (1.0) unstable; urgency=low
+
+  * Initial Release.
+  * This package is a horrible, horrible hack. I'm sorry that I have to write
+    it.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 09 May 2008 19:46:45 -0400
