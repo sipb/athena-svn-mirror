@@ -23,8 +23,8 @@ case "$1" in
 	file="/etc/cups/cupsd.conf"
 	truename="$(/usr/sbin/dpkg-divert --truename "$file")"
 	dpkg-query --showformat='${Conffiles}\n' --show "cupsys" | \
-	    grep -F " $truename " | \
-	    sed -n "s,^ $file \([0-9a-f]*\)$,\2  $truename, p" | \
+	    grep -F " $file " | \
+	    sed -n "s,^ $file \([0-9a-f]*\)$,\1  $truename, p" | \
 	    md5sum -c
 	chmod o+r $file
     ;;
