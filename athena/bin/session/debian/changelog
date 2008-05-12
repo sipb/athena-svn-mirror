@@ -1,3 +1,10 @@
+debathena-session (10.0.0-0debathena1) unstable; urgency=low
+
+  * For bash users, execute .bash_logout instead of .logout.
+  * Execute the logout dotfile in the user's shell.
+
+ -- Greg Hudson <ghudson@mit.edu>  Mon, 12 May 2008 13:36:50 -0400
+
 debathena-session (9.4.0-0debathena1) unstable; urgency=low
 
   * Initial release.

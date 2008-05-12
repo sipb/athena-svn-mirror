@@ -331,6 +331,8 @@ void logout(void)
 {
     int f;
     struct sigaction sa;
+    char* shell;
+    char* logoutname;
 
     /* Ignore Alarm in child since HUP probably arrived during
      * sleep() in main loop.
@@ -340,7 +342,14 @@ void logout(void)
     sa.sa_handler = SIG_IGN;
     sigaction(SIGALRM, &sa, NULL);
     unlink(filename);
-    f = open(".logout", O_RDONLY, 0);
+    shell = getenv("SHELL");
+    if (!shell)
+	shell = "/bin/athena/tcsh";
+    if (strlen(shell) >= 5 && strcmp(shell + strlen(shell) - 5, "/bash") == 0)
+	logoutname = ".bash_logout";
+    else
+	logoutname = ".logout";
+    f = open(logoutname, O_RDONLY, 0);
     if (f >= 0) {
 	char buf[2];
 
@@ -348,11 +357,11 @@ void logout(void)
 	    exit(0);
 	lseek(f, 0, SEEK_SET);
 	if (!memcmp(buf, "#!", 2))
-	    execl(".logout", ".logout", 0);
+	    execl(logoutname, logoutname, 0);
 	/* if .logout wasn't executable, silently fall through to
 	   old behavior */
 	dup2(f, 0);
-	execl("/bin/athena/tcsh", "logout", 0);
+	execl(shell, "logout", 0);
     }
     exit(0);
 }
