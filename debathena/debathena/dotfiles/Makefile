@@ -35,6 +35,8 @@ install:
 	install -c -m 0644 dot.bash_login ${DESTDIR}${PROTOTMP}/.bash_login
 	install -c -m 0644 dot.bashrc ${DESTDIR}${PROTOTYPE}/.bashrc
 	install -c -m 0644 dot.bashrc ${DESTDIR}${PROTOTMP}/.bashrc
+	install -c -m 0644 dot.generation ${DESTDIR}${PROTOTYPE}/.generation
+	install -c -m 0644 dot.generation ${DESTDIR}${PROTOTMP}/.generation
 	install -c -m 0644 env_remove ${DESTDIR}${SYSTEM}
 	install -c -m 0644 env_setup ${DESTDIR}${SYSTEM}
 	install -c -m 0755 gnome-stuff-1-to-2 ${DESTDIR}${SYSTEM}

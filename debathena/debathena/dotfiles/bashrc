@@ -32,6 +32,12 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	export ENV_SET=t			# Avoid unnecessary repeat
 	export HOSTTYPE="`/bin/machtype`"
 
+	if [ -r "$HOME/.generation" ]; then
+		export ATHENA_DOTFILE_GENERATION=`cat "$HOME/.generation"`
+	else
+		export ATHENA_DOTFILE_GENERATION=0
+	fi
+
 	umask 077				# Strictly protect files
 						#  (does not apply in AFS)
 	ulimit -S -c 0				# Don't allow coredumps
@@ -40,6 +46,11 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	export MM_CHARSET=iso-8859-1
 
 	export MORE=-s
+
+	# Set double-sided printing for sufficiently recent users.
+	if [ 1 -le "$ATHENA_DOTFILE_GENERATION" ]; then
+		export LPROPT=-Zduplex
+	fi
 
 	export ATHENA_SYS=`/bin/machtype -S`
 	export ATHENA_SYS_COMPAT=`/bin/machtype -C`

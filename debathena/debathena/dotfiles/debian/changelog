@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.2-0debathena2) unstable; urgency=low
+
+  * Add new .generation dotfile to distinguish old and new accounts.
+  * Make double-sided printing the default for new users.
+
+ -- Greg Hudson <ghudson@mit.edu>  Mon, 12 May 2008 13:56:23 -0400
+
 debathena-dotfiles (10.0.2-0debathena1) unstable; urgency=low
 
   * Fix a bug introduced in the handling of ~/.path files.

@@ -35,6 +35,12 @@ if (! $?ENV_SET) then
 
   setenv ENV_SET				# Avoid unnecessary repeat
 
+  if (-r ~/.generation) then
+    setenv ATHENA_DOTFILE_GENERATION `cat ~/.generation`
+  else
+    setenv ATHENA_DOTFILE_GENERATION 0
+  endif
+
   umask 077				# Strictly protect files
 					#  (does not apply in AFS)
   limit coredumpsize 0            	# Don't allow coredumps
@@ -44,6 +50,11 @@ if (! $?ENV_SET) then
   setenv EDITOR emacs			# Set default editor
   setenv VISUAL emacs			# Set default screen editor
   setenv MM_CHARSET iso-8859-1
+
+  # Set double-sided printing for sufficiently recent users.
+  if ( $ATHENA_DOTFILE_GENERATION >= 1 ) then
+    setenv LPROPT -Zduplex
+  endif
 
   setenv ATHENA_SYS `/bin/machtype -S`
   if ( $ATHENA_SYS == "" ) then
