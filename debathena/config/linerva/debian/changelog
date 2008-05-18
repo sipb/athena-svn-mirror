@@ -1,3 +1,9 @@
+debathena-linerva (1.10) unstable; urgency=low
+
+  * Update k5login.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sat, 17 May 2008 03:53:48 -0400
+
 debathena-linerva (1.9) unstable; urgency=low
 
   * Add /etc/ssh/sshd_config (for port 8080 sshd)
