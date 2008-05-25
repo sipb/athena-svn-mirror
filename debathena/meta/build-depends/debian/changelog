@@ -1,3 +1,9 @@
+debathena-build-depends (1.2) unstable; urgency=low
+
+  * Version bump for rebuilding on Hardy and removing debathena-config-build-common.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sun, 25 May 2008 14:01:26 -0400
+
 debathena-build-depends (1.1) unstable; urgency=low
 
   * Version bump for rebuilding on Lenny/Gutsy
@@ -6,6 +12,6 @@ debathena-build-depends (1.1) unstable; urgency=low
 
 debathena-build-depends (1.0) unstable; urgency=low
 
-  * Initial release  * 
+  * Initial release
 
  -- Tim Abbott <tabbott@mit.edu>  Thu,  9 Aug 2007 21:14:04 -0400
