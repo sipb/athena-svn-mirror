@@ -1,3 +1,9 @@
+debathena-athinfod (9.4.0-0debathena6) unstable; urgency=low
+
+  * Remove old transitional code from 9.4.0-0debathena4 changeset.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sun, 25 May 2008 18:39:51 -0400
+
 debathena-athinfod (9.4.0-0debathena5) unstable; urgency=low
 
   * Depends: openbsd-inetd | inet-superserver

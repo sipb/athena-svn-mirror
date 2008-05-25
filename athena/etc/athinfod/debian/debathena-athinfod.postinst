@@ -25,7 +25,6 @@ case "$1" in
 athinfo		49155/tcp			# workstation info server
 EOF
 	fi
-	update-inetd --group INFO --remove "athinfo\t\tstream\ttcp\tnowait\tnobody\t/usr/sbin/athinfod\tathinfod"
 	update-inetd --group INFO --add "athinfo\t\tstream\ttcp\tnowait\tnobody\t/sbin/athinfod\tathinfod"
 	;;
 
