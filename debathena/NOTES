@@ -220,7 +220,7 @@ Release engineer: Setting up a build server
        than 3.0)
       Run: /etc/init.d/approx restart
 
-  11. Apply scripts/build-server/10mount.patch.
+  11. Apply scripts/build-server/mount-defaults.patch.
 
   12. For each supported DIST (see scripts/debian-versions.sh) run:
 
