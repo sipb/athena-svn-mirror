@@ -17,7 +17,8 @@ Depends: build-essential, gnome-devel,
   texlive | tetex-bin,
   gv,
   openoffice.org,
-  thunderbird | mozilla-thunderbird | icedove
+  thunderbird | mozilla-thunderbird | icedove,
+  krb5-clients
 Recommends: ckermit,
   sun-java6-jdk | sun-java5-jdk,
   x3270
