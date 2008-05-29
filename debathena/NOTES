@@ -248,6 +248,14 @@ Release engineer: Removing a build chroot on the build server
 
   4. Run lvremove blah/chrootname
 
+Release engineer: Removing a dist from the apt repository
+---------------------------------------------------------
+
+  1. Inside the apt repository, edit conf/distributions and remove the
+     distribution section.
+
+  2. Run reprepro -Vb $DEBATHENA_APT --delete clearvanished
+
 Release engineer: Setting up a canonical build area
 ---------------------------------------------------
 
