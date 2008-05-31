@@ -1,0 +1,26 @@
+#!/bin/sh
+set -e
+
+name=evolution-data-server
+daversionappend=debathena1
+
+hack_package () {
+    perl -0pe 's/--with-krb5=/--with-krb4=\/usr --with-krb5=/m or die' -i debian/rules
+    append_description <<EOF
+ .
+ This package was rebuilt for the Debian-Athena project to include
+ Kerberos 4 support
+EOF
+    add_changelog 'Enable krb4 support.'
+    add_debathena_provides
+    munge_sections
+}
+
+case $1 in
+dapper*)
+  echo "Native package has krb4 support; skipping $1." >&2
+  exit
+  ;;
+esac
+
+. ../common/debathenificator.sh
