@@ -19,7 +19,7 @@ add_changelog () {
 }
 
 append_description () {
-    perl -0pe 'open THREE, "</dev/fd/3"; $x = <THREE>; s/(^Description:.*\n( .*\n)*)/$1$x/gm or die' -i debian/control 3<&0
+    perl -0pe 'open THREE, "</dev/fd/3"; $x = <THREE>; s/(^Description:.*\n( .*\S.*\n)*)/$1$x/gm or die' -i debian/control 3<&0
 }
 
 add_build_depends () {
