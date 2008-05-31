@@ -101,6 +101,7 @@ case $dist in
 sarge|dapper|edgy)
   echo "Native libsasl2-krb4-mit package exists; skipping $dist_arch." >&2
   exit
+  ;;
 esac
 
 version=$(
