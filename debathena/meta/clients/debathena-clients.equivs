@@ -31,7 +31,8 @@ Depends: athena-jot,
  owl,
  pine,
  tzc
-Recommends: debathena-lprng-config | debathena-cupsys-config
+Recommends: debathena-lprng-config,
+ debathena-cupsys-config
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Metapackage providing clients for Athena services
