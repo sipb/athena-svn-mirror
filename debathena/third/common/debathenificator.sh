@@ -39,7 +39,7 @@ cmd_source () {
     echo "Building source for $name-$daversion on $dist_arch" >&2
     
     if ! [ -e "${name}_$version.dsc" ]; then
-	schroot -c "$chroot" -u root -- apt-get -d source "$name"
+	schroot -c "$chroot" -- apt-get -d source "$name"
     fi
     
     if ! [ -e "${name}_$daversion.dsc" ]; then
