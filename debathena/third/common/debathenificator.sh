@@ -39,7 +39,7 @@ cmd_source () {
     echo "Building source for $name-$daversion on $dist_arch" >&2
     
     if ! [ -e "${name}_$version.dsc" ]; then
-	schroot -c "$chroot" -- apt-get -d source "$name"
+	schroot -c "$chroot" -u root -- apt-get -d source "$name"
     fi
     
     if ! [ -e "${name}_$daversion.dsc" ]; then
@@ -53,7 +53,9 @@ cmd_source () {
 	    trap 'schroot -e -c "$sid"' EXIT
 	    set -x
 	    cp -a "${name}_$origversion.orig.tar.gz" "$tmpdir/"
-	    dpkg-source -x "${name}_$version.dsc" "$tmpdir/$name-$origversion"
+	    dscdir=$(pwd)
+	    cd "$tmpdir/"
+	    dpkg-source -x "$dscdir/${name}_$version.dsc" "$tmpdir/$name-$origversion"
 	    cd "$tmpdir/$name-$origversion"
 	    dch_done=
 	    hack_package
