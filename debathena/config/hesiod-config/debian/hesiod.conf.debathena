@@ -10,4 +10,4 @@ rhs=.athena.mit.edu
 # This line specifies the class search order.  You can reverse the
 # order or leave out IN or HS if you want.  Don't add spaces after the
 # beginning of the value.
-classes=IN,HS
+classes=IN
