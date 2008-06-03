@@ -1,0 +1,75 @@
+#!/usr/bin/perl
+
+# Evolution wrapper script for Athena
+
+# Performs the following Evolution customizations:
+#   * Ensures $HOME/.evolution is private when created.
+#   * Performs Hesiod lookup of user inbox.
+#   * Pre-configures Evolution for MIT mail on first invocation.
+
+use strict;
+use Gnome2::GConf;
+
+# Ensure $HOME/.evolution is private when created.
+my $homedir = $ENV{"HOME"};
+if ($homedir && ! -e "$homedir/.evolution") {
+    if (mkdir("$homedir/.evolution")) {
+	system("fs sa $homedir/.evolution system:anyuser none 2>/dev/null");
+    }
+}
+
+# Look up user inbox in Hesiod.
+my $user = $ENV{"USER"} || getpwuid($<);
+my $result = `hesinfo $user pobox`;
+my @fields = split(' ', $result);
+my $server = $fields[1];
+
+my $client = Gnome2::GConf::Client->get_default;
+my $accounts = $client->get_list("/apps/evolution/mail/accounts");
+
+if ($accounts) {
+    # Update the server with the value from Hesiod.
+    my $change = 0;
+    foreach (@$accounts) {
+	my $old = $_;
+	if (/name="MIT mail"/) {
+	    s|(imap://[^/]*@)(po\d+\.mit\.edu)|\1$server|;
+	}
+	$change = 1 if ($_ ne $old);
+    }
+
+    if ($change) {
+	$client->set_list("/apps/evolution/mail/accounts", "string",
+			  $accounts);
+    }
+} else {
+    # Pre-configuration.
+    $client->set_string("/apps/evolution/calendar/display/timezone",
+			"America/New_York");
+    ($_, $_, $_, $_, $_, $_, my $gecos) = getpwuid($<);
+    my @fields = split(",", $gecos);
+    my $name = $fields[0];
+    my $home = $ENV{"HOME"};
+    my $local = "mbox:$home/.evolution/mail/local";
+    my $a = '<?xml version="1.0"?>' . "\n";
+    $a .= '<account name="MIT mail" uid="mitinitial" enabled="true">';
+    $a .= '<identity>';
+    $a .= "<name>$name</name>";
+    $a .= "<addr-spec>$user\@mit.edu</addr-spec>";
+    $a .= '</identity>';
+    $a .= '<source save-passwd="false">';
+    $a .= "<url>imap://$user;auth=KERBEROS_V4\@$server/;use_ssl=always</url>";
+    $a .= '</source>';
+    $a .= '<transport save-passwd="false">';
+    $a .= "<url>smtp://$user;auth=GSSAPI\@outgoing.mit.edu/;use_ssl=always";
+    $a .= '</url>';
+    $a .= '</transport>';
+    $a .= "<drafts-folder>$local#Drafts</drafts-folder>";
+    $a .= "<sent-folder>$local#Sent</sent-folder>";
+    $a .= '</account>' . "\n";
+    $accounts = [ $a ];
+    $client->set_list("/apps/evolution/mail/accounts", "string", $accounts);
+    $client->set_string("/apps/evolution/mail/default_account", "mitinitial");
+}
+
+exec("/usr/bin/evolution.debathena-orig", @ARGV);

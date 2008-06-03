@@ -1,0 +1,17 @@
+Source: debathena-evolution-wrapper
+Section: debathena/web
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, lsb-release
+Standards-Version: 3.7.2
+
+Package: debathena-evolution-wrapper
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libgnome2-gconf-perl
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Wrapper to configure Evolution for Debathena
+ This package provides a wrapper for the stock Evolution IM client.
+ It ensures that newly-created .evolution directories are made
+ private, and automatically creates an MIT mail account when Evolution
+ is run for the first time.
