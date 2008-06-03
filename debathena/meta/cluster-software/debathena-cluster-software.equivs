@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster-software
-Version: 0.1
+Version: 0.2
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: build-essential, gnome-devel,
   enscript, psutils,
