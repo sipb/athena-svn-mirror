@@ -1,3 +1,11 @@
+debathena-pidgin-wrapper (10.0.1) unstable; urgency=low
+
+  * Convert to config-package-dev.
+  * Punt autoconf goo and use debhelper-style install.
+  * Punt Debian version component; this is not portable software.
+
+ -- Greg Hudson <ghudson@mit.edu>  Tue, 03 Jun 2008 12:29:55 -0400
+
 debathena-pidgin-wrapper (10.0.0-0debathena2) unstable; urgency=low
 
   * Make architecture-independent.
