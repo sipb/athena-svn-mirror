@@ -1,0 +1,74 @@
+#!/bin/sh
+set -e
+
+name=lprng
+daversionappend=debathena1
+
+hack_package () {
+    # Rename the package and make it not conflict with cupsys-bsd.
+    perl -pe 's/^Package: lprng$/Package: debathena-lprng/' -i debian/control
+    perl -pe '/^Conflicts/ && s/cupsys-bsd/lprng/' -i debian/control
+    perl -pe '/^Replaces/ && s/$/, lprng/' -i debian/control
+
+    perl -n -i - debian/rules << 'EOS'
+	if (/^build:/) {
+	    # lprng has a gcc 4.2.3-related build failure on some dists.
+	    # src/common/plp_snprintf.c uses a macro safestrlen() on
+	    # character arrays in four places; the macro triggers GCC's
+	    # -Waddress warning since it tests for the falsehood of an
+	    # array address.  This is a workaround.
+	    print "confflags += --disable-werror\n";
+	}
+
+	# Since we're renaming the main package, we have to adjust
+	# where things get installed.  But make sure not to change
+	# references to debian/lprng-doc, which we aren't renaming.
+	s|debian/lprng|debian/debathena-lprng|;
+	s|debian/debathena-lprng-doc|debian/lprng-doc|;
+
+	print;
+
+	# Rename the commands.
+	if (/^[^#]*MAKE.*install/) {
+	    my $usr = "debian/debathena-lprng/usr";
+	    my $man1 = "$usr/share/man/man1";
+	    my $man8 = "$usr/share/man/man8";
+	    print "\trm $usr/bin/cancel\n";
+	    print "\tln -s mit-lprm $usr/bin/cancel\n";
+	    print "\trm $usr/bin/lp\n";
+	    print "\tln -s mit-lpr $usr/bin/lp\n";
+	    print "\tmv $usr/bin/cancel $usr/bin/mit-cancel\n";
+	    print "\tmv $usr/bin/lp $usr/bin/mit-lp\n";
+	    print "\tmv $usr/bin/lpq $usr/bin/mit-lpq\n";
+	    print "\tmv $usr/bin/lprm $usr/bin/mit-lprm\n";
+	    print "\tmv $usr/bin/lpr $usr/bin/mit-lpr\n";
+	    print "\tmv $usr/bin/lpstat $usr/bin/mit-lpstat\n";
+	    print "\tmv $usr/sbin/lpc $usr/sbin/mit-lpc\n";
+	    print "\tmv $man1/cancel.1 $man1/mit-cancel.1\n";
+	    print "\tmv $man1/lp.1 $man1/mit-lp.1\n";
+	    print "\tmv $man1/lpq.1 $man1/mit-lpq.1\n";
+	    print "\tmv $man1/lprm.1 $man1/mit-lprm.1\n";
+	    print "\tmv $man1/lpr.1 $man1/mit-lpr.1\n";
+	    print "\tmv $man1/lpstat.1 $man1/mit-lpstat.1\n";
+	    print "\tmv $man8/lpc.8 $man8/mit-lpc.8\n";
+	}
+EOS
+
+    # The renamed binary package no longer matches the source package
+    # name, so we have to rename a bunch of debhelper files.
+    for f in config cron.daily dirs examples mime postinst postrm preinst \
+      prerm templates; do
+	mv debian/$f debian/debathena-lprng.$f
+    done
+    perl -pe 's/templates/debathena-lprng.templates/' -i debian/po/POTFILES.in
+
+    append_description <<EOF
+ .
+ This package was rebuilt for the Debian-Athena project to rename the
+ package and commands so that it no longer conflicts with cupsys-bsd.
+EOF
+    add_changelog 'Rename commands.'
+    munge_sections
+}
+
+. ../common/debathenificator.sh
