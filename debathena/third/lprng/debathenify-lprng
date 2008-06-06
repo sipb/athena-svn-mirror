@@ -62,6 +62,13 @@ EOS
     done
     perl -pe 's/templates/debathena-lprng.templates/' -i debian/po/POTFILES.in
 
+    # lprng's cron job generates mail to root each day if you're not
+    # running a server.  Fix this problem by making the cron script
+    # conditional on the existence of /etc/printcap, just as the
+    # init.d script is.
+    perl -ne 'print; /#.*main/ && print "[ -f /etc/printcap ] || exit 0\n";' \
+      -i debian/debathena-lprng.cron.daily
+
     append_description <<EOF
  .
  This package was rebuilt for the Debian-Athena project to rename the
