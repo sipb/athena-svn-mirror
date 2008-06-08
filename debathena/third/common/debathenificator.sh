@@ -60,8 +60,8 @@ cmd_source () {
 	    dch_done=
 	    hack_package
 	    [ -n "$dch_done" ]
-	    schroot -r -c "$sid" -u root -- apt-get -q -y build-dep "$name"
-	    schroot -r -c "$sid" -u root -- apt-get -q -y install devscripts
+	    schroot -r -c "$sid" -u root -- apt-get -q -y install devscripts pbuilder
+	    schroot -r -c "$sid" -u root -- /usr/lib/pbuilder/pbuilder-satisfydepends
 	    schroot -r -c "$sid" -- debuild -S -sa -us -uc -i -I.svn
 	)
 	[ $? -eq 0 ] || {
