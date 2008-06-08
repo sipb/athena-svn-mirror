@@ -58,7 +58,7 @@ EOS
     # name, so we have to rename a bunch of debhelper files.
     for f in config cron.daily dirs examples init.d mime postinst postrm \
       preinst prerm templates; do
-	mv debian/$f debian/debathena-lprng.$f
+	[ -f debian/$f ] && mv debian/$f debian/debathena-lprng.$f
     done
     perl -pe 's/templates/debathena-lprng.templates/' -i debian/po/POTFILES.in
 
