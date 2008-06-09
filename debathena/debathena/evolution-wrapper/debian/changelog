@@ -1,3 +1,9 @@
+debathena-evolution-wrapper (10.0.1) unstable; urgency=low
+
+  * Depend on debathena-evolution-data-server to ensure krb4 support.
+
+ -- Greg Hudson <ghudson@mit.edu>  Mon, 09 Jun 2008 04:18:03 -0400
+
 debathena-evolution-wrapper (10.0.0) unstable; urgency=low
 
   * Initial release.

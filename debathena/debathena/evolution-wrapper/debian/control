@@ -7,7 +7,10 @@ Standards-Version: 3.7.2
 
 Package: debathena-evolution-wrapper
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, evolution
+Depends: ${shlibs:Depends}, ${misc:Depends}, evolution,
+ debathena-evolution-data-server
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
 Description: Wrapper to configure Evolution for Debathena
  This package provides a wrapper for the stock Evolution IM client.
  It ensures that newly-created .evolution directories are made
