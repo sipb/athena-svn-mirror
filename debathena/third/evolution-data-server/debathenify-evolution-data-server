@@ -16,11 +16,4 @@ EOF
     munge_sections
 }
 
-case $1 in
-dapper*)
-  echo "Native package has krb4 support; skipping $1." >&2
-  exit
-  ;;
-esac
-
 . ../common/debathenificator.sh
