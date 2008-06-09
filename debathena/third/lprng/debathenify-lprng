@@ -2,7 +2,7 @@
 set -e
 
 name=lprng
-daversionappend=debathena1
+daversionappend=debathena2
 
 hack_package () {
     # Rename the package and make it not conflict with cupsys-bsd.
@@ -53,6 +53,11 @@ hack_package () {
 	    print "\tmv $man8/lpc.8 $man8/mit-lpc.8\n";
 	}
 EOS
+
+    # The postinst script sets or unsets the setuid bit of
+    # lpr/lprm/lpq and thus needs to be adjusted for the command
+    # renaming.
+    perl -pe 's|/usr/bin/lp|/usr/bin/mit-lp|' -i debian/postinst
 
     # The renamed binary package no longer matches the source package
     # name, so we have to rename a bunch of debhelper files.
