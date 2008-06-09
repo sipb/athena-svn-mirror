@@ -1,3 +1,9 @@
+debathena-lprng-config (1.7) unstable; urgency=low
+
+  * Stop hedging and demand debathena-lprng specifically.
+
+ -- Greg Hudson <ghudson@mit.edu>  Mon, 09 Jun 2008 11:28:38 -0400
+
 debathena-lprng-config (1.6) unstable; urgency=low
 
   * Prefer debathena-lprng to lprng, but either will work.
