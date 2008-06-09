@@ -2,13 +2,15 @@
 set -e
 
 name=lprng
-daversionappend=debathena2
+daversionappend=debathena3
 
 hack_package () {
-    # Rename the package and make it not conflict with cupsys-bsd.
+    # Rename the package and make it not conflict with lpr or cupsys-bsd.
     perl -pe 's/^Package: lprng$/Package: debathena-lprng/' -i debian/control
+    perl -ne '/^Provides: lpr$/ || print;' -i debian/control
+    perl -pe '/^Conflicts/ && s/lpr, //' -i debian/control
     perl -pe '/^Conflicts/ && s/cupsys-bsd/lprng/' -i debian/control
-    perl -pe '/^Replaces/ && s/$/, lprng/' -i debian/control
+    perl -pe '/^Replaces/ && s/lpr/lprng/' -i debian/control
 
     perl -n -i - debian/rules << 'EOS'
 	if (/^build:/) {
