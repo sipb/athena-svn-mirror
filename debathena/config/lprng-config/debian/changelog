@@ -1,3 +1,11 @@
+debathena-lprng-config (1.6) unstable; urgency=low
+
+  * Prefer debathena-lprng to lprng, but either will work.
+  * Stop recommending debathena-lprng-no-server-config since
+    debathena-lprng takes care of that.
+
+ -- Greg Hudson <ghudson@mit.edu>  Mon, 09 Jun 2008 04:22:53 -0400
+
 debathena-lprng-config (1.5) unstable; urgency=low
 
   * Convert to use config-package.mk interface, new in config-package-
