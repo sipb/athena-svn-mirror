@@ -28,12 +28,15 @@ my $client = Gnome2::GConf::Client->get_default;
 my $accounts = $client->get_list("/apps/evolution/mail/accounts");
 
 if ($accounts) {
-    # Update the server with the value from Hesiod.
+    # Update the server with the value from Hesiod.  Also convert
+    # Athena 9.4-style Hesiod specifications (although it should be
+    # unusual to see one due to debathena-gconf2-config).
     my $change = 0;
     foreach (@$accounts) {
 	my $old = $_;
 	if (/name="MIT mail"/) {
-	    s|(imap://[^/]*@)(po\d+\.mit\.edu)|\1$server|;
+	    s|(imap://[^/]*\@)(po\d+\.mit\.edu)|\1$server|i;
+	    s|(imap://[^/]*\@)_hesiod|\1$server|;
 	}
 	$change = 1 if ($_ ne $old);
     }

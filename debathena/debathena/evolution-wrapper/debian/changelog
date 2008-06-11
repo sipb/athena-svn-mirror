@@ -1,3 +1,10 @@
+debathena-evolution-wrapper (10.0.2) unstable; urgency=low
+
+  * Fix updating of server name from Hesiod.
+  * Convert @_hesiod server specifications if we see them.
+
+ -- Greg Hudson <ghudson@mit.edu>  Wed, 11 Jun 2008 13:54:26 -0400
+
 debathena-evolution-wrapper (10.0.1) unstable; urgency=low
 
   * Depend on debathena-evolution-data-server to ensure krb4 support.
