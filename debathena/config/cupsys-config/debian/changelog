@@ -1,3 +1,9 @@
+debathena-cupsys-config (1.2) unstable; urgency=low
+
+  * Handle rename of cupsys to cups in Debian sid.
+
+ -- Greg Hudson <ghudson@mit.edu>  Thu, 12 Jun 2008 16:14:25 -0400
+
 debathena-cupsys-config (1.1) unstable; urgency=low
 
   * Depend on cupsys-bsd, mostly as a way to restore cupsys-bsd and

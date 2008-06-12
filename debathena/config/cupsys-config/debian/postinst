@@ -22,10 +22,12 @@ set -e
 
 case "$1" in
     configure)
+	# Handle Debian package name change from cupsys to cups.
+	[ -e /etc/init.d/cups ] && rcname=cups || rcname=cupsys
 	if hash invoke-rc.d; then
-	    invoke-rc.d cupsys restart
+	    invoke-rc.d $rcname restart
 	else
-	    /etc/init.d/cupsys restart
+	    /etc/init.d/$rcname restart
 	fi
     ;;
 
