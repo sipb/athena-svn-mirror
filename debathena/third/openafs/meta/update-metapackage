@@ -1,0 +1,94 @@
+#!/bin/sh
+
+# Usage: update-metapackage DIST_ARCH -A
+
+# Typically run under da with: da ./update-metapackage
+
+# After building OpenAFS modules, run this script to update the
+# openafs-modules metapackages which delay kernel upgrades until a
+# matching OpenAFS module is built.
+
+set -e
+
+dist_arch=$1; shift
+if [ "$1" != "-A" ]; then
+  echo "Skipping $dist_arch."
+  exit
+fi
+chroot=$dist_arch-sbuild
+dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
+arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
+
+sid=$(schroot -b -c "$chroot")
+trap 'schroot -e -c "$sid"' EXIT
+schroot -r -c "$sid" -u root -- apt-get -qq update
+for ktype in generic; do
+  # Get a list of packages named linux-image-<version>-<ktype>.
+  pkgs=$(schroot -r -c "$sid" -- \
+    apt-cache search --names-only "^linux-image-[0-9].*-$ktype"\$ | \
+    awk '{print $1}')
+
+  # Find the one with the highest version.
+  kver=~~~
+  for pkg in $pkgs; do
+    pkgver=$(echo "$pkg" | sed -e "s/^linux-image-\(.*\)-$ktype/\1/")
+    if dpkg --compare-versions "$pkgver" '>' "$kver"; then
+      kver=$pkgver
+      kpkg=$pkg
+    fi
+  done
+  if [ ~~~ = "$kver" ]; then
+    echo "No $ktype kernels found for $dist_arch"
+    break
+  fi
+
+  # Make sure we have a matching openafs-modules package.
+  opkg=openafs-modules-$kver-$ktype
+  if ! zcat "$DEBATHENA_APT/dists/$dist/openafs/binary-$arch/Packages.gz" | \
+    grep -q "^Package: $opkg\$"; then
+    echo "*** WARNING: No matching openafs package for $kpkg ***"
+    break
+  fi
+
+  # Look up the current kernel metapackage version.
+  mver=$(schroot -r -c "$sid" -- \
+    apt-cache show --no-all-versions "linux-image-$ktype" | \
+    sed -n 's/^Version: //p')
+
+  # Check if we are already up to date.
+  mpkg=openafs-modules-$ktype
+  eqname=$dist/$mpkg.equivs
+  if [ -e "$eqname" ]; then
+    eqver=$(sed -n 's/^Version: //p' "$eqname")
+    if [ "x$eqver" = "x$mver" ]; then
+      echo "Metapackage already up to date for $dist_arch $ktype"
+      break
+    fi
+  fi
+
+  # Create the equivs file.
+  mkdir -p "$dist"
+  [ -e "$eqname" ] && mv "$eqname" "$eqname.old"
+  cat > $eqname <<EOF
+Section: openafs
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: $mpkg
+Version: $mver
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Depends: $opkg, linux-image-$ktype (= $mver)
+Copyright: ../common/copyright
+Readme: ../common/README.in
+Description: Metapackage to enforce OpenAFS modules for kernel
+ This package prevents automatic upgrades of the $ktype generic until
+ there is a corresponding openafs-modules Debathena package available.
+EOF
+
+  # Build the equivs file.
+  (cd "$dist" && equivs-build --full "$mpkg.equivs")
+
+  # Upload the resulting package.
+  (cd "$dist" && reprepro -Vb $DEBATHENA_APT --ignore=wrongdistribution \
+    include "$dist" "openafs-modules-${ktype}_${mver}_${arch}.changes")
+done
