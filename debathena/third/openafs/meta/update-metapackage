@@ -23,22 +23,16 @@ sid=$(schroot -b -c "$chroot")
 trap 'schroot -e -c "$sid"' EXIT
 schroot -r -c "$sid" -u root -- apt-get -qq update
 for ktype in generic; do
-  # Get a list of packages named linux-image-<version>-<ktype>.
-  pkgs=$(schroot -r -c "$sid" -- \
-    apt-cache search --names-only "^linux-image-[0-9].*-$ktype"\$ | \
-    awk '{print $1}')
-
-  # Find the one with the highest version.
-  kver=~~~
-  for pkg in $pkgs; do
-    pkgver=$(echo "$pkg" | sed -e "s/^linux-image-\(.*\)-$ktype/\1/")
-    if dpkg --compare-versions "$pkgver" '>' "$kver"; then
-      kver=$pkgver
-      kpkg=$pkg
-    fi
-  done
-  if [ ~~~ = "$kver" ]; then
-    echo "No $ktype kernels found for $dist_arch"
+  # Get info on the current linux-image-<ktype> package.  Set mver to
+  # the version of the metapackage and kver to the version of the
+  # image it depends on.
+  info=$(schroot -r -c "$sid" -- \
+    apt-cache show --no-all-versions "linux-image-$ktype")
+  mver=$(echo "$info" | sed -n 's/^Version: //p')
+  kver=$(echo "$info" | \
+    sed -n 's/^Depends: linux-image-\([0-9.-]*\)-generic.*$/\1/p')
+  if [ -z "$mver" -o -z "$kver" ]; then
+    echo "*** Failed to get current version info for $dist_arch $ktype ***"
     break
   fi
 
@@ -49,11 +43,6 @@ for ktype in generic; do
     echo "*** WARNING: No matching openafs package for $kpkg ***"
     break
   fi
-
-  # Look up the current kernel metapackage version.
-  mver=$(schroot -r -c "$sid" -- \
-    apt-cache show --no-all-versions "linux-image-$ktype" | \
-    sed -n 's/^Version: //p')
 
   # Check if we are already up to date.
   mpkg=openafs-modules-$ktype
