@@ -1,0 +1,6 @@
+#!/bin/sh
+
+motd=$(get_message -new)
+[ -n "$motd" ] && zenity --no-wrap --info --text="
+Athena message of the day:
+$motd"

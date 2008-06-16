@@ -1,0 +1,4 @@
+#!/bin/sh
+
+lertmsg=$(lert)
+[ -n "$lertmsg" ] && zenity --no-wrap --info --text="$lertmsg"

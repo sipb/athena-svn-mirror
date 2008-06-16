@@ -1,0 +1,6 @@
+debian/98debathena-xsession etc/X11/Xsession.d
+debian/displaylert usr/lib/init
+debian/displaymotd usr/lib/init
+debian/quotawarn usr/lib/init
+debian/xsession.bash usr/lib/init
+debian/xsession.tcsh usr/lib/init
