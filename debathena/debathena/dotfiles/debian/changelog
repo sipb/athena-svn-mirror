@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.2-0debathena3) unstable; urgency=low
+
+  * quotawarn belongs in the xsession integration package; remove it.
+
+ -- Greg Hudson <ghudson@mit.edu>  Mon, 16 Jun 2008 13:03:34 -0400
+
 debathena-dotfiles (10.0.2-0debathena2) unstable; urgency=low
 
   * Add new .generation dotfile to distinguish old and new accounts.
