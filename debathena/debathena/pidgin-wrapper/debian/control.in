@@ -6,7 +6,7 @@ Build-Depends: @cdbs@, lsb-release
 Standards-Version: 3.7.2
 
 Package: debathena-pidgin-wrapper
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, pidgin
 Description: Wrapper to configure Pidgin for Debathena
  This package provides a wrapper for the stock Pidgin IM client.  It

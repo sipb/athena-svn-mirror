@@ -1,3 +1,9 @@
+debathena-pidgin-wrapper (10.0.2) unstable; urgency=low
+
+  * Actually make architecture-independent
+
+ -- Evan Broder <broder@mit.edu>  Mon, 16 Jun 2008 23:33:34 -0400
+
 debathena-pidgin-wrapper (10.0.1) unstable; urgency=low
 
   * Convert to config-package-dev.

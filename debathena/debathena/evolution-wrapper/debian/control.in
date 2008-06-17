@@ -6,7 +6,7 @@ Build-Depends: @cdbs@, lsb-release
 Standards-Version: 3.7.2
 
 Package: debathena-evolution-wrapper
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, libgnome2-gconf-perl,
  debathena-evolution-data-server
 Provides: ${diverted-files}

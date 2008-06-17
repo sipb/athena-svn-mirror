@@ -1,3 +1,9 @@
+debathena-evolution-wrapper (10.0.3) unstable; urgency=low
+
+  * Actually make debathena-evolution-wrapper architecture-independent
+
+ -- Evan Broder <broder@mit.edu>  Mon, 16 Jun 2008 23:31:09 -0400
+
 debathena-evolution-wrapper (10.0.2) unstable; urgency=low
 
   * Fix updating of server name from Hesiod.
