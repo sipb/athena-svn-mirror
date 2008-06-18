@@ -1,3 +1,11 @@
+debathena-dotfiles (10.0.3-0debathena1) unstable; urgency=low
+
+  * Restore the cdpath and prompt customizations for tcsh.
+  * Eliminate the noclobber and ignoreeof customizations for bash.
+  * Add /sbin and /usr/sbin to the path for both shell types.
+
+ -- Greg Hudson <ghudson@mit.edu>  Wed, 18 Jun 2008 12:20:03 -0400
+
 debathena-dotfiles (10.0.2-0debathena3) unstable; urgency=low
 
   * quotawarn belongs in the xsession integration package; remove it.

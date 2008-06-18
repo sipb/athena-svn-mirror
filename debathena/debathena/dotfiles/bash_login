@@ -64,7 +64,6 @@ if [ "${skip_tty_startup+set}" != set ]; then
 	if [ "${verbose_login+set}" = set ]; then
 		 echo "Running standard startup activities ..."
 	fi
-	IGNOREEOF=			# ^D won't log you out
 	$ZEPHYR_CLIENT			# Start Zephyr client
 	get_message -new -login		# Display current motd
 	mailquota -n			# Check quota on post office server

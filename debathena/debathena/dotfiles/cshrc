@@ -83,6 +83,10 @@ if (! $?ENV_SET) then
   endif
   unset x
 
+  # Although it's contrary to theory, there is useful stuff in /sbin
+  # and /usr/sbin, and we've traditionally had it in the default path.
+  set path = ( $path /sbin /usr/sbin )
+
   # Run user environment customizations identified in your
   # ~/.environment file.  This is the place to include your own
   # environment variables, attach commands, and other system wide
@@ -118,6 +122,8 @@ set noclobber			# Don't overwrite files with redirection
 if ($?prompt) then		# For interactive shells only (i.e., NOT rsh):
   # Set prompt.
   set promptchars="%#"
+  set prompt = "athena%# "
+  set cdpath = (~)
   set interactive		#   Provide shell variable for compatability
 endif
 

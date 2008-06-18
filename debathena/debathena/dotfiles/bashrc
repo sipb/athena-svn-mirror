@@ -78,6 +78,11 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	fi
 	unset x
 
+	# Although it's contrary to theory, there is useful stuff in
+	# /sbin and /usr/sbin, and we've traditionally had it in the
+	# default path.
+	PATH=${PATH}:/sbin:/usr/sbin
+
 	# Run user environment customizations identified in your
 	# ~/.bash_environment file.  This is the place to include your
 	# own environment variables, attach commands, and other system
@@ -91,9 +96,9 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 		. ~/.bash_environment
 	fi
 
-	# Standard Athena path modifications
+	# If the user has a bindir in $HOME, put it in front of the path.
 	athena_home_bin=$( /usr/bin/athdir "$HOME" )
-	PATH=${athena_home_bin:+$athena_home_bin:}$PATH:.
+	PATH=${athena_home_bin:+$athena_home_bin:}$PATH
 	unset athena_home_bin
 
 fi
@@ -102,8 +107,6 @@ fi
 # *******************  BASH SETUP   *******************
 
 # Set up standard bash shell initializations
-
-set -o noclobber		# Don't overwrite files with redirection
 
 #   alias for re-establishing authentication
 renew () { kinit -54 $USER && fsid -a && zctl load /dev/null ; }
