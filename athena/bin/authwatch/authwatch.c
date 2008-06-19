@@ -113,23 +113,23 @@ static gint timeout_cb(gpointer reset)
     const char *message;        /* Formatted for a gtk_message_dialog */
   } warnings[] = {
     { 0,
-"You have no authentication.  Select ``Renew Authentication'' from the "
-"Athena ``Utilities'' menu to re-authenticate."
+"You have no authentication.  Select Applications -> System Tools -> "
+"Renew Authentication to re-authenticate."
     },
 
     { 60,
 "Your authentication will expire in less than one minute.  Select "
-"``Renew Authentication'' from the Athena ``Utilities'' menu to re-authenticate."
+"Applications -> System Tools -> Renew Authentication to re-authenticate."
     },
 
     { 60*5,
 "Your authentication will expire in less than five minutes.  Select "
-"``Renew Authentication'' from the Athena ``Utilities'' menu to re-authenticate."
+"Applications -> System Tools -> Renew Authentication to re-authenticate."
     },
 
     { 60*15,
 "Your authentication will expire in less than fifteen minutes.  Select "
-"``Renew Authentication'' from the Athena ``Utilities'' menu to re-authenticate."
+"Applications -> System Tools -> Renew Authentication to re-authenticate."
     }
   };
   static const int nwarnings = sizeof(warnings) / sizeof(*warnings);
