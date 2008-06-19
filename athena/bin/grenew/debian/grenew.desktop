@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Renew Authentication
+Comment=You will need to renew every 10 hours of a login session.
+Exec=grenew
+Terminal=false
+Type=Application
+Icon=gnome-run
+Categories=System;

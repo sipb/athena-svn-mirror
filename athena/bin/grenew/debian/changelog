@@ -1,3 +1,10 @@
+debathena-grenew (10.0.0-0debathena1) unstable; urgency=low
+
+  * Add a desktop item.
+  * Describe the package correctly.
+
+ -- Greg Hudson <ghudson@mit.edu>  Thu, 19 Jun 2008 16:41:37 -0400
+
 debathena-grenew (9.4.0+cvs20060726-0debathena1) unstable; urgency=low
 
   * Initial release.
