@@ -1,4 +1,10 @@
-debathena-authwatch (9.4.12-0debathena3) unstable; urgency=low
+debathena-authwatch (10.0.0-0debathena2) unstable; urgency=low
+
+  * Recommend grenew since we tell users to run it.
+
+ -- Greg Hudson <ghudson@mit.edu>  Thu, 19 Jun 2008 16:46:27 -0400
+
+debathena-authwatch (10.0.0-0debathena1) unstable; urgency=low
 
   * Refer to the correct grenew menu item for Athena 10.
 

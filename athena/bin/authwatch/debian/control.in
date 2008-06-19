@@ -7,9 +7,8 @@ Standards-Version: 3.7.2
 
 Package: debathena-authwatch
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-grenew
+Recommends: debathena-grenew
 Description: Warn user of expiring authentication
  This program runs in the background and warns the user if their
  Kerberos authentication is about to expire.
-
-
