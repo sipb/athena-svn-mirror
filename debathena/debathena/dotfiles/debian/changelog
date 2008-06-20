@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.4-0debathena1) unstable; urgency=low
+
+  * Don't add sbin directories to user paths after all.
+
+ -- Greg Hudson <ghudson@mit.edu>  Fri, 20 Jun 2008 11:09:45 -0400
+
 debathena-dotfiles (10.0.3-0debathena1) unstable; urgency=low
 
   * Restore the cdpath and prompt customizations for tcsh.

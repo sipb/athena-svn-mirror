@@ -78,11 +78,6 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	fi
 	unset x
 
-	# Although it's contrary to theory, there is useful stuff in
-	# /sbin and /usr/sbin, and we've traditionally had it in the
-	# default path.
-	PATH=${PATH}:/sbin:/usr/sbin
-
 	# Run user environment customizations identified in your
 	# ~/.bash_environment file.  This is the place to include your
 	# own environment variables, attach commands, and other system
