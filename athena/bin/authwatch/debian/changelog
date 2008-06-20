@@ -1,3 +1,9 @@
+debathena-authwatch (10.0.0-0debathena3) unstable; urgency=low
+
+  * Fix depends/recommends editing error in control.in.
+
+ -- Greg Hudson <ghudson@mit.edu>  Thu, 19 Jun 2008 23:14:08 -0400
+
 debathena-authwatch (10.0.0-0debathena2) unstable; urgency=low
 
   * Recommend grenew since we tell users to run it.
