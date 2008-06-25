@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Xess
+Comment=Spreadsheet program designed for scientists (supported)
+Exec=gathrun xess
+Terminal=false
+Type=Application
+Icon=gnome-run
+Categories=Locker;

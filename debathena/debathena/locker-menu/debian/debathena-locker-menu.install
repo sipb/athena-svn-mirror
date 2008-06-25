@@ -1,0 +1,3 @@
+debian/debathena-locker.menu etc/xdg/menus/applications-merged
+debian/Locker.directory usr/share/desktop-directories
+debian/*.desktop usr/share/applications

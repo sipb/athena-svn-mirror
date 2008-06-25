@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Maple
+Comment=Symbolic math and visualization package (supported)
+Exec=gathrun maple
+Terminal=false
+Type=Application
+Icon=gnome-run
+Categories=Locker;

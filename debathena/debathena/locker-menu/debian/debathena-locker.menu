@@ -1,0 +1,11 @@
+<Menu>
+  <Name>Locker software merge menu</Name>
+  <Menu>
+    <Name>Locker Software</Name>
+    <Directory>Locker.directory</Directory>
+    <Include>
+      <Category>Locker</Category>
+    </Include>
+  </Menu>
+</Menu>
+

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Stata
+Comment=Statistical analysis program
+Exec=gathrun stata stata-se
+Terminal=false
+Type=Application
+Icon=gnome-run
+Categories=Locker;

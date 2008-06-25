@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Mathematica
+Comment=Symbolic math and numerical calculation environment (unsupported, limited licenses)
+Exec=gathrun math mathematica 
+Terminal=false
+Type=Application
+Icon=gnome-run
+Categories=Locker;
