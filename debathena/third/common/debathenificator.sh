@@ -5,6 +5,28 @@ set -e
 
 : ${DEBATHENA_APT=/mit/debathena/apt}
 
+# Process arguments.
+dist_arch=$1; shift
+a=
+if [ "$1" = "-A" ]; then a=-A; shift; fi
+chroot=$dist_arch-sbuild
+
+if [ -z "$dist_arch" -o $# -eq 0 ]; then
+    echo 'No arguments!' >&2
+    exit 2
+fi
+
+dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
+arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
+
+# Create a chroot and define functions for using it.
+sid=$(schroot -b -c "$chroot")
+trap 'schroot -e -c "$sid"' EXIT
+sch() { schroot -r -c "$sid" -- "$@"; }           # Run in the chroot
+schq() { schroot -q -r -c "$sid" -- "$@"; }       # Run in the chroot quietly
+schr() { schroot -r -c "$sid" -u root -- "$@"; }  # Run in the chroot as root
+schr apt-get -qq -y update
+
 munge_sections () {
     perl -0pe 's/^Section: /Section: debathena-system\//gm or die' -i debian/control
 }
@@ -39,19 +61,14 @@ cmd_source () {
     echo "Building source for $name-$daversion on $dist_arch" >&2
     
     if ! [ -e "${name}_$version.dsc" ]; then
-	schroot -c "$chroot" -- apt-get -d source "$name"
+	sch apt-get -d source "$name"
     fi
     
     if ! [ -e "${name}_$daversion.dsc" ]; then
-	tmpdir=$(mktemp -td "debathenify.$$.XXXXXXXXXX")
-	trap 'rm -rf "$tmpdir"' EXIT
-	origversion=$(echo "$version" | sed 's/-[^-]*$//')
-	#echo "! [ -e '$tmpdir/${name}_$origversion.orig.tar.gz' ] || diff -u <(xxd '${name}_$origversion.orig.tar.gz') <(xxd '$tmpdir/${name}_$origversion.orig.tar.gz')" >| /tmp/wtf
-	
 	(
-	    sid=$(schroot -b -c "$chroot")
-	    trap 'schroot -e -c "$sid"' EXIT
-	    set -x
+	    tmpdir=$(mktemp -td "debathenify.$$.XXXXXXXXXX")
+	    trap 'rm -rf "$tmpdir"' EXIT
+	    origversion=$(echo "$version" | sed 's/-[^-]*$//')
 	    cp -a "${name}_$origversion.orig.tar.gz" "$tmpdir/"
 	    dscdir=$(pwd)
 	    cd "$tmpdir/"
@@ -60,16 +77,12 @@ cmd_source () {
 	    dch_done=
 	    hack_package
 	    [ -n "$dch_done" ]
-	    schroot -r -c "$sid" -u root -- apt-get -q -y install devscripts pbuilder
-	    schroot -r -c "$sid" -u root -- /usr/lib/pbuilder/pbuilder-satisfydepends
-	    schroot -r -c "$sid" -- debuild -S -sa -us -uc -i -I.svn
+	    schr apt-get -q -y install devscripts pbuilder
+	    schr /usr/lib/pbuilder/pbuilder-satisfydepends
+	    sch debuild -S -sa -us -uc -i -I.svn && cp -a "../${name}_$daversion"* "$dscdir"
 	)
-	[ $? -eq 0 ] || {
-	    bash -c "diff -u <(xxd '${name}_$origversion.orig.tar.gz') <(xxd '$tmpdir/${name}_$origversion.orig.tar.gz')"
-	    exit 1
-	}
+	[ $? -eq 0 ] || exit 1
 	
-	cp -a "$tmpdir/${name}_$daversion"* .
 	if [ -n "$DA_CHECK_DIFFS" ]; then
 	    interdiff -z "${name}_$version.diff.gz" "${name}_$daversion.diff.gz" | \
 		enscript --color --language=ansi --highlight=diffu --output=- -q | \
@@ -102,21 +115,8 @@ cmd_upload () {
     $REPREPRO include "$dist" "${name}_${daversion}${tag}_${arch}.changes"
 }
 
-dist_arch=$1; shift
-a=
-if [ "$1" = "-A" ]; then a=-A; shift; fi
-chroot=$dist_arch-sbuild
-
-if [ -z "$dist_arch" -o $# -eq 0 ]; then
-    echo 'No arguments!' >&2
-    exit 2
-fi
-
-dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
-arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
-
 version=$(
-    schroot -q -c "$chroot" -- apt-cache showsrc "$name" | \
+    sch apt-cache showsrc "$name" | \
 	sed -n 's/^Version: \(.*\)$/\1/ p' | (
 	version='~~~'
 	while read -r newversion; do
