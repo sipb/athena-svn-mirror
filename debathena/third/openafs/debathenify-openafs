@@ -36,10 +36,10 @@ done
 
 sid=$(schroot -b -c "$chroot")
 trap 'schroot -e -c "$sid"' EXIT
-sch="schroot -r -c $sid --"
-schq="schroot -q -r -c $sid --"
-schr="schroot -r -c $sid -u root --"
-$schr apt-get -qq -y update
+sch() { schroot -r -c "$sid" -- "$@"; }           # Run in the chroot
+schq() { schroot -q -r -c "$sid" -- "$@"; }       # Run in the chroot quietly
+schr() { schroot -r -c "$sid" -u root -- "$@"; }  # Run in the chroot as root
+schr apt-get -qq -y update
 
 # Get all of the packages named linux-image-*.  This list includes
 # three types of packages:
@@ -60,7 +60,7 @@ $schr apt-get -qq -y update
 # To distinguish metapackages from meta-metapackages, we need to look
 # at whether the package's linux-image-* dependency is an actual
 # kernel image or a metapackage.
-pkgs=$($sch apt-cache search --names-only '^linux-image-' | awk '{print $1}')
+pkgs=$(sch apt-cache search --names-only '^linux-image-' | awk '{print $1}')
 
 # Identify the metapackages which depend directly on actual kernel
 # images, as well as the header packages corresponding to those
@@ -69,7 +69,7 @@ metareg='linux-meta\|linux-latest.*'
 mpkgs=
 headers=
 for pkg in $pkgs; do
-  info=$($schq apt-cache show --no-all-versions "$pkg")
+  info=$(schq apt-cache show --no-all-versions "$pkg")
 
   # Disregard if this is not a metapackage.
   src=$(echo "$info" | sed -ne 's/^Source: //p')
@@ -79,7 +79,7 @@ for pkg in $pkgs; do
 
   # Disregard if this package's linux-image dependency is a metapackage.
   dep=$(echo "$info" | sed -ne 's/^Depends:.*\(linux-image-[^ ,]*\).*$/\1/p')
-  depsrc=$($schq apt-cache show --no-all-versions "$dep" \
+  depsrc=$(schq apt-cache show --no-all-versions "$dep" \
     | sed -ne 's/^Source: //p')
   if [ $(expr "$depsrc" : "$metareg") != 0 ]; then
     continue
@@ -89,7 +89,7 @@ for pkg in $pkgs; do
   # this is probably an Ubuntu linux-image-debug metapackage and we
   # can ignore it.
   hdr=$(echo "$dep" | sed -e 's/image/headers/')
-  hdrinfo=$($schq apt-cache show "$hdr" 2>/dev/null)
+  hdrinfo=$(schq apt-cache show "$hdr" 2>/dev/null)
   if [ -z "$hdrinfo" ]; then
     continue
   fi
@@ -118,16 +118,16 @@ for hdr in $headers; do
   if [ yes = "$do_binary" ]; then
     echo "*** Building: $dist_arch $module"
     kversion=$(echo "$hdr" | sed 's/^linux-headers-//')
-    $schr apt-get -y install module-assistant "$hdr"
-    $schr m-a -i -t -l "$kversion" get openafs
-    $schr m-a -i -t -l "$kversion" unpack openafs
-    afsv=$($schq dpkg-query --showformat='${Version}' --show \
+    schr apt-get -y install module-assistant "$hdr"
+    schr m-a -i -t -l "$kversion" get openafs
+    schr m-a -i -t -l "$kversion" unpack openafs
+    afsv=$(schq dpkg-query --showformat='${Version}' --show \
       openafs-modules-source)
-    hdrv=$($schq dpkg-query --showformat='${Version}' --show "$hdr")
-    $schr touch \
+    hdrv=$(schq dpkg-query --showformat='${Version}' --show "$hdr")
+    schr touch \
       "/usr/src/openafs-modules-${kversion}_${afsv}+${hdrv}_$arch.changes.pt"
     here=$(pwd)
-    $schr sh -ec "
+    schr sh -ec "
       eval \"\$(dpkg-architecture)\"
       if [ \"\$DEB_HOST_ARCH\" != amd64 ] && \
         fgrep -x CONFIG_X86_64=y '/lib/modules/$kversion/build/.config'; then
@@ -150,12 +150,12 @@ for hdr in $headers; do
     if [ $? -eq 0 ]; then
       echo "*** Successful build: $dist_arch $module"
       mkdir -p "$dist_arch"
-      $schr sh -c "cp /usr/src/openafs-modules* $dist_arch"
+      schr sh -c "cp /usr/src/openafs-modules* $dist_arch"
     else
       echo "*** Failed build: $dist_arch $module"
       echo "$dist_arch $hdr" >> failed.log
     fi
-    $schr sh -c "rm -f /usr/src/openafs-modules*"
+    schr sh -c "rm -f /usr/src/openafs-modules*"
   fi
 
   # Upload the module if requested, if we successfully built one.
@@ -183,7 +183,7 @@ fi
 # module to the current version of the upstream metapackage, if one
 # does not already exist at the current version.
 for image_mpkg in $mpkgs; do
-  info=$($schq apt-cache show --no-all-versions "$image_mpkg")
+  info=$(schq apt-cache show --no-all-versions "$image_mpkg")
   ver=$(echo "$info" | sed -ne 's/^Version: //p')
   afs_mpkg=$(echo "$image_mpkg" | sed -e 's/^linux-image/openafs-modules/')
 
@@ -226,8 +226,8 @@ Description: Metapackage to enforce OpenAFS modules for kernel
  This package prevents automatic upgrades of the $ktype generic until
  there is a corresponding openafs-modules Debathena package available.
 EOF
-    $schr apt-get -y install equivs
-    (cd "meta/$dist_arch" && $sch equivs-build -a "$arch" "$afs_mpkg.equivs")
+    schr apt-get -y install equivs
+    (cd "meta/$dist_arch" && sch equivs-build -a "$arch" "$afs_mpkg.equivs")
   fi
 
   if [ yes = "$do_upload" ]; then
