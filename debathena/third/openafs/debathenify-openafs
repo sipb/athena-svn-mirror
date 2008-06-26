@@ -14,6 +14,7 @@ arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 . /mit/debathena/bin/debian-versions.sh
 tag=$(gettag $dist)
 pkgfile=$DEBATHENA_APT/dists/$dist/openafs/binary-$arch/Packages.gz
+: ${DEBATHENA_APT=/mit/debathena/apt}
 
 do_binary=no
 do_upload=no
