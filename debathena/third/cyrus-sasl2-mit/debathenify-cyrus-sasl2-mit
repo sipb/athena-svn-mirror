@@ -22,6 +22,28 @@ set -e
 
 : ${DEBATHENA_APT=/mit/debathena/apt}
 
+# Process arguments.
+dist_arch=$1; shift
+a=
+if [ "$1" = "-A" ]; then a=-A; shift; fi
+chroot=$dist_arch-sbuild
+
+if [ -z "$dist_arch" -o $# -eq 0 ]; then
+  echo 'No arguments!' >&2
+  exit 2
+fi
+
+dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
+arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
+
+# Create a chroot and define functions for using it.
+sid=$(schroot -b -c "$chroot")
+trap 'schroot -e -c "$sid"' EXIT
+sch() { schroot -r -c "$sid" -- "$@"; }           # Run in the chroot
+schq() { schroot -q -r -c "$sid" -- "$@"; }       # Run in the chroot quietly
+schr() { schroot -r -c "$sid" -u root -- "$@"; }  # Run in the chroot as root
+schr apt-get -qq -y update
+
 name=cyrus-sasl2-mit
 daversionappend=$(dpkg-parsechangelog -l$(dirname "$0")/debian/changelog |
   sed -nre 's/Version: .*(debathena.*)$/\1/p')
@@ -33,32 +55,29 @@ cmd_source() {
   fi
 
   if [ ! -e "cyrus-sasl2_$version.dsc" ]; then
-    schroot -c "$chroot" -- apt-get -d source cyrus-sasl2
+    sch apt-get -d source cyrus-sasl2
   fi
 
   if [ ! -e "${name}_$daversion.dsc" ]; then
-    tmpdir=$(mktemp -td "debathenify.$$.XXXXXXXXXX")
-    trap 'rm -rf "$tmpdir"' EXIT
-    pkgdir=$tmpdir/$name-$origversion
-    mkdir "$pkgdir"
-    cp -a $(dirname "$0")/debian "$pkgdir"
-    cp -a "cyrus-sasl2_$origversion.orig.tar.gz" "$pkgdir"
-    (cd $tmpdir && tar czf "${name}_$origversion.orig.tar.gz" \
-      "$name-$origversion/cyrus-sasl2_$origversion.orig.tar.gz")
-    perl -0pe "s/\@TARDIR\@/cyrus-sasl-$origversion/m or die" \
-      -i "$pkgdir/debian/rules"
     (
-      sid=$(schroot -b -c "$chroot")
-      trap 'schroot -e -c "$sid"' EXIT
-      set -x
+      tmpdir=$(mktemp -td "debathenify.$$.XXXXXXXXXX")
+      trap 'rm -rf "$tmpdir"' EXIT
+      pkgdir=$tmpdir/$name-$origversion
+      mkdir "$pkgdir"
+      cp -a $(dirname "$0")/debian "$pkgdir"
+      cp -a "cyrus-sasl2_$origversion.orig.tar.gz" "$pkgdir"
+      here=$(pwd)
+      (cd $tmpdir && tar czf "${name}_$origversion.orig.tar.gz" \
+        "$name-$origversion/cyrus-sasl2_$origversion.orig.tar.gz")
+      perl -0pe "s/\@TARDIR\@/cyrus-sasl-$origversion/m or die" \
+        -i "$pkgdir/debian/rules"
       cd "$tmpdir/$name-$origversion"
-      schroot -r -c "$sid" -u root -- apt-get -q -y build-dep cyrus-sasl2
-      schroot -r -c "$sid" -u root -- apt-get -q -y install dbs
-      schroot -r -c "$sid" -u root -- apt-get -q -y install devscripts
-      schroot -r -c "$sid" -- debuild -S -sa -us -uc -i -I.svn
+      schr apt-get -q -y build-dep cyrus-sasl2
+      schr apt-get -q -y install dbs devscripts
+      sch debuild -S -sa -us -uc -i -I.svn
+      cp -a "$tmpdir/${name}_$daversion"* "$here"
+      cp -a "$tmpdir/${name}_$origversion.orig.tar.gz" "$here"
     )
-    cp -a "$tmpdir/${name}_$daversion"* .
-    cp -a "$tmpdir/${name}_$origversion.orig.tar.gz" .
   fi
 }
 
@@ -84,19 +103,6 @@ cmd_upload () {
   $REPREPRO include "$dist" "${name}_${daversion}${tag}_${arch}.changes"
 }
 
-dist_arch=$1; shift
-a=
-if [ "$1" = "-A" ]; then a=-A; shift; fi
-chroot=$dist_arch-sbuild
-
-if [ -z "$dist_arch" -o $# -eq 0 ]; then
-  echo 'No arguments!' >&2
-  exit 2
-fi
-
-dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
-arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
-
 case $dist in
 sarge|dapper|edgy)
   echo "Native libsasl2-krb4-mit package exists; skipping $dist_arch." >&2
@@ -105,7 +111,7 @@ sarge|dapper|edgy)
 esac
 
 version=$(
-  schroot -q -c "$chroot" -- apt-cache showsrc cyrus-sasl2 | \
+  sch apt-cache showsrc cyrus-sasl2 | \
     sed -n 's/^Version: \(.*\)$/\1/ p' | (
       version='~~~'
       while read -r newversion; do
@@ -123,7 +129,7 @@ version=$(
 origversion=$(echo "$version" | sed 's/-[^-]*$//')
 daversion=$origversion-0$daversionappend
 
-if zcat "$DEBATHENA_APT/dists/$dist/debathena-system/binary-$arch/Packages.gz" | \
+if zcat "$DEBATHENA_APT/dists/$dist/debathena/binary-$arch/Packages.gz" | \
   dpkg-awk -f - "Source:^$name\$" "Version:^$daversion~" -- Architecture | \
   if [ "$a" = "-A" ]; then cat; else fgrep -vx 'Architecture: all'; fi | \
   grep -q .; then
