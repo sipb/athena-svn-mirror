@@ -19,6 +19,9 @@ fi
 dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
 arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 
+. /mit/debathena/bin/debian-versions.sh
+tag=$(gettag $dist)
+
 # Create a chroot and define functions for using it.
 sid=$(schroot -b -c "$chroot")
 trap 'schroot -e -c "$sid"' EXIT
@@ -106,9 +109,6 @@ cmd_upload () {
     REPREPRO="v reprepro -Vb $DEBATHENA_APT"
     REPREPROI="$REPREPRO --ignore=wrongdistribution --ignore=missingfield"
 
-    . /mit/debathena/bin/debian-versions.sh
-    tag=$(gettag $dist)
-
     if [ "$a" = "-A" ]; then
 	$REPREPROI include "$dist" "${name}_${daversion}_source.changes"
     fi
@@ -133,10 +133,15 @@ version=$(
     )
 daversion=$version$daversionappend
 
-if zcat "$DEBATHENA_APT/dists/$dist/debathena-system/binary-$arch/Packages.gz" | \
-    dpkg-awk -f - "Source:^$name\$" "Version:^$daversion~" -- Architecture | \
-    if [ "$a" = "-A" ]; then cat; else fgrep -vx 'Architecture: all'; fi | \
-    grep -q .; then
+# Avoid rebuilding anything we have already uploaded a package for.
+# Use reprepro to search for a binary package either named $name or
+# with the source $name, matching the expected version and current
+# architecture.  This check will not work for sources which produce an
+# architecture-independent output, so it will have to be adapted if we
+# start debathenifying any of those.
+if reprepro -Vb "$DEBATHENA_APT" listfilter "$dist" \
+    "(Source (== $name) | (!Source, Package (== $name)),
+    Architecture (== $arch), Version (== $daversion$tag))" | grep -q .; then
     echo "$name $daversion already exists for $dist_arch." >&2
     exit 0
 fi
