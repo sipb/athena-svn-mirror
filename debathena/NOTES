@@ -66,6 +66,16 @@ but the instructions in this file do.  The options mean:
   * Ignore common version control metadata files when creating diffs.
   * Ignore .svn paths when creating tarballs.
 
+You will also want a $HOME/.sbuildrc file containing the following:
+
+  $nolog = 1;
+  $mailto = 'yourusername';
+  $log_dir = '/tmp/sbuild-logs';
+  $maintainer_name = 'Debian-Athena Project <debathena@mit.edu>';
+  $force_orig_source = 1;
+  $sbuild_mode = "user";
+  1;
+
 You should also set the environment variable DEBATHENA_APT to
 "/afs/dev.mit.edu/system/athena10/apt".
 
@@ -214,9 +224,7 @@ Release engineer: Bootstrapping the project infrastructure
      Improvements to this machinery are pending.
 
   6. For each package under third, run "da ./debathenify-PKG source
-     binary upload".  This infrastructure depends on the chroots being
-     up to date, so run "all-schroots upgrade-schroot" beforehand if
-     substantial time has passed since they were created.
+     binary upload".
 
 Release engineer: Setting up a build server
 -------------------------------------------
@@ -280,6 +288,45 @@ Release engineer: Setting up a build server
       amd64 line if DIST is sarge.
 
       Example: VG=/dev/dink scripts/build-server/make-chroot gutsy i386
+
+  13. Create a local account for builder with:
+
+        adduser --uid 1047 --disabled-password builder
+
+      Make the home directory mode 700.  Install a
+      daemon/linux-build-10.mit.edu keytab in the home directory as
+      "keytab".  Install a copy of the secret repository-signing key
+      (athena10@mit.edu) in the home directory's keyring with
+      something like:
+
+        kinit builder
+        gpg --export-secret-keys athena10@mit.edu | \
+          ssh -l builder machinename gpg --import
+
+      Create a file named .sbuildrc in builder's homedir containing:
+
+        $nolog = 1;
+        $mailto = 'source-wash@mit.edu';
+        $log_dir = '/tmp/sbuild-logs';
+        $maintainer_name = 'Debian-Athena Project <debathena@mit.edu>';
+        $force_orig_source = 1;
+        $sbuild_mode = "user";
+        1;
+
+      Add builder to the sbuild group in /etc/group.
+
+      Copy scripts/build-server/autodebathenify to builder's homedir.
+      Create a file named autodebathenify.config in builder's homedir
+      containing:
+
+        error_addr=source-wash@mit.edu
+        scripts_dir=/afs/dev.mit.edu/source/src-svn/debathena/scripts
+        build_dir=/afs/dev.mit.edu/project/release/10/build/third
+        packages="cyrus-sasl2-mit evolution-data-server lprng openafs tcsh"
+        export DEBATHENA_APT=/afs/dev.mit.edu/system/athena10/apt
+
+      Copy scripts/build-server/autodebathenify.cron to builder's
+      homedir and install it with "crontab autodebathenify.cron".
 
 Release engineer: Removing a build chroot on the build server
 -------------------------------------------------------------
