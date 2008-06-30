@@ -1,3 +1,10 @@
+debathena-firefox-extension (10.0.1-0debathena1) unstable; urgency=low
+
+  * Bump the max version supported to 3.0.*.
+  * Add a /usr/lib/firefox-3.0/extensions symlink.
+
+ -- Robert Basch <rbasch@kiko.mit.edu>  Mon, 30 Jun 2008 18:34:14 -0400
+
 debathena-firefox-extension (10.0.0-0debathena2) unstable; urgency=low
 
   * Set libdir in the Makefile.
