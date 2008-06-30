@@ -313,6 +313,11 @@ Release engineer: Setting up a build server
         $sbuild_mode = "user";
         1;
 
+      Create a file named .ssh/config in builder's homedir containing:
+
+        Host svn.mit.edu
+          User debuildsvn
+
       Add builder to the sbuild group in /etc/group.
 
       Copy scripts/build-server/autodebathenify to builder's homedir.
