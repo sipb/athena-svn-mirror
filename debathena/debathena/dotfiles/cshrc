@@ -83,6 +83,22 @@ if (! $?ENV_SET) then
   endif
   unset x
 
+  # This "extend" alias and friends have been left in for backwards
+  # compatibility with old .environment files, just in case. The new
+  # add alias does not use them.
+  alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
+  if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
+  if ($?extendyes) setenv \!:1 ${\!:1}:\!:2 && \\
+  unset extendyes'
+  alias sextend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
+  if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
+  if ($?extendyes) set \!:1=(${\!:1} \!:2) && \\
+  unset extendyes'
+  alias textend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
+  if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
+  if ($?extendyes) set \!:1=${\!:1}:\!:2 && \\
+  unset extendyes'
+
   # Run user environment customizations identified in your
   # ~/.environment file.  This is the place to include your own
   # environment variables, attach commands, and other system wide
@@ -92,6 +108,8 @@ if (! $?ENV_SET) then
   # customizations" option when you logged in).
 
   if ((! $?NOCALLS) && (-r ~/.environment)) source ~/.environment
+
+  unalias extend sextend textend
 
   if ((! $?NOCALLS) && (-r ~/.path)) then
     # Support .path files for compatibility.
