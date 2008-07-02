@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster-software
-Version: 0.2
+Version: 0.3
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: build-essential, gnome-devel,
   enscript, psutils,
@@ -18,7 +18,10 @@ Depends: build-essential, gnome-devel,
   gv,
   openoffice.org,
   thunderbird | mozilla-thunderbird | icedove,
-  krb5-clients
+  krb5-clients,
+  gnuplot,
+  eclipse,
+  drscheme
 Recommends: ckermit,
   sun-java6-jdk | sun-java5-jdk,
   x3270
