@@ -1,3 +1,11 @@
+debathena-locker-menu (1.1) unstable; urgency=low
+
+  * Remove Pro Engineer.
+  * Add Tecplot, Applixware, and Acrobat Reader.
+  * Add an informational link to the top of the menu.
+
+ -- Greg Hudson <ghudson@mit.edu>  Wed, 02 Jul 2008 13:51:17 -0400
+
 debathena-locker-menu (1.0) unstable; urgency=low
 
   * Initial release.

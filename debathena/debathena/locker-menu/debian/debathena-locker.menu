@@ -6,6 +6,10 @@
     <Include>
       <Category>Locker</Category>
     </Include>
+    <Layout>
+      <Filename>locker-avail.desktop</Filename>
+      <Separator/>
+      <Merge type="all"/>
+    </Layout>
   </Menu>
 </Menu>
-

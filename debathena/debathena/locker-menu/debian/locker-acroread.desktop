@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Adobe Acrobat Reader
+Comment=Adobe Acrobat Reader
+Comment[fi]=Adobe Acrobat PDF dokumenttien näyttäjä
+Comment[pt]=Visualizador de PDFs
+Comment[fr]=Afficheur Adobe Acrobat
+Comment[sv]=Visare för Adobe Acrobat PDF-dokument
+Name[C]=Adobe Acrobat Reader
+Comment[C]=Adobe Acrobat Reader
+Comment[pl]=Przegl±darka plików Adobe Portable Document Format
+Comment[cs]=Prohlí¾eè PDF souborù
+Comment[it]=Visualizzatore file PDF
+Exec=gathrun acro acroread 
+Terminal=false
+Type=Application
+Icon=gnome-run
+Categories=Locker;

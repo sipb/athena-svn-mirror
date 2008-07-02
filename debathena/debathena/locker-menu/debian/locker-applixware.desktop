@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Applixware
+Comment=Office productivity suite
+Exec=gathrun applix
+Terminal=false
+Type=Application
+Icon=gnome-run
+Categories=Locker;

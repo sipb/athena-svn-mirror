@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Pro Engineer
-Comment=High-end CAD/CAM package, used mostly in Mechanical Engineering
-Exec=gathrun ptc proewildfire
-Terminal=false
-Type=Application
-Icon=gnome-run
-Categories=Locker;
