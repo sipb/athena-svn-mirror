@@ -6,6 +6,8 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/patchsys-quilt.mk
 
+DEB_OPT_FLAG = -O0  # Work around a segfault at uip/mhlsbr.c:904.
+
 CPPFLAGS += -DLINUX_STDIO
 CFLAGS += -DLINUX_STDIO  # Sarge cdbs doesn't support CPPFLAGS.
 DEB_CONFIGURE_EXTRA_FLAGS += --enable-nmh-pop --enable-nmh-debug --with-krb4=$(shell krb5-config --prefix krb4) --with-hesiod --with-mts=sendmail --with-editor=emacs --with-editor=/usr/bin/sensible-editor --with-pager=/usr/bin/sensible-pager

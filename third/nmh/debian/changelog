@@ -1,3 +1,23 @@
+debathena-nmh (1.0+athena9.4.34-0debathena3) unstable; urgency=low
+
+  * Prefer debathena-msmtp-mta rather than nullmailer for
+    mail-transport-agent.
+
+ -- Tim Abbott <tabbott@mit.edu>  Tue, 22 Apr 2008 15:40:09 -0400
+
+debathena-nmh (1.0+athena9.4.34-0debathena2) unstable; urgency=low
+
+  [ Tim Abbott ]
+  * Fix configure issues: make sure /usr/lib/sendmail exists on build
+    machine by Build-Depends: mail-transport-agent.
+  * Add dependency on metamail.
+
+  [ Anders Kaseorg ]
+  * Set DEB_OPT_FLAG = -O0, to work around a segfault at uip/mhlsbr.c:904
+    reported by mitchb.
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 14 Apr 2008 15:56:17 -0400
+
 debathena-nmh (1.0+athena9.4.34-0debathena1) unstable; urgency=low
 
   * Initial release.
