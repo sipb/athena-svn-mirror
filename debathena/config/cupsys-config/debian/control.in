@@ -2,7 +2,7 @@ Source: debathena-cupsys-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debian-Athena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, cups | cupsys, debathena-cupsys-hack
+Build-Depends: @cdbs@, debathena-cups, debathena-cupsys-hack
 Standards-Version: 3.7.2
 
 Package: debathena-cupsys-config

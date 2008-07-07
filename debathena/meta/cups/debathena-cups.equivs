@@ -1,0 +1,14 @@
+Section: debathena/net
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-cups
+Version: 0.1.0
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Depends: cups | cupsys
+Suggests: debathena-cupsys-config
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: CUPS for Debian-Athena
+ This package depends on CUPS. It is otherwise empty, so you may
+ safely remove it.
