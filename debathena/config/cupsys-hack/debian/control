@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-cupsys-hack
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, cupsys
+Depends: ${shlibs:Depends}, ${misc:Depends}, cups | cupsys
 Description: Make /etc/cups/cupsd.conf world-readable
  This package makes /etc/cups/cupsd.conf world-readable so that it can be used
  for other packages.
