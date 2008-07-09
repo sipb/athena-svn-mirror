@@ -1,3 +1,4 @@
+debian/97debathena-homedir-mode etc/X11/Xsession.d
 debian/98debathena-xsession etc/X11/Xsession.d
 debian/displaylert usr/lib/init
 debian/displaymotd usr/lib/init

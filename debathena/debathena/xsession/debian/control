@@ -2,7 +2,7 @@ Source: debathena-xsession
 Section: debathena/base
 Priority: extra
 Maintainer: Debian-Athena Project <debathena@mit.edu>
-Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 5)
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0)
 Standards-Version: 3.7.2
 
 Package: debathena-xsession
@@ -12,7 +12,7 @@ Depends: x11-common, zenity, debathena-pam-config, debathena-zephyr-config,
  debathena-mailquota, ${misc:Depends}
 Recommends: debathena-bash, debathena-tcsh
 Replaces: debathena-dotfiles-x11
-Conflicts: debathena-dotfiles-x11
+Conflicts: debathena-dotfiles-x11, debathena-dotfiles (<< 10.0.2-0debathena3)
 Description: X session integration for graphical Athena logins
  This package contains an X session wrapper which launches standard
  Athena programs and is compatible with historical Athena dotfile
