@@ -28,7 +28,8 @@ schr() { schroot -r -c "$sid" -u root -- "$@"; }  # Run in the chroot as root
 schr apt-get -qq -y update
 
 munge_sections () {
-    perl -0pe 's/^Section: /Section: debathena-system\//gm or die' -i debian/control
+    section=${1:-debathena-section}
+    perl -0pe "s/^Section: /Section: $section\\//gm or die" -i debian/control
 }
 
 add_changelog () {
