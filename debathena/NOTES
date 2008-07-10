@@ -333,6 +333,15 @@ Release engineer: Setting up a build server
       Copy scripts/build-server/autodebathenify.cron to builder's
       homedir and install it with "crontab autodebathenify.cron".
 
+      In builder's homedir, append to .profile:
+
+        PATH=${PATH}:/afs/dev.mit.edu/source/src-svn/debathena/scripts
+        export DEBATHENA_APT=/afs/dev.mit.edu/system/athena10/apt
+
+      and to .bashrc:
+
+        bld=/afs/dev.mit.edu/project/release/10/build
+
 Release engineer: Removing a build chroot on the build server
 -------------------------------------------------------------
 
