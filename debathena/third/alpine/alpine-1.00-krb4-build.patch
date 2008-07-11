@@ -1,0 +1,179 @@
+diff -ur alpine-1.00+kerberos4/imap/Makefile alpine-1.00+athena-krb4/imap/Makefile
+--- alpine-1.00+kerberos4/imap/Makefile	2007-12-20 17:18:28.000000000 -0500
++++ alpine-1.00+athena-krb4/imap/Makefile	2008-04-16 16:08:10.000000000 -0400
+@@ -660,6 +660,7 @@
+ 	$(TOOLS)/$@ "$(LN)" src/c-client c-client
+ 	$(TOOLS)/$@ "$(LN)" src/ansilib c-client
+ 	$(TOOLS)/$@ "$(LN)" src/charset c-client
++	sh -c '(test -d src/kerberos) && ($(LN) `pwd`/src/kerberos/* c-client) || true'
+ 	$(TOOLS)/$@ "$(LN)" src/osdep/$(SYSTEM) c-client
+ 	$(TOOLS)/$@ "$(LN)" src/mtest mtest
+ 	$(TOOLS)/$@ "$(LN)" src/ipopd ipopd
+diff -ur alpine-1.00+kerberos4/imap/src/kerberos/acte_krb.c alpine-1.00+athena-krb4/imap/src/kerberos/acte_krb.c
+--- alpine-1.00+kerberos4/imap/src/kerberos/acte_krb.c	2002-01-16 21:36:02.000000000 -0500
++++ alpine-1.00+athena-krb4/imap/src/kerberos/acte_krb.c	2008-04-16 16:08:10.000000000 -0400
+@@ -27,6 +27,7 @@
+  *
+  */
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <string.h>
+ #include <netdb.h>
+ #include <sys/types.h>
+@@ -36,10 +37,6 @@
+ 
+ #include "acte.h"
+ 
+-extern char *malloc();
+-
+-extern char *lcase P((char *str));
+-
+ #ifndef HAVE_KRB_GET_PHOST
+ extern char *krb_get_phost P((char *));
+ #endif
+@@ -762,12 +759,6 @@
+ }
+ #endif /* !NOPRIVACY */
+ 
+-#ifndef HAVE_AFS_STRING_TO_KEY
+-
+-static afs_string_to_key P((char *str, des_cblock *key, char *cell));
+-
+-#endif
+-
+ /*
+  * Kerberos set srvtab filename
+  * Accepts: name of srvtab file to use in reading authenticators
+@@ -838,7 +829,7 @@
+ 	/* Now try andrew string-to-key */
+ 	strcpy(cell, realm);
+ 	lcase(cell);
+-	afs_string_to_key(passwd, &key, cell);
++	afs_string_to_key(passwd, cell, &key);
+     
+ 	result = krb_get_in_tkt(user, "", realm,
+ 				"krbtgt", realm, 1, use_key, NULL, key);
+@@ -881,111 +872,3 @@
+     dest_tkt();
+     return result;
+ }
+-
+-/* andrewstk.c -- afs string to key function
+- *
+- * Code taken from AuthMan from University of Michigan
+- */
+-
+-/* forward declarations */
+-#ifndef HAVE_AFS_STRING_TO_KEY
+-static afs_transarc_StringToKey P((char *str, char *cell, des_cblock *key));
+-static afs_cmu_StringToKey P((char *str, char *cell, des_cblock *key));
+-#endif
+-
+-extern char *crypt();
+-
+-#ifndef HAVE_AFS_STRING_TO_KEY
+-
+-/* This defines the Andrew string_to_key function.  It accepts a password
+- * string as input and converts its via a one-way encryption algorithm to a DES
+- * encryption key.  It is compatible with the original Andrew authentication
+- * service password database.
+- */
+-
+-static
+-afs_cmu_StringToKey (str, cell, key)
+-char *str;
+-char *cell;                  /* cell for password */
+-des_cblock *key;
+-{   char  password[8+1];                /* crypt is limited to 8 chars anyway */
+-    int   i;
+-    int   passlen;
+-
+-    memset(key, 0, sizeof(des_cblock));
+-    memset((void *)password, 0, sizeof(password));
+-
+-    strncpy (password, cell, 8);
+-    passlen = strlen (str);
+-    if (passlen > 8) passlen = 8;
+-
+-    for (i=0; i<passlen; i++)
+-        password[i] = str[i] ^ cell[i];
+-
+-    for (i=0;i<8;i++)
+-        if (password[i] == '\0') password[i] = 'X';
+-
+-    /* crypt only considers the first 8 characters of password but for some
+-       reason returns eleven characters of result (plus the two salt chars). */
+-    strncpy((void *)key, crypt(password, "p1") + 2, sizeof(des_cblock));
+-
+-    /* parity is inserted into the LSB so leftshift each byte up one bit.  This
+-       allows ascii characters with a zero MSB to retain as much significance
+-       as possible. */
+-    {   char *keybytes = (char *)key;
+-        unsigned int temp;
+-
+-        for (i = 0; i < 8; i++) {
+-            temp = (unsigned int) keybytes[i];
+-            keybytes[i] = (unsigned char) (temp << 1);
+-        }
+-    }
+-    des_fixup_key_parity (key);
+-}
+-
+-static
+-afs_transarc_StringToKey (str, cell, key)
+-char *str;
+-char *cell;                  /* cell for password */
+-des_cblock *key;
+-{   des_key_schedule schedule;
+-    char temp_key[8];
+-    char ivec[8];
+-    char password[BUFSIZ];
+-    int  passlen;
+-
+-    strncpy (password, str, sizeof(password));
+-    if ((passlen = strlen (password)) < sizeof(password)-1)
+-        strncat (password, cell, sizeof(password)-passlen);
+-    if ((passlen = strlen(password)) > sizeof(password)) passlen = sizeof(password);
+-
+-    memcpy (ivec, "kerberos", 8);
+-    memcpy (temp_key, "kerberos", 8);
+-    des_fixup_key_parity ((void *)temp_key);
+-    des_key_sched (temp_key, schedule);
+-    des_cbc_cksum (password, ivec, passlen, schedule, ivec);
+-
+-    memcpy (temp_key, ivec, 8);
+-    des_fixup_key_parity ((void *)temp_key);
+-    des_key_sched (temp_key, schedule);
+-    des_cbc_cksum (password, (void *)key, passlen, schedule, ivec);
+-
+-    des_fixup_key_parity (key);
+-}
+-
+-static afs_string_to_key(str, key, cell)
+-char *str;
+-des_cblock *key;
+-char *cell;                  /* cell for password */
+-{
+-    if (strlen(str) > 8) {
+-	afs_transarc_StringToKey (str, cell, key);
+-    }
+-    else {
+-	afs_cmu_StringToKey (str, cell, key);
+-    }
+-}
+-
+-#endif /* ifndef HAVE_AFS_STRING_TO_KEY */
+-
+-
+diff -ur alpine-1.00+kerberos4/imap/src/kerberos/Makefile.krb alpine-1.00+athena-krb4/imap/src/kerberos/Makefile.krb
+--- alpine-1.00+kerberos4/imap/src/kerberos/Makefile.krb	2000-02-03 10:58:29.000000000 -0500
++++ alpine-1.00+athena-krb4/imap/src/kerberos/Makefile.krb	2008-04-16 16:08:10.000000000 -0400
+@@ -34,7 +34,7 @@
+ # Extended flags needed for additional authenticators.  You may need to modify.
+ 
+ KRBCFLAGS= -I/usr/include/kerberosIV -DHAVE_AFS_STRING_TO_KEY -DHAVE_KRB_GET_PHOST -DHAVE_KRB_REALMOFHOST
+-KRBLDFLAGS= -lkrb -ldes
++KRBLDFLAGS= -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err
+ 
+ krb:	# Kerberos IV flags
+ 	echo $(KRBCFLAGS) >> OSCFLAGS

@@ -1,0 +1,65 @@
+#!/bin/sh
+set -e
+
+name=alpine
+daversionappend=debathena1
+
+dir=$(cd "$(dirname "$0")"; pwd)
+
+hack_package () {
+  add_build_depends libhesiod-dev
+  add_build_depends libkrb5-dev
+
+  # alpine versions prior to 1.10 have broken krb5 detection.
+  # Versions prior to 1.0 can be patched in a similar fashion (though
+  # not with exactly the same patch) but we're not currently
+  # integrating those.
+  case $version in
+  1.0*)  patch -p1 < $dir/alpine-1.00-krb5-configure.patch ;;
+  esac
+
+  # Integrate krb4 support.
+  tar -C imap/src -xzf "$dir/kerberos4-patches.tar.Z"
+  patch -p1 < $dir/alpine-1.00-krb4-build.patch
+  echo 'DEFAULTAUTHENTICATORS+=krb' >> imap/src/osdep/unix/Makefile
+
+  # Ensure newly created mail directories in AFS are private.
+  patch -p1 < $dir/alpine-1.00-creatdir.patch
+
+  # Integrate Hesiod support.
+  patch -p1 < $dir/alpine-1.00-hesiod.patch
+
+  # Turn on Hesiod and krb4 suppport in the build.
+  perl -0pe 's|./configure|./configure alpine_c_client_cflags="-DHESIOD -DKERBEROS" alpine_c_client_ldflags="-lhesiod" LIBS="-lhesiod -lkrb4"|m or die' -i debian/rules
+  append_description <<EOF
+ .
+ This package was rebuilt for the Debian-Athena project to add Hesiod
+ support, to add krb4 IMAP support, and to ensure that newly-created
+ mail directories in AFS are private.
+EOF
+  add_changelog 'Add Hesiod support.'
+  add_changelog 'Add krb4 IMAP support.'
+  add_changelog 'Make newly-created mail directories private in AFS.'
+  add_debathena_provides
+  munge_sections
+}
+
+# dapper has no alpine package.
+# etch has an alpine package in backports (which we're not currently
+#  set up to use).
+# feisty has a package based on 0.82.  gutsy has one based on 0.99,
+#  with a 1.0 one in backports.  Both would require additional build
+#  system work to integrate due to differences in how they handle
+#  CFLAGS for c-client.
+case $1 in
+etch-*|dapper-*)
+  echo "No alpine package for $1; skipping"
+  exit
+  ;;
+feisty-*|gutsy-*)
+  echo "alpine package too broken for $1; skipping"
+  exit
+  ;;
+esac
+
+. ../common/debathenificator.sh

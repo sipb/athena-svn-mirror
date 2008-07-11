@@ -1,0 +1,126 @@
+diff -ur alpine-1.00/imap/src/c-client/mail.c alpine-1.00+hesiod/imap/src/c-client/mail.c
+--- alpine-1.00/imap/src/c-client/mail.c	2007-11-09 17:55:37.000000000 -0500
++++ alpine-1.00+hesiod/imap/src/c-client/mail.c	2007-12-24 14:30:04.000000000 -0500
+@@ -31,6 +31,9 @@
+ #include <stdio.h>
+ #include <time.h>
+ #include "c-client.h"
++#ifdef HESIOD
++#include <hesiod.h>
++#endif
+ 
+ char *UW_copyright = "Copyright 1988-2007 University of Washington\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n     http://www.apache.org/licenses/LICENSE-2.0\n";
+ 
+@@ -715,6 +718,76 @@
+ }
+ 
+ 
++#ifdef HESIOD
++/* Mail lookup and validate hesiod information
++ * Accepts: NETMBX structure to process
++ * Returns: T on success, NIL on failure
++ */
++
++static long mail_valid_hesiod (NETMBX *mb)
++{
++  char *user;
++  struct hesiod_postoffice *office;
++  struct servent *serv;
++  char tmp[MAILTMPLEN], service[NETMAXSRV];
++  void *hcontext;
++
++  if (mb->user && *mb->user)	/* Allows for the /user=foo switch */
++    user = mb->user;
++  else
++    user = myusername ();
++  sprintf (tmp,"Hesiod lookup for \"%s\"",user);
++  mm_log (tmp,NIL);
++
++  if (hesiod_init (&hcontext) == 0) {
++    office = hesiod_getmailhost (hcontext,user);
++    if (office && *office->hesiod_po_type
++	&& *office->hesiod_po_host && *office->hesiod_po_name) {
++      sprintf(tmp,"Hesiod answer: %s %s %s",
++	      office->hesiod_po_type,office->hesiod_po_host,
++	      office->hesiod_po_name);
++      mm_log(tmp,NIL);
++    }
++    else {
++      sprintf (tmp,"Hesiod error while determining PO server for \"%s\"",user);
++      mm_log (tmp,ERROR);
++      if (office)
++	hesiod_free_postoffice (hcontext,office);
++      hesiod_end (hcontext);
++      return NIL;
++    }
++  }
++  else {
++      sprintf(tmp,
++	      "Hesiod initialization error determining PO server for \"%s\"",
++	      user);
++      mm_log(tmp,ERROR);
++      return NIL;
++  }
++
++  strcpy(mb->host,office->hesiod_po_host);
++  strcpy(mb->user,office->hesiod_po_name);
++  /* Set service if it isn't specified, but don't force compliance. */
++  if (!*mb->service) {
++    if (!strcmp (office->hesiod_po_type,"POP"))
++      strcpy (mb->service,"pop3");
++    else if (!strcmp (office->hesiod_po_type,"IMAP"))
++      strcpy (mb->service,"imap");
++    else {
++      sprintf (tmp,"Hesiod error while determining PO server for \"%s\"",user);
++      mm_log (tmp,ERROR);
++      return NIL;
++    }
++  }
++
++  hesiod_free_postoffice (hcontext,office);
++  hesiod_end (hcontext);
++
++  return T;
++}
++#endif /* HESIOD */
++
++
+ /* Mail validate network mailbox name
+  * Accepts: mailbox name
+  *	    NETMBX structure to return values
+@@ -802,6 +875,9 @@
+       else {			/* non-argument switch */
+ 	if (!compare_cstring (s,"anonymous")) mb->anoflag = T;
+ 	else if (!compare_cstring (s,"debug")) mb->dbgflag = T;
++#ifdef HESIOD
++	else if (!compare_cstring (s,"hesiod")) mb->hesflag = T;
++#endif
+ 	else if (!compare_cstring (s,"readonly")) mb->readonlyflag = T;
+ 	else if (!compare_cstring (s,"secure")) mb->secflag = T;
+ 	else if (!compare_cstring (s,"norsh")) mb->norsh = T;
+@@ -842,6 +918,12 @@
+       return NIL;
+     } while (c);		/* see if anything more to parse */
+   }
++#ifdef HESIOD
++  if (mb->hesflag) {
++    if (!mail_valid_hesiod (mb))
++      return NIL;
++  }
++#endif
+ 				/* default mailbox name */
+   if (!*mb->mailbox) strcpy (mb->mailbox,"INBOX");
+ 				/* default service name */
+diff -ur alpine-1.00/imap/src/c-client/mail.h alpine-1.00+hesiod/imap/src/c-client/mail.h
+--- alpine-1.00/imap/src/c-client/mail.h	2007-11-19 18:32:35.000000000 -0500
++++ alpine-1.00+hesiod/imap/src/c-client/mail.h	2007-12-24 14:31:08.000000000 -0500
+@@ -662,6 +662,9 @@
+   unsigned int norsh : 1;	/* don't use rsh/ssh */
+   unsigned int loser : 1;	/* server is a loser */
+   unsigned int tlssslv23 : 1;	/* force SSLv23 client method over TLS */
++#ifdef HESIOD
++  unsigned int hesflag : 1;	/* Hesiod flag */
++#endif
+ } NETMBX;
+ 
+ /* Item in an address list */
