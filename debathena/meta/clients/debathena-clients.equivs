@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-clients
-Version: 0.3.0
+Version: 0.3.1
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: athena-jot,
  debathena-athinfo,
@@ -22,7 +22,7 @@ Depends: athena-jot,
  debathena-mitmailutils,
  debathena-moira-clients,
  debathena-nmh,
- debathena-pine,
+ debathena-alpine-config | debathena-pine,
  debathena-printing-config,
  debathena-ssh-client-config,
  debathena-ssl-certificates,
@@ -30,7 +30,6 @@ Depends: athena-jot,
  debathena-xdsc,
  debathena-zephyr-config,
  barnowl | owl,
- pine,
  tzc
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
