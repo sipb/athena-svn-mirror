@@ -1,0 +1,16 @@
+Source: debathena-alpine-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-alpine-config
+Architecture: all
+Depends: ${misc:Depends}, debathena-msmtp-config, debianutils
+Conflicts: pine
+Replaces: pine
+Description: Alpine configuration for Debian-Athena
+ This package configures Alpine for the Debian-Athena system by
+ setting up the default inbox, changing a few default flags, and
+ creating a "pine" symlink for historical compatibility.

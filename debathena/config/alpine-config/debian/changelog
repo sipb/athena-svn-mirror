@@ -1,0 +1,5 @@
+debathena-alpine-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Greg Hudson <ghudson@mit.edu>  Fri, 11 Jul 2008 13:50:49 -0400
