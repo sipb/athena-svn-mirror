@@ -28,7 +28,7 @@ schr() { schroot -r -c "$sid" -u root -- "$@"; }  # Run in the chroot as root
 schr apt-get -qq -y update
 
 munge_sections () {
-    section=${1:-debathena-section}
+    section=${1:-debathena-system}
     perl -0pe "s/^Section: /Section: $section\\//gm or die" -i debian/control
 }
 
@@ -121,7 +121,8 @@ version=$(
 	sed -n 's/^Version: \(.*\)$/\1/ p' | (
 	version='~~~'
 	while read -r newversion; do
-	    if dpkg --compare-versions "$newversion" '>' "$version"; then
+	    if [ $(expr "$version" : '.*debathena') = 0 ] && \
+		dpkg --compare-versions "$newversion" '>' "$version"; then
 		version=$newversion
 	    fi
 	done
