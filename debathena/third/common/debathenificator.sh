@@ -121,7 +121,7 @@ version=$(
 	sed -n 's/^Version: \(.*\)$/\1/ p' | (
 	version='~~~'
 	while read -r newversion; do
-	    if [ $(expr "$version" : '.*debathena') = 0 ] && \
+	    if [ $(expr "$newversion" : '.*debathena') = 0 ] && \
 		dpkg --compare-versions "$newversion" '>' "$version"; then
 		version=$newversion
 	    fi
