@@ -2,7 +2,7 @@
 set -e
 
 name=evolution-data-server
-daversionappend=debathena1
+daversionappend=debathena2
 
 hack_package () {
     perl -0pe 's/--with-krb5=/--with-krb4=\/usr --with-krb5=/m or die' -i debian/rules
@@ -13,7 +13,7 @@ hack_package () {
 EOF
     add_changelog 'Enable krb4 support.'
     add_debathena_provides
-    munge_sections
+    munge_sections debathena
 }
 
 . ../common/debathenificator.sh
