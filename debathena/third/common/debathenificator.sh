@@ -18,6 +18,7 @@ fi
 
 dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
 arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
+: ${section=debathena-system}
 
 # Create a chroot and define functions for using it.
 sid=$(schroot -b -c "$chroot")
@@ -28,7 +29,6 @@ schr() { schroot -r -c "$sid" -u root -- "$@"; }  # Run in the chroot as root
 schr apt-get -qq -y update
 
 munge_sections () {
-    section=${1:-debathena-system}
     perl -0pe "s/^Section: /Section: $section\\//gm or die" -i debian/control
 }
 
@@ -140,7 +140,7 @@ daversion=$version$daversionappend
 # if we weren't run with the -A flag).  We need to look for either a
 # Source: or a Package: header matching $name since there is no
 # Source: header for a package whose name matches its source.
-pkgfile=$DEBATHENA_APT/dists/$dist/debathena-system/binary-$arch/Packages.gz
+pkgfile=$DEBATHENA_APT/dists/$dist/$section/binary-$arch/Packages.gz
 if { zcat "$pkgfile" | \
     dpkg-awk -f - "Package:^$name\$" "Version:^$daversion~" -- Architecture;
     zcat "$pkgfile" | \

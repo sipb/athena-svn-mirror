@@ -3,6 +3,7 @@ set -e
 
 name=lprng
 daversionappend=debathena4
+section=debathena
 
 hack_package () {
     # Rename the package and make it not conflict with lpr or cupsys-bsd.
@@ -82,7 +83,7 @@ EOS
  package and commands so that it no longer conflicts with cupsys-bsd.
 EOF
     add_changelog 'Rename commands.'
-    munge_sections debathena
+    munge_sections
 }
 
 . ../common/debathenificator.sh
