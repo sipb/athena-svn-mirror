@@ -439,3 +439,14 @@ steps below.
 
   13. Go into third/openafs in the build area and build AFS modules
       for the new suite's kernels.  (Instructions pending.)
+
+Release engineer: apt repository HTTP server setup
+--------------------------------------------------
+
+The apt repository server (athena10.mit.edu) is an ops virtual image
+with httpd and AFS installed.  At the moment, the only customization
+is two changes to /etc/httpd/conf/httpd.conf:
+
+  * The DocumentRoot is set to "/afs/dev.mit.edu/system/athena10".
+  * The Directory entry for /var/html/www is also changed to
+    "/afs/dev.mit.edu/system/athena10".
