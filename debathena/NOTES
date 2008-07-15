@@ -336,6 +336,10 @@ Release engineer: Setting up a build server
       Copy scripts/build-server/autodebathenify.cron to builder's
       homedir and install it with "crontab autodebathenify.cron".
 
+      Create a file named .devscripts in builder's homedir containing:
+
+        DEBUILD_DPKG_BUILDPACKAGE_OPTS="-sa -us -uc -i -I.svn"
+
       In builder's homedir, append to .profile:
 
         PATH=${PATH}:/afs/dev.mit.edu/source/src-svn/debathena/scripts
