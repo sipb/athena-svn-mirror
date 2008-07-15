@@ -224,7 +224,10 @@ Release engineer: Bootstrapping the project infrastructure
      Improvements to this machinery are pending.
 
   6. For each package under third, run "da ./debathenify-PKG source
-     binary upload".
+     binary upload".  Any created directories under third/openafs/meta
+     should be chmodded 777 to work around a perl/AFS permissions
+     issue with File::Temp; if this is not done, OpenAFS metapackage
+     builds will fail for other users.
 
 Release engineer: Setting up a build server
 -------------------------------------------
@@ -381,10 +384,11 @@ Release engineer: Setting up a canonical build area
 
      svn co svn+ssh://svn.mit.edu/athena/trunk/debathena/meta
      svn co svn+ssh://svn.mit.edu/athena/trunk/debathena/third
+     chmod 777 meta/*
 
-     (A couple of subdirectories of debathena/meta are normal Debian
+     A couple of subdirectories of debathena/meta are normal Debian
      packages, so this will create redundant copies of those.  Ignore
-     them; they won't be used.)
+     them; they won't be used.
 
 Release engineer: Adding a new suite
 ------------------------------------
@@ -437,8 +441,8 @@ steps below.
       touch $DEBATHENA_BUILD_AREA/stamps.newdist/packagename.done" and
       restart the build.
 
-  13. Go into third/openafs in the build area and build AFS modules
-      for the new suite's kernels.  (Instructions pending.)
+      The newly created third/openafs/meta directories should be
+      chmodded 777 to work around a perl/AFS permissions issue.
 
 Release engineer: apt repository HTTP server setup
 --------------------------------------------------
