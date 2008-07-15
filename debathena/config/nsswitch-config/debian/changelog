@@ -1,3 +1,10 @@
+debathena-nsswitch-config (1.10) unstable; urgency=low
+
+  * Change from depending on debathena-afuse-automounter to the more
+    generic debathena-mit-automounter.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 10 Jul 2008 22:29:52 -0400
+
 debathena-nsswitch-config (1.9) unstable; urgency=low
 
   * Convert to use config-package.mk interface, new in config-package-

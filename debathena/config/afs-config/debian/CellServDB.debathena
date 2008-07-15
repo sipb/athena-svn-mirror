@@ -184,15 +184,16 @@
 128.2.10.28                     #vice28.fs.andrew.cmu.edu.
 128.2.32.44                     #new-vice12.fs.andrew.cmu.edu.
 >club.cc.cmu.edu        #Carnegie Mellon University Computer Club
+128.2.204.149                   #barium.club.cc.cmu.edu
 128.237.157.11                  #sodium.club.cc.cmu.edu.
 128.237.157.13                  #potassium.club.cc.cmu.edu.
 >chem.cmu.edu           #Carnegie Mellon University - Chemistry Dept.
 128.2.40.134                    #afs.chem.cmu.edu.
 128.2.40.140                    #afs2.chem.cmu.edu.
 >cs.cmu.edu             #Carnegie Mellon University - School of Comp. Sci.
-128.2.194.178                   #cherry.srv.cs.cmu.edu.
-128.2.194.179                   #pumpkin.srv.cs.cmu.edu.
-128.2.194.180                   #strawberry.srv.cs.cmu.edu.
+128.2.184.215                   #pumpkin.srv.cs.cmu.edu
+128.2.201.46                    #strawberry.srv.cs.cmu.edu
+128.2.201.48                    #cherry.srv.cs.cmu.edu
 >ece.cmu.edu            #Carnegie Mellon University - Elec. Comp. Eng. Dept.
 128.2.129.7                     #porok.ece.cmu.edu.
 128.2.129.8                     #vicio.ece.cmu.edu.
@@ -200,11 +201,11 @@
 >scotch.ece.cmu.edu     #CMU ECE CALCM research group
 128.2.134.82                    #lagavulin.ece.cmu.edu.
 >qatar.cmu.edu          #Carnegie Mellon University - Qatar Campus Cell
-204.194.25.7                    #afs1.qatar.cmu.edu.
-204.194.25.8                    #afs2.qatar.cmu.edu.
+86.36.46.6                      #afs1.qatar.cmu.edu
+86.36.46.7                      #afs2.qatar.cmu.edu
 >sbp.ri.cmu.edu         #Carnegie Mellon University - Sensor Based Planning Lab
-128.2.56.129                    #nihao.sbp.ri.cmu.edu.
-128.2.56.136                    #youtheman.sbp.ri.cmu.edu.
+128.2.179.12                    #nihao.sbp.ri.cmu.edu
+128.2.179.113                   #youtheman.sbp.ri.cmu.edu
 >msc.cornell.edu        #Cornell University Materials Science Center
 128.84.231.242                  #miranda.ccmr.cornell.edu.
 128.84.241.35                   #co.ccmr.cornell.edu.

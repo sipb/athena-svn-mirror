@@ -3,10 +3,9 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-locker
-Version: 0.2.6
+Version: 0.2.7
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: debathena-afs-config,
- debathena-afuse-automounter,
  debathena-athdir,
  debathena-athrun,
  debathena-attach,
@@ -18,6 +17,7 @@ Depends: debathena-afs-config,
  debathena-kerberos-config,
  debathena-lert,
  debathena-machtype,
+ debathena-mit-automounter,
  debathena-quota,
  debathena-quota-config,
  debathena-tcsh-config,
@@ -25,6 +25,7 @@ Depends: debathena-afs-config,
  debathena-zephyr-config
 Recommends: debathena-bash,
  debathena-tcsh
+Conflicts: debathena-afuse-automounter (<= 1.4)
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Metapackage providing Athena locker support
