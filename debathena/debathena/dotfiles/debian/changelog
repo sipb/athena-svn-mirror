@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.6-0debathena1) unstable; urgency=low
+
+  * Change from using debathena-afuse-automounter to more generic
+    debathena-mit-automounter.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 10 Jul 2008 22:21:44 -0400
+
 debathena-dotfiles (10.0.5-0debathena1) unstable; urgency=low
 
   * Restore "extend" aliases in cshrc for compatibility.
