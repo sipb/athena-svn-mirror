@@ -34,7 +34,7 @@ for arg; do
   esac
 done
 
-sid=$(schroot -b -c "$chroot")
+sid=$(schroot -b -c "$chroot") || exit 1
 trap 'schroot -e -c "$sid"' EXIT
 sch() { schroot -r -c "$sid" -- "$@"; }           # Run in the chroot
 schq() { schroot -q -r -c "$sid" -- "$@"; }       # Run in the chroot quietly
@@ -227,7 +227,8 @@ Description: Metapackage to enforce OpenAFS modules for kernel
  there is a corresponding openafs-modules Debathena package available.
 EOF
     schr apt-get -y install equivs
-    (cd "meta/$dist_arch" && sch equivs-build -a "$arch" "$afs_mpkg.equivs")
+    (cd "meta/$dist_arch" && sch equivs-build -a "$arch" "$afs_mpkg.equivs") \
+      || exit 1
   fi
 
   if [ yes = "$do_upload" ]; then
