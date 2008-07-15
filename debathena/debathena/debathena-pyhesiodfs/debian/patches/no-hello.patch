@@ -1,0 +1,72 @@
+Index: debathena-pyhesiodfs-0.0.r77/pyHesiodFS.py
+===================================================================
+--- debathena-pyhesiodfs-0.0.r77.orig/pyHesiodFS.py	2008-07-10 21:32:21.000000000 -0400
++++ debathena-pyhesiodfs-0.0.r77/pyHesiodFS.py	2008-07-10 21:38:44.000000000 -0400
+@@ -21,13 +21,6 @@
+ 
+ fuse.fuse_python_api = (0, 2)
+ 
+-hello_path = '/README.txt'
+-hello_str = """This is the pyhesiodfs FUSE autmounter. To access a Hesiod filsys, just access
+-%(mountpoint)s/name.
+-
+-If you're using the Finder, try pressing Cmd+Shift+G and then entering
+-%(mountpoint)s/name"""
+-
+ class MyStat(fuse.Stat):
+     def __init__(self):
+         self.st_mode = 0
+@@ -54,10 +47,6 @@
+         if path == '/':
+             st.st_mode = stat.S_IFDIR | 0755
+             st.st_nlink = 2
+-        elif path == hello_path:
+-            st.st_mode = stat.S_IFREG | 0444
+-            st.st_nlink = 1
+-            st.st_size = len(hello_str)
+         elif '/' not in path[1:]:
+             if self.findLocker(path[1:]):
+                 st.st_mode = stat.S_IFLNK | 0777
+@@ -94,33 +83,13 @@
+                 return None
+ 
+     def readdir(self, path, offset):
+-        for r in  ['.', '..', hello_path[1:]]+self.getCachedLockers():
++        for r in  ['.', '..']+self.getCachedLockers():
+             yield fuse.Direntry(r)
+             
+     def readlink(self, path):
+         return self.findLocker(path[1:])
+ 
+-    def open(self, path, flags):
+-        if path != hello_path:
+-            return -errno.ENOENT
+-        accmode = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
+-        if (flags & accmode) != os.O_RDONLY:
+-            return -errno.EACCES
+-
+-    def read(self, path, size, offset):
+-        if path != hello_path:
+-            return -errno.ENOENT
+-        slen = len(hello_str)
+-        if offset < slen:
+-            if offset + size > slen:
+-                size = slen - offset
+-            buf = hello_str[offset:offset+size]
+-        else:
+-            buf = ''
+-        return buf
+-
+ def main():
+-    global hello_str
+     usage="""
+ pyHesiodFS
+ 
+@@ -130,7 +99,6 @@
+                      dash_s_do='setsingle')
+ 
+     server.parse(errex=1)
+-    hello_str = hello_str % {'mountpoint': server.parse(errex=1).mountpoint}
+     server.main()
+ 
+ if __name__ == '__main__':

@@ -1,0 +1,96 @@
+Index: debathena-pyhesiodfs-0.0.r77/pyHesiodFS.py
+===================================================================
+--- debathena-pyhesiodfs-0.0.r77.orig/pyHesiodFS.py	2008-07-11 13:14:20.000000000 -0400
++++ debathena-pyhesiodfs-0.0.r77/pyHesiodFS.py	2008-07-11 13:14:34.000000000 -0400
+@@ -15,13 +15,11 @@
+ 
+ import hesiod
+ 
+-if not hasattr(fuse, '__version__'):
+-    raise RuntimeError, \
+-        "your fuse-py doesn't know of fuse.__version__, probably it's too old."
++new_fuse = hasattr(fuse, '__version__')
+ 
+ fuse.fuse_python_api = (0, 2)
+ 
+-class MyStat(fuse.Stat):
++class MyStat(object):
+     def __init__(self):
+         self.st_mode = 0
+         self.st_ino = 0
+@@ -33,13 +31,21 @@
+         self.st_atime = 0
+         self.st_mtime = 0
+         self.st_ctime = 0
++        
++    def toTuple(self):
++        return (self.st_mode, self.st_ino, self.st_dev, self.st_nlink,
++                self.st_uid, self.st_gid, self.st_size, self.st_atime,
++                self.st_mtime, self.st_ctime)
+ 
+ class PyHesiodFS(Fuse):
+ 
+     def __init__(self, *args, **kwargs):
+         Fuse.__init__(self, *args, **kwargs)
+-        self.fuse_args.add("allow_other", True)
+-        self.fuse_args.add("fsname", "pyHesiodFS")
++        try:
++            self.fuse_args.add("allow_other", True)
++        except AttributeError:
++            self.allow_other = 1
++            
+         self.mounts = {}
+     
+     def getattr(self, path):
+@@ -56,7 +62,10 @@
+                 return -errno.ENOENT
+         else:
+             return -errno.ENOENT
+-        return st
++        if new_fuse:
++            return st
++        else:
++            return st.toTuple()
+ 
+     def getCachedLockers(self):
+         return self.mounts.keys()
+@@ -82,8 +91,11 @@
+                 print >>sys.stderr, "Couldn't find filsys for "+name
+                 return None
+ 
++    def getdir(self, path):
++        return [(i, 0) for i in (['.', '..'] + self.getCachedLockers())]
++    
+     def readdir(self, path, offset):
+-        for r in  ['.', '..']+self.getCachedLockers():
++        for (r, zero) in self.getdir(path):
+             yield fuse.Direntry(r)
+             
+     def readlink(self, path):
+@@ -91,14 +103,20 @@
+ 
+ def main():
+     usage="""
+-pyHesiodFS
++pyHesiodFS [mount_path]
+ 
+-""" + Fuse.fusage
+-    server = PyHesiodFS(version="%prog " + fuse.__version__,
+-                     usage=usage,
+-                     dash_s_do='setsingle')
++"""
++    try:
++        usage += Fuse.fusage
++        server = PyHesiodFS(version="%prog " + fuse.__version__,
++                            usage=usage,
++                            dash_s_do='setsingle')
++        server.parse(errex=1)
++    except AttributeError:
++        if sys.argv[1] == '-f':
++            sys.argv.pop(1)
++        server = PyHesiodFS()
+ 
+-    server.parse(errex=1)
+     server.main()
+ 
+ if __name__ == '__main__':

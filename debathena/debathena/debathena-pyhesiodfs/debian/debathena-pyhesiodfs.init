@@ -1,0 +1,70 @@
+#! /bin/sh -e
+### BEGIN INIT INFO
+# Provides:             debathena-pyhesiodfs
+# Required-Start:	openafs-client
+# Required-Stop:        openafs-client
+# Should-Start:         $local_fs $network
+# Default-Start:	2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    Debathena automounter using pyFUSE
+# Description:          Auto-creates symlinks from /mit/LOCKER to AFS using Hesiod lookups.
+### END INIT INFO
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin/:/usr/sbin:/usr/bin
+DAEMON="/usr/bin/pyhesiodfs"
+NAME=debathena-pyhesiodfs
+pyhesiodfs_dir="/mit"
+
+if [ -f /etc/default/pyhesiodfs ]; then
+  . /etc/default/pyhesiodfs
+fi
+
+# If the hesiod module hasn't been installed yet, this will fail and cause the
+# installation to fail, too. So fail silently instead
+if ! python -m hesiod >/dev/null 2>/dev/null
+then
+    exit 0
+fi
+
+case "$1" in
+  start)
+	if start-stop-daemon --test --start --quiet \
+	    --pidfile "/var/run/$NAME.pid" \
+	    --startas "$DAEMON" -- -f "$pyhesiodfs_dir"
+	then
+	    modprobe fuse
+	    mkdir -p "$pyhesiodfs_dir"
+	    chgrp pyhesiodfs "$pyhesiodfs_dir"
+	    chmod g+w "$pyhesiodfs_dir"
+	    echo -n "Starting $DESC: "
+	    start-stop-daemon --oknodo --start --quiet \
+		--pidfile "/var/run/$NAME.pid" \
+		--chuid pyhesiodfs:pyhesiodfs --background \
+		--make-pidfile --startas "$DAEMON" -- -f "$pyhesiodfs_dir"
+	    echo "$NAME."
+	fi
+	;;
+  stop)
+	echo -n "Stopping $DESC: "
+	if start-stop-daemon --test --stop --quiet --pidfile "/var/run/$NAME.pid"
+	then
+	    fusermount -u "$pyhesiodfs_dir"
+	    echo "$NAME"
+	else
+	    echo "automounter for $pyhesiodfs_dir not running." >&2
+	fi
+	rm -f "/var/run/$NAME.pid"
+	;;
+  force-reload|restart)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	N=/"etc/init.d/$NAME"
+	# echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
+	echo "Usage: $N {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

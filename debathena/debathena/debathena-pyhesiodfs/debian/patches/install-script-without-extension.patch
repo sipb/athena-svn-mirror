@@ -1,0 +1,11 @@
+Index: debathena-pyhesiodfs-0.0.r77/setup.py
+===================================================================
+--- debathena-pyhesiodfs-0.0.r77.orig/setup.py	2008-07-11 13:23:58.000000000 -0400
++++ debathena-pyhesiodfs-0.0.r77/setup.py	2008-07-11 13:24:08.000000000 -0400
+@@ -4,5 +4,5 @@
+       author='Quentin Smith',
+       author_email='pyhesiodfs@mit.edu',
+       py_modules=['hesiod'],
+-      scripts=['pyHesiodFS.py'],
++      scripts=['pyhesiodfs'],
+       )
