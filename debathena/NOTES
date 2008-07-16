@@ -229,6 +229,39 @@ Release engineer: Bootstrapping the project infrastructure
      issue with File::Temp; if this is not done, OpenAFS metapackage
      builds will fail for other users.
 
+Release engineer: Updating the apt repository
+---------------------------------------------
+
+  1. ssh to the build server as the builder account and change to the
+     canonical build directory.
+
+  2. Run "gen-packages" to update the package list.  (Or "gen-packages
+     -c" if you know the AFS checkout of the source tree is up to date;
+     it should update every half hour.)
+
+  3. Run "ood-packages" to produce a list of out-of-date packages.
+
+  4. For each out of date package, run "dasource PKG".  Then change to
+     the package directory and run "da sbuildhack *.dsc" and
+     "daupload-release *_source.changes".  If the package contains
+     only an "Architecture: all" binary package, pass the -A option to
+     both commands.
+
+  5. svn update the meta directory.  If there are new subdirectories,
+     chmod them 777 to work around a perl/AFS permissions issue with
+     File::Temp.  For each updated subdir, change to it, run
+     "equivs-build --full *.equivs", and then "daequivsupload
+     FILENAME.changes" on the produced changes file.
+
+  6. svn update the third directory.  You can let autodebathenify
+     handle the updated scripts, or you can touch
+     ~/autodebathenify.suppress, make sure it's not running, and run
+     "da ./debathenify-PKG source binary upload" in each updated
+     directory.
+
+Sometimes you may have to mix up the order of the above steps in order
+to handle build dependencies.
+
 Release engineer: Setting up a build server
 -------------------------------------------
 
