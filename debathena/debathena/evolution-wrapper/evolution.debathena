@@ -49,6 +49,14 @@ if ($accounts) {
     # Pre-configuration.
     $client->set_string("/apps/evolution/calendar/display/timezone",
 			"America/New_York");
+
+    # To configure the accounts we need to know if we have krb4 support.
+    my $provides = `dpkg-query -Wf '\${Provides}' evolution-data-server`;
+    my $krb4 = "";
+    if ($provides =~ /debathena-evolution-data-server/) {
+	$krb4 = ";auth=KERBEROS_V4";
+    }
+
     ($_, $_, $_, $_, $_, $_, my $gecos) = getpwuid($<);
     my @fields = split(",", $gecos);
     my $name = $fields[0];
@@ -61,7 +69,7 @@ if ($accounts) {
     $a .= "<addr-spec>$user\@mit.edu</addr-spec>";
     $a .= '</identity>';
     $a .= '<source save-passwd="false">';
-    $a .= "<url>imap://$user;auth=KERBEROS_V4\@$server/;use_ssl=always</url>";
+    $a .= "<url>imap://$user$krb4\@$server/;use_ssl=always</url>";
     $a .= '</source>';
     $a .= '<transport save-passwd="false">';
     $a .= "<url>smtp://$user;auth=GSSAPI\@outgoing.mit.edu/;use_ssl=always";
