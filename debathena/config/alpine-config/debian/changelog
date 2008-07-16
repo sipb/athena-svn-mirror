@@ -1,3 +1,9 @@
+debathena-alpine-config (1.1) unstable; urgency=low
+
+  * Pull in alpine; recommend the debathenified version.
+
+ -- Greg Hudson <ghudson@mit.edu>  Wed, 16 Jul 2008 15:30:59 -0400
+
 debathena-alpine-config (1.0) unstable; urgency=low
 
   * Initial release.
