@@ -1,91 +1,52 @@
 #!/bin/sh
 # $Id: sendbug.sh,v 1.21 2003-07-30 19:16:12 zacheiss Exp $
 
-# save PATH so we can restore it for user's $EDITOR later
-saved_path="$PATH"
-
-# make sure stuff this script needs is up front
-PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin:/usr/bsd:/usr/sbin
-export PATH
-
-subject=$1
-bugs_address=bugs@MIT.EDU
-sendmail="/usr/lib/sendmail -t -oi"
-report_file=/tmp/bug$$.text
-version_file=/etc/athena/version
-if [ ! -r "$version_file" ]; then
-	version="unknown version (no $version_file found)"
-else
-	version=`awk '
-		/^Athena Workstation \([^\) ]*\) Version Update/ {
-			update = 1;
-		}
-		/^Athena Workstation \([^\) ]*\) Version [0-9]/ {
-			update = 0;
-			mkserv_update = 0;
-			mkserv = 0;
-			if ($5 == version) {
-				same++;
-			} else {
-				version = $5;
-				same = 0;
-			}
-		}
-		/^Athena Server \([^\) ]*\) Version Update/ {
-			mkserv_update = 1;
-		}
-		/^Athena Server \([^\) ]*\) Version [0-9]/ {
-			mkserv_update = 0;
-			mkserv = 1;
-		}
-		END {
-			printf "%s", version;
-			if (same)
-				printf " (%d update(s) to same version)", same;
-			if (mkserv)
-				printf " (with mkserv)";
-			if (mkserv_update)
-				printf " (plus partial mkserv)";
-			if (update)
-				printf " (plus partial update)";
-		}' "$version_file"`
+visual=false
+if [ x--gnome = x"$1" ]; then
+  # This is how we are invoked from the panel menu
+  gnome=true
+  shift
 fi
-short_version=`expr "$version (" : '\([^(]*[^( ]\) *(.*'`
-machtype=`machtype`
-cpu=`machtype -c`
-hostname=`hostname`
-dpy=`machtype -d | sed -e 's/^/Display type:		/'`
+subject=$1
+bugs_address=bugs@mit.edu
+sendmail="/usr/sbin/sendmail -t -oi"
+report_file=$(mktemp -t "sendbug.$USER.XXXX")
+machtype=$(machtype)
+cpu=$(machtype -c)
+hostname=$(hostname)
+dpy=$(machtype -d)
 
 shell=`awk -F: '/^'$USER':/ { print $7; exit; }' /etc/passwd 2>/dev/null`
 case $shell in
 $SHELL)
-    ;;
+  ;;
 "")
-    shell="$SHELL (?)"
-    ;;
+  shell="$SHELL (?)"
+  ;;
 *)
-    shell="$shell ($SHELL?)"
-    ;;
+  shell="$shell ($SHELL?)"
+  ;;
 esac
 
 if [ -z "$subject" ]; then
-  fmt << EOF
-Please enter the name of the program or locker with which you are
-having problems. You may first want to check with the consultants to
-see if there is a known workaround to this problem; hit ctrl-c now and
-type 'olc' at your athena% prompt to enter a question.
-EOF
-  echo -n ' --> '
-  read subject
+  text="Please enter the name of the program or locker with which you are"
+  text="$text having problems."
+  if [ true = "$gnome" ]; then
+    subject=$(zenity --entry --text="$text")
+  else
+    echo "$text" || fmt
+    echo -n ' --> '
+    read subject
+  fi
 fi
 
 cat > $report_file << EOF
 To: $bugs_address
-Subject: $machtype $short_version: $subject
--------
+Subject: Athena 10: $subject
+
 System name:		$hostname
-Type and version:	$cpu $version
-$dpy
+Type:			$cpu
+Display type:		$dpy
 
 Shell:			$shell
 Window manager:		${WINDOW_MANAGER:-unknown}
@@ -103,22 +64,60 @@ Please describe any relevant documentation references:
 	[Please replace this line with your information.]
 EOF
 
-fmt << EOF
+if [ true = "$gnome" ]; then
+  text="After you click OK, an editor window will appear with the bug report"
+  text="$text contents.  Please fill out the form, then save and exit.  If"
+  text="$text you change your mind, you will have a chance to cancel before"
+  text="$text the bug report is sent."
+  zenity --info --text="$text"
+  gnome-text-editor "$report_file"
+  # zenity doesn't let us specify the buttons on a question, and the
+  # list dialog is awkward.  So while we'd like to do something more
+  # like what we do in the terminal case, we'll compromise a bit.
+  question="Do you still want to send the bug report?"
+  if ! zenity --question --text="$question"; then
+    text="Cancelled.  Your text is in $report_file if you wish to recover it."
+    zenity --info --no-wrap --text="$text"
+    exit
+  fi
+
+  if $sendmail < $report_file; then
+    text="Thank you for your bug report."
+    zenity --info --text="$text"
+  else
+    text="Failed to send the bug report!  Please contact x3-4435 for"
+    text="$text\nassistance.  Your text is in $report_file"
+    text="$text\nif you wish to recover it."
+    zenity --error --no-wrap --text="$text"
+  fi
+else
+  fmt << EOF
 
 Please fill in the specified fields of the bug report form, which will
 be displayed momentarily.
 Remember to save the file before exiting the editor.
 EOF
+  : ${EDITOR=emacs}
+  $EDITOR "$report_file"
+  while true; do
+    fmt << EOF
 
-if [ -r "${MH-$HOME/.mh_profile}" ]; then
-	PATH="$saved_path" /usr/athena/bin/comp -form "$report_file"
-	rm "$report_file"
-	exit 0
-fi
-# not using MH; run the editor, and send, ourselves.
-MH=/dev/null; export MH
-if [ "${EDITOR}" = "" ]; then
-	EDITOR=/usr/athena/bin/emacs ; export EDITOR
-fi
+Please enter "send" to send the report, "edit" to re-edit it, or
+"quit" to quit.
+EOF
+    echo -n ' --> '
+    read reply
+    [ send = "$reply" ] && break
+    [ quit = "$reply" ] && exit
+    [ edit = "$reply" ] && $EDITOR "$report_file"
+  done
 
-PATH="$saved_path" exec whatnow -editor "$EDITOR" "$report_file"
+  if $sendmail < $report_file; then
+    echo "Thank you for your bug report."
+  else
+    fmt << EOF
+Failed to send the bug report!  Please contact x3-4435 for assistance.
+Your text is in $report_file if you wish to recover it.
+EOF
+  fi
+fi

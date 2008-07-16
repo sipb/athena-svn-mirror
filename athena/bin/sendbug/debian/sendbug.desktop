@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Report an Athena bug
+Comment=Report a bug in the Athena system
+Exec=sendbug --gnome
+Terminal=false
+Type=Application
+Icon=gnome-run
+Categories=System;
