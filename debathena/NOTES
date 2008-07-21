@@ -481,6 +481,69 @@ steps below.
       The newly created third/openafs/meta directories should be
       chmodded 777 to work around a perl/AFS permissions issue.
 
+Release engineer: Maintaining autodebathenify
+---------------------------------------------
+
+autodebathenify is a cron job which runs hourly on the builder account
+and keeps the OpenAFS modules and modified packages under
+debathena/third up to date when there are upstream changes.  It relies
+on the following:
+
+  * builder@ATHENA.MIT.EDU has access to a local account named
+    debuildsvn on svn.mit.edu with read access to the athena
+    repository.
+
+  * builder@ATHENA.MIT.EDU has write access to the canonical build
+    area and apt repository in the dev cell.
+
+  * The builder account on the build machine has a copy of the signing
+    private key for the apt repository.
+
+The cron job will silently exit if it detects that it is already
+running.  If it fails for any other reason, it will send mail to
+source-wash@mit.edu and touch a file named autodebathenify.suppress
+which will prevent it from running again until manual intervention.
+It is important to get autodebathenify running smoothly or the apt
+repository will become out of date with respect to third-party
+packages, which in turn will compromise the user experience.
+
+Even if you don't notice failure mail, it's good to check on the
+status of autodebathenify from time to time.  To do this, get tickets
+as builder and ssh to linux-build-10 as builder.  Run "ls -l logs" to
+see what's been going on.  A logfile with size around 48K indicates
+that autodebathenify ran normally but didn't find any new work to do.
+A logfile with size around 60 means that autodebathenify.suppress
+exists and the cron job has stopped running.  A longer logfile
+indicates that autodebathenify attempted to build and upload a
+package.
+
+Possible failure cases include:
+
+  * One of the upstream apt repositories timed out during an "apt-get
+    update" of a chroot.  If this happens, you can just remove the
+    autodebathenify.suppress file to get the cron job to start running
+    again.
+
+  * autodebathenify tried to build an upstream version which already
+    exists.  If this happens, the build will fail at upload time.  If
+    this happens, there is a bug in the part of the debathenify-*
+    script which checks whether our apt repository already has the
+    expected version of the built package.
+
+  * Debian and Ubuntu have .orig files with the same name but
+    different contexts for a particular third-party package.  This has
+    only happened once, with bash (which is currently not configured
+    into autodebathenify for that reason).  We do not have a general
+    mechanism for resolving such issues at this time.
+
+  * The new upstream version of the package is sufficiently different
+    to cause our modifications to fail to apply, and our debathenify-*
+    script needs to be adapted appropriately.
+
+The cron job is run out of builder's home directory, but its canonical
+source location is in debathena/scripts/build-server in this
+repository, should it need to be modified.
+
 Release engineer: apt repository HTTP server setup
 --------------------------------------------------
 
