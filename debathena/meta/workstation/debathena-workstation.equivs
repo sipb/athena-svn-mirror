@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-workstation
-Version: 0.3
+Version: 0.4
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: debathena-login,
  debathena-build-depends,
@@ -12,7 +12,8 @@ Depends: debathena-login,
  debathena-firefox-extension,
  debathena-firefox-wrapper,
  debathena-pidgin-wrapper,
- debathena-evolution-wrapper
+ debathena-evolution-wrapper,
+ debathena-locker-menu
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena Workstation configuration for Debian
