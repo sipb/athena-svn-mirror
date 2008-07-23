@@ -1,0 +1,2 @@
+clean-tmp-areas usr/sbin
+debathena-tmp-cleaner etc/cron.d
