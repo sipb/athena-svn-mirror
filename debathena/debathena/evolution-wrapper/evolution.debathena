@@ -51,7 +51,7 @@ if ($accounts) {
 			"America/New_York");
 
     # To configure the accounts we need to know if we have krb4 support.
-    my $provides = `dpkg-query -Wf '${Provides}' 'libcamel*'`;
+    my $provides = `dpkg-query -Wf '\${Provides}' 'libcamel*'`;
     my $krb4 = "";
     if ($provides =~ /debathena-libcamel-krb4/) {
 	$krb4 = ";auth=KERBEROS_V4";
