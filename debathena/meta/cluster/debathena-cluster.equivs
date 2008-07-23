@@ -1,0 +1,15 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-cluster
+Version: 0.1
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Depends: debathena-workstation,
+ debathena-cluster-software,
+ debathena-tmp-cleaner
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Athena cluster configuration for Debian
+ This package is intended for centrally-maintained machines in
+ clusters and for Quickstations.
