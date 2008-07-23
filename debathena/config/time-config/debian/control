@@ -1,0 +1,14 @@
+Source: debathena-time-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Athena 10 Project <athena10@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 5), config-package-dev (>= 4.5~)
+Standards-Version: 3.8.0
+
+Package: debathena-time-config
+Architecture: all
+Depends: ntp | chrony, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Time configuration for Athena 10.
+ Tweaks the configuration of ntp and/or chrony to look to time.mit.edu.
