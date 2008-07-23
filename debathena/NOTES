@@ -180,7 +180,7 @@ which may help identify which metapackage is best:
 
 * cluster: Implies workstation and cluster-software.  Also contains
   configurations for self-maintenance of machines (unattended updates,
-  cleanups between logins, etc.).  Does not exist yet.
+  cleanups between logins, etc.).
 
 * debian-dev: Intended for developers of the system itself; provides a
   set of Debian packages used by Debathena for development.
