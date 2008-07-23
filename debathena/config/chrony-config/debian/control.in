@@ -1,0 +1,14 @@
+Source: debathena-chrony-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Athena 10 Project <athena10@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.8.0
+
+Package: debathena-chrony-config
+Architecture: all
+Depends: chrony, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Configuration for Athena 10 chrony installs.
+ Tweaks the configuration of chrony to look to time.mit.edu.

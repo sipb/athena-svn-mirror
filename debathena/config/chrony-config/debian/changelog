@@ -1,4 +1,4 @@
-debathena-time-config (1.0) unstable; urgency=low
+debathena-chrony-config (1.0) unstable; urgency=low
 
   * Initial release.
 
