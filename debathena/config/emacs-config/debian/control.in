@@ -1,0 +1,14 @@
+Source: debathena-emacs-config
+Section: debathena-config/editors
+Priority: extra
+Maintainer: Athena 10 Project <athena10@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.8.0
+
+Package: debathena-emacs-config
+Architecture: all
+Depends: emacs, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Site customizations for emacs.
+ Adds local customizations to the emacs config.
