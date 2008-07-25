@@ -15,16 +15,9 @@
 ; Force outgoing mail domain to be "mit.edu" instead of local machine name.
 (setq mail-host-address "mit.edu")
 
-; Force print command to be "lpr" on SysV sytems; "lp" doesn't work on Athena.
-(setq lpr-command "lpr")
-
 ; lpr -d doesn't do anything in the Athena environment; use dvips to print
 ; DVI files.
 (setq tex-dvi-print-command "dvips")
-
-; Use htmlview to browse URLs.
-(setq browse-url-generic-program "htmlview")
-(setq browse-url-browser-function 'browse-url-generic)
 
 ; Athena likes different X paste behavior
 (setq mouse-yank-at-point t)
@@ -33,11 +26,9 @@
 ; consistent with gnome-terminal, xterm, etc.)
 (blink-cursor-mode 0)
 
-; Get info from the gnu locker as well as the normal places.
-(setq Info-default-directory-list
-      (append '("/afs/athena.mit.edu/project/gnu/info")
-	      Info-default-directory-list))
-
+; Change the initial scratch buffer to avoid people losing text they
+; erroneously type into it.  Also make it a text buffer instead of a
+; lisp buffer.
 (setq initial-major-mode '(lambda ()
 			    (text-mode)
 			    (auto-fill-mode 1)
@@ -50,60 +41,15 @@ own buffer.
 
 ")
 
-; Include PO server in rmail inbox list as well as obvious mbox files.
-(setq local-inbox
-      (cond ((file-accessible-directory-p "/var/mail/")
-	     (concat "/var/mail/" user-login-name))
-	    ((file-accessible-directory-p "/var/spool/mail/")
-	     (concat "/var/spool/mail/" user-login-name))
-	    ((file-accessible-directory-p "/usr/spool/mail/")
-	     (concat "/usr/spool/mail/" user-login-name))))
-(setq rmail-primary-inbox-list (list "~/mbox" local-inbox 
-				     (concat "po:" user-login-name)))
-
-; Some gnus settings.  We set gnus-mode-non-string-length to 27 to make room
-; for line-number-mode; this seems to be an oversight in the defaults
-; (understandable since line-number-mode wasn't on by default until 19.30).
-; We set gnus-use-long-filename to t to force consistent filenames on all
-; platforms, overriding the backward-compatible default for usg-unix-v
-; (Solaris).  We set nnmail-crosspost-link-function to 'copy-file because
-; AFS does not support hard links.  We set nnmail-spool-file to retrieve
-; mail from the same place rmail does.
-(setq news-inews-program "/afs/sipb.mit.edu/project/sipb/bin/inews"
-      gnus-default-nntp-server "news.mit.edu"
+; Some gnus settings.  We set nnmail-crosspost-link-function to
+; 'copy-file because AFS does not support hard links.
+(setq gnus-default-nntp-server "news.mit.edu"
       gnus-local-organization "Massachusetts Institute of Technology"
-      gnus-mode-non-string-length 27
-      gnus-use-long-file-name t
-      nnmail-crosspost-link-function 'copy-file
-      nnmail-spool-file rmail-primary-inbox-list)
-
-(autoload 'discuss "discuss" "Emacs Discuss" t)
-
-(autoload 'report-emacs-bug "emacsbug"
-	  "Report a bug in Gnu emacs."
-	  t)
-
-(autoload 'clu-mode "clu-mode"
-	  "Load CLU mode."
-	  t)
-(setq auto-mode-alist (append auto-mode-alist '(("\\.clu$" . clu-mode)
-						("\\.equ$" . clu-mode))))
-
-(autoload 'ispell-word "ispell"
-	  "Check the spelling of a word in the buffer."
-	  t)
-(autoload 'ispell-region "ispell"
-	  "Check the spelling of a region in the buffer."
-	  t)
-(autoload 'ispell-buffer "ispell"
-	  "Check the spelling of the entire buffer."
-	  t)
+      nnmail-crosspost-link-function 'copy-file)
 
 ; Athena auto-save customizations
 
-(defconst auto-save-main-directory
-  (cond ((file-accessible-directory-p "/var/tmp/") "/var/tmp/")
-	((file-accessible-directory-p "/tmp/") "/tmp/"))
+(defconst auto-save-main-directory "/var/tmp/"
   "The root of the auto-save directory; nil means use old style.")
 
 ; Put .saves files in same place as auto-save files.
