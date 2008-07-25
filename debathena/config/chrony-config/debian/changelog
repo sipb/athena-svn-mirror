@@ -1,3 +1,9 @@
+debathena-chrony-config (1.0debathena1) unstable; urgency=low
+
+  * Added postinstall hook to restart chrony.
+
+ -- andrew m. boardman <amb@mit.edu>  Fri, 25 Jul 2008 12:21:18 -0400
+
 debathena-chrony-config (1.0) unstable; urgency=low
 
   * Initial release.

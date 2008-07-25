@@ -1,3 +1,9 @@
+debathena-ntp-config (1.0debathena1) unstable; urgency=low
+
+  * Added postinstall hook to restart ntp.
+
+ -- andrew m. boardman <amb@mit.edu>  Fri, 25 Jul 2008 12:20:21 -0400
+
 debathena-ntp-config (1.0) unstable; urgency=low
 
   * Initial release.
