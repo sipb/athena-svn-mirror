@@ -26,7 +26,7 @@ trap 'schroot -e -c "$sid"' EXIT
 sch() { schroot -r -c "$sid" -- "$@"; }           # Run in the chroot
 schq() { schroot -q -r -c "$sid" -- "$@"; }       # Run in the chroot quietly
 schr() { schroot -r -c "$sid" -u root -- "$@"; }  # Run in the chroot as root
-schr apt-get -qq -y update
+schr apt-get -qq -y update || exit 3
 
 munge_sections () {
     perl -0pe "s/^Section: /Section: $section\\//gm or die" -i debian/control
