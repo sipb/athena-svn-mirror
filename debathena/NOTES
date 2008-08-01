@@ -520,9 +520,9 @@ package.
 Possible failure cases include:
 
   * One of the upstream apt repositories timed out during an "apt-get
-    update" of a chroot.  If this happens, you can just remove the
-    autodebathenify.suppress file to get the cron job to start running
-    again.
+    update" of an sbuild chroot.  If this happens, you can just remove
+    the autodebathenify.suppress file to get the cron job to start
+    running again.
 
   * autodebathenify tried to build an upstream version which already
     exists.  If this happens, the build will fail at upload time.  If
