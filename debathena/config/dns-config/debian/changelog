@@ -1,0 +1,5 @@
+debathena-dns-config (1.1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Greg Hudson <ghudson@mit.edu>  Sat, 02 Aug 2008 00:54:29 -0400
