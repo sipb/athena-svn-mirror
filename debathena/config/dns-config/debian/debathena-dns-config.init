@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+### BEGIN INIT INFO
+# Provides:          debathena-dns-config
+# Required-Start:    resolvconf
+# Default-Start:     2 3 4 5
+# Short-Description: Debathena DNS configuration for MIT
+# Description:       This service provides a mit.edu search path to
+#                    resolvconf.
+### END INIT INFO
+#
+# This script is part of the debathena-dns-config package
+# See /usr/share/doc/debathena-dns-config/copyright
+
+[ -x /sbin/resolvconf ] || exit 0
+
+case "$1" in
+start)
+	echo "search mit.edu" | /sbin/resolvconf -a mit
+	;;
+esac
