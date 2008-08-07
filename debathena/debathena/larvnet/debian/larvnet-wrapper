@@ -1,0 +1,15 @@
+#!/bin/sh
+
+servers=$(hesinfo larvnet sloc)
+port=49153 # aka "larvnet"
+hostname=$(hostname --fqdn)
+arch=$(machtype -c)
+set_busy() {
+  for s in $servers; do
+    printf "%d%s\0%s\0" "$1" "$hostname" "$arch" | nc -q0 -u "$s" "$port"
+  done
+}
+
+set_busy 1
+"$@"
+set_busy 0

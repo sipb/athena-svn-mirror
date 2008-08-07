@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+
+use strict;
+
+# Determine if the machine is busy.  Unfortunately, this test only
+# works for root.  Perhaps there is a better one which would allow
+# this daemon to run as nobody.
+my @result = glob("/var/lib/gdm/*.Xservers");
+my $busy = (scalar @result > 0) ? 1 : 0;
+
+# Collect some basic information about the machine.
+my $hostname = `hostname --fqdn`;
+my $arch = `machtype -c`;
+chomp $hostname;
+chomp $arch;
+
+# Read the packet.
+my $addr = recv(STDIN, my $dummy, 1, 0);
+
+# Reply with the status packet.
+my $msg = $busy . $hostname . "\0" . $arch . "\0";
+send(STDIN, $msg, 0, $addr);
