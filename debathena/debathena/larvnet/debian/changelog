@@ -1,3 +1,10 @@
+debathena-larvnet (10.0.0-0debathena2) unstable; urgency=low
+
+  * Use a better test for the workstation's busy state.
+  * Run busyd as nobody.
+
+ -- Greg Hudson <ghudson@mit.edu>  Thu, 07 Aug 2008 14:56:02 -0400
+
 debathena-larvnet (10.0.0-0debathena1) unstable; urgency=low
 
   * Initial release.

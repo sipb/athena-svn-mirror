@@ -2,11 +2,9 @@
 
 use strict;
 
-# Determine if the machine is busy.  Unfortunately, this test only
-# works for root.  Perhaps there is a better one which would allow
-# this daemon to run as nobody.
-my @result = glob("/var/lib/gdm/*.Xservers");
-my $busy = (scalar @result > 0) ? 1 : 0;
+# Determine if the machine is busy.
+my $result = `pgrep -c larvnet-wrapper`;
+my $busy = ($result > 0) ? 1 : 0;
 
 # Collect some basic information about the machine.
 my $hostname = `hostname --fqdn`;

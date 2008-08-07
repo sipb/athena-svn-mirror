@@ -25,7 +25,7 @@ case "$1" in
 busypoll	49154/udp			# busy polling port for ws
 EOF
 	fi
-	update-inetd --group INFO --add "busypoll\tdgram\tudp\twait\troot\t/usr/sbin/busyd\tbusyd"
+	update-inetd --group INFO --add "busypoll\tdgram\tudp\twait\tnobody\t/usr/sbin/busyd\tbusyd"
 	;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
