@@ -1,0 +1,35 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          debathena-clusterinfo
+# Required-Start:    $local_fs
+# Required-Stop:
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Caches Athena cluster info
+# Description:       Initializes the Athena cluster info cache
+### END INIT INFO
+
+if [ -e /lib/lsb/init-functions ]; then
+    . /lib/lsb/init-functions
+else
+    alias log_action_begin_msg="echo -n"
+    log_action_end_msg () {
+	echo .
+    }
+fi
+
+case "$1" in
+    start)
+	log_action_begin_msg "Initializing Athena cluster info cache"
+	/usr/sbin/save-cluster-info
+	log_action_end_msg $?
+	;;
+    restart|stop|force-reload)
+	;;
+    *)
+	echo "Usage: $0 {start}" >&2
+	exit 3
+	;;
+esac
+
+:

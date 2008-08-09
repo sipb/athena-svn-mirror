@@ -1,0 +1,5 @@
+debathena-clusterinfo (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Greg Hudson <ghudson@mit.edu>  Fri, 08 Aug 2008 14:43:48 -0400
