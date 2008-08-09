@@ -59,8 +59,10 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 		export ATHENA_SYS=@sys
 	fi
 
-	if [ "${PRINTER+set}" != set -a -e /var/athena/clusterinfo ]; then
-		PRINTER=`awk '/LPR/ { print $3 }' /var/athena/clusterinfo`
+	if [ "${PRINTER+set}" != set \
+	  -a -e /var/run/athena-clusterinfo.sh ]; then
+		PRINTER=`awk '/LPR/ { print $3 }' \
+		  /var/run/athena-clusterinfo.sh`
 		if [ -n "$PRINTER" ]; then export PRINTER; fi
 	fi
 

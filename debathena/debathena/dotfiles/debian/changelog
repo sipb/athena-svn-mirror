@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.7-0debathena1) unstable; urgency=low
+
+  * Adjust for new clusterinfo paths.
+
+ -- Greg Hudson <ghudson@mit.edu>  Sat, 09 Aug 2008 02:06:16 -0400
+
 debathena-dotfiles (10.0.6-0debathena1) unstable; urgency=low
 
   * Change from using debathena-afuse-automounter to more generic
