@@ -3,13 +3,14 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 0.3
+Version: 0.4
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: debathena-workstation,
  debathena-cluster-software,
- debathena-tmp-cleaner,
+ debathena-clusterinfo,
  debathena-dns-config,
- debathena-larvnet
+ debathena-larvnet,
+ debathena-tmp-cleaner
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena cluster configuration for Debian
