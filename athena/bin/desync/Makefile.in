@@ -9,15 +9,14 @@ top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 mandir=@mandir@
-sysconfdir=@sysconfdir@
-lsbindir=@lsbindir@
+bindir=@bindir@
 
 CC=@CC@
 CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
-ALL_CFLAGS=-DSYSCONFDIR=\"${sysconfdir}\" ${CPPFLAGS} ${CFLAGS}
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
 
 all: desync
 
@@ -30,10 +29,10 @@ desync: desync.o
 check:
 
 install:
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${lsbindir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
-	${INSTALL_PROGRAM} -m 555 desync ${DESTDIR}${lsbindir}
-	${INSTALL} -m 444 ${srcdir}/desync.8 ${DESTDIR}${mandir}/man8
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} -m 555 desync ${DESTDIR}${bindir}
+	${INSTALL} -m 444 ${srcdir}/desync.1 ${DESTDIR}${mandir}/man1
 
 clean:
 	rm -f desync.o desync
