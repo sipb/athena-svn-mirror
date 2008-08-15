@@ -13,8 +13,8 @@ dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
 arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 . /mit/debathena/bin/debian-versions.sh
 tag=$(gettag $dist)
-pkgfile=$DEBATHENA_APT/dists/$dist/openafs/binary-$arch/Packages.gz
 : ${DEBATHENA_APT=/mit/debathena/apt}
+pkgfile=$DEBATHENA_APT/dists/$dist/openafs/binary-$arch/Packages.gz
 
 do_binary=no
 do_upload=no
@@ -126,7 +126,7 @@ for hdr in $headers; do
     hdrv=$(schq dpkg-query --showformat='${Version}' --show "$hdr")
     schr touch \
       "/usr/src/openafs-modules-${kversion}_${afsv}+${hdrv}_$arch.changes.pt"
-    here=$(pwd)
+    here=$(readlink -f .)
     schr sh -ec "
       eval \"\$(dpkg-architecture)\"
       if [ \"\$DEB_HOST_ARCH\" != amd64 ] && \
