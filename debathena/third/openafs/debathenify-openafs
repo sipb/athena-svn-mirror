@@ -136,13 +136,14 @@ for hdr in $headers; do
     schr touch \
       "/usr/src/openafs-modules-${kversion}_${afsv}+${hdrv}_$arch.changes.pt"
     here=$(readlink -f .)
-    schr sh -ec "
+    schr sh -xec "
       eval \"\$(dpkg-architecture)\"
       if [ \"\$DEB_HOST_ARCH\" != amd64 ] && \
         fgrep -x CONFIG_X86_64=y '/lib/modules/$kversion/build/.config'; then
         apt-get -y install binutils-multiarch util-linux
         type linux64 >/dev/null || apt-get -y install linux32
         export KPKG_ARCH=amd64
+        export ARCH=x86_64
         export PERSONALITY=linux64
         export PATH=$here/hacked-arch:\$PATH
       fi
