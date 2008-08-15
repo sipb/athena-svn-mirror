@@ -1,5 +1,9 @@
 #!/bin/sh
 
+quote() {
+  echo "$1" | sed 's/[^[:alnum:]]/\\&/g'
+}
+
 fail() {
   echo "$@" >&2
   exit 1
@@ -40,6 +44,9 @@ sch() { schroot -r -c "$sid" -- "$@"; }           # Run in the chroot
 schq() { schroot -q -r -c "$sid" -- "$@"; }       # Run in the chroot quietly
 schr() { schroot -r -c "$sid" -u root -- "$@"; }  # Run in the chroot as root
 schr apt-get -qq -y update || exit 3
+
+afsv=$(schq apt-cache show --no-all-versions openafs-modules-source | \
+  sed -n 's/^Version: // p')
 
 # Get all of the packages named linux-image-*.  This list includes
 # three types of packages:
@@ -102,9 +109,14 @@ done
 # (according to the command-line arguments) a corresponding
 # openafs-modules package if one does not already exist.
 for hdr in $headers; do
+  hdrv=$(schq apt-cache show --no-all-versions "$hdr" | \
+    sed -n 's/^Version: // p')
+
   # Check if we already have one.
   module=$(echo "$hdr" | sed -e 's/^linux-headers/openafs-modules/')
-  if zcat "$pkgfile" | fgrep -qx "Package: $module"; then
+  if zcat "$pkgfile" | \
+     dpkg-awk -f - "Package:^$module\$" "Version:^$(quote "$afsv+$hdrv")\$" | \
+     grep -q .; then
     echo "*** Already exists: $dist_arch $module"
     continue
   fi
@@ -121,9 +133,6 @@ for hdr in $headers; do
     schr apt-get -y install module-assistant "$hdr"
     schr m-a -i -t -l "$kversion" get openafs
     schr m-a -i -t -l "$kversion" unpack openafs
-    afsv=$(schq dpkg-query --showformat='${Version}' --show \
-      openafs-modules-source)
-    hdrv=$(schq dpkg-query --showformat='${Version}' --show "$hdr")
     schr touch \
       "/usr/src/openafs-modules-${kversion}_${afsv}+${hdrv}_$arch.changes.pt"
     here=$(readlink -f .)
@@ -188,7 +197,8 @@ for image_mpkg in $mpkgs; do
   afs_mpkg=$(echo "$image_mpkg" | sed -e 's/^linux-image/openafs-modules/')
 
   # Check if we already have an up-to-date OpenAFS metapackage.
-  repover=$(zcat "$pkgfile" | dpkg-awk -f - "Package:^$afs_mpkg\$" -- Version \
+  repover=$(zcat "$pkgfile" \
+    | dpkg-awk -f - "Package:^$(quote $afs_mpkg)\$" -- Version \
     | sed -e 's/^Version: //')
   if [ "x${repover%%~*}" = "x$ver" ]; then
     echo "*** Already up to date: $dist_arch $afs_mpkg"
