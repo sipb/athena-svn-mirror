@@ -1,0 +1,98 @@
+#!/bin/sh
+
+if [ 0 != "$(id -u)" ]; then
+  echo "This script must be run as root." >&2
+  exit 1
+fi
+
+# First argument should be "cron" or "reactivate"; if not given, we
+# will assume someone ran this by hand.
+invoker=$1
+if [ -z "$invoker" ]; then
+  invoker=cmdline
+fi
+
+# Avoid confusing the system by running two updates at once.
+pidfile=/var/run/athena-update.pid
+if [ -e $pidfile ]; then
+  if ! kill -0 "$(cat $pidfile)"; then
+    rm -f $pidfile
+  fi
+fi
+(set -o noclobber; echo $$ > $pidfile) 2>/dev/null || exit
+
+# Redirect further output to a log file, and ensure that we don't ever
+# wait for console input.
+exec </dev/null >>/var/log/athena-update 2>&1
+
+echo "-----"
+echo "Beginning Athena auto-update at $(date)"
+echo
+
+# Set up an exit handler to close out the log and remove any
+# /etc/nologin we might have written.
+wrote_nologin=false
+finish() {
+    echo "Ending Athena auto-update at $(date)"
+    echo "-----"
+    echo
+    [ true = "$wrote_nologin" ] && rm -f /etc/nologin
+    exit
+}
+trap finish EXIT
+
+complain() {
+  logger -t "$(gethostname --fqdn)" -p user.notice "update: $1"
+}
+
+if [ cron = "$invoker" ]; then
+  files=$(ls /var/lib/gdm/*.Xservers >/dev/null)
+  if [ -n "$files" ]; then
+    # We don't want to perform auto-updates during a graphical login.
+    # But we can download the packages to save time during the update.
+    echo "gdm login active, only downloading packages"
+    aptitude update
+    aptitude --download-only full-upgrade
+    exit
+  fi
+fi
+
+if [ cron = "$invoker" -a ! -e /etc/nologin ]; then
+  echo "An update is in progress, please try again later." > /etc/nologin
+  wrote_nologin=true
+fi
+
+# Determine which metapackage we have installed.
+metapackage=
+for pkg in cluster workstation login standard; do
+  status=$(dpkg-query -Wf '${status}' debathena-$pkg 2>/dev/null)
+  case $status in (*installed)
+    metapackage=debathena-$pkg
+    break
+    ;;
+  esac
+done
+if [ -z "$metapackage" ]; then
+  echo "Can't find an installed Debathena metapackage, exiting."
+  complain "no metapackage found"
+  exit
+fi
+echo "Found metapackage $metapackage"
+
+# Perform the update.  In some corner cases, aptitude might decide
+# that the best course of action is to remove the Debathena
+# metapackage, so be paranoid about that.
+aptitude update
+aptitude keep-all
+aptitude --schedule-only --assume-yes dist-upgrade
+aptitude --schedule-only --assume-yes install "$metapackage"
+result=$(aptitude search "~S~VTARGET~n^$metapackage\$")
+if [ -z "$result" ]; then
+  echo "$metapackage would be removed by the update, aborting"
+  aptitude keep-all
+  complain "$metapackage would be removed by update"
+  exit
+fi
+aptitude --assume-yes install
+
+exit

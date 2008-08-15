@@ -1,0 +1,14 @@
+Source: debathena-reactivate
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-reactivate
+Architecture: all
+Depends: ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Performs post-logout tasks for Athena cluster machines
+ This package runs tasks after logout for Athena cluster machines.

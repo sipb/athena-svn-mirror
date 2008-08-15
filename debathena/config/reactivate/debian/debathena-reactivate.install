@@ -1,0 +1,2 @@
+debian/athena-reactivate usr/sbin
+debian/Default.debathena etc/gdm/PostSession
