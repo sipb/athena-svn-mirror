@@ -169,8 +169,8 @@ for hdr in $headers; do
 
   # Upload the module if requested, if we successfully built one.
   if [ yes = "$do_upload" ]; then
-    ch=$(ls "$dist_arch/$module"_*.changes 2>/dev/null)
-    if [ -n "$ch" ]; then
+    ch="$dist_arch/${module}_${afsv}+${hdrv}_$arch.changes"
+    if [ -e "$ch" ]; then
       echo "*** Uploading: $dist_arch $module"
       reprepro --ignore=wrongdistribution -Vb "$DEBATHENA_APT" -C openafs \
         include "$dist" $ch
