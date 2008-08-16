@@ -1,3 +1,12 @@
+debathena-auto-update (1.1) unstable; urgency=low
+
+  * Improve diagnostic output for the log.
+  * Remove the pid file when we are done.
+  * Stop if aptitude update fails.
+  * Set a path in the cron.d file so that it runs.
+
+ -- Greg Hudson <ghudson@mit.edu>  Sat, 16 Aug 2008 19:28:38 -0400
+
 debathena-auto-update (1.0) unstable; urgency=low
 
   * Initial release.
