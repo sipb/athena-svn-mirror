@@ -1,0 +1,98 @@
+python-hesiod (0.2.9.1-1debathena1) unstable; urgency=low
+
+  * Debathena specific: Conflict with old versions of
+    debathena-pyhesiodfs, since they share a common hesiod.py file
+
+ -- Evan Broder <broder@mit.edu>  Wed, 13 Aug 2008 19:33:10 -0400
+
+python-hesiod (0.2.9.1-1) unstable; urgency=low
+
+  * Undo a mistaken test commit
+
+ -- Evan Broder <evan@remus.mit.edu>  Tue, 19 Aug 2008 23:00:33 -0400
+
+python-hesiod (0.2.9-1) unstable; urgency=low
+
+  * Fix Linux bug where errno would get corrupted
+
+ -- Evan Broder <evan@remus.mit.edu>  Tue, 19 Aug 2008 22:37:27 -0400
+
+python-hesiod (0.2.8-2) unstable; urgency=low
+
+  * Stop using CDBS's DEB_AUTO_UPDATE_DEBIAN_CONTROL to deal with versioning
+    issues on older Ubuntu and Debian distributions
+
+ -- Evan Broder <broder@mit.edu>  Tue, 13 Aug 2008 18:53:11 -0400
+
+python-hesiod (0.2.8-1) unstable; urgency=low
+
+  * Actually set IOErrors correctly
+
+ -- Evan Broder <broder@mit.edu>  Tue, 12 Aug 2008 03:17:16 -0400
+
+python-hesiod (0.2.7-1) unstable; urgency=low
+
+  * In passwd and group lookups, convert IDs to strings
+
+ -- Evan Broder <broder@mit.edu>  Mon, 11 Aug 2008 17:52:15 -0400
+
+python-hesiod (0.2.6) unstable; urgency=low
+
+  * Fix exceptions related to raising exceptions
+
+ -- Evan Broder <broder@mit.edu>  Sun, 10 Aug 2008 19:11:53 -0400
+
+python-hesiod (0.2.5-1) unstable; urgency=low
+
+  * Remove shebang line from hesiod module
+
+ -- Evan Broder <broder@mit.edu>  Thu, 31 Jul 2008 21:55:27 -0700
+
+python-hesiod (0.2.4-2) unstable; urgency=low
+
+  * Remove redundant COPYING file from documentation
+
+ -- Evan Broder <broder@mit.edu>  Thu, 31 Jul 2008 21:44:07 -0700
+
+python-hesiod (0.2.4-1) unstable; urgency=low
+
+  * Fix bug in Python 2.4 syntax
+
+ -- Evan Broder <broder@mit.edu>  Thu, 31 Jul 2008 21:23:13 -0700
+
+python-hesiod (0.2.3-1) unstable; urgency=low
+
+  * Fix egg-info
+
+ -- Evan Broder <broder@mit.edu>  Wed, 30 Jul 2008 15:17:36 -0700
+
+python-hesiod (0.2.2-1) unstable; urgency=low
+
+  * Add the COPYING file to the distribution
+
+ -- Evan Broder <broder@mit.edu>  Wed, 30 Jul 2008 11:33:35 -0700
+
+python-hesiod (0.2.1-1) unstable; urgency=low
+
+  * Some slight metadata changes
+
+ -- Evan Broder <broder@mit.edu>  Wed, 30 Jul 2008 00:22:30 -0700
+
+python-hesiod (0.2.0-1) unstable; urgency=low
+
+  * Add more Pythonic interfaces for common lookups, like filsys and passwd
+
+ -- Evan Broder <broder@mit.edu>  Wed, 30 Jul 2008 00:05:50 -0700
+
+python-hesiod (0.1.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Make lookups thread safe
+
+ -- Evan Broder <broder@mit.edu>  Tue, 29 Jul 2008 18:32:05 -0700
+
+python-hesiod (0.1.1-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 12 Jul 2008 04:12:01 -0400

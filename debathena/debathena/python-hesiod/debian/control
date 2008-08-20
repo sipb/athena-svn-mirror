@@ -1,0 +1,15 @@
+Source: python-hesiod
+Section: python
+Priority: extra
+Maintainer: Evan Broder <broder@mit.edu>
+Build-Depends: cdbs, debhelper, python-all-dev, python-support, python-pyrex, python-setuptools, libhesiod-dev
+Standards-Version: 3.7.2
+
+Package: python-hesiod
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Provides: ${python:Provides}
+Conflicts: debathena-pyhesiodfs (<< 0.0.r144)
+Description: Hesiod bindings for Moira
+ PyHesiod provides a set of Python bindings for Hesiod, the Project
+ Athena service name resolution protocol used at MIT and elsewhere.
