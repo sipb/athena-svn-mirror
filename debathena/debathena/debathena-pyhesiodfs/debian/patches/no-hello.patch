@@ -1,8 +1,9 @@
-Index: debathena-pyhesiodfs-0.0.r77/pyHesiodFS.py
+
+Index: debathena-pyhesiodfs/pyHesiodFS.py
 ===================================================================
---- debathena-pyhesiodfs-0.0.r77.orig/pyHesiodFS.py	2008-07-10 21:32:21.000000000 -0400
-+++ debathena-pyhesiodfs-0.0.r77/pyHesiodFS.py	2008-07-10 21:38:44.000000000 -0400
-@@ -21,13 +21,6 @@
+--- debathena-pyhesiodfs.orig/pyHesiodFS.py
++++ debathena-pyhesiodfs/pyHesiodFS.py	
+@@ -19,13 +19,6 @@
  
  fuse.fuse_python_api = (0, 2)
  
@@ -13,10 +14,10 @@ Index: debathena-pyhesiodfs-0.0.r77/pyHesiodFS.py
 -If you're using the Finder, try pressing Cmd+Shift+G and then entering
 -%(mountpoint)s/name"""
 -
- class MyStat(fuse.Stat):
-     def __init__(self):
-         self.st_mode = 0
-@@ -54,10 +47,6 @@
+ if not hasattr(fuse, 'Stat'):
+     fuse.Stat = object
+ 
+@@ -68,10 +61,6 @@
          if path == '/':
              st.st_mode = stat.S_IFDIR | 0755
              st.st_nlink = 2
@@ -27,14 +28,16 @@ Index: debathena-pyhesiodfs-0.0.r77/pyHesiodFS.py
          elif '/' not in path[1:]:
              if self.findLocker(path[1:]):
                  st.st_mode = stat.S_IFLNK | 0777
-@@ -94,33 +83,13 @@
+@@ -111,7 +100,7 @@
                  return None
  
+     def getdir(self, path):
+-        return [(i, 0) for i in (['.', '..', hello_path[1:]] + self.getCachedLockers())]
++        return [(i, 0) for i in (['.', '..'] + self.getCachedLockers())]
+ 
      def readdir(self, path, offset):
--        for r in  ['.', '..', hello_path[1:]]+self.getCachedLockers():
-+        for r in  ['.', '..']+self.getCachedLockers():
-             yield fuse.Direntry(r)
-             
+         for (r, zero) in self.getdir(path):
+@@ -120,27 +109,7 @@
      def readlink(self, path):
          return self.findLocker(path[1:])
  
@@ -59,13 +62,13 @@ Index: debathena-pyhesiodfs-0.0.r77/pyHesiodFS.py
 -
  def main():
 -    global hello_str
-     usage="""
- pyHesiodFS
+     try:
+         usage = Fuse.fusage
+         server = PyHesiodFS(version="%prog " + fuse.__version__,
+@@ -156,7 +125,6 @@
+             sys.argv.pop(1)
+         server = PyHesiodFS()
  
-@@ -130,7 +99,6 @@
-                      dash_s_do='setsingle')
- 
-     server.parse(errex=1)
 -    hello_str = hello_str % {'mountpoint': server.parse(errex=1).mountpoint}
      server.main()
  

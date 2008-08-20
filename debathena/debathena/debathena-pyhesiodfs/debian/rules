@@ -5,6 +5,10 @@ DEB_DIVERT_FILES_debathena-pyhesiodfs += \
 	/etc/fuse.conf.debathena
 DEB_PYTHON_SYSTEM=pysupport
 
+ifneq ($(shell grep RESTART_AFTER_UPGRADE /usr/bin/dh_installinit),)
+	DEB_DH_INSTALLINIT_ARGS += --restart-after-upgrade
+endif
+
 clean::
 	if [ -f pyhesiodfs ]; then mv pyhesiodfs pyHesiodFS.py; fi
 

@@ -19,7 +19,6 @@ case "$1" in
 	if ! getent passwd pyhesiodfs >/dev/null; then
 	    adduser --system --no-create-home --group pyhesiodfs
 	fi
-	adduser pyhesiodfs fuse
 	;;
     
     abort-upgrade)

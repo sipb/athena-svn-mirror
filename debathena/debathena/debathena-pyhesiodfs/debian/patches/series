@@ -1,5 +1,2 @@
-no-os-x-launchdaemon.patch
 install-script-without-extension.patch
-dont-use-mac-only-options.patch
 no-hello.patch
-crazy-cross-api-version-compat.patch

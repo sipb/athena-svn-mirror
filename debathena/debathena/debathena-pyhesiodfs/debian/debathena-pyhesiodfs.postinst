@@ -25,11 +25,14 @@ set -e
 
 case "$1" in
     configure)
+        adduser pyhesiodfs fuse
+        
 	if hash invoke-rc.d 2>/dev/null; then
 	    invoke-rc.d debathena-pyhesiodfs restart
 	else
 	    /etc/init.d/debathena-pyhesiodfs restart
 	fi
+        update-rc.d -f debathena-afuse-automounter remove >/dev/null || :
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
