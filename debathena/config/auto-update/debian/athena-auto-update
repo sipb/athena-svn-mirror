@@ -1,15 +1,33 @@
 #!/bin/sh
 
+complain() {
+  logger -t "$(gethostname --fqdn)" -p user.notice "update: $1"
+}
+
+maybe_reboot() {
+  if [ -f /var/run/reboot-required ]; then
+    # A package wants us to reboot the machine.  Do so if no one is
+    # logged in.  Be paranoid about stale utmp entries.
+    ttys=$(w -h -s | awk '{print $2}')
+    for tty in $ttys; do
+      pids=$(ps --no-heading -j -t "$tty" 2>/dev/null \
+             | awk '($1 == $3) {print $1}')
+      if [ -n "$pids" ]; then
+        return
+      fi
+    done
+    # screen processes count as logins.
+    if pgrep '^screen' > /dev/null; then
+      return
+    fi
+    reboot
+    exit
+  fi
+}
+
 if [ 0 != "$(id -u)" ]; then
   echo "This script must be run as root." >&2
   exit 1
-fi
-
-# First argument should be "cron" or "reactivate"; if not given, we
-# will assume someone ran this by hand.
-invoker=$1
-if [ -z "$invoker" ]; then
-  invoker=cmdline
 fi
 
 # Avoid confusing the system by running two updates at once.
@@ -21,50 +39,53 @@ if [ -e $pidfile ]; then
 fi
 (set -o noclobber; echo $$ > $pidfile) 2>/dev/null || exit
 
-# Redirect further output to a log file, and ensure that we don't ever
-# wait for console input.
-exec </dev/null >>/var/log/athena-update 2>&1
+trap 'rm -f $pidfile' EXIT
 
+# Make sure nothing expects input on stdin.
+exec </dev/null
+
+# Punt output while we figure out if there are updates to take.
+exec >/dev/null 2>&1
+
+# Update the aptitude cache.
+if ! aptitude update; then
+  complain "aptitude update failed"
+  exit
+fi
+
+# Exit quietly (except for perhaps rebooting) if there are no upgrades
+# to take.
+pattern='^0 packages upgraded, 0 newly installed, 0 to remove'
+if aptitude -s -y full-upgrade | grep -q "$pattern"; then
+  maybe_reboot
+  exit
+fi
+
+# Redirect further output to a log file.
+exec >>/var/log/athena-update 2>&1
+
+# Write a log header now and a footer at exit.
 echo "-----"
 echo "** Beginning Athena auto-update at $(date)"
 
-# Set up an exit handler to close out the log, delete the pid file,
-# and remove any /etc/nologin we might have written.
-wrote_nologin=false
 finish() {
     echo "** Ending Athena auto-update at $(date)"
     echo "-----"
     echo
     rm -f $pidfile
-    [ true = "$wrote_nologin" ] && rm -f /etc/nologin
     exit
 }
 trap finish EXIT
-
-complain() {
-  logger -t "$(gethostname --fqdn)" -p user.notice "update: $1"
-}
 
 v() {
   echo "** Running:" "$@"
   "$@"
 }
 
-if [ cron = "$invoker" ]; then
-  files=$(ls /var/lib/gdm/*.Xservers 2>/dev/null)
-  if [ -n "$files" ]; then
-    # We don't want to perform auto-updates during a graphical login.
-    # But we can download the packages to save time during the update.
-    echo "** gdm login active, only downloading packages"
-    v aptitude update || exit
-    v aptitude --download-only full-upgrade
-    exit
-  fi
-fi
-
-if [ cron = "$invoker" -a ! -e /etc/nologin ]; then
-  echo "An update is in progress, please try again later." > /etc/nologin
-  wrote_nologin=true
+# Download packages first.
+if ! v aptitude --quiet --download-only --assume-yes full-upgrade; then
+  complain "download failed"
+  exit
 fi
 
 # Determine which metapackage we have installed.
@@ -84,20 +105,32 @@ if [ -z "$metapackage" ]; then
 fi
 echo "** Found metapackage $metapackage"
 
+# If the debathena-reactivate package is installed, call into the
+# login snapshot script to create a root snapshot for the next update.
+if [ -x /usr/sbin/athena-login-snapshot ]; then
+  echo "** Creating root snapshot"
+  /usr/sbin/athena-login-snapshot update-start
+fi
+
 # Perform the update.  In some corner cases, aptitude might decide
 # that the best course of action is to remove the Debathena
 # metapackage, so be paranoid about that.
-v aptitude update || exit
-v aptitude keep-all
-v aptitude --schedule-only --assume-yes dist-upgrade
-v aptitude --schedule-only --assume-yes install "$metapackage"
+v aptitude -q keep-all
+v aptitude --quiet --schedule-only --assume-yes dist-upgrade
+v aptitude --quiet --schedule-only --assume-yes install "$metapackage"
 result=$(aptitude search "~S~VTARGET~n^$metapackage\$")
 if [ -z "$result" ]; then
   echo "** $metapackage would be removed by the update, aborting"
-  v aptitude keep-all
+  v aptitude --quiet keep-all
   complain "$metapackage would be removed by update"
-  exit
+else
+  v aptitude --quiet --assume-yes install
 fi
-v aptitude --assume-yes install
 
+if [ -x /usr/sbin/athena-login-snapshot ]; then
+  echo "** Cleaning up root snapshot"
+  /usr/sbin/athena-login-snapshot update-end
+fi
+
+maybe_reboot
 exit
