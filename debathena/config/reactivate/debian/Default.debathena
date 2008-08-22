@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# This script runs as root at the end of a gdm login session.  gdm
-# blocks until it finishes.  DISPLAY is set but the X server might be
-# dead in some cases.
-
-exec /usr/sbin/athena-reactivate

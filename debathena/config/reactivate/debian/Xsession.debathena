@@ -1,0 +1,4 @@
+#!/bin/sh
+
+#!/bin/bash
+exec schroot -c login -p /etc/gdm/Xsession.debathena-orig "$@"

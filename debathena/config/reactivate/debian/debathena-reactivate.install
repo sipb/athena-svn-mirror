@@ -1,2 +1,4 @@
-debian/athena-reactivate usr/sbin
-debian/Default.debathena etc/gdm/PostSession
+debian/athena-login-snapshot usr/sbin
+debian/Xsession.debathena etc/gdm
+debian/PreSession/Default.debathena etc/gdm/PreSession
+debian/PostSession/Default.debathena etc/gdm/PostSession
