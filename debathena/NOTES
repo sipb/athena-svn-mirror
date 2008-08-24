@@ -192,6 +192,42 @@ package is unavailable.  For example, a package which doesn't exist in
 all Debian/Ubuntu suites or isn't free can be listed under
 "Recommends:" so that our metapackages still work in all environments.
 
+Developers: Index of cluster packages
+-------------------------------------
+
+Some private workstation admins may want specific pieces of cluster
+infrastructure.  With Athena 9.4, they would typically install the
+entire Athena software suite and then turn off features they did not
+want via /etc/athena/rc.conf.  That is not generally possible in
+Athena 10; a debathena-cluster machine acts like a cluster machine in
+all respects.  Instead, the machine owner should install
+debathena-workstation and then install specific packages they might be
+interested in.  At this time, candidate packages include:
+
+  * debathena-dns-config: Installs a caching DNS resolver and
+    configures the machine to use it.
+
+  * debathena-tmp-cleaner: Cleans files in /tmp and /var/tmp which
+    have not been recently accessed.
+
+  * debathena-reactivate: Causes each graphical login to be performed
+    in a separate ephemeral snapshot of the chroot.  This package
+    requires the root filesystem to be an LVM logical volume inside a
+    volume group with 21GB of free space for the snapshots; if that is
+    not the case, it will break graphical logins.  Install with care.
+
+  * debathena-auto-update: Periodically updates the machine's software
+    and reboots (when no one is logged in) if necessary.
+
+Cluster packages which are generally not of interest to private
+machine owners include:
+
+  * debathena-clusterinfo: Looks up the machine's cluster information
+    in Hesiod and caches it on local disk.
+
+  * debathena-larvnet: Reports to the central larvnet server whether
+    anyone has a graphical login to the machine.
+
 Release engineer: Bootstrapping the project infrastructure
 ----------------------------------------------------------
 
