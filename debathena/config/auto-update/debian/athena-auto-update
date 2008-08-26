@@ -47,6 +47,16 @@ exec </dev/null
 # Punt output while we figure out if there are updates to take.
 exec >/dev/null 2>&1
 
+# Allow hesiod cluster info to specify the debathena apt repository.
+# (Will do nothing if debathena-clusterinfo isn't installed.)
+[ -x /usr/sbin/save-cluster-info ] && /usr/sbin/save-cluster-info
+cinfo=/var/run/athena-clusterinfo.sh
+slist=/etc/apt/sources.list.d/debathena.list
+if [ -r $cinfo -a -w $slist ]; then
+  (. $cinfo;
+   [ -n "$APT" ] && perl -pi.old -e 's|http://\S+|$ENV{"APT"}|e;' $slist)
+fi
+
 # Update the aptitude cache.
 if ! aptitude update; then
   complain "aptitude update failed"
