@@ -228,6 +228,9 @@ machine owners include:
   * debathena-larvnet: Reports to the central larvnet server whether
     anyone has a graphical login to the machine.
 
+  * debathena-syslog-config: Configures sysklogd so that some syslog
+    messages are forwarded to a central logging host.
+
 Release engineer: Bootstrapping the project infrastructure
 ----------------------------------------------------------
 
