@@ -1,0 +1,15 @@
+Source: debathena-syslog-config
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), config-package-dev (>= 4.5~), sysklogd
+Standards-Version: 3.7.2
+
+Package: debathena-syslog-config
+Architecture: all
+Depends: sysklogd
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Configures central syslogging of some messages
+ This package configures sysklogd to forward some messages to a
+ central server.

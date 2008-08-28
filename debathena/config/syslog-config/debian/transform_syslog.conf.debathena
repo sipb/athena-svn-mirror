@@ -1,0 +1,3 @@
+#!/bin/sh
+cat
+echo "*.warning;kern,user,auth.info	@WSLOGGER.MIT.EDU"
