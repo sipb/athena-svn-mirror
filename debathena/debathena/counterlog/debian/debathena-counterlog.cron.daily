@@ -1,0 +1,50 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+# We want a unique ID for each machine, ideally surviving a reinstall.
+# Produce the ID using the hardware addresses of the ethernet devices,
+# and save it to a file so that it at least survives the duration of
+# this install.
+idfile=/var/lib/debathena-counterlog/id
+if [ -r $idfile ]; then
+  id=$(cat $idfile)
+else
+  id=$(ifconfig -a | sed -nre 's/.*HWaddr ([^ ]+).*/\1/p' | sort -u \
+       | md5sum | awk '{print $1}')
+  echo "$id" > $idfile
+fi
+
+# Determine if this is an Athena 10 or Debathena machine.
+slist=/etc/apt/sources.list.d/debathena.list
+if [ ! -r $slist ]; then
+  slist=/etc/apt/sources.list
+fi
+aptloc=$(awk '/^deb .* debathena.*/ {print $2}' $slist)
+case $aptloc in
+*//athena10.mit.edu/*)
+  version=athena10
+  loghost=wslogger.mit.edu
+  ;;
+*//debathena.mit.edu/*)
+  # SIPB does not currently have a log host set up.  Change this block
+  # if it sets one up and wants counter logs.
+  version=debathena
+  exit
+  ;;
+*)
+  exit
+  ;;
+esac
+
+host=$(hostname --fqdn)
+mtype=$(machtype)
+ctype=$(machtype -c)
+
+# Traditionally, we do counter logging via syslog.  (We could do it
+# via HTTP post or something else instead, if we wanted.)  We can't
+# rely on central syslogging being configured because that's a
+# cluster-only package.  Fortunately, the syslog protocol is dead
+# simple, so just fake a packet to the log host.
+msg="<13>root: counterlog: $host $mtype $ctype $version $id cron"
+printf "%s" "$msg" | nc -q0 -u $loghost syslog
