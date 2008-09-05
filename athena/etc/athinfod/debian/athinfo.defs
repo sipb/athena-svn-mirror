@@ -35,3 +35,4 @@ login		test -f /etc/nologin; echo $?
 cpuspeed	grep MHz /proc/cpuinfo
 packages	dpkg-query -W
 modules  	lsmod
+update-status	aptitude --simulate --assume-yes full-upgrade

@@ -1,3 +1,9 @@
+debathena-athinfod (9.4.0-0debathena7) unstable; urgency=low
+
+  * Add upgrade-status query.
+
+ -- Greg Hudson <ghudson@mit.edu>  Fri, 05 Sep 2008 13:00:14 -0400
+
 debathena-athinfod (9.4.0-0debathena6) unstable; urgency=low
 
   * Remove old transitional code from 9.4.0-0debathena4 changeset.
