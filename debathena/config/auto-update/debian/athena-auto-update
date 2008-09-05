@@ -127,7 +127,6 @@ fi
 # metapackage, so be paranoid about that.
 v aptitude -q keep-all
 v aptitude --quiet --schedule-only --assume-yes dist-upgrade
-v aptitude --quiet --schedule-only --assume-yes install "$metapackage"
 result=$(aptitude search "~S~VTARGET~n^$metapackage\$")
 if [ -z "$result" ]; then
   echo "** $metapackage would be removed by the update, aborting"
