@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-clients
-Version: 0.3.8
+Version: 0.3.9
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: athena-jot,
  debathena-athinfo,
@@ -22,7 +22,6 @@ Depends: athena-jot,
  debathena-just,
  debathena-kerberos-config,
  debathena-ldap-config,
- debathena-misc-glue,
  debathena-mitmailutils,
  debathena-moira-clients,
  debathena-nmh,
@@ -34,7 +33,6 @@ Depends: athena-jot,
  debathena-ssh-client-config,
  debathena-ssl-certificates,
  debathena-tex-extras,
- debathena-transcript-glue,
  debathena-xcluster,
  debathena-xdsc,
  debathena-zephyr-config,

@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-locker
-Version: 0.2.7
+Version: 0.2.8
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: debathena-afs-config,
  debathena-athdir,
@@ -17,11 +17,13 @@ Depends: debathena-afs-config,
  debathena-kerberos-config,
  debathena-lert,
  debathena-machtype,
+ debathena-misc-glue,
  debathena-mit-automounter,
  debathena-quota,
  debathena-quota-config,
  debathena-tcsh-config,
  debathena-tellme,
+ debathena-transcript-glue,
  debathena-zephyr-config
 Recommends: debathena-bash,
  debathena-tcsh
