@@ -1,0 +1,13 @@
+Source: debathena-misc-glue
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-misc-glue
+Architecture: all
+Depends: ${misc:Depends}
+Description: Miscellaneous attach-and-run scripts for Debathena
+ This package contains attach-and-run scripts for software installed
+ in Athena lockers.

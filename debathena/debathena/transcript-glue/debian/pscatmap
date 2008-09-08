@@ -1,0 +1,2 @@
+#!/bin/sh
+exec attachandrun psutils pscatmap "$0" "$@"

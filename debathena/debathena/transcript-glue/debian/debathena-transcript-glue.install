@@ -1,0 +1,8 @@
+debian/afmdit usr/bin
+debian/pscat usr/bin
+debian/pscatmap usr/bin
+debian/psdit usr/bin
+debian/psdraft usr/bin
+debian/pslpr usr/bin
+debian/psplot usr/bin
+debian/psrev usr/bin

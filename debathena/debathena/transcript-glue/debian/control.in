@@ -1,0 +1,13 @@
+Source: debathena-transcript-glue
+Section: debathena/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-transcript-glue
+Architecture: all
+Depends: ${misc:Depends}
+Description: Transcript attach-and-run scripts for Debathena
+ This package contains attach-and-run scripts for Transcript software
+ installed in the psutils locker.

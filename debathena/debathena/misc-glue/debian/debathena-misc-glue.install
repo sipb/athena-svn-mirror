@@ -1,0 +1,6 @@
+debian/acroread usr/bin
+debian/freewrl usr/bin
+debian/ivview usr/bin
+debian/lastlog usr/bin
+debian/realplay usr/bin
+debian/tellme usr/bin

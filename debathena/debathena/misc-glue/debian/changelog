@@ -1,0 +1,5 @@
+debathena-misc-glue (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Greg Hudson <ghudson@mit.edu>  Mon, 08 Sep 2008 13:13:00 -0400
