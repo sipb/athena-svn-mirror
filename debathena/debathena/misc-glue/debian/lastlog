@@ -1,2 +1,0 @@
-#!/bin/sh
-exec attachandrun consult lastlog "$0" "$@"

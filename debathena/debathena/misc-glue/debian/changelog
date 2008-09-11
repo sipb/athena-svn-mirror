@@ -1,3 +1,9 @@
+debathena-misc-glue (1.2) unstable; urgency=low
+
+  * Remove lastlog; it conflicts with the system command.
+
+ -- Greg Hudson <ghudson@mit.edu>  Thu, 11 Sep 2008 15:09:53 -0400
+
 debathena-misc-glue (1.1) unstable; urgency=low
 
   * Remove tellme; it's handled by a separate package.
