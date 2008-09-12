@@ -57,8 +57,11 @@ if [ -r $cinfo -a -w $slist ]; then
    [ -n "$APT" ] && perl -pi.old -e 's|http://\S+|$ENV{"APT"}|e;' $slist)
 fi
 
+# Tell apt not to expect user input during package installation.
+export DEBIAN_FRONTEND=noninteractive
+
 # Update the aptitude cache.
-if ! aptitude update; then
+if ! aptitude --quiet --assume-yes update; then
   complain "aptitude update failed"
   exit
 fi
@@ -66,7 +69,7 @@ fi
 # Exit quietly (except for perhaps rebooting) if there are no upgrades
 # to take.
 pattern='^0 packages upgraded, 0 newly installed, 0 to remove'
-if aptitude -s -y full-upgrade | grep -q "$pattern"; then
+if aptitude --simulate --assume-yes full-upgrade | grep -q "$pattern"; then
   maybe_reboot
   exit
 fi
@@ -93,7 +96,7 @@ v() {
 }
 
 # Download packages first.
-if ! v aptitude --quiet --download-only --assume-yes full-upgrade; then
+if ! v aptitude --quiet --assume-yes --download-only full-upgrade; then
   complain "download failed"
   exit
 fi
@@ -125,12 +128,12 @@ fi
 # Perform the update.  In some corner cases, aptitude might decide
 # that the best course of action is to remove the Debathena
 # metapackage, so be paranoid about that.
-v aptitude -q keep-all
-v aptitude --quiet --schedule-only --assume-yes dist-upgrade
+v aptitude --quiet --assume-yes keep-all
+v aptitude --quiet --assume-yes --schedule-only dist-upgrade
 result=$(aptitude search "~S~VTARGET~n^$metapackage\$")
 if [ -z "$result" ]; then
   echo "** $metapackage would be removed by the update, aborting"
-  v aptitude --quiet keep-all
+  v aptitude --quiet --assume-yes keep-all
   complain "$metapackage would be removed by update"
 else
   v aptitude --quiet --assume-yes install

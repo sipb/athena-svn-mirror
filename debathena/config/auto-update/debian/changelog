@@ -1,3 +1,10 @@
+debathena-auto-update (1.5) unstable; urgency=low
+
+  * Set DEBCONF_FRONTEND=noninteractive during updates.
+  * Pass --assume-yes to more aptitude commands to avoid loops.
+
+ -- Greg Hudson <ghudson@mit.edu>  Fri, 12 Sep 2008 10:21:34 -0400
+
 debathena-auto-update (1.4) unstable; urgency=low
 
   * Fix a bug causing nothing to happen during updates.
