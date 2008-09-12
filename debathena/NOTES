@@ -222,6 +222,10 @@ interested in.  At this time, candidate packages include:
 Cluster packages which are generally not of interest to private
 machine owners include:
 
+  * debathena-cluster-login-config: Configures a variety of system
+    services to implement the cluster login policy (no tty logins, no
+    user switching, screensaver logout button after 20 minutes, etc.).
+
   * debathena-clusterinfo: Looks up the machine's cluster information
     in Hesiod and caches it on local disk.
 
