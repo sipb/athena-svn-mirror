@@ -1,0 +1,17 @@
+# ttymsg
+#
+# This service displays a message on the first six ttys.
+
+start on stopped rc2
+start on stopped rc3
+start on stopped rc4
+start on stopped rc5
+
+stop on runlevel 0
+stop on runlevel 1
+stop on runlevel 6
+
+script
+m="Press ctrl-alt-F7 to log in"
+for n in 1 2 3 4 5 6; do echo "$m" > /dev/tty$n; done
+end script

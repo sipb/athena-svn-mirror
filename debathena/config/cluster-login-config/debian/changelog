@@ -1,0 +1,5 @@
+debathena-cluster-login-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Greg Hudson <ghudson@mit.edu>  Thu, 11 Sep 2008 15:21:46 -0400

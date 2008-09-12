@@ -1,0 +1,3 @@
+#!/bin/sed -f
+s/^SystemCommandsInMenu=.*/SystemCommandsInMenu=/
+s/^AllowLogoutActions=.*/AllowLogoutActions=/

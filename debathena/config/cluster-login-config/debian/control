@@ -1,0 +1,17 @@
+Source: debathena-cluster-login-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), config-package-dev (>= 4.5~), system-services, debathena-gdm-config
+Standards-Version: 3.7.2
+
+Package: debathena-cluster-login-config
+Architecture: all
+Depends: debathena-machtype, debathena-afs-config, debathena-gdm-config, gconf2
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Login configuration for Athena cluster machines
+ This package sets up a login policy for Athena cluster machines by
+ disabling console logins, disabling sshd, disabling user switching,
+ setting the root password, and configuring the screensaver to allow
+ logouts afer a certain time period.
