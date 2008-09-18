@@ -113,7 +113,7 @@ if (! $?ENV_SET) then
 
   if ((! $?NOCALLS) && (-r ~/.path)) then
     # Support .path files for compatibility.
-    set athena_path=$path
+    set athena_path=($path)
     source ~/.path
   else
     # Standard Athena path additions.

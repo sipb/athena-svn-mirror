@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.7-0debathena2) unstable; urgency=low
+
+  * Fix the handling of .path files in cshrc.
+
+ -- Greg Hudson <ghudson@mit.edu>  Thu, 18 Sep 2008 18:04:13 -0400
+
 debathena-dotfiles (10.0.7-0debathena1) unstable; urgency=low
 
   * Adjust for new clusterinfo paths.
