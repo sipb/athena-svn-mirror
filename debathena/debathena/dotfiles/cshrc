@@ -153,11 +153,7 @@ alias term 'set noglob; unsetenv TERMCAP; eval `tset -s -I -Q \!*`'
 alias xresize 'set noglob; eval `resize -c` || unset noglob'
 
 if ($?XSESSION) then
-  if ("$XSESSION" == "") then
-    alias logout	'exit && end_session'		# logout for X
-  else
-    alias logout	'exit && kill -HUP $XSESSION'	# logout for X
-  endif
+  alias logout	'exit && gnome-session-save --kill --silent'	# logout for X
 endif
 
 #   aliases dealing with subjects

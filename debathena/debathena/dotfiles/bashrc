@@ -115,11 +115,7 @@ term () { set -f; unset TERMCAP; eval "$( tset -s -I -Q "$@" )"; set +f; }
 xresize () { set -f; eval "$( resize -u )"; set +f ; }
 
 if [ "${XSESSION+set}" = set ]; then
-	if [ -z "$XSESSION" ]; then
-		logout () { end_session && exit; }		# logout for X
-	else
-		logout () { kill -HUP $XSESSION && exit; }	# logout for X
-	fi
+	logout () { gnome-session-save --kill --silent; exit; } # logout for X
 fi
 
 #   aliases dealing with adding locker programs

@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.7-0debathena3) unstable; urgency=low
+
+  * Use gnome-session-save for logout.
+
+ -- Greg Hudson <ghudson@mit.edu>  Fri, 19 Sep 2008 17:59:57 -0400
+
 debathena-dotfiles (10.0.7-0debathena2) unstable; urgency=low
 
   * Fix the handling of .path files in cshrc.
