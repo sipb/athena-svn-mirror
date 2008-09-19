@@ -5,8 +5,8 @@
 # - This is an AFS homedir
 # - The user has a standard Athena shell
 # - The user does not have an xsession script
-if [ afs = "$DEBATHENA_HOME_TYPE" -a default = "$1" \
-     -a ! -e "$USERXSESSION" -a ! -e "$ALTUSERXSESSION" ]; then
+if [ afs = "$DEBATHENA_HOME_TYPE" -a ! -e "$USERXSESSION" \
+     -a ! -e "$ALTUSERXSESSION" ]; then
   case $SHELL in
   */bash)
     STARTUP="/usr/lib/init/xsession.bash $STARTUP"
