@@ -1,0 +1,21 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-wmaker
+Version: 0.1
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Depends: wmaker,
+ wmbubble,
+ wmbutton,
+ wmcalclock,
+ wmfire,
+ wmhdplop,
+ wmmemload,
+ wmnd,
+ wmtop,
+ wmweather 
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Metapackage providing Window Maker
+ This package depends on Window Maker and popular common dockapps.
