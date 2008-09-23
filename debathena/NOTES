@@ -358,7 +358,11 @@ Release engineer: Setting up a build server
 
   11. Apply scripts/build-server/mount-defaults.patch.
 
-  12. For each supported DIST (see scripts/debian-versions.sh) run:
+  12. Edit /etc/lvm/lvm.conf and change "archive = 1" to "archive = 0"
+      in order to avoid generating a bazillion backup files under
+      /etc/lvm/archive.
+
+  13. For each supported DIST (see scripts/debian-versions.sh) run:
 
         VG=/dev/blah scripts/build-server/make-chroot DIST i386
         VG=/dev/blah scripts/build-server/make-chroot DIST amd64
@@ -368,7 +372,7 @@ Release engineer: Setting up a build server
 
       Example: VG=/dev/dink scripts/build-server/make-chroot gutsy i386
 
-  13. Create a local account for builder with:
+  14. Create a local account for builder with:
 
         adduser --uid 1047 --disabled-password builder
 
@@ -527,10 +531,10 @@ steps below.
 Release engineer: Maintaining autodebathenify
 ---------------------------------------------
 
-autodebathenify is a cron job which runs hourly on the builder account
-and keeps the OpenAFS modules and modified packages under
-debathena/third up to date when there are upstream changes.  It relies
-on the following:
+autodebathenify is a cron job which runs on the builder account and
+keeps the OpenAFS modules and modified packages under debathena/third
+up to date when there are upstream changes.  It relies on the
+following:
 
   * builder@ATHENA.MIT.EDU has access to a local account named
     debuildsvn on svn.mit.edu with read access to the athena
