@@ -3,9 +3,10 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 0.7
+Version: 0.8
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: debathena-workstation,
+ debathena-build-depends,
  debathena-cluster-software,
  debathena-cluster-login-config,
  debathena-clusterinfo,
