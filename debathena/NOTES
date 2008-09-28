@@ -360,9 +360,7 @@ Release engineer: Setting up a build server
 
   12. Edit /etc/lvm/lvm.conf and change "archive = 1" to "archive = 0"
       in order to avoid generating a bazillion backup files under
-      /etc/lvm/archive.  Also change "write_cache_state = 1" to
-      "write_cache_state = 0" to prevent the system from piling up a
-      huge cache file as it cycles through snapshots.
+      /etc/lvm/archive.
 
   13. For each supported DIST (see scripts/debian-versions.sh) run:
 
@@ -592,6 +590,12 @@ Possible failure cases include:
 The cron job is run out of builder's home directory, but its canonical
 source location is in debathena/scripts/build-server in this
 repository, should it need to be modified.
+
+After several months of operation, LVM snapshots on the build server
+will start to become slower and slower, as /etc/lvm/cache/.cache grows
+in size.  Turning off the cache entirely seems to cause schroot to
+occasionally fail; the current solution is to rm /etc/lvm/cache/.cache
+every so often.
 
 Release engineer: apt repository HTTP server setup
 --------------------------------------------------
