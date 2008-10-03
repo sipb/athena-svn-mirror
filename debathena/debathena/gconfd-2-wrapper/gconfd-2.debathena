@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Wrapper script for gconfd-2 to create the gconf and gconfd
+# directories in an AFS home directory and make them private.
+
+# We parse this file to find the gconf directory to use in the
+# home directory.
+gconf_config=/usr/share/debathena-gconf2-config/gconf.afs
+
+gconfd_dir=".gconfd"
+
+# Create the given directory name as a subdirectory of $HOME, if it
+# does not yet exist, and set its ACL so as to make it private.
+create_private_dir () {
+  dir="$HOME/$1"
+  if [ ! -e "$dir" ]; then
+    mkdir -m 700 "$dir" 2>/dev/null && \
+      fs sa "$dir" system:anyuser none > /dev/null 2>&1
+  fi
+}
+
+# Only create directories when the home directory is in AFS.
+if [ "$DEBATHENA_HOME_TYPE" = afs ]; then
+  # Use the Debathena gconf config file to determine the name of the
+  # gconf directory to use.
+  gconf_dir=
+  if [ -f "$gconf_config" ]; then
+    gconf_dir=`sed -n -e 's|^xml:readwrite:$(HOME)/\(.*$\)|\1|p' \
+      "$gconf_config"`
+  fi
+  # If we cannot determine the gconf directory name; fall back to
+  # .gconf.
+  if [ -z "$gconf_dir" ]; then
+    gconf_dir=".gconf"
+  fi
+  # Create the directories as needed.
+  create_private_dir "$gconf_dir"
+  create_private_dir "$gconfd_dir"
+fi
+
+exec /usr/lib/libgconf2-4/gconfd-2.debathena-orig "$@"

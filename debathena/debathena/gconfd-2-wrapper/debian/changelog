@@ -1,0 +1,5 @@
+debathena-gconfd-2-wrapper (10.0.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Robert Basch <rbasch@mit.edu>  Fri, 03 Oct 2008 15:41:11 -0400
