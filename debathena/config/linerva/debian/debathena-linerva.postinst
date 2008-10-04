@@ -117,6 +117,9 @@ case "$1" in
 	lose_setuid /usr/X11R6/bin/xterm
 	lose_setuid /usr/bin/wall
 
+	lose_setuid /usr/lib/apache2/suexec
+	lose_setuid /usr/bin/lppasswd
+
 	chmod a=rwx,o+t /var/run/screen  # So that screen works without setuid.
 
 	echo ""
