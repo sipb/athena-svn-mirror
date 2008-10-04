@@ -1,0 +1,13 @@
+Source: debathena-dent
+Section: debathena/text
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-dent
+Architecture: any
+Provides: dent
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: An Athena utility to indent files
+ The dent utility indents files by a fixed number of spaces.
