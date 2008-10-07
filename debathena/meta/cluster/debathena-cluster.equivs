@@ -3,16 +3,19 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 0.8.1
+Version: 0.8.2
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: debathena-workstation,
  debathena-build-depends,
  debathena-cluster-software,
  debathena-cluster-login-config,
  debathena-clusterinfo,
+ debathena-counterlog,
  debathena-dns-config,
+ debathena-emacs-config,
  debathena-larvnet,
  debathena-misc-glue,
+ debathena-ntp-config | debathena-chrony-config,
  debathena-tmp-cleaner,
  debathena-transcript-glue,
  debathena-reactivate,

@@ -3,14 +3,12 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-clients
-Version: 0.3.9
+Version: 0.3.10
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: athena-jot,
  debathena-athinfo,
- debathena-counterlog,
  debathena-discuss,
  debathena-discuss-emacs,
- debathena-emacs-config,
  debathena-finger,
  debathena-finger-config,
  debathena-from,
@@ -25,7 +23,6 @@ Depends: athena-jot,
  debathena-mitmailutils,
  debathena-moira-clients,
  debathena-nmh,
- debathena-ntp-config | debathena-chrony-config,
  debathena-alpine-config | debathena-pine,
  debathena-printing-config,
  debathena-saferm,
