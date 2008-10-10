@@ -47,7 +47,7 @@ int main(int argc, char **argv)
   struct hostent *host_info = NULL;
   struct sockaddr_in time_address;
   char *time_hostname;
-  unsigned char buffer[20];
+  uint32_t rfc868_time;
   int tries, time_socket, result;
   fd_set read_set;
   struct timeval timeout, current_time;
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
   for (tries = 0; tries < MAX_TRIES; tries++)
     {
       /* Just send an empty packet. */
-      send(time_socket, buffer, 0, 0);
+      send(time_socket, NULL, 0, 0);
 
       /* Wait a little while for a reply. */
       FD_SET(time_socket, &read_set);
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
 	}
 
       /* There must be data available. */
-      result = recv(time_socket, buffer, sizeof(buffer), 0);
+      result = recv(time_socket, &rfc868_time, sizeof(rfc868_time), 0);
       if (result < 0)
 	{
 	  fprintf(stderr, "%s: receive failed: %s\n", program_name,
@@ -198,9 +198,8 @@ int main(int argc, char **argv)
     }
 
   /* Convert RFC868 time to Unix time, and print it. */
-  now = (time_t)(((buffer[0] << 24) | (buffer[1] << 16) |
-		  (buffer[2] << 8) | buffer[3])
-		 - UNIX_OFFSET_TO_1900);
+  now = (time_t)(ntohl(rfc868_time) - UNIX_OFFSET_TO_1900);
+
   fprintf(stdout, "%s", ctime(&now));
 
   /* Set the time if requested. */
