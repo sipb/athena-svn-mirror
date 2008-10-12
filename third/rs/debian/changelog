@@ -1,0 +1,5 @@
+debathena-rs (10.0.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Robert Basch <rbasch@mit.edu>  Sat, 11 Oct 2008 17:07:44 -0400
