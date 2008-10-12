@@ -1,0 +1,13 @@
+Source: debathena-lam
+Section: debathena/text
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-lam
+Architecture: any
+Provides: lam
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: "laminate" files by putting them into multi-column format
+ "laminate" files by putting them into multi-column format
