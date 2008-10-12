@@ -1,8 +1,8 @@
 # $Id: Makefile,v 1.2 1996-10-10 17:16:03 ghudson Exp $
 
 SHELL=/bin/sh
-ATHBINDIR=/usr/athena/bin
-ATHMANDIR=/usr/athena/man
+ATHBINDIR=/usr/bin
+ATHMANDIR=/usr/share/man
 
 all: rs
 
