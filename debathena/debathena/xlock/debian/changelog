@@ -1,0 +1,5 @@
+debathena-xlock (10.0.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Robert Basch <rbasch@mit.edu>  Wed, 15 Oct 2008 19:07:20 -0400

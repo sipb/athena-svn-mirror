@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# This script tells the running gnome-screensaver process to lock the
+# screen immediately.  It is provided for compatibility with previous
+# Athena releases.
+
+exec gnome-screensaver-command -l

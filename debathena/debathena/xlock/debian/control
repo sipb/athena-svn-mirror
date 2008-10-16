@@ -1,0 +1,14 @@
+Source: debathena-xlock
+Section: debathena/gnome
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0)
+Standards-Version: 3.7.2
+
+Package: debathena-xlock
+Architecture: all
+Depends: ${misc:Depends}, gnome-screensaver
+Description: Tell the screensaver to lock the screen
+ This package provides a script which tells the running gnome-screensaver
+ process to lock the screen immediately.  It is provided for compatibility
+ with previous Athena releases.
