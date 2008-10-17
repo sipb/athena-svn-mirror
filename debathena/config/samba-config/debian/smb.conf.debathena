@@ -1,0 +1,14 @@
+# This is the Athena version of the main configuration file for the
+# Samba suite.  It configures Samba for access to the WIN.MIT.EDU
+# Windows domain.
+#
+# See the smb.conf(5) manual page for information on the configuration
+# options in this file.
+#
+# To enable single sign-on from domain clients to Samba services on
+# this machine, you will need to join the machine to the domain
+# (see the net(8) manual page).
+
+[global]
+   realm = WIN.MIT.EDU
+   security = ADS

@@ -1,0 +1,15 @@
+Source: debathena-samba-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.2.0), config-package-dev (>= 4.5~)
+Standards-Version: 3.7.2
+
+Package: debathena-samba-config
+Architecture: all
+Depends: samba-common, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Samba configuration for Athena
+ This package configures the Samba suite for access to the WIN.MIT.EDU
+ Windows domain.

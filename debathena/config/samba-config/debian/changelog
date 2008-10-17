@@ -1,0 +1,5 @@
+debathena-samba-config (10.0.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Robert Basch <rbasch@mit.edu>  Fri, 17 Oct 2008 19:19:17 -0400
