@@ -1,3 +1,9 @@
+debathena-shell-config (1.8) unstable; urgency=low
+
+  * Print a helpful message when aklog doesn't work.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 20 Oct 2008 21:53:57 -0400
+
 debathena-shell-config (1.7) unstable; urgency=low
 
   * Add Recommends: bash-completion, since programmable bash completion

@@ -10,7 +10,14 @@ fi
 
 renew () {
     principal=`klist -5 2>/dev/null | sed -n 's/^Default principal: // p'`
-    kinit -54 "${principal:-${ATHENA_USER:-$USER}}" && aklog ;
+    kinit -54 "${principal:-${ATHENA_USER:-$USER}}" || return $?
+    [ -e /afs/athena.mit.edu ] && aklog || {
+	ret=$?
+	echo >&2
+	echo "Your AFS client does not seem to be working.  To troubleshoot this problem," >&2
+	echo "visit http://debathena.mit.edu/troubleshooting#openafs-modules" >&2
+	return $ret
+    }
 }
 
 add_flags=
