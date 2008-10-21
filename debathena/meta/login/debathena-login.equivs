@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-login
-Version: 0.2.2
+Version: 0.2.3
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: debathena-athinfod,
  debathena-moira-passwd-config,
@@ -11,7 +11,8 @@ Depends: debathena-athinfod,
  debathena-pam-config,
  debathena-ssh-server-config,
  debathena-standard,
- debathena-gconf2-config
+ debathena-gconf2-config,
+ debathena-gconfd-2-wrapper
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena login services for Debian-Athena
