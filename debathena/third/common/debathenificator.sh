@@ -46,7 +46,7 @@ append_description () {
 }
 
 add_build_depends () {
-    perl -0pe 's/^(Build-Depends:.*)$/$1, '"$1"'/m or die' -i debian/control
+    perl -0pe 's/^(Build-Depends:.*(?:\n[ \t].*)*)$/$1, '"$1"'/m or die' -i debian/control
 }
 
 add_debathena_provides () {
