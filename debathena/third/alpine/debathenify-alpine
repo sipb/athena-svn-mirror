@@ -30,7 +30,12 @@ hack_package () {
   patch -p1 < $dir/alpine-1.00-hesiod.patch
 
   # Turn on Hesiod and krb4 suppport in the build.
-  perl -0pe 's|./configure|./configure alpine_c_client_cflags="-DHESIOD -DKERBEROS" alpine_c_client_ldflags="-lhesiod" LIBS="-lhesiod -lkrb4"|m or die' -i debian/rules
+  configure_flags='alpine_c_client_cflags="-DHESIOD -DKERBEROS" alpine_c_client_ldflags="-lhesiod" LIBS="-lhesiod -lkrb4"'
+  if grep -Fq DEB_CONFIGURE_EXTRA_FLAGS debian/rules; then
+    echo "DEB_CONFIGURE_EXTRA_FLAGS += $configure_flags" >> debian/rules
+  else
+    perl -0pe "s|./configure|./configure $configure_flags|m or die" -i debian/rules
+  fi
   append_description <<EOF
  .
  This package was rebuilt for the Debian-Athena project to add Hesiod
