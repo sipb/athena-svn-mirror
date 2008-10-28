@@ -1,3 +1,9 @@
+debathena-auto-update (1.6) unstable; urgency=low
+
+  * Protect all installed debathena or openafs metapackages from removal.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 28 Oct 2008 15:08:18 -0400
+
 debathena-auto-update (1.5) unstable; urgency=low
 
   * Set DEBCONF_FRONTEND=noninteractive during updates.

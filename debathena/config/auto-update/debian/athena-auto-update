@@ -1,7 +1,7 @@
 #!/bin/sh
 
 complain() {
-  logger -t "$(gethostname --fqdn)" -p user.notice "update: $1"
+  logger -t "$(gethostname --fqdn)" -p user.notice "update: $*"
 }
 
 maybe_reboot() {
@@ -101,23 +101,6 @@ if ! v aptitude --quiet --assume-yes --download-only full-upgrade; then
   exit
 fi
 
-# Determine which metapackage we have installed.
-metapackage=
-for pkg in cluster workstation login standard; do
-  status=$(dpkg-query -Wf '${status}' debathena-$pkg 2>/dev/null)
-  case $status in (*installed)
-    metapackage=debathena-$pkg
-    break
-    ;;
-  esac
-done
-if [ -z "$metapackage" ]; then
-  echo "** Can't find an installed Debathena metapackage, exiting."
-  complain "no metapackage found"
-  exit
-fi
-echo "** Found metapackage $metapackage"
-
 # If the debathena-reactivate package is installed, call into the
 # login snapshot script to create a root snapshot for the next update.
 if [ -x /usr/sbin/athena-login-snapshot ]; then
@@ -130,11 +113,11 @@ fi
 # metapackage, so be paranoid about that.
 v aptitude --quiet --assume-yes keep-all
 v aptitude --quiet --assume-yes --schedule-only dist-upgrade
-result=$(aptitude search "~S~VTARGET~n^$metapackage\$")
-if [ -z "$result" ]; then
-  echo "** $metapackage would be removed by the update, aborting"
+result=$(aptitude -F "%p" search '~i!~VTARGET(^debathena-cluster$ | ^debathena-workstation$ | ^debathena-login$ | ^debathena-standard$ | ^openafs-modules-~D^linux-image-)')
+if [ -n "$result" ]; then
+  echo "** metapackages would be removed by the update, aborting:" $result
   v aptitude --quiet --assume-yes keep-all
-  complain "$metapackage would be removed by update"
+  complain "metapackages would be removed by update:" $result
 else
   v aptitude --quiet --assume-yes install
 fi
