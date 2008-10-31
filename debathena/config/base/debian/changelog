@@ -1,3 +1,9 @@
+debathena-base (10.0) unstable; urgency=low
+
+  * Bump /etc/athena/version to 10.0.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 31 Oct 2008 16:57:18 -0400
+
 debathena-base (1.0) unstable; urgency=low
 
   * Initial release.
