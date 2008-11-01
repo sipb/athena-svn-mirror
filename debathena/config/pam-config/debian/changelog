@@ -1,3 +1,9 @@
+debathena-pam-config (1.8) unstable; urgency=low
+
+  * fix dependencies in new-style case, to account for ~ suffixes
+
+ -- Greg Price <price@mit.edu>  Sat,  1 Nov 2008 07:39:32 -0400
+
 debathena-pam-config (1.7) unstable; urgency=low
 
   * Take advantage of pam-auth-update in libpam-runtime (>= 1.0.1-4ubuntu1),
