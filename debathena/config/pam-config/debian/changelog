@@ -1,3 +1,17 @@
+debathena-pam-config (1.7) unstable; urgency=low
+
+  * Take advantage of pam-auth-update in libpam-runtime (>= 1.0.1-4ubuntu1),
+    which is in intrepid.  This means no munging of /etc/pam.d/common-*
+    directly, so users and other packages can make their own changes.
+    * libpam-krb524, libpam-athena-locker, libpam-debathena-home-type
+      now enable themselves
+    * new libpam-krb5-config package configures libpam-krb5 the new way
+    * add a file to apply mktemp to ATHENA_SESSION_TMPDIR the new way
+    * on upgrade from older versions, if /etc/pam.d/common-* match what
+      old debathena-pam-config versions supplied then replace them
+
+ -- Greg Price <price@mit.edu>  Sat,  1 Nov 2008 05:52:00 -0400
+
 debathena-pam-config (1.6) unstable; urgency=low
 
   * Check if common-* templates are available in /usr/share/pam/

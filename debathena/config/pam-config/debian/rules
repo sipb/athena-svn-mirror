@@ -7,6 +7,20 @@ pam_krb5_passwd_opts = use_authtok
 DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_DIVERT_EXTENSION = .debathena
 
+pam_auth_update = $(shell hash pam-auth-update 2>/dev/null && echo yes)
+
+ifeq ($(pam_auth_update),)
+    DEB_TRANSFORM_FILES_debathena-pam-config += \
+	$(patsubst %,/etc/pam.d/common-%.debathena,$(pam_types))
+
+    ifneq ($(wildcard /usr/share/pam/common-auth),)
+        DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-auth.debathena = /usr/share/pam/common-auth
+        DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-session.debathena = /usr/share/pam/common-session
+        DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-account.debathena = /usr/share/pam/common-account
+        DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-password.debathena = /usr/share/pam/common-password
+    endif
+endif
+
 ifneq ($(wildcard /etc/pam.d/sshd),)
     PAM_SSHD = /etc/pam.d/sshd.debathena
     DEB_TRANSFORM_SCRIPT_$(PAM_SSHD) = debian/transform_ssh.debathena
@@ -14,15 +28,7 @@ else
     PAM_SSHD = /etc/pam.d/ssh.debathena
 endif
 
-ifneq ($(wildcard /usr/share/pam/common-auth),)
-    DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-auth.debathena = /usr/share/pam/common-auth
-    DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-session.debathena = /usr/share/pam/common-session
-    DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-account.debathena = /usr/share/pam/common-account
-    DEB_CHECK_FILES_SOURCE_/etc/pam.d/common-password.debathena = /usr/share/pam/common-password
-endif
-
 DEB_TRANSFORM_FILES_debathena-pam-config += \
-	$(patsubst %,/etc/pam.d/common-%.debathena,$(pam_types)) \
 	/etc/pam.d/gdm.debathena \
 	$(PAM_SSHD) \
 	/etc/pam.d/login.debathena
@@ -32,6 +38,32 @@ DEB_DIVERT_FILES_debathena-pam-config += \
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
+
+ifneq ($(pam_auth_update),)
+install/debathena-pam-config::
+	install -D -m 644 debian/athena-session-tmpdir-mktemp.pam-config \
+	  $(DEB_DESTDIR)/usr/share/pam-configs/athena-session-tmpdir-mktemp
+debathena-pam-config-substvars:
+	( \
+	  echo -n "debathena-pam-config-depends="; \
+	  echo -n "libpam-runtime (>= 1.0.1-4ubuntu1),"; \
+	  echo -n "libpam-krb5-config,"; \
+	  echo -n "libpam-krb524 (>= 1.3-0debathena3),"; \
+	  echo -n "libpam-athena-locker (>= 2.1-0debathena3),"; \
+	  echo -n "libpam-debathena-home-type (>= 1.1-0debathena2),"; \
+	) >>debian/debathena-pam-config.substvars
+else
+debathena-pam-config-substvars:
+	( \
+	  echo -n "debathena-pam-config-depends="; \
+	  echo -n "libpam-krb5,"; \
+	  echo -n "libpam-krb524,"; \
+	  echo -n "libpam-athena-locker,"; \
+	  echo -n "libpam-debathena-home-type,"; \
+	) >>debian/debathena-pam-config.substvars
+endif
+
+binary-predeb/debathena-pam-config:: debathena-pam-config-substvars
 
 ifneq ($(wildcard /etc/pam.d/sshd),)
 debian-divert/debathena-pam-config::
