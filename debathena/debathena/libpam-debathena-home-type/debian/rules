@@ -5,3 +5,7 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/makefile.mk
 
 DEB_MAKE_INSTALL_TARGET = install DESTDIR=$(DEB_DESTDIR)
+
+install/libpam-debathena-home-type::
+	install -D -m 644 debian/libpam-debathena-home-type.pam-config \
+	  $(DEB_DESTDIR)/usr/share/pam-configs/debathena-home-type

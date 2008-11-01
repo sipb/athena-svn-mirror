@@ -1,3 +1,9 @@
+libpam-debathena-home-type (1.1-0debathena2) unstable; urgency=low
+
+  * Self-enable with pam-auth-update where available.
+
+ -- Greg Price <price@mit.edu>  Sat,  1 Nov 2008 02:13:26 -0400
+
 libpam-debathena-home-type (1.1-0debathena1) unstable; urgency=low
 
   * zero sigaction struct before using it.
