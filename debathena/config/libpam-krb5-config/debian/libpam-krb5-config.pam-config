@@ -1,0 +1,19 @@
+Name: Kerberos
+Default: yes
+Priority: 128
+Auth-Type: Primary
+Auth-Initial:
+	[success=end default=ignore]	pam_krb5.so
+Auth:
+	[success=end default=ignore]	pam_krb5.so use_first_pass
+Account-Type: Primary
+Account:
+	[success=end default=ignore]	pam_krb5.so
+Session-Type: Additional
+Session:
+	optional	pam_krb5.so
+Password-Type: Primary
+Password-Initial:
+	[success=end default=ignore]	pam_krb5.so
+Password:
+	[success=end default=ignore]	pam_krb5.so use_first_pass

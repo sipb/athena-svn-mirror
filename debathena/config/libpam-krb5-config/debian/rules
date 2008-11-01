@@ -1,0 +1,8 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+install/libpam-krb5-config::
+	install -D -m 644 debian/libpam-krb5-config.pam-config \
+	  $(DEB_DESTDIR)/usr/share/pam-configs/krb5

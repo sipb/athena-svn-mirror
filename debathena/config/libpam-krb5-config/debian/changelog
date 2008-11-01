@@ -1,0 +1,5 @@
+libpam-krb5-config (0.0.1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Greg Price <price@mit.edu>  Sat,  1 Nov 2008 04:43:56 -0400
