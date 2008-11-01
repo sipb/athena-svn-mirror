@@ -1,3 +1,9 @@
+libpam-debathena-home-type (1.1-0debathena3) unstable; urgency=low
+
+  * change pam-auth-update message to be clearer in menu
+
+ -- Greg Price <price@mit.edu>  Sat,  1 Nov 2008 08:00:22 -0400
+
 libpam-debathena-home-type (1.1-0debathena2) unstable; urgency=low
 
   * Self-enable with pam-auth-update where available.

@@ -1,4 +1,4 @@
-Name: Set DEBATHENA_HOME_TYPE to 'afs' or 'local'
+Name: Athena: set DEBATHENA_HOME_TYPE to 'afs' or 'local'
 Default: yes
 Priority: 18
 Session-Type: Additional

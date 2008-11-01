@@ -1,4 +1,4 @@
-Name: Attach Athena locker at login
+Name: Athena: attach locker at login
 Default: yes
 Priority: 19
 Session-Type: Additional

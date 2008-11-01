@@ -1,3 +1,9 @@
+libpam-krb5-config (0.0.2) unstable; urgency=low
+
+  * change pam-auth-update message to be clearer in menu
+
+ -- Greg Price <price@mit.edu>  Sat,  1 Nov 2008 08:02:40 -0400
+
 libpam-krb5-config (0.0.1) unstable; urgency=low
 
   * Initial release.

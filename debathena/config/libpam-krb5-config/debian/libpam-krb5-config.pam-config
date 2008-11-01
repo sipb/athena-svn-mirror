@@ -1,4 +1,4 @@
-Name: Kerberos
+Name: Kerberos authentication
 Default: yes
 Priority: 128
 Auth-Type: Primary

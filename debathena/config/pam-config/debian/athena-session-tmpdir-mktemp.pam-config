@@ -1,4 +1,4 @@
-Name: Create ATHENA_SESSION_TMPDIR securely
+Name: Athena: create ATHENA_SESSION_TMPDIR securely
 Default: yes
 Priority: 17
 Session-Type: Additional
