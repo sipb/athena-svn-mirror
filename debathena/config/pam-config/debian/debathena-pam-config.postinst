@@ -1,23 +1,37 @@
 #!/bin/sh
 set -e
-# Upgrade logic copied from libpam-ldap v184-4ubuntu2.  Code improved.
-#
-# If we're upgrading across the pam-auth-update change, and the
-# files are unmodified from what the old debathena-pam-config
-# wrote, then it's safe to force the pam-auth-update.
+# If on configure
+#  - we didn't already have a pam-auth-update-aware debathena-pam-config, and
+#  - the /etc/pam.d/common-* files are unmodified from either
+#   - stock Hardy files, as after a do-release-upgrade, or
+#   - the stock Debathena Hardy files supplied by old debathena-pam-config
+# then we force pam-auth-update.
 
-if hash pam-auth-update 2>/dev/null; then
-    force=
-    if dpkg --compare-versions "$2" lt-nl 1.7 \
-      && md5sum --status -c /dev/stdin <<EOF; then
+#DEBHELPER#
+
+debathena_hardy_files="
 44cdd3fac614ee24f9aaccad459cb094  /etc/pam.d/common-account
 6734f92af34672ea4554964da6a56fb9  /etc/pam.d/common-auth
 926da8a781f7e7023689d6f36fa61f28  /etc/pam.d/common-password
 133fe5e5131ed14ee5bb9ec7339fbe35  /etc/pam.d/common-session
-EOF
-        force=--force
+"
+hardy_files="
+9f04221fe44762047894adeb96ffd069  /etc/pam.d/common-account
+088442eac95e5d27310cba44cb730ec0  /etc/pam.d/common-auth
+8537a9c7dc11a585d537fe5226c3ea81  /etc/pam.d/common-password
+4845c1632b3561a9debe8d59be1b238e  /etc/pam.d/common-session
+"
+
+if [ "$1" = "configure" ]; then
+    if hash pam-auth-update 2>/dev/null; then
+        force=
+        if dpkg --compare-versions "$2" lt 1.7 \
+            && (echo "$debathena_hardy_files" | md5sum --status -c /dev/stdin \
+                || echo "$hardy_files" | md5sum --status -c /dev/stdin); then
+            force=--force
+        fi
+        pam-auth-update --package $force
     fi
-    pam-auth-update --package $force
 fi
 
-#DEBHELPER#
+exit 0

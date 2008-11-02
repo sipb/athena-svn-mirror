@@ -1,8 +1,10 @@
 debathena-pam-config (1.10) unstable; urgency=low
 
+  * force pam-auth-update on stock Hardy /etc/pam.d/common-*
+    as well as stock Debathena Hardy
   * trivial clarification in dependency versions
 
- -- Greg Price <price@mit.edu>  Sat,  1 Nov 2008 22:50:59 -0400
+ -- Greg Price <price@mit.edu>  Sun,  2 Nov 2008 00:17:36 -0400
 
 debathena-pam-config (1.9) unstable; urgency=low
 
