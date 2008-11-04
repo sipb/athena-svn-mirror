@@ -1,3 +1,10 @@
+debathena-pam-config (1.11) unstable; urgency=low
+
+  * work around a pam-auth-update bug: force it to re-read the Default:
+    lines in our pam-configs
+
+ -- Greg Price <price@mit.edu>  Mon,  3 Nov 2008 23:57:08 -0500
+
 debathena-pam-config (1.10) unstable; urgency=low
 
   * force pam-auth-update on stock Hardy /etc/pam.d/common-*
