@@ -1,3 +1,9 @@
+debathena-gdm-config (1.4) unstable; urgency=low
+
+  * Reload gdm on postinst.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 05 Nov 2008 12:49:30 -0500
+
 debathena-gdm-config (1.3) unstable; urgency=low
 
   * Convert to use config-package.mk interface, new in config-package-

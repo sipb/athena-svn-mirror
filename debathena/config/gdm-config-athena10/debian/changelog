@@ -1,3 +1,9 @@
+debathena-gdm-config (1.5) unstable; urgency=low
+
+  * Reload gdm on postinst.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 05 Nov 2008 12:50:30 -0500
+
 debathena-gdm-config (1.4) unstable; urgency=low
 
   * Say "Welcome to Athena 10" instead of "Welome to Debathena".
