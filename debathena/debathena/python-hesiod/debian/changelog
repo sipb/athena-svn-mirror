@@ -1,9 +1,15 @@
-python-hesiod (0.2.9.1-1debathena1) unstable; urgency=low
-
+python-hesiod (0.2.10-1debathena1) unstable; urgency=low
+   
   * Debathena specific: Conflict with old versions of
     debathena-pyhesiodfs, since they share a common hesiod.py file
 
  -- Evan Broder <broder@mit.edu>  Wed, 13 Aug 2008 19:33:10 -0400
+
+python-hesiod (0.2.10-1) unstable; urgency=low
+
+  * Sort filsys entries based on priority
+
+ -- Evan Broder <broder@mit.edu>  Thu, 20 Nov 2008 18:37:20 -0500
 
 python-hesiod (0.2.9.1-1) unstable; urgency=low
 
