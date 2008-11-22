@@ -1,0 +1,25 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.8.0
+
+Package: debathena-extra-software
+Version: 0.6
+Maintainer: Debian-Athena Project <debathena@mit.edu>
+Conflicts: debathena-cluster-software
+Replaces: debathena-cluster-software
+Depends: debathena-extra-software-nox,
+  gnome-devel,
+  pidgin | gaim, pidgin-encryption | gaim-encryption,
+  gv,
+  openoffice.org,
+  thunderbird | mozilla-thunderbird | icedove,
+  gnuplot,
+  eclipse,
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Athena auxiliary software
+ This package pulls in miscellaneous non-Athena-specific software
+ for a fully-stocked Athena workstation.
+ .
+ Graphical applications are included; debathena-extra-software-nox
+ is the non-graphical subset.

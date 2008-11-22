@@ -172,13 +172,13 @@ which may help identify which metapackage is best:
   X login experience using Athena home directories.  Still in
   development.
 
-* cluster-software: Provides a set of Debian packages common to
-  cluster machines.  The resulting software set is rather large, and
-  thus may not be desirable to all workstation configurations.  Only
-  stock Debian packages belong in this metapackage; do not add
-  other Debathena packages to it.
+* extra-software: Implies a set of Debian packages common to cluster
+  machines and typical workstations.  The resulting software set is
+  rather large, and thus may not be desirable to all workstation
+  configurations.  Only stock Debian packages belong in this
+  metapackage; do not add other Debathena packages to it.
 
-* cluster: Implies workstation and cluster-software.  Also contains
+* cluster: Implies workstation and extra-software.  Also contains
   configurations for self-maintenance of machines (unattended updates,
   cleanups between logins, etc.).
 
