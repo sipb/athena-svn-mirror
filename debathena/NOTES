@@ -319,8 +319,16 @@ Release engineer: Setting up a build server
 
   3. apt-key add /afs/dev.mit.edu/system/athena10/apt/athena10-archive.asc
 
-  4. Install the packages listed in
-     scripts/build-server/packages (using "aptitude install")
+  4. Install the packages listed in scripts/build-server/packages
+     (using "aptitude install").
+
+     Note that currently the build system uses a new feature of sbuild
+     which is not in the package version in the main Ubuntu Hardy
+     release.  The proper package version and its prerequisite schroot
+     packages have been backported locally for Hardy, and should be
+     installed from /afs/dev.mit.edu/project/release/10/build/backports.
+     This will also require installing the devscripts package from the
+     Hardy backports repository.
 
   5. Install debathena-login, debathena-ssh-server, and
      debathena-build-depends (using "aptitude install").
