@@ -113,11 +113,17 @@ fi
 # metapackage, so be paranoid about that.
 v aptitude --quiet --assume-yes keep-all
 v aptitude --quiet --assume-yes --schedule-only dist-upgrade
-result=$(aptitude -F "%p" search '~i!~VTARGET(^debathena-cluster$ | ^debathena-workstation$ | ^debathena-login$ | ^debathena-standard$ | ^openafs-modules-~D^linux-image-)')
-if [ -n "$result" ]; then
+v aptitude --quiet --download-only --assume-yes install
+if result=$(aptitude -F "%p" search '~i!~VTARGET(^debathena-cluster$ | ^debathena-workstation$ | ^debathena-login$ | ^debathena-standard$ | ^openafs-modules-~D^linux-image-)')
+  [ -n "$result" ]; then
   echo "** metapackages would be removed by the update, aborting:" $result
   v aptitude --quiet --assume-yes keep-all
   complain "metapackages would be removed by update:" $result
+elif result=$(aptitude -F "%p" search '~b')
+  [ -n "$result" ]; then
+  echo "** packages would be broken by the update, aborting:" $result
+  v aptitude --quiet --assume-yes keep-all
+  complain "packages would be broken by update:" $result
 else
   v aptitude --quiet --assume-yes install
 fi

@@ -1,3 +1,13 @@
+debathena-auto-update (1.7) unstable; urgency=low
+
+  * Use aptitude --download-only install to force the aptitude conflict
+    resolver to make a decision before we decide whether to let it
+    proceed.
+  * Abort the upgrade if somehow the scheduled solution still involves
+    breaking any packages.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat, 29 Nov 2008 03:41:31 -0500
+
 debathena-auto-update (1.6) unstable; urgency=low
 
   * Protect all installed debathena or openafs metapackages from removal.
