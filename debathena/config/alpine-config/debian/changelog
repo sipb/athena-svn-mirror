@@ -1,3 +1,9 @@
+debathena-alpine-config (1.2) unstable; urgency=low
+
+  * Use config-package-dev
+
+ -- Evan Broder <broder@mit.edu>  Sat, 29 Nov 2008 12:36:43 -0500
+
 debathena-alpine-config (1.1) unstable; urgency=low
 
   * Pull in alpine; recommend the debathenified version.
