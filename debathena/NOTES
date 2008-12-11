@@ -499,7 +499,7 @@ steps below.
   3. Create the new distribution in the apt repository's configuration
      file.  Create the skeleton of the dist by installing at least one
      equivs package from meta/ with "reprepro -Vb $DEBATHENA_APT
-     include newdistname file.changes".
+     --ignore=wrongdistribution include newdistname file.changes".
 
   4. On the build server, create a chroot for the new distribution as
      documented above.  This may require downloading and installing a
