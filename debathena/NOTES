@@ -497,9 +497,8 @@ steps below.
      be present in the gettag conditional.)
 
   3. Create the new distribution in the apt repository's configuration
-     file.  Create the skeleton of the dist by installing at least one
-     equivs package from meta/ with "reprepro -Vb $DEBATHENA_APT
-     --ignore=wrongdistribution include newdistname file.changes".
+     file.  Create the skeleton of the dist by running "reprepro -Vb
+     $DEBATHENA_APT export".
 
   4. On the build server, create a chroot for the new distribution as
      documented above.  This may require downloading and installing a
