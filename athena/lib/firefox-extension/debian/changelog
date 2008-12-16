@@ -1,3 +1,10 @@
+debathena-firefox-extension (10.0.1-0debathena2) unstable; urgency=low
+
+  * Create a symlink in /usr/lib/firefox-addons/extensions, instead of
+    /usr/lib/firefox-3.0/extensions.
+
+ -- Robert Basch <rbasch@mit.edu>  Tue, 16 Dec 2008 17:59:25 -0500
+
 debathena-firefox-extension (10.0.1-0debathena1) unstable; urgency=low
 
   * Bump the max version supported to 3.0.*.
