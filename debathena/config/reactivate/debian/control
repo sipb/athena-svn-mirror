@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-reactivate
 Architecture: all
-Depends: schroot, lvm2, psmisc, gdm, ${misc:Depends}
+Depends: schroot, lvm2, psmisc, gdm, alsa-utils, ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Causes gdm logins to run in an ephemeral snapshot of the root
