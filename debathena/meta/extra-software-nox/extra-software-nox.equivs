@@ -3,10 +3,10 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software-nox
-Version: 0.6
+Version: 0.7
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: build-essential,
-  enscript, psutils, vgrind,
+  enscript, psutils,
   emacs, emacs-intl-fonts,
   athena-jot,
   hesiod,
@@ -21,7 +21,8 @@ Depends: build-essential,
   lynx
 Recommends: ckermit,
   sun-java6-jdk | sun-java5-jdk,
-  x3270
+  x3270,
+  vgrind
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena auxiliary software, non-graphical
