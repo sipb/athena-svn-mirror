@@ -1,5 +1,11 @@
+python-hesiod (0.2.10-1debathena2) unstable; urgency=low
+
+  * Fix the short description.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 03 Jan 2009 19:27:31 -0500
+
 python-hesiod (0.2.10-1debathena1) unstable; urgency=low
-   
+
   * Debathena specific: Conflict with old versions of
     debathena-pyhesiodfs, since they share a common hesiod.py file
 
