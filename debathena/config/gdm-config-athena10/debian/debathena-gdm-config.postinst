@@ -20,11 +20,13 @@ set -e
 
 case "$1" in
     configure)
-	if hash invoke-rc.d 2>/dev/null; then
-	    invoke-rc.d gdm reload
-	else
-	    /etc/init.d/gdm reload
-	fi
+        if test -f /var/run/gdm.pid ; then
+	    if hash invoke-rc.d 2>/dev/null; then
+	        invoke-rc.d gdm reload
+        	else
+		/etc/init.d/gdm reload
+	    fi
+        fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

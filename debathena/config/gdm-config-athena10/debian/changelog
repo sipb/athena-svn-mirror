@@ -1,3 +1,9 @@
+debathena-gdm-config (1.6) unstable; urgency=low
+
+  * Modified the gdm reload to be conditional on gdm running.
+
+ -- andrew m. boardman <amb@mit.edu>  Mon, 05 Jan 2009 16:43:51 -0500
+
 debathena-gdm-config (1.5) unstable; urgency=low
 
   * Reload gdm on postinst.
