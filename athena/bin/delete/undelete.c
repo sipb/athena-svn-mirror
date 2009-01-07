@@ -41,7 +41,11 @@ char *argv[];
      int arg;
      int retval;
      
+#if defined(__APPLE__) && defined(__MACH__)
+     add_error_table(&et_del_error_table);
+#else
      initialize_del_error_table();
+#endif
      
      whoami = lastpart(argv[0]);
      interactive = recursive = verbose = directoriesonly = noop = force = 0;

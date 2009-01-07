@@ -60,7 +60,11 @@ char *argv[];
      extern int optind;
      int arg;
 
+#if defined(__APPLE__) && defined(__MACH__)
+     add_error_table(&et_del_error_table);
+#else
      initialize_del_error_table();
+#endif
      
      whoami = lastpart(argv[0]);
      if (*whoami == 'p') { /* we're doing a purge */

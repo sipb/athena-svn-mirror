@@ -84,7 +84,11 @@ char *argv[];
      
      whoami = lastpart(argv[0]);
 
+#if defined(__APPLE__) && defined(__MACH__)
+     add_error_table(&et_del_error_table);
+#else
      initialize_del_error_table();
+#endif
 
 #ifdef HAVE_AFS
      gettimeofday(&tvp[0], (struct timezone *)0);

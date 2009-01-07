@@ -142,7 +142,11 @@ int num;
      int status = 0;
      int retval;
 
+#if defined(__APPLE__) && defined(__MACH__)
+     add_error_table(&et_del_error_table);
+#else
      initialize_del_error_table();
+#endif
      
      if (retval = initialize_tree()) {
 	  error("initialize_tree");
