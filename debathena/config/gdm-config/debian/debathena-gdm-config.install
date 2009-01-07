@@ -1,2 +1,3 @@
 debian/debathena.png usr/share/pixmaps
 debathena /usr/share/gdm/themes/
+sessions /usr/share/debathena-gdm-config/

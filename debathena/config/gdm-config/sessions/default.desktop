@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Standard Athena session
+Exec=default
+# The "default" Exec is a very special one and is handled specially in
+# the Xsession script, you could also have "custom" which would just run
+# "~/.xsession" directly
+Icon=
+Type=Application
