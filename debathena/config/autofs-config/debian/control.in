@@ -1,7 +1,7 @@
 Source: debathena-autofs-config
 Section: debathena-config/net
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@
 Standards-Version: 3.7.2
 
@@ -10,7 +10,7 @@ Architecture: all
 Depends: autofs-hesiod, debathena-afs-config, debathena-hesiod-config, ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
-Description: Automounter configuration for Debian-Athena
+Description: Automounter configuration for Debathena
  This packages configures autofs to automatically mount Athena lockers
  using the Hesiod directory information.  It also configures autofs to
  not timeout automatic locker mounts.
