@@ -1,3 +1,13 @@
+debathena-firefox-extension (10.0.1-0debathena3) unstable; urgency=low
+
+  * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 14:34:44 -0500
+
 debathena-firefox-extension (10.0.1-0debathena2) unstable; urgency=low
 
   * Create a symlink in /usr/lib/firefox-addons/extensions, instead of
