@@ -4,7 +4,7 @@ Standards-Version: 3.6.2
 
 Package: debathena-standard
 Version: 0.2.3
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-athena-libraries,
  debathena-clients,
  debathena-dotfiles,
@@ -14,7 +14,7 @@ Recommends: debathena-bash,
  debathena-msmtp-mta
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
-Description: Metapackage providing Debian-Athena standard environment
+Description: Metapackage providing Debathena standard environment
  This package and its dependencies provide an environment for
  accessing MIT Athena services from your Debian-based computer,
  including Kerberos authentication, AFS and AFS locker software, and

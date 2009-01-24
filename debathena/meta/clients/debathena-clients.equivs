@@ -4,7 +4,7 @@ Standards-Version: 3.6.2
 
 Package: debathena-clients
 Version: 0.3.12
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Depends: athena-jot,
  debathena-athinfo,
  debathena-counterlog,

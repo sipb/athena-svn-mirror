@@ -4,7 +4,7 @@ Standards-Version: 3.6.2
 
 Package: debathena-libss
 Version: 0.1debathena1
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Depends: ss-dev
 Replaces: debathena-libss1 (<= 0.0.20060319), debathena-libss-dev (<= 0.0.20060319)
 Conflicts: debathena-libss1 (<= 0.0.20060319), debathena-libss-dev (<= 0.0.20060319)

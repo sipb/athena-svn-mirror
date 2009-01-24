@@ -4,7 +4,7 @@ Standards-Version: 3.8.0
 
 Package: debathena-extra-software
 Version: 0.9
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Conflicts: debathena-cluster-software
 Replaces: debathena-cluster-software
 Depends: debathena-extra-software-nox,

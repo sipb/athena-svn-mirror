@@ -4,7 +4,7 @@ Standards-Version: 3.6.2
 
 Package: debathena-cluster
 Version: 0.8.4
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-workstation,
  debathena-build-depends,
  debathena-extra-software,

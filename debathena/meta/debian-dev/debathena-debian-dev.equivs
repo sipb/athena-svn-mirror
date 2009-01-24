@@ -4,7 +4,7 @@ Standards-Version: 3.6.2
 
 Package: debathena-debian-dev
 Version: 0.2.3
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Depends: apt-file,
  apt-rdepends,
  apt-show-versions,
@@ -28,6 +28,6 @@ Depends: apt-file,
  wdiff
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
-Description: Metapackage providing tools for Debian-Athena development
+Description: Metapackage providing tools for Debathena development
  This metapackage installs a collection of tools used for development
- of Debian-Athena.
+ of Debathena.

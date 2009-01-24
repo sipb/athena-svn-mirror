@@ -4,7 +4,7 @@ Standards-Version: 3.6.2
 
 Package: debathena-workstation
 Version: 0.5.1
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-login,
  debathena-gdm-config,
  debathena-xsession,

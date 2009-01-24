@@ -4,7 +4,7 @@ Standards-Version: 3.6.2
 
 Package: debathena-mitmailutils
 Version: 9.4.0debathena2
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-mailquota,
  debathena-mailusage,
  debathena-mitmailappend,

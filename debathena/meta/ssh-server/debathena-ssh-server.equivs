@@ -4,11 +4,11 @@ Standards-Version: 3.6.2
 
 Package: debathena-ssh-server
 Version: 0.2.1
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Depends: openssh-server (>= 1:4.3) | ssh-krb5
 Suggests: debathena-ssh-server-config
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
-Description: SSH server for Debian-Athena
+Description: SSH server for Debathena
  This package depends on an SSH server with Kerberos support.  It is
  otherwise empty, so you may safely remove it.

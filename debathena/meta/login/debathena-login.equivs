@@ -4,7 +4,7 @@ Standards-Version: 3.6.2
 
 Package: debathena-login
 Version: 0.2.3
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-athinfod,
  debathena-moira-passwd-config,
  debathena-nsswitch-config,
@@ -15,6 +15,6 @@ Depends: debathena-athinfod,
  debathena-gconfd-2-wrapper
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
-Description: Athena login services for Debian-Athena
+Description: Athena login services for Debathena
  This package installs support for Athena-like Kerberos login with AFS
  home directories.
