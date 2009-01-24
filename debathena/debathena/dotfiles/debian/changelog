@@ -1,3 +1,12 @@
+debathena-dotfiles (10.0.7-0debathena4) unstable; urgency=low
+
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 14:32:52 -0500
+
 debathena-dotfiles (10.0.7-0debathena3) unstable; urgency=low
 
   * Use gnome-session-save for logout.
