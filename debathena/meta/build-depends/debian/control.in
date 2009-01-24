@@ -1,12 +1,12 @@
 Source: debathena-build-depends
 Section: debathena/devel
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, aptitude, dpkg-awk
 Standards-Version: 3.7.2
 
 Package: debathena-build-depends
 Architecture: all
 Depends: ${misc:Depends}, ${debathena-build-depends:Depends}, debathena-debian-dev
-Description: Metapackage providing build dependencies for Debian-Athena
- This metapackage installs the packages you need to build Debian-Athena.
+Description: Metapackage providing build dependencies for Debathena
+ This metapackage installs the packages you need to build Debathena.
