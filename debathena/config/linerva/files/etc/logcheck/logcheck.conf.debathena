@@ -42,7 +42,7 @@ FQDN=1
 # exceptions to the rules in /etc/logcheck/cracking.d:
 # Alternatively, set to "1" to enable cracking.ignore support
 
-#SUPPORT_CRACKING_IGNORE=0
+SUPPORT_CRACKING_IGNORE=1
 
 # Controls the base directory for rules file location
 # This must be an absolute path
