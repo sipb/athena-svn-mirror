@@ -1,3 +1,13 @@
+debathena-base (10.1) unstable; urgency=low
+
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
+  * Comment the dh_link workaround in debian/rules.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 17:02:23 -0500
+
 debathena-base (10.0) unstable; urgency=low
 
   * Bump /etc/athena/version to 10.0.
