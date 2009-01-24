@@ -1,3 +1,13 @@
+debathena-athdir (10.0.0-0debathena1) unstable; urgency=low
+
+  * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Clean up debian/copyright.
+  * Remove debian/control from version control.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 14:16:12 -0500
+
 debathena-athdir (9.4.0-0debathena2) unstable; urgency=low
 
   * Section: debathena/net.
