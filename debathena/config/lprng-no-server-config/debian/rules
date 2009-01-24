@@ -1,6 +1,5 @@
 #!/usr/bin/make -f
 
-DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_UNREMOVE_FILES_debathena-lprng-no-server-config += \
 	/etc/cron.daily/lprng
 DEB_UNREMOVE_VERSION_/etc/cron.daily/lprng = 1.0
