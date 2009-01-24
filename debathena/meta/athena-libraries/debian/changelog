@@ -1,3 +1,13 @@
+debathena-athena-libraries (1.0debathena2+nmu2) unstable; urgency=low
+
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
+  * Some description cleanups.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 17:23:44 -0500
+
 debathena-athena-libraries (1.0debathena2) unstable; urgency=low
 
   * Avoid calling aptitude with no arguments.
