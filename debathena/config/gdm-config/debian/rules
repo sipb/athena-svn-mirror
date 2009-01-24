@@ -7,7 +7,6 @@ else
     GDM_CONFFILE = /etc/gdm/gdm.conf.debathena
 endif
 
-DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_DIVERT_EXTENSION = .debathena
 DEB_TRANSFORM_FILES_debathena-gdm-config += \
 	${GDM_CONFFILE}
