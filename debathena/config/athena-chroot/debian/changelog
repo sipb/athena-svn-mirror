@@ -1,3 +1,12 @@
+debathena-athena-chroot (1.2) unstable; urgency=low
+
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 15:57:59 -0500
+
 debathena-athena-chroot (1.1) unstable; urgency=low
 
   * Convert to use config-package.mk interface, new in config-package-
