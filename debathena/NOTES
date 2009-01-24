@@ -71,7 +71,7 @@ You will also want a $HOME/.sbuildrc file containing the following:
   $nolog = 1;
   $mailto = 'yourusername';
   $log_dir = '/tmp/sbuild-logs';
-  $maintainer_name = 'Debian-Athena Project <debathena@mit.edu>';
+  $maintainer_name = 'Debathena Project <debathena@mit.edu>';
   $force_orig_source = 1;
   $sbuild_mode = "user";
   1;
@@ -399,7 +399,7 @@ Release engineer: Setting up a build server
         $nolog = 1;
         $mailto = 'source-wash@mit.edu';
         $log_dir = '/tmp/sbuild-logs';
-        $maintainer_name = 'Debian-Athena Project <debathena@mit.edu>';
+        $maintainer_name = 'Debathena Project <debathena@mit.edu>';
         $force_orig_source = 1;
         $sbuild_mode = "user";
         1;
