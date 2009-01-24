@@ -1,7 +1,7 @@
 Source: debathena-nsswitch-config
 Section: debathena-config/net
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@
 Standards-Version: 3.7.2
 
@@ -10,7 +10,7 @@ Architecture: all
 Depends: debathena-hesiod-config, debathena-mit-automounter, libnss-nonlocal (>= 1.3~), libnss-afspag, ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}, debathena-afuse-automounter (<= 1.4)
-Description: nsswitch configuration for Debian-Athena
+Description: nsswitch configuration for Debathena
  This packages configures nsswitch to get passwd information from
  Athena Hesiod, using libnss-nonlocal, which prevents network users
  from authenticating to the same uid as a local user (and similarly
