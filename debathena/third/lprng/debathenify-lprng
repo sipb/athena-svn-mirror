@@ -79,7 +79,7 @@ EOS
 
     append_description <<EOF
  .
- This package was rebuilt for the Debian-Athena project to rename the
+ This package was rebuilt for the Debathena project to rename the
  package and commands so that it no longer conflicts with cupsys-bsd.
 EOF
     add_changelog 'Rename commands.'
