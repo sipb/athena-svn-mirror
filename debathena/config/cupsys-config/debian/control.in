@@ -1,7 +1,7 @@
 Source: debathena-cupsys-config
 Section: debathena-config/net
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, debathena-cups, debathena-cupsys-hack
 Standards-Version: 3.7.2
 
@@ -10,5 +10,5 @@ Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, cups | cupsys, cups-bsd | cupsys-bsd
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
-Description: CUPS configuration for Debian-Athena
+Description: CUPS configuration for Debathena
  This package configures CUPS to use the cups.mit.edu CUPS server
