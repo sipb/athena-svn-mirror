@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software-nox
-Version: 0.7
+Version: 0.8
 Maintainer: Debian-Athena Project <debathena@mit.edu>
 Depends: build-essential,
   enscript, psutils,
@@ -18,7 +18,10 @@ Depends: build-essential,
   drscheme,
   inn2-inews,
   screen,
-  lynx
+  lynx,
+  rcs, cvs, subversion, bzr, mercurial,
+  git-core, git-cvs, git-svn,
+  manpages-posix-dev, manpages-dev
 Recommends: ckermit,
   sun-java6-jdk | sun-java5-jdk,
   x3270,
