@@ -38,7 +38,7 @@ hack_package () {
   fi
   append_description <<EOF
  .
- This package was rebuilt for the Debian-Athena project to add Hesiod
+ This package was rebuilt for the Debathena project to add Hesiod
  support, to add krb4 IMAP support, and to ensure that newly-created
  mail directories in AFS are private.
 EOF
