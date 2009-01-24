@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-ssh-client
-Version: 0.2.0
+Version: 0.2.1
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: openssh-client | ssh-krb5
 Suggests: debathena-ssh-client-config

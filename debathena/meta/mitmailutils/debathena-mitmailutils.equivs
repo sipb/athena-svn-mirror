@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-mitmailutils
-Version: 9.4.0debathena2
+Version: 10.0.0
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-mailquota,
  debathena-mailusage,

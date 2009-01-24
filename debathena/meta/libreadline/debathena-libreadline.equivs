@@ -3,7 +3,7 @@ Priority: optional
 Standards-Version: 3.6.2
 
 Package: debathena-libreadline-dev
-Version: 0.1
+Version: 0.2
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: libreadline5-dev (>= 5.1) | libreadline4-dev
 Conflicts: libreadline5-dev (<< 5.1)

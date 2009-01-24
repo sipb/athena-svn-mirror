@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cups
-Version: 0.1.0
+Version: 0.1.1
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: cups | cupsys
 Suggests: debathena-cupsys-config

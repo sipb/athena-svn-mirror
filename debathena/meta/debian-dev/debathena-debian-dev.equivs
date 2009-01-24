@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-debian-dev
-Version: 0.2.3
+Version: 0.2.4
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: apt-file,
  apt-rdepends,

@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-standard
-Version: 0.2.3
+Version: 0.2.4
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-athena-libraries,
  debathena-clients,
