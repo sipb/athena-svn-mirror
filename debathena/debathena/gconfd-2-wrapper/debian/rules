@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
-
 DEB_DIVERT_EXTENSION=.debathena
 DEB_DIVERT_FILES_debathena-gconfd-2-wrapper += \
 	/usr/lib/libgconf2-4/gconfd-2.debathena
