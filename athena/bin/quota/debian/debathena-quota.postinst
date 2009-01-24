@@ -20,7 +20,7 @@ set -e
 
 case "$1" in
     configure)
-	# Setup attach binary for setgid-attach.
+	# Setup quota binary for setgid-attach.
 	if ! dpkg-statoverride --list /usr/bin/quota.debathena >/dev/null; then
 	    chgrp attach /usr/bin/quota.debathena
 	    chmod a=rx,u+w,g+s /usr/bin/quota.debathena

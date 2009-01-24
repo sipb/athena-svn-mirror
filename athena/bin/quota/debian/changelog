@@ -1,3 +1,14 @@
+debathena-quota (10.0.0-0debathena1) unstable; urgency=low
+
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
+  * Clean up debian/copyright.
+  * Fix typo in postinst script.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 15:36:45 -0500
+
 debathena-quota (9.4.0-0debathena4) unstable; urgency=low
 
   * Link against libcom_err from openafs so that the package builds on
