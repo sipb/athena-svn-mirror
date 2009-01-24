@@ -1,3 +1,12 @@
+debathena-shell-config (1.9) unstable; urgency=low
+
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 16:26:44 -0500
+
 debathena-shell-config (1.8) unstable; urgency=low
 
   * Print a helpful message when aklog doesn't work.
