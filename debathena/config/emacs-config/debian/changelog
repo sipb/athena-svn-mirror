@@ -1,3 +1,12 @@
+debathena-emacs-config (1.2) unstable; urgency=low
+
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Athena 10 Project" to "Debathena Project".
+  * Clean up debian/copyright.
+  * Remove debian/control from version control.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 16:59:50 -0500
+
 debathena-emacs-config (1.1) unstable; urgency=low
 
   * Prune heavily.

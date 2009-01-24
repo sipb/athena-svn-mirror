@@ -1,7 +1,7 @@
 Source: debathena-emacs-config
 Section: debathena-config/editors
 Priority: extra
-Maintainer: Athena 10 Project <athena10@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@
 Standards-Version: 3.8.0
 
