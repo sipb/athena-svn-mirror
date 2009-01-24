@@ -1,4 +1,4 @@
-# Debian-Athena lprng configuration
+# Debathena lprng configuration
 force_localhost@
 kerberos_service=daemon
 pass_env=KRB5CCNAME

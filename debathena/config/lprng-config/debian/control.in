@@ -1,7 +1,7 @@
 Source: debathena-lprng-config
 Section: debathena-config/net
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@
 Standards-Version: 3.7.2
 
@@ -10,7 +10,7 @@ Architecture: all
 Depends: debathena-lprng, debathena-hesiod-config, debathena-kerberos-config, ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
-Description: Printing configuration for Debian-Athena
+Description: Printing configuration for Debathena
  This packages configures lprng to get printer information from
  the Athena Hesiod domain.
 
