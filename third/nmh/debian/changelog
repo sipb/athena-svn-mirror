@@ -1,3 +1,13 @@
+debathena-nmh (1.0+athena9.4.34-0debathena4) unstable; urgency=low
+
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
+  * Remove comment #DEB_AUTO_UPDATE_AUTOCONF = 2.13 from rules file.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 15:36:12 -0500
+
 debathena-nmh (1.0+athena9.4.34-0debathena3) unstable; urgency=low
 
   * Prefer debathena-msmtp-mta rather than nullmailer for

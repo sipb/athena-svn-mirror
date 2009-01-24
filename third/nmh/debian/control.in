@@ -1,7 +1,7 @@
 Source: debathena-nmh
 Section: debathena/mail
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, libkrb5-dev, libhesiod-dev, libncurses-dev, libdb-dev, debathena-msmtp-mta | nullmailer | mail-transport-agent
 Standards-Version: 3.7.2
 
