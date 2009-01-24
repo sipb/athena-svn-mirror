@@ -1,3 +1,10 @@
+debathena-cluster-login-config (1.1) unstable; urgency=low
+
+  * Give sudo privileges to members of the admin group (users logging in
+    will be added to that group by debathena-reactivate)
+
+ -- Evan Broder <broder@mit.edu>  Sat, 24 Jan 2009 18:08:33 -0500
+
 debathena-cluster-login-config (1.0) unstable; urgency=low
 
   * Initial release.
