@@ -229,7 +229,7 @@ Standards-Version: 3.6.2
 
 Package: $afs_mpkg
 Version: $ver$tag
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Depends: $module, $image_mpkg (= $ver)
 Copyright: ../common/copyright
 Readme: ../common/README.in
