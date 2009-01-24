@@ -1,7 +1,7 @@
 Source: debathena-finger-config
 Section: debathena-config/net
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@
 Standards-Version: 3.7.2
 
@@ -11,5 +11,5 @@ Depends: debathena-finger (>= 9.4), ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Set Athena finger as default
- This package makes /usr/bin/finger point to the Debian-Athena
+ This package makes /usr/bin/finger point to the Debathena
  version.
