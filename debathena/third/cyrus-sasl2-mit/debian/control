@@ -3,7 +3,7 @@ Build-Depends: autotools-dev, debhelper (>= 4), libpam0g-dev, chrpath, libkrb5-d
 Build-Conflicts: kerberos4kth-dev, autoconf2.13, automake1.4
 Section: debathena/libs
 Priority: optional
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Standards-Version: 3.6.1
 
 Package: libsasl2-krb4-mit
