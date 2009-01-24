@@ -1,7 +1,7 @@
 Source: debathena-libxj
 Section: debathena/libs
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, libx11-dev, libxext-dev
 Standards-Version: 3.7.2
 
