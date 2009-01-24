@@ -1,3 +1,11 @@
+debathena-mailusage (10.0.0-0debathena2) unstable; urgency=low
+
+  * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+
+ -- Tim Abbott <tabbott@mit.edu>  Mon, 19 Jan 2009 15:29:30 -0500
+
 debathena-mailusage (10.0.0-0debathena1) unstable; urgency=low
 
   * Merged quilt patches into mainline Athena tree
