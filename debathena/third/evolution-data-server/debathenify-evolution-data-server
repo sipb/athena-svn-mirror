@@ -8,7 +8,7 @@ hack_package () {
     perl -0pe 's/--with-krb5=/--with-krb4=\/usr --with-krb5=/m or die' -i debian/rules
     append_description <<EOF
  .
- This package was rebuilt for the Debian-Athena project to include
+ This package was rebuilt for the Debathena project to include
  Kerberos 4 support
 EOF
     add_changelog 'Enable krb4 support.'
