@@ -1,7 +1,7 @@
 Source: debathena-moira-passwd-config
 Section: debathena-config/net
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@
 Standards-Version: 3.7.2
 
@@ -13,5 +13,5 @@ Conflicts: ${diverted-files}, debathena-moira-user-tools (<= 4.0.0-3)
 Replaces: debathena-moira-user-tools (<= 4.0.0-3)
 Description: Set Athena chsh and chfn as default
  This package makes /usr/bin/chsh and /usr/bin/chfn point to the
- Debian-Athena version that changes entries in Moira.  It also
+ Debathena version that changes entries in Moira.  It also
  replaces /usr/sbin/adduser to use the Debian version of chfn.
