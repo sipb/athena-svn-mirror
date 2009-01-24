@@ -1,7 +1,7 @@
 Source: debathena-xcluster
 Section: debathena/net
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, libhesiod-dev, debathena-libxj-dev, libx11-dev, libxmu-dev
 Standards-Version: 3.7.2
 
