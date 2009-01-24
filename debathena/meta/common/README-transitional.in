@@ -1,4 +1,4 @@
-@packagename@ for Debian-Athena
+@packagename@ for Debathena
 
 This is a transitional dummy package.  It provides no files, and its 
 only purpose is to cause the installation or removal of other packages.  
