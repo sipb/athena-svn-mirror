@@ -1,7 +1,7 @@
 Source: debathena-gathlogout
 Section: debathena/gnome
 Priority: extra
-Maintainer: Debian-Athena Project <debathena@mit.edu>
+Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, libgtk2.0-dev, libx11-dev, libxt-dev
 Standards-Version: 3.7.2
 
