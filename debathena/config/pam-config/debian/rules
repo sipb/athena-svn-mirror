@@ -4,7 +4,6 @@ pam_types = account auth session password
 pam_krb5_auth_opts = use_authtok
 pam_krb5_passwd_opts = use_authtok
 
-DEB_AUTO_UPDATE_DEBIAN_CONTROL = 1
 DEB_DIVERT_EXTENSION = .debathena
 
 pam_auth_update = $(shell hash pam-auth-update 2>/dev/null && echo yes)
