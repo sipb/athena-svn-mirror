@@ -1,3 +1,12 @@
+debathena-reactivate (1.5) unstable; urgency=low
+
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 18:59:19 -0500
+
 debathena-reactivate (1.4) unstable; urgency=low
 
   * Add the user to more groups when they login.
