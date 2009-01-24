@@ -28,7 +28,7 @@ lockfile=/var/run/athena-snapshot.lock
 snapshotsize=10G
 event=$1
 binddirs="/proc /sys /dev /var/run /var/lock /afs /mit /tmp /media /home"
-addgroups="cdrom floppy audio video plugdev"
+addgroups="admin lpadmin adm fuse cdrom floppy audio video plugdev scanner dialout"
 
 rootdev=$(awk '$2 == "/" { dev=$1 } END { print dev }' /proc/mounts)
 vgname=$(lvs --noheadings -o vg_name "$rootdev" | awk '{print $1}')

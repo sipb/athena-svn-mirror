@@ -1,3 +1,9 @@
+debathena-reactivate (1.4) unstable; urgency=low
+
+  * Add the user to more groups when they login.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 24 Jan 2009 13:36:03 -0500
+
 debathena-reactivate (1.3) unstable; urgency=low
 
   * Ensure the sound card volume levels are set to 0 at session end.
