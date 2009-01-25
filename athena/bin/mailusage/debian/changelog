@@ -3,8 +3,10 @@ debathena-mailusage (10.0.0-0debathena2) unstable; urgency=low
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
   * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
 
- -- Tim Abbott <tabbott@mit.edu>  Mon, 19 Jan 2009 15:29:30 -0500
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 19:43:20 -0500
 
 debathena-mailusage (10.0.0-0debathena1) unstable; urgency=low
 
