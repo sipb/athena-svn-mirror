@@ -11,6 +11,9 @@ DEB_DIVERT_EXTENSION = .debathena
 DEB_TRANSFORM_FILES_debathena-gdm-config += \
 	${GDM_CONFFILE}
 DEB_TRANSFORM_SCRIPT_${GDM_CONFFILE} = debian/transform_gdm.conf.debathena
+DEB_DIVERT_FILES_debathena-gdm-config += \
+       /usr/share/gdm/BuiltInSessions/default.desktop.debathena
+DEB_REMOVE_FILES_debathena-gdm-config += \
+       /usr/share/xsessions/ssh.desktop
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
-

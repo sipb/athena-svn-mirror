@@ -1,2 +1,3 @@
 debian/debathena.png usr/share/pixmaps
+debian/default.desktop.desktop usr/share/gdm/BuiltInSessions
 debathena /usr/share/gdm/themes/

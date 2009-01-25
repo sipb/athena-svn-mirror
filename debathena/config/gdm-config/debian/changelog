@@ -1,3 +1,10 @@
+debathena-gdm-config (1.7) unstable; urgency=low
+
+  * Remove the somewhat broken "Secure Remote Connection" session
+  * Rename "Run Xclient Script" to "System Default Session"
+
+ -- Evan Broder <broder@mit.edu>  Sun, 25 Jan 2009 13:11:18 -0500
+
 debathena-gdm-config (1.6) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.

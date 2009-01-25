@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=System Default Session
+Comment=This session runs the Xclients script
+Exec=default
+Icon=
+Type=Application
