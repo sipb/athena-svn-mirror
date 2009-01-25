@@ -1,4 +1,4 @@
-debathena-athena-libraries (1.0debathena2+nmu2) unstable; urgency=low
+debathena-athena-libraries (1.0debathena3) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
   * Change "Debian-Athena Project" to "Debathena Project".

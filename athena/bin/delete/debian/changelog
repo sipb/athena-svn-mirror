@@ -1,4 +1,4 @@
-debathena-delete (9.4.0-0debathena2.2) unstable; urgency=low
+debathena-delete (10.0.0-0debathena1) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
