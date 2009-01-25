@@ -1,3 +1,12 @@
+debathena-tmp-cleaner (1.2) unstable; urgency=low
+
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 19:10:11 -0500
+
 debathena-tmp-cleaner (1.1) unstable; urgency=low
 
   * Use dh_installcron for cron job.
