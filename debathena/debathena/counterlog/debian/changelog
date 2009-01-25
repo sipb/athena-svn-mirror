@@ -1,3 +1,12 @@
+debathena-counterlog (1.1) unstable; urgency=low
+
+  * Add a copyright file.
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 19:12:32 -0500
+
 debathena-counterlog (1.0) unstable; urgency=low
 
   * Initial release.
