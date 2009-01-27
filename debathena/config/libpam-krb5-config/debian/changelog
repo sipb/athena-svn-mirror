@@ -1,8 +1,9 @@
 libpam-krb5-config (0.0.4) unstable; urgency=low
 
   * Fix debian/copyright.
+  * Change "Athena 10 Project" to "Debathena Project".
 
- -- Greg Price <price@mit.edu>  Tue, 27 Jan 2009 00:27:22 -0500
+ -- Greg Price <price@mit.edu>  Tue, 27 Jan 2009 00:35:42 -0500
 
 libpam-krb5-config (0.0.3) unstable; urgency=low
 
