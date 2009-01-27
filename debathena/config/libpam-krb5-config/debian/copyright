@@ -5,7 +5,7 @@ Board.
 The source code was obtained from the Athena SVN repository at
 <svn://debathena.mit.edu/athena/trunk>, and is licensed as follows:
 
-  Copyright © 2008 Gregory Price
+  Copyright © 2008 Greg Price
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation files
@@ -27,5 +27,5 @@ The source code was obtained from the Athena SVN repository at
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
-The Debian packaging is Copyright © 2007-2008 Tim Abbott and Anders
-Kaseorg, and has the same license as the original software.
+The Debian packaging is Copyright © 2008 Greg Price, and has the same
+license as the original software.

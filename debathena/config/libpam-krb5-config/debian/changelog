@@ -1,3 +1,9 @@
+libpam-krb5-config (0.0.4) unstable; urgency=low
+
+  * Fix debian/copyright.
+
+ -- Greg Price <price@mit.edu>  Tue, 27 Jan 2009 00:27:22 -0500
+
 libpam-krb5-config (0.0.3) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
