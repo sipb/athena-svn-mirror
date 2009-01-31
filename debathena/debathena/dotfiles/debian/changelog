@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.8-0debathena1) unstable; urgency=low
+
+  * Set $EMAIL in the system dotfiles.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 31 Jan 2009 18:52:41 -0500
+
 debathena-dotfiles (10.0.7-0debathena4) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.

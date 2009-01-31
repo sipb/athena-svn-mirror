@@ -45,6 +45,8 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	export VISUAL=emacs			# Set default screen editor
 	export MM_CHARSET=iso-8859-1
 
+	export EMAIL="$USER@mit.edu"		# Set default email address
+
 	export MORE=-s
 
 	# Set double-sided printing for sufficiently recent users.

@@ -51,6 +51,8 @@ if (! $?ENV_SET) then
   setenv VISUAL emacs			# Set default screen editor
   setenv MM_CHARSET iso-8859-1
 
+  setenv EMAIL "$USER@mit.edu"		# Set default email address
+
   # Set double-sided printing for sufficiently recent users.
   if ( $ATHENA_DOTFILE_GENERATION >= 1 ) then
     setenv LPROPT -Zduplex
