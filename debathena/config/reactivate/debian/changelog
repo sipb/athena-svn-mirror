@@ -1,3 +1,10 @@
+debathena-reactivate (1.6) unstable; urgency=low
+
+  * Fix typo in schroot configuration (environment_filter should be
+    environment-filter).
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 31 Jan 2009 15:00:34 -0500
+
 debathena-reactivate (1.5) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.

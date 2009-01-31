@@ -92,7 +92,7 @@ uloginlvpath=/dev/$vgname/login-update
 description=Login root snapshot
 location=/login
 users=$USER
-environment_filter=""
+environment-filter=""
 ###ATHENA-END###
 EOF
     mv $conf.new $conf
