@@ -3,43 +3,13 @@
       mh-lib-progs "/usr/lib/debathena-nmh/"
       mh-lib "/etc/nmh/")
 
-; Security measure.
-(setq inhibit-local-variables t)
-
 ; Too many users get bit if we don't set this.
+; We can probably remove this setting once tcsh is gone.
 (setq require-final-newline t)
-
-; Handle bug reports locally.
-(setq bug-gnu-emacs "bugs@mit.edu")
-
-; Force outgoing mail domain to be "mit.edu" instead of local machine name.
-(setq mail-host-address "mit.edu")
 
 ; lpr -d doesn't do anything in the Athena environment; use dvips to print
 ; DVI files.
 (setq tex-dvi-print-command "dvips")
-
-; Athena likes different X paste behavior
-(setq mouse-yank-at-point t)
-
-; Cosmetic change, preferred by most users as far as we know.  (And
-; consistent with gnome-terminal, xterm, etc.)
-(blink-cursor-mode 0)
-
-; Change the initial scratch buffer to avoid people losing text they
-; erroneously type into it.  Also make it a text buffer instead of a
-; lisp buffer.
-(setq initial-major-mode '(lambda ()
-			    (text-mode)
-			    (auto-fill-mode 1)
-			    (setq buffer-offer-save t)))
-; compensate for the above
-(setq initial-scratch-message "\
-This buffer is for notes you don't want to save.  If you want to create
-a file, visit that file with C-x C-f, then enter the text in that file's
-own buffer.
-
-")
 
 ; Some gnus settings.  We set nnmail-crosspost-link-function to
 ; 'copy-file because AFS does not support hard links.
