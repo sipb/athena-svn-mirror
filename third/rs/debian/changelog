@@ -1,3 +1,10 @@
+debathena-rs (10.0.2) unstable; urgency=low
+
+  * Remove BSD license 4th clause, as per
+    <ftp://ftp.cs.berkeley.edu/pub/4bsd/README.Impt.License.Change>.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 31 Jan 2009 19:48:14 -0500
+
 debathena-rs (10.0.1) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
