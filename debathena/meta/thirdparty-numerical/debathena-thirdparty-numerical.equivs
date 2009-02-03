@@ -1,0 +1,44 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-thirdparty-numerical
+Version: 0.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Depends: maxima,
+ xmaxima,
+ maxima-doc,
+ maxima-share,
+ maxima-test,
+ maxima-emacs,
+ nickle,
+ gnumeric-gtk,
+ gnumeric-doc,
+ gnumeric-plugins-extra,
+ gnuplot-doc,
+ octave3.0,
+ octave3.0-doc,
+ octave3.0-headers,
+ octave3.0-htmldoc,
+ octave3.0-emacsen,
+ pari-gp,
+ pari-doc,
+ pari-extra,
+ grace,
+ grace6,
+ k3dsurf,
+ euler,
+ euler-doc,
+ fityk,
+ scilab,
+ scilab-doc,
+ pvm,
+ sc
+
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Athena 10 debathena-thirdparty-numerical software suite.
+ This includes a set of subpackages of commonly-used third-party software
+ within the numerical domain.  It is intended for cluster machines though usable
+ anywhere.  Direct questions about software included in this metapackage
+ to 3partysw@mit.edu.

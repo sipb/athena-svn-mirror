@@ -1,0 +1,75 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-thirdparty-graphics
+Version: 0.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Depends: inventor-clients,
+ inventor-data,
+ inventor-demo,
+ inventor-dev,
+ inventor-doc,
+ libinventor0,
+ imagemagick,
+ freeglut3-dev,
+ libghc6-glut-dev,
+ libghc6-glut-doc,
+ libghc6-glut-prof,
+ glutg3,
+ glutg3-dev,
+ glut-doc,
+ libglui-dev,
+ libglui2c2,
+ inkscape,
+ plotutils,
+ gnome-mplayer,
+ smplayer,
+ mplayer-fonts,
+ mplayer-doc,
+ vlc,
+ mozilla-plugin-vlc,
+ xine-ui,
+ gxine,
+ gxineplugin,
+ xine-plugin,
+ netpbm,
+ libnetpbm10-dev,
+ xcircuit,
+ mgp,
+ scribus,
+ scribus-doc,
+ scribus-template,
+ geomview,
+ libgeomview-dev,
+ povray,
+ povray-doc,
+ povray-examples,
+ povray-includes,
+ dia,
+ xaralx,
+ xaralx-examples,
+ xaralx-svg,
+ djvulibre-bin,
+ djview,
+ ipe,
+ pstoedit,
+ tgif,
+ xfig,
+ xfig-libs,
+ xfig-doc,
+ xpaint,
+ blender,
+ qcad,
+ qcad-doc,
+ gerbv,
+ sdr,
+ xprint-utils
+
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Athena 10 debathena-thirdparty-graphics software suite.
+ This includes a set of subpackages of commonly-used third-party software
+ within the graphics domain.  It is intended for cluster machines though usable
+ anywhere.  Direct questions about software included in this metapackage
+ to 3partysw@mit.edu.

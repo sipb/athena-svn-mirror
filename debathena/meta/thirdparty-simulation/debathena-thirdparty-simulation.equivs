@@ -1,0 +1,62 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-thirdparty-simulation
+Version: 0.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Depends: lp-solve,
+ lp-solve-doc,
+ liblpsolve55-dev,
+ glpk,
+ glpk-doc,
+ glpk-utils,
+ libglpk-dev,
+ python-glpk,
+ rasmol,
+ rasmol-doc,
+ geda,
+ geda-gattrib,
+ geda-gsymcheck,
+ geda-utils,
+ geda-xgsch2pcb,
+ libgeda-dev,
+ geda-examples,
+ gnucap,
+ gspiceui,
+ gtkwave,
+ pcb,
+ verilog,
+ verilog-mode,
+ meep,
+ harminv,
+ mpb,
+ mpb-doc,
+ python-biopython,
+ python-biopython-doc,
+ wise,
+ wise-doc,
+ blast2,
+ clustalx,
+ seaview,
+ biosquid,
+ biosquid-dev,
+ emboss,
+ emboss-doc,
+ hmmer,
+ hmmer-doc,
+ phylip,
+ phylip-doc,
+ primer3,
+ tetgen,
+ pymol,
+ xdrawchem,
+ openbabel
+
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Athena 10 debathena-thirdparty-simulation software suite.
+ This includes a set of subpackages of commonly-used third-party software
+ within the simulation domain.  It is intended for cluster machines though usable
+ anywhere.  Direct questions about software included in this metapackage
+ to 3partysw@mit.edu.

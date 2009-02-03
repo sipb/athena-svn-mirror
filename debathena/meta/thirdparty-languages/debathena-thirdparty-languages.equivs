@@ -1,0 +1,88 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-thirdparty-languages
+Version: 0.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Depends: cmake,
+ python-numpy,
+ python-numpy-ext,
+ python-numpy-doc,
+ g77,
+ g77-doc,
+ gfortran,
+ gfortran-doc,
+ gfortran-multilib,
+ jikes-classpath,
+ jikes-gij,
+ ant-doc,
+ mit-scheme,
+ mit-scheme-doc,
+ valgrind,
+ jython,
+ jython-doc,
+ jython-gcj,
+ clisp,
+ clisp-dev,
+ clisp-doc,
+ scm,
+ slib,
+ gdc,
+ hugs,
+ mozart,
+ mozart-doc,
+ mozart-doc,
+ f2c,
+ ftnchek,
+ gcj,
+ gnudatalanguage,
+ erlang,
+ erlang-doc-html,
+ erlang-examples,
+ erlang-manpages,
+ ghc6,
+ ghc6-doc,
+ ghc6-prof,
+ ucblogo,
+ lua5.1,
+ lua5.1-doc,
+ gprolog,
+ gprolog-doc,
+ nasm,
+ ocaml,
+ ocaml-book-en,
+ ocaml-doc,
+ ocaml-libs,
+ ocaml-mode,
+ scala,
+ swi-prolog,
+ swi-prolog-doc,
+ swi-prolog-xpce,
+ swi-prolog-clib,
+ smlnj,
+ sml-mode,
+ libexene-smlnj,
+ yorick,
+ yorick-curses,
+ yorick-doc,
+ yorick-hdf5,
+ yorick-imutil,
+ yorick-soy,
+ yorick-yeti,
+ yorick-yeti-fftw,
+ yorick-yeti-gsl,
+ yorick-yeti-regex,
+ yorick-yeti-tiff,
+ yorick-yutils,
+ yorick-z,
+ eclipse-cdt,
+ eclipse-pydev
+
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Athena 10 debathena-thirdparty-languages software suite.
+ This includes a set of subpackages of commonly-used third-party software
+ within the languages domain.  It is intended for cluster machines though usable
+ anywhere.  Direct questions about software included in this metapackage
+ to 3partysw@mit.edu.

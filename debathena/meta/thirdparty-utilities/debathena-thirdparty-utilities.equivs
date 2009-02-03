@@ -1,0 +1,35 @@
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.6.2
+
+Package: debathena-thirdparty-utilities
+Version: 0.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Depends: nfs-common,
+ mtoolsfm,
+ rcs,
+ g3data,
+ gnucash,
+ gnucash-docs,
+ gnupg,
+ pgpgpg,
+ gnupg-doc,
+ gnupg2,
+ recode,
+ recode-doc,
+ units,
+ tofromdos,
+ gitk,
+ hfsutils-tcltk,
+ mercurial,
+ subversion,
+ weather-util,
+ scratchbox2
+
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Athena 10 debathena-thirdparty-utilities software suite.
+ This includes a set of subpackages of commonly-used third-party software
+ within the utilities domain.  It is intended for cluster machines though usable
+ anywhere.  Direct questions about software included in this metapackage
+ to 3partysw@mit.edu.
