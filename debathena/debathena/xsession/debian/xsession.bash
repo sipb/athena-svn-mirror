@@ -12,6 +12,10 @@ source_if_exists() {
   [ -r "$1" ] && . "$1"
 }
 
+echo_if_verbose() {
+  [ t = "$verbose_login" ] && echo "$@"
+}
+
 export XSESSION=$$
 
 source_if_exists /etc/profile
@@ -21,6 +25,14 @@ if [ -r "$HOME/.bashrc" ]; then
   . "$HOME/.bashrc"
 else
   source_if_exists "$initdir/bashrc"
+fi
+
+# Start default initial xterm window.  To skip this, put the command
+# "skip_initial_xterm=t" in your ~/.bash_environment file.
+
+if [ "${skip_initial_xterm+set}" != set ]; then
+  echo_if_verbose "Creating initial xterm window..."
+  (gnome-terminal --geometry=80x40-0-0 >/dev/null 2>&1 &)
 fi
 
 if [ "${skip_x_startup+set}" != set ]; then

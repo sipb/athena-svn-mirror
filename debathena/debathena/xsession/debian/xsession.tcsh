@@ -21,6 +21,11 @@ else
   if (-r ${initdir}/cshrc) source ${initdir}/cshrc
 endif
 
+if (! $?skip_initial_xterm) then
+  if ($?verbose_login) echo "Creating initial xterm window..."
+  (gnome-terminal --geometry=80x40-0-0 >& /dev/null &)
+endif
+
 if (! $?skip_x_startup) then
   if (! $?ZEPHYR_CLIENT) setenv ZEPHYR_CLIENT zwgc
   $ZEPHYR_CLIENT
