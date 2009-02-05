@@ -1,10 +1,14 @@
 #!/bin/sh
 
+# Start warning when a usage is less than this many kilobytes away
+# from your quota
+tolerance=100000
+
 # Determine the user's home directory usage and quota.
 qline=`quota.debathena -v -f "$USER" | awk '/^\// {print}'`
 usage=`echo "$qline" | awk '{print $2}'`
 quota=`echo "$qline" | awk '{print $3}'`
-quota90=`expr "${quota:-0}" \* 9 / 10`
+warnlevel=`expr "${quota:-0}" - ${tolerance}`
 
 if [ -n "$usage" -a -n "$quota" ] && [ "$usage" -ge "$quota" ]; then
   zenity --error --text="
@@ -15,7 +19,7 @@ unneeded files.  You may find the following command
 useful to identify unneeded files:
 
   athrun consult helpquota"
-elif [ -n "$usage" -a -n "$quota90" ] && [ "$usage" -ge "$quota90" ]; then
+elif [ -n "$usage" -a -n "$warnlevel" ] && [ "$usage" -ge "$warnlevel" ]; then
   zenity --info --text="
 Your home directory usage is near your quota (${usage}KB
 used out of ${quota}KB).  Consider removing unneeded
@@ -26,12 +30,12 @@ command useful to identify unneeded files:
 fi
 
 # Determine the user's mail usage and quota.
-qline=`mailquota | tail +2`
+qline=`mailquota | tail -n +2`
 usage=`echo "$qline" | awk '{print $2}'`
 quota=`echo "$qline" | awk '{print $3}'`
-quota90=`expr "${quota:-0}" \* 9 / 10`
+warnlevel=`expr "${quota:-0}" - ${tolerance}`
 
-if [ -n "$usage" -a -n "$quota90" ] && [ "$usage" -ge "$quota90" ]; then
+if [ -n "$usage" -a -n "$warnlevel" ] && [ "$usage" -ge "$warnlevel" ]; then
   zenity --info --text="
 Your MIT mail usage is close to or exceeding your mail
 quota (${usage}KB used out of ${quota}KB).  Consider
