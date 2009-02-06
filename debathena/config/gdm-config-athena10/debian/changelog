@@ -1,3 +1,12 @@
+debathena-gdm-config (1.9) unstable; urgency=low
+
+  * Revert GdmGreeterTheme.desktop back more like debathena.
+  * Add "(GPL)" license to copyright notice there.
+  * Change author to me.
+  * Change banner to say "Athena" instead of "Athena 10"
+
+ -- William D Cattey <wdc@mit.edu>  Fri, 06 Feb 2009 17:26:43 -0500
+
 debathena-gdm-config (1.8) unstable; urgency=low
 
   * Update look of debathena greeter as per jdreed prototype

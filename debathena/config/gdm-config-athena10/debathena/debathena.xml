@@ -64,7 +64,7 @@
       <item type="label" id="title">
 	<normal color="#993333" font="Trebuchet MS Bold 20" />
 	<pos anchor="c" x="50%" y="50%"/>
-	<text>Welcome to Athena 10</text>
+	<text>Welcome to Athena</text>
       </item>
       <!-- Hostname -->
       <item type="label">
