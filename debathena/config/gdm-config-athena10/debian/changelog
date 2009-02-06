@@ -1,3 +1,9 @@
+debathena-gdm-config (1.8) unstable; urgency=low
+
+  * Update look of debathena greeter as per jdreed prototype
+
+ -- William D Cattey <wdc@mit.edu>  Thu, 05 Feb 2009 18:51:42 -0500
+
 debathena-gdm-config (1.7) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.

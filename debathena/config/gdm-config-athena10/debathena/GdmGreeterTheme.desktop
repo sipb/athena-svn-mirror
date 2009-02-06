@@ -1,8 +1,8 @@
 [GdmGreeterTheme]
 Encoding=UTF-8
 Greeter=debathena.xml
-Name=Debathena
-Description=Athena-style login dialog
-Author=Geoffrey Thomas <geofft@mit.edu>
-Copyright=© 2008 SIPB (GPL)
+Name=Athena 10
+Description=Athena 10 GDM theme
+Author=Jonathan Reed <jdreed@mit.edu>
+Copyright=© 2009 MIT
 Screenshot=screenshot.png
