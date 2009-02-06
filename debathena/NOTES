@@ -380,6 +380,10 @@ Release engineer: Setting up a build server
 
       Example: VG=/dev/dink scripts/build-server/make-chroot gutsy i386
 
+      Note: the make-chroot script currently doesn't apt-key add the
+      Athena 10 repository key; if you're setting up an Athena 10 build
+      server, you'll need to add it.
+
   14. Create a local account for builder with:
 
         adduser --uid 1047 --disabled-password builder
