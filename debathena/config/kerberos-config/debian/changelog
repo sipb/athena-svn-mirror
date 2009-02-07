@@ -1,3 +1,11 @@
+debathena-kerberos-config (1.5) unstable; urgency=low
+
+  * Add support for ATHENA.MIT.EDU being the default realm in
+    /usr/share/kerberos-configs/krb.conf.template, as it is in
+    kerberos-configs >= 1.22.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 07 Feb 2009 16:37:29 -0500
+
 debathena-kerberos-config (1.4) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
