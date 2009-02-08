@@ -99,13 +99,22 @@ EOF
     ;;
 
   login-end)
-    # Clean up any processes using the mountpoint.
+    # Clean up any remaining user processes using the bind mounts.
+    if [ -n "$USER" -a "$USER" != root ]; then
+      for dir in $binddirs; do
+        su -s /bin/sh "$USER" -c "fuser -km /login$dir" > /dev/null || true
+      done
+    fi
+
+    # Clean up any processes using the chroot mountpoint.
     fuser -km /login > /dev/null || true
     sleep 2
 
     # Clean up the bind mounts we made earlier.
+    # If any of these fail, the umount of /login will fail below,
+    # and we will reboot.
     for dir in $binddirs; do
-      umount "/login$dir"
+      umount "/login$dir" || true
     done
 
     # Attempt to unmount /login.

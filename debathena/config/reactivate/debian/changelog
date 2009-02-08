@@ -1,3 +1,13 @@
+debathena-reactivate (1.8) unstable; urgency=low
+
+  * Try to kill remaining user processes using any of the login
+    chroot's bind mounts at session end.
+  * Don't die upon failure to umount any of the bind mounts at
+    session end; this should force a reboot after the umount of
+    the chroot mountpoint fails.
+
+ -- Robert Basch <rbasch@mit.edu>  Sat, 07 Feb 2009 18:38:45 -0500
+
 debathena-reactivate (1.7) unstable; urgency=low
 
   * Configure locate's cron job to not walk /login.
