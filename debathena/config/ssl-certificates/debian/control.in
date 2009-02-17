@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: debathena-ssl-certificates
 Architecture: all
-Depends: openssl, ${misc:Depends}
+Depends: ca-certificates, ${misc:Depends}
 Description: SSL certificates for Debathena
  This packages includes the MIT CA certificates.

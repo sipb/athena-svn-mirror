@@ -1,3 +1,11 @@
+debathena-ssl-certificates (1.3) unstable; urgency=low
+
+  * Let the MIT CA be managed by update-ca-certificates.  (This causes the
+    CA to be added to /etc/ssl/certs/ca-certificates.crt, and also lets
+    Java use the CA.)
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 17 Feb 2009 06:26:17 -0500
+
 debathena-ssl-certificates (1.2) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
