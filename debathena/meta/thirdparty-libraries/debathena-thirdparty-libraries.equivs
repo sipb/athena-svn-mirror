@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-libraries
-Version: 0.1
+Version: 0.2
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: libatlas-base-dev,
  libatlas-sse-dev,
@@ -42,7 +42,7 @@ Depends: libatlas-base-dev,
  motif-clients,
  gsl-bin,
  gsl-doc-pdf,
- gsl-doc-html,
+ gsl-ref-html,
  libgsl0-dev,
  libocamlgsl-ocaml,
  libocamlgsl-ocaml-dev,
@@ -82,7 +82,7 @@ Depends: libatlas-base-dev,
  libcln5,
  libcln-dev,
  libitpp-doc,
- libitpp6,
+ libitpp6 | libitpp6gf,
  libitpp-dev,
  libqhull-dev,
  libqhull5,

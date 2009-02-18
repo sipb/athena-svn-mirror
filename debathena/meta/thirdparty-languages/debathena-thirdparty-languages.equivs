@@ -3,22 +3,18 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-languages
-Version: 0.1
+Version: 0.2
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: cmake,
  python-numpy,
  python-numpy-ext,
  python-numpy-doc,
- g77,
- g77-doc,
  gfortran,
  gfortran-doc,
  gfortran-multilib,
+ jikes
  jikes-classpath,
- jikes-gij,
  ant-doc,
- mit-scheme,
- mit-scheme-doc,
  valgrind,
  jython,
  jython-doc,
@@ -78,6 +74,13 @@ Depends: cmake,
  yorick-z,
  eclipse-cdt,
  eclipse-pydev
+
+Recommends:
+ mit-scheme,
+ mit-scheme-doc,
+ g77,
+ g77-doc,
+ jikes-gij
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in

@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-utilities
-Version: 0.1
+Version: 0.2
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: nfs-common,
  mtoolsfm,
@@ -18,7 +18,7 @@ Depends: nfs-common,
  recode,
  recode-doc,
  units,
- tofromdos,
+ tofrodos,
  gitk,
  hfsutils-tcltk,
  mercurial,
