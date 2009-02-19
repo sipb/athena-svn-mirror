@@ -27,7 +27,7 @@ bootflag=/var/run/athena-reboot-after-update
 lockfile=/var/run/athena-snapshot.lock
 snapshotsize=10G
 event=$1
-binddirs="/proc /sys /dev /var/run /var/lock /afs /mit /tmp /media /home"
+binddirs="/proc /sys /dev /dev/shm /dev/pts /var/run /var/lock /var/tmp /afs /mit /tmp /media /home"
 addgroups="admin lpadmin adm fuse cdrom floppy audio video plugdev scanner dialout"
 
 rootdev=$(awk '$2 == "/" { dev=$1 } END { print dev }' /proc/mounts)
@@ -68,6 +68,11 @@ uloginlvpath=/dev/$vgname/login-update
     # Mount the login snapshot.
     mkdir -p /login
     mount "$loginlvpath" /login
+
+    # Enable subtree operations on /media by making it a mount point,
+    # then share it.
+    mount --bind /media /media
+    mount --make-shared /media
 
     # Bind-mount a bunch of stuff from the real root into the chroot.
     for dir in $binddirs; do
@@ -113,9 +118,13 @@ EOF
     # Clean up the bind mounts we made earlier.
     # If any of these fail, the umount of /login will fail below,
     # and we will reboot.
-    for dir in $binddirs; do
+    for dir in $(echo $binddirs|tac -s\ ); do
       umount "/login$dir" || true
     done
+
+    # Unmount /media, which we bind-mounted to itself earlier so it could be shared
+    # and then bind-mounted.
+    umount /media
 
     # Attempt to unmount /login.
     if ! umount /login; then

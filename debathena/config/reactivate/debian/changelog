@@ -1,3 +1,13 @@
+debathena-reactivate (1.9) unstable; urgency=low
+
+  * Added /dev/pts and /dev/shm to the bind-mount list such that matlab and
+    mathematica can run.
+  * Made /media a shared mount (which also required pre-bind-mounting it
+    to itself) so that USB automounts are visible inside the chroot.
+  * Reversed the order of unmounting such that it's more likely to succeed.
+
+ -- andrew m. boardman <amb@mit.edu>  Thu, 19 Feb 2009 16:51:30 -0500
+	
 debathena-reactivate (1.8) unstable; urgency=low
 
   * Try to kill remaining user processes using any of the login
