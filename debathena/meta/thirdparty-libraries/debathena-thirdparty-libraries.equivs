@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-libraries
-Version: 0.2
+Version: 0.3
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: libatlas-base-dev,
  libatlas-sse-dev,
@@ -37,7 +37,6 @@ Depends: libatlas-base-dev,
  libboost-thread1.34.1,
  libboost-wave-dev,
  libboost-wave1.34.1,
- libmotif-dev,
  libmotif3,
  motif-clients,
  gsl-bin,
