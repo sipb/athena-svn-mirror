@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-graphics
-Version: 0.2
+Version: 0.3
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: inventor-data,
  inventor-demo,
@@ -63,8 +63,7 @@ Depends: inventor-data,
  sdr,
  xprint-utils
 
-Recommends: djview,
-  inventor-dev,
+Recommends: inventor-dev,
   inventor-clients
 
 Copyright: ../common/copyright
