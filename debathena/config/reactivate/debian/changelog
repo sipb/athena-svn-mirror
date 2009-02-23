@@ -1,3 +1,9 @@
+debathena-reactivate (1.10) unstable; urgency=low
+
+  * Ignore failure to umount /media.
+
+ -- Robert Basch <rbasch@mit.edu>  Mon, 23 Feb 2009 12:41:53 -0500
+
 debathena-reactivate (1.9) unstable; urgency=low
 
   * Added /dev/pts and /dev/shm to the bind-mount list such that matlab and

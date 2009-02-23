@@ -122,9 +122,9 @@ EOF
       umount "/login$dir" || true
     done
 
-    # Unmount /media, which we bind-mounted to itself earlier so it could be shared
-    # and then bind-mounted.
-    umount /media
+    # Unmount /media, which we bind-mounted to itself earlier so it
+    # could be shared and then bind-mounted.
+    umount /media || true
 
     # Attempt to unmount /login.
     if ! umount /login; then
