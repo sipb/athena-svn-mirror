@@ -3,9 +3,10 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-login
-Version: 0.2.4
+Version: 0.2.5
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-athinfod,
+ debathena-fingerd-config,
  debathena-moira-passwd-config,
  debathena-nsswitch-config,
  debathena-pam-config,
