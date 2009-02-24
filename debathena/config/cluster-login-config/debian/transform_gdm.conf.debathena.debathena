@@ -1,3 +1,4 @@
 #!/bin/sed -f
 s/^SystemCommandsInMenu=.*/SystemCommandsInMenu=/
 s/^AllowLogoutActions=.*/AllowLogoutActions=/
+s/^#\?FlexibleXServers=.*/FlexibleXServers=0/
