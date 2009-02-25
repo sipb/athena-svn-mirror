@@ -22,8 +22,7 @@ else
 endif
 
 if (! $?skip_initial_xterm) then
-  if ($?verbose_login) echo "Creating initial xterm window..."
-  (gnome-terminal --geometry=80x40-0-0 >& /dev/null &)
+  setenv ATHENA_INITIAL_X_TERMINAL
 endif
 
 if (! $?skip_x_startup) then

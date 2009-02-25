@@ -1,7 +1,9 @@
 debian/97debathena-homedir-mode etc/X11/Xsession.d
 debian/98debathena-xsession etc/X11/Xsession.d
+debian/athena-initial-x-terminal.desktop etc/xdg/autostart
 debian/displaylert usr/lib/init
 debian/displaymotd usr/lib/init
+debian/initial-x-terminal usr/lib/init
 debian/quotawarn usr/lib/init
 debian/xsession.bash usr/lib/init
 debian/xsession.tcsh usr/lib/init

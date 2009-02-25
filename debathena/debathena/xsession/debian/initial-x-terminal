@@ -1,0 +1,6 @@
+#!/bin/sh
+
+if [ "${ATHENA_INITIAL_X_TERMINAL+set}" = set ]; then
+  gnome-terminal --geometry=80x40-0-0 >/dev/null 2>&1 &
+fi
+exit 0

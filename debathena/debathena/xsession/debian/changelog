@@ -1,3 +1,10 @@
+debathena-xsession (1.6) unstable; urgency=low
+
+  * Use xdg's autostart facility to launch the initial gnome-terminal,
+    so that it properly belongs to the GNOME session.
+
+ -- Robert Basch <rbasch@mit.edu>  Tue, 24 Feb 2009 18:53:08 -0500
+
 debathena-xsession (1.5) unstable; urgency=low
 
   [ William D Cattey ]

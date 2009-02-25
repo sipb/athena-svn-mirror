@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Initial X Terminal
+Comment=Athena Initial X Terminal Emulator
+Icon=gnome-terminal
+Exec=/usr/lib/init/initial-x-terminal
+Terminal=false
+Type=Application

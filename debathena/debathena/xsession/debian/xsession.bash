@@ -27,7 +27,7 @@ fi
 # "skip_initial_xterm=t" in your ~/.bash_environment file.
 
 if [ "${skip_initial_xterm+set}" != set ]; then
-  (gnome-terminal --geometry=80x40-0-0 >/dev/null 2>&1 &)
+  export ATHENA_INITIAL_X_TERMINAL=
 fi
 
 if [ "${skip_x_startup+set}" != set ]; then
