@@ -8,9 +8,13 @@ if [ -z "$ATHENA_SYS" ]; then
     export ATHENA_SYS=@sys
 fi
 
+# If your Athena username differs from your local username,
+# you should override this in your own .bashrc or .bashrc.mine.
+export ATHENA_USER=$USER
+
 renew () {
     principal=`klist -5 2>/dev/null | sed -n 's/^Default principal: // p'`
-    kinit -54 "${principal:-${ATHENA_USER:-$USER}}" || return $?
+    kinit -54 "${principal:-$ATHENA_USER}" || return $?
     [ -e /afs/athena.mit.edu ] && aklog || {
 	ret=$?
 	echo >&2

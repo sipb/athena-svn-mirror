@@ -1,3 +1,10 @@
+debathena-shell-config (1.10) unstable; urgency=low
+
+  * Default ATHENA_USER to USER.
+  * Fix csh renew to use $ATHENA_USER.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 26 Feb 2009 20:00:07 -0500
+
 debathena-shell-config (1.9) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
