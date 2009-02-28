@@ -20,15 +20,6 @@ set -e
 
 #DEBHELPER#
 
-divert_symlink()
-{
-    # Use to symlink e.g /bin/fs -> /usr/bin/fs
-    file=$1
-    if [ ! -e "${file}" ]; then
-	ln -s "/usr${file}" "${file}"
-    fi
-}
-
 lose_setuid()
 {
     file=$1
@@ -44,28 +35,9 @@ case "$1" in
  
 	# Make /srv/tmp exists so we can symlink to it.
 	mkdir -p /srv/tmp
-# 	# Make sure /tmp is setup correctly.
-# 	ln -s /srv/tmp/ /tmp
-# 	chmod 777 /srv/tmp/
-# 	chmod +t /srv/tmp/
 
 	# make motd not change on reboot
 	sed -i 's/EDITMOTD=yes/EDITMOTD=no/' /etc/default/rcS
-
-	# Deal with binaries that are in /bin/athena on Athena and not
-	# /bin in Debian
-	# Commented so that people will fix their scripts.  --andersk
-	#divert_symlink /bin/aklog
-	#divert_symlink /bin/bos
-	#divert_symlink /bin/detach
-	#divert_symlink /bin/fs
-	#divert_symlink /bin/getcluster
-	#divert_symlink /bin/hesinfo
-	#divert_symlink /bin/klog
-	#divert_symlink /bin/pts
-	#divert_symlink /bin/tokens
-	#divert_symlink /bin/unlog
-	#divert_symlink /bin/vos
 
 	# replace logcheck config
 	# make logcheck able to read its stuff and run every minute
