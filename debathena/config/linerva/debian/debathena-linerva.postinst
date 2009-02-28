@@ -32,14 +32,11 @@ case "$1" in
 	if [ -e /srv/old ]; then
 	    chmod 700 /srv/old
 	fi
- 
+
 	# Make /srv/tmp exists so we can symlink to it.
 	mkdir -p /srv/tmp
 
-	# replace logcheck config
-	# make logcheck able to read its stuff and run every minute
-	sed -i 's/. \* \* \* \*/* * * * */' /etc/cron.d/logcheck
-	/etc/init.d/cron reload
+	# make logcheck able to read its stuff
 	chown logcheck /var/lib/logcheck/
 	chown logcheck /var/lock/logcheck/
 	chmod 750 /etc/logcheck

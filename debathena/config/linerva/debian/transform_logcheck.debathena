@@ -1,0 +1,3 @@
+#!/usr/bin/perl -0p
+# run every minute
+s/. \* \* \* \*/* * * * */
