@@ -3,12 +3,13 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-standard
-Version: 0.2.4
+Version: 0.2.5
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-athena-libraries,
  debathena-clients,
  debathena-dotfiles,
  debathena-locker,
+ debathena-archive-keyring
 Recommends: debathena-bash,
  debathena-tcsh,
  debathena-msmtp-mta
