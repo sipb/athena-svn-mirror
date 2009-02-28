@@ -36,9 +36,6 @@ case "$1" in
 	# Make /srv/tmp exists so we can symlink to it.
 	mkdir -p /srv/tmp
 
-	# make motd not change on reboot
-	sed -i 's/EDITMOTD=yes/EDITMOTD=no/' /etc/default/rcS
-
 	# replace logcheck config
 	# make logcheck able to read its stuff and run every minute
 	sed -i 's/. \* \* \* \*/* * * * */' /etc/cron.d/logcheck
