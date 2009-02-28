@@ -1,6 +1,6 @@
-#auth        sufficient  pam_unix.so nullok_secure debug
-#auth        required    pam_krb5.so forwardable use_first_pass debug
-auth         [default=1 success=ignore]          pam_succeed_if.so uid eq 0
-auth         sufficient pam_unix.so              nullok_secure
-auth         [default=1 success=ignore]          pam_succeed_if.so uid > 0
-auth    required        pam_krb5.so              forwardable
+#password    sufficient  pam_unix.so nullok_secure md5 debug
+#password    required    pam_krb5.so use_first_pass use_authtok debug
+password    [default=1 success=ignore]    pam_succeed_if.so uid eq 0
+password    sufficient  pam_unix.so       nullok_secure md5 debug
+password    [default=1 success=ignore]    pam_succeed_if.so uid > 0
+password    required    pam_krb5.so
