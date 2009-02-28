@@ -1,0 +1,57 @@
+#!/bin/bash
+
+list_bad_setuid () {
+  find / -xdev -type f -perm +4000 -print 2> /dev/null \
+   | diff --old-line-format= --unchanged-line-format= /dev/fd/3 - 3<<EOF
+#for pyhesiodfs
+/usr/bin/fusermount
+#for athmode
+/usr/bin/schroot
+#network utilities
+/usr/bin/traceroute.lbl
+/usr/bin/traceroute6
+/usr/bin/mtr
+/bin/ping6
+/bin/ping
+EOF
+}
+
+list_bad_setgid () {
+  find / -xdev -type f -perm +2000 \
+    -not -group mit -not -group games -print 2> /dev/null \
+   | diff --old-line-format= --unchanged-line-format= /dev/fd/3 - 3<<EOF
+#for attachtab
+/usr/bin/quota.debathena
+/bin/attach
+EOF
+}
+
+case "$1" in
+  --list|"")
+    echo "Unexpected setuid files:"
+    ls -l $(list_bad_setuid)
+    echo
+    echo "Unexpected setgid files:"
+    ls -l $(list_bad_setgid)
+    echo
+    echo "Run $0 --clean to fix these."
+  ;;
+
+  --clean)
+    setuid="$(list_bad_setuid)"
+    setgid="$(list_bad_setgid)"
+    echo "Unexpected setuid files:"
+    ls -l $setuid
+    echo
+    echo "Unexpected setgid files:"
+    ls -l $setgid
+    echo
+    chmod u-s $setuid
+    chmod g-s $setgid
+  ;;
+
+  *)
+    echo "Huh?  Try --list or --clean." >&2
+    exit 2
+  ;;
+esac

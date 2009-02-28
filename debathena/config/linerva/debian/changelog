@@ -3,8 +3,9 @@ debathena-linerva (1.13) unstable; urgency=low
   * cut commented code
   * EDIT_MOTD no longer exists in /etc/default/rcS
   * use DEB_TRANSFORM_FILES rather than sed -i in postinst
+  * pull out setuid/setgid cleanup into a script; whitelist, not blacklist
 
- -- Greg Price <price@mit.edu>  Sat, 28 Feb 2009 16:40:36 -0500
+ -- Greg Price <price@mit.edu>  Sat, 28 Feb 2009 18:48:50 -0500
 
 debathena-linerva (1.12) unstable; urgency=low
 
