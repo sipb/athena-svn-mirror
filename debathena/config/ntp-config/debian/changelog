@@ -1,3 +1,9 @@
+debathena-ntp-config (1.2) unstable; urgency=low
+
+  * Switch to using DEB_TRANSFORM_FILES instead of DEB_DIVERT_FILES
+
+ -- Evan Broder <broder@mit.edu>  Sun, 25 Jan 2009 22:26:39 -0500
+
 debathena-ntp-config (1.1) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.

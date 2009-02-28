@@ -1,0 +1,4 @@
+#!/usr/bin/perl -0p
+s/^server .*$/###SERVER/m or die;
+s/^server .*$//mg;
+s/###SERVER/server TIME.MIT.EDU/ or die;
