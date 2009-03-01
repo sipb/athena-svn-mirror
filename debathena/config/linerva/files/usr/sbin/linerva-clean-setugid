@@ -2,7 +2,7 @@
 
 list_bad_setuid () {
   find / -xdev -type f -perm +4000 -print 2> /dev/null \
-   | diff --old-line-format= --unchanged-line-format= /dev/fd/3 - 3<<EOF
+   | fgrep -xvf /dev/fd/3 3<<EOF
 #for pyhesiodfs
 /usr/bin/fusermount
 #for athmode
@@ -19,7 +19,7 @@ EOF
 list_bad_setgid () {
   find / -xdev -type f -perm +2000 \
     -not -group mit -not -group games -print 2> /dev/null \
-   | diff --old-line-format= --unchanged-line-format= /dev/fd/3 - 3<<EOF
+   | fgrep -xvf /dev/fd/3 3<<EOF
 #for attachtab
 /usr/bin/quota.debathena
 /bin/attach
