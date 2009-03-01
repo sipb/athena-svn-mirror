@@ -1,6 +1,7 @@
 
-Linerva is now running Debathena based on Debian etch.  Outage announcements
-will be sent to <linerva-announce@mit.edu>.  For more information, visit
-<http://linerva.mit.edu>.  Please send any questions or bug reports to the SIPB
-Linerva maintainers <linerva@mit.edu>; do not seek support from IS&T.
+Welcome to Linerva, the SIPB Linux dialup for MIT.
+Linerva runs Debathena on Debian etch.
+ http://linerva.mit.edu                           for more information
+ blanche linerva-announce -a $USER          # for outage announcements
+ linerva@mit.edu              (not IS&T) for questions and bug reports
 

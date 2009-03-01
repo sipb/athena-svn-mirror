@@ -23,7 +23,6 @@ DEB_DIVERT_FILES_debathena-linerva += \
 	/etc/motd.debathena \
 	/etc/resolv.conf.debathena \
 	/etc/security/limits.conf.debathena \
-	/etc/openafs/cacheinfo.debathena.debathena \
 	/sbin/init.debathena \
 	/etc/ssh/sshd_config.debathena.debathena
 DEB_TRANSFORM_FILES_debathena-linerva += \

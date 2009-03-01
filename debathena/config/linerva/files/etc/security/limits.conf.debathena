@@ -48,8 +48,9 @@ tabbott		hard	maxlogins	100
 nelhage		hard	maxlogins	100
 andersk		hard	maxlogins	100
 jbarnold	hard	maxlogins	100
+broder	hard	maxlogins	100
+price	hard	maxlogins	100
 root		hard	maxlogins	100
 *		hard	nproc		200
 *		hard	nofile		1024
 *		hard	cpu		240
-
