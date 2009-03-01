@@ -1,5 +1,6 @@
 debathena-linerva (1.13) unstable; urgency=low
 
+  [ Greg Price ]
   * cut commented code
   * EDIT_MOTD no longer exists in /etc/default/rcS
   * use DEB_TRANSFORM_FILES rather than sed -i in postinst
@@ -8,7 +9,10 @@ debathena-linerva (1.13) unstable; urgency=low
   * /etc/openafs/cacheinfo.debathena.debathena is no longer necessary
   * motd: etch isn't new; also pull info out in format
 
- -- Greg Price <price@mit.edu>  Sat, 28 Feb 2009 19:18:19 -0500
+  [ Evan Broder ]
+  * sync /etc/security/access.conf.debathena from linerva
+
+ -- Evan Broder <broder@mit.edu>  Sat, 28 Feb 2009 19:40:44 -0500
 
 debathena-linerva (1.12) unstable; urgency=low
 
