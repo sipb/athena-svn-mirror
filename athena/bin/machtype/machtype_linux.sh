@@ -91,12 +91,15 @@ if [ $syspacks ]; then
 fi
 
 if [ $ath_vers ]; then
-	if [ $verbose ]; then
-		tail -1 /etc/athena/version
-	else
-		awk '{ v = $5; } END { print v; }' /etc/athena/version
-	fi
-	printed=1
+	for meta in cluster workstation login standard clients locker athena-libraries extra-software extra-software-nox thirdparty; do
+		if dpkg-query --showformat '${Status}\n' -W "debathena-$meta" 2>/dev/null | grep -q ' installed$'; then
+			echo "debathena-$meta"
+			printed=1
+			if [ ! $verbose ]; then
+				break
+			fi
+		fi
+	done
 fi
 
 if [ $base_os_name ]; then
@@ -109,7 +112,7 @@ if [ $base_os_name ]; then
 fi
 
 if [ $base_os_ver ]; then
-	uname -r
+	lsb_release -sd
 	printed=1
 fi
 

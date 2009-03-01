@@ -1,3 +1,10 @@
+debathena-machtype (10.0.0-0debathena4) unstable; urgency=low
+
+  * Change `machtype -E` and `machtype -L` to output more informative
+    information.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 28 Feb 2009 19:13:47 -0500
+
 debathena-machtype (10.0.0-0debathena3) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
