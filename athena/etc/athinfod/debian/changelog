@@ -1,3 +1,13 @@
+debathena-athinfod (10.0.0-0debathena2) unstable; urgency=low
+
+  * Remove queries that are no longer meaningful on Debathena.
+  * Update the version query to output a more useful representation of the
+    version installed.
+  * Change "full-upgrade" to "dist-upgrade" for old releases that don't
+    support "full-upgrade".
+
+ -- Evan Broder <broder@mit.edu>  Sat, 28 Feb 2009 19:31:56 -0500
+
 debathena-athinfod (10.0.0-0debathena1) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.

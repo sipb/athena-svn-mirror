@@ -15,15 +15,9 @@ display		/bin/machtype -v -d
 disks		/bin/machtype -v -r
 memory		/bin/machtype -v -M
 swap		swapon -s
-rc.conf		cat /etc/athena/rc.conf
-version		cat /etc/athena/version
+version		echo `machtype -L` on `machtype -E`
 clusterinfo	test -r /var/athena/clusterinfo && cat /var/athena/clusterinfo 
 clusterinfo.bsh	test -r /var/athena/clusterinfo.bsh && cat /var/athena/clusterinfo.bsh 
-update.desync	test -r /var/athena/update.desync && cat /var/athena/update.desync
-services	test -r /var/server/.services && cat /var/server/.services
-update.log	. /etc/athena/rc.conf && test true = "$PUBLIC" && test -r /var/athena/update.log && cat /var/athena/update.log
-install.log	test -r /var/athena/install.log && cat /var/athena/install.log
-verify.log	test -r /var/athena/verify.log && cat /var/athena/verify.log
 date		date
 uptime		uptime
 partitions	fdisk -l
@@ -35,4 +29,4 @@ login		test -f /etc/nologin; echo $?
 cpuspeed	grep MHz /proc/cpuinfo
 packages	dpkg-query -W
 modules  	lsmod
-update-status	aptitude --simulate --assume-yes full-upgrade
+update-status	aptitude --simulate --assume-yes dist-upgrade
