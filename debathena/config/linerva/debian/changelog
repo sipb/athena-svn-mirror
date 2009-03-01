@@ -1,3 +1,9 @@
+debathena-linerva (1.15) unstable; urgency=low
+
+  * Make linerva-clean-setugid use dpkg-statoverride again.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat, 28 Feb 2009 23:30:44 -0500
+
 debathena-linerva (1.14) unstable; urgency=low
 
   * Move logcheck configuration into a separate git repository.

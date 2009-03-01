@@ -27,42 +27,32 @@ EOF
 }
 
 case "$1" in
-  --list|"")
+  --list|""|--clean)
     found=""
-    setuid="$(list_bad_setuid)"
-    setgid="$(list_bad_setgid)"
-    if [ -n "$setuid" ]; then
-        echo "Unexpected setuid files:"
-        ls -l $(list_bad_setuid)
-        echo
-        found=1
-    fi
-    if [ -n "$setgid" ]; then
-        echo "Unexpected setgid files:"
-        ls -l $(list_bad_setgid)
-        echo
-        found=1
-    fi
-    if [ -n "$found" ]; then
-        echo "Run $0 --clean to fix these."
-    fi
-  ;;
-
-  --clean)
     setuid="$(list_bad_setuid)"
     setgid="$(list_bad_setgid)"
     if [ -n "$setuid" ]; then
         echo "Unexpected setuid files:"
         ls -l $setuid
         echo
-        chmod u-s $setuid
+        found=1
     fi
-
     if [ -n "$setgid" ]; then
         echo "Unexpected setgid files:"
         ls -l $setgid
         echo
-        chmod g-s $setgid
+        found=1
+    fi
+    if [ -n "$found" ]; then
+        if [ "$1" = --clean ]; then
+            stat -c "%U %G %a %n" $setuid $setgid | \
+                while read user group mode file; do
+                dpkg-statoverride --update --add \
+                    "$user" "$group" "${mode:${#mode}-3}" "$file"
+            done
+        else
+            echo "Run $0 --clean to fix these."
+        fi
     fi
   ;;
 
