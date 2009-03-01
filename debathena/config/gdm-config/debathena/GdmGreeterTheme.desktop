@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Greeter=debathena.xml
 Name=Debathena
-Description=Athena-style login dialog
-Author=Geoffrey Thomas <geofft@mit.edu>
-Copyright=© 2008 SIPB (GPL)
+Description=Standard Athena login dialog
+Author=Debathena Project <debathena@mit.edu>
+Copyright=© 2009 MIT (MIT license)
 Screenshot=screenshot.png

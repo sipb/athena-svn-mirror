@@ -1,3 +1,9 @@
+debathena-gdm-config (1.10) unstable; urgency=low
+
+  * Merge the athena10.mit.edu apt repo's fork into the original package.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sun, 01 Mar 2009 00:06:53 -0500
+
 debathena-gdm-config (1.7) unstable; urgency=low
 
   * Remove the somewhat broken "Secure Remote Connection" session

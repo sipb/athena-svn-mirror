@@ -1,8 +1,0 @@
-[GdmGreeterTheme]
-Encoding=UTF-8
-Greeter=debathena.xml
-Name=Debathena
-Description=Athena-style login dialog
-Author=William D. Cattey <wdc@mit.edu>
-Copyright=© 2009 MIT (GPL)
-Screenshot=screenshot.png

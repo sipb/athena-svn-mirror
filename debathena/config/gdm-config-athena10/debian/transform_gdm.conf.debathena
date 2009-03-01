@@ -1,3 +1,0 @@
-#!/usr/bin/perl -0p
-s|(\[daemon\]\n)|\1UserAuthDir=/tmp\n| or die;
-s|(\[greeter\]\n)|\1GraphicalTheme=debathena\n| or die;
