@@ -33,7 +33,12 @@ case "$1" in
 	# make logcheck able to read its stuff
 	chown logcheck /var/lib/logcheck/
 	chown logcheck /var/lock/logcheck/
-	chmod 750 /etc/logcheck
+        if [ ! -e /etc/logcheck/.git ]; then
+            mv /etc/logcheck /etc/logcheck.orig
+            git clone /mit/linerva/git/logcheck.git /etc/logcheck
+        fi
+        chmod 750 /etc/logcheck
+        chmod 750 /etc/logcheck.orig
 
 	chmod a=rwx,o+t /var/run/screen  # So that screen works without setuid.
 

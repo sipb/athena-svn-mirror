@@ -28,26 +28,42 @@ EOF
 
 case "$1" in
   --list|"")
-    echo "Unexpected setuid files:"
-    ls -l $(list_bad_setuid)
-    echo
-    echo "Unexpected setgid files:"
-    ls -l $(list_bad_setgid)
-    echo
-    echo "Run $0 --clean to fix these."
+    found=""
+    setuid="$(list_bad_setuid)"
+    setgid="$(list_bad_setgid)"
+    if [ -n "$setuid" ]; then
+        echo "Unexpected setuid files:"
+        ls -l $(list_bad_setuid)
+        echo
+        found=1
+    fi
+    if [ -n "$setgid" ]; then
+        echo "Unexpected setgid files:"
+        ls -l $(list_bad_setgid)
+        echo
+        found=1
+    fi
+    if [ -n "$found" ]; then
+        echo "Run $0 --clean to fix these."
+    fi
   ;;
 
   --clean)
     setuid="$(list_bad_setuid)"
     setgid="$(list_bad_setgid)"
-    echo "Unexpected setuid files:"
-    ls -l $setuid
-    echo
-    echo "Unexpected setgid files:"
-    ls -l $setgid
-    echo
-    chmod u-s $setuid
-    chmod g-s $setgid
+    if [ -n "$setuid" ]; then
+        echo "Unexpected setuid files:"
+        ls -l $setuid
+        echo
+        chmod u-s $setuid
+    fi
+
+    if [ -n "$setgid" ]; then
+        echo "Unexpected setgid files:"
+        ls -l $setgid
+        echo
+        chmod g-s $setgid
+    fi
   ;;
 
   *)

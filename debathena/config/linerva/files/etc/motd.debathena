@@ -1,6 +1,6 @@
 
 Welcome to Linerva, the SIPB Linux dialup for MIT.
-Linerva runs Debathena on Debian etch.
+Linerva runs Debathena on Debian lenny..
  http://linerva.mit.edu                           for more information
  blanche linerva-announce -a $USER          # for outage announcements
  linerva@mit.edu              (not IS&T) for questions and bug reports

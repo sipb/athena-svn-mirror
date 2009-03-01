@@ -7,6 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-linerva
 Architecture: all
+Pre-Depends: git-core
 Depends: logcheck, screen, elinks, sysklogd, linux32, bind9
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}

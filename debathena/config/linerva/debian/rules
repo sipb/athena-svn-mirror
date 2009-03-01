@@ -2,29 +2,13 @@
 
 DEB_DIVERT_EXTENSION = .debathena
 DEB_DIVERT_FILES_debathena-linerva += \
-	/etc/logcheck/logcheck.conf.debathena \
-	/etc/logcheck/ignore.d.server/kernel.debathena \
-	/etc/logcheck/ignore.d.server/perl.debathena \
-	/etc/logcheck/ignore.d.server/ssh.debathena \
-	/etc/logcheck/ignore.d.server/get_message.debathena \
-	/etc/logcheck/ignore.d.server/cron.debathena \
-	/etc/logcheck/ignore.d.server/fingerd.debathena \
-	/etc/logcheck/ignore.d.server/automount.debathena \
-	/etc/logcheck/ignore.d.server/gconfd.debathena \
-	/etc/logcheck/ignore.d.server/screen.debathena \
-	/etc/logcheck/violations.ignore.d/logcheck-automount.debathena \
-	/etc/logcheck/violations.ignore.d/logcheck-gconfd.debathena \
-	/etc/logcheck/violations.ignore.d/logcheck-get_message.debathena \
-	/etc/logcheck/violations.ignore.d/logcheck-kernel.debathena \
-	/etc/logcheck/violations.ignore.d/logcheck-perl.debathena \
-	/etc/logcheck/violations.ignore.d/logcheck-screen.debathena \
-	/etc/logcheck/violations.ignore.d/logcheck-ssh.debathena \
 	/usr/bin/elinks.debathena \
 	/etc/motd.debathena \
 	/etc/resolv.conf.debathena \
 	/etc/security/limits.conf.debathena \
 	/sbin/init.debathena \
-	/etc/ssh/sshd_config.debathena.debathena
+	/etc/ssh/sshd_config.debathena.debathena \
+	/etc/security/access.conf.debathena.debathena
 DEB_TRANSFORM_FILES_debathena-linerva += \
 	/etc/syslog.conf.debathena \
 	/etc/cron.d/logcheck.debathena
