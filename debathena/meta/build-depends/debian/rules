@@ -32,6 +32,7 @@ debian/deps: check-debathena-repository-added
 	    sort -u | \
 	    grep -v '\[' | \
 	    grep -v tetex | \
+	    grep -v chrony | grep -v ntp | \
 	    tr '\n' ',' >> $@;
 	echo >> $@
 
