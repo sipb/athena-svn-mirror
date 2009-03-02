@@ -1,3 +1,9 @@
+debathena-athinfod (10.0.0-0debathena4) unstable; urgency=low
+
+  * Actually add the right dependency.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 02 Mar 2009 13:06:02 -0500
+
 debathena-athinfod (10.0.0-0debathena3) unstable; urgency=low
 
   * Add missing dependency on machtype.

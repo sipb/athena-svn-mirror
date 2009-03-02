@@ -9,7 +9,7 @@ Package: debathena-athinfod
 Architecture: any
 Provides: athinfod
 Conflicts: debathena-athena-files (<= 0.1.2)
-Depends: ${shlibs:Depends}, ${misc:Depends}, netbase, openbsd-inetd | inet-superserver, machtype
+Depends: ${shlibs:Depends}, ${misc:Depends}, netbase, openbsd-inetd | inet-superserver, debathena-machtype
 Description: An Athena server to respond to athinfo requests
  Respond to network queries for information about the workstation, such 
  as its hardware type and configuration, its current software 
