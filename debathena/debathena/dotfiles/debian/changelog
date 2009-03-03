@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.9-0debathena1) unstable; urgency=low
+
+  * In bash, parse $PRINTER from the csh clusterinfo because it's easier.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 03 Mar 2009 14:24:09 -0500
+
 debathena-dotfiles (10.0.8-0debathena1) unstable; urgency=low
 
   * Set $EMAIL in the system dotfiles.
