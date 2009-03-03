@@ -34,7 +34,7 @@ case "$1" in
 
 	# Set mandatory gconf key values.
 	gcsrc=xml:readwrite:/etc/gconf/gconf.xml.mandatory
-	gc="gconftool-2 --direct ---config-source=$gcsrc --set"
+	gc="gconftool-2 --direct --config-source=$gcsrc --set"
 	$gc -t bool /desktop/gnome/lockdown/disable_user_switching true
 	$gc -t bool /apps/gnome-screensaver/logout_enabled true
 	$gc -t int /apps/gnome-screensaver/logout_delay 20
@@ -56,7 +56,7 @@ case "$1" in
 
 	# Set up gconf defaults.
 	gcsrc=xml:readwrite:/etc/gconf/gconf.xml.defaults
-	gc="gconftool-2 --direct ---config-source=$gcsrc --set"
+	gc="gconftool-2 --direct --config-source=$gcsrc --set"
 	$gc -t string \
 	    /desktop/gnome/session/required_components/windowmanager \
 	    "/usr/bin/metacity"

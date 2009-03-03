@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.6) unstable; urgency=low
+
+  * Fix a typo in gconftool-2's --config-source option.
+
+ -- Robert Basch <rbasch@mit.edu>  Tue, 03 Mar 2009 17:52:20 -0500
+
 debathena-cluster-login-config (1.5) unstable; urgency=low
 
   * Make metacity the default window manager for now.
