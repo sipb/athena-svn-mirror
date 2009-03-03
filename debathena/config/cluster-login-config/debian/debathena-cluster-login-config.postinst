@@ -54,6 +54,13 @@ case "$1" in
 	$gc -t bool /apps/gnome-screensaver/lock_enabled true
 	$gc -t int /apps/gnome-screensaver/lock_delay 1
 
+	# Set up gconf defaults.
+	gcsrc=xml:readwrite:/etc/gconf/gconf.xml.defaults
+	gc="gconftool-2 --direct ---config-source=$gcsrc --set"
+	$gc -t string \
+	    /desktop/gnome/session/required_components/windowmanager \
+	    "/usr/bin/metacity"
+
         cat >>/etc/sudoers <<EOF
 ### BEGIN debathena-cluster-login-config
 %admin ALL=(root) ALL
