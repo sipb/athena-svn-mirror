@@ -1,4 +1,4 @@
-debathena-cluster-login-config (1.5) hardy; urgency=low
+debathena-cluster-login-config (1.5) unstable; urgency=low
 
   * Make metacity the default window manager for now.
 
