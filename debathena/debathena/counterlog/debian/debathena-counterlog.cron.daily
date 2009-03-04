@@ -15,7 +15,7 @@ else
   echo "$id" > $idfile
 fi
 
-version=debathena
+version=$(machtype -L)
 loghost=wslogger.mit.edu
 host=$(hostname --fqdn)
 mtype=$(machtype)
