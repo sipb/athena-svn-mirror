@@ -15,28 +15,8 @@ else
   echo "$id" > $idfile
 fi
 
-# Determine if this is an Athena 10 or Debathena machine.
-slist=/etc/apt/sources.list.d/debathena.list
-if [ ! -r $slist ]; then
-  slist=/etc/apt/sources.list
-fi
-aptloc=$(awk '/^deb .* debathena.*/ {print $2}' $slist)
-case $aptloc in
-*//athena10.mit.edu/*)
-  version=athena10
-  loghost=wslogger.mit.edu
-  ;;
-*//debathena.mit.edu/*)
-  # SIPB does not currently have a log host set up.  Change this block
-  # if it sets one up and wants counter logs.
-  version=debathena
-  exit
-  ;;
-*)
-  exit
-  ;;
-esac
-
+version=debathena
+loghost=wslogger.mit.edu
 host=$(hostname --fqdn)
 mtype=$(machtype)
 ctype=$(machtype -c)

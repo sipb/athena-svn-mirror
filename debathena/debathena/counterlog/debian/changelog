@@ -1,3 +1,9 @@
+debathena-counterlog (1.2) unstable; urgency=low
+
+  * Use wslogger.mit.edu as the log host unconditionally.
+
+ -- Tim Abbott <tabbott@mit.edu>  Wed, 04 Mar 2009 01:30:50 -0500
+
 debathena-counterlog (1.1) unstable; urgency=low
 
   * Add a copyright file.
