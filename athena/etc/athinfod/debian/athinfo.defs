@@ -16,8 +16,8 @@ disks		/bin/machtype -v -r
 memory		/bin/machtype -v -M
 swap		swapon -s
 version		echo `machtype -L` on `machtype -E`
-clusterinfo	test -r /var/athena/clusterinfo && cat /var/athena/clusterinfo 
-clusterinfo.bsh	test -r /var/athena/clusterinfo.bsh && cat /var/athena/clusterinfo.bsh 
+clusterinfo	test -r /var/run/athena-clusterinfo.csh && cat /var/run/athena-clusterinfo.csh
+clusterinfo.bsh	test -r /var/run/athena-clusterinfo.sh && cat /var/run/athena-clusterinfo.sh
 date		date
 uptime		uptime
 partitions	fdisk -l
