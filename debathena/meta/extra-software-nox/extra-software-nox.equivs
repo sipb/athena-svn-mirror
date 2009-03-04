@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software-nox
-Version: 0.10
+Version: 0.11
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: build-essential,
   enscript, psutils,
@@ -20,9 +20,12 @@ Depends: build-essential,
   inn2-inews,
   screen,
   lynx,
-  rcs, cvs, subversion, bzr, mercurial,
+  rcs, cvs, subversion, bzr, mercurial, monotone,
   git-core, git-cvs, git-svn,
-  manpages-posix-dev, manpages-dev
+  manpages-posix-dev, manpages-dev,
+  perl-doc,
+  bsdgames,
+  auctex
 Recommends: ckermit,
   sun-java6-jdk | sun-java5-jdk,
   x3270,
