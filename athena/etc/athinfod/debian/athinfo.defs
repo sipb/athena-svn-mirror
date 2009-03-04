@@ -20,7 +20,7 @@ clusterinfo	test -r /var/run/athena-clusterinfo.csh && cat /var/run/athena-clust
 clusterinfo.bsh	test -r /var/run/athena-clusterinfo.sh && cat /var/run/athena-clusterinfo.sh
 date		date
 uptime		uptime
-partitions	fdisk -l
+partitions	cat /proc/partitions
 df		df -k -t ext2 -t ext3
 interfaces	netstat -in
 routes		netstat -rn
