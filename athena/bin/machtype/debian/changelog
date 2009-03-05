@@ -1,3 +1,10 @@
+debathena-machtype (10.0.0-0debathena5) unstable; urgency=low
+
+  * machtype -L outputs "debathena" if no metapackages are installed,
+    instead of "linux".
+
+ -- Evan Broder <broder@mit.edu>  Thu, 05 Mar 2009 17:38:20 -0500
+
 debathena-machtype (10.0.0-0debathena4) unstable; urgency=low
 
   * Change `machtype -E` and `machtype -L` to output more informative

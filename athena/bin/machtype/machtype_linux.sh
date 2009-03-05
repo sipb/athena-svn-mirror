@@ -100,6 +100,10 @@ if [ $ath_vers ]; then
 			fi
 		fi
 	done
+        if [ $printed -eq '0' ]; then
+            echo "debathena"
+            printed=1
+        fi
 fi
 
 if [ $base_os_name ]; then
