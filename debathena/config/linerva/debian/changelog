@@ -1,3 +1,9 @@
+debathena-linerva (1.18) unstable; urgency=low
+
+  * trivial motd fix
+
+ -- Greg Price <price@mit.edu>  Thu, 05 Mar 2009 18:37:53 -0500
+
 debathena-linerva (1.17) unstable; urgency=low
 
   * Move linerva-install out of /usr/local
