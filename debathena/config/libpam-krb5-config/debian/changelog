@@ -1,3 +1,9 @@
+libpam-krb5-config (0.0.5) unstable; urgency=low
+
+  * Move to the debathena-config component from the debathena component.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 05 Mar 2009 18:28:22 -0500
+
 libpam-krb5-config (0.0.4) unstable; urgency=low
 
   * Fix debian/copyright.

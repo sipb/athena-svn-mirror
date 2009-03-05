@@ -1,5 +1,5 @@
 Source: debathena-dns-config
-Section: debathena/base
+Section: debathena-config/base
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, bind9

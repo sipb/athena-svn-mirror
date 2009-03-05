@@ -1,3 +1,9 @@
+debathena-msmtp-config (1.5) unstable; urgency=low
+
+  * Move to the debathena-config component from the debathena component.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 05 Mar 2009 18:26:53 -0500
+
 debathena-msmtp-config (1.4) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.

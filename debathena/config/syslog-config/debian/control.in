@@ -1,5 +1,5 @@
 Source: debathena-syslog-config
-Section: debathena/net
+Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, sysklogd
