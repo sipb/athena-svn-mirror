@@ -1,3 +1,10 @@
+debathena-gdm-config (1.11) unstable; urgency=low
+
+  * Restart gdm when uninstalled so that gdm doesn't complain about the
+    missing debathena theme.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 05 Mar 2009 18:13:19 -0500
+
 debathena-gdm-config (1.10) unstable; urgency=low
 
   * Merge the athena10.mit.edu apt repo's fork into the original package.
