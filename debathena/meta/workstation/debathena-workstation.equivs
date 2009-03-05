@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-workstation
-Version: 0.5.2
+Version: 0.6
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-login,
  debathena-gdm-config,
@@ -12,7 +12,9 @@ Depends: debathena-login,
  debathena-firefox-wrapper,
  debathena-pidgin-wrapper | gaim (<< 1:2.0.0+fake),
  debathena-evolution-wrapper,
- debathena-locker-menu
+ debathena-locker-menu,
+ debathena-transcript-glue, debathena-misc-glue,
+ debathena-xlock,
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena Workstation configuration for Debian

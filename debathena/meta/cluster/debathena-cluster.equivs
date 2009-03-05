@@ -3,24 +3,20 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 0.8.6
+Version: 0.8.7
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-workstation,
- debathena-build-depends,
  debathena-extra-software,
  debathena-cluster-login-config,
  debathena-clusterinfo,
  debathena-dns-config,
  debathena-emacs-config,
  debathena-larvnet,
- debathena-misc-glue,
  debathena-ntp-config | debathena-chrony-config,
  debathena-tmp-cleaner,
- debathena-transcript-glue,
  debathena-reactivate,
  debathena-auto-update,
  debathena-syslog-config,
- debathena-xlock
 Recommends: ubuntu-desktop
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
