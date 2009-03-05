@@ -1,3 +1,9 @@
+debathena-linerva (1.17) unstable; urgency=low
+
+  * Move linerva-install out of /usr/local
+
+ -- Evan Broder <broder@mit.edu>  Thu, 05 Mar 2009 15:50:17 -0500
+
 debathena-linerva (1.16) unstable; urgency=low
 
   * Configure the netcat/http inetd service.
