@@ -1,1 +1,0 @@
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ automount\[[0-9]+\]: failed to mount

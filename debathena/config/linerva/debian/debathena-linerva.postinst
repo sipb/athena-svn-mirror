@@ -49,6 +49,9 @@ case "$1" in
 	else
 	    /etc/init.d/openafs-client restart
 	fi
+
+        # Install the http redirect inetd service
+        update-inetd --add "http\tstream\ttcp\tnowait\tnobody\t/bin/nc nc scripts.mit.edu http"
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

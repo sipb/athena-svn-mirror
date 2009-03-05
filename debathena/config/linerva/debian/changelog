@@ -1,3 +1,10 @@
+debathena-linerva (1.16) unstable; urgency=low
+
+  * Configure the netcat/http inetd service.
+  * Remove old logcheck config that's been replaced by Nelson's git repo
+
+ -- Evan Broder <broder@mit.edu>  Thu, 05 Mar 2009 02:50:39 -0500
+
 debathena-linerva (1.15) unstable; urgency=low
 
   * Make linerva-clean-setugid use dpkg-statoverride again.

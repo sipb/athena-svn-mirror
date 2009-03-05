@@ -1,8 +1,0 @@
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: lp[0-9]+ out of paper$
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: grsec: From [1234567890.]*: signal [1234567890]* sent to
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: grsec: signal [1234567890]* sent to
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: grsec: From [1234567890.]*: denied resource overstep by requesting 4096 for RLIMIT_CORE
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: afs: Waiting for busy volume 
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: afs: Tokens for user of AFS id .* have expired
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: grsec: more alerts, logging disabled for 10 seconds
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: process `\w+' is using obselete setsockopt
