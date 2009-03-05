@@ -1,3 +1,10 @@
+debathena-athinfod (10.0.0-0debathena6) unstable; urgency=low
+
+  * Change the packages query to filter out packages that aren't
+    installed.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 05 Mar 2009 14:45:53 -0500
+
 debathena-athinfod (10.0.0-0debathena5) unstable; urgency=low
 
   * Fix the clusterinfo queries.
