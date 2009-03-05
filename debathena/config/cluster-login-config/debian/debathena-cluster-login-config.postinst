@@ -63,7 +63,7 @@ case "$1" in
 
         cat >>/etc/sudoers <<EOF
 ### BEGIN debathena-cluster-login-config
-%admin ALL=(root) ALL
+%admin ALL=(ALL) ALL
 ### END debathena-cluster-login-config
 EOF
 

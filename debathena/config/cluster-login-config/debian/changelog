@@ -1,3 +1,10 @@
+debathena-cluster-login-config (1.7) unstable; urgency=low
+
+  * Allow users to sudo to anyone, primarily so they can sudo to
+    themselves for debathena-reactivate.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 04 Mar 2009 22:08:40 -0500
+
 debathena-cluster-login-config (1.6) unstable; urgency=low
 
   * Fix a typo in gconftool-2's --config-source option.

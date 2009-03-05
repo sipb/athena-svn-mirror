@@ -1,3 +1,10 @@
+debathena-reactivate (1.11) unstable; urgency=low
+
+  * Work around an schroot bug that causes you to get dropped from all of
+    your groups.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 04 Mar 2009 22:01:39 -0500
+
 debathena-reactivate (1.10) unstable; urgency=low
 
   * Ignore failure to umount /media.

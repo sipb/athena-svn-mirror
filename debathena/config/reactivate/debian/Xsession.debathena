@@ -1,4 +1,7 @@
 #!/bin/sh
 
-#!/bin/bash
-exec schroot -c login -p /etc/gdm/Xsession.debathena-orig "$@"
+# We wrap the Xsession in sudo because it runs initgroups(3) /after/
+# being chrooted, which puts users back in the groups we added them to
+# in athena-login-snapshot
+
+exec schroot -c login -p -- sudo -E -u "$USER" -- /etc/gdm/Xsession.debathena-orig "$@"
