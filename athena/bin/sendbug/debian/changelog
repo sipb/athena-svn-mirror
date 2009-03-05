@@ -1,3 +1,9 @@
+debathena-sendbug (10.0.1-debathena1) unstable; urgency=low
+
+  * Change "Athena 10" to "Debathena Beta" in the bug report template.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 04 Mar 2009 23:37:49 -0500
+
 debathena-sendbug (10.0.0-debathena2) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
