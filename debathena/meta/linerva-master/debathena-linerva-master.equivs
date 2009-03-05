@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-linerva-master
-Version: 0.2.8
+Version: 0.2.9
 Maintainer: Debathena Project <debathena@mit.edu>
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
@@ -18,6 +18,7 @@ Depends: debathena-login,
  debathena-linerva-perl,
  debathena-debian-dev,
  debathena-build-depends,
+ debathena-ntp-config,
  apache2-utils,
  apel,
  apg,
