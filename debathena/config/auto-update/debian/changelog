@@ -1,3 +1,9 @@
+debathena-auto-update (1.10) unstable; urgency=low
+
+  * Update the apt-file cache when running other updates.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 06 Mar 2009 17:19:31 -0500
+
 debathena-auto-update (1.9) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.

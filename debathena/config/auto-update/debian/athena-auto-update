@@ -127,6 +127,9 @@ else
   v aptitude --quiet --assume-yes install
 fi
 
+# Finally, update the apt-file cache
+v apt-file update
+
 if [ -x /usr/sbin/athena-login-snapshot ]; then
   echo "** Cleaning up root snapshot"
   /usr/sbin/athena-login-snapshot update-end
