@@ -1,3 +1,9 @@
+debathena-athinfod (10.0.0-0debathena7) unstable; urgency=low
+
+  * Add back the update.log query.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 06 Mar 2009 18:39:18 -0500
+
 debathena-athinfod (10.0.0-0debathena6) unstable; urgency=low
 
   * Change the packages query to filter out packages that aren't

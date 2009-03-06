@@ -18,6 +18,7 @@ swap		swapon -s
 version		echo `machtype -L` on `machtype -E`
 clusterinfo	test -r /var/run/athena-clusterinfo.csh && cat /var/run/athena-clusterinfo.csh
 clusterinfo.bsh	test -r /var/run/athena-clusterinfo.sh && cat /var/run/athena-clusterinfo.sh
+update.log	machtype -v -L | grep -q "debathena-cluster" && test -r /var/log/athena-update && cat /var/log/athena-update
 date		date
 uptime		uptime
 partitions	cat /proc/partitions
