@@ -8,8 +8,9 @@ debathena-linerva (1.20) unstable; urgency=low
   * Increase the OpenAFS cache size
   * Fix linerva-install to deal with the package being moved
   * Add a couple more utilities to the suid whitelist
+  * Explicitly conflict with Apache so it doesn't get installed
 
- -- Evan Broder <broder@mit.edu>  Sat, 07 Mar 2009 14:46:59 -0500
+ -- Evan Broder <broder@mit.edu>  Sat, 07 Mar 2009 14:48:15 -0500
 
 debathena-linerva (1.19) unstable; urgency=low
 
