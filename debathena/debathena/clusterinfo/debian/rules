@@ -1,3 +1,5 @@
 #!/usr/bin/make -f
 
+DEB_UPDATE_RCD_PARAMS_debathena-clusterinfo += defaults 90 10
+
 include /usr/share/cdbs/1/rules/debhelper.mk
