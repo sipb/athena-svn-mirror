@@ -5,8 +5,9 @@ debathena-linerva (1.20) unstable; urgency=low
     * Use an explicit AFS path (in case the automounter isn't working)
     * Not fail if a previous checkout failed
   * Create /tmp/uscreens for non-distribution-provided screen packages
+  * Increase the OpenAFS cache size
 
- -- Evan Broder <broder@mit.edu>  Sat, 07 Mar 2009 14:30:02 -0500
+ -- Evan Broder <broder@mit.edu>  Sat, 07 Mar 2009 14:33:36 -0500
 
 debathena-linerva (1.19) unstable; urgency=low
 

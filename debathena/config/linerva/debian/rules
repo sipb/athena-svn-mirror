@@ -8,7 +8,8 @@ DEB_DIVERT_FILES_debathena-linerva += \
 	/etc/security/limits.conf.debathena \
 	/sbin/init.debathena \
 	/etc/ssh/sshd_config.debathena.debathena \
-	/etc/security/access.conf.debathena.debathena
+	/etc/security/access.conf.debathena.debathena \
+	/etc/openafs/cacheinfo.debathena.debathena
 DEB_TRANSFORM_FILES_debathena-linerva += \
 	/etc/rsyslog.conf.debathena \
 	/etc/cron.d/logcheck.debathena
