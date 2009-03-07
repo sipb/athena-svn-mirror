@@ -63,6 +63,7 @@ case "$1" in
 	    1) log_end_msg 1 ;; # Old process is still running
 	    *) log_end_msg 1 ;; # Failed to start
 	esac
+        ;;
   *)
 	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
 	exit 3
