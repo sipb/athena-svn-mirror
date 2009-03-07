@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Usage: athena-login-snapshot {login-start|login-end|update-start|update-end}
 
@@ -29,6 +29,7 @@ snapshotsize=10G
 event=$1
 binddirs="/proc /sys /dev /dev/shm /dev/pts /var/run /var/lock /var/tmp /afs /mit /tmp /media /home"
 addgroups="admin lpadmin adm fuse cdrom floppy audio video plugdev scanner dialout"
+daemons="cups cupsys"
 
 rootdev=$(awk '$2 == "/" { dev=$1 } END { print dev }' /proc/mounts)
 vgname=$(lvs --noheadings -o vg_name "$rootdev" | awk '{print $1}')
@@ -84,9 +85,54 @@ uloginlvpath=/dev/$vgname/login-update
       chroot /login gpasswd -a "$USER" "$group"
     done
 
-    # Prevent daemons from starting inside the chroot.
-    (echo "#!/bin/sh"; echo "exit 101") > /login/usr/sbin/policy-rc.d
+    # There are some daemons that should be running inside the
+    # chroot. For example, changes to CUPS config shouldn't persist
+    # between sessions.
+    #
+    # Start those daemons inside the chroot
+    #
+    # For extra special bonus points, cupsys was renamed to cups at
+    # some point, so we have to try both names and catch the error for
+    # the one that doesn't exist
+    for daemon in $daemons; do
+      invoke-rc.d $daemon stop || [ $? = 100 ]
+      chroot /login invoke-rc.d $daemon start || [ $? = 100 ]
+    done
+
+    # Prevent most daemons from starting inside the chroot.
+    cat > /login/usr/sbin/policy-rc.d <<EOF
+#!/bin/sh
+
+case "\$1" in
+    $(echo $daemons | sed -e 's/ /|/'))
+        if echo "\$2" | grep -q -v "(.*)"; then
+            exit 0
+        fi
+    ;;
+esac
+
+exit 101
+EOF
     chmod 755 /login/usr/sbin/policy-rc.d
+    
+    # Prevent a few daemons from starting outside the chroot
+    cat > /usr/sbin/policy-rc.d <<EOF
+#!/bin/sh
+
+case "\$1" in
+    $(echo $daemons | sed -e 's/ /|/'))
+        exit 101
+    ;;
+esac
+
+if echo "\$2" | grep -q -v "(.*)"; then
+    exit 101
+fi
+
+exit 0
+
+EOF
+    chmod 755 /usr/sbin/policy-rc.d
 
     # Add an schroot.conf entry for the chroot.
     conf=/etc/schroot/schroot.conf
@@ -104,6 +150,17 @@ EOF
     ;;
 
   login-end)
+    # Clean-up the policy-rc.d files that were created to change which
+    # daemons could start
+    rm /login/usr/sbin/policy-rc.d /usr/sbin/policy-rc.d
+
+    # Stop any daemons that were specifically started inside the
+    # chroot
+    for daemon in $daemons; do
+      chroot /login invoke-rc.d $daemon stop || [ $? = 100 ]
+      invoke-rc.d $daemon start || [ $? = 100 ]
+    done
+
     # Clean up any remaining user processes using the bind mounts.
     if [ -n "$USER" -a "$USER" != root ]; then
       for dir in $binddirs; do
