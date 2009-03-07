@@ -7,9 +7,12 @@ list_bad_setuid () {
 /usr/bin/fusermount
 #for athmode
 /usr/bin/schroot
+#for people hacking at their grplist
+/usr/bin/newgrp
 #network utilities
-/usr/bin/traceroute.lbl
-/usr/bin/traceroute6
+/usr/bin/traceroute.db
+/usr/bin/traceroute6.db
+/usr/bin/traceroute6.iputils
 /usr/bin/mtr
 /bin/ping6
 /bin/ping
