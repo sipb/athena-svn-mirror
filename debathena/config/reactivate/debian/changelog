@@ -1,3 +1,11 @@
+debathena-reactivate (1.13) unstable; urgency=low
+
+  * Instead of generating policy-rc.d at login time, have a general
+    policy-rc.d that works both inside and outside of the chroot. This
+    fixes a potential issue if there's a reboot during a login session.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 07 Mar 2009 17:20:01 -0500
+
 debathena-reactivate (1.12) unstable; urgency=low
 
   * Restart a provided list of daemons inside the chroot at login.
