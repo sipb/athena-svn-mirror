@@ -34,7 +34,7 @@ case "$1" in
 	chown logcheck /var/lib/logcheck/
 	chown logcheck /var/lock/logcheck/
         if [ ! -e /etc/logcheck/.git ]; then
-            mv /etc/logcheck /etc/logcheck.orig
+            mv /etc/logcheck /etc/logcheck.orig || true
         fi
         if [ ! -e /etc/logcheck ]; then
             kinit -k
@@ -43,8 +43,6 @@ case "$1" in
         fi
         chmod 750 /etc/logcheck
         chmod 750 /etc/logcheck.orig
-
-	chmod a=rwx,o+t /var/run/screen  # So that screen works without setuid.
 
 	linerva-clean-setugid --clean
 

@@ -14,5 +14,8 @@ DEB_TRANSFORM_FILES_debathena-linerva += \
 	/etc/rsyslog.conf.debathena \
 	/etc/cron.d/logcheck.debathena
 
+#Needs to go before S70screen-cleanup (and before users log in and run screen.)
+DEB_UPDATE_RCD_PARAMS_debathena-linerva = "start 65 S ."
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk

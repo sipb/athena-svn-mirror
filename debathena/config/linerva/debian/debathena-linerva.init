@@ -38,6 +38,8 @@ do_start()
     mkdir /tmp/uscreens
     chown root:utmp /tmp/uscreens
     chmod a=rwx,o+t /tmp/uscreens
+
+    chmod a=rwx,o+t /var/run/screen  # So that screen works without setuid.
 }
 
 case "$1" in
