@@ -10,9 +10,6 @@ list_bad_setuid () {
 #for people hacking at their grplist
 /usr/bin/newgrp
 #network utilities
-/usr/bin/traceroute.db
-/usr/bin/traceroute6.db
-/usr/bin/traceroute6.iputils
 /usr/bin/mtr
 /bin/ping6
 /bin/ping

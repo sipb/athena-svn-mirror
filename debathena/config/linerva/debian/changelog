@@ -1,3 +1,10 @@
+debathena-linerva (1.22) unstable; urgency=low
+
+  * traceroute.db doesn't expect suid, so let's use that, and not keep the
+    bit on traceroute6.iputils
+
+ -- Evan Broder <broder@mit.edu>  Sat, 07 Mar 2009 15:12:40 -0500
+
 debathena-linerva (1.21) unstable; urgency=low
 
   * Fix a typo in the init script.
