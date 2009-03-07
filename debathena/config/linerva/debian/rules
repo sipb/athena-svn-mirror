@@ -10,7 +10,7 @@ DEB_DIVERT_FILES_debathena-linerva += \
 	/etc/ssh/sshd_config.debathena.debathena \
 	/etc/security/access.conf.debathena.debathena
 DEB_TRANSFORM_FILES_debathena-linerva += \
-	/etc/syslog.conf.debathena \
+	/etc/rsyslog.conf.debathena \
 	/etc/cron.d/logcheck.debathena
 
 include /usr/share/cdbs/1/rules/debhelper.mk
