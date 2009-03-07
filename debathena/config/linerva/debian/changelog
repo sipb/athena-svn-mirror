@@ -1,3 +1,12 @@
+debathena-linerva (1.20) unstable; urgency=low
+
+  * Update the logcheck git checkout to:
+    * Get tickets and tokens
+    * Use an explicit AFS path (in case the automounter isn't working)
+    * Not fail if a previous checkout failed
+
+ -- Evan Broder <broder@mit.edu>  Sat, 07 Mar 2009 14:29:20 -0500
+
 debathena-linerva (1.19) unstable; urgency=low
 
   * Change from sysklogd to rsyslog.

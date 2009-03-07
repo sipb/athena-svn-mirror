@@ -35,7 +35,11 @@ case "$1" in
 	chown logcheck /var/lock/logcheck/
         if [ ! -e /etc/logcheck/.git ]; then
             mv /etc/logcheck /etc/logcheck.orig
-            git clone /mit/linerva/git/logcheck.git /etc/logcheck
+        fi
+        if [ ! -e /etc/logcheck ]; then
+            kinit -k
+            aklog sipb
+            git clone /afs/sipb.mit.edu/project/linerva/git/logcheck.git /etc/logcheck
         fi
         chmod 750 /etc/logcheck
         chmod 750 /etc/logcheck.orig
