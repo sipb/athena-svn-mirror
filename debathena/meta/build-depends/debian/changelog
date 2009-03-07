@@ -1,3 +1,9 @@
+debathena-build-depends (1.5) unstable; urgency=low
+
+  * Filter sysklogd.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 07 Mar 2009 12:36:33 -0500
+
 debathena-build-depends (1.4) unstable; urgency=low
 
   * Version bump to recalculate dependencies.

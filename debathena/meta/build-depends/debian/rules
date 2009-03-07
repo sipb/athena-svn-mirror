@@ -33,6 +33,7 @@ debian/deps: check-debathena-repository-added
 	    grep -v '\[' | \
 	    grep -v tetex | \
 	    grep -v chrony | grep -v ntp | \
+	    grep -v sysklogd | \
 	    tr '\n' ',' >> $@;
 	echo >> $@
 
