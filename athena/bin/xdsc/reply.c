@@ -712,8 +712,8 @@ XtPointer	call_data;
 		TopSelect(NULL, 2, NULL);
 */
 		myfree (returndata);
-		myfree (tempstring1);
-		myfree (tempstring2);
+		/* myfree (tempstring1); *
+		 * myfree (tempstring2); */
 	}
 
 	if (addPopupW) {
@@ -880,7 +880,7 @@ XtPointer	call_data;
 		TopSelect(NULL, 2, NULL);
 */
 		myfree (returndata);
-		myfree (tempstring1);
+		/* myfree (tempstring1); */
 	}
 
 	XtDestroyWidget(deletePopupW);

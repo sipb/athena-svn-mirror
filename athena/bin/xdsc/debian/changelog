@@ -1,3 +1,9 @@
+debathena-xdsc (10.0.0-0debathena3) intrepid; urgency=low
+
+  * Avoid a crash in xdsc (Closes: Debathena Trac #84).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sun, 08 Mar 2009 09:05:13 -0400
+
 debathena-xdsc (10.0.0-0debathena2) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
