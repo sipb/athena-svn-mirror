@@ -7,7 +7,6 @@ Standards-Version: 3.7.2
 
 Package: debathena-finger
 Architecture: any
-Provides: finger
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: The Athena version of the normal finger utility
  The finger command displays information about local and remote users in 
