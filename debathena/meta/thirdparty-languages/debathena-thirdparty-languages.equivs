@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-languages
-Version: 0.3
+Version: 0.4
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: cmake,
  python-numpy,
@@ -37,6 +37,7 @@ Depends: cmake,
  erlang-doc-html,
  erlang-examples,
  erlang-manpages,
+ gfortran,
  ghc6,
  ghc6-doc,
  ghc6-prof,
@@ -77,10 +78,7 @@ Depends: cmake,
 
 Recommends:
  mit-scheme,
- mit-scheme-doc,
- g77,
- g77-doc,
- jikes-gij
+ mit-scheme-doc
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in

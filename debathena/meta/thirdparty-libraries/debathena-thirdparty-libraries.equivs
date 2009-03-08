@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-libraries
-Version: 0.3
+Version: 0.4
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: libatlas-base-dev,
  libatlas-sse-dev,
@@ -80,7 +80,6 @@ Depends: libatlas-base-dev,
  ginac-tools,
  libcln5,
  libcln-dev,
- libitpp-doc,
  libitpp6 | libitpp6gf,
  libitpp-dev,
  libqhull-dev,
@@ -108,7 +107,6 @@ Depends: libatlas-base-dev,
  dx,
  dx-doc,
  dxsamples,
- guile,
  guile-1.8,
  guile-1.8-doc,
  guile-1.8-dev,
