@@ -140,10 +140,10 @@ daversion=$version$daversionappend
 # if we weren't run with the -A flag).  We need to look for either a
 # Source: or a Package: header matching $name since there is no
 # Source: header for a package whose name matches its source.
-pkgfile=$DEBATHENA_APT/dists/$dist/$section/binary-$arch/Packages.gz
-if { zcat "$pkgfile" | \
+pkgfiles="$DEBATHENA_APT/dists/$dist/$section/binary-$arch/Packages.gz $DEBATHENA_APT/dists/${dist}-proposed/$section/binary-$arch/Packages.gz"
+if { zcat $pkgfiles | \
     dpkg-awk -f - "Package:^$name\$" "Version:^$daversion~" -- Architecture;
-    zcat "$pkgfile" | \
+    zcat $pkgfiles | \
     dpkg-awk -f - "Source:^$name\$" "Version:^$daversion~" -- Architecture; } \
     | if [ "$a" = "-A" ]; then cat; else fgrep -vx 'Architecture: all'; fi \
     | grep -q .; then
