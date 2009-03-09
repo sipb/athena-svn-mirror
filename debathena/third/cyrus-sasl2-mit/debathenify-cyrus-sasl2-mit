@@ -98,9 +98,9 @@ cmd_upload () {
   tag=$(gettag $dist)
 
   if [ "$a" = "-A" ]; then
-    $REPREPROI include "$dist" "${name}_${daversion}_source.changes"
+    $REPREPROI include "${dist}${release}" "${name}_${daversion}_source.changes"
   fi
-  $REPREPRO include "$dist" "${name}_${daversion}${tag}_${arch}.changes"
+  $REPREPRO include "${dist}${release}" "${name}_${daversion}${tag}_${arch}.changes"
 }
 
 case $dist in
