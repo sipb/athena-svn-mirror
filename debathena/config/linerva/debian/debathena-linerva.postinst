@@ -41,6 +41,7 @@ case "$1" in
             aklog sipb
             git clone /afs/sipb.mit.edu/project/linerva/git/logcheck.git /etc/logcheck
         fi
+        chgrp -R logcheck /etc/logcheck/
         chmod 750 /etc/logcheck
         chmod 750 /etc/logcheck.orig
 

@@ -1,0 +1,2 @@
+#!/bin/sh
+zwrite -d -c linerva -i apt -s "APT on $(hostname)" -O auto
