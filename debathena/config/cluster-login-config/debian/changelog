@@ -1,3 +1,16 @@
+debathena-cluster-login-config (1.8) unstable; urgency=low
+
+  * Unset /desktop/gnome/lockdown/disable_user_switching, so that
+    the fast-user-switch-applet is enabled (for logout).
+  * Configure fast-user-switch-applet and gnome-power-manager
+    settings so that FUSA offers only the lock screen, logout,
+    restart, and shutdown options.
+  * Undo our gconf settings in the prerm script.
+  * Re-enable HALT and REBOOT from the login screen and as logout
+    actions.
+  
+ -- Robert Basch <rbasch@mit.edu>  Mon, 09 Mar 2009 17:58:09 -0400
+
 debathena-cluster-login-config (1.7) unstable; urgency=low
 
   * Allow users to sudo to anyone, primarily so they can sudo to

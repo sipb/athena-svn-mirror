@@ -1,5 +1,5 @@
 #!/bin/sed -f
 /^\[daemon\]/a\
-SystemCommandsInMenu=\
-AllowLogoutActions=\
+SystemCommandsInMenu=HALT;REBOOT\
+AllowLogoutActions=HALT;REBOOT\
 FlexibleXServers=0

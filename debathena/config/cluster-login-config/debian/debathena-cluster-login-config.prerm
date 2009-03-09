@@ -20,6 +20,27 @@ set -e
 case "$1" in
     remove|upgrade|deconfigure)
         perl -i'' -ne 's%^### (BEGIN|END) debathena-cluster-login-config\s*$%%m && ($skip = ($1 eq "BEGIN")); print unless $skip;' /etc/sudoers
+
+        # Undo our mandatory gconf settings.
+        gcsrc=xml:readwrite:/etc/gconf/gconf.xml.mandatory
+        gcunset="gconftool-2 --direct --config-source=$gcsrc --unset"
+        $gcunset /apps/gnome-screensaver/logout_enabled
+        $gcunset /apps/gnome-screensaver/logout_delay
+        $gcunset /apps/gnome-screensaver/logout_command
+        $gcunset /apps/gnome-screensaver/embedded_keyboard_command
+        $gcunset /apps/gnome-screensaver/embedded_keyboard_enabled
+        $gcunset /apps/gnome-screensaver/user_switch_enabled
+        $gcunset /apps/gnome-screensaver/lock_enabled
+        $gcunset /apps/gnome-screensaver/lock_delay
+        $gcunset /apps/fast-user-switch-applet/show_active_users_only
+        $gcunset /apps/fast-user-switch-applet/show_guest_login
+        $gcunset /apps/gnome-power-manager/general/can_hibernate
+        $gcunset /apps/gnome-power-manager/general/can_suspend
+
+        # Undo our default gconf settings.
+        gcsrc=xml:readwrite:/etc/gconf/gconf.xml.defaults
+        gcunset="gconftool-2 --direct --config-source=$gcsrc --unset"
+        $gcunset /desktop/gnome/session/required_components/windowmanager
     ;;
 
     failed-upgrade)

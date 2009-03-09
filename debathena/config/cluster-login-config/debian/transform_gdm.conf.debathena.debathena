@@ -1,4 +1,4 @@
 #!/bin/sed -f
-s/^SystemCommandsInMenu=.*/SystemCommandsInMenu=/
-s/^AllowLogoutActions=.*/AllowLogoutActions=/
+s/^SystemCommandsInMenu=.*/SystemCommandsInMenu=HALT;REBOOT/
+s/^AllowLogoutActions=.*/AllowLogoutActions=HALT;REBOOT/
 s/^#\?FlexibleXServers=.*/FlexibleXServers=0/
