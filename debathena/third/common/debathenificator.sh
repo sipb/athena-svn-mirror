@@ -113,7 +113,7 @@ cmd_upload () {
     if [ "$a" = "-A" ]; then
 	$REPREPROI include "${dist}${release}" "${name}_${daversion}_source.changes"
     fi
-    $REPREPRO include "${dist}${release}" "${name}_${daversion}${tag}_${arch}.changes"
+    $REPREPROI include "${dist}${release}" "${name}_${daversion}${tag}_${arch}.changes"
 }
 
 version=$(
