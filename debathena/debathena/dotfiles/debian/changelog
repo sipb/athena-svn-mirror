@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.9-0debathena2) unstable; urgency=low
+
+  * Add /bin/athena/tcsh and /bin/athena/bash to the list of valid shells.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 10 Mar 2009 13:56:37 -0400
+
 debathena-dotfiles (10.0.9-0debathena1) unstable; urgency=low
 
   * In bash, parse $PRINTER from the csh clusterinfo because it's easier.
