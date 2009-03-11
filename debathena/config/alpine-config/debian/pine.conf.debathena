@@ -162,7 +162,7 @@ character-set=
 editor=
 
 # Specifies the program invoked by ^T in the Composer.
-speller=
+speller=aspell -c
 
 # Specifies the column of the screen where the composer should wrap.
 composer-wrap-column=
