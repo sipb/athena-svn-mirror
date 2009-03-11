@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-alpine-config
 Architecture: all
-Depends: ${misc:Depends}, debathena-msmtp-config, debianutils, alpine
+Depends: ${misc:Depends}, debathena-msmtp-config, debianutils, alpine, aspell
 Recommends: debathena-alpine
 Conflicts: pine
 Replaces: pine

@@ -1,4 +1,4 @@
-debathena-alpine-config (1.4) intrepid; urgency=low
+debathena-alpine-config (1.4) unstable; urgency=low
 
   * Set the default spell checking program to `aspell -c`.
 
