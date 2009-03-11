@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software-nox
-Version: 0.14
+Version: 0.15
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: build-essential, debathena-build-depends,
   enscript, psutils,
@@ -28,7 +28,7 @@ Depends: build-essential, debathena-build-depends,
   bsdgames,
   auctex
 Recommends: ckermit,
-  sun-java6-jdk | sun-java5-jdk,
+  openjdk-6-jdk,
   x3270,
   vgrind
 Copyright: ../common/copyright
