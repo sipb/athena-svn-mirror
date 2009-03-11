@@ -1,3 +1,9 @@
+debathena-linerva (1.25) unstable; urgency=low
+
+  * Disable Ctrl-Alt-Del.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Wed, 11 Mar 2009 03:32:44 -0400
+
 debathena-linerva (1.24) unstable; urgency=low
 
   [ Nelson Elhage ]

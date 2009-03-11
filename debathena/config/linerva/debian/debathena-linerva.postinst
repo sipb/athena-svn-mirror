@@ -27,6 +27,10 @@ case "$1" in
 	    chmod 700 /srv/old
 	fi
 
+	# Disable Ctrl-Alt-Del.
+	sed -i 's/^ca:/#&/' /etc/inittab
+	telinit q
+
 	# Make /srv/tmp exists so we can symlink to it.
 	mkdir -p /srv/tmp
 
