@@ -1,3 +1,9 @@
+libpam-krb5-config (0.0.6) unstable; urgency=low
+
+  * Remove and replace the config file provided by libpam-krb5 in Jaunty.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 12 Mar 2009 12:37:34 -0400
+
 libpam-krb5-config (0.0.5) unstable; urgency=low
 
   * Move to the debathena-config component from the debathena component.
