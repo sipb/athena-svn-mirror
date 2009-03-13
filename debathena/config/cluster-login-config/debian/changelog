@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.9) unstable; urgency=low
+
+  * Install and configure kexec-tools to work around Jira ATN-52.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 13 Mar 2009 17:49:41 -0400
+
 debathena-cluster-login-config (1.8) unstable; urgency=low
 
   * Unset /desktop/gnome/lockdown/disable_user_switching, so that
