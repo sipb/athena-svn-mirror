@@ -1,3 +1,9 @@
+debathena-reactivate (1.14) unstable; urgency=low
+
+  * Add instrumentation to track why reactivations are failing.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 12 Mar 2009 20:06:10 -0400
+
 debathena-reactivate (1.13) unstable; urgency=low
 
   * Instead of generating policy-rc.d at login time, have a general

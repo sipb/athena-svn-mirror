@@ -21,6 +21,7 @@
 # that circumstance should be fairly rare.
 
 set -e
+exec >>/var/log/athena-reactivate 2>&1
 
 updflag=/var/run/athena-update-in-progress
 bootflag=/var/run/athena-reboot-after-update
@@ -40,6 +41,22 @@ loginlvpath=/dev/$vgname/login
 uloginlvname=login-update
 uloginlvpath=/dev/$vgname/login-update
 
+echo "-----"
+echo "** Beginning Athena reactivation ($event) session at $(date)"
+
+finish() {
+    echo "** Finishing Athena reactivation ($event) at $(date)"
+    echo "-----"
+    echo
+    exit
+}
+trap finish EXIT
+
+v() {
+    echo "** Running:" "$@"
+    echo "$@"
+}
+
 (
   flock -x 9
   case $event in
@@ -49,7 +66,7 @@ uloginlvpath=/dev/$vgname/login-update
     if [ -e "$loginlvpath" ]; then
       # A login snapshot already exists; perhaps the machine rebooted
       # during a login.  Clean it up.
-      lvremove -f "$loginlvpath"
+      v lvremove -f "$loginlvpath"
     fi
 
     if [ -e "$updflag" ]; then
@@ -58,31 +75,31 @@ uloginlvpath=/dev/$vgname/login-update
       # (If we already used it up, /etc/nologin should prevent us from
       # getting here until the update ends.)  Rename it to login.
       [ -e "$uloginlvpath" ]
-      lvrename "$vgname" "$uloginlvname" "$loginlvname"
+      v lvrename "$vgname" "$uloginlvname" "$loginlvname"
     else
       # No update is in progress.  Create our own snapshot of the root.
       sync
-      lvcreate --snapshot --size "$snapshotsize" --name "$loginlvname" \
+      v lvcreate --snapshot --size "$snapshotsize" --name "$loginlvname" \
         "$rootlvpath"
     fi
 
     # Mount the login snapshot.
     mkdir -p /login
-    mount "$loginlvpath" /login
+    v mount "$loginlvpath" /login
 
     # Enable subtree operations on /media by making it a mount point,
     # then share it.
-    mount --bind /media /media
-    mount --make-shared /media
+    v mount --bind /media /media
+    v mount --make-shared /media
 
     # Bind-mount a bunch of stuff from the real root into the chroot.
     for dir in $binddirs; do
-      mount --bind "$dir" "/login$dir"
+      v mount --bind "$dir" "/login$dir"
     done
 
     # Add the user to a bunch of groups in the chroot.
     for group in $addgroups; do
-      chroot /login gpasswd -a "$USER" "$group"
+      v chroot /login gpasswd -a "$USER" "$group"
     done
 
     # There are some daemons that should be running inside the
@@ -95,12 +112,12 @@ uloginlvpath=/dev/$vgname/login-update
     # some point, so we have to try both names and catch the error for
     # the one that doesn't exist
     for daemon in $daemons; do
-      invoke-rc.d $daemon stop || [ $? = 100 ]
-      chroot /login invoke-rc.d $daemon start || [ $? = 100 ]
+      v invoke-rc.d $daemon stop || [ $? = 100 ]
+      v chroot /login invoke-rc.d $daemon start || [ $? = 100 ]
     done
 
-    touch /login/ClusterLogin
-    touch /var/run/athena-login
+    v touch /login/ClusterLogin
+    v touch /var/run/athena-login
 
     # Add an schroot.conf entry for the chroot.
     conf=/etc/schroot/schroot.conf
@@ -119,39 +136,39 @@ EOF
 
   login-end)
     # Clean-up the temporary file to indicate the logged in state
-    rm /var/run/athena-login
+    v rm /var/run/athena-login
 
     # Stop any daemons that were specifically started inside the
     # chroot
     for daemon in $daemons; do
-      chroot /login invoke-rc.d $daemon stop || [ $? = 100 ]
-      invoke-rc.d $daemon start || [ $? = 100 ]
+      v chroot /login invoke-rc.d $daemon stop || [ $? = 100 ]
+      v invoke-rc.d $daemon start || [ $? = 100 ]
     done
 
     # Clean up any remaining user processes using the bind mounts.
     if [ -n "$USER" -a "$USER" != root ]; then
       for dir in $binddirs; do
-        su -s /bin/sh "$USER" -c "fuser -km /login$dir" > /dev/null || true
+        v su -s /bin/sh "$USER" -c "fuser -km /login$dir" > /dev/null || true
       done
     fi
 
     # Clean up any processes using the chroot mountpoint.
-    fuser -km /login > /dev/null || true
+    v fuser -km /login > /dev/null || true
     sleep 2
 
     # Clean up the bind mounts we made earlier.
     # If any of these fail, the umount of /login will fail below,
     # and we will reboot.
     for dir in $(echo $binddirs|tac -s\ ); do
-      umount "/login$dir" || true
+      v umount "/login$dir" || true
     done
 
     # Unmount /media, which we bind-mounted to itself earlier so it
     # could be shared and then bind-mounted.
-    umount /media || true
+    v umount /media || true
 
     # Attempt to unmount /login.
-    if ! umount /login; then
+    if ! v umount /login; then
       # There may be an unkillable process in I/O wait keeping the
       # mountpoint busy.  We need to reboot the machine.
       if [ -e "$updflag" ]; then
@@ -160,15 +177,16 @@ EOF
         if [ ! -e /etc/nologin ]; then
           echo "An update and reboot is in progress, please try again later." \
             > /etc/nologin.update
-          ln /etc/nologin.update /etc/nologin
+          v ln /etc/nologin.update /etc/nologin
         fi
-        touch "$bootflag"
+        v touch "$bootflag"
       else
         # We can just reboot now.
-        reboot
+        echo "** Rebooting because of umount /login failure"
+        v reboot
       fi
     fi
-    lvremove -f "$loginlvpath"
+    v lvremove -f "$loginlvpath"
 
     if [ -e "$updflag" -a ! -e "$uloginlvpath" ]; then
       # An update is in progress and we just used up its snapshot.  We
@@ -188,37 +206,37 @@ EOF
     if [ -e "$uloginlvpath" ]; then
       # It already exists; perhaps the machine rebooted during an
       # update.  Clean it up.
-      lvremove -f "$uloginlvpath"
+      v lvremove -f "$uloginlvpath"
     fi
     sync
-    lvcreate --snapshot --size "$snapshotsize" --name "$uloginlvname" \
+    v lvcreate --snapshot --size "$snapshotsize" --name "$uloginlvname" \
       "$rootlvpath"
 
     # Touch the flag file signifying an update in progress.
-    touch "$updflag"
+    v touch "$updflag"
     ;;
 
   update-end)
     if [ -e "$uloginlvpath" ]; then
       # It appears our login snapshot was never used.  Clean it up.
-      lvremove -f "$uloginlvpath"
+      v lvremove -f "$uloginlvpath"
     fi
 
     if [ -e /etc/nologin.update ]; then
       # Our login snapshot was used and that login ended before we
       # did, causing further logins to block.  Now that the update has
       # ended, we can unblock logins.
-      rm -f /etc/nologin.update /etc/nologin
+      v rm -f /etc/nologin.update /etc/nologin
     fi
 
     if [ -e "$bootflag" ]; then
       # We need to reboot in order to unmount /login.
       echo "Rebooting in order to unmount /login."
-      reboot 
+      v reboot 
     fi
 
     # Remove the flag file signifying an update in progress.
-    rm -f "$updflag"
+    v rm -f "$updflag"
     ;;
   esac
 ) 9> $lockfile
