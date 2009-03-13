@@ -1,3 +1,10 @@
+debathena-athinfod (10.0.0-0debathena8) unstable; urgency=low
+
+  * Add a reactivate.log query to access the instrumentation added in
+    debathena-reactivate 1.14
+
+ -- Evan Broder <broder@mit.edu>  Thu, 12 Mar 2009 20:09:38 -0400
+
 debathena-athinfod (10.0.0-0debathena7) unstable; urgency=low
 
   * Add back the update.log query.
