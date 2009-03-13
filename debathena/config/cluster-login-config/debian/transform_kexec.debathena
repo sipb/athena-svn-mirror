@@ -1,7 +1,4 @@
 #!/usr/bin/perl -0p
-my $kexec_version = `dpkg-query -W -f '\${Version}' kexec-tools`;
-# In 20080324-1, LOAD_KEXEC was changed from being 0/1 to being
-# false/true
-system("dpkg", "--compare-versions", "$kexec_version", "lt", "20080324-1");
-my $set_to = $? ? "true" : "1";
-s/^(LOAD_KEXEC=).*$/$1$set_to/m or die;
+s/^LOAD_KEXEC=false$/LOAD_KEXEC=true/ or
+    s/^LOAD_KEXEC=0$/LOAD_KEXEC=1/ or
+    s/^USE_KEXEC=0$/USE_KEXEC=1/ or die;
