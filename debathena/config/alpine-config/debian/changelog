@@ -1,3 +1,9 @@
+debathena-alpine-config (1.5) unstable; urgency=low
+
+  * Depend on alpine instead of only recommending it.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 13 Mar 2009 23:31:00 -0400
+
 debathena-alpine-config (1.4) unstable; urgency=low
 
   * Set the default spell checking program to `aspell -c`.
