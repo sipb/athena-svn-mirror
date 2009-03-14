@@ -28,6 +28,10 @@ schq() { schroot -q -r -c "$sid" -- "$@"; }       # Run in the chroot quietly
 schr() { schroot -r -c "$sid" -u root -- "$@"; }  # Run in the chroot as root
 schr apt-get -qq -y update || exit 3
 
+quote() {
+  echo "$1" | sed 's/[^[:alnum:]]/\\&/g'
+}
+
 munge_sections () {
     perl -0pe "s/^Section: /Section: $section\\//gm or die" -i debian/control
 }
@@ -142,9 +146,9 @@ daversion=$version$daversionappend
 # Source: header for a package whose name matches its source.
 pkgfiles="$DEBATHENA_APT/dists/$dist/$section/binary-$arch/Packages.gz $DEBATHENA_APT/dists/${dist}-proposed/$section/binary-$arch/Packages.gz"
 if { zcat $pkgfiles | \
-    dpkg-awk -f - "Package:^$name\$" "Version:^$daversion~" -- Architecture;
+    dpkg-awk -f - "Package:^$name\$" "Version:^$(quote "$daversion")~" -- Architecture;
     zcat $pkgfiles | \
-    dpkg-awk -f - "Source:^$name\$" "Version:^$daversion~" -- Architecture; } \
+    dpkg-awk -f - "Source:^$name\$" "Version:^$(quote "$daversion")~" -- Architecture; } \
     | if [ "$a" = "-A" ]; then cat; else fgrep -vx 'Architecture: all'; fi \
     | grep -q .; then
     echo "$name $daversion already exists for $dist_arch." >&2
