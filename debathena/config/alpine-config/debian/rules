@@ -1,8 +1,12 @@
 #!/usr/bin/make -f
 
 DEB_DIVERT_EXTENSION = .debathena
-DEB_DIVERT_FILES_debathena-alpine-config += \
-	/etc/pine.conf
+DEB_TRANSFORM_FILES_debathena-alpine-config += \
+	/etc/pine.conf.debathena
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
+
+debian/check_file_copies/etc/pine.conf.debathena::
+	mkdir -p debian/check_file_copies/etc
+	alpine -conf >$@
