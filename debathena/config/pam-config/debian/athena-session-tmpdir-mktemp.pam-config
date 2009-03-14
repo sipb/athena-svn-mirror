@@ -3,4 +3,4 @@ Default: yes
 Priority: 17
 Session-Type: Additional
 Session:
-	optional	pam_mktemp.so ATHENA_SESSION_TMPDIR prefix=/var/run/athena-sessions/session dir
+	optional	pam_mktemp.so var=ATHENA_SESSION_TMPDIR prefix=/var/run/athena-sessions/session dir

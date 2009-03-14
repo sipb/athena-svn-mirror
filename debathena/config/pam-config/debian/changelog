@@ -1,3 +1,10 @@
+debathena-pam-config (1.13) unstable; urgency=low
+
+  * Fix a missing "var=" in the pam_mktemp configuration for
+    intrepid/jaunty.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 14 Mar 2009 13:15:49 -0400
+
 debathena-pam-config (1.12) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
