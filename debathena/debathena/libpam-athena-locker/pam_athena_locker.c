@@ -84,7 +84,8 @@ pam_sm_open_session(pam_handle_t *pamh, int flags, int argc, const char **argv)
     }
 
     if ((filecache = pam_getenv(pamh, "KRB5CCNAME")) == NULL) {
-	syslog(LOG_ERR, "pam_athena_locker: No Kerberos ticket cache; not attaching locker");
+	if (debug)
+	    syslog(LOG_DEBUG, "pam_athena_locker: No Kerberos ticket cache; not attaching locker");
 	return PAM_SESSION_ERR;
     }
 

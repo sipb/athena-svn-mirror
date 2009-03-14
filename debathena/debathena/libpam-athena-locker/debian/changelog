@@ -1,3 +1,10 @@
+libpam-athena-locker (2.2-0debathena1) unstable; urgency=low
+
+  * Make not having a Kerberos ticket log at level DEBUG, since system
+    users like cron often trigger this condition.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 14 Mar 2009 13:08:11 -0400
+
 libpam-athena-locker (2.1-0debathena5) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
