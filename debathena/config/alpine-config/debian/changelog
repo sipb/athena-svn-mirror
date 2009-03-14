@@ -3,8 +3,11 @@ debathena-alpine-config (1.5) unstable; urgency=low
   * Depend on alpine instead of only recommending it.
   * Revert 1.4; this is being handled upstream.
   * Use DEB_TRANSFORM_FILES to isolate our changes to the default config.
+  * Wipe out a few Lintian warnings:
+    * Missing manpage
+    * Specify version of debianutils
 
- -- Evan Broder <broder@mit.edu>  Sat, 14 Mar 2009 00:41:22 -0400
+ -- Evan Broder <broder@mit.edu>  Sat, 14 Mar 2009 00:43:01 -0400
 
 debathena-alpine-config (1.4) unstable; urgency=low
 
