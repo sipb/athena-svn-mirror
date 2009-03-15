@@ -1,0 +1,10 @@
+debathena-workstation (0.7) unstable; urgency=high
+
+  * After April 30 2009, we will be changing debathena-workstation to be
+    largely identical to the Debathena cluster configuration, except for
+    some cluster-specific user isolation measures.
+  
+    If you do not want these additional customizations, you should remove
+    this package and install debathena-login-graphical.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 14 Mar 2009 19:41:34 -0400
