@@ -13,7 +13,7 @@ Description: Athena graphical login configuration - transitional package
  This is a transitional package. debathena-workstation has been
  replaced by debathena-login-graphical.
  .
- After April 30 2009, we will be changing debathena-workstation to
+ After April 30, 2009, we will be changing debathena-workstation to
  largely identical to the Debathena cluster configuration, except for
  some cluster-specific user isolation measures.
  .
