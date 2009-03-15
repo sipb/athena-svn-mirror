@@ -1,3 +1,9 @@
+debathena-linerva (1.26) unstable; urgency=low
+
+  * Only zephyr the basename of packages being installed.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 15 Mar 2009 16:22:34 -0400
+
 debathena-linerva (1.25) unstable; urgency=low
 
   * Disable Ctrl-Alt-Del.
