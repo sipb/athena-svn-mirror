@@ -1,3 +1,9 @@
+debathena-reactivate (1.15) unstable; urgency=low
+
+  * Include timing information in the logging.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 16 Mar 2009 08:28:51 -0400
+
 debathena-reactivate (1.14) unstable; urgency=low
 
   * Add instrumentation to track why reactivations are failing.

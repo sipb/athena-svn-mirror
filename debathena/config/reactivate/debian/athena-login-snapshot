@@ -54,6 +54,7 @@ trap finish EXIT
 
 v() {
     echo "** Running:" "$@"
+    echo "** $(date)"
     "$@"
 }
 
