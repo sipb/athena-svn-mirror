@@ -1,3 +1,10 @@
+debathena-sendbug (10.0.2-0debathena1) unstable; urgency=low
+
+  * If a user clicks "cancel" in the zenity dialog, actually
+    quit. (Trac: #157)
+
+ -- Evan Broder <broder@mit.edu>  Mon, 16 Mar 2009 14:51:17 -0400
+
 debathena-sendbug (10.0.1-debathena1) unstable; urgency=low
 
   * Change "Athena 10" to "Debathena Beta" in the bug report template.

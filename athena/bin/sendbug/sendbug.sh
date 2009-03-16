@@ -32,7 +32,9 @@ if [ -z "$subject" ]; then
   text="Please enter the name of the program or locker with which you are"
   text="$text having problems."
   if [ true = "$gnome" ]; then
-    subject=$(zenity --entry --text="$text")
+      if ! subject=$(zenity --entry --text="$text"); then
+          exit
+      fi
   else
     echo "$text" || fmt
     echo -n ' --> '
