@@ -1,3 +1,9 @@
+debathena-reactivate (1.16) unstable; urgency=low
+
+  * Don't redirect output to /dev/null when we're trying to log it
+
+ -- Evan Broder <broder@mit.edu>  Mon, 16 Mar 2009 20:18:52 -0400
+
 debathena-reactivate (1.15) unstable; urgency=low
 
   * Include timing information in the logging.
