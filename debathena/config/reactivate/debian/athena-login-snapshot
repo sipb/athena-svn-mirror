@@ -149,12 +149,12 @@ EOF
     # Clean up any remaining user processes using the bind mounts.
     if [ -n "$USER" -a "$USER" != root ]; then
       for dir in $binddirs; do
-        v su -s /bin/sh "$USER" -c "fuser -km /login$dir" || true
+        v su -s /bin/sh "$USER" -c "fuser -kmv /login$dir" || true
       done
     fi
 
     # Clean up any processes using the chroot mountpoint.
-    v fuser -km /login || true
+    v fuser -kvm /login || true
     sleep 2
 
     # Clean up the bind mounts we made earlier.

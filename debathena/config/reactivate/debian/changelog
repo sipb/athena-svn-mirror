@@ -1,3 +1,10 @@
+debathena-reactivate (1.17) unstable; urgency=low
+
+  * Even more verbosity! Use fuser -kmv to get more output about the
+    running processes.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 18 Mar 2009 19:25:53 -0400
+
 debathena-reactivate (1.16) unstable; urgency=low
 
   * Don't redirect output to /dev/null when we're trying to log it
