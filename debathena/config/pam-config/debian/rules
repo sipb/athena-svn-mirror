@@ -66,7 +66,7 @@ binary-predeb/debathena-pam-config:: debathena-pam-config-substvars
 
 ifneq ($(wildcard /etc/pam.d/sshd),)
 debian-divert/debathena-pam-config::
-	(echo "if [ \"\$$1\" = configure ] && [ -n \"\$$2\" ]; then"; \
+	(echo "if [ \"\$$1\" = configure ] && dpkg-divert --list /etc/pam.d/ssh | grep -xFq 'diversion of /etc/pam.d/ssh to /etc/pam.d/ssh.debathena-orig by $(cdbs_curpkg)'; then"; \
 	echo "    undivert_unlink /etc/pam.d/ssh"; \
 	echo "fi") >> $(CURDIR)/debian/$(cdbs_curpkg).postinst.debhelper
 endif
