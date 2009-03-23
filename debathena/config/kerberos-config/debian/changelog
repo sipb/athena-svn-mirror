@@ -1,3 +1,11 @@
+debathena-kerberos-config (1.6) unstable; urgency=low
+
+  * Transform things in /etc/apparmor.d, if they exist, to permit
+    reading /etc/krb5.conf.debathena in addition to /etc/krb5.conf. This
+    should suppress audit errors on Intrepid with cupsd.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 23 Mar 2009 01:17:26 -0400
+
 debathena-kerberos-config (1.5) unstable; urgency=low
 
   * Add support for ATHENA.MIT.EDU being the default realm in

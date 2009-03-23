@@ -1,0 +1,2 @@
+#!/usr/bin/perl -p0
+s|^([ \t]*/etc/krb5.conf)( .*)$|\1\2\n\1.debathena\2|m;

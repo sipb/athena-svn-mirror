@@ -5,6 +5,14 @@ DEB_TRANSFORM_FILES_debathena-kerberos-config += \
 	/etc/krb5.conf.debathena \
 	/etc/krb.conf.debathena \
 	/etc/krb.realms.debathena
+ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
+    DEB_TRANSFORM_FILES_debathena-kerberos-config += \
+	/etc/apparmor.d/usr.sbin.cupsd
+endif
+ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
+    DEB_TRANSFORM_FILES_debathena-kerberos-config += \
+	/etc/apparmor.d/abstractions/kerberosclient
+endif
 DEB_CHECK_FILES_SOURCE_/etc/krb5.conf.debathena = \
 	/usr/share/kerberos-configs/krb5.conf.template
 DEB_CHECK_FILES_SOURCE_/etc/krb.conf.debathena = \
