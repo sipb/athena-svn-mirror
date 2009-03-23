@@ -1,3 +1,10 @@
+debathena-xdsc (10.0.0-0debathena4) unstable; urgency=low
+
+  * Revert 10.0.0-0debathena3 pending further investigation of the memory
+    corruption.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 23 Mar 2009 12:05:26 -0400
+
 debathena-xdsc (10.0.0-0debathena3) intrepid; urgency=low
 
   * Avoid a crash in xdsc (Closes: Debathena Trac #84).
