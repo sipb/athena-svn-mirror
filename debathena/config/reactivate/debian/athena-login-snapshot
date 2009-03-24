@@ -147,7 +147,13 @@ EOF
     done
 
     # Clean up any remaining user processes using the bind mounts.
+    # Try sending SIGTERM first to give processes a chance to exit
+    # cleanly.
     if [ -n "$USER" -a "$USER" != root ]; then
+      for dir in $binddirs; do
+        v su -s /bin/sh "$USER" -c "fuser -kmv -TERM /login$dir" || true
+      done
+      sleep 3
       for dir in $binddirs; do
         v su -s /bin/sh "$USER" -c "fuser -kmv /login$dir" || true
       done
