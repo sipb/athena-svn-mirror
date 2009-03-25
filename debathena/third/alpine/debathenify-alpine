@@ -10,14 +10,6 @@ hack_package () {
   add_build_depends libhesiod-dev
   add_build_depends libkrb5-dev
 
-  # alpine versions prior to 1.10 have broken krb5 detection.
-  # Versions prior to 1.0 can be patched in a similar fashion (though
-  # not with exactly the same patch) but we're not currently
-  # integrating those.
-  case $version in
-  1.0*)  patch -p1 < $dir/alpine-1.00-krb5-configure.patch ;;
-  esac
-
   # Integrate krb4 support.
   tar -C imap/src -xzf "$dir/kerberos4-patches.tar.Z"
   patch -p1 < $dir/alpine-1.00-krb4-build.patch
