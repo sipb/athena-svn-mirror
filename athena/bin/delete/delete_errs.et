@@ -36,7 +36,7 @@ ec NO_HOME_DIR,
 	"can't find home directory"
 ec INTERNAL_ERROR,
 	"strange internal error"
-ec ENOMATCH,
+ec DELETE_ENOMATCH,
 	"no match"
 ec EXPUNGE_NOT_EXPUNGED,
 	""

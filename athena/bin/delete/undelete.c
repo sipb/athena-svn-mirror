@@ -188,7 +188,7 @@ char *name;
 	       set_error(ENOENT)
 	  }
 	  else
-	       set_error(ENOMATCH);
+	       set_error(DELETE_ENOMATCH);
 	  error(name);
 	  return error_code;
      }

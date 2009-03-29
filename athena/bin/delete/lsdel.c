@@ -192,7 +192,7 @@ int num;
 		    }
 	       }
 	       else {
-		    set_error(ENOMATCH);
+		    set_error(DELETE_ENOMATCH);
 		    error(args[num - 1]);
 		    status = error_code;
 		    continue;

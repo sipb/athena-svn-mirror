@@ -4,8 +4,10 @@ debathena-delete (10.0.1-0debathena1) unstable; urgency=low
     - When recursively deleting a directory, read in the directory's
       entire contents before deleting anything so readdir doesn't get
       confused
+    - Change the ENOMATCH error constant to DELETE_ENOMATCH to avoid
+      conflicting with a system error constant of the same name
 
- -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 14:50:37 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 14:55:58 -0400
 
 debathena-delete (10.0.0-0debathena1) unstable; urgency=low
 

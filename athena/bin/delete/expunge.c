@@ -233,7 +233,7 @@ int num;
 		    }
 	       }
 	       else {
-		    set_error(ENOMATCH);
+		    set_error(DELETE_ENOMATCH);
 		    error(files[num - 1]);
 	       }
 	  }
