@@ -1,0 +1,50 @@
+# Mutt configuration for Debathena.
+#
+# All of the following are documented on the web here:
+#   http://www.mutt.org/doc/devel/manual.html
+
+
+# Set MIT IMAP as the location of the inbox and other folders.
+set folder="imap://$USER@`hesinfo $USER pobox | awk '{print $2}'`"
+set spoolfile=+INBOX
+set record=+INBOX.sent-mail
+set postponed=+INBOX.postponed-msgs
+
+# TODO can we rely on $ATHENA_USER and use it here?
+
+
+# don't always prompt to move mail to ~/mbox
+set move=no
+
+
+# Use the MIT spam score for sorting/filtering by spam value.
+set imap_headers="X-Spam-Score"
+spam "X-Spam-Score:.(.*)" "%1"
+
+
+# Pass 'To: joeuser' through to the mail system, rather than assuming
+# it means 'To: joeuser@thishost.mit.edu'.
+set use_domain=no
+
+
+# TODO is there a reasonable way to implement this?
+#set query_command = "athrun sipb mutt_ldap_query.pl %s"
+
+
+
+
+# TODO possibly enable header caching
+#set header_cache=~/.muttcache
+
+# TODO possibly
+#set imap_check_subscribed
+# Really this looks like a weirdness in upstream, for any site.
+
+# TODO auto_view?
+# or upstream in debian
+
+
+# TODO use debathena-msmtp, like -alpine-config
+
+
+# TODO deal with Etch's lack of /etc/Muttrc.d/
