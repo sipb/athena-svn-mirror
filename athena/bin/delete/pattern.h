@@ -10,8 +10,9 @@
  */
 #include "mit-copying.h"
 
-int add_str();
-int add_arrays();
+int add_str(char ***array, int array_count, int *array_size, char *string);
+int add_arrays(char ***array1, int *num1, int *size1, char ***array2,
+	       int *num2);
 int find_contents();
 int find_deleted_contents();
 int find_deleted_contents_recurs();

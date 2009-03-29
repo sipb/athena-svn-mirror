@@ -40,16 +40,28 @@ void free_list();
  * lengths, merges the two into the first by realloc'ing the first and
  * then free's the second's memory usage.
  */  
-int add_arrays(array1, num1, array2, num2)
+int add_arrays(array1, num1, size1, array2, num2)
 char ***array1, ***array2;
-int *num1, *num2;
+int *num1, *size1, *num2;
 {
      int counter;
-     
+
+     if (! *size1) {
+       if (*array1)
+	 free(*array1);
+       *array1 = *array2;
+       *num1 = *num2;
+       *size1 = *num2;
+       return 0;
+     }
+
+     while (*size1 < (*num1 + *num2)) {
+       *size1 *= 2;
+     }
+
      *array1 = (char **) realloc((char *) *array1, (unsigned)
-				 (sizeof(char *) * (*num1 + *num2)));
-     if ((! *array1) && (*num1 + *num2))
-     {
+				 (sizeof(char *) * *size1));
+     if (! *array1) {
 	  set_error(errno);
 	  error("realloc");
 	  return error_code;
@@ -69,15 +81,27 @@ int *num1, *num2;
 /*
  * Add a string to a list of strings.
  */
-int add_str(strs, num, str)
+int add_str(strs, num, size, str)
 char ***strs;
-int num;
+int num, *size;
 char *str;
 {
      char **ary;
 
-     ary = *strs = (char **) realloc((char *) *strs, (unsigned)
-				     (sizeof(char *) * (num + 1)));
+     if (! *size) {
+       num = 0;
+       *size = 1;
+       ary = *strs = (char **) malloc((unsigned) (sizeof(char *)));
+     }
+     else if (num == *size) {
+       *size *= 2;
+       ary = *strs = (char **) realloc((char *) *strs, (unsigned)
+				       (sizeof(char *) * *size));
+     }
+     else {
+       ary = *strs;
+     }
+
      if (! *strs) {
 	  set_error(errno);
 	  error("realloc");
@@ -171,7 +195,7 @@ int options;
 {
      char 	**matched_files, **return_files, **recurs_files;
      int 	num_matched_files = 0, num_return_files = 0,
-                num_recurs_files = 0;
+                num_recurs_files = 0, return_files_size = 0;
      int	retval;
      int	i;
 #ifdef DEBUG
@@ -232,7 +256,8 @@ int options;
 
 	       if (num_recurs_files) {
 		    retval = add_arrays(&return_files, &num_return_files,
-					&recurs_files, &num_recurs_files);
+					&return_files_size, &recurs_files,
+					&num_recurs_files);
 		    if (retval) {
 			 error("add_arrays");
 			 return retval;
@@ -249,6 +274,7 @@ int options;
 	       if (is_deleted(lastpart(matched_files[i]))) {
 		    if (options & FIND_DELETED) {
 			 retval = add_str(&return_files, num_return_files,
+					  &return_files_size,
 					  matched_files[i]);
 			 if (retval) {
 			      error("add_str");
@@ -263,7 +289,7 @@ int options;
 	       }
 	       else if (options & FIND_UNDELETED) {
 		    retval = add_str(&return_files, num_return_files,
-				     matched_files[i]);
+				     &return_files_size, matched_files[i]);
 		    if (retval) {
 			 error("add_str");
 			 return retval;
@@ -406,6 +432,7 @@ Boolean match_undeleted, match_deleted;
 #ifdef PATTERN_DEBUG
      int j;
 #endif
+     int found_size = 0;
      
 #ifdef DEBUG
      printf("do_match: looking for %s\n", name);
@@ -435,7 +462,7 @@ Boolean match_undeleted, match_deleted;
      }
      (void) strcpy(first, firstpart(name, rest));
      if ((! *first) && (match_undeleted)) {
-	  retval = add_str(found, *num_found, base);
+	  retval = add_str(found, *num_found, &found_size, base);
 	  if (retval) {
 	       error("add_str");
 	       (void) popall();
@@ -511,7 +538,8 @@ Boolean match_undeleted, match_deleted;
 	  if (! *first) {
 	       if (is_deleted(lastpart(base))) {
 		    if (match_deleted) {
-			 retval = add_str(found, *num_found, base);
+			 retval = add_str(found, *num_found, &found_size,
+					  base);
 			 if (retval) {
 			      error("add_str");
 			      (void) popall();
@@ -524,7 +552,7 @@ Boolean match_undeleted, match_deleted;
 		    }
 	       }
 	       else if (match_undeleted) {
-		    retval = add_str(found, *num_found, base);
+		    retval = add_str(found, *num_found, &found_size, base);
 		    if (retval) {
 			 error("add_str");
 			 (void) popall();
@@ -745,6 +773,7 @@ int options;
      int strsize;
      struct stat statbuf;
      int use_stat;
+     int found_size = 0;
 
 #ifdef DEBUG
      fprintf(stderr, "do_recurs: opening %s\n", name);
@@ -825,7 +854,7 @@ int options;
 
 	  if (is_deleted(dp->d_name)) {
 	       if (options & FIND_DELETED) {
-		    retval = add_str(found, *num_found,
+		    retval = add_str(found, *num_found, &found_size,
 				     append(base, dp->d_name));
 		    if (retval) {
 			 error("add_str");
@@ -845,7 +874,7 @@ int options;
 	  if (options & FIND_UNDELETED) {
 	       if (is_dotfile(dp->d_name)) {
 		    if (options & FIND_DOTFILES) {
-			 retval = add_str(found, *num_found,
+			 retval = add_str(found, *num_found, &found_size,
 					  append(base, dp->d_name));
 			 if (retval) {
 			      error("add_str");
@@ -856,7 +885,7 @@ int options;
 		    continue;
 	       }
 	       else {
-		    retval = add_str(found, *num_found,
+		    retval = add_str(found, *num_found, &found_size,
 				     append(base, dp->d_name));
 		    if (retval) {
 			 error("add_str");

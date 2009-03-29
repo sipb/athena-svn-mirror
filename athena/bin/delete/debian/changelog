@@ -14,6 +14,8 @@ debathena-delete (10.0.1-0debathena1) unstable; urgency=low
     - Change the "st_chtime" structure member to "st_ctim" to avoid a
       potential header file conflict.
     - Don't try to use symbolic links on platforms that don't have them.
+    - When adding to an array, leave some extra space at the end so that
+      we don't have to keep growing it every time.
 
  -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 15:07:52 -0400
 
