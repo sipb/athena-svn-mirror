@@ -762,6 +762,7 @@ int options;
 	  return error_code;
      }
 	 
+#ifdef S_IFLNK
      if (is_link(base, &statbuf)) {
 	  /* Never follow deleted symlinks */
 	  if (is_deleted(lastpart(base))) {
@@ -798,6 +799,7 @@ int options;
 	       }
 	  }
      }
+#endif
 
      if ((statbuf.st_mode & S_IFMT) != S_IFDIR)
 	  return 0;

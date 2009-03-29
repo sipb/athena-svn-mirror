@@ -13,8 +13,9 @@ debathena-delete (10.0.1-0debathena1) unstable; urgency=low
     - Fix compiler nit by adding missing prototyle to directories.h
     - Change the "st_chtime" structure member to "st_ctim" to avoid a
       potential header file conflict.
+    - Don't try to use symbolic links on platforms that don't have them.
 
- -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 15:03:56 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 15:07:52 -0400
 
 debathena-delete (10.0.0-0debathena1) unstable; urgency=low
 
