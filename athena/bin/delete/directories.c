@@ -13,6 +13,7 @@
      static char rcsid_directories_c[] = "$Id: directories.c,v 1.28 1999-01-22 23:08:54 ghudson Exp $";
 #endif
 
+#include <math.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/param.h>
@@ -705,4 +706,39 @@ int *num;
 
      *in_strings = strings;
      return 0;
+}
+
+char *bytes_to_friendly(off_t bytes)
+{
+  double size = bytes;
+  char *output;
+
+  size /= 1024;
+  if (size < 1024) {
+    if (! (output = malloc(7))) {
+      set_error(errno);
+      error("malloc");
+      return "";
+    }
+    sprintf(output, "%.0fKB", ceil(size));
+    return(output);
+  }
+  size /= 1024;
+  if (size < 1024) {
+    if (! (output = malloc(9))) {
+      set_error(errno);
+      error("malloc");
+      return "";
+    }
+    sprintf(output, "%.1fMB", size);
+    return(output);
+  }
+  size /= 1024;
+  if (! (output = malloc((int)log10(size)+6))) {
+    set_error(errno);
+    error("malloc");
+    return "";
+  }
+  sprintf(output, "%.2fGB", size);
+  return(output);
 }

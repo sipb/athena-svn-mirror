@@ -205,10 +205,12 @@ int num;
 	       return error_code;
 	  }
      }
-     if (yield)
-	  printf("\nTotal space taken up by file%s: %dk\n",
-		 (total == 1 ? "" : "s"), space_to_k(space_total));
-
+     if (yield) {
+       char *friendly = space_to_friendly(space_total);
+       printf("\nTotal space taken up by file%s: %s\n",
+	      (total == 1 ? "" : "s"), friendly);
+       free(friendly);
+     }
      return status;
 }
 

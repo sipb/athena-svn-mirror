@@ -263,11 +263,12 @@ int num;
 	  }
      }
      if (yield) {
-	  if (noop)
-	       printf("Total that would be expunged: %dk\n",
-		      space_to_k(space_removed));
-	  else
-	       printf("Total expunged: %dk\n", space_to_k(space_removed));
+       char *friendly = space_to_friendly(space_removed);
+       if (noop)
+	 printf("Total that would be expunged: %s\n", friendly);
+       else
+	 printf("Total expunged: %s\n", friendly);
+       free(friendly);
      }
      return status;
 }
@@ -375,8 +376,9 @@ filerec *file_ent;
      (void) convert_to_user_name(real, user);
 
      if (interactive) {
-	  printf ("%s: Expunge %s (%dk)? ", whoami, user,
-		  specs_to_k(file_ent->specs));
+       char *friendly = specs_to_friendly(file_ent->specs);
+       printf ("%s: Expunge %s (%s)? ", whoami, user, friendly);
+       free(friendly);
 	  if (! yes()) {
 	       set_status(EXPUNGE_NOT_EXPUNGED);
 	       return error_code;
@@ -385,9 +387,12 @@ filerec *file_ent;
 
      if (noop) {
 	  space_removed += specs_to_space(file_ent->specs);
-	  printf("%s: %s (%dk) would be expunged (%dk total)\n", whoami, user,
-		 specs_to_k(file_ent->specs),
-		 space_to_k(space_removed));
+	  char *friendly = space_to_friendly(space_removed);
+	  char *friendly2 = specs_to_friendly(file_ent->specs);
+	  printf("%s: %s (%s) would be expunged (%s total)\n", whoami, user,
+		 friendly2, friendly);
+	  free(friendly);
+	  free(friendly2);
 	  return 0;
      }
 
@@ -397,10 +402,14 @@ filerec *file_ent;
 	  status = unlink(real);
      if (! status) {
 	  space_removed += specs_to_space(file_ent->specs);
-	  if (verbose)
-	       printf("%s: %s (%dk) expunged (%dk total)\n", whoami, user,
-		      specs_to_k(file_ent->specs),
-		      space_to_k(space_removed));
+	  if (verbose) {
+	    char *friendly = space_to_friendly(space_removed);
+	    char *friendly2 = specs_to_friendly(file_ent->specs);
+	    printf("%s: %s (%s) expunged (%s total)\n", whoami, user,
+		   friendly2, friendly);
+	    free(friendly);
+	    free(friendly2);
+	  }
 	  return 0;
      }
      else {

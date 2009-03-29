@@ -15,10 +15,13 @@ typedef short Boolean;
 #define True			(Boolean) 1
 #define False			(Boolean) 0
 
+char *bytes_to_friendly(off_t);
 
 #define specs_to_space(x)	((x).st_blocks)
 #define space_to_k(x)		((x) / 2 + (((x) % 2) ? 1 : 0))
 #define specs_to_k(x)		space_to_k((x).st_blocks)
+#define space_to_friendly(x)	bytes_to_friendly((x))
+#define specs_to_friendly(x)	space_to_friendly((x).st_size)
 
 #define FOLLOW_LINKS		1
 #define DONT_FOLLOW_LINKS	0
