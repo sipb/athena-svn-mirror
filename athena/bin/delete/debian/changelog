@@ -9,6 +9,7 @@ debathena-delete (10.0.1-0debathena1) unstable; urgency=low
     - When printing an amount of space, print it in friendly units, e.g.,
       KB, MB or GB, rather than always printing kb.
     - Fix a double free in lsdel
+    - Fix compiler nit by including <string.h> in stack.c
 
  -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 14:59:32 -0400
 

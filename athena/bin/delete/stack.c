@@ -13,6 +13,7 @@
      static char rcsid_stack_c[] = "$Id: stack.c,v 1.13 1999-01-22 23:09:06 ghudson Exp $";
 #endif
 
+#include <string.h>
 #include <sys/types.h>
 #include <stdio.h>
 #include <errno.h>
