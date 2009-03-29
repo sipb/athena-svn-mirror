@@ -19,9 +19,11 @@ static const char rcsid[] = "$Id: lertsrv.c,v 1.10 2009/03/26 19:30:39 zacheiss 
 
 #include <stdio.h>
 #include <unistd.h>
+#ifdef HAVE_KRB4
 #include <krb.h>
-#include <krb5.h>
 #include <des.h>
+#endif
+#include <krb5.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -55,14 +57,16 @@ int main(int argc, char **argv)
   int fromlen;
   int status;
   int len;
+#ifdef HAVE_KRB4
   AUTH_DAT ad;
   KTEXT_ST authent;
   KTEXT_ST ktxt;
+  char instance[INST_SZ];
   /* for krb_mk_priv */
   des_key_schedule sched;		/* session key schedule */
+#endif
   struct hostent *hp;
   struct utsname thishost;
-  char instance[INST_SZ];
   /* for the krb5-authenticated v2 of the protocol */
   krb5_error_code problem;
   krb5_auth_context auth_con = NULL;
@@ -124,6 +128,7 @@ int main(int argc, char **argv)
       fprintf(stderr, "lertsrv: Received packet of length %d\n", plen);
 #endif
 
+#ifdef HAVE_KRB4
       if (packet[0] == '1')
 	{
 	  /* krb4-authenticated version of the protocol. */
@@ -172,7 +177,9 @@ int main(int argc, char **argv)
 	  /* Avoid confusion, zeroize now */
 	  memset(&from, 0, sizeof(from));
 	}
-      else if (packet[0] == LERT_VERSION)
+      else
+#endif
+      if (packet[0] == LERT_VERSION)
 	{
 	  /* krb5-authenticated version of the protocol. */
 	  if (!context)
