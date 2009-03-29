@@ -57,6 +57,7 @@ int add_directory_to_parent();
 int add_file_to_parent();
 int add_path_to_tree();
 int find_child();
+int change_path();
 filerec *first_in_directory();
 filerec *first_specified_in_directory();
 filerec *get_cwd_tree();

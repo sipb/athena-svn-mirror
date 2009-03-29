@@ -10,8 +10,9 @@ debathena-delete (10.0.1-0debathena1) unstable; urgency=low
       KB, MB or GB, rather than always printing kb.
     - Fix a double free in lsdel
     - Fix compiler nit by including <string.h> in stack.c
+    - Fix compiler nit by adding missing prototyle to directories.h
 
- -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 14:59:32 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 15:02:58 -0400
 
 debathena-delete (10.0.0-0debathena1) unstable; urgency=low
 
