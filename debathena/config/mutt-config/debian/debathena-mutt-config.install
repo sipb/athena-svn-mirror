@@ -1,1 +1,2 @@
 debian/debathena.rc etc/Muttrc.d
+debian/debathena-mutt-folder usr/lib/debathena-mutt-config

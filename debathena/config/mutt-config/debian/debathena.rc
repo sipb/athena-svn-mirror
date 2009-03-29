@@ -5,12 +5,10 @@
 
 
 # Set MIT IMAP as the location of the inbox and other folders.
-set folder="imap://$USER@`hesinfo $USER pobox | awk '{print $2}'`"
+set folder=`/usr/lib/debathena-mutt-config/debathena-mutt-folder`
 set spoolfile=+INBOX
 set record=+INBOX.sent-mail
 set postponed=+INBOX.postponed-msgs
-
-# TODO can we rely on $ATHENA_USER and use it here?
 
 
 # don't always prompt to move mail to ~/mbox

@@ -1,0 +1,3 @@
+#!/bin/bash
+user=${ATHENA_USER:-$USER}
+echo imap://$user@$(hesinfo $user pobox | awk '{print $2}')/
