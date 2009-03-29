@@ -339,7 +339,6 @@ int *number;
      for (last = 0, i = 1; i < *number; i++) {
 	  if (! strcmp(files[last], files[i])) {
 	       free (files[i]);
-	       free (files[i]);
 	       files[i] = (char *) NULL;
 	  }
 	  else

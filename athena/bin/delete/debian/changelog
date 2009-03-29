@@ -8,8 +8,9 @@ debathena-delete (10.0.1-0debathena1) unstable; urgency=low
       conflicting with a system error constant of the same name
     - When printing an amount of space, print it in friendly units, e.g.,
       KB, MB or GB, rather than always printing kb.
+    - Fix a double free in lsdel
 
- -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 14:58:43 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 14:59:32 -0400
 
 debathena-delete (10.0.0-0debathena1) unstable; urgency=low
 
