@@ -1,3 +1,12 @@
+debathena-delete (10.0.1-0debathena1) unstable; urgency=low
+
+  * Patches from Jonathan Kamens:
+    - When recursively deleting a directory, read in the directory's
+      entire contents before deleting anything so readdir doesn't get
+      confused
+
+ -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 14:50:37 -0400
+
 debathena-delete (10.0.0-0debathena1) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.

@@ -357,6 +357,8 @@ int recursed;
      int status = 0;
      char newfile[MAXPATHLEN];
      int retval = 0;
+     char **dir_contents = 0;
+     int num_dir_contents = 0, dir_contents_size = 0;
      
      if (interactive && recursed) {
 	  printf("%s: remove directory %s? ", whoami, filename);
@@ -378,20 +380,33 @@ int recursed;
 	       continue;
 	  if (is_deleted(dp->d_name))
 	       continue;
-	  else {
-	       (void) strcpy(newfile, append(filename, dp->d_name));
-	       if (! *newfile) {
-		    error(filename);
-		    status = error_code;
-	       }
-
-	       retval = delete(newfile, 1);
-	       if (retval) {
-		    error(newfile);
-		    status = retval;
-	       }
+	  (void) strcpy(newfile, append(filename, dp->d_name));
+	  if (! *newfile) {
+	    error(filename);
+	    status = error_code;
+	    break;
 	  }
+	  if ((retval = add_str(&dir_contents, num_dir_contents,
+				&dir_contents_size, newfile))) {
+	    error(filename);
+	    status = retval;
+	    break;
+	  }
+	  num_dir_contents++;
      }
+
+     if (!status && num_dir_contents) {
+       int i;
+       for (i = 0; i < num_dir_contents; i++) {
+	 retval = delete(dir_contents[i], 1);
+	 if (retval) {
+	   error(dir_contents[i]);
+	   status = retval;
+	 }
+       }
+     }
+
+     free_list(dir_contents, num_dir_contents);
      closedir(dirp);
 
      if (status && (! emulate_rm)) {
