@@ -1,0 +1,13 @@
+Source: debathena-tex-config
+Section: debathena-config/tex
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, texlive-base-bin, dvipdfmx
+Standards-Version: 3.8.0
+
+Package: debathena-tex-config
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, texlive-base-bin
+Description: TeX configuration for Debathena
+ This package configures TeX for the Debathena system by defaulting to
+ letter paper for all TeX utilities.

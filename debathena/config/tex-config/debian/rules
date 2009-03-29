@@ -1,0 +1,27 @@
+#!/usr/bin/make -f
+
+BUILD_ROOT=$(CURDIR)/files
+TEXMFVAR=$(CURDIR)/junk
+TEXMFCONFIG=etc/texmf
+
+DEB_DIVERT_EXTENSION = .debathena
+DEB_DIVERT_FILES_debathena-tex-config += \
+	$(shell cd $(BUILD_ROOT) && find . -type f | sed 's,^\.,,; s,$$,.debathena,')
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/config-package.mk
+
+build/debathena-tex-config::
+	TEXMFVAR=$(TEXMFVAR) TEXMFCONFIG=$(BUILD_ROOT)/$(TEXMFCONFIG) texconfig paper letter
+
+install/debathena-tex-config::
+	set -x; \
+	cd $(BUILD_ROOT); \
+	for f in $$(find $(TEXMFCONFIG) -type f); do \
+	    mkdir -p $(DEB_DESTDIR)$$(dirname $$f); \
+	    cp -a $$f $(DEB_DESTDIR)$$f.debathena; \
+	done
+
+clean::
+	rm -rf $(CURDIR)/files
+	rm -rf $(TEXMFVAR)
