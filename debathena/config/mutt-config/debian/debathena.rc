@@ -10,6 +10,8 @@ set spoolfile=+INBOX
 set record=+INBOX.sent-mail
 set postponed=+INBOX.postponed-msgs
 
+# Use MIT's outgoing SMTP servers.
+set sendmail="/usr/lib/debathena-msmtp -t"
 
 # don't always prompt to move mail to ~/mbox
 set move=no
@@ -40,9 +42,6 @@ set use_domain=no
 
 # TODO auto_view?
 # or upstream in debian
-
-
-# TODO use debathena-msmtp, like -alpine-config
 
 
 # TODO deal with Etch's lack of /etc/Muttrc.d/
