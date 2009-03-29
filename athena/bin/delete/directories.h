@@ -34,7 +34,7 @@ typedef struct mystat {
      ino_t st_ino;
      unsigned short st_mode;
      off_t st_size;
-     time_t st_chtime;
+     time_t st_ctim;
      long st_blocks;
 } mystat;
 

@@ -226,7 +226,7 @@ timed_out(file_ent, current_time, min_days)
 filerec *file_ent;
 time_t current_time, min_days;
 {
-     if ((current_time - file_ent->specs.st_chtime) / 86400 >= min_days)
+     if ((current_time - file_ent->specs.st_ctim) / 86400 >= min_days)
 	  return(1);
      else
 	  return(0);

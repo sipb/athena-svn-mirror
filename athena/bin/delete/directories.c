@@ -222,7 +222,7 @@ int follow; /* follow symlinks or not? */
      specs->st_ino = realspecs.st_ino;
      specs->st_mode = realspecs.st_mode;
      specs->st_size = realspecs.st_size;
-     specs->st_chtime = realspecs.st_ctime;
+     specs->st_ctim = realspecs.st_ctime;
      specs->st_blocks = realspecs.st_blocks;
 
      return 0;
