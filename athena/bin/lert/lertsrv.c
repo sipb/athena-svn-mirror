@@ -15,7 +15,7 @@
 
 /* This is the server for the lert system. */
 
-static const char rcsid[] = "$Id: lertsrv.c,v 1.9 2006-03-10 07:07:34 ghudson Exp $";
+static const char rcsid[] = "$Id: lertsrv.c,v 1.10 2009/03/26 19:30:39 zacheiss Exp $";
 
 #include <stdio.h>
 #include <unistd.h>
@@ -225,12 +225,9 @@ int main(int argc, char **argv)
 	    {
 	      krb5_unparse_name(context, client, &username);
 	      if (username)
-		{
-		  fprintf(stderr, "lertsrv: %s not null instance in realm "
-			  "%s.\n", username, 
-			  krb5_princ_realm(context, server)->data);
-		  free(username);
-		}
+		fprintf(stderr, "lertsrv: %s not null instance in realm "
+			"%s.\n", username, 
+			krb5_princ_realm(context, server)->data);
 	      opacket[1] = LERT_NOT_IN_DB;
 	      opacket[2] = '\0';
 	    }

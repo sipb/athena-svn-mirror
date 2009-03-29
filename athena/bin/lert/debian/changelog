@@ -1,3 +1,9 @@
+debathena-lert (10.0.1-0debathena1) unstable; urgency=low
+
+  * Fix a double-free in the lert server. (Patch by Garry Zacheiss)
+
+ -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 11:38:02 -0400
+
 debathena-lert (10.0.0-0debathena2) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
