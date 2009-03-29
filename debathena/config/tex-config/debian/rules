@@ -15,7 +15,7 @@ build/debathena-tex-config::
 	TEXMFVAR=$(TEXMFVAR) TEXMFCONFIG=$(BUILD_ROOT)/$(TEXMFCONFIG) texconfig paper letter
 
 install/debathena-tex-config::
-	set -x; \
+	set -xe; \
 	cd $(BUILD_ROOT); \
 	for f in $$(find $(TEXMFCONFIG) -type f); do \
 	    mkdir -p $(DEB_DESTDIR)$$(dirname $$f); \

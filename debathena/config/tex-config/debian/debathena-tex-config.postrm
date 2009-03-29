@@ -21,7 +21,9 @@ set -e
 
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-        fmtutil-sys --refresh
+        if hash fmtutil-sys >/dev/null 2>&1; then
+            fmtutil-sys --refresh
+        fi
     ;;
 
     *)
