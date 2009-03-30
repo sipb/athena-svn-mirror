@@ -1,7 +1,7 @@
 #!/usr/bin/perl -0p
 s#^(user-domain=).*$#${1}mit.edu#m or die;
 s#^(nntp-server=).*$#${1}news.mit.edu#m or die;
-s#^(inbox-path=).*$#${1}{mit.edu/hesiod/imap}INBOX#m or die;
+s#^(inbox-path=).*$#${1}{mit.edu/hesiod/imap/user=\${ATHENA_USER:-\$USER}}}INBOX#m or die;
 s#^(feature-list=).*$#${1}enable-mail-check-cue,\n\tsave-will-quote-leading-froms,\n\tenable-full-header-cmd#m or die;
 s#^(bugs-fullname=).*$#${1}Athena Bugs#m or die;
 s#^(bugs-address=).*$#${1}bugs\@mit.edu#m or die;
@@ -10,7 +10,7 @@ s#^(suggest-address=).*$#${1}suggest\@mit.edu#m or die;
 s#^(local-fullname=).*$#${1}Athena Consultants#m or die;
 s#^(local-address=).*$#${1}olc-mail\@mit.edu#m or die;
 s#^(url-viewers=).*$#${1}/usr/bin/sensible-browser#m or die;
-s#^(folder-collections=).*$#${1}"MIT Mail" {mit.edu/hesiod/imap}INBOX.[]#m or die;
+s#^(folder-collections=).*$#${1}"MIT Mail" {mit.edu/hesiod/imap/user=\${ATHENA_USER:-\$USER}}}INBOX.[]#m or die;
 s#^(sendmail-path=).*$#${1}/usr/lib/debathena-msmtp -t#m or die;
 s#^(rsh-open-timeout=).*$#${1}0#m or die;
 s#^(ssh-open-timeout=).*$#${1}0#m or die;

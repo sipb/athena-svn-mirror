@@ -1,3 +1,10 @@
+debathena-alpine-config (1.7) unstable; urgency=low
+
+  * Try ATHENA_USER, then USER for the username to use when doing the
+    Hesiod lookup and conncting to the mail server.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 30 Mar 2009 09:00:08 -0400
+
 debathena-alpine-config (1.6) unstable; urgency=low
 
   * Add back missing trailing commas in feature-list.
