@@ -1,3 +1,9 @@
+debathena-tex-config (1.1) unstable; urgency=low
+
+  * Don't actually depend on TeX - if it's installed, we'll configure it.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 29 Mar 2009 20:14:10 -0400
+
 debathena-tex-config (1.0) unstable; urgency=low
 
   * Initial Release.

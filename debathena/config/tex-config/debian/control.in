@@ -7,7 +7,7 @@ Standards-Version: 3.8.0
 
 Package: debathena-tex-config
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, texlive-base-bin
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: TeX configuration for Debathena
  This package configures TeX for the Debathena system by defaulting to
  letter paper for all TeX utilities.
