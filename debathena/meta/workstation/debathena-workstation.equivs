@@ -3,12 +3,12 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-workstation
-Version: 0.7
+Version: 0.7.1
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-login-graphical
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
-Changelog: transitional-changelog
+Extra-Files: NEWS.Debian
 Description: Athena graphical login configuration - transitional package
  This is a transitional package. debathena-workstation has been
  replaced by debathena-login-graphical.
