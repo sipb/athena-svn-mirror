@@ -1,3 +1,9 @@
+debathena-larvnet (10.0.4) unstable; urgency=low
+
+  * Use STDOUT, not STDIN, to send the busyd status reply.
+
+ -- Robert Basch <rbasch@mit.edu>  Tue, 31 Mar 2009 17:29:18 -0400
+
 debathena-larvnet (10.0.3) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.

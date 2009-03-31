@@ -17,4 +17,4 @@ my $addr = recv(STDIN, my $dummy, 1, 0);
 
 # Reply with the status packet.
 my $msg = $busy . $hostname . "\0" . $arch . "\0";
-send(STDIN, $msg, 0, $addr);
+send(STDOUT, $msg, 0, $addr);
