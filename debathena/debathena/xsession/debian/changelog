@@ -1,8 +1,11 @@
 debathena-xsession (1.7) unstable; urgency=low
 
   * Add a warning dialog for people with trackerd enabled. (Trac: #154)
+  * Squash some tcsh-related lintian bugs:
+    - Add missing dependency on tcsh.
+    - Correct path to tcsh in xsession.tcsh
 
- -- Evan Broder <broder@mit.edu>  Tue, 31 Mar 2009 16:57:55 -0400
+ -- Evan Broder <broder@mit.edu>  Tue, 31 Mar 2009 17:02:35 -0400
 
 debathena-xsession (1.6) unstable; urgency=low
 

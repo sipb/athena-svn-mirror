@@ -9,7 +9,7 @@ Package: debathena-xsession
 Architecture: all
 Depends: x11-common, zenity, debathena-pam-config, debathena-zephyr-config,
  debathena-get-message, debathena-lert, debathena-authwatch, debathena-quota,
- debathena-mailquota, ${misc:Depends}
+ debathena-mailquota, tcsh, ${misc:Depends}
 Recommends: debathena-bash, debathena-tcsh
 Replaces: debathena-dotfiles-x11
 Conflicts: debathena-dotfiles-x11, debathena-dotfiles (<< 10.0.2-0debathena3)

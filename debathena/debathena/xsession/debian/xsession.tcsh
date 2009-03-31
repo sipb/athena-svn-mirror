@@ -1,4 +1,4 @@
-#!/bin/tcsh -f
+#!/usr/bin/tcsh -f
 
 # This is the Athena xsession wrapper for tcsh users.  Its job is to:
 # 1. Set the XSESSION environment variable.
