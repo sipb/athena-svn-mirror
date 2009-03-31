@@ -1,2 +1,2 @@
 #!/bin/sh
-xargs -n 1 basename | zwrite -d -c linerva -i apt -s "APT on $(hostname)" -O auto
+xargs -n 1 basename | zwrite -d -c linerva -i "apt.$(hostname)" -s "APT on $(hostname)" -O auto
