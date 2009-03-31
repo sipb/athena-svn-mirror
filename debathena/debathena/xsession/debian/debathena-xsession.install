@@ -1,3 +1,4 @@
+debian/96debathena-tracker etc/X11/Xsession.d
 debian/97debathena-homedir-mode etc/X11/Xsession.d
 debian/98debathena-xsession etc/X11/Xsession.d
 debian/athena-initial-x-terminal.desktop etc/xdg/autostart
