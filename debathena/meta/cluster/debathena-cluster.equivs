@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 0.8.7
+Version: 0.8.8
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-workstation,
  debathena-extra-software,
@@ -17,6 +17,7 @@ Depends: debathena-workstation,
  debathena-reactivate,
  debathena-auto-update,
  debathena-syslog-config,
+ debathena-bugme,
 Recommends: ubuntu-desktop
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
