@@ -1,8 +1,9 @@
 debathena-machtype (10.0.1-0debathena1) unstable; urgency=low
 
   * Add debathena-login-graphical to the list of metapackages we test for.
+  * Switch to architecture: all
 
- -- Evan Broder <broder@mit.edu>  Wed, 01 Apr 2009 12:11:21 -0400
+ -- Evan Broder <broder@mit.edu>  Wed, 01 Apr 2009 12:13:45 -0400
 
 debathena-machtype (10.0.0-0debathena5) unstable; urgency=low
 
