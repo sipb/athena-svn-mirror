@@ -1,3 +1,9 @@
+debathena-machtype (10.0.1-0debathena1) unstable; urgency=low
+
+  * Add debathena-login-graphical to the list of metapackages we test for.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 01 Apr 2009 12:11:21 -0400
+
 debathena-machtype (10.0.0-0debathena5) unstable; urgency=low
 
   * machtype -L outputs "debathena" if no metapackages are installed,

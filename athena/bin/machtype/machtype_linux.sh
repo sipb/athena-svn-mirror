@@ -91,7 +91,7 @@ if [ $syspacks ]; then
 fi
 
 if [ $ath_vers ]; then
-	for meta in cluster workstation login standard clients locker athena-libraries extra-software extra-software-nox thirdparty; do
+	for meta in cluster workstation login-graphical login standard clients locker athena-libraries extra-software extra-software-nox thirdparty; do
 		if dpkg-query --showformat '${Status}\n' -W "debathena-$meta" 2>/dev/null | grep -q ' installed$'; then
 			echo "debathena-$meta"
 			printed=1
