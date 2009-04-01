@@ -1,3 +1,10 @@
+debathena-machtype (10.0.1-0debathena2) unstable; urgency=low
+
+  * Switch back to architecture: any - the sysnames are calculated at
+    build time.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 01 Apr 2009 12:28:22 -0400
+
 debathena-machtype (10.0.1-0debathena1) unstable; urgency=low
 
   * Add debathena-login-graphical to the list of metapackages we test for.
