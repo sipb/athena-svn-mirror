@@ -50,6 +50,7 @@ debathena-pam-config-substvars:
 	  echo -n "libpam-krb524 (>= 1.3-0debathena3~),"; \
 	  echo -n "libpam-athena-locker (>= 2.1-0debathena3~),"; \
 	  echo -n "libpam-debathena-home-type (>= 1.1-0debathena2~),"; \
+	  echo \
 	) >>debian/debathena-pam-config.substvars
 else
 debathena-pam-config-substvars:
@@ -59,6 +60,7 @@ debathena-pam-config-substvars:
 	  echo -n "libpam-krb524,"; \
 	  echo -n "libpam-athena-locker,"; \
 	  echo -n "libpam-debathena-home-type,"; \
+	  echo \
 	) >>debian/debathena-pam-config.substvars
 endif
 

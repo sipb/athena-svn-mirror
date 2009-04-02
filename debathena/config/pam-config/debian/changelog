@@ -1,8 +1,10 @@
 debathena-pam-config (1.14) unstable; urgency=low
 
   * Avoid a harmless OMINOUS WARNING on upgrades.
+  * Fix FTBFS on squeeze due to a missing newline in the generated
+    debathena-pam-config.substvars.
 
- -- Anders Kaseorg <andersk@mit.edu>  Fri, 20 Mar 2009 17:16:23 -0400
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 02 Apr 2009 13:47:39 -0400
 
 debathena-pam-config (1.13) unstable; urgency=low
 
