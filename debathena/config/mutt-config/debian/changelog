@@ -1,3 +1,9 @@
+debathena-mutt-config (1.1) unstable; urgency=low
+
+  * Add dependency on libsasl2-krb4-mit to make sure that krb4 auth works.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 02 Apr 2009 18:19:39 -0400
+
 debathena-mutt-config (1.0) unstable; urgency=low
 
   * Initial release.
