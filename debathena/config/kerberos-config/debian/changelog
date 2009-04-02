@@ -1,3 +1,9 @@
+debathena-kerberos-config (1.7) unstable; urgency=low
+
+  * Add missing build-deps for apparmor transformations.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 02 Apr 2009 15:34:12 -0400
+
 debathena-kerberos-config (1.6) unstable; urgency=low
 
   * Transform things in /etc/apparmor.d, if they exist, to permit
