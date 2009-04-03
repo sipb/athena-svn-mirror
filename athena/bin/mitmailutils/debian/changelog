@@ -1,0 +1,5 @@
+debathena-mitmailutils (10.1.0-0debathena1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 02 Apr 2009 23:26:29 -0400
