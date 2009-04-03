@@ -24,6 +24,11 @@ install:
 	    ${INSTALL_SCRIPT} mitmail$$util.pl ${DESTDIR}${bindir}/mitmail$$util; \
 	    ${INSTALL} -m 444 ${srcdir}/mitmail$$util.1 ${DESTDIR}${mandir}/man1; \
 	done
+	set -xe; \
+	for util in quota usage; do \
+	    ${INSTALL_SCRIPT} mail$$util.pl ${DESTDIR}${bindir}/mail$$util; \
+	    ${INSTALL} -m 444 ${srcdir}/mail$$util.1 ${DESTDIR}${mandir}/man1; \
+	done
 
 clean:
 
