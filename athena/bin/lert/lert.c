@@ -387,17 +387,21 @@ static void view_message(char *msgs, int type, int no_more)
 
   if (type == LERT_Z || type == LERT_MAIL)
     {
-      struct passwd *pw;
+      user = getenv("ATHENA_USER");
+      if(!user)
+        user = getenv("USER");
 
-      pw = getpwuid(getuid());
-      if (pw)
-	user = pw->pw_name;
-      else
-	{
-	  user = getenv("USER");
-	  if (!user)
-	    user = getlogin();
+      if(!user)
+        user = getlogin();
+
+      if(!user)
+        {
+          struct passwd *pw;
+          pw = getpwuid(getuid());
+          if (pw)
+            user = pw->pw_name;
 	}
+
       if (!user)
 	type = LERT_CAT;
     }
