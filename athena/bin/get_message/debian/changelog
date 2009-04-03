@@ -1,3 +1,9 @@
+debathena-get-message (10.0.1-0debathena1) unstable; urgency=low
+
+  * Try $ATHENA_USER before using $USER.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 02 Apr 2009 21:03:57 -0400
+
 debathena-get-message (10.0.0-0debathena2) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.

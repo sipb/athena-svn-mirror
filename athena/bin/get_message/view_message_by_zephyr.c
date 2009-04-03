@@ -28,7 +28,9 @@ void view_message_by_zephyr(char *message)
   char *whoami;
   char *ptr;
   
-  whoami = getenv("USER");
+  whoami = getenv("ATHENA_USER");
+  if (!whoami)
+    whoami = getenv("USER");
   
   if(!whoami)
     whoami = getlogin();
