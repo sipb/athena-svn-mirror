@@ -35,7 +35,7 @@ GetOptions("debug", "help" => \&usage, "host=s") || usage;
 
 usage "Please specify an existing and new mailbox names" if @ARGV != 2;
 
-my $username = $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
+my $username = $ENV{'ATHENA_USER'} || $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
     errorout "Cannot determine user name";
 
 unless ($opt_host) {
