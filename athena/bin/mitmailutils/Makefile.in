@@ -29,6 +29,8 @@ install:
 	    ${INSTALL_SCRIPT} mail$$util.pl ${DESTDIR}${bindir}/mail$$util; \
 	    ${INSTALL} -m 444 ${srcdir}/mail$$util.1 ${DESTDIR}${mandir}/man1; \
 	done
+	${INSTALL_SCRIPT} from.pl ${DESTDIR}${bindir}/from; \
+	${INSTALL} -m 444 ${srcdir}/from.1 ${DESTDIR}${mandir}/man1; \
 
 clean:
 
