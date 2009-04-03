@@ -55,7 +55,7 @@ my $username = shift @ARGV;
 if ($username) {
     $have_user = 1;
 } else {
-    $username = $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
+    $username = $ENV{"ATHENA_USER"} || $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
 	errorout "Cannot determine user name";
 }
 usage "Too many arguments" if @ARGV > 0;
