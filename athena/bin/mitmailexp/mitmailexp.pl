@@ -44,7 +44,7 @@ usage "Too many arguments" if @ARGV > 0;
 
 $opt_mailbox = 'INBOX' unless $opt_mailbox;
 
-my $username = $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
+my $username = $ENV{'ATHENA_USER'} || $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
     errorout "Cannot determine user name";
 
 unless ($opt_host) {
