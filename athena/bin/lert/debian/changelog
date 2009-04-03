@@ -1,8 +1,9 @@
 debathena-lert (10.0.2-0debathena1) unstable; urgency=low
 
   * Try $ATHENA_USER before using $USER.
+  * Configure the lert server to comply with the FHS. (Trac: #167)
 
- -- Evan Broder <broder@mit.edu>  Thu, 02 Apr 2009 20:17:11 -0400
+ -- Evan Broder <broder@mit.edu>  Thu, 02 Apr 2009 21:39:13 -0400
 
 debathena-lert (10.0.1-0debathena1) unstable; urgency=low
 
