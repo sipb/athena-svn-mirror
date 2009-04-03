@@ -38,7 +38,7 @@ EOF
 # Parse the command line arguments.
 my %opts;
 getopts('dh:m:nrs', \%opts) || usage;
-my $username = shift @ARGV || $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
+my $username = shift @ARGV || $ENV{'ATHENA_USER'} || $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
 	errorout "Cannot determine user name";
 
 usage "Too many arguments" if @ARGV > 0;
