@@ -44,7 +44,7 @@ my $format = "%-${root_width}.${root_width}s" .
 # Parse the command line arguments.
 my %opts;
 getopts('dh:m:nu:', \%opts) || usage;
-my $username = shift @ARGV || $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
+my $username = shift @ARGV || $ENV{'ATHENA_USER'} || $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
 	errorout "Cannot determine user name";
 
 usage "Too many arguments" if @ARGV > 0;
