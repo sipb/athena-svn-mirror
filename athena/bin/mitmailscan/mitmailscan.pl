@@ -131,7 +131,7 @@ usage "Cannot specify both --deleted and --undeleted"
 $opt_mailbox = 'INBOX' unless $opt_mailbox;
 $opt_search_key = 'ALL' unless $opt_search_key;
 
-my $username = $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
+my $username = $ENV{'ATHENA_USER'} || $ENV{'USER'} || getlogin || (getpwuid($<))[0] ||
     errorout "Cannot determine user name";
 
 unless ($opt_host) {
