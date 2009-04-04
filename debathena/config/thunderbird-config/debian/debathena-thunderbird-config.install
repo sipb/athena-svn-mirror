@@ -1,0 +1,3 @@
+debian/debathena.js etc/thunderbird/pref
+debian/debathena.cfg usr/lib/thunderbird
+debian/thunderbird.debathena usr/bin

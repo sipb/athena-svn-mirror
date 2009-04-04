@@ -1,0 +1,5 @@
+debathena-thunderbird-config (1.0) unstable; urgency=low
+
+  * Initial release. (Trac: #130)
+
+ -- Evan Broder <broder@mit.edu>  Sat, 04 Apr 2009 18:25:12 -0400

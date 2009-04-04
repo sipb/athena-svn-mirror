@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if ! [ -d "$HOME/.mozilla-thunderbird" ]; then
+    if [ -d "$HOME/.thunderbird" ] && ! [ -L "$HOME/.thunderbird" ]; then
+	mv "$HOME/.thunderbird" "$HOME/.mozilla-thunderbird"
+	ln -s "$HOME/.mozilla-thunderbird" "$HOME/.thunderbird"
+    else
+	mkdir -p "$HOME/.mozilla-thunderbird"
+    fi
+
+    fs sa "$HOME/.mozilla-thunderbird" system:anyuser none
+fi
+: ${NAME:=$(getent passwd "$USER" | cut -d: -f5 | cut -d, -f1)}
+: ${POBOX:=$(hesinfo "${ATHENA_USER:-USER}" pobox | awk '{print $2}')}
+export NAME POBOX
+
+exec "$0.debathena-orig" "$@"
