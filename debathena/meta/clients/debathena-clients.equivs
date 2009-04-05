@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-clients
-Version: 0.3.16
+Version: 0.3.17
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: athena-jot,
  debathena-athinfo,
@@ -13,7 +13,6 @@ Depends: athena-jot,
  debathena-discuss-emacs,
  debathena-finger,
  debathena-finger-config,
- debathena-from,
  debathena-from-config,
  debathena-getcluster,
  debathena-gettime,
