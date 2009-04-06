@@ -1,7 +1,7 @@
 #!/bin/sh
 
 complain() {
-  logger -t "$(gethostname --fqdn)" -p user.notice "update: $*"
+  logger -t "$(hostname --fqdn)" -p user.notice "update: $*"
 }
 
 maybe_reboot() {
@@ -44,36 +44,6 @@ trap 'rm -f $pidfile' EXIT
 # Make sure nothing expects input on stdin.
 exec </dev/null
 
-# Punt output while we figure out if there are updates to take.
-exec >/dev/null 2>&1
-
-# Allow hesiod cluster info to specify the debathena apt repository.
-# (Will do nothing if debathena-clusterinfo isn't installed.)
-[ -x /usr/sbin/save-cluster-info ] && /usr/sbin/save-cluster-info
-cinfo=/var/run/athena-clusterinfo.sh
-slist=/etc/apt/sources.list.d/debathena.list
-if [ -r $cinfo -a -w $slist ]; then
-  (. $cinfo;
-   [ -n "$APT" ] && perl -pi.old -e 's|http://\S+|$ENV{"APT"}|e;' $slist)
-fi
-
-# Tell apt not to expect user input during package installation.
-export DEBIAN_FRONTEND=noninteractive
-
-# Update the aptitude cache.
-if ! aptitude --quiet --assume-yes update; then
-  complain "aptitude update failed"
-  exit
-fi
-
-# Exit quietly (except for perhaps rebooting) if there are no upgrades
-# to take.
-pattern='^0 packages upgraded, 0 newly installed, 0 to remove'
-if aptitude --simulate --assume-yes full-upgrade | grep -q "$pattern"; then
-  maybe_reboot
-  exit
-fi
-
 # Redirect further output to a log file.
 exec >>/var/log/athena-update 2>&1
 
@@ -94,6 +64,35 @@ v() {
   echo "** Running:" "$@"
   "$@"
 }
+
+
+# Allow hesiod cluster info to specify the debathena apt repository.
+# (Will do nothing if debathena-clusterinfo isn't installed.)
+[ -x /usr/sbin/save-cluster-info ] && v /usr/sbin/save-cluster-info
+cinfo=/var/run/athena-clusterinfo.sh
+slist=/etc/apt/sources.list.d/debathena.list
+if [ -r $cinfo -a -w $slist ]; then
+  (. $cinfo;
+   [ -n "$APT" ] && perl -pi.old -e 's|http://\S+|$ENV{"APT"}|e;' $slist)
+fi
+
+# Tell apt not to expect user input during package installation.
+export DEBIAN_FRONTEND=noninteractive
+
+# Update the aptitude cache.
+if ! v aptitude --quiet --assume-yes update; then
+  complain "aptitude update failed"
+  exit
+fi
+
+# Exit quietly (except for perhaps rebooting) if there are no upgrades
+# to take.
+pattern='^0 packages upgraded, 0 newly installed, 0 to remove'
+if v aptitude --simulate --assume-yes full-upgrade | grep -q "$pattern"; then
+  echo "Nothing to do!"
+  maybe_reboot
+  exit
+fi
 
 # Download packages first.
 if ! v aptitude --quiet --assume-yes --download-only full-upgrade; then

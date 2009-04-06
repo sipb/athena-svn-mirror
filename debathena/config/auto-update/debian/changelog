@@ -1,3 +1,10 @@
+debathena-auto-update (1.11) intrepid; urgency=low
+
+  * Don't avoid logging the output of `aptitude update` (Closes: Trac #178).
+  * Fix a typo that caused the logger command not to get our hostname.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 06 Apr 2009 18:57:32 -0400
+
 debathena-auto-update (1.10) unstable; urgency=low
 
   * Update the apt-file cache when running other updates.
