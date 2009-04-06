@@ -9,14 +9,18 @@ Package: debathena-mitmailutils
 Architecture: all
 Provides: from, mailquota, mailusage, mitmailappend, mitmailcreate,
  mitmaildel, mitmailexp, mitmailmove, mitmailrename, mitmailscan,
- mitmailshow
+ mitmailshow, debathena-from, debathena-mailquota,
+ debathena-mailusage, debathena-mitmailappend,
+ debathena-mitmailcreate, debathena-mitmaildel, debathena-mitmailexp,
+ debathena-mitmailmove, debathena-mitmailrename,
+ debathena-mitmailscan, debathena-mitmailshow
+Depends: ${shlibs:Depends}, ${misc:Depends}, libcyrus-imap-perl22 | debathena-libcyrus-imap-perl, libsasl2-krb4-mit, hesiod
 Replaces: debathena-from (<< 10.1.0), debathena-mailquota (<< 10.1.0),
  debathena-mailusage (<< 10.1.0), debathena-mitmailappend (<< 10.1.0),
  debathena-mitmailcreate (<< 10.1.0), debathena-mitmaildel (<<
  10.1.0), debathena-mitmailexp (<< 10.1.0), debathena-mitmailmove (<<
  10.1.0), debathena-mitmailrename (<< 10.1.0), debathena-mitmailscan
  (<< 10.1.0), debathena-mitmailshow (<< 10.1.0)
-Depends: ${shlibs:Depends}, ${misc:Depends}, libcyrus-imap-perl22 | debathena-libcyrus-imap-perl, libsasl2-krb4-mit, hesiod
 Conflicts: debathena-mitmailutils (<< 9.4), debathena-from (<<
  10.1.0), debathena-mailquota (<< 10.1.0), debathena-mailusage (<<
  10.1.0), debathena-mitmailappend (<< 10.1.0), debathena-mitmailcreate
