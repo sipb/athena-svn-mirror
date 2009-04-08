@@ -66,14 +66,32 @@ v() {
 }
 
 
-# Allow hesiod cluster info to specify the debathena apt repository.
+# Allow hesiod cluster info to specify the debathena apt release.
 # (Will do nothing if debathena-clusterinfo isn't installed.)
 [ -x /usr/sbin/save-cluster-info ] && v /usr/sbin/save-cluster-info
 cinfo=/var/run/athena-clusterinfo.sh
-slist=/etc/apt/sources.list.d/debathena.list
-if [ -r $cinfo -a -w $slist ]; then
-  (. $cinfo;
-   [ -n "$APT" ] && perl -pi.old -e 's|http://\S+|$ENV{"APT"}|e;' $slist)
+slist=/etc/apt/sources.list.d/debathena.clusterinfo.list
+if [ -r "$cinfo" ] && ( [ ! -e "$slist" ] || [ -w "$slist" ] ); then
+  echo "** Updating debathena.clusterinfo.list"
+  dsource="$(egrep -h '^deb(-src)? http://debathena.mit.edu/apt' /etc/apt/sources.list /etc/apt/sources.list.d/*.list 2>/dev/null | sort -u)"
+  if [ -n "$dsource" ]; then
+    (. $cinfo
+     echo "# This file is automatically updated by debathena-auto-update"
+     echo "# based on your Hesiod cluster information. If you want to"
+     echo "# make changes, do so in another file."
+     echo
+     case $APT_RELEASE in
+       production)  ;;
+       proposed)    echo "$dsource" | awk '{$3 = $3 "-proposed"; print}' ;;
+       development) echo "$dsource" | awk '{$3 = $3 "-proposed"; print}'
+                    echo "$dsource" | awk '{$3 = $3 "-development"; print}' ;;
+     esac
+    ) > $slist
+  else
+    echo "Never mind, I can't figure out which sources.list line is Debathena's"
+  fi
+else
+  echo "** Skipping update of debathena.clusterinfo.list"
 fi
 
 # Tell apt not to expect user input during package installation.

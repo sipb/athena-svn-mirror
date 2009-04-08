@@ -2,8 +2,10 @@ debathena-auto-update (1.11) intrepid; urgency=low
 
   * Don't avoid logging the output of `aptitude update` (Closes: Trac #178).
   * Fix a typo that caused the logger command not to get our hostname.
+  * Use the apt_release key instead of the apt key in clusterinfo
+    (Closes: Trac #163).
 
- -- Geoffrey Thomas <geofft@mit.edu>  Mon, 06 Apr 2009 18:57:32 -0400
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 07 Apr 2009 23:51:40 -0400
 
 debathena-auto-update (1.10) unstable; urgency=low
 
