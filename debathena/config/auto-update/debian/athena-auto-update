@@ -73,7 +73,7 @@ cinfo=/var/run/athena-clusterinfo.sh
 slist=/etc/apt/sources.list.d/debathena.clusterinfo.list
 if [ -r "$cinfo" ] && ( [ ! -e "$slist" ] || [ -w "$slist" ] ); then
   echo "** Updating debathena.clusterinfo.list"
-  dsource="$(egrep -h '^deb(-src)? http://debathena.mit.edu/apt' /etc/apt/sources.list /etc/apt/sources.list.d/*.list 2>/dev/null | sort -u)"
+  dsource="$(egrep -h '^deb(-src)? http://debathena\.mit\.edu/apt ' /etc/apt/sources.list /etc/apt/sources.list.d/*.list 2>/dev/null | sort -u)"
   if [ -n "$dsource" ]; then
     (. $cinfo
      echo "# This file is automatically updated by debathena-auto-update"
