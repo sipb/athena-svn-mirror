@@ -1,3 +1,10 @@
+debathena-auto-update (1.11.1) unstable; urgency=low
+
+  * Revert "Use the apt_release key instead of the apt key in clusterinfo"
+    because it's buggy.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 08 Apr 2009 17:20:01 -0400
+
 debathena-auto-update (1.11) unstable; urgency=low
 
   * Don't avoid logging the output of `aptitude update` (Closes: Trac #178).
