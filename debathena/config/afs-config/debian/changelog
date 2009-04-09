@@ -1,3 +1,9 @@
+debathena-afs-config (1.7) unstable; urgency=low
+
+  * New build for huge set of CellServDB updates.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 09 Apr 2009 10:42:23 -0400
+
 debathena-afs-config (1.6) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
