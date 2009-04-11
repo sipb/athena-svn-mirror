@@ -1,3 +1,10 @@
+debathena-mitmailutils (10.1.0-0debathena2) unstable; urgency=low
+
+  * Switch to unversioned conflicts/replaces against the old mitmailfoo
+    packages to make the upgrade path smoother.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 11 Apr 2009 00:42:52 -0400
+
 debathena-mitmailutils (10.1.0-0debathena1) unstable; urgency=low
 
   * Initial release.
