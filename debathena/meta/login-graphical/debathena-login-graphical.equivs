@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-login-graphical
-Version: 0.2
+Version: 0.3
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-login,
  debathena-gdm-config,
@@ -16,6 +16,7 @@ Depends: debathena-login,
  debathena-transcript-glue, debathena-misc-glue,
  debathena-xlock,
 Recommends: ubuntu-desktop,
+ debathena-thunderbird-config,
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena graphical login configuration
