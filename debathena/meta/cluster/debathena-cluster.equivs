@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 0.8.9
+Version: 0.8.10
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-workstation,
  debathena-extra-software,
@@ -19,7 +19,6 @@ Depends: debathena-workstation,
  debathena-syslog-config,
  debathena-bugme,
  debathena-tex-config,
-Recommends: ubuntu-desktop
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena cluster configuration for Debian
