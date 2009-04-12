@@ -27,6 +27,7 @@ case "$1" in
 	else
 	    /etc/init.d/openafs-client restart || true
 	fi
+	update-cellservdb
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

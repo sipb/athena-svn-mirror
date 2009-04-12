@@ -1,3 +1,10 @@
+debathena-afs-config (1.8) unstable; urgency=low
+
+  * Add script to `fs newcell` any cells that are out of date according to
+    the newly installed CellServDB. (Trac: #186)
+
+ -- Evan Broder <broder@mit.edu>  Sun, 12 Apr 2009 01:59:31 -0400
+
 debathena-afs-config (1.7) unstable; urgency=low
 
   * New build for huge set of CellServDB updates.
