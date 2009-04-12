@@ -44,7 +44,7 @@ endif
 # "set skip_tty_startup" in your ~/.environment file.
 
 if (! $?ZEPHYR_CLIENT) then
-	if (! -f /etc/athena/dialuptype) then
+	if (! -f /etc/athena/dialuptype || "fallback: true" == "`zctl show fallback`") then
 		setenv ZEPHYR_CLIENT zwgc
 	else
 		setenv ZEPHYR_CLIENT 'echo This is a dialup, so zwgc is not being run on login.'

@@ -53,7 +53,7 @@ esac
 
 if [ "${ZEPHYR_CLIENT+set}" != set ]; then
 	export ZEPHYR_CLIENT
-	if [ ! -f /etc/athena/dialuptype ]; then
+	if [ ! -f /etc/athena/dialuptype ] || [ "fallback: true" = "`zctl show fallback`" ]; then
 		ZEPHYR_CLIENT=zwgc
 	else
 		ZEPHYR_CLIENT='echo This is a dialup, so zwgc is not being run on login.'
