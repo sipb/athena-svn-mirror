@@ -19,6 +19,7 @@ fi
 dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
 arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 : ${section=debathena-system}
+: ${daname=$name}
 
 # Create a chroot and define functions for using it.
 sid=$(schroot -b -c "$chroot")
@@ -54,8 +55,15 @@ add_build_depends () {
 }
 
 add_debathena_provides () {
+    [ "$name" = "$daname" ]
     perl -0pe 's/^(Package: (.*)\n(?:(?!Provides:).+\n)*)(?:Provides: (.*)\n((?:.+\n)*))?(?=\n|\z)/$1Provides: $3, debathena-$2\n$4/mg or die; s/^Provides: , /Provides: /mg' -i debian/control
     add_changelog "Provide debathena-$name."
+}
+
+rename_source () {
+    perl -pe "s{^Source: $name\$}{Source: $daname}" -i debian/control
+    add_changelog "Rename package to $daname."
+    perl -0pe "s/^$name/$daname/" -i debian/changelog
 }
 
 cmd_source () {
@@ -63,13 +71,13 @@ cmd_source () {
 	echo "Not building source package for $dist_arch." >&2
 	return
     fi
-    echo "Building source for $name-$daversion on $dist_arch" >&2
+    echo "Building source for $daname-$daversion on $dist_arch" >&2
     
     if ! [ -e "${name}_$version.dsc" ]; then
 	sch apt-get -d source "$name"
     fi
     
-    if ! [ -e "${name}_$daversion.dsc" ]; then
+    if ! [ -e "${daname}_$daversion.dsc" ]; then
 	(
 	    tmpdir=$(mktemp -td "debathenify.$$.XXXXXXXXXX")
 	    trap 'rm -rf "$tmpdir"' EXIT
@@ -81,15 +89,20 @@ cmd_source () {
 	    cd "$tmpdir/$name-$origversion"
 	    dch_done=
 	    hack_package
+            if [ "$name" != "$daname" ]; then
+                rename_source
+                cp -a "$tmpdir/${name}_$origversion.orig.tar.gz" "$tmpdir/${daname}_$origversion.orig.tar.gz"
+                cp -a "$tmpdir/${daname}_$origversion.orig.tar.gz" "$dscdir"
+            fi
 	    [ -n "$dch_done" ]
 	    schr apt-get -q -y install devscripts pbuilder
 	    schr /usr/lib/pbuilder/pbuilder-satisfydepends
-	    sch debuild -S -sa -us -uc -i -I.svn && cp -a "../${name}_$daversion"* "$dscdir"
+	    sch debuild -S -sa -us -uc -i -I.svn && cp -a "../${daname}_$daversion"* "$dscdir"
 	)
 	[ $? -eq 0 ] || exit 1
 	
 	if [ -n "$DA_CHECK_DIFFS" ]; then
-	    interdiff -z "${name}_$version.diff.gz" "${name}_$daversion.diff.gz" | \
+	    interdiff -z "${name}_$version.diff.gz" "${daname}_$daversion.diff.gz" | \
 		enscript --color --language=ansi --highlight=diffu --output=- -q | \
 		less -R
 	    echo -n "Press Enter to continue: " >&2
@@ -99,7 +112,7 @@ cmd_source () {
 }
 
 cmd_binary () {
-    sbuildhack "$dist_arch" $a "${name}_$daversion.dsc"
+    sbuildhack "$dist_arch" $a "${daname}_$daversion.dsc"
 }
 
 v () {
@@ -115,9 +128,9 @@ cmd_upload () {
     tag=$(gettag $dist)
 
     if [ "$a" = "-A" ]; then
-	$REPREPROI include "${dist}${release}" "${name}_${daversion}_source.changes"
+	$REPREPROI include "${dist}${release}" "${daname}_${daversion}_source.changes"
     fi
-    $REPREPROI include "${dist}${release}" "${name}_${daversion}${tag}_${arch}.changes"
+    $REPREPROI include "${dist}${release}" "${daname}_${daversion}${tag}_${arch}.changes"
 }
 
 version=$(
@@ -146,12 +159,12 @@ daversion=$version$daversionappend
 # Source: header for a package whose name matches its source.
 pkgfiles="$DEBATHENA_APT/dists/$dist/$section/binary-$arch/Packages.gz $DEBATHENA_APT/dists/${dist}-proposed/$section/binary-$arch/Packages.gz"
 if { zcat $pkgfiles | \
-    dpkg-awk -f - "Package:^$name\$" "Version:^$(quote "$daversion")~" -- Architecture;
+    dpkg-awk -f - "Package:^$daname\$" "Version:^$(quote "$daversion")~" -- Architecture;
     zcat $pkgfiles | \
-    dpkg-awk -f - "Source:^$name\$" "Version:^$(quote "$daversion")~" -- Architecture; } \
+    dpkg-awk -f - "Source:^$daname\$" "Version:^$(quote "$daversion")~" -- Architecture; } \
     | if [ "$a" = "-A" ]; then cat; else fgrep -vx 'Architecture: all'; fi \
     | grep -q .; then
-    echo "$name $daversion already exists for $dist_arch." >&2
+    echo "$daname $daversion already exists for $dist_arch." >&2
     exit 0
 fi
 
