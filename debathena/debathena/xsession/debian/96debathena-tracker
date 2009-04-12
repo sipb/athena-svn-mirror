@@ -1,7 +1,8 @@
 # This file is sourced by Xsession(5), not executed.
 
 if [ afs = "$DEBATHENA_HOME_TYPE" ] && \
-    [ "`awk -F= '/^EnableIndexing/ { print $2}' $HOME/.config/tracker/tracker.cfg`" != "false" ]; then
+    [ -f "$HOME/.config/tracker/tracker.cfg" ] && \
+    [ "$(awk -F= '/^EnableIndexing/ { print $2}' $HOME/.config/tracker/tracker.cfg)" != "false" ]; then
     
     message "You currently have the Tracker applet configured to index" \
 	"your home directory, probably because you logged into an earlier" \
