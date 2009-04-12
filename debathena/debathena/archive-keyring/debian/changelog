@@ -1,3 +1,10 @@
+debathena-archive-keyring (1.1) unstable; urgency=low
+
+  * Remove the Athena 10 key, as it was only needed for a transitional
+    period. (Trac: #181)
+
+ -- Evan Broder <broder@mit.edu>  Sun, 12 Apr 2009 01:45:31 -0400
+
 debathena-archive-keyring (1.0) unstable; urgency=low
 
   * Initial commit.
