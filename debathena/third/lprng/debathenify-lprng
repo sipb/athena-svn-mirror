@@ -2,7 +2,8 @@
 set -e
 
 name=lprng
-daversionappend=debathena4
+daname=debathena-lprng
+daversionappend=debathena5
 section=debathena
 
 hack_package () {
@@ -84,6 +85,8 @@ EOS
 EOF
     add_changelog 'Rename commands.'
     munge_sections
+
+    perl -pe 'm{^Package: lprng-doc$} .. s{^Section: debathena}{Section: debathena-system}' -i debian/control
 }
 
 . ../common/debathenificator.sh
