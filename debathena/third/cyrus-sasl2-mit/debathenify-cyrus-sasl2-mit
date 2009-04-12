@@ -35,6 +35,7 @@ fi
 
 dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
 arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
+: ${release=-proposed}
 
 # Create a chroot and define functions for using it.
 sid=$(schroot -b -c "$chroot")

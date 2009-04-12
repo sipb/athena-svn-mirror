@@ -20,6 +20,7 @@ dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
 arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 : ${section=debathena-system}
 : ${daname=$name}
+: ${release=-proposed}
 
 # Create a chroot and define functions for using it.
 sid=$(schroot -b -c "$chroot")

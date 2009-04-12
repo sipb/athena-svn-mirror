@@ -20,6 +20,8 @@ tag=$(gettag $dist)
 : ${DEBATHENA_APT=/mit/debathena/apt}
 pkgfiles="$DEBATHENA_APT/dists/$dist/openafs/binary-$arch/Packages.gz $DEBATHENA_APT/dists/${dist}-proposed/openafs/binary-$arch/Packages.gz"
 
+: ${release=-proposed}
+
 do_binary=no
 do_upload=no
 for arg; do
