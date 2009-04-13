@@ -27,7 +27,9 @@ case "$1" in
 	else
 	    /etc/init.d/openafs-client restart || true
 	fi
-	update-cellservdb
+	if [ -n "$(mount -t afs)" ]; then
+            update-cellservdb
+        fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
