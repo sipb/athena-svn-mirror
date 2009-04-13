@@ -1,0 +1,5 @@
+debathena-upgrade-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 13 Apr 2009 13:17:42 -0400

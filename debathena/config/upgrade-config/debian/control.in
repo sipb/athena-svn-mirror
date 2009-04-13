@@ -1,0 +1,16 @@
+Source: debathena-upgrade-config
+Section: debathena-config/admin
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.8.0
+
+Package: debathena-upgrade-config
+Architecture: all
+Depends: ${misc:Depends}
+Description: Ubuntu upgrade configuration for Debathena
+ This package configures the Ubuntu release upgrade process to not
+ disable the Debathena repository when upgrading from one Ubuntu
+ release to another.
+ .
+ This package has no effect on Debian systems.
