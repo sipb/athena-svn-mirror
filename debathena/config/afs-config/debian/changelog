@@ -2,8 +2,9 @@ debathena-afs-config (1.9) unstable; urgency=low
 
   * Only attempt to run update-cellservdb if AFS is currently running. If
     it's not, then AFS will take the CSDB update when it next starts.
+  * Take updates to the CellServDB.
 
- -- Evan Broder <broder@mit.edu>  Mon, 13 Apr 2009 12:48:16 -0400
+ -- Evan Broder <broder@mit.edu>  Mon, 13 Apr 2009 12:51:41 -0400
 
 debathena-afs-config (1.8) unstable; urgency=low
 
