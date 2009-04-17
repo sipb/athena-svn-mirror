@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-languages
-Version: 0.6
+Version: 0.6.1
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: cmake,
  python-numpy,
@@ -74,6 +74,8 @@ Depends: cmake,
  eclipse-pydev
 
 Recommends:
+ mit-scheme,
+ mit-scheme-doc,
  mozart,
  mozart-doc
 
