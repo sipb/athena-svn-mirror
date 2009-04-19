@@ -86,7 +86,8 @@ To prepare a change to a regular package (a source tree containing a
 debian/ subdir), make the edits in a checkout and record a changelog
 entry.  You can either edit debian/changelog using emacs changelog
 mode (C-c C-v to add a new version entry, C-c C-a to add a change
-entry, C-c C-f to finalize the entry) or you can run "dadch".
+entry, C-c C-f to finalize the entry) or you can run "dadch" from
+the debathena locker / SVN scripts directory.
 
 When creating a new version entry, bump the upstream version number
 (to 10.0.0 if it was not already that high) if you are changing the
@@ -167,10 +168,9 @@ which may help identify which metapackage is best:
   namespace into the local machine namespace for the purpose of user
   lookups and authentication.
 
-* workstation: Implies login.  Configurations for the graphical login
+* login-graphical: Implies login.  Configurations for the graphical login
   system and graphical client software intended to provide a standard
-  X login experience using Athena home directories.  Still in
-  development.
+  X login experience using Athena home directories.
 
 * extra-software: Implies a set of Debian packages common to cluster
   machines and typical workstations.  The resulting software set is
@@ -178,9 +178,21 @@ which may help identify which metapackage is best:
   configurations.  Only stock Debian packages belong in this
   metapackage; do not add other Debathena packages to it.
 
-* cluster: Implies workstation and extra-software.  Also contains
-  configurations for self-maintenance of machines (unattended updates,
-  cleanups between logins, etc.).
+* workstation: Implies login-graphical and extra-software.  The use case
+  is the same as that of the old "private workstations", so it includes
+  more centrally-managed configuration than standard or login does
+  (unattended updates, etc.). New as of May 2009.
+
+* thirdparty: Software supported by 3partysw that upstream Ubuntu
+  already happens to be keeping up to date, and is therefore easier to
+  install via packages than through lockers. This package is HUGE (1 GB of
+  network traffic, 3 GB installed), and is also not strongly tested on
+  Debian or on older releases of Ubuntu.
+
+* cluster: Implies workstation and thirdparty. Configures public cluster
+  machines (login-time LVM snapshots, cleanups between logins, public
+  root password, etc.). The snapshot code requires a particular LVM
+  layout that the PXE (netboot) cluster installer sets up.
 
 * debian-dev: Intended for developers of the system itself; provides a
   set of Debian packages used by Debathena for development.
@@ -245,10 +257,11 @@ Release engineer: Bootstrapping the project infrastructure
 
   2. Create the build area.
 
-  3. Build each equivs package under meta/ using "equivs-build --full
-     *.equivs" and upload each with "daequivsupload *.changes".  This
-     has the side-effect of creating the basic structure of the
-     package repository.
+  3. Run 'reprepro -Vb $DEBATHENA_APT export' to set up the repository.
+     Build each equivs package under meta/ using 'equivs-build --full
+     *.equivs' and upload each with 'daupload-equivs-proposed
+     *.changes', followed by 'damove -proposed "" PACKAGE' (replacing
+     PACKAGE with the name of each equivs package you are moving).
 
   4. Set up the build server.  The basic structure of the apt
      repository must work for make-chroot to succeed, so this must
@@ -308,11 +321,10 @@ to handle build dependencies.
 Release engineer: Setting up a build server
 -------------------------------------------
 
-  1. The build server must be installed with free space in an LVM
-     volume group.  The build chroots consume 2GB each.  There is a
-     known memory corruption issue with LVM snapshots in the kernel
-     used in Ubuntu Gutsy (which is based on 2.6.22), so use a newer
-     kernel such as the one in Ubuntu Hardy (based on 2.6.24) instead.
+  1. Install either Debian testing (or stable, if it's new enough, but
+     see the note about sbuild below) or the latest Ubuntu release.
+     The build server must be installed with free space in an LVM
+     volume group.  The build chroots consume 2GB each.
 
   2. Install debathena-standard as per the the instructions in
      http://debathena.mit.edu/install.
@@ -322,15 +334,12 @@ Release engineer: Setting up a build server
   4. Install the packages listed in scripts/build-server/packages
      (using "aptitude install").
 
-     Note that currently the build system uses a new feature of sbuild
-     which is not in the package version in the main Ubuntu Hardy
-     release.  The proper package version and its prerequisite schroot
-     packages have been backported locally for Hardy, and should be
-     installed from /afs/dev.mit.edu/project/release/10/build/backports.
-     This will also require installing the devscripts package from the
-     Hardy backports repository.
+     Note that currently the build system uses the latest version of
+     sbuild, so if you have not installed Debian testing, you'll
+     need to set up apt pinning to grab sbuild from there. See the
+     apt_preferences man page.
 
-  5. Install debathena-login, debathena-ssh-server, and
+  5. Install debathena-standard, debathena-ssh-server, and
      debathena-build-depends (using "aptitude install").
 
      (Depending on how recently debathena-build-depends was rebuilt,
@@ -338,60 +347,33 @@ Release engineer: Setting up a build server
      build-depends of newer packages.  This can be taken care of later
      when an error occurs building a source package.)
 
-  6. Edit /etc/security/access.conf and add a first line:
-     -:ALL EXCEPT root <developer usernames>:ALL
+  6. Append to /etc/approx/approx.conf the contents of
+      scripts/build-server/approx.conf.tail.
+     Run: /etc/init.d/approx restart
 
-  7. Edit /etc/pam.d/schroot, comment out "@include common-session",
-     and add:
+  7. Apply scripts/build-server/mount-defaults.patch.
 
-       # Basic pam_unix session module in place of common-session.
-       session required		pam_unix.so
+  8. Edit /etc/lvm/lvm.conf and change "archive = 1" to "archive = 0"
+     in order to avoid generating a bazillion backup files under
+     /etc/lvm/archive.
 
-  8. Edit /etc/group and add the developers to the sbuild group.
+  9. For each supported DIST (see scripts/debian-versions.sh) run:
 
-  9. Create /etc/passwd entries for each developer with "hesinfo
-     username passwd >> /etc/passwd" and then run pwconv.
+       VG=/dev/blah scripts/build-server/make-chroot DIST i386
+       VG=/dev/blah scripts/build-server/make-chroot DIST amd64
 
-     (This is not necessary for the login system on the main root
-     environment, but is for the chroot environments.)
+     substituting the name of the volume group for blah.
 
-  10. Append to /etc/approx/approx.conf the contents of
-       scripts/build-server/approx.conf.tail.
-      Change the last line from http://debathena.mit.edu/apt to
-       file:///afs/dev.mit.edu/system/athena10/apt
-      Add "$interval 0" above the repository lines (only necessary if
-       the version of approx as reported by "dpkg -l approx" is less
-       than 3.0)
-      Run: /etc/init.d/approx restart
+     Example: VG=/dev/dink scripts/build-server/make-chroot intrepid i386
 
-  11. Apply scripts/build-server/mount-defaults.patch.
-
-  12. Edit /etc/lvm/lvm.conf and change "archive = 1" to "archive = 0"
-      in order to avoid generating a bazillion backup files under
-      /etc/lvm/archive.
-
-  13. For each supported DIST (see scripts/debian-versions.sh) run:
-
-        VG=/dev/blah scripts/build-server/make-chroot DIST i386
-        VG=/dev/blah scripts/build-server/make-chroot DIST amd64
-
-      substituting the name of the volume group for blah.  Omit the
-      amd64 line if DIST is sarge.
-
-      Example: VG=/dev/dink scripts/build-server/make-chroot gutsy i386
-
-      Note: the make-chroot script currently doesn't apt-key add the
-      Athena 10 repository key; if you're setting up an Athena 10 build
-      server, you'll need to add it.
-
-  14. Create a local account for builder with:
+  10. Create a local account for builder with:
 
         adduser --uid 1047 --disabled-password builder
 
       Make the home directory mode 700.  Install a
       daemon/linux-build-10.mit.edu keytab in the home directory as
       "keytab".  Install a copy of the secret repository-signing key
-      (athena10@mit.edu) in the home directory's keyring with
+      (debathena@mit.edu) in the home directory's keyring with
       something like:
 
         kinit builder
@@ -432,14 +414,12 @@ Release engineer: Setting up a build server
 
         DEBUILD_DPKG_BUILDPACKAGE_OPTS="-sa -us -uc -i -I.svn"
 
-      In builder's homedir, append to .profile:
+      In builder's homedir, append to .bashrc:
 
-        PATH=${PATH}:/afs/dev.mit.edu/source/src-svn/debathena/scripts
-        export DEBATHENA_APT=/afs/dev.mit.edu/system/athena10/apt
+        add debathena
+        export PATH=$PATH:~/bin
+        export DEBATHENA_APT=/mit/debathena/apt
 
-      and to .bashrc:
-
-        bld=/afs/dev.mit.edu/project/release/10/build
 
 Release engineer: Removing a build chroot on the build server
 -------------------------------------------------------------
@@ -469,7 +449,7 @@ Release engineer: Setting up a canonical build area
 ---------------------------------------------------
 
   1. Create an empty directory and cd into it.  The canonical build
-     area lives in /afs/dev.mit.edu/project/release/10/build.
+     area lives in /mit/debathena/packages/.
 
   2. Run gen-packages to create the table of normal Debian packages.
 
@@ -611,10 +591,16 @@ every so often.
 Release engineer: apt repository HTTP server setup
 --------------------------------------------------
 
-The apt repository server (athena10.mit.edu) is an ops virtual image
-with httpd and AFS installed.  At the moment, the only customization
-is two changes to /etc/httpd/conf/httpd.conf:
+The apt repository server (debathena.mit.edu) is hosted on
+scripts.mit.edu out of the debathena locker. To replicate it on a
+dedicated server, install Apache and AFS (e.g., debathena-standard
+and apache2), and configure the document root to be
+  /mit/debathena/web_scripts
 
-  * The DocumentRoot is set to "/afs/dev.mit.edu/system/athena10".
-  * The Directory entry for /var/html/www is also changed to
-    "/afs/dev.mit.edu/system/athena10".
+There's also a crontab in /mit/debathena/cron_scripts that updates
+the package lists on the website. It expects to be able to edit the
+web_scripts directory; on scripts, it does so with daemon.scripts
+permissions.
+
+Trac (http://debathena.mit.edu/trac/) expects to use sql.mit.edu
+for its database.
