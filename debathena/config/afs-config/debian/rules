@@ -18,10 +18,17 @@ FROM_ATHENA = debian/CellAlias.debathena debian/CellServDB.debathena
 clean:: $(FROM_ATHENA)
 common-build-indep:: $(FROM_ATHENA)
 
+update::
+	UPDATE=1 debian/rules $(FROM_ATHENA)
+
 $(patsubst %.debathena,%.athena,$(FROM_ATHENA)) : %.athena: FORCE
 	wget http://stuff.mit.edu/afs/athena.mit.edu/service/$(patsubst debian/%.athena,%,$@) -O $@.new
-	diff -q $@ $@.new  # Check that they are the same.
-	rm -f $@.new
+	if [ -z $$UPDATE ]; then \
+	    diff -q $@ $@.new ;  # Check that they are the same. \
+	    rm -f $@.new ; \
+	else \
+	    mv $@.new $@ ; \
+	fi
 
 $(FROM_ATHENA) : %.debathena: %.athena %.debathena-extra
 	cat $^ >| $@.tmp
