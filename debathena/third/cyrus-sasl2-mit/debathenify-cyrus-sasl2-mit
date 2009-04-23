@@ -98,8 +98,8 @@ v() {
 }
 
 cmd_upload () {
-  REPREPRO="v reprepro -Vb $DEBATHENA_APT"
-  REPREPROI="$REPREPRO --ignore=wrongdistribution --ignore=missingfield"
+  REPREPRO="v reprepro --ignpore=wrongdistribution -Vb $DEBATHENA_APT"
+  REPREPROI="$REPREPRO --ignore=missingfield"
 
   if [ "$a" = "-A" ]; then
     $REPREPROI include "${dist}${release}" "${name}_${daversion}_source.changes"
