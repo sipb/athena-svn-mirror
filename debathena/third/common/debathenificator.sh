@@ -10,8 +10,6 @@ dist_arch=$1; shift
 a=
 if [ "$1" = "-A" ]; then a=-A; shift; fi
 chroot=$dist_arch-sbuild
-. /mit/debathena/bin/debian-versions.sh
-tag=$(gettag $dist)
 
 if [ -z "$dist_arch" -o $# -eq 0 ]; then
     echo 'No arguments!' >&2
@@ -23,6 +21,8 @@ arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 : ${section=debathena-system}
 : ${daname=$name}
 : ${release=-proposed}
+. /mit/debathena/bin/debian-versions.sh
+tag=$(gettag $dist)
 
 # Create a chroot and define functions for using it.
 sid=$(schroot -b -c "$chroot")
