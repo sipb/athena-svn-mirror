@@ -10,6 +10,8 @@ dist_arch=$1; shift
 a=
 if [ "$1" = "-A" ]; then a=-A; shift; fi
 chroot=$dist_arch-sbuild
+. /mit/debathena/bin/debian-versions.sh
+tag=$(gettag $dist)
 
 if [ -z "$dist_arch" -o $# -eq 0 ]; then
     echo 'No arguments!' >&2
@@ -125,9 +127,6 @@ cmd_upload () {
     REPREPRO="v reprepro -Vb $DEBATHENA_APT"
     REPREPROI="$REPREPRO --ignore=wrongdistribution --ignore=missingfield"
 
-    . /mit/debathena/bin/debian-versions.sh
-    tag=$(gettag $dist)
-
     if [ "$a" = "-A" ]; then
 	$REPREPROI include "${dist}${release}" "${daname}_${daversion}_source.changes"
     fi
@@ -160,9 +159,9 @@ daversion=$version$daversionappend
 # Source: header for a package whose name matches its source.
 pkgfiles="$DEBATHENA_APT/dists/$dist/$section/binary-$arch/Packages.gz $DEBATHENA_APT/dists/${dist}-proposed/$section/binary-$arch/Packages.gz"
 if { zcat $pkgfiles | \
-    dpkg-awk -f - "Package:^$daname\$" "Version:^$(quote "$daversion")~" -- Architecture;
+    dpkg-awk -f - "Package:^$daname\$" "Version:^$(quote "$daversion$tag")" -- Architecture;
     zcat $pkgfiles | \
-    dpkg-awk -f - "Source:^$daname\$" "Version:^$(quote "$daversion")~" -- Architecture; } \
+    dpkg-awk -f - "Source:^$daname\$" "Version:^$(quote "$daversion$tag")" -- Architecture; } \
     | if [ "$a" = "-A" ]; then cat; else fgrep -vx 'Architecture: all'; fi \
     | grep -q .; then
     echo "$daname $daversion already exists for $dist_arch." >&2

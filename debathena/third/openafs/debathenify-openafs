@@ -203,7 +203,7 @@ for image_mpkg in $mpkgs; do
   repover=$(zcat $pkgfiles \
     | dpkg-awk -f - "Package:^$(quote $afs_mpkg)\$" -- Version \
     | sed -e 's/^Version: //')
-  if [ "x${repover%%~*}" = "x$ver" ]; then
+  if [ "x$repover" = "x$ver$tag" ]; then
     echo "*** Already up to date: $dist_arch $afs_mpkg"
     continue
   fi
