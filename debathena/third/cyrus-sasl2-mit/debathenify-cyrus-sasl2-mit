@@ -98,7 +98,7 @@ v() {
 }
 
 cmd_upload () {
-  REPREPRO="v reprepro --ignpore=wrongdistribution -Vb $DEBATHENA_APT"
+  REPREPRO="v reprepro -Vb $DEBATHENA_APT --ignore=wrongdistribution"
   REPREPROI="$REPREPRO --ignore=missingfield"
 
   if [ "$a" = "-A" ]; then
