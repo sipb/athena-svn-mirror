@@ -1,3 +1,10 @@
+debathena-afs-config (1.10) unstable; urgency=low
+
+  * More updates to the CellServDB, it seems. Virtualizing our
+    grand.central.org is the gist of it.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 22 Apr 2009 23:33:01 -0400
+
 debathena-afs-config (1.9) unstable; urgency=low
 
   * Only attempt to run update-cellservdb if AFS is currently running. If

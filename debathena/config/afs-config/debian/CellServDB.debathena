@@ -1,6 +1,6 @@
 >athena.mit.edu		  #MIT/Athena cell
 18.7.1.66			#paris.mit.edu.
-18.9.48.11			#castor.mit.edu
+18.9.48.11			#castor.mit.edu.
 18.9.48.12 			#pollux.mit.edu.
 >dev.mit.edu              #MIT/IS Development cell
 18.9.48.13                      #saw.mit.edu.
@@ -16,7 +16,7 @@
 >lees.mit.edu		  #MIT/private Lab for Electromagnetic and Electronic Systems
 18.90.0.123			#sangeet.mit.edu.
 >grand.central.org      #GCO Public CellServDB 07 Nov 2008
-18.92.0.108                     #grand-opening.mit.edu
+18.9.48.14			#grand.mit.edu.
 128.2.203.61                    #penn.central.org
 130.237.48.87                   #andrew.e.kth.se
 >wu-wien.ac.at          #University of Economics, Vienna, Austria
