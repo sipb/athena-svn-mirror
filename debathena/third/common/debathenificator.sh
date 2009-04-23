@@ -159,9 +159,9 @@ daversion=$version$daversionappend
 # Source: header for a package whose name matches its source.
 pkgfiles="$DEBATHENA_APT/dists/$dist/$section/binary-$arch/Packages.gz $DEBATHENA_APT/dists/${dist}-proposed/$section/binary-$arch/Packages.gz"
 if { zcat $pkgfiles | \
-    dpkg-awk -f - "Package:^$daname\$" "Version:^$(quote "$daversion$tag")" -- Architecture;
+    dpkg-awk -f - "Package:^$daname\$" "Version:^$(quote "$daversion$tag")\$" -- Architecture;
     zcat $pkgfiles | \
-    dpkg-awk -f - "Source:^$daname\$" "Version:^$(quote "$daversion$tag")" -- Architecture; } \
+    dpkg-awk -f - "Source:^$daname\$" "Version:^$(quote "$daversion$tag")\$" -- Architecture; } \
     | if [ "$a" = "-A" ]; then cat; else fgrep -vx 'Architecture: all'; fi \
     | grep -q .; then
     echo "$daname $daversion already exists for $dist_arch." >&2

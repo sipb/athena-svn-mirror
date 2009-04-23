@@ -130,7 +130,7 @@ origversion=$(echo "$version" | sed 's/-[^-]*$//')
 daversion=$origversion-0$daversionappend
 
 if zcat "$DEBATHENA_APT/dists/$dist/debathena/binary-$arch/Packages.gz" | \
-  dpkg-awk -f - "Source:^$name\$" "Version:^$daversion$tag" -- Architecture | \
+  dpkg-awk -f - "Source:^$name\$" "Version:^$daversion$tag\$" -- Architecture | \
   if [ "$a" = "-A" ]; then cat; else fgrep -vx 'Architecture: all'; fi | \
   grep -q .; then
   echo "$name $daversion already exists for $dist_arch." >&2
