@@ -1,3 +1,11 @@
+debathena-cupsys-config (1.5) unstable; urgency=low
+
+  * Disable browsing. It's not needed for BrowsePoll to work, and
+    confusingly causes other print servers to show up in the GUI. (Trac:
+    #229)
+
+ -- Evan Broder <broder@mit.edu>  Thu, 30 Apr 2009 07:26:36 -0400
+
 debathena-cupsys-config (1.4) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
