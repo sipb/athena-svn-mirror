@@ -1,0 +1,13 @@
+Source: debathena-maybe-apparmor
+Section: debathena/admin
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.8.0
+
+Package: debathena-maybe-apparmor
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${debathena-maybe-apparmor-depends}
+Description: Metapackage for apparmor
+ This package depends on apparmor if it's available on this
+ platform. It is otherwise empty, so you may safely remove it.

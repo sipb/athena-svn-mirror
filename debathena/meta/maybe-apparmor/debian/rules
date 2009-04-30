@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+HAVE_APPARMOR = $(shell apt-cache show apparmor >/dev/null 2>/dev/null && echo yes)
+
+ifneq (,$(HAVE_APPARMOR))
+binary-predeb/debathena-maybe-apparmor:: debathena-maybe-apparmor-substvars
+
+debathena-maybe-apparmor-substvars::
+	( \
+	  echo -n "debathena-maybe-apparmor-depends="; \
+	  echo -n "apparmor"; \
+	  echo \
+	) >>debian/debathena-maybe-apparmor.substvars
+endif

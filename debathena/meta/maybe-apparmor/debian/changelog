@@ -1,0 +1,5 @@
+debathena-maybe-apparmor (1.0) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 30 Apr 2009 07:28:18 -0400
