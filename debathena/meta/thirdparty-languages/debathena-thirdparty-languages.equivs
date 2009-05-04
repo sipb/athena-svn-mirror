@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-languages
-Version: 0.6.1
+Version: 0.6.2
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: cmake,
  python-numpy,
@@ -31,7 +31,6 @@ Depends: cmake,
  gcj,
  gnudatalanguage,
  erlang,
- erlang-doc-html,
  erlang-examples,
  erlang-manpages,
  gfortran,
@@ -77,7 +76,8 @@ Recommends:
  mit-scheme,
  mit-scheme-doc,
  mozart,
- mozart-doc
+ mozart-doc,
+ erlang-doc-html,
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
