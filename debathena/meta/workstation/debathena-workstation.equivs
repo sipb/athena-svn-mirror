@@ -1,21 +1,23 @@
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.8.1
 
 Package: debathena-workstation
-Version: 0.7.1
+Version: 0.8.0
 Maintainer: Debathena Project <debathena@mit.edu>
-Depends: debathena-login-graphical
+Depends: debathena-login-graphical,
+ debathena-extra-software,
+ debathena-clusterinfo,
+ debathena-dns-config,
+ debathena-emacs-config,
+ debathena-ntp-config | debathena-chrony-config,
+ debathena-tmp-cleaner,
+ debathena-auto-update,
+ debathena-tex-config,
+ debathena-thirdparty,
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
-Extra-Files: NEWS.Debian
-Description: Athena graphical login configuration - transitional package
- This is a transitional package. debathena-workstation has been
- replaced by debathena-login-graphical.
- .
- After April 30, 2009, we will be changing debathena-workstation to
- largely identical to the Debathena cluster configuration, except for
- some cluster-specific user isolation measures.
- .
- If you do not want these additional customizations, you should remove
- this package and install debathena-login-graphical.
+Description: Athena managed workstation configuration
+ This package configures a private, graphical Debathena workstation.
+ It includes configuration, such as automatic updates, designed to
+ minimize the need for manual maintenance.
