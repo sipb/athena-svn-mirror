@@ -6,20 +6,11 @@ Package: debathena-cluster
 Version: 0.9
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-workstation,
- debathena-extra-software,
  debathena-cluster-login-config,
- debathena-clusterinfo,
- debathena-dns-config,
- debathena-emacs-config,
  debathena-larvnet,
- debathena-ntp-config | debathena-chrony-config,
- debathena-tmp-cleaner,
  debathena-reactivate,
- debathena-auto-update,
  debathena-syslog-config,
  debathena-bugme,
- debathena-tex-config,
- debathena-thirdparty,
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena cluster configuration for Debian
