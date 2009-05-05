@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.1
 
 Package: debathena-workstation
-Version: 0.8.0
+Version: 0.8.1
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-login-graphical,
  debathena-extra-software,
@@ -14,7 +14,7 @@ Depends: debathena-login-graphical,
  debathena-tmp-cleaner,
  debathena-auto-update,
  debathena-tex-config,
- debathena-thirdparty,
+Recommends: debathena-thirdparty,
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena managed workstation configuration

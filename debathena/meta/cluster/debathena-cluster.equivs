@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 0.9.1
+Version: 0.9.2
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-workstation,
  debathena-cluster-login-config,
@@ -11,6 +11,7 @@ Depends: debathena-workstation,
  debathena-reactivate,
  debathena-syslog-config,
  debathena-bugme,
+ debathena-thirdparty,
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena cluster configuration for Debian
