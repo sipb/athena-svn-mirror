@@ -25,7 +25,7 @@ set -e
 
 case "$1" in
     configure)
-        fmtutil-sys --refresh
+        fmtutil-sys --all
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

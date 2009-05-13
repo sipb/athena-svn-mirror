@@ -1,3 +1,10 @@
+debathena-tex-config (1.2) unstable; urgency=low
+
+  * Be sure to generate all format files (including creating missing
+    ones). (Trac: #244)
+
+ -- Evan Broder <broder@mit.edu>  Wed, 13 May 2009 16:15:23 -0400
+
 debathena-tex-config (1.1) unstable; urgency=low
 
   * Don't actually depend on TeX - if it's installed, we'll configure it.
