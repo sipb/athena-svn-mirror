@@ -19,9 +19,6 @@ pref("print.printer_PostScript/duplex.print_command", "lpr -Zduplex ");
 pref("print.printer_PostScript/2upduplex.print_command", "psnup -q -n 2 | lpr -Zduplex ");
 pref("print.printer_list", "default duplex 2upduplex");
 
-// Font set-up for MathML
-pref("font.mathfont-family", "CMSY10, CMEX10, Math1, Math2, Math4, MT Extra, Standard Symbols L");
-
 // Trust the MIT IdP for HTTP/SPNEGO.
 pref("network.negotiate-auth.trusted-uris", "https://idp.mit.edu");
 

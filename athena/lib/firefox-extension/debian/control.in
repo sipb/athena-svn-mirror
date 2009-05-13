@@ -2,12 +2,14 @@ Source: debathena-firefox-extension
 Section: debathena/web
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, zip
+Build-Depends: @cdbs@, zip, debathena-maybe-ubufox
 Standards-Version: 3.7.2
 
 Package: debathena-firefox-extension
 Architecture: all
 Depends: ${misc:Depends}, firefox | iceweasel, libkrb53, psutils
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
 Description: Athena customizations to the Mozilla Firefox Web browser
  This package provides an extension which customizes the stock version
  of the Firefox browser for the Athena environment.

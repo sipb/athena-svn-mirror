@@ -1,0 +1,3 @@
+#!/bin/sed -f
+$a\
+pref("browser.startup.homepage", "chrome://athena/content/athena.properties");

@@ -1,3 +1,10 @@
+debathena-firefox-extension (10.0.2-0debathena1) unstable; urgency=low
+
+  * Override the ubufox homepage setting (Trac #143).
+  * Remove setting of font.mathfont-family preference.
+
+ -- Robert Basch <rbasch@mit.edu>  Wed, 13 May 2009 15:59:22 -0400
+
 debathena-firefox-extension (10.0.1-0debathena3) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
