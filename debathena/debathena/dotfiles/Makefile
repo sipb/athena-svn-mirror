@@ -39,6 +39,8 @@ install:
 	install -c -m 0644 dot.generation ${DESTDIR}${PROTOTMP}/.generation
 	install -c -m 0644 env_remove ${DESTDIR}${SYSTEM}
 	install -c -m 0644 env_setup ${DESTDIR}${SYSTEM}
+	install -c -m 0644 env_remove.bash ${DESTDIR}${SYSTEM}
+	install -c -m 0644 env_setup.bash ${DESTDIR}${SYSTEM}
 	install -c -m 0755 gnome-stuff-1-to-2 ${DESTDIR}${SYSTEM}
 	install -c -m 0755 gnome-panel-1-to-2 ${DESTDIR}${SYSTEM}
 	install -c -m 0444 lockers.7 ${DESTDIR}${ATHMANDIR}/man7

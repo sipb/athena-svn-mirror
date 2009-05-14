@@ -115,7 +115,22 @@ fi
 
 #   aliases dealing with adding locker programs
 
-alias setup='echo "setup is not supported in bash yet"'
+setup_tty () {(export SUBJECT="$@"; $SHELL)}
+setup_X () {(export SUBJECT="$@"; xterm -title "$@" &)}
+
+if [ -n "$XSESSION" ]; then
+   alias setup=setup_X
+else
+   alias setup=setup_tty
+fi
+
+remove () { export SUBJECT="$@"; 
+       	    source $initdir/env_remove.bash; 
+	    unset SUBJECT; }
+
+if [ -n "$SUBJECT" -a -r $initdir/env_setup.bash ]; then
+	source $initdir/env_setup.bash
+fi
 
 
 # All of the bash initializing commands above can be overridden by using

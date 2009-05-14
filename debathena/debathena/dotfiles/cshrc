@@ -159,7 +159,7 @@ if ($?XSESSION) then
 else
   alias setup setup_tty
 endif
-alias remove 'setenv SUBJECT \!* ; source $initdir/env_remove'
+alias remove 'setenv SUBJECT \!* ; source $initdir/env_remove ; unsetenv SUBJECT'
 
 # If this is a subject window, run the env_setup script
 if (($?SUBJECT) && (-r $initdir/env_setup)) source $initdir/env_setup
