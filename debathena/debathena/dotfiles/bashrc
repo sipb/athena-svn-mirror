@@ -42,7 +42,6 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 						#  (does not apply in AFS)
 	ulimit -S -c 0				# Don't allow coredumps
 	export EDITOR=emacs			# Set default editor
-	export VISUAL=emacs			# Set default screen editor
 	export MM_CHARSET=iso-8859-1
 
 	export EMAIL="$USER@mit.edu"		# Set default email address
@@ -109,12 +108,6 @@ fi
 
 #   alias for re-establishing authentication
 renew () { kinit -54 $USER && fsid -a && zctl load /dev/null ; }
-
-#   alias for a convenient way to change terminal type
-term () { set -f; unset TERMCAP; eval "$( tset -s -I -Q "$@" )"; set +f; }
-
-#   aliases dealing with x window system
-xresize () { set -f; eval "$( resize -u )"; set +f ; }
 
 if [ "${XSESSION+set}" = set ]; then
 	logout () { gnome-session-save --kill --silent; exit; } # logout for X

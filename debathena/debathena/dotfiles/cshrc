@@ -48,7 +48,6 @@ if (! $?ENV_SET) then
 					# we are now down to -s
 					# because -d is wrong.
   setenv EDITOR emacs			# Set default editor
-  setenv VISUAL emacs			# Set default screen editor
   setenv MM_CHARSET iso-8859-1
 
   setenv EMAIL "$USER@mit.edu"		# Set default email address
@@ -147,12 +146,6 @@ endif
 
 #   alias for re-establishing authentication
 alias renew 'kinit -54 $USER && fsid -a && zctl load /dev/null'
-
-#   alias for a convenient way to change terminal type
-alias term 'set noglob; unsetenv TERMCAP; eval `tset -s -I -Q \!*`'
-
-#   aliases dealing with x window system
-alias xresize 'set noglob; eval `resize -c` || unset noglob'
 
 if ($?XSESSION) then
   alias logout	'exit && gnome-session-save --kill --silent'	# logout for X
