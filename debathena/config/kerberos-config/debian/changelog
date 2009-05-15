@@ -1,3 +1,11 @@
+debathena-kerberos-config (1.7.1) unstable; urgency=low
+
+  * Don't have AppArmor attempt to load all three of
+    usr.sbin.cupsd{,.debathena,.debathena-orig}. While it just so happened
+    to get the first one and fail the other two, that's less than ideal.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 14 May 2009 21:36:46 -0400
+
 debathena-kerberos-config (1.7) unstable; urgency=low
 
   * Add missing build-deps for apparmor transformations.

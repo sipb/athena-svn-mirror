@@ -6,12 +6,22 @@ DEB_TRANSFORM_FILES_debathena-kerberos-config += \
 	/etc/krb.conf.debathena \
 	/etc/krb.realms.debathena
 ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
-    DEB_TRANSFORM_FILES_debathena-kerberos-config += \
-	/etc/apparmor.d/usr.sbin.cupsd.debathena
+    debian/usr.sbin.cups.debathena: $(call debian_check_files,/etc/apparmor.d/usr.sbin.cupsd)
+	debian/transform_usr.sbin.cupsd.debathena < $< > $@
+    clean::
+        -rm debian/usr.sbin.cups.debathen
+    install/debathena-kerberos-config::
+        dh_install debian/usr.sbin.cups.debathena etc/apparmor.d
+    DEB_REMOVE_FILES += /etc/apparmor.d/usr.sbin.cupsd
 endif
 ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
-    DEB_TRANSFORM_FILES_debathena-kerberos-config += \
-	/etc/apparmor.d/abstractions/kerberosclient.debathena
+    debian/kerberosclient.debathena: $(call debian_check_files,/etc/apparmor.d/abstractions/kerberosclient)
+	debian/transform_kerberosclient.debathena < $< > $@
+    clean::
+        -rm debian/kerberosclient
+    install/debathena-kerberos-config::
+        dh_install debian/kerberosclient.debathena etc/apparmor.d/abstractions
+    DEB_REMOVE_FILES += /etc/apparmor.d/abstractions/kerberosclient
 endif
 DEB_CHECK_FILES_SOURCE_/etc/krb5.conf.debathena = \
 	/usr/share/kerberos-configs/krb5.conf.template
