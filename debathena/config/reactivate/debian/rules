@@ -6,7 +6,6 @@ DEB_DIVERT_FILES_debathena-reactivate += \
 	/etc/gdm/PreSession/Default.debathena \
 	/etc/gdm/PostSession/Default.debathena
 DEB_TRANSFORM_FILES_debathena-reactivate += \
-	/etc/sudoers.debathena \
 	/etc/pam.d/su.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
