@@ -1,0 +1,10 @@
+Attention: You are on a Debathena cluster machine. Although you can use
+su to become root, your access is restricted to a sandbox (chroot)
+created when you logged in. If you install software or change
+global settings, they will be reverted when you log out.
+
+If you would like a permanent change to cluster machines, please
+report a bug via the "sendbug" command.
+
+Run the command "tellme root" to find the current Athena root password.
+

@@ -1,3 +1,10 @@
+debathena-reactivate (1.19) unstable; urgency=low
+
+  * Display a warning about the login snapshots, once per session
+    for sudo and every time you su.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 15 May 2009 02:35:03 -0400
+
 debathena-reactivate (1.18) unstable; urgency=low
 
   * Send SIGTERM before SIGKILL when cleaning up user processes

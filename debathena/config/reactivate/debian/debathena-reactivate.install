@@ -4,3 +4,5 @@ debian/PreSession/Default.debathena etc/gdm/PreSession
 debian/PostSession/Default.debathena etc/gdm/PostSession
 debian/updatedb.findutils.cron.local etc
 debian/policy-rc.d usr/sbin
+debian/sudo-warning etc/athena
+debian/su-warning etc/athena
