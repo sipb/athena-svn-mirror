@@ -9,18 +9,18 @@ ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
     debian/usr.sbin.cups.debathena: $(call debian_check_files,/etc/apparmor.d/usr.sbin.cupsd)
 	debian/transform_usr.sbin.cupsd.debathena < $< > $@
     clean::
-        -rm debian/usr.sbin.cups.debathen
+	-rm debian/usr.sbin.cups.debathen
     install/debathena-kerberos-config::
-        dh_install debian/usr.sbin.cups.debathena etc/apparmor.d
+	dh_install debian/usr.sbin.cups.debathena etc/apparmor.d
     DEB_REMOVE_FILES += /etc/apparmor.d/usr.sbin.cupsd
 endif
 ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
     debian/kerberosclient.debathena: $(call debian_check_files,/etc/apparmor.d/abstractions/kerberosclient)
 	debian/transform_kerberosclient.debathena < $< > $@
     clean::
-        -rm debian/kerberosclient
+	-rm debian/kerberosclient
     install/debathena-kerberos-config::
-        dh_install debian/kerberosclient.debathena etc/apparmor.d/abstractions
+	dh_install debian/kerberosclient.debathena etc/apparmor.d/abstractions
     DEB_REMOVE_FILES += /etc/apparmor.d/abstractions/kerberosclient
 endif
 DEB_CHECK_FILES_SOURCE_/etc/krb5.conf.debathena = \
