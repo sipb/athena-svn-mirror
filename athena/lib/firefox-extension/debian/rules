@@ -6,6 +6,9 @@ ifneq ($(wildcard /etc/firefox-3.0/pref/ubufox.js),)
 	/etc/firefox-3.0/pref/ubufox.js.debathena
 endif
 
+common-build-impl::
+	chmod +x debian/transform_ubufox.js.debathena
+
 DEB_AUTO_UPDATE_AUTOCONF = 2.50
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
