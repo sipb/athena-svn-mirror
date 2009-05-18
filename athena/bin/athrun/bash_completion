@@ -1,0 +1,19 @@
+_athrun () {
+    local cur
+    local opts
+    COMPREPLY=()
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    if [ $COMP_CWORD -lt 3 ]; then
+        case $COMP_CWORD in
+            1)
+                opts="$(ls /mit)"
+                ;;
+            2)
+                opts="$(ls $(athdir "/mit/$prev" bin))"
+                ;;
+        esac
+        COMPREPLY=($(compgen -W "${opts}" -- "${cur}"))
+    fi
+}
+complete -F _athrun athrun

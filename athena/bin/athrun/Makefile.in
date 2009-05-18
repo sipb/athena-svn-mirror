@@ -10,6 +10,7 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 mandir=@mandir@
+sysconfdir=@sysconfdir@
 
 all:
 
@@ -18,8 +19,10 @@ check:
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${sysconfdir}/bash_completion.d
 	${INSTALL_PROGRAM} ${srcdir}/athrun.sh ${DESTDIR}${bindir}/athrun
 	${INSTALL} -m 444 ${srcdir}/athrun.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 644 ${srcdir}/bash_completion ${DESTDIR}${sysconfdir}/bash_completion.d/athrun
 
 clean:
 

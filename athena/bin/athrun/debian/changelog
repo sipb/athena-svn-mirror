@@ -1,3 +1,9 @@
+debathena-athrun (10.0.1-0debathena1) unstable; urgency=low
+
+  * Add bash tab completion for athrun. (Trac: #150)
+
+ -- Evan Broder <broder@mit.edu>  Mon, 18 May 2009 16:34:00 -0400
+
 debathena-athrun (10.0.0-0debathena2) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
