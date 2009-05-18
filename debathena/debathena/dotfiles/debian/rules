@@ -2,7 +2,6 @@
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/makefile.mk
-include /usr/share/cdbs/1/rules/patchsys-quilt.mk
 
 OS = linux
 ATHENA_MAJOR_VERSION = 9

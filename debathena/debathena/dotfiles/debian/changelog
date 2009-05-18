@@ -2,8 +2,9 @@ debathena-dotfiles (10.0.11-0debathena2) unstable; urgency=low
 
   * Fix the packaging to install the bash versions of env_setup and
     env_remove
+  * Kill off unnecessary quilt build-dep.
 
- -- Evan Broder <broder@mit.edu>  Mon, 18 May 2009 14:02:54 -0400
+ -- Evan Broder <broder@mit.edu>  Mon, 18 May 2009 14:04:43 -0400
 
 debathena-dotfiles (10.0.11-0debathena1) unstable; urgency=low
 
