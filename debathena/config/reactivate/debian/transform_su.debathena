@@ -1,3 +1,2 @@
-#!/bin/sh
-cat
-echo auth optional pam_echo.so file=/etc/athena/su-warning
+#!/bin/sed -f
+/^@include common-auth$/iauth optional pam_echo.so file=/etc/athena/su-warning
