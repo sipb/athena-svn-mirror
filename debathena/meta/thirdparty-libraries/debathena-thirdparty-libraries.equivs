@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-libraries
-Version: 0.5
+Version: 0.6
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: liblapack-dev,
  liblapack-doc,
@@ -107,7 +107,8 @@ Depends: liblapack-dev,
  guile-1.8-doc,
  guile-1.8-dev,
  guile-cairo,
- libqt-perl
+ libqt-perl,
+ libgl1-mesa-dev,
 Recommends: libatlas-base-dev,
  libatlas-sse-dev,
  libatlas-sse2-dev,
