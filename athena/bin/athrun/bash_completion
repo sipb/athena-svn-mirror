@@ -10,7 +10,7 @@ _athrun () {
                 opts="$(ls /mit)"
                 ;;
             2)
-                opts="$(ls $(athdir "/mit/$prev" bin))"
+                opts="$(ls "$(athdir "/mit/$prev" bin)")"
                 ;;
         esac
         COMPREPLY=($(compgen -W "${opts}" -- "${cur}"))
