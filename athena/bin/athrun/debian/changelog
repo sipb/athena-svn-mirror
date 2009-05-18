@@ -1,8 +1,12 @@
 debathena-athrun (10.0.1-0debathena1) unstable; urgency=low
 
+  [ Evan Broder ]
   * Add bash tab completion for athrun. (Trac: #150)
 
- -- Evan Broder <broder@mit.edu>  Mon, 18 May 2009 16:34:00 -0400
+  [ Anders Kaseorg ]
+  * Better bash completion.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Mon, 18 May 2009 18:47:00 -0400
 
 debathena-athrun (10.0.0-0debathena2) unstable; urgency=low
 
