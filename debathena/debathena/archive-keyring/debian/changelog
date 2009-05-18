@@ -3,8 +3,9 @@ debathena-archive-keyring (1.2) unstable; urgency=low
   * Don't try to repeatedly delete the old keys, and actually fail if it
     fails to remove.
   * Add the new Debathena signing key (0D8A9E8F) to the keyring.
+  * Use the standard debhelper postinst template.
 
- -- Evan Broder <broder@mit.edu>  Mon, 18 May 2009 12:29:31 -0400
+ -- Evan Broder <broder@mit.edu>  Mon, 18 May 2009 12:47:12 -0400
 
 debathena-archive-keyring (1.1) unstable; urgency=low
 
