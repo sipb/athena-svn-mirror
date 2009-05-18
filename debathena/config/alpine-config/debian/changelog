@@ -1,3 +1,9 @@
+debathena-alpine-config (1.9) unstable; urgency=low
+
+  * Add old MH and Pine folders to folder-collections. (Trac: #220)
+
+ -- Evan Broder <broder@mit.edu>  Mon, 18 May 2009 15:04:56 -0400
+
 debathena-alpine-config (1.8) unstable; urgency=low
 
   * Remove typoed close-brackets.
