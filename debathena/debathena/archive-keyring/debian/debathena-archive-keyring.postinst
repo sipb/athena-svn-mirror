@@ -2,5 +2,7 @@
 
 if hash apt-key >/dev/null 2>&1; then
     apt-key add /usr/share/keyrings/debathena-archive-keyring.gpg
-    apt-key del 0xA2DA1A6C || [ $? = 2 ]
+    if apt-key list | grep -q A2DA1A6C; then
+        apt-key del A2DA1A6C
+    fi
 fi
