@@ -83,9 +83,9 @@ if [ -r "$cinfo" ] && ( [ ! -e "$slist" ] || [ -w "$slist" ] ); then
      echo
      case $APT_RELEASE in
        production)  ;;
-       proposed)    echo "$dsource" | awk '{sub("-.*", "", $3); $3 = $3 "-proposed"; print}' ;;
-       development) echo "$dsource" | awk '{sub("-.*", "", $3); $3 = $3 "-proposed"; print}'
-                    echo "$dsource" | awk '{sub("-.*", "", $3); $3 = $3 "-development"; print}' ;;
+       proposed)    echo "$dsource" | awk '$3 !~ /-/ {$3 = $3 "-proposed"; print}' ;;
+       development) echo "$dsource" | awk '$3 != /-/ {$3 = $3 "-proposed"; print}'
+                    echo "$dsource" | awk '$3 != /-/ {$3 = $3 "-development"; print}' ;;
      esac
     ) > $slist
   else
