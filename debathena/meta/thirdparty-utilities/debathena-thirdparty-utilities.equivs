@@ -3,10 +3,9 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-utilities
-Version: 0.2
+Version: 0.3
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: nfs-common,
- mtoolsfm,
  rcs,
  g3data,
  gnucash,
@@ -24,7 +23,8 @@ Depends: nfs-common,
  mercurial,
  subversion,
  weather-util,
- scratchbox2
+ scratchbox2,
+Recommends: mtoolsfm,
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
