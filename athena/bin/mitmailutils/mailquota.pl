@@ -53,6 +53,7 @@ my $warn_only = $opts{'n'};
 my $usage_threshold = $opts{'u'};
 my $host = $opts{'h'} || (split(" ", `hesinfo $username pobox`))[1] ||
     errorout "Cannot find Post Office server for $username";
+errorout "Exchange accounts are not supported yet. Try http://owa.mit.edu/." if $host eq "EXCHANGE.MIT.EDU";
 my $mbox = $opts{'m'} || "INBOX";
 
 # Validate the usage percentage threshold, allowing a trailing %.

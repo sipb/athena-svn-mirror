@@ -1,9 +1,10 @@
 debathena-mitmailutils (10.1.0-0debathena3) unstable; urgency=low
 
-  * Don't run 'from' on EXCHANGE.MIT.EDU accounts for now. This is
-    apparently causing prefrosh' dotfiles to hang forever on login.
+  * Don't run mitmailutils on EXCHANGE.MIT.EDU accounts for now, since this
+    will hang forever (since IMAP.EXCHANGE, not EXCHANGE, is the IMAP server,
+    but it doesn't currently support GSSAPI anyway).
 
- -- Geoffrey Thomas <geofft@mit.edu>  Wed, 20 May 2009 00:20:01 -0400
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 20 May 2009 00:39:10 -0400
 
 debathena-mitmailutils (10.1.0-0debathena2) unstable; urgency=low
 

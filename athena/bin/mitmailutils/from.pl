@@ -63,7 +63,7 @@ my $checkall = $opts{'A'} && ($search_key = "all");
 my $debug = $opts{'d'};
 my $host = $opts{'h'} || (split(" ", `hesinfo $username pobox`))[1] ||
     errorout "Cannot find Post Office server for $username";
-exit 0 if $host eq "EXCHANGE.MIT.EDU";
+errorout "Exchange accounts are not supported yet. Try http://owa.mit.edu/." if $host eq "EXCHANGE.MIT.EDU";
 my $mbox = $opts{'m'} || "INBOX";
 my $quiet = $opts{'n'};
 my $checknew = $opts{'N'} && ($search_key = "new");

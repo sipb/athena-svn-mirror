@@ -45,6 +45,7 @@ usage "Too many arguments" if @ARGV > 0;
 my $debug = $opts{'d'};
 my $host = $opts{'h'} || (split(" ", `hesinfo $username pobox`))[1] ||
     errorout "Cannot find Post Office server for $username";
+errorout "Exchange accounts are not supported yet. Try http://owa.mit.edu/." if $host eq "EXCHANGE.MIT.EDU";
 my $mbox = $opts{'m'} || '*';
 my $noheader = $opts{'n'};
 my $recurse = $opts{'r'};
