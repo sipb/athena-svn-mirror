@@ -67,7 +67,9 @@ if [ "${skip_tty_startup+set}" != set ]; then
 	$ZEPHYR_CLIENT			# Start Zephyr client
 	get_message -new -login		# Display current motd
 	mailquota -n			# Check quota on post office server
-	from.debathena -t -n		# Check for mail
+	if hesinfo "$USER" pobox | grep -qv EXCHANGE; then
+	  from.debathena -t -n		# Check for mail
+	fi
 fi
 
 

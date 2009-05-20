@@ -210,7 +210,9 @@ if [ "${skip_x_startup+set}" != set ]; then
   if [ "${skip_quotawarn+set}" != set ]; then
     ($initdir/quotawarn &)	# Display warning dialogs if near quota
   fi
-  from -t -n			# Check for mail
+  if hesinfo "$USER" pobox | grep -qv EXCHANGE; then
+    from -t -n			# Check for mail
+  fi
   if [ "${skip_xss+set}" != set ]; then
     (xscreensaver -no-splash &)
   fi

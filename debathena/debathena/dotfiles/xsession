@@ -245,7 +245,9 @@ if (! $?skip_x_startup) then
   if (! $?skip_quotawarn) then
     ($initdir/quotawarn &)	# Display warning dialogs if near quota
   endif
-  from.debathena -t -n		# Check for mail
+  if ("`hesinfo $USER pobox`" !~ "*EXCHANGE*") then
+    from.debathena -t -n	# Check for mail
+  endif
   if (! $?skip_xss) then
     (xscreensaver -no-splash &)
   endif

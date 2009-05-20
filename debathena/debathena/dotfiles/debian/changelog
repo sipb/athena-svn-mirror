@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.11-0debathena3) unstable; urgency=low
+
+  * Don't run 'from' on EXCHANGE.MIT.EDU accounts for now. This is
+    apparently causing prefrosh' dotfiles to hang forever on login.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 20 May 2009 00:54:30 -0400
+
 debathena-dotfiles (10.0.11-0debathena2) unstable; urgency=low
 
   * Fix the packaging to install the bash versions of env_setup and
