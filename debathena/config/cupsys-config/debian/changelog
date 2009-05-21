@@ -1,3 +1,11 @@
+debathena-cupsys-config (1.6) unstable; urgency=low
+
+  * Revert version 1.5. Browsing is, in fact, needed to make BrowsePoll
+    work. We'll have to wait until we have a better printing solution to
+    disable local network browsing.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 18 May 2009 13:32:48 -0400
+
 debathena-cupsys-config (1.5) unstable; urgency=low
 
   * Disable browsing. It's not needed for BrowsePoll to work, and
