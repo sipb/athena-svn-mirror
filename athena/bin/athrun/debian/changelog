@@ -1,3 +1,9 @@
+debathena-athrun (10.0.1-0debathena2) unstable; urgency=low
+
+  * Don't spew errors in bash completion if /mit doesn't exist.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 21 May 2009 11:31:39 -0400
+
 debathena-athrun (10.0.1-0debathena1) unstable; urgency=low
 
   [ Evan Broder ]

@@ -4,7 +4,7 @@ _athrun () {
 
     if [ $COMP_CWORD -eq 1 ]; then
 	local IFS=$'\n'
-	COMPREPLY=( $(cd /mit && compgen -f -- "$cur") )
+	COMPREPLY=( $(cd /mit 2>/dev/null && compgen -f -- "$cur") )
     elif [ $COMP_CWORD -eq 2 ]; then
 	local IFS=$'\n'
 	COMPREPLY=( $(dir="$(eval "athdir /mit/${COMP_WORDS[1]}")" && \
