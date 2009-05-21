@@ -1,3 +1,9 @@
+debathena-linerva (1.29) unstable; urgency=low
+
+  * Upgrade the apt-zephyr hook to version AWESOME!!!.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Thu, 21 May 2009 00:24:22 -0400
+
 debathena-linerva (1.28) unstable; urgency=low
 
   * Add the hostname to the APT zephyr instance.

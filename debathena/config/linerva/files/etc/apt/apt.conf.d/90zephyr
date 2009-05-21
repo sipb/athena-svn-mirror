@@ -1,0 +1,2 @@
+DPkg::Pre-Install-Pkgs {"/usr/sbin/apt-zephyr || :";};
+DPkg::Tools::options::/usr/sbin/apt-zephyr::Version "2";

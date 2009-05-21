@@ -1,0 +1,79 @@
+#!/bin/sh
+set -e
+
+# Defaults
+CLASS=
+INSTANCE=
+REALM=
+RECIPIENTS=
+SIG="$(hostname -f)"
+OPCODE=auto
+ZAUTH=
+
+# Read configuration
+. /etc/apt-zephyr.conf
+
+package ()
+{
+    package=$1
+    oldver=$2
+    cmp=$3
+    newver=$4
+
+    if [ "$newver" = '-' ] && [ "$oldver" = '-' ]; then
+	echo "Purging $package"
+    elif [ "$newver" = '-' ]; then
+	echo "Removing $package $oldver"
+    elif [ "$oldver" = '-' ]; then
+	echo "Installing $package $newver"
+    elif [ "$cmp" = '<' ]; then
+	echo "Upgrading $package $oldver to $newver"
+    elif [ "$cmp" = '=' ]; then
+	echo "Reinstalling $package $newver"
+    elif [ "$cmp" = '>' ]; then
+	echo "Downgrading $package $oldver to $newver"
+    else
+	echo "I'm confused: $*"
+    fi
+}
+
+read -r line
+case "$line" in
+    'VERSION 2')
+	while read -r line && [ -n "$line" ]; do :; done
+	while read -r package oldver cmp newver action; do
+	    case "$action" in
+		'**CONFIGURE**' | '**REMOVE**')
+		    package "$package" "$oldver" "$cmp" "$newver"
+		    ;;
+		'**ERROR**')
+		    echo "ERROR on $package $newver"
+		    ;;
+	    esac
+	done
+	;;
+    'VERSION *')
+	echo "$0: unrecognized version: $line"
+	;;
+    '')
+	;;
+    *)
+	oldpkgs=$(mktemp -t "apt-zephyr-old.XXXXXX") || exit $?
+	newpkgs=$(mktemp -t "apt-zephyr-new.XXXXXX") || exit $?
+	(echo "$line"; cat) | xargs -r -d '\n' dpkg-deb -W | sort -o "$newpkgs"
+	cut -f 1 "$newpkgs" | xargs -r -d '\n' dpkg-query -W | \
+	    sort -o "$oldpkgs"
+	join -t '	' -j 1 -e '-' "$oldpkgs" "$newpkgs" | \
+	    while IFS='	' read -r package oldver newver; do
+	    if dpkg --compare-versions "$oldver" lt "$newver"; then
+		package "$package" "$oldver" '<' "$newver"
+	    elif dpkg --compare-versions "$oldver" eq "$newver"; then
+		package "$package" "$oldver" '=' "$newver"
+	    else
+		package "$package" "$oldver" '>' "$newver"
+	    fi
+	done
+	rm -f "$oldpkgs" "$newpkgs"
+	;;
+esac | \
+    zwrite ${CLASS:+-c "$CLASS"} ${INSTANCE:+-i "$INSTANCE"} ${REALM:+-r "$REALM"} ${SIG:+-s "$SIG"} ${OPCODE:+-O "$OPCODE"} ${ZAUTH:--d} ${RECIPIENTS:+$RECIPIENTS}
