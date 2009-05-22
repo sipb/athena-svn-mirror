@@ -1,3 +1,9 @@
+debathena-locker-menu (1.3) unstable; urgency=low
+
+  * Remove Applixware from the menu at alexp's request.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 22 May 2009 19:55:00 -0400
+
 debathena-locker-menu (1.2) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
