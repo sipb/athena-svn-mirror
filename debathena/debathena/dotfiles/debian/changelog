@@ -1,3 +1,13 @@
+debathena-dotfiles (10.0.12-0debathena1) unstable; urgency=low
+
+  * New upstream version, since the previous change modified files outside
+    debian/.
+  * Ensure /var/run/athena-sessions exists in the postinst, in case the
+    system was rebooted and /var/run was cleaned between package unpacking
+    and configuration.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat, 23 May 2009 16:00:46 -0400
+
 debathena-dotfiles (10.0.11-0debathena3) unstable; urgency=low
 
   * Don't run 'from' on EXCHANGE.MIT.EDU accounts for now. This is

@@ -20,6 +20,7 @@ set -e
 
 case "$1" in
     configure)
+        mkdir -p /var/run/athena-sessions
         if ! dpkg-statoverride --list /var/run/athena-sessions >/dev/null; then
             chmod a=rwx,u+t /var/run/athena-sessions
         fi
