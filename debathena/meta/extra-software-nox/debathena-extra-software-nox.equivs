@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software-nox
-Version: 0.19
+Version: 0.20
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: build-essential, debathena-build-depends,
   enscript, psutils,
@@ -31,6 +31,9 @@ Depends: build-essential, debathena-build-depends,
   python-twisted,
   python-setuptools,
   moreutils,
+  socat,
+  vpnc,
+  cyrus-clients-2.2,
 Recommends: ckermit,
   openjdk-6-jdk,
   x3270,
