@@ -27,6 +27,11 @@ command useful to identify unneeded files:
   athrun consult helpquota"
 fi
 
+# mitmailutils doesn't do Exchange yet
+if hesinfo "$USER" pobox | grep -q EXCHANGE; then
+  exit
+fi
+
 # Determine the user's mail usage and quota.
 qline=`mailquota | tail +2`
 usage=`echo "$qline" | awk '{print $2}'`

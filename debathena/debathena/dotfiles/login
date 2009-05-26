@@ -56,8 +56,8 @@ if (! $?skip_tty_startup) then
 	set ignoreeof			# ^D won't log you out
 	$ZEPHYR_CLIENT			# Start Zephyr client
 	get_message -new -login		# Display current motd
-	mailquota -n			# Check quota on post office server
 	if ("`hesinfo $USER pobox`" !~ "*EXCHANGE*") then
+	  mailquota -n			# Check quota on post office server
 	  from.debathena -t -n		# Check for mail
 	endif
 endif

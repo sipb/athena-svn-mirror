@@ -1,3 +1,11 @@
+debathena-dotfiles (10.0.13-0debathena1) unstable; urgency=low
+
+  * Also don't run 'mailquota' on EXCHANGE.MIT.EDU accounts for now
+    (although as of mitmailutils >= 10.1.0-0debathena3, this is only
+    a cosmetic problem).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 26 May 2009 15:13:55 -0400
+
 debathena-dotfiles (10.0.12-0debathena1) unstable; urgency=low
 
   * New upstream version, since the previous change modified files outside
