@@ -3,17 +3,17 @@ Default: yes
 Priority: 128
 Auth-Type: Primary
 Auth-Initial:
-	[success=end default=ignore]	pam_krb5.so
+	[success=end default=ignore]	pam_krb5.so minimum_uid=1
 Auth:
-	[success=end default=ignore]	pam_krb5.so use_first_pass
+	[success=end default=ignore]	pam_krb5.so minimum_uid=1 use_first_pass
 Account-Type: Primary
 Account:
-	[success=end default=ignore]	pam_krb5.so
+	[success=end default=ignore]	pam_krb5.so minimum_uid=1
 Session-Type: Additional
 Session:
 	optional	pam_krb5.so
 Password-Type: Primary
 Password-Initial:
-	[success=end default=ignore]	pam_krb5.so
+	[success=end default=ignore]	pam_krb5.so minimum_uid=1
 Password:
-	[success=end default=ignore]	pam_krb5.so use_first_pass
+	[success=end default=ignore]	pam_krb5.so minimum_uid=1 use_first_pass
