@@ -1,3 +1,9 @@
+debathena-thunderbird-config (1.1) unstable; urgency=low
+
+  * Only run fs if the user has an AFS homedir.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 03 Jun 2009 19:02:17 -0400
+
 debathena-thunderbird-config (1.0) unstable; urgency=low
 
   * Initial release. (Trac: #130)

@@ -8,7 +8,9 @@ if ! [ -d "$HOME/.mozilla-thunderbird" ]; then
 	mkdir -p "$HOME/.mozilla-thunderbird"
     fi
 
-    fs sa "$HOME/.mozilla-thunderbird" system:anyuser none
+    if [ afs = "$DEBATHENA_HOME_TYPE" ]; then
+        fs sa "$HOME/.mozilla-thunderbird" system:anyuser none
+    fi
 fi
 : ${NAME:=$(getent passwd "$USER" | cut -d: -f5 | cut -d, -f1)}
 : ${POBOX:=$(hesinfo "${ATHENA_USER:-USER}" pobox | awk '{print $2}')}
