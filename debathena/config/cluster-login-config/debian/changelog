@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.10) unstable; urgency=low
+
+  * Make the forced windowmanager work on Jaunty as well (Trac: #215).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon,  8 Jun 2009 22:01:23 -0400
+
 debathena-cluster-login-config (1.9) unstable; urgency=low
 
   * Install and configure kexec-tools to work around Jira ATN-52.

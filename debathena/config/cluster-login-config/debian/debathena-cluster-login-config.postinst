@@ -73,7 +73,7 @@ case "$1" in
 	gc="gconftool-2 --direct --config-source=$gcsrc --set"
 	$gc -t string \
 	    /desktop/gnome/session/required_components/windowmanager \
-	    "/usr/bin/metacity"
+	    "metacity"
 
         cat >>/etc/sudoers <<EOF
 ### BEGIN debathena-cluster-login-config
