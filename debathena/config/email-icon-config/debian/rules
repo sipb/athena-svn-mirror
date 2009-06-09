@@ -1,0 +1,8 @@
+#!/usr/bin/make -f
+
+DEB_DIVERT_EXTENSION = .debathena
+DEB_DIVERT_FILES_debathena-email-icon-config += \
+	/usr/share/applications/evolution-mail.desktop
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/config-package.mk

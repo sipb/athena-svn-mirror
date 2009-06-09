@@ -1,0 +1,2 @@
+debian/debathena-email-switch usr/lib
+debian/evolution-mail.desktop.debathena usr/share/applications
