@@ -2,8 +2,10 @@ debathena-xsession (1.9) unstable; urgency=low
 
   * Add a new GDM session for logging in without customizations, as well
     as the Xsession machinery to make it work. (Trac: #148)
+  * For tcsh users with AFS homedirs, start an xconsole following
+    .xsession-errors so they can actually see the errors. (Trac: #153)
 
- -- Evan Broder <broder@mit.edu>  Thu, 11 Jun 2009 21:35:38 -0400
+ -- Evan Broder <broder@mit.edu>  Thu, 11 Jun 2009 21:42:31 -0400
 
 debathena-xsession (1.8) unstable; urgency=low
 
