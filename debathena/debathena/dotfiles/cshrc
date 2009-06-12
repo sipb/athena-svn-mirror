@@ -84,21 +84,10 @@ if (! $?ENV_SET) then
   endif
   unset x
 
-  # This "extend" alias and friends have been left in for backwards
-  # compatibility with old .environment files, just in case. The new
-  # add alias does not use them.
-  alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
-  if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
-  if ($?extendyes) setenv \!:1 ${\!:1}:\!:2 && \\
-  unset extendyes'
-  alias sextend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
-  if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
-  if ($?extendyes) set \!:1=(${\!:1} \!:2) && \\
-  unset extendyes'
-  alias textend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
-  if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
-  if ($?extendyes) set \!:1=${\!:1}:\!:2 && \\
-  unset extendyes'
+  # NOTE:
+  # The use of the "extend", "sextend", and "textend" aliases in
+  # ~/.environment is no longer supported.  Consult the Athena
+  # documentation on Dotfiles for supported dotfile operations
 
   # Run user environment customizations identified in your
   # ~/.environment file.  This is the place to include your own
@@ -110,16 +99,12 @@ if (! $?ENV_SET) then
 
   if ((! $?NOCALLS) && (-r ~/.environment)) source ~/.environment
 
-  unalias extend sextend textend
-
-  if ((! $?NOCALLS) && (-r ~/.path)) then
-    # Support .path files for compatibility.
-    set athena_path=($path)
-    source ~/.path
-  else
-    # Standard Athena path additions.
-    set path=(`/usr/bin/athdir $HOME` $path .)
-  endif
+  # NOTE:
+  # .path files are no longer supported, consult Athena documentation
+  # for the correct way to specify your PATH
+  
+  # Standard Athena path additions.
+  set path=(`/usr/bin/athdir $HOME` $path .)
 
 endif
 
@@ -135,10 +120,6 @@ set bindir=arch/${ATHENA_SYS}/bin
 set noclobber			# Don't overwrite files with redirection
 
 if ($?prompt) then		# For interactive shells only (i.e., NOT rsh):
-  # Set prompt.
-  set promptchars="%#"
-  set prompt = "athena%# "
-  set cdpath = (~)
   set interactive		#   Provide shell variable for compatability
 endif
 

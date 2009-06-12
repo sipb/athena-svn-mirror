@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.14-0debathena1) unstable; urgency=low
+
+  * Desupport extend, sextend, textend, ~/.path, cdpath, and setting the
+    prompt in tcsh. (Trac: #256)
+
+ -- Evan Broder <broder@mit.edu>  Thu, 11 Jun 2009 21:48:46 -0400
+
 debathena-dotfiles (10.0.13-0debathena1) unstable; urgency=low
 
   * Also don't run 'mailquota' on EXCHANGE.MIT.EDU accounts for now
