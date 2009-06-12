@@ -1,5 +1,5 @@
 debian/000debathena-nocalls.desktop usr/share/xsessions
-05debathena-nocalls etc/X11/Xsession.d
+debian/05debathena-nocalls etc/X11/Xsession.d
 debian/96debathena-tracker etc/X11/Xsession.d
 debian/97debathena-homedir-mode etc/X11/Xsession.d
 debian/98debathena-xsession etc/X11/Xsession.d
