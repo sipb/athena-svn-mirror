@@ -3,3 +3,6 @@
 SystemCommandsInMenu=HALT;REBOOT\
 AllowLogoutActions=HALT;REBOOT\
 FlexibleXServers=0
+/^\[greeter\]/a\
+ShowGnomeFailsafeSession=false\
+ShowXtermFailsafeSession=false

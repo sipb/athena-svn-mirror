@@ -2,3 +2,5 @@
 s/^SystemCommandsInMenu=.*/SystemCommandsInMenu=HALT;REBOOT/
 s/^AllowLogoutActions=.*/AllowLogoutActions=HALT;REBOOT/
 s/^#\?FlexibleXServers=.*/FlexibleXServers=0/
+s/^#\?ShowGnomeFailsafeSession=.*/ShowGnomeFailsafeSession=false/
+s/^#\?ShowXtermFailsafeSession=.*/ShowXtermFailsafeSession=false/

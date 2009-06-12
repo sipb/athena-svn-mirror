@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.11) unstable; urgency=low
+
+  * Disable the built-in failsafe Xterm and GNOME sessions. (Trac: #148)
+
+ -- Evan Broder <broder@mit.edu>  Thu, 11 Jun 2009 22:02:24 -0400
+
 debathena-cluster-login-config (1.10) unstable; urgency=low
 
   * Make the forced windowmanager work on Jaunty as well (Trac: #215).
