@@ -1,3 +1,10 @@
+debathena-counterlog (1.5) unstable; urgency=low
+
+  * Move athena-counterlog into /usr/lib, since it's not meant to be
+    called by users. (Trac: #265)
+
+ -- Evan Broder <broder@mit.edu>  Sat, 13 Jun 2009 16:30:21 -0400
+
 debathena-counterlog (1.4) unstable; urgency=low
 
   * Depend on debathena-machtype. (Trac: #241)
