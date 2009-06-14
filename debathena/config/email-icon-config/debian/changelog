@@ -1,3 +1,10 @@
+debathena-email-icon-config (1.1) unstable; urgency=low
+
+  * Make package suitable for machines that have local users; namely, only
+    check Athena accounts for the possibility of launching OWA.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 11 Jun 2009 22:37:18 -0400
+
 debathena-email-icon-config (1.0) unstable; urgency=low
 
   * Initial release.

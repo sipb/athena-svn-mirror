@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if hesinfo "$USER" pobox | egrep -q "^POP (IMAP\.)?EXCHANGE\.MIT\.EDU "; then
+if [ "$DEBATHENA_HOME_TYPE" = "afs" ] && hesinfo "$USER" pobox | egrep -q "^POP (IMAP\.)?EXCHANGE\.MIT\.EDU "; then
   exec sensible-browser http://owa.mit.edu/
 else
   exec evolution --component=mail
