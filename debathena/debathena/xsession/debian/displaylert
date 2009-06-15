@@ -2,9 +2,9 @@
 
 # zenity expects Pangotext, which is something like HTML, so we need
 # to strip entities
-lertmsg=$(lert | sed -e 's/&/\&amp;/;' \
-    -e 's/</\&lt;/' \
-    -e 's/>/\&gt;/' \
-    -e 's/"/\&quot;/' \
-    -e "s/'/\&apos;/")
+lertmsg=$(lert | sed -e 's/&/\&amp;/g' \
+    -e 's/</\&lt;/g' \
+    -e 's/>/\&gt;/g' \
+    -e 's/"/\&quot;/g' \
+    -e "s/'/\&apos;/g")
 [ -n "$lertmsg" ] && zenity --no-wrap --info --text="$lertmsg"
