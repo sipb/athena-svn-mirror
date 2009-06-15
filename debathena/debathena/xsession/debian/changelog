@@ -1,3 +1,9 @@
+debathena-xsession (1.9.1) unstable; urgency=low
+
+  * Give the xconsole code half a chance of working.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sun, 14 Jun 2009 22:33:30 -0400
+
 debathena-xsession (1.9) unstable; urgency=low
 
   * Add a new GDM session for logging in without customizations, as well

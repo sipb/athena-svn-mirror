@@ -9,8 +9,8 @@
 # Horrible work-around for the fact that GDM can't read the
 # .xsession-errors file it tries to write.
 if ( "$DEBATHENA_HOME_TYPE" == "afs" ) then
-    xconsole -daemon -file "$HOME/.xsession-errors"
-    XCONSOLE=$!
+    xterm -rightbar -sb -fn 9x18 -T ".xsession-errors" -e tail -n +1 -f "$HOME/.xsession-errors" &
+    set XCONSOLE=$!
 endif
 
 set initdir=/usr/lib/init
@@ -53,7 +53,7 @@ if (-r ~/.startup.X) then
 endif
 
 # If we got this far, then there were no errors that the user /really/
-# needed to see, so get rid of the ugly xconsole
+# needed to see, so get rid of the ugly xterm
 if ( "$DEBATHENA_HOME_TYPE" == "afs" ) then
     kill $XCONSOLE
 endif
