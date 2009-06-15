@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software-nox
-Version: 0.20
+Version: 0.21
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: build-essential, debathena-build-depends,
   enscript, psutils,
@@ -23,7 +23,6 @@ Depends: build-essential, debathena-build-depends,
   lynx, links, links2,
   rcs, cvs, subversion, bzr, mercurial, monotone,
   git-core, git-cvs, git-svn,
-  manpages-posix-dev, manpages-dev,
   perl-doc,
   bsdgames,
   auctex,
@@ -37,7 +36,8 @@ Depends: build-essential, debathena-build-depends,
 Recommends: ckermit,
   openjdk-6-jdk,
   x3270,
-  vgrind
+  vgrind,
+  manpages-posix-dev, manpages-dev,
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena auxiliary software, non-graphical
