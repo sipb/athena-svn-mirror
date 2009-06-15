@@ -1,3 +1,12 @@
+debathena-xsession (1.9.2) unstable; urgency=low
+
+  * Spawn the xterm tailing .xsession-errors in the Xsession.d scripts
+    instead of in the xsession.tcsh script.
+  * When enabling NOCALLS mode, actually check for the right session name
+    in the Xsession.d scripts.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 15 Jun 2009 16:05:55 -0400
+
 debathena-xsession (1.9.1) unstable; urgency=low
 
   * Give the xconsole code half a chance of working.

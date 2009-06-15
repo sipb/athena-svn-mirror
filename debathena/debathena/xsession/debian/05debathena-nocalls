@@ -1,4 +1,4 @@
-if [ "$GDMSESSION" = "debathena-nocalls" ]; then
+if [ "$GDMSESSION" = "000debathena-nocalls" ]; then
    export NOCALLS=1
    message "You have chosen to log in without your customizations." \
    	   "Your dotfiles will be ignored in favor of the system" \

@@ -6,13 +6,6 @@
 # 3. Run standard startup programs if the user has not opted out.
 # 4. Run the user's .startup.X.
 
-# Horrible work-around for the fact that GDM can't read the
-# .xsession-errors file it tries to write.
-if ( "$DEBATHENA_HOME_TYPE" == "afs" ) then
-    xterm -rightbar -sb -fn 9x18 -T ".xsession-errors" -e tail -n +1 -f "$HOME/.xsession-errors" &
-    set XCONSOLE=$!
-endif
-
 set initdir=/usr/lib/init
 
 setenv XSESSION $$
@@ -54,8 +47,9 @@ endif
 
 # If we got this far, then there were no errors that the user /really/
 # needed to see, so get rid of the ugly xterm
-if ( "$DEBATHENA_HOME_TYPE" == "afs" ) then
+if ( "$DEBATHENA_HOME_TYPE" == "afs" && $?XCONSOLE ) then
     kill $XCONSOLE
+    unsetenv XCONSOLE
 endif
 
 # Proceed with the session command, which has been passed as arguments.
