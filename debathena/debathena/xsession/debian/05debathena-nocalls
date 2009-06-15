@@ -4,7 +4,7 @@ if [ "$GDMSESSION" = "000debathena-nocalls" ]; then
    	"Your dotfiles will be ignored in favor of the system" \
         "default settings.  You can use this session to fix any" \
 	"problems with your dotfiles."
-
-    # You don't actually want nocalls as your default session
-    [ -e "$HOME/.dmrc" ] && rm "$HOME/.dmrc"
 fi
+
+# You don't actually want nocalls as your default session
+[ -e "$HOME/.dmrc" ] && grep -q 000debathena-nocalls "$HOME/.dmrc" && rm "$HOME/.dmrc"

@@ -41,7 +41,7 @@ if (! $?skip_lert) then
   ($initdir/displaylert &)
 endif
 
-if (-r ~/.startup.X && (! $?NOCALLS)) then
+if ((-r ~/.startup.X) && (! $?NOCALLS)) then
   (source ~/.startup.X &)
 endif
 
