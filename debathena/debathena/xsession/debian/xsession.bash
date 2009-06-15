@@ -46,7 +46,7 @@ if [ "${skip_lert+set}" != set ]; then
   ($initdir/displaylert &)
 fi
 
-if [ -r "$HOME/.startup.X" ]; then
+if [ -r "$HOME/.startup.X" ] && [ "${NOCALLS+set}" != set ]; then
   ( . "$HOME/.startup.X" &)
 fi
 
