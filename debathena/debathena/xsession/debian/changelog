@@ -1,3 +1,10 @@
+debathena-xsession (1.10) unstable; urgency=low
+
+  * Replace HTML entities in displaymotd and displaylert, to work around
+    LP #387536. (Trac: #284)
+
+ -- Evan Broder <broder@mit.edu>  Mon, 15 Jun 2009 18:10:30 -0400
+
 debathena-xsession (1.9.3) unstable; urgency=low
 
   * Don't let people set debathena-nocalls as their default session.

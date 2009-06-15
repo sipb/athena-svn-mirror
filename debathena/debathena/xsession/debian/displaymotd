@@ -1,6 +1,12 @@
 #!/bin/sh
 
-motd=$(get_message -new)
+# We need to strip out HTML entities because zenity takes something
+# that pretends to be HTML
+motd=$(get_message -new | sed -e 's/&/\&amp;/;' \
+    -e 's/</\&lt;/' \
+    -e 's/>/\&gt;/' \
+    -e 's/"/\&quot;/' \
+    -e "s/'/\&apos;/")
 [ -n "$motd" ] && zenity --no-wrap --info --text="
 Athena message of the day:
 $motd"
