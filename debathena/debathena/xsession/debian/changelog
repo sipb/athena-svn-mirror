@@ -1,3 +1,9 @@
+debathena-xsession (1.10.1) unstable; urgency=low
+
+  * Apparently we need an explicit dependency on xterm.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 15 Jun 2009 20:11:41 -0400
+
 debathena-xsession (1.10) unstable; urgency=low
 
   * Replace HTML entities in displaymotd and displaylert, to work around
