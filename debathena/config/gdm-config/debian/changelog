@@ -1,3 +1,9 @@
+debathena-gdm-config (1.12) unstable; urgency=low
+
+  * Athena 10 is dead. Long live Athena. (Trac: #289)
+
+ -- Evan Broder <broder@mit.edu>  Wed, 17 Jun 2009 13:13:48 -0400
+
 debathena-gdm-config (1.11) unstable; urgency=low
 
   * Restart gdm when uninstalled so that gdm doesn't complain about the
