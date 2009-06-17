@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-email-icon-config
 Architecture: all
-Depends: ${misc:Depends}, sensible-utils | debianutils (>= 2.0), hesiod
+Depends: ${misc:Depends}, firefox | iceweasel | sensible-utils | debianutils (>= 2.0), hesiod
 Description: Email icon configuration for Debathena graphical logins
  Since Outlook Web Access provides a vastly better user experience than
  Evolution for Exchange users, this package configures the Evolution

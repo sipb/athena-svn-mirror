@@ -1,3 +1,10 @@
+debathena-email-icon-config (1.2) unstable; urgency=low
+
+  * Since the alternatives for sensible-browser are messed up on Ubuntu,
+    prefer Firefox over Iceweasel over sensible-browser when opening OWA.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 17 Jun 2009 13:06:45 -0400
+
 debathena-email-icon-config (1.1) unstable; urgency=low
 
   * Make package suitable for machines that have local users; namely, only
