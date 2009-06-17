@@ -1,0 +1,8 @@
+index.html usr/lib/debathena-kiosk
+launch-kiosk usr/lib/debathena-kiosk
+prefs.js usr/lib/debathena-kiosk
+r-kiosk.xpi usr/lib/debathena-kiosk
+userChrome.css usr/lib/debathena-kiosk
+xinitrc usr/lib/debathena-kiosk
+images usr/lib/debathena-kiosk
+styles usr/lib/debathena-kiosk

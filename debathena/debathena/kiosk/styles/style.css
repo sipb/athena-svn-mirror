@@ -1,0 +1,171 @@
+/*
+  Why do I have the sinking feeling that a year from now, the entire
+  world is going to look like the Debathena webpage?
+
+  Creating your own stylesheet really isn't that hard.  You are
+  welcome to use this one as a reference, but please avoid copying the
+  entire layout.  At least have the decency to change the fonts,
+  colors, and margins so that your site doesn't become visually
+  identified with Debathena.
+*/
+
+/* Basic fonts and sizes. */
+html {
+    font-size: 87.5%;
+}
+body {
+    font-family: Tahoma, Sans, sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Trebuchet MS", Trebuchet, Sans, sans-serif;
+}
+pre, code, samp, kbd, tt {
+    font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Luxi Mono", Consolas, "Andale Mono", Monaco, "Courier New", monospace;
+    font-size: 100%;
+}
+
+/* Colors. */
+h1, h2, h3, h4, h5, h6 {
+    color: #d70751;
+}
+:link {
+    color: #06c;
+}
+:visited {
+    color: #039;
+}
+var {
+    color: #090;
+}
+ins {
+    text-decoration: none;
+    color: #090;
+}
+pre {
+    background: #f6f6f6;
+    border-color: #ddd;
+}
+.note {
+    background: #ffd;
+    border-color: #eea;
+}
+
+/* Remove link underline until hover. */
+:link, :visited {
+    text-decoration: none;
+}
+:link:hover, :visited:hover {
+    text-decoration: underline;
+}
+
+/* And remove the weird border around linked images. */
+:link img, :visited img {
+    border: none;
+}
+
+/* Dashed lines for the header and footer. */
+h1 {
+    border-bottom: 1px dashed black;
+    margin-top: 0;
+    overflow: auto;
+}
+address {
+    margin-top: 2em;
+    border-top: 1px dashed black;
+    padding-top: .5em;
+}
+
+/* Display <kbd /> in boldface to distinguish typed input from displayed output. */
+kbd {
+    font-weight: bold;
+}
+
+/* <dt /> in boldface so it is more usable as a header. */
+dt {
+    font-weight: bold;
+}
+
+/* Add extra margin between entries in lists with class="long". */
+.long li, dl.long dd {
+    margin-bottom: .5em;
+}
+
+/* <dl class="short" /> and <dl class="shorter" /> get displayed like
+   a two-column table. */
+dl.short dt {
+    clear: both;
+    float: left;
+    min-width: 28em;
+}
+dl.short dd {
+    margin-left: 28em;
+    margin-bottom: .5em;
+}
+dl.shorter dt {
+    clear: both;
+    float: left;
+    min-width: 16em;
+}
+dl.shorter dd {
+    margin-left: 16em;
+    margin-bottom: .5em;
+}
+
+/* Make a rounded box around <pre /> and <p class="note" />. */
+pre, .note, .index table {
+    border-style: solid;
+    border-width: 1px;
+    -moz-border-radius: .4em;
+    -webkit-border-radius: .4em;
+    border-radius: .4em;
+    padding: .125em;
+}
+
+/* Right-floated Debathena logo. */
+#logo {
+    float: right;
+    margin: -1em -1em 0 0;
+}
+
+/* Alignment for tiny link icons. */
+.linkicon {
+    vertical-align: middle;
+    margin-right: .25em;
+}
+
+/* The navlinks list on the Debathena front page. */
+.navlinks {
+    margin: 1em 0;
+    padding: 0 2em;
+}
+.navlinks li {
+    list-style-type: none;
+}
+.navlinks .linkicon {
+    margin-right: 1em;
+}
+
+/* Apache-generated directory indexes. */
+.index h1 tt {
+    font-size: 83%;
+}
+.index table {
+    background: #fec;
+    border-color: #eca;
+    border-collapse: separate;
+    border-spacing: 1em 0.125em;
+    margin: 0.5em;
+}
+.index table th {
+    border-bottom: 1px solid black;
+}
+.index table th, .index table td {
+    padding: 0;
+    border: none;
+    margin: 0;
+}
+.index table.parent {
+    border: none;
+    padding: 0;
+    background: none;
+}

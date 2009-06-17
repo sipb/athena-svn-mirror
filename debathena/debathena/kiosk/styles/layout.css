@@ -1,0 +1,46 @@
+/*
+  Why do I have the sinking feeling that a year from now, the entire
+  world is going to look like the Debathena webpage?
+
+  Creating your own stylesheet really isn't that hard.  You are
+  welcome to use this one as a reference, but please avoid copying the
+  entire layout.  At least have the decency to change the fonts,
+  colors, and margins so that your site doesn't become visually
+  identified with Debathena.
+*/
+
+/* This file contains screen-only layout declarations that won't be
+   used for printing. */
+
+/* Make <body /> show up as a centered white box with rounded border,
+   over the darker enclosing <html />. */
+html {
+    padding: .75em;
+    background: #602;
+}
+body {
+    position: relative;
+    margin: 0 auto;
+    padding: 1em;
+    border: 1px solid black;
+    -moz-border-radius: .4em;
+    -webkit-border-radius: .4em;
+    border-radius: .4em;
+    background: #fff;
+}
+
+/* Limit the <body /> width for readability. */
+body {
+    max-width: 66em;
+}
+
+/* Increase line heights for better screen readability. */
+p, li, dt, dd, address {
+    line-height: 1.5em;
+}
+.short dt, .short dd, .shorter dt, .shorter dd {
+    line-height: 1.1em;
+}
+pre {
+    line-height: 1.25em;
+}

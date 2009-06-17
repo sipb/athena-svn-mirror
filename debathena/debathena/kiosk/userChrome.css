@@ -1,0 +1,32 @@
+/*
+ * Additional UI customizations for kiosk mode.
+ */
+
+/*
+ * Do not remove the @namespace line -- it's required for correct functioning
+ */
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* set default namespace to XUL */
+
+/* Disable window controls other than "close" for fullscreen mode. */
+#nav-bar #window-controls #minimize-button, #restore-button
+{
+    display:none !important;
+}
+
+/* Disable the URL input. */
+#urlbar
+{
+    display:none !important;
+}
+
+/* Disable the search box. */
+#searchbar
+{
+    display:none !important;
+}
+
+/* Disallow exit from fullscreen mode. */
+menuitem[label="Exit Full Screen Mode"]
+{
+    display:none !important;
+}
