@@ -1,3 +1,9 @@
+debathena-reactivate (1.20.1) unstable; urgency=low
+
+  * Use the right debian/rules variable for removing files.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 17 Jun 2009 23:21:08 -0400
+
 debathena-reactivate (1.20) unstable; urgency=low
 
   * Remove the autostart .desktop files for jockey-gtk and update-notifier
