@@ -7,5 +7,8 @@ DEB_DIVERT_FILES_debathena-reactivate += \
 	/etc/gdm/PostSession/Default.debathena
 DEB_TRANSFORM_FILES_debathena-reactivate += \
 	/etc/pam.d/su.debathena
+DEB_DELETE_FILES_debathena-reactivate += \
+	/etc/xdg/autostart/jockey-gtk.desktop \
+	/etc/xdg/autostart/update-notifier.desktop
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
