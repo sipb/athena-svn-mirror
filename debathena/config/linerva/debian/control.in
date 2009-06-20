@@ -2,7 +2,7 @@ Source: debathena-linerva
 Section: linerva/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, rsyslog, logcheck, debathena-ssh-server-config, login
+Build-Depends: @cdbs@, rsyslog, logcheck, debathena-ssh-server-config
 Standards-Version: 3.7.2
 
 Package: debathena-linerva
