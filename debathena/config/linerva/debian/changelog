@@ -1,3 +1,14 @@
+debathena-linerva (1.30) unstable; urgency=low
+
+  * Up the default CPU limit to 12 hours.
+  * Run logcheck every 5 minutes, instead of every minute.
+  * Turn off GSSAPIStrictAcceptorCheck.
+    - Also use DEB_TRANSFORM_FILES for sshd_config. 
+  * Add a "helpful" error message when people try to su.
+  * Only look for LVM PVs in /dev/md*.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 20 Jun 2009 18:05:06 -0400
+
 debathena-linerva (1.29) unstable; urgency=low
 
   * Upgrade the apt-zephyr hook to version AWESOME!!!.

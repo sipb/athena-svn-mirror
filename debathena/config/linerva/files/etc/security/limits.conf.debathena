@@ -53,4 +53,4 @@ price	hard	maxlogins	100
 root		hard	maxlogins	100
 *		hard	nproc		200
 *		hard	nofile		1024
-*		hard	cpu		240
+*		hard	cpu		720

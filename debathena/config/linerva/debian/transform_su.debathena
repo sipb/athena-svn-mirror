@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s{^(auth *sufficient *pam_rootok.so)$}{\1\nauth [default=die] pam_echo.so file=/etc/issue.net.no_su}m or die;

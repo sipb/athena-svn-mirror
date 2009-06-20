@@ -7,12 +7,14 @@ DEB_DIVERT_FILES_debathena-linerva += \
 	/etc/resolv.conf.debathena \
 	/etc/security/limits.conf.debathena \
 	/sbin/init.debathena \
-	/etc/ssh/sshd_config.debathena.debathena \
 	/etc/security/access.conf.debathena.debathena \
 	/etc/openafs/cacheinfo.debathena.debathena
 DEB_TRANSFORM_FILES_debathena-linerva += \
 	/etc/rsyslog.conf.debathena \
-	/etc/cron.d/logcheck.debathena
+	/etc/cron.d/logcheck.debathena \
+	/etc/ssh/sshd_config.debathena.debathena \
+	/etc/pam.d/su \
+	/etc/lvm/lvm.conf
 
 #Needs to go before S70screen-cleanup (and before users log in and run screen.)
 DEB_UPDATE_RCD_PARAMS_debathena-linerva = "start 65 S ."

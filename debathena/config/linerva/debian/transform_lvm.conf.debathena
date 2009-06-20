@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s{^(\s+filter = ).*$}{\1\[ "a|/dev/md.*|", "r|.*|" ]}m or die;

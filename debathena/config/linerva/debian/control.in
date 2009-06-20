@@ -2,13 +2,13 @@ Source: debathena-linerva
 Section: linerva/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, rsyslog, logcheck
+Build-Depends: @cdbs@, rsyslog, logcheck, debathena-ssh-server-config, login
 Standards-Version: 3.7.2
 
 Package: debathena-linerva
 Architecture: all
 Pre-Depends: git-core
-Depends: logcheck, screen, elinks, rsyslog, linux32, bind9
+Depends: logcheck, screen, elinks, rsyslog, linux32, bind9, debathena-ssh-server-config
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}, apache2
 Description: Special Configuration for Linerva
