@@ -23,6 +23,8 @@ list_bad_setgid () {
 #for attachtab
 /usr/bin/quota.debathena
 /bin/attach
+#for...locate
+/usr/bin/mlocate
 EOF
 }
 

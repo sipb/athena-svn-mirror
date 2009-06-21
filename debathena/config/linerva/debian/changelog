@@ -1,3 +1,9 @@
+debathena-linerva (1.32) unstable; urgency=low
+
+  * Let mlocate be setgid.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 21 Jun 2009 00:02:02 -0400
+
 debathena-linerva (1.31) unstable; urgency=low
 
   * Install debathena-dns-config instead of configuring it ourselves.
