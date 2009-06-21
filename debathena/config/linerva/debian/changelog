@@ -1,8 +1,10 @@
 debathena-linerva (1.32) unstable; urgency=low
 
   * Let mlocate be setgid.
+  * Since linerva doesn't deliver mail to root@localhost, let's make it a
+    little more likely that logcheck mail makes it to us.
 
- -- Evan Broder <broder@mit.edu>  Sun, 21 Jun 2009 00:02:02 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 21 Jun 2009 00:31:47 -0400
 
 debathena-linerva (1.31) unstable; urgency=low
 

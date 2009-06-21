@@ -1,3 +1,5 @@
 #!/usr/bin/perl -0p
 # run every five minutes
 s{. \* \* \* \*}{*/5 * * * *}
+# send mail to root
+s{^(MAILTO=).*}{\1linerva-root@mit.edu}
