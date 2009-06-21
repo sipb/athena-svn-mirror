@@ -1,3 +1,10 @@
+debathena-linerva-pam-config (1.6.1) unstable; urgency=low
+
+  * Actually add the /etc/pam.d/common-session.debathena.debathena that
+    keeps root out of a PAG.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 20 Jun 2009 23:32:25 -0400
+
 debathena-linerva-pam-config (1.6) unstable; urgency=low
 
   * Don't put root in a PAG. It just makes life more complicated.

@@ -1,0 +1,7 @@
+session	required	pam_unix.so
+session	optional	pam_krb5.so
+session	optional	pam_krb524.so
+session [default=1 success=ignore]	pam_succeed_if.so uid > 0
+session	optional	pam_athena_locker.so
+session	optional	pam_debathena_home_type.so
+session	optional	pam_mktemp.so var=ATHENA_SESSION_TMPDIR prefix=/var/run/athena-sessions/session dir
