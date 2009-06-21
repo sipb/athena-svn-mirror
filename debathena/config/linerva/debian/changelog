@@ -1,3 +1,9 @@
+debathena-linerva (1.31) unstable; urgency=low
+
+  * Install debathena-dns-config instead of configuring it ourselves.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 20 Jun 2009 22:20:12 -0400
+
 debathena-linerva (1.30) unstable; urgency=low
 
   * Up the default CPU limit to 12 hours.

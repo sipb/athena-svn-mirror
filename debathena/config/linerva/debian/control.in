@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: debathena-linerva
 Architecture: all
 Pre-Depends: git-core
-Depends: logcheck, screen, elinks, rsyslog, linux32, bind9, debathena-ssh-server-config, lvm2
+Depends: logcheck, screen, elinks, rsyslog, linux32, debathena-ssh-server-config, lvm2
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}, apache2
 Description: Special Configuration for Linerva
