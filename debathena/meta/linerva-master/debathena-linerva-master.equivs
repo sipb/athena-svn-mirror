@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-linerva-master
-Version: 0.2.9
+Version: 0.2.10
 Maintainer: Debathena Project <debathena@mit.edu>
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
@@ -297,4 +297,35 @@ Depends: debathena-login,
  python2.5-dev,
  python-ldap,
  libfcgi-dev,
- libboost1.35-dev
+ libboost1.35-dev,
+ inotify-tools,
+ dnotify,
+ libncursesw5-dev,
+ vinagre,
+ python-twisted,
+ rlwrap,
+ links,
+ binutils-dev,
+ nasm,
+ python-pygments,
+ gopher,
+ sox,
+ libsox-fmt-all,
+ libcrypt-ssleay-perl,
+ keyutils,
+ rubber,
+ finch,
+ r-recommended,
+ figlet,
+ rubygems,
+ debathena-libmoira-dev,
+ python-celementtree,
+ python-elementtree,
+ dtach,
+ cyrus-admin-2.2,
+ rake,
+ ruby1.8-dev,
+ libxslt-dev,
+ iperf,
+ guile-1.8-dev,
+ libdevel-repl-perl,
