@@ -25,7 +25,7 @@ common-build-indep:: debian/sshd_config.debathena
 
 debian/sshd_config.debathena: debian/sshd_config.debathena-orig
 	perl -0pe ' \
-	    s/^#?GSSAPIAuthentication .*$$/GSSAPIAuthentication yes\nGSSAPIKeyExchange yes/m and \
+	    s/^#?GSSAPIAuthentication .*$$/GSSAPIAuthentication yes\nGSSAPIKeyExchange yes\nGSSAPIStrictAcceptorCheck no/m and \
 	    s/^#?GSSAPICleanupCredentials .*$$/GSSAPICleanupCredentials yes/m and \
 	    s/^#?ChallengeResponseAuthentication .*$$/ChallengeResponseAuthentication yes/m and \
 	    s/^#?UsePrivilegeSeparation .*$$/UsePrivilegeSeparation $(PRIVSEP)/m and \
