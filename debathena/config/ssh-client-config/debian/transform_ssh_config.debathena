@@ -1,3 +1,5 @@
 #!/usr/bin/perl -0p
 s/^\s*#?\s*GSSAPIAuthentication.*\n//mg;
 s/$/\n    GSSAPIAuthentication yes/ or die;
+s/^\s*#?\s*GSSAPIKeyExchange.*\n//mg;
+s/$/\n    GSSAPIKeyExchange yes/ or die;
