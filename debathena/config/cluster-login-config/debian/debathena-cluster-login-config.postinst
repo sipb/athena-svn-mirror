@@ -22,12 +22,19 @@ set -e
 
 case "$1" in
     configure)
-	# Shut down sshd.
+	# Shut down sshd and reload gdm.
 	if hash invoke-rc.d; then
 	    invoke-rc.d ssh stop
+            invoke-rc.d gdm reload
 	else
 	    /etc/init.d/ssh stop
+            /etc/init.d/gdm reload
 	fi
+
+        # Shut down the gettys
+        for i in $(seq 1 6); do
+            initctl stop "tty$i" >/dev/null 2>&1
+        done
 
 	# Attempt to initially set the root password.
 	/usr/sbin/athena-root-password

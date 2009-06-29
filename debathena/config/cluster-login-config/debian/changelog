@@ -1,3 +1,10 @@
+debathena-cluster-login-config (1.13) unstable; urgency=low
+
+  * Reload gdm and kill the tty gettys so we don't need to reboot after
+    installing. (Trac: #305)
+
+ -- Evan Broder <broder@mit.edu>  Sun, 28 Jun 2009 20:42:09 -0400
+
 debathena-cluster-login-config (1.12) unstable; urgency=low
 
   * Add a gdm custom command to register for an account via the
