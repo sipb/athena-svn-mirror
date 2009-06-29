@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.13.1) unstable; urgency=low
+
+  * Ignore failures to reload gdm or stop the tty gettys.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 29 Jun 2009 10:41:31 -0400
+
 debathena-cluster-login-config (1.13) unstable; urgency=low
 
   * Reload gdm and kill the tty gettys so we don't need to reboot after
