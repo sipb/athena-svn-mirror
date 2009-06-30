@@ -1,3 +1,10 @@
+debathena-afs-config (1.11) unstable; urgency=low
+
+  * CellServDB update from /afs/athena/service/CellServDB: removed
+    soap.mit.edu, presumably in favor of AFSDB records.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 30 Jun 2009 12:16:06 -0400
+
 debathena-afs-config (1.10) unstable; urgency=low
 
   * More updates to the CellServDB, it seems. Virtualizing our

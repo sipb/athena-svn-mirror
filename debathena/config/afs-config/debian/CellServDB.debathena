@@ -254,10 +254,6 @@
 129.186.1.243                   #afsdb-1.iastate.edu
 129.186.6.243                   #afsdb-2.iastate.edu
 129.186.142.243                 #afsdb-3.iastate.edu
->soap.mit.edu           #MIT School Of Architecture & Planning
-18.89.1.204                     #crypt.mit.edu
-18.89.1.209                     #grotto.mit.edu
-18.89.2.156                     #ac.mit.edu
 >msu.edu                #Michigan State University Main Cell
 35.9.7.10                       #afsdb0.cl.msu.edu
 >nd.edu                 #University of Notre Dame
