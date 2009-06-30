@@ -35,7 +35,7 @@ SCRIPTNAME=/etc/init.d/$NAME
 #
 do_start()
 {
-    mkdir /tmp/uscreens
+    mkdir -p /tmp/uscreens
     chown root:utmp /tmp/uscreens
     chmod a=rwx,o+t /tmp/uscreens
 
