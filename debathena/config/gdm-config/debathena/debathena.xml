@@ -1,29 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE greeter SYSTEM "greeter.dtd">
 <greeter>
+
   <!-- The background -->
   <item type="pixmap">
     <normal file="marble-512x512.png" />
     <pos x="0" y="0" width="100%" height="100%" anchor="nw" />
   </item>
+
   <!-- Bottom bar -->
   <item type="rect">
     <normal color="#000000"/>
-    <pos x="0" y="-60" width="100%" height="60"/>
+    <pos x="0" y="100%" width="100%" height="60" anchor="sw"/>
     <fixed>
       <!-- The black border of the bottom bar -->
       <item type="rect" background="true"> 
         <normal color="#ffffff"/>
         <pos x="0" y="5" width="100%" height="100%"/>
 	<!-- A box containing the session and action buttons -->
-        <box orientation="horizontal" spacing="10" xpadding="10" ypadding="0">
-          <item type="button" id="session_button">
-            <pos y="50%" anchor="w" height="30" width="100"/>
-	    <stock type="session"/>
+        <box spacing="10" xpadding="10" ypadding="0" orientation="horizontal">
+          <item type="rect" id="session_button" button="true">
+            <pos x="0" y="13" anchor="nw" width="100" height="30"/>
+	    <fixed>
+	      <item type="pixmap">
+		<pos x="50%" y="50%" anchor="c"/>
+		<normal file="btn-normal.svg"/>
+		<prelight file="btn-prelight.svg"/>
+		<active file="btn-active.svg"/>
+	      </item>
+	      <item type="label">
+		<normal font="Sans 11" color="#000000"/>
+		<pos x="50%" y="50%" anchor="c"/>
+		<stock type="session"/>
+	      </item>
+	    </fixed>
           </item>
-          <item type="button" id="options_button">
-            <pos y="50%" anchor="w" width="100" height="30" />
-            <stock type="system"/>
+          <item type="rect" id="options_button" button="true">
+            <pos x="0" y="13" anchor="nw" width="100" height="30" />
+	    <fixed>
+	      <item type="pixmap">
+		<pos x="50%" y="50%" anchor="c"/>
+		<normal file="btn-normal.svg"/>
+		<prelight file="btn-prelight.svg"/>
+		<active file="btn-active.svg"/>
+	      </item>
+	      <item type="label">
+		<normal font="Sans 11" color="#000000"/>
+		<pos x="50%" y="50%" anchor="c"/>
+		<stock type="system"/>
+	      </item>
+	    </fixed>
           </item>
         </box>
       </item>

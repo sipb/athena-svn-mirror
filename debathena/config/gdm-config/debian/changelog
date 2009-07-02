@@ -1,3 +1,10 @@
+debathena-gdm-config (1.13) unstable; urgency=low
+
+  * Update the GDM theme to use pixmaps and text labels instead of
+    buttons. Thanks to Jacob Morzinski for the patch. (Trac: #188)
+
+ -- Evan Broder <broder@mit.edu>  Wed, 01 Jul 2009 20:07:33 -0400
+
 debathena-gdm-config (1.12) unstable; urgency=low
 
   * Athena 10 is dead. Long live Athena. (Trac: #289)
