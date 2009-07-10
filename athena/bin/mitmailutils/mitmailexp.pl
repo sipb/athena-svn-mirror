@@ -51,7 +51,7 @@ unless ($opt_host) {
     $opt_host = (split(" ", `hesinfo $username pobox`))[1] ||
         errorout "Cannot find Post Office server for $username";
 }
-errorout "Exchange accounts are not supported yet. Try http://owa.mit.edu/." if $opt_host eq "EXCHANGE.MIT.EDU";
+errorout "Exchange accounts are not supported yet. Try http://owa.mit.edu/." if $opt_host =~ /EXCHANGE/;
 
 # Connect to the IMAP server, and authenticate.
 my $client = Cyrus::IMAP->new($opt_host) ||

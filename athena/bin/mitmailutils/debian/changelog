@@ -1,3 +1,9 @@
+debathena-mitmailutils (10.1.1-0debathena1) unstable; urgency=low
+
+  * Replace test for EXCHANGE.MIT.EDU with test for *EXCHANGE*.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 10 Jul 2009 16:47:26 -0400
+
 debathena-mitmailutils (10.1.0-0debathena3) unstable; urgency=low
 
   * Don't run mitmailutils on EXCHANGE.MIT.EDU accounts for now, since this
