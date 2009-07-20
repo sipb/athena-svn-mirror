@@ -1,3 +1,9 @@
+debathena-afs-config (1.12) unstable; urgency=low
+
+  * CellServDB updates.
+
+ -- Evan Broder <broder@dr-wily.mit.edu>  Mon, 20 Jul 2009 12:07:45 -0400
+
 debathena-afs-config (1.11) unstable; urgency=low
 
   * CellServDB update from /afs/athena/service/CellServDB: removed
