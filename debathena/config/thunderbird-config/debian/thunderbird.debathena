@@ -9,7 +9,7 @@ if ! [ -d "$HOME/.mozilla-thunderbird" ]; then
     fi
 
     if [ afs = "$DEBATHENA_HOME_TYPE" ]; then
-        fs sa "$HOME/.mozilla-thunderbird" system:anyuser none
+        fs sa "$HOME/.mozilla-thunderbird" "$ATHENA_USER" all -clear
     fi
 fi
 : ${NAME:=$(getent passwd "$USER" | cut -d: -f5 | cut -d, -f1)}

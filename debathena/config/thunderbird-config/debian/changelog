@@ -1,3 +1,10 @@
+debathena-thunderbird-config (1.2) unstable; urgency=low
+
+  * Whitelist the AFS ACL on the Thunderbird profile instead of
+    blacklisting.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 22 Jul 2009 13:18:34 -0400
+
 debathena-thunderbird-config (1.1) unstable; urgency=low
 
   * Only run fs if the user has an AFS homedir. (Trac: #279)
