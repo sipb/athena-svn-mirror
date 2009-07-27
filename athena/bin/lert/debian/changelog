@@ -1,3 +1,9 @@
+debathena-lert (10.0.2-0debathena2) unstable; urgency=low
+
+  * Always build without krb4.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 27 Jul 2009 13:16:04 -0400
+
 debathena-lert (10.0.2-0debathena1) unstable; urgency=low
 
   * Try $ATHENA_USER before using $USER.
