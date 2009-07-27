@@ -1,3 +1,10 @@
+debathena-alpine-config (1.10) unstable; urgency=low
+
+  * Use SSL for the default folder collection. This is necessary for
+    Exchange to work.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 27 Jul 2009 19:23:11 -0400
+
 debathena-alpine-config (1.9) unstable; urgency=low
 
   * Add old MH and Pine folders to folder-collections. (Trac: #220)
