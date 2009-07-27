@@ -1,3 +1,10 @@
+debathena-finger (10.0.1-0debathena1) unstable; urgency=low
+
+  * Instead of explicitly linking against krb4, let libzephyr pull in
+    whatever it needs.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 27 Jul 2009 13:09:58 -0400
+
 debathena-finger (10.0.0-0debathena4) unstable; urgency=low
 
   * debathena-finger doesn't install a /usr/bin/finger, so it shouldn't
