@@ -1,3 +1,9 @@
+debathena-finger (10.0.1-0debathena2) unstable; urgency=low
+
+  * Drop unneeded build-dep on libzephyr3-krb.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 27 Jul 2009 14:01:25 -0400
+
 debathena-finger (10.0.1-0debathena1) unstable; urgency=low
 
   * Instead of explicitly linking against krb4, let libzephyr pull in
