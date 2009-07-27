@@ -1,0 +1,13 @@
+Section: libdevel
+Priority: optional
+Standards-Version: 3.6.2
+
+Package: debathena-libzephyr-krb
+Version: 0.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Depends: libzephyr3-krb | libzephyr4-krb
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Dummy package for libzephyr-krb
+ This package only exists to depend on the right version of 
+ libzephyr-krb for building Debathena packages such as finger.
