@@ -44,7 +44,7 @@ fi
 
 cat > $report_file << EOF
 To: $bugs_address
-Subject: Debathena Beta: $subject
+Subject: Debathena: $subject
 
 System name:		$hostname
 Type:			$cpu
