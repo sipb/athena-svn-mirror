@@ -1,3 +1,9 @@
+debathena-zephyr-config (1.7) unstable; urgency=low
+
+  * Update dependencies for zephyr 3.0.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 28 Jul 2009 14:29:49 -0400
+
 debathena-zephyr-config (1.6) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
