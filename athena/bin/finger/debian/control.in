@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-finger
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libzephyr3-krb | libzephyr4-krb5
+Depends: ${shlibs:Depends}, ${misc:Depends}, libzephyr4-krb5 | libzephyr3-krb
 Description: The Athena version of the normal finger utility
  The finger command displays information about local and remote users in 
  a convenient format.  The Athena version contains improvements to 
