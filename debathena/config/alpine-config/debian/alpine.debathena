@@ -1,8 +1,8 @@
 #!/bin/bash
 
-arg=""
+arg=()
 case "$(hesinfo "${ATHENA_USER:-$USER}" pobox | cut -d' ' -f2)" in
-    *EXCHANGE*) arg="-disable-these-authenticators=GSSAPI" ;;
+    *EXCHANGE*) arg=(-disable-these-authenticators=GSSAPI) ;;
 esac
 
-exec "$0.debathena-orig" "$arg" "$@"
+exec "$0.debathena-orig" "${arg[@]}" "$@"
