@@ -1,3 +1,10 @@
+debathena-alpine-config (1.11.2) unstable; urgency=low
+
+  * Explicitly exec alpine.debathena-orig in the wrapper script in case
+    it's run as `pine`. (Trac: #323)
+
+ -- Evan Broder <broder@mit.edu>  Thu, 30 Jul 2009 07:46:45 -0700
+
 debathena-alpine-config (1.11.1) unstable; urgency=low
 
   * Fix the alpine wrapper script to not pass extra empty arguments to

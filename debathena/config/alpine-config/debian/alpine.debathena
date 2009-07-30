@@ -5,4 +5,4 @@ case "$(hesinfo "${ATHENA_USER:-$USER}" pobox | cut -d' ' -f2)" in
     *EXCHANGE*) arg=(-disable-these-authenticators=GSSAPI) ;;
 esac
 
-exec "$0.debathena-orig" "${arg[@]}" "$@"
+exec "alpine.debathena-orig" "${arg[@]}" "$@"
