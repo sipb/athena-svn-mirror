@@ -1,0 +1,2 @@
+#!/bin/sh
+dbus-send --session --dest=edu.mit.debathena.console --type=method_call /edu/mit/debathena/console edu.mit.debathena.console.set_visibility boolean:true

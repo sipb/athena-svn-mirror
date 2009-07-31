@@ -1,0 +1,4 @@
+debathena-console usr/bin
+show_console usr/bin
+hide_console usr/bin
+debathena-console.schemas etc/gconf/schemas

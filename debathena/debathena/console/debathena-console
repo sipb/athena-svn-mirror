@@ -1,0 +1,243 @@
+#!/usr/bin/env python
+"""Debathena Console viewer
+Written by quentin@mit.edu
+
+Based on pygtk textview example code
+"""
+
+import os
+import sys
+import time
+
+import gobject
+import gtk
+import gconf
+import dbus, dbus.service
+import _dbus_bindings as dbus_bindings
+import dbus.mainloop.glib
+import wnck
+
+NAME = 'Console'
+
+# Supported gconf options:
+# /apps/debathena-console/blink
+# /apps/debathena-console/auto_hide
+# /apps/debathena-console/start_visible
+
+DBUS_IFACE="edu.mit.debathena.console"
+DBUS_BUS="edu.mit.debathena.console"
+DBUS_OBJECT="/edu/mit/debathena/console"
+
+class ConsoleDBus(dbus.service.Object):
+    def __init__(self, show_me, hide_me):
+        self.show_me = show_me
+        self.hide_me = hide_me
+        session_bus = dbus.SessionBus()
+        bus_name = dbus.service.BusName(DBUS_BUS, bus=session_bus)
+        object_path = DBUS_OBJECT
+        dbus.service.Object.__init__(self, bus_name, object_path)
+
+    @dbus.service.method(DBUS_IFACE,
+                         in_signature="b")
+    def set_visibility(self, visible):
+        if visible:
+            self.show_me(True)
+        else:
+            self.hide_me()
+
+class ConsoleViewer(gtk.Window):
+    def __init__(self, fds=[]):
+        # Create the toplevel window
+        gtk.Window.__init__(self)
+
+        self.connect('focus-in-event', self.on_focus)
+
+        self.set_focus_on_map(False)
+
+        client = gconf.client_get_default()
+        client.add_dir('/apps/debathena-console',
+                gconf.CLIENT_PRELOAD_ONELEVEL)
+        client.notify_add('/apps/debathena-console/blink',
+                self.new_blink)
+        client.notify_add('/apps/debathena-console/auto_hide',
+                self.new_auto_hide)
+        self.auto_hide_id = False
+        self.new_blink(client)
+        self.new_auto_hide(client)
+
+        self.systray = gtk.StatusIcon()
+        self.systray.set_from_stock("gtk-info")
+        self.systray.connect("activate", self.on_tray_activate, "activate")
+#        self.systray.connect("popup-menu", self.on_tray_popupmenu, self.popupmenu)
+        self.systray.set_tooltip(NAME)
+
+
+        self.set_title(NAME)
+        self.set_default_size(640, 320)
+        self.set_border_width(0)
+
+        vbox = gtk.VBox(False, 0)
+        self.add(vbox)
+
+        self.view = gtk.TextView();
+        buffer = self.view.get_buffer()
+
+        self.view.set_editable(False)
+        self.view.set_cursor_visible(False)
+        # See http://www.pygtk.org/docs/pygtk/gtk-constants.html#gtk-wrap-mode-constants
+        self.view.set_wrap_mode(gtk.WRAP_CHAR)
+
+        sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+
+        vbox.pack_start(sw)
+
+        sw.add(self.view)
+
+        bbox = gtk.HButtonBox()
+        bbox.set_border_width(5)
+        bbox.set_layout(gtk.BUTTONBOX_END)
+        bbox.set_spacing(40)
+
+        vbox.pack_start(bbox, expand=False)
+
+        def hide_window(*args):
+            gobject.idle_add(self.hide_me)
+            return True
+
+        button = gtk.Button("Hide")
+        button.connect("clicked", hide_window)
+        bbox.add(button)
+        self.connect('delete-event', hide_window)
+
+        self.create_tags(buffer)
+        self.insert_text(buffer)
+
+        # NB: we do show_all on the vbox so the widgets are ready
+        # when we present_with_time() inside show_me()
+        vbox.show_all()
+
+        if (client.get_bool("/apps/debathena-console/start_visible")):
+            self.show_me()
+
+        self.start_listening(buffer, self.view, fds)
+
+        self.dbus_service = ConsoleDBus(self.show_me, self.hide_me)
+        dbus.SessionBus().request_name(DBUS_BUS, dbus_bindings.NAME_FLAG_DO_NOT_QUEUE)
+
+    def new_blink(self, client, *a):
+        self.blink = client.get_bool("/apps/debathena-console/blink")
+
+    def new_auto_hide(self, client, *a):
+        self.auto_hide = client.get_int("/apps/debathena-console/auto_hide")
+        if self.auto_hide == 0 and self.auto_hide_id:
+            gobject.source_remove(self.auto_hide_id)
+            self.auto_hide_id = False
+
+    def on_tray_activate(self, widget, data=None):
+        if self.is_active():
+            self.hide_me()
+        else:
+            self.show_me(True)
+
+    def show_me(self, focus=False):
+        screen = wnck.screen_get_default()
+
+        active = screen.get_active_window()
+        if focus:
+            self.show_all()
+            self.window.focus()
+        elif not self.has_toplevel_focus():
+            # we need to be shown, but we're in the back
+            self.present_with_time(int(time.time()))
+            # restore the active window
+            while gtk.events_pending():
+                gtk.main_iteration()
+            if active:
+                active.activate(int(time.time()))
+
+        if self.auto_hide > 0:
+            if self.auto_hide_id:
+                gobject.source_remove(self.auto_hide_id)
+            self.auto_hide_id = gobject.timeout_add(self.auto_hide * 1000, self.hide_me)
+
+    def hide_me(self):
+        self.window.lower()
+        self.hide()
+        if self.auto_hide_id:
+            gobject.source_remove(self.auto_hide_id)
+            self.auto_hide_id = False
+        return False
+
+    def on_focus(self, widget, event):
+        self.systray.set_blinking(False)
+        return False
+
+    def create_tags(self, text_buffer):
+        '''
+        Create the tags we use for text (stdout and stderr)
+        '''
+
+        import pango
+
+        # See http://www.pygtk.org/docs/pygtk/class-gtktexttag.html
+        default_args = {'family': 'monospace',
+                        'size_points': 12}
+
+        text_buffer.create_tag("stdout", **default_args)
+        text_buffer.create_tag("stderr", foreground="red", **default_args)
+        text_buffer.create_tag("xconsole", weight=pango.WEIGHT_BOLD, **default_args)
+
+    def insert_text(self, text_buffer):
+        '''
+        Insert some sample text demonstrating the tags
+        '''
+        # get start of buffer; each insertion will revalidate the
+        # iterator to point to just after the inserted text.
+        iter = text_buffer.get_end_iter()
+
+        text_buffer.insert_with_tags_by_name(iter, "This is stdout\n", "stdout")
+        text_buffer.insert_with_tags_by_name(iter, "This is stderr\n", "stderr")
+        text_buffer.insert_with_tags_by_name(iter, "This is more stdout\n", "stdout")
+
+    def start_listening(self, text_buffer, text_view, fds):
+        '''
+        Sets up a gobject event listener that adds text to the textview whenever
+        stdin has something to read
+        '''
+        def got_data(source, condition, tag):
+            data = source.read()
+            # act like tee, so the logs still end up in .xsession-errors
+            print data,
+            text_buffer.insert_with_tags_by_name(text_buffer.get_end_iter(),
+                                                 data, tag)
+
+            text_view.scroll_to_mark(text_buffer.create_mark(None, text_buffer.get_end_iter(), False), 0, False)
+
+            if self.blink and not self.has_toplevel_focus():
+                self.systray.set_blinking(True)
+            elif not self.has_toplevel_focus():
+                self.show_me()
+
+            if source.closed:
+                return False # we got an eof
+            else:
+                return True # causes callback to remain in existence
+        import fcntl, os
+        for i in range(len(fds)):
+            f = os.fdopen(fds[i][1])
+            fcntl.fcntl(fds[i][1], fcntl.F_SETFL, os.O_NONBLOCK)
+            gobject.io_add_watch(f, gobject.IO_IN, got_data, fds[i][0])
+
+def main():
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    if len(sys.argv) >= 2:
+        type, fd = x.split(':')
+        ConsoleViewer(fds=[(type, int(fd)) for x in sys.argv[1:]])
+    else:
+        ConsoleViewer(fds=[("stdout", 0)])
+    gtk.main()
+
+if __name__ == '__main__':
+    main()
