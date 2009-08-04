@@ -1,3 +1,11 @@
+debathena-athinfod (10.0.0-0debathena9) unstable; urgency=low
+
+  * Add a 'policy' query to run 'apt-cache policy' without arguments.
+    This is mainly for figuring out if a machine has -proposed
+    repositories enabled or not (Trac: #172).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 04 Aug 2009 01:06:55 -0400
+
 debathena-athinfod (10.0.0-0debathena8) unstable; urgency=low
 
   * Add a reactivate.log query to access the instrumentation added in
