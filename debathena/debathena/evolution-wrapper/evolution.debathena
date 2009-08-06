@@ -9,6 +9,11 @@
 
 use strict;
 use Gnome2::GConf;
+use File::Basename;
+use File::Path;
+
+sub edit_state_file();
+sub create_initial_state_file();
 
 # Ensure $HOME/.evolution is private when created.
 my $homedir = $ENV{"HOME"};
@@ -19,43 +24,77 @@ if ($homedir && ! -e "$homedir/.evolution") {
 }
 
 # Look up user inbox in Hesiod.
-my $user = $ENV{"USER"} || getpwuid($<);
+my $user = $ENV{"ATHENA_USER"} || $ENV{"USER"} || getpwuid($<);
 my $result = `hesinfo $user pobox`;
 my @fields = split(' ', $result);
 my $server = $fields[1];
 
+unless ($server) {
+    warn "Could not obtain Hesiod POBOX information for $user\n";
+    exec("/usr/bin/evolution.debathena-orig", @ARGV);
+}
+
+# Determine the authentication method to use for the IMAP server.
+# For a Cyrus PO server account we use krb4, if the installed package
+# supports it.
+# For an Exchange account (or anything else), use password for now.
+# (Ideally some day we will use GSSAPI everywhere).
+my $auth = "";
+if ($server =~ /po\d+\.mit\.edu/i) {
+    my $provides = `dpkg-query -Wf '\${Provides}' 'libcamel*'`;
+    if ($provides =~ /debathena-libcamel-krb4/) {
+	$auth = ";auth=KERBEROS_V4";
+    }
+}
+
+# Regular expression for the server names we recognize when updating
+# the IMAP account setting.  We also convert Athena 9.4-style Hesiod
+# specifications (although it should be unusual to see one due to
+# debathena-gconf2-config).
+my $serverRE = '(po\d+\.mit\.edu)|((imap\.)?exchange\.mit\.edu)|(_hesiod)';
+my $old_server = "";
+
 my $client = Gnome2::GConf::Client->get_default;
 my $accounts = $client->get_list("/apps/evolution/mail/accounts");
 
-if ($accounts) {
-    # Update the server with the value from Hesiod.  Also convert
-    # Athena 9.4-style Hesiod specifications (although it should be
-    # unusual to see one due to debathena-gconf2-config).
+if ($accounts && @$accounts) {
+    # Update the server with the value from Hesiod.
     my $change = 0;
     foreach (@$accounts) {
 	my $old = $_;
 	if (/name="MIT mail"/) {
-	    s|(imap://[^/]*\@)(po\d+\.mit\.edu)|\1$server|i;
-	    s|(imap://[^/]*\@)_hesiod|\1$server|;
+	    # Remember the old server name.
+	    if (m%imap://$user(?:;[^\@]*)?\@([^/]+)/%i) {
+		$old_server = $1;
+	    }
+
+	    # Update the server name (and corresponding auth method).
+	    s%(imap://$user)(\;[^\@]*)?\@($serverRE)%$1$auth\@$server%i;
+
+	    # Make sure we always use SSL.
+	    unless (m%imap://[^/]*/[^<]*;use_ssl=always[^<]*%i) {
+		# First clear any other SSL setting.
+		s%(imap://[^/]*/[^<]*);use_ssl=[^;<]*([^<]*)%$1$2%i;
+		s%(imap://[^/]*/)([^<]*)%$1;use_ssl=always$2%i;
+	    }
 	}
 	$change = 1 if ($_ ne $old);
     }
 
     if ($change) {
+	# We need to update the account settings.
 	$client->set_list("/apps/evolution/mail/accounts", "string",
 			  $accounts);
+	if ($old_server ne $server) {
+	    # Edit the folder state file -- the URI of the saved
+	    # selected folder may point at the old server.
+	    edit_state_file();
+	}
     }
 } else {
     # Pre-configuration.
     $client->set_string("/apps/evolution/calendar/display/timezone",
 			"America/New_York");
-
-    # To configure the accounts we need to know if we have krb4 support.
-    my $provides = `dpkg-query -Wf '\${Provides}' 'libcamel*'`;
-    my $krb4 = "";
-    if ($provides =~ /debathena-libcamel-krb4/) {
-	$krb4 = ";auth=KERBEROS_V4";
-    }
 
     ($_, $_, $_, $_, $_, $_, my $gecos) = getpwuid($<);
     my @fields = split(",", $gecos);
@@ -69,7 +108,7 @@ if ($accounts) {
     $a .= "<addr-spec>$user\@mit.edu</addr-spec>";
     $a .= '</identity>';
     $a .= '<source save-passwd="false">';
-    $a .= "<url>imap://$user$krb4\@$server/;use_ssl=always</url>";
+    $a .= "<url>imap://$user$auth\@$server/;use_ssl=always</url>";
     $a .= '</source>';
     $a .= '<transport save-passwd="false">';
     $a .= "<url>smtp://$user;auth=GSSAPI\@outgoing.mit.edu/;use_ssl=always";
@@ -81,6 +120,68 @@ if ($accounts) {
     $accounts = [ $a ];
     $client->set_list("/apps/evolution/mail/accounts", "string", $accounts);
     $client->set_string("/apps/evolution/mail/default_account", "mitinitial");
+    create_initial_state_file();
 }
 
 exec("/usr/bin/evolution.debathena-orig", @ARGV);
+
+# Edit the existing folder tree state file, to update any URI referring to
+# the old server.
+sub edit_state_file() {
+    return unless $old_server;
+    my $file = "$homedir/.evolution/mail/config/folder-tree-expand-state.xml";
+    open(OLD, "<$file") or return;
+    my $newfile = $file . ".debathena-new";
+    unless (open(NEW, ">$newfile")) {
+	warn "Cannot open $newfile: $!\n";
+	close OLD;
+	return;
+    }
+    my $changed = 0;
+    # Loop to copy and edit the file, replacing the old IMAP server
+    # name with the new.
+    while (<OLD>) {
+	my $old = $_;
+	s%(imap://$user)(;[^\@]*)?\@($old_server)%$1\@$server%i;
+	print NEW;
+	$changed = 1 if ($_ ne $old);
+    }
+    close NEW;
+    close OLD;
+    # If we have changed the file, move the new one into place.
+    # Otherwise, just delete the copy.
+    if ($changed) {
+	unless (rename($newfile, $file)) {
+	    warn "Cannot rename $newfile to $file: $!\n";
+	    # Nuke the old file to be safe.
+	    unlink $file;
+	}
+    } else {
+	unlink $newfile;
+    }
+}
+
+# Create the initial folder tree state file, to expand and select the
+# MIT INBOX.
+sub create_initial_state_file() {
+    my $file = "$homedir/.evolution/mail/config/folder-tree-expand-state.xml";
+
+    # Do not clobber an existing file.
+    return if (-e $file);
+
+    mkpath(dirname($file), 0, 0700);
+    unless (open(OUT, ">$file")) {
+	warn "Cannot open $file: $!\n";
+	return;
+    }
+    print OUT "<?xml version=\"1.0\"?>\n";
+    print OUT "<tree-state>\n";
+    print OUT "  <node name=\"local\" expand=\"true\"/>\n";
+    print OUT "  <node name=\"vfolder\" expand=\"false\"/>\n";
+    print OUT "  <node name=\"mitinitial\" expand=\"true\">\n";
+    print OUT "    <node name=\"INBOX\" expand=\"true\"/>\n";
+    print OUT "  </node>\n";
+    print OUT "  <selected uri=\"imap://$user\@$server/INBOX\"/>\n";
+    print OUT "</tree-state>\n";
+    close OUT;
+}

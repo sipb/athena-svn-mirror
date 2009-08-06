@@ -1,3 +1,15 @@
+debathena-evolution-wrapper (10.0.8) unstable; urgency=low
+
+  * Handle a Hesiod POBOX setting for IMAP.EXCHANGE, and ensure that
+    we always use SSL for the MIT IMAP account. (Trac: #317)
+  * Update the folder state file to reflect a PO server change.
+  * Create an initial folder tree state, to expand and select the
+    MIT INBOX. (Trac: #304)
+  * Honor $ATHENA_USER.
+  * Add some error checking.
+
+ -- Robert Basch <rbasch@mit.edu>  Thu, 06 Aug 2009 18:01:50 -0400
+
 debathena-evolution-wrapper (10.0.7) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
