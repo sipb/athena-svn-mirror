@@ -1,3 +1,10 @@
+debathena-mutt-config (1.2) unstable; urgency=low
+
+  * Use SSL for connections to Exchange (I'd use it universally, but SSL
+    + Kerberos seems to result in segfaults). (Trac: #317)
+
+ -- Evan Broder <broder@mit.edu>  Sun, 09 Aug 2009 13:24:16 -0700
+
 debathena-mutt-config (1.1) unstable; urgency=low
 
   * Add dependency on libsasl2-krb4-mit to make sure that krb4 auth works.

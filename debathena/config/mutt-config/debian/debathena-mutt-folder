@@ -1,3 +1,8 @@
 #!/bin/sh
 user=${ATHENA_USER:-$USER}
-echo "imap://$user@$(hesinfo "$user" pobox | awk '{print $2}')/"
+pobox="$(hesinfo "$user" pobox | awk '{print $2}')"
+ssl=
+case "$pobox" in
+    *EXCHANGE*) ssl=s ;;
+esac
+echo "imap${ssl}://$user@$pobox/"
