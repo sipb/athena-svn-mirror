@@ -11,9 +11,5 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/config-package.mk
 
-$(call debian_transform_files,/etc/firefox-3.0/pref/ubufox.js.debathena): fix-perms
-fix-perms:
-	chmod +x debian/transform_ubufox.js.debathena
-
 clean::
 	rm -f configure
