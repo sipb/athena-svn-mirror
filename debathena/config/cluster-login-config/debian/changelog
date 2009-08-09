@@ -1,3 +1,12 @@
+debathena-cluster-login-config (1.14) unstable; urgency=low
+
+  * Use a persistantly running daemon to keep the ttys open instead of a
+    one-time script. (Trac: #307)
+  * Make sure the ttymsg job gets kicked when cluster-login-config is
+    upgraded.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 09 Aug 2009 16:28:08 -0700
+
 debathena-cluster-login-config (1.13.1) unstable; urgency=low
 
   * Ignore failures to reload gdm or stop the tty gettys.

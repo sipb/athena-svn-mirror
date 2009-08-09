@@ -21,6 +21,8 @@ case "$1" in
     remove|upgrade|deconfigure)
         perl -i'' -ne 's%^### (BEGIN|END) debathena-cluster-login-config\s*$%%m && ($skip = ($1 eq "BEGIN")); print unless $skip;' /etc/sudoers
 
+	initctl stop ttymsg >/dev/null 2>&1 || true
+
         # Undo our mandatory gconf settings.
         gcsrc=xml:readwrite:/etc/gconf/gconf.xml.mandatory
         gcunset="gconftool-2 --direct --config-source=$gcsrc --unset"
