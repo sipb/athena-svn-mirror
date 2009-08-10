@@ -37,6 +37,12 @@ case "$1" in
         done
 	initctl start ttymsg >/dev/null 2>&1 || true
 
+	# Configure dns-nameservers if they're not there
+	if ! egrep -q '^[[:space:]]+dns-nameservers' /etc/network/interfaces; then
+	    echo '  dns-nameservers 18.70.0.160 18.71.0.151 18.72.0.3' >>/etc/network/interfaces
+	    /usr/share/update-notifier/notify-reboot-required
+	fi
+
 	# Attempt to initially set the root password.
 	/usr/sbin/athena-root-password
 

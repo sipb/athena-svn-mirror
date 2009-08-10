@@ -1,3 +1,10 @@
+debathena-cluster-login-config (1.15) unstable; urgency=low
+
+  * Make sure DNS servers are listed in /etc/network/interfaces to fix a
+    race condition between ntp and bind. (Trac: #332)
+
+ -- Evan Broder <broder@mit.edu>  Sun, 09 Aug 2009 19:36:52 -0700
+
 debathena-cluster-login-config (1.14) unstable; urgency=low
 
   * Use a persistantly running daemon to keep the ttys open instead of a
