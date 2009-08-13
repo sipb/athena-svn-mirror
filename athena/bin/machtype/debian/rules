@@ -39,19 +39,7 @@ ifeq ($(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' '4' && echo y),y)
     endif
 endif
 
-ifeq ($(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' '3.1' && echo y),y)
-    ifeq ($(DEB_BUILD_ARCH),amd64)
-        SYS_COMPAT += amd64_deb31 i386_deb31
-    else
-        ifeq ($(DEB_BUILD_ARCH),i386)
-            SYS_COMPAT += i386_deb31
-        else
-            $(error Unrecognized architecture $(DEB_BUILD_ARCH))
-        endif
-    endif
-endif
-
-SYS_COMPAT += i386_rhel3 i386_rh9 i386_linux24 i386_linux22 i386_linux3 i386_linux2 i386_linux1
+SYS_COMPAT += i386_rhel3 i386_linux24
 
 ATHENA_SYS = $(word 1, $(SYS_COMPAT))
 ATHENA_SYS_COMPAT = $(patsubst %:,%,$(subst : ,:,$(patsubst %,%:,$(wordlist 2, $(words $(SYS_COMPAT)), $(SYS_COMPAT)))))
