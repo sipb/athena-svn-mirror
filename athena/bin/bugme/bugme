@@ -36,6 +36,9 @@ class BugMe:
             sys.exit(255)
         self.startTime = int(time.time())
         self.timerWindow = self.xml.get_widget('TimerWindow')
+        self.timerWindow.connect("visibility_notify_event",
+                                 self.visibility_event_handler)
+        self.timerWindow.set_events(gtk.gdk.VISIBILITY_NOTIFY_MASK)
         self.nagDialog = self.xml.get_widget('NagDialog')
         self.nagLabel = self.xml.get_widget('NagLabel')
         self.elapsed_label = self.xml.get_widget('ElapsedLabel')
@@ -92,6 +95,11 @@ class BugMe:
 
     def on_dialog_response(self, dialog, response_id):
         self.nagDialog.hide()
+
+    def visibility_event_handler(self, widget, event):
+        if event.state != gtk.gdk.VISIBILITY_UNOBSCURED:
+            self.timerWindow.present()
+        return True
 
 
 if __name__ == '__main__':

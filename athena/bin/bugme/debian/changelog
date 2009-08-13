@@ -1,3 +1,14 @@
+debathena-bugme (10.0.1-0debathena1) unstable; urgency=low
+
+  * Add a handler for timer window visibility events, to raise the
+    window when it has been obscured (e.g. by Nautilus when it takes
+    over the desktop). (Trac: #324)
+  * Change the timer window from a popup to a normal toplevel window,
+    but disallowing input focus, so that it does not obscure menu
+    items.
+
+ -- Robert Basch <rbasch@mit.edu>  Thu, 13 Aug 2009 14:31:22 -0400
+
 debathena-bugme (10.0.0-0debathena1) unstable; urgency=low
 
   * Initial release.
