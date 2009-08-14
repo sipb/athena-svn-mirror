@@ -1,0 +1,13 @@
+#!/usr/bin/perl -0p
+s/^\s*#?\s*Browsing.*$//m;
+s/$/\nBrowsing On/ or die;
+
+END {
+    print <<EOF;
+BrowseRemoteProtocols LDAP
+BrowseLDAPServer ldap://printers.mit.edu:389
+BrowseLDAPDN dc=MIT, dc=EDU
+BrowseInterval 600
+BrowseTimeout 1200
+EOF
+}

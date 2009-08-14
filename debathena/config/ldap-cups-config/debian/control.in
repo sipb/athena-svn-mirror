@@ -1,0 +1,15 @@
+Source: debathena-ldap-cups-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, debathena-cups, debathena-cupsys-hack
+Standards-Version: 3.7.2
+
+Package: debathena-ldap-cups-config
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, cups | cupsys, cups-bsd | cupsys-bsd
+Provides: ${diverted-files}, debathena-cupsys-config
+Conflicts: ${diverted-files}, debathena-cupsys-config
+Description: LDAP-based CUPS configuration for Debathena
+ This package configures CUPS to use LDAP-based printer discovery with
+ printers.mit.edu.
