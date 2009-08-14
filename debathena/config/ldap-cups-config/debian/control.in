@@ -13,3 +13,7 @@ Conflicts: ${diverted-files}, debathena-cupsys-config
 Description: LDAP-based CUPS configuration for Debathena
  This package configures CUPS to use LDAP-based printer discovery with
  printers.mit.edu.
+ .
+ As the printers.mit.edu server is still under testing, this package
+ is not recommended for use in a production environment. It also is
+ not guaranteed to work from an off-campus IP address.
