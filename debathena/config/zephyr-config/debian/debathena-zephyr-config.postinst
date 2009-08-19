@@ -25,9 +25,9 @@ case "$1" in
 	start-stop-daemon --oknodo --stop --retry 5 --quiet --pidfile \
 	    /var/run/zhm.pid --name zhm
 	if hash invoke-rc.d; then
-	    invoke-rc.d zhm restart
+	    invoke-rc.d zhm restart || :
 	else
-	    /etc/init.d/zhm restart
+	    /etc/init.d/zhm restart || :
 	fi
     ;;
 

@@ -1,3 +1,10 @@
+debathena-zephyr-config (1.8) unstable; urgency=low
+
+  * Don't fail to configure the package if networking is unavailable and
+    thus zhm can't restart.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 19 Aug 2009 10:31:35 -0400
+
 debathena-zephyr-config (1.7) unstable; urgency=low
 
   * Update dependencies for zephyr 3.0.
