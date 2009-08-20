@@ -1,3 +1,10 @@
+debathena-athinfod (10.0.0-0debathena10) unstable; urgency=low
+
+  * Add a 'hardware' query to give the DMI-reported model of a machine
+    (e.g., "OptiPlex 755").
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 20 Aug 2009 02:03:21 -0400
+
 debathena-athinfod (10.0.0-0debathena9) unstable; urgency=low
 
   * Add a 'policy' query to run 'apt-cache policy' without arguments.
