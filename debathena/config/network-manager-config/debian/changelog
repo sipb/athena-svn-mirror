@@ -1,0 +1,5 @@
+debathena-network-manager-config (1.0) unstable; urgency=low
+
+  * Initial release. (Trac: #212)
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 24 Aug 2009 17:27:22 -0400

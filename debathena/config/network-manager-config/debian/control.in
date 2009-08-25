@@ -1,0 +1,14 @@
+Source: debathena-network-manager-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.7.2
+
+Package: debathena-network-manager-config
+Architecture: all
+Depends: ${misc:Depends}
+Description: NetworkManager configuration for Debathena workstations
+ This package configures your computer to connect to the "MIT" wireless
+ network on boot, which permits you to log in to network accounts from
+ the initial login screen.

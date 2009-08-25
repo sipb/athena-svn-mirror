@@ -1,0 +1,15 @@
+[connection]
+id=MIT
+uuid=760764f5-d284-4c5a-a9db-04747945f947
+type=802-11-wireless
+autoconnect=true
+
+[ipv4]
+method=auto
+ignore-auto-routes=false
+ignore-auto-dns=false
+never-default=false
+
+[802-11-wireless]
+ssid=77;73;84;
+mode=infrastructure
