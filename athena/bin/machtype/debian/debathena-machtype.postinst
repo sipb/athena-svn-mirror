@@ -22,7 +22,7 @@ case "$1" in
     configure)
 	if hash fs >/dev/null 2>&1 && [ -e /etc/openafs/afs.conf ]; then
 	    . /etc/openafs/afs.conf
-	    fs sysname $AFS_SYSNAME
+	    fs sysname $AFS_SYSNAME || true
 	fi
     ;;
 
