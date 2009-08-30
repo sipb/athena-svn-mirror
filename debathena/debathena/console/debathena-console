@@ -197,10 +197,6 @@ class ConsoleViewer(gtk.Window):
         # iterator to point to just after the inserted text.
         iter = text_buffer.get_end_iter()
 
-        text_buffer.insert_with_tags_by_name(iter, "This is stdout\n", "stdout")
-        text_buffer.insert_with_tags_by_name(iter, "This is stderr\n", "stderr")
-        text_buffer.insert_with_tags_by_name(iter, "This is more stdout\n", "stdout")
-
     def start_listening(self, text_buffer, text_view, fds):
         '''
         Sets up a gobject event listener that adds text to the textview whenever
@@ -233,8 +229,8 @@ class ConsoleViewer(gtk.Window):
 def main():
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     if len(sys.argv) >= 2:
-        type, fd = x.split(':')
-        ConsoleViewer(fds=[(type, int(fd)) for x in sys.argv[1:]])
+        ConsoleViewer(fds=[(type, int(fd)) for x in sys.argv[1:]
+                            for type, fd in [x.split(':')]])
     else:
         ConsoleViewer(fds=[("stdout", 0)])
     gtk.main()
