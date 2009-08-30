@@ -1,3 +1,9 @@
+debathena-larvnet (10.0.5) unstable; urgency=low
+
+  * Check if larvnet-wrapper exists before adding it to STARTUP (Trac: #343).
+
+ -- David Benjamin <davidben@mit.edu>  Sat, 29 Aug 2009 20:24:22 -0400
+
 debathena-larvnet (10.0.4) unstable; urgency=low
 
   * Use STDOUT, not STDIN, to send the busyd status reply.
