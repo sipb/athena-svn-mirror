@@ -1,3 +1,10 @@
+debathena-evolution-wrapper (10.0.9) unstable; urgency=low
+
+  * Always create a new folder state file after initializing the
+    account in gconf.
+
+ -- Robert Basch <rbasch@mit.edu>  Tue, 01 Sep 2009 15:34:22 -0400
+
 debathena-evolution-wrapper (10.0.8) unstable; urgency=low
 
   * Handle a Hesiod POBOX setting for IMAP.EXCHANGE, and ensure that

@@ -166,9 +166,6 @@ sub edit_state_file() {
 sub create_initial_state_file() {
     my $file = "$homedir/.evolution/mail/config/folder-tree-expand-state.xml";
 
-    # Do not clobber an existing file.
-    return if (-e $file);
-
     mkpath(dirname($file), 0, 0700);
     unless (open(OUT, ">$file")) {
 	warn "Cannot open $file: $!\n";
