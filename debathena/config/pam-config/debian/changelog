@@ -1,3 +1,10 @@
+debathena-pam-config (1.16) unstable; urgency=low
+
+  * Configure the Kerberos authentication to print an error message if
+    pam_krb5 can't reach the KDC. (Trac: #208)
+
+ -- Evan Broder <broder@mit.edu>  Fri, 04 Sep 2009 14:45:26 -0400
+
 debathena-pam-config (1.15) unstable; urgency=low
 
   * Don't accept root's Kerberos password, only the local root password.

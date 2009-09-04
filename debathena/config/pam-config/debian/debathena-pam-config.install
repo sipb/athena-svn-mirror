@@ -1,1 +1,2 @@
 debian/access.conf.debathena etc/security
+debian/issue.net.no_network etc

@@ -3,9 +3,11 @@ Default: yes
 Priority: 128
 Auth-Type: Primary
 Auth-Initial:
-	[success=end default=ignore]	pam_krb5.so minimum_uid=1
+	[success=end authinfo_unavail=ignore default=1]	pam_krb5.so minimum_uid=1
+	[default=die] pam_echo.so file=/etc/issue.net.no_network
 Auth:
-	[success=end default=ignore]	pam_krb5.so minimum_uid=1 use_first_pass
+	[success=end authinfo_unavail=ignore default=1]	pam_krb5.so minimum_uid=1 use_first_pass
+	[default=die] pam_echo.so file=/etc/issue.net.no_network
 Account-Type: Primary
 Account:
 	[success=end default=ignore]	pam_krb5.so minimum_uid=1
