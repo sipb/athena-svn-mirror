@@ -1,3 +1,9 @@
+debathena-network-manager-config (1.1) unstable; urgency=low
+
+  * chmod the NetworkManager config file to 600 so NM won't ignore it.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 03 Sep 2009 21:58:00 -0400
+
 debathena-network-manager-config (1.0) unstable; urgency=low
 
   * Initial release. (Trac: #212)
