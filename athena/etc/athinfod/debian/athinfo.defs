@@ -33,4 +33,4 @@ packages	dpkg-query -W -f '${Package}\t${Version}\t${Status}\n' | sed -n 's/\tin
 modules  	lsmod
 update-status	aptitude --simulate --assume-yes dist-upgrade
 policy		apt-cache policy
-hardware	cat /sys/class/dmi/id/product_{name,version}
+hardware	cat /sys/class/dmi/id/product_name /sys/class/dmi/id/product_version
