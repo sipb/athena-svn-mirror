@@ -1,10 +1,10 @@
 # This is the Debathena /etc/bash.bashrc configuration.
 # It is only necessary if you are not using debathena-login.
 
-# It sources all bash scripts in the directory bashrc.d
+# Source the normal bash.bashrc
+. /etc/bash.bashrc.debathena-orig
+
+# Source all bash scripts in the directory bashrc.d
 # To remove this feature, uninstall the debathena-bash-config package.
 DEBATHENA_BASHRC_DIR=/usr/share/debathena-bash-config/bashrc.d
 for i in `run-parts --list "$DEBATHENA_BASHRC_DIR"`; do . "$i"; done
-
-# Now source the normal bash.bashrc (afterwards, to allow overrides)
-. /etc/bash.bashrc.debathena-orig

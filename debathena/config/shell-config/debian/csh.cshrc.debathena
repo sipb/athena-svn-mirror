@@ -1,6 +1,9 @@
 # This is the Debathena csh.cshrc configuration.
 # You should in general only use it if you are not using debathena-login.
 
+# Source the normal csh.cshrc
+source /etc/csh.cshrc.debathena-orig;
+
 # It sources a csh script that creates the add and renew commands,
 # sets ATHENA_SYS is set correctly, and other similar tasks.
 # To remove this feature, uninstall the debathena-tcsh-config package.
@@ -8,6 +11,3 @@ set DEBATHENA_CSHRC="/usr/share/debathena-tcsh-config/cshrc.debathena"
 if (-e $DEBATHENA_CSHRC) then
     source $DEBATHENA_CSHRC;
 endif
-
-# Now source the normal csh.cshrc (afterwards, to allow overrides)
-source /etc/csh.cshrc.debathena-orig;

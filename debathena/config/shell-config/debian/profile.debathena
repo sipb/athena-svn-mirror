@@ -1,11 +1,10 @@
 # This is the Debathena /etc/profile configuration.
 # It is only necessary if you are not using debathena-login.
 
-# It sources a bash script that creates the add and renew commands,
-# sets ATHENA_SYS is set correctly, and other similar tasks.
+# Source the normal profile
+. /etc/profile.debathena-orig
+
+# Source all bash scripts in the profile.d directory
 # To remove this feature, uninstall the debathena-bash-config package.
 DEBATHENA_PROFILE_DIR=/usr/share/debathena-bash-config/profile.d
 for i in `run-parts --list "$DEBATHENA_PROFILE_DIR"`; do . "$i"; done
-
-# Now source the normal profile (afterwards, to allow overrides)
-. /etc/profile.debathena-orig
