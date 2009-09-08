@@ -1,3 +1,10 @@
+debathena-shell-config (1.11) unstable; urgency=low
+
+  * Don't set environment variables in
+    /etc/{bash.bashrc,csh.cshrc}.debathena (Trac #214)
+
+ -- Jessica Hamrick <jhamrick@mit.edu>  Mon, 07 Sep 2009 23:21:59 -0400
+
 debathena-shell-config (1.10) unstable; urgency=low
 
   * Default ATHENA_USER to USER.

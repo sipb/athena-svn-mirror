@@ -1,0 +1,3 @@
+# If your Athena username differs from your local username,
+# you should override this in your own .login
+setenv ATHENA_USER $USER

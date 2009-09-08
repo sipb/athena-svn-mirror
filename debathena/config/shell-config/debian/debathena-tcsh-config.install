@@ -1,2 +1,3 @@
 debian/csh.cshrc.debathena /etc/
 debian/cshrc.debathena /usr/share/debathena-tcsh-config/
+debian/csh-set-athena-user /etc/csh/login.d/

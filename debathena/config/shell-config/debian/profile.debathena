@@ -4,10 +4,8 @@
 # It sources a bash script that creates the add and renew commands,
 # sets ATHENA_SYS is set correctly, and other similar tasks.
 # To remove this feature, uninstall the debathena-bash-config package.
-DEBATHENA_BASHRC=/usr/share/debathena-bash-config/bashrc.debathena
-if [ -e "$DEBATHENA_BASHRC" ]; then
-    . "$DEBATHENA_BASHRC"
-fi
+DEBATHENA_PROFILE_DIR=/usr/share/debathena-bash-config/profile.d
+for i in `run-parts --list "$DEBATHENA_PROFILE_DIR"`; do source "$i"; done
 
 # Now source the normal profile (afterwards, to allow overrides)
 . /etc/profile.debathena-orig

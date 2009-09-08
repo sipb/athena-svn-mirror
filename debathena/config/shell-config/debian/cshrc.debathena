@@ -8,10 +8,6 @@ if ( $ATHENA_SYS == "" ) then
 endif
 setenv ATHENA_SYS_COMPAT `/bin/machtype -C`
 
-# If your Athena username differs from your local username,
-# you should override this in your own .cshrc or .cshrc.mine
-setenv ATHENA_USER $USER
-
 alias renew 'kinit -54 $ATHENA_USER && aklog'
 
 set add_flags
