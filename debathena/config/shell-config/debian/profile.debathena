@@ -5,7 +5,7 @@
 # sets ATHENA_SYS is set correctly, and other similar tasks.
 # To remove this feature, uninstall the debathena-bash-config package.
 DEBATHENA_PROFILE_DIR=/usr/share/debathena-bash-config/profile.d
-for i in `run-parts --list "$DEBATHENA_PROFILE_DIR"`; do source "$i"; done
+for i in `run-parts --list "$DEBATHENA_PROFILE_DIR"`; do . "$i"; done
 
 # Now source the normal profile (afterwards, to allow overrides)
 . /etc/profile.debathena-orig

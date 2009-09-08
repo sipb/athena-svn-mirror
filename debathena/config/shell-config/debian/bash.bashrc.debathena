@@ -3,8 +3,8 @@
 
 # It sources all bash scripts in the directory bashrc.d
 # To remove this feature, uninstall the debathena-bash-config package.
-DEBATHENA_BASHRC_DIR=/usr/share/debathena-bash-config/bashrc.d/
-for i in `run-parts --list "$DEBATHENA_BASHRC_DIR"`; do source "$i"; done
+DEBATHENA_BASHRC_DIR=/usr/share/debathena-bash-config/bashrc.d
+for i in `run-parts --list "$DEBATHENA_BASHRC_DIR"`; do . "$i"; done
 
 # Now source the normal bash.bashrc (afterwards, to allow overrides)
 . /etc/bash.bashrc.debathena-orig
