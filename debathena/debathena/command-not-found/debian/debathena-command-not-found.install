@@ -1,0 +1,2 @@
+debian/10-command-not-found /usr/share/debathena-bash-config/bashrc.d/
+debian/whichlocker /usr/lib/

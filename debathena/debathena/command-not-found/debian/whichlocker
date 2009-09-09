@@ -1,0 +1,7 @@
+#!/bin/sh
+
+while read program locker; do
+    if [ "$program" = "$1" ]; then
+	echo "'$program' is in the '$locker' locker"
+    fi
+done < /usr/share/debathena-command-not-found/program-list

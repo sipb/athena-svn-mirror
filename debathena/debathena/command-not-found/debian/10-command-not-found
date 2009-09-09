@@ -1,0 +1,39 @@
+# This is the Debathena handle for command-not-found.  It uses
+# the functionality of both command-not-found and whichlocker.
+
+function command_not_found_handle {
+         INLOCKER=""
+         if [ -x /usr/lib/whichlocker ]; then
+            INLOCKER=`/usr/lib/whichlocker "$1"`
+            if [ ! -z "$INLOCKER" ]; then
+               echo "Found in the following Athena lockers: "
+               echo "$INLOCKER"
+               echo "Run \`add <lockername>; $1\` (without the quotes)"
+            fi
+         fi
+
+         CANSUDO=""
+         if [ "$UID" == 0 ]; then
+            CANSUDO="true"
+         else
+            ISADMIN=`groups | grep -o "\badmin\b"`
+            if [ ! -z "$ISADMIN" ]; then
+	           CANSUDO="true"
+            fi
+         fi
+
+         if [ ! -z "$CANSUDO" ]; then
+            if [ -x /usr/lib/command-not-found ]; then
+               INAPT=$(/usr/bin/python /usr/lib/command-not-found -- "$1" 2>&1)
+	       if [ ! -z "$INLOCKER" ]; then
+                  if [ ! -z "$INAPT" ]; then
+                     echo ""
+                     echo "In apt:"
+                  fi
+               fi
+               echo "$INAPT"
+            fi
+         fi
+
+	 return 127
+}
