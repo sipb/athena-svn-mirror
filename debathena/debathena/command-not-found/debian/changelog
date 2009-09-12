@@ -1,7 +1,7 @@
 debathena-command-not-found (1.1) unstable; urgency=low
 
-  * Move /usr/bin/whichlocker to
-    /usr/bin/debathena-command-not-found/whichlocker.
+  * Move /usr/lib/whichlocker to
+    /usr/lib/debathena-command-not-found/whichlocker.
   * Update package description.
   * Run curl in silent mode from cronjob.
 
