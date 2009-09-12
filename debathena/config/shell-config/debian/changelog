@@ -1,3 +1,11 @@
+debathena-shell-config (1.11.1) jaunty; urgency=low
+
+  * Make sure that 'add' etc. are still available in
+    interactive login bash shells, by sourcing bashrc.d/* in
+    profile if needed.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sat, 12 Sep 2009 18:59:13 -0400
+
 debathena-shell-config (1.11) unstable; urgency=low
 
   * Don't set environment variables in
