@@ -1,4 +1,4 @@
-debathena-shell-config (1.11.1) jaunty; urgency=low
+debathena-shell-config (1.11.1) unstable; urgency=low
 
   * Make sure that 'add' etc. are still available in
     interactive login bash shells, by sourcing bashrc.d/* in
