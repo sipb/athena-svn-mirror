@@ -1,3 +1,3 @@
 #!/bin/sh
 
-[ -x /usr/lib/whichlocker ] && /usr/bin/curl --connect-timeout 5 https://debathena.mit.edu/auto/whichlocker-database -o /usr/share/debathena-command-not-found/program-list
+[ -x /usr/lib/whichlocker ] && /usr/bin/curl -s --connect-timeout 5 https://debathena.mit.edu/auto/whichlocker-database -o /usr/share/debathena-command-not-found/program-list

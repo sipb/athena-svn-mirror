@@ -1,3 +1,12 @@
+debathena-command-not-found (1.1) unstable; urgency=low
+
+  * Move /usr/bin/whichlocker to
+    /usr/bin/debathena-command-not-found/whichlocker.
+  * Update package description.
+  * Run curl in silent mode from cronjob.
+
+ -- Jessica Hamrick <jhamrick@mit.edu>  Sat, 12 Sep 2009 13:47:45 -0400
+
 debathena-command-not-found (1.0) unstable; urgency=low
 
   * Initial release.

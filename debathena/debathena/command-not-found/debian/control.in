@@ -8,7 +8,9 @@ Standards-Version: 3.8.3
 Package: debathena-command-not-found
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, python, debathena-bash-config, debathena-ssl-certificates, curl
-Description: Overrides command-not-found to use whichlocker
- The functionality of whichlocker is added to the
- command-not-found handle, such that it will print 
- the locker the command is found in (if applicable).
+Description: Displays the AFS locker an unknown command is in
+ This package updates the bash command-not-found
+ handle to print the AFS locker a command can
+ be found in (if applicable).  This is in
+ addition to checking if the command is available
+ through the package database.

@@ -3,8 +3,8 @@
 
 function command_not_found_handle {
          INLOCKER=""
-         if [ -x /usr/lib/whichlocker ]; then
-            INLOCKER=`/usr/lib/whichlocker "$1"`
+         if [ -x /usr/lib/debathena-command-not-found/whichlocker ]; then
+            INLOCKER=`/usr/lib/debathena-command-not-found/whichlocker "$1"`
             if [ ! -z "$INLOCKER" ]; then
                echo "Found in the following Athena lockers: "
                echo "$INLOCKER"
