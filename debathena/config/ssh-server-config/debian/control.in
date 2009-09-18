@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-ssh-server-config
 Architecture: all
-Depends: openssh-server (>= 1:4.3) | ssh-krb5, ${misc:Depends}
+Depends: openssh-server (>= 1:4.3) | ssh-krb5, ${misc:Depends}, debathena-bash-config (>= 1.11) | debathena-tcsh-config (>= 1.11)
 Provides: ${diverted-files}
 Conflicts: debathena-sshd-config (<< 1.0), ${diverted-files}
 Replaces: debathena-sshd-config (<< 1.0)
