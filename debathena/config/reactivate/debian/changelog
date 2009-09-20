@@ -1,3 +1,9 @@
+debathena-reactivate (1.21) unstable; urgency=low
+
+  * Avoid sound during first login (Trac: 292).
+
+ -- Michael Mekonnen <mikemeko@mit.edu>  Sun, 20 Sep 2009 15:31:13 -0400
+
 debathena-reactivate (1.20.1) unstable; urgency=low
 
   * Use the right debian/rules variable for removing files.

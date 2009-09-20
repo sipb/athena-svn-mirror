@@ -7,7 +7,7 @@
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 # Set the volume to zero for all sound cards, and save that state.
-(/etc/init.d/alsa-utils stop all && alsactl store) > /dev/null 2>&1
+invoke-rc.d debathena-reactivate start
 
 # Clean up the login snapshot.
 athena-login-snapshot login-end
