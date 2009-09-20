@@ -19,8 +19,6 @@ else
 	  echo "C Shell initialization has not been performed."
 	  stty sane
 	endif
-	# set some basic defaults if failed initialization
-	umask 077
 endif
 
 

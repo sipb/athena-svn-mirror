@@ -38,8 +38,6 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 		export ATHENA_DOTFILE_GENERATION=0
 	fi
 
-	umask 077				# Strictly protect files
-						#  (does not apply in AFS)
 	ulimit -S -c 0				# Don't allow coredumps
 	export EDITOR=emacs			# Set default editor
 	export MM_CHARSET=iso-8859-1

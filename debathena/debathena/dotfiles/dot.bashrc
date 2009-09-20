@@ -19,8 +19,6 @@ else
 	  echo "Shell initialization has not been performed."
 	  stty sane
 	fi
-	# set some basic defaults if failed initialization
-	umask 077
 fi
 
 

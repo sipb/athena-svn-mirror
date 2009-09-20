@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.15-0debathena1) unstable; urgency=low
+
+  * Stop setting umask in dotfiles. (Trac: #368)
+
+ -- Nancy R Ouyang <nouyang@mit.edu>  Sun, 20 Sep 2009 15:45:25 -0400
+
 debathena-dotfiles (10.0.14-0debathena1) unstable; urgency=low
 
   * Desupport extend, sextend, textend, ~/.path, cdpath, and setting the

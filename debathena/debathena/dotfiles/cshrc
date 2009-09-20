@@ -41,8 +41,6 @@ if (! $?ENV_SET) then
     setenv ATHENA_DOTFILE_GENERATION 0
   endif
 
-  umask 077				# Strictly protect files
-					#  (does not apply in AFS)
   limit coredumpsize 0            	# Don't allow coredumps
   setenv MORE -s			# Default "more" behavior
 					# we are now down to -s
