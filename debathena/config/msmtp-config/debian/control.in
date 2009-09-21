@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-msmtp-config
 Architecture: all
-Depends: msmtp, debathena-kerberos-config, ${misc:Depends}
+Depends: msmtp, debathena-kerberos-config, libmail-expandaliases-perl, ${misc:Depends}
 Conflicts: debathena-pine (<= 4.64-3debathena3)
 Description: msmtp configuration for Debathena
  This packages provides a script to send authenticated outgoing mail via 

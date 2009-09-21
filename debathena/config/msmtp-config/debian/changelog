@@ -1,3 +1,10 @@
+debathena-msmtp-config (1.6) unstable; urgency=low
+
+  * Replace shell script with Perl script that respects
+    /etc/aliases. (Trac: #83)
+
+ -- David Wilson <dwilson@mit.edu>  Sun, 20 Sep 2009 20:30:55 -0400
+
 debathena-msmtp-config (1.5) unstable; urgency=low
 
   * Move to the debathena-config component from the debathena component.

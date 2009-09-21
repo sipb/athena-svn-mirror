@@ -1,16 +1,27 @@
-#!/bin/sh
-if [ -z "$DEBATHENA_SENDMAIL_AUTH" ]; then
-    if klist -s 2>/dev/null; then
-	DEBATHENA_SENDMAIL_AUTH=yes
-    fi
-fi
-if [ "$DEBATHENA_SENDMAIL_AUTH" = "yes" ]; then
-    kuser=$(klist 2>/dev/null | sed -n 's/^Default principal: \(.*\)@ATHENA\.MIT\.EDU/\1/ p')
-    if [ -z "$kuser" ]; then
-	echo "Could not find valid ATHENA.MIT.EDU Kerberos tickets." >&2
-	exit 1
-    fi
-    exec msmtp --host=outgoing.mit.edu --port=587 --auth=gssapi --user="$kuser" --auto-from=on --maildomain=mit.edu "$@"
-else
-    exec msmtp --host=outgoing.mit.edu --port=25 --auth=off --auto-from=on --maildomain=mit.edu "$@"
-fi
+#!/usr/bin/perl
+
+use Mail::ExpandAliases;
+
+$ticketlist = `klist 2>/dev/null`;
+$ticketlist =~ /Default principal: (.*?)\@ATHENA.MIT.EDU/;
+$kuser = $1;
+
+$parser = Mail::ExpandAliases->new;
+foreach $arg (@ARGV) {
+    push @aliases, $parser->expand($arg);
+}
+
+if ($kuser &&
+     (($ENV{'DEBATHENA_SENDMAIL_AUTH'} eq 'yes') ||
+      (!$ENV{'DEBATHENA_SENDMAIL_AUTH'}))) {
+    #send auth
+    exec(qw{msmtp --host=outgoing.mit.edu --port=587 --auth=gssapi}, "--user=$kuser", qw{--auto-from=on --maildomain=mit.edu}, @aliases);
+}
+elsif ($ENV{'DEBATHENA_SENDMAIL_AUTH'} eq 'yes') {
+    $! = 1;
+    die "Could not find valid ATHENA.MIT.EDU Kerberos tickets.\n";
+}
+else {
+    #send unauth
+    exec(qw{msmtp --host=outgoing.mit.edu --port=25 --auth=off --auto-from=on --maildomain=mit.edu}, @aliases);
+}
