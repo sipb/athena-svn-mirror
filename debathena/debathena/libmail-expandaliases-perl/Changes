@@ -1,0 +1,24 @@
+# ----------------------------------------------------------------------
+# Changelog for Mail::ExpandAliases
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# Version 0.46                                         November 24, 2008
+# ----------------------------------------------------------------------
+
+* Changed the parser to understand whitespace before the colon on the
+  LHS of an alias, as suggested by Terry Williams
+  <williams.terry.r@gmail.com>.
+
+# ----------------------------------------------------------------------
+# Version 0.45                                              (Unreleased)
+# ----------------------------------------------------------------------
+
+* Added patch from Thomas Kishel <tom@kishel.net>, which adds a method
+  that returns a list of all of the aliases in the aliase file.
+
+# ----------------------------------------------------------------------
+# Version 0.44                                        September 22, 2004 
+# ----------------------------------------------------------------------
+
+* Initial import from old CVS repository.

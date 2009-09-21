@@ -1,0 +1,13 @@
+Source: libmail-expandaliases-perl
+Section: perl
+Priority: optional
+Build-Depends: cdbs, debhelper (>= 5), perl (>= 5.6.10-12)
+Maintainer: Debathena Project <debathena@mit.edu>
+Standards-Version: 3.8.0
+Homepage: http://search.cpan.org/dist/Mail-ExpandAliases/
+
+Package: libmail-expandaliases-perl
+Architecture: all
+Depends: ${perl:Depends}, ${misc:Depends}
+Description: Expand aliases from /etc/aliases files
+ This Perl module supports expanding aliases from an aliases file.

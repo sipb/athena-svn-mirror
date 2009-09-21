@@ -1,0 +1,5 @@
+libmail-expandaliases-perl (0.46-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 20 Sep 2009 19:50:21 -0400
