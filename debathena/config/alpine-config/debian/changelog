@@ -1,3 +1,9 @@
+debathena-alpine-config (1.11.3) unstable; urgency=low
+
+  * Suppress a Hesiod error when running alpine on a non-Athena account.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sun, 20 Sep 2009 09:28:23 -0400
+
 debathena-alpine-config (1.11.2) unstable; urgency=low
 
   * Explicitly exec alpine.debathena-orig in the wrapper script in case
