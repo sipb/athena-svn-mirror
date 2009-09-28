@@ -1,6 +1,11 @@
+#!/bin/sh
+cat <<'EOF'
 <?xml version="1.0"?>
 <svg width="300" height="10pt" xmlns="http://www.w3.org/2000/svg">
 <text style="font-family: Trebuchet MS; font-size: 10pt; font-weight: normal;" x="100%" y="10pt" text-anchor="end">
-DISTRO
+EOF
+lsb_release -sd
+cat <<'EOF'
 </text>
 </svg>
+EOF
