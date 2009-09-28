@@ -2,13 +2,18 @@
 
 DEB_DIVERT_EXTENSION = .debathena
 DEB_DIVERT_FILES_debathena-reactivate += \
-	/etc/gdm/Xsession.debathena \
-	/etc/gdm/PreSession/Default.debathena \
-	/etc/gdm/PostSession/Default.debathena
+	/etc/gdm/Xsession.debathena
 DEB_TRANSFORM_FILES_debathena-reactivate += \
 	/etc/pam.d/su.debathena
 DEB_REMOVE_FILES_debathena-reactivate += \
 	/etc/xdg/autostart/jockey-gtk.desktop \
 	/etc/xdg/autostart/update-notifier.desktop
+
+DEB_UNDIVERT_FILES_debathena-reactivate += \
+	/etc/gdm/PreSession/Default.debathena \
+	/etc/gdm/PostSession/Default.debathena
+DEB_UNDIVERT_VERSION_/etc/gdm/PreSession/Default.debathena = 1.22
+DEB_UNDIVERT_VERSION_/etc/gdm/PostSession/Default.debathena = 1.22
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
