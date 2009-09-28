@@ -3,9 +3,10 @@ Priority: extra
 Standards-Version: 3.8.1
 
 Package: debathena-workstation
-Version: 0.8.3
+Version: 1.0
 Maintainer: Debathena Project <debathena@mit.edu>
-Depends: debathena-login-graphical,
+Depends: debathena-workstation-branding,
+ debathena-login-graphical,
  debathena-extra-software,
  debathena-clusterinfo,
  debathena-dns-config,

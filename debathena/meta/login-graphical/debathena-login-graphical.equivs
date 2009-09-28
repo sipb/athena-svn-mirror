@@ -3,9 +3,10 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-login-graphical
-Version: 0.4
+Version: 0.5
 Maintainer: Debathena Project <debathena@mit.edu>
-Depends: debathena-login,
+Depends: debathena-login-graphical-branding,
+ debathena-login,
  debathena-gdm-config,
  debathena-xsession,
  debathena-firefox-extension,
