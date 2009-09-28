@@ -1,2 +1,4 @@
 etc/gdm
 usr/share/pixmaps
+etc/gdm/PreSession.d
+etc/gdm/PostSession.d

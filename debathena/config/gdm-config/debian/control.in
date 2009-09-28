@@ -10,7 +10,8 @@ Architecture: all
 Depends: gdm, ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
+Breaks: debathena-reactivate (<< 1.22~)
+Replaces: debathena-reactivate (<< 1.22~)
 Description: GDM configuration for Debathena
  This packages configures gdm to use the Debathena logo, store
  xauthority files in /tmp, and welcome the user to Debathena.
-

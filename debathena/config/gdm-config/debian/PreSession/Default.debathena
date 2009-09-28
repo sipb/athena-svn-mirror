@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# This script runs as root at the beginning of a gdm login session.
+# gdm blocks until it finishes.
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+for i in `run-parts --list /etc/gdm/PreSession.d`; do . "$i"; done
+
+# Chain over to the native pre-session default script.
+exec /etc/gdm/PreSession/Default.debathena-orig

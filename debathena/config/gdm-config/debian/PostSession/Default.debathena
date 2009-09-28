@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# This script runs as root at the end of a gdm login session.  gdm
+# blocks until it finishes.  DISPLAY is set but the X server might be
+# dead in some cases.
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+for i in `run-parts --list /etc/gdm/PostSession.d`; do . "$i"; done
+
+# Chain over to the native post-session default script.
+exec /etc/gdm/PostSession/Default.debathena-orig
