@@ -1,7 +1,7 @@
 debathena-gdm-config (1.14) unstable; urgency=low
 
-  * Provide /etc/gdm/{Pre,Post}Session.d directories so that multiple
-    packages can insert scripts.
+  * Provide /usr/share/debathena-gdm-config/{Pre,Post}Session.d
+    directories so that multiple packages can insert scripts.
 
  -- Evan Broder <broder@mit.edu>  Sat, 26 Sep 2009 23:00:49 -0400
 

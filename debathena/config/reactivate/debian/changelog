@@ -1,6 +1,7 @@
 debathena-reactivate (1.22) unstable; urgency=low
 
-  * Use the new /etc/gdm/{Pre,Post}Session.d directories in gdm-config.
+  * Use the new /usr/share/debathena-gdm-config/{Pre,Post}Session.d
+    directories in gdm-config.
 
  -- Evan Broder <broder@mit.edu>  Mon, 28 Sep 2009 14:44:49 -0400
 

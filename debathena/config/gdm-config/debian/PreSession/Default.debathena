@@ -5,7 +5,7 @@
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
-for i in `run-parts --list /etc/gdm/PreSession.d`; do . "$i"; done
+for i in `run-parts --list /usr/share/debathena-gdm-config/PreSession.d`; do . "$i"; done
 
 # Chain over to the native pre-session default script.
 exec /etc/gdm/PreSession/Default.debathena-orig

@@ -1,4 +1,4 @@
 etc/gdm
 usr/share/pixmaps
-etc/gdm/PreSession.d
-etc/gdm/PostSession.d
+usr/share/debathena-gdm-config/PreSession.d
+usr/share/debathena-gdm-config/PostSession.d
