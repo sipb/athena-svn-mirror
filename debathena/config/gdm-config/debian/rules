@@ -2,7 +2,7 @@
 
 ifneq ($(wildcard /etc/gdm/gdm.conf-custom),)
     GDM_CONFFILE = /etc/gdm/gdm.conf-custom.debathena
-    DEB_DH_LINK_ARGS=/etc/gdm/gdm.conf-custom.debathena /etc/gdm/gdm.conf.debathena
+    DEB_DH_LINK_ARGS_debathena-gdm-config=/etc/gdm/gdm.conf-custom.debathena /etc/gdm/gdm.conf.debathena
 else
     GDM_CONFFILE = /etc/gdm/gdm.conf.debathena
 endif
@@ -19,3 +19,11 @@ DEB_REMOVE_FILES_debathena-gdm-config += \
 	/usr/share/xsessions/ssh.desktop
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
+
+common-build-indep:: debathena/distro.svg
+
+debathena/distro.svg:
+	sed "s/DISTRO/`lsb_release -sd`/" < debian/distro.svg > $@
+
+clean::
+	-rm debathena/distro.svg

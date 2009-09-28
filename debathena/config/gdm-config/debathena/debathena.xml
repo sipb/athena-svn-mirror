@@ -53,11 +53,19 @@
           </item>
         </box>
       </item>
-      <!-- The clock -->
+      <!-- The clock, metapackage level, and distribution -->
       <item type="label" id="clock">
 	<normal color="#000000" font="Trebuchet MS 10" />
-	<pos x="-10" y="50%" anchor="e" />
+	<pos x="-10" y="10" anchor="ne" />
 	<text>%c</text>
+      </item>
+      <item type="pixmap">
+        <normal file="metapackage.svg" />
+        <pos x="-10" y="50%" anchor="e" />
+      </item>
+      <item type="pixmap">
+        <normal file="distro.svg" />
+        <pos x="-10" y="-10" anchor="se" />
       </item>
       <!-- The caps-lock icon -->
       <item type="pixmap" id="caps-lock-warning">

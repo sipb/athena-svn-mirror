@@ -1,3 +1,12 @@
+debathena-gdm-config (1.15) unstable; urgency=low
+
+  * Display the OS version and Debathena metapackage in the corner
+    of the login screen.
+  * To implement this feature, create debathena-*-branding packages for
+    metapackages that depend on gdm-config.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 28 Sep 2009 17:37:45 -0400
+
 debathena-gdm-config (1.14) unstable; urgency=low
 
   * Provide /usr/share/debathena-gdm-config/{Pre,Post}Session.d
