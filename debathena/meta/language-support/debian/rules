@@ -1,0 +1,22 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+APTITUDE_LOCKFILE = $(CURDIR)/debian/aptitude-lockfile
+APTITUDE = aptitude -o 'Aptitude::LockFile=$(APTITUDE_LOCKFILE)' -o 'Debug::NoLocking=yes'
+
+common-build-indep:: debian/deps
+
+debian/deps:
+	echo -n "debathena-language-support:Depends=" > $@
+	$(APTITUDE) search '~n^language-support-input-' -F '%p' | \
+	    tr '\n' ',' >> $@;
+	echo >> $@
+
+binary-predeb/debathena-language-support:: add-deps/debathena-language-support
+
+add-deps/debathena-language-support: debian/deps
+	cat $< >> debian/$(cdbs_curpkg).substvars
+
+clean::
+	rm -f $(APTITUDE_LOCKFILE) debian/deps
