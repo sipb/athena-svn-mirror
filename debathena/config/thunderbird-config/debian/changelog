@@ -1,3 +1,9 @@
+debathena-thunderbird-config (1.3) unstable; urgency=low
+
+  * Change Thunderbird to use user.mail.mit.edu instead of Hesiod.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 29 Sep 2009 12:16:42 -0400
+
 debathena-thunderbird-config (1.2) unstable; urgency=low
 
   * Whitelist the AFS ACL on the Thunderbird profile instead of

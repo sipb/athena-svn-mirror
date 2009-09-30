@@ -13,7 +13,6 @@ if ! [ -d "$HOME/.mozilla-thunderbird" ]; then
     fi
 fi
 : ${NAME:=$(getent passwd "$USER" | cut -d: -f5 | cut -d, -f1)}
-: ${POBOX:=$(hesinfo "${ATHENA_USER:-USER}" pobox | awk '{print $2}')}
-export NAME POBOX
+export NAME
 
 exec "$0.debathena-orig" "$@"

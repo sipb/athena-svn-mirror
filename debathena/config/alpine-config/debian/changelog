@@ -1,3 +1,11 @@
+debathena-alpine-config (1.11.4) unstable; urgency=low
+
+  * Switch to using $USER.mail.mit.edu instead of Hesiod, eliminating the
+    need for a Debathenified alpine.
+  * TODO: Figure out what to do about alpine-1.00-creatdir.patch
+
+ -- Evan Broder <broder@mit.edu>  Tue, 29 Sep 2009 12:09:58 -0400
+
 debathena-alpine-config (1.11.3) unstable; urgency=low
 
   * Suppress a Hesiod error when running alpine on a non-Athena account.
