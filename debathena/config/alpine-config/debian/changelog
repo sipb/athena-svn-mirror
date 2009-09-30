@@ -1,4 +1,4 @@
-debathena-alpine-config (1.11.4) unstable; urgency=low
+debathena-alpine-config (1.12) unstable; urgency=low
 
   * Switch to using $USER.mail.mit.edu instead of Hesiod, eliminating the
     need for a Debathenified alpine.
