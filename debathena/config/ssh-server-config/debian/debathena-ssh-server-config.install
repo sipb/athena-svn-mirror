@@ -1,3 +1,3 @@
 debian/sshd_config.debathena etc/ssh/
-debian/10-kerberos-credentials-warn usr/share/debathena-bash-config/profile.d/
-debian/csh-kerberos-credentials-warn etc/csh/login.d/
+debian/10-bash-kerberos-credentials-warn usr/share/debathena-bash-config/profile.d/
+debian/10-csh-kerberos-credentials-warn etc/csh/login.d/
