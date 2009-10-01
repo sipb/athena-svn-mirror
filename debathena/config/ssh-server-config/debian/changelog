@@ -1,3 +1,9 @@
+debathena-ssh-server-config (1.7) unstable; urgency=low
+
+  * Put a blank line before and after any ticket/token warnings.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 01 Oct 2009 18:22:31 -0400
+
 debathena-ssh-server-config (1.6) unstable; urgency=low
 
   * Add a warning if a user logs in without tickets
