@@ -1,3 +1,4 @@
 #!/usr/bin/perl -0p
 s/(^Port .*$)/\1\nPort 8080/m or die;
 s/(^GSSAPICleanupCredentials .*$)/\1\nGSSAPIStrictAcceptorCheck no/m or die;
+s/(^PermitRootLogin) yes/\1 without-password/m or die;
