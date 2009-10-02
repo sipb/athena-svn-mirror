@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-graphics
-Version: 0.4
+Version: 0.5
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: inventor-data,
  inventor-demo,
@@ -34,19 +34,11 @@ Depends: inventor-data,
  netpbm,
  libnetpbm10-dev,
  xcircuit,
- scribus,
- scribus-doc,
- scribus-template,
- geomview,
- libgeomview-dev,
  povray,
  povray-doc,
  povray-examples,
  povray-includes,
  dia,
- xaralx,
- xaralx-examples,
- xaralx-svg,
  djvulibre-bin,
  ipe,
  pstoedit,
@@ -56,11 +48,10 @@ Depends: inventor-data,
  xfig-doc,
  xpaint,
  blender,
- qcad,
- qcad-doc,
  gerbv,
  sdr,
- xprint-utils
+ xprint-utils,
+ pdftoipe,
 
 Recommends: inventor-dev,
   inventor-clients

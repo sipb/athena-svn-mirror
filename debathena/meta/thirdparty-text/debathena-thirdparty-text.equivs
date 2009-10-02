@@ -3,20 +3,20 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-text
-Version: 0.2
+Version: 0.3
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: abiword-gnome,
  abiword-help,
  lyx,
- tth,
  nvi,
- xchm,
  wv,
  html2ps,
  latex2html,
  nedit,
  xemacs21,
- xpdf
+ xpdf,
+ jedit,
+ pdfedit,
 Recommends: abiword-plugins-gnome
 
 Copyright: ../common/copyright

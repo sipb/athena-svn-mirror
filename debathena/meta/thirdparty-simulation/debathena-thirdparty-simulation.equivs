@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-simulation
-Version: 0.2
+Version: 0.3
 Maintainer: Debathena Project <debathena@mit.edu>
 # Before 3.0.3-3, libctl-dev used guile-1.6, which conflicts with
 # several other applications in this list.
@@ -18,8 +18,6 @@ Depends: lp-solve,
  glpk-utils,
  libglpk-dev,
  python-glpk,
- rasmol,
- rasmol-doc,
  geda,
  geda-gattrib,
  geda-gsymcheck,
@@ -33,10 +31,6 @@ Depends: lp-solve,
  pcb,
  verilog,
  verilog-mode,
- meep,
- harminv,
- mpb,
- mpb-doc,
  python-biopython,
  python-biopython-doc,
  wise,
@@ -46,17 +40,8 @@ Depends: lp-solve,
  seaview,
  biosquid,
  biosquid-dev,
- emboss,
- emboss-doc,
- hmmer,
- hmmer-doc,
- phylip,
- phylip-doc,
- primer3,
  tetgen,
  pymol,
- xdrawchem,
- openbabel
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in

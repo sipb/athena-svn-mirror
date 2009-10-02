@@ -3,12 +3,14 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-information
-Version: 0.2
+Version: 0.3
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: ncbi-tools-x11,
  wordnet,
  dict,
  weblint-perl,
+ liferea,
+ postgresql-client,
 Recommends: amaya,
  amaya-doc,
 

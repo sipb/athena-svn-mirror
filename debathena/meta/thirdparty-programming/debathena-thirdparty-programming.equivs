@@ -3,11 +3,16 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-programming
-Version: 0.1
+Version: 0.2
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: fltk1.1-doc,
  libfltk1.1,
- libfltk1.1-dev
+ libfltk1.1-dev,
+ tcl-dev,
+ tk-dev,
+ fluid,
+ mono-gmcs,
+ ikvm,
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in

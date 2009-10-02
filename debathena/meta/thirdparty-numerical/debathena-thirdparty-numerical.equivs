@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-numerical
-Version: 0.1
+Version: 0.2
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: maxima,
  xmaxima,
@@ -22,18 +22,12 @@ Depends: maxima,
  octave3.0-htmldoc,
  octave3.0-emacsen,
  pari-gp,
+ pari-gp2c,
  pari-doc,
  pari-extra,
- grace,
- grace6,
- k3dsurf,
- euler,
- euler-doc,
- fityk,
- scilab,
- scilab-doc,
- pvm,
- sc
+ sc,
+ singular,
+ libsingular-dev,
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
