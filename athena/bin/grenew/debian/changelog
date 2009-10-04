@@ -1,3 +1,10 @@
+debathena-grenew (10.0.1-0debathena1) unstable; urgency=low
+
+  * Support building on systems where krb5 no longer comes with
+    krb4. (Trac: #380)
+
+ -- Evan Broder <broder@mit.edu>  Sat, 03 Oct 2009 23:20:43 -0400
+
 debathena-grenew (10.0.0-0debathena2) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.

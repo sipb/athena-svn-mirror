@@ -6,7 +6,9 @@
 
 #include <gtk/gtk.h>
 #include <krb5.h>
+#ifdef HAVE_KRB4
 #include <kerberosIV/krb.h>
+#endif
 #include <string.h>
 #include <stdio.h>
 #include <com_err.h>
@@ -25,10 +27,12 @@ int try_krb4(krb5_context kcontext, krb5_principal me, char *password,
 int try_convert524(krb5_context kcontext, krb5_ccache ccache);
 
 /* library functions not declared inside the included headers. */
+#ifdef HAVE_KRB4
 void krb524_init_ets(krb5_context kcontext);
 int krb524_convert_creds_kdc(krb5_context kcontext,
 			     krb5_creds * k5creds,
 			     CREDENTIALS * k4creds);
+#endif HAVE_KRB4
 
 static void quit()
 {
@@ -220,6 +224,7 @@ int try_krb4(kcontext, me, password, lifetime)
 	char *password;
 	krb5_deltat lifetime;
 {
+#ifdef HAVE_KRB4
 	krb5_error_code code;
 	int krbval;
 	char v4name[ANAME_SZ], v4inst[INST_SZ], v4realm[REALM_SZ];
@@ -245,6 +250,9 @@ int try_krb4(kcontext, me, password, lifetime)
 		return 0;
 	}
 	return 1;
+#else
+	return 0;
+#endif
 }
 
 /* Convert krb5 tickets to krb4. This function was copied from kinit */
@@ -252,6 +260,7 @@ int try_convert524(kcontext, ccache)
 	 krb5_context kcontext;
 	 krb5_ccache ccache;
 {
+#ifdef HAVE_KRB4
 	krb5_principal me, kpcserver;
 	krb5_error_code kpccode;
 	int kpcval;
@@ -322,6 +331,9 @@ int try_convert524(kcontext, ccache)
 		return 0;
 	}
 	return 1;
+#else
+	return 0;
+#endif
 }
 
 int main(int argc, char **argv)
