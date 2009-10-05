@@ -55,13 +55,9 @@ class Metrics(dbus.service.Object):
         self.start_time = time.time()
         self.session_uuid = str(uuid.uuid4())
 
-        proc_conn = connector.Connector()
-        make_non_blocking(proc_conn)
-        gobject.io_add_watch(
-            proc_conn,
-            gobject.IO_IN,
-            self.run_program,
-            )
+        self.proc_conn = connector.Connector()
+        make_non_blocking(self.proc_conn)
+        self.setup_io_watch()
 
         dbus.SystemBus().add_signal_receiver(
             self.install_package,
@@ -77,25 +73,43 @@ class Metrics(dbus.service.Object):
             path=DBUS_OBJECT,
             )
 
+    def setup_io_watch(self):
+        gobject.io_add_watch(
+            self.proc_conn,
+            gobject.IO_IN,
+            self.setup_run_program,
+            )
+
+    def setup_run_program(self, fd, cond):
+        gobject.timeout_add(
+            1,
+            self.run_program,
+            fd,
+            cond,
+            )
+        return False
+
     def run_program(self, fd, cond):
-        while True:
-            try:
-                ev = fd.recv_event()
-            except IOError, e:
-                if e.errno == errno.EAGAIN:
-                    break
-                raise
-
-            if ev.what == connector.PROC_EVENT_EXEC:
+        try:
+            while True:
                 try:
-                    prog = os.readlink("/proc/%d/exe" % ev.process_pid)
-                    self.executed_programs.add(prog)
-                except OSError, e:
-                    if e.errno == errno.ENOENT:
-                        continue
-                    raise
+                    ev = fd.recv_event()
+                except IOError, e:
+                    if e.errno == errno.EAGAIN:
+                        break
 
-        return True
+                if ev.what == connector.PROC_EVENT_EXEC:
+                    try:
+                        prog = os.readlink("/proc/%d/exe" % ev.process_pid)
+                        self.executed_programs.add(prog)
+                    except OSError, e:
+                        if e.errno == errno.ENOENT:
+                            continue
+        except:
+            pass
+
+        self.setup_io_watch()
+        return False
 
     def install_package(self, package):
         self.installed_packages.add(str(package))
