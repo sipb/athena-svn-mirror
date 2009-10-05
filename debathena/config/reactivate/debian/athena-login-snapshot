@@ -84,19 +84,9 @@ v() {
         "$rootlvpath"
     fi
 
-    # To improve performance, we do not want ext3 journalling on the
-    # snapshot filesystem, as it is destroyed at the end of session anyway.
-    # First disable full filesystem checking, and use fsck to ensure the
-    # journal is applied.  Then disable the journal, so we can mount it
-    # as an ext2 filesystem.
-    v tune2fs -c 0 -i 0 "$loginlvpath"
-    v e2fsck -y "$loginlvpath" || [ $? -eq 1 ]
-    v tune2fs -O ^has_journal "$loginlvpath"
-    sync
-
     # Mount the login snapshot.
     mkdir -p /login
-    v mount -t ext2 -o noatime "$loginlvpath" /login
+    v mount -o noatime "$loginlvpath" /login
 
     # Enable subtree operations on /media by making it a mount point,
     # then share it.
