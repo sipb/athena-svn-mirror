@@ -10,7 +10,7 @@ Standards-Version: 3.8.3
 Package: debathena-metrics
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends},
- daemon, dbus
+ daemon, dbus, debathena-gdm-config (>= 1.14~)
 Conflicts: ${diverted-files}
 Description: Collect metrics on Athena usage
  This package collects, anonymizes, and centrally logs statistics on
