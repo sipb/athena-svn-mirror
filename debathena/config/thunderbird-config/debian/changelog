@@ -1,3 +1,11 @@
+debathena-thunderbird-config (1.4) unstable; urgency=low
+
+  * Kill the Kerberos settings stolen from the thunderbird locker - they
+    don't seem to be necessary.
+  * Set mail.server.server1.useSecAuth, which secretly means "use SASL."
+
+ -- Evan Broder <broder@mit.edu>  Mon, 05 Oct 2009 04:28:15 -0400
+
 debathena-thunderbird-config (1.3) unstable; urgency=low
 
   * Change Thunderbird to use user.mail.mit.edu instead of Hesiod.
