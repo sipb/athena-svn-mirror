@@ -1,3 +1,9 @@
+debathena-alpine-config (1.13) unstable; urgency=low
+
+  * Disable GSSAPI on the command line if the user doesn't have tickets.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 05 Oct 2009 11:09:50 -0400
+
 debathena-alpine-config (1.12) unstable; urgency=low
 
   * Switch to using $USER.mail.mit.edu instead of Hesiod, eliminating the
