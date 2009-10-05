@@ -5,7 +5,7 @@
 machtype \- Print machine type to standard output
 .SH SYNOPSIS
 .B machtype
-[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-N] [-E] [-S] [-C]
+[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-N] [-E] [-S] [-C] [-q]
 .SH DESCRIPTION
 .I Machtype
 prints the CPU type to standard output.  It prints "sun4" when run on a
@@ -63,6 +63,10 @@ compatible with the current architecture. This value is normally
 stored in the environment variable ATHENA_SYS_COMPAT, and is used by
 \fIathdir\fR(1) and \fIadd\fR(1) as a set of fallback values when a
 locker doesn't have binaries for the actual Athena System name.
+.TP
+.B -q
+Print out "quickstation" if the workstation is a quickstation and
+"not_quickstation" if it is not.
 .PP
 .I Machtype
 is useful for conditionalizing shell scripts, .login files, etc. in an

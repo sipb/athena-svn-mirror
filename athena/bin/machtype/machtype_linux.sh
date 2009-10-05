@@ -18,10 +18,12 @@
 #  -N     : print out the name of the base OS
 #  -P     : print out Athena System packs (from /srvd/.rvdinfo)
 #  -S     : Print out the Athena System name
+#  -q     : Print out "quickstation" or "not_quickstation" depending on if this
+#           workstation is a quickstation or not
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
-while getopts cdk:m:rvACELMNPS i; do
+while getopts cdk:m:rvACELMNPSq i; do
 	case "$i" in
 	c)
 		cpu=1
@@ -68,6 +70,9 @@ while getopts cdk:m:rvACELMNPS i; do
 		;;
 	S)
 		ath_sys_name=1
+		;;
+	q)
+		quickstation=1
 		;;
 	\?)
 		echo "Usage: machtype [-cdrvACELMNPS]" 1>&2
@@ -161,6 +166,17 @@ if [ $memory ] ; then
 		    /proc/meminfo
 	else
 		awk '/^MemTotal:/ { printf "%d\n", $2 }' /proc/meminfo
+	fi
+	printed=1
+fi
+
+if [ $quickstation ]; then
+	if (mount | grep -q '^AFS on /afs' && 
+		grep -Fxqi "$(hostname --fqdn)" /afs/athena.mit.edu/system/config/quick/quickstations) ||
+	    [ "$FORCE_QUICKSTATION" = 1 ]; then
+		echo quickstation
+	else
+		echo not_quickstation
 	fi
 	printed=1
 fi

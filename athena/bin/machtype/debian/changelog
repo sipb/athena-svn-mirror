@@ -1,3 +1,10 @@
+debathena-machtype (10.0.2-0debathena1) unstable; urgency=low
+
+  * Add machtype -q, which outputs whether or not a workstation is a
+    quickstation.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 05 Oct 2009 15:12:58 -0400
+
 debathena-machtype (10.0.1-0debathena5) unstable; urgency=low
 
   * Don't make the inability to successfully run fs (e.g., if AFS hasn't
