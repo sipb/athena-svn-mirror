@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software
-Version: 0.21
+Version: 0.22
 Maintainer: Debathena Project <debathena@mit.edu>
 Conflicts: debathena-cluster-software
 Replaces: debathena-cluster-software
@@ -16,7 +16,6 @@ Depends: debathena-extra-software-nox,
   gnuplot,
   eclipse,
   idle,
-  kdebase-workspace | kdebase (<< 4:4),
   twm,
   ratpoison,
   wmaker, wmbubble, wmbutton, wmcalclock, wmfire, wmhdplop, wmmemload, wmnd, wmtop, wmweather,
