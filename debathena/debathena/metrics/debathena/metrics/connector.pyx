@@ -85,6 +85,11 @@ cdef class ExitProcEvent(ProcEvent):
             self.exit_signal)
 
 
+cdef class UnknownProcEvent(ProcEvent):
+    def __repr__(self):
+        return "<UnknownProcEvent what=%d>" % self.what
+
+
 cdef class Connector:
     cdef int sock
     cdef public object closed
@@ -147,51 +152,50 @@ cdef class Connector:
         cdef proc_event *ev
         cdef object ret
 
-        while True:
-            from_addr.nl_family = AF_NETLINK
-            from_addr.nl_groups = CN_IDX_PROC
-            from_addr.nl_pid = 1
-            s = sizeof(from_addr)
+        from_addr.nl_family = AF_NETLINK
+        from_addr.nl_groups = CN_IDX_PROC
+        from_addr.nl_pid = 1
+        s = sizeof(from_addr)
 
-            if recvfrom(self.sock, buf, sizeof(buf), 0,
-                        <sockaddr *>&from_addr, &s) == -1:
-                raise IOError(errno, strerror(errno))
+        if recvfrom(self.sock, buf, sizeof(buf), 0,
+                    <sockaddr *>&from_addr, &s) == -1:
+            raise IOError(errno, strerror(errno))
 
-            ev = <proc_event *>((<cn_msg *>NLMSG_DATA(buf)).data)
+        ev = <proc_event *>((<cn_msg *>NLMSG_DATA(buf)).data)
 
-            if ev.what == PROC_EVENT_FORK:
-                ret = ForkProcEvent()
-                ret.parent_pid = ev.event_data.fork.parent_pid
-                ret.parent_tgid = ev.event_data.fork.parent_tgid
-                ret.child_pid = ev.event_data.fork.child_pid
-                ret.child_tgid = ev.event_data.fork.child_tgid
-            elif ev.what == PROC_EVENT_EXEC:
-                ret = ExecProcEvent()
-                ret.process_pid = ev.event_data.exec_.process_pid
-                ret.process_tgid = ev.event_data.exec_.process_tgid
-            elif ev.what == PROC_EVENT_UID:
-                ret = UidProcEvent()
-                ret.process_pid = ev.event_data.id_.process_pid
-                ret.process_tgid = ev.event_data.id_.process_tgid
-                ret.ruid = ev.event_data.id_.r.ruid
-                ret.euid = ev.event_data.id_.e.euid
-            elif ev.what == PROC_EVENT_GID:
-                ret = GidProcEvent()
-                ret.process_pid = ev.event_data.id_.process_pid
-                ret.process_tgid = ev.event_data.id_.process_tgid
-                ret.rgid = ev.event_data.id_.r.rgid
-                ret.egid = ev.event_data.id_.e.egid
-            elif ev.what == PROC_EVENT_EXIT:
-                ret = ExitProcEvent()
-                ret.process_pid = ev.event_data.exit_.process_pid
-                ret.process_tgid = ev.event_data.exit_.process_tgid
-                ret.exit_code = ev.event_data.exit_.exit_code
-                ret.exit_signal = ev.event_data.exit_.exit_signal
-            else:
-                continue
+        if ev.what == PROC_EVENT_FORK:
+            ret = ForkProcEvent()
+            ret.parent_pid = ev.event_data.fork.parent_pid
+            ret.parent_tgid = ev.event_data.fork.parent_tgid
+            ret.child_pid = ev.event_data.fork.child_pid
+            ret.child_tgid = ev.event_data.fork.child_tgid
+        elif ev.what == PROC_EVENT_EXEC:
+            ret = ExecProcEvent()
+            ret.process_pid = ev.event_data.exec_.process_pid
+            ret.process_tgid = ev.event_data.exec_.process_tgid
+        elif ev.what == PROC_EVENT_UID:
+            ret = UidProcEvent()
+            ret.process_pid = ev.event_data.id_.process_pid
+            ret.process_tgid = ev.event_data.id_.process_tgid
+            ret.ruid = ev.event_data.id_.r.ruid
+            ret.euid = ev.event_data.id_.e.euid
+        elif ev.what == PROC_EVENT_GID:
+            ret = GidProcEvent()
+            ret.process_pid = ev.event_data.id_.process_pid
+            ret.process_tgid = ev.event_data.id_.process_tgid
+            ret.rgid = ev.event_data.id_.r.rgid
+            ret.egid = ev.event_data.id_.e.egid
+        elif ev.what == PROC_EVENT_EXIT:
+            ret = ExitProcEvent()
+            ret.process_pid = ev.event_data.exit_.process_pid
+            ret.process_tgid = ev.event_data.exit_.process_tgid
+            ret.exit_code = ev.event_data.exit_.exit_code
+            ret.exit_signal = ev.event_data.exit_.exit_signal
+        else:
+            ret = UnknownProcEvent()
 
-            ret.what = ev.what
-            ret.cpu = ev.cpu
-            ret.timestamp_ns = ev.timestamp_ns
+        ret.what = ev.what
+        ret.cpu = ev.cpu
+        ret.timestamp_ns = ev.timestamp_ns
 
-            return ret
+        return ret
