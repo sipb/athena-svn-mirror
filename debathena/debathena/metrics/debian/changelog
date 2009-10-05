@@ -1,3 +1,9 @@
+debathena-metrics (1.1) unstable; urgency=low
+
+  * Fix a typo in the install-pkg script.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 04 Oct 2009 23:39:44 -0400
+
 debathena-metrics (1.0) unstable; urgency=low
 
   * Initial release.

@@ -2,5 +2,5 @@
 
 while read pkg_path; do
     pkg="$(echo "$pkg_path" | sed -e 's#.*/##; s#_.*##')"
-    dbus-send --system edu.mit.debathena.Metrics.InstallPackage "string:$pkg"
+    dbus-send --system / edu.mit.debathena.Metrics.InstallPackage "string:$pkg"
 done
