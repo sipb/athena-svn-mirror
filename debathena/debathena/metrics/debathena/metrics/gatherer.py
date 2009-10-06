@@ -35,7 +35,7 @@ DBUS_OBJECT = '/'
 DBUS_INTERFACE = 'edu.mit.debathena.Metrics'
 
 
-LOG_LEVEL = syslog.LOG_DAEMON | syslog.LOG_INFO
+LOG_LEVEL = syslog.LOG_LOCAL0 | syslog.LOG_INFO
 LOG_SERVER = ('wslogger.mit.edu', 514)
 
 
@@ -128,7 +128,7 @@ class Metrics(dbus.service.Object):
 
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         for l in lines:
-            s.sendto('<%d> debathena-metrics %s: %s\n' % (LOG_LEVEL, self.session_uuid, l),
+            s.sendto('<%d>debathena-metrics %s: %s\n' % (LOG_LEVEL, self.session_uuid, l),
                      LOG_SERVER)
 
         self.loop.quit()
