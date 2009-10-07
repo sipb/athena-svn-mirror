@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.16) unstable; urgency=low
+
+  * Unset the root password if the machine is a quickstation.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 07 Oct 2009 00:58:39 -0400
+
 debathena-cluster-login-config (1.15) unstable; urgency=low
 
   * Make sure DNS servers are listed in /etc/network/interfaces to fix a

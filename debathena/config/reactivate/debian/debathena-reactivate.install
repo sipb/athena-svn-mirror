@@ -6,3 +6,5 @@ debian/updatedb.findutils.cron.local etc
 debian/policy-rc.d usr/sbin
 debian/sudo-warning etc/athena
 debian/su-warning etc/athena
+debian/sudo-warning.chroot etc/athena
+debian/su-warning.chroot etc/athena
