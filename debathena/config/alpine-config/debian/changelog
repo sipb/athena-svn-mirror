@@ -1,3 +1,9 @@
+debathena-alpine-config (1.14) unstable; urgency=low
+
+  * Revert 1.12 and 1.13 pending fixing of imaps://po10.mail.mit.edu.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 07 Oct 2009 12:52:14 -0400
+
 debathena-alpine-config (1.13) unstable; urgency=low
 
   * Disable GSSAPI on the command line if the user doesn't have tickets.

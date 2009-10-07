@@ -5,8 +5,4 @@ case "$(hesinfo "${ATHENA_USER:-$USER}" pobox 2>/dev/null | cut -d' ' -f2)" in
     *EXCHANGE*) arg=(-disable-these-authenticators=GSSAPI) ;;
 esac
 
-if ! klist -s; then
-    arg=(-disable-these-authenticators=GSSAPI)
-fi
-
 exec "alpine.debathena-orig" "${arg[@]}" "$@"
