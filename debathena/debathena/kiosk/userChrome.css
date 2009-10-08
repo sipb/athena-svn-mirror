@@ -13,18 +13,6 @@
     display:none !important;
 }
 
-/* Disable the URL input. */
-#urlbar
-{
-    display:none !important;
-}
-
-/* Disable the search box. */
-#searchbar
-{
-    display:none !important;
-}
-
 /* Disallow exit from fullscreen mode. */
 menuitem[label="Exit Full Screen Mode"]
 {

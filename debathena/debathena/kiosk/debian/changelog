@@ -1,3 +1,9 @@
+debathena-kiosk (1.1) unstable; urgency=low
+
+  * Enable the URL and search bars.
+
+ -- Robert Basch <rbasch@mit.edu>  Thu, 08 Oct 2009 15:42:34 -0400
+
 debathena-kiosk (1.0) unstable; urgency=low
 
   * Initial release.
