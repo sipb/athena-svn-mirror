@@ -23,9 +23,9 @@ case "$1" in
     purge|remove)
         if test -f /var/run/gdm.pid ; then
 	    if hash invoke-rc.d 2>/dev/null; then
-	        invoke-rc.d gdm reload
+	        invoke-rc.d gdm reload || true
         	else
-		/etc/init.d/gdm reload
+		/etc/init.d/gdm reload || true
 	    fi
         fi
     ;;

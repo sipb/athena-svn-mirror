@@ -22,9 +22,9 @@ case "$1" in
     configure)
         if test -f /var/run/gdm.pid ; then
 	    if hash invoke-rc.d 2>/dev/null; then
-	        invoke-rc.d gdm reload
+	        invoke-rc.d gdm reload || true
         	else
-		/etc/init.d/gdm reload
+		/etc/init.d/gdm reload || true
 	    fi
         fi
 	# We don't actually want the "unknown metapackage" file, but it

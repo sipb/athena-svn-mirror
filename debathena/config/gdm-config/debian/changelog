@@ -1,3 +1,10 @@
+debathena-gdm-config (1.16) UNRELEASED; urgency=low
+
+  * Don't make errors in reloading gdm's configuration fatal for
+    upgrading the package.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 07 Oct 2009 23:41:50 -0400
+
 debathena-gdm-config (1.15) unstable; urgency=low
 
   * Display the OS version and Debathena metapackage in the corner
