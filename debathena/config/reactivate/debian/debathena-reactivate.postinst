@@ -76,7 +76,7 @@ case "$1" in
         done
         cat >>/etc/sudoers <<EOF
 ### BEGIN debathena-reactivate
-Defaults:%admin lecture_file=/etc/athena/sudo-warning, lecture=once
+Defaults lecture_file=/etc/athena/sudo-warning, lecture=once
 ### END debathena-reactivate
 EOF
 

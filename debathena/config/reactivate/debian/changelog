@@ -1,3 +1,10 @@
+debathena-reactivate (1.25.1) unstable; urgency=low
+
+  * Display the sudo lecture file for all users, not just the admin
+    group. This ensures it will show on quickstations, not just clusters.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 11 Oct 2009 12:20:11 -0400
+
 debathena-reactivate (1.25) unstable; urgency=low
 
   * Don't put the user in a login snapshot on a quickstation.
