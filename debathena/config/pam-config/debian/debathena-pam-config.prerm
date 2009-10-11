@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = remove ]; then
+    if hash pam-auth-update 2>/dev/null; then
+	pam-auth-update --package --remove krb5
+	pam-auth-update --package --remove athena-session-tmpdir-mktemp
+    fi
+fi
+
+#DEBHELPER#

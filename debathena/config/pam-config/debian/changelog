@@ -2,8 +2,9 @@ debathena-pam-config (1.16) unstable; urgency=low
 
   * Configure the Kerberos authentication to print an error message if
     pam_krb5 can't reach the KDC. (Trac: #208)
+  * Merge in the libpam-krb5-config package.
 
- -- Evan Broder <broder@mit.edu>  Fri, 04 Sep 2009 14:45:26 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 11 Oct 2009 12:37:26 -0400
 
 debathena-pam-config (1.15) unstable; urgency=low
 

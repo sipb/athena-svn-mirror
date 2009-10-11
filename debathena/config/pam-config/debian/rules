@@ -35,6 +35,9 @@ DEB_TRANSFORM_FILES_debathena-pam-config += \
 DEB_DIVERT_FILES_debathena-pam-config += \
 	/etc/security/access.conf.debathena
 
+DEB_REMOVE_FILES_debathena-pam-config += \
+	/usr/share/pam-configs/krb5
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
 
@@ -42,11 +45,13 @@ ifneq ($(pam_auth_update),)
 install/debathena-pam-config::
 	install -D -m 644 debian/athena-session-tmpdir-mktemp.pam-config \
 	  $(DEB_DESTDIR)/usr/share/pam-configs/athena-session-tmpdir-mktemp
+	install -D -m 644 debian/libpam-krb5.pam-config \
+	  $(DEB_DESTDIR)/usr/share/pam-configs/krb5.debathena
 debathena-pam-config-substvars:
 	( \
 	  echo -n "debathena-pam-config-depends="; \
 	  echo -n "libpam-runtime (>= 1.0.1-4ubuntu1),"; \
-	  echo -n "libpam-krb5-config,"; \
+	  echo -n "libpam-krb5,"; \
 	  echo -n "libpam-krb524 (>= 1.3-0debathena3~),"; \
 	  echo -n "libpam-athena-locker (>= 2.1-0debathena3~),"; \
 	  echo -n "libpam-debathena-home-type (>= 1.1-0debathena2~),"; \
