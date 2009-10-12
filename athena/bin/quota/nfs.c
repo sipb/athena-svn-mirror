@@ -13,6 +13,8 @@
  * without express or implied warranty.
  */
 
+#ifdef ENABLE_NFS
+
 /* This contains the NFS quota-checking routines. */
 
 static const char rcsid[] = "$Id: nfs.c,v 1.4 1999-10-07 17:06:22 rbasch Exp $";
@@ -185,3 +187,5 @@ static int callaurpc(char *host, int prognum, int versnum, int procnum,
   clnt_destroy(client);
   return status;
 }
+
+#endif /* ENABLE_NFS */

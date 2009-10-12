@@ -203,7 +203,13 @@ int main(int argc, char **argv)
       if (!strcasecmp(fslist[i].type, "afs"))
 	status = get_afs_quota(&fslist[i], uid, verbose);
       else if (!strcasecmp(fslist[i].type, "nfs"))
-	status = get_nfs_quota(&fslist[i], uid, verbose);
+	{
+#ifdef ENABLE_NFS
+	  status = get_nfs_quota(&fslist[i], uid, verbose);
+#else
+	  status = 1;
+#endif
+	}
       else
 	status = get_local_quota(&fslist[i], uid, verbose);
 

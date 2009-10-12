@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 2005-03-12 17:30:22 ghudson Exp $
+ $Id: Makefile.in,v 1.5 2005-03-12 17:30:22 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -20,12 +20,11 @@ CFLAGS=@CFLAGS@ ${WARN_CFLAGS}
 DEFS=@DEFS@
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
-KRB4_LIBS=@KRB4_LIBS@
 ZEPHYR_LIBS=-lzephyr
 AFS_LIBS=-lprot -lauth -lrxkad -lubik -laudit -lsys -lrx -llwp -lsys -lafsutil
 MOST_CFLAGS=
 ALL_CFLAGS=${WARN_CFLAGS} -I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
-ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${KRB4_LIBS} \
+ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} \
 	 -lhesiod -lcom_err -lrpcsvc ${LIBS}
 
 OBJS=	quota.o fslist.o afs.o nfs.o ufs.o @RQUOTA_OBJS@
