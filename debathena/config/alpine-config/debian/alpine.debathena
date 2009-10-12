@@ -9,7 +9,4 @@ if ! klist -s; then
     arg=(-disable-these-authenticators=GSSAPI)
 fi
 
-mkdir "$HOME/Mail"
-fs sa "$HOME/Mail" "${ATHENA_USER:-$USER}" all -clear 2>/dev/null
-
 exec "alpine.debathena-orig" "${arg[@]}" "$@"
