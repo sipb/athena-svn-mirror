@@ -1,3 +1,9 @@
+debathena-reactivate (1.25.2) unstable; urgency=low
+
+  * Use PAM instead of the sudo lecture_file to lecture users.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 12 Oct 2009 15:46:06 -0400
+
 debathena-reactivate (1.25.1) unstable; urgency=low
 
   * Display the sudo lecture file for all users, not just the admin

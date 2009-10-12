@@ -1,0 +1,2 @@
+#!/bin/sed -f
+/^@include common-auth$/iauth optional pam_echo.so file=/etc/athena/sudo-warning

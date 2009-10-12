@@ -74,11 +74,6 @@ case "$1" in
         for group in $(sed -ne 's/^addgroups="\(.*\)"/\1/p' /usr/sbin/athena-login-snapshot); do
             getent group "$group" >/dev/null || addgroup --system "$group"
         done
-        cat >>/etc/sudoers <<EOF
-### BEGIN debathena-reactivate
-Defaults lecture_file=/etc/athena/sudo-warning, lecture=once
-### END debathena-reactivate
-EOF
 
 	cleanup_old_diversion /etc/gdm/PreSession/Default
 	cleanup_old_diversion /etc/gdm/PostSession/Default
