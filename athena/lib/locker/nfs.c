@@ -17,6 +17,8 @@
 
 static const char rcsid[] = "$Id: nfs.c,v 1.5 2006-07-25 23:29:09 ghudson Exp $";
 
+#ifdef ENABLE_NFS
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -38,10 +40,14 @@ static const char rcsid[] = "$Id: nfs.c,v 1.5 2006-07-25 23:29:09 ghudson Exp $"
 
 #include <krb.h>
 
+#endif /* ENABLE_NFS */
+
 #include "locker.h"
 #include "locker_private.h"
 
+#ifdef ENABLE_NFS
 static bool_t xdr_krbtkt(XDR *xdrs, KTEXT authp);
+#endif /* ENABLE_NFS */
 
 static int nfs_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **at);
@@ -62,6 +68,7 @@ struct locker_ops locker__nfs_ops = {
 static int nfs_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **atp)
 {
+#ifdef ENABLE_NFS
   locker_attachent *at;
   struct hostent *h;
   char *dup;
@@ -229,11 +236,15 @@ cleanup:
   free(dup);
   locker_free_attachent(context, at);
   return status;
+#else /* ENABLE_NFS */
+  return LOCKER_EPARSE;
+#endif /* ENABLE_NFS */
 }
 
 static int nfs_auth(locker_context context, locker_attachent *at,
 		    int mode, int op)
 {
+#ifdef ENABLE_NFS
   int status, len;
   char *host;
 
@@ -250,11 +261,15 @@ static int nfs_auth(locker_context context, locker_attachent *at,
   status = locker_auth_to_host(context, at->name, host, op);
   free(host);
   return status;
+#else /* ENABLE_NFS */
+  return LOCKER_EAUTH;
+#endif /* ENABLE_NFS */
 }
 
 int locker_auth_to_host(locker_context context, char *name, char *host,
 			int op)
 {
+#ifdef ENABLE_NFS
   int status, len;
   struct timeval timeout;
   CLIENT *cl;
@@ -371,12 +386,17 @@ int locker_auth_to_host(locker_context context, char *name, char *host,
     }
 
   return LOCKER_SUCCESS;
+#else /* ENABLE_NFS */
+  return LOCKER_EAUTH;
+#endif /* ENABLE_NFS */
 }
 
 /* XDR for sending a Kerberos ticket - sends the whole KTEXT block,
  * but this is very old lossage, and nothing that can really be fixed
  * now.
  */
+
+#ifdef ENABLE_NFS
 
 static bool_t xdr_krbtkt(XDR *xdrs, KTEXT authp)
 {
@@ -387,8 +407,11 @@ static bool_t xdr_krbtkt(XDR *xdrs, KTEXT authp)
   return xdr_opaque(xdrs, (caddr_t)&auth, sizeof(KTEXT_ST));
 }
 
+#endif /* ENABLE_NFS */
+
 static int nfs_zsubs(locker_context context, locker_attachent *at)
 {
+#ifdef ENABLE_NFS
   int len, status;
   char *subs[2];
 
@@ -409,4 +432,7 @@ static int nfs_zsubs(locker_context context, locker_attachent *at)
   status = locker__add_zsubs(context, subs, 2);
   free(subs[1]);
   return status;
+#else /* ENABLE_NFS */
+  return LOCKER_EPARSE;
+#endif
 }

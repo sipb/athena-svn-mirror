@@ -1,3 +1,12 @@
+debathena-liblocker (10.0.1-0debathena1) unstable; urgency=low
+
+  * Add a configure-time option to tear the NFS (and therefore the krb4)
+    out of liblocker.
+  * Shell out to aklog, instead of duplicating all of its code.
+  * On Debathena, build without NFS support.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 12 Oct 2009 14:54:27 -0400
+
 debathena-liblocker (10.0.0-0debathena2) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.

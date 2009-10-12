@@ -20,11 +20,13 @@ static const char rcsid[] = "$Id: afs.c,v 1.16 2006-08-08 21:50:09 ghudson Exp $
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <errno.h>
 #include <netdb.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <afs/stds.h>
 #include <afs/param.h>
@@ -42,7 +44,6 @@ static const char rcsid[] = "$Id: afs.c,v 1.16 2006-08-08 21:50:09 ghudson Exp $
 #define VNAMESIZE 32
 
 #include <com_err.h>
-#include <krb.h>
 #include <krb5.h>
 
 #include "locker.h"
@@ -87,10 +88,6 @@ static int afs_get_cred(krb5_context context, char *name, char *inst, char *real
 			krb5_creds **creds);
 static int afs_maybe_auth_to_cell(locker_context context, char *name,
 				  char *cell, int op, int force);
-static int get_user_realm(krb5_context context, char *realm);
-static char *afs_realm_of_cell(krb5_context, struct afsconf_cell *);
-
-extern int krb524_convert_creds_kdc(krb5_context, krb5_creds *, CREDENTIALS *);
 
 static int afs_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **atp)
@@ -358,243 +355,47 @@ int locker_auth_to_cell(locker_context context, char *name, char *cell, int op)
 static int afs_maybe_auth_to_cell(locker_context context, char *name,
 				  char *cell, int op, int force)
 {
-  char *crealm, urealm[REALM_SZ], *user = NULL;
-  int status;
-  struct afsconf_dir *configdir;
-  struct afsconf_cell cellconfig;
-  struct ktc_principal server, client, xclient;
-  struct ktc_token token, xtoken;
-  afs_int32 vice_id;
   uid_t uid = geteuid(), ruid = getuid();
-  krb5_context v5context;
-  krb5_creds *v5cred = NULL;
+  pid_t pid;
+  int stat_loc;
 
   if (op != LOCKER_AUTH_AUTHENTICATE)
     return LOCKER_SUCCESS;
 
-  /* Find the cell's db servers. */
-  configdir = afsconf_Open(AFSDIR_CLIENT_ETC_DIRPATH);
-  if (!configdir)
+  pid = fork();
+  if (pid == -1)
     {
-      locker__error(context, "%s: Could not authenticate to AFS: "
-		    "error opening CellServDB file.\n", name);
+      locker__error(context, "%s: Unable to fork: %s\n",
+		    name, error_message(errno));
       return LOCKER_EAUTH;
     }
-  status = afsconf_GetCellInfo(configdir, cell, NULL, &cellconfig);
-  afsconf_Close(configdir);
-  if (status)
+  else if (pid == 0)
     {
-      initialize_acfg_error_table();
-      locker__error(context, "%s: Could not authenticate to AFS:\n%s while "
-		    "reading CellServDB file.\n", name, error_message(status));
-      return LOCKER_EAUTH;
+      if (uid != ruid)
+	seteuid(ruid);
+
+      close(0);
+      close(1);
+      close(2);
+      open("/dev/null", O_RDWR);
+      dup2(0, 1);
+      dup2(0, 2);
+
+      if (-1 == execlp("aklog", "aklog", "-c", cell, NULL))
+	exit(errno);
     }
-
-  /* Canonicalize the cell name. */
-  cell = cellconfig.name;
-
-  /* Get tickets for the realm containing the cell's servers. (Set uid
-   * to the user before touching the ticket file.) Try
-   * afs.cellname@realm first, and afs@realm if that doesn't exist.
-   */
-  status = krb5_init_context(&v5context);
-  if (status)
+  else
     {
-      locker__error(context, "%s: Could not establish krb5 context: %s\n",
-		    name, error_message(status));
-      return LOCKER_EAUTH;
-    }
-  crealm = afs_realm_of_cell(v5context, &cellconfig);
-  if (uid != ruid)
-    seteuid(ruid);
-  status = afs_get_cred(v5context, "afs", cell, crealm, &v5cred);
-  if (status)
-    status = afs_get_cred(v5context, "afs", "", crealm, &v5cred);
-  if (uid != ruid)
-    seteuid(uid);
-  if (status)
-    {
-      if (status == KRB5_FCC_NOFILE)
+      waitpid(pid, &stat_loc, 0);
+
+      if (0 != WEXITSTATUS(stat_loc))
 	{
-	  locker__error(context, "%s: Could not authenticate to AFS: %s.\n",
-			name, error_message(status));
-	}
-      else
-	{
-	  locker__error(context, "%s: Could not authenticate to AFS cell "
-			"%s:\n%s while getting tickets for %s.\n",
-			name, cell, error_message(status), crealm);
-	}
-      krb5_free_context(v5context);
-      return LOCKER_EAUTH;
-    }
-  status = get_user_realm(v5context, urealm);
-  if (status)
-    {
-      locker__error(context, "Couldn't obtain user's realm.\n");
-      return LOCKER_EAUTH;
-    }
-
-  /*
-   * Create a token from the ticket.
-   * (This code is shamelessly stolen from aklog.)
-   */
-
-  if (! context->use_krb4)
-    {
-      char *p;
-      char *pname, *pinst = NULL;
-      int pnamelen, pinstlen = 0;
-
-      /* Using Kerberos V5 ticket natively via rxkad 2b */
-
-      pname    = krb5_princ_component(v5context, v5cred->client, 0)->data;
-      pnamelen = krb5_princ_component(v5context, v5cred->client, 0)->length;
-
-      if (krb5_princ_size(v5context, v5cred->client) > 1)
-	{
-	  pinst    = krb5_princ_component(v5context, v5cred->client, 1)->data;
-	  pinstlen = krb5_princ_component(v5context, v5cred->client, 1)->length;
-	}
-
-      user = malloc(pnamelen + pinstlen + strlen(urealm) + 3);
-      if (!user)
-	{
-	  locker__error(context, "Out of memory authenticating to cell.\n");
-	  return LOCKER_ENOMEM;
-	}
-
-      strncpy(user, pname, pnamelen);
-      user[pnamelen] = '\0';
-
-      if (pinst)
-	{
-	  strcat(user, ".");
-	  p = user + strlen(user);
-	  strncpy(p, pinst, pinstlen);
-	  p[pinstlen] = '\0';
-	}
-
-      if (strcasecmp(crealm, urealm))
-	sprintf(user + strlen(user), "@%s", urealm);
-
-      memset(&token, 0, sizeof(token));
-      token.kvno = RXKAD_TKT_TYPE_KERBEROS_V5;
-      token.startTime = v5cred->times.starttime;;
-      token.endTime = v5cred->times.endtime;
-      memcpy(&token.sessionKey, v5cred->keyblock.contents,
-	     v5cred->keyblock.length);
-      token.ticketLen = v5cred->ticket.length;
-      memcpy(token.ticket, v5cred->ticket.data, token.ticketLen);
-    } 
-  else 
-    {
-      CREDENTIALS cred;
-
-      /* Using Kerberos 524 translator service */
-
-      status = krb5_524_convert_creds(v5context, v5cred, &cred);
-
-      if (status)
-	{
-	  locker__error(context, "%s: Could not convert tickets "
-			"to Kerberos V4 format: %s.\n",
-			name, error_message(status));
-	  krb5_free_context(v5context);
+	  locker__error(context, "%s: Error acquiring tokens: %s\n",
+			name, error_message(WEXITSTATUS(stat_loc)));
 	  return LOCKER_EAUTH;
 	}
-
-      user = malloc(strlen(cred.pname) + strlen(cred.pinst) + strlen(urealm) + 3);
-      if (!user)
-	{
-	  locker__error(context, "Out of memory authenticating to cell.\n");
-	  return LOCKER_ENOMEM;
-	}
-
-      strcpy(user, cred.pname);
-      if (*cred.pinst)
-	sprintf(user + strlen(user), ".%s", cred.pinst);
-      if (strcasecmp(crealm, urealm))
-	sprintf(user + strlen(user), "@%s", urealm);
-
-      token.kvno = cred.kvno;
-      token.startTime = cred.issue_date;
-      token.endTime = v5cred->times.endtime;
-      memcpy(&token.sessionKey, cred.session, sizeof(token.sessionKey));
-      token.ticketLen = cred.ticket_st.length;
-      memcpy(token.ticket, cred.ticket_st.dat, token.ticketLen);
     }
 
-  krb5_free_creds(v5context, v5cred);
-  krb5_free_context(v5context);
-
-  /* Look up principal's PTS id. */
-  status = pr_Initialize(0, (char *)AFSDIR_CLIENT_ETC_DIRPATH, cell);
-  if (status)
-    {
-      locker__error(context, "%s: Could not initialize AFS protection "
-		    "library while authenticating to cell \"%s\":\n%s.\n",
-		    name, cell, error_message(status));
-      free(user);
-      return LOCKER_EAUTH;
-    }
-  status = pr_SNameToId(user, &vice_id);
-  if (status)
-    {
-      locker__error(context, "%s: Could not find AFS PTS id for user \"%s\""
-		    "in cell \"%s\":\n%s.\n", name, user, cell,
-		    error_message(status));
-      free(user);
-      return LOCKER_EAUTH;
-    }
-
-  /* Select appropriate dead chicken to wave. */
-  if (vice_id == ANONYMOUSID)
-    strncpy(client.name, user, MAXKTCNAMELEN - 1);
-  else
-    sprintf(client.name, "AFS ID %ld", (long) vice_id);
-  strcpy(client.instance, "");
-  strncpy(client.cell, crealm, MAXKTCREALMLEN - 1);
-  client.cell[MAXKTCREALMLEN - 1] = '\0';
-
-  strcpy(server.name, "afs");
-  strcpy(server.instance, "");
-  strncpy(server.cell, cell, MAXKTCREALMLEN - 1);
-  server.cell[MAXKTCREALMLEN - 1] = '\0';
-
-  if (!force)
-    {
-      /* Check for an existing token. */
-      status = ktc_GetToken(&server, &xtoken, sizeof(token), &xclient);
-      if (!status)
-	{
-	  /* Don't get tokens as another user. */
-	  if (strcmp(xclient.name, client.name))
-	    {
-	      free(user);
-	      return LOCKER_SUCCESS;
-	    }
-
-	  /* Don't get tokens that won't last longer than existing tokens. */
-	  if (token.endTime <= xtoken.endTime)
-	    {
-	      free(user);
-	      return LOCKER_SUCCESS;
-	    }
-	}
-    }
-
-  /* Store the token. */
-  status = ktc_SetToken(&server, &token, &client, 0);
-  if (status)
-    {
-      locker__error(context, "%s: Could not obtain %s tokens for cell "
-		    "%s:\n%s.\n", name, user, cell, error_message(status));
-      free(user);
-      return LOCKER_EAUTH;
-    }
-
-  free(user);
   return LOCKER_SUCCESS;
 }
 
@@ -733,55 +534,4 @@ static int afs_zsubs(locker_context context, locker_attachent *at)
 void des_pcbc_init(void)
 {
   abort();
-}
-
-static char *afs_realm_of_cell(context, cellconfig)
-     krb5_context context;
-     struct afsconf_cell *cellconfig;
-{
-  static char krbrlm[REALM_SZ+1];
-  char **hrealms = 0;
-
-  if (!cellconfig)
-    return 0;
-  if (krb5_get_host_realm(context, cellconfig->hostName[0], &hrealms))
-    return 0;
-  if (!hrealms[0])
-    return 0;
-  strcpy(krbrlm, hrealms[0]);
-
-  if (hrealms)
-    free(hrealms);
-
-  return krbrlm;
-}
-
-static int get_user_realm(krb5_context context, char *realm)
-{
-  krb5_principal client_principal = NULL;
-  krb5_ccache krb425_ccache = NULL;
-  krb5_error_code retval = 0;
-  int i;
-
-  retval = krb5_cc_default(context, &krb425_ccache);
-  if (retval)
-    goto fail;
-
-  retval = krb5_cc_get_principal(context, krb425_ccache, &client_principal);
-  if (retval)
-    goto fail;
-
-  i = krb5_princ_realm(context, client_principal)->length;
-  if (i > REALM_SZ - 1)
-    i = REALM_SZ - 1;
-  memcpy(realm, krb5_princ_realm(context, client_principal)->data, i);
-  realm[i] = '\0';
-
-fail:
-  if (krb425_ccache)
-    krb5_cc_close(context, krb425_ccache);
-  if (client_principal)
-    krb5_free_principal(context, client_principal);
-
-  return retval;
 }
