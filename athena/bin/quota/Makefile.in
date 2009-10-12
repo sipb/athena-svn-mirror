@@ -1,5 +1,3 @@
- $Id: Makefile.in,v 1.5 2005-03-12 17:30:22 ghudson Exp $
-
 SHELL=/bin/sh
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
