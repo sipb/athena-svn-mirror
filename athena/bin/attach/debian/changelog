@@ -1,3 +1,11 @@
+debathena-attach (10.0.1-0debathena1) unstable; urgency=low
+
+  * Now that liblocker doesn't require krb4, don't require it here either.
+  * Since Debathena is building liblocker without krb4, don't build with
+    it here either.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 12 Oct 2009 14:56:01 -0400
+
 debathena-attach (10.0.0-0debathena2) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.

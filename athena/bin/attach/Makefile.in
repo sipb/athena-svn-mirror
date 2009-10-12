@@ -20,12 +20,11 @@ CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
 DEFS=@DEFS@
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
-KRB4_LIBS=@KRB4_LIBS@
 REGEX_LIBS=@REGEX_LIBS@
 ZEPHYR_LIBS=-lzephyr
 AFS_LIBS=-lprot -lauth -lrxkad -lubik -laudit -lsys -lrx -llwp -lsys -lafsutil
 ALL_CFLAGS=${WARN_CFLAGS} ${ERROR_CFLAGS} -I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
-ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${KRB4_LIBS} ${REGEX_LIBS} \
+ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${REGEX_LIBS} \
 	 -lhesiod -lcom_err ${LIBS}
 
 ATTACH_OBJS=suite.o agetopt.o add.o attach.o detach.o fsid.o zinit.o

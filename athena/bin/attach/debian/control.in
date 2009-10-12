@@ -2,13 +2,13 @@ Source: debathena-attach
 Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, libopenafs-dev, libhesiod-dev, libzephyr-dev, libzephyr3-krb, debathena-liblocker-dev, debathena-libathdir-dev
+Build-Depends: @cdbs@, libopenafs-dev, libhesiod-dev, libzephyr-dev, debathena-liblocker-dev, debathena-libathdir-dev
 Standards-Version: 3.7.2
 
 Package: debathena-attach
 Architecture: any
 Provides: attach
-Depends: ${shlibs:Depends}, ${misc:Depends}, libzephyr3-krb, debathena-liblocker (>= 9.4), zephyr-clients
+Depends: ${shlibs:Depends}, ${misc:Depends}, libzephyr4-krb5 | libzephyr3-krb, debathena-liblocker (>= 9.4), zephyr-clients
 Description: An Athena utility to attach a remote file system to the workstation
  The attach utility is a filesystem-independent utility which allows you 
  to attach a filesystem to a directory hierarchy on a workstation.  
