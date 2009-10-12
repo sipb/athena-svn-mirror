@@ -1,3 +1,10 @@
+debathena-alpine-config (1.14) unstable; urgency=low
+
+  * Replace the old creatdir patch from the debathenified alpine with
+    equivalent code in the alpine wrapper script.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 12 Oct 2009 19:15:52 -0400
+
 debathena-alpine-config (1.13) unstable; urgency=low
 
   * Disable GSSAPI on the command line if the user doesn't have tickets.
