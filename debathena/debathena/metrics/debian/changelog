@@ -1,3 +1,12 @@
+debathena-metrics (1.3) unstable; urgency=low
+
+  * If a process is being started inside the login chroot, strip off the
+    /login prefix for path consistency.
+  * Add an application blacklist for apps that always run in a login
+    session.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 13 Oct 2009 14:32:06 -0400
+
 debathena-metrics (1.2) unstable; urgency=low
 
   * Switch to facility local0.

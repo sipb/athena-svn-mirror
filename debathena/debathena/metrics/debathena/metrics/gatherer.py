@@ -2,8 +2,8 @@
 """Debathena metrics collection.
 Usage: debathena-metrics
 
-This script wraps an X session, collecting statistics on what programs
-are run by the user over the course of the session.
+This script runs during a login session, collecting statistics on what
+programs are run by the user over the course of the session.
 
 This script also collects notifications about software being installed
 through apt.
@@ -38,6 +38,132 @@ DBUS_INTERFACE = 'edu.mit.debathena.Metrics'
 LOG_LEVEL = syslog.LOG_LOCAL0 | syslog.LOG_INFO
 LOG_SERVER = ('wslogger.mit.edu', 514)
 
+
+PROGRAM_BLACKLIST = set([
+    '/bin/attach',
+    '/bin/bash',
+    '/bin/cat',
+    '/bin/chmod',
+    '/bin/chown',
+    '/bin/dash',
+    '/bin/date',
+    '/bin/dbus-daemon',
+    '/bin/echo',
+    '/bin/egrep',
+    '/bin/fuser',
+    '/bin/fusermount',
+    '/bin/grep',
+    '/bin/hostname',
+    '/bin/ls',
+    '/bin/mkdir',
+    '/bin/mount',
+    '/bin/mv',
+    '/bin/nc.traditional',
+    '/bin/pwd',
+    '/bin/readlink',
+    '/bin/rm',
+    '/bin/run-parts',
+    '/bin/sed',
+    '/bin/sleep',
+    '/bin/su',
+    '/bin/touch',
+    '/bin/umount',
+    '/bin/uname',
+    '/lib/udev/vol_id',
+    '/sbin/dmsetup',
+    '/sbin/killall5',
+    '/sbin/lvm',
+    '/sbin/modprobe',
+    '/sbin/runlevel',
+    '/sbin/start-stop-daemon',
+    '/sbin/usplash_write',
+    '/usr/bin/aklog',
+    '/usr/bin/athdir',
+    '/usr/bin/authwatch',
+    '/usr/bin/basename',
+    '/usr/bin/bluetooth-applet',
+    '/usr/bin/canberra-gtk-play',
+    '/usr/bin/cpp-4.3',
+    '/usr/bin/cut',
+    '/usr/bin/dbus-launch',
+    '/usr/bin/dbus-send',
+    '/usr/bin/dirname',
+    '/usr/bin/expr',
+    '/usr/bin/flock',
+    '/usr/bin/fs',
+    '/usr/bin/gawk',
+    '/usr/bin/gconftool-2',
+    '/usr/bin/gdmflexiserver',
+    '/usr/bin/get_message',
+    '/usr/bin/getent',
+    '/usr/bin/gnome-keyring-daemon',
+    '/usr/bin/gnome-panel',
+    '/usr/bin/gnome-power-manager',
+    '/usr/bin/gnome-session',
+    '/usr/bin/gnome-session-save',
+    '/usr/bin/gnome-terminal',
+    '/usr/bin/gpasswd',
+    '/usr/bin/gpg',
+    '/usr/bin/gpgconf',
+    '/usr/bin/hesinfo',
+    '/usr/bin/id',
+    '/usr/bin/klist',
+    '/usr/bin/krb524init',
+    '/usr/bin/lert',
+    '/usr/bin/metacity',
+    '/usr/bin/nautilus',
+    '/usr/bin/nm-applet',
+    '/usr/bin/pactl',
+    '/usr/bin/perl',
+    '/usr/bin/pulseaudio',
+    '/usr/bin/python2.6',
+    '/usr/bin/quota.debathena',
+    '/usr/bin/schroot',
+    '/usr/bin/scim',
+    '/usr/bin/scim-bridge',
+    '/usr/bin/seahorse-agent',
+    '/usr/bin/setfacl',
+    '/usr/bin/ssh-agent',
+    '/usr/bin/sudo',
+    '/usr/bin/tac',
+    '/usr/bin/tail',
+    '/usr/bin/tokens',
+    '/usr/bin/tput',
+    '/usr/bin/xargs',
+    '/usr/bin/xdg-user-dirs-gtk-update',
+    '/usr/bin/xdg-user-dirs-update',
+    '/usr/bin/xhost',
+    '/usr/bin/xrdb',
+    '/usr/bin/xset',
+    '/usr/bin/xsetroot',
+    '/usr/lib/ConsoleKit/ck-collect-session-info',
+    '/usr/lib/ConsoleKit/ck-get-x11-server-pid',
+    '/usr/lib/bonobo-activation/bonobo-activation-server',
+    '/usr/lib/cups/daemon/cups-polld',
+    '/usr/lib/fast-user-switch-applet/fast-user-switch-applet',
+    '/usr/lib/gcc/i486-linux-gnu/4.3/cc1',
+    '/usr/lib/gnome-applets/mixer_applet2',
+    '/usr/lib/gnome-applets/stickynotes_applet',
+    '/usr/lib/gnome-applets/trashapplet',
+    '/usr/lib/gnome-session/helpers/gnome-settings-daemon-helper',
+    '/usr/lib/gnome-settings-daemon/gnome-settings-daemon',
+    '/usr/lib/gvfs/gvfs-fuse-daemon',
+    '/usr/lib/gvfs/gvfs-gphoto2-volume-monitor',
+    '/usr/lib/gvfs/gvfs-hal-volume-monitor',
+    '/usr/lib/gvfs/gvfsd',
+    '/usr/lib/gvfs/gvfsd-burn',
+    '/usr/lib/gvfs/gvfsd-trash',
+    '/usr/lib/hal/hal-acl-tool',
+    '/usr/lib/indicator-applet/indicator-applet',
+    '/usr/lib/libgconf2-4/gconf-sanity-check-2',
+    '/usr/lib/libgconf2-4/gconfd-2.debathena-orig',
+    '/usr/lib/libvte9/gnome-pty-helper',
+    '/usr/lib/notify-osd/notify-osd',
+    '/usr/lib/policykit/polkit-read-auth-helper',
+    '/usr/lib/pulseaudio/pulse/gconf-helper',
+    '/usr/sbin/chroot',
+    '/usr/sbin/cupsd',
+    ])
 
 def make_non_blocking(fd):
     flags = fcntl.fcntl(fd, fcntl.F_GETFL)
@@ -101,7 +227,10 @@ class Metrics(dbus.service.Object):
                 if ev.what == connector.PROC_EVENT_EXEC:
                     try:
                         prog = os.readlink("/proc/%d/exe" % ev.process_pid)
-                        self.executed_programs.add(prog)
+                        if prog.startswith('/login'):
+                            prog = prog[len('/login'):]
+                        if prog not in PROGRAM_BLACKLIST:
+                            self.executed_programs.add(prog)
                     except OSError, e:
                         if e.errno == errno.ENOENT:
                             continue
