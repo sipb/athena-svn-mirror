@@ -1,3 +1,11 @@
+debathena-cluster-login-config (1.17) unstable; urgency=low
+
+  * Deny everybody sudo privileges by default, then override that for the
+    admin group. This makes sure that everybody is somewhere in the
+    sudoers file, which also ensures that they get lectured.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 14 Oct 2009 12:40:39 -0400
+
 debathena-cluster-login-config (1.16) unstable; urgency=low
 
   * Unset the root password if the machine is a quickstation.

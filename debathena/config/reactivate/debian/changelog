@@ -1,3 +1,11 @@
+debathena-reactivate (1.25.3) unstable; urgency=low
+
+  * Specify both of the lecture files in /etc/sudoers: error for
+    everybody, and warning for the admin group. The latter overrides the
+    former.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 14 Oct 2009 12:39:11 -0400
+
 debathena-reactivate (1.25.2) unstable; urgency=low
 
   [ Evan Broder ]

@@ -1,2 +1,0 @@
-#!/bin/sed -f
-/^@include common-auth$/iauth [default=die] pam_echo.so file=/etc/athena/sudo-error
