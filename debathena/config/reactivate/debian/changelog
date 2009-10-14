@@ -1,3 +1,11 @@
+debathena-reactivate (1.25.4) unstable; urgency=low
+
+  * Always lecture users trying to sudo on quickstations.
+  * Stop editing /etc/pam.d/sudo in the snapshot setup, since we're no
+    longer diverting it.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 14 Oct 2009 13:52:32 -0400
+
 debathena-reactivate (1.25.3) unstable; urgency=low
 
   * Specify both of the lecture files in /etc/sudoers: error for

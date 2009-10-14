@@ -103,11 +103,9 @@ v() {
       v chroot /login gpasswd -a "$USER" "$group"
     done
 
-    # Remove the su and sudo messages intended for quickstations and
-    # unlock the commands.
-    for cmd in su sudo; do
-      sed -i "/$cmd-error/d" "/etc/pam.d/$cmd"
-    done
+    # Remove the su message intended for quickstations and unlock the
+    # command.
+    sed -i "/su-error/d" "/login/etc/pam.d/su"
 
     # There are some daemons that should be running inside the
     # chroot. For example, changes to CUPS config shouldn't persist
