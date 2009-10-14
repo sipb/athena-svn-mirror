@@ -81,8 +81,9 @@ Defaults:%admin lecture_file=/etc/athena/sudo-warning, lecture=once
 ### END debathena-reactivate
 EOF
 
-	if ! grep -Fq 'auth [default=die] pam_echo.so file=/etc/athena/su-error' /etc/pam.d/su.debathena; then
-	    sed -i '\#^auth optional pam_echo.so file=/etc/athena/su-warning#iauth [default=die] pam_echo.so file=/etc/athena/su-error' /etc/pam.d/su.debathena
+	if dpkg --compare-versions "$2" lt 1.25.5~ && \
+	    dpkg --compare-versions "$2" ge 1.25.2; then
+	    ln -nsf su.debathena /etc/pam.d/su
 	fi
 
 	cleanup_old_diversion /etc/gdm/PreSession/Default

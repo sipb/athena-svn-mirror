@@ -105,7 +105,7 @@ v() {
 
     # Remove the su message intended for quickstations and unlock the
     # command.
-    sed -i "/su-error/d" "/login/etc/pam.d/su"
+    sed -i "/su-error/d" "/login/etc/pam.d/su.debathena"
 
     # There are some daemons that should be running inside the
     # chroot. For example, changes to CUPS config shouldn't persist

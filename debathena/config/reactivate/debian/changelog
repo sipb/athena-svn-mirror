@@ -1,10 +1,10 @@
 debathena-reactivate (1.25.5) unstable; urgency=low
 
-  * geofft's transformation of /etc/pam.d/su in athena-login-snapshot
-    isn't being overwritten by package upgrades, so we'll have to cleanup
-    for it in the postinst by hand.
+  * geofft's transformation of /etc/pam.d/su was running outside the
+    chroot, and editing the file in place, thus clobbering the symlink. We
+    need to fix all of this in the postinst.
 
- -- Evan Broder <broder@mit.edu>  Wed, 14 Oct 2009 14:24:35 -0400
+ -- Evan Broder <broder@mit.edu>  Wed, 14 Oct 2009 14:47:45 -0400
 
 debathena-reactivate (1.25.4) unstable; urgency=low
 
