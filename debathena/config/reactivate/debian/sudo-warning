@@ -1,7 +1,9 @@
-Attention: You are on a Debathena Quickstation. Quickstations do not
-allow root access. If you need root access to a Debathena machine, you
-should be able to use any cluster workstation.
+Attention: You are on a Debathena cluster machine. Although you can use
+sudo to become root, your access is restricted to a sandbox (chroot)
+created when you logged in. If you install software or change
+global settings, they will be reverted when you log out.
 
 If you would like a permanent change to cluster machines, please
 report a bug via the "sendbug" command.
+Enter your Athena password below.
 

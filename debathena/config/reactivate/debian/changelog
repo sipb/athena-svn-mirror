@@ -1,8 +1,14 @@
 debathena-reactivate (1.25.2) unstable; urgency=low
 
+  [ Evan Broder ]
   * Use PAM instead of the sudo lecture_file to lecture users.
 
- -- Evan Broder <broder@mit.edu>  Mon, 12 Oct 2009 15:46:06 -0400
+  [ Geoffrey Thomas ]
+  * Do that only outside the cluster login session, and preserve
+    lecture_file within the chroot.
+  * Revert 1.25.1, since it doesn't actually change anything.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 14 Oct 2009 06:52:53 -0400
 
 debathena-reactivate (1.25.1) unstable; urgency=low
 

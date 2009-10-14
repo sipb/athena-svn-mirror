@@ -103,11 +103,6 @@ v() {
       v chroot /login gpasswd -a "$USER" "$group"
     done
 
-    # Update the su and sudo warnings within the chroot (outside the
-    # chroot, you tell you that you can't become root)
-    mv /login/etc/athena/su-warning.chroot /login/etc/athena/su-warning
-    mv /login/etc/athena/sudo-warning.chroot /login/etc/athena/sudo-warning
-
     # There are some daemons that should be running inside the
     # chroot. For example, changes to CUPS config shouldn't persist
     # between sessions.

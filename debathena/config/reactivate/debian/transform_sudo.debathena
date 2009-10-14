@@ -1,2 +1,5 @@
 #!/bin/sed -f
-/^@include common-auth$/iauth optional pam_echo.so file=/etc/athena/sudo-warning
+# /ClusterLogin exists and is empty within a cluster login session.
+# If it exists, skip the pam_echo and die rule.
+1iauth [ignore=1 success=ok] pam_echo.so file=/ClusterLogin
+1iauth [default=die] pam_echo.so file=/etc/athena/sudo-error
