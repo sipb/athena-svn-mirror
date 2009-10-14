@@ -4,7 +4,7 @@ debian/99debathena-reactivate-setup usr/share/debathena-gdm-config/PreSession.d
 debian/01debathena-reactivate-cleanup usr/share/debathena-gdm-config/PostSession.d
 debian/updatedb.findutils.cron.local etc
 debian/policy-rc.d usr/sbin
+debian/sudo-error etc/athena
+debian/su-error etc/athena
 debian/sudo-warning etc/athena
 debian/su-warning etc/athena
-debian/sudo-warning.chroot etc/athena
-debian/su-warning.chroot etc/athena
