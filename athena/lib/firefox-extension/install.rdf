@@ -5,7 +5,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>athena@mit.edu</em:id>
-    <em:version>1.1</em:version>
+    <em:version>1.2</em:version>
     <em:type>2</em:type>
    
     <!-- Target Application this extension can install into, 
@@ -14,7 +14,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>1.0+</em:minVersion>
-        <em:maxVersion>3.0.*</em:maxVersion>
+        <em:maxVersion>3.5.*</em:maxVersion>
       </Description>
     </em:targetApplication>
    
@@ -22,7 +22,7 @@
     <em:name>Athena Customizations</em:name>
     <em:description>Customizations for MIT Athena</em:description>
     <em:creator>MIT Information Services and Technology</em:creator>
-    <em:homepageURL>http://web.mit.edu/ist/</em:homepageURL>
+    <em:homepageURL>http://ist.mit.edu/</em:homepageURL>
     <em:iconURL>chrome://athena/skin/icon.png</em:iconURL>
   </Description>      
 </RDF>

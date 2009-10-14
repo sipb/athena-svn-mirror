@@ -1,3 +1,10 @@
+debathena-firefox-extension (10.0.3-0debathena1) unstable; urgency=low
+
+  * Bump the max supported version for Firefox 3.5. (Trac: #414)
+  * Update help and home page URLs.
+
+ -- Robert Basch <rbasch@mit.edu>  Wed, 14 Oct 2009 18:12:29 -0400
+
 debathena-firefox-extension (10.0.2-0debathena2) unstable; urgency=low
 
   * Don't manually chmod the transform script; config-package-dev 4.10
