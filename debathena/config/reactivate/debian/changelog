@@ -1,3 +1,11 @@
+debathena-reactivate (1.25.5) unstable; urgency=low
+
+  * geofft's transformation of /etc/pam.d/su in athena-login-snapshot
+    isn't being overwritten by package upgrades, so we'll have to cleanup
+    for it in the postinst by hand.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 14 Oct 2009 14:24:35 -0400
+
 debathena-reactivate (1.25.4) unstable; urgency=low
 
   * Always lecture users trying to sudo on quickstations.

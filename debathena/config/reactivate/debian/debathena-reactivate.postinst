@@ -81,6 +81,10 @@ Defaults:%admin lecture_file=/etc/athena/sudo-warning, lecture=once
 ### END debathena-reactivate
 EOF
 
+	if ! grep -Fq 'auth [default=die] pam_echo.so file=/etc/athena/su-error' /etc/pam.d/su.debathena; then
+	    sed -i '\#^auth optional pam_echo.so file=/etc/athena/su-warning#iauth [default=die] pam_echo.so file=/etc/athena/su-error' /etc/pam.d/su.debathena
+	fi
+
 	cleanup_old_diversion /etc/gdm/PreSession/Default
 	cleanup_old_diversion /etc/gdm/PostSession/Default
 
