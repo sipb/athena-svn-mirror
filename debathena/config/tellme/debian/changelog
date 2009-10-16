@@ -1,3 +1,9 @@
+debathena-tellme (1.4) unstable; urgency=low
+
+  * Add a manpage for tellme. (Trac: #272)
+
+ -- Evan Broder <broder@mit.edu>  Fri, 16 Oct 2009 14:28:11 -0400
+
 debathena-tellme (1.3) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
