@@ -1,3 +1,10 @@
+debathena-evolution-wrapper (10.0.10) unstable; urgency=low
+
+  * Update evolution wrapper to use username.mail.mit.edu and GSSAPI
+    instead of Hesiod and krb4. (Trac: #402)
+
+ -- Evan Broder <broder@mit.edu>  Mon, 12 Oct 2009 13:41:50 -0400
+
 debathena-evolution-wrapper (10.0.9) unstable; urgency=low
 
   * Always create a new folder state file after initializing the

@@ -8,7 +8,6 @@ Standards-Version: 3.7.2
 Package: debathena-evolution-wrapper
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, libgnome2-gconf-perl
-Recommends: debathena-libcamel-krb4
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Wrapper to configure Evolution for Debathena

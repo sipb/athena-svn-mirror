@@ -23,35 +23,25 @@ if ($homedir && ! -e "$homedir/.evolution") {
     }
 }
 
-# Look up user inbox in Hesiod.
+# Pick server to use
 my $user = $ENV{"ATHENA_USER"} || $ENV{"USER"} || getpwuid($<);
-my $result = `hesinfo $user pobox`;
-my @fields = split(' ', $result);
-my $server = $fields[1];
-
-unless ($server) {
-    warn "Could not obtain Hesiod POBOX information for $user\n";
-    exec("/usr/bin/evolution.debathena-orig", @ARGV);
-}
+my $server = "$user.mail.mit.edu";
 
 # Determine the authentication method to use for the IMAP server.
-# For a Cyrus PO server account we use krb4, if the installed package
-# supports it.
+# For a Cyrus PO server account we use GSSAPI.
 # For an Exchange account (or anything else), use password for now.
 # (Ideally some day we will use GSSAPI everywhere).
 my $auth = "";
-if ($server =~ /po\d+\.mit\.edu/i) {
-    my $provides = `dpkg-query -Wf '\${Provides}' 'libcamel*'`;
-    if ($provides =~ /debathena-libcamel-krb4/) {
-	$auth = ";auth=KERBEROS_V4";
-    }
+my ($real_server) = gethostbyname($server);
+if ($real_server =~ /po\d+\.mail\.mit\.edu/i) {
+    $auth = ";auth=GSSAPI";
 }
 
 # Regular expression for the server names we recognize when updating
 # the IMAP account setting.  We also convert Athena 9.4-style Hesiod
 # specifications (although it should be unusual to see one due to
 # debathena-gconf2-config).
-my $serverRE = '(po\d+\.mit\.edu)|((imap\.)?exchange\.mit\.edu)|(_hesiod)';
+my $serverRE = "($user" . '\.mail\.mit\.edu)|(po\d+\.mit\.edu)|((imap\.)?exchange\.mit\.edu)|(_hesiod)';
 my $old_server = "";
 
 my $client = Gnome2::GConf::Client->get_default;
