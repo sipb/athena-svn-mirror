@@ -68,7 +68,9 @@ if [ "${skip_tty_startup+set}" != set ]; then
 	get_message -new -login		# Display current motd
 	if hesinfo "$USER" pobox | grep -qv EXCHANGE; then
 	  mailquota -n			# Check quota on post office server
-	  from.debathena -t -n		# Check for mail
+	  if hash from.debathena 2>/dev/null; then
+	      from.debathena -t -n	# Check for mail
+	  fi
 	fi
 fi
 

@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.16-0debathena1) unstable; urgency=low
+
+  * Only run from at login if it's available, and demote it to a
+    recommendation.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 16 Oct 2009 17:00:16 -0400
+
 debathena-dotfiles (10.0.15-0debathena1) unstable; urgency=low
 
   * Stop setting umask in dotfiles. (Trac: #368)

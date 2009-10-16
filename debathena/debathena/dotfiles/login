@@ -58,7 +58,9 @@ if (! $?skip_tty_startup) then
 	get_message -new -login		# Display current motd
 	if ("`hesinfo $USER pobox`" !~ "*EXCHANGE*") then
 	  mailquota -n			# Check quota on post office server
-	  from.debathena -t -n		# Check for mail
+	  if ({which from.debathena >& /dev/null}) then
+	    from.debathena -t -n	# Check for mail
+	  endif
 	endif
 endif
 
