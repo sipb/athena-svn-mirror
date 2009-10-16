@@ -7,7 +7,7 @@ Standards-Version: 3.8.0
 
 Package: debathena-mutt-config
 Architecture: all
-Depends: ${misc:Depends}, debathena-hesiod-config, debathena-msmtp-config, mutt, libsasl2-krb4-mit
+Depends: ${misc:Depends}, debathena-hesiod-config, debathena-msmtp-config, mutt
 Description: Mutt configuration for Debathena
  This package configures Mutt for the Debathena system,
  setting it to use MIT's IMAP and outgoing-SMTP servers

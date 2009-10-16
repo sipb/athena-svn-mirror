@@ -1,3 +1,10 @@
+debathena-mutt-config (1.4) unstable; urgency=low
+
+  * Now that mutt is using GSSAPI instead of krb4, we no longer need to
+    depend on libsasl2-krb4-mit.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 16 Oct 2009 17:51:56 -0400
+
 debathena-mutt-config (1.3) unstable; urgency=low
 
   * Instead of using Hesiod, use user.mail.mit.edu. We can also switch to
