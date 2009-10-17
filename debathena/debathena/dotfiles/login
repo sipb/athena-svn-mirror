@@ -57,8 +57,8 @@ if (! $?skip_tty_startup) then
 	$ZEPHYR_CLIENT			# Start Zephyr client
 	get_message -new -login		# Display current motd
 	if ("`hesinfo $USER pobox`" !~ "*EXCHANGE*") then
-	  mailquota -n			# Check quota on post office server
 	  if ({which from.debathena >& /dev/null}) then
+	    mailquota -n		# Check quota on post office server
 	    from.debathena -t -n	# Check for mail
 	  endif
 	endif
