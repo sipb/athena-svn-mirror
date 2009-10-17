@@ -1,3 +1,9 @@
+debathena-reactivate (1.25.6) unstable; urgency=low
+
+  * Fix init script metadata (overlooked in 1.21).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 16 Oct 2009 23:57:22 -0400
+
 debathena-reactivate (1.25.5) unstable; urgency=low
 
   * geofft's transformation of /etc/pam.d/su was running outside the

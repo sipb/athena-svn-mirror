@@ -1,15 +1,14 @@
 #! /bin/sh
 ### BEGIN INIT INFO
-# Provides:          rmnologin
-# Required-Start:    $remote_fs $all
+# Provides:          debathena-reactivate
+# Required-Start:
 # Required-Stop: 
 # Default-Start:     2 3 4 5
 # Default-Stop:
-# Short-Description: Remove /etc/nologin at boot
-# Description:       This script removes the /etc/nologin file as the
-#                    last step in the boot process, if DELAYLOGIN=yes.
-#                    If DELAYLOGIN=no, /etc/nologin was not created by
-#                    bootmisc earlier in the boot process.
+# X-Start-Before:    gdm
+# Short-Description: Re-activate Athena cluster machine
+# Description:       This script sets up an Athena cluster machine at boot.
+#                    Currently, it just mutes the sound.
 ### END INIT INFO
 
 PATH=/sbin:/bin
