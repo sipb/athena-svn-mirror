@@ -1,0 +1,5 @@
+debathena-maybe-krb4-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 17 Oct 2009 15:00:00 -0400

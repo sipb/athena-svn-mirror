@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+HAVE_KRB4_CONFIG = $(shell apt-cache show krb4-config >/dev/null 2>&1 && echo yes)
+
+ifneq ($(HAVE_KRB4_CONFIG),)
+binary-predeb/debathena-maybe-krb4-config:: debathena-maybe-krb4-config-substvars
+
+debathena-maybe-krb4-config-substvars::
+	echo "debathena-maybe-krb4-config-depends=krb4-config" \
+	  >> debian/debathena-maybe-krb4-config.substvars
+endif
