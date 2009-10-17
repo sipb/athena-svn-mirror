@@ -23,6 +23,12 @@ case "$1" in
 	if dpkg-query -f '${Conffiles}\n' -W debathena-kerberos-config | grep '/etc/apparmor.d/usr.sbin.cups.debathena' | awk '{ print $2"  "$1 }' | md5sum -c >/dev/null 2>&1; then
 	    rm -f /etc/apparmor.d/usr.sbin.cups.debathena
 	fi
+
+	if hash invoke-rc.d 2>/dev/null; then
+	    invoke-rc.d apparmor reload || :
+	else
+	    /etc/init.d/apparmor reload || :
+	fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

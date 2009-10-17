@@ -2,8 +2,9 @@ debathena-kerberos-config (1.8) unstable; urgency=low
 
   * Cleanup after a filename typo in 1.7.1 (usr.sbin.cups.debathena
     shouldn't exist). (Trac: #319)
+  * Reload apparmor on upgrades (Trac: #326)
 
- -- Evan Broder <broder@mit.edu>  Mon, 07 Sep 2009 18:26:39 -0400
+ -- Evan Broder <broder@mit.edu>  Sat, 17 Oct 2009 14:54:13 -0400
 
 debathena-kerberos-config (1.7.1) unstable; urgency=low
 
