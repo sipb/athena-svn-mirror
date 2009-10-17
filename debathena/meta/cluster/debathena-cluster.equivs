@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 1.3
+Version: 1.4
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-cluster-branding,
  debathena-workstation,
@@ -16,6 +16,7 @@ Depends: debathena-cluster-branding,
  debathena-thirdparty,
  debathena-mitmailutils,
  debathena-nmh,
+ debathena-from-config,
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena cluster configuration for Debian
