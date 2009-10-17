@@ -10,7 +10,10 @@ fi
 
 renew () {
     principal=`klist -5 2>/dev/null | sed -n 's/^Default principal: // p'`
-    kinit -54 "${principal:-$ATHENA_USER}" || return $?
+    KINIT_ARGS=""
+    kinit -4 </dev/null &>/dev/null
+    [ $? != 3 ] && KINIT_ARGS="-54"
+    kinit $KINIT_ARGS "${principal:-$ATHENA_USER}" || return $?
     [ -e /afs/athena.mit.edu ] && aklog || {
 	ret=$?
 	echo >&2

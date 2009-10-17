@@ -1,3 +1,9 @@
+debathena-shell-config (1.12) unstable; urgency=low
+
+  * Only pass -45 to kinit on systems that still have a krb4. (Trac: #417)
+
+ -- Evan Broder <broder@mit.edu>  Sat, 17 Oct 2009 12:56:38 -0400
+
 debathena-shell-config (1.11.1) unstable; urgency=low
 
   * Make sure that 'add' etc. are still available in

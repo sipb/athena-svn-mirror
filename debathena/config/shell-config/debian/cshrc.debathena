@@ -8,7 +8,10 @@ if ( $ATHENA_SYS == "" ) then
 endif
 setenv ATHENA_SYS_COMPAT `/bin/machtype -C`
 
-alias renew 'kinit -54 $ATHENA_USER && aklog'
+alias renew 'set KINIT_ARGS=""; \
+    kinit -4 </dev/null >& /dev/null; \
+    if ($? != 3) set KINIT_ARGS="-45"; \
+    kinit $KINIT_ARGS "$ATHENA_USER" && aklog'
 
 set add_flags
 alias add 'eval `/bin/attach -Padd $add_flags \!:*`'
