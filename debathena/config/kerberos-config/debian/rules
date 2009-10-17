@@ -21,8 +21,6 @@ ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
     install/debathena-kerberos-config::
 	dh_install debian/usr.sbin.cupsd.debathena etc/apparmor.d
     DEB_REMOVE_FILES_debathena-kerberos-config += /etc/apparmor.d/usr.sbin.cupsd
-else
-    DEB_UNREMOVE_FILES_debathena-kerberos-config += /etc/apparmor.d/usr.sbin.cupsd
 endif
 ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
     common-build-indep:: debian/kerberosclient.debathena
@@ -33,6 +31,4 @@ ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
     install/debathena-kerberos-config::
 	dh_install debian/kerberosclient.debathena etc/apparmor.d/abstractions
     DEB_REMOVE_FILES_debathena-kerberos-config += /etc/apparmor.d/abstractions/kerberosclient
-else
-    DEB_UNREMOVE_FILES_debathena-kerberos-config += /etc/apparmor.d/abstractions/kerberosclient
 endif
