@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.18-0debathena1) unstable; urgency=low
+
+  * Stop defining add and renew in the Athena dotfiles - they should be
+    getting defined in the system dotfiles anyway. (Trac: #393)
+
+ -- Evan Broder <broder@mit.edu>  Sat, 17 Oct 2009 12:28:42 -0400
+
 debathena-dotfiles (10.0.17-0debathena1) unstable; urgency=low
 
   * If we're not running from, don't run mailquota either - they're both

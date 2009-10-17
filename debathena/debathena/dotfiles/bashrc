@@ -6,11 +6,6 @@
 
 initdir=/usr/lib/init
 
-# add alias moved here to avoid having two copies of it.
-
-add () { eval "$( /bin/attach -Padd -b "$@" )" ; }
-
-
 # *******************   ENVIRONMENT SETUP   *******************
 
 
@@ -103,9 +98,6 @@ fi
 # *******************  BASH SETUP   *******************
 
 # Set up standard bash shell initializations
-
-#   alias for re-establishing authentication
-renew () { kinit -54 $USER && fsid -a && zctl load /dev/null ; }
 
 if [ "${XSESSION+set}" = set ]; then
 	logout () { gnome-session-save --kill --silent; exit; } # logout for X

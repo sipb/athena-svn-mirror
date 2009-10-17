@@ -25,9 +25,6 @@ setenv HOSTTYPE "$ATHENA_HOSTTYPE"
 set hosttype=$HOSTTYPE
 set host=$HOST
 
-# add alias for attaching lockers
-alias add 'eval `/bin/attach -Padd \!:*`'
-
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and additions to search path)
 
@@ -122,9 +119,6 @@ if ($?prompt) then		# For interactive shells only (i.e., NOT rsh):
 endif
 
 # Set up standard C shell aliases
-
-#   alias for re-establishing authentication
-alias renew 'kinit -54 $USER && fsid -a && zctl load /dev/null'
 
 if ($?XSESSION) then
   alias logout	'exit && gnome-session-save --kill --silent'	# logout for X
