@@ -6,7 +6,7 @@ DEB_TRANSFORM_FILES_debathena-kerberos-config += \
 DEB_CHECK_FILES_SOURCE_/etc/krb5.conf.debathena = \
 	/usr/share/kerberos-configs/krb5.conf.template
 
-KRB5_VERSION="$(shell dpkg-query -W -f '${Version}' krb5-clients)"
+KRB5_VERSION = $(shell dpkg-query -W -f '$${Version}' krb5-clients)
 ifeq ($(shell dpkg --compare-versions $(KRB5_VERSION) '<<' '1.7~' && echo y),y)
     DEB_TRANSFORM_FILES_debathena-kerberos-config += \
 	/etc/krb.conf.debathena \
