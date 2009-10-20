@@ -2,12 +2,12 @@ Source: debathena-kerberos-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, krb5-config, krb4-config, debathena-maybe-apparmor, debathena-cups
+Build-Depends: @cdbs@, krb5-config, debathena-maybe-krb4-config, debathena-maybe-apparmor, debathena-cups
 Standards-Version: 3.7.2
 
 Package: debathena-kerberos-config
 Architecture: all
-Depends: krb5-config, krb4-config, krb5-user, krb5-clients, ntp | ntp-server | time-daemon, ntpdate | time-daemon, ${misc:Depends}
+Depends: krb5-config, krb5-user, krb5-clients, ntp | ntp-server | time-daemon, ntpdate | time-daemon, ${misc:Depends}, ${debathena-krb4-depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Kerberos configuration for Debathena

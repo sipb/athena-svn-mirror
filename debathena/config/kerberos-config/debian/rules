@@ -2,16 +2,24 @@
 
 DEB_DIVERT_EXTENSION = .debathena
 DEB_TRANSFORM_FILES_debathena-kerberos-config += \
-	/etc/krb5.conf.debathena \
-	/etc/krb.conf.debathena \
-	/etc/krb.realms.debathena
+	/etc/krb5.conf.debathena
 DEB_CHECK_FILES_SOURCE_/etc/krb5.conf.debathena = \
 	/usr/share/kerberos-configs/krb5.conf.template
-DEB_CHECK_FILES_SOURCE_/etc/krb.conf.debathena = \
-	/usr/share/kerberos-configs/krb.conf.template
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
 
+ifneq ($(wildcard /usr/share/kerberos-configs/krb.conf.template),)
+    DEB_TRANSFORM_FILES_debathena-kerberos-config += \
+	/etc/krb.conf.debathena \
+	/etc/krb.realms.debathena
+    DEB_CHECK_FILES_SOURCE_/etc/krb.conf.debathena = \
+	/usr/share/kerberos-configs/krb.conf.template
+
+    binary-predeb/debathena-kerberos-config:: debathena-krberos-config-substvars
+    debathena-krberos-config-substvars::
+	echo "debathena-krb4-depends=krb4-config" \
+	  >> debian/debathena-kerberos-config.substvars
+endif
 ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
     common-build-indep:: debian/usr.sbin.cupsd.debathena
     debian/usr.sbin.cupsd.debathena: $(call debian_check_files,/etc/apparmor.d/usr.sbin.cupsd)
