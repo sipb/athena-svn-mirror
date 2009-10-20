@@ -1,3 +1,11 @@
+debathena-kerberos-config (1.8.2) unstable; urgency=low
+
+  * Apparently /etc/apparmor.d/abstractions/kerberosclient has to still
+    exist, so switch back to DEB_TRANSFORM_FILES for that, but keep using
+    DEB_REMOVE_FILES for the CUPS config file.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 20 Oct 2009 15:13:00 -0400
+
 debathena-kerberos-config (1.8.1) unstable; urgency=low
 
   * Clean up the upgrade path from 1.7 by undoing the DEB_TRANSFORM_FILES

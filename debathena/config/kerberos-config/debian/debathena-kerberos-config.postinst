@@ -65,17 +65,27 @@ cleanup_old_diversion() {
     fi
 }
 
+cleanup_old_removal() {
+    file="$1"
+    removedfile="$2"
+    if dpkg-divert --list "${file}" | grep -Fxq "diversion of ${file} to ${removedfile} by ${package}"; then
+	undivert_unlink_divert "$file"
+    fi
+}
+
 case "$1" in
     configure)
 	if dpkg-query -f '${Conffiles}\n' -W debathena-kerberos-config | grep '/etc/apparmor.d/usr.sbin.cups.debathena' | awk '{ print $2"  "$1 }' | md5sum -c >/dev/null 2>&1; then
 	    rm -f /etc/apparmor.d/usr.sbin.cups.debathena
 	fi
 
-	# This will only undo the old DEB_TRANSFORM_FILES diversions,
-	# not the DEB_REMOVE_FILES diversions that the package is
-	# adding.
+	# The cupsd config can be removed, but not diverted; the
+	# kerberosclient config can be diverted but not removed. Since
+	# both files have been both at various points in the package's
+	# history, if one of them is wrong, fix it before putting the
+	# diversion back in later on.
 	cleanup_old_diversion /etc/apparmor.d/usr.sbin.cupsd
-	cleanup_old_diversion /etc/apparmor.d/abstractions/kerberosclient
+	cleanup_old_removal /etc/apparmor.d/abstractions/kerberosclient /usr/share/debathena-kerberos-config/etc++apparmor.d++abstractions++kerberosclient
 
 	# Handle upgrading from a system with krb4 to one without
 	krb5_version="$(dpkg-query -W -f '${Version}' krb5-clients)"
