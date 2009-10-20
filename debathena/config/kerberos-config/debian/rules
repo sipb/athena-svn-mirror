@@ -22,6 +22,9 @@ endif
 ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
     DEB_TRANSFORM_FILES_debathena-kerberos-config += /etc/apparmor.d/abstractions/kerberosclient
 endif
+ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
+    DEB_REMOVE_FILES_debathena-kerberos-config += /etc/apparmor.d/usr.sbin.cupsd
+endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
@@ -34,5 +37,4 @@ ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
 	-rm debian/usr.sbin.cupsd.debathena
     install/debathena-kerberos-config::
 	dh_install debian/usr.sbin.cupsd.debathena etc/apparmor.d
-    DEB_REMOVE_FILES_debathena-kerberos-config += /etc/apparmor.d/usr.sbin.cupsd
 endif
