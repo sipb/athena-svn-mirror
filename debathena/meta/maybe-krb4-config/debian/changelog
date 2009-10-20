@@ -1,3 +1,11 @@
+debathena-maybe-krb4-config (1.1) unstable; urgency=low
+
+  * Because we already have packages depending on krb4-config, it's always
+    going to be in apt's cache. A better question is whether or not we can
+    install the package.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 20 Oct 2009 11:45:50 -0400
+
 debathena-maybe-krb4-config (1.0) unstable; urgency=low
 
   * Initial release.
