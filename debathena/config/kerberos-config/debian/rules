@@ -19,6 +19,13 @@ ifeq ($(shell dpkg --compare-versions $(KRB5_VERSION) '<<' '1.7~' && echo y),y)
 	echo "debathena-krb4-depends=krb4-config" \
 	  >> debian/debathena-kerberos-config.substvars
 endif
+ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
+    DEB_TRANSFORM_FILES_debathena-kerberos-config += /etc/apparmor.d/abstractions/kerberosclient
+endif
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/config-package.mk
+
 ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
     common-build-indep:: debian/usr.sbin.cupsd.debathena
     debian/usr.sbin.cupsd.debathena: $(call debian_check_files,/etc/apparmor.d/usr.sbin.cupsd)
@@ -29,9 +36,3 @@ ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
 	dh_install debian/usr.sbin.cupsd.debathena etc/apparmor.d
     DEB_REMOVE_FILES_debathena-kerberos-config += /etc/apparmor.d/usr.sbin.cupsd
 endif
-ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
-    DEB_TRANSFORM_FILES_debathena-kerberos-config += /etc/apparmor.d/abstractions/kerberosclient
-endif
-
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/config-package.mk
