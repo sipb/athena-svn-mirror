@@ -20,7 +20,7 @@ ifeq ($(shell dpkg --compare-versions $(KRB5_VERSION) '<<' '1.7~' && echo y),y)
 	  >> debian/debathena-kerberos-config.substvars
 endif
 ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
-    DEB_TRANSFORM_FILES_debathena-kerberos-config += /etc/apparmor.d/abstractions/kerberosclient
+    DEB_TRANSFORM_FILES_debathena-kerberos-config += /etc/apparmor.d/abstractions/kerberosclient.debathena
 endif
 ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
     DEB_REMOVE_FILES_debathena-kerberos-config += /etc/apparmor.d/usr.sbin.cupsd
