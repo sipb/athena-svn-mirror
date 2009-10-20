@@ -71,10 +71,11 @@ case "$1" in
 	    rm -f /etc/apparmor.d/usr.sbin.cups.debathena
 	fi
 
-	# This will only undo an old DEB_TRANSFORM_FILES diversion,
-	# not the DEB_REMOVE_FILES diversion that the package is
+	# This will only undo the old DEB_TRANSFORM_FILES diversions,
+	# not the DEB_REMOVE_FILES diversions that the package is
 	# adding.
 	cleanup_old_diversion /etc/apparmor.d/usr.sbin.cupsd
+	cleanup_old_diversion /etc/apparmor.d/abstractions/kerberosclient
 
 	# Handle upgrading from a system with krb4 to one without
 	krb5_version="$(dpkg-query -W -f '${Version}' krb5-clients)"
