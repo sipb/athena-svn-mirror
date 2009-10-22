@@ -1,3 +1,9 @@
+debathena-pam-config (1.16.1) unstable; urgency=low
+
+  * Fix a typo in /etc/issue.net.no_network.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 21 Oct 2009 21:50:26 -0400
+
 debathena-pam-config (1.16) unstable; urgency=low
 
   * Configure the Kerberos authentication to print an error message if
