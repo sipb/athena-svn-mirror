@@ -87,12 +87,12 @@
   <!-- The background for the login box -->
   <item type="pixmap">
     <normal file="loginbox.png" />
-    <pos x="50%" y="45%" anchor="c" width="500" height="320" />
+    <pos x="50%" y="45%" anchor="c" width="500" height="380" />
   </item>
   <!-- An invisible rectangle for the login box -->
   <item type="rect">
     <normal color="#000000" alpha="0.0" />
-    <pos anchor="c" x="50%" y="46%" width="400" height="220" />
+    <pos anchor="c" x="50%" y="46%" width="400" height="280" />
     <box orientation="vertical" padding="5" spacing="10" homogenous="false">
       <!-- Welcome -->
       <item type="label" id="title">
@@ -140,6 +140,12 @@
 	  </item>
 	</fixed>
       </item>
+      <!-- pam message (eg: checkout your network) -->
+      <item type="label" id="pam-message">
+	<pos x="50%" anchor="n" />
+	<normal color="#000000" font="Trebuchet MS 10" />
+	<text></text>
+      </item>
       <!-- PAM error text (ie: username/passsword incorret -->
       <item type="label" id="pam-error">
 	<pos anchor="n" x="50%" />
@@ -148,11 +154,4 @@
       </item>
     </box>
   </item>
-
-<!-- pam message (hidden, but required) -->
-<item type="label" id="pam-message">
-  <pos x="50%" anchor="c" />
-  <normal alpha="1.00"/>
-  <text></text>
-</item>
 </greeter>

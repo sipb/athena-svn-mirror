@@ -1,9 +1,14 @@
-debathena-gdm-config (1.16) UNRELEASED; urgency=low
+debathena-gdm-config (1.16) unstable; urgency=low
 
+  [ Geoffrey Thomas ]
   * Don't make errors in reloading gdm's configuration fatal for
     upgrading the package.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Wed, 07 Oct 2009 23:41:50 -0400
+  [ Evan Broder ]
+  * Move the pam-message field back into the login box, so that the new
+    missing network connection message shows up.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 22 Oct 2009 15:11:00 -0400
 
 debathena-gdm-config (1.15) unstable; urgency=low
 

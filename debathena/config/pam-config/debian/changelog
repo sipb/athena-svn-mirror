@@ -1,3 +1,10 @@
+debathena-pam-config (1.16.1) unstable; urgency=low
+
+  * Un-word-wrap the missing network connection message, beacuse gdm
+    includes the carriage return, and it looks weird.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 22 Oct 2009 15:11:53 -0400
+
 debathena-pam-config (1.16) unstable; urgency=low
 
   * Configure the Kerberos authentication to print an error message if
