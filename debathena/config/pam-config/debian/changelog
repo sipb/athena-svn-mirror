@@ -1,3 +1,11 @@
+debathena-pam-config (1.16.2) unstable; urgency=low
+
+  * Explicitly conflict with the old libpam-krb5-config, because
+    apparently just conflicting with diverts-usr++share++pam-configs++krb5
+    isn't always good enough.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 25 Oct 2009 16:37:17 -0400
+
 debathena-pam-config (1.16.1) unstable; urgency=low
 
   * Un-word-wrap the missing network connection message, beacuse gdm
