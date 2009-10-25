@@ -14,7 +14,8 @@ DEB_TRANSFORM_FILES_debathena-linerva += \
 	/etc/ssh/sshd_config.debathena.debathena \
 	/etc/pam.d/su.debathena \
 	/etc/lvm/lvm.conf.debathena \
-	/etc/adduser.conf.debathena
+	/etc/adduser.conf.debathena \
+	/etc/default/bitlbee.debathena
 
 #Needs to go before S70screen-cleanup (and before users log in and run screen.)
 DEB_UPDATE_RCD_PARAMS_debathena-linerva = "start 65 S ."

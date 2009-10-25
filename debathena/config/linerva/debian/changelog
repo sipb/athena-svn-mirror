@@ -1,3 +1,9 @@
+debathena-linerva (1.37) karmic; urgency=low
+
+  * Configure bitlbee not to run its system daemon.
+
+ -- Nelson Elhage <nelhage@mit.edu>  Sun, 25 Oct 2009 01:27:21 -0400
+
 debathena-linerva (1.36) unstable; urgency=low
 
   * Change FIRST_SYSTEM_GID to 103 to avoid creating group 101.

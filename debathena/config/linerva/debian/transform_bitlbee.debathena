@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s{^BITLBEE_DISABLED=0$}{BITLBEE_DISABLED=1}m or die;
