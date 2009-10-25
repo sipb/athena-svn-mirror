@@ -8,6 +8,6 @@ Standards-Version: 3.7.2
 Package: debathena-nmh
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-attachandrun, debianutils, metamail
-Conflicts: nmh
+Conflicts: nmh, dvb-apps
 Description: The NMH mail handling system
  NMH used to be the standard mail handling system on Athena.

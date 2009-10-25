@@ -1,3 +1,9 @@
+debathena-nmh (1.0+athena9.4.34-0debathena5) unstable; urgency=low
+
+  * Conflict with dvb-apps, because that too has a /usr/bin/scan.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sat, 24 Oct 2009 23:28:47 -0400
+
 debathena-nmh (1.0+athena9.4.34-0debathena4) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
