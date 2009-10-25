@@ -1,3 +1,9 @@
+debathena-linerva (1.36) unstable; urgency=low
+
+  * Change FIRST_SYSTEM_GID to 103 to avoid creating group 101.
+
+ -- Nelson Elhage <nelhage@mit.edu>  Sat, 24 Oct 2009 19:54:31 -0400
+
 debathena-linerva (1.35) unstable; urgency=low
 
   * Don't accept the root password over ssh.
