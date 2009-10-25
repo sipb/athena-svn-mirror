@@ -1,4 +1,3 @@
-debian/athena-login-snapshot usr/sbin
 debian/Xsession.debathena etc/gdm
 debian/99debathena-reactivate-setup usr/share/debathena-gdm-config/PreSession.d
 debian/01debathena-reactivate-cleanup usr/share/debathena-gdm-config/PostSession.d
@@ -8,3 +7,6 @@ debian/sudo-error etc/athena
 debian/su-error etc/athena
 debian/sudo-warning etc/athena
 debian/su-warning etc/athena
+debian/login etc/schroot/chroot.d
+debian/script-athena etc/schroot
+debian/mount-athena etc/schroot

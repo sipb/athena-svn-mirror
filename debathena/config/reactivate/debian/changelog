@@ -1,3 +1,14 @@
+debathena-reactivate (2.0) UNRELEASED; urgency=low
+
+  * Rewrite to use schroot 1.3 and aufs union mounts instead of LVM.
+    This makes logins on a Dell 760 take about 8 seconds to reach the
+    desktop.
+    - TODO: Reincorporate clean-up fallbacks (e.g. rebooting) of previous
+      version.
+    - TODO: Deal with manually modified /etc/schroot/schroot.conf.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sat, 24 Oct 2009 19:28:08 -0400
+
 debathena-reactivate (1.25.6) unstable; urgency=low
 
   * Fix init script metadata (overlooked in 1.21).

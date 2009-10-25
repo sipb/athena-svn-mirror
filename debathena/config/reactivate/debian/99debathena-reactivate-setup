@@ -1,7 +1,10 @@
 # This script is sourced (not executed) as root at the beginning of a
 # gdm login session.  gdm blocks until it finishes.
 
-if [ "$(machtype -q)" != "quickstation" ]; then
-    # Create a login chroot for this login session.
-    athena-login-snapshot login-start || exit
-fi
+# Stop daemons that need to be restarted inside the chroot
+daemons=$(/usr/bin/policy-rc.d --daemons)
+for daemon in $daemons; do
+    invoke-rc.d "$daemon" stop || [ $? = 100 ]
+done
+
+touch /var/run/athena-login

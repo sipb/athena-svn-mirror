@@ -8,17 +8,24 @@
 # X-Start-Before:    gdm
 # Short-Description: Re-activate Athena cluster machine
 # Description:       This script sets up an Athena cluster machine at boot.
-#                    Currently, it just mutes the sound.
+#                    Currently, it mutes the sound and sets up a filesystem
+#                    for snapshots.
 ### END INIT INFO
 
 PATH=/sbin:/bin
 
 . /lib/init/vars.sh
+. /lib/init/mount-functions.sh
 
 case "$1" in
   start)
 	# Set the volume to zero for all sound cards, and save that state.
 	(/etc/init.d/alsa-utils stop all && alsactl store) > /dev/null 2>&1
+
+	# Create a tmpfs where schroot puts overlays. This is needed
+	# because aufs won't let you put an overlay and underlay on the
+	# same file system.
+	domount tmpfs "" /var/lib/schroot/union/overlay tmpfs -osize=1073741824
 	;;
   restart|reload|force-reload)
 	echo "Error: argument '$1' not supported" >&2

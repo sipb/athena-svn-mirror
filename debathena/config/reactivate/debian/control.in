@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-reactivate
 Architecture: all
-Depends: schroot, lvm2, psmisc, gdm, alsa-utils, debathena-gdm-config (>= 1.14~), ${misc:Depends}
+Depends: debathena-schroot, psmisc, gdm, alsa-utils, debathena-gdm-config (>= 1.14~), sudo, ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Causes gdm logins to run in an ephemeral snapshot of the root
@@ -15,8 +15,6 @@ Description: Causes gdm logins to run in an ephemeral snapshot of the root
  root, so that any system modifications performed within the chroot
  are erased after logout.
  .
- This package is very much tailored to Athena cluster machines.  To
- use it, the machine MUST be installed so that the root partition is a
- logical volume inside a volume group with at least 21GB of free
- space.  This script will, in certain exceptional conditions, reboot
+ This package is very much tailored to Athena cluster machines.
+ This script will, in certain exceptional conditions, reboot
  the machine in order to be able to unmount the login snapshot.

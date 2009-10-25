@@ -1,0 +1,3 @@
+FSTAB="/etc/schroot/mount-athena"
+COPYFILES=""
+NSSDATABASES=""

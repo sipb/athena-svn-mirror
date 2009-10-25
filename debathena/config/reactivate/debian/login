@@ -1,0 +1,8 @@
+[login]
+type=directory
+# There's got to be a better way
+groups=nss-local-users,nss-nonlocal-users
+root-groups=nss-local-users,nss-nonlocal-users
+script-config=script-athena
+directory=/
+union-type=aufs

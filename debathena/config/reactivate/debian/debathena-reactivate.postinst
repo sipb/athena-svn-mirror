@@ -71,7 +71,7 @@ case "$1" in
     configure)
         # Users logging in will be added to several different
         # groups. Make sure they all exist.
-        for group in $(sed -ne 's/^addgroups="\(.*\)"/\1/p' /usr/sbin/athena-login-snapshot); do
+        for group in $(sed -ne 's/^addgroups="\(.*\)"/\1/p' /etc/gdm/Xsession.debathena); do
             getent group "$group" >/dev/null || addgroup --system "$group"
         done
         cat >>/etc/sudoers <<EOF

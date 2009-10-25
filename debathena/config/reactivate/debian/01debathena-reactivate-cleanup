@@ -5,7 +5,10 @@
 # Set the volume to zero for all sound cards, and save that state.
 invoke-rc.d debathena-reactivate start
 
-if [ "$(machtype -q)" != "quickstation" ]; then
-    # Clean up the login snapshot.
-    athena-login-snapshot login-end
-fi
+# Restart necessary daemons outside the chroot
+daemons=$(/usr/bin/policy-rc.d --daemons)
+for daemon in $daemons; do
+    invoke-rc.d "$daemon" start || [ $? = 100 ]
+done
+
+rm /var/run/athena-login
