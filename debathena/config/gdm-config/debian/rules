@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 GDM_VERSION = $(shell dpkg-query --showformat='$${Version}' --show gdm)
-NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' & echo y)
+NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' && echo y)
 
 ifneq ($(wildcard /etc/gdm/gdm.conf-custom),)
     GDM_CONFFILE = /etc/gdm/gdm.conf-custom.debathena
