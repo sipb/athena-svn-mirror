@@ -1,3 +1,12 @@
+debathena-gdm-config (1.17) unstable; urgency=low
+
+  * Don't configure /etc/gdm/gdm.conf{,-custom} on post-gdm-2.20
+    platforms.
+    - Themes are no longer supported, so there's no point setting one
+    - Xauthority files are now going into /var/run
+
+ -- Evan Broder <broder@mit.edu>  Sun, 25 Oct 2009 12:46:46 -0400
+
 debathena-gdm-config (1.16) unstable; urgency=low
 
   [ Geoffrey Thomas ]

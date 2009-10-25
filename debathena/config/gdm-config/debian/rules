@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+GDM_VERSION = $(shell dpkg-query --showformat='$${Version}' --show gdm)
+NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' & echo y)
+
 ifneq ($(wildcard /etc/gdm/gdm.conf-custom),)
     GDM_CONFFILE = /etc/gdm/gdm.conf-custom.debathena
     DEB_DH_LINK_ARGS_debathena-gdm-config=/etc/gdm/gdm.conf-custom.debathena /etc/gdm/gdm.conf.debathena
@@ -8,8 +11,6 @@ else
 endif
 
 DEB_DIVERT_EXTENSION = .debathena
-DEB_TRANSFORM_FILES_debathena-gdm-config += \
-	${GDM_CONFFILE}
 DEB_TRANSFORM_SCRIPT_${GDM_CONFFILE} = debian/transform_gdm.conf.debathena
 DEB_DIVERT_FILES_debathena-gdm-config += \
 	/etc/gdm/PreSession/Default.debathena \
@@ -17,6 +18,12 @@ DEB_DIVERT_FILES_debathena-gdm-config += \
 	/usr/share/gdm/BuiltInSessions/default.desktop.debathena
 DEB_REMOVE_FILES_debathena-gdm-config += \
 	/usr/share/xsessions/ssh.desktop
+
+ifneq ($(NEW_GDM),y)
+    DEB_TRANSFORM_FILES_debathena-gdm-config += \
+	${GDM_CONFFILE}
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
 
