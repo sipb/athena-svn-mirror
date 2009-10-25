@@ -9,7 +9,8 @@ Package: debathena-pam-config
 Architecture: all
 Depends: debathena-kerberos-config, debathena-dotfiles, debathena-nsswitch-config (>= 1.3~), libpam-mktemp, ${misc:Depends}, ${debathena-pam-config-depends}
 Provides: ${diverted-files}
-Conflicts: ${diverted-files}, libpam-krb5-config (<= 0.0.7)
+Conflicts: ${diverted-files}
+Breaks: libpam-krb5-config (<= 0.0.7)
 Replaces: libpam-krb5-config (<= 0.0.7)
 Description: PAM configuration for Debathena
  This package configures PAM to use the Athena Kerberos realm to

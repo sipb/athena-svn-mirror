@@ -1,3 +1,10 @@
+debathena-pam-config (1.16.3) unstable; urgency=low
+
+  * Make that a Breaks and not a Conflicts, because Conflicting with
+    earlier-than versions is wrong.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 25 Oct 2009 17:39:29 -0400
+
 debathena-pam-config (1.16.2) unstable; urgency=low
 
   * Explicitly conflict with the old libpam-krb5-config, because
