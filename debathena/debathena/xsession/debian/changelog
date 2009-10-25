@@ -1,3 +1,9 @@
+debathena-xsession (1.11.1) unstable; urgency=low
+
+  * Close the conditional in quotawarn.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 25 Oct 2009 15:37:32 -0400
+
 debathena-xsession (1.11) unstable; urgency=low
 
   * Demote mitmailutils to a recommendation while it's uninstallable on
