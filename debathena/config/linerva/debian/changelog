@@ -1,4 +1,4 @@
-debathena-linerva (1.37) karmic; urgency=low
+debathena-linerva (1.37) unstable; urgency=low
 
   * Configure bitlbee not to run its system daemon.
 
