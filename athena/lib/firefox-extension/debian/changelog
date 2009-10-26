@@ -1,3 +1,9 @@
+debathena-firefox-extension (10.0.3-0debathena2) unstable; urgency=low
+
+  * Update the GSSAPI dependency for post-krb5-1.7.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 25 Oct 2009 20:56:25 -0400
+
 debathena-firefox-extension (10.0.3-0debathena1) unstable; urgency=low
 
   * Bump the max supported version for Firefox 3.5. (Trac: #414)
