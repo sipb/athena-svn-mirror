@@ -1,3 +1,9 @@
+debathena-linerva (1.38) unstable; urgency=low
+
+  * Add bash completion for linerva-install.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 27 Oct 2009 10:25:09 -0400
+
 debathena-linerva (1.37) unstable; urgency=low
 
   * Configure bitlbee not to run its system daemon.
