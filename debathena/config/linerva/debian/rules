@@ -22,3 +22,6 @@ DEB_UPDATE_RCD_PARAMS_debathena-linerva = "start 65 S ."
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
+
+binary-install/debathena-linerva::
+	dh_bash-completion -pdebathena-linerva
