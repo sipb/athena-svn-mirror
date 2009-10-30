@@ -88,7 +88,7 @@ int	owidth = 80, gutter = 2;
 void	  usage(char *, char *);
 void	  getargs(int, char *[]);
 void	  getfile(void);
-int	  getline(void);
+int	  rs_getline(void);
 char	 *getlist(short **, char *);
 char	 *getnum(int *, char *, int);
 char	**getptrs(char **);
@@ -128,11 +128,11 @@ getfile()
 	char **padto;
 
 	while (skip--) {
-		getline();
+		rs_getline();
 		if (flags & SKIPPRINT)
 			puts(curline);
 	}
-	getline();
+	rs_getline();
 	if (flags & NOARGS && curlen < owidth)
 		flags |= ONEPERLINE;
 	if (flags & ONEPERLINE)
@@ -178,7 +178,7 @@ getfile()
 				INCR(ep);
 			}
 		}
-	} while (getline() != EOF);
+	} while (rs_getline() != EOF);
 	*ep = 0;				/* mark end of pointers */
 	nelem = ep - elem;
 }
@@ -334,7 +334,7 @@ prepfile()
 char	ibuf[BSIZE];		/* two screenfuls should do */
 
 int
-getline()	/* get line; maintain curline, curlen; manage storage */
+rs_getline()	/* get line; maintain curline, curlen; manage storage */
 {
 	static	int putlength;
 	static	char *endblock = ibuf + BSIZE;

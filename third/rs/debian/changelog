@@ -1,3 +1,10 @@
+debathena-rs (10.0.3) unstable; urgency=low
+
+  * Rename getline to rs_getline to avoid conflicting with the getline in
+    <stdio.h>.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 29 Oct 2009 22:23:09 -0400
+
 debathena-rs (10.0.2) unstable; urgency=low
 
   * Remove BSD license 4th clause, as per
