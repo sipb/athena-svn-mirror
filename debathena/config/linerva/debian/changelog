@@ -1,8 +1,9 @@
 debathena-linerva (1.39) unstable; urgency=low
 
   * Set mmap_min_addr to 65536.
+  * Also make /var/run/screen sticky after screen-cleanup runs.
 
- -- Evan Broder <broder@mit.edu>  Wed, 04 Nov 2009 14:46:43 -0500
+ -- Evan Broder <broder@mit.edu>  Wed, 04 Nov 2009 14:54:45 -0500
 
 debathena-linerva (1.38) unstable; urgency=low
 

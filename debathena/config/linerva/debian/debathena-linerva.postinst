@@ -53,8 +53,10 @@ case "$1" in
 
 	if hash invoke-rc.d; then
 	    invoke-rc.d openafs-client restart
+	    invoke-rc.d procps force-reload
 	else
 	    /etc/init.d/openafs-client restart
+	    /etc/init.d/procps force-reload
 	fi
 
         # Install the http redirect inetd service
