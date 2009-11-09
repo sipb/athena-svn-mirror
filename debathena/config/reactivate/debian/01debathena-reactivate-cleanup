@@ -11,4 +11,6 @@ for daemon in $daemons; do
     invoke-rc.d "$daemon" start || [ $? = 100 ]
 done
 
+/usr/lib/debathena-reactivate/reactivate
+
 rm /var/run/athena-login

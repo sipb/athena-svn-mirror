@@ -1,38 +1,3 @@
 #!/bin/sh
 
-set -e
-
-addgroups="admin lpadmin adm fuse cdrom floppy audio video plugdev scanner dialout"
-daemons="$(/usr/sbin/policy-rc.d --daemons)"
-
-# Setup
-
-session=$(schroot -c login -b)
-for group in $addgroups; do
-    schroot -c "$session" -r -u root -- gpasswd -a "$USER" "$group"
-done
-
-schroot -c "$session" -r -u root -- sed -i "/su-error/d" "/etc/pam.d/su.debathena"
-
-for daemon in $daemons; do
-    schroot -c "$session" -r -u root -- invoke-rc.d "$daemon" start || [ $? = 100 ]
-done
-
-schroot -c "$session" -r -u root -- touch /ClusterLogin
-
-schroot -c "$session" -r -u root -- rm /etc/debian_chroot
-
-# Run the session
-#
-# We wrap the Xsession in sudo because it runs initgroups(3)
-# /after/ being chrooted, which puts users back in the groups we
-# added them to
-schroot -c "$session" -r -p -- sudo -E -u "$USER" -- /etc/gdm/Xsession.debathena-orig "$@"
-
-# Teardown
-
-for daemon in $daemons; do
-    schroot -c "$session" -r -u root -- invoke-rc.d "$daemon" stop || [ $? = 100 ]
-done
-
-schroot -c "$session" -e
+exec /usr/lib/debathena-reactivate/snapshot-run /etc/gdm/Xsession.debathena-orig "$@"

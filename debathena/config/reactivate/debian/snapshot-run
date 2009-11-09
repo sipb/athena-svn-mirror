@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# snapshot-run PROGRAM [ARGS]
+# Create an Athena login snapshot, run PROGRAM within it, and clean up
+# the snapshot.
+#
+# This script is run as the user who is logging in, usually as a wrapper
+# around their Xsession or shell. You probably want to run reactivate
+# immediately afterwards, as root.
+
+set -e
+
+addgroups="admin lpadmin adm fuse cdrom floppy audio video plugdev scanner dialout"
+daemons="$(/usr/sbin/policy-rc.d --daemons)"
+
+# Setup
+
+session=$(schroot -c login -b)
+for group in $addgroups; do
+    schroot -c "$session" -r -u root -- gpasswd -a "$USER" "$group"
+done
+
+schroot -c "$session" -r -u root -- sed -i "/su-error/d" "/etc/pam.d/su.debathena"
+
+for daemon in $daemons; do
+    schroot -c "$session" -r -u root -- invoke-rc.d "$daemon" start || [ $? = 100 ]
+done
+
+schroot -c "$session" -r -u root -- touch /ClusterLogin
+
+schroot -c "$session" -r -u root -- rm /etc/debian_chroot
+
+# Run the session
+#
+# We wrap the target command in sudo because it runs initgroups(3)
+# /after/ being chrooted, which puts users back in the groups we
+# added them to
+
+set +e
+
+schroot -c "$session" -r -p -- sudo -E -u "$USER" -- "$@"
+
+# Teardown
+
+for daemon in $daemons; do
+    schroot -c "$session" -r -u root -- invoke-rc.d "$daemon" stop || [ $? = 100 ]
+done
+
+schroot -c "$session" -e

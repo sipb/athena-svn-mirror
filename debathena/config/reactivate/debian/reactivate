@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+# Cleans up after a login snapshot to make the machine ready for the
+# next login.
+#
+# This script may choose to reboot the machine in order to clear
+# user processes or processes using the login snapshot, although
+# that circumstance should be fairly rare.
+
+set -e
+exec >>/var/log/athena-reactivate 2>&1
+
+# Stop any daemons that were specifically started inside the
+# chroot
+for daemon in $daemons; do
+  invoke-rc.d $daemon restart || [ $? = 100 ]
+done
+
+# schroot has already attempted to kill everything inside the chroot,
+# fairly thoroughly. Our job here is to determine if anything is stuck
+# after a kill -9, and reboot.
+for i in /var/lib/schroot/mount/*; do
+  if mountpoint -q "$i"; then
+    touch /var/run/reboot-required
+    break
+  fi
+done
+if [ -n "$USER" -a "$USER" != root ]; then
+  if pgrep -u "$USER"; then
+    touch /var/run/reboot-required
+  fi
+fi
+
+# If either we or an updated package wanted to reboot, now is a
+# perfectly good time to do so -- auto-update is inhibited during a
+# login session.
+if [ -e /var/run/reboot-required ]; then
+  reboot
+fi
