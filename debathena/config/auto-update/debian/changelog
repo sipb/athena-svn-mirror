@@ -2,8 +2,9 @@ debathena-auto-update (1.12) unstable; urgency=low
 
   * Inhibit updates during a cluster login.
   * Write an /etc/nologin-style file in /var/run while updating.
+  * Slow updates to a 6-hour (desync'd) schedule during waking hours.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Fri, 06 Nov 2009 23:58:30 -0500
+ -- Geoffrey Thomas <geofft@mit.edu>  Sun, 08 Nov 2009 21:46:52 -0500
 
 debathena-auto-update (1.11.2) unstable; urgency=low
 
