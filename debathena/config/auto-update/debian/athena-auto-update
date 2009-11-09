@@ -30,6 +30,11 @@ if [ 0 != "$(id -u)" ]; then
   exit 1
 fi
 
+# Don't run updates during a cluster login.
+if [ -e /var/run/athena-login ]; then
+  exit 0
+fi
+
 # Avoid confusing the system by running two updates at once.
 pidfile=/var/run/athena-update.pid
 if [ -e $pidfile ]; then
@@ -48,14 +53,21 @@ exec </dev/null
 exec >>/var/log/athena-update 2>&1
 
 # Write a log header now and a footer at exit.
+# Also write a target for cluster's /etc/nologin symlink.
 echo "-----"
 echo "** Beginning Athena auto-update at $(date)"
+
+cat > /var/run/athena-nologin << NOLOGIN
+This system is currently taking software updates.
+Please log in to a different system.
+NOLOGIN
 
 finish() {
     echo "** Ending Athena auto-update at $(date)"
     echo "-----"
     echo
     rm -f $pidfile
+    rm -f /var/run/athena-nologin
     exit
 }
 trap finish EXIT

@@ -1,3 +1,10 @@
+debathena-auto-update (1.12) unstable; urgency=low
+
+  * Inhibit updates during a cluster login.
+  * Write an /etc/nologin-style file in /var/run while updating.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 06 Nov 2009 23:58:30 -0500
+
 debathena-auto-update (1.11.2) unstable; urgency=low
 
   * Unrevert "Use the apt_release key", and fix the bugginess.
