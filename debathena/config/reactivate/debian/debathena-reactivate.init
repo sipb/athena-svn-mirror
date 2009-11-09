@@ -26,6 +26,13 @@ case "$1" in
 	# because aufs won't let you put an overlay and underlay on the
 	# same file system.
 	domount tmpfs "" /var/lib/schroot/union/overlay tmpfs -osize=1073741824
+
+	# Enable subtree operations on /media by making it a mount point,
+	# then share it.
+	if ! mountpoint -q /media; then
+	    mount --bind /media /media
+	    mount --make-shared /media
+	fi
 	;;
   restart|reload|force-reload)
 	echo "Error: argument '$1' not supported" >&2
