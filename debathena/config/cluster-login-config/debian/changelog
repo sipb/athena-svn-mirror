@@ -1,3 +1,10 @@
+debathena-cluster-login-config (1.18) unstable; urgency=low
+
+  * Revert 1.16; set the root password for both quickstation and
+    non-quickstation machines.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 10 Nov 2009 16:30:50 -0500
+
 debathena-cluster-login-config (1.17) unstable; urgency=low
 
   * Deny everybody sudo privileges by default, then override that for the
