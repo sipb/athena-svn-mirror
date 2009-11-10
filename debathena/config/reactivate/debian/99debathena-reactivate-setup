@@ -2,7 +2,7 @@
 # gdm login session.  gdm blocks until it finishes.
 
 # Stop daemons that need to be restarted inside the chroot
-daemons=$(/usr/bin/policy-rc.d --daemons)
+daemons=$(/usr/sbin/policy-rc.d --daemons)
 for daemon in $daemons; do
     invoke-rc.d "$daemon" stop || [ $? = 100 ]
 done
