@@ -17,3 +17,5 @@ if [ $? -eq 0 -a -s $base.csh.new ]; then
   rm -f $base.csh
   mv $base.csh.new $base.csh
 fi
+
+run-parts /usr/share/debathena-clusterinfo/update.d
