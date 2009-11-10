@@ -7,15 +7,14 @@ ver=10
 getcluster -b $ver > $base.sh.new
 if [ $? -eq 0 -a -s $base.sh.new ]; then
   chmod 644 $base.sh.new
-  rm -f $base.sh
-  mv $base.sh.new $base.sh
+  mv -fT $base.sh.new $base.sh
 fi
 
 getcluster $ver > $base.csh.new
 if [ $? -eq 0 -a -s $base.csh.new ]; then
   chmod 644 $base.csh.new
-  rm -f $base.csh
-  mv $base.csh.new $base.csh
+  mv -fT $base.csh.new $base.csh
 fi
 
+. $base.sh
 run-parts /usr/share/debathena-clusterinfo/update.d
