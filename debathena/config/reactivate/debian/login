@@ -6,3 +6,5 @@ root-groups=nss-local-users,nss-nonlocal-users
 script-config=script-athena
 directory=/
 union-type=aufs
+# Don't filter out any environment variables
+environment-filter=^$
