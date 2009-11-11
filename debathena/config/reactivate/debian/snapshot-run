@@ -9,6 +9,7 @@
 # immediately afterwards, as root.
 
 set -e
+cd /
 
 addgroups="admin lpadmin adm fuse cdrom floppy audio video plugdev scanner dialout"
 daemons="$(/usr/sbin/policy-rc.d --daemons)"
@@ -38,7 +39,9 @@ schroot -c "$session" -r -u root -- rm /etc/debian_chroot
 
 set +e
 
+cd
 schroot -c "$session" -r -p -- sudo -E -u "$USER" -- "$@"
+cd /
 
 # Teardown
 
