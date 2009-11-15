@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.19-0debathena2) unstable; urgency=low
+
+  * Punt debathena-bash and debathena-tcsh recommendations.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 15 Nov 2009 15:30:37 -0500
+
 debathena-dotfiles (10.0.19-0debathena1) unstable; urgency=low
 
   * Fix the test of from's availability.
