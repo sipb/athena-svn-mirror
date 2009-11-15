@@ -25305,10 +25305,10 @@ _ACEOF
 
 fi
 
-{ echo "$as_me:$LINENO: checking for boost::program_options::variables_map in -lboost_program_options" >&5
-echo $ECHO_N "checking for boost::program_options::variables_map in -lboost_program_options... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking for boost::program_options::variables_map in -lboost_program_options-mt" >&5
+echo $ECHO_N "checking for boost::program_options::variables_map in -lboost_program_options-mt... $ECHO_C" >&6; }
 saved_LIBS="${LIBS}"
-LIBS="${LIBS} -lboost_program_options"
+LIBS="${LIBS} -lboost_program_options-mt"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -25344,7 +25344,7 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
        $as_test_x conftest$ac_exeext; then
   { echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6; }
-	        BOOST_LIBS="${BOOST_LIBS} -lboost_program_options"
+	        BOOST_LIBS="${BOOST_LIBS} -lboost_program_options-mt"
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
@@ -25362,10 +25362,10 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS="${saved_LIBS}"
 
-{ echo "$as_me:$LINENO: checking for boost::program_options::options_description::options() in -lboost_program_options" >&5
-echo $ECHO_N "checking for boost::program_options::options_description::options() in -lboost_program_options... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking for boost::program_options::options_description::options() in -lboost_program_options-mt" >&5
+echo $ECHO_N "checking for boost::program_options::options_description::options() in -lboost_program_options-mt... $ECHO_C" >&6; }
 saved_LIBS="${LIBS}"
-LIBS="${LIBS} -lboost_program_options"
+LIBS="${LIBS} -lboost_program_options-mt"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -25425,10 +25425,10 @@ _ACEOF
 
 fi
 
-{ echo "$as_me:$LINENO: checking for boost::regex in -lboost_regex" >&5
-echo $ECHO_N "checking for boost::regex in -lboost_regex... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking for boost::regex in -lboost_regex-mt" >&5
+echo $ECHO_N "checking for boost::regex in -lboost_regex-mt... $ECHO_C" >&6; }
 saved_LIBS="${LIBS}"
-LIBS="${LIBS} -lboost_regex"
+LIBS="${LIBS} -lboost_regex-mt"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -25464,7 +25464,7 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
        $as_test_x conftest$ac_exeext; then
   { echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6; }
-	        BOOST_LIBS="${BOOST_LIBS} -lboost_regex"
+	        BOOST_LIBS="${BOOST_LIBS} -lboost_regex-mt"
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
@@ -25482,10 +25482,10 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS="${saved_LIBS}"
 
-{ echo "$as_me:$LINENO: checking for boost::filesystem in -lboost_filesystem" >&5
-echo $ECHO_N "checking for boost::filesystem in -lboost_filesystem... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking for boost::filesystem in -lboost_filesystem-mt" >&5
+echo $ECHO_N "checking for boost::filesystem in -lboost_filesystem-mt... $ECHO_C" >&6; }
 saved_LIBS="${LIBS}"
-LIBS="${LIBS} -lboost_filesystem"
+LIBS="${LIBS} -lboost_filesystem-mt"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -25521,7 +25521,7 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
        $as_test_x conftest$ac_exeext; then
   { echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6; }
-	        BOOST_FILESYSTEM_LIBS="-lboost_filesystem"
+	        BOOST_FILESYSTEM_LIBS="-lboost_filesystem-mt"
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
