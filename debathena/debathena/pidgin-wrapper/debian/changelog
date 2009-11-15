@@ -1,3 +1,9 @@
+debathena-pidgin-wrapper (10.0.4) unstable; urgency=low
+
+  * Check ATHENA_USER before using USER. (Trac: #428)
+
+ -- Evan Broder <broder@mit.edu>  Sun, 15 Nov 2009 16:23:12 -0500
+
 debathena-pidgin-wrapper (10.0.3) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
