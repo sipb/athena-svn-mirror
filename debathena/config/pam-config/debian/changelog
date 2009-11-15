@@ -1,3 +1,9 @@
+debathena-pam-config (1.17) unstable; urgency=low
+
+  * Only enable libpam-krb524 if krb4 is actually available. (Trac: #418)
+
+ -- Evan Broder <broder@mit.edu>  Sun, 15 Nov 2009 16:36:44 -0500
+
 debathena-pam-config (1.16.3) unstable; urgency=low
 
   * Make that a Breaks and not a Conflicts, because Conflicting with
