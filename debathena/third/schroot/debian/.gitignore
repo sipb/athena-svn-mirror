@@ -1,0 +1,13 @@
+dchroot-dsa
+dchroot
+files
+install
+libsbuild-dev
+libsbuild-doc
+schroot-common
+schroot
+schroot-dbg
+build
+*.debhelper
+*.log
+*.substvars
