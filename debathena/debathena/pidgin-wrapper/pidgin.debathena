@@ -17,7 +17,7 @@ if [ ! -f "$HOME/.purple/accounts.xml" ]; then
 <accounts version='1.0'>
  <account>
   <protocol>prpl-jabber</protocol>
-  <name>${ATHENA_USER:-USER}@mit.edu/Pidgin</name>
+  <name>${ATHENA_USER:-$USER}@mit.edu/Pidgin</name>
   <settings>
    <setting name='athena' type='bool'>1</setting>
    <setting name='require_tls' type='bool'>1</setting>
