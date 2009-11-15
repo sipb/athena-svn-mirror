@@ -1,9 +1,15 @@
-debathena-schroot (1.3.1-1debathena1) experimental; urgency=low
+schroot (1.3.1-1debathena1) experimental; urgency=low
 
+  [ Geoffrey Thomas ]
   * Backport to Jaunty, and fix build dependencies and build process.
   * Permit union schroots of the root filesystem.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Sun, 25 Oct 2009 22:16:14 -0400
+  [ Evan Broder ]
+  * Provide debathena-schroot.
+  * Move to the debathena-system component
+  * Update the package description.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 15 Nov 2009 12:39:22 -0500
 
 schroot (1.3.1-1) experimental; urgency=low
 
