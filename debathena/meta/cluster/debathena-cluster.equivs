@@ -3,11 +3,10 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 1.5
+Version: 1.5.1
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-cluster-branding,
  debathena-workstation,
- debathena-cluster-login-config,
  debathena-larvnet,
  debathena-reactivate,
  debathena-syslog-config,
