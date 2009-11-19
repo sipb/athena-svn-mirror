@@ -20,10 +20,10 @@ The current procedures do not even use this svn repository yet.
 Debian software used by Debathena:
 
   * schroot - Used to manage build chroot environments for each
-    Debian/Ubuntu version.  We use the lvm-snapshot schroot type,
-    which allows rapid construction of ephemeral copies of template
-    "source" chroots, so that every binary package build is done in a
-    clean environment.
+    Debian/Ubuntu version.  We use the device schroot type with aufs
+    union mounts, which allows rapid construction of ephemeral copies
+    of template "source" chroots, so that every binary package build
+    is done in a clean environment.
 
   * debuild - Used to create Debian source packages from package
     source directories.
@@ -335,9 +335,10 @@ Release engineer: Setting up a build server
      (using "aptitude install").
 
      Note that currently the build system uses the latest version of
-     sbuild, so if you have not installed Debian testing, you'll
-     need to set up apt pinning to grab sbuild from there. See the
-     apt_preferences man page.
+     sbuild, so if you have not installed Debian testing, you'll need
+     to set up apt pinning to grab sbuild from there. See the
+     apt_preferences man page. You'll also need to grab schroot from
+     Debian experimental.
 
   5. Install debathena-standard, debathena-ssh-server, and
      debathena-build-depends (using "aptitude install").
@@ -347,26 +348,27 @@ Release engineer: Setting up a build server
      build-depends of newer packages.  This can be taken care of later
      when an error occurs building a source package.)
 
-  6. Append to /etc/approx/approx.conf the contents of
+  6. Install the module-assistant package and build the aufs kernel
+     module by running "m-a -ti a-i aufs"
+
+  7. Append to /etc/approx/approx.conf the contents of
       scripts/build-server/approx.conf.tail.
      Run: /etc/init.d/approx restart
 
-  7. Apply scripts/build-server/mount-defaults.patch.
+  8. Apply scripts/build-server/mount-defaults.patch.
 
-  8. Edit /etc/lvm/lvm.conf and change "archive = 1" to "archive = 0"
-     in order to avoid generating a bazillion backup files under
-     /etc/lvm/archive.
+  9. Copy scripts/build-server/07debathena to /etc/schroot/setup.d/
 
-  9. For each supported DIST (see scripts/debian-versions.sh) run:
+  10. For each supported DIST (see scripts/debian-versions.sh) run:
 
-       VG=/dev/blah scripts/build-server/make-chroot DIST i386
-       VG=/dev/blah scripts/build-server/make-chroot DIST amd64
+        VG=/dev/blah scripts/build-server/make-chroot DIST i386
+        VG=/dev/blah scripts/build-server/make-chroot DIST amd64
 
-     substituting the name of the volume group for blah.
+      substituting the name of the volume group for blah.
 
-     Example: VG=/dev/dink scripts/build-server/make-chroot intrepid i386
+      Example: VG=/dev/dink scripts/build-server/make-chroot intrepid i386
 
-  10. Create a local account for builder with:
+  11. Create a local account for builder with:
 
         adduser --uid 1047 --disabled-password builder
 
