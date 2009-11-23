@@ -1,10 +1,7 @@
 #!/bin/sh
 
-daemons="cups|cupsys"
-
 if [ "--daemons" = "$1" ]; then
-    IFS='|'
-    echo $daemons
+    echo cups cupsys
     exit
 fi
 
@@ -19,7 +16,7 @@ if ! [ -e /var/run/athena-login ]; then
     exit 0
 elif [ -e /ClusterLogin ]; then
     case "$1" in
-        $daemons)
+        cups|cupsys)
             exit 0
             ;;
         *)
@@ -28,7 +25,7 @@ elif [ -e /ClusterLogin ]; then
     esac
 else
     case "$1" in
-        $daemons)
+        cups|cupsys)
             exit 101
             ;;
         *)

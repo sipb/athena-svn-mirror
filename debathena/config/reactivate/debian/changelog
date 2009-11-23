@@ -1,8 +1,12 @@
 debathena-reactivate (2.0.2) unstable; urgency=low
 
   * Clean up the CUPS remote queue cache on logout and package upgrades.
+  * Fix the policy-rc.d to actually allow for restarting cups and cupsys
+    inside the chroot. Apparently pipes can delineate patterns, but don't
+    mean anything within a single pattern, such as the one one pattern
+    that results from variable expansion.
 
- -- Evan Broder <broder@mit.edu>  Mon, 23 Nov 2009 13:57:35 -0500
+ -- Evan Broder <broder@mit.edu>  Mon, 23 Nov 2009 15:51:42 -0500
 
 debathena-reactivate (2.0.1) unstable; urgency=low
 
