@@ -1,3 +1,9 @@
+debathena-reactivate (2.0.2) unstable; urgency=low
+
+  * Clean up the CUPS remote queue cache on logout and package upgrades.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 23 Nov 2009 13:57:35 -0500
+
 debathena-reactivate (2.0.1) unstable; urgency=low
 
   * Various bugfixes:

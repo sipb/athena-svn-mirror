@@ -89,6 +89,26 @@ EOF
 	cleanup_old_diversion /etc/gdm/PreSession/Default
 	cleanup_old_diversion /etc/gdm/PostSession/Default
 
+	# Make printing suck less
+	if hash invoke-rc.d >/dev/null 2>&1; then
+	    invoke-rc.d cups stop || invoke-rc.d cupsys stop
+	else
+	    /etc/init.d/cups stop || /etc/init.d/cupsys stop
+	fi
+	rm /var/cache/cups/remote.cache
+	if hash invoke-rc.d >/dev/null 2>&1; then
+	    invoke-rc.d cups start || invoke-rc.d cupsys start
+	else
+	    /etc/init.d/cups stop || /etc/init.d/cupsys start
+	fi
+
+	browse_host="$(sed -ne '/^BrowsePoll/ { s/^BrowsePoll //p; q }' /etc/cups/cupsd.conf)"
+	if [ -n "$browse_host" ];
+	    queue_count=$(lpstat -h "$browse_host" -a | wc -l)
+	    while [ $(lpstat -a | wc -l) -lt $queue_count ]; do
+		sleep 1
+	    done
+	fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
