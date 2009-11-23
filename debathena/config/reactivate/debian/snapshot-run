@@ -23,11 +23,11 @@ done
 
 schroot -c "$session" -r -u root -- sed -i "/su-error/d" "/etc/pam.d/su.debathena"
 
+schroot -c "$session" -r -u root -- touch /ClusterLogin
+
 for daemon in $daemons; do
     schroot -c "$session" -r -u root -- invoke-rc.d "$daemon" start || [ $? = 100 ]
 done
-
-schroot -c "$session" -r -u root -- touch /ClusterLogin
 
 schroot -c "$session" -r -u root -- rm /etc/debian_chroot
 

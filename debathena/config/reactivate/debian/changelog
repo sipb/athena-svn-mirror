@@ -1,3 +1,11 @@
+debathena-reactivate (2.0.3) unstable; urgency=low
+
+  * Now that policy-rc.d isn't blindly allowing stops and starts for
+    anything in the chroot, we should be sure that the chroot actually
+    knows it's a chroot before we try to start CUPS in it.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 23 Nov 2009 16:14:12 -0500
+
 debathena-reactivate (2.0.2) unstable; urgency=low
 
   * Clean up the CUPS remote queue cache on logout and package upgrades.
