@@ -1,3 +1,10 @@
+debathena-xsession (1.11.3) unstable; urgency=low
+
+  * Define a message function for use by Xsession.d scripts if the
+    Xsession script has not done so.
+
+ -- Robert Basch <rbasch@mit.edu>  Tue, 24 Nov 2009 18:52:13 -0500
+
 debathena-xsession (1.11.2) unstable; urgency=low
 
   * Punt debathena-bash and debathena-tcsh recommendations.
