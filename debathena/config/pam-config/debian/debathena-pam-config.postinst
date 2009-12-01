@@ -25,7 +25,7 @@ hardy_files="
 if [ "$1" = "configure" ]; then
     if hash pam-auth-update 2>/dev/null; then
         force=
-        if dpkg --compare-versions "$2" lt 1.7 \
+        if dpkg --compare-versions "$2" lt 1.7~ \
             && (echo "$debathena_hardy_files" | md5sum --status -c /dev/stdin \
                 || echo "$hardy_files" | md5sum --status -c /dev/stdin); then
             force=--force
