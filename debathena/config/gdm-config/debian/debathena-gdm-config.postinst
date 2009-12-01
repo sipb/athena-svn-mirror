@@ -72,6 +72,7 @@ case "$1" in
 	if dpkg --compare-versions "$gdm_version" ge '2.25.2~'; then
 	    cleanup_old_diversion /etc/gdm/gdm.conf
 	    cleanup_old_diversion /etc/gdm/gdm.conf-custom
+	    cleanup_old_diversion /usr/share/gdm/BuiltInSessions/default.desktop
 	fi
 
         if test -f /var/run/gdm.pid ; then

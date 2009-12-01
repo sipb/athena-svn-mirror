@@ -1,3 +1,12 @@
+debathena-gdm-config (1.18) unstable; urgency=low
+
+  * Don't divert /usr/share/gdm/BuiltInSessions/default.desktop in
+    the new gdm, where it no longer exists. (Trac: #447)
+  * Add a gconf default to disable the user list in the new gdm.
+    (Trac: #429)
+
+ -- Robert Basch <rbasch@mit.edu>  Tue, 01 Dec 2009 17:36:04 -0500
+
 debathena-gdm-config (1.17) unstable; urgency=low
 
   * Don't configure /etc/gdm/gdm.conf{,-custom} on post-gdm-2.20

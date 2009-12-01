@@ -14,14 +14,15 @@ DEB_DIVERT_EXTENSION = .debathena
 DEB_TRANSFORM_SCRIPT_${GDM_CONFFILE} = debian/transform_gdm.conf.debathena
 DEB_DIVERT_FILES_debathena-gdm-config += \
 	/etc/gdm/PreSession/Default.debathena \
-	/etc/gdm/PostSession/Default.debathena \
-	/usr/share/gdm/BuiltInSessions/default.desktop.debathena
+	/etc/gdm/PostSession/Default.debathena
 DEB_REMOVE_FILES_debathena-gdm-config += \
 	/usr/share/xsessions/ssh.desktop
 
 ifneq ($(NEW_GDM),y)
     DEB_TRANSFORM_FILES_debathena-gdm-config += \
 	${GDM_CONFFILE}
+    DEB_DIVERT_FILES_debathena-gdm-config += \
+	/usr/share/gdm/BuiltInSessions/default.desktop.debathena
 endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk
@@ -31,6 +32,14 @@ common-build-indep:: debathena/distro.svg
 
 debathena/distro.svg: debian/distro.svg.sh
 	sh $< > $@
+
+ifneq ($(NEW_GDM),y)
+    install/debathena-gdm-config::
+	dh_install debian/default.desktop.debathena usr/share/gdm/BuiltInSessions
+else
+    install/debathena-gdm-config::
+	dh_gconf --priority 90
+endif
 
 clean::
 	-rm debathena/distro.svg
