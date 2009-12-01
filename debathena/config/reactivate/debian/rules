@@ -11,7 +11,7 @@ DEB_REMOVE_FILES_debathena-reactivate += \
 
 DEB_UNDIVERT_FILES_debathena-reactivate += \
 	/etc/pam.d/sudo.debathena
-DEB_UNDIVERT_VERSION_/etc/pam.d/sudo.debathena = 1.25.2
+DEB_UNDIVERT_VERSION_/etc/pam.d/sudo.debathena = 1.25.2~
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
