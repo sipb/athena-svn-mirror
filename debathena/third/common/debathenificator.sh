@@ -21,6 +21,7 @@ arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 : ${section=debathena-system}
 : ${daname=$name}
 : ${release=-proposed}
+: ${maint=Debathena Project <debathena@mit.edu>}
 . /mit/debathena/bin/debian-versions.sh
 tag=$(gettag $dist)
 
@@ -63,6 +64,13 @@ add_debathena_provides () {
     add_changelog "Provide debathena-$name."
 }
 
+set_debathena_maintainer() {
+    orig_maint="$(python -c 'from rfc822 import Message, AddressList as al; f = open("debian/control"); m=Message(f); print al(m.get("Maintainer")) + al(m.get("XSBC-Original-Maintainer"))')"
+    sed -i -e '/^\(XSBC-Original-Maintainer\|Maintainer\)/d' debian/control
+    MAINT="$maint" ORIG_MAINT="$orig_maint" perl -0pe 's/\n\n/\nMaintainer: $ENV{MAINT}\nXSBC-Original-Maintainer: $ENV{ORIG_MAINT}\n\n/' -i debian/control
+    add_changelog "Update Maintainer to $maint."
+}
+
 rename_source () {
     perl -pe "s{^Source: $name\$}{Source: $daname}" -i debian/control
     add_changelog "Rename package to $daname."
@@ -91,6 +99,7 @@ cmd_source () {
 	    dpkg-source -x "$dscdir/${name}_$version.dsc" "$tmpdir/$name-$origversion"
 	    cd "$tmpdir/$name-$origversion"
 	    dch_done=
+	    schr apt-get -q -y install python
 	    hack_package
             if [ "$name" != "$daname" ]; then
                 rename_source
