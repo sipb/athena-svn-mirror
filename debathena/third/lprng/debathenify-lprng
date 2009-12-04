@@ -3,7 +3,7 @@ set -e
 
 name=lprng
 daname=debathena-lprng
-daversionappend=debathena5
+daversionappend=debathena6
 section=debathena
 
 hack_package () {
@@ -15,6 +15,7 @@ hack_package () {
     perl -pe '/^Replaces/ && s/lpr/lprng/' -i debian/control
 
     perl -n -i - debian/rules << 'EOS'
+
 	if (/^build:/) {
 	    # lprng has a gcc 4.2.3-related build failure on some dists.
 	    # src/common/plp_snprintf.c uses a macro safestrlen() on
@@ -33,7 +34,7 @@ hack_package () {
 	print;
 
 	# Rename the commands.
-	if (/^[^#]*MAKE.*install/) {
+	if (/^(?:[^#]*MAKE.*install|\tdh_auto_install)/) {
 	    my $usr = "debian/debathena-lprng/usr";
 	    my $man1 = "$usr/share/man/man1";
 	    my $man8 = "$usr/share/man/man8";
@@ -57,6 +58,8 @@ hack_package () {
 	    print "\tmv $man8/lpc.8 $man8/mit-lpc.8\n";
 	}
 EOS
+
+    grep -q 'mit-lpr' debian/rules
 
     # The postinst script sets or unsets the setuid bit of
     # lpr/lprm/lpq and thus needs to be adjusted for the command
