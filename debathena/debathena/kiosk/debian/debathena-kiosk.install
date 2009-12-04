@@ -1,8 +1,10 @@
-index.html usr/lib/debathena-kiosk
+index.html usr/share/debathena-kiosk
 launch-kiosk usr/lib/debathena-kiosk
-prefs.js usr/lib/debathena-kiosk
-r-kiosk.xpi usr/lib/debathena-kiosk
-userChrome.css usr/lib/debathena-kiosk
-xinitrc usr/lib/debathena-kiosk
-images usr/lib/debathena-kiosk
-styles usr/lib/debathena-kiosk
+prefs.js usr/share/debathena-kiosk
+r-kiosk.xpi usr/share/debathena-kiosk
+userChrome.css usr/share/debathena-kiosk
+xinitrc usr/share/debathena-kiosk
+images usr/share/debathena-kiosk
+styles usr/share/debathena-kiosk
+gdm-launch-kiosk usr/lib/debathena-kiosk
+gdm-launch-kiosk.glade usr/share/debathena-kiosk

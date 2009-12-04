@@ -1,3 +1,11 @@
+debathena-kiosk (1.2) unstable; urgency=low
+
+  * Add a launcher GUI for the new gdm login window. (Trac: #431)
+  * Disable the tabs bar for Firefox 3.5.
+  * Move non-executables to /usr/share/debathena-kiosk.
+
+ -- Robert Basch <rbasch@mit.edu>  Fri, 04 Dec 2009 16:41:59 -0500
+
 debathena-kiosk (1.1) unstable; urgency=low
 
   * Enable the URL and search bars.

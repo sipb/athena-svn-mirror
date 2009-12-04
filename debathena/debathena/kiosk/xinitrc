@@ -2,17 +2,17 @@
 
 # This is the xinit script for the kiosk user.
 
-libdir=/usr/lib/debathena-kiosk
+datadir=/usr/share/debathena-kiosk
 
 # The rkiosk extension's unique ID, and the location of its xpi file.
 rkiosk_id="{4D498D0A-05AD-4fdb-97B5-8A0AABC1FC5B}"
-rkiosk_xpi=$libdir/r-kiosk.xpi
+rkiosk_xpi=$datadir/r-kiosk.xpi
 
 # File with preferences to set in the firefox profile.
-prefs="$libdir/prefs.js"
+prefs="$datadir/prefs.js"
 
 # User chrome (UI customizations) file.
-chrome="$libdir/userChrome.css"
+chrome="$datadir/userChrome.css"
 
 cd || exit 1
 

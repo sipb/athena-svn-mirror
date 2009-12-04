@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
+<!--Generated with glade3 3.4.5 on Fri Nov 20 17:32:41 2009 -->
+<glade-interface>
+  <widget class="GtkWindow" id="KioskWindow">
+    <property name="title" translatable="yes">Kiosk</property>
+    <property name="accept_focus">False</property>
+    <property name="focus_on_map">False</property>
+    <property name="decorated">False</property>
+    <property name="gravity">GDK_GRAVITY_SOUTH</property>
+    <child>
+      <widget class="GtkHBox" id="KioskHbox">
+        <property name="visible">True</property>
+        <child>
+          <widget class="GtkButton" id="KioskButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="has_tooltip">True</property>
+            <property name="tooltip_text">Browse the web, register for an Athena account, etc.</property>
+            <property name="tooltip" translatable="yes">Browse the web, register for an Athena account, etc.</property>
+            <property name="label" translatable="yes">Browse</property>
+            <property name="response_id">0</property>
+            <signal name="clicked" handler="kioskButton_on_click"/>
+          </widget>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkDialog" id="KioskDialog">
+    <property name="border_width">5</property>
+    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+    <property name="decorated">False</property>
+    <property name="transient_for">KioskWindow</property>
+    <signal name="response" handler="kioskDialogResponseHandler"/>
+    <child internal-child="vbox">
+      <widget class="GtkVBox" id="dialog-vbox1">
+        <property name="visible">True</property>
+        <property name="spacing">2</property>
+        <child>
+          <widget class="GtkLabel" id="KioskDialogLabel">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Click OK to launch a restricted web browser.
+This can be used to register for an Athena account.
+Click Cancel to login to a standard Athena session.</property>
+            <property name="wrap">True</property>
+          </widget>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <widget class="GtkHButtonBox" id="dialog-action_area1">
+            <property name="visible">True</property>
+            <property name="layout_style">GTK_BUTTONBOX_SPREAD</property>
+            <child>
+              <widget class="GtkButton" id="KioskCancelbutton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="response_id">0</property>
+              </widget>
+            </child>
+            <child>
+              <widget class="GtkButton" id="KioskOKButton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">OK</property>
+                <property name="response_id">1</property>
+              </widget>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</glade-interface>

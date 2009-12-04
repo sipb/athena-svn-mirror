@@ -13,6 +13,12 @@
     display:none !important;
 }
 
+/* Do not display the tabs bar. */
+.tabbrowser-tabs
+{
+    display:none !important;
+}
+
 /* Disallow exit from fullscreen mode. */
 menuitem[label="Exit Full Screen Mode"]
 {

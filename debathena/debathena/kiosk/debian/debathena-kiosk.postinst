@@ -25,6 +25,16 @@ case "$1" in
         if ! getent passwd $user >/dev/null; then
             adduser --system --force-badname $user
         fi
+        # In the new gdm, the launcher is invoked as user gdm.
+        gdm_version="$(dpkg-query -W -f '${Version}' gdm)"
+        if dpkg --compare-versions "$gdm_version" ge '2.25.2~'; then
+            cat >>/etc/sudoers <<EOF
+### BEGIN debathena-kiosk
+# gdm can launch kiosk mode
+gdm ALL=NOPASSWD: /usr/lib/debathena-kiosk/launch-kiosk
+### END debathena-kiosk
+EOF
+        fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

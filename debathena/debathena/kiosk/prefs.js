@@ -12,6 +12,6 @@ user_pref("network.protocol-handler.external-default", false);
 user_pref("extensions.checkCompatibility", false);
 
 // Set the home page.
-user_pref("browser.startup.homepage", "file:///usr/lib/debathena-kiosk/index.html");
+user_pref("browser.startup.homepage", "file:///usr/share/debathena-kiosk/index.html");
 user_pref("startup.homepage_override_url", "");
 user_pref("startup.homepage_welcome_url", "");

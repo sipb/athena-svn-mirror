@@ -1,0 +1,75 @@
+#!/usr/bin/python -Wall
+
+import gtk
+import gtk.glade
+import gobject
+import time
+import os
+import sys
+import subprocess
+from optparse import OptionParser
+
+gladeFile = "/usr/share/debathena-kiosk/gdm-launch-kiosk.glade"
+launchCommand = "/usr/lib/debathena-kiosk/launch-kiosk"
+
+class Kiosk:
+    def __init__(self):
+        try:
+            self.xml = gtk.glade.XML(gladeFile)
+        except:
+            print "Failed to create Glade XML object."
+            sys.exit(1)
+        self.kioskWindow = self.xml.get_widget('KioskWindow')
+        self.kioskDialog = self.xml.get_widget('KioskDialog')
+        self.xml.signal_autoconnect(self)
+        # Turn off all window decorations for the login screen.
+        self.kioskWindow.set_decorated(False)
+        self.kioskDialog.set_decorated(False)
+        # Position the window near the bottom of the screen, in the center.
+        self.kioskWindow.set_gravity(gtk.gdk.GRAVITY_SOUTH)
+        width, height = self.kioskWindow.get_size()
+        self.kioskWindow.move((gtk.gdk.screen_width() - width) / 2,
+                              gtk.gdk.screen_height() - height - 80)
+        self.kioskWindow.show_all()
+
+    def kioskButton_on_click(self, button):
+        self.kioskDialog.show()
+
+    def kioskDialogResponseHandler(self, dialog, response_id):
+        if response_id == 1:
+            self.launch()
+        self.kioskDialog.hide()
+
+    def launch(self):
+        pid = os.fork()
+        if pid == 0:
+            # Start a new session.
+            os.setsid();
+            # Fork another child to launch the command.
+            pid = os.fork()
+            if pid == 0:
+                # Here in the second child, exec the command.
+                try:
+                    os.execlp("sudo", "sudo", "-n", launchCommand)
+                except OSError, e:
+                    print "error: Could not run %s as root: %s" % (launchCommand, e.strerror)
+                    os._exit(255)
+            else:
+                # The first child exits immediately.
+                os._exit(0)
+        else:
+            # Here in the parent: wait for the first child to exit.
+            (pid, status) = os.waitpid(pid, 0)
+            if status != 0:
+                print "error launching command, status %d" % status
+
+
+def main():
+    if not os.access(gladeFile, os.R_OK):
+        print 'error: Unable to read glade file "' + gladeFile + '"'
+        sys.exit(1)
+    Kiosk()
+    gtk.main()
+
+if __name__ == '__main__':
+    main()
