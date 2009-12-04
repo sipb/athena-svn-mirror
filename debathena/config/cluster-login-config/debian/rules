@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+GDM_VERSION = $(shell dpkg-query --showformat='$${Version}' --show gdm)
+NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' && echo y)
+
 DEB_DIVERT_EXTENSION = .debathena
 ifneq ($(wildcard /etc/gdm/gdm.conf-custom.debathena),)
     GDM_CONFFILE = /etc/gdm/gdm.conf-custom.debathena.debathena
@@ -7,8 +10,12 @@ else
     GDM_CONFFILE = /etc/gdm/gdm.conf.debathena.debathena
 endif
 DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
-	${GDM_CONFFILE} \
 	/etc/default/kexec.debathena
+
+ifneq ($(NEW_GDM),y)
+    DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
+	${GDM_CONFFILE}
+endif
 
 DEB_REMOVE_FILES_debathena-cluster-login-config += \
 	/etc/event.d/tty1 \

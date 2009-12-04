@@ -1,3 +1,10 @@
+debathena-cluster-login-config (1.19) unstable; urgency=low
+
+  * Don't configure /etc/gdm/gdm.conf{,-custom} on post-gdm-2.20
+    platforms.
+
+ -- Robert Basch <rbasch@mit.edu>  Fri, 04 Dec 2009 18:14:15 -0500
+
 debathena-cluster-login-config (1.18) unstable; urgency=low
 
   * Revert 1.16; set the root password for both quickstation and
