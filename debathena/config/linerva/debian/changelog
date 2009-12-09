@@ -1,3 +1,10 @@
+debathena-linerva (1.40) unstable; urgency=low
+
+  * Set a soft limit on memory to avoid processes ballooning out of
+    control.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 09 Dec 2009 16:29:10 -0500
+
 debathena-linerva (1.39) unstable; urgency=low
 
   * Set mmap_min_addr to 65536.

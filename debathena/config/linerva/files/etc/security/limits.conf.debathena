@@ -54,3 +54,4 @@ root		hard	maxlogins	100
 *		hard	nproc		200
 *		hard	nofile		1024
 *		hard	cpu		720
+*		soft	rss		1048576
