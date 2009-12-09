@@ -1,3 +1,9 @@
+debathena-cupsys-config (1.7) unstable; urgency=low
+
+  * Switch from cups.mit.edu to cluster-printers.mit.edu.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 09 Dec 2009 03:02:41 -0500
+
 debathena-cupsys-config (1.6) unstable; urgency=low
 
   * Revert version 1.5. Browsing is, in fact, needed to make BrowsePoll

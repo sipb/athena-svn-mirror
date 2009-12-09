@@ -4,4 +4,4 @@ s/$/\nBrowsing On/ or die;
 s/^\s*#?\s*BrowseProtocols.*$//m;
 s/$/\nBrowseProtocols cups/ or die;
 s/^\s*#?\s*BrowsePoll.*$//m;
-s/$/\nBrowsePoll cups.mit.edu/ or die;
+s/$/\nBrowsePoll cluster-printers.mit.edu/ or die;
