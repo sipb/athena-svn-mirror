@@ -26,8 +26,9 @@ case "$1" in
 	    /var/run/attachtab/mountpoint; do
 	    if ! [ -e "$dir" ]; then
 		mkdir -m 2770 "$dir"
-		chown root:attach "$dir"
 	    fi
+	    chown root:attach "$dir"
+	    chmod 2770 "$dir"
 	done
 	for lock in /var/run/attachtab/.lock \
 	    /var/run/attachtab/.dirlock; do
