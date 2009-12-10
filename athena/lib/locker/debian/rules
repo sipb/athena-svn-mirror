@@ -6,7 +6,6 @@ include /usr/share/cdbs/1/class/autotools.mk
 
 DEB_CONFIGURE_EXTRA_FLAGS += --with-afs=/usr --disable-nfs --with-krb5 --with-hesiod
 DEB_DH_INSTALL_SOURCEDIR = $(DEB_DESTDIR)
-DEB_DH_INSTALLINIT_ARGS = --no-start
 DEB_UPDATE_RCD_PARAMS = "start 65 S ."
 
 ifeq ($(DEB_BUILD_ARCH),amd64)

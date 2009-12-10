@@ -1,3 +1,15 @@
+debathena-liblocker (10.0.1-0debathena2) unstable; urgency=low
+
+  * Make /var/run/attachtab/.{,dir}lock owned by root at startup to
+    prevent a potential DoS from the first user to attach a locker.
+  * Make /var/run/attachtab/ 770 instead of 777 to prevent unprivileged
+    users from being able to get to and potentially manipulate entries
+    they created in the attachtab.
+  * Don't ship the attachtab as part of the package; instead create it
+    during installation by running the init script.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 10 Dec 2009 17:27:42 -0500
+
 debathena-liblocker (10.0.1-0debathena1) unstable; urgency=low
 
   * Add a configure-time option to tear the NFS (and therefore the krb4)
