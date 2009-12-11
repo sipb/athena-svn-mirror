@@ -9,14 +9,7 @@
 # Description:       Clean old Athena sessions from /var/run/athena-sessions.
 ### END INIT INFO
 
-if [ -e /lib/lsb/init-functions ]; then
-    . /lib/lsb/init-functions
-else
-    alias log_action_begin_msg="echo -n"
-    log_action_end_msg () {
-	echo .
-    }
-fi
+. /lib/lsb/init-functions
 
 clean_athena_sessions () {
     cd /var/run/athena-sessions || return 1
