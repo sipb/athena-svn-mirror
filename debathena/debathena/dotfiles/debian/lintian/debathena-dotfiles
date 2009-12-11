@@ -1,0 +1,2 @@
+debathena-dotfiles binary: non-standard-dir-in-usr usr/prototype_user/
+debathena-dotfiles binary: file-in-unusual-dir usr/prototype_user/*

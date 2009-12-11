@@ -1,8 +1,14 @@
 debathena-dotfiles (10.0.19-0debathena3) unstable; urgency=low
 
+  [ Evan Broder ]
   * Don't ship /var/run/athena-sessions as part of the package.
 
- -- Evan Broder <broder@mit.edu>  Thu, 10 Dec 2009 20:42:52 -0500
+  [ Geoffrey Thomas ]
+  * Install Lintian overrides for non-standard-dir-in-usr and
+    file-in-unusual-dir for /usr/prototype_user, which is a legacy
+    pathname we need to support indefinitely.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 10 Dec 2009 21:28:03 -0500
 
 debathena-dotfiles (10.0.19-0debathena2) unstable; urgency=low
 
