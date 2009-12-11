@@ -9,4 +9,3 @@ usr/lib/init/login
 usr/lib/init/bashrc
 usr/lib/init/bash_login
 usr/share/man/man*/*
-usr/share/lintian/overrides/debathena-dotfiles
