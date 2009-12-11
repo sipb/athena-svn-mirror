@@ -10,4 +10,6 @@ Architecture: any
 Provides: lam
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: "laminate" files by putting them into multi-column format
- "laminate" files by putting them into multi-column format
+ This utility combines files into columns, somewhat like paste(1).
+ Debathena provides it because it has traditionally been provided on
+ Athena and is not available in Debian.

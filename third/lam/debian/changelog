@@ -1,3 +1,10 @@
+debathena-lam (10.0.3) jaunty; urgency=low
+
+  * Flesh out the description to avoid the Lintian error
+    description-synopsis-is-duplicated.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 10 Dec 2009 21:04:55 -0500
+
 debathena-lam (10.0.2) unstable; urgency=low
 
   * Remove BSD license 4th clause, as per
