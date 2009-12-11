@@ -1,4 +1,4 @@
-debathena-lam (10.0.3) jaunty; urgency=low
+debathena-lam (10.0.3) unstable; urgency=low
 
   * Flesh out the description to avoid the Lintian error
     description-synopsis-is-duplicated.
