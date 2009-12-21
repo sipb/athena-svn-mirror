@@ -1,3 +1,11 @@
+debathena-reactivate (2.0.4) unstable; urgency=low
+
+  * Add some convenience functions to snapshot-run for running commands in
+    the chroot.
+  * Make sure that a group exists before we add users to it.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 21 Dec 2009 12:02:51 -0500
+
 debathena-reactivate (2.0.3) unstable; urgency=low
 
   * Now that policy-rc.d isn't blindly allowing stops and starts for
