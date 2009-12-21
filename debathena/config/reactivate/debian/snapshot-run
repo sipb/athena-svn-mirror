@@ -17,9 +17,9 @@ daemons="$(/usr/sbin/policy-rc.d --daemons)"
 # Setup
 
 session=$(schroot -c login -b)
-sch() { schroot -r -c "$session" -- "$@" }          # Run in the chroot
-schq() { schroot -q -r -c "$session" -- "$@" }      # Run in the chroot quietly
-schr() { schroot -r -c -u root "$session" -- "$@" } # Run in the chroot as root
+sch() { schroot -r -c "$session" -- "$@"; }          # Run in the chroot
+schq() { schroot -q -r -c "$session" -- "$@"; }      # Run in the chroot quietly
+schr() { schroot -r -c -u root "$session" -- "$@"; } # Run in the chroot as root
 
 for group in $addgroups; do
     schr getent group "$group" >/dev/null 2>&1 && schr adduser "$USER" "$group"
