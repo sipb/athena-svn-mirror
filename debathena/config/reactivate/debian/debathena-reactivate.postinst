@@ -95,7 +95,7 @@ EOF
 	else
 	    /etc/init.d/cups stop || /etc/init.d/cupsys stop
 	fi
-	rm /var/cache/cups/remote.cache
+	rm -f /var/cache/cups/remote.cache
 	if hash invoke-rc.d >/dev/null 2>&1; then
 	    invoke-rc.d cups start || invoke-rc.d cupsys start
 	else

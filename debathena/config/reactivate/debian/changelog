@@ -3,8 +3,9 @@ debathena-reactivate (2.0.4) unstable; urgency=low
   * Add some convenience functions to snapshot-run for running commands in
     the chroot.
   * Make sure that a group exists before we add users to it.
+  * Ignore removal of the CUPS remote queue cache.
 
- -- Evan Broder <broder@mit.edu>  Mon, 21 Dec 2009 12:02:51 -0500
+ -- Evan Broder <broder@mit.edu>  Mon, 21 Dec 2009 12:34:02 -0500
 
 debathena-reactivate (2.0.3) unstable; urgency=low
 
