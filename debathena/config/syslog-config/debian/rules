@@ -1,7 +1,21 @@
 #!/usr/bin/make -f
 
 DEB_DIVERT_EXTENSION = .debathena
-DEB_TRANSFORM_FILES_debathena-syslog-config += \
+
+ifneq ($(wildcard /etc/syslog.conf),)
+    DAEMON = sysklogd
+    DEB_TRANSFORM_FILES_debathena-syslog-config += \
 	/etc/syslog.conf.debathena
+else ifneq ($(wildcard /etc/rsyslog.d),)
+    DAEMON = rsyslog
+else
+    $(error Unknown default syslog daemon.)
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
+
+ifeq ($(DAEMON),rsyslog)
+    install/debathena-syslog-config::
+	dh_install debian/50-debathena-syslog-config.conf etc/rsyslog.d
+endif
