@@ -9,6 +9,7 @@ ifneq ($(wildcard /etc/syslog.conf),)
 else ifneq ($(wildcard /etc/rsyslog.d),)
     DAEMON = rsyslog
 else
+    # If you change this, be sure to update the postinst, too
     $(error Unknown default syslog daemon.)
 endif
 
