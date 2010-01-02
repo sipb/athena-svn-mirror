@@ -1,0 +1,5 @@
+debathena-syslog (1.0) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 01 Jan 2010 22:40:09 -0500

@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+DEFAULT_SYSLOG = $(shell aptitude search -F"%p" ~Psystem-log-daemon~pimportant)
+
+binary-predeb/debathena-syslog:: debathena-syslog-substvars
+
+debathena-syslog-substvars::
+	( \
+	  echo -n "debathena-syslog-depends="; \
+	  echo -n $(DEFAULT_SYSLOG); \
+	  echo \
+	) >>debian/debathena-syslog.substvars
