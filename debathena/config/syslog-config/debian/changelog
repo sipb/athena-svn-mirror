@@ -1,7 +1,7 @@
 debathena-syslog-config (1.4) unstable; urgency=low
 
   * Configure the default syslog daemon, instead of always configuring
-    sysklogd.
+    sysklogd. (Trac: #433)
 
  -- Evan Broder <broder@mit.edu>  Fri, 01 Jan 2010 23:07:47 -0500
 
