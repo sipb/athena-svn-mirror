@@ -4,13 +4,20 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 
 APTITUDE_LOCKFILE = $(CURDIR)/debian/aptitude-lockfile
 APTITUDE = aptitude -o 'Aptitude::LockFile=$(APTITUDE_LOCKFILE)' -o 'Debug::NoLocking=yes'
+
+common-build-indep:: debian/deps
+
+debian/deps:
+	echo -n "debathena-syslog-depends=" > $@
+	$(APTITUDE) search '~Psystem-log-daemon~pimportant' -F '%p' >> $@
+	echo >> $@
+
 DEFAULT_SYSLOG = $(shell $(APTITUDE) search -F"%p" ~Psystem-log-daemon~pimportant)
 
-binary-predeb/debathena-syslog:: debathena-syslog-substvars
+binary-predeb/debathena-syslog:: add-deps/debathena-syslog
 
-debathena-syslog-substvars::
-	( \
-	  echo -n "debathena-syslog-depends="; \
-	  echo -n $(DEFAULT_SYSLOG); \
-	  echo \
-	) >>debian/debathena-syslog.substvars
+add-deps/debathena-syslog: debian/deps
+	cat $< >> debian/$(cdbs_curpkg).substvars
+
+clean::
+	rm -f $(APTITUDE_LOCKFILE) debian/deps
