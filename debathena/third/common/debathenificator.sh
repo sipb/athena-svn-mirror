@@ -25,6 +25,11 @@ arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 . /mit/debathena/bin/debian-versions.sh
 tag=$(gettag $dist)
 
+if [ -e nobuild ] && fgrep -q "$dist" nobuild; then
+  echo "Skipping $dist since it is listed in ./nobuild."
+  exit
+fi
+
 # Create a chroot and define functions for using it.
 sid=$(schroot -b -c "$chroot")
 trap 'schroot -e -c "$sid"' EXIT
