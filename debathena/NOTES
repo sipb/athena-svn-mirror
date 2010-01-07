@@ -369,13 +369,12 @@ Release engineer: Setting up a build server
      something like:
 
        kinit builder
-       gpg --export-secret-keys athena10@mit.edu | \
+       gpg --export-secret-keys debathena@mit.edu | \
          ssh -l builder machinename gpg --import
 
      Create a file named .sbuildrc in builder's homedir containing:
 
-       $nolog = 1;
-       $mailto = 'source-wash@mit.edu';
+       $mailto = undef;
        $log_dir = '/tmp/sbuild-logs';
        $maintainer_name = 'Debathena Project <debathena@mit.edu>';
        $force_orig_source = 1;
@@ -393,14 +392,26 @@ Release engineer: Setting up a build server
      Create a file named autodebathenify.config in builder's homedir
      containing:
 
-       error_addr=source-wash@mit.edu
-       scripts_dir=/afs/dev.mit.edu/source/src-svn/debathena/scripts
-       build_dir=/afs/dev.mit.edu/project/release/10/build/third
-       packages="cyrus-sasl2-mit evolution-data-server lprng openafs tcsh"
-       export DEBATHENA_APT=/afs/dev.mit.edu/system/athena10/apt
+       error_addr=debathena-root@mit.edu
+       scripts_dir=/mit/debathena/bin
+       build_dir=/mit/debathena/packages/third
+       packages="lprng openafs"
+       export DEBATHENA_APT=/mit/debathena/apt
 
      Copy scripts/build-server/autodebathenify.cron to builder's
      homedir and install it with "crontab autodebathenify.cron".
+
+     Copy scripts/build-server/autolivebuilder to builder's
+     homedir. Create a file called autolivebuilder.config in builder's
+     homedir containing:
+
+       error_addr=debathena-root@mit.edu
+       release_version='9.04'
+       release='jaunty'
+       arch='i386'
+       mirror='mirrors.mit.edu'
+       gpg_opts=("-u" "0D8A9E8F")
+       live_dir=/net/sipb-isilon-sc.mit.edu/ifs/mirror/sipb/debathena/livecd
 
      Create a file named .devscripts in builder's homedir containing:
 
