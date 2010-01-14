@@ -1,3 +1,11 @@
+debathena-cluster-login-config (1.20) unstable; urgency=low
+
+  * Change --kill --silent, which is deprecated and now equivalent to
+    --logout, to --force-logout, because --force fixes everything
+    (Trac: #278).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 14 Jan 2010 02:31:44 -0500
+
 debathena-cluster-login-config (1.19) unstable; urgency=low
 
   * Don't configure /etc/gdm/gdm.conf{,-custom} on post-gdm-2.20
