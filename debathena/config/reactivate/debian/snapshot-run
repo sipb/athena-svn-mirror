@@ -35,6 +35,10 @@ done
 
 schr rm /etc/debian_chroot
 
+# Deter people from thinking they can use /home as persistant storage
+# by punting it
+schr rm -rf /home
+
 # Run the session
 #
 # We wrap the target command in sudo because it runs initgroups(3)

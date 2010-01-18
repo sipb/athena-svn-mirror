@@ -1,3 +1,11 @@
+debathena-reactivate (2.0.5) unstable; urgency=low
+
+  * Bind-mount /boot (read-only), but not /home. (Trac: #314)
+  * Deter people from thinking that /home will persist by getting rid of
+    it in the chroot.
+
+ -- Evan Broder <broder@mit.edu>  Mon, 18 Jan 2010 08:23:16 -0500
+
 debathena-reactivate (2.0.4) unstable; urgency=low
 
   * Add some convenience functions to snapshot-run for running commands in
