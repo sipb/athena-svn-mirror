@@ -18,7 +18,7 @@ Package: debathena-acroread-glue
 Architecture: all
 Provides: acroread
 Conflicts: acroread
-Replaces: acroread, debathena-misc-glue
+Replaces: acroread, debathena-misc-glue (<< 1.5~)
 Depends: ${misc:Depends}
 Description: Debathena attach-and-run script for acroread
  Athena provides acroread in the 'acro' locker, so it is not
@@ -29,7 +29,7 @@ Package: debathena-freewrl-glue
 Architecture: all
 Provides: freewrl
 Conflicts: freewrl
-Replaces: freewrl, debathena-misc-glue
+Replaces: freewrl, debathena-misc-glue (<< 1.5~)
 Depends: ${misc:Depends}
 Description: Debathena attach-and-run script for acroread
  Athena provides freewrl in the 'freewrl' locker, so it is not
@@ -40,7 +40,7 @@ Package: debathena-realplay-glue
 Architecture: all
 Provides: realplayer, realplay
 Conflicts: realplayer, realplay
-Replaces: realplayer, realplay, debathena-misc-glue
+Replaces: realplayer, realplay, debathena-misc-glue (<< 1.5~)
 Depends: ${misc:Depends}
 Description: Debathena attach-and-run script for acroread
  Athena provides realplay in the 'infoagents' locker, so it is not
