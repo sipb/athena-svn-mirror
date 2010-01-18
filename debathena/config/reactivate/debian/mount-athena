@@ -9,6 +9,7 @@
 /dev/pts	/dev/pts	none	rw,bind		0	0
 /var/run	/var/run	none	rw,bind		0	0
 /var/lock	/var/lock	none	rw,bind		0	0
+/var/log	/var/log	none	rw,bind		0	0
 /var/tmp	/var/tmp	none	rw,bind		0	0
 /afs		/afs		none	rw,bind		0	0
 /mit		/mit		none	rw,bind		0	0
