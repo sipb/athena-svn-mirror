@@ -1,3 +1,13 @@
+debathena-misc-glue (1.5) unstable; urgency=low
+
+  * Split package into a metapackage and a package for each individual
+    attachandrun script we provide.
+  * Allow local packages that provide the same software to satisfy
+    the metapackage's dependencies, and P/C/R those packages in an
+    attempt to make installing them work more gracefully (Trac: #385).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sun, 17 Jan 2010 20:53:09 -0500
+
 debathena-misc-glue (1.4) unstable; urgency=low
 
   * Punt ivview in favor of the locally installed (and conflicting) version.
