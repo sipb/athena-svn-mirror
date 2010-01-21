@@ -31,7 +31,7 @@ Provides: freewrl
 Conflicts: freewrl
 Replaces: freewrl, debathena-misc-glue (<< 1.5~)
 Depends: ${misc:Depends}
-Description: Debathena attach-and-run script for acroread
+Description: Debathena attach-and-run script for freewrl
  Athena provides freewrl in the 'freewrl' locker, so it is not
  necessary to install it locally. This package provides a
  /usr/bin/freewrl that runs freewrl out of the freewrl locker.
@@ -42,7 +42,7 @@ Provides: realplayer, realplay
 Conflicts: realplayer, realplay
 Replaces: realplayer, realplay, debathena-misc-glue (<< 1.5~)
 Depends: ${misc:Depends}
-Description: Debathena attach-and-run script for acroread
+Description: Debathena attach-and-run script for realplay
  Athena provides realplay in the 'infoagents' locker, so it is not
  necessary to install it locally. This package provides a
  /usr/bin/realplay that runs realplay out of the infoagents locker.

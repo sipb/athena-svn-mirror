@@ -1,3 +1,9 @@
+debathena-misc-glue (1.5.1) unstable; urgency=low
+
+  * Correct typos in the control file.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 21 Jan 2010 03:30:25 -0500
+
 debathena-misc-glue (1.5) unstable; urgency=low
 
   * Split package into a metapackage and a package for each individual
