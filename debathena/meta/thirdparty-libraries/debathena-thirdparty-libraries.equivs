@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-libraries
-Version: 0.9
+Version: 0.10
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: liblapack-dev,
  liblapack-doc,
@@ -89,6 +89,7 @@ Depends: liblapack-dev,
  wine-dev,
  libboost1.37-dev,
  fftw-dev,
+ gtk-sharp2,
 Recommends: libatlas-base-dev,
  libatlas-sse-dev,
  libatlas-sse2-dev,
