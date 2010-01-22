@@ -9,4 +9,7 @@ if ! klist -s; then
     arg=(-disable-these-authenticators=GSSAPI)
 fi
 
+: ${ATHENA_USER=$USER}
+export ATHENA_USER
+
 exec "alpine.debathena-orig" "${arg[@]}" "$@"

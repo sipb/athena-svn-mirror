@@ -1,3 +1,11 @@
+debathena-alpine-config (1.15) unstable; urgency=low
+
+  * Alpine doesn't parse ${ATHENA_USER:-$USER} as we'd want, so stop
+    doing that and make sure $ATHENA_USER is set in the wrapper script
+    (Trac: #413).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 21 Jan 2010 23:16:36 -0500
+
 debathena-alpine-config (1.14.1) unstable; urgency=low
 
   * Revert 1.14, because it doesn't appear to be necessary anymore.
