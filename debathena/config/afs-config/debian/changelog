@@ -1,3 +1,9 @@
+debathena-afs-config (1.13) unstable; urgency=low
+
+  * Move update-cellservdb to /usr/lib (Trac: #263).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 21 Jan 2010 22:26:40 -0500
+
 debathena-afs-config (1.12) unstable; urgency=low
 
   * CellServDB updates.

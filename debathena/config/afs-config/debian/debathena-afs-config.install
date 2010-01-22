@@ -4,4 +4,4 @@ debian/CellServDB.debathena etc/openafs
 debian/SuidCells.debathena etc/openafs
 debian/ThisCell.debathena etc/openafs
 debian/cacheinfo.debathena etc/openafs
-debian/update-cellservdb usr/sbin
+debian/update-cellservdb usr/lib/debathena-afs-config

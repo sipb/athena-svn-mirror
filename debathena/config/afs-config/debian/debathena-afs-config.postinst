@@ -28,7 +28,7 @@ case "$1" in
 	    /etc/init.d/openafs-client restart || true
 	fi
 	if [ -n "$(mount -t afs)" ]; then
-            update-cellservdb
+            /usr/lib/debathena-afs-config/update-cellservdb
         fi
     ;;
 
