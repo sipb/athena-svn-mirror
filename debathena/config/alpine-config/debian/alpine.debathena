@@ -12,4 +12,13 @@ fi
 : ${ATHENA_USER=$USER}
 export ATHENA_USER
 
+# If you've customized your folder collections on an Athenified pine,
+# then you probably have copied in mit.edu/hesiod/imap, which isn't
+# going to work.
+#
+# We substitute in $ATHENA_USER rather than use the variable because
+# Athena 9 doesn't have it, and besides this is presumably not being
+# shared between users.
+sed -i "s#mit\.edu/hesiod/imap#$ATHENA_USER\.mail\.mit\.edu/imap/user=$ATHENA_USER#g" ~/.pinerc
+
 exec "alpine.debathena-orig" "${arg[@]}" "$@"
