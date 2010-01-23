@@ -2,8 +2,10 @@ debathena-kerberos-config (1.9) unstable; urgency=low
 
   * Set allow_weak_crypto = true so that krb5 1.8 will still talk to the
     ATHENA.MIT.EDU KDC. (Trac: #488)
+  * Test for krb5 1.7 using krb5-user instead of krb5-clients, since
+    krb5-clients is being seprated into a separate source package.
 
- -- Evan Broder <broder@mit.edu>  Fri, 22 Jan 2010 19:45:18 -0500
+ -- Evan Broder <broder@mit.edu>  Fri, 22 Jan 2010 19:54:09 -0500
 
 debathena-kerberos-config (1.8.2) unstable; urgency=low
 

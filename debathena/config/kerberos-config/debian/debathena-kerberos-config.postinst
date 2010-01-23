@@ -88,7 +88,7 @@ case "$1" in
 	cleanup_old_removal /etc/apparmor.d/abstractions/kerberosclient /usr/share/debathena-kerberos-config/etc++apparmor.d++abstractions++kerberosclient
 
 	# Handle upgrading from a system with krb4 to one without
-	krb5_version="$(dpkg-query -W -f '${Version}' krb5-clients)"
+	krb5_version="$(dpkg-query -W -f '${Version}' krb5-user)"
 	if dpkg --compare-versions "$krb5_version" ge "1.7~"; then
 	    cleanup_old_diversion /etc/krb.conf
 	    cleanup_old_diversion /etc/krb.realms
