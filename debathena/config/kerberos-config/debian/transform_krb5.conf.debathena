@@ -16,3 +16,4 @@ s/(\[domain_realm\][^[]*\n)[ \t]*mit\.edu\s*=[^\n]*\n/\1/;
 s/(\[domain_realm\]\n)/\1\tmit.edu = ATHENA.MIT.EDU\n/ or die;
 s/(\[domain_realm\][^[]*\n)[ \t]*\.mit\.edu\s*=[^\n]*\n/\1/;
 s/(\[domain_realm\]\n)/\1\t.mit.edu = ATHENA.MIT.EDU\n/ or die;
+s/(\[libdefaults\]\n)/\1\tallow_weak_crypto = true\n/ or die;

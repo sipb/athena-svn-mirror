@@ -1,3 +1,10 @@
+debathena-kerberos-config (1.9) unstable; urgency=low
+
+  * Set allow_weak_crypto = true so that krb5 1.8 will still talk to the
+    ATHENA.MIT.EDU KDC. (Trac: #488)
+
+ -- Evan Broder <broder@mit.edu>  Fri, 22 Jan 2010 19:45:18 -0500
+
 debathena-kerberos-config (1.8.2) unstable; urgency=low
 
   * Apparently /etc/apparmor.d/abstractions/kerberosclient has to still
