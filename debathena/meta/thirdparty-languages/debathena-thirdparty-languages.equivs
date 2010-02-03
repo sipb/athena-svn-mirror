@@ -51,7 +51,7 @@ Recommends:
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
-Description: Athena 10 debathena-thirdparty-languages software suite.
+Description: Debathena metapackage for third-party languages software
  This includes a set of subpackages of commonly-used third-party software
  within the languages domain.  It is intended for cluster machines though usable
  anywhere.  Direct questions about software included in this metapackage

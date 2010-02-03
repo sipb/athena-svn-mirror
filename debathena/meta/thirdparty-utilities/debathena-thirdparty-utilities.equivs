@@ -29,7 +29,7 @@ Depends: nfs-common,
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
-Description: Athena 10 debathena-thirdparty-utilities software suite.
+Description: Debathena metapackage for third-party utilities software
  This includes a set of subpackages of commonly-used third-party software
  within the utilities domain.  It is intended for cluster machines though usable
  anywhere.  Direct questions about software included in this metapackage
