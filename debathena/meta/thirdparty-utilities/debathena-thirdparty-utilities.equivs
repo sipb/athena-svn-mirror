@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-utilities
-Version: 0.3.1
+Version: 0.4
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: nfs-common,
  rcs,
@@ -25,6 +25,7 @@ Depends: nfs-common,
  weather-util,
  scratchbox2,
  mtools,
+ dosemu,
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
