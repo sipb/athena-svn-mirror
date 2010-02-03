@@ -1,3 +1,15 @@
+debathena-finger (10.0.2-0debathena1) karmic; urgency=low
+
+  * Change ^ 100 to ^ 0100, since this code appears to be intended to do
+    something to sanitize control characters. Setting bit 0100
+    (01000000) for characters under 32 converts them to the
+    corresponding uppercase ASCII letter (e.g., ^A to A); XORing them
+    with decimal 100 (01100100) is meaningless.
+  * Pass through characters that are not in the ASCII set unsanitized.
+    This allows .plans and .projects with UTF-8 text to be displayed.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 02 Feb 2010 22:06:04 -0500
+
 debathena-finger (10.0.1-0debathena3) unstable; urgency=low
 
   * Prefer newer versions of the Kerberized zephyr libraries over older

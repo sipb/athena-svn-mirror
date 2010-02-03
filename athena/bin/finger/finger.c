@@ -587,10 +587,12 @@ print(personn)
 					while ((c = getc(fp)) != EOF) {
 						if (c == '\n')
 							break;
-						if (isprint(c) || isspace(c))
+						if (isprint(c) || isspace(c) || !isascii(c))
 							(void) putchar(c);
-						else
-							(void) putchar(c ^ 100);
+						else {
+							(void) putchar('^');
+							(void) putchar(c ^ 0100);
+						}
 					}
 					(void) fclose(fp);
 					(void) putchar('\n');
@@ -615,17 +617,21 @@ print(personn)
 							if (c != MM[i]) {
 								for (j = 0; j < i; j++)
 									(void) putchar(MM[j]);
-								if (isprint(c) || isspace(c))
+								if (isprint(c) || isspace(c) || !isascii(c))
 									(void) putchar(c);
-								else
-									(void) putchar(c ^ 100);
+								else {
+									(void) putchar('^');
+									(void) putchar(c ^ 0100);
+								}
 								okay = 0;
 							}
 						}
-						else if (isprint(c) || isspace(c))
+						else if (isprint(c) || isspace(c) || !isascii(c))
 							(void) putchar(c);
-						else
-							(void) putchar(c ^ 100);
+						else {
+							(void) putchar('^');
+							(void) putchar(c ^ 0100);
+						}
 						i++;
 					}
 					(void) fclose(fp);
@@ -1450,10 +1456,12 @@ netfinger(name)
 			break;
 		}
 		lastc = c;
-		if (isprint(c) || isspace(c))
+		if (isprint(c) || isspace(c) || !isascii(c))
 			(void) putchar(c);
-		else
-			(void) putchar(c ^ 100);
+		else {
+			(void) putchar('^');
+			(void) putchar(c ^ 0100);
+		}
 	}
 	if (lastc != '\n')
 		(void) putchar('\n');
