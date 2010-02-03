@@ -31,20 +31,20 @@ include /usr/share/cdbs/1/rules/config-package.mk
 
 ifeq ($(XSPLASH),y)
     DEB_DIVERT_FILES_debathena-gdm-config += \
-        /usr/share/images/xsplash/bg_2560x1600.jpg \
-        /usr/share/images/xsplash/throbber_small.png \
-        /usr/share/images/xsplash/throbber_medium.png \
-        /usr/share/images/xsplash/throbber_large.png \
-        /usr/share/images/xsplash/throbber_xtra_large.png
+        /usr/share/images/xsplash/bg_2560x1600.debathena.jpg \
+        /usr/share/images/xsplash/throbber_small.debathena.png \
+        /usr/share/images/xsplash/throbber_medium.debathena.png \
+        /usr/share/images/xsplash/throbber_large.debathena.png \
+        /usr/share/images/xsplash/throbber_xtra_large.debathena.png
     install/debathena-gdm-config::
-	dh_install debian/bg_2560x1600.jpg.debathena usr/share/images/xsplash
-	dh_install debian/throbber_large.png.debathena usr/share/images/xsplash
-	dh_link usr/share/images/xsplash/throbber_large.png \
-	        usr/share/images/xsplash/throbber_small.png.debathena
-	dh_link usr/share/images/xsplash/throbber_large.png.debathena \
-	        usr/share/images/xsplash/throbber_medium.png.debathena
-	dh_link usr/share/images/xsplash/throbber_large.png.debathena \
-	        usr/share/images/xsplash/throbber_xtra_large.png.debathena
+	dh_install debian/bg_2560x1600.debathena.jpg usr/share/images/xsplash
+	dh_install debian/throbber_large.debathena.png usr/share/images/xsplash
+	dh_link usr/share/images/xsplash/throbber_large.debathena.png \
+	        usr/share/images/xsplash/throbber_small.debathena.png
+	dh_link usr/share/images/xsplash/throbber_large.debathena.png \
+	        usr/share/images/xsplash/throbber_medium.debathena.png
+	dh_link usr/share/images/xsplash/throbber_large.debathena.png \
+	        usr/share/images/xsplash/throbber_xtra_large.debathena.png
 endif
 
 common-build-indep:: debathena/distro.svg
