@@ -19,6 +19,8 @@ export ATHENA_USER
 # We substitute in $ATHENA_USER rather than use the variable because
 # Athena 9 doesn't have it, and besides this is presumably not being
 # shared between users.
-sed -i "s#mit\.edu/hesiod/imap#$ATHENA_USER\.mail\.mit\.edu/imap/user=$ATHENA_USER#g" ~/.pinerc
+if [ -e ~/.pinerc ] && grep -qF mit.edu/hesiod/imap ~/.pinerc; then
+    sed -i "s#mit\.edu/hesiod/imap#$ATHENA_USER\.mail\.mit\.edu/imap/user=$ATHENA_USER#g" ~/.pinerc
+fi
 
 exec "alpine.debathena-orig" "${arg[@]}" "$@"

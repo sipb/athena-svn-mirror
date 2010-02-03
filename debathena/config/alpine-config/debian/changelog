@@ -1,3 +1,10 @@
+debathena-alpine-config (1.15.1) unstable; urgency=low
+
+  * Don't rewrite ~/.pinerc with sed if we're going to end up not
+    changing it.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 03 Feb 2010 10:56:34 -0500
+
 debathena-alpine-config (1.15) unstable; urgency=low
 
   * Alpine doesn't parse ${ATHENA_USER:-$USER} as we'd want, so stop
