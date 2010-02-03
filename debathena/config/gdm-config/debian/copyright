@@ -5,7 +5,8 @@ Board.
 The source code was obtained from the Athena SVN repository at
 <svn://debathena.mit.edu/athena/trunk>, and is licensed as follows:
 
-  Copyright © 2007-2008 Tim Abbott, Anders Kaseorg, and Geoffrey Thomas
+  Copyright © 2007-2010 Tim Abbott, Anders Kaseorg, Geoffrey Thomas,
+  and the Massachusetts Institute of Technology
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation files
@@ -27,5 +28,12 @@ The source code was obtained from the Athena SVN repository at
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
-The Debian packaging is Copyright © 2007-2008 Tim Abbott and Anders
-Kaseorg, and has the same license as the original software.
+The image of MIT Building 10 (debian/bg_2560x1600.jpg.debathena)
+is adapted from
+  http://www.flickr.com/photos/22240293@N05/3930252680/
+taken by Flickr user "Diez Photography" and licensed under CC-BY 2.0:
+  http://creativecommons.org/licenses/by/2.0/deed.en
+
+The Debian packaging is Copyright © 2007-2010 Tim Abbott, Anders
+Kaseorg, Geoffrey Thomas, and the Massachusetts Institute of Technology,
+and has the same license as the original source code.

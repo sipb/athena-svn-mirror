@@ -1,3 +1,9 @@
+debathena-gdm-config (1.19) unstable; urgency=low
+
+  * Make half an attempt at skinning the new gdm (Trac: #430).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 03 Feb 2010 08:45:35 -0500
+
 debathena-gdm-config (1.18) unstable; urgency=low
 
   * Don't divert /usr/share/gdm/BuiltInSessions/default.desktop in
