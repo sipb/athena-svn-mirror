@@ -64,15 +64,15 @@ my $username = $ENV{'ATHENA_USER'} || $ENV{'USER'} || getlogin || (getpwuid($<))
     errorout "Cannot determine user name";
 
 unless ($opt_host) {
-    $opt_host = (split(" ", `hesinfo $username pobox`))[1] ||
-        errorout "Cannot find Post Office server for $username";
+    $opt_host = (gethostbyname("$username.mail.mit.edu"))[0];
+    errorout "Cannot find Post Office server for $username" unless $opt_host;
 }
 errorout "Exchange accounts are not supported yet. Try http://owa.mit.edu/." if $opt_host =~ /EXCHANGE/;
 
 # Connect to the IMAP server, and authenticate.
 my $client = Cyrus::IMAP->new($opt_host) ||
     errorout "Cannot connect to IMAP server on $opt_host";
-$client->authenticate(-authz => $username) ||
+$client->authenticate(-authz => $username, -maxssf => 0) ||
     close_and_errorout "Cannot authenticate to $opt_host";
 
 # Select the mailbox (for read-write access).  Store the value of the

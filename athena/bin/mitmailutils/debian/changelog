@@ -1,3 +1,18 @@
+debathena-mitmailutils (10.1.2-0debathena1) unstable; urgency=low
+
+  * Switch from Hesiod to using *.mail.mit.edu so we can use GSSAPI
+    authentication (Trac: #403).
+  * Because of a Cyrus SASL bug (documented in that ticket) regarding
+    parsing long encrypted responses, set maxssf to zero to send mail in
+    the clear. This isn't as terrible as it sounds because mail travels
+    in the clear on the public Internet anyway, and a bunch of client
+    programs (Pine on Athena 9, for instance) don't use encryption, and
+    the major use of mitmailutils is `from` and `mailquota` anyway.
+
+    Patch based on one from Jonathan Reed <jdreed@mit.edu>.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 03 Feb 2010 19:03:41 -0500
+
 debathena-mitmailutils (10.1.1-0debathena1) unstable; urgency=low
 
   * Replace test for EXCHANGE.MIT.EDU with test for *EXCHANGE*.

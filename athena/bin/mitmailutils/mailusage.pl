@@ -43,8 +43,8 @@ my $username = shift @ARGV || $ENV{'ATHENA_USER'} || $ENV{'USER'} || getlogin ||
 
 usage "Too many arguments" if @ARGV > 0;
 my $debug = $opts{'d'};
-my $host = $opts{'h'} || (split(" ", `hesinfo $username pobox`))[1] ||
-    errorout "Cannot find Post Office server for $username";
+my $host = $opts{'h'} || (gethostbyname("$username.mail.mit.edu"))[0];
+errorout "Cannot find Post Office server for $username" unless $host;
 errorout "Exchange accounts are not supported yet. Try http://owa.mit.edu/." if $host =~ /EXCHANGE/;
 my $mbox = $opts{'m'} || '*';
 my $noheader = $opts{'n'};
@@ -54,7 +54,7 @@ my $list_cmd = ($opts{'s'} ? 'LSUB' : 'LIST');
 # Connect to the IMAP server, and authenticate.
 my $client = Cyrus::IMAP->new($host) ||
     errorout "Cannot connect to IMAP server on $host";
-unless ($client->authenticate(-authz => $username)) {
+unless ($client->authenticate(-authz => $username, -maxssf => 0)) {
     close_connection();
     errorout "Cannot authenticate to $host";
 }

@@ -51,8 +51,8 @@ usage "Too many arguments" if @ARGV > 0;
 my $debug = $opts{'d'};
 my $warn_only = $opts{'n'};
 my $usage_threshold = $opts{'u'};
-my $host = $opts{'h'} || (split(" ", `hesinfo $username pobox`))[1] ||
-    errorout "Cannot find Post Office server for $username";
+my $host = $opts{'h'} || (gethostbyname("$username.mail.mit.edu"))[0];
+errorout "Cannot find Post Office server for $username" unless $host;
 errorout "Exchange accounts are not supported yet. Try http://owa.mit.edu/." if $host =~ /EXCHANGE/;
 my $mbox = $opts{'m'} || "INBOX";
 
@@ -78,7 +78,7 @@ $client->addcallback({-trigger => 'CAPABILITY',
 send_command "CAPABILITY";
 $caps =~ '\bQUOTA\b' ||
     close_and_errorout "$host does not support the IMAP QUOTA extension";
-$client->authenticate(-authz => $username) ||
+$client->authenticate(-authz => $username, -maxssf => 0) ||
     close_and_errorout "Cannot authenticate to $host";
 
 # Send the GETQUOTAROOT command, which returns both the QUOTA and
