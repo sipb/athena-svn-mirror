@@ -347,7 +347,8 @@ Release engineer: Setting up a build server
       scripts/build-server/approx.conf.tail.
      Run: /etc/init.d/approx restart
 
-  7. Apply scripts/build-server/mount-defaults.patch.
+  7. Apply scripts/build-server/mount-defaults.patch and
+     scripts/build-server/pam-schroot.patch.
 
   8. For each supported DIST (see scripts/debian-versions.sh) run:
 
