@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-clients
-Version: 0.3.21
+Version: 0.3.22
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: athena-jot,
  debathena-athinfo,
@@ -13,6 +13,7 @@ Depends: athena-jot,
  debathena-discuss-emacs,
  debathena-finger,
  debathena-finger-config,
+ debathena-from-config,
  debathena-getcluster,
  debathena-gettime,
  debathena-get-message,
@@ -40,7 +41,6 @@ Depends: athena-jot,
 Recommends:  debathena-alpine-config | debathena-pine,
  debathena-mutt-config,
  debathena-nmh,
- debathena-from-config,
 Suggests: barnowl | owl
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
