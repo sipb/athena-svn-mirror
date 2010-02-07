@@ -1,3 +1,10 @@
+debathena-xsession (1.12) unstable; urgency=low
+
+  * Promote mitmailutils back to a dependency, now that it's installable
+    everywhere again.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 06 Feb 2010 19:16:24 -0500
+
 debathena-xsession (1.11.3) unstable; urgency=low
 
   * Define a message function for use by Xsession.d scripts if the
