@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=MATLAB
 Comment="MATrix LABoratory" package for numeric computation, data analysis, and visualization (supported)
-Exec=gathrun matlab
+Exec=gathrun matlab matlab -desktop
 Terminal=false
 Type=Application
 Icon=gnome-run
