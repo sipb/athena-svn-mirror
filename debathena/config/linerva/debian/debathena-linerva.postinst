@@ -60,7 +60,8 @@ case "$1" in
 	fi
 
         # Install the http redirect inetd service
-        update-inetd --add "http\tstream\ttcp\tnowait\tnobody\t/bin/nc nc scripts.mit.edu http"
+        update-inetd --remove http
+        update-inetd --add "http\tstream\ttcp\tnowait\tnobody\t/bin/nc nc -q0 scripts.mit.edu http"
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

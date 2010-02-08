@@ -1,3 +1,11 @@
+debathena-linerva (1.41) unstable; urgency=low
+
+  * Use nc -q0 (quit on 0 seconds of stdin being closed, rather than
+    only when nc gets a signal) so that we don't leak nc processes every
+    time someone visits http://linerva.mit.edu/.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sun, 07 Feb 2010 21:50:31 -0500
+
 debathena-linerva (1.40) unstable; urgency=low
 
   * Set a soft limit on memory to avoid processes ballooning out of
