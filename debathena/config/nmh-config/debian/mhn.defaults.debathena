@@ -1,0 +1,40 @@
+mhshow-show-text/plain: %ecat '%f'
+mhshow-show-text: %e/bin/attachandrun mimeutils show-text show-text '%s' '%f'
+mhstore-store-text/html: %m%P.%s
+mhstore-store-text/richtext: %m%P.rt
+mhstore-store-text: %m%P.txt
+mhshow-show-image: %l/bin/attachandrun mimeutils show-image show-image '%s' '%F'
+mhstore-store-image/x-sgi-image: %m%P.sgi
+mhshow-show-video: %l/bin/attachandrun mimeutils show-video show-video '%s' '%F'
+mhstore-store-video/mpeg: %m%P.mpg
+mhshow-show-audio: %l/bin/attachandrun mimeutils show-audio show-audio '%s' '%F'
+mhstore-store-audio/x-aifc: %m%P.aifc
+mhstore-store-audio/x-aiff: %m%P.aiff
+mhstore-store-audio/x-next: %m%P.nexta
+mhstore-store-audio/x-wav: %m%P.wav
+mhstore-store-audio/x-mpeg: %m%P.mpeg
+mhstore-store-audio/basic: %m%P.raw
+mhshow-show-application/msword: %l%e/bin/attachandrun mimeutils show-msword show-msword '%f'
+mhshow-show-application/x-msword: %l%e/bin/attachandrun mimeutils show-msword show-msword '%f'
+mhstore-store-application/x-msword: %m%P.doc
+mhstore-store-application/msword: %m%P.doc
+mhshow-show-application/postscript: %l/bin/attachandrun mimeutils show-postscript show-postscript '%f'
+mhstore-store-application/postscript: %m%P.ps
+mhshow-show-application/pdf: %l/bin/attachandrun mimeutils show-pdf show-pdf '%f'
+mhshow-show-application/mac-binhex40: %l/bin/attachandrun mimeutils show-binhex show-binhex '%f'
+mhstore-store-application/mac-binhex40: | /bin/attachandrun mimeutils store-binhex store-binhex %m%P
+mhshow-show-application: %l/bin/attachandrun mimeutils show-application show-application '%s' '%F' '%a'
+mhstore-store-application/x-framemaker: %m%P.doc
+mhstore-store-application/x-ez: %m%P.ez
+mhstore-store-application/x-dvi: %m%P.dvi
+mhshow-show-application/excel: %l%e/bin/attachandrun mimeutils show-excel show-excel '%f'
+mhshow-show-application/x-excel: %l%e/bin/attachandrun mimeutils show-excel show-excel '%f'
+mhshow-show-application/msexcel: %l%e/bin/attachandrun mimeutils show-excel show-excel '%f'
+mhshow-show-application/x-msexcel: %l%e/bin/attachandrun mimeutils show-excel show-excel '%f'
+mhshow-show-application/vnd.ms-excel: %l%e/bin/attachandrun mimeutils show-excel show-excel '%f'
+mhstore-store-application/excel: %m%P.xls
+mhstore-store-application/x-excel: %m%P.xls
+mhstore-store-application/msexcel: %m%P.xls
+mhstore-store-application/x-msexcel: %m%P.xls
+mhstore-store-application/vnd.ms-excel: %m%P.xls
+mhshow-show-message/delivery-status: %ecat '%f'

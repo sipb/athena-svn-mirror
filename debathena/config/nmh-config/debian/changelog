@@ -1,0 +1,5 @@
+debathena-nmh-config (1.0) unstable; urgency=low
+
+  * Initial release (Trac: #74).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 08 Feb 2010 04:59:34 -0500

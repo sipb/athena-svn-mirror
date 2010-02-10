@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+
+DEB_DIVERT_EXTENSION = .debathena
+DEB_DIVERT_FILES_debathena-nmh-config += \
+	/usr/bin/mh/inc.debathena \
+	/usr/lib/mh/post.debathena \
+	/etc/nmh/mhn.defaults.debathena
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/config-package.mk

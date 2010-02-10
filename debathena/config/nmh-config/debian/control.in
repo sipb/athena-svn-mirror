@@ -1,0 +1,15 @@
+Source: debathena-nmh-config
+Section: debathena-config/mail
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.8.4
+
+Package: debathena-nmh-config
+Architecture: all
+Depends: nmh, debathena-bash-config, libsasl2-modules-gssapi-mit, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: NMH configuration for the Athena environment
+ This package configures Debian's nmh package to work with the Athena
+ environment.
