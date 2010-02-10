@@ -1,3 +1,11 @@
+debathena-cluster-login-config (1.21) unstable; urgency=low
+
+  * On new-gdm platforms only, remove the xsessions .desktop files
+    for xterm and gnome-failsafe sessions (formerly disabled in
+    gdm's configuration).
+
+ -- Robert Basch <rbasch@mit.edu>  Wed, 10 Feb 2010 14:37:14 -0500
+
 debathena-cluster-login-config (1.20) unstable; urgency=low
 
   * Change --kill --silent, which is deprecated and now equivalent to

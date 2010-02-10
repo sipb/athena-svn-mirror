@@ -15,6 +15,10 @@ DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
 ifneq ($(NEW_GDM),y)
     DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
 	${GDM_CONFFILE}
+else
+    DEB_REMOVE_FILES_debathena-cluster-login-config += \
+	/usr/share/xsessions/gnome-failsafe.desktop \
+	/usr/share/xsessions/xterm.desktop
 endif
 
 DEB_REMOVE_FILES_debathena-cluster-login-config += \
