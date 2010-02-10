@@ -1,3 +1,10 @@
+debathena-cupsys-config (1.7.1) unstable; urgency=high
+
+  * Flush remote.cache, because CUPS isn't good at realizing that you switched
+    BrowsePoll hosts and so it should forget the old server's queues.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 10 Feb 2010 01:57:10 -0500
+
 debathena-cupsys-config (1.7) unstable; urgency=low
 
   * Switch from cups.mit.edu to cluster-printers.mit.edu.
