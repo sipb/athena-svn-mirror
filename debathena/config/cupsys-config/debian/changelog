@@ -1,3 +1,10 @@
+debathena-cupsys-config (1.8) unstable; urgency=low
+
+  * Lengthen BrowseInterval and BrowseTimeout to reduce unnecessary load
+    on CUPS servers when things aren't changing.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 10 Feb 2010 10:48:10 -0500
+
 debathena-cupsys-config (1.7.1) unstable; urgency=high
 
   * Flush remote.cache, because CUPS isn't good at realizing that you switched
