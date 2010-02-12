@@ -3,13 +3,14 @@ Section: debathena-system/admin
 Priority: optional
 Maintainer: Debian buildd-tools Developers <buildd-tools-devel@lists.alioth.debian.org>
 Uploaders: Michael Banck <mbanck@debian.org>, Luk Claes <luk@debian.org>, Roger Leigh <rleigh@debian.org>, Francesco Paolo Lovergine <frankie@debian.org>
-Build-Depends: debhelper (>= 7.0.0), autotools-dev, pkg-config (>= 0.20), libpam0g-dev (>= 0.79-3.1), uuid-dev, liblockdev1-dev (>= 1.0.2), libboost1.37-dev (>= 1.37.0), libboost-program-options1.37-dev (>= 1.37.0), libboost-regex1.37-dev (>= 1.37.0), libboost-filesystem1.37-dev (>= 1.37.0), gettext, libcppunit-dev, doxygen, graphviz
+Build-Depends: debhelper (>= 7.0.0), autotools-dev, pkg-config (>= 0.20), libpam0g-dev (>= 0.79-3.1), uuid-dev, liblockdev1-dev (>= 1.0.2), libboost1.40-dev, libboost-program-options1.40-dev, libboost-regex1.40-dev, libboost-filesystem1.40-dev, gettext, libcppunit-dev, doxygen, graphviz
 Standards-Version: 3.8.3
 Vcs-Browser: http://git.debian.org/?p=buildd-tools/schroot.git
 Vcs-Git: git://git.debian.org/git/buildd-tools/schroot
 
 Package: schroot-common
 Architecture: all
+Depends: ${misc:Depends}
 Replaces: schroot (<< 1.1.1)
 Description: common files for schroot
  schroot allows users to execute commands or interactive shells in
@@ -22,15 +23,11 @@ Description: common files for schroot
  .
  This package provides translations for localisation of schroot
  programs.
- .
- This package was rebuilt for the Debathena project to allow union
- chroots on the root filesystem.
-Provides: debathena-schroot-common
 
 Package: libsbuild-dev
 Architecture: any
 Section: debathena-system/libdevel
-Depends: pkg-config (>= 0.14.0)
+Depends: ${misc:Depends}, pkg-config (>= 0.14.0)
 Suggests: schroot-dbg, libsbuild-doc
 Description: development files for the Debian source builder
  sbuild provides facilities to manage and access chroots, as part of
@@ -47,16 +44,12 @@ Description: development files for the Debian source builder
  This package contains the header files and static library needed to
  develop applications which make use of sbuild.  Once the API and ABI
  are stable, a shared library will replace the static library.
- .
- This package was rebuilt for the Debathena project to allow union
- chroots on the root filesystem.
-Provides: debathena-libsbuild-dev
 
 Package: schroot-dbg
 Architecture: any
 Section: debathena-system/debug
 Priority: extra
-Depends: schroot (= ${binary:Version}) | dchroot (= ${binary:Version}) 
+Depends: ${misc:Depends}, schroot (= ${binary:Version}) | dchroot (= ${binary:Version}) 
  | dchroot-dsa (= ${binary:Version})
 Conflicts: schroot (<< ${binary:Version}), schroot (>> ${binary:Version}),
  dchroot (<< ${binary:Version}), dchroot (>>${binary:Version}),
@@ -75,14 +68,11 @@ Description: schroot, dchroot and dchroot-dsa debuggging symbols
  .
  This package contains debugging symbols for the schroot, dchroot
  and dchroot-dsa packages.
- .
- This package was rebuilt for the Debathena project to allow union
- chroots on the root filesystem.
-Provides: debathena-schroot-dbg
 
 Package: libsbuild-doc
 Architecture: all
 Section: debathena-system/doc
+Depends: ${misc:Depends}
 Suggests: libsbuild-dev
 Description: development documentation for the Debian source builder
  sbuild provides facilities to manage and access chroots, as part of
@@ -98,14 +88,10 @@ Description: development documentation for the Debian source builder
  .
  This package contains the API documentation needed to develop
  applications which make use of sbuild.
- .
- This package was rebuilt for the Debathena project to allow union
- chroots on the root filesystem.
-Provides: debathena-libsbuild-doc
 
 Package: schroot
 Architecture: any
-Depends: ${shlibs:Depends}, schroot-common (=${source:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, schroot-common (=${source:Version})
 Conflicts: dchroot (<< 0.13)
 Enhances: sbuild
 Suggests: debootstrap, lvm2, unzip, aufs-modules | unionfs-modules
@@ -134,15 +120,11 @@ Description: Execute commands in a chroot environment
  .
  schroot shares most of its options with dchroot, but offers vastly
  more functionality.
- .
- This package was rebuilt for the Debathena project to allow union
- chroots on the root filesystem.
-Provides: debathena-schroot
 
 Package: dchroot
 Architecture: any
 Suggests: debootstrap
-Depends: schroot (= ${binary:Version}), ${shlibs:Depends}, schroot-common (=${source:Version})
+Depends: ${misc:Depends}, schroot (= ${binary:Version}), ${shlibs:Depends}, schroot-common (=${source:Version})
 Description: Execute commands in a chroot environment
  dchroot allows users to execute commands or interactive shells in
  different chroots.  A typical installation might provide 'stable',
@@ -161,15 +143,11 @@ Description: Execute commands in a chroot environment
     root access to the chroot if required.
  Using schroot will avoid these issues, as well as provide additional
  functionality dchroot does not possess.
- .
- This package was rebuilt for the Debathena project to allow union
- chroots on the root filesystem.
-Provides: debathena-dchroot
 
 Package: dchroot-dsa
 Architecture: any
 Suggests: debootstrap
-Depends: schroot (= ${binary:Version}), ${shlibs:Depends}, schroot-common (=${source:Version})
+Depends: ${misc:Depends}, schroot (= ${binary:Version}), ${shlibs:Depends}, schroot-common (=${source:Version})
 Description: Execute commands in a chroot environment
  dchroot allows users to execute commands or interactive shells in
  different chroots.  A typical installation might provide 'stable',
@@ -195,7 +173,3 @@ Description: Execute commands in a chroot environment
     the chroot if required.
  Using schroot will avoid these issues, as well as provide significant
  additional functionality dchroot-dsa does not possess.
- .
- This package was rebuilt for the Debathena project to allow union
- chroots on the root filesystem.
-Provides: debathena-dchroot-dsa

@@ -53,6 +53,7 @@ chroot_block_device::chroot_block_device (const chroot_block_device& rhs):
 {
 }
 
+#ifdef SBUILD_FEATURE_LVMSNAP
 chroot_block_device::chroot_block_device (const chroot_lvm_snapshot& rhs):
   chroot_block_device_base(rhs)
 {
@@ -61,6 +62,7 @@ chroot_block_device::chroot_block_device (const chroot_lvm_snapshot& rhs):
     add_facet(sbuild::chroot_facet_union::create());
 #endif // SBUILD_FEATURE_UNION
 }
+#endif // SBUILD_FEATURE_LVMSNAP
 
 sbuild::chroot::ptr
 chroot_block_device::clone () const
@@ -107,6 +109,79 @@ chroot_block_device::setup_env (chroot const& chroot,
 				environment&  env) const
 {
   chroot_block_device_base::setup_env(chroot, env);
+}
+
+void
+chroot_block_device::setup_lock (chroot::setup_type type,
+				 bool               lock,
+				 int                status)
+{
+  /* Lock is preserved through the entire session. */
+  if ((type == SETUP_START && lock == false) ||
+      (type == SETUP_STOP && lock == true))
+    return;
+
+  try
+    {
+      if (!stat(this->get_device()).is_block())
+	{
+	  throw error(get_device(), DEVICE_NOTBLOCK);
+	}
+      else
+	{
+#ifdef SBUILD_FEATURE_UNION
+	  /* We don't lock the device if union is configured. */
+	  const chroot *base = dynamic_cast<const chroot *>(this);
+	  assert(base);
+	  chroot_facet_union::const_ptr puni
+	    (base->get_facet<chroot_facet_union>());
+	  assert(puni);
+	  if (!puni->get_union_configured())
+#endif
+	    {
+	      sbuild::device_lock dlock(this->device);
+	      if (lock)
+		{
+		  try
+		    {
+		      dlock.set_lock(lock::LOCK_EXCLUSIVE, 15);
+		    }
+		  catch (sbuild::lock::error const& e)
+		    {
+		      throw error(get_device(), DEVICE_LOCK, e);
+		    }
+		}
+	      else
+		{
+		  try
+		    {
+		      dlock.unset_lock();
+		    }
+		  catch (sbuild::lock::error const& e)
+		    {
+		      throw error(get_device(), DEVICE_UNLOCK, e);
+		    }
+		}
+	    }
+	}
+    }
+  catch (sbuild::stat::error const& e) // Failed to stat
+    {
+      // Don't throw if stopping a session and the device stat
+      // failed.  This is because the setup scripts shouldn't fail
+      // to be run if the block device no longer exists, which
+      // would prevent the session from being ended.
+      if (type != SETUP_STOP)
+	throw;
+    }
+
+  /* Create or unlink session information. */
+  if ((type == SETUP_START && lock == true) ||
+      (type == SETUP_STOP && lock == false && status == 0))
+    {
+      bool start = (type == SETUP_START);
+      setup_session_info(start);
+    }
 }
 
 sbuild::chroot::session_flags

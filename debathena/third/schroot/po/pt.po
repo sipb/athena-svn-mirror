@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: schroot 1.1.6-1\n"
 "Report-Msgid-Bugs-To: Roger Leigh <rleigh@debian.org>\n"
-"POT-Creation-Date: 2009-10-16 22:57+0100\n"
-"PO-Revision-Date: 2008-05-04 23:00+0100\n"
+"POT-Creation-Date: 2010-01-16 15:36+0000\n"
+"PO-Revision-Date: 2010-01-16 15:44+0000\n"
 "Last-Translator: Pedro Ribeiro <p.m42.ribeiro@gmail.com>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
 "MIME-Version: 1.0\n"
@@ -480,9 +480,8 @@ msgstr "Escrito por Roger Leigh"
 
 #. TRANSLATORS: '(C)' is a copyright symbol and '-' is an en-dash.
 #: bin/schroot-base/schroot-base-main.cc:69
-#, fuzzy
-msgid "Copyright (C) 2004-2009 Roger Leigh"
-msgstr "Copyright (C) 2004-2008 Roger Leigh"
+msgid "Copyright (C) 2004-2010 Roger Leigh"
+msgstr "Copyright © 2004–2010 Roger Leigh"
 
 #: bin/schroot-base/schroot-base-main.cc:70
 msgid ""
@@ -624,8 +623,8 @@ msgstr "[OPÇÃO...] - montar sistema de ficheiros"
 
 #: bin/schroot-mount/schroot-mount-main.cc:128
 #: bin/schroot-mount/schroot-mount-main.cc:192 sbuild/sbuild-auth-pam.cc:119
-#: sbuild/sbuild-log.cc:172 sbuild/sbuild-run-parts.cc:229
-#: sbuild/sbuild-session.cc:1064 sbuild/sbuild-session.cc:1330
+#: sbuild/sbuild-log.cc:172 sbuild/sbuild-run-parts.cc:232
+#: sbuild/sbuild-session.cc:1069 sbuild/sbuild-session.cc:1335
 msgid "An unknown exception occurred"
 msgstr "Ocorreu uma excepção desconhecida"
 
@@ -927,48 +926,48 @@ msgid ""
 "This option will be removed in the future; please update your configuration"
 msgstr "Esta opção será removida no futuro"
 
-#: sbuild/sbuild-chroot-block-device-base.cc:197
+#: sbuild/sbuild-chroot-block-device-base.cc:130
 msgid "Device"
 msgstr "Dispositivo"
 
 #. TRANSLATORS: %1% = chroot alias name
 #. TRANSLATORS: %4% = chroot name
-#: sbuild/sbuild-chroot-config.cc:57
+#: sbuild/sbuild-chroot-config.cc:58
 #, boost-format
 msgid "Alias '%1%' already associated with '%4%' chroot"
 msgstr "O alias '%1%' já está associado com o chroot '%4%'"
 
-#: sbuild/sbuild-chroot-config.cc:58
+#: sbuild/sbuild-chroot-config.cc:59
 msgid "No such chroot"
 msgstr "Não há tal chroot"
 
 #. TRANSLATORS: %1% = chroot name
-#: sbuild/sbuild-chroot-config.cc:60
+#: sbuild/sbuild-chroot-config.cc:61
 #, boost-format
 msgid "A chroot or alias '%1%' already exists with this name"
 msgstr "Um chroot ou 'alias' '%1%' já existe com esse nome"
 
-#: sbuild/sbuild-chroot-config.cc:61 sbuild/sbuild-chroot.cc:79
+#: sbuild/sbuild-chroot-config.cc:62 sbuild/sbuild-chroot.cc:79
 msgid "File is not a regular file"
 msgstr "O ficheiro não é um ficheiro regular"
 
-#: sbuild/sbuild-chroot-config.cc:62
+#: sbuild/sbuild-chroot-config.cc:63
 msgid "Failed to open file"
 msgstr "Falhou a abertura de ficheiro"
 
-#: sbuild/sbuild-chroot-config.cc:63 sbuild/sbuild-chroot.cc:80
+#: sbuild/sbuild-chroot-config.cc:64 sbuild/sbuild-chroot.cc:80
 msgid "File is not owned by user root"
 msgstr "O ficheiro não pertence ao utilizador root"
 
-#: sbuild/sbuild-chroot-config.cc:64 sbuild/sbuild-chroot.cc:81
+#: sbuild/sbuild-chroot-config.cc:65 sbuild/sbuild-chroot.cc:81
 msgid "File has write permissions for others"
 msgstr "O ficheiro tem permissões de escrita para outros"
 
-#: sbuild/sbuild-chroot-config.cc:227 sbuild/sbuild-chroot-config.cc:233
+#: sbuild/sbuild-chroot-config.cc:230 sbuild/sbuild-chroot-config.cc:236
 msgid "Duplicate names are not allowed"
 msgstr "Nomes duplicados não são permitidos"
 
-#: sbuild/sbuild-chroot-config.cc:312
+#: sbuild/sbuild-chroot-config.cc:315
 msgid "Available chroots: "
 msgstr "Chroots disponíveis: "
 
@@ -1062,11 +1061,11 @@ msgstr "Ficheiro"
 msgid "File Repack"
 msgstr "Re-empacotamento do Ficheiro"
 
-#: sbuild/sbuild-chroot-lvm-snapshot.cc:238
+#: sbuild/sbuild-chroot-lvm-snapshot.cc:233
 msgid "LVM Snapshot Device"
 msgstr "Dispositivo de Snapshot LVM"
 
-#: sbuild/sbuild-chroot-lvm-snapshot.cc:240
+#: sbuild/sbuild-chroot-lvm-snapshot.cc:235
 msgid "LVM Snapshot Options"
 msgstr "Opções de Snapshot LVM"
 
@@ -1222,18 +1221,6 @@ msgstr "A flag close-on-execute do terminal de controlo não pôde ser activada"
 msgid "The controlling terminal file descriptor could not be duplicated"
 msgstr ""
 "O descritor de ficheiro do terminal de controle não pôde ser duplicado."
-
-#. TRANSLATORS: %1% = directory name
-#: sbuild/sbuild-dirstream.cc:40
-#, boost-format
-msgid "Failed to open directory '%1%'"
-msgstr "Falhou a abertura do directório '%1%'"
-
-#. TRANSLATORS: %1% = directory name
-#: sbuild/sbuild-dirstream.cc:42
-#, boost-format
-msgid "Failed to read directory '%1%'"
-msgstr "Falhou a leitura do directório '%1%'"
 
 #: sbuild/sbuild-format-detail.cc:72
 msgid "true"
@@ -1474,7 +1461,7 @@ msgid "Failed to read file descriptor"
 msgstr "Falhou a obtenção do estado do descriptor de ficheiro"
 
 #. TRANSLATORS: %1% = command
-#: sbuild/sbuild-run-parts.cc:199
+#: sbuild/sbuild-run-parts.cc:202
 #, boost-format
 msgid "Executing '%1%'"
 msgstr "Executando '%1%'"
@@ -1635,14 +1622,14 @@ msgstr "Erro ao restaurar as configurações de terminal"
 
 #. TRANSLATORS: %1% = chroot name
 #. TRANSLATORS: %4% = command
-#: sbuild/sbuild-session.cc:833
+#: sbuild/sbuild-session.cc:838
 #, boost-format
 msgid "[%1% chroot] Running login shell: '%4%'"
 msgstr "[chroot %1%] Executando a 'shell' de login: '%4%'"
 
 #. TRANSLATORS: %1% = chroot name
 #. TRANSLATORS: %4% = command
-#: sbuild/sbuild-session.cc:837
+#: sbuild/sbuild-session.cc:842
 #, boost-format
 msgid "[%1% chroot] Running shell: '%4%'"
 msgstr "[chroot %1%] Executando a 'shell': '%4%'"
@@ -1652,7 +1639,7 @@ msgstr "[chroot %1%] Executando a 'shell': '%4%'"
 #. TRANSLATORS: %3% = user name
 #. TRANSLATORS: %4% = command
 #. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
-#: sbuild/sbuild-session.cc:848
+#: sbuild/sbuild-session.cc:853
 #, boost-format
 msgid "[%1% chroot] (%2%->%3%) Running login shell: '%4%'"
 msgstr "[chroot %1%] (%2%->%3%) Executando a 'shell' de login: '%4%'"
@@ -1662,14 +1649,14 @@ msgstr "[chroot %1%] (%2%->%3%) Executando a 'shell' de login: '%4%'"
 #. TRANSLATORS: %3% = user name
 #. TRANSLATORS: %4% = command
 #. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
-#: sbuild/sbuild-session.cc:855
+#: sbuild/sbuild-session.cc:860
 #, boost-format
 msgid "[%1% chroot] (%2%->%3%) Running shell: '%4%'"
 msgstr "[chroot %1%] (%2%->%3%) Executando a 'shell': '%4%'"
 
 #. TRANSLATORS: %1% = chroot name
 #. TRANSLATORS: %4% = command
-#: sbuild/sbuild-session.cc:893
+#: sbuild/sbuild-session.cc:898
 #, boost-format
 msgid "[%1% chroot] Running command: \"%4%\""
 msgstr "[chroot %1%] Executando comando: \"%4%\""
@@ -1679,17 +1666,17 @@ msgstr "[chroot %1%] Executando comando: \"%4%\""
 #. TRANSLATORS: %3% = user name
 #. TRANSLATORS: %4% = command
 #. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
-#: sbuild/sbuild-session.cc:900
+#: sbuild/sbuild-session.cc:905
 #, boost-format
 msgid "[%1% chroot] (%2%->%3%) Running command: \"%4%\""
 msgstr "[chroot %1%] (%2%->%3%) Executando comando: \"%4%\""
 
-#: sbuild/sbuild-session.cc:1088
+#: sbuild/sbuild-session.cc:1093
 #, boost-format
 msgid "stage=%1%"
 msgstr "etapa=%1%"
 
-#: sbuild/sbuild-session.cc:1254 sbuild/sbuild-session.cc:1261
+#: sbuild/sbuild-session.cc:1259 sbuild/sbuild-session.cc:1266
 msgid "terminating immediately"
 msgstr "terminando imediatamente"
 
@@ -1705,13 +1692,19 @@ msgstr "terminando imediatamente"
 msgid "%d %b %Y"
 msgstr "%d %b %Y"
 
-#: sbuild/sbuild-util.cc:80
+#: sbuild/sbuild-util.cc:81
 msgid "Failed to stat file"
 msgstr "Falhou o 'stat' ao ficheiro"
 
-#: sbuild/sbuild-util.cc:81
+#: sbuild/sbuild-util.cc:82
 msgid "Failed to stat file descriptor"
 msgstr "Falhou a obtenção do estado do descriptor de ficheiro"
+
+#~ msgid "Failed to open directory '%1%'"
+#~ msgstr "Falhou a abertura do directório '%1%'"
+
+#~ msgid "Failed to read directory '%1%'"
+#~ msgstr "Falhou a leitura do directório '%1%'"
 
 #~ msgid "Force a build dependency"
 #~ msgstr "Forçar uma dependência de criação"

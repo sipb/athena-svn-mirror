@@ -44,11 +44,15 @@ namespace sbuild
     /// The copy constructor.
     chroot_block_device (const chroot_block_device& rhs);
 
+#ifdef SBUILD_FEATURE_LVMSNAP
     /// The copy constructor.
     chroot_block_device (const chroot_lvm_snapshot& rhs);
+#endif
 
     friend class chroot;
+#ifdef SBUILD_FEATURE_LVMSNAP
     friend class chroot_lvm_snapshot;
+#endif
 
   public:
     /// The destructor.
@@ -71,6 +75,13 @@ namespace sbuild
 
     virtual session_flags
     get_session_flags (chroot const& chroot) const;
+
+  protected:
+    virtual void
+    setup_lock (chroot::setup_type type,
+		bool               lock,
+		int                status);
+
 
     virtual void
     get_details (chroot const&  chroot,
