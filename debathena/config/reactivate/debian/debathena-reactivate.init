@@ -14,9 +14,6 @@
 
 PATH=/sbin:/bin
 
-. /lib/init/vars.sh
-. /lib/init/mount-functions.sh
-
 case "$1" in
   start)
 	# Set the volume to zero for all sound cards, and save that state.
@@ -25,7 +22,9 @@ case "$1" in
 	# Create a tmpfs where schroot puts overlays. This is needed
 	# because aufs won't let you put an overlay and underlay on the
 	# same file system.
-	domount tmpfs "" /var/lib/schroot/union/overlay tmpfs -osize=1073741824
+	if ! mountpoint -q /var/lib/schroot/union/overlay; then
+	    mount -t tmpfs -o size=1073741824 tmpfs /var/lib/schroot/union/overlay
+	fi
 
 	# Enable subtree operations on /media by making it a mount point,
 	# then share it.

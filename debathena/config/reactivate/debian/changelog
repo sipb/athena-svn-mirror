@@ -1,3 +1,13 @@
+debathena-reactivate (2.0.7) unstable; urgency=low
+
+  * /lib/init/mount-functions.sh is gone as a side effect of Karmic
+    increasingly _actually_ using Upstart, so stop using it and just
+    implement the (very small) logic we wanted from it ourselves.
+  * Add a two-minute timeout to postinst code that could be an infinite
+    loop in appropriately unfortunate circumstances.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sat, 13 Feb 2010 00:47:52 -0500
+
 debathena-reactivate (2.0.6) unstable; urgency=low
 
   * Permit (possibly-backported) upstream schroot at a version that
