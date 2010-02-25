@@ -1,3 +1,10 @@
+debathena-xsession (1.13) unstable; urgency=low
+
+  * Prevent debathena-nocalls from being set as the default session
+    in gdm's cached dmrc, as well as in the home directory file.
+
+ -- Robert Basch <rbasch@mit.edu>  Thu, 25 Feb 2010 14:44:07 -0500
+
 debathena-xsession (1.12) unstable; urgency=low
 
   * Promote mitmailutils back to a dependency, now that it's installable
