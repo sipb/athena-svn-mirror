@@ -2,8 +2,9 @@ debathena-archive-keyring (1.3) unstable; urgency=low
 
   * Remove the old "Debian-Athena" signing key (997D6B23) from the
     keyring.
+  * Squash some debhelper-related Lintian warnings.
 
- -- Evan Broder <broder@mit.edu>  Mon, 01 Mar 2010 00:39:51 -0500
+ -- Evan Broder <broder@mit.edu>  Mon, 01 Mar 2010 00:43:23 -0500
 
 debathena-archive-keyring (1.2) unstable; urgency=low
 

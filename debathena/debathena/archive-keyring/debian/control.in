@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-archive-keyring
 Architecture: all
-Depends: apt
+Depends: ${misc:Depends}, apt
 Description: GnuPG archive keys of the Debathena archive
  The Debathena project digitally signs its Release files. This package
  contains the GnuPG archive keys used for that purpose.
