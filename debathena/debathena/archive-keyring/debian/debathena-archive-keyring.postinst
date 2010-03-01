@@ -24,6 +24,9 @@ case "$1" in
             if apt-key list | grep -q A2DA1A6C; then
                 apt-key del A2DA1A6C
             fi
+	    if apt-key list | grep -q 997D6B23; then
+		apt-key del 997D6B23
+	    fi
         fi
     ;;
 
