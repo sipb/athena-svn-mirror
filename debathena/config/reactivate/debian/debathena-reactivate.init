@@ -16,6 +16,9 @@ PATH=/sbin:/bin
 
 case "$1" in
   start)
+	# Clean up the per-user files cached locally by gdm.
+	rm -rf /var/cache/gdm/*
+
 	# Set the volume to zero for all sound cards, and save that state.
 	(/etc/init.d/alsa-utils stop all && alsactl store) > /dev/null 2>&1
 
@@ -28,7 +31,8 @@ case "$1" in
 
 	# Enable subtree operations on /media by making it a mount point,
 	# then share it.
-	if ! mountpoint -q /media; then
+	media_mount=$(mount | awk '$1 == "/media" && $3 == "/media"')
+	if [ -z "$media_mount" ]; then
 	    mount --bind /media /media
 	    mount --make-shared /media
 	fi

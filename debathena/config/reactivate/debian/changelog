@@ -1,3 +1,12 @@
+debathena-reactivate (2.0.8) unstable; urgency=low
+
+  * Fix the check to determine whether we have already bind-mounted
+    /media. (Trac: #493)
+  * Clean up the per-user files cached locally by the new gdm.
+    (Trac: #527)
+  
+ -- Robert Basch <rbasch@mit.edu>  Mon, 01 Mar 2010 09:52:26 -0500
+
 debathena-reactivate (2.0.7) unstable; urgency=low
 
   * /lib/init/mount-functions.sh is gone as a side effect of Karmic
