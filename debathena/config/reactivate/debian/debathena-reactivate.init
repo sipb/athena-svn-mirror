@@ -12,7 +12,7 @@
 #                    for snapshots.
 ### END INIT INFO
 
-PATH=/sbin:/bin
+PATH=/sbin:/bin:/usr/bin
 
 case "$1" in
   start)
