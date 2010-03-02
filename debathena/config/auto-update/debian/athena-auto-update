@@ -110,6 +110,15 @@ fi
 # Tell apt not to expect user input during package installation.
 export DEBIAN_FRONTEND=noninteractive
 
+# Configure any unconfigured packages (Trac #407)
+if ! v dpkg --configure -a; then
+  complain "Failed to configure unconfigured packages."
+  exit
+fi  
+
+# A recently configured package may want a reboot
+maybe_reboot
+
 # Update the aptitude cache.
 if ! v aptitude --quiet --assume-yes update; then
   complain "aptitude update failed"
