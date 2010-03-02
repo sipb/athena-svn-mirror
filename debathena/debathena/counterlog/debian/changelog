@@ -1,3 +1,11 @@
+debathena-counterlog (1.7) unstable; urgency=low
+
+  * Report release codename (from lsb_release -sc) instead of machtype
+    (Trac #491)
+  * Add dependency on lsb-release package for above change
+
+ -- 
+
 debathena-counterlog (1.6) unstable; urgency=low
 
   * Move athena-counterlog into /usr/lib/debathean-counterlog, to be even
