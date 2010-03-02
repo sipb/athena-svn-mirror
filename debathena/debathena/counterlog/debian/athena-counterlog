@@ -18,7 +18,7 @@ fi
 version=$(machtype -L)
 loghost=wslogger.mit.edu
 host=$(hostname --fqdn)
-mtype=$(machtype)
+mtype=$(lsb_release -sc | sed -e 's/\s/_/g')
 ctype=$(machtype -c)
 
 # Traditionally, we do counter logging via syslog.  (We could do it
