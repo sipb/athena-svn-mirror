@@ -1,3 +1,10 @@
+debathena-afs-config (1.15) unstable; urgency=low
+
+  * CellServDB update from /afs/athena/service/CellServDB: remove old
+    athena.mit.edu DB server.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 03 Mar 2010 16:50:46 -0500
+
 debathena-afs-config (1.14) unstable; urgency=low
 
   * CellServDB update from /afs/athena/service/CellServDB: add new
