@@ -89,6 +89,11 @@ EOF
 	cleanup_old_diversion /etc/gdm/PreSession/Default
 	cleanup_old_diversion /etc/gdm/PostSession/Default
 
+	if dpkg --compare versions "$2" lt 2.0.9~ && \
+	    [ -x /usr/share/update-notifier/notify-reboot-required ]; then
+	    /usr/share/update-notifier/notify-reboot-required
+	fi
+
 	# Make printing suck less
 	if hash invoke-rc.d >/dev/null 2>&1; then
 	    invoke-rc.d cups stop || invoke-rc.d cupsys stop
