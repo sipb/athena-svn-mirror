@@ -1,3 +1,11 @@
+debathena-afs-config (1.16) unstable; urgency=low
+
+  * Remove the processed CellServDB and CellAlias from version control,
+    and always generate them at build time. (Because svn always updates
+    timestamps, the .debathena files were never getting regenerated)
+
+ -- Evan Broder <broder@mit.edu>  Wed, 03 Mar 2010 17:35:53 -0500
+
 debathena-afs-config (1.15) unstable; urgency=low
 
   * CellServDB update from /afs/athena/service/CellServDB: remove old
