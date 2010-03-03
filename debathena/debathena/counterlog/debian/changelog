@@ -1,10 +1,14 @@
 debathena-counterlog (1.7) unstable; urgency=low
 
+  [ Jonathan Reed ]
   * Report release codename (from lsb_release -sc) instead of machtype
     (Trac #491)
   * Add dependency on lsb-release package for above change
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 02 Mar 2010 09:50:24 -0500
+  [ Evan Broder ]
+  * Bump debhelper and standards versions (no change required).
+
+ -- Evan Broder <broder@mit.edu>  Wed, 03 Mar 2010 12:16:08 -0500
 
 debathena-counterlog (1.6) unstable; urgency=low
 
