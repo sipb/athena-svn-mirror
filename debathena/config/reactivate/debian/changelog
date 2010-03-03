@@ -2,8 +2,9 @@ debathena-reactivate (2.0.9) unstable; urgency=low
 
   * Reboot on update if we haven't rebooted for the bind-mount fix from
     2.0.8 already.
+  * Bump standards version (no changes required).
 
- -- Evan Broder <broder@mit.edu>  Wed, 03 Mar 2010 11:56:30 -0500
+ -- Evan Broder <broder@mit.edu>  Wed, 03 Mar 2010 12:05:07 -0500
 
 debathena-reactivate (2.0.8) unstable; urgency=low
 
