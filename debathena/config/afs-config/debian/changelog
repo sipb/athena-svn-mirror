@@ -1,3 +1,10 @@
+debathena-afs-config (1.14) unstable; urgency=low
+
+  * CellServDB update from /afs/athena/service/CellServDB: add new
+    athena.mit.edu DB server.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 03 Mar 2010 08:14:46 -0500
+
 debathena-afs-config (1.13) unstable; urgency=low
 
   * Move update-cellservdb to /usr/lib (Trac: #263).
