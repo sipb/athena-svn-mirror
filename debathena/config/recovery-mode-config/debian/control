@@ -1,0 +1,13 @@
+Source: debathena-recovery-mode-config
+Section: debathena-config/net
+Priority: extra
+Build-Depends: cdbs, debhelper
+Maintainer: Debathena Project <debathena@mit.edu>
+
+Package: debathena-recovery-mode-config
+Architecture: all
+Depends: ${misc:Depends}, debathena-auto-update, debathena-machtype, perl
+Description: Adds two options to recovery-mode menu
+ This package adds two options to the recovery-mode menu.  One option
+ forces an immediate update of the workstation, and the other allows
+ easy reconfiguration of the network.

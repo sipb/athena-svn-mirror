@@ -1,0 +1,193 @@
+#!/usr/bin/perl -w
+#
+#
+
+use strict;
+use Socket;
+use File::Copy;
+use Getopt::Std;
+
+my $MASKS="/usr/share/debathena-recovery-mode-config/masks";
+
+if (defined($ARGV[0]) && ($ARGV[0] eq 'test')) {
+    print "Change IP address or hostname\n";
+    exit 0;
+}
+
+sub bail {
+    print shift;
+    print "\n\n(press ENTER to return to the recovery mode menu)\n";
+    my $foo = <STDIN>;
+    exit 0;
+}
+
+sub mask {
+    my $ip = shift;
+    my $mask = shift;
+    my $mbits = pack("B*", (1 x $mask) . (0 x (32 - $mask)));
+    my $ibits = pack("CCCC", split(/\./, $ip));
+    my $net = $ibits & $mbits;
+    return join('.', unpack("CCCC", $net));
+}
+
+sub cidr2ip {
+    my $cidr = shift;
+    return join('.', unpack("CCCC", pack("B*", (1 x $cidr) . (0 x (32 - $cidr)))));
+}
+
+sub validIP {
+    my $ip = shift;
+    if ($ip =~ /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/) {
+	if (scalar(grep { ($_ <= 255) && ($_ >= 0) } ($1, $2, $3, $4)) == 4) {
+	    return 1;
+	}
+    }
+    return 0;
+}
+
+# main
+
+# Sanity checks
+foreach (qw(/etc/network/interfaces /etc/hosts /etc/hostname)) {
+    (-w $_) || bail("Cannot write to $_. (Are you root?)");
+}
+
+(-r $MASKS) || bail("Cannot read $MASKS");
+
+my $machtype = `machtype -L`;
+chomp($machtype);
+if ($machtype ne 'debathena-cluster') {
+    print "WARNING: This script is designed for debathena-cluster machines but\n";
+    print "this machine is running $machtype.\n";
+    print "Are you SURE you want to continue? (y/n) ";
+    my $ans = <STDIN>;
+    chomp($ans);
+    if ($ans ne 'y') {
+	exit 0;
+    }
+}
+
+my $ip = '';
+until (validIP($ip)) {
+    if ($ip) {
+	print "Invalid IP address ($ip).  Try again.\n";
+    }
+    print "Enter the new IP address: ";
+    ($ip = <STDIN>) =~ s/\s//g;
+}
+print "Looking up hostname...";
+my $fqdn = gethostbyaddr(inet_aton($ip), AF_INET);
+if ($fqdn) {
+    print " found.\n";
+} else {
+    $fqdn = '';
+    print " not found.\n";
+    until ($fqdn =~ /^[a-z][\w\-\.]*/i) {
+	print "Please enter the machine's new hostname: ";
+	($fqdn = <STDIN>) =~ s/\s//g;
+    }
+}
+$fqdn = lc($fqdn);
+my $hostname = $fqdn;
+if ($fqdn =~ /\./) {
+    $hostname = (split(/\./, $fqdn))[0];
+} else {
+    print "NOTE: No domain specified, assuming 'mit.edu'";
+    $fqdn = "${hostname}.mit.edu";
+}
+
+my ($subnetmask, $gateway);
+print "Looking up netmask information...\n";
+open(MASKS, $MASKS) || bail("Cannot read $MASKS: $!");
+while (<MASKS>) {
+    next if (/^#/);
+    next unless (/\d/);
+    my ($addr, $sbits, $mbits, $gw) = split(' '); #the ' ' pattern emulates awk
+    if (mask($ip, $sbits) eq $addr) {
+	$subnetmask = cidr2ip($mbits);
+	if (! $gw) {
+	    my @octets = split(/\./, mask($ip, $mbits));
+	    my $trailing = pop(@octets) + 1;
+	    $gateway = join('.', @octets, $trailing);
+	} else {
+	    $gateway = $gw;
+	}
+	last;
+    }
+}
+(defined($subnetmask) && defined($gateway)) || bail("Could not find a matching line in masks file for $ip.\nIf you are sure you typed the IP address correctly, please report\nthis error to IS&T, along with the IP address you were trying to use.");
+
+close(MASKS);
+print "IP address:  $ip\n";
+print "Subnet Mask: $subnetmask\n";
+print "Gateway:     $gateway\n";
+print "Hostname:    $hostname\n";
+print "FQDN:        $fqdn\n\n";
+print "Does that look correct? (y/n) ";
+my $ans = <STDIN>;
+chomp $ans;
+if ($ans ne 'y') {
+    bail("OK, cancelled.");
+}
+print "Updating /etc/network/interfaces...\n";
+copy("/etc/network/interfaces", "/etc/network/interfaces.old") || bail("Could not copy /etc/network/interfaces");
+open(INTERFACES, ">/etc/network/interfaces") || bail ("Could not overwrite /etc/network/interfaces: $!");
+print INTERFACES <<"ENDINTERFACES";
+# This file was created by $0
+
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eth0
+iface eth0 inet static
+        address $ip
+        netmask $subnetmask
+        gateway $gateway
+        dns-nameservers 18.70.0.160 18.71.0.151 18.72.0.3
+ENDINTERFACES
+close(INTERFACES);
+
+print "Updating /etc/hosts...\n";
+
+copy("/etc/hosts", "/etc/hosts.old") || bail("Could not copy /etc/hosts");
+open(HOSTS, ">/etc/hosts") || bail ("Could not overwrite /etc/hosts: $!");
+print HOSTS <<"ENDHOSTS";
+# This file was created by $0
+127.0.0.1       localhost
+127.0.1.1       $fqdn $hostname
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+ENDHOSTS
+close(HOSTS);
+				    
+print "Updating /etc/hostname...\n";
+copy("/etc/hostname", "/etc/hostname.old") || bail("Could not copy /etc/hostname");
+open(HOSTNAME, ">/etc/hostname") || bail ("Could not overwrite /etc/hostname: $!");
+print HOSTNAME "$hostname\n";
+close(HOSTNAME);
+
+print "Setting hostname...\n";
+system("/bin/hostname", $hostname);
+print "\nDone!  You will need to reboot the workstation for the\n";
+print "changes to take effect.\n";
+print "Would you like to reboot now? (y/n) ";
+$ans = <STDIN>;
+chomp $ans;
+if ($ans ne 'y') {
+    print "\nPlease perform a full shutdown and reboot as soon as possible.\n";
+    exit 0;
+}
+print "The workstation will now power down completely.\n";
+print "When you turn it back on, it will use the new IP address.\n\n";
+print "(press ENTER to power down the workstation)";
+getc(STDIN);
+system("/sbin/poweroff");
+exit 0;

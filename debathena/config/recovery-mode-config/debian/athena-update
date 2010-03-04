@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ "$1" = "test" ]; then
+  echo "Force an update of the workstation"
+  exit 0
+fi
+
+echo "Running auto-updater, please wait..."
+/usr/sbin/athena-auto-update
+echo "Auto-update complete.  Press Enter to reboot.";
+read answer
+/sbin/poweroff
