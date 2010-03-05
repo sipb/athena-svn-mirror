@@ -14,10 +14,17 @@ if (defined($ARGV[0]) && ($ARGV[0] eq 'test')) {
     exit 0;
 }
 
+sub confirm {
+    my $question = shift || "Continue?";
+    print "${question} (y/n) ";
+    my $ans = <STDIN>;
+    return ($ans =~ m/^y$/i);
+}
+
 sub bail {
     print shift;
     print "\n\n(press ENTER to return to the recovery mode menu)\n";
-    my $foo = <STDIN>;
+    my $dummy = <STDIN>;
     exit 0;
 }
 
@@ -59,10 +66,7 @@ chomp($machtype);
 if ($machtype ne 'debathena-cluster') {
     print "WARNING: This script is designed for debathena-cluster machines but\n";
     print "this machine is running $machtype.\n";
-    print "Are you SURE you want to continue? (y/n) ";
-    my $ans = <STDIN>;
-    chomp($ans);
-    if ($ans ne 'y') {
+    if (! confirm("Are you SURE you want to continue?")) {
 	exit 0;
     }
 }
@@ -123,10 +127,7 @@ print "Subnet Mask: $subnetmask\n";
 print "Gateway:     $gateway\n";
 print "Hostname:    $hostname\n";
 print "FQDN:        $fqdn\n\n";
-print "Does that look correct? (y/n) ";
-my $ans = <STDIN>;
-chomp $ans;
-if ($ans ne 'y') {
+if (! confirm("Does that look correct?")) {
     bail("OK, cancelled.");
 }
 print "Updating /etc/network/interfaces...\n";
@@ -178,10 +179,7 @@ print "Setting hostname...\n";
 system("/bin/hostname", $hostname);
 print "\nDone!  You will need to reboot the workstation for the\n";
 print "changes to take effect.\n";
-print "Would you like to reboot now? (y/n) ";
-$ans = <STDIN>;
-chomp $ans;
-if ($ans ne 'y') {
+if (! confirm("Would you like to reboot now?")) {
     print "\nPlease perform a full shutdown and reboot as soon as possible.\n";
     exit 0;
 }
