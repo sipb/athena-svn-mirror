@@ -67,7 +67,9 @@ case "$1" in
     install|upgrade)
 	cleanup_old_diversion /etc/gdm/PreSession/Default
 	cleanup_old_diversion /etc/gdm/PostSession/Default
-	if dpkg --compare-versions "$2" lt 2.0~; then
+	if dpkg --compare-versions "$2" lt-nl 2.0~ && \
+	    [ -w /etc/schroot/schroot.conf ] && \
+	    grep -q '###ATHENA-BEGIN###' /etc/schroot/schroot.conf; then
 	    sed -i -e '/###ATHENA-BEGIN###/,/###ATHENA-END###/d' /etc/schroot/schroot.conf
 	fi
     ;;
