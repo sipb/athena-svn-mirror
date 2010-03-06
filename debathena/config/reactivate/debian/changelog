@@ -1,8 +1,9 @@
 debathena-reactivate (2.0.10) unstable; urgency=low
 
   * Be more robust in the preinst when fixing schroot.conf.
+  * Bump the debhelper compatibility level as high as we can.
 
- -- Evan Broder <broder@mit.edu>  Sat, 06 Mar 2010 02:49:20 -0500
+ -- Evan Broder <broder@mit.edu>  Sat, 06 Mar 2010 02:59:55 -0500
 
 debathena-reactivate (2.0.9) unstable; urgency=low
 
