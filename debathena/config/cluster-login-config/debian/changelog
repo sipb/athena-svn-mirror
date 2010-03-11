@@ -1,3 +1,14 @@
+debathena-cluster-login-config (1.22) unstable; urgency=low
+
+  * On new Upstart platforms, remove /etc/init/ttyN.conf instead.  Remove
+    ttymsg from the .install file, and install it by hand in rules, using
+    dh_installinit on newer platforms.  
+  * Remove /usr/lib/indicator-session/indicator-users-service, thus
+    preventing "Switch User" and "Guest Session" from appearing in the new
+    indicator-session applet (f/k/a FUSA)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 10 Mar 2010 23:21:58 -0500
+
 debathena-cluster-login-config (1.21) unstable; urgency=low
 
   * On new-gdm platforms only, remove the xsessions .desktop files
