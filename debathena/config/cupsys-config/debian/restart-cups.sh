@@ -19,5 +19,16 @@ restart_cups()
 		rm -f /var/cache/cups/remote.cache
 		$invoke start
 	    fi
+
+	    # Wait up to two minutes to pick up all the BrowsePoll server's queues.
+	    browse_host="$(sed -ne '/^BrowsePoll/ { s/^BrowsePoll //p; q }' /etc/cups/cupsd.conf)"
+	    if [ -n "$browse_host" ]; then
+		queue_count=$(lpstat -h "$browse_host" -a | wc -l)
+		timeout=0
+		while [ $(lpstat -a | wc -l) -lt $queue_count ] && [ $timeout -le 120 ]; do
+		    sleep 1
+		    timeout=$((timeout+1))
+		done
+	    fi
 	fi
 }

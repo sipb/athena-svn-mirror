@@ -1,9 +1,10 @@
-debathena-cupsys-config (1.9) UNRELEASED; urgency=low
+debathena-cupsys-config (1.9) unstable; urgency=low
 
   * Refactor the CUPS-restarting logic into a separate shell script so that
     other postinsts can share code with it.
+  * Merge in some of reactivate's CUPS-restarting logic.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Mon, 08 Mar 2010 16:58:42 -0500
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 08 Mar 2010 17:23:24 -0500
 
 debathena-cupsys-config (1.8) unstable; urgency=low
 

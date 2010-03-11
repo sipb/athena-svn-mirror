@@ -1,10 +1,11 @@
-debathena-reactivate (2.0.11) UNRELEASED; urgency=low
+debathena-reactivate (2.0.11) unstable; urgency=low
 
   * Fix a typo in 2.0.9.
-  * Use debathena-cupsys-config's restarting logic, which checks to make sure
-    that cups is running.
+  * Merge reactivate's CUPS-restarting logic, which waits for BrowsePolling to
+    complete, with debathena-cupsys-config's, which checks to make sure
+    that cups is running first, and use a common file for both.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Mon, 08 Mar 2010 17:14:35 -0500
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 08 Mar 2010 17:21:25 -0500
 
 debathena-reactivate (2.0.10) unstable; urgency=low
 
