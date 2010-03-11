@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software-nox
-Version: 0.24
+Version: 0.25
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: build-essential, debathena-build-depends,
   enscript, psutils,
@@ -34,6 +34,7 @@ Depends: build-essential, debathena-build-depends,
   vpnc,
   cyrus-clients-2.2,
   expect,
+  traceroute,
 Recommends: ckermit,
   openjdk-6-jdk,
   x3270,
