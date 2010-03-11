@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-libraries
-Version: 0.12.1
+Version: 0.13
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: liblapack-dev,
  liblapack-doc,
