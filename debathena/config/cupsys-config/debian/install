@@ -1,0 +1,1 @@
+debian/restart-cups.sh usr/lib/debathena-cupsys-config
