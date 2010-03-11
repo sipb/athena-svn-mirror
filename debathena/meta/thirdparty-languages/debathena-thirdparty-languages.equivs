@@ -41,13 +41,13 @@ Depends: cmake,
  ocaml-libs,
  ocaml-mode,
  scala,
- eclipse-cdt,
- eclipse-pydev,
  irb,
 
 Recommends:
  mit-scheme,
  mit-scheme-doc,
+ eclispe-cdt,
+ eclipse-pydev
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
