@@ -1,0 +1,25 @@
+.TH SENDMAIL 8 "11 March 2010" "debathena-msmtp-mta" "Athena Electronic Mail"
+.SH NAME
+sendmail \- A script which invokes msmtp in order to send mail
+.SH SYNOPSIS
+.nf
+.B sendmail [\fIflags\fP] [\fIaddress ...\fP]
+.sp
+.SH DESCRIPTION
+.BR sendmail
+sends a message to one or more recipients.  Flags and addresses are
+passed to msmtp, which is invoked with the requisite options.  If
+possible, the message is sent authenticated, but will fall back to
+unauthenticated smtp.  Authentication can be forced by setting the
+variable \fIDEBATHENA_SENDMAIL_AUTH\fP to "yes".  If authentication is
+forced, but no valid Kerberos tickets can be found to authenticate the
+user, the script will exit with status 1.  See mstmp(1) for possible
+values for \fIflags\fP.
+
+.SH SEE ALSO
+
+msmtp(1)
+
+.SH AUTHOR
+SIPB Debathena Project (http://debathena.mit.edu)
+

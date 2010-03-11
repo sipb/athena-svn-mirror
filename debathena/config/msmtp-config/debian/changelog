@@ -1,3 +1,9 @@
+debathena-msmtp-config (1.7) unstable; urgency=low
+
+  * Install a man page for sendmail (Trac #269)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 11 Mar 2010 14:58:23 -0500
+
 debathena-msmtp-config (1.6) unstable; urgency=low
 
   * Replace shell script with Perl script that respects
