@@ -4,7 +4,7 @@ debathena-auto-update (1.13) unstable; urgency=low
   * Create a status file (/var/lib/athena-update-status) that can be
     easily queried with athinfo.  The file contains the timestamp of the
     last successful update, the timestamp of the last attempted update,
-    the status of the last attempted update, and any addition status
+    the status of the last attempted update, and any additional status
     messages.
 
  -- Jonathan Reed <jdreed@mit.edu>  Fri, 12 Mar 2010 15:44:47 -0500
