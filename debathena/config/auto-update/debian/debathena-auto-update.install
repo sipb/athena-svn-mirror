@@ -1,1 +1,2 @@
 debian/athena-auto-update usr/sbin
+debian/athena-auto-update.8 usr/share/man/man8

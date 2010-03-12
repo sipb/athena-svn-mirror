@@ -6,8 +6,9 @@ debathena-auto-update (1.13) unstable; urgency=low
     last successful update, the timestamp of the last attempted update,
     the status of the last attempted update, and any additional status
     messages.
+  * Include a manpage so lintian will STFU
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 12 Mar 2010 15:44:47 -0500
+ -- Jonathan Reed <jdreed@loop.mit.edu>  Fri, 12 Mar 2010 17:27:55 -0500
 
 debathena-auto-update (1.12) unstable; urgency=low
 

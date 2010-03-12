@@ -1,0 +1,32 @@
+.TH ATHENA-AUTO-UPDATE 8 "11 March 2010" "debathena-auto-update" "Athena Update Sysmte"
+.SH NAME
+athena-auto-update \- Attempt to automatically update installed packages
+.SH SYNOPSIS
+.nf
+.B athena-auto-update
+.sp
+.SH DESCRIPTION
+.BR athena-auto-update
+is intended to be run by cron on a regular basis.  It attempts to
+reconfigure any unconfigured packages, then will simulate an upgrade.
+If there are no packages to update, it will exit.  If there are
+packages to update, it will ensure that the update process won't try
+to remove any of the required metapackages.  It will then perform the
+upgrade, and update the apt-file cache.
+
+If the update fails at any point, a message will be sent to the
+\fIuser\fP syslog facility, with priority \fInotice\fP.
+
+The results of the script are logged to \fI/var/log/athena-update\fP.
+
+.SH FILES
+
+.B /var/log/athena-update
+
+.SH SEE ALSO
+
+aptitude(1)
+
+.SH AUTHOR
+SIPB Debathena Project (http://debathena.mit.edu)
+
