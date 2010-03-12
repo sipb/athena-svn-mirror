@@ -2,7 +2,19 @@
 
 complain() {
   logger -t "$(hostname --fqdn)" -p user.notice "update: $*"
+  updstatus="failed"
+  updmsg="$*"
 }
+
+save_success() {
+  updstatus="ok"
+  updmsg=$1
+}
+
+save_state() {
+  rm -f $statfile
+  echo "$updlast|$(date)|$updstatus|$updmsg" > $statfile
+}  
 
 maybe_reboot() {
   if [ -f /var/run/reboot-required ]; then
@@ -20,6 +32,7 @@ maybe_reboot() {
     if pgrep '^screen' > /dev/null; then
       return
     fi
+    save_state
     reboot
     exit
   fi
@@ -46,6 +59,16 @@ fi
 
 trap 'rm -f $pidfile' EXIT
 
+statfile="/var/lib/athena-update-status"
+updstatus="unknown"
+updmsg=""
+updlast=$(date)
+
+# Get the last successful update
+if [ -f $statfile ]; then
+    updlast=$(awk -F\| '{print $1;}' $statfile)
+fi
+
 # Make sure nothing expects input on stdin.
 exec </dev/null
 
@@ -68,6 +91,7 @@ finish() {
     echo
     rm -f $pidfile
     rm -f /var/run/athena-nologin
+    save_state
     exit
 }
 trap finish EXIT
@@ -117,6 +141,7 @@ if ! v dpkg --configure -a; then
 fi  
 
 # A recently configured package may want a reboot
+save_success "Rebooted after dpkg --configure -a"
 maybe_reboot
 
 # Update the aptitude cache.
@@ -130,6 +155,7 @@ fi
 pattern='^0 packages upgraded, 0 newly installed, 0 to remove'
 if v aptitude --simulate --assume-yes full-upgrade | grep -q "$pattern"; then
   echo "Nothing to do!"
+  save_success "No updates"
   maybe_reboot
   exit
 fi
@@ -164,6 +190,9 @@ elif result=$(aptitude -F "%p" search '~b')
   complain "packages would be broken by update:" $result
 else
   v aptitude --quiet --assume-yes install
+  # Successful update, reset $updlast
+  updlast=$(date)
+  save_success "Successful update"
 fi
 
 # Finally, update the apt-file cache
