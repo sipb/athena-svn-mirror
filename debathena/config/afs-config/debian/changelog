@@ -1,3 +1,9 @@
+debathena-afs-config (1.17) unstable; urgency=low
+
+  * CellServDB update (merging in changes from grand.central.org).
+
+ -- Evan Broder <broder@mit.edu>  Thu, 11 Mar 2010 22:11:04 -0500
+
 debathena-afs-config (1.16) unstable; urgency=low
 
   * Remove the processed CellServDB and CellAlias from version control,
