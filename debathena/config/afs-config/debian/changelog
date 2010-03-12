@@ -1,8 +1,9 @@
 debathena-afs-config (1.17) unstable; urgency=low
 
   * CellServDB update (merging in changes from grand.central.org).
+  * Bump debhelper compatibility level (no other changes needed).
 
- -- Evan Broder <broder@mit.edu>  Thu, 11 Mar 2010 22:11:04 -0500
+ -- Evan Broder <broder@mit.edu>  Thu, 11 Mar 2010 22:12:13 -0500
 
 debathena-afs-config (1.16) unstable; urgency=low
 
