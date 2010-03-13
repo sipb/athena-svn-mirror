@@ -1,3 +1,10 @@
+debathena-athinfod (10.0.0-0debathena11) unstable; urgency=low
+
+  * Change the update-status query to display the status file set by the
+    new auto-update.  
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 12 Mar 2010 19:47:59 -0500
+
 debathena-athinfod (10.0.0-0debathena10) unstable; urgency=low
 
   * Add a 'hardware' query to give the DMI-reported model of a machine
