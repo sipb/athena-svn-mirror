@@ -1,7 +1,7 @@
 #!/bin/sh
 
 complain() {
-  logger -t "$(hostname --fqdn)" -p user.notice "update: $*"
+  logger -t "athena-auto-update" -p user.notice "$*"
   updstatus="failed"
   updmsg="$*"
 }

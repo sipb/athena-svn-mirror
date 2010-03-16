@@ -1,3 +1,10 @@
+debathena-auto-update (1.14) unstable; urgency=low
+
+  * Don't prefix the log message with the fqdn, that's syslog's job
+  * Change the tag to "athena-auto-update"
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 16 Mar 2010 10:49:22 -0400
+
 debathena-auto-update (1.13) unstable; urgency=low
 
   * Run dpkg --configure -a each time (Trac #407)
@@ -8,7 +15,7 @@ debathena-auto-update (1.13) unstable; urgency=low
     messages.
   * Include a manpage so lintian will STFU
 
- -- Jonathan Reed <jdreed@loop.mit.edu>  Fri, 12 Mar 2010 17:27:55 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 12 Mar 2010 17:27:55 -0500
 
 debathena-auto-update (1.12) unstable; urgency=low
 
