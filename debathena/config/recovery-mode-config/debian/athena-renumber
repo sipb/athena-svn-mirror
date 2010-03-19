@@ -182,6 +182,8 @@ print "The workstation will now power down completely.\n";
 print "When you turn it back on, it will use the new IP address.\n\n";
 print "(press ENTER to power down the workstation)";
 getc(STDIN);
-system("/sbin/kexec -u");
-system("/sbin/poweroff");
+if (-x "/sbin/kexec") {
+    system("/sbin/kexec -u");
+}
+system("/sbin/reboot");
 exit 0;
