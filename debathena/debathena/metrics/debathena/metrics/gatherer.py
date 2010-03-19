@@ -22,6 +22,7 @@ import socket
 import syslog
 import time
 import uuid
+import re
 
 import dbus
 import dbus.mainloop.glib
@@ -38,6 +39,7 @@ DBUS_INTERFACE = 'edu.mit.debathena.Metrics'
 LOG_LEVEL = syslog.LOG_LOCAL0 | syslog.LOG_INFO
 LOG_SERVER = ('wslogger.mit.edu', 514)
 
+SCHROOT_PAT = re.compile('/var/lib/schroot/mount/login-[^/]+')
 
 PROGRAM_BLACKLIST = set([
     '/bin/attach',
@@ -227,8 +229,12 @@ class Metrics(dbus.service.Object):
                 if ev.what == connector.PROC_EVENT_EXEC:
                     try:
                         prog = os.readlink("/proc/%d/exe" % ev.process_pid)
+                        # reactivate-1.x
                         if prog.startswith('/login'):
                             prog = prog[len('/login'):]
+                        # reactivate-2.x
+                        elif prog.startswith('/var/lib/schroot/mount'):
+                            prog = schroot_pat.sub('', prog)
                         if prog not in PROGRAM_BLACKLIST:
                             self.executed_programs.add(prog)
                     except OSError, e:
