@@ -3,8 +3,9 @@ debathena-recovery-mode-config (1.1) unstable; urgency=low
   * Add a menu item to reboot the workstation
   * Show kexec who's boss
   * Reboot, don't poweroff, after renumbering
+  * Increase debhelper compatibility level and add Standards-Version
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 19 Mar 2010 16:26:33 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 19 Mar 2010 16:33:31 -0400
 
 debathena-recovery-mode-config (1.0) unstable; urgency=low
 

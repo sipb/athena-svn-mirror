@@ -3,6 +3,7 @@ Section: debathena-config/net
 Priority: extra
 Build-Depends: cdbs, debhelper
 Maintainer: Debathena Project <debathena@mit.edu>
+Standards-Version: 3.8.4 
 
 Package: debathena-recovery-mode-config
 Architecture: all
