@@ -1,8 +1,9 @@
-debathena-metrics (1.4) UNRELEASED; urgency=low
+debathena-metrics (1.4) unstable; urgency=low
 
   * Strip off reactivate-2.x chroot path prefixes
+  * Add a directory blacklist and update the program blacklist
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 19 Mar 2010 11:56:39 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 19 Mar 2010 12:18:09 -0400
 
 debathena-metrics (1.3) unstable; urgency=low
 

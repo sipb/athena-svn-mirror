@@ -23,6 +23,7 @@ import syslog
 import time
 import uuid
 import re
+import os.path
 
 import dbus
 import dbus.mainloop.glib
@@ -41,44 +42,16 @@ LOG_SERVER = ('wslogger.mit.edu', 514)
 
 SCHROOT_PAT = re.compile('/var/lib/schroot/mount/login-[^/]+')
 
+DIRECTORY_BLACKLIST = set([
+    '/bin',
+    '/sbin',
+    '/usr/lib/schroot',
+    '/usr/lib/cups/backend',
+    '/usr/lib/cups/backend-available',
+    ])
+
 PROGRAM_BLACKLIST = set([
-    '/bin/attach',
-    '/bin/bash',
-    '/bin/cat',
-    '/bin/chmod',
-    '/bin/chown',
-    '/bin/dash',
-    '/bin/date',
-    '/bin/dbus-daemon',
-    '/bin/echo',
-    '/bin/egrep',
-    '/bin/fuser',
-    '/bin/fusermount',
-    '/bin/grep',
-    '/bin/hostname',
-    '/bin/ls',
-    '/bin/mkdir',
-    '/bin/mount',
-    '/bin/mv',
-    '/bin/nc.traditional',
-    '/bin/pwd',
-    '/bin/readlink',
-    '/bin/rm',
-    '/bin/run-parts',
-    '/bin/sed',
-    '/bin/sleep',
-    '/bin/su',
-    '/bin/touch',
-    '/bin/umount',
-    '/bin/uname',
     '/lib/udev/vol_id',
-    '/sbin/dmsetup',
-    '/sbin/killall5',
-    '/sbin/lvm',
-    '/sbin/modprobe',
-    '/sbin/runlevel',
-    '/sbin/start-stop-daemon',
-    '/sbin/usplash_write',
     '/usr/bin/aklog',
     '/usr/bin/athdir',
     '/usr/bin/authwatch',
@@ -89,6 +62,7 @@ PROGRAM_BLACKLIST = set([
     '/usr/bin/cut',
     '/usr/bin/dbus-launch',
     '/usr/bin/dbus-send',
+    '/usr/bin/desync',
     '/usr/bin/dirname',
     '/usr/bin/expr',
     '/usr/bin/flock',
@@ -126,6 +100,7 @@ PROGRAM_BLACKLIST = set([
     '/usr/bin/seahorse-agent',
     '/usr/bin/setfacl',
     '/usr/bin/ssh-agent',
+    '/usr/bin/stat',
     '/usr/bin/sudo',
     '/usr/bin/tac',
     '/usr/bin/tail',
@@ -235,7 +210,7 @@ class Metrics(dbus.service.Object):
                         # reactivate-2.x
                         elif prog.startswith('/var/lib/schroot/mount'):
                             prog = schroot_pat.sub('', prog)
-                        if prog not in PROGRAM_BLACKLIST:
+                        if (prog not in PROGRAM_BLACKLIST) and (os.path.dirname(prog) not in DIRECTORY_BLACKLIST):
                             self.executed_programs.add(prog)
                     except OSError, e:
                         if e.errno == errno.ENOENT:
