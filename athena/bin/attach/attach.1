@@ -20,36 +20,35 @@ attach \- attach a remote file system to your workstation
 .SH SYNOPSIS
 .TP 8
 attach
-[-v | -q] [-y | -n] [-g | -a] [-z | -h] [-x | -e] [-N | -S] 
-[-w | -r] [-p] [-L] [-O] [-o mountoptions] [-t type] [-m mountpoint] locker ...
+[-v | -q | -p] [-z | -h] locker ...
 .PP
 .nf
 attach -l \fIfilesystem\fP
-attach [-H \fIhost\fP]
 .fi
 .SH DESCRIPTION
 .I attach
 is a filesystem-independent utility which allows you attach a
-filesystem to a directory hierarchy on your workstation. The following
-filesystems are currently supported: AFS, NFS, and UFS.
+filesystem to a directory hierarchy on your workstation. Currently,
+the only supported filesystem type is AFS.
 
-Attach looks up \fIfilesystem\fP in
-.BR attach.conf (5)
-or by using
+.B NOTE: 
+.I attach 
+is provided mainly for compatibility with previous versions of Athena.
+With Debathena, \fI/mit\fP is auto-mounted, so you can access any path
+under \fI/mit\fP without explicitly attaching the locker.
+
+Attach looks up the \fIfilesystem\fP in
 .BR Hesiod (3)
 to retrieve the file system type, the server host, the name by which
 the file system is known to the server (e.g., an NFS server
 mountpoint), and the default mount point and mode (read-only,
-read-write). The user may also explicitly specify this information, as
-described below under the
-.I --explicit
-option.
+read-write). 
 
 By default,
 .I attach
 will attempt to make sure the user is authenticated to the remote
 filesystem, by getting tokens in the appropriate cell for an AFS
-locker, or creating a Kerberos NFS mapping for an NFS locker.
+locker.
 
 The following arguments to \fIattach\fP modify its behavior. Default
 options are marked as such. Unless otherwise marked, all arguments are
@@ -78,30 +77,6 @@ causes the pathname of the mounted filesystem to be printed instead.
 This was used by the old "add" aliases. Use of this option
 automatically surpresses the -verbose option.
 .TP 8
-.I --lookup (-l)
-This option causes \fIattach\fP to look up the filesystem definition
-using either
-.BR attach.conf (5)
-or
-.BR Hesiod (3)
-and print out the definition, but not to actually attach the filesystem.
-.TP 8
-.I --map (-y)
-Attempt to authenticate the user with Kerberos to the filesystem
-server.  The authentication may be necessary in order to have the
-proper access to the filesystem.  This is the default.
-.TP 8
-.I --nomap (-n)
-Do not attempt to authenticate the user to the filesystem server.
-This implicitly invokes the -noremap option.
-.TP 8
-.I --remap (-g)
-Go ahead and reauthenticate the user even if the filesystem is already
-attached.  This is the default.
-.TP 8
-.I --noremap (-a)
-Don't reauthenticate the user if the filesystem is already attached.
-.TP 8
 .I --zephyr (-z)
 Subscribe to
 .BR Zephyr (1)
@@ -111,76 +86,6 @@ messages about the server host.  This is the default.
 Don't subscribe to
 .BR Zephyr (1)
 messages about the server host.
-.TP 8
-.I --readonly (-r), --write (-w)
-Overrides the default access mode for the next filesystem.  "-r"
-indicates read-only access, and "-w" indicates write access.  These
-options have no effect for AFS filesystems.
-.TP 8
-.I --mountpoint \fImount-point\fP (-m \fImount-point\fP)
-Overrides the default mount point for the next filesystem.
-.TP 8
-.I --master (-M)
-Attach the master copy of the locker even if a local copy of the
-locker exists.  Without this option, if a symlink exists in
-.B /var/athena/local-validated
-(or the value of local-dir in
-.BR attach.conf (5)
-if set) with the name of the locker, that symlink is copied to the
-mountpoint in place of attaching the locker.
-.TP 8
-.I --noexplicit (-x)
-Tell \fIattach\fP to interpret the \fIfilesystem\fP as a Hesiod name.
-This is the default.
-.TP 8
-.I --explicit (-e)
-Change the behavior of \fIattach\fP such that the \fIfilesystem\fP is
-now interpreted as an explicit description (\fIdirectory\fP in the
-case of AFS or \fIhost:directory\fP in the case of NFS) instead of as
-a Hesiod name. This allows arbitrary directories to be attached. When
-this option is used, the default mount point is determined by
-filesystem-specific code, but can be overridden by the -m option.
-.TP 8
-.I --type \fIfilesystem-type\fP (-t \fIfilesystem-type\fP)
-Used with the 
-.I --explicit
-option to tell \fIattach\fP the type of the filesystem that's going to
-be attached. It defaults to NFS.
-.TP 8
-.I --mountoptions \fIoptions\fP (-o \fIoptions\fP)
-Specify options for the mounting of the filesystem.  The options are
-the same as the ones used by
-.BR mount (8)\fP.
-.TP 8
-.I --nosetuid \fPor\fI -nosuid (-N)
-With this option, \fIattach\fP will mount the filesystem with the
-nosuid option.  This causes the kernel not to honor setuid or setgid
-permission in the filesystem.  (This option does not have any
-effect with AFS filesystems.)
-.TP 8
-.I --setuid -suid (-S)
-This option can be used by a trusted user to forcibly mount a
-filesystem without the nosuid option.  This can be used to override
-the fact that the system administrator has made an entry such that the
-filesystem would normally be mounted nosuid.
-.TP 8
-.I --override (-O)
-\fIAttach\fP can be set up so that normal users cannot attach certain
-filsystems.  A trusted user can use this option to override these
-restrictions.  See
-.BR attach.conf (5)
-for more information.
-.TP 8
-.I --lock (-L)
-This option tells \fIattach\fP to lock the filesystem so that it cannot
-be unmounted except explicitly by one of the trusted users.  This
-command requires the user to be in the trusted users list.
-.TP 8
-.I --host \fIhostnames\fP (-H \fIhostnames\fP)
-This option causes \fIattach\fP to list all filesystems that are mounted
-from the given \fIhostnames\fP.  After this option appears on the
-command line, no more filesystems may be attached; only hostnames may be
-specified.
 .PP
 If the default mount-point for a filesystem (or the mount-point
 specified with the -m option) does not exist, it is created.  Any
@@ -189,17 +94,9 @@ directory can't be created, the attach fails.  When the filesystem is
 detached, any directories that were created during the attach are
 deleted, if possible.
 
-.SH EXAMPLES
-.nf
-attach -t afs -m /mit/gnu -e /afs/.athena.mit.edu/project/gnu
-.fi
-
-Attach the read-write AFS path to the gnu locker to the mountpoint
-/mit/gnu.
-
 .SH DIAGNOSTICS
 If \fIattach\fP is unable to initalize the locker library, it will
-exist with status 1. If \fIattach\fP encounters a problem attaching a
+exit with status 1. If \fIattach\fP encounters a problem attaching a
 locker, it will continue trying to attach any remaining lockers on the
 command line, but eventually exit with status 2.
 
@@ -208,15 +105,22 @@ command line, but eventually exit with status 2.
 .br
 /var/athena/attachtab/
 .br
-/var/athena/local-validated/
+
+.SH BUGS
+NFS and RVD lockers are no longer supported.
+
+.SH FEATURES
+NFS and RVD lockers are no longer supported.
 
 .SH "SEE ALSO"
-add(1), detach(1), nfsid(1), zinit(1), attach.conf(5)
+add(1), detach(1)
 
 .SH AUTHORS
-Dan Winship, MIT Information Systems
+SIPB Debathena Project
 .PP
-based on the original attach by
+Previous versions by:
+.br
+Dan Winship, MIT Information Systems
 .br
 Robert French, Project Athena
 .br

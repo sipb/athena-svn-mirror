@@ -1,3 +1,9 @@
+debathena-attach (10.0.1-0debathena2) unstable; urgency=low
+
+  * Fix the attach man page
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 19 Mar 2010 18:17:42 -0400
+
 debathena-attach (10.0.1-0debathena1) unstable; urgency=low
 
   * Now that liblocker doesn't require krb4, don't require it here either.
