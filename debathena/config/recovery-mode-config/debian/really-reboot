@@ -13,22 +13,14 @@ ask() {
 }
 
 if [ "$1" = "test" ]; then
-  echo "Force an update of the workstation"
+  echo "Reboot the workstation (bypassing kexec)"
   exit 0
 fi
-
-echo "Running auto-updater, please wait..."
-/usr/sbin/athena-auto-update
-if [ $? != 0 ]; then
-    echo "Something went wrong.  Press Enter to return to the menu."
-    read dummy
-    exit 0
-fi
-ask "You are strongly encouraged to reboot.  Reboot now? (y/n) " y
+ask "Are you sure you want to reboot? (y/n) " y
 if [ "$answer" = "y" ]; then
     echo "OK, rebooting..."
     [ -x "/sbin/kexec" ] && /sbin/kexec -u
     /sbin/reboot
 fi
-echo "Please reboot as soon as possible.  Press Enter to return to the menu."
+echo "OK, cancelled.  Press Enter to return to the menu."
 read dummy

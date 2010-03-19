@@ -66,9 +66,7 @@ chomp($machtype);
 if ($machtype ne 'debathena-cluster') {
     print "WARNING: This script is designed for debathena-cluster machines but\n";
     print "this machine is running $machtype.\n";
-    if (! confirm("Are you SURE you want to continue?")) {
-	exit 0;
-    }
+    confirm("Are you SURE you want to continue?") || bail("OK, cancelled.");
 }
 
 my $ip = '';
@@ -127,9 +125,9 @@ print "Subnet Mask: $subnetmask\n";
 print "Gateway:     $gateway\n";
 print "Hostname:    $hostname\n";
 print "FQDN:        $fqdn\n\n";
-if (! confirm("Does that look correct?")) {
-    bail("OK, cancelled.");
-}
+
+confirm("Does that look correct?") || bail("OK, cancelled.");
+
 print "Updating /etc/network/interfaces...\n";
 copy("/etc/network/interfaces", "/etc/network/interfaces.old") || bail("Could not copy /etc/network/interfaces");
 open(INTERFACES, ">/etc/network/interfaces") || bail ("Could not overwrite /etc/network/interfaces: $!");
@@ -179,13 +177,11 @@ print "Setting hostname...\n";
 system("/bin/hostname", $hostname);
 print "\nDone!  You will need to reboot the workstation for the\n";
 print "changes to take effect.\n";
-if (! confirm("Would you like to reboot now?")) {
-    print "\nPlease perform a full shutdown and reboot as soon as possible.\n";
-    exit 0;
-}
+confirm("Would you like to reboot now?") || bail("Please perform a full shutdown and reboot as soon as possible.");
 print "The workstation will now power down completely.\n";
 print "When you turn it back on, it will use the new IP address.\n\n";
 print "(press ENTER to power down the workstation)";
 getc(STDIN);
+system("/sbin/kexec -u");
 system("/sbin/poweroff");
 exit 0;
