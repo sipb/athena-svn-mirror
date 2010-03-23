@@ -1,5 +1,10 @@
 #!/bin/sh
 
+usage() {
+  echo "Usage: athena-auto-update [-n]"
+  exit 0
+}
+
 complain() {
   logger -t "athena-auto-update" -p user.notice "$*"
   updstatus="failed"
@@ -17,6 +22,9 @@ save_state() {
 }  
 
 maybe_reboot() {
+  if [ "$SHOULD_REBOOT" = "no" ]; then
+      return
+  fi
   if [ -f /var/run/reboot-required ]; then
     # A package wants us to reboot the machine.  Do so if no one is
     # logged in.  Be paranoid about stale utmp entries.
@@ -37,6 +45,13 @@ maybe_reboot() {
     exit
   fi
 }
+
+SHOULD_REBOOT="yes"
+case "$1" in
+    -n) SHOULD_REBOOT="no";;
+    "") ;;
+    *) usage;;
+esac
 
 if [ 0 != "$(id -u)" ]; then
   echo "This script must be run as root." >&2
