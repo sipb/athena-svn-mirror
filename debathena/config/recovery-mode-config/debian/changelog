@@ -1,3 +1,14 @@
+debathena-recovery-mode-config (1.2) unstable; urgency=low
+
+  * Remove "really-reboot", because it doesn't actually workaround kexec,
+    because kexec sucks
+  * Revert to shutting down after updates and renumbers, because kexec
+    sucks
+  * Call athena-auto-update with new (as of 1.15) -n option to ensure it
+    won't reboot and end up back in recovery-mode, because kexec sucks
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 23 Mar 2010 15:28:24 -0400
+
 debathena-recovery-mode-config (1.1) unstable; urgency=low
 
   * Add a menu item to reboot the workstation

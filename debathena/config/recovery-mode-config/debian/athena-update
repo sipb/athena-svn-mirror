@@ -17,20 +17,21 @@ if [ "$1" = "test" ]; then
   exit 0
 fi
 
-# Unload kexec here, in case auto-updater wants to reboot
-# (We really don't want cluster machines ending up back in recovery-mode)
-[ -x "/sbin/kexec" ] && /sbin/kexec -u
+# Unloading kexec doesn't work, awesome.  Use new -n option to prevent
+# auto-update from rebooting
 echo "Running auto-updater, please wait..."
-/usr/sbin/athena-auto-update
+/usr/sbin/athena-auto-update -n
 if [ $? != 0 ]; then
     echo "Something went wrong.  Press Enter to return to the menu."
     read dummy
     exit 0
 fi
-ask "You are strongly encouraged to reboot.  Reboot now? (y/n) " y
+ask "The workstation needs to be shut down and rebooted.  Do that now? (y/n) " y
 if [ "$answer" = "y" ]; then
-    echo "OK, rebooting..."
-    /sbin/reboot
+    echo "The workstation will now shut down.  You can then turn it back on."
+    echo "(Press Enter to continue)"
+    ready dummy
+    /sbin/poweroff
 fi
-echo "Please reboot as soon as possible.  Press Enter to return to the menu."
+echo "Please shut down as soon as possible.  Press Enter to return to the menu."
 read dummy
