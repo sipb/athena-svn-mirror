@@ -1,1 +1,2 @@
 debian/debathena-msmtp usr/lib
+debian/aliases etc

@@ -1,8 +1,9 @@
 debathena-msmtp-config (1.7) unstable; urgency=low
 
   * Install a man page for sendmail (Trac #269)
+  * Ship a useful /etc/aliases
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 11 Mar 2010 14:58:23 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 23 Mar 2010 11:51:32 -0400
 
 debathena-msmtp-config (1.6) unstable; urgency=low
 
