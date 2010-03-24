@@ -7,7 +7,7 @@ Standards-Version: 3.8.4
 
 Package: debathena-recovery-mode-config
 Architecture: all
-Depends: ${misc:Depends}, debathena-auto-update (>=1.15~), debathena-machtype, perl
+Depends: ${misc:Depends}, debathena-auto-update (>= 1.15~), debathena-machtype, perl
 Description: Adds two options to recovery-mode menu
  This package adds two options to the recovery-mode menu.  One option
  forces an immediate update of the workstation, and the other allows

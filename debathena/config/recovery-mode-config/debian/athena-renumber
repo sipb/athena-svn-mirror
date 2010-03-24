@@ -1,11 +1,15 @@
 #!/usr/bin/perl -w
 #
-#
+# A script to change the IP/hostname on a cluster machine
+# jdreed@mit.edu
 
 use strict;
 use Socket;
 use File::Copy;
 use Getopt::Std;
+
+# sulogin gets upset if it gets a ^C
+$SIG{'INT'} = 'bail';
 
 my $MASKS="/usr/share/debathena-recovery-mode-config/masks";
 
@@ -22,7 +26,11 @@ sub confirm {
 }
 
 sub bail {
-    print shift;
+    if ($_[0] eq 'INT') {
+	print "\nCancelled.";
+    } else {
+	print shift;
+    }
     print "\n\n(press ENTER to return to the recovery mode menu)\n";
     my $dummy = <STDIN>;
     exit 0;
