@@ -1,3 +1,11 @@
+debathena-msmtp-config (1.8) unstable; urgency=low
+
+  * Don't ship aliases, generate it in the postinst
+  * Use debconf to prompt for root's address
+  * Set envelope from a bit more intelligently
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 24 Mar 2010 18:36:44 -0400
+
 debathena-msmtp-config (1.7) unstable; urgency=low
 
   * Install a man page for sendmail (Trac #269)

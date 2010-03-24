@@ -1,1 +1,2 @@
 debian/sendmail.8 usr/share/man/man8
+debian/newaliases.1 usr/share/man/man1

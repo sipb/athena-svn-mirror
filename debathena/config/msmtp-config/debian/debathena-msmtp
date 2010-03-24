@@ -1,12 +1,43 @@
 #!/usr/bin/perl
 
 use Mail::ExpandAliases;
+use File::Basename;
+use POSIX qw(getgroups);
 
 $ticketlist = `klist 2>/dev/null`;
 $ticketlist =~ /Default principal: (.*?)\@ATHENA.MIT.EDU/;
 $kuser = $1;
 
 $parser = Mail::ExpandAliases->new;
+
+if (basename($0) eq 'newaliases') {
+    my $root = join(', ', @{$parser->expand('root')});
+    if ($root !~ /@/) {
+	print STDERR <<EOF
+NOTE: root expands to: $root
+This does not appear to contain a remote address.  Since debathena-msmtp
+does not support local delivery, you may wish to send root's mail
+somewhere useful (e.g. your MIT account).
+EOF
+    }
+    exit 0;
+}
+
+sub from_address {
+  # If we have tickets, use them
+  if ($kuser) {
+    return "--from=" . join('@', $kuser, 'mit.edu');
+  }
+  # If not, assume nss-nonlocal-users are @mit.edu
+  my $nssnonlocalgid = (getgrnam('nss-nonlocal-users'))[2];
+  if (grep(/^$nssnonlocalgid$/, getgroups())) {
+    return "--from=" . join('@', $ENV{'USER'}, 'mit.edu');
+  }
+  # Otherwise, user@fqdn
+  chomp(my $hostname = `hostname --fqdn`);
+  return "--from=" . join('@', $ENV{'USER'}, $hostname);
+}
+
 foreach $arg (@ARGV) {
     push @aliases, $parser->expand($arg);
 }
@@ -15,7 +46,7 @@ if ($kuser &&
      (($ENV{'DEBATHENA_SENDMAIL_AUTH'} eq 'yes') ||
       (!$ENV{'DEBATHENA_SENDMAIL_AUTH'}))) {
     #send auth
-    exec(qw{msmtp --host=outgoing.mit.edu --port=587 --auth=gssapi}, "--user=$kuser", qw{--auto-from=on --maildomain=mit.edu}, @aliases);
+    exec(qw{msmtp --host=outgoing.mit.edu --port=587 --auth=gssapi}, "--user=$kuser", from_address(), @aliases);
 }
 elsif ($ENV{'DEBATHENA_SENDMAIL_AUTH'} eq 'yes') {
     $! = 1;
@@ -23,5 +54,5 @@ elsif ($ENV{'DEBATHENA_SENDMAIL_AUTH'} eq 'yes') {
 }
 else {
     #send unauth
-    exec(qw{msmtp --host=outgoing.mit.edu --port=25 --auth=off --auto-from=on --maildomain=mit.edu}, @aliases);
+    exec(qw{msmtp --host=outgoing.mit.edu --port=25 --auth=off}, from_address(), @aliases);
 }

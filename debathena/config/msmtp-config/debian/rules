@@ -4,4 +4,5 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 
 DEB_DH_LINK_debathena-msmtp-mta += \
 	/usr/sbin/sendmail /usr/lib/sendmail \
-	/usr/lib/debathena-msmtp /usr/sbin/sendmail
+	/usr/lib/debathena-msmtp /usr/sbin/sendmail \
+	/usr/lib/debathena-msmtp /usr/bin/newaliases

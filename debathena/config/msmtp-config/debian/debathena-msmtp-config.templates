@@ -1,0 +1,5 @@
+Template: debathena-msmtp-config/root_addr
+Type: string
+_Description: Address for root's mail:
+ Enter an e-mail address which should receive mail intended for 
+ the local root user.
