@@ -2,7 +2,7 @@ Source: debathena-reactivate
 Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, sudo
+Build-Depends: @cdbs@, sudo, schroot
 Standards-Version: 3.8.4
 
 Package: debathena-reactivate
