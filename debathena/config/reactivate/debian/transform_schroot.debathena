@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s/^SESSIONS_RECOVER="recover"$/SESSIONS_RECOVER="end"/m;
