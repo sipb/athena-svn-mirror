@@ -1,4 +1,0 @@
-installer /usr/share/debathena-athena-chroot/
-debian/athmode /usr/bin
-schroot /etc/
-debian/schroot.debathena /etc/pam.d/
