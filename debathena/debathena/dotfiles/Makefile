@@ -7,6 +7,7 @@ SYSTEM=/usr/lib/init
 ATHMANDIR=/usr/share/man
 ATHRETCDIR=/etc/athena
 ATHLOGINDIR=${ATHRETCDIR}/login
+PROTODESKTOP=${PROTOTYPE}/Desktop
 
 all:
 	cd os/${OS} && ${MAKE} $@
@@ -23,6 +24,7 @@ install:
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man1
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man7
 	mkdir -p ${DESTDIR}${ATHLOGINDIR}
+	mkdir -p ${DESTDIR}${PROTODESKTOP}
 	install -c -m 0755 Xsession ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 cshrc ${DESTDIR}${SYSTEM}
 	install -c -m 0644 dot.cshrc ${DESTDIR}${PROTOTYPE}/.cshrc
@@ -58,6 +60,9 @@ install:
 	install -c -m 0755 xkill-mozilla.sh ${DESTDIR}${SYSTEM}/xkill-mozilla
 	install -c -m 0755 xsession ${DESTDIR}${SYSTEM}
 	install -c -m 0755 xsession.bash ${DESTDIR}${SYSTEM}
+	install -c -m 0755 welcome.desktop ${DESTDIR}${PROTODESKTOP}
+	install -c -m 0755 olh.desktop ${DESTDIR}${PROTODESKTOP}
+	install -c -m 0755 faq.desktop ${DESTDIR}${PROTODESKTOP}
 	cd os/${OS} && ${MAKE} $@
 	cd gnome && ${MAKE} $@
 

@@ -1,8 +1,10 @@
-debathena-dotfiles (10.0.20-0debathena2) UNRELEASED; urgency=low
+debathena-dotfiles (10.0.21-0debathena1) unstable; urgency=low
 
   * Make zwgc fallback check case-insensitive (Trac #501)
+  * Add desktop files and bump version number
+  * Update welcome file for 21st century (Trac #514)
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 23 Mar 2010 12:09:51 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 30 Mar 2010 09:28:23 -0400
 
 debathena-dotfiles (10.0.20-0debathena1) unstable; urgency=low
 

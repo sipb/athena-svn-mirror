@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Link
+Icon[en_US]=help-faq
+URL=http://kb.mit.edu
+Name[en_US]=Knowledge Base (FAQ)
+Name=Knowledge Base (FAQ)
+Icon=help-faq

@@ -12,27 +12,28 @@ Welcome to Athena
   available to MIT students and faculty to help them achieve their academic
   goals and learn about computers while at the Institute.
 
-- For help about any aspect of Athena, type:   help   followed by a carriage
-  return.  This starts a web browser displaying the home page of the On-Line
-  Help system (OLH), which helps you find information about many Athena
-  topics.  (If a topic is not described in detail, OLH usually provides
-  information on where to find out more about the topic.)  OLH includes:
+- For help about any aspect of Athena, visit the On-Line Help (OLH)
+  web pages at: http://ist.mit.edu/services/athena/olh
 
-    - guides to all aspects of the supported Athena environment, including
-      how to get an account, how to login and logout, how to work with the
-      UNIX operating system, and how to use some of the most popular
-      software on Athena (including software that can help you use Athena
-      to write papers or analyze data)
+  There you will find guides to all aspects of the supported Athena
+  environment, including a basic introduction, a tutorial on using the
+  command line (shell), information about the AFS file system and how
+  to use it, and much more.
 
-    - up-to-date status information on the Athena system, available Athena
-      minicourses, and other current events at Athena
+- If you run into problems, consult our extensive collection of
+  answers in Hermes, the MIT Knowledge Base.  Visit http://kb.mit.edu
+  for more information.
 
-    - consultants' stock answers to commonly asked questions about Athena
+- If you require assistance, you can contact an Athena Consultant.
+  The Athena Consulting office is open 9am-5pm, Monday through Friday
+  (except MIT holidays).  You can reach a consultant by phone
+  (x3-4435, 617-253-4435 from off campus) or e-mail (olc@mit.edu), or
+  you can visit their office in bulding N42.
 
-    - a complete set of standard UNIX reference modules ("man pages")
-
-- If you have trouble, you can contact an Athena User Consultant.  To get a
-  consultant on-line, just type:  olc   followed by a carriage return.  To
-  talk to a consultant in person, call X3-4435 (if there is no consultant on
-  duty, you will get a recording informing you of the consulting schedule).
+- If you're interested in the more technical aspects of Athena, visit
+  the Debathena web page at http://debathena.mit.edu
+  
+  Debathena is the suite of packages and software that powers the
+  Athena system, and much of the development was done by MIT students.
+  For more information, see http://debathena.mit.edu/development
 
