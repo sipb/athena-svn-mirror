@@ -4,11 +4,16 @@ use Mail::ExpandAliases;
 use File::Basename;
 use POSIX qw(getgroups);
 
-$ticketlist = `klist 2>/dev/null`;
-$ticketlist =~ /Default principal: (.*?)\@ATHENA.MIT.EDU/;
-$kuser = $1;
+use strict;
 
-$parser = Mail::ExpandAliases->new;
+system(qw(klist -s));
+my $kuser;
+if (($? == 0) &&
+    (`klist 2>/dev/null` =~ /Default principal: (.*?)\@ATHENA.MIT.EDU/)) {
+    $kuser = $1;
+}
+
+my $parser = Mail::ExpandAliases->new;
 
 if (basename($0) eq 'newaliases') {
     my $root = join(', ', @{$parser->expand('root')});
@@ -38,7 +43,8 @@ sub from_address {
   return "--from=" . join('@', $ENV{'USER'}, $hostname);
 }
 
-foreach $arg (@ARGV) {
+my @aliases = ();
+foreach my $arg (@ARGV) {
     push @aliases, $parser->expand($arg);
 }
 
