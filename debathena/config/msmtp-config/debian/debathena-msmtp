@@ -5,9 +5,12 @@ use File::Basename;
 use POSIX qw(getgroups);
 
 use strict;
+use warnings;
 
 system(qw(klist -s));
 my $kuser;
+my $want_auth = $ENV{'DEBATHENA_SENDMAIL_AUTH'} || '';
+
 if (($? == 0) &&
     (`klist 2>/dev/null` =~ /Default principal: (.*?)\@ATHENA.MIT.EDU/)) {
     $kuser = $1;
@@ -34,9 +37,11 @@ sub from_address {
     return "--from=" . join('@', $kuser, 'mit.edu');
   }
   # If not, assume nss-nonlocal-users are @mit.edu
-  my $nssnonlocalgid = (getgrnam('nss-nonlocal-users'))[2];
-  if (grep(/^$nssnonlocalgid$/, getgroups())) {
-    return "--from=" . join('@', $ENV{'USER'}, 'mit.edu');
+  if (getgrnam('nss-nonlocal-users')) {
+    my $nssnonlocalgid = (getgrnam('nss-nonlocal-users'))[2];
+    if (grep(/^$nssnonlocalgid$/, getgroups())) {
+      return "--from=" . join('@', $ENV{'USER'}, 'mit.edu');
+    }
   }
   # Otherwise, user@fqdn
   chomp(my $hostname = `hostname --fqdn`);
@@ -48,13 +53,11 @@ foreach my $arg (@ARGV) {
     push @aliases, $parser->expand($arg);
 }
 
-if ($kuser &&
-     (($ENV{'DEBATHENA_SENDMAIL_AUTH'} eq 'yes') ||
-      (!$ENV{'DEBATHENA_SENDMAIL_AUTH'}))) {
+if ($kuser && (($want_auth eq 'yes') || ($want_auth eq '')) ) {
     #send auth
     exec(qw{msmtp --host=outgoing.mit.edu --port=587 --auth=gssapi}, "--user=$kuser", from_address(), @aliases);
 }
-elsif ($ENV{'DEBATHENA_SENDMAIL_AUTH'} eq 'yes') {
+elsif ($want_auth eq 'yes') {
     $! = 1;
     die "Could not find valid ATHENA.MIT.EDU Kerberos tickets.\n";
 }

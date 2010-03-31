@@ -1,9 +1,15 @@
+debathena-msmtp-config (1.8.2) unstable; urgency=low
+
+  * Warnings are also a good idea, as is error checking
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 31 Mar 2010 14:47:14 -0400
+
 debathena-msmtp-config (1.8.1) unstable; urgency=low
 
   * Use klist -s to determine whether tickets are valid
   * Use strict because it's a good idea
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 31 Mar 2010 13:05:27 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 31 Mar 2010 14:46:55 -0400
 
 debathena-msmtp-config (1.8) unstable; urgency=low
 
