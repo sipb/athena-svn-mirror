@@ -1,4 +1,4 @@
 #!/usr/bin/perl -0p
-s|^\@include common-auth$|\@include common-auth
-auth [default=die] pam_echo.so file=/etc/athena/su-error
-auth optional pam_echo.so file=/etc/athena/su-warning|m or die;
+s|^\@include common-auth$|auth [default=die] pam_echo.so file=/etc/athena/su-error
+auth optional pam_echo.so file=/etc/athena/su-warning
+$&|m or die;
