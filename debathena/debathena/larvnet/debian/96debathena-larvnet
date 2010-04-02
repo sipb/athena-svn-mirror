@@ -1,5 +1,6 @@
 # This file is sourced by Xsession(5), not executed.
 
-if test -x "/usr/lib/debathena-larvnet/larvnet-wrapper"; then
-    STARTUP="/usr/lib/debathena-larvnet/larvnet-wrapper $STARTUP"
+if [ "$(dpkg-query -W -f '${Status}' debathena-larvnet 2>/dev/null)" = "install ok installed" ] && \
+   test -x "/usr/lib/debathena-larvnet/larvnet-wrapper"; then
+   STARTUP="/usr/lib/debathena-larvnet/larvnet-wrapper $STARTUP"
 fi
