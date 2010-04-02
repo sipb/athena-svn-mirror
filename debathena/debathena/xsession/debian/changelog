@@ -1,3 +1,10 @@
+debathena-xsession (1.14) unstable; urgency=low
+
+  * Make sure debathena-xsession is installed before executing any of the
+    scripts in /etc/X11/Xsession.d (Trac: #348)
+
+ -- Jessica Hamrick <jhamrick@mit.edu>  Fri, 02 Apr 2010 19:36:43 -0400
+
 debathena-xsession (1.13) unstable; urgency=low
 
   * Prevent debathena-nocalls from being set as the default session

@@ -2,7 +2,8 @@
 
 # Work around the absence of the message function (to pretty-print user
 # messages) from some versions of gdm's Xsession script.
-if ! hash message 2>/dev/null ; then
+if [ "$(dpkg-query -W -f '${Status}' debathena-xsession 2>/dev/null)" = "install ok installed" ] && \
+   ! hash message 2>/dev/null ; then
   message () {
     text="$@"
     echo "$text" | fold -s

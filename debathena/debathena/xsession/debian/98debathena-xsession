@@ -5,7 +5,8 @@
 # - This is an AFS homedir
 # - The user has a standard Athena shell
 # - The user does not have an xsession script
-if [ afs = "$DEBATHENA_HOME_TYPE" -a ! -e "$USERXSESSION" \
+if [ "$(dpkg-query -W -f '${Status}' debathena-xsession 2>/dev/null)" = "install ok installed" ] && \
+     [ afs = "$DEBATHENA_HOME_TYPE" -a ! -e "$USERXSESSION" \
      -a ! -e "$ALTUSERXSESSION" ]; then
   case $SHELL in
   */bash)
