@@ -1,4 +1,0 @@
-#!/usr/bin/perl -0p
-s/^LOAD_KEXEC=false$/LOAD_KEXEC=true/m or
-    s/^LOAD_KEXEC=0$/LOAD_KEXEC=1/m or
-    s/^USE_KEXEC=0$/USE_KEXEC=1/m;

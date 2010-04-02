@@ -10,8 +10,9 @@ ifneq ($(wildcard /etc/gdm/gdm.conf-custom.debathena),)
 else
     GDM_CONFFILE = /etc/gdm/gdm.conf.debathena.debathena
 endif
-DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
+DEB_UNDIVERT_FILES_debathena-cluster-login-config += \
 	/etc/default/kexec.debathena
+DEB_UNDIVERT_VERSION_/etc/default/kexec.debathena = 1.23~
 
 ifneq ($(NEW_GDM),y)
     DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
