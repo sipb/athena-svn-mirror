@@ -1,8 +1,10 @@
 #!/bin/sh
-if [ "$DEBATHENA_HOME_TYPE" = "afs" ]; then
-    if [ -n "$XDG_CONFIG_DIRS" ]; then
-	export XDG_CONFIG_DIRS=/etc/xdg.debathena:$XDG_CONFIG_DIRS
-    else
-	export XDG_CONFIG_DIRS=/etc/xdg.debathena:/etc/xdg
+if [ "$(dpkg-query -W -f '${Status}' debathena-desktop-config 2>/dev/null)" = "install ok installed" ]; then
+    if [ "$DEBATHENA_HOME_TYPE" = "afs" ]; then
+	if [ -n "$XDG_CONFIG_DIRS" ]; then
+	    export XDG_CONFIG_DIRS=/etc/xdg.debathena:$XDG_CONFIG_DIRS
+	else
+	    export XDG_CONFIG_DIRS=/etc/xdg.debathena:/etc/xdg
+	fi
     fi
 fi
