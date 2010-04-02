@@ -1,3 +1,10 @@
+debathena-bugme (10.0.1-0debathena3) unstable; urgency=low
+
+  * Make sure debathena-bugme is installed before executing the xsession
+    script
+
+ -- Jessica Hamrick <jhamrick@mit.edu>  Fri, 02 Apr 2010 18:04:06 -0400
+
 debathena-bugme (10.0.1-0debathena2) unstable; urgency=low
 
   * Use machtype -q to determine if a workstation is a quickstation.
