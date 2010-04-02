@@ -1,3 +1,9 @@
+libpam-debathena-home-type (1.1-0debathena5) unstable; urgency=low
+
+  * Added missing shlibs dependency
+
+ -- Greg Brockman <gdb@mit.edu>  Fri, 02 Apr 2010 15:55:00 -0400
+
 libpam-debathena-home-type (1.1-0debathena4) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
