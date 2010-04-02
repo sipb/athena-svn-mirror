@@ -35,6 +35,6 @@ fi
 # perfectly good time to do so -- auto-update is inhibited during a
 # login session.
 if [ -e /var/run/reboot-required ]; then
-  kexec -l /vmlinuz --initrd=/initrd.img --append="$(cat /proc/cmdline)" || :
+  kexec -l /vmlinuz --initrd=/initrd.img --append="$(sed -e 's/ single$/ quiet splash/' /proc/cmdline)" || :
   reboot
 fi
