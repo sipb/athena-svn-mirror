@@ -1,9 +1,13 @@
-debathena-bugme (10.0.1-0debathena3) unstable; urgency=low
+debathena-bugme (10.0.2-0debathena1) unstable; urgency=low
 
+  [ Jessica Hamrick ]
   * Make sure debathena-bugme is installed before executing the xsession
     script
 
- -- Jessica Hamrick <jhamrick@mit.edu>  Fri, 02 Apr 2010 18:04:06 -0400
+  [ Evan Broder ]
+  * Bump the upstream version number for changes outside of debian/
+
+ -- Evan Broder <broder@mit.edu>  Fri, 02 Apr 2010 19:20:51 -0400
 
 debathena-bugme (10.0.1-0debathena2) unstable; urgency=low
 
