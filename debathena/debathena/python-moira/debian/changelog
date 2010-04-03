@@ -1,0 +1,90 @@
+python-moira (4.2-3) unstable; urgency=low
+
+  * Leave qy out of the package for now.
+  * Do a better job of cleaning up.
+  * You know what's worse than control.in? DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 02 Apr 2010 23:14:42 -0400
+
+python-moira (4.2-2) unstable; urgency=low
+
+  * control.in must die.
+  * Bump standards-version.
+  * Bump debhelper compatibility.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 02 Apr 2010 22:51:35 -0400
+
+python-moira (4.2-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Evan Broder <broder@mit.edu>  Fri, 02 Apr 2010 22:24:06 -0400
+
+python-moira (4.1-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Evan Broder <broder@mit.edu>  Thu, 19 Nov 2009 11:09:41 -0500
+
+python-moira (4.0-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Evan Broder <broder@mit.edu>  Fri, 13 Nov 2009 17:23:02 -0500
+
+python-moira (3.0.1-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Evan Broder <broder@mit.edu>  Thu, 20 Aug 2009 08:36:55 -0700
+
+python-moira (3.0.0-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Evan Broder <broder@mit.edu>  Wed, 16 Jul 2008 14:15:45 -0700
+
+python-moira (2.1.1-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Evan Broder <broder@mit.edu>  Mon, 07 Jul 2008 19:17:32 -0700
+
+python-moira (2.1.0-1) unstable; urgency=low
+
+  * New upstream version
+  * python-moira now raises both the error code and the com_err message
+
+ -- Evan Broder <broder@mit.edu>  Mon, 07 Jul 2008 12:34:16 -0400
+
+python-moira (2.0.1-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Evan Broder <broder@mit.edu>  Sat, 05 Jul 2008 17:51:18 -0700
+
+python-moira (2.0.0-1) unstable; urgency=low
+
+  * New upstream version
+  * python-moira now returns query results as dicts and accepts keyword
+    arguments
+
+ -- Evan Broder <broder@mit.edu>  Sat, 05 Jul 2008 15:24:09 -0700
+
+python-moira (1.0.2-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Evan Broder <broder@mit.edu>  Sat, 05 Jul 2008 12:44:01 -0400
+
+python-moira (1.0.1-1) unstable; urgency=low
+
+  * New upstream version that specifies license.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 02 Jul 2008 14:27:52 -0400
+
+python-moira (1.0.0-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 02 Jul 2008 02:50:52 -0400
