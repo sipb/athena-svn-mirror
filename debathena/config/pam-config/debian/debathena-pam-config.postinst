@@ -33,7 +33,7 @@ if [ "$1" = "configure" ]; then
         pam-auth-update --package $force
         # pam-auth-update is broken.  (?)  Sigh.
         perl -i -lne 'print unless (/^(krb5 | krb524 | athena-locker
-            | debathena-home-type | athena-session-tmpdir-mktemp)$/x)' \
+            | debathena-home-type | athena-session-tmpdir-mktemp | afs-session)$/x)' \
           /var/lib/pam/seen
         pam-auth-update --package
     fi

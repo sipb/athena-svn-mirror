@@ -1,3 +1,9 @@
+debathena-pam-config (1.18) unstable; urgency=low
+
+  * Replace libpam-athena-locker with libpam-afs-session. (Trac: #316)
+
+ -- Evan Broder <broder@mit.edu>  Sun, 04 Apr 2010 12:49:06 -0400
+
 debathena-pam-config (1.17) unstable; urgency=low
 
   * Only enable libpam-krb524 if krb4 is actually available. (Trac: #418)

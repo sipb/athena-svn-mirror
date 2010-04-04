@@ -10,8 +10,8 @@ Architecture: all
 Depends: debathena-kerberos-config, debathena-dotfiles, debathena-nsswitch-config (>= 1.3~), libpam-mktemp, ${misc:Depends}, ${debathena-pam-config-depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
-Breaks: libpam-krb5-config (<= 0.0.7)
-Replaces: libpam-krb5-config (<= 0.0.7)
+Breaks: libpam-krb5-config (<= 0.0.7), libpam-athena-locker (<= 2.2-0debathena1)
+Replaces: libpam-krb5-config (<= 0.0.7), libpam-athena-locker (<= 2.2-0debathena1)
 Description: PAM configuration for Debathena
  This package configures PAM to use the Athena Kerberos realm to
  manage authentication, get AFS tokens on login, etc.

@@ -50,6 +50,8 @@ install/debathena-pam-config::
 	  $(DEB_DESTDIR)/usr/share/pam-configs/athena-session-tmpdir-mktemp
 	install -D -m 644 debian/libpam-krb5.pam-config \
 	  $(DEB_DESTDIR)/usr/share/pam-configs/krb5.debathena
+	install -D -m 644 debian/libpam-afs-session.pam-config \
+	  $(DEB_DESTDIR)/usr/share/pam-configs/afs-session
 debathena-pam-config-substvars:
 	( \
 	  echo -n "debathena-pam-config-depends="; \
@@ -58,7 +60,7 @@ debathena-pam-config-substvars:
 	  if [ "$(HAVE_KRB4)" = "y" ]; then \
 	    echo -n "libpam-krb524 (>= 1.3-0debathena3~),"; \
 	  fi; \
-	  echo -n "libpam-athena-locker (>= 2.1-0debathena3~),"; \
+	  echo -n "libpam-afs-session,"; \
 	  echo -n "libpam-debathena-home-type (>= 1.1-0debathena2~),"; \
 	  echo \
 	) >>debian/debathena-pam-config.substvars
@@ -70,7 +72,7 @@ debathena-pam-config-substvars:
 	  if [ "$(HAVE_KRB4)" = "y" ]; then \
 	    echo -n "libpam-krb524,"; \
 	  fi; \
-	  echo -n "libpam-athena-locker,"; \
+	  echo -n "libpam-afs-session,"; \
 	  echo -n "libpam-debathena-home-type,"; \
 	  echo \
 	) >>debian/debathena-pam-config.substvars
