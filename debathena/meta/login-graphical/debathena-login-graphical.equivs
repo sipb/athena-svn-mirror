@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-login-graphical
-Version: 0.5
+Version: 0.6
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-login-graphical-branding,
  debathena-login,
@@ -11,7 +11,7 @@ Depends: debathena-login-graphical-branding,
  debathena-xsession,
  debathena-firefox-extension,
  debathena-firefox-wrapper,
- debathena-pidgin-wrapper | gaim (<< 1:2.0.0+fake),
+ debathena-pidgin-wrapper,
  debathena-evolution-wrapper,
  debathena-locker-menu,
  debathena-transcript-glue, debathena-misc-glue,
