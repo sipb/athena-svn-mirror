@@ -1,0 +1,14 @@
+Source: debathena-nautilus-afs-integration
+Section: debathena-config/gnome
+Priority: extra
+Build-Depends: cdbs, debhelper
+Maintainer: Debathena Project <debathena@mit.edu>
+Standards-Version: 3.8.4 
+
+Package: debathena-nautilus-afs-integration
+Architecture: all
+Depends: ${misc:Depends}, python-nautilus, python-gtk2, python
+Description: Provide a Nautilus GUI for AFS ACLs
+ This package provides a Nautilus GUI for viewing and modifying AFS
+ ACLs.
+
