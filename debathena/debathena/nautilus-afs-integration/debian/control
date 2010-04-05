@@ -7,7 +7,7 @@ Standards-Version: 3.8.4
 
 Package: debathena-nautilus-afs-integration
 Architecture: all
-Depends: ${misc:Depends}, python-nautilus >= 0.5.0-0ubuntu3, python-gtk2, python
+Depends: ${misc:Depends}, python-nautilus (>= 0.5.0-0ubuntu3), python-gtk2, python
 Description: Provide a Nautilus GUI for AFS ACLs
  This package provides a Nautilus GUI for viewing and modifying AFS
  ACLs.
