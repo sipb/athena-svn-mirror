@@ -181,6 +181,12 @@ if [ -x /usr/sbin/athena-login-snapshot ]; then
   /usr/sbin/athena-login-snapshot update-start
 fi
 
+APTITUDE_OPTS=
+# On cluster machines, force the new conffile if there's a conflict
+if dpkg-query --showformat '${Status}\n' -W "debathena-cluster" 2>/dev/null | grep -q ' installed$'; then
+    APTITUDE_OPTS="-o Dpkg::Options::=--force-confnew"
+fi
+
 # Perform the update.  In some corner cases, aptitude might decide
 # that the best course of action is to remove the Debathena
 # metapackage, so be paranoid about that.
@@ -197,7 +203,7 @@ elif result=$(aptitude -F "%p" search '~b')
   v aptitude --quiet --assume-yes keep-all
   complain "packages would be broken by update:" $result
 else
-  v aptitude --quiet --assume-yes install
+  v aptitude $APTITUDE_OPTS --quiet --assume-yes install
   # Successful update, reset $updlast
   updlast=$(date)
   save_success "Successful update"

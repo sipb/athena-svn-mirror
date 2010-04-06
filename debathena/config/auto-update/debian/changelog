@@ -1,3 +1,9 @@
+debathena-auto-update (1.16) unstable; urgency=low
+
+  * Force new conffiles on cluster machines (Trac #483)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 06 Apr 2010 12:14:17 -0400
+
 debathena-auto-update (1.15.1) unstable; urgency=low
 
   * Don't break cron's invocation of athena-auto-update
