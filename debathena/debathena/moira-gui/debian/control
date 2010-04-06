@@ -7,7 +7,7 @@ Standards-Version: 3.8.4
 
 Package: debathena-moira-gui
 Architecture: all
-Depends: ${misc:Depends}, python-moira, debathena-libmoira0, python-gtk2, python
+Depends: ${misc:Depends}, python-moira, python-gtk2, python
 Description: Provide a GUI for common Moira operations
  This package provides a GUI for common moira operations such as
  chpobox, chfn and chsh.
