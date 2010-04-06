@@ -150,6 +150,7 @@ class XMoira():
             return
         moira.connect()
         moira.auth(self.clientName)
+        mrclient.connect()
         self.connected = True
 
     def query(self, query, *argList):
