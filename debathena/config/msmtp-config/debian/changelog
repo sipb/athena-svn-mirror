@@ -1,8 +1,15 @@
+debathena-msmtp-config (1.8.4) unstable; urgency=low
+
+  * getpwuid($<) is better than getlogin()
+  * Add debugging features
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 06 Apr 2010 14:52:01 -0400
+
 debathena-msmtp-config (1.8.3) unstable; urgency=low
 
   * Don't assume that $USER is set (thank you very much Anacron)
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 06 Apr 2010 10:55:20 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 06 Apr 2010 14:51:40 -0400
 
 debathena-msmtp-config (1.8.2) unstable; urgency=low
 

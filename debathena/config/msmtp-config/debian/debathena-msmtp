@@ -11,6 +11,13 @@ system(qw(klist -s));
 my $kuser;
 my $want_auth = $ENV{'DEBATHENA_SENDMAIL_AUTH'} || '';
 
+sub debug {
+  if (defined($ENV{'DEBATHENA_SENDMAIL_DEBUG'}) && 
+      ($ENV{'DEBATHENA_SENDMAIL_DEBUG'} eq 'yes')) {
+    print STDERR "DEBUG: " . join(' ', @_) . "\n";
+  }
+}
+
 if (($? == 0) &&
     (`klist 2>/dev/null` =~ /Default principal: (.*?)\@ATHENA.MIT.EDU/)) {
     $kuser = $1;
@@ -36,13 +43,14 @@ sub from_address {
   if ($kuser) {
     return "--from=" . join('@', $kuser, 'mit.edu');
   }
-  my $uname = $ENV{'USER'} || $ENV{'LOGNAME'} || getlogin();
+  my $uname = $ENV{'USER'} || $ENV{'LOGNAME'} || getpwuid($<);
   # Otherwise, assume user@fqdn ...
   chomp(my $maildomain = `hostname --fqdn`);
   # ... except that nss-nonlocal-users are @mit.edu
   if (getgrnam('nss-nonlocal-users')) {
     my $nssnonlocalgid = (getgrnam('nss-nonlocal-users'))[2];
     if (grep(/^$nssnonlocalgid$/, getgroups())) {
+      debug("Assuming \@mit.edu for nss-nonlocal-user $uname");
       $maildomain = 'mit.edu';
     }
   }
@@ -56,6 +64,7 @@ foreach my $arg (@ARGV) {
 
 if ($kuser && (($want_auth eq 'yes') || ($want_auth eq '')) ) {
     #send auth
+    debug(qw{msmtp --host=outgoing.mit.edu --port=587 --auth=gssapi}, "--user=$kuser", from_address(), @aliases);
     exec(qw{msmtp --host=outgoing.mit.edu --port=587 --auth=gssapi}, "--user=$kuser", from_address(), @aliases);
 }
 elsif ($want_auth eq 'yes') {
@@ -64,5 +73,6 @@ elsif ($want_auth eq 'yes') {
 }
 else {
     #send unauth
+    debug(qw{msmtp --host=outgoing.mit.edu --port=25 --auth=off}, from_address(), @aliases);
     exec(qw{msmtp --host=outgoing.mit.edu --port=25 --auth=off}, from_address(), @aliases);
 }
