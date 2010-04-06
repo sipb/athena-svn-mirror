@@ -36,16 +36,17 @@ sub from_address {
   if ($kuser) {
     return "--from=" . join('@', $kuser, 'mit.edu');
   }
-  # If not, assume nss-nonlocal-users are @mit.edu
+  my $uname = $ENV{'USER'} || $ENV{'LOGNAME'} || getlogin();
+  # Otherwise, assume user@fqdn ...
+  chomp(my $maildomain = `hostname --fqdn`);
+  # ... except that nss-nonlocal-users are @mit.edu
   if (getgrnam('nss-nonlocal-users')) {
     my $nssnonlocalgid = (getgrnam('nss-nonlocal-users'))[2];
     if (grep(/^$nssnonlocalgid$/, getgroups())) {
-      return "--from=" . join('@', $ENV{'USER'}, 'mit.edu');
+      $maildomain = 'mit.edu';
     }
   }
-  # Otherwise, user@fqdn
-  chomp(my $hostname = `hostname --fqdn`);
-  return "--from=" . join('@', $ENV{'USER'}, $hostname);
+  return "--from=" . join('@', $uname, $maildomain);
 }
 
 my @aliases = ();
