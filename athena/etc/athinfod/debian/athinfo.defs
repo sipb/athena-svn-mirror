@@ -34,3 +34,4 @@ modules  	lsmod
 update-status	machtype -v -L | grep -q "debathena-cluster" && test -r /var/lib/athena-update-status && cat /var/lib/athena-update-status
 policy		apt-cache policy
 hardware	cat /sys/class/dmi/id/product_name /sys/class/dmi/id/product_version
+in-use		machtype -L | grep -q "debathena-cluster" && (test `pgrep -c larvnet-wrapper` -gt 0 && echo "yes" || echo "no") || echo "n/a"

@@ -1,3 +1,10 @@
+debathena-athinfod (10.0.0-0debathena12) unstable; urgency=low
+
+  * Add 'in-use' query to test whether a cluster machine is in use, using
+    the same logic as busyd (Trac #542)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 07 Apr 2010 11:04:20 -0400
+
 debathena-athinfod (10.0.0-0debathena11) unstable; urgency=low
 
   * Change the update-status query to display the status file set by the
