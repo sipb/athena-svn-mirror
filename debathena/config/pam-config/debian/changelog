@@ -1,9 +1,9 @@
 debathena-pam-config (1.18.1) unstable; urgency=low
 
-  * Only configure libpam-athena-locker as a session module, not an auth
+  * Only configure libpam-afs-session as a session module, not an auth
     module, to work around a bad interaction with sudo.
 
- -- Evan Broder <broder@mit.edu>  Tue, 06 Apr 2010 23:43:43 -0400
+ -- Evan Broder <broder@mit.edu>  Tue, 06 Apr 2010 23:50:25 -0400
 
 debathena-pam-config (1.18) unstable; urgency=low
 

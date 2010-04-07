@@ -44,6 +44,8 @@ DEB_REMOVE_FILES_debathena-pam-config += \
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
 
+DEB_INSTALL_DOCS_debathena-pam-config = debian/README.pam-afs-session
+
 ifneq ($(pam_auth_update),)
 install/debathena-pam-config::
 	install -D -m 644 debian/athena-session-tmpdir-mktemp.pam-config \

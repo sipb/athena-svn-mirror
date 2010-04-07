@@ -1,0 +1,19 @@
+pam_afs_session exports an auth interface to make sure it gets run
+when PAM users call pam_setcred instead of
+pam_open_session. Screensavers, for instance, do this.
+
+debathena-pam-config, however, does not configure pam_afs_session's
+auth component.
+
+Because sudo's PAM configuration only includes /etc/pam.d/common-auth
+and not /etc/pam.d/common-session, configuring pam_afs_session as an
+auth module caused it to run under sudo when previously
+pam_athena_locker did not.
+
+Configuring the auth module, combined with the fact that sudo doesn't
+seem to set PAM's environment correctly, would cause pam_afs_session
+to get run when sudo executed its PAM stack, create a new PAG, but
+fail to get tokens (because KRB5CCNAME isn't set).
+
+Since part of the debathena-cluster login process is run through sudo,
+this would cause users to not get tokens.
