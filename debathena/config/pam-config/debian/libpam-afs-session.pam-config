@@ -1,9 +1,6 @@
 Name: Athena: get AFS tokens at login
 Default: yes
 Priority: 19
-Auth-Type: Additional
-Auth:
-	optional	pam_afs_session.so aklog_homedir
 Session-Type: Additional
 Session:
 	optional	pam_afs_session.so aklog_homedir

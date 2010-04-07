@@ -1,2 +1,2 @@
 #!/usr/bin/perl -0p
-s/^(auth[ \t]+)(required|requisite)( ? ?)([ \t]+)(pam_unix\.so([ \t]+.*)?)\n/$1sufficient$4$5\n$1\[success=done authinfo_unavail=ignore default=die\]$3$4pam_krb5.so minimum_uid=1 use_first_pass\n$1\[default=die\]$3$4pam_echo.so file=\/etc\/issue.net.no_network\n$1optional$3$4pam_afs_session.so aklog_homedir\n/m or die;
+s/^(auth[ \t]+)(required|requisite)( ? ?)([ \t]+)(pam_unix\.so([ \t]+.*)?)\n/$1sufficient$4$5\n$1\[success=done authinfo_unavail=ignore default=die\]$3$4pam_krb5.so minimum_uid=1 use_first_pass\n$1\[default=die\]$3$4pam_echo.so file=\/etc\/issue.net.no_network\n/m or die;
