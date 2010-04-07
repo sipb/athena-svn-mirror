@@ -1,3 +1,10 @@
+debathena-reactivate (2.0.16) unstable; urgency=low
+
+  * Don't kexec back into recovery mode - regardless of whether or not
+    recovery mode was the *very* last thing on the command line.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 07 Apr 2010 00:23:32 -0400
+
 debathena-reactivate (2.0.15) unstable; urgency=low
 
   [ Greg Brockman ]
