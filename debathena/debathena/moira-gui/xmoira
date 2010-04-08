@@ -56,13 +56,13 @@ class XMoira():
     def validateEmail(self, str):
         try:
             currUser = mrclient.krb_user()
-        except mrclient.MoiraClientException as (errno, errstr):
-            self.errorDialog(errstr)
+        except mrclient.MoiraClientException, e:
+            self.errorDialog(e.args[1])
             return None
         try:
             validatedStr = mrclient.validate_pobox_smtp(currUser, str)
-        except mrclient.MoiraClientException as (errno, errstr):
-            self.errorDialog(errstr)
+        except mrclient.MoiraClientException, e:
+            self.errorDialog(e.args[1])
             return None
         return validatedStr
 
@@ -150,7 +150,6 @@ class XMoira():
             return
         moira.connect()
         moira.auth(self.clientName)
-        mrclient.connect()
         self.connected = True
 
     def query(self, query, *argList):
