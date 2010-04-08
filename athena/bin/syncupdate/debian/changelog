@@ -1,0 +1,15 @@
+debathena-syncupdate (10.0.1) unstable; urgency=low
+
+  * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
+  * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
+  * Change "Debian-Athena Project" to "Debathena Project".
+  * Remove debian/control from version control.
+  * Clean up debian/copyright.
+
+ -- Tim Abbott <tabbott@mit.edu>  Sat, 24 Jan 2009 19:32:39 -0500
+
+debathena-syncupdate (10.0.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Robert Basch <rbasch@mit.edu>  Tue, 07 Oct 2008 18:45:46 -0400
