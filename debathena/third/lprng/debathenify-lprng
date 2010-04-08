@@ -3,7 +3,7 @@ set -e
 
 name=lprng
 daname=debathena-lprng
-daversionappend=debathena6
+daversionappend=debathena7
 section=debathena
 
 hack_package () {
