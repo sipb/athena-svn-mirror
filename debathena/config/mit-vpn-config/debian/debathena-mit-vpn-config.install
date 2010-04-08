@@ -1,0 +1,4 @@
+mit-vpn etc/default
+mitvpn-connect usr/sbin
+openconnect-script.sh usr/share/debathena-mit-vpn-config
+mitvpn-connect.8 usr/share/man/man8

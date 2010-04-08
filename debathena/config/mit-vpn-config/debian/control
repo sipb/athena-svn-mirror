@@ -1,0 +1,12 @@
+Source: debathena-mit-vpn-config
+Section: debathena/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs
+Standards-Version: 3.8.4
+
+Package: debathena-mit-vpn-config
+Architecture: all
+Depends: ${misc:Depends}, iproute, openconnect
+Description: Configures the MIT VPN usefully.
+ This package configures the MIT VPN usefully.

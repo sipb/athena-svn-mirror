@@ -1,0 +1,16 @@
+# Settings for mit-vpn-config
+
+# A program to run after the connection is established, but before routing
+MIT_VPN_PRECONNECT=
+
+# A program to run after the connection is established and after routing
+MIT_VPN_POSTCONNECT=
+
+# A program to run at disconnect time, before routes are destroyed
+MIT_VPN_PREDISCONNECT=
+
+# A program to run after connection and routes are destroyed
+MIT_VPN_POSTDISCONNECT=
+
+# Default MTU if none is received from VPN
+MTU=1406

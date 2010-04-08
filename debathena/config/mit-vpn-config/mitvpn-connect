@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+#
+
+if [ `id -u` != "0" ]; then
+  echo "You must run this as root."
+  exit 1
+fi
+
+if [ ! -x /usr/bin/openconnect ]; then
+    echo "Openconnect not found!"
+    exit 1
+fi
+
+if [ ! -x /usr/share/debathena-mit-vpn-config/openconnect-script.sh ]; then
+    echo "Openconnect connection script not found!"
+    exit 1
+fi
+
+openconnect -s /usr/share/debathena-mit-vpn-config/openconnect-script.sh vpn.mit.edu
+
