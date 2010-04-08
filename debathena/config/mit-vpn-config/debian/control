@@ -7,6 +7,6 @@ Standards-Version: 3.8.4
 
 Package: debathena-mit-vpn-config
 Architecture: all
-Depends: ${misc:Depends}, iproute, openconnect
+Depends: ${misc:Depends}, iproute, openconnect, resolvconf
 Description: Configures the MIT VPN usefully.
  This package configures the MIT VPN usefully.
