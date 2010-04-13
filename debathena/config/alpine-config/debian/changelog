@@ -1,3 +1,9 @@
+debathena-alpine-config (1.15.2) unstable; urgency=low
+
+  * Added conflicts and provides entries for diversions (Trac: #535).
+
+ -- Liz A. Denys <lizdenys@mit.edu>  Mon, 12 Apr 2010 23:36:58 -0400
+
 debathena-alpine-config (1.15.1) unstable; urgency=low
 
   * Don't rewrite ~/.pinerc with sed if we're going to end up not
