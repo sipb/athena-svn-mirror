@@ -1,3 +1,9 @@
+debathena-msmtp-config (1.8.6) unstable; urgency=low
+
+  * If $ATHENA_USER is set, then ensure that domain is mit.edu.
+
+ -- Liz A. Denys <lizdenys@mit.edu>  Tue, 13 Apr 2010 23:27:54 -0400
+
 debathena-msmtp-config (1.8.5) unstable; urgency=low
 
   * Check $ATHENA_USER before $USER for setting the from address in
