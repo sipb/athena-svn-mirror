@@ -43,9 +43,10 @@ sub from_address {
   if ($kuser) {
     return "--from=" . join('@', $kuser, 'mit.edu');
   }
-  if ($ENV{'ATHENA_USER'}) {
-    return "--from=" . join('@', $ENV{'ATHENA_USER'}, 'mit.edu');
-  }
+  # Note that ATHENA_USER is explicitly not checked here. We've
+  # already checked to see if you have Kerberos tickets, and
+  # semantically, if you don't have Kerberos tickets, you're not
+  # sending as an Athena user.
   my $uname = $ENV{'USER'} || $ENV{'LOGNAME'} || getpwuid($<);
   # Otherwise, assume user@fqdn ...
   chomp(my $maildomain = `hostname --fqdn`);
