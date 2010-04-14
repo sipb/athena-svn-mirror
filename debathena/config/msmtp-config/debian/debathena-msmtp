@@ -43,7 +43,7 @@ sub from_address {
   if ($kuser) {
     return "--from=" . join('@', $kuser, 'mit.edu');
   }
-  my $uname = $ENV{'USER'} || $ENV{'LOGNAME'} || getpwuid($<);
+  my $uname = $ENV{'ATHENA_USER'} || $ENV{'USER'} || $ENV{'LOGNAME'} || getpwuid($<);
   # Otherwise, assume user@fqdn ...
   chomp(my $maildomain = `hostname --fqdn`);
   # ... except that nss-nonlocal-users are @mit.edu

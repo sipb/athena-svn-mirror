@@ -1,3 +1,10 @@
+debathena-msmtp-config (1.8.5) unstable; urgency=low
+
+  * Check $ATHENA_USER before $USER for setting the from address in
+    debathena-msmtp (Trac: #460).
+
+ -- Liz A. Denys <lizdenys@mit.edu>  Tue, 13 Apr 2010 22:55:52 -0400
+
 debathena-msmtp-config (1.8.4) unstable; urgency=low
 
   * getpwuid($<) is better than getlogin()
