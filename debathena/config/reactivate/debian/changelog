@@ -1,7 +1,7 @@
 debathena-reactivate (2.0.17) unstable; urgency=low
 
   * Remove the autostart .desktop files for nm-applet so that users don't
-    users don't see configurations they cannot change.
+    users don't see configurations they cannot change. (Trac: #400)
 
  -- Liz A. Denys <lizdenys@mit.edu>  Tue, 13 Apr 2010 22:06:35 -0400
 
