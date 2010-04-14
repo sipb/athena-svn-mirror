@@ -8,7 +8,8 @@ DEB_TRANSFORM_FILES_debathena-reactivate += \
 	/etc/default/schroot.debathena
 DEB_REMOVE_FILES_debathena-reactivate += \
 	/etc/xdg/autostart/jockey-gtk.desktop \
-	/etc/xdg/autostart/update-notifier.desktop
+	/etc/xdg/autostart/update-notifier.desktop \
+	/etc/xdg/autostart/nm-applet.desktop
 
 DEB_UNDIVERT_FILES_debathena-reactivate += \
 	/etc/pam.d/sudo.debathena
