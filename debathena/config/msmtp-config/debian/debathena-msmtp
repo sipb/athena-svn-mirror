@@ -7,10 +7,6 @@ use POSIX qw(getgroups);
 use strict;
 use warnings;
 
-system(qw(klist -s));
-my $kuser;
-my $want_auth = $ENV{'DEBATHENA_SENDMAIL_AUTH'} || '';
-
 sub debug {
   if (defined($ENV{'DEBATHENA_SENDMAIL_DEBUG'}) && 
       ($ENV{'DEBATHENA_SENDMAIL_DEBUG'} eq 'yes')) {
@@ -18,6 +14,10 @@ sub debug {
   }
 }
 
+my $kuser;
+my $want_auth = $ENV{'DEBATHENA_SENDMAIL_AUTH'} || '';
+
+system(qw(klist -s));
 if (($? == 0) &&
     (`klist 2>/dev/null` =~ /Default principal: (.*?)\@ATHENA.MIT.EDU/)) {
     $kuser = $1;
