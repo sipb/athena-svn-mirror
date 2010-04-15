@@ -1,3 +1,10 @@
+debathena-reactivate (2.0.18) unstable; urgency=low
+
+  * Add "lp" to the list of groups we add the user to, to support all
+    those cluster machines with parallel port printers attached (Trac #92)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 15 Apr 2010 14:12:08 -0400
+
 debathena-reactivate (2.0.17) unstable; urgency=low
 
   * Remove the autostart .desktop files for nm-applet so that users don't

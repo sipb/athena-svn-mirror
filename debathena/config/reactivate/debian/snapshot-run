@@ -11,7 +11,7 @@
 set -e
 cd /
 
-addgroups="admin lpadmin adm fuse cdrom floppy audio video plugdev scanner dialout"
+addgroups="admin lpadmin adm fuse cdrom floppy audio video plugdev scanner dialout lp"
 daemons="$(/usr/sbin/policy-rc.d --daemons)"
 
 # Setup
