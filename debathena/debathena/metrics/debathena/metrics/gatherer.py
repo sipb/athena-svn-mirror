@@ -230,7 +230,7 @@ class Metrics(dbus.service.Object):
         except Exception, e:
             try:
                 syslog.openlog("debathena-metrics", syslog.LOG_NOWAIT | syslog.LOG_NDELAY, syslog.LOG_LOCAL0)
-                syslog.syslog(syslog.LOG_ERR, e.str)
+                syslog.syslog(syslog.LOG_ERR, str(e))
                 syslog.closelog()
             except:
                 pass
