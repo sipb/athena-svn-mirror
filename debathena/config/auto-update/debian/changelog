@@ -1,6 +1,6 @@
 debathena-auto-update (1.17) unstable; urgency=low
 
-  * Use desync -t instead of sleeping (Trac #309)
+  * Use at(1) instead of desync (Trac #309)
 
  -- Jonathan Reed <jdreed@mit.edu>  Wed, 21 Apr 2010 16:17:18 -0400
 
