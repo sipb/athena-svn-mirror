@@ -209,14 +209,19 @@ class Metrics(dbus.service.Object):
                             prog = prog[len('/login'):]
                         # reactivate-2.x
                         elif prog.startswith('/var/lib/schroot/mount'):
-                            prog = schroot_pat.sub('', prog)
+                            prog = SCHROOT_PAT.sub('', prog)
                         if (prog not in PROGRAM_BLACKLIST) and (os.path.dirname(prog) not in DIRECTORY_BLACKLIST):
                             self.executed_programs.add(prog)
                     except OSError, e:
                         if e.errno == errno.ENOENT:
                             continue
-        except:
-            pass
+        except Exception, e:
+            try:
+                syslog.openlog("debathena-metrics", syslog.LOG_NOWAIT | syslog.LOG_NDELAY, syslog.LOG_LOCAL0)
+                syslog.syslog(syslog.LOG_ERR, e.str)
+                syslog.closelog()
+            except:
+                pass
 
         self.setup_io_watch()
         return False
