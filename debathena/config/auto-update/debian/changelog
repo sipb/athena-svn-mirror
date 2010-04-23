@@ -1,7 +1,7 @@
 debathena-auto-update (1.17.1) unstable; urgency=low
 
   * Don't cause cron to send mail when everything's fine.
-  * Remove dependency on desync, add dependency on cron and at
+  * Add dependency on cron and at
 
  -- Jonathan Reed <jdreed@mit.edu>  Fri, 23 Apr 2010 10:36:11 -0400
 
