@@ -1,8 +1,14 @@
+debathena-auto-update (1.17.1) unstable; urgency=low
+
+  * Don't cause cron to send mail when everything's fine.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 23 Apr 2010 10:33:25 -0400
+
 debathena-auto-update (1.17) unstable; urgency=low
 
   * Use at(1) instead of desync (Trac #309)
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 21 Apr 2010 16:17:18 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 23 Apr 2010 10:33:01 -0400
 
 debathena-auto-update (1.16) unstable; urgency=low
 
