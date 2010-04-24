@@ -30,11 +30,11 @@ ifneq ($(NEW_GDM),y)
         /usr/share/images/xsplash/throbber_medium.debathena.png \
         /usr/share/images/xsplash/throbber_large.debathena.png \
         /usr/share/images/xsplash/throbber_xtra_large.debathena.png
-    DEB_UNDIVERT_VERSIONS_/usr/share/images/xsplash/bg_2560x1600.debathena.jpg = 1.20~
-    DEB_UNDIVERT_VERSIONS_/usr/share/images/xsplash/throbber_small.debathena.png = 1.20~
-    DEB_UNDIVERT_VERSIONS_/usr/share/images/xsplash/throbber_medium.debathena.png = 1.20~
-    DEB_UNDIVERT_VERSIONS_/usr/share/images/xsplash/throbber_large.debathena.png = 1.20~
-    DEB_UNDIVERT_VERSIONS_/usr/share/images/xsplash/throbber_xtra_large.debathena.png = 1.20~
+    DEB_UNDIVERT_VERSION_/usr/share/images/xsplash/bg_2560x1600.debathena.jpg = 1.20~
+    DEB_UNDIVERT_VERSION_/usr/share/images/xsplash/throbber_small.debathena.png = 1.20~
+    DEB_UNDIVERT_VERSION_/usr/share/images/xsplash/throbber_medium.debathena.png = 1.20~
+    DEB_UNDIVERT_VERSION_/usr/share/images/xsplash/throbber_large.debathena.png = 1.20~
+    DEB_UNDIVERT_VERSION_/usr/share/images/xsplash/throbber_xtra_large.debathena.png = 1.20~
 endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk
@@ -50,7 +50,8 @@ ifneq ($(NEW_GDM),y)
 	dh_install debian/default.desktop.debathena usr/share/gdm/BuiltInSessions
 	dh_install debian/background.jpg usr/share/debathena-gdm-config
 	dh_install debian/%gconf-tree.xml var/lib/gdm/.gconf.debathena-gdm-config
-	install debian/gconf.path.debathena $(DEB_DESTDIR)/var/lib/gdm/.gconf.path.debathena
+
+	install -m 660 debian/gconf.path.debathena debian/$(cdbs_curpkg)/var/lib/gdm/.gconf.path.debathena
 
     binary-predeb/debathena-gdm-config:: debathena-gdm-config-substvars
     debathena-gdm-config-substvars::
