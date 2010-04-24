@@ -48,6 +48,8 @@ debathena/distro.svg: debian/distro.svg.sh
 ifneq ($(NEW_GDM),y)
     install/debathena-gdm-config::
 	dh_install debian/default.desktop.debathena usr/share/gdm/BuiltInSessions
+else
+    install/debathena-gdm-config::
 	dh_install debian/background.jpg usr/share/debathena-gdm-config
 	dh_install debian/%gconf-tree.xml var/lib/gdm/.gconf.debathena-gdm-config
 
@@ -57,7 +59,7 @@ ifneq ($(NEW_GDM),y)
     debathena-gdm-config-substvars::
 	echo "debathena-gdm-gconf-depends=debathena-gconf2-config (>= 1.8~)" \
 	    >> debian/debathena-gdm-config.substvars
-else
+
     install/debathena-gdm-config::
 	dh_gconf --priority 90
 endif
