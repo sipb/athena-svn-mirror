@@ -1,11 +1,4 @@
 usr/prototype_user
 usr/lib/prototype_tmpuser
-usr/lib/init/cshrc
-usr/lib/init/env_remove
-usr/lib/init/env_setup
-usr/lib/init/env_remove.bash
-usr/lib/init/env_setup.bash
-usr/lib/init/login
-usr/lib/init/bashrc
-usr/lib/init/bash_login
+usr/lib/init
 usr/share/man/man*/*

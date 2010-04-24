@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.22-0debathena1) unstable; urgency=low
+
+  * Cleaned up unused cruft, including the debathena-dotfiles-x11
+    package. (Trac: #539)
+
+ -- Liz A. Denys <lizdenys@mit.edu>  Fri, 23 Apr 2010 21:00:44 -0400
+
 debathena-dotfiles (10.0.21-0debathena1) unstable; urgency=low
 
   * Make zwgc fallback check case-insensitive (Trac #501)

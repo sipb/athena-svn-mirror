@@ -13,9 +13,3 @@ Conflicts: debathena-athena-files (<< 0.2), debathena-afuse-automounter (<= 1.4)
 Description: User template and system standard shell dotfiles for Athena
  This package contains user template and system standard shell
  dotfiles that are used for a non-graphical Athena environment.
-
-Package: debathena-dotfiles-x11
-Architecture: all
-Description: System dotfiles for graphical Athena
- This package contains user template and system standard shell
- dotfiles that are used for a graphical Athena environment.
