@@ -2,8 +2,11 @@ debathena-gdm-config (1.20) unstable; urgency=low
 
   * Skin new gdm versions by overriding the gdm user's gconf
     config. (Trac: #546)
+  * Squash some lintian warnings:
+    - Bump debhelper compatibility level.
+    - Update to latest standards version.
 
- -- Evan Broder <broder@mit.edu>  Thu, 22 Apr 2010 17:57:16 -0400
+ -- Evan Broder <broder@mit.edu>  Fri, 23 Apr 2010 21:04:51 -0400
 
 debathena-gdm-config (1.19) unstable; urgency=low
 
