@@ -47,9 +47,9 @@ debathena/distro.svg: debian/distro.svg.sh
 
 ifneq ($(NEW_GDM),y)
     install/debathena-gdm-config::
-	dh_install debian/default.desktop.debathena usr/share/gdm/BuiltInSessions \
-	    debian/background.jpg usr/share/debathena-gdm-config \
-	    debian/%gconf-tree.xml var/lib/gdm/.gconf.debathena-gdm-config
+	dh_install debian/default.desktop.debathena usr/share/gdm/BuiltInSessions
+	dh_install debian/background.jpg usr/share/debathena-gdm-config
+	dh_install debian/%gconf-tree.xml var/lib/gdm/.gconf.debathena-gdm-config
 	install debian/gconf.path.debathena $(DEB_DESTDIR)/var/lib/gdm/.gconf.path.debathena
 
     binary-predeb/debathena-gdm-config:: debathena-gdm-config-substvars
