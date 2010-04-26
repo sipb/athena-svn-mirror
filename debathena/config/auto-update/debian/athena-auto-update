@@ -13,7 +13,7 @@ save_success() {
 
 save_state() {
   rm -f $statfile
-  echo "$updlast|$(date)|$updstatus|$updmsg" > $statfile
+  echo "$updlast|$(date +"%s")|$updstatus|$updmsg" > $statfile
 }  
 
 maybe_reboot() {
@@ -70,7 +70,7 @@ trap 'rm -f $pidfile' EXIT
 statfile="/var/lib/athena-update-status"
 updstatus="unknown"
 updmsg=""
-updlast=$(date)
+updlast=$(date +"%s")
 
 # Get the last successful update
 if [ -f $statfile ]; then
@@ -205,7 +205,7 @@ elif result=$(aptitude -F "%p" search '~b')
 else
   v aptitude $APTITUDE_OPTS --quiet --assume-yes install
   # Successful update, reset $updlast
-  updlast=$(date)
+  updlast=$(date +"%s")
   save_success "Successful update"
 fi
 

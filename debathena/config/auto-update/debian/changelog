@@ -1,3 +1,10 @@
+debathena-auto-update (1.18) unstable; urgency=low
+
+  * Change update-status to give seconds since the epoch which is easier
+    for Nagios to parse
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 25 Apr 2010 23:00:35 -0400
+
 debathena-auto-update (1.17.1) unstable; urgency=low
 
   * Don't cause cron to send mail when everything's fine.
