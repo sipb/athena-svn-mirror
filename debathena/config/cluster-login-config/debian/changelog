@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.24) UNRELEASED; urgency=low
+
+  * Specify package name in prerm script
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 26 Apr 2010 16:21:33 -0400
+
 debathena-cluster-login-config (1.23) unstable; urgency=low
 
   * Kill kexec with fire - we'll enable it by hand from reactivate (Trac:
