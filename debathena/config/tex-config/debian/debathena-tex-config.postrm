@@ -1,5 +1,5 @@
 #!/bin/sh
-# postrm script for #PACKAGE#
+# postrm script for debathena-tex-config
 #
 # see: dh_installdeb(1)
 

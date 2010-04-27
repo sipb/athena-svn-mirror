@@ -1,3 +1,9 @@
+debathena-tex-config (1.3) UNRELEASED; urgency=low
+
+  * Fix package name in maintainer scripts
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 27 Apr 2010 11:18:41 -0400
+
 debathena-tex-config (1.2) unstable; urgency=low
 
   * Be sure to generate all format files (including creating missing

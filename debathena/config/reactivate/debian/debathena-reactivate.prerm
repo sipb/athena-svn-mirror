@@ -1,5 +1,5 @@
 #!/bin/sh
-# prerm script for #PACKAGE#
+# prerm script for debathena-reactivate
 #
 # see: dh_installdeb(1)
 
