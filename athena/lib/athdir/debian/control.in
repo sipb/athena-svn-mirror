@@ -28,7 +28,7 @@ Description: The Athena directory location library with debugging symbols
 Package: debathena-libathdir-dev
 Section: debathena/libdevel
 Architecture: any
-Provides: libathdir-dev, debathena-libathdir
+Provides: libathdir-dev
 Conflicts: debathena-libathdir (<< 9.4)
 Replaces: debathena-libathdir (<< 9.4)
 Depends: debathena-libathdir0 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
