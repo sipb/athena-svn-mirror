@@ -5,13 +5,33 @@ Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, debathena-machtype
 Standards-Version: 3.7.2
 
+Package: debathena-libathdir0
+Section: debathena/libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: The Athena directory location library
+ A library to implement machine-specific directory location on Athena.
+ .
+ This package contains the shared athdir library.
+
+Package: debathena-libathdir0-dbg
+Section: debathena/libdevel
+Architecture: any
+Depends: debathena-libathdir0 (= ${binary:Version}),
+ ${shlibs:Depends}, ${misc:Depends}
+Description: The Athena directory location library with debugging symbols
+ A library to implement machine-specific directory location on Athena.
+ .
+ This package contains an unstripped shared library. It will be used
+ automatically by gdb for debugging libathdir-related issues.
+
 Package: debathena-libathdir-dev
 Section: debathena/libdevel
 Architecture: any
 Provides: libathdir-dev, debathena-libathdir
 Conflicts: debathena-libathdir (<< 9.4)
 Replaces: debathena-libathdir (<< 9.4)
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: debathena-libathdir0 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: Development files for the Athena directory location library
  A library to implement machine-specific directory location on Athena.
  .
