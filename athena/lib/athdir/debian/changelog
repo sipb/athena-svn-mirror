@@ -1,3 +1,10 @@
+debathena-libathdir (10.0.0-0debathena2) unstable; urgency=low
+
+  * Export ATHENA_SYS and ATHENA_HOSTTYPE at build time, to make sure that
+    athdir has the correct compile-time constants built-in. (Trac: #570)
+
+ -- Evan Broder <broder@mit.edu>  Wed, 28 Apr 2010 13:23:11 -0400
+
 debathena-libathdir (10.0.0-0debathena1) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
