@@ -1,3 +1,9 @@
+debathena-libathdir (10.0.1-0debathena1) unstable; urgency=low
+
+  * Update our autogoo for the 21st century.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 28 Apr 2010 13:31:36 -0400
+
 debathena-libathdir (10.0.0-0debathena2) unstable; urgency=low
 
   * Export ATHENA_SYS and ATHENA_HOSTTYPE at build time, to make sure that

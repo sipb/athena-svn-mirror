@@ -1,0 +1,13 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT
+AC_CONFIG_SRCDIR([athdir.c])
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+AC_DEFINE_UNQUOTED([ATHSYS], ["$ATHENA_SYS"])
+AC_DEFINE_UNQUOTED([HOSTTYPE_$ATHENA_HOSTTYPE])
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
