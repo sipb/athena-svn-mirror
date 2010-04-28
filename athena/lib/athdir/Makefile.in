@@ -2,6 +2,8 @@
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_HEADER=${INSTALL_DATA}
 LIBTOOL=@LIBTOOL@
 MKDIR_P=@MKDIR_P@
 VPATH=@srcdir@
@@ -38,8 +40,8 @@ install:
 	${MKDIR_P} ${DESTDIR}${libdir}
 	${MKDIR_P} ${DESTDIR}${includedir}
 	${LIBTOOL} --mode=install ${INSTALL} libathdir.la ${DESTDIR}${libdir}
-	${INSTALL} -m 444 ${srcdir}/athdir.h ${DESTDIR}${includedir}
-	${INSTALL} -m 644 ${srcdir}/athdir.pc ${DESTDIR}${pkgconfigdir}
+	${INSTALL_HEADER} ${srcdir}/athdir.h ${DESTDIR}${includedir}
+	${INSTALL_DATA} ${srcdir}/athdir.pc ${DESTDIR}${pkgconfigdir}
 
 clean:
 	${LIBTOOL} --mode=clean rm -f ${OBJS} libathdir.la
