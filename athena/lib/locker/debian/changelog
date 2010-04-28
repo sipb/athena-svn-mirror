@@ -1,8 +1,9 @@
 debathena-liblocker (10.0.2-0debathena1) unstable; urgency=low
 
   * Update our autoconf for the 21st century.
+  * Use debathena-aclocal instead of the Athena aclocal.m4 file.
 
- -- Evan Broder <broder@mit.edu>  Wed, 28 Apr 2010 19:46:48 -0400
+ -- Evan Broder <broder@mit.edu>  Wed, 28 Apr 2010 19:48:11 -0400
 
 debathena-liblocker (10.0.1-0debathena2) unstable; urgency=low
 
