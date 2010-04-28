@@ -39,9 +39,10 @@ check:
 install:
 	${MKDIR_P} ${DESTDIR}${libdir}
 	${MKDIR_P} ${DESTDIR}${includedir}
+	${MKDIR_P} ${DESTDIR}${pkgconfigdir}
 	${LIBTOOL} --mode=install ${INSTALL} libathdir.la ${DESTDIR}${libdir}
 	${INSTALL_HEADER} ${srcdir}/athdir.h ${DESTDIR}${includedir}
-	${INSTALL_DATA} ${srcdir}/athdir.pc ${DESTDIR}${pkgconfigdir}
+	${INSTALL_DATA} ${srcdir}/athdir.pc ${DESTDIR}${pkgconfigdir}/athdir.pc
 
 clean:
 	${LIBTOOL} --mode=clean rm -f ${OBJS} libathdir.la
