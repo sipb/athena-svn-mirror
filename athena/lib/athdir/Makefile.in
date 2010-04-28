@@ -13,6 +13,7 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 mandir=@mandir@
+pkgconfigdir=${libdir}/pkgconfig
 
 CC=@CC@
 CPPFLAGS=@CPPFLAGS@
@@ -38,9 +39,10 @@ install:
 	${MKDIR_P} ${DESTDIR}${includedir}
 	${LIBTOOL} --mode=install ${INSTALL} libathdir.la ${DESTDIR}${libdir}
 	${INSTALL} -m 444 ${srcdir}/athdir.h ${DESTDIR}${includedir}
+	${INSTALL} -m 644 ${srcdir}/athdir.pc ${DESTDIR}${pkgconfigdir}
 
 clean:
 	${LIBTOOL} --mode=clean rm -f ${OBJS} libathdir.la
 
 distclean: clean
-	rm -f config.cache config.log config.status Makefile
+	rm -f config.cache config.log config.status Makefile athdir.pc
