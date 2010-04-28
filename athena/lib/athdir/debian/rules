@@ -1,11 +1,19 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_AUTOCONF = 2.50
+DEB_AUTO_UPDATE_ACLOCAL = 1.9
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
+
+debian/stamp-autotools-files: aclocal.m4 install-sh missing
+aclocal.m4:
+	touch $@
+install-sh missing:
+	-automake-1.9 --foreign --add-missing
 
 export ATHENA_SYS="$(shell machtype -S)"
 export ATHENA_HOSTTYPE="$(shell machtype)"
 
 clean::
-	rm -f configure
+	rm -f configure aclocal.m4 install-sh missing
