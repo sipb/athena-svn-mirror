@@ -3,6 +3,7 @@
 SHELL=/bin/sh
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
+MKDIR_P=@MKDIR_P@
 RANLIB=@RANLIB@
 VPATH=@srcdir@
 srcdir=@srcdir@
@@ -11,6 +12,7 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
+datarootdir=@datarootdir@
 mandir=@mandir@
 
 CC=@CC@
@@ -37,10 +39,10 @@ ${OBJS}: locker.h locker_private.h
 check:
 
 install:
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man3
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man5
+	${MKDIR_P} ${DESTDIR}${libdir}
+	${MKDIR_P} ${DESTDIR}${includedir}
+	${MKDIR_P} ${DESTDIR}${mandir}/man3
+	${MKDIR_P} ${DESTDIR}${mandir}/man5
 	${INSTALL} -m 644 liblocker.a ${DESTDIR}${libdir}
 	${RANLIB} ${DESTDIR}${libdir}/liblocker.a
 	chmod u-w ${DESTDIR}${libdir}/liblocker.a

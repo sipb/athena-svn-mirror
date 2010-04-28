@@ -1,9 +1,11 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(locker.h)
+AC_INIT([liblocker], [10.0.2])
+AC_CONFIG_SRCDIR([locker.h])
 
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_RANLIB
+AC_PROG_MKDIR_P
 
 AC_ARG_ENABLE([nfs],
 	[AS_HELP_STRING([--enable-nfs], [support for kNFS lockers (deprecated)])])
@@ -33,4 +35,5 @@ ATHENA_KRB5_REQUIRED
 ATHENA_AFS_REQUIRED
 ATHENA_HESIOD_REQUIRED
 
-AC_OUTPUT(Makefile)
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
