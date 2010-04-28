@@ -3,11 +3,12 @@ debathena-libathdir (10.0.1-0debathena1) unstable; urgency=low
   * Update our autogoo for the 21st century.
   * Generate aclocal.m4 ourselves instead of copying in the standard
     Athena aclocal.m4. (Trac: #334)
-  * Bump debhelper compatibility.
   * Build libathdir as a shared library. (Trac: #70)
   * Ship a pkgconfig file for libathdir.
+  * Bump debhelper compatibility.
+  * Bump standards version.
 
- -- Evan Broder <broder@mit.edu>  Wed, 28 Apr 2010 16:15:41 -0400
+ -- Evan Broder <broder@mit.edu>  Wed, 28 Apr 2010 16:29:46 -0400
 
 debathena-libathdir (10.0.0-0debathena2) unstable; urgency=low
 
