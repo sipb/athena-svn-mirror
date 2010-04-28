@@ -15,7 +15,7 @@ Description: The Athena directory location library
  This package contains the shared athdir library.
 
 Package: debathena-libathdir0-dbg
-Section: debathena/libdevel
+Section: debathena/debug
 Architecture: any
 Depends: debathena-libathdir0 (= ${binary:Version}),
  ${shlibs:Depends}, ${misc:Depends}
