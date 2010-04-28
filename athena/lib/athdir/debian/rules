@@ -12,8 +12,8 @@ aclocal.m4:
 install-sh missing:
 	-automake-1.9 --foreign --add-missing
 
-export ATHENA_SYS="$(shell machtype -S)"
-export ATHENA_HOSTTYPE="$(shell machtype)"
+export ATHENA_SYS=$(shell machtype -S)
+export ATHENA_HOSTTYPE=$(shell machtype)
 
 clean::
 	rm -f configure aclocal.m4 install-sh missing
