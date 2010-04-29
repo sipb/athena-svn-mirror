@@ -25,7 +25,7 @@ ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
 all: athdir
 
 athdir: athdir.o
-	${CC} ${LDFLAGS} -o athdir athdir.o -lathdir ${LIBS}
+	${CC} ${LDFLAGS} -o athdir athdir.o ${LIBS}
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
