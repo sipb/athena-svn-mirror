@@ -2,8 +2,9 @@ debathena-athdir (10.0.1-0debathena1) unstable; urgency=low
 
   * Update autogoo for the 21st century.
   * Update packaging to not require daconfiscate.
+  * Bump debhelper compatibility level.
 
- -- Evan Broder <broder@mit.edu>  Wed, 28 Apr 2010 23:03:16 -0400
+ -- Evan Broder <broder@mit.edu>  Wed, 28 Apr 2010 23:17:15 -0400
 
 debathena-athdir (10.0.0-0debathena1) unstable; urgency=low
 
