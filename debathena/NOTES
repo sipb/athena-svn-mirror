@@ -257,11 +257,11 @@ Release engineer: Bootstrapping the project infrastructure
 
   2. Create the build area.
 
-  3. Run 'reprepro -Vb $DEBATHENA_APT export' to set up the repository.
-     Build each equivs package under meta/ using 'equivs-build --full
-     *.equivs' and upload each with 'daupload-equivs-proposed
-     *.changes', followed by 'damove -proposed "" PACKAGE' (replacing
-     PACKAGE with the name of each equivs package you are moving).
+  3. Run 'dareprepro export' to set up the repository.  Build each
+     equivs package under meta/ using 'equivs-build --full *.equivs'
+     and upload each with 'daupload-equivs-proposed *.changes',
+     followed by 'damove -proposed "" PACKAGE' (replacing PACKAGE with
+     the name of each equivs package you are moving).
 
   4. Set up the build server.  The basic structure of the apt
      repository must work for make-chroot to succeed, so this must
@@ -447,7 +447,7 @@ Release engineer: Removing a dist from the apt repository
   1. Inside the apt repository, edit conf/distributions and remove the
      distribution section.
 
-  2. Run reprepro -Vb $DEBATHENA_APT --delete clearvanished
+  2. Run dareprepro --delete clearvanished
 
 Release engineer: Setting up a canonical build area
 ---------------------------------------------------
@@ -485,8 +485,8 @@ steps below.
      be present in the gettag conditional.)
 
   3. Create the new distribution in the apt repository's configuration
-     file.  Create the skeleton of the dist by running "reprepro -Vb
-     $DEBATHENA_APT export".
+     file.  Create the skeleton of the dist by running "dareprepro
+     export".
 
   4. On the build server, create a chroot for the new distribution as
      documented above.  This may require downloading and installing a

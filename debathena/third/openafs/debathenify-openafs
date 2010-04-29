@@ -175,8 +175,7 @@ for hdr in $headers; do
     ch="$dist_arch/${module}_${afsv}+${hdrv}_$arch.changes"
     if [ -e "$ch" ]; then
       echo "*** Uploading: $dist_arch $module"
-      reprepro --ignore=wrongdistribution -Vb "$DEBATHENA_APT" -C openafs \
-        include "${dist}${release}" $ch
+      dareprepro -C openafs include "${dist}${release}" $ch
     else
       echo "*** No module: $dist_arch $module"
     fi
@@ -248,8 +247,7 @@ EOF
     deb=meta/$dist_arch/${afs_mpkg}_${ver}${tag}_${arch}.deb
     if [ -e "$deb" ]; then
       echo "*** Uploading: $dist_arch $afs_mpkg"
-      reprepro -Vb "$DEBATHENA_APT" --ignore=wrongdistribution includedeb \
-        "${dist}${release}" "$deb"
+      dareprepro includedeb "${dist}${release}" "$deb"
     else
       echo "*** No package: $dist_arch $afs_mpkg"
     fi

@@ -138,13 +138,10 @@ v () {
 }
 
 cmd_upload () {
-    REPREPRO="v reprepro -Vb $DEBATHENA_APT"
-    REPREPROI="$REPREPRO --ignore=wrongdistribution --ignore=missingfield"
-
     if [ "$a" = "-A" ]; then
-	$REPREPROI include "${dist}${release}" "${daname}_${daversion}_source.changes"
+	v dareprepro include "${dist}${release}" "${daname}_${daversion}_source.changes"
     fi
-    $REPREPROI include "${dist}${release}" "${daname}_${daversion}${tag}_${arch}.changes"
+    v dareprepro include "${dist}${release}" "${daname}_${daversion}${tag}_${arch}.changes"
 }
 
 version=$(
