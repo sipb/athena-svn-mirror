@@ -1,3 +1,9 @@
+debathena-firefox-extension (10.0.4-0debathena1) unstable; urgency=low
+
+  * Bump the max supported version for Firefox 3.6.
+
+ -- Robert Basch <rbasch@mit.edu>  Thu, 29 Apr 2010 16:18:05 -0400
+
 debathena-firefox-extension (10.0.3-0debathena2) unstable; urgency=low
 
   * Update the GSSAPI dependency for post-krb5-1.7. (Trac: #427)
