@@ -4,11 +4,14 @@ SHELL=/bin/sh
 VPATH=@srcdir@
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_DATA=@INSTALL_DATA@
+MKDIR_P=@MKDIR_P@
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
+datarootdir=@datarootdir@
 mandir=@mandir@
 
 CC=@CC@
@@ -30,10 +33,10 @@ athdir: athdir.o
 check:
 
 install:
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${MKDIR_P} ${DESTDIR}${bindir}
+	${MKDIR_P} ${DESTDIR}${mandir}/man1
 	${INSTALL_PROGRAM} athdir ${DESTDIR}${bindir}
-	${INSTALL} -m 444 ${srcdir}/athdir.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/athdir.1 ${DESTDIR}${mandir}/man1
 
 clean:
 	rm -f athdir.o athdir
