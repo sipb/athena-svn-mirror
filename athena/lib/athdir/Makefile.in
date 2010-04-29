@@ -23,12 +23,13 @@ CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
 DEFS=@DEFS@
 ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+LDFLAGS=@LDFLAGS@
 OBJS=athdir.lo stringlist.lo
 
 all: libathdir.la
 
 libathdir.la: ${OBJS}
-	${LIBTOOL} --mode=link ${CC} ${ALL_LDFFLAGS} -o $@ ${OBJS} -rpath ${libdir} -version-info 0:0:0
+	${LIBTOOL} --mode=link ${CC} ${LDFLAGS} -o $@ ${OBJS} -rpath ${libdir} -version-info 0:0:0
 
 .SUFFIXES: .lo
 

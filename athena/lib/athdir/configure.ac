@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([libathdir], [10.0.1])
+AC_INIT([libathdir], [10.0.2])
 AC_CONFIG_SRCDIR([athdir.c])
 
 AC_PROG_CC

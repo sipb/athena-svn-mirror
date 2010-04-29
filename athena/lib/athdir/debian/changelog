@@ -1,3 +1,9 @@
+debathena-libathdir (10.0.2-0debathena1) unstable; urgency=low
+
+  * Fix handling of LDFLAGS.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 28 Apr 2010 20:01:59 -0400
+
 debathena-libathdir (10.0.1-0debathena1) unstable; urgency=low
 
   * Update our autogoo for the 21st century.
