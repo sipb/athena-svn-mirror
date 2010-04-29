@@ -17,6 +17,15 @@ config.guess config.sub:
 install-sh missing:
 	-automake-1.9 --foreign --add-missing
 
+common-configure-arch:: verify-versions
+verify-versions: debian/stamp-autotools-files
+	if ! $(DEB_CONFIGURE_SCRIPT) --version | \
+	    grep -Fqx "libathdir configure $(DEB_UPSTREAM_VERSION)"; then \
+	    echo "E: Debian and upstream version numbers don't match." >&2 ; \
+	    echo "E: Did you forget to update the version number in configure.ac?" >&2 ; \
+	    exit 1 ; \
+	fi
+
 export ATHENA_SYS=$(shell machtype -S)
 export ATHENA_HOSTTYPE=$(shell machtype)
 
