@@ -1,10 +1,3 @@
-; mh-rmail won't find mh programs by default; tell it where they are.
-(setq mh-progs "/usr/bin/"
-      mh-lib-progs "/usr/lib/debathena-nmh/"
-      mh-lib "/etc/nmh/"
-      ; See bugs[27406] and Trac #478
-      mh-send-uses-spost-flag 't)
-
 ; Too many users get bit if we don't set this.
 ; We can probably remove this setting once tcsh is gone.
 (setq require-final-newline t)
