@@ -8,8 +8,10 @@ user_pref("network.protocol-handler.external.news", false);
 user_pref("network.protocol-handler.external.nntp", false);
 user_pref("network.protocol-handler.external-default", false);
 
-// Needed because r-kiosk's maxVersion is set to 3.0, not 3.0.*.
+// Disable the compatibility check for the r-kiosk extension
+// (the per-version preference is used in firefox 3.6+).
 user_pref("extensions.checkCompatibility", false);
+user_pref("extensions.checkCompatibility.3.6", false);
 
 // Set the home page.
 user_pref("browser.startup.homepage", "file:///usr/share/debathena-kiosk/index.html");

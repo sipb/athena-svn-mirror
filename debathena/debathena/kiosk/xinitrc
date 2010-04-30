@@ -30,12 +30,18 @@ firefox -CreateProfile default > /dev/null || exit 1
 profdir=$(find .mozilla/firefox -type d -name \*.default)
 
 # Add the rkiosk extension.
-mkdir -p "$profdir/extensions/$rkiosk_id"
-(cd "$profdir/extensions/$rkiosk_id" && unzip "$rkiosk_xpi") || exit 1
+rkiosk_dir="$profdir/extensions/$rkiosk_id"
+mkdir -p "$rkiosk_dir"
+(cd "$rkiosk_dir" && unzip "$rkiosk_xpi") || exit 1
 cat <<EOF >> "$profdir/extensions.ini"
 [ExtensionDirs]
-Extension0=$profdir/extensions/$rkiosk_id
+Extension0=$rkiosk_dir
 EOF
+
+# Firefox 3.6+ requires a chrome.manifest for the extension.
+if [ ! -e "$rkiosk_dir/chrome.manifest" ]; then
+  cp "$datadir/chrome.manifest.r-kiosk" "$rkiosk_dir/chrome.manifest" || exit 1
+fi
 
 # Apply our preference settings and UI customizations.
 cat "$prefs" >> "$profdir/prefs.js" || exit 1

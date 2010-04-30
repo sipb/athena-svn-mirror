@@ -1,5 +1,7 @@
 #!/usr/bin/python -Wall
 
+import dbus
+import dbus.mainloop.glib
 import gtk
 import gtk.glade
 import gobject
@@ -9,13 +11,27 @@ import sys
 import subprocess
 from optparse import OptionParser
 
-gladeFile = "/usr/share/debathena-kiosk/gdm-launch-kiosk.glade"
-launchCommand = "/usr/lib/debathena-kiosk/launch-kiosk"
+GLADE_FILE = "/usr/share/debathena-kiosk/gdm-launch-kiosk.glade"
+LAUNCH_COMMAND = "/usr/lib/debathena-kiosk/launch-kiosk"
+
+SM_DBUS_NAME = "org.gnome.SessionManager"
+SM_DBUS_PATH = "/org/gnome/SessionManager"
+SM_DBUS_INTERFACE = "org.gnome.SessionManager"
+SM_CLIENT_DBUS_INTERFACE = "org.gnome.SessionManager.ClientPrivate"
+APP_ID = "debathena-kiosk"
 
 class Kiosk:
     def __init__(self):
+        self.sessionEnding = False
+        self.sessionBus = dbus.SessionBus()
         try:
-            self.xml = gtk.glade.XML(gladeFile)
+            self.register_with_sm()
+            self.init_sm_client()
+        except:
+            print "Warning: Cannot register with session manager."
+
+        try:
+            self.xml = gtk.glade.XML(GLADE_FILE)
         except:
             print "Failed to create Glade XML object."
             sys.exit(1)
@@ -33,10 +49,11 @@ class Kiosk:
         self.kioskWindow.show_all()
 
     def kioskButton_on_click(self, button):
-        self.kioskDialog.show()
+        if not self.sessionEnding:
+            self.kioskDialog.show()
 
     def kioskDialogResponseHandler(self, dialog, response_id):
-        if response_id == 1:
+        if response_id == 1 and not self.sessionEnding:
             self.launch()
         self.kioskDialog.hide()
 
@@ -50,9 +67,9 @@ class Kiosk:
             if pid == 0:
                 # Here in the second child, exec the command.
                 try:
-                    os.execlp("sudo", "sudo", "-n", launchCommand)
+                    os.execlp("sudo", "sudo", "-n", LAUNCH_COMMAND)
                 except OSError, e:
-                    print "error: Could not run %s as root: %s" % (launchCommand, e.strerror)
+                    print "error: Could not run %s as root: %s" % (LAUNCH_COMMAND, e.strerror)
                     os._exit(255)
             else:
                 # The first child exits immediately.
@@ -63,11 +80,49 @@ class Kiosk:
             if status != 0:
                 print "error launching command, status %d" % status
 
+    # Connect to the session manager, and register our client.
+    def register_with_sm(self):
+        proxy = self.sessionBus.get_object(SM_DBUS_NAME, SM_DBUS_PATH)
+        sm = dbus.Interface(proxy, SM_DBUS_INTERFACE)
+        autostart_id = os.getenv("DESKTOP_AUTOSTART_ID", default="")
+        self.smClientId = sm.RegisterClient(APP_ID, autostart_id)
+
+    # Set up to handle signals from the session manager.
+    def init_sm_client(self):
+        proxy = self.sessionBus.get_object(SM_DBUS_NAME, self.smClientId)
+        self.smClient = dbus.Interface(proxy, SM_CLIENT_DBUS_INTERFACE)
+        self.smClient.connect_to_signal("QueryEndSession",
+                                         self.sm_on_QueryEndSession)
+        self.smClient.connect_to_signal("EndSession", self.sm_on_EndSession)
+        self.smClient.connect_to_signal("CancelEndSession",
+                                         self.sm_on_CancelEndSession)
+        self.smClient.connect_to_signal("Stop", self.sm_on_Stop)
+
+    # Here on a QueryEndSession signal from the session manager.
+    def sm_on_QueryEndSession(self, flags):
+        self.sessionEnding = True
+        # Response args: is_ok, reason.
+        self.smClient.EndSessionResponse(True, "")
+
+    # Here on an EndSession signal from the session manager.
+    def sm_on_EndSession(self, flags):
+        self.sessionEnding = True
+        # Response args: is_ok, reason.
+        self.smClient.EndSessionResponse(True, "")
+
+    # Here on a CancelEndSession signal from the session manager.
+    def sm_on_CancelEndSession(self):
+        self.sessionEnding = False
+
+    # Here on a Stop signal from the session manager.
+    def sm_on_Stop(self):
+        gtk.main_quit()
 
 def main():
-    if not os.access(gladeFile, os.R_OK):
-        print 'error: Unable to read glade file "' + gladeFile + '"'
+    if not os.access(GLADE_FILE, os.R_OK):
+        print 'error: Unable to read glade file "' + GLADE_FILE + '"'
         sys.exit(1)
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     Kiosk()
     gtk.main()
 
