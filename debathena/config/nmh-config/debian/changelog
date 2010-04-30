@@ -1,5 +1,6 @@
 debathena-nmh-config (1.0) unstable; urgency=low
 
   * Initial release (Trac: #74).
+  * Move relevant MH-E configuration from debathena-emacs-config.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Mon, 08 Feb 2010 04:59:34 -0500
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 28 Apr 2010 18:19:44 -0400
