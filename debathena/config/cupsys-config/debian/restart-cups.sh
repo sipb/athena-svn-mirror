@@ -28,7 +28,7 @@ restart_cups()
 		queue_count=$(lpstat -h "$browse_host" -a | awk '{print $1}' | sort -u | wc -l)
 
 		if echo "$browse_host" | grep -q ':'; then
-		    browse_port="${browse_host#*:}"
+		    browse_port="${browse_host##*:}"
 		    browse_host="${browse_host%:*}"
 		else
 		    browse_port=631
