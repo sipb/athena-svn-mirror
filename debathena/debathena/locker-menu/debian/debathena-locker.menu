@@ -10,6 +10,8 @@
       <Filename>locker-avail.desktop</Filename>
       <Separator/>
       <Merge type="all"/>
+      <Separator/>
+      <Filename>xmoira.desktop</Filename>
     </Layout>
   </Menu>
 </Menu>

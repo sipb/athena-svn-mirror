@@ -1,3 +1,9 @@
+debathena-locker-menu (1.6) unstable; urgency=low
+
+  * Separate xmoira from other software in the locker menu.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 04 May 2010 11:41:51 -0400
+
 debathena-locker-menu (1.5) unstable; urgency=low
 
   * Change the name to something that makes more sense (Trac #396)
