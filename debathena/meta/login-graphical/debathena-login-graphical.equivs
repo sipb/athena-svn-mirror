@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-login-graphical
-Version: 0.6
+Version: 0.7
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-login-graphical-branding,
  debathena-login,
@@ -17,6 +17,7 @@ Depends: debathena-login-graphical-branding,
  debathena-transcript-glue, debathena-misc-glue,
  debathena-xlock,
  debathena-email-icon-config,
+ debathena-moira-gui,
 Recommends: ubuntu-desktop,
  debathena-thunderbird-config,
 Copyright: ../common/copyright
