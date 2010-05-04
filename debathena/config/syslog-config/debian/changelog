@@ -1,3 +1,10 @@
+debathena-syslog-config (1.5) unstable; urgency=low
+
+  * Don't send kern.info to WSLOGGER, because it's loud and not useful
+    (Trac: #359)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 04 May 2010 14:52:00 -0400
+
 debathena-syslog-config (1.4) unstable; urgency=low
 
   * Configure the default syslog daemon, instead of always configuring
