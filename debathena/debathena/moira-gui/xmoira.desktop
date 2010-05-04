@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=MIT Account Settings
+Comment=Change e-mail forwarding and other settings for your MIT account
+Exec=xmoira
+Terminal=false
+Type=Application
+Icon=gnome-run
+Categories=Locker;
