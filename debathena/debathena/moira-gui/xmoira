@@ -9,7 +9,10 @@ import pwd
 import re
 
 moiraClientName = "xmoira"
-gladeFile = "/usr/share/debathena-moira-gui/xmoira.glade"
+if os.path.exists("xmoira.glade"):
+    gladeFile = "xmoira.glade"
+else:
+    gladeFile = "/usr/share/debathena-moira-gui/xmoira.glade"
 
 import moira
 from _moira import MoiraException
