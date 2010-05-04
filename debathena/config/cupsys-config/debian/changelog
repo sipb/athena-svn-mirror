@@ -5,8 +5,10 @@ debathena-cupsys-config (1.11) unstable; urgency=low
     done. (Trac: #562)
   * Now that we expect restart-cups.sh to be fast (order of 2-4 seconds),
     drop the timeout to something more reasonable (30 seconds).
+  * Bump debhelper compatibility.
+  * Bump standards version.
 
- -- Evan Broder <broder@mit.edu>  Mon, 03 May 2010 23:30:27 -0400
+ -- Evan Broder <broder@mit.edu>  Mon, 03 May 2010 23:41:20 -0400
 
 debathena-cupsys-config (1.10) unstable; urgency=low
 
