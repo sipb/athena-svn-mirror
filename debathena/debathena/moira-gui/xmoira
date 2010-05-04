@@ -80,8 +80,8 @@ class XMoira():
         result = None
         try: 
             result = moira.query('ufbl', None, **argList)
-        except MoiraException as (errno, errstr):
-            self.errorDialog(errstr)
+        except MoiraException, e:
+            self.errorDialog(e.args[1])
         if result == []:
             msg = gtk.MessageDialog(self.window, gtk.DIALOG_MODAL,
                                     gtk.MESSAGE_INFO, gtk.BUTTONS_OK,
@@ -158,10 +158,10 @@ class XMoira():
         result = []
         try: 
             result = moira.query(query, *argList)
-        except MoiraException as (errno, errstr):
+        except MoiraException, e:
             msg = gtk.MessageDialog(self.window, gtk.DIALOG_MODAL,
                                     gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
-                                    "Error: %s" % errstr)
+                                    "Error: %s" % e.args[1])
             msg.set_title("Error")
             msg.run()
             msg.destroy()
