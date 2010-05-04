@@ -24,7 +24,7 @@ restart_cups()
 	    browse_host="$(sed -ne '/^BrowsePoll/ { s/^BrowsePoll //p; q }' /etc/cups/cupsd.conf)"
 	    if [ -n "$browse_host" ]; then
 		echo "Retrieving printer list, please wait..." >&2
-		echo "(This may take up to 2 minutes)" >&2
+		echo "(This may take up to 30 seconds)" >&2
 		queue_count=$(lpstat -h "$browse_host" -a | awk '{print $1}' | sort -u | wc -l)
 
 		if echo "$browse_host" | grep -q ':'; then
@@ -47,7 +47,7 @@ restart_cups()
 			"$browse_host" "$browse_port" 1 631
 
 		    timeout=0
-		    while [ $(lpstat -a | wc -l) -lt $queue_count ] && [ $timeout -le 120 ]; do
+		    while [ $(lpstat -a | wc -l) -lt $queue_count ] && [ $timeout -le 30 ]; do
 			sleep 1
 			timeout=$((timeout+1))
 		    done)

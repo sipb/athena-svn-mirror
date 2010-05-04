@@ -3,8 +3,10 @@ debathena-cupsys-config (1.11) unstable; urgency=low
   * In restart-cups.sh, temporarily spawn our own instance cups-polld to
     quickly feed the printer list into cupsd and kill it when we're
     done. (Trac: #562)
+  * Now that we expect restart-cups.sh to be fast (order of 2-4 seconds),
+    drop the timeout to something more reasonable (30 seconds).
 
- -- Evan Broder <broder@mit.edu>  Mon, 03 May 2010 23:28:50 -0400
+ -- Evan Broder <broder@mit.edu>  Mon, 03 May 2010 23:30:27 -0400
 
 debathena-cupsys-config (1.10) unstable; urgency=low
 
