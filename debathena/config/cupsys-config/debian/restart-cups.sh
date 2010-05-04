@@ -25,12 +25,32 @@ restart_cups()
 	    if [ -n "$browse_host" ]; then
 		echo "Retrieving printer list, please wait..." >&2
 		echo "(This may take up to 2 minutes)" >&2
-		queue_count=$(lpstat -h "$browse_host" -a | wc -l)
-		timeout=0
-		while [ $(lpstat -a | wc -l) -lt $queue_count ] && [ $timeout -le 120 ]; do
-		    sleep 1
-		    timeout=$((timeout+1))
-		done
+		queue_count=$(lpstat -h "$browse_host" -a | awk '{print $1}' | sort -u | wc -l)
+
+		if echo "$browse_host" | grep -q ':'; then
+		    browse_port="${browse_host#*:}"
+		    browse_host="${browse_host%:*}"
+		else
+		    browse_port=631
+		fi
+
+		# Execute the cups-polld in a subshell so that we can
+		# set an EXIT trap
+		(trap "start-stop-daemon --stop --oknodo --pidfile /var/run/debathena-cupsys-config-polld.pid" EXIT
+
+		    start-stop-daemon --start \
+			--chuid lp \
+			--pidfile /var/run/debathena-cupsys-config-polld.pid \
+			--background \
+			--make-pidfile \
+			--startas /usr/lib/cups/daemon/cups-polld -- \
+			"$browse_host" "$browse_port" 1 631
+
+		    timeout=0
+		    while [ $(lpstat -a | wc -l) -lt $queue_count ] && [ $timeout -le 120 ]; do
+			sleep 1
+			timeout=$((timeout+1))
+		    done)
 	    fi
 	fi
 }
