@@ -1,3 +1,10 @@
+debathena-libathdir (10.0.2-0debathena2) unstable; urgency=low
+
+  * Generate aclocal.m4 ourselves instead of using DEB_AUTO_UPDATE_ACLOCAL
+    to avoid potential races between aclocal and autoconf.
+
+ -- Evan Broder <broder@mit.edu>  Tue, 04 May 2010 14:00:32 -0400
+
 debathena-libathdir (10.0.2-0debathena1) unstable; urgency=low
 
   * Fix handling of LDFLAGS.

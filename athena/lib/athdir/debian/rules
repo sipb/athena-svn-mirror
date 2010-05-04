@@ -1,7 +1,6 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_AUTOCONF = 2.50
-DEB_AUTO_UPDATE_ACLOCAL = 1.9
 DEB_AUTO_UPDATE_LIBTOOL = pre
 
 include /usr/share/cdbs/1/rules/debhelper.mk
@@ -11,7 +10,7 @@ DEB_DH_INSTALL_SOURCEDIR = $(DEB_DESTDIR)
 
 debian/stamp-autotools-files: aclocal.m4 config.guess config.sub install-sh missing
 aclocal.m4:
-	touch $@
+	aclocal-1.9
 config.guess config.sub:
 	cp /usr/share/misc/$@ $@
 install-sh missing:
