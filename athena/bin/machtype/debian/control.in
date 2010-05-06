@@ -2,7 +2,7 @@ Source: debathena-machtype
 Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@
+Build-Depends: @cdbs@, lsb-release
 Standards-Version: 3.7.2
 
 Package: debathena-machtype
