@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-libraries
-Version: 0.13
+Version: 0.14
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: liblapack-dev,
  liblapack-doc,
@@ -50,7 +50,7 @@ Depends: liblapack-dev,
  libginac1.4 | libginac1.5,
  libginac-dev,
  ginac-tools,
- libcln5,
+ libcln5 | libcln6,
  libcln-dev,
  libitpp6 | libitpp6gf,
  libitpp-dev,
@@ -74,7 +74,7 @@ Depends: liblapack-dev,
  libpoppler-glib-dev,
  libgtksourceview-dev,
  libnss3-dev,
- xulrunner-1.9-dev | xulrunner-1.9.1-dev,
+ xulrunner-1.9-dev | xulrunner-1.9.1-dev | xulrunner-dev,
  liblog4net1.2-cil,
  dx,
  dx-doc,
@@ -91,7 +91,7 @@ Depends: liblapack-dev,
  fftw-dev,
  gtk-sharp2,
  libfuse-dev, fuse-utils,
- libcv1,
+ libcv1 | libcv4,
  libcv-dev,
  python-psycopg2,
 Recommends: libatlas-base-dev,
