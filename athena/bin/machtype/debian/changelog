@@ -1,3 +1,9 @@
+debathena-machtype (10.0.2-0debathena2) unstable; urgency=low
+
+  * Functionalize logic for determining arch-specific sysnames.
+
+ -- Evan Broder <broder@mit.edu>  Thu, 06 May 2010 19:03:50 -0400
+
 debathena-machtype (10.0.2-0debathena1) unstable; urgency=low
 
   * Add machtype -q, which outputs whether or not a workstation is a

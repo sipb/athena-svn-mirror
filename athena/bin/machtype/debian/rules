@@ -7,6 +7,8 @@ include /usr/share/cdbs/1/class/autotools.mk
 ATHENA_MAJOR_VERSION = 10
 ATHENA_MINOR_VERSION = 0
 
+ARCH_SYSNAMES = $(if $(filter amd64,$(DEB_BUILD_ARCH)),$(1),$(if $(filter i386,$(DEB_BUILD_ARCH)),$(2),$(error Unrecognized architecture $(DEB_BUILD_ARCH))))
+
 DEBIAN_VERSION = $(shell dpkg-query --showformat='$${Version}' --show base-files)
 
 SYS_COMPAT=
@@ -16,27 +18,11 @@ ifneq ($(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' '3.1' && echo y),y
 endif
 
 ifeq ($(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' '4.0.4' && echo y),y)
-    ifeq ($(DEB_BUILD_ARCH),amd64)
-        SYS_COMPAT += amd64_deb50 i386_deb50
-    else
-        ifeq ($(DEB_BUILD_ARCH),i386)
-            SYS_COMPAT += i386_deb50
-        else
-            $(error Unrecognized architecture $(DEB_BUILD_ARCH))
-        endif
-    endif
+    SYS_COMPAT += $(call ARCH_SYSNAMES,amd64_deb50 i386_deb50,i386_deb50)
 endif
 
 ifeq ($(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' '4' && echo y),y)
-    ifeq ($(DEB_BUILD_ARCH),amd64)
-        SYS_COMPAT += amd64_deb40 i386_deb40 i386_rhel4
-    else
-        ifeq ($(DEB_BUILD_ARCH),i386)
-            SYS_COMPAT += i386_deb40 i386_rhel4
-        else
-            $(error Unrecognized architecture $(DEB_BUILD_ARCH))
-        endif
-    endif
+    SYS_COMPAT += $(call ARCH_SYSNAMES,amd64_deb40 i386_deb40 i386_rhel4,i386_deb40 i386_rhel4)
 endif
 
 SYS_COMPAT += i386_rhel3 i386_linux24
