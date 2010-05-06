@@ -1,5 +1,5 @@
 Source: debathena-moira-gui
-Section: debathena-config/gnome
+Section: debathena/gnome
 Priority: extra
 Build-Depends: cdbs, debhelper
 Maintainer: Debathena Project <debathena@mit.edu>
