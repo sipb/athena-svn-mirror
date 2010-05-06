@@ -14,17 +14,20 @@ DISTRO = $(shell lsb_release --short --id)
 DEBIAN_VERSION = $(shell dpkg-query --showformat='$${Version}' --show base-files)
 UBUNTU_VERSION = $(shell lsb_release --short --release)
 
+COMPARE_DEBIAN_VERSION = $(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' $(1) && echo y)
+COMPARE_UBUNTU_VERSION = $(shell dpkg --compare-versions $(UBUNTU_VERSION) '>=' $(1) && echo y)
+
 SYS_COMPAT=
 
-ifneq ($(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' '3.1' && echo y),y)
+ifneq ($(call COMPARE_DEBIAN_VERSION,3.1),y)
     $(error Debian version $(DEBIAN_VERSION) is too old)
 endif
 
-ifeq ($(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' '4.0.4' && echo y),y)
+ifeq ($(call COMPARE_DEBIAN_VERSION,4.0.4),y)
     SYS_COMPAT += $(call ARCH_SYSNAMES,amd64_deb50,i386_deb50)
 endif
 
-ifeq ($(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' '4' && echo y),y)
+ifeq ($(call COMPARE_DEBIAN_VERSION,4),y)
     SYS_COMPAT += $(call ARCH_SYSNAMES,amd64_deb40,i386_deb40 i386_rhel4)
 endif
 
