@@ -17,7 +17,7 @@ UBUNTU_VERSION := $(shell lsb_release --short --release)
 compare_debian_version = $(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' $(1) && echo y)
 compare_ubuntu_version = $(shell dpkg --compare-versions $(UBUNTU_VERSION) '>=' $(1) && echo y)
 
-SYS_COMPAT=
+SYS_COMPAT :=
 
 ifneq ($(call compare_debian_version,3.1),y)
     $(error Debian version $(DEBIAN_VERSION) is too old)
