@@ -2,8 +2,10 @@ debathena-machtype (10.0.2-0debathena2) unstable; urgency=low
 
   * Functionalize logic for determining arch-specific sysnames.
   * Add appropriate sysnames for Ubuntu releases.
+  * Protect ourselves from adding too many sysnames by erroring out if
+    that happens.
 
- -- Evan Broder <broder@mit.edu>  Thu, 06 May 2010 19:32:22 -0400
+ -- Evan Broder <broder@mit.edu>  Thu, 06 May 2010 19:41:58 -0400
 
 debathena-machtype (10.0.2-0debathena1) unstable; urgency=low
 
