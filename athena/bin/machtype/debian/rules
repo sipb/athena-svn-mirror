@@ -7,28 +7,48 @@ include /usr/share/cdbs/1/class/autotools.mk
 ATHENA_MAJOR_VERSION = 10
 ATHENA_MINOR_VERSION = 0
 
-ARCH_SYSNAMES = $(if $(filter amd64,$(DEB_BUILD_ARCH)),$(1) $(2),$(if $(filter i386,$(DEB_BUILD_ARCH)),$(2),$(error Unrecognized architecture $(DEB_BUILD_ARCH))))
+arch_sysnames = $(if $(filter amd64,$(DEB_BUILD_ARCH)),$(1) $(2),$(if $(filter i386,$(DEB_BUILD_ARCH)),$(2),$(error Unrecognized architecture $(DEB_BUILD_ARCH))))
 
 DISTRO = $(shell lsb_release --short --id)
 # Ubuntu releases have Debian versions, but not vice-versa
 DEBIAN_VERSION = $(shell dpkg-query --showformat='$${Version}' --show base-files)
 UBUNTU_VERSION = $(shell lsb_release --short --release)
 
-COMPARE_DEBIAN_VERSION = $(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' $(1) && echo y)
-COMPARE_UBUNTU_VERSION = $(shell dpkg --compare-versions $(UBUNTU_VERSION) '>=' $(1) && echo y)
+compare_debian_version = $(shell dpkg --compare-versions $(DEBIAN_VERSION) '>=' $(1) && echo y)
+compare_ubuntu_version = $(shell dpkg --compare-versions $(UBUNTU_VERSION) '>=' $(1) && echo y)
 
 SYS_COMPAT=
 
-ifneq ($(call COMPARE_DEBIAN_VERSION,3.1),y)
+ifneq ($(call compare_debian_version,3.1),y)
     $(error Debian version $(DEBIAN_VERSION) is too old)
 endif
 
-ifeq ($(call COMPARE_DEBIAN_VERSION,4.0.4),y)
-    SYS_COMPAT += $(call ARCH_SYSNAMES,amd64_deb50,i386_deb50)
+ifeq ($(DISTRO),Ubuntu)
+    ifeq ($(call compare_ubuntu_version,10.04),y)
+        SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu1004,i386_ubuntu1004)
+    endif
+
+    ifeq ($(call compare_ubuntu_version,9.10),y)
+        SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu910,i386_ubuntu910)
+    endif
+
+    ifeq ($(call compare_ubuntu_version,9.04),y)
+        SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu904,i386_ubuntu904)
+    endif
 endif
 
-ifeq ($(call COMPARE_DEBIAN_VERSION,4),y)
-    SYS_COMPAT += $(call ARCH_SYSNAMES,amd64_deb40,i386_deb40 i386_rhel4)
+ifeq ($(call compare_debian_version,4.0.4),y)
+    SYS_COMPAT += $(call arch_sysnames,amd64_deb50,i386_deb50)
+endif
+
+ifeq ($(DISTRO),Ubuntu)
+    ifeq ($(call compare_ubuntu_version,8.04),y)
+        SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu804,i386_ubuntu804)
+    endif
+endif
+
+ifeq ($(call compare_debian_version,4),y)
+    SYS_COMPAT += $(call arch_sysnames,amd64_deb40,i386_deb40 i386_rhel4)
 endif
 
 SYS_COMPAT += i386_rhel3 i386_linux24
