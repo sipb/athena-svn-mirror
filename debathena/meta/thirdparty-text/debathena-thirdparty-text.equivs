@@ -3,10 +3,9 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-text
-Version: 0.3
+Version: 0.4
 Maintainer: Debathena Project <debathena@mit.edu>
-Depends: abiword-gnome,
- abiword-help,
+Depends: abiword,
  lyx,
  nvi,
  wv,
