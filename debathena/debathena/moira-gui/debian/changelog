@@ -1,8 +1,13 @@
-debathena-moira-gui (1.1) UNRELEASED; urgency=low
+debathena-moira-gui (1.1) unstable; urgency=low
 
+  [ Evan Broder ]
   * Move moira-gui out of the debathena-config component.
 
- -- Evan Broder <broder@mit.edu>  Thu, 06 May 2010 11:57:37 -0400
+  [ Jonathan Reed ]
+  * Don't lie to the user about whether or not they entered an e-mail
+    address
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 07 May 2010 13:44:27 -0400
 
 debathena-moira-gui (1.0) unstable; urgency=low
 

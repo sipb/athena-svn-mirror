@@ -100,15 +100,15 @@ class XMoira():
             if radioButton.get_active():
                 (query, type) = self.radioBtnQueries[radioButton.name]
                 textEntry = self.widgets.get_widget(radioButton.name.replace("rb", "ent"))
-                if not textEntry:
-                    self.errorDialog("You did not enter an e-mail address")
-                    return
-                validated = self.validateEmail(textEntry.get_text())
-                if not validated:
-                    return
                 if type == None:
                     self.query(query, mrclient.krb_user())
                 else:
+                    if textEntry and not textEntry.get_text():
+                        self.errorDialog("You did not enter an e-mail address")
+                        return
+                    validated = self.validateEmail(textEntry.get_text())
+                    if not validated:
+                        return
                     self.query(query, self.currentUser, type, validated)
                 self.refreshChpoboxTab()
 
