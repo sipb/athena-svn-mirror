@@ -23,18 +23,6 @@ ifneq ($(NEW_GDM),y)
 	${GDM_CONFFILE}
     DEB_DIVERT_FILES_debathena-gdm-config += \
 	/usr/share/gdm/BuiltInSessions/default.desktop.debathena
-
-    DEB_UNDIVERT_FILES_debathena-gdm-config += \
-        /usr/share/images/xsplash/bg_2560x1600.debathena.jpg \
-        /usr/share/images/xsplash/throbber_small.debathena.png \
-        /usr/share/images/xsplash/throbber_medium.debathena.png \
-        /usr/share/images/xsplash/throbber_large.debathena.png \
-        /usr/share/images/xsplash/throbber_xtra_large.debathena.png
-    DEB_UNDIVERT_VERSION_/usr/share/images/xsplash/bg_2560x1600.debathena.jpg = 1.20~
-    DEB_UNDIVERT_VERSION_/usr/share/images/xsplash/throbber_small.debathena.png = 1.20~
-    DEB_UNDIVERT_VERSION_/usr/share/images/xsplash/throbber_medium.debathena.png = 1.20~
-    DEB_UNDIVERT_VERSION_/usr/share/images/xsplash/throbber_large.debathena.png = 1.20~
-    DEB_UNDIVERT_VERSION_/usr/share/images/xsplash/throbber_xtra_large.debathena.png = 1.20~
 endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk

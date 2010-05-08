@@ -73,6 +73,11 @@ case "$1" in
 	    cleanup_old_diversion /etc/gdm/gdm.conf
 	    cleanup_old_diversion /etc/gdm/gdm.conf-custom
 	    cleanup_old_diversion /usr/share/gdm/BuiltInSessions/default.desktop
+	    cleanup_old_diversion /usr/share/images/xsplash/bg_2560x1600.debathena.jpg
+	    cleanup_old_diversion /usr/share/images/xsplash/throbber_small.debathena.png
+	    cleanup_old_diversion /usr/share/images/xsplash/throbber_medium.debathena.png
+	    cleanup_old_diversion /usr/share/images/xsplash/throbber_large.debathena.png
+	    cleanup_old_diversion /usr/share/images/xsplash/throbber_xtra_large.debathena.png
 	fi
 
         if test -f /var/run/gdm.pid ; then
