@@ -135,10 +135,15 @@ class XMoira():
         english = " ".join((gpob['type'], gpob['address']))
         if gpob['type'] == "IMAP" or gpob['type'] == "EXCHANGE":
             english = "Your mail is not forwarded."
+            self.widgets.get_widget("rbChpoboxPobox").set_active(True)
         if gpob['type'] == "SMTP":
             english = "Your mail is being forwarded to %s." % gpob['box']
+            self.widgets.get_widget("rbChpoboxSmtp").set_active(True)
+            self.widgets.get_widget("entChpoboxSmtp").set_text(gpob['box'])
         if gpob['type'] == "SPLIT":
             english = "Your mail is being split between your MIT account\nand %s." % gpob['box']
+            self.widgets.get_widget("rbChpoboxSplit").set_active(True)
+            self.widgets.get_widget("entChpoboxSplit").set_text(gpob['box'])
         self.widgets.get_widget("lblChpoboxCurrentSetting").set_text(english)
 
     def pageChanged(self, notebook, page, page_num):

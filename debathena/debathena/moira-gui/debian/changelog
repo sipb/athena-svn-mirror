@@ -1,3 +1,10 @@
+debathena-moira-gui (1.2) unstable; urgency=low
+
+  * Pre-populate the chpobox widgets to match the user's current
+    information.
+
+ -- Evan Broder <broder@mit.edu>  Sun, 09 May 2010 23:02:32 -0400
+
 debathena-moira-gui (1.1) unstable; urgency=low
 
   [ Evan Broder ]
