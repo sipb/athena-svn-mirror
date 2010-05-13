@@ -3,6 +3,8 @@
 SHELL=/bin/sh
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_DATA=@INSTALL_DATA@
+MKDIR_P=@MKDIR_P@
 VPATH=@srcdir@
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
@@ -12,6 +14,7 @@ bindir=@bindir@
 sbindir=@sbindir@
 lbindir=@lbindir@
 lsbindir=@lsbindir@
+datarootdir=@datarootdir@
 mandir=@mandir@
 
 CC=@CC@
@@ -43,11 +46,11 @@ atconvert: atconvert.o
 check:
 
 install:
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${sbindir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${lbindir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${lsbindir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
+	${MKDIR_P} ${DESTDIR}${sbindir}
+	${MKDIR_P} ${DESTDIR}${lbindir}
+	${MKDIR_P} ${DESTDIR}${lsbindir}
+	${MKDIR_P} ${DESTDIR}${mandir}/man1
+	${MKDIR_P} ${DESTDIR}${mandir}/man8
 	${INSTALL} -m 4755 -o root attach ${DESTDIR}${lbindir}
 	rm -f ${DESTDIR}${lbindir}/detach
 	ln -s attach ${DESTDIR}${lbindir}/detach
@@ -59,13 +62,13 @@ install:
 	ln -s attach ${DESTDIR}${lbindir}/zinit
 	rm -f ${DESTDIR}${lsbindir}/zinit
 	ln -s ${lbindir}/attach ${DESTDIR}${lsbindir}/zinit
-	${INSTALL} -m 755 atconvert ${DESTDIR}${sbindir}
-	${INSTALL} -m 644 ${srcdir}/add.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 ${srcdir}/attach.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 ${srcdir}/detach.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 ${srcdir}/fsid.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 ${srcdir}/nfsid.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 644 ${srcdir}/zinit.8 ${DESTDIR}${mandir}/man8
+	${INSTALL_PROGRAM} atconvert ${DESTDIR}${sbindir}
+	${INSTALL_DATA} ${srcdir}/add.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/attach.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/detach.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/fsid.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/nfsid.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/zinit.8 ${DESTDIR}${mandir}/man8
 
 clean:
 	rm -f ${ATTACH_OBJS} attach
