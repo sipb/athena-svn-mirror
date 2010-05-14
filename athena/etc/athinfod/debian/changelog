@@ -1,3 +1,9 @@
+debathena-athinfod (10.0.0-0debathena13) unstable; urgency=low
+
+  * Add ext4 filesystems to df output (for new dialups)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 14 May 2010 10:12:30 -0400
+
 debathena-athinfod (10.0.0-0debathena12) unstable; urgency=low
 
   * Add 'in-use' query to test whether a cluster machine is in use, using
