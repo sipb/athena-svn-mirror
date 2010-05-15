@@ -1,10 +1,19 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_AUTOCONF = 2.50
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
+
+debian/stamp-autotools-files: aclocal.m4 config.guess config.sub install-sh missing
+aclocal.m4:
+	aclocal-1.9
+config.guess config.sub:
+	cp /usr/share/misc/$@ $@
+install-sh missing:
+	-automake-1.9 --foreign --add-missing
 
 DEB_CONFIGURE_EXTRA_FLAGS += lbindir=/bin lsbindir=/sbin --with-afs=/usr --without-krb4 --with-hesiod LIBS=/usr/lib/afs/libcom_err.a
 
 clean::
-	rm -f configure
+	rm -f configure config.guess config.sub install-sh missing aclocal.m4
