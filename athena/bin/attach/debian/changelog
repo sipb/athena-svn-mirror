@@ -2,8 +2,10 @@ debathena-attach (10.0.2-0debathena1) unstable; urgency=low
 
   * Update our autogoo for the 21st century.
   * Update packaging to not require daconfiscate.
+  * Use pkg-config when available instead of hard-coding compiler and
+    linker flags.
 
- -- Evan Broder <broder@mit.edu>  Fri, 14 May 2010 22:56:05 -0400
+ -- Evan Broder <broder@mit.edu>  Tue, 18 May 2010 16:46:15 -0400
 
 debathena-attach (10.0.1-0debathena2) unstable; urgency=low
 

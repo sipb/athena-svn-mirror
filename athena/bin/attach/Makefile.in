@@ -19,26 +19,31 @@ mandir=@mandir@
 
 CC=@CC@
 CPPFLAGS=@CPPFLAGS@
-CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
+CFLAGS=@CFLAGS@
 DEFS=@DEFS@
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 REGEX_LIBS=@REGEX_LIBS@
 ZEPHYR_LIBS=-lzephyr
+ATHDIR_CFLAGS=@ATHDIR_CFLAGS@
+ATHDIR_LIBS=@ATHDIR_LIBS@
 AFS_LIBS=-lprot -lauth -lrxkad -lubik -laudit -lsys -lrx -llwp -lsys -lafsutil
-ALL_CFLAGS=${WARN_CFLAGS} ${ERROR_CFLAGS} -I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
-ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${REGEX_LIBS} \
-	 -lhesiod -lcom_err ${LIBS}
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${REGEX_LIBS} ${LIBS}
 
+PROGRAMS=attach atconvert
 ATTACH_OBJS=suite.o agetopt.o add.o attach.o detach.o fsid.o zinit.o
 
-all: attach atconvert
+all: ${PROGRAMS}
 
 attach: ${ATTACH_OBJS}
-	${CC} ${LDFLAGS} -o attach ${ATTACH_OBJS} -lathdir ${ALL_LIBS}
+${ATTACH_OBJS}: CFLAGS += ${ATHDIR_CFLAGS}
+attach: LIBS += ${ATHDIR_LIBS}
 
 atconvert: atconvert.o
-	${CC} ${LDFLAGS} -o atconvert atconvert.o ${ALL_LIBS}
+
+${PROGRAMS}:
+	${CC} ${LDFLAGS} -o $@ $^ ${ALL_LIBS}
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
