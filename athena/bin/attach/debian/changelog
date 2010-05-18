@@ -6,8 +6,10 @@ debathena-attach (10.0.2-0debathena1) unstable; urgency=low
     linker flags.
   * Don't link against libcom_err from openafs anymore. It is no longer
     necessary, since liblocker now shells out to aklog.
+  * Bump Debian standards version.
+  * Bump debhelper compatibility level.
 
- -- Evan Broder <broder@mit.edu>  Tue, 18 May 2010 16:53:08 -0400
+ -- Evan Broder <broder@mit.edu>  Tue, 18 May 2010 17:15:30 -0400
 
 debathena-attach (10.0.1-0debathena2) unstable; urgency=low
 
