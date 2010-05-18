@@ -13,7 +13,7 @@ config.guess config.sub:
 install-sh missing:
 	-automake-1.9 --foreign --add-missing
 
-DEB_CONFIGURE_EXTRA_FLAGS += lbindir=/bin lsbindir=/sbin --with-afs=/usr --without-krb4 --with-hesiod LIBS=/usr/lib/afs/libcom_err.a
+DEB_CONFIGURE_EXTRA_FLAGS += lbindir=/bin lsbindir=/sbin --with-afs=/usr --without-krb4 --with-hesiod
 
 clean::
 	rm -f configure config.guess config.sub install-sh missing aclocal.m4
