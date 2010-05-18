@@ -2,7 +2,7 @@ Source: debathena-attach
 Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, automake1.9, autotools-dev, debathena-aclocal, libopenafs-dev, libhesiod-dev, libzephyr-dev, debathena-liblocker-dev, debathena-libathdir-dev
+Build-Depends: @cdbs@, automake1.9, autotools-dev, debathena-aclocal, libopenafs-dev, libhesiod-dev, libzephyr-dev, debathena-liblocker-dev (>= 10.0.1-0debathena1~), debathena-libathdir-dev (>= 10.0.1-0debathena1~)
 Standards-Version: 3.7.2
 
 Package: debathena-attach
