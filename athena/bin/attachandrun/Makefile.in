@@ -25,7 +25,7 @@ ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
 all: attachandrun
 
 attachandrun: attachandrun.o
-	${CC} ${LDFLAGS} -o attachandrun attachandrun.o -lathdir ${LIBS}
+	${CC} ${LDFLAGS} -o attachandrun attachandrun.o ${LIBS}
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<

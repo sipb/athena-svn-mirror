@@ -2,8 +2,9 @@ debathena-attachandrun (10.0.1-0debathena1) unstable; urgency=low
 
   * Update our autogoo for the 21st century.
   * Update packaging to not require daconfiscate.
+  * Use pkg-config to get the CFLAGS and LDFLAGS for libathdir.
 
- -- Evan Broder <broder@mit.edu>  Wed, 19 May 2010 18:52:41 -0400
+ -- Evan Broder <broder@mit.edu>  Wed, 19 May 2010 18:56:13 -0400
 
 debathena-attachandrun (10.0.0-0debathena2) unstable; urgency=low
 
