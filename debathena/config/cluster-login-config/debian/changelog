@@ -9,8 +9,9 @@ debathena-cluster-login-config (1.24) unstable; urgency=low
     to press a key combo. (Trac: #547)
   * Bump Debian standards version.
   * Bump debhelper compatibility level.
+  * Add missing misc:Depends dependency.
 
- -- Evan Broder <broder@mit.edu>  Sun, 23 May 2010 00:17:12 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 23 May 2010 00:18:05 -0400
 
 debathena-cluster-login-config (1.23) unstable; urgency=low
 
