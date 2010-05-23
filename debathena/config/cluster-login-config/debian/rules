@@ -26,29 +26,38 @@ endif
 DEB_REMOVE_FILES_debathena-cluster-login-config += \
     /usr/lib/indicator-session/indicator-users-service
 
+DEB_DIVERT_FILES_debathena-cluster-login-config += \
+	/sbin/getty.debathena
+
 ifeq ($(EVENT_D),y)
-    DEB_REMOVE_FILES_debathena-cluster-login-config += \
+    DEB_UNREMOVE_FILES_debathena-cluster-login-config += \
 	/etc/event.d/tty1 \
 	/etc/event.d/tty2 \
 	/etc/event.d/tty3 \
 	/etc/event.d/tty4 \
 	/etc/event.d/tty5 \
 	/etc/event.d/tty6
+    DEB_UNREMOVE_VERSION_/etc/event.d/tty1 = 1.24~
+    DEB_UNREMOVE_VERSION_/etc/event.d/tty2 = 1.24~
+    DEB_UNREMOVE_VERSION_/etc/event.d/tty3 = 1.24~
+    DEB_UNREMOVE_VERSION_/etc/event.d/tty4 = 1.24~
+    DEB_UNREMOVE_VERSION_/etc/event.d/tty5 = 1.24~
+    DEB_UNREMOVE_VERSION_/etc/event.d/tty6 = 1.24~
 else
-    DEB_REMOVE_FILES_debathena-cluster-login-config += \
+    DEB_UNREMOVE_FILES_debathena-cluster-login-config += \
 	/etc/init/tty1.conf \
 	/etc/init/tty2.conf \
 	/etc/init/tty3.conf \
 	/etc/init/tty4.conf \
 	/etc/init/tty5.conf \
 	/etc/init/tty6.conf
-endif    
+    DEB_UNREMOVE_VERSION_/etc/init/tty1.conf = 1.24~
+    DEB_UNREMOVE_VERSION_/etc/init/tty2.conf = 1.24~
+    DEB_UNREMOVE_VERSION_/etc/init/tty3.conf = 1.24~
+    DEB_UNREMOVE_VERSION_/etc/init/tty4.conf = 1.24~
+    DEB_UNREMOVE_VERSION_/etc/init/tty5.conf = 1.24~
+    DEB_UNREMOVE_VERSION_/etc/init/tty6.conf = 1.24~
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
-
-install/debathena-cluster-login-config::
-	if [ "$(EVENT_D)" = "y" ]; then \
-		dh_install debian/ttymsg etc/event.d; \
-	else \
-		dh_installinit --name=ttymsg -n --upstart-only; \
-	fi

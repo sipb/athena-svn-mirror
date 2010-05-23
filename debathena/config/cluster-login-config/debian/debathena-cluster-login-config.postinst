@@ -68,6 +68,14 @@ cleanup_old_diversion() {
     fi
 }
 
+rm_conffile() {
+    local PKGNAME="$1" # Unused
+    local CONFFILE="$2"
+    if [ -f "$CONFFILE".dpkg-del ]; then
+        rm -f "$CONFFILE".dpkg-del
+    fi
+}
+
 case "$1" in
     configure)
 	gdm_version="$(dpkg-query -W -f '${Version}' gdm)"
@@ -75,6 +83,11 @@ case "$1" in
 	    cleanup_old_diversion /etc/gdm/gdm.conf.debathena
 	    cleanup_old_diversion /etc/gdm/gdm.conf-custom.debathena
 	fi
+
+        if dpkg --compare-versions "$2" lt 1.24~; then
+            rm_conffile debathena-cluster-login-config "/etc/event.d/ttymsg"
+            rm_conffile debathena-cluster-login-config "/etc/init/ttymsg.conf"
+        fi
 
 	# Shut down sshd and reload gdm.
 	if hash invoke-rc.d; then
@@ -85,11 +98,12 @@ case "$1" in
             /etc/init.d/gdm reload || true
 	fi
 
-        # Shut down the gettys
+        # Make sure the gettys are running
+        initctl stop ttymsg >/dev/null 2>&1 || true
         for i in $(seq 1 6); do
             initctl stop "tty$i" >/dev/null 2>&1 || true
+            initctl start "tty$i" >/dev/null 2>&1 || true
         done
-	initctl start ttymsg >/dev/null 2>&1 || true
 
 	# Configure dns-nameservers if they're not there
 	if ! egrep -q '^[[:space:]]+dns-nameservers' /etc/network/interfaces; then

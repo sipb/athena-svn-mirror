@@ -1,8 +1,14 @@
-debathena-cluster-login-config (1.24) UNRELEASED; urgency=low
+debathena-cluster-login-config (1.24) unstable; urgency=low
 
+  [ Jonathan Reed ]
   * Specify package name in prerm script
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 26 Apr 2010 16:21:33 -0400
+  [ Evan Broder ]
+  * Replace /sbin/getty instead of diverting the tty jobs.
+  * Use ConsoleKit to activate the user's session instead of telling them
+    to press a key combo. (Trac: #547)
+
+ -- Evan Broder <broder@mit.edu>  Thu, 20 May 2010 20:41:39 -0400
 
 debathena-cluster-login-config (1.23) unstable; urgency=low
 

@@ -1,0 +1,113 @@
+#!/usr/bin/python
+"""getty replacement for Debathena
+
+Debathena clusters only allow logins through X, in order to avoid a
+user logging into a tty, then switching away from that tty, and
+walking away from their session.
+
+This replacement for getty clears the screen, and offers to switch the
+user back to their session if they press any key.
+"""
+
+
+import curses
+import getopt
+import os
+import pwd
+import sys
+
+import dbus
+
+
+CK_NAME = 'org.freedesktop.ConsoleKit'
+CK_MANAGER_PATH = '/org/freedesktop/ConsoleKit/Manager'
+CK_MANAGER_IFACE = 'org.freedesktop.ConsoleKit.Manager'
+CK_SESSION_IFACE = 'org.freedesktop.ConsoleKit.Session'
+KIOSK_USER = None
+
+
+def find_tty(args):
+    """Find the tty in a set of getty arguments.
+
+    Given the command line arguments one might pass to getty, find and
+    return the argument that is the tty to use.
+
+    find_tty uses the getopt option specifier and tty identifying
+    logic from util-linux 2.13.1.1.
+
+    Note that all other arguments will be ignored, making this getty
+    useless for gettys that are not on normal ttys.
+    """
+    opts, args = getopt.getopt(args, '8I:LH:f:hil:mt:wUn')
+
+    # Accept both "tty baudrate" and "baudrate tty"
+    if '0' <= args[0][0] <= '9':
+        return args[1]
+    else:
+        return args[0]
+
+
+def activate_session():
+    """Seek out and activate what should be the current session.
+
+    Using ConsoleKit, activate_session first looks to see if there is
+    an active kiosk-mode browsing session, and if so, switches to
+    that. Otherwise, it picks the first local session it can find and
+    assumes that's the user's session.
+
+    With the exception of the kiosk-mode session, it should be
+    impossible to have more than one session running simultaneously,
+    so blindly using the first session shouldn't be a problem.
+    """
+    global KIOSK_USER
+    if KIOSK_USER is None:
+        try:
+            KIOSK_USER = pwd.getpwnam('kiosk@mit').pw_uid
+        except KeyError:
+            # There is no kiosk user
+            KIOSK_USER = False
+
+    bus = dbus.SystemBus()
+    manager = dbus.Interface(bus.get_object(CK_NAME, CK_MANAGER_PATH),
+                             CK_MANAGER_IFACE)
+
+    session = None
+    if KIOSK_USER:
+        sessions = manager.GetSessionsForUnixUser(KIOSK_USER)
+        if sessions:
+            session = dbus.Interface(bus.get_object(CK_NAME, sessions[0]),
+                                     CK_SESSION_IFACE)
+    if not session:
+        # Find the first session that identifies itself as local
+        sessions = manager.GetSessions()
+        for s in sessions:
+            session = dbus.Interface(bus.get_object(CK_NAME, s),
+                                     CK_SESSION_IFACE)
+            if session.IsLocal():
+               break 
+        else:
+            session = None
+
+    if session:
+        session.Activate()
+
+
+def main():
+    tty_name = find_tty(sys.argv[1:])
+    tty = open(os.path.join('/dev', tty_name), 'a+')
+    # We want to set TERM for a tty, not for whatever TERM was set to
+    # on getty's controlling terminal.
+    curses.setupterm("linux", tty.fileno())
+
+    CLEAR = curses.tigetstr('clear')
+
+    while True:
+        tty.write(CLEAR)
+        tty.write('Please press Enter to return to your session\n')
+        tty.readline()
+
+        activate_session()
+
+
+if __name__ == '__main__':
+    main()
