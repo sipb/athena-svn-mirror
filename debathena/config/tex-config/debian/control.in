@@ -3,7 +3,7 @@ Section: debathena-config/tex
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, debathena-tex-bin, dvipdfmx, ed
-Standards-Version: 3.8.0
+Standards-Version: 3.8.4
 
 Package: debathena-tex-config
 Architecture: all
