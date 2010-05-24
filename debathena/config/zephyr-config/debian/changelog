@@ -2,8 +2,9 @@ debathena-zephyr-config (1.9) unstable; urgency=low
 
   * Use Hesiod to find zephyr servers instead of specifying them
     explicitly. (Trac: #134)
+  * Bump Debian standards version and debhelper compatibility level.
 
- -- Evan Broder <broder@mit.edu>  Sun, 23 May 2010 23:59:27 -0400
+ -- Evan Broder <broder@mit.edu>  Mon, 24 May 2010 00:00:32 -0400
 
 debathena-zephyr-config (1.8) unstable; urgency=low
 
