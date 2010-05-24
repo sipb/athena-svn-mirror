@@ -4,8 +4,10 @@ debathena-thunderbird-config (1.5) unstable; urgency=low
     symlink to a file in /usr/share. When thunderbird-config is
     uninstalled and the broken symlink sticks around, Thunderbird ignores
     it. (Trac: #405)
+  * Bump Debian standards version.
+  * Bump debhelper compatibility level.
 
- -- Evan Broder <broder@mit.edu>  Sun, 23 May 2010 22:04:44 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 23 May 2010 22:09:49 -0400
 
 debathena-thunderbird-config (1.4) unstable; urgency=low
 

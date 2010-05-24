@@ -3,7 +3,7 @@ Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@
-Standards-Version: 3.8.0
+Standards-Version: 3.8.4
 
 Package: debathena-thunderbird-config
 Architecture: all
