@@ -1,3 +1,11 @@
+debathena-cluster-login-config (1.25) unstable; urgency=low
+
+  * If we are unable to find and activate the user's session using
+    ConsoleKit, assume it is on tty7. This will happen on systems using
+    legacy GDM before the user has logged in.
+
+ -- Evan Broder <broder@mit.edu>  Wed, 26 May 2010 12:35:44 -0400
+
 debathena-cluster-login-config (1.24) unstable; urgency=low
 
   [ Jonathan Reed ]
