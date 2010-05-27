@@ -19,7 +19,7 @@ set -e
 
 case "$1" in
     remove|upgrade|deconfigure)
-        perl -i'' -ne 's%^### (BEGIN|END) debathena-reactivate\s*$%%m && ($skip = ($1 eq "BEGIN")); print unless $skip;' /etc/sudoers
+        perl -i'' -ne 'print unless /^### BEGIN debathena-reactivate/../^### END debathena-reactivate/' /etc/sudoers
     ;;
 
     failed-upgrade)
