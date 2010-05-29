@@ -4,6 +4,9 @@
 set -e
 
 : ${DEBATHENA_APT=/mit/debathena/apt}
+: ${DEBATHENA_RELEASE=}
+export DEBATHENA_APT
+export DEBATHENA_RELEASE
 
 # Process arguments.
 dist_arch=$1; shift
@@ -20,7 +23,6 @@ dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
 arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 : ${section=debathena-system}
 : ${daname=$name}
-: ${release=-proposed}
 : ${maint=Debathena Project <debathena@mit.edu>}
 . /mit/debathena/bin/debian-versions.sh
 tag=$(gettag $dist)
@@ -139,9 +141,9 @@ v () {
 
 cmd_upload () {
     if [ "$a" = "-A" ]; then
-	v dareprepro include "${dist}${release}" "${daname}_${daversion}_source.changes"
+	v dareprepro include "${dist}${DEBATHENA_RELEASE}" "${daname}_${daversion}_source.changes"
     fi
-    v dareprepro include "${dist}${release}" "${daname}_${daversion}${tag}_${arch}.changes"
+    v dareprepro include "${dist}${DEBATHENA_RELEASE}" "${daname}_${daversion}${tag}_${arch}.changes"
 }
 
 version=$(

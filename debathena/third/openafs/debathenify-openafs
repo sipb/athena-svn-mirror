@@ -18,9 +18,10 @@ arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 . /mit/debathena/bin/debian-versions.sh
 tag=$(gettag $dist)
 : ${DEBATHENA_APT=/mit/debathena/apt}
+: ${DEBATHENA_RELEASE=}
+export DEBATHENA_APT
+export DEBATHENA_RELEASE
 pkgfiles="$DEBATHENA_APT/dists/$dist/openafs/binary-$arch/Packages.gz $DEBATHENA_APT/dists/${dist}-proposed/openafs/binary-$arch/Packages.gz"
-
-: ${release=-proposed}
 
 do_binary=no
 do_upload=no
@@ -175,7 +176,7 @@ for hdr in $headers; do
     ch="$dist_arch/${module}_${afsv}+${hdrv}_$arch.changes"
     if [ -e "$ch" ]; then
       echo "*** Uploading: $dist_arch $module"
-      dareprepro -C openafs include "${dist}${release}" $ch
+      dareprepro -C openafs include "${dist}${DEBATHENA_RELEASE}" $ch
     else
       echo "*** No module: $dist_arch $module"
     fi
@@ -247,7 +248,7 @@ EOF
     deb=meta/$dist_arch/${afs_mpkg}_${ver}${tag}_${arch}.deb
     if [ -e "$deb" ]; then
       echo "*** Uploading: $dist_arch $afs_mpkg"
-      dareprepro includedeb "${dist}${release}" "$deb"
+      dareprepro includedeb "${dist}${DEBATHENA_RELEASE}" "$deb"
     else
       echo "*** No package: $dist_arch $afs_mpkg"
     fi
