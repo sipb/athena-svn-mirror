@@ -4,7 +4,7 @@
 set -e
 
 : ${DEBATHENA_APT=/mit/debathena/apt}
-: ${DEBATHENA_RELEASE=}
+: ${DEBATHENA_RELEASE=production}
 export DEBATHENA_APT
 export DEBATHENA_RELEASE
 
