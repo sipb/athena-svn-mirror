@@ -1,3 +1,9 @@
+debathena-nsswitch-config (1.12) unstable; urgency=low
+
+  * Add recommendation for lib32nss-nonlocal on amd64. (Trac: #597)
+
+ -- Evan Broder <broder@mit.edu>  Mon, 31 May 2010 15:43:51 -0400
+
 debathena-nsswitch-config (1.11) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
