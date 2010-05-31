@@ -1,8 +1,9 @@
 debathena-nsswitch-config (1.12) unstable; urgency=low
 
   * Add recommendation for lib32nss-nonlocal on amd64. (Trac: #597)
+  * Bump Debian standards version and debhelper compatibility level.
 
- -- Evan Broder <broder@mit.edu>  Mon, 31 May 2010 15:43:51 -0400
+ -- Evan Broder <broder@mit.edu>  Mon, 31 May 2010 15:46:29 -0400
 
 debathena-nsswitch-config (1.11) unstable; urgency=low
 
