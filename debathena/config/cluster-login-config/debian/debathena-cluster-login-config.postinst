@@ -146,9 +146,19 @@ case "$1" in
 	$gc -t bool /apps/gnome-power-manager/general/can_hibernate false
 	$gc -t bool /apps/gnome-power-manager/general/can_suspend false
 
-	# We set this true in earlier versions, before settings were
-	# undone in the prerm script, but we want it unset now.
-	$gcunset /desktop/gnome/lockdown/disable_user_switching
+	# This should be set to true on systems using
+	# indicator-applet-session, and false on systems that don't
+	# (i.e. those still using fast-user-switch-agent)
+	#
+	# (This setting completely disables fast-user-switch-applet,
+	# which provides the logout button, but is the only clean way
+	# to disable user switching as of indicator-applet-session
+	# 0.2.2)
+	if dpkg-query -f '${Status}' -W indicator-applet-session 2>/dev/null | grep -q 'install ok installed'; then
+	    $gc -t bool /desktop/gnome/lockdown/disable_user_switching true
+	else
+	    $gcunset /desktop/gnome/lockdown/disable_user_switching
+	fi
 
 	# Set up gconf defaults.
 	gcsrc=xml:readwrite:/etc/gconf/gconf.xml.defaults

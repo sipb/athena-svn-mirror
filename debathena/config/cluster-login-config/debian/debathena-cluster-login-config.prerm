@@ -45,6 +45,7 @@ case "$1" in
         $gcunset /apps/fast-user-switch-applet/show_guest_login
         $gcunset /apps/gnome-power-manager/general/can_hibernate
         $gcunset /apps/gnome-power-manager/general/can_suspend
+        $gcunset /desktop/gnome/lockdown/disable_user_switching
 
         # Undo our default gconf settings.
         gcsrc=xml:readwrite:/etc/gconf/gconf.xml.defaults
