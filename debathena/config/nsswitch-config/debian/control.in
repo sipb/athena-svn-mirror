@@ -6,7 +6,7 @@ Build-Depends: @cdbs@
 Standards-Version: 3.8.4
 
 Package: debathena-nsswitch-config
-Architecture: all
+Architecture: any
 Depends: debathena-hesiod-config, debathena-mit-automounter, libnss-nonlocal (>= 1.3~), libnss-afspag, ${misc:Depends}
 Recommends: lib32nss-nonlocal [amd64]
 Provides: ${diverted-files}
