@@ -8,6 +8,12 @@ set -e
 export DEBATHENA_APT
 export DEBATHENA_RELEASE
 
+if [ "$DEBATHENA_RELEASE" = "production" ]; then
+    apt_release=""
+else
+    apt_release="$DEBATHENA_RELEASE"
+fi
+
 # Process arguments.
 dist_arch=$1; shift
 a=
@@ -141,9 +147,9 @@ v () {
 
 cmd_upload () {
     if [ "$a" = "-A" ]; then
-	v dareprepro include "${dist}${DEBATHENA_RELEASE}" "${daname}_${daversion}_source.changes"
+	v dareprepro include "${dist}${apt_release}" "${daname}_${daversion}_source.changes"
     fi
-    v dareprepro include "${dist}${DEBATHENA_RELEASE}" "${daname}_${daversion}${tag}_${arch}.changes"
+    v dareprepro include "${dist}${apt_release}" "${daname}_${daversion}${tag}_${arch}.changes"
 }
 
 version=$(

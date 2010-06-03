@@ -23,6 +23,12 @@ export DEBATHENA_APT
 export DEBATHENA_RELEASE
 pkgfiles="$DEBATHENA_APT/dists/$dist/openafs/binary-$arch/Packages.gz $DEBATHENA_APT/dists/${dist}-proposed/openafs/binary-$arch/Packages.gz"
 
+if [ "$DEBATHENA_RELEASE" = "production" ]; then
+    apt_release=""
+else
+    apt_release="$DEBATHENA_RELEASE"
+fi
+
 do_binary=no
 do_upload=no
 for arg; do
@@ -176,7 +182,7 @@ for hdr in $headers; do
     ch="$dist_arch/${module}_${afsv}+${hdrv}_$arch.changes"
     if [ -e "$ch" ]; then
       echo "*** Uploading: $dist_arch $module"
-      dareprepro -C openafs include "${dist}${DEBATHENA_RELEASE}" $ch
+      dareprepro -C openafs include "${dist}${apt_release}" $ch
     else
       echo "*** No module: $dist_arch $module"
     fi
@@ -248,7 +254,7 @@ EOF
     deb=meta/$dist_arch/${afs_mpkg}_${ver}${tag}_${arch}.deb
     if [ -e "$deb" ]; then
       echo "*** Uploading: $dist_arch $afs_mpkg"
-      dareprepro includedeb "${dist}${DEBATHENA_RELEASE}" "$deb"
+      dareprepro includedeb "${dist}${apt_release}" "$deb"
     else
       echo "*** No package: $dist_arch $afs_mpkg"
     fi
