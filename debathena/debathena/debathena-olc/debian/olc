@@ -21,6 +21,10 @@ in future releases.
 
 * To view stock answers, please visit http://kb.mit.edu
 
+If you were viewing a web page which directed you to run this command,
+please contact that page's maintainer and ask them to update their
+documentation.
+
 EOF
 
 exit 0
