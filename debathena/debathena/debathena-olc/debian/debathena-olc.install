@@ -1,0 +1,2 @@
+debian/olc usr/bin
+debian/olc.1 usr/share/man/man1

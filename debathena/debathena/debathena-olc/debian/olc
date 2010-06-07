@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Wrapper script that pretends to be the old OLC client, in order
+# to point people at the website.  This command is still documented
+# in too many places.
+
+# Special case, dotfiles used to run "olc who" to tell the OLC server
+# that a user had logged in
+
+if [ "$1" = "who" ]; then
+    exit 0
+fi
+
+cat <<EOF
+
+The OLC command was deprecated in 2009 and may be removed completely
+in future releases.  
+
+* To ask a question, please call 617-253-4435 or visit the Athena
+  Consulting web page at: http://ist.mit.edu/support/olc
+
+* To view stock answers, please visit http://kb.mit.edu
+
+EOF
+
+exit 0

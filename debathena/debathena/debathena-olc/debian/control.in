@@ -1,0 +1,14 @@
+Source: debathena-olc
+Section: debathena/base
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.8.4
+
+Package: debathena-olc
+Architecture: all
+Depends: ${misc:Depends}
+Description: Wrapper script for the old OLC client
+ This package should not exist, but it does, because the "olc" command
+ is still documented in too many places.  It's merely a shell script
+ that tells users to go look on the web.
