@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-login
-Version: 0.2.5
+Version: 0.2.6
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-athinfod,
  debathena-fingerd-config,
@@ -13,7 +13,8 @@ Depends: debathena-athinfod,
  debathena-ssh-server-config,
  debathena-standard,
  debathena-gconf2-config,
- debathena-gconfd-2-wrapper
+ debathena-gconfd-2-wrapper,
+ debathena-olc
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena login services for Debathena
