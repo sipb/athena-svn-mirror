@@ -2,3 +2,4 @@ debian/inc.debathena usr/bin/mh
 debian/80-csh-add-mh-path etc/csh/login.d
 debian/80-bash-add-mh-path usr/share/debathena-bash-config/profile.d
 debian/mhn.defaults.debathena etc/nmh
+debian/61debathena-nmh-config.el etc/emacs/site-start.d

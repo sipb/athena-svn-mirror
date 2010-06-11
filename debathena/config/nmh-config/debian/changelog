@@ -1,3 +1,9 @@
+debathena-nmh-config (1.1.1) unstable; urgency=low
+
+  * Actually install said relevant MH-E configuration.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 11 Jun 2010 04:41:26 -0400
+
 debathena-nmh-config (1.1) unstable; urgency=low
 
   * csh programming considered harmful.
