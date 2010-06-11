@@ -1,3 +1,12 @@
+debathena-emacs-config (1.5.1) unstable; urgency=low
+
+  * Because 1.5 got rid of the customizations needed to make MH-E work
+    with the old debathena-nmh package, Conflict with that package so as
+    to force either upgrading to debathena-nmh-config (which is what we
+    Suggest) or punting it entirely.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 11 Jun 2010 02:47:46 -0400
+
 debathena-emacs-config (1.5) unstable; urgency=low
 
   * Move MH-E customizations to new debathena-nmh-config package.

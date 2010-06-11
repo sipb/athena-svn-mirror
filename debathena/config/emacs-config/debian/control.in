@@ -9,6 +9,7 @@ Package: debathena-emacs-config
 Architecture: all
 Depends: emacs, ${misc:Depends}
 Provides: ${diverted-files}
-Conflicts: ${diverted-files}
+Conflicts: ${diverted-files}, debathena-nmh (<= 1.0+athena9.4.34-0debathena4)
+Suggests: debathena-nmh-config
 Description: Site customizations for emacs.
  Adds local customizations to the emacs config.
