@@ -1,3 +1,9 @@
+debathena-nmh-config (1.1) UNRELEASED; urgency=low
+
+  * csh programming considered harmful.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 11 Jun 2010 02:53:33 -0400
+
 debathena-nmh-config (1.0) unstable; urgency=low
 
   * Initial release (Trac: #74).
