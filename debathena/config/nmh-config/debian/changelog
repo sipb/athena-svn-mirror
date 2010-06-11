@@ -1,8 +1,12 @@
-debathena-nmh-config (1.1) UNRELEASED; urgency=low
+debathena-nmh-config (1.1) unstable; urgency=low
 
   * csh programming considered harmful.
+  * Depend on the Debathenified version of nmh, which has the mbx_close
+    patch for not losing your mail if you run out of quota. This
+    dependency should be adjusted if the patch gets incorporated
+    upstream.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Fri, 11 Jun 2010 02:53:33 -0400
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 11 Jun 2010 04:05:17 -0400
 
 debathena-nmh-config (1.0) unstable; urgency=low
 
