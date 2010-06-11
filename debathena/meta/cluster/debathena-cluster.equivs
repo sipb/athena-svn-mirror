@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 1.5.4
+Version: 1.6
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-cluster-branding,
  debathena-workstation,
@@ -15,7 +15,6 @@ Depends: debathena-cluster-branding,
  debathena-bugme,
  debathena-thirdparty,
  debathena-mitmailutils,
- debathena-nmh,
  debathena-from-config,
  debathena-recovery-mode-config,
 Conflicts: debathena-cluster-printing-config (<= 1.16)

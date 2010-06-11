@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-clients
-Version: 0.3.22
+Version: 0.4
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: athena-jot,
  debathena-athinfo,
@@ -25,6 +25,7 @@ Depends: athena-jot,
  debathena-ldap-config,
  debathena-mitmailutils,
  debathena-moira-clients,
+ debathena-nmh-config,
  debathena-printing-config,
  debathena-rs,
  debathena-saferm,
@@ -40,7 +41,6 @@ Depends: athena-jot,
  ldap-utils
 Recommends:  debathena-alpine-config | debathena-pine,
  debathena-mutt-config,
- debathena-nmh,
 Suggests: barnowl | owl
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
