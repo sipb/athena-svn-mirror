@@ -1,0 +1,4 @@
+#!/bin/sh
+cat
+echo '  /usr/bin/lpr px,'
+echo '  /usr/bin/lpr.debathena px,'

@@ -1,0 +1,5 @@
+debathena-apparmor-config (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Greg Brockman <gdb@mit.edu>  Wed, 09 Jun 2010 16:17:41 -0500

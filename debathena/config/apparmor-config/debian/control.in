@@ -1,0 +1,15 @@
+Source: debathena-apparmor-config
+Section: debathena-config/admin
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, debathena-maybe-apparmor, debathena-cups
+Standards-Version: 3.7.2
+
+Package: debathena-apparmor-config
+Architecture: all
+Depends: ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Replaces: debathena-kerberos-config (<< 1.10~)
+Description: Apparmor configuration for Debathena
+ This packages configures apparmor profiles for use with Debathena.

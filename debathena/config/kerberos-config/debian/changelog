@@ -1,3 +1,9 @@
+debathena-kerberos-config (1.10) unstable; urgency=low
+
+  * Moved apparmor config into apparmor-config package. (Trac: #498)
+
+ -- Greg Brockman <gdb@mit.edu>  Wed, 09 Jun 2010 16:19:33 -0500
+
 debathena-kerberos-config (1.9) unstable; urgency=low
 
   * Set allow_weak_crypto = true so that krb5 1.8 will still talk to the

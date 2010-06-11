@@ -1,0 +1,27 @@
+#!/usr/bin/make -f
+
+DEB_DIVERT_EXTENSION = .debathena
+ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
+    DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/kerberosclient.debathena
+endif
+
+ifneq ($(wildcard /etc/apparmor.d/abstractions/cups-client),)
+    DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/cups-client.debathena
+endif
+
+ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
+    DEB_REMOVE_FILES_debathena-apparmor-config += /etc/apparmor.d/usr.sbin.cupsd
+endif
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/config-package.mk
+
+ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
+    common-build-indep:: debian/usr.sbin.cupsd.debathena
+    debian/usr.sbin.cupsd.debathena: $(call debian_check_files,/etc/apparmor.d/usr.sbin.cupsd)
+	debian/transform_usr.sbin.cupsd.debathena < $< > $@
+    clean::
+	-rm debian/usr.sbin.cupsd.debathena
+    install/debathena-apparmor-config::
+	dh_install debian/usr.sbin.cupsd.debathena etc/apparmor.d
+endif
