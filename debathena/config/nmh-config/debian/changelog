@@ -1,8 +1,13 @@
 debathena-nmh-config (1.1.1) unstable; urgency=low
 
+  [ Geoffrey Thomas ]
   * Actually install said relevant MH-E configuration.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Fri, 11 Jun 2010 04:41:26 -0400
+  [ Evan Broder ]
+  * Make sure nmh-config depends on the Debathenified upstream nmh, not
+    the old Athena fork.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 12:42:36 -0400
 
 debathena-nmh-config (1.1) unstable; urgency=low
 

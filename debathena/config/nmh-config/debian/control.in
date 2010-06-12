@@ -7,7 +7,7 @@ Standards-Version: 3.8.4
 
 Package: debathena-nmh-config
 Architecture: all
-Depends: debathena-nmh, debathena-bash-config, libsasl2-modules-gssapi-mit, ${misc:Depends}
+Depends: debathena-nmh (>> 1.0+athena9.4.34-0debathena4), debathena-bash-config, libsasl2-modules-gssapi-mit, ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: NMH configuration for the Athena environment
