@@ -1,5 +1,5 @@
 #!/bin/sh
-# postrm script for debathena-kerberos-config
+# postrm script for debathena-apparmor-config
 #
 # see: dh_installdeb(1)
 
