@@ -6,5 +6,8 @@ debathena-apparmor-config (1.0) unstable; urgency=low
   [ Evan Broder ]
   * Only restart apparmor if it was previously running. (Trac: #506)
   * Bump Debian standards version and debhelper compatibility level.
+  * Run debhelper- and config-package-dev-generated postinst/postrm code
+    before reloading apparmor, so the diversions are actually in place
+    when we do.
 
- -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 12:32:47 -0400
+ -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 17:29:51 -0400
