@@ -1,8 +1,13 @@
 debathena-kerberos-config (1.10) unstable; urgency=low
 
+  [ Greg Brockman ]
   * Moved apparmor config into apparmor-config package. (Trac: #498)
 
- -- Greg Brockman <gdb@mit.edu>  Wed, 09 Jun 2010 16:19:33 -0500
+  [ Evan Broder ]
+  * Only reload apparmor in the postinst, not the postrm, and only if it
+    was previously running. (Trac: #506)
+
+ -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 17:40:49 -0400
 
 debathena-kerberos-config (1.9) unstable; urgency=low
 
