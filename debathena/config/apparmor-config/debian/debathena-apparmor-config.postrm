@@ -21,10 +21,12 @@ set -e
 
 case "$1" in
     purge|remove|failed-upgrade|abort-install|abort-upgrade|disappear)
-	if hash invoke-rc.d 2>/dev/null; then
-	    invoke-rc.d apparmor reload || :
-	else
-	    /etc/init.d/apparmor reload || :
+	if hash apparmor_status 2>/dev/null && apparmor_status --enabled; then
+	    if hash invoke-rc.d 2>/dev/null; then
+		invoke-rc.d apparmor reload
+	    else
+		/etc/init.d/apparmor reload
+	    fi
 	fi
     ;;
 

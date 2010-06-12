@@ -1,5 +1,9 @@
 debathena-apparmor-config (1.0) unstable; urgency=low
 
+  [ Greg Brockman ]
   * Initial release.
 
- -- Greg Brockman <gdb@mit.edu>  Wed, 09 Jun 2010 16:17:41 -0500
+  [ Evan Broder ]
+  * Only restart apparmor if it was previously running. (Trac: #506)
+
+ -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 12:26:36 -0400
