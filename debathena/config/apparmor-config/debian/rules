@@ -9,6 +9,10 @@ ifneq ($(wildcard /etc/apparmor.d/abstractions/cups-client),)
     DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/cups-client.debathena
 endif
 
+ifneq ($(wildcard /etc/apparmor.d/abstractions/X),)
+    DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/X
+endif
+
 ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
     DEB_REMOVE_FILES_debathena-apparmor-config += /etc/apparmor.d/usr.sbin.cupsd
 endif

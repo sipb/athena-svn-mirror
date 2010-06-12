@@ -1,0 +1,2 @@
+#!/usr/bin/perl -p0
+s|^(\s*)\@\{HOME\}/.Xauthority\s+r,$|$&\n$1/var/run/xauth-* r,|m or die;
