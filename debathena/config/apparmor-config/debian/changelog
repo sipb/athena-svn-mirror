@@ -10,7 +10,8 @@ debathena-apparmor-config (1.0) unstable; urgency=low
   * Run debhelper- and config-package-dev-generated postinst/prerm code
     before reloading apparmor, so the diversions are actually in place
     when we do.
+  * Include AFS homedirs in the list of home directories. (Trac: #601)
   * Allow X applications to read /var/run/xauth-*. (Trac: #602)
   * Bump Debian standards version and debhelper compatibility level.
 
- -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 18:16:56 -0400
+ -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 19:09:21 -0400

@@ -13,6 +13,13 @@ ifneq ($(wildcard /etc/apparmor.d/abstractions/X),)
     DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/X
 endif
 
+ifneq ($(wildcard /etc/apparmor.d/tunables/home),)
+    ifeq ($(wildcard /etc/apparmor.d/tunables/home.d),)
+        # Needed for anything older than Lucid
+        DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/tunables/home
+    endif
+endif
+
 ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
     DEB_REMOVE_FILES_debathena-apparmor-config += /etc/apparmor.d/usr.sbin.cupsd
 endif
@@ -28,4 +35,10 @@ ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
 	-rm debian/usr.sbin.cupsd.debathena
     install/debathena-apparmor-config::
 	dh_install debian/usr.sbin.cupsd.debathena etc/apparmor.d
+endif
+
+ifneq ($(wildcard /etc/apparmor.d/tunables/home.d),)
+    install/debathena-apparmor-config::
+	install -D -m 644 debian/home \
+	    $(DEB_DESTDIR)/etc/apparmor.d/tunables/home.d/debathena
 endif
