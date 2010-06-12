@@ -5,5 +5,6 @@ debathena-apparmor-config (1.0) unstable; urgency=low
 
   [ Evan Broder ]
   * Only restart apparmor if it was previously running. (Trac: #506)
+  * Bump Debian standards version and debhelper compatibility level.
 
- -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 12:26:36 -0400
+ -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 12:32:47 -0400
