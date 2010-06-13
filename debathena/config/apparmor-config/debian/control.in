@@ -11,5 +11,6 @@ Depends: ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Replaces: debathena-kerberos-config (<< 1.10~)
+Breaks: debathena-kerberos-config (<< 1.10~)
 Description: Apparmor configuration for Debathena
  This packages configures apparmor profiles for use with Debathena.

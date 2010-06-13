@@ -1,3 +1,10 @@
+debathena-apparmor-config (1.1) unstable; urgency=low
+
+  * Break old versions of kerberos-config to try and force the correct
+    upgrade order.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 21:52:22 -0400
+
 debathena-apparmor-config (1.0) unstable; urgency=low
 
   [ Greg Brockman ]
