@@ -4,8 +4,10 @@ debathena-apparmor-config (1.1) unstable; urgency=low
     upgrade order.
   * Change permissions on lpr in <abstractions/cups-client> to make
     AppArmor whine less, and possibly even be more secure.
+  * Cleanup /etc/apparmor.d/tunables/home diversion when we upgrade to a
+    release that has <tunables/home.d> (i.e. Lucid)
 
- -- Evan Broder <broder@mit.edu>  Sun, 13 Jun 2010 10:05:12 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 13 Jun 2010 10:07:36 -0400
 
 debathena-apparmor-config (1.0) unstable; urgency=low
 
