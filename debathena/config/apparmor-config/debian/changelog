@@ -2,8 +2,10 @@ debathena-apparmor-config (1.1) unstable; urgency=low
 
   * Break old versions of kerberos-config to try and force the correct
     upgrade order.
+  * Change permissions on lpr in <abstractions/cups-client> to make
+    AppArmor whine less, and possibly even be more secure.
 
- -- Evan Broder <broder@mit.edu>  Sat, 12 Jun 2010 21:52:22 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 13 Jun 2010 10:05:12 -0400
 
 debathena-apparmor-config (1.0) unstable; urgency=low
 
