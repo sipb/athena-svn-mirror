@@ -1,3 +1,6 @@
-@{HOMEDIRS}+=/afs/athena.mit.edu/user/?/?/
-@{HOMEDIRS}+=/afs/athena.mit.edu/user/other/
-@{HOMEDIRS}+=/afs/sipb.mit.edu/user/
+# There are a handful of accounts that have "other" in one of the two
+# components, hence the '*' instead of '?'
+@{HOMEDIRS}+=/afs/athena{.mit.edu,}/user/*/*/
+@{HOMEDIRS}+=/afs/athena{.mit.edu,}/user/other/
+@{HOMEDIRS}+=/afs/sipb{.mit.edu,}/user/
+@{HOMEDIRS}+=/afs/net{.mit.edu,}/user/
