@@ -89,10 +89,10 @@ case "$1" in
 	# kerberosclient config can be diverted but not removed. Since
 	# both files have been both at various points in the package's
 	# history, if one of them is wrong, fix it.
-	cleanup_old_removal /etc/apparmor.d/usr.sbin.cupsd
+	cleanup_old_removal /etc/apparmor.d/usr.sbin.cupsd /usr/share/debathena-kerberos-config/etc++apparmor.d++usr.sbin.cupsd
 	cleanup_old_diversion /etc/apparmor.d/usr.sbin.cupsd
 	cleanup_old_removal /etc/apparmor.d/abstractions/kerberosclient /usr/share/debathena-kerberos-config/etc++apparmor.d++abstractions++kerberosclient
-	cleanup_old_diversion /etc/apparmor.d/abstractions/kerberosclient.debathena
+	cleanup_old_diversion /etc/apparmor.d/abstractions/kerberosclient
 
 	# Handle upgrading from a system with krb4 to one without
 	krb5_version="$(dpkg-query -W -f '${Version}' krb5-user)"
