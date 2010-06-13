@@ -1,4 +1,4 @@
 #!/bin/sh
 cat
-echo '  /usr/bin/lpr px,'
-echo '  /usr/bin/lpr.debathena px,'
+echo '  /usr/bin/lpr ux,'
+echo '  /usr/bin/lpr.debathena ux,'
