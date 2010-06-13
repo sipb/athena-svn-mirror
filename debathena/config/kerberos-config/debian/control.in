@@ -3,7 +3,7 @@ Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, krb5-user, krb5-config, debathena-maybe-krb4-config
-Standards-Version: 3.7.2
+Standards-Version: 3.8.4
 
 Package: debathena-kerberos-config
 Architecture: all
