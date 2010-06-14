@@ -7,7 +7,7 @@ Standards-Version: 3.8.4
 
 Package: debathena-zephyr-config
 Architecture: all
-Depends: libzephyr4-krb5 | libzephyr3-krb, zephyr-clients, debathena-kerberos-config, debathena-hesiod-config, ${misc:Depends}
+Depends: libzephyr4-krb5 | zephyr-clients (<< 3.0~), zephyr-clients (>= 3.0~) | libzephyr3-krb, zephyr-clients, debathena-kerberos-config, debathena-hesiod-config, ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Zephyr configuration for Debathena
