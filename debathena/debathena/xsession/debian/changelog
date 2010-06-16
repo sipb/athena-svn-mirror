@@ -1,3 +1,10 @@
+debathena-xsession (1.15) unstable; urgency=low
+
+  * Add an autostart delay for the initial terminal, to prevent
+    it from launching prematurely on Lucid.  (Trac: #545)
+
+ -- Robert Basch <rbasch@mit.edu>  Wed, 16 Jun 2010 11:30:44 -0400
+
 debathena-xsession (1.14) unstable; urgency=low
 
   * Make sure debathena-xsession is installed before executing any of the
