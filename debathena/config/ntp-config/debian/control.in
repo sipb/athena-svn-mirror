@@ -8,6 +8,7 @@ Standards-Version: 3.8.0
 Package: debathena-ntp-config
 Architecture: all
 Depends: ntp, ${misc:Depends}
+Recommends: debathena-apparmor-config
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Configuration for Athena 10 ntp installs.
