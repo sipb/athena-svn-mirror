@@ -8,7 +8,7 @@ Standards-Version: 3.8.4
 Package: debathena-nsswitch-config
 Architecture: any
 Depends: debathena-hesiod-config, debathena-mit-automounter, libnss-nonlocal (>= 1.3~), libnss-afspag, ${misc:Depends}
-Recommends: lib32nss-nonlocal [amd64]
+Recommends: lib32nss-nonlocal [amd64], debathena-apparmor-config
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}, debathena-afuse-automounter (<= 1.4)
 Description: nsswitch configuration for Debathena

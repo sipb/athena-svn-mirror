@@ -1,3 +1,10 @@
+debathena-nsswitch-config (1.13) unstable; urgency=low
+
+  * Recommend apparmor-config to ensure nsswitch.conf.debathena is
+    whitelisted.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 19 Jun 2010 19:10:50 -0400
+
 debathena-nsswitch-config (1.12) unstable; urgency=low
 
   * Add recommendation for lib32nss-nonlocal on amd64. (Trac: #597)
