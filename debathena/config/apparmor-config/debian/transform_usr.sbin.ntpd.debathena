@@ -1,0 +1,2 @@
+#!/usr/bin/perl -p0
+s|^(\s*)/etc/ntp.conf\s+r,$|$&$1/etc/ntp.conf.debathena r,|m or die;
