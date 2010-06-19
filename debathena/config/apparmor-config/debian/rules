@@ -13,6 +13,10 @@ ifneq ($(wildcard /etc/apparmor.d/abstractions/X),)
     DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/X.debathena
 endif
 
+ifneq ($(wildcard /etc/apparmor.d/abstractions/nameservice),)
+    DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/nameservice.debathena
+endif
+
 ifneq ($(wildcard /etc/apparmor.d/tunables/home),)
     ifeq ($(wildcard /etc/apparmor.d/tunables/home.d),)
         # Needed for anything older than Lucid

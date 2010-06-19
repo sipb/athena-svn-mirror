@@ -1,0 +1,5 @@
+#!/usr/bin/perl -p0
+s|^(\s*)/etc/nsswitch.conf\s+r,$|$&
+$1/etc/nsswitch.conf.debathena r,
+$1/etc/hesiod.conf r,
+$1/etc/hesiod.conf.debathena r,|m or die;
