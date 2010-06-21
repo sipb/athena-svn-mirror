@@ -7,8 +7,10 @@ debathena-apparmor-config (1.2) unstable; urgency=low
     /etc/ntp.conf.debathena. (Trac: #611)
   * Fix the <abstractions/X> patch to get the right Xauthority path
     (/var/run/athena-sessions/xauth-*)
+  * In <tunables/home.d/debathena>, only whitelist canonical paths, not
+    symlinked ones, because AppArmor resolves symlinks.
 
- -- Evan Broder <broder@mit.edu>  Sun, 20 Jun 2010 22:00:19 -0400
+ -- Evan Broder <broder@mit.edu>  Sun, 20 Jun 2010 22:05:16 -0400
 
 debathena-apparmor-config (1.1) unstable; urgency=low
 
