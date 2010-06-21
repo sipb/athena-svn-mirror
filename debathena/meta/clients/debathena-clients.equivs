@@ -3,9 +3,10 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-clients
-Version: 0.4
+Version: 0.5
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: athena-jot,
+ debathena-apparmor-config,
  debathena-athinfo,
  debathena-counterlog,
  debathena-dent,
