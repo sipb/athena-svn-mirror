@@ -1,10 +1,3 @@
-if ("$PATH" !~ "*:/usr/bin/mh") then
-  if (-e ~/Mail/context) then
-      setenv PATH "${PATH}:/usr/bin/mh"
-  else if (-r ~/.config/debathena/nmh-in-path) then
-    # csh is dumb about short-circuiting
-    if (yes == `cat ~/.config/debathena/nmh-in-path`) then
-      setenv PATH "${PATH}:/usr/bin/mh"
-    endif
-  endif
+if (("$PATH" !~ "*:/usr/bin/mh") && ((-e ~/Mail/context) || (-e ~/.config/debathena/nmh-in-path))) then
+  setenv PATH "${PATH}:/usr/bin/mh"
 endif

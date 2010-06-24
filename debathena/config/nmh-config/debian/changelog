@@ -1,3 +1,11 @@
+debathena-nmh-config (1.1.2) unstable; urgency=low
+
+  * In the shell startup configuration to add /usr/bin/mh to your path
+    if you're an MH user, be slightly more robust to missing tokens, and
+    only test for ~/.config/ file existence as opposed to readability.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 23 Jun 2010 22:34:01 -0400
+
 debathena-nmh-config (1.1.1) unstable; urgency=low
 
   [ Geoffrey Thomas ]
