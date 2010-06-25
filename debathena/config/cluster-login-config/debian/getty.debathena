@@ -102,7 +102,7 @@ def activate_session():
             pass
 
         # Look for any X session
-        try:
+        if not vt:
             p = subprocess.Popen(['pgrep', '-x', 'Xorg'],
                                  stdout=subprocess.PIPE)
             pid, _ = p.communicate()
