@@ -16,6 +16,7 @@ import os
 import pwd
 import subprocess
 import sys
+import time
 
 import dbus
 
@@ -74,25 +75,50 @@ def activate_session():
 
     session = None
     if KIOSK_USER:
+        # We'll prefer kiosk sessions if they exist
         sessions = manager.GetSessionsForUnixUser(KIOSK_USER)
-        if sessions:
-            session = dbus.Interface(bus.get_object(CK_NAME, sessions[0]),
-                                     CK_SESSION_IFACE)
-    if not session:
-        # Find the first session that identifies itself as local
+    if not sessions:
+        # But if not, we'll take any graphical session that identifies
+        # as local
         sessions = manager.GetSessions()
-        for s in sessions:
-            session = dbus.Interface(bus.get_object(CK_NAME, s),
-                                     CK_SESSION_IFACE)
-            if session.IsLocal():
-               break 
+
+    for s in sessions:
+        session = dbus.Interface(bus.get_object(CK_NAME, s),
+                                 CK_SESSION_IFACE)
+        if session.IsLocal() and session.GetX11Display():
+               break
         else:
             session = None
 
     if session:
         session.Activate()
     else:
-        subprocess.call(['chvt', '7'])
+        vt = None
+
+        # Look for a kiosk-mode session that we missed
+        try:
+            vt = open('/var/run/athena-kiosk-vt').read().strip()
+        except IOError, e:
+            pass
+
+        # Look for any X session
+        try:
+            p = subprocess.Popen(['pgrep', '-x', 'Xorg'],
+                                 stdout=subprocess.PIPE)
+            pid, _ = p.communicate()
+            pid = pid.splitlines()[0]
+
+            if pid:
+                p = subprocess.Popen(['ps', '-otty=', pid],
+                                     stdout=subprocess.PIPE)
+                tty, _ = p.communicate()
+                tty = tty.splitlines()[0]
+
+                if tty.startswith('tty'):
+                    vt = tty[len('tty'):]
+
+        if vt:
+            subprocess.call(['chvt', vt])
 
 
 def main():
@@ -110,6 +136,13 @@ def main():
         tty.readline()
 
         activate_session()
+
+        tty.write("If you are seeing this message, it was not possible to return you to\n")
+        tty.write("your session automatically, Try pressing Ctrl-Alt-F7, Ctrl-Alt-F8 or\n")
+        tty.write("Ctrl-Alt-F9. If that does not work, reboot the computer by pressing\n")
+        tty.write("Ctrl-Alt-Delete.\n")
+
+        time.sleep(10)
 
 
 if __name__ == '__main__':

@@ -1,3 +1,11 @@
+debathena-cluster-login-config (1.27) unstable; urgency=low
+
+  * Make getty.debathena more robust by looking harder for the kiosk
+    session or any X session, and displaying a message to the user if that
+    fails.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 25 Jun 2010 14:03:16 -0400
+
 debathena-cluster-login-config (1.26) unstable; urgency=low
 
   * Disable user switching on Lucid by setting
