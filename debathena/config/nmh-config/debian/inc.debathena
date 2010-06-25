@@ -2,4 +2,4 @@
 if ! [ -e ~/.config/debathena/nmh-in-path ]; then
     mkdir -p ~/.config/debathena >/dev/null 2>&1 && echo yes > ~/.config/debathena/nmh-in-path
 fi
-exec /usr/bin/mh/inc.debathena-orig -host "${ATHENA_USER:-$USER}.mail.mit.edu" -sasl "$@"
+exec -a inc /usr/bin/mh/inc.debathena-orig -host "${ATHENA_USER:-$USER}.mail.mit.edu" -sasl "$@"

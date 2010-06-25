@@ -1,3 +1,10 @@
+debathena-nmh-config (1.1.3) unstable; urgency=low
+
+  * exec inc.debathena-orig with argv[0] set to inc, so that it can
+    correctly detect what it's being run as.
+
+ -- Evan Broder <broder@mit.edu>  Fri, 25 Jun 2010 09:21:13 -0400
+
 debathena-nmh-config (1.1.2) unstable; urgency=low
 
   * In the shell startup configuration to add /usr/bin/mh to your path
