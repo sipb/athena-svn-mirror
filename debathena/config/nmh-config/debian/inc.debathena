@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if ! [ -e ~/.config/debathena/nmh-in-path ]; then
     mkdir -p ~/.config/debathena >/dev/null 2>&1 && echo yes > ~/.config/debathena/nmh-in-path
 fi
