@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-languages
-Version: 0.11
+Version: 0.12
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: cmake,
  python-all-dev,
@@ -44,7 +44,7 @@ Depends: cmake,
 Recommends:
  mit-scheme,
  mit-scheme-doc,
- eclispe-cdt,
+ eclipse-cdt,
  eclipse-pydev,
  clisp-dev,
 
