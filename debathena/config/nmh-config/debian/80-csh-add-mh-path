@@ -1,3 +1,2 @@
-if (("$PATH" !~ "*:/usr/bin/mh") && ((-e ~/Mail/context) || (-e ~/.config/debathena/nmh-in-path))) then
-  setenv PATH "${PATH}:/usr/bin/mh"
-endif
+setenv PATH "${PATH}:/usr/bin/mh"
+
