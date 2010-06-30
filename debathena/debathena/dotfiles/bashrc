@@ -27,6 +27,10 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	export ENV_SET=t			# Avoid unnecessary repeat
 	export HOSTTYPE="`/bin/machtype`"
 
+	# Ensure user's homedir is attached, for legacy things
+	# that care about attachtab
+	/bin/attach $USER
+
 	if [ -r "$HOME/.generation" ]; then
 		export ATHENA_DOTFILE_GENERATION=`cat "$HOME/.generation"`
 	else

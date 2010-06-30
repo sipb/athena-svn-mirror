@@ -32,6 +32,10 @@ if (! $?ENV_SET) then
 
   setenv ENV_SET				# Avoid unnecessary repeat
 
+  # Ensure user's homedir is attached, for legacy things
+  # that care about attachtab
+  /bin/attach $USER >&/dev/null
+
   if (-r ~/.generation) then
     setenv ATHENA_DOTFILE_GENERATION `cat ~/.generation`
   else
