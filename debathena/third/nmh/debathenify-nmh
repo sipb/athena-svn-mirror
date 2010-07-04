@@ -19,7 +19,7 @@ hack_package () {
  from MIME mail in a pager.
 EOF
     add_changelog 'Avoid losing mail if close() fails, as it can in AFS.'
-    add_chnagelog 'Wrap as much output from MIME mail in the moreproc as possible.'
+    add_changelog 'Wrap as much output from MIME mail in the moreproc as possible.'
     add_debathena_provides
     munge_sections
 }
