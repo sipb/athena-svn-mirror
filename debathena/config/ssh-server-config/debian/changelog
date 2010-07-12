@@ -1,3 +1,9 @@
+debathena-ssh-server-config (1.8) unstable; urgency=low
+
+  * Disable GSSAPI if there's no keytab when sshd is started (Trac #315)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 12 Jul 2010 08:54:10 -0400
+
 debathena-ssh-server-config (1.7) unstable; urgency=low
 
   * Put a blank line before and after any ticket/token warnings.

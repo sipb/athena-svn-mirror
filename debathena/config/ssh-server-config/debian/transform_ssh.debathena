@@ -1,0 +1,7 @@
+#!/usr/bin/perl -0p
+s|SSHD_OPTS=|SSHD_OPTS=
+
+\x23 Disable GSSAPI if there's no keytab when sshd is started
+if [ ! -e /etc/krb5.keytab ]; then
+   SSHD_OPTS="\$SSHD_OPTS -o GSSAPIKeyExchange=no -o GSSAPIAuthentication=no"
+fi|x or die;
