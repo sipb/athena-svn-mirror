@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.22-0debathena3) unstable; urgency=low
+
+  * Run attach -q so as not to break sftp
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 15 Jul 2010 10:42:04 -0400
+
 debathena-dotfiles (10.0.22-0debathena2) unstable; urgency=low
 
   * Fix package name in maintainer scripts
