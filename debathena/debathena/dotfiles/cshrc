@@ -34,7 +34,7 @@ if (! $?ENV_SET) then
 
   # Ensure user's homedir is attached, for legacy things
   # that care about attachtab
-  /bin/attach -q $USER 
+  /bin/attach -h -q $USER 
 
   if (-r ~/.generation) then
     setenv ATHENA_DOTFILE_GENERATION `cat ~/.generation`
