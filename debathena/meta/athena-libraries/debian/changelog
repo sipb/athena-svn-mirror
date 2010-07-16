@@ -1,3 +1,11 @@
+debathena-athena-libraries (1.1) unstable; urgency=low
+
+  * Add libgtksourceview1.0-0 (explicitly, instead of going through the
+    scary rules logic, because the scary rules logic scares me) because
+    the stata locker needs it. Request from Alex Prengel.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 15 Jul 2010 23:04:58 -0400
+
 debathena-athena-libraries (1.0debathena3) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.
