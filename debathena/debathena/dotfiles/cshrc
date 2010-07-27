@@ -35,8 +35,14 @@ if (! $?ENV_SET) then
   # Ensure user's homedir is attached, for legacy things
   # that care about attachtab
   # Only attach if running as an Athena user, not e.g. using sudo.
-  if ( $?ATHENA_USER ) then
-    /bin/attach -h -q "$ATHENA_USER"
+  if ( $?DEBATHENA_HOME_TYPE ) then
+    if ( $DEBATHENA_HOME_TYPE == afs ) then
+      if ( $?ATHENA_USER ) then
+        echo /bin/attach -h -q "$ATHENA_USER"
+      else
+        echo /bin/attach -h -q "$USER"
+      endif
+    endif
   endif
 
   if (-r ~/.generation) then

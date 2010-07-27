@@ -4,14 +4,13 @@ debathena-dotfiles (10.0.23-1) unstable; urgency=low
     change) modified things outside debian/.
   * Drop 0debathena business from the Debian version number because
     Debathena has been upstream for a while now.
-  * Only attach $USER if $ATHENA_USER is set, to avoid an error
-    message with "sudo bash". Patch from Thomas Coles.
+  * Change from attaching $USER unconditionally to attaching
+    $ATHENA_USER if $DEBATHENA_HOME_TYPE is set to "afs", to avoid
+    an error message if you run the Athena .bashrc in a local account,
+    as e.g.  "sudo bash"/"sudo -s" does. Based on a patch from (and
+    Signed-off-by) Thomas Coles <tcoles@mit.edu>.
 
-    Signed-off-by: Thomas Coles <tcoles@mit.edu>
-    [geofft: also switch to attaching $ATHENA_USER instead of $USER]
-    Signed-off-by: Geoffrey Thomas <geofft@mit.edu>
-
- -- Geoffrey Thomas <geofft@mit.edu>  Mon, 26 Jul 2010 22:46:24 -0400
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 27 Jul 2010 00:08:37 -0400
 
 debathena-dotfiles (10.0.22-0debathena3) unstable; urgency=low
 
