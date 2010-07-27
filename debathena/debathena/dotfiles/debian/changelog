@@ -1,3 +1,18 @@
+debathena-dotfiles (10.0.23-1) unstable; urgency=low
+
+  * Bump upstream version number because previous changes (and this
+    change) modified things outside debian/.
+  * Drop 0debathena business from the Debian version number because
+    Debathena has been upstream for a while now.
+  * Only attach $USER if $ATHENA_USER is set, to avoid an error
+    message with "sudo bash". Patch from Thomas Coles.
+
+    Signed-off-by: Thomas Coles <tcoles@mit.edu>
+    [geofft: also switch to attaching $ATHENA_USER instead of $USER]
+    Signed-off-by: Geoffrey Thomas <geofft@mit.edu>
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 26 Jul 2010 22:46:24 -0400
+
 debathena-dotfiles (10.0.22-0debathena3) unstable; urgency=low
 
   * Run attach -q (and -h) so as not to break sftp

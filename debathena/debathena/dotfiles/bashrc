@@ -29,7 +29,10 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 
 	# Ensure user's homedir is attached, for legacy things
 	# that care about attachtab
-	/bin/attach -h -q $USER
+	# Only attach if running as an Athena user, not e.g. using sudo.
+	if [ -n "$ATHENA_USER" ]; then
+		/bin/attach -h -q "$ATHENA_USER"
+	fi
 
 	if [ -r "$HOME/.generation" ]; then
 		export ATHENA_DOTFILE_GENERATION=`cat "$HOME/.generation"`
