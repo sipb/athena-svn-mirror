@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.24-0debathena1) unstable; urgency=low
+
+  * Undrop the 0debathena business because we're not Debian.
+  * Actually run attach instead of echoing it. I suck.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 03 Aug 2010 11:40:58 -0400
+
 debathena-dotfiles (10.0.23-1) unstable; urgency=low
 
   * Bump upstream version number because previous changes (and this

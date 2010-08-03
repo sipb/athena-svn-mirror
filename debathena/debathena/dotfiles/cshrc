@@ -38,9 +38,9 @@ if (! $?ENV_SET) then
   if ( $?DEBATHENA_HOME_TYPE ) then
     if ( $DEBATHENA_HOME_TYPE == afs ) then
       if ( $?ATHENA_USER ) then
-        echo /bin/attach -h -q "$ATHENA_USER"
+        /bin/attach -h -q "$ATHENA_USER"
       else
-        echo /bin/attach -h -q "$USER"
+        /bin/attach -h -q "$USER"
       endif
     endif
   endif
