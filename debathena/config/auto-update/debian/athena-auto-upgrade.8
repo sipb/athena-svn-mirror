@@ -1,0 +1,25 @@
+.TH ATHENA-AUTO-UPGRADE 8 "3 August 2010" "debathena-auto-upgrade" "Athena Upgrade System"
+.SH NAME
+athena-auto-upgrade \- Attempt to automatically upgrade to a newer release of Ubuntu
+.SH SYNOPSIS
+.nf
+.B athena-auto-upgrade
+.sp
+.SH DESCRIPTION
+.BR athena-auto-upgrade
+is intended to be run by cron on a regular basis.  It queries Hesiod
+for the newest release of Ubuntu, and then kexec's into the installer
+for that version. If the upgrade fails prior to kexec, a message will
+be sent to the \fIuser\fP syslog facility, with priority \fInotice\fP.
+
+You really don't want to run this by hand.
+
+.SH FEATURES
+Here be dragons.
+
+.SH SEE ALSO
+aptitude(1), kexec(8)
+
+.SH AUTHOR
+SIPB Debathena Project (http://debathena.mit.edu)
+

@@ -1,0 +1,116 @@
+#!/bin/bash
+#
+# This is designed to be called from cron
+
+debug() {
+    [ $DEBUG -eq 1 ] && echo "DEBUG: $*"
+}
+
+complain() {
+    if [ $DEBUG -eq 1 ]; then
+	echo "ERROR: $*"
+    else
+	logger -t "athena-auto-upgrade" -p user.notice "$*"
+    fi
+}
+
+DEBUG=0
+MAYBE=""
+if [ "$1" = "--debug" ]; then
+    DEBUG=1
+    MAYBE=echo
+fi
+
+UPDATE_TO_TESTING=0
+[ -f /etc/default/athena-auto-upgrade ] && . /etc/default/athena-auto-upgrade
+
+if [ $DEBUG -eq 1 ]; then
+    UPDATE_TO_TESTING=1
+fi
+
+# Not supported on Debian
+if [ $(lsb_release -si) != "Ubuntu" ]; then
+    exit 0
+fi
+
+# Skip other sanity checks in debug mode
+if [ $DEBUG -ne 1 ]; then
+    # Only run this on cluster
+    if [ $(machtype -L) != "debathena-cluster" ]; then
+	exit 0
+    fi
+    
+    # Bail if someone is logged in (stolen from auto-update)
+    ttys=$(w -h -s | awk '{print $2}')
+    for tty in $ttys; do
+	pids=$(ps --no-heading -j -t "$tty" 2>/dev/null \
+            | awk '($1 == $3) {print $1}')
+	if [ -n "$pids" ]; then
+            exit 0
+	fi
+    done
+    # screen processes count as logins.
+    if pgrep '^screen' > /dev/null; then
+	exit 0
+    fi
+fi
+
+UBUNTU_RELEASE=
+CLUSTERINFO=`getcluster -b $(lsb_release -sr)`
+[ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
+eval $CLUSTERINFO
+if [ ! -z "$NEW_PRODUCTION_RELEASE" ]; then
+    debug "Taking new production release: $NEW_PRODUCTION_RELEASE"
+    NEWCLUSTER=`getcluster -b $NEW_PRODUCTION_RELEASE`
+    [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
+    eval $NEWCLUSTER
+fi
+if [ ! -z "$NEW_TESTING_RELEASE" -a $UPDATE_TO_TESTING -eq 1 -a -z "$UBUNTU_RELEASE" ]; then
+    debug "Taking new testing release: $NEW_TESTING_RELEASE"
+    NEWCLUSTER=`getcluster -b $NEW_TESTING_RELEASE`
+    [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
+    eval $NEWCLUSTER
+fi
+if [ -z "$UBUNTU_RELEASE" ]; then
+    debug "No new releases."
+    exit 0
+fi
+if [ $(lsb_release -sc) = "$UBUNTU_RELEASE" ]; then
+    complain "Tried to upgrade to already running release; shouldn't happen"
+    exit 1
+fi
+debug "OK, trying to upgrade to $UBUNTU_RELEASE"
+
+# That's a space and then a tab inside the brackets
+if egrep -q '^flags[ 	].* lm( |$)' /proc/cpuinfo; then 
+    arch=amd64
+else 
+    arch=i386
+fi
+debug "Arch: $arch"
+IPADDR=`ifconfig eth0 |perl -ne'/^\s+inet addr:([\d\.]+)/ && print $1'`
+if [ -z "$IPADDR" ]; then
+    complain "Couldn't get IP address from ifconfig!"
+    exit 0
+fi
+debug "Using IPADDR=$IPADDR"
+$MAYBE mkdir /h
+$MAYBE cd /h
+$MAYBE wget http://debathena.mit.edu/net-install/kexec
+$MAYBE wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/initrd.gz
+$MAYBE wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/linux
+$MAYBE chmod 755 kexec
+# This is just the guts of the hackboot script:
+dkargs="DEBCONF_DEBUG=5"
+kargs="netcfg/get_hostname= locale=en_US console-setup/layoutcode=us \
+       interface=auto \
+       url=http://18.9.60.73/installer/${UBUNTU_RELEASE}/debathena.preseed \
+       debathena/clusterforce=yes debathena/clusteraddr=$IPADDR --"
+debug "Would execute kexec with --append=\"$dkargs $kargs\""
+if [ $DEBUG -eq 1 ]; then
+    exit 0
+fi
+./kexec -l linux --append="$dkargs $kargs" --initrd=initrd.gz \
+    && sleep 3 && chvt 1 && sleep 2 && ./kexec -e
+complain "Failed to kexec."
+exit 1
