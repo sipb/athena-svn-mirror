@@ -95,11 +95,11 @@ Depends: liblapack-dev,
  libcv-dev,
  python-psycopg2,
  libppl-c2,
- libmpc2,
 Recommends: libatlas-base-dev,
  libatlas-sse-dev,
  libatlas-sse2-dev,
  libatlas-doc,
+ libmpc2,
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
