@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-libraries
-Version: 0.15
+Version: 0.16
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: liblapack-dev,
  liblapack-doc,
@@ -95,6 +95,7 @@ Depends: liblapack-dev,
  libcv-dev,
  python-psycopg2,
  libppl-c2,
+ libmpc2,
 Recommends: libatlas-base-dev,
  libatlas-sse-dev,
  libatlas-sse2-dev,
