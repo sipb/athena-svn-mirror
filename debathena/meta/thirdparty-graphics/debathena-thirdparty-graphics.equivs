@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-graphics
-Version: 0.5
+Version: 0.6
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: inventor-data,
  inventor-demo,
@@ -52,9 +52,11 @@ Depends: inventor-data,
  sdr,
  xprint-utils,
  pdftoipe,
+ mgp,
 
 Recommends: inventor-dev,
-  inventor-clients
+ inventor-clients,
+ gle-graphics,
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in

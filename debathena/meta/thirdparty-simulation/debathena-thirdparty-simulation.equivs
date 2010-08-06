@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-simulation
-Version: 0.3
+Version: 0.4
 Maintainer: Debathena Project <debathena@mit.edu>
 # Before 3.0.3-3, libctl-dev used guile-1.6, which conflicts with
 # several other applications in this list.
@@ -42,6 +42,9 @@ Depends: lp-solve,
  biosquid-dev,
  tetgen,
  pymol,
+ meep,
+ harminv,
+ mpb,
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
