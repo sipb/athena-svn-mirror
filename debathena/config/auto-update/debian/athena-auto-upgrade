@@ -22,10 +22,12 @@ if [ "$1" = "--debug" ]; then
 fi
 
 UPDATE_TO_TESTING=0
+UPGRADE_ANYWAY=0
 [ -f /etc/default/athena-auto-upgrade ] && . /etc/default/athena-auto-upgrade
 
 if [ $DEBUG -eq 1 ]; then
     UPDATE_TO_TESTING=1
+    UPGRADE_ANYWAY=1
 fi
 
 # Not supported on Debian
@@ -36,7 +38,7 @@ fi
 # Skip other sanity checks in debug mode
 if [ $DEBUG -ne 1 ]; then
     # Only run this on cluster
-    if [ $(machtype -L) != "debathena-cluster" ]; then
+    if [ $(machtype -L) != "debathena-cluster" -a $UPGRADE_ANYWAY -ne 1 ]; then
 	exit 0
     fi
     
