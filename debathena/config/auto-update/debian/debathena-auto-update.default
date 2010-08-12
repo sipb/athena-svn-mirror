@@ -1,0 +1,10 @@
+# Defaults for athena-auto-upgrade(8)
+
+# Values for options are 'yes' or 'no'
+# Really, don't change these unless you know what you're doing
+
+# Upgrade to a 'testing' release?
+UPGRADE_TO_TESTING=no
+
+# Upgrade automatically, even if this isn't a cluster machine?
+UPGRADE_ANYWAY=no

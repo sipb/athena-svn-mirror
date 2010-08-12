@@ -21,13 +21,13 @@ if [ "$1" = "--debug" ]; then
     MAYBE=echo
 fi
 
-UPDATE_TO_TESTING=0
-UPGRADE_ANYWAY=0
-[ -f /etc/default/athena-auto-upgrade ] && . /etc/default/athena-auto-upgrade
+UPGRADE_TO_TESTING=no
+UPGRADE_ANYWAY=no
+[ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
 
 if [ $DEBUG -eq 1 ]; then
-    UPDATE_TO_TESTING=1
-    UPGRADE_ANYWAY=1
+    UPGRADE_TO_TESTING=yes
+    UPGRADE_ANYWAY=yes
 fi
 
 # Not supported on Debian
@@ -38,7 +38,7 @@ fi
 # Skip other sanity checks in debug mode
 if [ $DEBUG -ne 1 ]; then
     # Only run this on cluster
-    if [ $(machtype -L) != "debathena-cluster" -a $UPGRADE_ANYWAY -ne 1 ]; then
+    if [ $(machtype -L) != "debathena-cluster" -a "$UPGRADE_ANYWAY" != "yes" ]; then
 	exit 0
     fi
     
@@ -67,7 +67,7 @@ if [ ! -z "$NEW_PRODUCTION_RELEASE" ]; then
     [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
     eval $NEWCLUSTER
 fi
-if [ ! -z "$NEW_TESTING_RELEASE" -a $UPDATE_TO_TESTING -eq 1 -a -z "$UBUNTU_RELEASE" ]; then
+if [ ! -z "$NEW_TESTING_RELEASE" -a "$UPGRADE_TO_TESTING" = "yes" -a -z "$UBUNTU_RELEASE" ]; then
     debug "Taking new testing release: $NEW_TESTING_RELEASE"
     NEWCLUSTER=`getcluster -b $NEW_TESTING_RELEASE`
     [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
