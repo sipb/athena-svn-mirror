@@ -38,7 +38,8 @@ fi
 # Skip other sanity checks in debug mode
 if [ $DEBUG -ne 1 ]; then
     # Only run this on cluster
-    if [ $(machtype -L) != "debathena-cluster" -a "$UPGRADE_ANYWAY" != "yes" ]; then
+    if [ $(machtype -L) != "debathena-cluster" ] && \
+       [ "$UPGRADE_ANYWAY" != "yes" ]; then
 	exit 0
     fi
     
@@ -67,7 +68,9 @@ if [ ! -z "$NEW_PRODUCTION_RELEASE" ]; then
     [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
     eval $NEWCLUSTER
 fi
-if [ ! -z "$NEW_TESTING_RELEASE" -a "$UPGRADE_TO_TESTING" = "yes" -a -z "$UBUNTU_RELEASE" ]; then
+if [ ! -z "$NEW_TESTING_RELEASE" ] && \
+    [ "$UPGRADE_TO_TESTING" = "yes" ] && \
+    [ "$UBUNTU_RELEASE" ]; then
     debug "Taking new testing release: $NEW_TESTING_RELEASE"
     NEWCLUSTER=`getcluster -b $NEW_TESTING_RELEASE`
     [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
