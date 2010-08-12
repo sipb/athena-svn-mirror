@@ -31,14 +31,14 @@ if [ $DEBUG -eq 1 ]; then
 fi
 
 # Not supported on Debian
-if [ $(lsb_release -si) != "Ubuntu" ]; then
+if [ "$(lsb_release -si)" != "Ubuntu" ]; then
     exit 0
 fi
 
 # Skip other sanity checks in debug mode
 if [ $DEBUG -ne 1 ]; then
     # Only run this on cluster
-    if [ $(machtype -L) != "debathena-cluster" ] && \
+    if [ "$(machtype -L)" != "debathena-cluster" ] && \
        [ "$UPGRADE_ANYWAY" != "yes" ]; then
 	exit 0
     fi
@@ -70,7 +70,7 @@ if [ ! -z "$NEW_PRODUCTION_RELEASE" ]; then
 fi
 if [ ! -z "$NEW_TESTING_RELEASE" ] && \
     [ "$UPGRADE_TO_TESTING" = "yes" ] && \
-    [ "$UBUNTU_RELEASE" ]; then
+    [ -z "$UBUNTU_RELEASE" ]; then
     debug "Taking new testing release: $NEW_TESTING_RELEASE"
     NEWCLUSTER=`getcluster -b $NEW_TESTING_RELEASE`
     [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
@@ -80,7 +80,7 @@ if [ -z "$UBUNTU_RELEASE" ]; then
     debug "No new releases."
     exit 0
 fi
-if [ $(lsb_release -sc) = "$UBUNTU_RELEASE" ]; then
+if [ "$(lsb_release -sc)" = "$UBUNTU_RELEASE" ]; then
     complain "Tried to upgrade to already running release; shouldn't happen"
     exit 1
 fi
