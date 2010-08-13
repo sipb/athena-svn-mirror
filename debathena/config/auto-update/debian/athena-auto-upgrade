@@ -16,6 +16,7 @@ complain() {
 
 # Redirect output to a log file
 exec >>/var/log/athena-upgrade 2>&1
+echo "Starting upgrade at $(date)"
 
 DEBUG=0
 MAYBE=""
@@ -66,7 +67,6 @@ if [ $DEBUG -ne 1 ]; then
     fi
 fi
 
-UBUNTU_RELEASE=
 CLUSTERINFO=`getcluster -b $(lsb_release -sr)`
 [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
 eval $CLUSTERINFO
@@ -75,16 +75,13 @@ if [ ! -z "$NEW_PRODUCTION_RELEASE" ]; then
     NEWCLUSTER=`getcluster -b $NEW_PRODUCTION_RELEASE`
     [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
     eval $NEWCLUSTER
-fi
-if [ ! -z "$NEW_TESTING_RELEASE" ] && \
-    [ "$UPGRADE_TO_TESTING" = "yes" ] && \
-    [ -z "$UBUNTU_RELEASE" ]; then
+elif [ ! -z "$NEW_TESTING_RELEASE" ] && \
+    [ "$UPGRADE_TO_TESTING" = "yes" ]; then
     debug "Taking new testing release: $NEW_TESTING_RELEASE"
     NEWCLUSTER=`getcluster -b $NEW_TESTING_RELEASE`
     [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
     eval $NEWCLUSTER
-fi
-if [ -z "$UBUNTU_RELEASE" ]; then
+else
     debug "No new releases."
     exit 0
 fi
