@@ -115,6 +115,6 @@ if [ $DEBUG -eq 1 ]; then
     exit 0
 fi
 /sbin/kexec -l linux --append="$dkargs $kargs" --initrd=initrd.gz \
-    && sleep 3 && chvt 1 && sleep 2 && ./kexec -e
+    && sleep 3 && chvt 1 && sleep 2 && /sbin/kexec -e
 complain "Failed to kexec."
 exit 1
