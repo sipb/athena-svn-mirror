@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.28) unstable; urgency=low
+
+  * Transform the pam gdm config to disallow root gdm logins (Trac #657)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 13 Aug 2010 13:29:10 -0400
+
 debathena-cluster-login-config (1.27.1) unstable; urgency=low
 
   * Fix a simple logic error in getty.

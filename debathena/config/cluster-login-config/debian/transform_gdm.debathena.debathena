@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s/^(#%PAM-[\d\.]+$)/$1\nauth\trequired\tpam_succeed_if.so user != root quiet/m or die;

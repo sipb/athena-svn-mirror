@@ -21,6 +21,8 @@ else
     DEB_REMOVE_FILES_debathena-cluster-login-config += \
 	/usr/share/xsessions/gnome-failsafe.desktop \
 	/usr/share/xsessions/xterm.desktop
+    DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
+	/etc/pam.d/gdm.debathena.debathena
 endif
 
 DEB_REMOVE_FILES_debathena-cluster-login-config += \
