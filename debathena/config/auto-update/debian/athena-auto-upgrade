@@ -14,6 +14,9 @@ complain() {
     fi
 }
 
+# Redirect output to a log file
+exec >>/var/log/athena-upgrade 2>&1
+
 DEBUG=0
 MAYBE=""
 if [ "$1" = "--debug" ]; then
@@ -32,6 +35,7 @@ fi
 
 # Not supported on Debian
 if [ "$(lsb_release -si)" != "Ubuntu" ]; then
+    debug "Only supported on Ubuntu.".
     exit 0
 fi
 
@@ -40,6 +44,7 @@ if [ $DEBUG -ne 1 ]; then
     # Only run this on cluster
     if [ "$(machtype -L)" != "debathena-cluster" ] && \
        [ "$UPGRADE_ANYWAY" != "yes" ]; then
+	debug "Not a cluster machine and UPGRADE_ANYWAY != yes.".
 	exit 0
     fi
     
@@ -49,11 +54,14 @@ if [ $DEBUG -ne 1 ]; then
 	pids=$(ps --no-heading -j -t "$tty" 2>/dev/null \
             | awk '($1 == $3) {print $1}')
 	if [ -n "$pids" ]; then
+	    debug "Users logged in, won't continue."
+	    debug "PIDs: $pids"
             exit 0
 	fi
     done
     # screen processes count as logins.
     if pgrep '^screen' > /dev/null; then
+	debug "Screen processes found, won't continue."
 	exit 0
     fi
 fi
