@@ -101,7 +101,6 @@ fi
 debug "Using IPADDR=$IPADDR"
 $MAYBE mkdir /h
 $MAYBE cd /h
-$MAYBE wget http://debathena.mit.edu/net-install/kexec
 $MAYBE wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/initrd.gz
 $MAYBE wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/linux
 $MAYBE chmod 755 kexec
@@ -115,7 +114,7 @@ debug "Would execute kexec with --append=\"$dkargs $kargs\""
 if [ $DEBUG -eq 1 ]; then
     exit 0
 fi
-./kexec -l linux --append="$dkargs $kargs" --initrd=initrd.gz \
+/sbin/kexec -l linux --append="$dkargs $kargs" --initrd=initrd.gz \
     && sleep 3 && chvt 1 && sleep 2 && ./kexec -e
 complain "Failed to kexec."
 exit 1
