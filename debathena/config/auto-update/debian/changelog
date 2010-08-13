@@ -1,7 +1,7 @@
 debathena-auto-update (1.19) unstable; urgency=low
 
   * Add athena-auto-upgrade to try and upgrade machines to a new release
-  * Depend on kexec, for auto-upgrade
+  * Depend on kexec-tools, for auto-upgrade
 
  -- Jonathan Reed <jdreed@mit.edu>  Thu, 12 Aug 2010 22:39:35 -0400
 
