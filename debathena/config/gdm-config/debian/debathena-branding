@@ -1,0 +1,107 @@
+#!/usr/bin/python -Wall
+
+import dbus
+import dbus.mainloop.glib
+import gtk
+import gobject
+#import time
+import os
+#import sys
+import subprocess
+#from optparse import OptionParser
+
+SM_DBUS_NAME = "org.gnome.SessionManager"
+SM_DBUS_PATH = "/org/gnome/SessionManager"
+SM_DBUS_INTERFACE = "org.gnome.SessionManager"
+SM_CLIENT_DBUS_INTERFACE = "org.gnome.SessionManager.ClientPrivate"
+APP_ID = "debathena-branding"
+
+class Branding:
+    def __init__(self):
+        self.sessionEnding = False
+        self.sessionBus = dbus.SessionBus()
+        try:
+            self.register_with_sm()
+            self.init_sm_client()
+        except:
+            print "Warning: Cannot register with session manager."
+
+        self.welcomeWindow = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.welcomeLabel = gtk.Label()
+        self.welcomeLabel.set_justify(gtk.JUSTIFY_CENTER)
+        self.welcomeLabel.set_padding(2,2)
+        self.welcomeLabel.set_markup('<span size="xx-large">Welcome to Debathena</span>')
+        self.welcomeWindow.set_position(gtk.WIN_POS_CENTER)
+        self.welcomeWindow.add(self.welcomeLabel)
+        self.welcomeWindow.set_decorated(False)
+        x, y = self.welcomeWindow.get_position()
+        self.welcomeWindow.move(x, y - 200)
+        self.brandingWindow = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.brandingLabel = gtk.Label()
+        self.brandingLabel.set_justify(gtk.JUSTIFY_CENTER)
+        self.brandingLabel.set_padding(2,2)
+        self.brandingWindow.add(self.brandingLabel)
+        # Turn off all window decorations for the login screen.
+        self.brandingWindow.set_decorated(False)
+        try:
+            metapackage = subprocess.Popen(["machtype", "-L"], stdout=subprocess.PIPE).communicate()[0].rstrip()
+        except OSError:
+            metapackage = '(error)'
+        try:
+            baseos = subprocess.Popen(["machtype", "-E"], stdout=subprocess.PIPE).communicate()[0].rstrip()
+        except OSError:
+            baseos = '(error)'
+        self.brandingLabel.set_text(metapackage + "\n" + baseos)
+        self.brandingWindow.set_gravity(gtk.gdk.GRAVITY_SOUTH_EAST)
+        self.brandingWindow.set_size_request(self.brandingLabel.get_property('width-chars'),-1)
+        width, height = self.brandingWindow.get_size()
+        self.brandingWindow.move(gtk.gdk.screen_width(),
+                              gtk.gdk.screen_height())
+        self.brandingWindow.show_all()
+        self.welcomeWindow.show_all()
+
+    # Connect to the session manager, and register our client.
+    def register_with_sm(self):
+        proxy = self.sessionBus.get_object(SM_DBUS_NAME, SM_DBUS_PATH)
+        sm = dbus.Interface(proxy, SM_DBUS_INTERFACE)
+        autostart_id = os.getenv("DESKTOP_AUTOSTART_ID", default="")
+        self.smClientId = sm.RegisterClient(APP_ID, autostart_id)
+
+    # Set up to handle signals from the session manager.
+    def init_sm_client(self):
+        proxy = self.sessionBus.get_object(SM_DBUS_NAME, self.smClientId)
+        self.smClient = dbus.Interface(proxy, SM_CLIENT_DBUS_INTERFACE)
+        self.smClient.connect_to_signal("QueryEndSession",
+                                         self.sm_on_QueryEndSession)
+        self.smClient.connect_to_signal("EndSession", self.sm_on_EndSession)
+        self.smClient.connect_to_signal("CancelEndSession",
+                                         self.sm_on_CancelEndSession)
+        self.smClient.connect_to_signal("Stop", self.sm_on_Stop)
+
+    # Here on a QueryEndSession signal from the session manager.
+    def sm_on_QueryEndSession(self, flags):
+        self.sessionEnding = True
+        # Response args: is_ok, reason.
+        self.smClient.EndSessionResponse(True, "")
+
+    # Here on an EndSession signal from the session manager.
+    def sm_on_EndSession(self, flags):
+        self.sessionEnding = True
+        # Response args: is_ok, reason.
+        self.smClient.EndSessionResponse(True, "")
+
+    # Here on a CancelEndSession signal from the session manager.
+    def sm_on_CancelEndSession(self):
+        self.sessionEnding = False
+
+    # Here on a Stop signal from the session manager.
+    def sm_on_Stop(self):
+        gtk.main_quit()
+
+def main():
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    Branding()
+    gtk.main()
+
+if __name__ == '__main__':
+    main()

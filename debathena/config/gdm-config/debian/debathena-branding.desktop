@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Debathena branding widget
+TryExec=/usr/lib/debathena-branding/debathena-branding
+Exec=/usr/lib/debathena-branding/debathena-branding
+OnlyShowIn=GNOME;
