@@ -1,4 +1,4 @@
-debathena-gdm-config (1.22) UNRELEASED; urgency=low
+debathena-gdm-config (1.22) unstable; urgency=low
 
   * Add branding widget for new gdm (Trac: #505)
 
