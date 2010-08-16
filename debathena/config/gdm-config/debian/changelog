@@ -1,3 +1,9 @@
+debathena-gdm-config (1.23) UNRELEASED; urgency=low
+
+  * Add an applet to monitor /etc/nologin on new-GDM
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 16 Aug 2010 17:12:59 -0400
+
 debathena-gdm-config (1.22.1) unstable; urgency=low
 
   * Fix typo in rules file

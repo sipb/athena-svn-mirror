@@ -1,0 +1,95 @@
+#!/usr/bin/python
+#
+# An applet to monitor /etc/nologin
+
+import gio
+import dbus
+import dbus.mainloop.glib
+import gtk
+import gobject
+import sys
+import os
+
+SM_DBUS_NAME = "org.gnome.SessionManager"
+SM_DBUS_PATH = "/org/gnome/SessionManager"
+SM_DBUS_INTERFACE = "org.gnome.SessionManager"
+SM_CLIENT_DBUS_INTERFACE = "org.gnome.SessionManager.ClientPrivate"
+APP_ID = "debathena-nologin-monitor"
+
+class GDMSucks:
+    def __init__(self):
+        self.sessionEnding = False
+        self.sessionBus = dbus.SessionBus()
+        try:
+            self.register_with_sm()
+            self.init_sm_client()
+        except:
+            print "Warning: Cannot register with session manager."
+        
+        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.label = gtk.Label()
+        self.label.set_markup('<span font_desc="Sans Bold 24">This workstation is temporarily unavailable.  Please use another workstation.</span>')
+        self.window.add(self.label)
+        self.window.set_decorated(False)
+        self.window.set_position(gtk.WIN_POS_CENTER)
+        self.window.hide()
+        self.gfile = gio.File("/etc/nologin")
+        self.monitor = self.gfile.monitor_file(gio.FILE_MONITOR_NONE, None)
+        self.monitor.connect("changed", self.directory_changed)
+
+    def directory_changed(self, monitor, file1, file2, evt_type):
+        # type(evt_type) is <class 'gio._gio.FileMonitorEvent'>
+        # Value is something like:
+        #     <enum G_FILE_MONITOR_EVENT_CREATED of type GFileMonitorEvent>
+        # However, those constants aren't available in Python, unless I'm missing something
+        # So, we do this the stupid way:
+        if str(evt_type) == "<enum G_FILE_MONITOR_EVENT_CREATED of type GFileMonitorEvent>":
+            self.window.show_all()
+        if str(evt_type) == "<enum G_FILE_MONITOR_EVENT_DELETED of type GFileMonitorEvent>":
+            self.window.hide()
+
+   # Connect to the session manager, and register our client.
+    def register_with_sm(self):
+        proxy = self.sessionBus.get_object(SM_DBUS_NAME, SM_DBUS_PATH)
+        sm = dbus.Interface(proxy, SM_DBUS_INTERFACE)
+        autostart_id = os.getenv("DESKTOP_AUTOSTART_ID", default="")
+        self.smClientId = sm.RegisterClient(APP_ID, autostart_id)
+
+    # Set up to handle signals from the session manager.
+    def init_sm_client(self):
+        proxy = self.sessionBus.get_object(SM_DBUS_NAME, self.smClientId)
+        self.smClient = dbus.Interface(proxy, SM_CLIENT_DBUS_INTERFACE)
+        self.smClient.connect_to_signal("QueryEndSession",
+                                         self.sm_on_QueryEndSession)
+        self.smClient.connect_to_signal("EndSession", self.sm_on_EndSession)
+        self.smClient.connect_to_signal("CancelEndSession",
+                                         self.sm_on_CancelEndSession)
+        self.smClient.connect_to_signal("Stop", self.sm_on_Stop)
+
+     # Here on a QueryEndSession signal from the session manager.
+    def sm_on_QueryEndSession(self, flags):
+        self.sessionEnding = True
+        # Response args: is_ok, reason.
+        self.smClient.EndSessionResponse(True, "")
+
+    # Here on an EndSession signal from the session manager.
+    def sm_on_EndSession(self, flags):
+        self.sessionEnding = True
+        # Response args: is_ok, reason.
+        self.smClient.EndSessionResponse(True, "")
+
+    # Here on a CancelEndSession signal from the session manager.
+    def sm_on_CancelEndSession(self):
+        self.sessionEnding = False
+
+    # Here on a Stop signal from the session manager.
+    def sm_on_Stop(self):
+        gtk.main_quit()
+
+def main():
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    GDMSucks()
+    gtk.main()
+
+if __name__ == '__main__':
+    main()

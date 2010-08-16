@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Debathena /etc/nologin monitor widget
+TryExec=/usr/lib/debathena-nologin-monitor/debathena-nologin-monitor
+Exec=/usr/lib/debathena-nologin-monitor/debathena-nologin-monitor
+OnlyShowIn=GNOME;
