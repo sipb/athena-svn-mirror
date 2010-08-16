@@ -14,7 +14,7 @@ SM_DBUS_PATH = "/org/gnome/SessionManager"
 SM_DBUS_INTERFACE = "org.gnome.SessionManager"
 SM_CLIENT_DBUS_INTERFACE = "org.gnome.SessionManager.ClientPrivate"
 APP_ID = "debathena-branding"
-GLADE_FILE="debathena-branding.glade"
+GLADE_FILE="/usr/share/debathena-branding/debathena-branding.glade"
 DEBATHENA_LOGO_FILE="/usr/share/pixmaps/debathena.png"
 LOGO_SCALE=0.60
 

@@ -36,6 +36,9 @@ debathena/distro.svg: debian/distro.svg.sh
 ifneq ($(NEW_GDM),y)
     install/debathena-gdm-config::
 	dh_install debian/default.desktop.debathena usr/share/gdm/BuiltInSessions
+	dh_install debian/debathena-branding usr/lib/debathena-branding
+	dh_install debian/debathena-branding.glade usr/share/debathena-branding
+	dh_install debian/debathena-branding.desktop usr/share/gdm/autostart/LoginWindow
 else
     install/debathena-gdm-config::
 	dh_install debian/background.jpg usr/share/debathena-gdm-config

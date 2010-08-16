@@ -1,3 +1,9 @@
+debathena-gdm-config (1.22) UNRELEASED; urgency=low
+
+  * Add branding widget for new gdm (Trac: #505)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 15 Aug 2010 22:23:08 -0400
+
 debathena-gdm-config (1.21) unstable; urgency=low
 
   [ Jonathan Reed ]
