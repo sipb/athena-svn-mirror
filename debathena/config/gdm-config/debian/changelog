@@ -1,3 +1,9 @@
+debathena-gdm-config (1.22.1) unstable; urgency=low
+
+  * Fix typo in rules file
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 15 Aug 2010 23:28:16 -0400
+
 debathena-gdm-config (1.22) unstable; urgency=low
 
   * Add branding widget for new gdm (Trac: #505)
