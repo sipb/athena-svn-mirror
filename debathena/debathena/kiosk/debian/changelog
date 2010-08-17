@@ -1,8 +1,13 @@
-debathena-kiosk (1.4) UNRELEASED; urgency=low
+debathena-kiosk (1.4) unstable; urgency=low
 
+  [ Evan Broder ]
   * Replace an awful Perl idiom with a much less awful one in the prerm.
 
- -- Evan Broder <broder@mit.edu>  Thu, 27 May 2010 13:29:55 -0400
+  [ Jonathan Reed ]
+  * Rename button to make it more obvious how to register
+  * Depend on a Java plugin (Trac: #675)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 17 Aug 2010 15:09:24 -0400
 
 debathena-kiosk (1.3.1) unstable; urgency=low
 

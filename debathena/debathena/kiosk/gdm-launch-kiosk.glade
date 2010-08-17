@@ -19,7 +19,7 @@
             <property name="has_tooltip">True</property>
             <property name="tooltip_text">Browse the web, register for an Athena account, etc.</property>
             <property name="tooltip" translatable="yes">Browse the web, register for an Athena account, etc.</property>
-            <property name="label" translatable="yes">Browse</property>
+            <property name="label" translatable="yes">Browse / Register for Account</property>
             <property name="response_id">0</property>
             <signal name="clicked" handler="kioskButton_on_click"/>
           </widget>
