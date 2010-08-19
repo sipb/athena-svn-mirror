@@ -4,4 +4,4 @@ s/^\s*#?\s*BrowseProtocols.*$//m;
 s/^\s*#?\s*BrowsePoll.*$//m;
 s/^\s*#?\s*BrowseInterval.*$//m;
 s/^\s*#?\s*BrowseTimeout.*$//m;
-s/$/\nBrowsing On\nBrowseProtocols cups\nBrowsePoll cluster-printers.mit.edu\nBrowseInterval 600\nBrowseTimeout 1200/ or die;
+s|$|\nInclude /usr/share/debathena-cupsys-config/cupsd-site.conf| or die;

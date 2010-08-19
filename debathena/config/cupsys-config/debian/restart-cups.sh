@@ -23,6 +23,9 @@ restart_cups()
 	    # Wait up to two minutes to pick up all the BrowsePoll server's queues.
 	    browse_host="$(sed -ne '/^BrowsePoll/ { s/^BrowsePoll //p; q }' /etc/cups/cupsd.conf)"
 	    if [ -n "$browse_host" ]; then
+		browse_host="$(sed -ne '/^BrowsePoll/ { s/^BrowsePoll //p; q }' /usr/share/debathena-cupsys-config/cupsd-site.conf)"
+	    fi
+	    if [ -n "$browse_host" ]; then
 		echo "Retrieving printer list, please wait..." >&2
 		echo "(This may take up to 30 seconds)" >&2
 		queue_count=$(lpstat -h "$browse_host" -a | awk '{print $1}' | sort -u | wc -l)

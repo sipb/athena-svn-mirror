@@ -1,3 +1,10 @@
+debathena-cupsys-config (1.12) UNRELEASED; urgency=low
+
+  * Change the diversion of cupsd.conf so that it includes a separate file
+  * Make restart_cups aware of this new file
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 19 Aug 2010 11:54:07 -0400
+
 debathena-cupsys-config (1.11) unstable; urgency=low
 
   * In restart-cups.sh, temporarily spawn our own instance cups-polld to
