@@ -5,7 +5,7 @@ CUPS_14 = $(shell dpkg --compare-versions $(CUPS_VERSION) ge '1.4.3~' && echo y)
 
 DEB_DIVERT_EXTENSION = .debathena
 
-ifneq ($(CUPS_14),y)
+ifeq ($(CUPS_14),y)
     DEB_DIVERT_FILES_debathena-cluster-cups-config += \
 	/usr/share/debathena-cupsys-config/cupsd-site.conf.debathena
 endif
