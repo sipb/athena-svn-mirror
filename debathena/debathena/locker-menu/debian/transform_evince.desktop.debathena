@@ -1,0 +1,2 @@
+#!/usr/bin/perl -p0
+s/^NoDisplay=true$/NoDisplay=false/m or die;

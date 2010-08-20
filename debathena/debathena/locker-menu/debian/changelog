@@ -1,3 +1,9 @@
+debathena-locker-menu (1.8) unstable; urgency=low
+
+  * Make Evince stop hiding itself (Trac: #663)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 20 Aug 2010 10:50:17 -0400
+
 debathena-locker-menu (1.7) unstable; urgency=low
 
   * Temporarily fix MATLAB by making it run in a terminal (Trac #541)

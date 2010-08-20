@@ -7,7 +7,9 @@ Standards-Version: 3.7.2
 
 Package: debathena-locker-menu
 Architecture: all
-Depends: debathena-gathrun, ${misc:Depends}
+Depends: debathena-gathrun, evince, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
 Description: Athena locker software application sub-menu
  This package creates an application sub-menu for popular Athena
  locker software.
