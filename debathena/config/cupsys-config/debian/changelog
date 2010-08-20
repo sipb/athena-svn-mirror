@@ -1,4 +1,4 @@
-debathena-cupsys-config (1.12) UNRELEASED; urgency=low
+debathena-cupsys-config (1.12) unstable; urgency=low
 
   * Change the diversion of cupsd.conf so that it includes a separate file
   * Make restart_cups aware of this new file
