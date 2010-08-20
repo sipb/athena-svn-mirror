@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-cluster
-Version: 1.6
+Version: 1.7
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-cluster-branding,
  debathena-workstation,
