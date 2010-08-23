@@ -27,6 +27,13 @@ set -e
 
 restart_cups_extra()
 {
+    # CUPS needs to not be running while we do this.
+    if [ "$1" -gt 0 ]; then
+        echo "CUPS is running and cannot be stopped automatically!" >&2
+        echo "Please shut down CUPS and retry configuring this package." >&2
+        return 1
+    fi
+
     # Make a directory to back up the old printers/classes.conf if we
     # haven't previously done so.
     if ! [ -e /etc/cups/debathena-cluster-cups-config-saved ]; then

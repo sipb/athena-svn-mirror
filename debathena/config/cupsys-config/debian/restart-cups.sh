@@ -18,9 +18,14 @@ restart_cups()
 	    if $invoke stop; then
 		rm -f /var/cache/cups/remote.cache
 		if type restart_cups_extra >/dev/null 2>&1; then
-		    restart_cups_extra
+		    restart_cups_extra 0
 		fi
 		$invoke start
+	    else
+		ret="$?"
+		if type restart_cups_extra >/dev/null 2>&1; then
+		    restart_cups_extra "$ret"
+		fi
 	    fi
 
 	    # Wait up to two minutes to pick up all the BrowsePoll server's queues.
@@ -57,6 +62,10 @@ restart_cups()
 			sleep 1
 			timeout=$((timeout+1))
 		    done)
+	    fi
+	else
+	    if type restart_cups_extra >/dev/null 2>&1; then
+		restart_cups_extra -1
 	    fi
 	fi
 }

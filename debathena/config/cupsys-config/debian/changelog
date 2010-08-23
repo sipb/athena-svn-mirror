@@ -6,9 +6,9 @@ debathena-cupsys-config (1.12) unstable; urgency=low
 
   [ Geoffrey Thomas ]
   * Permit restart_cups to take a callback restart_cups_extra to do
-    other stuff while cups is down
+    other stuff while cups is down (or if we're not restarting it)
 
- -- Geoffrey Thomas <geofft@mit.edu>  Mon, 23 Aug 2010 03:16:00 -0400
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 23 Aug 2010 04:12:45 -0400
 
 debathena-cupsys-config (1.11) unstable; urgency=low
 
