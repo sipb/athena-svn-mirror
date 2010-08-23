@@ -17,6 +17,9 @@ restart_cups()
 	    # cupsd anyway).
 	    if $invoke stop; then
 		rm -f /var/cache/cups/remote.cache
+		if type restart_cups_extra >/dev/null 2>&1; then
+		    restart_cups_extra
+		fi
 		$invoke start
 	    fi
 

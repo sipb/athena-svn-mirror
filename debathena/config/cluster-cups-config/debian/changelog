@@ -6,5 +6,6 @@ debathena-cluster-cups-config (1.0) unstable; urgency=low
   [ Geoffrey Thomas ]
   * Build-depend on cupsys | cups (by depending on debathena-cups)
     so that it's available for package version testing.
+  * Also do something useful with the printers.conf and classes.conf files.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Mon, 23 Aug 2010 01:22:58 -0400
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 23 Aug 2010 03:13:35 -0400
