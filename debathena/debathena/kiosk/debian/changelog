@@ -1,3 +1,10 @@
+debathena-kiosk (1.4.1) unstable; urgency=low
+
+  * Offer the user a chance to run the standalone reg applet, 
+    since IcedTea sucks (Trac: #675, #650)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 23 Aug 2010 14:16:15 -0400
+
 debathena-kiosk (1.4) unstable; urgency=low
 
   [ Evan Broder ]
@@ -7,7 +14,7 @@ debathena-kiosk (1.4) unstable; urgency=low
   * Rename button to make it more obvious how to register
   * Depend on a Java plugin (Trac: #675)
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 17 Aug 2010 15:09:24 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 23 Aug 2010 14:15:20 -0400
 
 debathena-kiosk (1.3.1) unstable; urgency=low
 

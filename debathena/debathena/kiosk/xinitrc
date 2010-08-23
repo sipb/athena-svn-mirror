@@ -24,6 +24,21 @@ export XAUTHORITY
 # Run a window manager so that firefox fullscreen mode works.
 metacity --sm-disable &
 
+choice=$(zenity --title="What would you like to do?" --text="Select the task y\
+ou wish to perform, then click \"OK\"" --list  --column="task" --column="Activ\
+ity" --hide-column=1 "reg" "Register for Account" "web" "Browse the Web")
+[ $? -eq 0 ] || exit 0
+if [ "$choice" = "reg" ]; then
+    classzip="/afs/athena.mit.edu/system/register/java/regclasses.zip"
+    if [ ! -r "$classzip" ]; then
+	zenity --error --text="An error occurred while trying to launch the registration applet.  Please try another workstation."
+	exit 0
+    fi
+    unzip $classzip
+    java -Dhost="moira.mit.edu"	regapplet.Regapplet
+    exit 0
+fi
+
 # Create a new firefox profile.
 rm -rf .mozilla
 firefox -CreateProfile default > /dev/null || exit 1
