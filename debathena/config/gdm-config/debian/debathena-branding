@@ -16,7 +16,6 @@ SM_CLIENT_DBUS_INTERFACE = "org.gnome.SessionManager.ClientPrivate"
 APP_ID = "debathena-branding"
 GLADE_FILE="/usr/share/debathena-branding/debathena-branding.glade"
 DEBATHENA_LOGO_FILE="/usr/share/pixmaps/debathena.png"
-LOGO_SCALE=0.60
 
 class Branding:
     def __init__(self):
@@ -36,11 +35,17 @@ class Branding:
 
         
         self.winWelcome = self.xml.get_widget('winWelcome')
-        self.winWelcome.move(self.winWelcome.get_position()[0], 200)
+        moveY = 200
+        logoScale = 0.60
+        if gtk.gdk.screen_height() < 864:
+            # Here's a nickel, buy a real display
+            moveY = 0
+            logoScale = 0.40
+        self.winWelcome.move(self.winWelcome.get_position()[0], moveY)
         self.imgDebathena = self.xml.get_widget('imgDebathena')
         try:
             pixbuf = gtk.gdk.pixbuf_new_from_file(DEBATHENA_LOGO_FILE)
-            self.imgDebathena.set_from_pixbuf(pixbuf.scale_simple(pixbuf.get_width() * LOGO_SCALE, pixbuf.get_height() * LOGO_SCALE, gtk.gdk.INTERP_BILINEAR))
+            self.imgDebathena.set_from_pixbuf(pixbuf.scale_simple(int(pixbuf.get_width() * logoScale), int(pixbuf.get_height() * logoScale), gtk.gdk.INTERP_BILINEAR))
         except:
             # Just don't display the image if it's missing
             pass 

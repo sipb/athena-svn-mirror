@@ -1,4 +1,10 @@
-debathena-gdm-config (1.23) UNRELEASED; urgency=low
+debathena-gdm-config (1.23.1) unstable; urgency=low
+
+  * Support legacy display resolutions
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 23 Aug 2010 17:14:31 -0400
+
+debathena-gdm-config (1.23) unstable; urgency=low
 
   * Add an applet to monitor /etc/nologin on new-GDM
 
