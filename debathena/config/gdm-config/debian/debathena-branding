@@ -41,7 +41,7 @@ class Branding:
             # Here's a nickel, buy a real display
             moveY = 0
             logoScale = 0.40
-        self.winWelcome.move(self.winWelcome.get_position()[0], moveY)
+        self.winWelcome.move((gtk.gdk.screen_width() - self.winWelcome.get_size()[0]) / 2, moveY)
         self.imgDebathena = self.xml.get_widget('imgDebathena')
         try:
             pixbuf = gtk.gdk.pixbuf_new_from_file(DEBATHENA_LOGO_FILE)
