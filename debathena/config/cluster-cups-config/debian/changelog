@@ -1,5 +1,10 @@
 debathena-cluster-cups-config (1.0) unstable; urgency=low
 
+  [ Jonathan Reed ]
   * Initial release.
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 19 Aug 2010 13:10:28 -0400
+  [ Geoffrey Thomas ]
+  * Build-depend on cups so that it's available for package version
+    testing.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 23 Aug 2010 01:22:58 -0400
