@@ -1,3 +1,9 @@
+debathena-gdm-config (1.23.2) unstable; urgency=low
+
+  * Deal with corner case of set_position not being honored
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 24 Aug 2010 14:50:51 -0400
+
 debathena-gdm-config (1.23.1) unstable; urgency=low
 
   * Support legacy display resolutions
