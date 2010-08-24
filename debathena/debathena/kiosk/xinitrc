@@ -29,13 +29,14 @@ ou wish to perform, then click \"OK\"" --list  --column="task" --column="Activ\
 ity" --hide-column=1 "reg" "Register for Account" "web" "Browse the Web")
 [ $? -eq 0 ] || exit 0
 if [ "$choice" = "reg" ]; then
+    errtext="An error occurred while trying to launch the registration applet.  Please try another workstation."
     classzip="/afs/athena.mit.edu/system/register/java/regclasses.zip"
     if [ ! -r "$classzip" ]; then
-	zenity --error --text="An error occurred while trying to launch the registration applet.  Please try another workstation."
+	zenity --error --text="${errtext}\n\n(could not unzip class file)"
 	exit 0
     fi
     unzip $classzip
-    java -Dhost="moira.mit.edu"	regapplet.Regapplet
+    java -Dhost="moira.mit.edu" regapplet.Regapplet || zenity --error --text="${errtext}\n\n(could not launch java)"
     exit 0
 fi
 
