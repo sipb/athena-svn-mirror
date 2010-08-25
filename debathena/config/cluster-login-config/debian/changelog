@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.29) unstable; urgency=low
+
+  * Transform the dbus gdm.conf to break user switching
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 25 Aug 2010 17:50:40 -0400
+
 debathena-cluster-login-config (1.28) unstable; urgency=low
 
   * Transform the pam gdm config to disallow root gdm logins (Trac #657)

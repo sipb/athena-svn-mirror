@@ -1,7 +1,9 @@
 #!/usr/bin/make -f
 
 GDM_VERSION = $(shell dpkg-query --showformat='$${Version}' --show gdm)
+CUPS_VERSION = $(shell dpkg-query --showformat='$${Version}' --show cups || echo 0)
 NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' && echo y)
+CUPS_14 = $(shell dpkg --compare-versions $(CUPS_VERSION) ge '1.4.3~' && echo y)
 EVENT_D = $(shell test -f /etc/event.d/tty1 && echo y)
 
 DEB_DIVERT_EXTENSION = .debathena
@@ -23,6 +25,8 @@ else
 	/usr/share/xsessions/xterm.desktop
     DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
 	/etc/pam.d/gdm.debathena.debathena
+    DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
+	/etc/dbus-1/system.d/gdm.conf.debathena
 endif
 
 DEB_REMOVE_FILES_debathena-cluster-login-config += \
@@ -59,6 +63,11 @@ else
     DEB_UNREMOVE_VERSION_/etc/init/tty4.conf = 1.24~
     DEB_UNREMOVE_VERSION_/etc/init/tty5.conf = 1.24~
     DEB_UNREMOVE_VERSION_/etc/init/tty6.conf = 1.24~
+endif
+
+ifeq ($(CUPS_14),y)
+    DEB_DIVERT_FILES_debathena-cluster-login-config += \
+	/usr/share/debathena-cupsys-config/cupsd-site.conf.debathena
 endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk
