@@ -1,9 +1,9 @@
 #!/usr/bin/make -f
 
 GDM_VERSION = $(shell dpkg-query --showformat='$${Version}' --show gdm)
-CUPS_VERSION = $(shell dpkg-query --showformat='$${Version}' --show cups || echo 0)
+CUPS_VERSION = $(shell dpkg-query --showformat='$${Version}' --show cups)
 NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' && echo y)
-CUPS_14 = $(shell dpkg --compare-versions $(CUPS_VERSION) ge '1.4.3~' && echo y)
+CUPS_14 = $(shell dpkg --compare-versions '$(CUPS_VERSION)' ge '1.4.3~' && echo y)
 EVENT_D = $(shell test -f /etc/event.d/tty1 && echo y)
 
 DEB_DIVERT_EXTENSION = .debathena
