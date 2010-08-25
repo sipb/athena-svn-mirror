@@ -23,10 +23,8 @@ else
 	/usr/share/xsessions/xterm.desktop
     DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
 	/etc/pam.d/gdm.debathena.debathena
-    ifneq ($(wildcard /etc/dbus-1/system.d/gdm.conf),)
-        DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
-	    /etc/dbus-1/system.d/gdm.conf.debathena
-    endif
+    DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
+	/etc/dbus-1/system.d/gdm.conf.debathena
 endif
 
 DEB_REMOVE_FILES_debathena-cluster-login-config += \
