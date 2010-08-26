@@ -1,5 +1,14 @@
 # Defaults for athena-auto-upgrade(8)
 
+# Warning:
+#
+#                      DESTROYS
+# An automatic upgrade DESTROYS the contents of your hard drive
+#                      DESTROYS
+#
+# This functionality is intended for only for cluster machines
+# and users who have no local data
+
 # Values for options are 'yes' or 'no'
 # Really, don't change these unless you know what you're doing
 
@@ -7,4 +16,6 @@
 UPGRADE_TO_TESTING=no
 
 # Upgrade automatically, even if this isn't a cluster machine?
+# (Go back and read the warning at the top again)
+# Note: This will turn your workstation into a cluster machine
 UPGRADE_ANYWAY=no

@@ -108,7 +108,6 @@ $MAYBE mkdir /h
 $MAYBE cd /h
 $MAYBE wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/initrd.gz
 $MAYBE wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/linux
-$MAYBE chmod 755 kexec
 # This is just the guts of the hackboot script:
 dkargs="DEBCONF_DEBUG=5"
 kargs="netcfg/get_hostname= locale=en_US console-setup/layoutcode=us \

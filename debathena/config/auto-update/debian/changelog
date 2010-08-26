@@ -1,3 +1,10 @@
+debathena-auto-update (1.19.1) unstable; urgency=low
+
+  * Don't chmod non-existent files
+  * Be louder in the comments
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 26 Aug 2010 14:39:12 -0400
+
 debathena-auto-update (1.19) unstable; urgency=low
 
   * Add athena-auto-upgrade to try and upgrade machines to a new release
