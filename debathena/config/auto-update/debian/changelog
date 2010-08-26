@@ -2,6 +2,7 @@ debathena-auto-update (1.19.1) unstable; urgency=low
 
   * Don't chmod non-existent files
   * Be louder in the comments
+  * Use wget -N for completeness
 
  -- Jonathan Reed <jdreed@mit.edu>  Thu, 26 Aug 2010 14:39:12 -0400
 
