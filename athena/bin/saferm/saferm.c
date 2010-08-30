@@ -23,6 +23,9 @@
 
 static const char rcsid[] = "$Id: saferm.c,v 1.6 1999-09-21 20:09:11 danw Exp $";
 
+/* See feature_test_macros(7) */
+#define _FILE_OFFSET_BITS 64
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -227,7 +230,8 @@ static int safe_open(char *filename, struct stat *file_stat)
 static int zero(int file, struct stat *file_stat)
 {
   char zeroes[BUFSIZ];
-  int written = 0, status;
+  off_t written = 0;
+  ssize_t status;
 
   memset(zeroes, 0, BUFSIZ);
 
