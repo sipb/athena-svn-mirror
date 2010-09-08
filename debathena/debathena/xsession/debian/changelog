@@ -1,3 +1,10 @@
+debathena-xsession (1.16) unstable; urgency=low
+
+  * Make the 'xterm' login session actually useful
+  * Warn about quota early in the session so users know why logins fail.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 08 Sep 2010 13:03:23 -0400
+
 debathena-xsession (1.15) unstable; urgency=low
 
   * Add an autostart delay for the initial terminal, to prevent
