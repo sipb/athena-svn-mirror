@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Athena TTY (Terminal) Session
+Comment=Athena TTY mode login
+Exec=xterm
+TryExec=xterm
+Icon=
+Type=Application
+X-Ubuntu-Gettext-Domain=gdm
