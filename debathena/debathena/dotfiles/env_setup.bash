@@ -17,8 +17,9 @@ if [ $? == 0 ]; then
 		source $setup_dir/.attachrc.bash
         else
 	    if [ -r $setup_dir/.attachrc ]; then
-		echo "This locker is not yet configured for the 'setup' command."
-		echo "Contact the locker maintainer for more information."
+		echo "This locker is not yet configured for the 'setup' command with the bash shell."
+		echo "(.attachrc.bash not readable).  Please contact the locker maintainer."
+		echo "For more information, see http://debathena.mit.edu/setup.bash"
 	    fi
 	    # Do minimal environment setup
 	    add $setup_filsys
