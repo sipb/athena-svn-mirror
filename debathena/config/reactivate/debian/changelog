@@ -1,4 +1,4 @@
-debathena-reactivate (2.0.19) UNRELEASED; urgency=low
+debathena-reactivate (2.0.19) unstable; urgency=low
 
   [ Jonathan Reed ]
   * Fix package name in maintainer scripts
