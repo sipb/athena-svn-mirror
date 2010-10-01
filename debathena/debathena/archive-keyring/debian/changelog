@@ -1,4 +1,4 @@
-debathena-archive-keyring (1.4) UNRELEASED; urgency=low
+debathena-archive-keyring (1.4) unstable; urgency=low
 
   * Fix package name in maintainer scripts
 
