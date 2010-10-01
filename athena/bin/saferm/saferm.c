@@ -23,9 +23,6 @@
 
 static const char rcsid[] = "$Id: saferm.c,v 1.6 1999-09-21 20:09:11 danw Exp $";
 
-/* See feature_test_macros(7) */
-#define _FILE_OFFSET_BITS 64
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
