@@ -1,4 +1,4 @@
-debathena-msmtp-config (1.8.8) UNRELEASED; urgency=low
+debathena-msmtp-config (1.8.8) unstable; urgency=low
 
   * Fix package name in maintainer scripts
 
