@@ -478,7 +478,11 @@ imperfect.  Substitute the name of the new suite for "newdist" in all
 steps below.
 
   1. Make sure the apt repository is up to date with respect to the
-     source tree for the existing dists.
+     source tree for the existing dists. Check
+     debathena.mit.edu/package-list/development and
+     debathena.mit.edu/package-list/proposed. More importantly, make
+     sure there is nothing in svn that isn't built. (An easy way to do
+     this is running the check-unbuilt-packages script.)
 
   2. Add the new dist to scripts/debian-versions.sh.  (It is not
      necessary to add the new dist to codes at this point, but it must
