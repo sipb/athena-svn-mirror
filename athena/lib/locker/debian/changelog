@@ -1,4 +1,4 @@
-debathena-liblocker (10.0.2-0debathena1) UNRELEASED; urgency=low
+debathena-liblocker (10.0.2-0debathena1) unstable; urgency=low
 
   * Update our autoconf for the 21st century.
   * Use debathena-aclocal instead of the Athena aclocal.m4 file.
