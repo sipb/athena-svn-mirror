@@ -54,7 +54,7 @@ install/debathena-pam-config::
 	install -D -m 644 debian/libpam-krb5.pam-config \
 	  $(DEB_DESTDIR)/usr/share/pam-configs/krb5.debathena
 	install -D -m 644 debian/libpam-afs-session.pam-config \
-	  $(DEB_DESTDIR)/usr/share/pam-configs/afs-session
+	  $(DEB_DESTDIR)/usr/share/pam-configs/afs-session.debathena
 debathena-pam-config-substvars:
 	( \
 	  echo -n "debathena-pam-config-depends="; \
