@@ -40,7 +40,7 @@ DEB_DIVERT_FILES_debathena-pam-config += \
 
 DEB_REMOVE_FILES_debathena-pam-config += \
 	/usr/share/pam-configs/krb5 \
-	/usr/share/pam-configs/afs-session.debathena
+	/usr/share/pam-configs/afs-session
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
