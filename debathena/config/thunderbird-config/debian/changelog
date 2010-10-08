@@ -1,3 +1,10 @@
+debathena-thunderbird-config (1.6) unstable; urgency=low
+
+  * Unbreak Thunderbird 3 by temporarily making the package do nothing
+  * Inform the user that configuration no longer works.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 08 Oct 2010 16:06:39 -0400
+
 debathena-thunderbird-config (1.5) unstable; urgency=low
 
   * Instead of dropping a file into /etc/thunderbird/pref, drop in a
