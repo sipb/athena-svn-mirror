@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software-nox
-Version: 0.26
+Version: 0.27
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: build-essential, debathena-build-depends,
   enscript, psutils,
@@ -17,7 +17,7 @@ Depends: build-essential, debathena-build-depends,
   texlive-full | tetex-extra,
   krb5-clients,
   remctl-client,
-  drscheme,
+  drscheme | plt-scheme,
   inn2-inews,
   screen,
   lynx, links, links2,
