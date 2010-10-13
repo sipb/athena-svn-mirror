@@ -1,3 +1,9 @@
+debathena-athinfod (10.0.0-0debathena14) unstable; urgency=low
+
+  * Add back the athena-install.log query.
+
+ -- andrew m. boardman <amb@mit.edu>  Fri, 17 Sep 2010 14:30:03 -0400
+
 debathena-athinfod (10.0.0-0debathena13) unstable; urgency=low
 
   * Add ext4 filesystems to df output (for new dialups)
