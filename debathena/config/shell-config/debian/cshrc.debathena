@@ -7,11 +7,15 @@ if ( $ATHENA_SYS == "" ) then
   setenv ATHENA_SYS @sys
 endif
 setenv ATHENA_SYS_COMPAT `/bin/machtype -C`
+setenv DEBATHENA_AKLOG "aklog -c athena.mit.edu -p $HOME"
+if ( -x "/bin/fsid" ) then
+    setenv DEBATHENA_AKLOG "fsid -a"
+endif
 
 alias renew 'set KINIT_ARGS=""; \
     kinit -4 </dev/null >& /dev/null; \
     if ($? != 3) set KINIT_ARGS="-45"; \
-    kinit $KINIT_ARGS "$ATHENA_USER" && aklog'
+    kinit $KINIT_ARGS "$ATHENA_USER" && $DEBATHENA_AKLOG'
 
 set add_flags
 alias add 'eval `/bin/attach -Padd $add_flags \!:*`'
