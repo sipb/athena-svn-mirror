@@ -11,7 +11,7 @@ DEB_DIVERT_FILES_debathena-thunderbird-config += \
 
 ifneq ($(NEW_TBIRD),y)
     install/debathena-thunderbird-config::
-        dh_link usr/share/debathena-thunderbird-config/debathena.js etc/thunderbird/pref/debathena.js
+	dh_link usr/share/debathena-thunderbird-config/debathena.js etc/thunderbird/pref/debathena.js
 endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk
