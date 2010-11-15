@@ -122,6 +122,7 @@ sub print_quota($$$$$) {
 
     # Print a header if this is the first line of output.
     if ($need_header) {
+	print "** IMAP e-mail usage for $mbox on $host:\n";
 	printf($format,
 	       "Quota",
 	       "KB Used", "KB Max", "KB %",
