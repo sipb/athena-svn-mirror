@@ -9,15 +9,12 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if (!defined(lint) && !defined(SABER))
-     static char rcsid_shell_regexp_c[] = "$Id: shell_regexp.c,v 1.4 1999-01-22 23:09:04 ghudson Exp $";
-#endif
-
 #include <com_err.h>
 #include "shell_regexp.h"
 #include "delete_errs.h"
 #include "errors.h"
 #include "mit-copying.h"
+#include "util.h"
 
 static int real_cmp();
 

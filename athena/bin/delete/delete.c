@@ -9,10 +9,6 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Id: delete.c,v 1.33 1999-01-22 23:08:52 ghudson Exp $";
-#endif
-
 #include <sys/types.h>
 #ifdef HAVE_AFS
 #include <sys/time.h>
@@ -26,11 +22,10 @@
 #include <errno.h>
 #include "errors.h"
 #include "delete_errs.h"
-#include "util.h"
+#include "pattern.h"
 #include "delete.h"
 #include "mit-copying.h"
-
-
+#include "util.h"
 
 /*
  * ALGORITHM:
@@ -67,6 +62,12 @@
  *    (excluding . files) to delete().
  */
 
+static void usage(void);
+static int delete(char *filename, int recursed);
+static int recursive_delete(char *filename, struct stat stat_buf, int recursed);
+static int empty_directory(char *filename);
+static int do_move(char *filename, struct stat stat_buf, int subs_not_deleted);
+static int unlink_completely(char *filename);
 
 int force, interactive, recursive, noop, verbose, filesonly, directoriesonly;
 int emulate_rm, linked_to_rm, linked_to_rmdir;
@@ -74,9 +75,7 @@ int emulate_rm, linked_to_rm, linked_to_rmdir;
 struct timeval tvp[2];
 #endif
 
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
      extern char *optarg;
      extern int optind;
@@ -158,7 +157,7 @@ char *argv[];
 	       exit(1);
 	  }
      }
-     report_errors = ! (force || emulate_rm);
+     report_errors = ! emulate_rm;
      
      if (optind == argc) {
 	  if (! force) {
@@ -172,12 +171,12 @@ char *argv[];
 	       error(argv[optind]);
 	  optind++;
      }
-     exit(((! force) && error_occurred) ? 1 : 0);
+     exit(error_occurred ? 1 : 0);
 }
 
 
 
-usage()
+static void usage()
 {
      printf("Usage: %s [ options ] filename ...\n", whoami);
      printf("Options are:\n");
@@ -202,20 +201,21 @@ usage()
 
 
 
-delete(filename, recursed)
-char *filename;
-int recursed;
+static int delete(char *filename, int recursed)
 {
      struct stat stat_buf;
      int retval;
      
      /* can the file be lstat'd? */
      if (lstat(filename, &stat_buf) == -1) {
-	  set_error(errno);
-	  if (emulate_rm && (! force))
-	       fprintf(stderr, "%s: %s nonexistent\n", whoami, filename);
-	  error(filename);
-	  return error_code;
+	  if (! force) {
+	    set_error(errno);
+	    if (emulate_rm)
+	      fprintf(stderr, "%s: %s nonexistent\n", whoami, filename);
+	    error(filename);
+	    return error_code;
+	  }
+	  return 0;
      }
 
      /* is the file a directory? */
@@ -233,11 +233,11 @@ int recursed;
 	  if (filesonly) {
 	       /* is the recursive option specified? */
 	       if (recursive) {
-		    if (retval = recursive_delete(filename, stat_buf,
-						  recursed)) {
-			 error(filename);
-			 return retval;
-		    }
+		 if ((retval = recursive_delete(filename, stat_buf,
+						recursed))) {
+		   error(filename);
+		   return retval;
+		 }
 	       }
 	       else {
 		    if (emulate_rm && (! force))
@@ -257,11 +257,11 @@ int recursed;
 	       }
 
 	       if (retval > 0) {
-		    /* remove it */
-		    if (retval = do_move(filename, stat_buf, 0)) {
-			 error(filename);
-			 return error_code;
-		    }
+		 /* remove it */
+		 if ((retval = do_move(filename, stat_buf, 0))) {
+		   error(filename);
+		   return error_code;
+		 }
 	       }
 	       else {
 		    /* is the directoriesonly option set? */
@@ -276,11 +276,11 @@ int recursed;
 		    else {
 			 /* is the recursive option specified? */
 			 if (recursive) {
-			      if (retval = recursive_delete(filename, stat_buf,
-							    recursed)) {
-				   error(filename);
-				   return error_code;
-			      }
+			   if ((retval = recursive_delete(filename, stat_buf,
+							  recursed))) {
+			     error(filename);
+			     return error_code;
+			   }
 			 }
 			 else {
 			      if (emulate_rm && (! force))
@@ -305,10 +305,10 @@ int recursed;
 	       return error_code;
 	  }
 	  else {
-	       if (retval = do_move(filename, stat_buf, 0)) {
-		    error(filename);
-		    return error_code;
-	       }
+	    if ((retval = do_move(filename, stat_buf, 0))) {
+	      error(filename);
+	      return error_code;
+	    }
 	  }
      }
      return 0;
@@ -318,8 +318,7 @@ int recursed;
 		 
 			 
 	       
-empty_directory(filename)
-char *filename;
+static int empty_directory(char *filename)
 {
      DIR *dirp;
      struct dirent *dp;
@@ -347,10 +346,7 @@ char *filename;
 
 
 
-recursive_delete(filename, stat_buf, recursed)
-char *filename;
-struct stat stat_buf;
-int recursed;
+static int recursive_delete(char *filename, struct stat stat_buf, int recursed)
 {
      DIR *dirp;
      struct dirent *dp;
@@ -359,7 +355,7 @@ int recursed;
      int retval = 0;
      char **dir_contents = 0;
      int num_dir_contents = 0, dir_contents_size = 0;
-     
+
      if (interactive && recursed) {
 	  printf("%s: remove directory %s? ", whoami, filename);
 	  if (! yes()) {
@@ -427,17 +423,15 @@ int recursed;
 
 
 
-do_move(filename, stat_buf, subs_not_deleted)
-char *filename;
-struct stat stat_buf;
-int subs_not_deleted; /* If the file in question is a directory, and  */
-		      /* there is something underneath it that hasn't */
-		      /* been removed, this will be set to true.      */
-                      /* The program asks if the user wants to delete */
-		      /* the directory, and if the user says yes,     */
-		      /* checks the value of subs_not_deleted.  If    */
-		      /* it's true, an error results.                 */
-                      /* This is used only when emulating rm.         */
+/*
+ * If the file in question is a directory, and there is something
+ * underneath it that hasn't been removed, then subs_not_deleted will
+ * be set to true.  The program asks if the user wants to delete the
+ * directory, and if the user says yes, checks the value of
+ * subs_not_deleted.  If it's true, an error results.  This is used
+ * only when emulating rm.
+ */
+static int do_move(char *filename, struct stat stat_buf, int subs_not_deleted)
 {
      char *last;
      char buf[MAXPATHLEN];
@@ -537,8 +531,7 @@ int subs_not_deleted; /* If the file in question is a directory, and  */
 
 
 
-unlink_completely(filename)
-char *filename;
+static int unlink_completely(char *filename)
 {
      char buf[MAXPATHLEN];
      struct stat stat_buf;

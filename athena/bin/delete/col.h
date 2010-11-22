@@ -10,6 +10,8 @@
  */
 #include "mit-copying.h"
 
+#include <stdio.h>
+
 /*
  * DEF_COL_WIDTH: the column with to try to use if none is specified.
  * DEF_WAIT: 1 if the program is supposed to wait for stdin to get to
@@ -33,3 +35,8 @@
  /* be when printed.  Also, if we are supposed to work in wait mode    */
  /* and are not given a maxitems value, this is what is used.          */
 #define DEF_MAX_ITEMS 10000
+
+int column_array(char **strings, int num_to_print, int screen_width,
+		 int column_width, int number_of_columns, int margin,
+		 int spread_flag, int number_flag, int var_col_flag,
+		 FILE *outfile);

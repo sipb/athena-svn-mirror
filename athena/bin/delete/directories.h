@@ -9,7 +9,11 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
+#ifndef __DELETE_DIRECTORIES_H__
+#define __DELETE_DIRECTORIES_H__
+
 #include "mit-copying.h"
+#include <dirent.h>
 
 typedef short Boolean;
 #define True			(Boolean) 1
@@ -17,9 +21,7 @@ typedef short Boolean;
 
 char *bytes_to_friendly(off_t);
 
-#define specs_to_space(x)	((x).st_blocks)
-#define space_to_k(x)		((x) / 2 + (((x) % 2) ? 1 : 0))
-#define specs_to_k(x)		space_to_k((x).st_blocks)
+#define specs_to_space(x)	((x).st_size)
 #define space_to_friendly(x)	bytes_to_friendly((x))
 #define specs_to_friendly(x)	space_to_friendly((x).st_size)
 
@@ -61,6 +63,7 @@ int change_path();
 filerec *first_in_directory();
 filerec *first_specified_in_directory();
 filerec *get_cwd_tree();
+int initialize_tree(void);
 filerec *get_root_tree();
 filerec *next_directory();
 filerec *next_in_directory();
@@ -69,7 +72,9 @@ filerec *next_specified_directory();
 filerec *next_specified_in_directory();
 filerec *next_specified_leaf();
 
-int get_leaf_path();
+int get_leaf_path(filerec *leaf, char leaf_buf[]);
 int accumulate_names();
 
 void free_leaf();
+
+#endif /* ! __DELETE_DIRECTORIES_H__ */

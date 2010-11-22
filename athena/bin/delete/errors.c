@@ -9,14 +9,11 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if (!defined(lint) && !defined(SABER))
-     static char rcsid_errors_c[] = "$Id: errors.c,v 1.5 1999-01-22 23:08:58 ghudson Exp $";
-#endif
-
 #include <com_err.h>
 #include <stdio.h>
 #include "delete_errs.h"
 #include "mit-copying.h"
+#include "util.h"
 
 char *whoami;
 int error_reported = 1;

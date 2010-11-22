@@ -9,10 +9,6 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Id: stack.c,v 1.13 1999-01-22 23:09:06 ghudson Exp $";
-#endif
-
 #include <string.h>
 #include <sys/types.h>
 #include <stdio.h>
@@ -27,9 +23,7 @@
 
 
 
-int dostack(data, op, bytes)
-caddr_t data;
-int op, bytes;
+int dostack(caddr_t data, int op, int bytes)
 {
      static caddr_t stack = (caddr_t) NULL;
      static int size = 0, count = 0;

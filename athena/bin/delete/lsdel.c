@@ -9,10 +9,6 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Id: lsdel.c,v 1.24 1999-01-22 23:09:01 ghudson Exp $";
-#endif
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -20,8 +16,8 @@
 #include <string.h>
 #include <errno.h>
 #include <com_err.h>
+#include <unistd.h>
 #include "col.h"
-#include "util.h"
 #include "directories.h"
 #include "pattern.h"
 #include "lsdel.h"
@@ -29,6 +25,11 @@
 #include "mit-copying.h"
 #include "delete_errs.h"
 #include "errors.h"
+#include "util.h"
+
+static void usage(void);
+static int ls(char **args, int num), process_files(char **files, int num);
+static int list_files(void), unique(char ***the_files, int *number);
 
 extern time_t current_time;
 
@@ -36,9 +37,7 @@ int space_total = 0;
 int dirsonly, recursive, yield, f_links, f_mounts, singlecolumn;
 time_t timev;
 
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
      extern char *optarg;
      extern int optind;
@@ -115,7 +114,7 @@ char *argv[];
 
 
 
-usage()
+static void usage()
 {
      fprintf(stderr, "Usage: %s [ options ] [ filename [ ...]]\n", whoami);
      fprintf(stderr, "Options are:\n");
@@ -133,9 +132,7 @@ usage()
 
 
 
-ls(args, num)
-char **args;
-int num;
+static int ls(char **args, int num)
 {
      char **found_files;
      int num_found = 0, total = 0;
@@ -148,18 +145,18 @@ int num;
      initialize_del_error_table();
 #endif
      
-     if (retval = initialize_tree()) {
+     if ((retval = initialize_tree())) {
 	  error("initialize_tree");
 	  return retval;
      }
      
      for ( ; num; num--) {
-	  if (retval = get_the_files(args[num - 1], &num_found,
-				     &found_files)) {
-	       error(args[num - 1]);
-	       status = retval;
-	       continue;
-	  }
+       if ((retval = get_the_files(args[num - 1], &num_found,
+				   &found_files))) {
+	 error(args[num - 1]);
+	 status = retval;
+	 continue;
+       }
 
 	  if (num_found) {
 	       num_found = process_files(found_files, num_found);
@@ -249,9 +246,7 @@ char ***found;
 
 
 
-process_files(files, num)
-char **files;
-int num;
+static int process_files(char **files, int num)
 {
      int i, skipped = 0;
      filerec *leaf;
@@ -282,7 +277,7 @@ const void *arg1, *arg2;
      return(strcmp(*(char **) arg1, *(char **) arg2));
 }
 
-list_files()
+static int list_files(void)
 {
      filerec *current;
      char **strings;
@@ -297,25 +292,25 @@ list_files()
 	  return error_code;
      }
      current = get_root_tree();
-     if (retval = accumulate_names(current, &strings, &num)) {
+     if ((retval = accumulate_names(current, &strings, &num))) {
 	  error("accumulate_names");
 	  return retval;
      }
      current = get_cwd_tree();
-     if (retval = accumulate_names(current, &strings, &num)) {
+     if ((retval = accumulate_names(current, &strings, &num))) {
 	  error("accumulate_names");
 	  return retval;
      }
 
      qsort(strings, num, sizeof(char *), alphacmp);
 
-     if (retval = unique(&strings, &num)) {
+     if ((retval = unique(&strings, &num))) {
 	  error("unique");
 	  return retval;
      }
 
-     if (retval = column_array(strings, num, DEF_SCR_WIDTH, 0, singlecolumn,
-			       2, 1, 0, 1, stdout)) {
+     if ((retval = column_array(strings, num, DEF_SCR_WIDTH, 0, singlecolumn,
+				2, 1, 0, 1, stdout))) {
 	  error("column_array");
 	  return retval;
      }
@@ -327,9 +322,7 @@ list_files()
 }
 
 
-int unique(the_files, number)
-char ***the_files;
-int *number;
+static int unique(char ***the_files, int *number)
 {
      int i, last;
      int offset;

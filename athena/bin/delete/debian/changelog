@@ -1,3 +1,14 @@
+debathena-delete (10.0.2-0debathena1) unstable; urgency=low
+
+  * Patches from Jonathan Kamens:
+    - The "-f" flag to delete should suppress nonexistent file errors but
+      not other errors.
+    - When the "-v" flag is specified to expunge, the correct totals
+      should be reported.  Previously, the totals were incorrect.
+    - Code cleanup.
+
+ -- Greg Hudson <ghudson@mit.edu>  Mon, 22 Nov 2010 12:05:35 -0500
+
 debathena-delete (10.0.1-0debathena1) unstable; urgency=low
 
   * Patches from Jonathan Kamens:

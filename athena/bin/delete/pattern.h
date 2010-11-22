@@ -20,6 +20,8 @@ int find_matches();
 int find_deleted_matches();
 int find_recurses();
 int find_deleted_recurses();
+void free_list(char **list, int num);
+int no_wildcards (char *name);
 
 #define FIND_DELETED		(1<<0)
 #define FIND_UNDELETED		(1<<1)

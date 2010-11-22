@@ -9,10 +9,6 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Id: directories.c,v 1.28 1999-01-22 23:08:54 ghudson Exp $";
-#endif
-
 #include <math.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -23,15 +19,18 @@
 #include <errno.h>
 #include <com_err.h>
 #include "delete_errs.h"
-#include "util.h"
 #include "directories.h"
 #include "mit-copying.h"
 #include "errors.h"
+#include "util.h"
 
 static filerec root_tree;
 static filerec cwd_tree;
 
-void free_leaf();
+void free_leaf(filerec *leaf);
+static int get_specs(char *path,
+		     struct mystat *specs,
+		     int follow);
 
  /* These are not static because external routines need to be able to */
  /* access them. 						      */
@@ -108,11 +107,11 @@ int initialize_tree()
      cwd_tree = default_cwd;
 
      current_time = time((time_t *)0);
-     if (retval = get_specs(".", &cwd_tree.specs, FOLLOW_LINKS)) {
+     if ((retval = get_specs(".", &cwd_tree.specs, FOLLOW_LINKS))) {
 	  error("get_specs on .");
 	  return retval;
      }
-     if (retval = get_specs("/", &root_tree.specs, FOLLOW_LINKS)) {
+     if ((retval = get_specs("/", &root_tree.specs, FOLLOW_LINKS))) {
 	  error("get_specs on /");
 	  return retval;
      }
@@ -130,7 +129,7 @@ filerec **leaf;
      struct mystat specs;
      int retval;
      
-     if (retval = get_specs(path, &specs, DONT_FOLLOW_LINKS)) {
+     if ((retval = get_specs(path, &specs, DONT_FOLLOW_LINKS))) {
 	  char error_buf[MAXPATHLEN+14];
 
 	  (void) sprintf(error_buf, "get_specs on %s", path);
@@ -159,13 +158,13 @@ filerec **leaf;
      (void) strcpy(next_name, firstpart(ptr, ptr));
      while (*ptr) {
 	  (void) strcat(built_path, next_name);
-	  if (retval = add_directory_to_parent(parent, next_name, False,
-					       &parent)) {
+	  if ((retval = add_directory_to_parent(parent, next_name, False,
+						&parent))) {
 	       error("add_directory_to_parent");
 	       return retval;
 	  }
 	  (void) strcpy(next_name, firstpart(ptr, ptr));
-	  if (retval = get_specs(built_path, &parent->specs, FOLLOW_LINKS)) {
+	  if ((retval = get_specs(built_path, &parent->specs, FOLLOW_LINKS))) {
 	       char error_buf[MAXPATHLEN+14];
 
 	       (void) sprintf(error_buf, "get_specs on %s", built_path);
@@ -196,10 +195,9 @@ filerec **leaf;
 
 
 
-int get_specs(path, specs, follow)
-char *path;
-struct mystat *specs;
-int follow; /* follow symlinks or not? */
+static int get_specs(char *path,
+		     struct mystat *specs,
+		     int follow) /* follow symlinks or not? */
 {
      int status;
      struct stat realspecs;
@@ -223,7 +221,6 @@ int follow; /* follow symlinks or not? */
      specs->st_mode = realspecs.st_mode;
      specs->st_size = realspecs.st_size;
      specs->st_ctim = realspecs.st_ctime;
-     specs->st_blocks = realspecs.st_blocks;
 
      return 0;
 }
@@ -252,10 +249,11 @@ filerec *leaf;
 filerec *next_specified_leaf(leaf)
 filerec *leaf;
 {
-     while (leaf = next_leaf(leaf))
-     if (leaf->specified)
-	  return(leaf);
-     return((filerec *) NULL);
+  while ((leaf = next_leaf(leaf))) {
+    if (leaf->specified)
+      return(leaf);
+  }
+  return((filerec *) NULL);
 }
 
 
@@ -278,10 +276,11 @@ filerec *leaf;
 filerec *next_specified_directory(leaf)
 filerec *leaf;
 {
-     while (leaf = next_directory(leaf))
-	  if (leaf->specified)
-	       return(leaf);
-     return ((filerec *) NULL);
+  while ((leaf = next_directory(leaf))) {
+    if (leaf->specified)
+      return(leaf);
+  }
+  return ((filerec *) NULL);
 }
 
 
@@ -308,10 +307,11 @@ filerec *leaf;
 filerec *next_specified_in_directory(leaf)
 filerec *leaf;
 {
-     while (leaf = next_in_directory(leaf))
-	  if (leaf->specified)
-	       return(leaf);
-     return ((filerec *) NULL);
+  while ((leaf = next_in_directory(leaf))) {
+    if (leaf->specified)
+      return(leaf);
+  }
+  return ((filerec *) NULL);
 }
 
 
@@ -350,6 +350,7 @@ filerec *leaf;
 }
 
 
+/* This is a debugging function not actually used anywhere in any program. */
 void print_paths_from(leaf)
 filerec *leaf;
 {
@@ -359,7 +360,12 @@ filerec *leaf;
       */
      static char buf[MAXPATHLEN];
 
-     printf("%s\n", get_leaf_path(leaf, buf));
+     if (! get_leaf_path(leaf, buf)) {
+       printf("%s\n", buf);
+     }
+     else {
+       error("get_leaf_path");
+     }
      if (leaf->dirs)
 	  print_paths_from(leaf->dirs);
      if (leaf->files)
@@ -369,6 +375,7 @@ filerec *leaf;
 }
 
 
+/* This is a debugging function not actually used anywhere in any program. */
 void print_specified_paths_from(leaf)
 filerec *leaf;
 {
@@ -378,8 +385,14 @@ filerec *leaf;
       */
      static char buf[MAXPATHLEN];
 
-     if (leaf->specified)
-	  printf("%s\n", get_leaf_path(leaf, buf));
+     if (leaf->specified) {
+       if (! get_leaf_path(leaf, buf)) {
+	 printf("%s\n", buf);
+       }
+       else {
+	 error("get_leaf_path");
+       }
+     }
      if (leaf->dirs)
 	  print_specified_paths_from(leaf->dirs);
      if (leaf->files)
@@ -495,8 +508,7 @@ Boolean specified;
 
 
 
-void free_leaf(leaf)
-filerec *leaf;
+void free_leaf(filerec *leaf)
 {
      leaf->freed = True;
      if (! (leaf->dirs || leaf->files)) {
@@ -611,9 +623,8 @@ char *old_path, *new_path;
 }
 
 
-int get_leaf_path(leaf, leaf_buf)
-filerec *leaf;
-char leaf_buf[]; /* RETURN */
+int get_leaf_path(filerec *leaf,
+		  char leaf_buf[]) /* RETURN */
 {
      char *name_ptr;
 
@@ -675,7 +686,7 @@ int *num;
 	       error("realloc");
 	       return error_code;
 	  }
-	  if (retval = get_leaf_path(leaf, newname)) {
+	  if ((retval = get_leaf_path(leaf, newname))) {
 	       error("get_leaf_path");
 	       return retval;
 	  }
@@ -688,18 +699,18 @@ int *num;
 	  }
 	  (void) strcpy(strings[*num - 1], newname);
      }
-     if (leaf->files) if (retval = accumulate_names(leaf->files, &strings,
-						    num)) {
+     if (leaf->files && (retval = accumulate_names(leaf->files, &strings,
+						   num))) {
 	  error("accumulate_names");
 	  return retval;
      }
-     if (leaf->dirs) if (retval = accumulate_names(leaf->dirs, &strings,
-						   num)) {
+     if (leaf->dirs && (retval = accumulate_names(leaf->dirs, &strings,
+						  num))) {
 	  error("accumulate_names");
 	  return retval;
      }
-     if (leaf->next) if (retval = accumulate_names(leaf->next, &strings,
-						   num)) {
+     if (leaf->next && (retval = accumulate_names(leaf->next, &strings,
+						  num))) {
 	  error("accumulate_names");
 	  return retval;
      }

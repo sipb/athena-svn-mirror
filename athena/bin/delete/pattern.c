@@ -9,10 +9,6 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Id: pattern.c,v 1.28 1999-01-22 23:09:03 ghudson Exp $";
-#endif
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -21,7 +17,6 @@
 #include <errno.h>
 #include <com_err.h>
 #include "pattern.h"
-#include "util.h"
 #include "directories.h"
 #include "undelete.h"
 #include "shell_regexp.h"
@@ -29,10 +24,13 @@
 #include "delete_errs.h"
 #include "errors.h"
 #include "stack.h"
+#include "util.h"
 
 extern char *whoami;
 
-void free_list();
+static int do_match(char *name, int *num_found, char ***found,
+		    Boolean match_undeleted, Boolean match_deleted);
+static int do_recurs(char *name, int *num_found, char ***found, int options);
 
 
 /*
@@ -81,10 +79,7 @@ int *num1, *size1, *num2;
 /*
  * Add a string to a list of strings.
  */
-int add_str(strs, num, size, str)
-char ***strs;
-int num, *size;
-char *str;
+int add_str(char ***strs, int num, int *size, char *str)
 {
      char **ary;
 
@@ -416,11 +411,8 @@ int options;
  *   restore dirp from stack
  *   goto loop
  */
-int do_match(name, num_found, found, match_undeleted, match_deleted)
-char *name;
-int *num_found;
-char ***found;
-Boolean match_undeleted, match_deleted;
+static int do_match(char *name, int *num_found, char ***found,
+		    Boolean match_undeleted, Boolean match_deleted)
 {
      char base[MAXPATHLEN];
      struct dirent *dp;
@@ -760,11 +752,7 @@ Boolean match_undeleted, match_deleted;
  *   restore dirp from stack
  *   goto loop
  */
-int do_recurs(name, num_found, found, options)
-char *name;
-int *num_found;
-char ***found;
-int options;
+static int do_recurs(char *name, int *num_found, char ***found, int options)
 {
      char base[MAXPATHLEN];
      struct dirent *dp;
@@ -1001,9 +989,7 @@ int options;
 }
 
 
-void free_list(list, num)
-char **list;
-int num;
+void free_list(char **list, int num)
 {
      int i;
 
@@ -1023,8 +1009,7 @@ int num;
  * means no non-quoted question marks, asterisks, or open square
  * braces.  Assumes a null-terminated string, and a valid globbing
  */
-int no_wildcards(name)
-char *name;
+int no_wildcards(char *name)
 {
      do {
 	  switch (*name) {

@@ -9,10 +9,6 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Id: util.c,v 1.33 2002-11-20 19:09:24 zacheiss Exp $";
-#endif
-
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
@@ -20,6 +16,8 @@
 #include <string.h>
 #include <pwd.h>
 #include <errno.h>
+#include <ctype.h>
+#include <unistd.h>
 #ifdef HAVE_AFS
 #include <sys/ioctl.h>
 #include <rx/rx.h>
@@ -29,10 +27,10 @@
 #include <afs/venus.h>
 #endif
 #include "delete_errs.h"
-#include "util.h"
 #include "directories.h"
 #include "mit-copying.h"
 #include "errors.h"
+#include "util.h"
 
 char *convert_to_user_name(real_name, user_name)
 char real_name[];
@@ -56,7 +54,7 @@ char *strindex(str, sub_str)
 char *str, *sub_str;
 {
      char *ptr = str;
-     while (ptr = strchr(ptr, *sub_str)) {
+     while ((ptr = strchr(ptr, *sub_str))) {
 	  if (! strncmp(ptr, sub_str, strlen(sub_str)))
 	       return(ptr);
 	  ptr++;
@@ -121,7 +119,8 @@ char *filepath, *filename;
 
 
 
-yes() {
+int yes()
+{
      char buf[BUFSIZ];
      char *val;
      
@@ -130,10 +129,14 @@ yes() {
 	  printf("\n");
 	  exit(1);
      }
-     if (! strchr(buf, '\n')) do
-	  (void) fgets(buf + 1, BUFSIZ - 1, stdin);
-     while (! strchr(buf + 1, '\n'));
-     return(*buf == 'y');
+     while (! strchr(buf, '\n')) {
+       val = fgets(buf + 1, BUFSIZ - 1, stdin);
+       if (! val) {
+	 printf("\n");
+	 exit(1);
+       }
+     }
+     return(tolower(*buf) == 'y');
 }
 
 
@@ -188,8 +191,7 @@ char *rest; /* RETURN */
 
 
 
-get_home(buf)
-char *buf;
+int get_home(char *buf)
 {
      char *user;
      struct passwd *psw;
@@ -222,9 +224,7 @@ char *buf;
 
 
 
-timed_out(file_ent, current_time, min_days)
-filerec *file_ent;
-time_t current_time, min_days;
+int timed_out(filerec *file_ent, time_t current_time, time_t min_days)
 {
      if ((current_time - file_ent->specs.st_ctim) / 86400 >= min_days)
 	  return(1);
@@ -234,8 +234,7 @@ time_t current_time, min_days;
 
 
 
-int directory_exists(dirname)
-char *dirname;
+int directory_exists(char *dirname)
 {
      struct stat stat_buf;
 
@@ -249,9 +248,7 @@ char *dirname;
 
 
 
-is_link(name, oldbuf)
-char *name;
-struct stat *oldbuf;
+int is_link(char *name, struct stat *oldbuf)
 {
 #ifdef S_IFLNK
      struct stat statbuf;

@@ -15,12 +15,15 @@
 #define lstat stat
 #endif
 
+#include "directories.h"
 #include <stdlib.h>
 
 char *append();
 char *convert_to_user_name();
 char *firstpart();
 char *lastpart();
+int get_home(char *buf);
+int timed_out(filerec *file_ent, time_t current_time, time_t min_days);
 char *strindex();
 char *strrindex();
 #ifdef MALLOC_DEBUG
@@ -29,7 +32,9 @@ char *Malloc();
 #define Malloc(a) malloc(a)
 #endif
 
-int is_mountpoint(), is_link();
+int is_mountpoint(), is_link(char *name, struct stat *oldbuf), yes(void);
+int directory_exists(char *dirname);
+
 
 #define is_dotfile(A) ((*A == '.') && \
 		       ((*(A + 1) == '\0') || \

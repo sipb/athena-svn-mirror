@@ -9,10 +9,6 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Id: undelete.c,v 1.30 2002-11-20 19:09:24 zacheiss Exp $";
-#endif
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -20,21 +16,29 @@
 #include <string.h>
 #include <com_err.h>
 #include <errno.h>
+#include <unistd.h>
 #include "delete_errs.h"
 #include "pattern.h"
-#include "util.h"
 #include "directories.h"
 #include "undelete.h"
 #include "shell_regexp.h"
 #include "mit-copying.h"
 #include "errors.h"
+#include "util.h"
+
+static void usage(void);
+static int interactive_mode(void), undelete(char *name);
+static int recurs_and_undelete(filerec *leaf), do_undelete(filerec *file_ent);
+static int do_file_rename(char *real_name, char *user_name);
+static int process_files(char **files, int num);
+static int unlink_completely(char *filename);
+static int filecmp(const void *arg1, const void *arg2);
+static int choose_better(char *str1, char *str2);
 
 int interactive, recursive, verbose, directoriesonly, noop, force;
 
 
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
      extern char *optarg;
      extern int optind;
@@ -105,7 +109,7 @@ char *argv[];
 
 
 
-interactive_mode()
+static int interactive_mode(void)
 {
      char buf[MAXPATHLEN];
      char *ptr;
@@ -139,7 +143,7 @@ interactive_mode()
 
 
 
-usage()
+static void usage()
 {
      fprintf(stderr, "Usage: %s [ options ] [filename ...]\n", whoami);
      fprintf(stderr, "Options are:\n");
@@ -153,8 +157,7 @@ usage()
      fprintf(stderr, "-r and -D are mutually exclusive\n");
 }
 
-undelete(name)
-char *name;
+static int undelete(char *name)
 {
      char **found_files;
      int num_found;
@@ -162,26 +165,26 @@ char *name;
      filerec *current;
      int retval;
      
-     if (retval =  get_the_files(name, &num_found, &found_files)) {
+     if ((retval =  get_the_files(name, &num_found, &found_files))) {
 	  error(name);
 	  return retval;
      }
      
      if (num_found) {
-	  if (retval = process_files(found_files, num_found)) {
-	       error(name);
-	       return retval;
-	  }
-	  if (*name == '/')
-	       current = get_root_tree();
-	  else
-	       current = get_cwd_tree();
+       if ((retval = process_files(found_files, num_found))) {
+	 error(name);
+	 return retval;
+       }
+       if (*name == '/')
+	 current = get_root_tree();
+       else
+	 current = get_cwd_tree();
 
-	  status = recurs_and_undelete(current);
-	  if (status) {
-	       error(name);
-	       return status;
-	  }
+       status = recurs_and_undelete(current);
+       if (status) {
+	 error(name);
+	 return status;
+       }
      }
      else {
 	  if (no_wildcards(name)) {
@@ -200,8 +203,7 @@ char *name;
 
 
 
-int recurs_and_undelete(leaf)
-filerec *leaf;
+static int recurs_and_undelete(filerec *leaf)
 {
      int status = 0;
      int retval;
@@ -251,9 +253,7 @@ filerec *leaf;
 
 
 
-int process_files(files, num)
-char **files;
-int num;
+static int process_files(char **files, int num)
 {
      int i;
      listrec *filelist;
@@ -287,28 +287,28 @@ int num;
      }
      free((char *) files);
 	  
-     if (retval = sort_files(filelist, num)) {
+     if ((retval = sort_files(filelist, num))) {
 	  error("sort_files");
 	  return retval;
      }
-     if (retval = unique(&filelist, &num)) {
+     if ((retval = unique(&filelist, &num))) {
 	  error("unique");
 	  return retval;
      }
-     if (retval = initialize_tree()) {
+     if ((retval = initialize_tree())) {
 	  error("initialize_tree");
 	  return retval;
      }
 	  
      for (i = 0; i < num; i++) {
-	  if (retval = add_path_to_tree(filelist[i].real_name, &not_needed)) {
-	       error("add_path_to_tree");
-	       return retval;
-	  }
-	  else {
-	       free(filelist[i].real_name);
-	       free(filelist[i].user_name);
-	  }
+       if ((retval = add_path_to_tree(filelist[i].real_name, &not_needed))) {
+	 error("add_path_to_tree");
+	 return retval;
+       }
+       else {
+	 free(filelist[i].real_name);
+	 free(filelist[i].user_name);
+       }
      }
      free((char *) filelist);
      return 0;
@@ -321,14 +321,13 @@ int num;
 
 
      
-do_undelete(file_ent)
-filerec *file_ent;
+static int do_undelete(filerec *file_ent)
 {
      struct stat stat_buf;
      char user_name[MAXPATHLEN], real_name[MAXPATHLEN];
      int retval;
      
-     if (retval = get_leaf_path(file_ent, real_name)) {
+     if ((retval = get_leaf_path(file_ent, real_name))) {
 	  if (! force)
 	       fprintf(stderr, "%s: %s: %s\n", whoami, "get_leaf_path",
 		       error_message(retval));
@@ -354,7 +353,7 @@ filerec *file_ent;
 	       set_status(UNDEL_NOT_UNDELETED);
 	       return error_code;
 	  }
-	  if (! noop) if (retval = unlink_completely(user_name)) {
+	  if ((! noop) && (retval = unlink_completely(user_name))) {
 	       error(user_name);
 	       return retval;
 	  }
@@ -364,7 +363,7 @@ filerec *file_ent;
 	  return 0;
      }
 
-     if (retval = do_file_rename(real_name, user_name)) {
+     if ((retval = do_file_rename(real_name, user_name))) {
 	  error("do_file_rename");
 	  return retval;
      }
@@ -378,8 +377,7 @@ filerec *file_ent;
 
 
 
-do_file_rename(real_name, user_name)
-char *real_name, *user_name;
+static int do_file_rename(char *real_name, char *user_name)
 {
      char *ptr;
      int retval;
@@ -406,7 +404,7 @@ char *real_name, *user_name;
        *--ptr = '\0';
        old_name[ptr - new_name] = '\0';
      }
-     if (retval = change_path(real_name, user_name)) {
+     if ((retval = change_path(real_name, user_name))) {
        error("change_path");
        return retval;
      }
@@ -419,8 +417,7 @@ char *real_name, *user_name;
 
 
 
-filecmp(arg1, arg2)
-const void *arg1, *arg2;
+static int filecmp(const void *arg1, const void *arg2)
 {
      listrec *file1 = (listrec *) arg1, *file2 = (listrec *) arg2;
 
@@ -496,8 +493,7 @@ int *number;
 
 
 
-choose_better(str1, str2)
-char *str1, *str2;
+static int choose_better(char *str1, char *str2)
 {
      char *pos1, *pos2;
      
@@ -521,8 +517,7 @@ char *str1, *str2;
 
 
      
-unlink_completely(filename)
-char *filename;
+static int unlink_completely(char *filename)
 {
      char buf[MAXPATHLEN];
      struct stat stat_buf;
@@ -549,19 +544,19 @@ char *filename;
 	       if (is_dotfile(dp->d_name))
 		    continue;
 	       (void) strcpy(buf, append(filename, dp->d_name));
-	       if (retval = unlink_completely(buf)) {
+	       if ((retval = unlink_completely(buf))) {
 		    error(buf);
 		    status = retval;
 	       }
 	  }
 	  closedir(dirp);
-	  if (retval = rmdir(filename)) {
+	  if ((retval = rmdir(filename))) {
 	       set_error(errno);
 	       error(filename);
 	       return error_code;
 	  }
      }
-     else if (retval = unlink(filename)) {
+     else if ((retval = unlink(filename))) {
 	  set_error(errno);
 	  error(filename);
 	  return error_code;

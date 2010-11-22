@@ -87,7 +87,9 @@ mode, whether to examine each directory.
 .B \-f
 Prevents
 .I delete
-from asking any questions and from reporting any errors.
+from asking any questions and from reporting any errors about
+nonexistent files.  However, as with rm, other errors (e.g.,
+permissions issues) are reported.
 .TP
 .B \-n
 No file removals are performed.  Instead,

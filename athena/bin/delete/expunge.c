@@ -9,10 +9,6 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Id: expunge.c,v 1.25 1999-01-22 23:08:59 ghudson Exp $";
-#endif
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/time.h>
@@ -21,8 +17,8 @@
 #include <string.h>
 #include <com_err.h>
 #include <errno.h>
+#include <unistd.h>
 #include "col.h"
-#include "util.h"
 #include "directories.h"
 #include "pattern.h"
 #include "expunge.h"
@@ -30,6 +26,13 @@
 #include "mit-copying.h"
 #include "delete_errs.h"
 #include "errors.h"
+#include "util.h"
+
+static void usage(void);
+static int purge(void), expunge(char **files, int num);
+static int process_files(char **files, int num), list_files(void);
+static int top_level(void), expunge_specified(filerec *leaf);
+static int really_do_expunge(filerec *file_ent);
 
 extern time_t current_time;
 
@@ -52,9 +55,7 @@ int space_removed = 0;
 
 
 
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
      extern char *optarg;
      extern int optind;
@@ -134,7 +135,7 @@ char *argv[];
 
 
 
-purge()
+static int purge()
 {
      char *home;
      int retval;
@@ -147,14 +148,14 @@ purge()
      }
      timev = interactive = noop = verbose = force = 0;
      yield = listfiles = recursive = 1;
-     if (retval = get_home(home)) {
+     if ((retval = get_home(home))) {
 	  error("purge");
 	  return retval;
      }
 
      printf("Please be patient.... this may take a while.\n\n");
 
-     if (retval = expunge(&home, 1)) {
+     if ((retval = expunge(&home, 1))) {
 	  error("expunge");
 	  return retval;
      }
@@ -164,7 +165,7 @@ purge()
 
 
 
-usage()
+static void usage()
 {
      fprintf(stderr, "Usage: %s [ options ] [ filename [ ... ]]\n", whoami);
      fprintf(stderr, "Options are:\n");
@@ -185,9 +186,7 @@ usage()
 
 
 
-int expunge(files, num)
-char **files;
-int num;
+static int expunge(char **files, int num)
 {
      char **found_files;
      int num_found;
@@ -239,28 +238,28 @@ int num;
 	  }
      }
      if (total && listfiles) {
-	  if (retval = list_files()) {
-	       error("list_files");
-	       return retval;
-	  }
-	  if (! force) if (! top_level()) {
-	       set_status(EXPUNGE_NOT_EXPUNGED);
-	       return error_code;
-	  }
+       if ((retval = list_files())) {
+	 error("list_files");
+	 return retval;
+       }
+       if (! (force || top_level())) {
+	 set_status(EXPUNGE_NOT_EXPUNGED);
+	 return error_code;
+       }
      }
      current = get_root_tree();
      if (current) {
-	  if (retval = expunge_specified(current)) {
-	       error("expunge_specified");
-	       status = retval;
-	  }
+       if ((retval = expunge_specified(current))) {
+	 error("expunge_specified");
+	 status = retval;
+       }
      }
      current = get_cwd_tree();
      if (current) {
-	  if (retval = expunge_specified(current)) {
-	       error("expunge_specified");
-	       status = retval;
-	  }
+       if ((retval = expunge_specified(current))) {
+	 error("expunge_specified");
+	 status = retval;
+       }
      }
      if (yield) {
        char *friendly = space_to_friendly(space_removed);
@@ -275,8 +274,7 @@ int num;
 
 
 
-expunge_specified(leaf)
-filerec *leaf;
+static int expunge_specified(filerec *leaf)
 {
      int status = 0;
      int do_it = 1;
@@ -289,7 +287,7 @@ filerec *leaf;
 	   */
 	  static char buf[MAXPATHLEN];
 
-	  if (retval = get_leaf_path(leaf, buf)) {
+	  if ((retval = get_leaf_path(leaf, buf))) {
 	       error("get_leaf_path");
 	       return retval;
 	  }
@@ -302,29 +300,29 @@ filerec *leaf;
      }
      if (do_it) {
 	  if (leaf->dirs) {
-	       if (retval = expunge_specified(leaf->dirs)) {
-		    error("expunge_specified");
-		    status = retval;
-	       }
+	    if ((retval = expunge_specified(leaf->dirs))) {
+	      error("expunge_specified");
+	      status = retval;
+	    }
 	  }
 	  if (leaf->files) {
-	       if (retval = expunge_specified(leaf->files)) {
-		    error("expunge_specified");
-		    status = retval;
-	       }
+	    if ((retval = expunge_specified(leaf->files))) {
+	      error("expunge_specified");
+	      status = retval;
+	    }
 	  }
      }
      if (leaf->specified && (! status)) {
-	  if (retval = really_do_expunge(leaf)) {
-	       error("really_do_expunge");
-	       status = retval;
-	  }
+       if ((retval = really_do_expunge(leaf))) {
+	 error("really_do_expunge");
+	 status = retval;
+       }
      }
      if (leaf->next) {
-	  if (retval = expunge_specified(leaf->next)) {
-	       error("expunge_specified");
-	       status = retval;
-	  }
+       if ((retval = expunge_specified(leaf->next))) {
+	 error("expunge_specified");
+	 status = retval;
+       }
      }
 
      free_leaf(leaf);
@@ -332,9 +330,7 @@ filerec *leaf;
 }
 
 
-process_files(files, num)
-char **files;
-int num;
+static int process_files(char **files, int num)
 {
      int i, skipped = 0;
      filerec *leaf;
@@ -362,14 +358,13 @@ int num;
 
 
 
-really_do_expunge(file_ent)
-filerec *file_ent;
+static int really_do_expunge(filerec *file_ent)
 {
      char real[MAXPATHLEN], user[MAXPATHLEN];
      int status;
      int retval;
      
-     if (retval = get_leaf_path(file_ent, real)) {
+     if ((retval = get_leaf_path(file_ent, real))) {
 	  error("get_leaf_path");
 	  return retval;
      }
@@ -427,7 +422,7 @@ filerec *file_ent;
 
 
 
-top_level()
+static int top_level()
 {
      if (interactive) {
 printf("The above files, which have been marked for deletion, are about to be\n");
@@ -446,7 +441,7 @@ printf("Do you wish to continue [return = no]? ");
 
 
 
-list_files()
+static int list_files()
 {
      filerec *current;
      char **strings;
@@ -464,17 +459,17 @@ list_files()
      printf("The following deleted files are going to be expunged: \n\n");
 
      current = get_root_tree();
-     if (retval = accumulate_names(current, &strings, &num)) {
+     if ((retval = accumulate_names(current, &strings, &num))) {
 	  error("accumulate_names");
 	  return retval;
      }
      current = get_cwd_tree();
-     if (retval = accumulate_names(current, &strings, &num)) {
+     if ((retval = accumulate_names(current, &strings, &num))) {
 	  error("accumulate_names");
 	  return retval;
      }
-     if (retval = column_array(strings, num, DEF_SCR_WIDTH, 0, 0, 2, 1, 0,
-			       1, stdout)) {
+     if ((retval = column_array(strings, num, DEF_SCR_WIDTH, 0, 0, 2, 1, 0,
+				1, stdout))) {
 	  error("column_array");
 	  return retval;
      }

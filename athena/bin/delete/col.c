@@ -9,32 +9,26 @@
  * For copying and distribution information, see the file "mit-copying.h."
  */
 
-#if (!defined(lint) && !defined(SABER))
-     static char rcsid_col_c[] = "$Id: col.c,v 1.10 1999-01-22 23:08:50 ghudson Exp $";
-#endif
-
 /*
  * Note that this function has a lot of options I'm not really using
  * because I took it out of other code that needed a lot more
  * versatility.
  */
 
-#include <stdio.h>
 #include <string.h>
 #include "errors.h"
 #include "delete_errs.h"
 #include "col.h"
 #include "mit-copying.h"
-
+#include "util.h"
 
 static int calc_string_width(), calc_widths(), num_width();
 static void trim_strings();
 
-int column_array(strings, num_to_print, screen_width, column_width,
-		 number_of_columns, margin, spread_flag, 
-		 number_flag, var_col_flag, outfile)
-char **strings;
-FILE *outfile;
+int column_array(char **strings, int num_to_print, int screen_width,
+		 int column_width, int number_of_columns, int margin,
+		 int spread_flag, int number_flag, int var_col_flag,
+		 FILE *outfile)
 {
      char buf[BUFSIZ];
      int updown, leftright, height;
