@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software
-Version: 0.25
+Version: 0.26
 Maintainer: Debathena Project <debathena@mit.edu>
 Conflicts: debathena-cluster-software
 Replaces: debathena-cluster-software
@@ -28,7 +28,8 @@ Recommends: flashplugin-nonfree,
   mplayer,
   msttcorefonts,
   ttf-xfree86-nonfree,
-  sun-java6-plugin | icedtea6-plugin
+  sun-java6-plugin | icedtea6-plugin.
+  poppler-data,
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Athena auxiliary software
