@@ -1,3 +1,20 @@
+debathena-zephyr-config (1.10) unstable; urgency=low
+
+  * In the if-up.d script, restart instead of start, as the zhm
+    initscript passes -N (don't send an HM_BOOT flushing subscriptions)
+    on the restart command. This works around losing subscriptions if
+    you manage to start multiple zhms (which is possible due to a Zephyr
+    3 bug involving SO_REUSEADDR) by the initscript and if-up.d script
+    racing; see discussion around Trac #133. Upstream will fix the
+    actual bug allowing multiple zhms to run.
+
+    We should possibly actually do as Trac #133 says and kill off the
+    initscript entirely in this package, possibly by replacing it with
+    an Upstart job that starts on runlevel or network, or alternatively
+    let upstream do so eventually, but this fixes the immediate issue.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 03 Dec 2010 19:18:09 -0500
+
 debathena-zephyr-config (1.9.2) unstable; urgency=low
 
   * Ensure that zephyr-clients and libzephyr-krb5 stay in sync (Trac #586)
