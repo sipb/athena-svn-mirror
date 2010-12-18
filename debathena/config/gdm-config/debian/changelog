@@ -1,5 +1,11 @@
 debathena-gdm-config (1.23.2) unstable; urgency=low
 
+  * Merry Christmas!
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 17 Dec 2010 19:05:52 -0500
+
+debathena-gdm-config (1.23.2) unstable; urgency=low
+
   * Deal with corner case of set_position not being honored
 
  -- Jonathan Reed <jdreed@mit.edu>  Tue, 24 Aug 2010 14:50:51 -0400

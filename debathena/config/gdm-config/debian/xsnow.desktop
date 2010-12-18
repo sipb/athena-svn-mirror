@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=xsnow
+Exec=xsnow
+OnlyShowIn=GNOME;
