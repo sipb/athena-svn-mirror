@@ -47,7 +47,6 @@ else
 	dh_install debian/debathena-branding.desktop usr/share/gdm/autostart/LoginWindow
 	dh_install debian/debathena-nologin-monitor usr/lib/debathena-nologin-monitor
 	dh_install debian/debathena-nologin-monitor.desktop usr/share/gdm/autostart/LoginWindow
-	dh_install debian/xsnow.desktop usr/share/gdm/autostart/LoginWindow
 
     binary-predeb/debathena-gdm-config:: debathena-gdm-config-substvars
     debathena-gdm-config-substvars::
