@@ -8,6 +8,7 @@ import gobject
 import sys
 import os
 import subprocess
+import platform
 
 SM_DBUS_NAME = "org.gnome.SessionManager"
 SM_DBUS_PATH = "/org/gnome/SessionManager"
@@ -58,7 +59,7 @@ class Branding:
             baseos = subprocess.Popen(["machtype", "-E"], stdout=subprocess.PIPE).communicate()[0].rstrip()
         except OSError:
             baseos = '(error)'
-        self.lblBranding.set_text(metapackage + "\n" + baseos)
+        self.lblBranding.set_text(metapackage + "\n" + baseos + " (" + platform.machine() + ")")
         self.winBranding.set_gravity(gtk.gdk.GRAVITY_SOUTH_EAST)
         width, height = self.winBranding.get_size()
         self.winBranding.move(gtk.gdk.screen_width() - width, gtk.gdk.screen_height() - height)
