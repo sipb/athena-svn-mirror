@@ -39,7 +39,7 @@ class Branding:
         moveY = 200
         logoScale = 0.60
         if gtk.gdk.screen_height() <= 900:
-            moveY = 0
+            moveY = 10
             logoScale = 0.40
         self.winWelcome.move((gtk.gdk.screen_width() - self.winWelcome.get_size()[0]) / 2, moveY)
         self.imgDebathena = self.xml.get_widget('imgDebathena')
