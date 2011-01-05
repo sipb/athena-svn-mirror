@@ -59,7 +59,10 @@ class Branding:
             baseos = subprocess.Popen(["machtype", "-E"], stdout=subprocess.PIPE).communicate()[0].rstrip()
         except OSError:
             baseos = '(error)'
-        self.lblBranding.set_text(metapackage + "\n" + baseos + " (" + platform.machine() + ")")
+        arch = platform.machine()
+        if arch != "x86_64":
+            arch = "<b>" + arch + "</b>"
+        self.lblBranding.set_markup(metapackage + "\n" + baseos + "\n" + arch)
         self.winBranding.set_gravity(gtk.gdk.GRAVITY_SOUTH_EAST)
         width, height = self.winBranding.get_size()
         self.winBranding.move(gtk.gdk.screen_width() - width, gtk.gdk.screen_height() - height)
