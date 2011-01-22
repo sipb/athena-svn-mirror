@@ -1,3 +1,9 @@
+debathena-tellme (1.4.1) unstable; urgency=low
+
+  * We don't need a .dirs file (Trac: #768)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 21 Jan 2011 19:06:13 -0500
+
 debathena-tellme (1.4) unstable; urgency=low
 
   * Add a manpage for tellme. (Trac: #272)
