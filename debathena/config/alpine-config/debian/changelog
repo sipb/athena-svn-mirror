@@ -1,3 +1,9 @@
+debathena-alpine-config (1.16) unstable; urgency=low
+
+  * Configure alpine to use the MIT LDAP server (Trac: #774).
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Sat, 22 Jan 2011 16:57:22 -0500
+
 debathena-alpine-config (1.15.2) unstable; urgency=low
 
   * Added conflicts and provides entries for diversions (Trac: #535).
