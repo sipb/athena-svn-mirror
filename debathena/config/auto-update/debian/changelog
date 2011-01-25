@@ -1,3 +1,9 @@
+debathena-auto-update (1.20) unstable; urgency=low
+
+  * Don't depend on at, because bad things happen (Trac #782)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 25 Jan 2011 12:43:05 -0500
+
 debathena-auto-update (1.19.1) unstable; urgency=low
 
   * Don't chmod non-existent files

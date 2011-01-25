@@ -67,6 +67,22 @@ if [ $DEBUG -ne 1 ]; then
     fi
 fi
 
+if [ "$1" = "cron" ]; then
+    interval=21600
+    shopt -s nocasematch
+    case `hostname` in
+	m38-370*)
+	    interval=43200
+	    ;;
+	w20-575*)
+	    interval=28800
+	    ;;
+    esac
+    if ! desync -t /var/run/athena-upgrade.desync $interval; then
+        exit 0
+    fi
+fi    
+
 CLUSTERINFO=`getcluster -b $(lsb_release -sr)`
 [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
 eval $CLUSTERINFO
