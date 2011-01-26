@@ -78,6 +78,7 @@ if [ "$1" = "cron" ]; then
 	    interval=28800
 	    ;;
     esac
+    shopt -u nocasematch
     if ! desync -t /var/run/athena-upgrade.desync $interval; then
         exit 0
     fi
