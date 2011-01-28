@@ -12,11 +12,6 @@ as "Debathena".  The contents are:
 
 * scripts - Build scripts and supporting materials.
 
-Debathena is a SIPB project, and its infrastructure and procedures
-will need to be adapted for Athena 10.  For the moment this file will
-document the Debathena procedures as they are, not as they will be.
-The current procedures do not even use this svn repository yet.
-
 Debian software used by Debathena:
 
   * schroot - Used to manage build chroot environments for each
@@ -45,8 +40,8 @@ Debian software used by Debathena:
     build server.  This cache is referenced by the build chroots for
     improved performance.
 
-The remainder of this file documents procedures useful to Athena 10
-developers and the release engineer.
+The remainder of this file documents procedures useful to Debathena
+developers and maintainers.
 
 Developers: Preferences setup
 -----------------------------
@@ -57,8 +52,7 @@ following:
 DEBUILD_DPKG_BUILDPACKAGE_OPTS="-sa -us -uc -i -I.svn"
 
 This will save you from having to specify those options every time you
-run debuild.  Athena 10 scripts do not assume the above preferences,
-but the instructions in this file do.  The options mean:
+run debuild.  The options mean:
 
   * Look for original source as a tarfile or create one.
   * Do not sign the source package.
@@ -77,7 +71,7 @@ You will also want a $HOME/.sbuildrc file containing the following:
   1;
 
 You should also set the environment variable DEBATHENA_APT to
-"/afs/dev.mit.edu/system/athena10/apt".
+"/afs/sipb.mit.edu/project/debathena/apt".
 
 Developers: Preparing a change
 ------------------------------
@@ -352,12 +346,10 @@ Release engineer: Setting up a build server
 
   8. For each supported DIST (see scripts/debian-versions.sh) run:
 
-       VG=/dev/blah scripts/build-server/make-chroot DIST i386
-       VG=/dev/blah scripts/build-server/make-chroot DIST amd64
+       scripts/build-server/make-chroot DIST i386
+       scripts/build-server/make-chroot DIST amd64
 
-     substituting the name of the volume group for blah.
-
-     Example: VG=/dev/dink scripts/build-server/make-chroot intrepid i386
+     Example: scripts/build-server/make-chroot intrepid i386
 
   9. Create a local account for builder with:
 
@@ -470,11 +462,11 @@ Release engineer: Setting up a canonical build area
      packages, so this will create redundant copies of those.  Ignore
      them; they won't be used.
 
-Release engineer: Adding a new suite
-------------------------------------
+Release engineer: Adding a new suite or rebuilding a suite
+----------------------------------------------------------
 
 This process is rarely performed and the infrastructure for it is
-imperfect.  Substitute the name of the new suite for "newdist" in all
+imperfect.  Substitute the name of the new suite for $suite in all
 steps below.
 
   1. Make sure the apt repository is up to date with respect to the
@@ -486,46 +478,63 @@ steps below.
 
   2. Add the new dist to scripts/debian-versions.sh.  (It is not
      necessary to add the new dist to codes at this point, but it must
-     be present in the gettag conditional.)
+     be present in the gettag conditional.)  If you are building an
+     unreleased distribution, add an additional ~0.1 tag; if you're
+     rebilding, bump that tag.
 
   3. Create the new distribution in the apt repository's configuration
-     file.  Create the skeleton of the dist by running "dareprepro
-     export".
+     file by editing /mit/debathena/apt/conf/gen-distributions and
+     running it with output to the 'distributions' file in the same
+     directory.  Create the skeleton of the dist by running "dareprepro
+     export". (You don't need to do this if you're rebuilding.)
 
-  4. On the build server, create a chroot for the new distribution as
-     documented above.  This may require downloading and installing a
+  4. Add an appropriate sources.list.d/*/$suite.list entry in
+     scripts/build-server. Commit and update
+     /mit/debathena/bin/build-server.
+
+  5. On the build server, create a chroot for the new distribution:
+
+        /mit/debathena/bin/build-server/make-chroot $suite i386
+        /mit/debathena/bin/build-server/make-chroot $suite amd64
+
+     This may require downloading and installing a
      more recent version of the debootstrap package from the
-     -backports dist corresponding to the build server's OS.
-
-  5. Set the DEBATHENA_BUILD_AREA environment variable to point to the
-     build area.
+     -backports dist corresponding to the build server's OS. (You
+     presumably don't need to do this if you're rebuilding.)
 
   6. Fire up screen.
 
-  7. mkdir $DEBATHENA_BUILD_AREA/stamps.newdist.
+  7. mkdir /mit/debathena/machines/awesome-build-server/stamps.$suite.
 
   8. cd into a checkout of debathena/scripts/build-server/build-all.
 
   9. Edit Makefile (and check in the edit) so that suite is the new
      distribution and psuite is the previously most recent Debian or
-     Ubuntu distribution.
+     Ubuntu distribution.  psuite is used to generate the order of
+     build-dependencies, so choose the closest distribution.  If you are
+     rebuilding, you can set psuite to suite.
 
   10. Run "make deps.mk".
 
-  11. Run "make -k all STAMPS=$DEBATHENA_BUILD_AREA/stamps.newdist".
+  11. Run "make -k all".
       You can watch the builds happen in the other windows of the
       screen session.  It's possible to do several builds at once with
       make -j N.
 
   12. debathenify packages will fail out; they must be built by hand.
       When the build fails on one, cd into third/packagename in the
-      build area and run "./debathenify newdist-amd64 -A source binary
-      upload" and "./debathenify newdist-i386 binary upload".  Then
-      touch $DEBATHENA_BUILD_AREA/stamps.newdist/packagename.done" and
+      build area and run "./debathenify $suite-amd64 -A source binary
+      upload" and "./debathenify $suite-i386 binary upload".  Then
+      touch $DEBATHENA_BUILD_AREA/stamps.$suite/packagename.done" and
       restart the build.
 
       The newly created third/openafs/meta directories should be
       chmodded 777 to work around a perl/AFS permissions issue.
+
+  13. Equivs packages (in meta/) will not be built, since they are only
+      built once and uploaded to every release. Upload all equivs
+      packages by running dareprepro include $suite-development on each
+      .changes file.
 
 Release engineer: Maintaining autodebathenify
 ---------------------------------------------
