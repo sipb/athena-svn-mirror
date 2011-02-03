@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+### BEGIN INIT INFO
+# Provides:          debathena-auto-update
+# Required-Start:    $network $local_fs
+# Default-Start:     2 3 4 5
+# Short-Description: Run an update at boot time
+# Description:       Run an update at boot time
+### END INIT INFO
+#
+# This script is part of the debathena-auto-update package
+# See /usr/share/doc/debathena-auto-update/copyright
+
+machtype -v -L | grep -q "debathena-cluster" || exit 0
+
+case "$1" in
+start)
+	if [ -f /var/lib/athena-update-status ]; then
+	    updlast=$(awk -F\| '{print $2;}' /var/lib/athena-update-status)
+	    time=$(date +%s)
+	    if echo $updlast | grep -q ^[0-9]*$; then
+		elapsed=`echo $time - $updlast | bc`
+		if [ $elapsed -le 21600 ]; then
+		    exit 0
+		fi
+	    fi
+	fi
+	/usr/sbin/athena-auto-update
+	;;
+esac

@@ -1,3 +1,10 @@
+debathena-auto-update (1.21) UNRELEASED; urgency=low
+
+  * Generate crontabs at configure time
+  * Run an update at boot time if it's been too long since the last one
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 03 Feb 2011 14:42:33 -0500
+
 debathena-auto-update (1.20) unstable; urgency=low
 
   * Don't depend on at, because bad things happen (Trac #782)

@@ -67,22 +67,6 @@ fi
 
 trap 'rm -f $pidfile' EXIT
 
-if [ "$1" = "cron" ]; then
-    case `date +"%H"` in
-	0[2-6])
-	    # 2 hrs
-	    interval=7200
-	    ;;
-	*)
-	    # 6 hrs
-	    interval=21600
-	    ;;
-    esac
-    if ! desync -t /var/run/athena-update.desync $interval; then
-	exit 0
-    fi
-fi
-
 statfile="/var/lib/athena-update-status"
 updstatus="unknown"
 updmsg=""
