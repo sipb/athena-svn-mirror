@@ -1,3 +1,11 @@
+debathena-athdir (10.0.1-0debathena2) unstable; urgency=low
+
+  * In configure.ac, add libathdir's LIBS to LIBS, not LDFLAGS. If the
+    linker is picky about the order of objects on the command line (as
+    Natty's appears to be), this fixes a FTBFS.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 03 Feb 2011 14:11:11 -0500
+
 debathena-athdir (10.0.1-0debathena1) unstable; urgency=low
 
   * Update autogoo for the 21st century.
