@@ -59,10 +59,10 @@ case "$1" in
 	hostname=`hostname | tr 'A-Z' 'a-z'`
 	case $hostname in
 	    m38-370*)
-		upginterval=420
+		upginterval=480
 		;;
 	    w20-575*)
-		upginterval=480
+		upginterval=420
 		;;
 	esac
 	desync2cron 2 $upginterval root /usr/sbin/athena-auto-upgrade >> $UPG_CRONFILE
