@@ -48,11 +48,6 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 
 	export MORE=-s
 
-	# Set double-sided printing for sufficiently recent users.
-	if [ 1 -le "$ATHENA_DOTFILE_GENERATION" ]; then
-		export LPROPT=-Zduplex
-	fi
-
 	export ATHENA_SYS=`/bin/machtype -S`
 	export ATHENA_SYS_COMPAT=`/bin/machtype -C`
 

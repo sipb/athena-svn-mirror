@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.26-0debathena1) unstable; urgency=low
+
+  * Stop setting LPROPT (Trac #794)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 07 Feb 2011 14:08:10 -0500
+
 debathena-dotfiles (10.0.25-0debathena1) unstable; urgency=low
 
   * Be a bit clearer when .attachrc exists but .attachrc.bash doesn't

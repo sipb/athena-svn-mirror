@@ -60,11 +60,6 @@ if (! $?ENV_SET) then
 
   setenv EMAIL "$USER@mit.edu"		# Set default email address
 
-  # Set double-sided printing for sufficiently recent users.
-  if ( $ATHENA_DOTFILE_GENERATION >= 1 ) then
-    setenv LPROPT -Zduplex
-  endif
-
   setenv ATHENA_SYS `/bin/machtype -S`
   if ( $ATHENA_SYS == "" ) then
     setenv ATHENA_SYS @sys
