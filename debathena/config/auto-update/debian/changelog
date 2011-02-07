@@ -3,8 +3,10 @@ debathena-auto-update (1.21) UNRELEASED; urgency=low
   * Generate crontabs at configure time (Trac #791)
   * Run an update at boot time if it's been too long since the last one
   * Configurable conffile conflict behavior on workstation (Trac #543)
+  * Pre-seed /var/lib/athena-update-status (Trac #686)
+  * Cleanup status file on uninstall
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 07 Feb 2011 13:02:38 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 07 Feb 2011 13:31:32 -0500
 
 debathena-auto-update (1.20) unstable; urgency=low
 

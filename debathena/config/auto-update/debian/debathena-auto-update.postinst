@@ -43,6 +43,10 @@ case "$1" in
 	    rm /var/lib/athena-update-status
 	fi
 
+        if [ ! -f /var/lib/athena-update-status ]; then
+	    echo "$(date +"%s")|$(date +"%s")|ok|Package configured" > /var/lib/athena-update-status
+        fi
+
 	rm -f $UPD_CRONFILE
 	rm -f $UPG_CRONFILE
 
