@@ -1,3 +1,15 @@
+# Defaults for athena-auto-update(8)
+
+# Note: The following does not apply when -cluster is installed
+# When a package ships a new configuration file, and the sysadmin has
+# made changes to that configuration file since it was originally
+# installed, what should happen?
+# Values:
+#   old - the old file is kept, and the new file is installed with
+#         a .dpkg-new suffix
+#   new - the old file is overwritten by the new file
+UPDATE_FORCE_CONFFILE=old
+
 # Defaults for athena-auto-upgrade(8)
 
 # Warning:
