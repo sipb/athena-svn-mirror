@@ -1,3 +1,9 @@
+debathena-help-config (1.1) unstable; urgency=low
+
+  * Update transform script to work with modified .desktop file in Natty.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 09 Feb 2011 14:24:47 -0500
+
 debathena-help-config (1.0) unstable; urgency=low
 
   * Initial release.
