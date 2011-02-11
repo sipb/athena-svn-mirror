@@ -12,10 +12,7 @@ if ( -x "/bin/fsid" ) then
     setenv DEBATHENA_AKLOG "fsid -a"
 endif
 
-alias renew 'set KINIT_ARGS=""; \
-    kinit -4 </dev/null >& /dev/null; \
-    if ($? != 3) set KINIT_ARGS="-45"; \
-    kinit $KINIT_ARGS "$ATHENA_USER" && $DEBATHENA_AKLOG'
+alias renew 'set KINIT_ARGS=""; kinit -4 </dev/null >& /dev/null; if ($? != 3) set KINIT_ARGS="-45"; kinit $KINIT_ARGS "$ATHENA_USER" && $DEBATHENA_AKLOG'
 
 set add_flags
 alias add 'eval `/bin/attach -Padd $add_flags \!:*`'

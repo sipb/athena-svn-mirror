@@ -1,3 +1,12 @@
+debathena-shell-config (1.14) unstable; urgency=low
+
+  * Avoid multi-line aliases in tcsh, because they play poorly with
+    precmd (in particular the return value of precmd becomes $?,
+    trashing the return value of the real previous command). It works
+    fine if you remove the linebreaks. I hate tcsh so much.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 11 Feb 2011 11:48:46 -0500
+
 debathena-shell-config (1.13) unstable; urgency=low
 
   * Make renew work for cells other than athena.mit.edu
