@@ -1,4 +1,4 @@
-debathena-athdir (10.0.1-0debathena2) unstable; urgency=low
+debathena-athdir (10.0.2-0debathena1) unstable; urgency=low
 
   * In configure.ac, add libathdir's LIBS to LIBS, not LDFLAGS. If the
     linker is picky about the order of objects on the command line (as
