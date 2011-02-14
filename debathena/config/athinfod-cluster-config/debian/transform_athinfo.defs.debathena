@@ -1,0 +1,12 @@
+#!/usr/bin/perl -p0
+print;
+print <<EOF;
+
+# Added by debathena-athinfod-cluster-config
+update.log	machtype -v -L | grep -q "debathena-cluster" && test -r /var/log/athena-update && cat /var/log/athena-update
+reactivate.log	machtype -v -L | grep -q "debathena-cluster" && test -r /var/log/athena-reactivate && cat /var/log/athena-reactivate
+update-status	machtype -v -L | grep -q "debathena-cluster" && test -r /var/lib/athena-update-status && cat /var/lib/athena-update-status
+in-use		machtype -L | grep -q "debathena-cluster" && (test `pgrep -c larvnet-wrapper` -gt 0 && echo "yes" || echo "no") || echo "n/a"
+update-schedule	machtype -v -L | grep -q "debathena-cluster" && test -r /etc/cron.d/debathena-auto-update && cat /etc/cron.d/debathena-auto-update
+EOF
+    exit 0;
