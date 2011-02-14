@@ -1,3 +1,9 @@
+debathena-athinfod (10.0.0-0debathena15) unstable; urgency=low
+
+  * Move cluster-specific queries to athinfod-cluster-config (Trac #693)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 14 Feb 2011 12:46:01 -0500
+
 debathena-athinfod (10.0.0-0debathena14) unstable; urgency=low
 
   * Add back the athena-install.log query.

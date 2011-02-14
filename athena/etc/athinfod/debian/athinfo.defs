@@ -18,9 +18,6 @@ swap		swapon -s
 version		echo `machtype -L` on `machtype -E`
 clusterinfo	test -r /var/run/athena-clusterinfo.csh && cat /var/run/athena-clusterinfo.csh
 clusterinfo.bsh	test -r /var/run/athena-clusterinfo.sh && cat /var/run/athena-clusterinfo.sh
-update.log	machtype -v -L | grep -q "debathena-cluster" && test -r /var/log/athena-update && cat /var/log/athena-update
-athena-install.log	machtype -v -L | grep -q "debathena-cluster" && test -r /var/log/athena-install.log && cat /var/log/athena-install.log
-reactivate.log	machtype -v -L | grep -q "debathena-cluster" && test -r /var/log/athena-reactivate && cat /var/log/athena-reactivate
 date		date
 uptime		uptime
 partitions	cat /proc/partitions
@@ -32,7 +29,6 @@ login		test -f /etc/nologin; echo $?
 cpuspeed	grep MHz /proc/cpuinfo
 packages	dpkg-query -W -f '${Package}\t${Version}\t${Status}\n' | sed -n 's/\tinstall ok installed$//p'
 modules  	lsmod
-update-status	machtype -v -L | grep -q "debathena-cluster" && test -r /var/lib/athena-update-status && cat /var/lib/athena-update-status
 policy		apt-cache policy
 hardware	cat /sys/class/dmi/id/product_name /sys/class/dmi/id/product_version
-in-use		machtype -L | grep -q "debathena-cluster" && (test `pgrep -c larvnet-wrapper` -gt 0 && echo "yes" || echo "no") || echo "n/a"
+
