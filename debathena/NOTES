@@ -521,11 +521,6 @@ steps below.
       screen session.  It's possible to do several builds at once with
       make -j N.
 
-  12. Equivs packages (in meta/) will not be built, since they are only
-      built once and uploaded to every release. Upload all equivs
-      packages by running dareprepro include $suite-development on each
-      .changes file.
-
 Release engineer: Maintaining autodebathenify
 ---------------------------------------------
 
