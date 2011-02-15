@@ -521,17 +521,7 @@ steps below.
       screen session.  It's possible to do several builds at once with
       make -j N.
 
-  12. debathenify packages will fail out; they must be built by hand.
-      When the build fails on one, cd into third/packagename in the
-      build area and run "./debathenify $suite-amd64 -A source binary
-      upload" and "./debathenify $suite-i386 binary upload".  Then
-      touch $DEBATHENA_BUILD_AREA/stamps.$suite/packagename.done" and
-      restart the build.
-
-      The newly created third/openafs/meta directories should be
-      chmodded 777 to work around a perl/AFS permissions issue.
-
-  13. Equivs packages (in meta/) will not be built, since they are only
+  12. Equivs packages (in meta/) will not be built, since they are only
       built once and uploaded to every release. Upload all equivs
       packages by running dareprepro include $suite-development on each
       .changes file.
