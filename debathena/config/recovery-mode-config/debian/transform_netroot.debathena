@@ -1,7 +1,7 @@
 #!/usr/bin/perl -p0
 
 my $replacement = <<'EOF';
-grep -q "^iface eth0$" /etc/network/interfaces
+grep -q "^iface eth0" /etc/network/interfaces
 if [ $? != 0]; then
     echo "This machine doesn't appear to use /etc/network/interfaces."
     echo "Falling back to dhclient instead."
