@@ -30,7 +30,7 @@ ask "The workstation needs to be shut down and rebooted.  Do that now? (y/n) " y
 if [ "$answer" = "y" ]; then
     echo "The workstation will now shut down.  You can then turn it back on."
     echo "(Press Enter to continue)"
-    ready dummy
+    read dummy
     /sbin/poweroff
 fi
 echo "Please shut down as soon as possible.  Press Enter to return to the menu."
