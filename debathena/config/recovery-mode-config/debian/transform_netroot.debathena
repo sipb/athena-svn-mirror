@@ -1,21 +1,20 @@
 #!/usr/bin/perl -p0
 
 my $replacement = <<'EOF';
-grep -q "^iface eth0 inet static$" /etc/network/interfaces
-if [ $? = 0]; then
+grep -q "^iface eth0$" /etc/network/interfaces
+if [ $? != 0]; then
+    echo "This machine doesn't appear to use /etc/network/interfaces."
+    echo "Falling back to dhclient instead."
+    /sbin/dhclient eth0
+else
     echo -n "Starting networking..."
-    # This works for now for Upstart, but who knows what the future will bring
-    /usr/sbin/invoke-rc.d networking start
+    ifup -a
     rv=$?
     sleep 1   # Some tg3 chipsets suck
     [ $rv = 0 ] && echo "ok" || echo "failed"
     echo -n "Starting local DNS server..."
     /usr/sbin/invoke-rc.d bind9 start
     [ $? = 0 ] && echo "ok" || echo "failed"
-else
-    echo "This machine doesn't appear to have a static IP configured."
-    echo "Falling back to dhclient instead."
-    /sbin/dhclient
 fi
 EOF
 s/^dhclient$/$replacement/gm or die;
