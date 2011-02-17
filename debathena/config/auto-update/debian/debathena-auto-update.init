@@ -13,6 +13,8 @@
 
 machtype -v -L | grep -q "debathena-cluster" || exit 0
 
+. /lib/lsb/init-functions
+
 case "$1" in
 start)
 	if [ -f /var/lib/athena-update-status ]; then
@@ -20,11 +22,25 @@ start)
 	    time=$(date +%s)
 	    if echo $updlast | grep -q ^[0-9]*$; then
 		elapsed=`echo $time - $updlast | bc`
-		if [ $elapsed -le 21600 ]; then
+		if [ $elapsed -lt 86400 ]; then
 		    exit 0
 		fi
 	    fi
 	fi
-	/usr/sbin/athena-auto-update
+	log_action_msg "Workstation has not checked for an update in 24 hours"
+	log_action_msg "Forcing an update now (this can take up to 15 minutes)"
+	if /usr/sbin/athena-auto-update; then
+	    log_end_msg 0
+	else
+	    log_end_msg 1
+	fi
+	;;
+stop|restart|reload|force-reload|status)
+	exit 0
+	;;
+*)
+	log_action_msg "Usage: /etc/init.d/debathena-auto-update {start}"
+	exit 1
 	;;
 esac
+exit 0
