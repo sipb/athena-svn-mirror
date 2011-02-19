@@ -5,8 +5,9 @@ debathena-auto-update (1.21) unstable; urgency=low
   * Configurable conffile conflict behavior on workstation (Trac #543)
   * Pre-seed /var/lib/athena-update-status (Trac #686)
   * Cleanup status file on uninstall
+  * Set UCF_FORCE_CONFFfoo variables where appropriate (Trac #552)
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 07 Feb 2011 13:31:32 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 18 Feb 2011 22:54:38 -0500
 
 debathena-auto-update (1.20) unstable; urgency=low
 

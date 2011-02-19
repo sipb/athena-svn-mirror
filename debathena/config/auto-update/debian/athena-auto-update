@@ -184,12 +184,19 @@ fi
 APTITUDE_OPTS=
 UPDATE_FORCE_CONFFILE=old
 [ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
+# On cluster machines, force the new conffile if there's a conflict
+# Ignore /etc/default/debathena-auto-update
+if dpkg-query --showformat '${Status}\n' -W "debathena-cluster" 2>/dev/null | grep -q ' installed$'; then
+    UPDATE_FORCE_CONFFILE=new
+fi
 case $UPDATE_FORCE_CONFFILE in
     old) 
 	APTITUDE_OPTS="-o Dpkg::Options::=--force-confold"
+	export UCF_FORCE_CONFFOLD=1
 	;;
     new)
 	APTITUDE_OPTS="-o Dpkg::Options::=--force-confnew"
+	export UCF_FORCE_CONFFNEW=1
 	;;
     *)
 	complain "Invalid value for UPDATE_FORCE_CONFFILE"
@@ -197,11 +204,6 @@ case $UPDATE_FORCE_CONFFILE in
 	;;
 esac
 
-# On cluster machines, force the new conffile if there's a conflict
-# Ignore /etc/default/debathena-auto-update
-if dpkg-query --showformat '${Status}\n' -W "debathena-cluster" 2>/dev/null | grep -q ' installed$'; then
-    APTITUDE_OPTS="-o Dpkg::Options::=--force-confnew"
-fi
 
 # Perform the update.  In some corner cases, aptitude might decide
 # that the best course of action is to remove the Debathena
