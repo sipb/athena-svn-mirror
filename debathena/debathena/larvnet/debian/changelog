@@ -1,3 +1,10 @@
+debathena-larvnet (10.0.7) unstable; urgency=low
+
+  * Revert the changes from 10.0.6, because dpkg-query is slow (Trac:
+    #778)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 19 Feb 2011 17:56:52 -0500
+
 debathena-larvnet (10.0.6) unstable; urgency=low
 
   * Make sure debathena-larvnet is installed before executing the xsession
