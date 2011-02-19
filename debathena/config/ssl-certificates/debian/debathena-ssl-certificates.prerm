@@ -26,6 +26,7 @@ s/\n?$/\n### BEGIN debathena-ssl-certificates
 # package.
 !mit.edu\/mitCAclient.crt
 !mit.edu\/mitCA.crt
+!csail.mit.edu\/csailCA.crt
 ### END debathena-ssl-certificates
 /;
 ' -i /etc/ca-certificates.conf

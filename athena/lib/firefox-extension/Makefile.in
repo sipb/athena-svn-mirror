@@ -24,6 +24,7 @@ CHROME_FILES = \
   content/athena.properties \
   content/athena.xul \
   content/mitca.pem \
+  content/csailca.pem \
   skin/icon.png
 
 all: athena.jar chrome.manifest

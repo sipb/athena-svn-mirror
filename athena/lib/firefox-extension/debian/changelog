@@ -1,3 +1,9 @@
+debathena-firefox-extension (10.0.5-0debathena1) unstable; urgency=low
+
+  * Package the CSAIL CA (Trac: #740).
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Sat, 22 Jan 2011 18:27:00 -0500
+
 debathena-firefox-extension (10.0.4-0debathena1) unstable; urgency=low
 
   * Bump the max supported version for Firefox 3.6.

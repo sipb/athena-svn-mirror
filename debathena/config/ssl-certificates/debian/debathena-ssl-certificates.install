@@ -1,2 +1,3 @@
 mitCA.crt usr/share/ca-certificates/mit.edu
 mitCAclient.crt usr/share/ca-certificates/mit.edu
+csailCA.crt	usr/share/ca-certificates/csail.mit.edu
