@@ -120,7 +120,7 @@ cmd_source () {
                 cp -a "$tmpdir/${daname}_$origversion.orig.tar.gz" "$dscdir"
             fi
 	    [ -n "$dch_done" ]
-	    schr apt-get -q -y install devscripts pbuilder
+	    schr apt-get -q -y install devscripts pbuilder aptitude
 	    schr /usr/lib/pbuilder/pbuilder-satisfydepends
 	    sch debuild -S -sa -us -uc -i -I.svn && cp -a "../${daname}_$daversion"* "$dscdir"
 	)
