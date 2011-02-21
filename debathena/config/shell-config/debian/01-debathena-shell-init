@@ -14,9 +14,15 @@ renew () {
     kinit -4 </dev/null &>/dev/null
     [ $? != 3 ] && KINIT_ARGS="-54"
     kinit $KINIT_ARGS "${principal:-$ATHENA_USER}" || return $?
-    DEBATHENA_AKLOG="aklog -c athena.mit.edu -p $HOME"
-    [ -x /bin/fsid ] && DEBATHENA_AKLOG="fsid -a"
-    [ -e /afs/athena.mit.edu ] && $DEBATHENA_AKLOG || {
+    [ -e /afs/athena.mit.edu ] && {
+	if [ "$DEBATHENA_HOME_TYPE" = afs ]; then
+	    if [ -x /bin/fsid ]; then
+		fsid -a
+	    else
+		aklog -p "$HOME"
+	    fi
+	fi
+    } && aklog || {
 	ret=$?
 	echo >&2
 	echo "Your AFS client does not seem to be working.  To troubleshoot this problem," >&2

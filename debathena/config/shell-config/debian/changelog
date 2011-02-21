@@ -1,3 +1,11 @@
+debathena-shell-config (1.15) unstable; urgency=low
+
+  * Restore the previous functionality of renew for local users (broken in
+    1.13), by running a plain ‘aklog’ too.
+  * Fix $HOME quoting problems in renew.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sun, 20 Feb 2011 20:03:53 -0500
+
 debathena-shell-config (1.14) unstable; urgency=low
 
   * Avoid multi-line aliases in tcsh, because they play poorly with
