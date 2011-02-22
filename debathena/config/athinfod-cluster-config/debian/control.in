@@ -2,7 +2,7 @@ Source: debathena-athinfod-cluster-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@
+Build-Depends: @cdbs@, debathena-athinfod
 Standards-Version: 3.8.4
 
 Package: debathena-athinfod-cluster-config
