@@ -1,0 +1,9 @@
+The debathena-license-config package agrees to certain EULAs on behalf
+of users so that updates may happen without human intervention.
+
+For more information on the licenses in question, see
+http://debathena.mit.edu/licensing
+
+Users who are familiar with debconf may examine
+/usr/share/debathena-license-config/debathena-license-selections to
+see exactly what values are stored.

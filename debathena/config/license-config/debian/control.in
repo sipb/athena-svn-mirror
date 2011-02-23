@@ -1,0 +1,13 @@
+Source: debathena-license-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.8.4
+
+Package: debathena-license-config
+Architecture: all
+Depends: ${misc:Depends}, debconf
+Description: Accept certain third party licenses on behalf of the user
+ This package accepts certain EULAs on behalf of the user.  See the
+ package's README file for more information.
