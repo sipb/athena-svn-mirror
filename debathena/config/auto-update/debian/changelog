@@ -1,3 +1,9 @@
+debathena-auto-update (1.22) unstable; urgency=low
+
+  * Install debathena-license-config and reconfigure packages as necessary
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 24 Feb 2011 16:29:09 -0500
+
 debathena-auto-update (1.21) unstable; urgency=low
 
   * Generate crontabs at configure time (Trac #791)

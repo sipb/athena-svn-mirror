@@ -158,9 +158,32 @@ if ! v aptitude --quiet --assume-yes update; then
   exit
 fi
 
+# Update debathena-license-config and reconfigure any packages if necessary
+pattern='^0 packages upgraded, 0 newly installed, 0 to remove'
+licenses=/usr/share/debathena-license-config/debathena-license-selections
+if ! v aptitude --simulate --assume-yes install debathena-license-config | grep -q "$pattern"; then
+  if v aptitude --assume-yes install debathena-license-config; then
+      if [ -f $licenses ]; then
+	  for p in $(awk '{print $1}' $licenses); do
+	      if dpkg-query --showformat '${Status}\n' -W $p 2>/dev/null | grep -q ' installed$'; then
+		  if ! v dpkg-reconfigure -fnoninteractive $p; then
+		      complain "Failed to dpkg-reconfigure $p"
+		  fi
+	      fi
+	  done
+      else
+	  complain "Could not find $licenses"
+	  exit
+      fi
+  else
+      complain "Failed to update debathena-license-config"
+      exit
+  fi
+fi
+
+
 # Exit quietly (except for perhaps rebooting) if there are no upgrades
 # to take.
-pattern='^0 packages upgraded, 0 newly installed, 0 to remove'
 if v aptitude --simulate --assume-yes full-upgrade | grep -q "$pattern"; then
   echo "Nothing to do!"
   save_success "No updates"
