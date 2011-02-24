@@ -15,3 +15,10 @@ debian/initial-x-terminal usr/lib/init
 debian/quotawarn usr/lib/init
 debian/xsession.bash usr/lib/init
 debian/xsession.tcsh usr/lib/init
+debian/debathena-gdm-sucks.sh usr/share/debathena-xsession
+debian/debathena-homedir-mode.sh usr/share/debathena-xsession
+debian/debathena-message.sh usr/share/debathena-xsession
+debian/debathena-nocalls.sh usr/share/debathena-xsession
+debian/debathena-quota.sh usr/share/debathena-xsession
+debian/debathena-tcsh-sucks.sh usr/share/debathena-xsession
+debian/debathena-tracker.sh usr/share/debathena-xsession
