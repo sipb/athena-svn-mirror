@@ -27,8 +27,10 @@ class GDMSucks:
             print "Warning: Cannot register with session manager."
         
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.window.set_property('can-focus', False)
         self.label = gtk.Label()
         self.label.set_markup('<span font_desc="Sans Bold 24">This workstation is temporarily unavailable.  Please use another workstation.</span>')
+        self.label.set_property('can-focus', False)
         self.window.add(self.label)
         self.window.set_decorated(False)
         self.window.set_position(gtk.WIN_POS_CENTER)

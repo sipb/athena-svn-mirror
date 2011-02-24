@@ -1,9 +1,15 @@
+debathena-gdm-config (1.24.1) unstable; urgency=low
+
+  * Applets shouldn't attempt to steal focus
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 23 Feb 2011 20:47:53 -0500
+
 debathena-gdm-config (1.24) unstable; urgency=low
 
   * Include arch type in bottom right corner
   * Update for Vostro panels (1440x900)
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 05 Jan 2011 15:38:03 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 23 Feb 2011 20:47:34 -0500
 
 debathena-gdm-config (1.23.2) unstable; urgency=low
 

@@ -36,6 +36,7 @@ class Branding:
 
         
         self.winWelcome = self.xml.get_widget('winWelcome')
+        self.winWelcome.set_property('can_focus', False)
         moveY = 200
         logoScale = 0.60
         if gtk.gdk.screen_height() <= 900:
@@ -43,6 +44,7 @@ class Branding:
             logoScale = 0.40
         self.winWelcome.move((gtk.gdk.screen_width() - self.winWelcome.get_size()[0]) / 2, moveY)
         self.imgDebathena = self.xml.get_widget('imgDebathena')
+        self.imgDebathena.set_property('can_focus', False)
         try:
             pixbuf = gtk.gdk.pixbuf_new_from_file(DEBATHENA_LOGO_FILE)
             self.imgDebathena.set_from_pixbuf(pixbuf.scale_simple(int(pixbuf.get_width() * logoScale), int(pixbuf.get_height() * logoScale), gtk.gdk.INTERP_BILINEAR))
@@ -50,7 +52,9 @@ class Branding:
             # Just don't display the image if it's missing
             pass 
         self.winBranding = self.xml.get_widget('winBranding')
+        self.winBranding.set_property('can_focus', False)
         self.lblBranding = self.xml.get_widget('lblBranding')
+        self.lblBranding.set_property('can_focus', False)
         try:
             metapackage = subprocess.Popen(["machtype", "-L"], stdout=subprocess.PIPE).communicate()[0].rstrip()
         except OSError:
