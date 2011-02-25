@@ -1,3 +1,9 @@
+debathena-network-manager-config (1.2) unstable; urgency=low
+
+  * Put nm-applet on the LoginWindow in new gdm
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 24 Feb 2011 20:17:30 -0500
+
 debathena-network-manager-config (1.1) unstable; urgency=low
 
   * chmod the NetworkManager config file to 600 so NM won't ignore it.

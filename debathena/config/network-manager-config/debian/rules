@@ -1,6 +1,19 @@
 #!/usr/bin/make -f
 
+GDM_VERSION = $(shell dpkg-query --showformat='$${Version}' --show gdm)
+NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' && echo y)
+
+ifeq ($(NEW_GDM),y)
+    DEB_DH_LINK_debathena-network-manager-config += \
+        /etc/xdg/autostart/nm-applet.desktop /usr/share/gdm/autostart/LoginWindow/nm-applet.desktop
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 
-binary-fixup/debathena-network-manager-config::
+ifneq ($(NEW_GDM),y)
+    install/debathena-network-manager-config::
+	dh_install debian/MIT etc/NetworkManager/system-connections
+
+    binary-fixup/debathena-network-manager-config::
 	chmod 600 $(DEB_DESTDIR)/etc/NetworkManager/system-connections/MIT
+endif
