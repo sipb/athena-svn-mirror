@@ -1,3 +1,9 @@
+debathena-athinfod-cluster-config (1.1) unstable; urgency=low
+
+  * Add lsusb and usb-hid queries, and Python support for the latter
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 28 Feb 2011 09:32:13 -0500
+
 debathena-athinfod-cluster-config (1.0.1) unstable; urgency=low
 
   * Depend on debathena-machtype, not machtype

@@ -1,4 +1,5 @@
 #!/usr/bin/perl -p0
+# For emacs: -*- mode: fundamental; -*-
 print;
 print <<EOF;
 
@@ -9,5 +10,7 @@ update-status	machtype -v -L | grep -q "debathena-cluster" && test -r /var/lib/a
 in-use		machtype -L | grep -q "debathena-cluster" && (test `pgrep -c larvnet-wrapper` -gt 0 && echo "yes" || echo "no") || echo "n/a"
 update-schedule	machtype -v -L | grep -q "debathena-cluster" && test -r /etc/cron.d/debathena-auto-update && cat /etc/cron.d/debathena-auto-update
 install.log	machtype -v -L | grep -q "debathena-cluster" && test -r /var/log/athena-install.log && cat /var/log/athena-install.log
+usb-hid		/usr/share/debathena-athinfod-cluster-config/usb-hid.py
+lsusb		machtype -v -L | grep -q "debathena-cluster" && lsusb
 EOF
     exit 0;
