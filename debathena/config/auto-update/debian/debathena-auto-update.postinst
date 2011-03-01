@@ -33,6 +33,28 @@ desync2cron() {
 UPD_CRONFILE=/etc/cron.d/athena-auto-update
 UPG_CRONFILE=/etc/cron.d/athena-auto-upgrade
 
+# We stopped shipping our own cron.d file in 1.21, so remove it
+# dpkg-maintscript-helper exists in maverick+
+if dpkg-maintscript-helper supports rm_conffile 2> /dev/null; then
+    dpkg-maintscript-helper rm_conffile \
+	/etc/cron.d/debathena-auto-update 1.21~ -- "$@"
+else
+    # From http://wiki.debian.org/DpkgConffileHandling
+    rm_conffile() {
+	local PKGNAME="$1" # Unused
+	local CONFFILE="$2"
+	if [ -f "$CONFFILE".dpkg-del ]; then
+            rm -f "$CONFFILE".dpkg-del
+	fi
+    }
+    case "$1" in
+	install|upgrade)
+	    if dpkg --compare-versions "$2" le-nl 1.21~; then
+		rm_conffile debathena-auto-update "/etc/cron.d/debathena-auto-update"
+	    fi
+    esac
+fi
+
 case "$1" in
     configure)
 	# Nuke /var/lib/athena-update-status on 1.18, 
@@ -43,11 +65,6 @@ case "$1" in
 	    rm /var/lib/athena-update-status
 	fi
 	
-	# We stopped shipping our own cron.d file in 1.21, so remove it.
-	if dpkg --compare-versions "$2" lt 1.21~; then
-	    rm -f /etc/cron.d/debathena-auto-update
-	fi
-
         if [ ! -f /var/lib/athena-update-status ]; then
 	    echo "$(date +"%s")|$(date +"%s")|ok|Package configured" > /var/lib/athena-update-status
         fi
