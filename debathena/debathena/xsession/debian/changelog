@@ -2,8 +2,9 @@ debathena-xsession (1.17) unstable; urgency=low
 
   * Don't use dpkg-query because it slows logins down; instead ship actual
     scripts in /usr/share and source them (Trac #778)
+  * Inform the user that they will lose if there's no AFS
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 23 Feb 2011 20:17:06 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 01 Mar 2011 12:44:58 -0500
 
 debathena-xsession (1.16) unstable; urgency=low
 
