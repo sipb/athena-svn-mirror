@@ -42,6 +42,11 @@ case "$1" in
 	    [ -f /var/lib/athena-update-status ]; then
 	    rm /var/lib/athena-update-status
 	fi
+	
+	# We stopped shipping our own cron.d file, so remove it.
+	if dpkg --compare-versions "$2" lt 1.22~; then
+	    rm -f /etc/cron.d/debathena-auto-update
+	fi
 
         if [ ! -f /var/lib/athena-update-status ]; then
 	    echo "$(date +"%s")|$(date +"%s")|ok|Package configured" > /var/lib/athena-update-status
