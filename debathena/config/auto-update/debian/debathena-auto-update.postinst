@@ -43,8 +43,8 @@ case "$1" in
 	    rm /var/lib/athena-update-status
 	fi
 	
-	# We stopped shipping our own cron.d file, so remove it.
-	if dpkg --compare-versions "$2" lt 1.22~; then
+	# We stopped shipping our own cron.d file in 1.21, so remove it.
+	if dpkg --compare-versions "$2" lt 1.21~; then
 	    rm -f /etc/cron.d/debathena-auto-update
 	fi
 
