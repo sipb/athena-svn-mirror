@@ -1,9 +1,10 @@
 debathena-auto-update (1.22) unstable; urgency=low
 
   * Install debathena-license-config and reconfigure packages as necessary
+  * Add dependency on debathena-license-config
   * Remove old cron.d file while attempting to comply with Debian policy
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 01 Mar 2011 15:02:30 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 02 Mar 2011 14:37:09 -0500
 
 debathena-auto-update (1.21) unstable; urgency=low
 
