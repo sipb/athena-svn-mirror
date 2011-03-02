@@ -9,6 +9,7 @@ import gtk
 import gobject
 import sys
 import os
+import subprocess
 
 SM_DBUS_NAME = "org.gnome.SessionManager"
 SM_DBUS_PATH = "/org/gnome/SessionManager"
@@ -28,16 +29,26 @@ class GDMSucks:
         
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_property('can-focus', False)
+        box = gtk.VBox()
         self.label = gtk.Label()
-        self.label.set_markup('<span font_desc="Sans Bold 24">This workstation is temporarily unavailable.  Please use another workstation.</span>')
+        self.label.set_markup('<span font_desc="Sans Bold 24">Software updates are being applied.\n\nThis workstation is temporarily unavailable.\n\nPlease use another workstation.</span>')
         self.label.set_property('can-focus', False)
-        self.window.add(self.label)
+        self.label.set_justify(gtk.JUSTIFY_CENTER)
+        box.pack_start(self.label, True, True, 5)
+        self.window.add(box)
+        self.window.set_size_request(800, 600)
         self.window.set_decorated(False)
         self.window.set_position(gtk.WIN_POS_CENTER)
         self.window.hide()
-        self.gfile = gio.File("/etc/nologin")
-        self.monitor = self.gfile.monitor_file(gio.FILE_MONITOR_NONE, None)
-        self.monitor.connect("changed", self.directory_changed)
+        try:
+            metapackage = subprocess.Popen(["machtype", "-L"], stdout=subprocess.PIPE).communicate()[0].rstrip()
+        except OSError:
+            # Assume cluster
+            metapackage = 'debathena-cluster'
+        if metapackage == 'debathena-cluster':
+            self.gfile = gio.File("/var/run/athena-nologin")
+            self.monitor = self.gfile.monitor_file(gio.FILE_MONITOR_NONE, None)
+            self.monitor.connect("changed", self.directory_changed)
 
     def directory_changed(self, monitor, file1, file2, evt_type):
         # type(evt_type) is <class 'gio._gio.FileMonitorEvent'>
