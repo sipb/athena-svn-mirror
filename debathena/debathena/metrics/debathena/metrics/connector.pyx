@@ -270,14 +270,16 @@ cdef class Connector:
         cdef proc_event *ev
         cdef object ret
 
-        from_addr.nl_family = AF_NETLINK
-        from_addr.nl_groups = CN_IDX_PROC
-        from_addr.nl_pid = 1
         s = sizeof(from_addr)
 
-        if recvfrom(self.sock, buf, sizeof(buf), 0,
-                    <sockaddr *>&from_addr, &s) == -1:
-            raise IOError(errno, strerror(errno))
+        while True:
+            if recvfrom(self.sock, buf, sizeof(buf), 0,
+                        <sockaddr *>&from_addr, &s) == -1:
+                raise IOError(errno, strerror(errno))
+
+            if from_addr.nl_pid != 0:
+                # Ignore messages that don't come from the kernel
+                continue
 
         ev = <proc_event *>((<cn_msg *>NLMSG_DATA(buf)).data)
 

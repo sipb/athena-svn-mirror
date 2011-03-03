@@ -1,3 +1,10 @@
+debathena-metrics (1.6) unstable; urgency=low
+
+  * Require that netlink messages come from the kernel, not from userspace.
+    Patch by Nelson Elhage.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 02 Mar 2011 20:02:12 -0500
+
 debathena-metrics (1.5.1) unstable; urgency=low
 
   * Update the blacklist
