@@ -10,6 +10,7 @@ import gobject
 import sys
 import os
 import subprocess
+from optparse import OptionParser
 
 SM_DBUS_NAME = "org.gnome.SessionManager"
 SM_DBUS_PATH = "/org/gnome/SessionManager"
@@ -18,7 +19,9 @@ SM_CLIENT_DBUS_INTERFACE = "org.gnome.SessionManager.ClientPrivate"
 APP_ID = "debathena-nologin-monitor"
 
 class GDMSucks:
-    def __init__(self):
+    def __init__(self, options):
+        self.debug = options.debug
+        self.guitest = options.guitest
         self.sessionEnding = False
         self.sessionBus = dbus.SessionBus()
         try:
@@ -40,17 +43,21 @@ class GDMSucks:
         self.window.set_decorated(False)
         self.window.set_position(gtk.WIN_POS_CENTER)
         self.window.hide()
+        if self.guitest:
+            self.window.show_all()
         try:
             metapackage = subprocess.Popen(["machtype", "-L"], stdout=subprocess.PIPE).communicate()[0].rstrip()
         except OSError:
             # Assume cluster
             metapackage = 'debathena-cluster'
-        if metapackage == 'debathena-workstation':
+        if self.debug or metapackage == 'debathena-cluster':
             self.gfile = gio.File("/var/run/athena-nologin")
             self.monitor = self.gfile.monitor_file(gio.FILE_MONITOR_NONE, None)
             self.monitor.connect("changed", self.directory_changed)
 
     def directory_changed(self, monitor, file1, file2, evt_type):
+        if self.debug:
+            print str(evt_type), file1.get_path()
         if evt_type == gio.FILE_MONITOR_EVENT_CREATED:
             self.window.show_all()
         if evt_type == gio.FILE_MONITOR_EVENT_DELETED:
@@ -94,10 +101,15 @@ class GDMSucks:
     def sm_on_Stop(self):
         gtk.main_quit()
 
-def main():
+def main(options):
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-    GDMSucks()
+    GDMSucks(options)
     gtk.main()
 
 if __name__ == '__main__':
-    main()
+    parser = OptionParser()
+    parser.set_defaults(debug=False, guitest=False)
+    parser.add_option("--test", action="store_true", dest="debug")
+    parser.add_option("--test-gui", action="store_true", dest="guitest")
+    (options, args) = parser.parse_args()
+    main(options)
