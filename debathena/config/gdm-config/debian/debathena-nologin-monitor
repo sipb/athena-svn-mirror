@@ -45,20 +45,15 @@ class GDMSucks:
         except OSError:
             # Assume cluster
             metapackage = 'debathena-cluster'
-        if metapackage == 'debathena-cluster':
+        if metapackage == 'debathena-workstation':
             self.gfile = gio.File("/var/run/athena-nologin")
             self.monitor = self.gfile.monitor_file(gio.FILE_MONITOR_NONE, None)
             self.monitor.connect("changed", self.directory_changed)
 
     def directory_changed(self, monitor, file1, file2, evt_type):
-        # type(evt_type) is <class 'gio._gio.FileMonitorEvent'>
-        # Value is something like:
-        #     <enum G_FILE_MONITOR_EVENT_CREATED of type GFileMonitorEvent>
-        # However, those constants aren't available in Python, unless I'm missing something
-        # So, we do this the stupid way:
-        if str(evt_type) == "<enum G_FILE_MONITOR_EVENT_CREATED of type GFileMonitorEvent>":
+        if evt_type == gio.FILE_MONITOR_EVENT_CREATED:
             self.window.show_all()
-        if str(evt_type) == "<enum G_FILE_MONITOR_EVENT_DELETED of type GFileMonitorEvent>":
+        if evt_type == gio.FILE_MONITOR_EVENT_DELETED:
             self.window.hide()
 
    # Connect to the session manager, and register our client.
