@@ -1,3 +1,10 @@
+debathena-cluster-login-config (1.30) unstable; urgency=low
+
+  * Ship our own logout command which will force a logout on cluster if
+    the user lacks tokens
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 04 Mar 2011 22:12:29 -0500
+
 debathena-cluster-login-config (1.29) unstable; urgency=low
 
   * Transform the dbus gdm.conf to break user switching

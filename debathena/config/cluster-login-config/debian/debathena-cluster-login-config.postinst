@@ -123,7 +123,7 @@ case "$1" in
 	$gc -t bool /apps/gnome-screensaver/logout_enabled true
 	$gc -t int /apps/gnome-screensaver/logout_delay 20
 	$gc -t string /apps/gnome-screensaver/logout_command \
-	    "/usr/bin/gnome-session-save --force-logout"
+	    "/usr/share/debathena-cluster-login-config/screensaver_logout.sh"
 	# KLUDGE: gnome-screensaver can overwrite its internal
 	# logout_command setting with the embedded_keyboard_command
 	# value (http://bugzilla.gnome.org/show_bug.cgi?id=573495).
@@ -132,7 +132,7 @@ case "$1" in
 	# has been fixed.  Also disable the embedded_keyboard to ensure
 	# that this value is not used otherwise.
 	$gc -t string /apps/gnome-screensaver/embedded_keyboard_command \
-	    "/usr/bin/gnome-session-save --force-logout"
+	    "/usr/share/debathena-cluster-login-config/screensaver_logout.sh"
 	$gc -t bool /apps/gnome-screensaver/embedded_keyboard_enabled false
 	$gc -t bool /apps/gnome-screensaver/user_switch_enabled false
 	$gc -t bool /apps/gnome-screensaver/lock_enabled true
