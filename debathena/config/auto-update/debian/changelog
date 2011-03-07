@@ -1,3 +1,10 @@
+debathena-auto-update (1.22.1) unstable; urgency=low
+
+  * Don't blindly copy maintainer script snippets from websites that are
+    full of lies
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 07 Mar 2011 15:43:03 -0500
+
 debathena-auto-update (1.22) unstable; urgency=low
 
   * Install debathena-license-config and reconfigure packages as necessary

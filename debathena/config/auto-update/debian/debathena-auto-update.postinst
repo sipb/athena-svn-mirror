@@ -40,6 +40,8 @@ if dpkg-maintscript-helper supports rm_conffile 2> /dev/null; then
 	/etc/cron.d/debathena-auto-update 1.21~ -- "$@"
 else
     # From http://wiki.debian.org/DpkgConffileHandling
+    # Which is full of lies, like the fact that postinsts get 
+    # called with "install" or "upgrade" when they totally don't
     rm_conffile() {
 	local PKGNAME="$1" # Unused
 	local CONFFILE="$2"
@@ -48,7 +50,7 @@ else
 	fi
     }
     case "$1" in
-	install|upgrade)
+	configure)
 	    if dpkg --compare-versions "$2" le-nl 1.21~; then
 		rm_conffile debathena-auto-update "/etc/cron.d/debathena-auto-update"
 	    fi
