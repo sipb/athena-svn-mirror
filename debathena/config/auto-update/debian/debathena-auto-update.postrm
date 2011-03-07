@@ -20,7 +20,7 @@ set -e
 
 if dpkg-maintscript-helper supports rm_conffile 2> /dev/null; then
     dpkg-maintscript-helper rm_conffile \
-	/etc/cron.d/debathena-auto-update 1.21~ -- "$@"
+	/etc/cron.d/debathena-auto-update 1.22.2 -- "$@"
 else
     # From http://wiki.debian.org/DpkgConffileHandling
     rm_conffile() {
@@ -34,7 +34,7 @@ else
     # See policy 6.6, item 3 and 5
     case "$1" in
 	abort-install|abort-upgrade)
-	    if dpkg --compare-versions "$2" le-nl 1.21~; then
+	    if dpkg --compare-versions "$2" le-nl 1.22.2; then
 		rm_conffile debathena-auto-update "/etc/cron.d/debathena-auto-update"
 	    fi
     esac
