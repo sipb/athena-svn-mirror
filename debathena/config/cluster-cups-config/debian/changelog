@@ -1,3 +1,10 @@
+debathena-cluster-cups-config (1.3) unstable; urgency=low
+
+  * Add the mitprint queue back, and also make the Pharos pilot queues
+    pointers to our Pharos server
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 08 Mar 2011 16:06:26 -0500
+
 debathena-cluster-cups-config (1.2) unstable; urgency=low
 
   * Revert r24975 (the mitprint queue) and bump the version making this
