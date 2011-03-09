@@ -1,2 +1,2 @@
-[ -f /usr/share/debathena-xsession/debathena-check-afs.sh ] && \ 
+[ -f /usr/share/debathena-xsession/debathena-check-afs.sh ] && \
  . /usr/share/debathena-xsession/debathena-check-afs.sh

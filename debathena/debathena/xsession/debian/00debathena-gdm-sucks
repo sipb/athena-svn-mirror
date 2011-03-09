@@ -1,2 +1,2 @@
-[ -f /usr/share/debathena-xsession/debathena-gdm-sucks.sh ] && \ 
+[ -f /usr/share/debathena-xsession/debathena-gdm-sucks.sh ] && \
  . /usr/share/debathena-xsession/debathena-gdm-sucks.sh

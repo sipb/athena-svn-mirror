@@ -1,3 +1,11 @@
+debathena-xsession (1.17.1) unstable; urgency=low
+
+  * Fix broken line continuation in gdm-sucks and check-afs Xsession.d
+    scripts
+  * Make check_afs more robust to libpam_debathena_home_type suckage
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 08 Mar 2011 19:10:36 -0500
+
 debathena-xsession (1.17) unstable; urgency=low
 
   * Don't use dpkg-query because it slows logins down; instead ship actual
