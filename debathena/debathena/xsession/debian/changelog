@@ -1,3 +1,10 @@
+debathena-xsession (1.17.2) unstable; urgency=low
+
+  * Incoprorate new DEBATHENA_HOME_TYPE values into check-afs.sh and
+    remove hack
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 09 Mar 2011 15:36:00 -0500
+
 debathena-xsession (1.17.1) unstable; urgency=low
 
   * Fix broken line continuation in gdm-sucks and check-afs Xsession.d
