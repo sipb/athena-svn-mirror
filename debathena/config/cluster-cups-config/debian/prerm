@@ -1,5 +1,5 @@
 #!/bin/sh
-# prerm script for #PACKAGE#
+# prerm script for debathena-cluster-cups-config
 #
 # see: dh_installdeb(1)
 
@@ -22,32 +22,11 @@ set -e
 
 #DEBHELPER#
 
-. /usr/lib/debathena-cupsys-config/restart-cups.sh
-
-restart_cups_extra ()
-{
-    # CUPS needs to not be running while we do this.
-    if [ "$1" -gt 0 ]; then
-        echo "CUPS is running and cannot be stopped automatically!" >&2
-        echo "Please shut down CUPS and retry deconfiguring this package." >&2
-        return 1
-    fi
-
-    for file in printers.conf printers.conf.O classes.conf classes.conf.O; do
-        if [ -e /etc/cups/"$file" ]; then
-            rm /etc/cups/"$file"
-        fi
-    done
-    if [ -d /etc/cups/debathena-cluster-cups-config-saved ]; then
-        mv /etc/cups/debathena-cluster-cups-config-saved/* /etc/cups
-    fi
-}
-
-. /usr/lib/debathena-cupsys-config/restart-cups.sh
-
 case "$1" in
     remove|deconfigure)
-        restart_cups
+	if [ -z "$2" ]; then
+	    /usr/share/debathena-cluster-cups-config/configure-athena-printers remove
+	fi
     ;;
 
     upgrade)

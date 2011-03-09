@@ -1,0 +1,75 @@
+#!/bin/sh
+
+PHAROS_PRINTERS="mitprint bias nysa python savion"
+ATHENA_PRINTERS="acantha ajax albany amittai ashdown avery barbar barker bob \
+                 boomboom bricks celine clearcut corfu e55prt echo edgerton \
+                 eie electra fiber getitfaster hayden helios homer jarthur \
+                 jonathan katharine laser lerman lotis macg maia \
+                 mark-the-great massave mccormick metis mortar nhdesk pacific \
+                 peecs picus pietro pindar pulp pulp-fiction quick-print \
+                 sanda sidney simmons stumpgrinder sum thesis \
+                 tree-eater ussy varan virus w20thesis w61cluster w84prt \
+                 waffle westgate wg-tang wh-print wired"
+
+add_printers() {
+    for p in $PHAROS_PRINTERS; do
+	lpadmin -p $p -E -v lpd://mitprint.mit.edu/bw \
+	        -D "Pharos (Monochrome)" \
+	        -L "Release jobs from any Pharos printer" \
+	        -o printer-is-share=false \
+	        -m drv:///hpijs.drv/hp-laserjet_9050-hpijs-pcl3.ppd
+	if [ $? != 0 ]; then
+	    echo "FAILED to add Pharos printer $p"
+	else
+	    echo "Added Pharos printer $p"
+	fi
+    done
+    for a in $ATHENA_PRINTERS; do
+	if add-athena-printer $a; then
+	    echo "Added Athena printer $a"
+	else
+	    echo "FAILED to add Athena printer $a"
+	fi
+    done
+}
+
+del_printers() {
+    for p in $PHAROS_PRINTERS $ATHENA_PRINTERS; do
+	lpadmin -x $p;
+	if [ $? != 0 ]; then
+	    echo "Failed to remove printer $p!"
+	fi
+    done
+}
+
+require_cups() {
+    # Ensure CUPS is running
+    [ -e /etc/init.d/cups ] && rcname=cups || rcname=cupsys
+    if hash invoke-rc.d; then
+        invoke="invoke-rc.d $rcname"
+    else
+        invoke="/etc/init.d/$rcname"
+    fi
+    if ! /etc/init.d/$rcname status; then
+	if ! $invoke start; then
+	    echo "FATAL: Couldn't start CUPS!"
+	    exit 1
+	fi
+    fi
+}
+
+case "$1" in
+    add)
+	require_cups  
+	add_printers
+	;;
+    remove)
+	require_cups
+	del_printers
+	;;
+    *)
+	echo "Usage: $0 [ add | remove ]"
+	exit 1
+	;;
+esac
+exit 0

@@ -7,7 +7,7 @@ Standards-Version: 3.8.4
 
 Package: debathena-cluster-cups-config
 Architecture: all
-Depends: ${misc:Depends}, debathena-cupsys-config (>= 1.12~)
+Depends: ${misc:Depends}, debathena-cupsys-config (>= 1.12~), debathena-printing-config, hpijs
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: CUPS configuration for Athena cluster machines

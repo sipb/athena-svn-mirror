@@ -1,3 +1,2 @@
-debian/classes.conf usr/share/debathena-cluster-cups-config
-debian/printers.conf usr/share/debathena-cluster-cups-config
+debian/configure-athena-printers usr/share/debathena-cluster-cups-config
 debian/cupsd-site.conf.debathena usr/share/debathena-cupsys-config

@@ -1,3 +1,13 @@
+debathena-cluster-cups-config (2.0) unstable; urgency=low
+
+  * Stop shipping our own printers.conf and classes.conf; instead use
+    lpadmin and add-athena-printer (Trac: #841)
+  * Fix the broken prerm by cleaning up in the preinst for pre-2.0
+    packages
+  * No more printername2 queues for legacy LPRng printers
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 09 Mar 2011 17:23:01 -0500
+
 debathena-cluster-cups-config (1.3) unstable; urgency=low
 
   * Add the mitprint queue back, and also make the Pharos pilot queues

@@ -1,5 +1,5 @@
 #!/bin/sh
-# postinst script for #PACKAGE#
+# postinst script for debathena-cluster-cups-config
 #
 # see: dh_installdeb(1)
 
@@ -25,34 +25,10 @@ set -e
 
 . /usr/lib/debathena-cupsys-config/restart-cups.sh
 
-restart_cups_extra()
-{
-    # CUPS needs to not be running while we do this.
-    if [ "$1" -gt 0 ]; then
-        echo "CUPS is running and cannot be stopped automatically!" >&2
-        echo "Please shut down CUPS and retry configuring this package." >&2
-        return 1
-    fi
-
-    # Make a directory to back up the old printers/classes.conf if we
-    # haven't previously done so.
-    if ! [ -e /etc/cups/debathena-cluster-cups-config-saved ]; then
-        mkdir /etc/cups/debathena-cluster-cups-config-saved
-        for file in printers.conf printers.conf.O classes.conf classes.conf.O; do
-            if [ -e /etc/cups/"$file" ]; then
-                mv /etc/cups/"$file" /etc/cups/debathena-cluster-cups-config-saved
-            fi
-        done
-    fi
-    # However, unconditionally copy printers.conf and classes.conf so we
-    # pick up changes in them.
-    cp /usr/share/debathena-cluster-cups-config/printers.conf /etc/cups
-    cp /usr/share/debathena-cluster-cups-config/classes.conf /etc/cups
-}
-
 case "$1" in
     configure)
         restart_cups
+	/usr/share/debathena-cluster-cups-config/configure-athena-printers add
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
