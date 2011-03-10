@@ -1,3 +1,10 @@
+debathena-xsession (1.17.3) unstable; urgency=low
+
+  * debathena-homedir-mode now offers to run the command for you (Trac
+    #387)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 10 Mar 2011 18:29:38 -0500
+
 debathena-xsession (1.17.2) unstable; urgency=low
 
   * Incoprorate new DEBATHENA_HOME_TYPE values into check-afs.sh and
