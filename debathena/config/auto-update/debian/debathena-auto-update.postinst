@@ -93,7 +93,9 @@ case "$1" in
 		upginterval=420
 		;;
 	esac
-	desync2cron 2 $upginterval root /usr/sbin/athena-auto-upgrade >> $UPG_CRONFILE
+	for h in 1 2 3; do
+	    desync2cron $h $upginterval root /usr/sbin/athena-auto-upgrade >> $UPG_CRONFILE
+	done
 	
     ;;
 
