@@ -2,7 +2,10 @@
 # Get cluster information from Hesiod and save it.
 
 base=/var/run/athena-clusterinfo
-ver=10
+ver=$(lsb_release -sr)
+if [ $(echo "$ver < 10" | bc -q) -eq 1 ]; then
+    ver=10
+fi
 
 getcluster -b $ver > $base.sh.new
 if [ $? -eq 0 -a -s $base.sh.new ]; then
