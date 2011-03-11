@@ -1,7 +1,8 @@
 #!/bin/sh
 
 if [ "--daemons" = "$1" ]; then
-    echo cups cupsys
+    [ -e /etc/init.d/cups ] && rcname=cups || rcname=cupsys
+    echo $rcname
     exit
 fi
 
