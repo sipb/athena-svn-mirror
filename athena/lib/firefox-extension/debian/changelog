@@ -1,6 +1,6 @@
 debathena-firefox-extension (10.0.6-0debathena1) UNRELEASED; urgency=low
 
-  * Print duplex printing code; Gtk+ printing now provides this
+  * Punt duplex printing code; Gtk+ printing now provides this
 
  -- Jonathan Reed <jdreed@mit.edu>  Fri, 11 Mar 2011 19:10:40 -0500
 
