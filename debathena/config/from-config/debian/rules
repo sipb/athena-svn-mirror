@@ -12,20 +12,11 @@ ifneq ($(USES_ALTERNATIVES),y)
 	/usr/share/man/man1/from.debathena.1.gz
 else
     # Newer packages: undivert, generate Conflicts, generate postinst
-    DEB_UNDIVERT_VERSION_/usr/bin/from.debathena = 1.5~
-    DEB_UNDIVERT_VERSION_/usr/share/man/man1/from.debathena.1.gz = 1.5~
-    DEB_UNDIVERT_FILES_debathena-from-config += \
-	/usr/bin/from.debathena \
-	/usr/share/man/man1/from.debathena.1.gz
+    # Except we can't use DEB_UNDIVERT_FILES because of Trac #549
     binary-predeb/debathena-from-config::
 	echo "debathena-from-config-conflicts=bsdmainutils (<8.0.6~)" >> debian/debathena-from-config.substvars
     common-build-indep::
-	(echo "#DEBHELPER#"; \
-	echo "if [ \"\$$1\" = configure ]; then"; \
-	echo "    update-alteratives \\"; \
-	echo "    --install /usr/bin/from from /usr/bin/from.debathena 100 \\"; \
-	echo "    --slave /usr/share/man/man1/from.1.gz from.1.gz /usr/share/man/man1/from.debathena.1.gz"; \
-	echo "fi") > debian/postinst
+	cp -f debian/postinst-alternatives debian/postinst
     clean::
 	rm -f debian/postinst
 endif
