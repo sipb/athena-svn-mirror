@@ -1,3 +1,9 @@
+debathena-from-config (1.5) unstable; urgency=low
+
+  * Update for alternatives-aware versions of bsdmainutils (Trac #729)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 12 Mar 2011 01:15:07 -0500
+
 debathena-from-config (1.4) unstable; urgency=low
 
   * Update dependencies for merge of debathena-from into

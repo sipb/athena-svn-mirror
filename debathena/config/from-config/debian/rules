@@ -1,9 +1,16 @@
 #!/usr/bin/make -f
 
-DEB_DIVERT_EXTENSION = .debathena
-DEB_DIVERT_FILES_debathena-from-config += \
+BSDMAINUTILS_VERSION = $(shell dpkg-query --showformat='$${Version}' --show bsdmainutils)
+# From the changelog for bsdmainutils
+USES_ALTERNATIVES = $(shell dpkg --compare-versions $(BSDMAINUTILS_VERSION) ge '8.0.6~' && echo y)
+
+ifeq ($(USES_ALTERNATIVES),y)
+    DEB_DIVERT_EXTENSION = .debathena
+    DEB_DIVERT_FILES_debathena-from-config += \
 	/usr/bin/from.debathena \
 	/usr/share/man/man1/from.debathena.1.gz
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
 
