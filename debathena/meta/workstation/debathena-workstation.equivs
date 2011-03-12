@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.8.1
 
 Package: debathena-workstation
-Version: 1.2
+Version: 1.3
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-workstation-branding,
  debathena-login-graphical,
@@ -16,7 +16,6 @@ Depends: debathena-workstation-branding,
  debathena-tmp-cleaner,
  debathena-auto-update,
  debathena-tex-config,
- debathena-help-config,
  debathena-moira-update-server,
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
