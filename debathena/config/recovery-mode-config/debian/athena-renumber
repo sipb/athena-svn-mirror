@@ -1,146 +1,127 @@
-#!/usr/bin/perl -w
+#!/bin/sh
 #
-# A script to change the IP/hostname on a cluster machine
-# jdreed@mit.edu
+# Change the IP/hostname on cluster machines
+#
 
-use strict;
-use Socket;
-use File::Copy;
-use Getopt::Std;
+# Required for recovery-mode scripts
+if [ "$1" = "test" ]; then
+  echo "Change IP address or hostname"
+  exit 0
+fi
+
+if [ "$(id -u)" != "0" ]; then
+    echo "This script must be run as root."
+    exit 0
+fi
+
+
+# Blatantly stolen from the installer
+ask() {
+  answer=''
+  while [ y != "$answer" -a n != "$answer" ]; do
+    echo -n "$1"
+    read answer
+    [ Y = answer ] && answer=y
+    [ N = answer ] && answer=n
+    [ -z "$answer" ] && answer=$2
+  done
+}
+
+bail() {
+    echo
+    echo "Cancelled.  Press Enter to the menu."
+    read dummy
+    exit 0;
+}
 
 # sulogin gets upset if it gets a ^C
-$SIG{'INT'} = 'bail';
+trap bail INT
 
-my $MASKS="/usr/share/debathena-recovery-mode-config/masks";
+PATH="/sbin:/bin:/usr/bin:/usr/sbin:$PATH"
 
-if (defined($ARGV[0]) && ($ARGV[0] eq 'test')) {
-    print "Change IP address or hostname\n";
-    exit 0;
-}
+if [ "$DEBATHENA_DEBUG" = "1" ]; then
+    echo "**********\nDEBUG MODE\n**********"
+    MASKS="$(pwd)/masks";
+    NETPARAMS="$(pwd)/netparams";
+    . "$(pwd)/require_network.sh"
+else
+    MASKS="/usr/share/debathena-recovery-mode-config/masks";
+    NETPARAMS="/usr/share/debathena-recovery-mode-config/netparams";
+    . /usr/share/debathena-recovery-mode-config/require_network.sh
+fi
 
-sub confirm {
-    my $question = shift || "Continue?";
-    print "${question} (y/n) ";
-    my $ans = <STDIN>;
-    return ($ans =~ m/^y$/i);
-}
+if [ "$DEBATHENA_DEBUG" != "1" ] && \
+   [ "$(machtype -L)" != "debathena-cluster" ]; then
+    echo "WARNING: This script is designed for debathena-cluster machines"
+    echo "but this machine is running $(machtype -L).\n";
+    ask "Are you SURE you want to continue? (y/N) " n
+    if [ "$answer" = "n" ]; then
+	exit 0
+    fi
+fi
 
-sub bail {
-    if ($_[0] eq 'INT') {
-	print "\nCancelled.";
-    } else {
-	print shift;
-    }
-    print "\n\n(press ENTER to return to the recovery mode menu)\n";
-    my $dummy = <STDIN>;
-    exit 0;
-}
+echo "Testing networking, please wait..."
+if ! require_network; then 
+    echo "Can't verify that networking is available.  If you continue,"
+    ask "errors may occur.  Continue? (y/N) " n
+    if [ "$answer" = "n" ]; then
+	exit 0
+    fi
+fi
 
-sub mask {
-    my $ip = shift;
-    my $mask = shift;
-    my $mbits = pack("B*", (1 x $mask) . (0 x (32 - $mask)));
-    my $ibits = pack("CCCC", split(/\./, $ip));
-    my $net = $ibits & $mbits;
-    return join('.', unpack("CCCC", $net));
-}
+while true; do
+    while [ -z "$IPADDR" ] ; do
+	echo -n "Enter IP address: "
+	read IPADDR
+    done
 
-sub cidr2ip {
-    my $cidr = shift;
-    return join('.', unpack("CCCC", pack("B*", (1 x $cidr) . (0 x (32 - $cidr)))));
-}
+    NETMASK=`$NETPARAMS -f $MASKS $IPADDR|cut -d\  -f 1`
+    GATEWAY=`$NETPARAMS -f $MASKS $IPADDR|cut -d\  -f 4`
 
-sub validIP {
-    my $ip = shift;
-    if ($ip =~ /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/) {
-	if (scalar(grep { ($_ <= 255) && ($_ >= 0) } ($1, $2, $3, $4)) == 4) {
-	    return 1;
-	}
-    }
-    return 0;
-}
-
-# main
-
-# Sanity checks
-foreach (qw(/etc/network/interfaces /etc/hosts /etc/hostname)) {
-    (-w $_) || bail("Cannot write to $_. (Are you root?)");
-}
-
-(-r $MASKS) || bail("Cannot read $MASKS");
-
-my $machtype = `machtype -L`;
-chomp($machtype);
-if ($machtype ne 'debathena-cluster') {
-    print "WARNING: This script is designed for debathena-cluster machines but\n";
-    print "this machine is running $machtype.\n";
-    confirm("Are you SURE you want to continue?") || bail("OK, cancelled.");
-}
-
-my $ip = '';
-until (validIP($ip)) {
-    if ($ip) {
-	print "Invalid IP address ($ip).  Try again.\n";
-    }
-    print "Enter the new IP address: ";
-    ($ip = <STDIN>) =~ s/\s//g;
-}
-print "Looking up hostname...";
-my $fqdn = gethostbyaddr(inet_aton($ip), AF_INET);
-if ($fqdn) {
-    print " found.\n";
-} else {
-    $fqdn = '';
-    print " not found.\n";
-    until ($fqdn =~ /^[a-z][\w\-\.]*/i) {
-	print "Please enter the machine's new hostname: ";
-	($fqdn = <STDIN>) =~ s/\s//g;
-    }
-}
-$fqdn = lc($fqdn);
-my $hostname = $fqdn;
-if ($fqdn =~ /\./) {
-    $hostname = (split(/\./, $fqdn))[0];
-} else {
-    print "NOTE: No domain specified, assuming 'mit.edu'";
-    $fqdn = "${hostname}.mit.edu";
-}
-
-my ($subnetmask, $gateway);
-print "Looking up netmask information...\n";
-open(MASKS, $MASKS) || bail("Cannot read $MASKS: $!");
-while (<MASKS>) {
-    next if (/^#/);
-    next unless (/\d/);
-    my ($addr, $sbits, $mbits, $gw) = split(' '); #the ' ' pattern emulates awk
-    if (mask($ip, $sbits) eq $addr) {
-	$subnetmask = cidr2ip($mbits);
-	if (! $gw) {
-	    my @octets = split(/\./, mask($ip, $mbits));
-	    my $trailing = pop(@octets) + 1;
-	    $gateway = join('.', @octets, $trailing);
-	} else {
-	    $gateway = $gw;
-	}
-	last;
-    }
-}
-(defined($subnetmask) && defined($gateway)) || bail("Could not find a matching line in masks file for $ip.\nIf you are sure you typed the IP address correctly, please report\nthis error to IS&T, along with the IP address you were trying to use.");
-
-close(MASKS);
-print "IP address:  $ip\n";
-print "Subnet Mask: $subnetmask\n";
-print "Gateway:     $gateway\n";
-print "Hostname:    $hostname\n";
-print "FQDN:        $fqdn\n\n";
-
-confirm("Does that look correct?") || bail("OK, cancelled.");
-
-print "Updating /etc/network/interfaces...\n";
-copy("/etc/network/interfaces", "/etc/network/interfaces.old") || bail("Could not copy /etc/network/interfaces");
-open(INTERFACES, ">/etc/network/interfaces") || bail ("Could not overwrite /etc/network/interfaces: $!");
-print INTERFACES <<"ENDINTERFACES";
-# This file was created by $0
+    echo "Address: $IPADDR"
+    echo
+    echo "Autoconfigured settings:"
+    echo "  Netmask: $NETMASK"
+    echo "  Gateway: $GATEWAY"
+    echo
+    ask "Is this correct? (Y/n) " y
+    [ "$answer" = "y" ] || continue
+    echo "Looking up hostname...";
+    FQDN="$(dig +short -x $IPADDR 2>/dev/null | sed -e 's/.$//')"
+    if [ $? != 0 ]; then
+	echo "Unable to look up hostname.  You may enter it below"
+	echo "but beware that typos may render your machine unusable."
+	FQDN=
+	while [ -z "$FQDN" ] ; do
+	    echo -n "Enter hostname: "
+	    read FQDN
+	    FQDN="$(echo $FQDN | tr -d ' ')"
+            if echo "$FQDN" | egrep -qi "[^a-z0-9_-\.]"; then
+		echo "Invalid characters in hostname, try again."
+		FQDN=
+	    fi
+	done
+    fi	
+    if ! echo "$FQDN" | grep -qi "MIT.EDU$"; then
+	FQDN="$FQDN.MIT.EDU"
+    fi
+    echo "Hostname: $FQDN"
+    ask "Is this correct? (Y/n) " y
+    if [ "$answer" = "y" ]; then
+	break
+    fi
+done
+HOSTNAME="$(echo "$FQDN" | cut -d. -f 1)"
+DOMAIN="$(echo "$FQDN" | sed 's/[^\.]*\.//')"
+if [ "$DEBATHENA_DEBUG" = "1" ]; then
+    echo "$IPADDR $NETMASK $GATEWAY $HOSTNAME $DOMAIN $FQDN"
+    echo "Done!"
+    exit 0
+fi
+echo "Updating /etc/network/interfaces..."
+mv -f "/etc/network/interfaces" "/etc/network/interfaces.old"
+cat <<EOF >/etc/network/interfaces
+# This file was created by athena-renumber
 
 # The loopback interface
 auto lo
@@ -149,19 +130,15 @@ iface lo inet loopback
 # The primary network interface
 auto eth0
 iface eth0 inet static
-        address $ip
-        netmask $subnetmask
-        gateway $gateway
+        address $IPADDR
+        netmask $NETMASK
+        gateway $GATEWAY
         dns-nameservers 18.70.0.160 18.71.0.151 18.72.0.3
-ENDINTERFACES
-close(INTERFACES);
-
-print "Updating /etc/hosts...\n";
-
-copy("/etc/hosts", "/etc/hosts.old") || bail("Could not copy /etc/hosts");
-open(HOSTS, ">/etc/hosts") || bail ("Could not overwrite /etc/hosts: $!");
-print HOSTS <<"ENDHOSTS";
-# This file was created by $0
+EOF
+echo "Updating /etc/hosts..."
+mv -f "/etc/hosts" "/etc/hosts.old"
+cat <<EOF >/etc/hosts
+# This file was created by athena-renumber
 127.0.0.1       localhost
 127.0.1.1       $fqdn $hostname
 
@@ -172,23 +149,18 @@ ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
-ENDHOSTS
-close(HOSTS);
-				    
-print "Updating /etc/hostname...\n";
-copy("/etc/hostname", "/etc/hostname.old") || bail("Could not copy /etc/hostname");
-open(HOSTNAME, ">/etc/hostname") || bail ("Could not overwrite /etc/hostname: $!");
-print HOSTNAME "$hostname\n";
-close(HOSTNAME);
-
-print "Setting hostname...\n";
-system("/bin/hostname", $hostname);
-print "\nDone!  You will need to reboot the workstation for the\n";
-print "changes to take effect.\n";
-confirm("Would you like to reboot now?") || bail("Please perform a full shutdown and reboot as soon as possible.");
-print "The workstation will now power down completely.\n";
-print "When you turn it back on, it will use the new IP address.\n\n";
-print "(press ENTER to power down the workstation)";
-getc(STDIN);
-system("/sbin/poweroff");
-exit 0;
+EOF
+echo "Updating /etc/hostname..."
+mv -f /etc/hostname /etc/hostname.old
+echo $HOSTNAME > /etc/hostname
+echo "Setting hostname...";
+hostname $HOSTNAME
+echo
+echo "Done!  You will need to reboot the workstation for the changes to take effect."
+ask "Would you like to reboot now? (Y/n) " y
+if [ "$answer" = "n" ]; then
+    echo "Please perform a full shutdown and reboot as soon as possible."
+    echo "(Press Enter to return to the menu)"
+    exit 0
+fi
+reboot

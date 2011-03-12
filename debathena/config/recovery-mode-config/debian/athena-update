@@ -17,8 +17,17 @@ if [ "$1" = "test" ]; then
   exit 0
 fi
 
-# Unloading kexec doesn't work, awesome.  Use new -n option to prevent
-# auto-update from rebooting
+. /usr/share/debathena-recovery-mode-config/require_network.sh
+
+echo "Testing networking, please wait..."
+if ! require_network; then 
+    echo "Can't verify that networking is available.  If you continue,"
+    ask "errors may occur.  Continue? (y/N) " n
+    if [ "$answer" = "n" ]; then
+	exit 0
+    fi
+fi
+
 echo "Running auto-updater, please wait..."
 /usr/sbin/athena-auto-update -n
 if [ $? != 0 ]; then
@@ -26,12 +35,11 @@ if [ $? != 0 ]; then
     read dummy
     exit 0
 fi
-ask "The workstation needs to be shut down and rebooted.  Do that now? (y/n) " y
+# We can just return to the menu and resume boot once LP:436936 gets fixed
+ask "The workstation needs to be rebooted.  Do that now? (Y/n) " y
 if [ "$answer" = "y" ]; then
-    echo "The workstation will now shut down.  You can then turn it back on."
-    echo "(Press Enter to continue)"
-    read dummy
-    /sbin/poweroff
+    /sbin/reboot
 fi
-echo "Please shut down as soon as possible.  Press Enter to return to the menu."
+echo "Please reboot as soon as possible.  Press Enter to return to the menu."
 read dummy
+exit 0

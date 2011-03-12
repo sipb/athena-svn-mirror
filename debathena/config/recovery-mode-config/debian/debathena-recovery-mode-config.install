@@ -1,3 +1,5 @@
 debian/athena-update usr/share/recovery-mode/options
 debian/athena-renumber usr/share/recovery-mode/options
 debian/masks usr/share/debathena-recovery-mode-config
+debian/netparams usr/share/debathena-recovery-mode-config
+debian/require_network.sh usr/share/debathena-recovery-mode-config
