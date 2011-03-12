@@ -14,11 +14,6 @@ pref("network.protocol-handler.external.mailto", true);
 // 0-Accept, 1-dontAcceptForeign, 2-dontUse, 3-p3p
 pref("network.cookie.cookieBehavior", 1);
 
-// Duplex printing set-up
-pref("print.printer_PostScript/duplex.print_command", "lpr -Zduplex ");
-pref("print.printer_PostScript/2upduplex.print_command", "psnup -q -n 2 | lpr -Zduplex ");
-pref("print.printer_list", "default duplex 2upduplex");
-
 // Trust the MIT IdP for HTTP/SPNEGO.
 pref("network.negotiate-auth.trusted-uris", "https://idp.mit.edu");
 
