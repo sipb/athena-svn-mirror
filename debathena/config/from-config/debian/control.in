@@ -2,7 +2,7 @@ Source: debathena-from-config
 Section: debathena-config/mail
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@
+Build-Depends: @cdbs@, bsdmainutils
 Standards-Version: 3.7.2
 
 Package: debathena-from-config
