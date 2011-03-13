@@ -6,7 +6,6 @@ Package: debathena-login
 Version: 0.2.6
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: debathena-athinfod,
- debathena-fingerd-config,
  debathena-moira-passwd-config,
  debathena-nsswitch-config,
  debathena-pam-config,
