@@ -25,7 +25,8 @@ add_printers() {
 	fi
     done
     for a in $ATHENA_PRINTERS; do
-	if add-athena-printer $a; then
+	# Clobber the queue if it exists
+	if add-athena-printer -f $a; then
 	    echo "Added Athena printer $a"
 	else
 	    echo "FAILED to add Athena printer $a"
