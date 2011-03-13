@@ -6,20 +6,9 @@ complain() {
   updmsg="$*"
 }
 
-warn() {
-  updstatus="warning"
-  updmsg="$*"
-}
-
 save_success() {
-  # Warnings which don't terminate the update should get saved, 
-  # along with the final success message.
-  if [ "$updstatus" = "warning" ];
-      updmsg="$* ($updmsg)"
-  else
-      updstatus="ok"
-      updmsg="$*"
-  fi
+  updstatus="ok"
+  updmsg=$1
 }
 
 save_state() {
@@ -153,53 +142,6 @@ fi
 # Tell apt not to expect user input during package installation.
 export DEBIAN_FRONTEND=noninteractive
 
-# Set conservative defaults in case file is missing
-UPDATE_FORCE_CONFFILE=old
-RUN_UPDATE_HOOK=no
-# Process defaults file
-[ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
-# On cluster machines, force our desired settings
-# Ignore /etc/default/debathena-auto-update
-if dpkg-query --showformat '${Status}\n' -W "debathena-cluster" 2>/dev/null | grep -q ' installed$'; then
-    UPDATE_FORCE_CONFFILE=new
-    RUN_UPDATE_HOOK=yes
-fi
-
-UPDATE_HOOK_URL=https://athena10.mit.edu/debathena-update-hook.sh
-UPDATE_HOOK_SUM=https://athena10.mit.edu/debatshena-update-hook-sha256sum
-MITCA=/usr/share/debathena-auto-update/mitCA.crt
-UPDATE_HOOK=/var/run/debathena-update-hook.sh
-
-rm -f $UPDATE_HOOK
-if [ $RUN_UPDATE_HOOK = "yes" ] && \
-   curl -sf -o $UPDATE_HOOK --cacert $MITCA $UPDATE_HOOK_URL; then
-   chmod 500 $UPDATE_HOOK
-   SHA256SUM=$(curl -sf --cacert $MITCA $UPDATE_HOOK_SUM)
-   rv=$?
-   if [ $rv = 0 ]; then
-       LOCALSUM=$(sha256sum $UPDATE_HOOK | awk '{print $1}')
-       if [ "$SHA256SUM" = "$LOCALSUM" ]; then
-	   if ! $UPDATE_HOOK; then
-	      complain "update hook returned non-zero status"
-	      exit
-	   fi
-       else
-	   complain "bad update hook checksum ($SHA256SUM != $LOCALSUM)"
-	   exit
-       fi
-   else
-       complain "Failed to retrieve $UPDATE_HOOK_SUM (curl returned $rv)"
-       exit
-   fi
-fi
-
-echo "Running aptitude install"
-if ! v aptitude --quiet --assume-yes install; then
-  # Don't fail, because make dpkg --configure -a will save us  
-  echo "ERROR: aptitude install failed, but continuing anyway"
-fi
-  
-
 # Configure any unconfigured packages (Trac #407)
 if ! v dpkg --configure -a; then
   complain "Failed to configure unconfigured packages."
@@ -209,24 +151,6 @@ fi
 # A recently configured package may want a reboot
 save_success "Rebooted after dpkg --configure -a"
 maybe_reboot
-
-# Ensure that the mirrors aren't broken
-urls=$(cat /etc/apt/sources.list /etc/apt/sources.list.d/*.list | grep -v ^# | grep -v ^$ | awk '{print $2}' | sort | uniq)
-failed=""
-for u in $urls; do
-    curl -m 60 -sfL -o /dev/null $u
-    if [ $? != 0 ]; then
-	if [ -z "$failed" ]; then
-	    failed=$u
-	else
-	    failed="$failed $u"
-	fi
-    fi
-done
-if [ -n "$failed" ]; then
-    warn "Failed to contact mirror(s): $failed"
-    exit
-fi
 
 # Update the aptitude cache.
 if ! v aptitude --quiet --assume-yes update; then
@@ -243,7 +167,6 @@ if ! v aptitude --simulate --assume-yes install debathena-license-config | grep 
 	  for p in $(awk '{print $1}' $licenses); do
 	      if dpkg-query --showformat '${Status}\n' -W $p 2>/dev/null | grep -q ' installed$'; then
 		  if ! v dpkg-reconfigure -fnoninteractive $p; then
-		      # Don't fail here
 		      complain "Failed to dpkg-reconfigure $p"
 		  fi
 	      fi
@@ -282,6 +205,13 @@ if [ -x /usr/sbin/athena-login-snapshot ]; then
 fi
 
 APTITUDE_OPTS=
+UPDATE_FORCE_CONFFILE=old
+[ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
+# On cluster machines, force the new conffile if there's a conflict
+# Ignore /etc/default/debathena-auto-update
+if dpkg-query --showformat '${Status}\n' -W "debathena-cluster" 2>/dev/null | grep -q ' installed$'; then
+    UPDATE_FORCE_CONFFILE=new
+fi
 case $UPDATE_FORCE_CONFFILE in
     old) 
 	APTITUDE_OPTS="-o Dpkg::Options::=--force-confold"

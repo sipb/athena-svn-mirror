@@ -1,8 +1,6 @@
-# Defaults for athena-auto-update(8) 
-#
-# N.B. The defaults for athena-auto-update (not upgrade) do not apply
-# when the debathena-cluster metapackage is installed
+# Defaults for athena-auto-update(8)
 
+# Note: The following does not apply when -cluster is installed
 # When a package ships a new configuration file, and the sysadmin has
 # made changes to that configuration file since it was originally
 # installed, what should happen?
@@ -12,12 +10,6 @@
 #   new - the old file is overwritten by the new file
 UPDATE_FORCE_CONFFILE=old
 
-# Check for and run an IS&T supplied remote update hook in the event
-# of a catastrophe?
-# Values: yes, no
-RUN_UPDATE_HOOK=no
-
-######################################################################
 # Defaults for athena-auto-upgrade(8)
 
 # Warning:

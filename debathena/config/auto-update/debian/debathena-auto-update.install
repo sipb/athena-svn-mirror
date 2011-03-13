@@ -2,4 +2,3 @@ debian/athena-auto-update usr/sbin
 debian/athena-auto-update.8 usr/share/man/man8
 debian/athena-auto-upgrade usr/sbin
 debian/athena-auto-upgrade.8 usr/share/man/man8
-debian/mitCA.crt usr/share/debathena-auto-update

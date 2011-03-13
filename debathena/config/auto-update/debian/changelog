@@ -1,9 +1,8 @@
 debathena-auto-update (1.23) UNRELEASED; urgency=low
 
   * Upgrade attempts now happen up to 3 times per night (Trac #694)
-  * Download and verify a recovery script (Trac #783)
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 10 Mar 2011 23:48:43 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 10 Mar 2011 23:44:50 -0500
 
 debathena-auto-update (1.22.2) unstable; urgency=low
 
