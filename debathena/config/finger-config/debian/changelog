@@ -1,3 +1,10 @@
+debathena-finger-config (1.5) unstable; urgency=low
+
+  * Replace and Conflict debathena-finger (<= 10.0.2-0debathena1)
+  * Ship a tiny finger wrapper which adds -m on older platforms
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 12 Mar 2011 20:42:08 -0500
+
 debathena-finger-config (1.4) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.

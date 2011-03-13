@@ -9,7 +9,8 @@ Package: debathena-finger-config
 Architecture: all
 Depends: debathena-finger (>= 9.4), ${misc:Depends}
 Provides: ${diverted-files}
-Conflicts: ${diverted-files}
+Conflicts: ${diverted-files}, debathena-finger (<= 10.0.2-0debathena1)
+Replaces: debathena-finger (<= 10.0.2-0debathena1)
 Description: Set Athena finger as default
  This package makes /usr/bin/finger point to the Debathena
  version.
