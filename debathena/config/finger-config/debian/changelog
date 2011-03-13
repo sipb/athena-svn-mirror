@@ -1,9 +1,10 @@
 debathena-finger-config (1.5) unstable; urgency=low
 
   * Replace and Conflict debathena-finger (<= 10.0.2-0debathena1)
-  * Ship a tiny finger wrapper which adds -m on older platforms
+  * Conflict with finger (>= 0.17-13~)
+  * Ship a new finger.debathena which just runs finger with -m
 
- -- Jonathan Reed <jdreed@mit.edu>  Sat, 12 Mar 2011 20:42:08 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 12 Mar 2011 21:36:18 -0500
 
 debathena-finger-config (1.4) unstable; urgency=low
 
