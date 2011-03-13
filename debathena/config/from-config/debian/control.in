@@ -10,5 +10,6 @@ Architecture: all
 Depends: debathena-mitmailutils (>= 10.1.0), ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}, ${debathena-from-config-conflicts}
+Breaks: ${debathena-from-config-breaks}
 Description: Set Athena from as default
  This package makes /usr/bin/from point to the Debathena version.
