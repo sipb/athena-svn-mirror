@@ -2,7 +2,7 @@ Source: debathena-clients
 Section: debathena/base
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@
+Build-Depends: @cdbs@, finger
 Standards-Version: 3.9.1
 
 Package: debathena-clients
