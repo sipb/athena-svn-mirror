@@ -1,0 +1,49 @@
+Source: debathena-clients
+Section: debathena/base
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.9.1
+
+Package: debathena-clients
+Architecture: all
+Depends: athena-jot,
+ debathena-apparmor-config,
+ debathena-athinfo,
+ debathena-counterlog,
+ debathena-dent,
+ debathena-discuss,
+ debathena-discuss-emacs,
+ ${debathena-finger-depends},
+ debathena-from-config,
+ debathena-getcluster,
+ debathena-gettime,
+ debathena-get-message,
+ debathena-hesiod-config,
+ debathena-hostinfo,
+ debathena-just,
+ debathena-kerberos-config,
+ debathena-lam,
+ debathena-ldap-config,
+ debathena-mitmailutils,
+ debathena-moira-clients,
+ debathena-nmh-config,
+ debathena-printing-config,
+ debathena-rs,
+ debathena-saferm,
+ debathena-sendbug,
+ debathena-ssh-client-config,
+ debathena-ssl-certificates,
+ debathena-syncupdate,
+ debathena-tex-extras,
+ debathena-xcluster,
+ debathena-xdsc,
+ debathena-zephyr-config,
+ tzc,
+ ldap-utils,
+ ${misc:Depends}
+Recommends:  debathena-alpine-config,
+ debathena-mutt-config,
+Suggests: barnowl | owl
+Description: Metapackage providing clients for Athena services
+ This package depends on clients for various Athena services.

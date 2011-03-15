@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+FINGER_VERSION = $(shell dpkg-query --showformat='$${Version}' --show finger)
+NEW_FINGER = $(shell dpkg --compare-versions $(FINGER_VERSION) ge '0.17-13~' && echo y)
+
+FINGER_DEPENDS = debathena-finger-config
+ifeq ($(NEW_FINGER),y)
+    FINGER_DEPENDS = finger (>= 0.17-13~)
+endif
+
+binary-predeb/debathena-clients::
+	echo "debathena-finger-depends=$(FINGER_DEPENDS)" >> debian/debathena-clients.substvars
+
+include /usr/share/cdbs/1/rules/debhelper.mk
