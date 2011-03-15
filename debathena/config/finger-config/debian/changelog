@@ -1,3 +1,9 @@
+debathena-finger-config (1.5.1) unstable; urgency=low
+
+  * Don't Depend: debathena-finger
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 15 Mar 2011 13:43:52 -0400
+
 debathena-finger-config (1.5) unstable; urgency=low
 
   * Replace and Conflict debathena-finger (<= 10.0.2-0debathena1)

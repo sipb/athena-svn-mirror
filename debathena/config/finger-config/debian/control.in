@@ -7,10 +7,10 @@ Standards-Version: 3.7.2
 
 Package: debathena-finger-config
 Architecture: all
-Depends: debathena-finger (>= 9.4), ${misc:Depends}
+Depends: ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}, debathena-finger (<= 10.0.2-0debathena1), finger (>= 0.17-13~)
 Replaces: debathena-finger (<= 10.0.2-0debathena1)
 Description: Set Athena finger as default
- This package makes /usr/bin/finger point to the Debathena
- version.
+ This package makes /usr/bin/finger a wrapper which adds "-m" on some
+ older platforms.
