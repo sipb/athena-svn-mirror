@@ -5,8 +5,9 @@ debathena-auto-update (1.23) unstable; urgency=low
   * Add new command-line options to auto-update
   * Run aptitude install (Trac #528)
   * auto-update checks for network connectivity to the mirrors (Trac #835)
+  * Check for new flag file from license-config when reconfiguring
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 15 Mar 2011 22:18:22 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 16 Mar 2011 12:59:06 -0400
 
 debathena-auto-update (1.22.2) unstable; urgency=low
 
