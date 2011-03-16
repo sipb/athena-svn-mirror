@@ -187,19 +187,19 @@ if dpkg-query --showformat '${Status}\n' -W "debathena-cluster" 2>/dev/null | gr
     RUN_UPDATE_HOOK=yes
 fi
 
-UPDATE_HOOK_URL=https://athena10.mit.edu/update-hook/debathena-update-hook.sh
-UPDATE_HOOK_SUM=https://athena10.mit.edu/update-hook/debathena-update-hook-sha256sum
-MITCA=/usr/share/debathena-auto-update/mitCA.crt
-UPDATE_HOOK=/var/run/debathena-update-hook.sh
+UPDATE_HOOK_URL="https://athena10.mit.edu/update-hook/debathena-update-hook.sh"
+UPDATE_HOOK_SUM="https://athena10.mit.edu/update-hook/debathena-update-hook-sha256sum"
+MITCA="/usr/share/debathena-auto-update/mitCA.crt"
+UPDATE_HOOK="/var/run/debathena-update-hook.sh"
 
 rm -f $UPDATE_HOOK
-if [ $RUN_UPDATE_HOOK = "yes" ] && \
+if [ "$RUN_UPDATE_HOOK" = "yes" ] && \
    curl -sf -o $UPDATE_HOOK --cacert $MITCA $UPDATE_HOOK_URL; then
    chmod 500 $UPDATE_HOOK
-   SHA256SUM=$(curl -sf --cacert $MITCA $UPDATE_HOOK_SUM)
+   SHA256SUM="$(curl -sf --cacert $MITCA $UPDATE_HOOK_SUM)"
    rv=$?
    if [ $rv = 0 ]; then
-       LOCALSUM=$(sha256sum $UPDATE_HOOK | awk '{print $1}')
+       LOCALSUM="$(sha256sum $UPDATE_HOOK | awk '{print $1}')"
        if [ "$SHA256SUM" = "$LOCALSUM" ]; then
 	   if ! $UPDATE_HOOK; then
 	      complain "update hook returned non-zero status"
