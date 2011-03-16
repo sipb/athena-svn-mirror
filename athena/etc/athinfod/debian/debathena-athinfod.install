@@ -1,4 +1,3 @@
 debian/athinfo.access	/etc/athena
 debian/athinfo.defs	/etc/athena
 debian/is_cluster	usr/lib/athinfod
-debian/is_cluster.1	usr/share/man/man1
