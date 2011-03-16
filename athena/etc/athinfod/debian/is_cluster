@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# Determine whether this is a cluster machine or not by
+# exiting with 0 or 1, respectively
+
+CLUSTER=
+eval "$(getcluster -b $(lsb_release -sr))"
+
+if [ "$CLUSTER" = "cluster" ]; then
+   # Hesiod takes priority
+   exit 0
+elif machtype -vL | grep -q debathena-cluster; then
+    exit 0
+fi
+exit 1

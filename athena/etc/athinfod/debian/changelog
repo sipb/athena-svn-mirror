@@ -1,3 +1,9 @@
+debathena-athinfod (10.0.0-0debathena16) unstable; urgency=low
+
+  * Add simple cluster test that will check Hesiod first (Trac #742)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 16 Mar 2011 19:27:11 -0400
+
 debathena-athinfod (10.0.0-0debathena15) unstable; urgency=low
 
   * Move cluster-specific queries to athinfod-cluster-config (Trac #693)
