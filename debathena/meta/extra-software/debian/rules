@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+
+HAVE_ICEDTEA = $(shell apt-cache show icedtea6-plugin >/dev/null 2>/dev/null && echo y)
+
+ifeq ($(HAVE_ICEDTEA),y)
+    binary-predeb/debathena-extra-software::
+	echo "debathena-java-plugin=icedtea6-plugin" >> debian/debathena-extra-software.substvars
+endif
+
+include /usr/share/cdbs/1/rules/debhelper.mk

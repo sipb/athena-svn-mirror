@@ -1,0 +1,40 @@
+Source: debathena-extra-software
+Section: debathena/base
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.9.1
+
+Package: debathena-extra-software
+Architecture: all
+Conflicts: debathena-cluster-software
+Replaces: debathena-cluster-software
+Depends: debathena-extra-software-nox,
+  gnome-devel,
+  pidgin | gaim, pidgin-encryption | gaim-encryption,
+  gv,
+  openoffice.org, openoffice.org-java-common,
+  thunderbird | mozilla-thunderbird | icedove,
+  vim-gnome,
+  gnuplot,
+  gimp,
+  eclipse,
+  idle,
+  twm,
+  ratpoison,
+  wmaker, wmbubble, wmbutton, wmcalclock, wmfire, wmhdplop, wmmemload, wmnd, wmtop, wmweather,
+  xmonad, suckless-tools | dwm-tools,
+  git-gui, gitk,
+  compizconfig-settings-manager,
+  ${debathena-java-plugin},
+Recommends: flashplugin-nonfree,
+  mplayer,
+  msttcorefonts,
+  ttf-xfree86-nonfree,
+  poppler-data,
+Description: Athena auxiliary software
+ This package pulls in miscellaneous non-Athena-specific software
+ for a fully-stocked Athena workstation.
+ .
+ Graphical applications are included; debathena-extra-software-nox
+ is the non-graphical subset.
