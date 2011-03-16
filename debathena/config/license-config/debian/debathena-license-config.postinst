@@ -21,6 +21,7 @@ set -e
 case "$1" in
     configure)
 	debconf-set-selections /usr/share/debathena-license-config/debathena-license-selections
+	touch /var/lib/debathena-license-config/reconfigure_required
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
