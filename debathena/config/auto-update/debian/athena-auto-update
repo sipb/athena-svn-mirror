@@ -187,8 +187,8 @@ if dpkg-query --showformat '${Status}\n' -W "debathena-cluster" 2>/dev/null | gr
     RUN_UPDATE_HOOK=yes
 fi
 
-UPDATE_HOOK_URL=https://athena10.mit.edu/debathena-update-hook.sh
-UPDATE_HOOK_SUM=https://athena10.mit.edu/debatshena-update-hook-sha256sum
+UPDATE_HOOK_URL=https://athena10.mit.edu/update-hook/debathena-update-hook.sh
+UPDATE_HOOK_SUM=https://athena10.mit.edu/update-hook/debathena-update-hook-sha256sum
 MITCA=/usr/share/debathena-auto-update/mitCA.crt
 UPDATE_HOOK=/var/run/debathena-update-hook.sh
 
