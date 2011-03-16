@@ -3,7 +3,7 @@
 athena-auto-update \- Attempt to automatically update installed packages
 .SH SYNOPSIS
 .nf
-.B athena-auto-update [-n]
+.B athena-auto-update [-n] [-v] [-d]
 .sp
 .SH DESCRIPTION
 .BR athena-auto-update
@@ -19,9 +19,14 @@ If the update fails at any point, a message will be sent to the
 
 The results of the script are logged to \fI/var/log/athena-update\fP.
 
-The \fI-n\fP option will prevent athena-auto-update from rebooting
-even if a package requests it.  You really don't want to use this
-option.
+.SH OPTIONS
+.IP -n
+Prevents athena-auto-update from rebooting even if a package requests
+it.  Don't use it unless you know what you're doing.
+.IP -v
+Causes some output to be printed to stdout in addition to the log.
+.IP -d
+Debug mode.  Implies -v.  
 
 .SH FILES
 
