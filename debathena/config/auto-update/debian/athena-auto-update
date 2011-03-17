@@ -236,6 +236,10 @@ maybe_reboot
 urls=$(cat /etc/apt/sources.list /etc/apt/sources.list.d/*.list | grep -v ^# | grep -v ^$ | awk '{print $2}' | sort | uniq)
 failed=""
 for u in $urls; do
+    # We don't (yet) know how to verify other URI schemes
+    if ! echo $u | grep -q "^http:"; then
+	continue
+    fi
     curl -m 60 -sfL -o /dev/null $u
     if [ $? != 0 ]; then
 	if [ -z "$failed" ]; then
