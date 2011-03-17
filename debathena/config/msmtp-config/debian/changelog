@@ -1,3 +1,9 @@
+debathena-msmtp-config (1.8.9) unstable; urgency=low
+
+  * Strip off the instance of any principal in the tickets (Trac #806)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 17 Mar 2011 19:37:12 -0400
+
 debathena-msmtp-config (1.8.8) unstable; urgency=low
 
   * Fix package name in maintainer scripts

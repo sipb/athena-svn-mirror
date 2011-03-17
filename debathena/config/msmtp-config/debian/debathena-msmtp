@@ -21,6 +21,8 @@ system(qw(klist -s));
 if (($? == 0) &&
     (`klist 2>/dev/null` =~ /Default principal: (.*?)\@ATHENA.MIT.EDU/)) {
     $kuser = $1;
+    # Remove any instances
+    $kuser =~ s|/.*||g;
 }
 
 my $parser = Mail::ExpandAliases->new;
