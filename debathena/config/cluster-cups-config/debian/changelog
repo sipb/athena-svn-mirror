@@ -1,3 +1,10 @@
+debathena-cluster-cups-config (2.0.1) unstable; urgency=low
+
+  * wired is now Pharos
+  * Use -f with add-athena-printer to clobber existing queues
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 18 Mar 2011 11:01:58 -0400
+
 debathena-cluster-cups-config (2.0) unstable; urgency=low
 
   * Stop shipping our own printers.conf and classes.conf; instead use

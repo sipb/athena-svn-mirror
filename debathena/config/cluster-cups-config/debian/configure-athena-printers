@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PHAROS_PRINTERS="mitprint bias nysa python savion"
+PHAROS_PRINTERS="mitprint bias nysa python savion wired"
 ATHENA_PRINTERS="acantha ajax albany amittai ashdown avery barbar barker bob \
                  boomboom bricks celine clearcut corfu e55prt echo edgerton \
                  eie electra fiber getitfaster hayden helios homer jarthur \
@@ -9,7 +9,7 @@ ATHENA_PRINTERS="acantha ajax albany amittai ashdown avery barbar barker bob \
                  peecs picus pietro pindar pulp pulp-fiction quick-print \
                  sanda sidney simmons stumpgrinder sum thesis \
                  tree-eater ussy varan virus w20thesis w61cluster w84prt \
-                 waffle westgate wg-tang wh-print wired"
+                 waffle westgate wg-tang wh-print"
 
 add_printers() {
     for p in $PHAROS_PRINTERS; do
@@ -25,7 +25,8 @@ add_printers() {
 	fi
     done
     for a in $ATHENA_PRINTERS; do
-	if add-athena-printer $a; then
+	# Clobber the queue if it exists
+	if add-athena-printer -f $a; then
 	    echo "Added Athena printer $a"
 	else
 	    echo "FAILED to add Athena printer $a"
