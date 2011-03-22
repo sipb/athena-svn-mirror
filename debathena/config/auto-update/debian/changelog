@@ -1,3 +1,9 @@
+debathena-auto-update (1.23.1) unstable; urgency=low
+
+  * cron.d files don't inherit crontab's path, so set one
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 22 Mar 2011 11:11:59 -0400
+
 debathena-auto-update (1.23) unstable; urgency=low
 
   * Upgrade attempts now happen up to 3 times per night (Trac #694)
