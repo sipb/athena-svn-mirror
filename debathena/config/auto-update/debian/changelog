@@ -1,8 +1,10 @@
 debathena-auto-update (1.23.1) unstable; urgency=low
 
   * cron.d files don't inherit crontab's path, so set one
+  * Don't re-run update-hooks once they've been run
+  * Don't bother to update license-config separately
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 22 Mar 2011 11:11:59 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 22 Mar 2011 23:04:23 -0400
 
 debathena-auto-update (1.23) unstable; urgency=low
 

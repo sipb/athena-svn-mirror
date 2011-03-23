@@ -198,20 +198,22 @@ if [ "$RUN_UPDATE_HOOK" = "yes" ] && \
    chmod 500 $UPDATE_HOOK
    SHA256SUM="$(curl -sf --cacert $MITCA $UPDATE_HOOK_SUM)"
    rv=$?
-   if [ $rv = 0 ]; then
-       LOCALSUM="$(sha256sum $UPDATE_HOOK | awk '{print $1}')"
-       if [ "$SHA256SUM" = "$LOCALSUM" ]; then
-	   if ! $UPDATE_HOOK; then
-	      complain "update hook returned non-zero status"
-	      exit
-	   fi
-       else
-	   complain "bad update hook checksum ($SHA256SUM != $LOCALSUM)"
-	   exit
-       fi
-   else
+   if [ $rv != 0 ]; then
        complain "Failed to retrieve $UPDATE_HOOK_SUM (curl returned $rv)"
        exit
+   fi
+   LOCALSUM="$(sha256sum $UPDATE_HOOK | awk '{print $1}')"
+   if [ "$SHA256SUM" != "$LOCALSUM" ]; then
+       complain "bad update hook checksum ($SHA256SUM != $LOCALSUM)"
+       exit
+   fi	   
+   if ! [ -f "/var/lib/athena-update-hooks/$SHA256SUM" ]; then
+       if ! $UPDATE_HOOK; then
+	   complain "update hook returned non-zero status"
+	   exit
+       else
+	   touch "/var/lib/athena-update-hooks/$SHA256SUM"
+       fi
    fi
 fi
 
@@ -260,24 +262,15 @@ if ! v aptitude --quiet --assume-yes update; then
   exit
 fi
 
-# Update debathena-license-config 
-pattern='^0 packages upgraded, 0 newly installed, 0 to remove'
+# If new licenses were installed since the last update, deal.
 licenses=/usr/share/debathena-license-config/debathena-license-selections
-if ! v aptitude --simulate --assume-yes install debathena-license-config | grep -q "$pattern"; then
-  if ! v aptitude --assume-yes install debathena-license-config; then
-      complain "Failed to update debathena-license-config"
-      exit
-  fi
-fi
-
-# If new licenses were installed, deal.
 if [ -f /var/lib/debathena-license-config/reconfigure_required ]; then
     rm -f /var/lib/debathena-license-config/reconfigure_require
     if [ -f $licenses ]; then
 	for p in $(awk '{print $1}' $licenses); do
 	    if dpkg-query --showformat '${Status}\n' -W $p 2>/dev/null | grep -q ' installed$'; then
 		if ! v dpkg-reconfigure -fnoninteractive $p; then
-		      # Don't fail here
+		    # Don't fail here
 		    complain "Failed to dpkg-reconfigure $p"
 		fi
 	    fi
@@ -291,6 +284,7 @@ fi
 
 # Exit quietly (except for perhaps rebooting) if there are no upgrades
 # to take.
+pattern='^0 packages upgraded, 0 newly installed, 0 to remove'
 if v aptitude --simulate --assume-yes full-upgrade | grep -q "$pattern"; then
   echo "Nothing to do!"
   save_success "No updates"
