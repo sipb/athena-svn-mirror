@@ -1,3 +1,9 @@
+debathena-from-config (1.5.1) unstable; urgency=low
+
+  * Actually spell "alternatives" correct when calling update-alternatives
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 23 Mar 2011 14:13:48 -0400
+
 debathena-from-config (1.5) unstable; urgency=low
 
   * Update for alternatives-aware versions of bsdmainutils (Trac #729)

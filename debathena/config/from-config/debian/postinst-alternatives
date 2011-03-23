@@ -71,7 +71,7 @@ case "$1" in
     configure)
 	cleanup_old_diversion /usr/bin/from.debathena
 	cleanup_old_diversion /usr/share/man/man1/from.debathena.1.gz
-	update-alteratives \
+	update-alternatives \
             --install /usr/bin/from from /usr/bin/from.debathena 100 \
 	    --slave /usr/share/man/man1/from.1.gz from.1.gz /usr/share/man/man1/from.debathena.1.gz
     ;;

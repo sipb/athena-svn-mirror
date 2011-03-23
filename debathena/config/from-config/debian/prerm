@@ -19,7 +19,7 @@ set -e
 
 case "$1" in
     remove|deconfigure)
-	if update-alteratives --list from | grep -qFx '/usr/bin/from.debathena'; then
+	if update-alternatives --list from | grep -qFx '/usr/bin/from.debathena'; then
 	    update-alternatives --remove from /usr/bin/from.debathena
 	fi
     ;;
