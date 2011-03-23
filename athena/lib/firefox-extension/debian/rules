@@ -13,3 +13,4 @@ include /usr/share/cdbs/1/rules/config-package.mk
 
 clean::
 	rm -f configure
+	rm -f chrome.manifest chrome/athena.jar

@@ -1,8 +1,11 @@
-debathena-firefox-extension (10.0.6-0debathena1) UNRELEASED; urgency=low
+debathena-firefox-extension (10.0.6-0debathena1) unstable; urgency=low
 
-  * Punt duplex printing code; Gtk+ printing now provides this
+  * Punt duplex printing code; Gtk+ printing now provides this (Trac #563)
+  * Support Firefox 4.0 (Trac #856)
+  * Remove chrome.manfiest and chrome/athena.jar in "clean" target
+  * Bump Standards-Version and debhelper compatibility level
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 11 Mar 2011 19:10:40 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 23 Mar 2011 15:51:56 -0400
 
 debathena-firefox-extension (10.0.5-0debathena1) unstable; urgency=low
 
