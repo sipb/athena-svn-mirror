@@ -1,8 +1,3 @@
 #!/usr/bin/make -f
 
-DEB_DIVERT_EXTENSION = .debathena
-DEB_TRANSFORM_FILES_debathena-recovery-mode-config += \
-        /usr/share/recovery-mode/options/netroot
-
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/config-package.mk
