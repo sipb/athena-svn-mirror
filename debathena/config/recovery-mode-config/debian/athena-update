@@ -29,7 +29,7 @@ if ! require_network; then
 fi
 
 echo "Running auto-updater, please wait..."
-/usr/sbin/athena-auto-update -n
+/usr/sbin/athena-auto-update -n -v
 if [ $? != 0 ]; then
     echo "Something went wrong.  Press Enter to return to the menu."
     read dummy

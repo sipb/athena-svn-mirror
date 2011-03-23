@@ -3,11 +3,11 @@ Section: debathena-config/net
 Priority: extra
 Build-Depends: cdbs, debhelper
 Maintainer: Debathena Project <debathena@mit.edu>
-Standards-Version: 3.8.4 
+Standards-Version: 3.9.1
 
 Package: debathena-recovery-mode-config
 Architecture: all
-Depends: ${misc:Depends}, debathena-auto-update (>= 1.15~), debathena-machtype, perl
+Depends: ${misc:Depends}, debathena-auto-update (>= 1.23.1~), debathena-machtype
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Adds options to recovery-mode menu

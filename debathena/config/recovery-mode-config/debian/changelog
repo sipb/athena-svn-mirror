@@ -3,8 +3,12 @@ debathena-recovery-mode-config (1.3) unstable; urgency=low
   * Don't poweroff, reboot, since kexec is nolonger an issue (Trac #759)
   * Make athena-update functional by requiring network (Trac #759)
   * Make athena-renumber less stupid
+  * Add dns-search to the created interfaces file in athena-renumber
+  * Make use of athena-auto-update's new -v option and depend on 1.23.1
+  * Bump standards-version
+  * Drop perl dependency
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 11 Mar 2011 22:32:36 -0500
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 22 Mar 2011 23:43:13 -0400
 
 debathena-recovery-mode-config (1.2.1) unstable; urgency=low
 
