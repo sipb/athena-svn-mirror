@@ -33,7 +33,7 @@ save_state() {
 }  
 
 maybe_reboot() {
-  if [ $SKIP_REBOOT ]; then
+  if [ "$SKIP_REBOOT" = "y" ]; then
       return
   fi
   if [ -f /var/run/reboot-required ]; then
@@ -265,7 +265,7 @@ fi
 # If new licenses were installed since the last update, deal.
 licenses=/usr/share/debathena-license-config/debathena-license-selections
 if [ -f /var/lib/debathena-license-config/reconfigure_required ]; then
-    rm -f /var/lib/debathena-license-config/reconfigure_require
+    rm -f /var/lib/debathena-license-config/reconfigure_required
     if [ -f $licenses ]; then
 	for p in $(awk '{print $1}' $licenses); do
 	    if dpkg-query --showformat '${Status}\n' -W $p 2>/dev/null | grep -q ' installed$'; then

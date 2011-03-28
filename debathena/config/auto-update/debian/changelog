@@ -1,3 +1,10 @@
+debathena-auto-update (1.23.2) unstable; urgency=low
+
+  * Fix bug which disabled reboots
+  * Actually remove the license reconfiguration flag file
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 28 Mar 2011 11:02:17 -0400
+
 debathena-auto-update (1.23.1) unstable; urgency=low
 
   * cron.d files don't inherit crontab's path, so set one
