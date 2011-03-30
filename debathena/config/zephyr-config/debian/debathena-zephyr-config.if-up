@@ -2,6 +2,7 @@
 
 case "$ADDRFAM" in
     inet|NetworkManager)
+	sleep 10
 	/etc/init.d/zhm restart >/dev/null 2>&1 || :
 	;;
 esac
