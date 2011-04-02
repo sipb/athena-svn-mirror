@@ -242,8 +242,9 @@ Depends: $module, $image_mpkg (= $ver)
 Copyright: ../common/copyright
 Readme: ../common/README.in
 Description: Metapackage to enforce OpenAFS modules for kernel
- This package prevents automatic upgrades of the $ktype generic until
- there is a corresponding openafs-modules Debathena package available.
+ This package prevents automatic upgrades of the $img_mpkg
+ kernel until there is a corresponding openafs-modules Debathena
+ package available.
 EOF
     schr apt-get -y install equivs
     (cd "meta/$dist_arch" && sch equivs-build -a "$arch" "$afs_mpkg.equivs") \
