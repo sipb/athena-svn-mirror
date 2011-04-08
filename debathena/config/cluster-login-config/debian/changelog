@@ -1,3 +1,10 @@
+debathena-cluster-login-config (1.31) unstable; urgency=low
+
+  * Add necessary files to enable backports and pin everything except
+    libstdc++5 (Trac: #863)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 08 Apr 2011 16:51:46 -0400
+
 debathena-cluster-login-config (1.30) unstable; urgency=low
 
   * Ship our own logout command which will force a logout on cluster if
