@@ -26,6 +26,12 @@ from the principal, with any instances removed, and append
 your mail having a \fIFrom:\fP address of \fIhost@mit.edu\fP.  Don't
 do that.
 
+Note that even if you specify a \fIFrom:\fP line, the
+\fIReturn-Path\fP will be set to the msmtp-constructed address, and
+thus you might miss bounces or other errors.  While you can specify
+\fIErrors-To:\fP, and most MTAs will honor it, it's discouraged (per
+RFC 2076).  So really, don't send mail with host tickets.
+
 .SH SEE ALSO
 
 msmtp(1)
