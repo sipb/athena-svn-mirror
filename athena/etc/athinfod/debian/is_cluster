@@ -4,7 +4,9 @@
 # exiting with 0 or 1, respectively
 
 CLUSTER=
-eval "$(getcluster -b $(lsb_release -sr))"
+if [ -s /var/run/athena-clusterinfo.sh ]; then
+    . /var/run/athena-clusterinfo.sh
+fi
 
 if [ "$CLUSTER" = "cluster" ]; then
    # Hesiod takes priority
