@@ -16,6 +16,16 @@ forced, but no valid Kerberos tickets can be found to authenticate the
 user, the script will exit with status 1.  See mstmp(1) for possible
 values for \fIflags\fP.
 
+.SH BUGS
+
+If you don't supply a \fIFrom:\fP line in the body of your e-mail,
+msmtp will construct one.  If you have tickets, it will construct it
+from the principal, with any instances removed, and append
+\fI@MIT.EDU\fP.  If you currently have tickets from a keytab
+(e.g. host/some-hostname.mit.edu@ATHENA.MIT.EDU), that will result in
+your mail having a \fIFrom:\fP address of \fIhost@mit.edu\fP.  Don't
+do that.
+
 .SH SEE ALSO
 
 msmtp(1)
