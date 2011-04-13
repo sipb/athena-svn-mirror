@@ -208,7 +208,7 @@ if [ "$RUN_UPDATE_HOOK" = "yes" ] && \
        exit
    fi	   
    if ! [ -f "/var/lib/athena-update-hooks/$SHA256SUM" ]; then
-       if ! $UPDATE_HOOK; then
+       if ! v $UPDATE_HOOK; then
 	   complain "update hook returned non-zero status"
 	   exit
        else
