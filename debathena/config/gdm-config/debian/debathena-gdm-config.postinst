@@ -68,6 +68,9 @@ cleanup_old_diversion() {
 
 case "$1" in
     configure)
+	if dpkg --compare-versions "$2" lt '1.26~'; then
+	    touch /var/run/reboot-required
+	fi
 	gdm_version="$(dpkg-query -W -f '${Version}' gdm)"
 	if dpkg --compare-versions "$gdm_version" ge '2.25.2~'; then
 	    cleanup_old_diversion /etc/gdm/gdm.conf

@@ -1,3 +1,9 @@
+debathena-gdm-config (1.26) unstable; urgency=low
+
+  * Force a reboot to fix broken nologin-monitor
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 19 Apr 2011 11:52:18 -0400
+
 debathena-gdm-config (1.25) unstable; urgency=low
 
   * Applets shouldn't attempt to steal focus
