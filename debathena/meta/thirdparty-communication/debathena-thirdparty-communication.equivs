@@ -3,9 +3,9 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-communication
-Version: 0.1
+Version: 0.2
 Maintainer: Debathena Project <debathena@mit.edu>
-Depends: ytnef
+Depends: 
 
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
