@@ -89,6 +89,14 @@ case "$1" in
             rm_conffile debathena-cluster-login-config "/etc/init/ttymsg.conf"
         fi
 
+	# Sigh  (LP:508545)
+	aptitude_vers="$(dpkg-query -W -f '${Version}' aptitude)"
+	if dpkg --compare-versions "$aptitude_vers" lt '0.6.3-3.2ubuntu1~'; then
+	    if ! grep -qxF "Package: libstdc++5" /etc/apt/preferences; then
+		cat /etc/apt/preferences.d/debathena-libstdcplusplus.pref >> /etc/apt/preferences
+	    fi
+	fi
+
 	# Shut down sshd and reload gdm.
 	if hash invoke-rc.d; then
 	    invoke-rc.d ssh stop
