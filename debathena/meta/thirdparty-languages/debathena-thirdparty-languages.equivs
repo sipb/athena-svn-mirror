@@ -8,7 +8,6 @@ Maintainer: Debathena Project <debathena@mit.edu>
 Depends: cmake,
  python-all-dev,
  python-numpy,
- python-numpy-ext,
  python-numpy-doc,
  python-scipy,
  python-matplotlib,
@@ -46,8 +45,7 @@ Recommends:
  mit-scheme,
  mit-scheme-doc,
  eclipse-cdt,
- eclipse-pydev,
- clisp-dev,
+ clisp-dev
 
 
 Copyright: ../common/copyright
