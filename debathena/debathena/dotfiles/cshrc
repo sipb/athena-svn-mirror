@@ -10,11 +10,11 @@ set initdir=/usr/lib/init
 # Determine if we're in an sftp or scp session, and if so, be quiet
 set SILENT=no
 if ($?command) then
-  switch (`echo "$command" | cut -d\  -f 1`)
+  switch ("$command")
     case /usr/lib/openssh/sftp-server:
       set SILENT=yes
       breaksw
-    case scp:
+    case 'scp *':
       set SILENT=yes
       breaksw
   endsw
