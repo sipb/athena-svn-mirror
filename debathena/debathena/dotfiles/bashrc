@@ -92,18 +92,13 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	# listed above.
 	# ~/.bash_environment is not sourced if NOCALLS is set (i.e.,
 	# if you selected the xlogin "Ignore your customizations"
-	# option when you logged in).q
+	# option when you logged in).
 
 	if [ "${NOCALLS+set}" != set -a -r ~/.bash_environment ]; then
 	    if [ "$SILENT" = "yes" ]; then
-		exec 6>&1                # Save STDOUT
-		exec 7>&2                # Save STDERR
-		exec > /dev/null 2>&1
-	    fi
-	    . ~/.bash_environment
-	    if [ "$SILENT" = "yes" ]; then
-		exec 1>&6 6>&-           # Restore STDOUT
-		exec 2>&7 7>&-           # Restore STDERR
+		. ~/.bash_environment &> /dev/null
+	    else
+		. ~/.bash_environment
 	    fi
 	fi
 
@@ -151,13 +146,8 @@ fi
 
 if [ "${NOCALLS+set}" != set -a -r ~/.bashrc.mine ]; then
     if [ "$SILENT" = "yes" ]; then
-	exec 6>&1                # Save STDOUT
-	exec 7>&2                # Save STDERR
-	exec > /dev/null 2>&1
-    fi
-    . ~/.bashrc.mine
-    if [ "$SILENT" = "yes" ]; then
-	exec 1>&6 6>&-           # Restore STDOUT
-	exec 2>&7 7>&-           # Restore STDERR
+	. ~/.bashrc.mine &> /dev/null
+    else
+	. ~/.bashrc.mine
     fi
 fi

@@ -115,9 +115,9 @@ if (! $?ENV_SET) then
 
   if ((! $?NOCALLS) && (-r ~/.environment)) then
     if ( $SILENT == "yes" ) then
-      source ~/.environment
-    else
       source ~/.environment >&/dev/null
+    else
+      source ~/.environment
     endif
   endif
 
@@ -173,8 +173,8 @@ if (($?SUBJECT) && (-r $initdir/env_setup)) source $initdir/env_setup
 
 if ((! $?NOCALLS) && (-r ~/.cshrc.mine)) then
   if ( $SILENT == "yes" ) then
-    source ~/.cshrc.mine
-  else
     source ~/.cshrc.mine >&/dev/null
+  else
+    source ~/.cshrc.mine
   endif
 endif
