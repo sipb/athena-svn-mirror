@@ -12,7 +12,7 @@ case "$BASH_EXECUTION_STRING" in
     /usr/lib/openssh/sftp-server)
 	SILENT=yes
 	;;
-    scp*)
+    scp\ *)
 	SILENT=yes
 	;;
 esac
