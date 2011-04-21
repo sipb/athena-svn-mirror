@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.27-0debathena1) unstable; urgency=low
+
+  * Suppress stdout/stderr for sftp sessions (Trac #512)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 21 Apr 2011 15:59:26 -0400
+
 debathena-dotfiles (10.0.26-0debathena1) unstable; urgency=low
 
   * Stop setting LPROPT (Trac #794)

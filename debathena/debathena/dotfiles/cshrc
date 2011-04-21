@@ -7,6 +7,19 @@
 
 set initdir=/usr/lib/init
 
+# Determine if we're in an sftp or scp session, and if so, be quiet
+set SILENT=no
+if ($?command) then
+  switch (`echo $command | cut -d\  -f 1`)
+    case /usr/lib/openssh/sftp-server:
+      set SILENT=yes
+      breaksw
+    case scp:
+      set SILENT=yes
+      breaksw
+  endsw
+endif
+
 # *******************   ENVIRONMENT SETUP   *******************
 
 # Compatibility with older versions of Athena tcsh
@@ -100,7 +113,13 @@ if (! $?ENV_SET) then
   # if NOCALLS is set (i.e., if you selected the xlogin "Ignore your
   # customizations" option when you logged in).
 
-  if ((! $?NOCALLS) && (-r ~/.environment)) source ~/.environment
+  if ((! $?NOCALLS) && (-r ~/.environment)) then
+    if ( $SILENT == "yes" ) then
+      source ~/.environment
+    else
+      source ~/.environment >&/dev/null
+    endif
+  endif
 
   # NOTE:
   # .path files are no longer supported, consult Athena documentation
@@ -152,4 +171,10 @@ if (($?SUBJECT) && (-r $initdir/env_setup)) source $initdir/env_setup
 # here.  ~/.cshrc.mine is not sourced if the xlogin "Ignore your
 # customizations" option was selected to begin the session.
 
-if ((! $?NOCALLS) && (-r ~/.cshrc.mine)) source ~/.cshrc.mine
+if ((! $?NOCALLS) && (-r ~/.cshrc.mine)) then
+  if ( $SILENT == "yes" ) then
+    source ~/.cshrc.mine
+  else
+    source ~/.cshrc.mine >&/dev/null
+  endif
+endif

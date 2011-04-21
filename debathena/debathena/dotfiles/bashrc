@@ -6,9 +6,18 @@
 
 initdir=/usr/lib/init
 
+# Determine if we're in an sftp or scp session and if so, be quiet
+SILENT=no
+case "$BASH_EXECUTION_STRING" in
+    /usr/lib/openssh/sftp-server)
+	SILENT=yes
+	;;
+    scp*)
+	SILENT=yes
+	;;
+esac
+
 # *******************   ENVIRONMENT SETUP   *******************
-
-
 
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and setting of search path)
@@ -83,10 +92,19 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 	# listed above.
 	# ~/.bash_environment is not sourced if NOCALLS is set (i.e.,
 	# if you selected the xlogin "Ignore your customizations"
-	# option when you logged in).
+	# option when you logged in).q
 
 	if [ "${NOCALLS+set}" != set -a -r ~/.bash_environment ]; then
-		. ~/.bash_environment
+	    if [ "$SILENT" = "yes" ]; then
+		exec 6>&1                # Save STDOUT
+		exec 7>&2                # Save STDERR
+		exec > /dev/null 2>&1
+	    fi
+	    . ~/.bash_environment
+	    if [ "$SILENT" = "yes" ]; then
+		exec 1>&6 6>&-           # Restore STDOUT
+		exec 2>&7 7>&-           # Restore STDERR
+	    fi
 	fi
 
 	# If the user has a bindir in $HOME, put it in front of the path.
@@ -132,5 +150,14 @@ fi
 # option was selected to begin the session.
 
 if [ "${NOCALLS+set}" != set -a -r ~/.bashrc.mine ]; then
-	. ~/.bashrc.mine
+    if [ "$SILENT" = "yes" ]; then
+	exec 6>&1                # Save STDOUT
+	exec 7>&2                # Save STDERR
+	exec > /dev/null 2>&1
+    fi
+    . ~/.bashrc.mine
+    if [ "$SILENT" = "yes" ]; then
+	exec 1>&6 6>&-           # Restore STDOUT
+	exec 2>&7 7>&-           # Restore STDERR
+    fi
 fi
