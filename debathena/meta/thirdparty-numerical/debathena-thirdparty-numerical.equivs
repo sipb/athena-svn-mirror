@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-numerical
-Version: 0.2
+Version: 0.3
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: maxima,
  xmaxima,
@@ -12,15 +12,15 @@ Depends: maxima,
  maxima-test,
  maxima-emacs,
  nickle,
- gnumeric-gtk,
+ gnumeric,
  gnumeric-doc,
  gnumeric-plugins-extra,
  gnuplot-doc,
- octave3.0,
- octave3.0-doc,
- octave3.0-headers,
- octave3.0-htmldoc,
- octave3.0-emacsen,
+ octave3.2,
+ octave3.2-doc,
+ octave3.2-headers,
+ octave3.2-htmldoc,
+ octave3.2-emacsen,
  pari-gp,
  pari-gp2c,
  pari-doc,
