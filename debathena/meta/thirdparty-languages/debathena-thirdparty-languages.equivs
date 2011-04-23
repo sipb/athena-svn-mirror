@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-languages
-Version: 0.13
+Version: 0.14
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: cmake,
  python-all-dev,
