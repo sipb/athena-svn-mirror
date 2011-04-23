@@ -3,7 +3,7 @@ Priority: extra
 Standards-Version: 3.6.2
 
 Package: debathena-thirdparty-simulation
-Version: 0.5
+Version: 0.6
 Maintainer: Debathena Project <debathena@mit.edu>
 # Before 3.0.3-3, libctl-dev used guile-1.6, which conflicts with
 # several other applications in this list.
@@ -30,7 +30,6 @@ Depends: lp-solve,
  gtkwave,
  pcb,
  verilog,
- verilog-mode,
  python-biopython,
  python-biopython-doc,
  wise,
