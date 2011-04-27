@@ -196,6 +196,13 @@ if [ dapper = "$dist" ]; then
   exit
 fi
 
+if schq aptitude show openafs-modules-dkms > /dev/null; then
+  # We don't need to build the metapackage if we already have
+  # openafs-modules-dkms
+  echo "*** Skipping metapackage creation as openafs-modules-dkms exists"
+  exit
+fi
+
 # For each upstream metapackage found, if we have an appropriate
 # OpenAFS module, create and/or upload a metapackage tying the OpenAFS
 # module to the current version of the upstream metapackage, if one
