@@ -206,7 +206,7 @@ for image_mpkg in $mpkgs; do
   afs_mpkg=$(echo "$image_mpkg" | sed -e 's/^linux-image/openafs-modules/')
 
   # Check if we have dkms
-  if schq aptitude show openafs-modules-dkms > /dev/null; then
+  if schq apt-cache show openafs-modules-dkms > /dev/null; then
     # epoch
     ver=1:1.0
   fi
