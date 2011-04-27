@@ -3,9 +3,9 @@ Priority: extra
 Standards-Version: 3.8.0
 
 Package: debathena-extra-software-nox
-Version: 0.27
+Version: 0.28
 Maintainer: Debathena Project <debathena@mit.edu>
-Depends: build-essential, debathena-build-depends,
+Depends: build-essential,
   enscript, psutils,
   emacs, emacs-intl-fonts,
   vim-nox,
