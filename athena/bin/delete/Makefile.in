@@ -4,11 +4,14 @@ SHELL=/bin/sh
 VPATH=@srcdir@
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_DATA=@INSTALL_DATA@
+MKDIR_P=@MKDIR_P@
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
+datarootdir=@datarootdir@
 mandir=@mandir@
 
 CC=@CC@
@@ -52,19 +55,19 @@ delete_errs.h delete_errs.c:
 check:
 
 install:
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${MKDIR_P} ${DESTDIR}${bindir}
+	${MKDIR_P} ${DESTDIR}${mandir}/man1
 	${INSTALL_PROGRAM} delete ${DESTDIR}${bindir}
 	${INSTALL_PROGRAM} undelete ${DESTDIR}${bindir}
 	${INSTALL_PROGRAM} expunge ${DESTDIR}${bindir}
 	${INSTALL_PROGRAM} lsdel ${DESTDIR}${bindir}
 	rm -f ${DESTDIR}${bindir}/purge
 	ln -s expunge ${DESTDIR}${bindir}/purge
-	${INSTALL} -m 444 ${srcdir}/man1/delete.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 444 ${srcdir}/man1/undelete.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 444 ${srcdir}/man1/expunge.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 444 ${srcdir}/man1/lsdel.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -m 444 ${srcdir}/man1/purge.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/man1/delete.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/man1/undelete.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/man1/expunge.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/man1/lsdel.1 ${DESTDIR}${mandir}/man1
+	${INSTALL_DATA} ${srcdir}/man1/purge.1 ${DESTDIR}${mandir}/man1
 
 clean:
 	rm -f ${PROGS} ${OBJS}
