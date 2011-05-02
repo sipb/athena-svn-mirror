@@ -1,3 +1,10 @@
+debathena-aclocal (1.1.1) unstable; urgency=low
+
+  * If we're going to use pkg-config's macros, having pkg-config
+    installed is probably a good plan.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 02 May 2011 03:58:34 -0400
+
 debathena-aclocal (1.1) unstable; urgency=low
 
   * Make ATHENA_UTIL_COM_ERR use pkg-config to find com_err's location

@@ -7,7 +7,7 @@ Standards-Version: 3.8.4
 
 Package: debathena-aclocal
 Architecture: all
-Depends: ${misc:Depends}
+Depends: ${misc:Depends}, pkg-config
 Description: Common autoconf macros for Debathena
  This package contains autoconf macros shared by multiple Debathena
  packages.
