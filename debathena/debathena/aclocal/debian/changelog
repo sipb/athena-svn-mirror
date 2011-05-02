@@ -1,3 +1,12 @@
+debathena-aclocal (1.1) unstable; urgency=low
+
+  * Make ATHENA_UTIL_COM_ERR use pkg-config to find com_err's location
+    (and set CFLAGS instead of CPPFLAGS as pkg-config wants), and prefix
+    CFLAGS and LDFLAGS so as to cause the normal com_err to be found in
+    preference to AFS' variant.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 02 May 2011 03:09:53 -0400
+
 debathena-aclocal (1.0) unstable; urgency=low
 
   * Initial commit.

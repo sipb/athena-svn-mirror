@@ -17,7 +17,7 @@ dnl The public macros are:
 dnl	ATHENA_UTIL_COM_ERR
 dnl		Generates error if com_err not found.
 dnl
-dnl All of the macros may extend CPPFLAGS and LDFLAGS to let the
+dnl All of the macros may extend CFLAGS and LDFLAGS to let the
 dnl compiler find the requested libraries.  Put ATHENA_UTIL_COM_ERR
 dnl and ATHENA_UTIL_SS before ATHENA_AFS or ATHENA_AFS_REQUIRED; there
 dnl is a com_err library in the AFS libraries which requires -lutil.
@@ -28,13 +28,13 @@ AC_DEFUN([ATHENA_UTIL_COM_ERR],
 [AC_ARG_WITH(com_err,
 	[  --with-com_err=PREFIX   Specify location of com_err],
 	[com_err="$withval"], [com_err=yes])
-if test "$com_err" != no; then
-	if test "$com_err" != yes; then
-		CPPFLAGS="$CPPFLAGS -I$com_err/include"
-		LDFLAGS="$LDFLAGS -L$com_err/lib"
-	fi
+AS_IF([test "$com_err" != no],
+	[AS_IF([test "$com_err" != yes],
+		[COM_ERR_CFLAGS="-I$com_err/include"
+		COM_ERR_LDFLAGS="-L$com_err/lib"])
+	PKG_CHECK_MODULES([COM_ERR], [com_err])
+	CFLAGS="$COM_ERR_CFLAGS $CFLAGS"
+	LDFLAGS="$COM_ERR_LDFLAGS $LDFLAGS"
 	AC_SEARCH_LIBS(com_err, com_err, ,
-		       [AC_MSG_ERROR(com_err library not found)])
-else
-	AC_MSG_ERROR(This package requires com_err.)
-fi])
+		       [AC_MSG_ERROR(com_err library not found)])],
+	[AC_MSG_ERROR(This package requires com_err.)])])
