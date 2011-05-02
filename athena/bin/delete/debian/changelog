@@ -1,8 +1,10 @@
-debathena-delete (10.0.3-0debathena1) UNRELEASED; urgency=low
+debathena-delete (10.0.3-0debathena2) UNRELEASED; urgency=low
 
   * Update autogoo for the 21st century.
+  * Update packaging to use debathena-aclocal instead of daconfiscate.
+  * Bump debhelper compatibility level.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Sun, 01 May 2011 19:08:41 -0400
+ -- Geoffrey Thomas <geofft@mit.edu>  Mon, 02 May 2011 01:49:40 -0400
 
 debathena-delete (10.0.2-0debathena1) unstable; urgency=low
 

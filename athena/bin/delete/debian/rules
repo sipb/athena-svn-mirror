@@ -6,5 +6,12 @@ include /usr/share/cdbs/1/class/autotools.mk
 
 DEB_CONFIGURE_EXTRA_FLAGS += --with-afs=/usr
 
+debian/stamp-autotools-files: aclocal.m4 config.guess config.sub install-sh missing
+aclocal.m4:
+	aclocal-1.10
+config.guess config.sub:
+	cp /usr/share/misc/$@ $@
+install-sh missing:
+	-automake-1.10 --foreign --add-missing
 clean::
-	rm -f configure delete_errs.h delete_errs.c
+	rm -f configure aclocal.m4 install-sh missing config.guess config.sub delete_errs.h delete_errs.c
