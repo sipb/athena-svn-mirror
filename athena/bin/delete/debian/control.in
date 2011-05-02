@@ -2,7 +2,7 @@ Source: debathena-delete
 Section: debathena/utils
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, comerr-dev, libopenafs-dev, automake1.10, autotools-dev, debathena-aclocal
+Build-Depends: @cdbs@, comerr-dev, libopenafs-dev, automake1.10, autotools-dev, debathena-aclocal (>= 1.1~)
 Standards-Version: 3.7.2
 
 Package: debathena-delete
