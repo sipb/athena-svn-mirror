@@ -1,3 +1,12 @@
+debathena-aclocal (1.1.2) unstable; urgency=low
+
+  * PKG_CHECK_MODULES doesn't split LDFLAGS and LIBS properly. Since we
+    need to insert com_err's LDFLAGS before AFS's, but since -lcom_err
+    needs to be after the object files, we need this split. So,
+    reimplement what we need of it and just use PKG_CHECK_EXISTS.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 03 May 2011 02:49:51 -0400
+
 debathena-aclocal (1.1.1) unstable; urgency=low
 
   * If we're going to use pkg-config's macros, having pkg-config

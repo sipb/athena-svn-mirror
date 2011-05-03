@@ -30,11 +30,12 @@ AC_DEFUN([ATHENA_UTIL_COM_ERR],
 	[com_err="$withval"], [com_err=yes])
 AS_IF([test "$com_err" != no],
 	[AS_IF([test "$com_err" != yes],
-		[COM_ERR_CFLAGS="-I$com_err/include"
-		COM_ERR_LDFLAGS="-L$com_err/lib"])
-	PKG_CHECK_MODULES([COM_ERR], [com_err])
-	CFLAGS="$COM_ERR_CFLAGS $CFLAGS"
-	LDFLAGS="$COM_ERR_LDFLAGS $LDFLAGS"
-	AC_SEARCH_LIBS(com_err, com_err, ,
-		       [AC_MSG_ERROR(com_err library not found)])],
+		[CFLAGS="$CFLAGS -I$com_err/include"
+		LDFLAGS="$LDFLAGS -L$com_err/lib"],
+		[PKG_CHECK_EXISTS([com_err],
+			[CFLAGS="$CFLAGS `$PKG_CONFIG --cflags com_err 2>/dev/null`"
+			LDFLAGS="$LDFLAGS `$PKG_CONFIG --libs-only-L --libs-only-other com_err 2>/dev/null`"
+			LIBS="$LIBS `$PKG_CONFIG --libs-only-l com_err 2>/dev/null`"],
+			[AC_SEARCH_LIBS(com_err, com_err, ,
+				       [AC_MSG_ERROR(com_err library not found)])])])],
 	[AC_MSG_ERROR(This package requires com_err.)])])
