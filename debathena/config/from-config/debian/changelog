@@ -1,3 +1,10 @@
+debathena-from-config (1.5.2) unstable; urgency=low
+
+  * Use config-package-dev 4.12 (yay) to handle undiversions, instead of
+    a copy of a broken version of its undiversions code.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Wed, 04 May 2011 02:42:42 -0400
+
 debathena-from-config (1.5.1) unstable; urgency=low
 
   * Actually spell "alternatives" correctly when calling update-alternatives

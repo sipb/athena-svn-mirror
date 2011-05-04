@@ -14,7 +14,9 @@ ifneq ($(USES_ALTERNATIVES),y)
 	echo "debathena-from-config-breaks=bsdmainutils (>= 8.0.6~)" >> debian/debathena-from-config.substvars
 else
     # Newer packages: undivert, generate Conflicts, generate postinst
-    # Except we can't use DEB_UNDIVERT_FILES because of Trac #549
+    DEB_UNDIVERT_FILES_debathena-from-config += \
+	/usr/bin/from.debathena \
+	/usr/share/man/man1/from.debathena.1.gz
     binary-predeb/debathena-from-config::
 	echo "debathena-from-config-conflicts=bsdmainutils (<< 8.0.6~)" >> debian/debathena-from-config.substvars
     common-build-indep::
