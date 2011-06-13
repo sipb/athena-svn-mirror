@@ -1,3 +1,11 @@
+debathena-athinfod-cluster-config (1.2) unstable; urgency=low
+
+  * Add support for dmesg and /var/log/messages (Trac #879)
+  * Use new cluster test and depend on relevant athinfod version (Trac
+    #906)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 13 Jun 2011 15:23:32 -0400
+
 debathena-athinfod-cluster-config (1.1) unstable; urgency=low
 
   * Add lsusb and usb-hid queries, and Python support for the latter
