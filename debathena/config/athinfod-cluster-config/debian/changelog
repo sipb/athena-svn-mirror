@@ -3,8 +3,10 @@ debathena-athinfod-cluster-config (1.2) unstable; urgency=low
   * Add support for dmesg and /var/log/messages (Trac #879)
   * Use new cluster test and depend on relevant athinfod version (Trac
     #906)
+  * Read the correct files in update-schedule (Trac #910)
+  * Remove 'test -r' (Trac #909)
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 13 Jun 2011 15:23:32 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 14 Jun 2011 16:31:08 -0400
 
 debathena-athinfod-cluster-config (1.1) unstable; urgency=low
 

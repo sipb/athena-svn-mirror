@@ -4,11 +4,11 @@ print;
 print <<EOF;
 
 # Added by debathena-athinfod-cluster-config
-update.log	/usr/lib/athinfod/is_cluster && test -r /var/log/athena-update && cat /var/log/athena-update
-update-status	/usr/lib/athinfod/is_cluster && test -r /var/lib/athena-update-status && cat /var/lib/athena-update-status
-in-use		machtype -L | grep -q "debathena-cluster" && (test `pgrep -c larvnet-wrapper` -gt 0 && echo "yes" || echo "no") || echo "n/a"
-update-schedule	/usr/lib/athinfod/is_cluster && test -r /etc/cron.d/debathena-auto-update && cat /etc/cron.d/debathena-auto-update
-install.log	/usr/lib/athinfod/is_cluster && test -r /var/log/athena-install.log && cat /var/log/athena-install.log
+update.log	/usr/lib/athinfod/is_cluster && cat /var/log/athena-update
+update-status	/usr/lib/athinfod/is_cluster && cat /var/lib/athena-update-status
+in-use		/usr/lib/athinfod/is_cluster && (test `pgrep -c larvnet-wrapper` -gt 0 && echo "yes" || echo "no") || echo "n/a"
+update-schedule	/usr/lib/athinfod/is_cluster && cat /etc/cron.d/athena-auto-update /etc/cron.d/athena-auto-upgrade
+install.log	/usr/lib/athinfod/is_cluster && cat /var/log/athena-install.log
 usb-hid		/usr/share/debathena-athinfod-cluster-config/usb-hid.py
 lsusb		/usr/lib/athinfod/is_cluster && lsusb
 dmesg		/usr/lib/athinfod/is_cluster && dmesg
