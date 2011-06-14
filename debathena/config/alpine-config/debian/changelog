@@ -1,3 +1,9 @@
+debathena-alpine-config (1.17) unstable; urgency=low
+
+  * Use ldap-too.mit.edu, not ldap.mit.edu (Trac: #392)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 20 Apr 2011 17:40:57 -0400
+
 debathena-alpine-config (1.16) unstable; urgency=low
 
   * Configure alpine to use the MIT LDAP server (Trac: #774).

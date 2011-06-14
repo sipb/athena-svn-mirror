@@ -1,3 +1,3 @@
 #!/usr/bin/perl -0p
 s/^#BASE.*$/BASE\tdc=mit, dc=edu/m or die;
-s/^#URI.*$/URI\tldap:\/\/ldap.mit.edu\nTLS_CACERT\t\/usr\/share\/ca-certificates\/mit.edu\/mitCA.crt/m or die;
+s/^#URI.*$/URI\tldap:\/\/ldap-too.mit.edu\nTLS_CACERT\t\/usr\/share\/ca-certificates\/mit.edu\/mitCA.crt/m or die;

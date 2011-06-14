@@ -15,4 +15,4 @@ s%^(sendmail-path=).*$%${1}/usr/lib/debathena-msmtp -t%m or die;
 s%^(rsh-open-timeout=).*$%${1}0%m or die;
 s%^(ssh-open-timeout=).*$%${1}0%m or die;
 s%^(new-version-threshold=).*$%\% (Athena hack: 'z' should be lexically greater than any pine version.)\n${1}z%m or die;
-s%^(ldap-servers=).*$%${1}ldap.mit.edu:389 "/base=dc=mit,dc=edu"%m or die;
+s%^(ldap-servers=).*$%${1}ldap-too.mit.edu:389 "/base=dc=mit,dc=edu"%m or die;
