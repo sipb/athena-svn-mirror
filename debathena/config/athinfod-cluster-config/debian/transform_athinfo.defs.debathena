@@ -12,6 +12,5 @@ install.log	/usr/lib/athinfod/is_cluster && cat /var/log/athena-install.log
 usb-hid		/usr/share/debathena-athinfod-cluster-config/usb-hid.py
 lsusb		/usr/lib/athinfod/is_cluster && lsusb
 dmesg		/usr/lib/athinfod/is_cluster && dmesg
-messages	/usr/lib/athinfod/is_cluster && cat /var/log/messages
 EOF
     exit 0;
