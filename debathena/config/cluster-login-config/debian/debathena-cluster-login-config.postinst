@@ -151,6 +151,7 @@ case "$1" in
 	$gc -t bool /apps/fast-user-switch-applet/show_guest_login false
 
 	# gnome-power-manager
+	# As of Lucid, these are ignored and polkit is used instead
 	$gc -t bool /apps/gnome-power-manager/general/can_hibernate false
 	$gc -t bool /apps/gnome-power-manager/general/can_suspend false
 

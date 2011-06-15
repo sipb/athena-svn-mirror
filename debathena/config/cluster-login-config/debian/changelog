@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.32) unstable; urgency=low
+
+  * Use polkit to disable suspend and hiberate (Trac #684)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 15 Jun 2011 09:47:54 -0400
+
 debathena-cluster-login-config (1.31) unstable; urgency=low
 
   * Add necessary files to enable backports and pin everything except

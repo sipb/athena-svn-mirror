@@ -1,0 +1,5 @@
+[Disable hibernate]
+Identity=unix-user:*
+Action=org.freedesktop.upower.hibernate
+ResultActive=no
+ResultAny=no
