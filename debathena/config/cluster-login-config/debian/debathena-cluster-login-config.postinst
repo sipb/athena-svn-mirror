@@ -154,6 +154,8 @@ case "$1" in
 	# As of Lucid, these are ignored and polkit is used instead
 	$gc -t bool /apps/gnome-power-manager/general/can_hibernate false
 	$gc -t bool /apps/gnome-power-manager/general/can_suspend false
+	# Change DPMS sleep time to 10 min
+	$gc -t int /apps/gnome-power-manager/timeout/sleep_display_ac 600
 
 	# This should be set to true on systems using
 	# indicator-applet-session, and false on systems that don't

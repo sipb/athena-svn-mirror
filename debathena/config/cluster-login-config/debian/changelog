@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.33) unstable; urgency=low
+
+  * Change display sleep time to 10 minutes (Trac: #894)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 16 Jun 2011 13:01:53 -0400
+
 debathena-cluster-login-config (1.32) unstable; urgency=low
 
   * Use polkit to disable suspend and hiberate (Trac #684)

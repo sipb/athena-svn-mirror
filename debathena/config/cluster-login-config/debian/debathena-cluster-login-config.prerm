@@ -46,6 +46,7 @@ case "$1" in
         $gcunset /apps/gnome-power-manager/general/can_hibernate
         $gcunset /apps/gnome-power-manager/general/can_suspend
         $gcunset /desktop/gnome/lockdown/disable_user_switching
+        $gcunset /apps/gnome-power-manager/timeout/sleep_display_ac
 
         # Undo our default gconf settings.
         gcsrc=xml:readwrite:/etc/gconf/gconf.xml.defaults
