@@ -204,6 +204,7 @@ for image_mpkg in $mpkgs; do
   info=$(schq apt-cache show --no-all-versions "$image_mpkg")
   ver=$(echo "$info" | sed -ne 's/^Version: //p')
   afs_mpkg=$(echo "$image_mpkg" | sed -e 's/^linux-image/openafs-modules/')
+  hdr_mpkg=$(echo "$image_mpkg" | sed -e 's/^linux-image/linux-headers/')
 
   # Check if we have dkms
   if schq apt-cache show openafs-modules-dkms > /dev/null 2>&1; then
@@ -254,7 +255,7 @@ Standards-Version: 3.6.2
 Package: $afs_mpkg
 Version: $ver$tag
 Maintainer: Debathena Project <debathena@mit.edu>
-Depends: openafs-modules-dkms
+Depends: openafs-modules-dkms, $image_mpkg, $hdr_mpkg
 Copyright: ../common/copyright
 Readme: ../common/README.in
 Description: Transitional package to install dkms
