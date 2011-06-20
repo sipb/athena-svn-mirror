@@ -112,6 +112,7 @@ $MAYBE wget -N http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/li
 dkargs="DEBCONF_DEBUG=5"
 kargs="netcfg/get_hostname= locale=en_US console-setup/layoutcode=us \
        interface=auto \
+       netcfg/dhcp_timeout=60 \
        url=http://18.9.60.73/installer/${UBUNTU_RELEASE}/debathena.preseed \
        debathena/clusterforce=yes debathena/clusteraddr=$IPADDR --"
 debug "Would execute kexec with --append=\"$dkargs $kargs\""
