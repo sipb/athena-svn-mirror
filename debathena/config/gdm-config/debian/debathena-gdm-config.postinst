@@ -83,6 +83,11 @@ case "$1" in
 	    cleanup_old_diversion /usr/share/images/xsplash/throbber_xtra_large.debathena.png
 	fi
 
+	if [ -f /usr/share/xsessions/athena.desktop ] && \
+	   [ -x /usr/lib/gdm/gdm-set-default-session ]; then
+	    /usr/lib/gdm/gdm-set-default-session -k athena
+	fi
+
         if test -f /var/run/gdm.pid ; then
 	    if hash invoke-rc.d 2>/dev/null; then
 	        invoke-rc.d gdm reload || true

@@ -1,3 +1,9 @@
+debathena-gdm-config (1.27) UNRELEASED; urgency=low
+
+  * Add new Athena session (Trac #850)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 20 Jun 2011 10:15:07 -0400
+
 debathena-gdm-config (1.26.1) unstable; urgency=low
 
   * Only request a reboot on upgrade, not the first install

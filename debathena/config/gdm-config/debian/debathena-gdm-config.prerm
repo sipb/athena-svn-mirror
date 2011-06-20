@@ -21,6 +21,11 @@ case "$1" in
     remove|upgrade|deconfigure)
         update-alternatives --remove debathena-metapackage.svg \
             /usr/share/gdm/themes/debathena/metapackage-unknown.svg
+	if [ -f /usr/share/xsessions/athena.desktop ] && \
+	   [ -x /usr/lib/gdm/gdm-set-default-session ]; then
+	    /usr/lib/gdm/gdm-set-default-session -r athena
+	fi
+
     ;;
 
     failed-upgrade)
