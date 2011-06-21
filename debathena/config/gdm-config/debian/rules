@@ -36,11 +36,11 @@ debathena/distro.svg: debian/distro.svg.sh
 ifneq ($(NEW_GDM),y)
     install/debathena-gdm-config::
 	dh_install debian/default.desktop.debathena usr/share/gdm/BuiltInSessions
-	dh_install debian/athena.desktop usr/share/xsessions
 else
     install/debathena-gdm-config::
 	dh_install debian/background.jpg usr/share/debathena-gdm-config
 	dh_install debian/%gconf-tree.xml var/lib/gdm/.gconf.debathena-gdm-config
+	dh_install debian/athena.desktop usr/share/xsessions
 
 	install -m 660 debian/gconf.path.debathena debian/$(cdbs_curpkg)/var/lib/gdm/.gconf.path.debathena
 	dh_install debian/debathena-branding usr/lib/debathena-branding
