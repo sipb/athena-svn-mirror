@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+
+TBIRD_VERSION = $(shell dpkg-query --showformat='$${Version}' --show thunderbird)
+TBIRD_3_1 = $(shell dpkg --compare-versions $(TBIRD_VERSION) ge '3.1~' && echo y)
+
+ifneq ($(TBIRD_3_1),y)
+binary-predeb/debathena-login-graphical::
+	echo "debathena-thunderbird-config-recommends=debathena-thunderbird-config" >> debian/debathena-login-graphical.substvars
+endif
+
+
+include /usr/share/cdbs/1/rules/debhelper.mk
