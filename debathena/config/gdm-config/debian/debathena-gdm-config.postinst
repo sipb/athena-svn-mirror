@@ -85,7 +85,9 @@ case "$1" in
 
 	if [ -f /usr/share/xsessions/athena.desktop ] && \
 	   [ -x /usr/lib/gdm/gdm-set-default-session ]; then
-	    /usr/lib/gdm/gdm-set-default-session -k athena
+	  # Sigh.  This exits non-zero if there already is a default 
+	  # session, but only if DBus is running.
+	  /usr/lib/gdm/gdm-set-default-session -k athena || true
 	fi
 
         if test -f /var/run/gdm.pid ; then

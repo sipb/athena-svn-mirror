@@ -23,7 +23,9 @@ case "$1" in
             /usr/share/gdm/themes/debathena/metapackage-unknown.svg
 	if [ -f /usr/share/xsessions/athena.desktop ] && \
 	   [ -x /usr/lib/gdm/gdm-set-default-session ]; then
-	    /usr/lib/gdm/gdm-set-default-session -r athena
+	  # Sigh.  This exits non-zero if there already is a default 
+	  # session, but only if DBus is running.
+	  /usr/lib/gdm/gdm-set-default-session -r athena || true
 	fi
 
     ;;
