@@ -1,3 +1,10 @@
+debathena-athinfod (10.0.0-0debathena17) unstable; urgency=low
+
+  * Make the cluster test executable, which it's not because this is a
+    non-native package
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 24 Jun 2011 17:21:01 -0400
+
 debathena-athinfod (10.0.0-0debathena16) unstable; urgency=low
 
   * Add simple cluster test that will check Hesiod first (Trac #742)

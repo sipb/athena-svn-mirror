@@ -8,3 +8,6 @@ DEB_CONFIGURE_EXTRA_FLAGS += lsbindir=/sbin
 
 clean::
 	rm -f configure
+
+binary-fixup/debathena-athinfod::
+	chmod 755 debian/$(cdbs_curpkg)/usr/lib/athinfod/is_cluster
