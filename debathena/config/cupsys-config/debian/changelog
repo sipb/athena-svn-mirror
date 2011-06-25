@@ -1,3 +1,12 @@
+debathena-cupsys-config (1.14) UNRELEASED; urgency=low
+
+  * No need to make restart_cups.sh executable, since it's only intended
+    to be included in other scripts and doesn't do anything if you
+    execute it (since it just defines a function).
+    This addresses Lintian warning executable-not-elf-or-script.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sat, 25 Jun 2011 04:49:45 -0400
+
 debathena-cupsys-config (1.13) unstable; urgency=low
 
   * No changes, version bump to resolve 1.12 disparity issues
