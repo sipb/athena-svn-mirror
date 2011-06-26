@@ -213,10 +213,10 @@ for image_mpkg in $mpkgs; do
   fi
 
   # Check if we already have an up-to-date OpenAFS metapackage.
-  repover=$(zcat $pkgfiles \
+  if zcat $pkgfiles \
     | dpkg-awk -f - "Package:^$(quote $afs_mpkg)\$" -- Version \
-    | sed -e 's/^Version: //')
-  if [ "x$repover" = "x$ver$tag" ]; then
+    | sed -ne 's/^Version: //p' \
+    | fgrep -qx "$ver$tag"; then
     echo "*** Already up to date: $dist_arch $afs_mpkg"
     continue
   fi
