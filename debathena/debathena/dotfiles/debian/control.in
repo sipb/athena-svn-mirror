@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-dotfiles
 Architecture: all
-Depends: tcsh, debathena-base, debathena-attach, debathena-machtype, debathena-athdir, debathena-get-message, debathena-lert, debathena-quota (>= 9.4.0-0debathena2~), debathena-mitmailutils (>= 10.1.0), debathena-afs-config, debathena-mit-automounter, debathena-kerberos-config, debathena-zephyr-config, ${misc:Depends}
+Depends: tcsh, debathena-base, debathena-attach, debathena-machtype, debathena-athdir, debathena-get-message, debathena-lert, debathena-mitmailutils (>= 10.1.0), debathena-afs-config, debathena-mit-automounter, debathena-kerberos-config, debathena-zephyr-config, ${misc:Depends}
 Replaces: debathena-athena-files (<< 0.2)
 Conflicts: debathena-athena-files (<< 0.2), debathena-afuse-automounter (<= 1.4)
 Description: User template and system standard shell dotfiles for Athena

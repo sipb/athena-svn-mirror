@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.28-0debathena2) UNRELEASED; urgency=low
+
+  * quotawarn hasn't been in this package since 10.0.2-0debathena3, so
+    we don't need to depend on debathena-quota.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sun, 26 Jun 2011 21:44:36 -0400
+
 debathena-dotfiles (10.0.28-0debathena1) unstable; urgency=low
 
   * Update lockers.7 for modern sysnames and the ubiquity of the
