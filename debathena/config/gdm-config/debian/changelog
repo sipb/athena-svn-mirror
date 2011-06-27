@@ -1,3 +1,10 @@
+debathena-gdm-config (1.28) unstable; urgency=low
+
+  * Ship our own athena-session and do logic in that
+  * Make the implict dependencyies on gnome-session and python explicit
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 27 Jun 2011 10:20:46 -0400
+
 debathena-gdm-config (1.27.1) unstable; urgency=low
 
   * Don't fail in maintainer scripts, even if the Debian utilities are

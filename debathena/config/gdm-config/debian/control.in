@@ -7,7 +7,7 @@ Standards-Version: 3.8.4
 
 Package: debathena-gdm-config
 Architecture: all
-Depends: gdm, ${misc:Depends}, ${debathena-gdm-gconf-depends}
+Depends: gdm, gnome-session, python, ${misc:Depends}, ${debathena-gdm-gconf-depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Breaks: debathena-reactivate (<< 1.22~)
