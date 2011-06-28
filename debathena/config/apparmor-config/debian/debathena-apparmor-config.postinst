@@ -84,6 +84,11 @@ case "$1" in
 	    cleanup_old_diversion /etc/apparmor.d/tunables/home
 	fi
 
+	# Ensure local files exist
+	for f in usr.sbin.cupsd usr.sbin.ntpd; do
+	  [ -f "/etc/apparmor.d/local/$f" ] || touch "/etc/apparmor.d/local/$f"
+	done
+
 	if hash apparmor_status 2>/dev/null && apparmor_status --enabled; then
 	    if hash invoke-rc.d 2>/dev/null; then
 		invoke-rc.d apparmor reload

@@ -1,3 +1,10 @@
+debathena-apparmor-config (1.2.1) unstable; urgency=low
+
+  * ensure local/usr.sbin/cupsd and local/usr.sbin.ntpd files exist even
+    if those packages aren't installed (Trac: #737)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 28 Jun 2011 17:27:26 -0400
+
 debathena-apparmor-config (1.2) unstable; urgency=low
 
   * Transform <abstractions/nameservice> to allow reading
