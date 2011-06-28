@@ -1,10 +1,12 @@
+Source: debathena-extra-software-nox
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.8.0
+Standards-Version: 3.9.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-extra-software-nox
-Version: 0.28
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: all
 Depends: build-essential,
   enscript, psutils,
   emacs, emacs-intl-fonts,
@@ -41,8 +43,6 @@ Recommends: ckermit,
   x3270,
   vgrind,
   manpages-posix-dev, manpages-dev,
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
 Description: Athena auxiliary software, non-graphical
  This package pulls in miscellaneous non-Athena-specific software
  for a fully-stocked non-graphical Athena machine, like a dialup.
