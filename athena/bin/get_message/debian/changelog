@@ -1,3 +1,9 @@
+debathena-get-message (10.0.1-0debathena2) unstable; urgency=low
+
+  * Update manpage to the new message cache.
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Wed, 29 Jun 2011 02:47:28 -0400
+
 debathena-get-message (10.0.1-0debathena1) unstable; urgency=low
 
   * Try $ATHENA_USER before using $USER.
