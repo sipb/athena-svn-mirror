@@ -1,10 +1,12 @@
+Source: debathena-workstation
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.8.1
+Standards-Version: 3.9.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-workstation
-Version: 1.3
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: all
 Depends: debathena-workstation-branding,
  debathena-login-graphical,
  debathena-extra-software,
@@ -17,8 +19,6 @@ Depends: debathena-workstation-branding,
  debathena-auto-update,
  debathena-tex-config,
  debathena-moira-update-server,
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
 Description: Athena managed workstation configuration
  This package configures a private, graphical Debathena workstation.
  It includes configuration, such as automatic updates, designed to
