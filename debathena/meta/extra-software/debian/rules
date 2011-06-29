@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-HAVE_ICEDTEA = $(shell apt-cache show icedtea6-plugin >/dev/null 2>/dev/null && echo y)
+HAVE_ICEDTEA = $(shell apt-cache show icedtea6-plugin 2>/dev/null | grep -q '^Version:' && echo y)
 
 ifeq ($(HAVE_ICEDTEA),y)
     binary-predeb/debathena-extra-software::
