@@ -39,6 +39,9 @@ schr rm /etc/debian_chroot
 # by punting it
 schr rm -rf /home
 
+# Fix up mtab so that df and friends work correctly
+schr sed -i "s|/var/lib/schroot/mount/$session||" /etc/mtab
+
 # Run the session
 #
 # We wrap the target command in sudo because it runs initgroups(3)

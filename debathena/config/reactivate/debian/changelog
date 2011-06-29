@@ -1,3 +1,10 @@
+debathena-reactivate (2.0.21) unstable; urgency=low
+
+  * Programs that run df no longer get confused about /tmp. (Trac #656)
+    (Thanks to Jon Reed for this patch.)
+
+ -- Liz A. Denys <lizdenys@mit.edu>  Wed, 29 Jun 2011 16:07:21 -0400
+
 debathena-reactivate (2.0.20) unstable; urgency=low
 
   * policy-rc.d should only return the cups daemons that exist (Trac
