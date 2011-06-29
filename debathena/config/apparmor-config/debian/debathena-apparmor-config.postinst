@@ -85,7 +85,8 @@ case "$1" in
 	fi
 
 	# Ensure local files exist
-	if [ -x /usr/bin/dh_apparmor ]; then
+	# This should be replaced with something less stupid
+	if fgrep -q '#include <local/' /etc/apparmor.d/*.debathena; then
 	  mkdir -p /etc/apparmor.d/local
 	  for f in usr.sbin.cupsd usr.sbin.ntpd; do
 	    [ -f "/etc/apparmor.d/local/$f" ] || touch "/etc/apparmor.d/local/$f"
