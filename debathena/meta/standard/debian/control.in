@@ -1,10 +1,12 @@
+Source: debathena-standard
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.9.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-standard
-Version: 0.2.7
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: all
 Depends: debathena-athena-libraries,
  debathena-clients,
  debathena-dotfiles,
@@ -12,8 +14,6 @@ Depends: debathena-athena-libraries,
  debathena-archive-keyring,
  debathena-upgrade-config,
 Recommends: debathena-msmtp-mta
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
 Description: Metapackage providing Debathena standard environment
  This package and its dependencies provide an environment for
  accessing MIT Athena services from your Debian-based computer,
