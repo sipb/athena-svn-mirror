@@ -6,12 +6,12 @@ include /usr/share/cdbs/1/class/autotools.mk
 
 DEB_DH_INSTALL_SOURCEDIR = $(DEB_DESTDIR)
 DEB_FIXPERMS_EXCLUDE += \
-	var/cache/debathena-libgms/messages
+	var/cache/libgms/messages
 
 common-install-indep::
-	mkdir -p $(DEB_DESTDIR)/var/cache/debathena-libgms
-	touch $(DEB_DESTDIR)/var/cache/debathena-libgms/messages
-	chmod a=rw $(DEB_DESTDIR)/var/cache/debathena-libgms/messages
+	mkdir -p $(DEB_DESTDIR)/var/cache/libgms
+	touch $(DEB_DESTDIR)/var/cache/libgms/messages
+	chmod a=rw $(DEB_DESTDIR)/var/cache/libgms/messages
 
 clean::
 	rm -f configure
