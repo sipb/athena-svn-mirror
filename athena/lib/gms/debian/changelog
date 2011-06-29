@@ -1,3 +1,9 @@
+debathena-libgms (10.0.0-0debathena4) unstable; urgency=low
+
+  * Correct temporary cache directory.
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Wed, 29 Jun 2011 02:44:33 -0400
+
 debathena-libgms (10.0.0-0debathena3) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
