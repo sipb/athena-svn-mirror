@@ -1,10 +1,12 @@
+Source: debathena-cluster
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.9.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-cluster
-Version: 1.8
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: all
 Depends: debathena-cluster-branding,
  debathena-workstation,
  debathena-cluster-login-config,
@@ -20,8 +22,6 @@ Depends: debathena-cluster-branding,
  debathena-cluster-cups-config,
  debathena-athinfod-cluster-config,
 Conflicts: debathena-cluster-printing-config (<= 1.16)
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
 Description: Athena cluster configuration for Debian
  This package is intended for centrally-maintained machines in
  clusters and for Quickstations.

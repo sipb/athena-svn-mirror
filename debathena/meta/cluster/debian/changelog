@@ -1,0 +1,6 @@
+debathena-cluster (1.9) unstable; urgency=low
+
+  * First release as non-equivs package
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 28 Jun 2011 20:48:54 -0400
+
