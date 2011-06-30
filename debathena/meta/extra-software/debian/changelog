@@ -6,7 +6,127 @@ debathena-extra-software (1.0.1) unstable; urgency=low
 
 debathena-extra-software (1.0) unstable; urgency=low
 
-  * First release as non-equivs package
+  * First release as non-equivs package (Trac: #848)
+  * Update dependency on dwm-tools to prefer suckless-tools due to
+    upstream renaming the former
+  * Detect installability of icedtea6-plugin at build time and depend on
+    it if available (Trac: #692)
 
  -- Jonathan Reed <jdreed@mit.edu>  Wed, 16 Mar 2011 17:01:06 -0400
+
+debathena-extra-software (0.26) unstable; urgency=low
+
+  * Add GIMP (Trac: #637)
+  * Recommend icedtea6-plugin if sun-java6-plugin is unavailable
+  * Recommend poppler-data to make certain PDF files display correctly
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 07 Feb 2011 11:10:50 -0500
+
+debathena-extra-software (0.23) unstable; urgency=low
+
+  * Depend on vim-gnome (replacing vim-full from extra-software-nox)
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 25 Oct 2009 14:21:48 -0400
+
+debathena-extra-software (0.22) unstable; urgency=low
+
+  * Punt KDE due to confusion over how dependencies interact with various
+    Ubuntu and Debian versions
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 05 Oct 2009 08:58:13 -0400
+
+debathena-extra-software (0.21) unstable; urgency=low
+
+  * Depend on kdebase-workspace in preference to kdebase
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 29 Sep 2009 15:16:11 -0400
+
+debathena-extra-software (0.20) unstable; urgency=low
+
+  * Depend on kdebase
+  
+ -- Debathena Project <debathena@mit.edu>  Tue, 22 Sep 2009 00:09:26 -0400
+
+debathena-extra-software (0.19) unstable; urgency=low
+
+  * No-change rebuild
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 25 Aug 2009 09:33:11 -0400
+
+debathena-extra-software (0.18) unstable; urgency=low
+
+  * Add dependency on openoffice.org-java-common
+  * Switch back to sun-java6-plugin, since OpenJDK is still terrible
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 25 Aug 2009 09:23:01 -0400
+
+debathena-extra-software (0.17) unstable; urgency=low
+
+  * Remove kde-core due to Java conflict
+
+ -- Debathena Project <debathena@mit.edu>  Thu, 12 Mar 2009 15:54:21 -0400
+
+debathena-extra-software (0.16) unstable; urgency=low
+
+  * Add icedtea6-plugin from OpenJDK as a recommendation
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 11 Mar 2009 14:39:48 -0400
+
+debathena-extra-software (0.15) unstable; urgency=low
+
+  * Replace kde with kde-core, since KDE is way too big
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 11 Mar 2009 14:39:42 -0400
+
+debathena-extra-software (0.14) unstable; urgency=low
+
+  * Add kde as a dependency
+
+ -- Debathena Project <debathena@mit.edu>  Sat, 07 Mar 2009 10:51:22 -0500
+
+debathena-extra-software (0.13) unstable; urgency=low
+
+  * Depend on idle
+
+ -- Debathena Project <debathena@mit.edu>  Thu, 05 Mar 2009 18:18:47 -0500
+
+debathena-extra-software (0.12) unstable; urgency=low
+
+  * Add monotone, perl-doc, bsdgames, auctex, xmonad, dwm-tools,
+    compizconfig-settings-manager.
+  * Recommend mplayer, msttcorefonts, and ttf-xfree86-nonfree 
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 04 Mar 2009 16:54:37 -0500
+
+debathena-extra-software (0.11) unstable; urgency=low
+
+  * Add a recommendation for flashplugin-nonfree
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 04 Mar 2009 16:17:53 -0500
+
+debathena-extra-software (0.10) unstable; urgency=low
+
+  * Fix maintainer name
+  * Add git-gui and gitk
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 01 Mar 2009 23:13:09 -0500
+
+debathena-extra-software (0.8) unstable; urgency=low
+
+  * Remove motif-clients
+
+ -- Debian-Athena Project <debathena@mit.edu>  Sat, 10 Jan 2009 17:56:39 -0500
+
+debathena-extra-software (0.7) unstable; urgency=low
+
+  * Add wmaker (and friends), ratpoison, twm, and mwm (from motif-clients)
+
+ -- Debian-Athena Project <debathena@mit.edu>  Fri, 19 Dec 2008 11:10:46 -0500
+
+debathena-extra-software (0.6) unstable; urgency=low
+
+  * First version (renamed from debathena-cluster-software)
+
+ -- Debian-Athena Project <debathena@mit.edu>  Sat, 22 Nov 2008 01:00:37 -0500
+
 
