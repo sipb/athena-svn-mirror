@@ -92,8 +92,7 @@ debathena-extra-software (0.13) unstable; urgency=low
 
 debathena-extra-software (0.12) unstable; urgency=low
 
-  * Add monotone, perl-doc, bsdgames, auctex, xmonad, dwm-tools,
-    compizconfig-settings-manager.
+  * Add xmonad, dwm-tools, compizconfig-settings-manager.
   * Recommend mplayer, msttcorefonts, and ttf-xfree86-nonfree 
 
  -- Debathena Project <debathena@mit.edu>  Wed, 04 Mar 2009 16:54:37 -0500
