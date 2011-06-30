@@ -1,6 +1,132 @@
 debathena-extra-software-nox (1.0) unstable; urgency=low
 
+  [ Jonathan Reed ]
   * First release as non-equivs package
 
+  [ Geoffrey Thomas ]
+  * Don't depend on build-depends, that's just silly
+
  -- Jonathan Reed <jdreed@mit.edu>  Tue, 28 Jun 2011 18:18:12 -0400
+
+debathena-extra-software-nox (0.27) unstable; urgency=low
+
+  * Prefer plt-scheme to drscheme
+
+ -- Debathena Project <debathena@mit.edu>  Sat, 09 Oct 2010 15:58:55 -0400
+
+debathena-extra-software-nox (0.26) unstable; urgency=low
+
+  * No-change rebuild
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 15 Mar 2010 14:28:37 -0400
+
+debathena-extra-software-nox (0.25) unstable; urgency=low
+
+  * Add traceroute (for 6.033)
+  * Add fortune-mod (Trac #513)
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 15 Mar 2010 14:26:53 -0400
+
+debathena-extra-software-nox (0.24) unstable; urgency=low
+
+  * Add vim-nox to get syntax highlighting
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 25 Oct 2009 14:47:10 -0400
+
+debathena-extra-software-nox (0.23) unstable; urgency=low
+
+  * Punt vim-full in favor of vim-gnome in -extra-software
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 25 Oct 2009 14:22:58 -0400
+
+debathena-extra-software-nox (0.22) unstable; urgency=low
+
+  * Add expect
+  
+ -- Debathena Project <debathena@mit.edu>  Sun, 05 Jul 2009 21:10:01 -0400
+
+debathena-extra-software-nox (0.21) unstable; urgency=low
+
+  * Demote manpages-posix-dev, manpages-dev to recommendations because
+    they're not Free(tm)
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 14 Jun 2009 23:19:32 -0400
+
+debathena-extra-software-nox (0.20) unstable; urgency=low
+
+  * Add socat, vpnc, and cyrus-clients-2.2
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 26 May 2009 16:46:52 -0400
+
+debathena-extra-software-nox (0.19) unstable; urgency=low
+
+  * Add moreutils
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 04 May 2009 06:14:06 -0400
+
+debathena-extra-software-nox (0.18) unstable; urgency=low
+
+  * Add python-twisted and python-setuptools
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 17 Apr 2009 01:42:29 -0400
+
+debathena-extra-software-nox (0.17) unstable; urgency=low
+
+  * Punt elinks (since we have links2)
+
+ -- Debathena Project <debathena@mit.edu>  Sat, 11 Apr 2009 23:45:07 -0400
+
+debathena-extra-software-nox (0.16) unstable; urgency=low
+
+  * Add tree
+
+ -- Debathena Project <debathena@mit.edu>  Sat, 11 Apr 2009 14:28:39 -0400
+
+debathena-extra-software-nox (0.15) unstable; urgency=low
+
+  * Recommend OpenJDK, not Sun JDK
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 11 Mar 2009 14:38:57 -0400
+
+debathena-extra-software-nox (0.14) unstable; urgency=low
+
+  * Move build-depends here from -cluster
+  * Add remctl-client
+  * Add elinks, links and links2,
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 09 Mar 2009 11:33:40 -0400
+
+debathena-extra-software-nox (0.11) unstable; urgency=low
+
+  * Add monotone, perl-doc, bsdgame, auctex
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 04 Mar 2009 16:55:53 -0500
+
+debathena-extra-software-nox (0.10) unstable; urgency=low
+
+  * Add vim-full
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 04 Mar 2009 16:55:25 -0500
+
+debathena-extra-software-nox (0.9) unstable; urgency=low
+
+  * Fix maintainer name
+  * Add rcs, cvs, subversion, bzr, mercurial, git-core, git-cvs, git-svn,
+    manpages-posix-dev, manpages-dev
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 01 Mar 2009 23:14:02 -0500
+
+debathena-extra-software-nox (0.7) unstable; urgency=low
+
+  * Demote vgrind to Recommends since it's not available in Intrepid
+  
+ -- Debian-Athena Project <debathena@mit.edu>  Fri, 19 Dec 2008 11:12:16 -0500
+
+debathena-extra-software-nox (0.6) unstable; urgency=low
+
+  * Renamed from debathena-cluster-software
+  * Pre-history: See r22816, r22986-7, r23054, r23168, r23208-9, r23240 if
+    you really care (hint: you don't)
+
+ -- Debian-Athena Project <debathena@mit.edu>  Sat, 22 Nov 2008 01:00:52 -0500
 
