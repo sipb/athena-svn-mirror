@@ -1,8 +1,10 @@
 debathena-cluster (1.9) unstable; urgency=low
 
   * Convert to non-equivs package (no other changes)
+  * Remove hard dependencies on from-config (which is in -clients) and
+    mitmailutils (which is in -xsession)
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 28 Jun 2011 20:48:54 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 30 Jun 2011 00:29:09 -0400
 
 debathena-cluster (1.8) unstable; urgency=low
 
