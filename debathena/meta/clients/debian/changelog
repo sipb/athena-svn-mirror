@@ -1,6 +1,189 @@
 debathena-clients (1.0) unstable; urgency=low
 
   * First release as non-equivs package
+  * Calculate correct finger dependency at build time
 
  -- Jonathan Reed <jdreed@mit.edu>  Tue, 15 Mar 2011 14:55:29 -0400
+
+debathena-clients (0.7) unstable; urgency=low
+
+  * Remove nonexistent debathena-pine package
+  * Kill Athena finger with fire (Trac: #120) by depending on real finger
+    or finger-config
+  
+ -- Debathena Project <debathena@mit.edu>  Tue, 15 Mar 2011 12:39:21 -0400
+
+debathena-clients (0.5) unstable; urgency=low
+
+  * Add dependency on new apparmor-config package
+  
+ -- Debathena Project <debathena@mit.edu>  Mon, 21 Jun 2010 11:04:59 -0400
+
+debathena-clients (0.4) unstable; urgency=low
+
+  * Remove recommendation of debathena-nmh and replace with dependency on
+    debathena-nmh-config, which will hopefully pull in a newer upstream
+    nmh
+  
+ -- Debathena Project <debathena@mit.edu>  Thu, 10 Jun 2010 23:23:06 -0400
+
+debathena-clients (0.3.22) unstable; urgency=low
+
+  * Restore from-config dependency now that it speaks krb5
+  
+ -- Debathena Project <debathena@mit.edu>  Thu, 10 Jun 2010 23:22:19 -0400
+
+debathena-clients (0.3.21) unstable; urgency=low
+
+  * Restore mitmailutils dependency now that it speaks krb5
+
+ -- Debathena Project <debathena@mit.edu>  Sat, 06 Feb 2010 19:28:21 -0500
+
+debathena-clients (0.3.20) unstable; urgency=low
+
+  * Demote debathena-from-config to a recommendation due to lack of krb4
+    on newer releases
+
+ -- Debathena Project <debathena@mit.edu>  Sat, 17 Oct 2009 03:20:59 -0400
+
+debathena-clients (0.3.19) unstable; urgency=low
+
+  * Demote nmh to a recommendation as well, pending getting it working
+    without krb4
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 16 Oct 2009 17:53:04 -0400
+
+debathena-clients (0.3.18) unstable; urgency=low
+
+  * Demote mitmailutils to a recommendation in debathena-clients,
+    pending us getting a version of mitmailutils that works with GSSAPI.
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 16 Oct 2009 17:03:20 -0400
+
+debathena-clients (0.3.17) unstable; urgency=low
+
+  * debathena-from has been absorbed into debathena-mitmailutils
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 05 Apr 2009 12:01:06 -0400
+
+debathena-clients (0.3.16) unstable; urgency=low
+
+  * Add debathena-mutt-config as a recommendation
+  
+ -- Debathena Project <debathena@mit.edu>  Thu, 02 Apr 2009 15:51:32 -0400
+
+debathena-clients (0.3.15) unstable; urgency=low
+
+  * Make debathena-alpine | debathena-pine a recommendation so that
+    debathena-clients can be installed without the debathena-system
+    component enabled.
+
+ -- Debathena Project <debathena@mit.edu>  Sat, 14 Mar 2009 01:07:56 -0400
+
+debathena-clients (0.3.14) unstable; urgency=low
+
+  * Add ldap-utils
+  
+ -- Debathena Project <debathena@mit.edu>  Fri, 06 Mar 2009 13:54:25 -0500
+
+debathena-clients (0.3.13) unstable; urgency=low
+
+  * Change maintainer name
+  * Restore debathena-counterlog
+  * Add debathena-dent, debathena-gettime, debathena-lam, debathena-rs,
+    debathena-syncupdate
+  * Downgrade barnowl | owl to a suggestion
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 01 Mar 2009 23:04:38 -0500
+
+debathena-clients (0.3.10) unstable; urgency=low
+
+  * Remove counterlog, emacs-config, and ntp-config | chrony-config to
+    move them to cluster
+  
+ -- Debian-Athena Project <debathena@mit.edu>  Mon, 06 Oct 2008 20:39:05 -0400
+
+debathena-clients (0.3.9) unstable; urgency=low
+
+  * Add debathena-counterlog, debathena-emacs-config, debathena-hostinfo,
+    debathena-saferm, debathena-sendbug, debathena-tex-extras
+  * Add debathena-ntp-config | debathena-chrony-config
+  * Prefer debathena-alpine-config to debathena-pine, and remove explict
+    dependency on pine
+
+ -- Debian-Athena Project <debathena@mit.edu>  Fri, 03 Oct 2008 17:45:32 -0400
+
+debathena-clients (0.3.0) unstable; urgency=low
+
+  * Remove recommendations for cupsys-config and lprng-config and replace
+    with dependency on new printing-config package
+  
+ -- Debian-Athena Project <debathena@mit.edu>  Wed, 02 Jul 2008 23:49:56 -0400
+
+debathena-clients (0.2.9) unstable; urgency=low
+
+  * Prefer barnowl to owl when possible
+  
+ -- Debian-Athena Project <debathena@mit.edu>  Sat, 31 May 2008 19:47:27 -0400
+
+debathena-clients (0.2.8) unstable; urgency=low
+
+  * Add recommendation for debathena-cupsys-config
+
+ -- Debian-Athena Project <debathena@mit.edu>  Sat, 31 May 2008 17:08:57 -0400
+
+debathena-clients (0.2.7) unstable; urgency=low
+
+  * Remove dependency on debathena-lert
+
+ -- Debian-Athena Project <debathena@mit.edu>  Fri, 07 Sep 2007 16:08:35 -0400
+
+debathena-clients (0.2.6) unstable; urgency=low
+
+  * Add dependency on athena-jot, debathena-ldap-config, debathena-nmh
+  * Demote debathena-lprng-config to recommendation
+  
+ -- Debian-Athena Project <debathena@mit.edu>  Thu, 23 Aug 2007 14:09:44 -0400
+
+debathena-clients (0.2.5) unstable; urgency=low
+
+  * Revert previous change, add dependency on stock pine
+  
+ -- Debian-Athena Project <debathena@mit.edu>  Mon, 06 Aug 2007 06:15:03 -0400
+
+debathena-clients (0.2.4) unstable; urgency=low
+
+  * Update debathena-pine dependency to require 4.64 or later
+  
+ -- Debian-Athena Project <debathena@mit.edu>  Mon, 06 Aug 2007 06:10:44 -0400
+
+debathena-clients (0.2.3) unstable; urgency=low
+
+  * Remove debathena-tellme
+  
+ -- Debian-Athena Project <debathena@mit.edu>  Fri, 03 Aug 2007 16:03:40 -0400
+
+debathena-clients (0.2.2) unstable; urgency=low
+
+  * Remove debathena-nmh
+  
+ -- Debian-Athena Project <debathena@mit.edu>  Wed, 18 Jul 2007 00:25:30 -0400
+
+debathena-clients (0.2.1) unstable; urgency=low
+
+  * Move to section debathena/base
+  * Remove debathena-athena-files, debathena-mailquota,
+    debathena-mailusage, debathena-olc
+  * Add debathena-discuss, debathena-discuss-emacs, debathena-finger,
+    debathena-finger-config, debathena-from-config,
+    debathena-ssh-client-config, debathena-ssl-certificates,
+    debathena-xdsc
+  
+ -- Debian-Athena Project <debathena@mit.edu>  Tue, 17 Jul 2007 21:15:57 -0400
+
+debathena-clients (0.2.0) unstable; urgency=low
+
+  * First version
+
+ -- Debian-Athena Project <debathena@mit.edu>  Sun, 17 Jun 2007 19:45:57 -0400
 
