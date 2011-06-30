@@ -1,6 +1,51 @@
 debathena-login-graphical (1.0) unstable; urgency=low
 
   * First release as non-equivs package
+  * Only recommend thunderbird-config on distros with Thunderbird 2.x
+    (Actually, we conditionalize on 3.1, because 3.0's autoconfig is
+    broken.  No distribution actually has 3.0, AFAICT)
 
  -- Jonathan Reed <jdreed@mit.edu>  Tue, 21 Jun 2011 15:36:52 -0400
+
+debathena-login-graphical (0.7) unstable; urgency=low
+
+  * Add moira-gui
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 04 May 2010 11:59:15 -0400
+
+debathena-login-graphical (0.6) unstable; urgency=low
+
+  * Remove gaim dependency since package no longer exists
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 05 Apr 2010 16:10:38 -0400
+
+debathena-login-graphical (0.5) unstable; urgency=low
+
+  * Add debathena-login-graphical-branding
+  
+ -- Debathena Project <debathena@mit.edu>  Tue, 29 Sep 2009 03:40:08 -0400
+
+debathena-login-graphical (0.4) unstable; urgency=low
+
+  * Add debathena-email-icon-config
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 17 Jun 2009 16:00:06 -0400
+
+debathena-login-graphical (0.3) unstable; urgency=low
+
+  * Recommend debathena-thunderbird-config
+
+ -- Debathena Project <debathena@mit.edu>  Sat, 11 Apr 2009 16:32:10 -0400
+
+debathena-login-graphical (0.2) unstable; urgency=low
+
+  * Recommend ubuntu-desktop (moved from -cluster)
+
+ -- Debathena Project <debathena@mit.edu>  Sat, 11 Apr 2009 16:23:59 -0400
+
+debathena-login-graphical (0.1) unstable; urgency=low
+
+  * First version (renamed from -workstation)
+
+ -- Debathena Project <debathena@mit.edu>  Sat, 14 Mar 2009 20:28:00 -0400
 
