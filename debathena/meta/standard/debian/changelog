@@ -1,6 +1,51 @@
 debathena-standard (1.0) unstable; urgency=low
 
-  * First release as non-equivs package
+  * First release as non-equivs package (no other changes)
 
  -- Jonathan Reed <jdreed@mit.edu>  Tue, 28 Jun 2011 20:31:04 -0400
+
+debathena-standard (0.2.7) unstable; urgency=low
+
+  * Punt debathena-bash and debathena-tcsh because we're killing them off
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 15 Nov 2009 15:33:13 -0500
+
+debathena-standard (0.2.6) unstable; urgency=low
+
+  * Add debathena-upgrade-config
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 16 Oct 2009 17:02:48 -0400
+
+debathena-standard (0.2.5) unstable; urgency=low
+
+  * Fix maintainer name and project name in Description
+  * Add debathena-archive-keyring (moved from debathena-base)
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 01 Mar 2009 23:20:19 -0500
+
+debathena-standard (0.2.3) unstable; urgency=low
+
+  * Recommend debathena-msmtp-mta to provide authenticated mail
+
+ -- Debian-Athena Project <debathena@mit.edu>  Mon, 21 Apr 2008 13:21:35 -0400
+
+debathena-standard (0.2.2) unstable; urgency=low
+
+  * Demote debathena-bash to a recommendation
+
+ -- Debian-Athena Project <debathena@mit.edu>  Sun,  6 Apr 2008 15:28:24 -0400
+
+debathena-standard (0.2.1) unstable; urgency=low
+
+  * Add dependencies on debathena-bash, debathena-tcsh, and
+    debathena-dotfiles
+  * Move to section debathena/base
+
+ -- Debian-Athena Project <debathena@mit.edu>  Tue, 17 Jul 2007 21:22:02 -0400
+
+debathena-standard (0.2.0) unstable; urgency=low
+
+  * First version
+
+ -- Debian-Athena Project <debathena@mit.edu>  Sun, 17 Jun 2007 19:46:19 -0400
 
