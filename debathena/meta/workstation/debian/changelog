@@ -1,6 +1,117 @@
 debathena-workstation (1.4) unstable; urgency=low
 
-  * First release as non-equivs package
+  * First release as non-equivs package (no other changes)
 
  -- Jonathan Reed <jdreed@mit.edu>  Tue, 28 Jun 2011 18:41:16 -0400
+
+debathena-workstation (1.3) unstable; urgency=low
+
+  * Punt help-config (Trac: #685)
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 15 Mar 2011 23:32:16 -0400
+
+debathena-workstation (1.2) unstable; urgency=low
+
+  * Add debathena-moira-update-server (Trac: #711)
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 02 Mar 2011 15:26:12 -0500
+
+debathena-workstation (1.1) unstable; urgency=low
+
+  * Add debathena-language-support
+  
+ -- Debathena Project <debathena@mit.edu>  Tue, 29 Sep 2009 04:29:52 -0400
+
+debathena-workstation (1.0) unstable; urgency=low
+
+  * Add debathena-workstation-branding
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 29 Sep 2009 03:39:33 -0400
+
+debathena-workstation (0.8.3) unstable; urgency=low
+
+  * Add debathena-help-config
+  
+ -- Debathena Project <debathena@mit.edu>  Tue, 08 Sep 2009 17:44:00 -0400
+
+debathena-workstation (0.8.2) unstable; urgency=low
+
+  * No longer recommend -thirdparty due to difficulty resolving its
+    depdencies on other distributions
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 13 May 2009 16:45:21 -0400
+
+debathena-workstation (0.8.1) unstable; urgency=low
+
+  * Recommend debathena-thirdparty instead of Depend
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 05 May 2009 14:22:19 -0400
+
+debathena-workstation (0.8.0) unstable; urgency=low
+
+  * Bump Standards-Version
+  * Package is no longer transitional, add dependencies from -cluster:
+    debathena-extra-software, debathena-clusterinfo, debathena-dns-config,
+    debathena-emacs-config, debathena-ntp-config |
+    debathena-chrony-config, debathena-tmp-cleaner, debathena-auto-update,
+    debathena-tex-config, debathena-thirdparty (Jira: ATN-18)
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 04 May 2009 06:02:42 -0400
+
+debathena-workstation (0.7.1) unstable; urgency=low
+
+  * No-change rebuild
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 31 Mar 2009 04:24:57 -0400
+
+debathena-workstation (0.7) unstable; urgency=high
+
+  * After April 30 2009, we will be changing debathena-workstation to be
+    largely identical to the Debathena cluster configuration, except for
+    some cluster-specific user isolation measures.
+  
+    If you do not want these additional customizations, you should remove
+    this package and install debathena-login-graphical.
+
+ -- Evan Broder <broder@mit.edu>  Sat, 14 Mar 2009 19:41:34 -0400
+
+debathena-workstation (0.5.2) unstable; urgency=low
+
+  * Fix maintainer name
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 01 Mar 2009 23:20:44 -0500
+
+debathena-workstation (0.5.1) unstable; urgency=low
+
+  * For older-releases, depend on gaim if pidgin isn't available
+
+ -- Debian-Athena Project <debathena@mit.edu>  Thu, 13 Nov 2008 01:01:17 -0500
+
+debathena-workstation (0.5) unstable; urgency=low
+
+  * Remove build-depends, add locker-menu package
+
+ -- Debian-Athena Project <debathena@mit.edu>  Fri, 03 Oct 2008 17:47:35 -0400
+
+debathena-workstation (0.3) unstable; urgency=low
+
+  * Add debathena-xsession, debathena-firefox-extension,
+    debathena-firefox-wrapper, debathena-pidgin-wrapper,
+    debathena-evolution-wrapper
+
+ -- Debian-Athena Project <debathena@mit.edu>  Tue, 17 Jun 2008 00:15:02 -0400
+
+debathena-workstation (0.1) unstable; urgency=low
+
+  * Remove debathena-lprng-no-server-config
+
+ -- Debian-Athena Project <debathena@mit.edu>  Fri, 14 Mar 2008 17:51:30 -0400
+
+debathena-workstation (0.0) unstable; urgency=low
+
+  * First version
+  * This package is our recommended cluster-style configuration
+
+ -- Debian-Athena Project <debathena@mit.edu>  Mon, 18 Feb 2008 02:13:27 -0500
+
 
