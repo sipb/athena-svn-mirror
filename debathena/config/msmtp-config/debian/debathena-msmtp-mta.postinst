@@ -1,5 +1,5 @@
 #!/bin/sh
-# postinst script for debathena-msmtp-config
+# postinst script for debathena-msmtp-mta
 #
 # see: dh_installdeb(1)
 
@@ -23,7 +23,7 @@ set -e
 # Mostly copied from exim4-config's postinst
 writealiases() {
     echo '# /etc/aliases' > /etc/aliases.tmp
-    echo '# Created by debathena-msmtp-config postinst' > /etc/aliases.tmp
+    echo '# Created by debathena-msmtp-mta postinst' > /etc/aliases.tmp
     echo 'mailer-daemon: postmaster' >> /etc/aliases.tmp
     for i in postmaster nobody hostmaster usenet news webmaster www ftp abuse noc security cron; do
         echo "${i}: root"
