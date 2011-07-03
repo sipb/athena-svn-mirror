@@ -98,7 +98,7 @@ debathena-extra-software-nox (0.14) unstable; urgency=low
 
 debathena-extra-software-nox (0.11) unstable; urgency=low
 
-  * Add monotone, perl-doc, bsdgame, auctex
+  * Add monotone, perl-doc, bsdgames, auctex
 
  -- Debathena Project <debathena@mit.edu>  Wed, 04 Mar 2009 16:55:53 -0500
 
