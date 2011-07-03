@@ -1,3 +1,9 @@
+debathena-clients (1.0.1) unstable; urgency=low
+
+  * No-change rebuild to incorporate historical changelog data
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 02 Jul 2011 22:14:41 -0400
+
 debathena-clients (1.0) unstable; urgency=low
 
   * First release as non-equivs package

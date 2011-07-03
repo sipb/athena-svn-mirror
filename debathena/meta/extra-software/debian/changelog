@@ -1,3 +1,9 @@
+debathena-extra-software (1.0.2) unstable; urgency=low
+
+  * No-change rebuild to incorporate previous changelog data
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 02 Jul 2011 22:15:30 -0400
+
 debathena-extra-software (1.0.1) unstable; urgency=low
 
   * Use a better rules test for whether icedtea6-plugin exists or not
