@@ -27,6 +27,7 @@ Depends: debathena-extra-software-nox,
   git-gui, gitk,
   compizconfig-settings-manager,
   ${debathena-java-plugin},
+  ${misc:Depends}
 Recommends: flashplugin-nonfree,
   mplayer,
   msttcorefonts,

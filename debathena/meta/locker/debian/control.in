@@ -1,7 +1,7 @@
 Source: debathena-locker
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.9.1
 Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@
 
@@ -24,7 +24,8 @@ Depends: debathena-afs-config,
  debathena-quota-config,
  debathena-tcsh-config,
  debathena-tellme,
- debathena-zephyr-config
+ debathena-zephyr-config,
+ ${misc:Depends}
 Conflicts: debathena-afuse-automounter (<= 1.4)
 Description: Metapackage providing Athena locker support
  This package installs support for accessing MIT AFS lockers and

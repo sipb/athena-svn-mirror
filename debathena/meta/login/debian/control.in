@@ -16,7 +16,8 @@ Depends: debathena-athinfod,
  debathena-standard,
  debathena-gconf2-config,
  debathena-gconfd-2-wrapper,
- debathena-olc
+ debathena-olc,
+ ${misc:Depends}
 Description: Athena login services for Debathena
  This package installs support for Athena-like Kerberos login with AFS
  home directories.

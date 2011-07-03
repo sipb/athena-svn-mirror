@@ -19,6 +19,7 @@ Depends: debathena-cluster-branding,
  debathena-recovery-mode-config,
  debathena-cluster-cups-config,
  debathena-athinfod-cluster-config,
+ ${misc:Depends}
 Conflicts: debathena-cluster-printing-config (<= 1.16)
 Description: Athena cluster configuration for Debian
  This package is intended for centrally-maintained machines in

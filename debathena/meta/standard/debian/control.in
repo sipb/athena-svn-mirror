@@ -13,6 +13,7 @@ Depends: debathena-athena-libraries,
  debathena-locker,
  debathena-archive-keyring,
  debathena-upgrade-config,
+ ${misc:Depends}
 Recommends: debathena-msmtp-mta
 Description: Metapackage providing Debathena standard environment
  This package and its dependencies provide an environment for

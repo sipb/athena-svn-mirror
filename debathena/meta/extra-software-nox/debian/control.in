@@ -38,6 +38,7 @@ Depends: build-essential,
   expect,
   traceroute,
   fortune-mod,
+  ${misc:Depends}
 Recommends: ckermit,
   openjdk-6-jdk,
   x3270,
