@@ -2,7 +2,7 @@ Source: debathena-login-graphical
 Section: debathena/base
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, thunderbird
+Build-Depends: @cdbs@
 Standards-Version: 3.9.1
 
 Package: debathena-login-graphical
