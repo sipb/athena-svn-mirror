@@ -9,6 +9,7 @@ import sys
 import os
 import subprocess
 import platform
+from optparse import OptionParser
 
 SM_DBUS_NAME = "org.gnome.SessionManager"
 SM_DBUS_PATH = "/org/gnome/SessionManager"
@@ -19,7 +20,8 @@ GLADE_FILE="/usr/share/debathena-branding/debathena-branding.glade"
 DEBATHENA_LOGO_FILE="/usr/share/pixmaps/debathena.png"
 
 class Branding:
-    def __init__(self):
+    def __init__(self, options):
+        self.debug = options.debug
         self.sessionEnding = False
         self.sessionBus = dbus.SessionBus()
         try:
@@ -29,9 +31,9 @@ class Branding:
             print "Warning: Cannot register with session manager."
         
         try:
-            self.xml = gtk.glade.XML(GLADE_FILE)
+            self.xml = gtk.glade.XML(options.gladefile)
         except:
-            print "Could not load Glade XML: %s" % (GLADE_FILE)
+            print "Could not load Glade XML: %s" % (options.gladefile)
             sys.exit(1)
 
         
@@ -109,10 +111,16 @@ class Branding:
     def sm_on_Stop(self):
         gtk.main_quit()
 
-def main():
+def main(options):
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-    Branding()
+    Branding(options)
     gtk.main()
 
 if __name__ == '__main__':
-    main()
+    parser = OptionParser()
+    parser.set_defaults(debug=False, guitest=False)
+    parser.add_option("--test", action="store_true", dest="debug")
+    parser.add_option("--glade", action="store", type="string",
+                      default=GLADE_FILE, dest="gladefile")
+    (options, args) = parser.parse_args()
+    main(options)

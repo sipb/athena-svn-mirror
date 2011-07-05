@@ -1,3 +1,9 @@
+debathena-gdm-config (1.29) UNRELEASED; urgency=low
+
+  * Applets really shouldn't attempt to steal focus (Trac: #812)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 05 Jul 2011 14:31:50 -0400
+
 debathena-gdm-config (1.28) unstable; urgency=low
 
   * Ship our own athena-session and do logic in that
