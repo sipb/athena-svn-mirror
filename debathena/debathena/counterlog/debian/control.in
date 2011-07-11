@@ -7,7 +7,7 @@ Standards-Version: 3.8.4
 
 Package: debathena-counterlog
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-machtype, lsb-release
+Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-machtype, lsb-release, socat
 Description: Machine counting service for Debathena machines
  Reports on the existence of this machine to a central logging
  service so that machines can be counted.

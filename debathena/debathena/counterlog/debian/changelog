@@ -1,3 +1,9 @@
+debathena-counterlog (1.8) unstable; urgency=low
+
+  * Switch to socat instead of netcat (Trac: #929)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 11 Jul 2011 17:38:46 -0400
+
 debathena-counterlog (1.7) unstable; urgency=low
 
   [ Jonathan Reed ]

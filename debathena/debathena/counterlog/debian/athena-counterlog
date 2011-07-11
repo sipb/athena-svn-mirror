@@ -27,4 +27,4 @@ ctype=$(machtype -c)
 # cluster-only package.  Fortunately, the syslog protocol is dead
 # simple, so just fake a packet to the log host.
 msg="<13>root: counterlog: $host $mtype $ctype $version $id cron"
-printf "%s" "$msg" | nc -q0 -u $loghost syslog
+printf "%s" "$msg" | socat STDIN UDP:${loghost}:syslog
