@@ -1,3 +1,9 @@
+debathena-reactivate (2.0.22) unstable; urgency=low
+
+  * Workaround for schroot/libpam-afs-session stupidity (Trac: #928)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 11 Jul 2011 16:03:09 -0400
+
 debathena-reactivate (2.0.21) unstable; urgency=low
 
   * Programs that run df no longer get confused about /tmp. (Trac #656)

@@ -5,7 +5,8 @@ DEB_DIVERT_FILES_debathena-reactivate += \
 	/etc/gdm/Xsession.debathena
 DEB_TRANSFORM_FILES_debathena-reactivate += \
 	/etc/pam.d/su.debathena \
-	/etc/default/schroot.debathena
+	/etc/default/schroot.debathena \
+	/etc/pam.d/schroot.debathena
 DEB_REMOVE_FILES_debathena-reactivate += \
 	/etc/xdg/autostart/jockey-gtk.desktop \
 	/etc/xdg/autostart/update-notifier.desktop \
@@ -14,6 +15,11 @@ DEB_REMOVE_FILES_debathena-reactivate += \
 DEB_UNDIVERT_FILES_debathena-reactivate += \
 	/etc/pam.d/sudo.debathena
 DEB_UNDIVERT_VERSION_/etc/pam.d/sudo.debathena = 1.25.2~
+
+DEB_TRANSFORM_SCRIPT_/etc/default/schroot.debathena = \
+	debian/transform_schroot_defaults
+DEB_TRANSFORM_SCRIPT_/etc/pam.d/schroot.debathena = \
+	debian/transform_schroot_pam
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk

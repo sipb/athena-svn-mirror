@@ -51,6 +51,9 @@ schr sed -i "s|/var/lib/schroot/mount/$session||" /etc/mtab
 set +e
 
 cd
+# Workaround for stupidity, see #928 for details
+# Remove this once we're running pam-afs-session 2.4
+echo "KRB5CCNAME=$KRB5CCNAME" >| /tmp/ticketenv
 schroot -c "$session" -r -p -- sudo -E -u "$USER" -- "$@"
 cd /
 

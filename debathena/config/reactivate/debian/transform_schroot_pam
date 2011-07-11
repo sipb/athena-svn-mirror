@@ -1,0 +1,9 @@
+#!/usr/bin/perl -0p
+# -*- mode: fundamental; -*-
+
+print <<EOF;
+# Added by debathena-reactivate
+auth required pam_env.so readenv=1 envfile=/tmp/ticketenv
+EOF
+print;
+exit 0;
