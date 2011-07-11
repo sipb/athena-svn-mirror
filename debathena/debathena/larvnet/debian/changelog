@@ -1,3 +1,9 @@
+debathena-larvnet (10.0.8) unstable; urgency=low
+
+  * Switch to socat because netcat is broken in Natty (Trac: #929)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 11 Jul 2011 17:36:27 -0400
+
 debathena-larvnet (10.0.7) unstable; urgency=low
 
   * Revert the changes from 10.0.6, because dpkg-query is slow (Trac:

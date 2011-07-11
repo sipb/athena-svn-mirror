@@ -6,7 +6,7 @@ hostname=$(hostname --fqdn)
 arch=$(machtype -c)
 set_busy() {
   for s in $servers; do
-    printf "%d%s\0%s\0" "$1" "$hostname" "$arch" | nc -q0 -u "$s" "$port"
+    printf "%d%s\0%s\0" "$1" "$hostname" "$arch" | socat STDIN UDP:"$s":"$port"
   done
 }
 
