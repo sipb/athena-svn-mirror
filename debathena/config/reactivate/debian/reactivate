@@ -31,6 +31,12 @@ if [ -n "$USER" -a "$USER" != root ]; then
   fi
 fi
 
+# Cleanup our ticketenv hack
+# Make sure nobody was evil
+chattr -i /tmp/ticketenv
+# If you made a directory and stored files there, too bad
+rm -rf /tmp/ticketenv
+
 # If either we or an updated package wanted to reboot, now is a
 # perfectly good time to do so -- auto-update is inhibited during a
 # login session.

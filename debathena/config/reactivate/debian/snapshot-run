@@ -48,17 +48,22 @@ schr sed -i "s|/var/lib/schroot/mount/$session||" /etc/mtab
 # /after/ being chrooted, which puts users back in the groups we
 # added them to
 
+# Workaround for stupidity, see #928 for details
+# Remove this once we're running pam-afs-session 2.4
+# Run this inside the "set -e" block so it'll fail if necessary
 echo "KRB5CCNAME=$KRB5CCNAME" >| /tmp/ticketenv
 
 set +e
 
 cd
-# Workaround for stupidity, see #928 for details
-# Remove this once we're running pam-afs-session 2.4
 schroot -c "$session" -r -p -- sudo -E -u "$USER" -- "$@"
 cd /
 
 # Teardown
+
+# Remove file from above.
+# (This also gets nuked in reactivate, but be paranoid)
+rm -f /tmp/ticketenv
 
 for daemon in $daemons; do
     schr invoke-rc.d "$daemon" stop || [ $? = 100 ]
