@@ -108,9 +108,19 @@ $MAYBE mkdir /h
 $MAYBE cd /h
 $MAYBE wget -N http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/initrd.gz
 $MAYBE wget -N http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/linux
+case "$UBUNTU_RELEASE" in
+    natty)
+        # Sigh
+        kbdcode="keyboard-configuration/layoutcode=us"
+        ;;
+    *)
+        kbdcode="console-setup/layoutcode=us"
+        ;;
+esac
+hostname=$(hostname)
 # This is just the guts of the hackboot script:
 dkargs="DEBCONF_DEBUG=5"
-kargs="netcfg/get_hostname= locale=en_US console-setup/layoutcode=us \
+kargs="netcfg/get_hostname=$hostname locale=en_US $kbdcode \
        interface=auto \
        netcfg/dhcp_timeout=60 \
        url=http://18.9.60.73/installer/${UBUNTU_RELEASE}/debathena.preseed \
