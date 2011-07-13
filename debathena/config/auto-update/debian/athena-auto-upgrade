@@ -14,16 +14,19 @@ complain() {
     fi
 }
 
-# Redirect output to a log file
-exec >>/var/log/athena-upgrade 2>&1
-echo "Starting upgrade at $(date)"
-
 DEBUG=0
 MAYBE=""
 if [ "$1" = "--debug" ]; then
     DEBUG=1
     MAYBE=echo
+else
+    # Redirect output to a log file
+    # Unless we're in debug mode
+    exec >>/var/log/athena-upgrade 2>&1
 fi
+
+echo "Starting upgrade at $(date)"
+
 
 UPGRADE_TO_TESTING=no
 UPGRADE_ANYWAY=no
@@ -98,12 +101,30 @@ else
     arch=i386
 fi
 debug "Arch: $arch"
-IPADDR=`ifconfig eth0 |perl -ne'/^\s+inet addr:([\d\.]+)/ && print $1'`
+IPADDR=
+NETMASK=
+eval `ifconfig eth0 |perl -ne'/^\s+inet addr:([\d\.]+).*? Mask:([\d\.]+)/ && print "IPADDR=$1 NETMASK=$2"'`
 if [ -z "$IPADDR" ]; then
-    complain "Couldn't get IP address from ifconfig!"
+    complain "Couldn't get IPADDR from ifconfig!"
     exit 0
 fi
+GATEWAY=`route -n | awk '/^0\.0\.0\.0/ { print $2 }'`
 debug "Using IPADDR=$IPADDR"
+debug "Using NETMASK=$NETMASK"
+debug "Using GATEWAY=$GATEWAY"
+if [ -n "$NETMASK" ] && [ -n "$GATEWAY" ]; then
+  knetinfo="netcfg/get_hostname=$(hostname) \
+            netcfg/disable_dhcp=true \
+            netcfg/get_domain=mit.edu \
+            netcfg/get_nameservers=18.72.0.3 \
+            netcfg/get_ipaddress=$IPADDR \
+            netcfg/get_netmask=$NETMASK \
+            netcfg/get_gateway=$GATEWAY \
+            netcfg/confirm_static=true"
+else
+  knetinfo="netcfg/dhcp_timeout=60 netcfg/get_hostname=$(hostname)"
+fi
+
 $MAYBE mkdir /h
 $MAYBE cd /h
 $MAYBE wget -N http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/initrd.gz
@@ -117,14 +138,15 @@ case "$UBUNTU_RELEASE" in
         kbdcode="console-setup/layoutcode=us"
         ;;
 esac
-hostname=$(hostname)
 # This is just the guts of the hackboot script:
 dkargs="DEBCONF_DEBUG=5"
-kargs="netcfg/get_hostname=$hostname locale=en_US $kbdcode \
+kargs="$knetinfo locale=en_US $kbdcode \
        interface=auto \
-       netcfg/dhcp_timeout=60 \
        url=http://18.9.60.73/installer/${UBUNTU_RELEASE}/debathena.preseed \
-       debathena/clusterforce=yes debathena/clusteraddr=$IPADDR --"
+       debathena/pxetype=cluster --"
+if [ $(echo $kargs | wc -c) -ge 512 ]; then
+  complain "kargs exceeds 512 bytes.  That's not good."
+fi
 debug "Would execute kexec with --append=\"$dkargs $kargs\""
 if [ $DEBUG -eq 1 ]; then
     exit 0
