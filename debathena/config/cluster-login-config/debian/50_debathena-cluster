@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Added by debathena-cluster-login-config to ensure machines
+# don't sit at a grub prompt forever
+
+cat <<EOF
+if [ \${timeout} = -1 ]; then
+  set timeout=60
+fi
+EOF

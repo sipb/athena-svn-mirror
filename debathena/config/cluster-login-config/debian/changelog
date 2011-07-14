@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.34) unstable; urgency=low
+
+  * Ship our own grub config to clobber the timeout value
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 14 Jul 2011 15:22:01 -0400
+
 debathena-cluster-login-config (1.33) unstable; urgency=low
 
   * Change display sleep time to 10 minutes (Trac: #894)

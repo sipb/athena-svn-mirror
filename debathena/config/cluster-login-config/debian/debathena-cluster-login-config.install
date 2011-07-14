@@ -6,3 +6,4 @@ debian/debathena-backports.list etc/apt/sources.list.d
 debian/debathena-libstdcplusplus.pref etc/apt/preferences.d
 debian/disable-suspend.pkla etc/polkit-1/localauthority/30-site.d
 debian/disable-hibernate.pkla etc/polkit-1/localauthority/30-site.d
+debian/50_debathena-cluster etc/grub.d
