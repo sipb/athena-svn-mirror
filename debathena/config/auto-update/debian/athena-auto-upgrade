@@ -151,7 +151,13 @@ debug "Would execute kexec with --append=\"$dkargs $kargs\""
 if [ $DEBUG -eq 1 ]; then
     exit 0
 fi
-/sbin/kexec -l linux --append="$dkargs $kargs" --initrd=initrd.gz \
-    && sleep 3 && chvt 1 && sleep 2 && /sbin/kexec -e
-complain "Failed to kexec."
-exit 1
+# Don't kexec -e here, because modern Ubuntu is unable to kexec while
+# X is running.  Instead, kexec -l and let the init script take care of.
+# Until Oneiric, when this will probably stop working if kexec-tools hasn't
+# been Upstartified.
+/sbin/kexec -l linux --append="$dkargs $kargs" --initrd=initrd.gz
+if [ "`cat /sys/kernel/kexec_loaded`" != "1" ]; then
+  echo "Hrm, looks like kexec -l didn't work.  This upgrade might fail."
+fi
+reboot
+exit 0
