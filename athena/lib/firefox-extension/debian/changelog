@@ -1,3 +1,9 @@
+debathena-firefox-extension (10.0.7-0debathena1) unstable; urgency=low
+
+  * Support Firefox 5.0, since Natty has upgraded to that.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 19 Jul 2011 16:40:51 -0400
+
 debathena-firefox-extension (10.0.6-0debathena1) unstable; urgency=low
 
   * Punt duplex printing code; Gtk+ printing now provides this (Trac #563)
