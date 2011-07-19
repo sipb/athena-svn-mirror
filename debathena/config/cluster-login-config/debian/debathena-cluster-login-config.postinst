@@ -97,6 +97,10 @@ case "$1" in
 	    fi
 	fi
 
+	if dpkg --compare-versions "$1" lt 1.34~; then
+	    update-grub
+	fi
+
 	# Shut down sshd and reload gdm.
 	if hash invoke-rc.d; then
 	    invoke-rc.d ssh stop

@@ -7,7 +7,7 @@ Standards-Version: 3.8.4
 
 Package: debathena-cluster-login-config
 Architecture: all
-Depends: ${misc:Depends}, debathena-afs-config, debathena-gdm-config, debathena-kiosk, gconf2, gnome-screensaver, update-notifier-common, debathena-machtype (>= 10.0.2-0debathena1~), python-dbus
+Depends: ${misc:Depends}, debathena-afs-config, debathena-gdm-config, debathena-kiosk, gconf2, gnome-screensaver, update-notifier-common, debathena-machtype (>= 10.0.2-0debathena1~), python-dbus, grub-common
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Breaks: debathena-reactivate (<< 2~)
