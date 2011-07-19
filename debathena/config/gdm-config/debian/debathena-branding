@@ -109,6 +109,7 @@ class Branding:
 
     # Here on a Stop signal from the session manager.
     def sm_on_Stop(self):
+        subprocess.call(["/usr/bin/pkill", "-f", "gnome-settings-daemon"])
         gtk.main_quit()
 
 def main(options):
