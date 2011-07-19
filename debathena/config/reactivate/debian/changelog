@@ -1,3 +1,16 @@
+debathena-reactivate (2.0.23) unstable; urgency=low
+
+  * sudo now checks its supplementary group list, not NSS, for group
+    membership, and so it doesn't consider you in the admin group until
+    after you run initgroups(3). Since we use sudo itself to run
+    initgroups, we need to work around this somehow... the simplest fix
+    is to explicitly add $USER to /etc/sudoers inside the chroot.
+
+    At some point we may want to write our own setuid initgroups(3)
+    helper and avoid sudo entirely.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 19 Jul 2011 17:07:54 -0400
+
 debathena-reactivate (2.0.22) unstable; urgency=low
 
   * Workaround for schroot/libpam-afs-session stupidity (Trac: #928)

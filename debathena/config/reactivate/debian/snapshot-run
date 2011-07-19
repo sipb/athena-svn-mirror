@@ -55,6 +55,8 @@ echo "KRB5CCNAME=$KRB5CCNAME" >| /tmp/ticketenv
 
 set +e
 
+echo "$USER ALL=(ALL) ALL" | schr sh -c "cat >> /etc/sudoers"
+
 cd
 schroot -c "$session" -r -p -- sudo -E -u "$USER" -- "$@"
 cd /
