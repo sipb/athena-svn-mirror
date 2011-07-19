@@ -1,3 +1,10 @@
+debathena-workstation (1.5) unstable; urgency=low
+
+  * Explicitly depend on debathena-build-depends, as it was removed from
+    debathena-extra-software
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 19 Jul 2011 17:12:04 -0400
+
 debathena-workstation (1.4) unstable; urgency=low
 
   * First release as non-equivs package (no other changes)

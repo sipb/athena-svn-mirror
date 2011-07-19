@@ -10,6 +10,7 @@ Architecture: all
 Depends: debathena-workstation-branding,
  debathena-login-graphical,
  debathena-extra-software,
+ debathena-build-depends,
  debathena-language-support,
  debathena-clusterinfo,
  debathena-dns-config,

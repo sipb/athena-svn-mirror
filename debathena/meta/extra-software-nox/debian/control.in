@@ -7,7 +7,7 @@ Build-Depends: @cdbs@
 
 Package: debathena-extra-software-nox
 Architecture: all
-Depends: build-essential,
+Depends: build-essential, debathena-debian-dev,
   enscript, psutils,
   emacs, emacs-intl-fonts,
   vim-nox,
