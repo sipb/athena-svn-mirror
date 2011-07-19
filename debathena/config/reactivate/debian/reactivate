@@ -33,7 +33,7 @@ fi
 
 # Cleanup our ticketenv hack
 # Make sure nobody was evil
-chattr -i /tmp/ticketenv
+chattr -f -i /tmp/ticketenv || :
 # If you made a directory and stored files there, too bad
 rm -rf /tmp/ticketenv
 

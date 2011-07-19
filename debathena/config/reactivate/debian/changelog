@@ -8,6 +8,8 @@ debathena-reactivate (2.0.23) unstable; urgency=low
 
     At some point we may want to write our own setuid initgroups(3)
     helper and avoid sudo entirely.
+  * If chattr fails due to the file not existing, that shouldn't abort
+    the rest of reactivate.
 
  -- Geoffrey Thomas <geofft@mit.edu>  Tue, 19 Jul 2011 17:07:54 -0400
 
