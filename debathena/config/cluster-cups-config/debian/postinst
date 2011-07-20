@@ -28,7 +28,8 @@ set -e
 case "$1" in
     configure)
         restart_cups
-	if ! lpstat -r; then
+	# Gee, I hope they never change the text
+	if [ "$(lpstat -r)" != "scheduler is running" ]; then
             # CUPS isn't running even though it should be.  We're probably
             # inside the installer.  Let the initscript deal.
 	    touch /var/lib/debathena-cluster-cups-config-reconfigure_required
