@@ -28,6 +28,14 @@ set -e
 case "$1" in
     configure)
         restart_cups
+	if ! lpstat -r; then
+            # CUPS isn't running even though it should be.  We're probably
+            # inside the installer.  Let the initscript deal.
+	    touch /var/lib/debathena-cluster-cups-config-reconfigure_required
+	    touch /var/run/reboot-required
+	    echo "debathena-cluster-cups-config" >> /var/run/reboot-required.pkgs
+	    exit 0
+	fi
 	/usr/share/debathena-cluster-cups-config/configure-athena-printers add
     ;;
 

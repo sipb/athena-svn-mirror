@@ -1,0 +1,35 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          debathena-cluster-cups-config
+# Required-Start:    cups
+# Required-Stop:     cups
+# Should-Start:      $local_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Cluster CUPS configuration
+# Description:       Ensure cluster printers exist
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    if [ -f /var/lib/debathena-cluster-cups-config-reconfigure_required ]; then
+      log_action_msg "Adding cluster printers"
+      if /usr/share/debathena-cluster-cups-config/configure-athena-printers add; then
+	log_end_msg 0
+      else
+	log_end_msg 1
+      fi
+    fi
+    ;;
+  stop|restart|reload|force-reload|status)
+    exit 0
+    ;;
+  *)
+    log_action_msg "Usage: /etc/init.d/debathena-cluster-cups-config {start}"
+    exit 1
+    ;;
+esac
+exit 0

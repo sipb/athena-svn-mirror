@@ -1,3 +1,11 @@
+debathena-cluster-cups-config (2.0.2) unstable; urgency=low
+
+  * Ship an init script which can be used to add the printers at boot
+    time, since they can't be added at install time because CUPS isn't
+    running
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 20 Jul 2011 14:19:43 -0400
+
 debathena-cluster-cups-config (2.0.1) unstable; urgency=low
 
   * wired is now Pharos

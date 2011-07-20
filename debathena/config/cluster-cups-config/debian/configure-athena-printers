@@ -69,7 +69,7 @@ case "$1" in
 	del_printers
 	;;
     *)
-	echo "Usage: $0 [ add | remove ]"
+	echo "Usage: $0 [ add | remove | verify ]"
 	exit 1
 	;;
 esac
