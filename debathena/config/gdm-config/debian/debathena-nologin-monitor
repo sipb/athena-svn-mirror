@@ -50,6 +50,8 @@ class GDMSucks:
         except OSError:
             # Assume cluster
             metapackage = 'debathena-cluster'
+        if os.path.isfile("/var/run/athena-nologin"):
+            self.window.show_all()
         if self.debug or metapackage == 'debathena-cluster':
             self.gfile = gio.File("/var/run/athena-nologin")
             self.monitor = self.gfile.monitor_file(gio.FILE_MONITOR_NONE, None)
