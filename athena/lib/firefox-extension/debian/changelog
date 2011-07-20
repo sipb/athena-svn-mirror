@@ -1,6 +1,6 @@
 debathena-firefox-extension (10.0.7-0debathena2) unstable; urgency=low
 
-  * And bump the extenion's version number to fix compatibility issues
+  * And bump the extension's version number to fix compatibility issues
 
  -- Jonathan Reed <jdreed@mit.edu>  Tue, 19 Jul 2011 21:13:14 -0400
 
