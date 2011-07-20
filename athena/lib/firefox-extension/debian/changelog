@@ -1,3 +1,9 @@
+debathena-firefox-extension (10.0.7-0debathena2) unstable; urgency=low
+
+  * And bump the extenion's version number to fix compatibility issues
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 19 Jul 2011 21:13:14 -0400
+
 debathena-firefox-extension (10.0.7-0debathena1) unstable; urgency=low
 
   * Support Firefox 5.0, since Natty has upgraded to that.
