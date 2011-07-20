@@ -18,6 +18,7 @@ case "$1" in
     if [ -f /var/lib/debathena-cluster-cups-config-reconfigure_required ]; then
       log_action_msg "Adding cluster printers"
       if /usr/share/debathena-cluster-cups-config/configure-athena-printers add; then
+	rm -f /var/lib/debathena-cluster-cups-config-reconfigure_required
 	log_end_msg 0
       else
 	log_end_msg 1
