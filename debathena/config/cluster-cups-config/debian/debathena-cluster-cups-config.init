@@ -17,12 +17,14 @@ case "$1" in
   start)
     if [ -f /var/lib/debathena-cluster-cups-config-reconfigure_required ]; then
       log_action_msg "Adding cluster printers"
+      touch /var/run/debathena-adding-printers
       if /usr/share/debathena-cluster-cups-config/configure-athena-printers add; then
 	rm -f /var/lib/debathena-cluster-cups-config-reconfigure_required
 	log_end_msg 0
       else
 	log_end_msg 1
       fi
+      rm /var/run/debathena-adding-printers
     fi
     ;;
   stop|restart|reload|force-reload|status)

@@ -57,6 +57,10 @@ require_cups() {
 	    exit 1
 	fi
     fi
+    if [ "$(lpstat -r)" != "scheduler is running" ]; then
+      echo "FATAL: cups claimed to have started, but lpstat -r says it's not running!"
+      exit 1
+    fi
 }
 
 case "$1" in
