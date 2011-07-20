@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.35.1) unstable; urgency=low
+
+  * Actually run update-grub
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 20 Jul 2011 16:44:00 -0400
+
 debathena-cluster-login-config (1.35) unstable; urgency=low
 
   * Run update-grub (and depend grub, I guess)

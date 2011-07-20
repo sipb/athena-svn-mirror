@@ -97,7 +97,7 @@ case "$1" in
 	    fi
 	fi
 
-	if dpkg --compare-versions "$1" lt 1.34~; then
+	if dpkg --compare-versions "$1" ge-nl 1.34~; then
 	    update-grub
 	fi
 
