@@ -1,3 +1,9 @@
+debathena-auto-update (1.24) unstable; urgency=low
+
+  * Fix bug which results in update status never recovering from 'warning'
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 26 Jul 2011 08:48:14 -0400
+
 debathena-auto-update (1.23.4) unstable; urgency=low
 
   * Support Natty's idea of preseeding the keyboard layout

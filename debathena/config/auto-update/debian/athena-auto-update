@@ -17,14 +17,10 @@ warn() {
 }
 
 save_success() {
-  # Warnings which don't terminate the update should get saved, 
-  # along with the final success message.
-  if [ "$updstatus" = "warning" ]; then
-      updmsg="$* ($updmsg)"
-  else
-      updstatus="ok"
-      updmsg="$*"
-  fi
+  # We used to check for 'warning' here for non-fatal warnings.
+  # There is no longer any such thing.
+  updstatus="ok"
+  updmsg="$*"
 }
 
 save_state() {
