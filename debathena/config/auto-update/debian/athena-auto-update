@@ -6,6 +6,8 @@ complain() {
   updmsg="$*"
 }
 
+# NOTE: Unlike complain(), calling warn() without subsequently 
+#       calling "exit" is not supported and its behavior is undefined
 warn() {
   # If we've already had a warning once, then fail
   if [ "$updstatus" = "warning" ]; then
