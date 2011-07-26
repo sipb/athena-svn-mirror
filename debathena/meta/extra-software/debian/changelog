@@ -1,3 +1,12 @@
+debathena-extra-software (1.1) unstable; urgency=low
+
+  * Remove dependency on wmtop and demote wmbubble to a recommendation.
+    Both have been removed from Debian squeeze; see Debian bugs 596759
+    and 549014 for some context. wmbubble is back in in wheezy, so we
+    might as well keep it as a recommendation.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 26 Jul 2011 16:35:11 -0400
+
 debathena-extra-software (1.0.2) unstable; urgency=low
 
   * No-change rebuild to incorporate previous changelog data
