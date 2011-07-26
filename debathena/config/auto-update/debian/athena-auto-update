@@ -325,7 +325,7 @@ esac
 # metapackage, so be paranoid about that.
 v aptitude --quiet --assume-yes keep-all
 v aptitude --quiet --assume-yes --download-only dist-upgrade
-if result=$(aptitude -F "%p" search '~i!~VTARGET(^debathena-cluster$ | ^debathena-workstation$ | ^debathena-login$ | ^debathena-standard$ | ^openafs-modules-~D^linux-image-)')
+if result=$(aptitude -F "%p" search '?action(remove) (^debathena-cluster$ | ^debathena-workstation$ | ^debathena-login$ | ^debathena-standard$ | ^openafs-modules-~D^linux-image-)')
   [ -n "$result" ]; then
   echo "** metapackages would be removed by the update, aborting:" $result
   v aptitude --quiet --assume-yes keep-all

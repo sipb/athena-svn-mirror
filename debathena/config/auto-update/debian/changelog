@@ -1,3 +1,11 @@
+debathena-auto-update (1.25) unstable; urgency=low
+
+  * Use the aptitude search predicate for removed packages, instead of
+    writing our own thing based on package versions/states that's
+    fragile (Trac: #987).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 26 Jul 2011 19:30:45 -0400
+
 debathena-auto-update (1.24) unstable; urgency=low
 
   * Fix bug which results in update status never recovering from 'warning'
