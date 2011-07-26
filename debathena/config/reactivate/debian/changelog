@@ -1,3 +1,9 @@
+debathena-reactivate (2.0.24) unstable; urgency=low
+
+  * Fix the patch for Trac #656 to use the correct regexp
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 26 Jul 2011 11:28:19 -0400
+
 debathena-reactivate (2.0.23) unstable; urgency=low
 
   * sudo now checks its supplementary group list, not NSS, for group

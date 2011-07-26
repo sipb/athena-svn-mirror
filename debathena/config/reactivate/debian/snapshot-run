@@ -40,7 +40,7 @@ schr rm /etc/debian_chroot
 schr rm -rf /home
 
 # Fix up mtab so that df and friends work correctly
-schr sed -i "s|/var/lib/schroot/mount/$session||" /etc/mtab
+schr sed -i "s| /var/lib/schroot/mount/${session}/| /|" /etc/mtab
 
 # Run the session
 #
