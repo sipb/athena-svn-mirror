@@ -97,7 +97,7 @@ case "$1" in
 	    fi
 	fi
 
-	if dpkg --compare-versions "$1" lt 1.35.1~; then
+	if dpkg --compare-versions "$2" lt 1.35.2~; then
 	    update-grub
 	fi
 

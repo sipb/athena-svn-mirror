@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.35.2) unstable; urgency=low
+
+  * Use the right variable in the postinst
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 26 Jul 2011 13:09:45 -0400
+
 debathena-cluster-login-config (1.35.1) unstable; urgency=low
 
   * Actually run update-grub
