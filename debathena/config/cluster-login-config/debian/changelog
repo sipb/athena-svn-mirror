@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.36.1) unstable; urgency=low
+
+  * Punt the conffiles we removed in 1.36
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 27 Jul 2011 12:21:07 -0400
+
 debathena-cluster-login-config (1.36) unstable; urgency=low
 
   * Punt all the code to enable backports and pin libstdc++5
