@@ -4,7 +4,7 @@ HAVE_LIBSTDC5 = $(shell apt-cache show libstdc++5 2>/dev/null | grep -q '^Versio
 
 ifeq ($(HAVE_LIBSTDC5),y)
     binary-predeb/debathena-extra-software-nox::
-        echo "debathena-libstdc5-depends=libstdc++5" >> debian/debathena-extra-software-nox.substvars
+	echo "debathena-libstdc5-depends=libstdc++5" >> debian/debathena-extra-software-nox.substvars
 endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk
