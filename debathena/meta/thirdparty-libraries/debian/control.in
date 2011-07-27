@@ -99,7 +99,6 @@ Recommends: libatlas-base-dev,
  libatlas-sse2-dev,
  libatlas-doc,
  libmpc2,
-
 Description: Debathena metapackage for third-party libraries software
  This includes a set of subpackages of commonly-used third-party software
  within the libraries domain.  It is intended for cluster machines though usable
