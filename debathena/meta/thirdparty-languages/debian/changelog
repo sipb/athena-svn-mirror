@@ -1,0 +1,94 @@
+debathena-thirdparty-languages (1.0) unstable; urgency=low
+
+  * First non-equivs version
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 27 Jul 2011 16:46:14 -0400
+
+debathena-thirdparty-languages (0.14) unstable; urgency=low
+
+  * Punt python-numpy-ext, it's been in python-numpy since feisty
+  * Punt eclipse-pydev, it has been gone since karmic
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 12 Jul 2011 11:56:13 -0400
+
+debathena-thirdparty-languages (0.13) unstable; urgency=low
+
+  * Add flex
+  * Spell "eclipse" correctly
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 06 Aug 2010 03:46:53 -0400
+
+debathena-thirdparty-languages (0.11) unstable; urgency=low
+
+  * No-change rebuild
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 22 Jun 2010 16:23:17 -0400
+
+debathena-thirdparty-languages (0.10) unstable; urgency=low
+
+  * Demote clisp-dev to recommendation because it still uses ancient
+    libreadline
+  * ocaml-mode is non-functional (LP:464587)
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 22 Jun 2010 16:02:24 -0400
+
+debathena-thirdparty-languages (0.9) unstable; urgency=low
+
+  * Demote eclipse-cdt and eclipse-pydev to recommendations
+  
+ -- Debathena Project <debathena@mit.edu>  Thu, 06 May 2010 16:14:31 -0400
+
+debathena-thirdparty-languages (0.8) unstable; urgency=low
+
+  * Add irb
+  
+ -- Debathena Project <debathena@mit.edu>  Tue, 06 Oct 2009 14:50:24 -0400
+
+debathena-thirdparty-languages (0.7) unstable; urgency=low
+
+  * Add python-all-dev, python-scipy, python-matplotlib, python-profiler
+  * Remove jikes, jikes-classpath, scm, slib, gdc, hugs, erlang,
+    erlang-examples, erlang-manpages, gprolog, gprolog-doc, nasm,
+    swi-prolog, swi-prolog-doc, swi-prolog-xpce, swi-prolog-clib, smlnj,
+    sml-mode, libexene-smlnj, yorick (and its millions of friends),
+    mozart, and erlang-doc-html
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 02 Oct 2009 15:19:44 -0400
+
+debathena-thirdparty-languages (0.6.2) unstable; urgency=low
+
+  * Demote erlang-doc-html to recommendation
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 04 May 2009 06:14:37 -0400
+
+debathena-thirdparty-languages (0.6.1) unstable; urgency=low
+
+  * Restore mit-scheme and mit-scheme-doc
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 17 Apr 2009 02:00:04 -0400
+
+debathena-thirdparty-languages (0.6) unstable; urgency=low
+
+  * Remove mit-scheme because it doesn't exist
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 14 Apr 2009 01:48:31 -0400
+
+debathena-thirdparty-languages (0.5) unstable; urgency=low
+
+  * Demote mozart to recommendation
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 05 Apr 2009 00:28:40 -0400
+
+debathena-thirdparty-languages (0.4) unstable; urgency=low
+
+  * Punt g77 in favor of gfortran
+  * Punt jikes-gij which no longer exists
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 08 Mar 2009 05:44:27 -0400
+
+debathena-thirdparty-languages (0.3) unstable; urgency=low
+
+  * First version
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 02 Mar 2009 22:48:56 -0500
+
