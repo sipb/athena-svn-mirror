@@ -1,0 +1,25 @@
+debathena-thirdparty-text (1.0) unstable; urgency=low
+
+  * First non-equivs release
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 27 Jul 2011 15:54:44 -0400
+
+debathena-thirdparty-text (0.4) unstable; urgency=low
+
+  * Depend abiword instead of abiword-gnome
+  * "Athena 10" -> "Debathena"
+
+ -- Debathena Project <debathena@mit.edu>  Thu, 06 May 2010 14:11:19 -0400
+
+debathena-thirdparty-text (0.3) unstable; urgency=low
+
+  * Add jedit and pdfedit
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 02 Oct 2009 15:24:36 -0400
+
+debathena-thirdparty-text (0.2) unstable; urgency=low
+
+  * First version
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 02 Mar 2009 22:49:51 -0500
+
