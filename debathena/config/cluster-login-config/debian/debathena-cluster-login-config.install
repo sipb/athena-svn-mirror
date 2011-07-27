@@ -2,8 +2,6 @@ debian/athena-root-password usr/sbin
 debian/sshd_not_to_be_run etc/ssh
 debian/getty.debathena sbin
 debian/screensaver_logout.sh usr/share/debathena-cluster-login-config
-debian/debathena-backports.list etc/apt/sources.list.d
-debian/debathena-libstdcplusplus.pref etc/apt/preferences.d
 debian/disable-suspend.pkla etc/polkit-1/localauthority/30-site.d
 debian/disable-hibernate.pkla etc/polkit-1/localauthority/30-site.d
 debian/50_debathena-cluster etc/grub.d

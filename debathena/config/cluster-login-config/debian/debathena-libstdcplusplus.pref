@@ -4,4 +4,4 @@ Pin-Priority: -1
 
 Package: libstdc++5
 Pin: release a=lucid-backports
-Pin-Priority: 500
+Pin-Priority: 200
