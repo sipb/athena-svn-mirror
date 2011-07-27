@@ -1,15 +1,15 @@
+Source: debathena-thirdparty-sound
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.9.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-thirdparty-sound
-Version: 0.1
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: all
 Depends: sox,
- libsox-dev
-
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
+ libsox-dev,
+ ${misc:Depends}
 Description: Debathena metapackage for third-party sound software
  This includes a set of subpackages of commonly-used third-party software
  within the sound domain.  It is intended for cluster machines though usable
