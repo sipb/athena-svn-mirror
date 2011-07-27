@@ -1,10 +1,12 @@
+Source: debathena-thirdparty-numerical
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.6.
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-thirdparty-numerical
-Version: 0.3
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: all
 Depends: maxima,
  xmaxima,
  maxima-doc,
@@ -28,9 +30,7 @@ Depends: maxima,
  sc,
  singular,
  libsingular-dev,
-
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
+ ${misc:Depends}
 Description: Debathena metapackage for third-party numerical software
  This includes a set of subpackages of commonly-used third-party software
  within the numerical domain.  It is intended for cluster machines though usable

@@ -1,0 +1,27 @@
+debathena-thirdparty-numerical (1.0) unstable; urgency=low
+
+  * First non-equivs package
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 27 Jul 2011 16:30:21 -0400
+
+debathena-thirdparty-numerical (0.3) unstable; urgency=low
+
+  * Depend gnumeric instead of virtual package gnumeric-gtk
+  * Bump octave from 3.0 to 3.2 for natty (and lucid)
+  * "Athena 10" -> "Debathena"
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 12 Jul 2011 11:58:46 -0400
+
+debathena-thirdparty-numerical (0.2) unstable; urgency=low
+
+  * Add pari-gp2c, singular, and libsingular-dev
+  * Punt grace, grace6, k3dsurf, euler, fityk, scilab, and pvm
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 02 Oct 2009 15:20:28 -0400
+
+debathena-thirdparty-numerical (0.1) unstable; urgency=low
+
+  * First version
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 02 Mar 2009 22:49:14 -0500
+
