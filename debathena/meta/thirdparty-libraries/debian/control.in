@@ -1,10 +1,12 @@
+Source: debathena-thirdparty-libraries
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.9.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-thirdparty-libraries
-Version: 0.18
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: any
 Depends: liblapack-dev,
  liblapack-doc,
  libblas-dev,
@@ -97,8 +99,6 @@ Recommends: libatlas-base-dev,
  libatlas-doc,
  libmpc2,
 
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
 Description: Debathena metapackage for third-party libraries software
  This includes a set of subpackages of commonly-used third-party software
  within the libraries domain.  It is intended for cluster machines though usable

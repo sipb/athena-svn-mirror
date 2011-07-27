@@ -1,0 +1,113 @@
+debathena-thirdparty-libraries (1.0) unstable; urgency=low
+
+  * First non-equivs version
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 27 Jul 2011 09:15:52 -0400
+
+debathena-thirdparty-libraries (0.18) unstable; urgency=low
+
+  * Support natty: libmotif4, libcv2.1, libvtk5.4, libvtk5.2-qt4,
+    libboost1.42
+  * Remove packages pulled from upstream (libglitz, libqt-perl)
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 12 Jul 2011 11:57:38 -0400
+
+debathena-thirdparty-libraries (0.17) unstable; urgency=low
+
+  * Add libcurl4-gnutls-dev
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 11 Aug 2010 02:52:17 -0400
+
+debathena-thirdparty-libraries (0.16) unstable; urgency=low
+
+  * Add libmpc2 as a recommendation
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 06 Aug 2010 12:49:48 -0400
+
+debathena-thirdparty-libraries (0.15) unstable; urgency=low
+
+  * Add libppl-c2
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 06 Aug 2010 03:47:40 -0400
+
+debathena-thirdparty-libraries (0.14) unstable; urgency=low
+
+  * Support Lucid: libcln6, xulrunner-dev, libcv4
+
+ -- Debathena Project <debathena@mit.edu>  Thu, 06 May 2010 14:39:05 -0400
+
+debathena-thirdparty-libraries (0.13) unstable; urgency=low
+
+  * Support Karmic: libvtk5.2, libginac1.5, xulrunner-1.9.1-dev,
+    libbost1.40-dev
+  * Explicitly depend on fuse-utils for 6.824 (in case we ever move away
+    from pyHesiodFS)
+
+ -- Debathena Project <debathena@mit.edu>  Thu, 06 May 2010 14:39:00 -0400
+
+debathena-thirdparty-libraries (0.12) unstable; urgency=low
+
+  * Add libcv1, python-psycopg2
+  * "Athena 10" is now pronounced "Debathena"
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 03 Feb 2010 17:52:58 -0500
+
+debathena-thirdparty-libraries (0.11) unstable; urgency=low
+
+  * Add libfuse-dev for 6.824
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 02 Feb 2010 13:57:43 -0500
+
+debathena-thirdparty-libraries (0.10) unstable; urgency=low
+
+  * Add gtk-sharp2
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 20 Jan 2010 20:15:57 -0500
+
+debathena-thirdparty-libraries (0.9) unstable; urgency=low
+
+  * Add fftw-dev
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 21 Oct 2009 13:30:28 -0400
+
+debathena-thirdparty-libraries (0.8) unstable; urgency=low
+
+  * Depend on libbost-1.37-dev instead of the millions of individual
+    packages
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 02 Oct 2009 15:20:07 -0400
+
+debathena-thirdparty-libraries (0.7) unstable; urgency=low
+
+  * Add wine and wine-dev because why not
+
+ -- Debathena Project <debathena@mit.edu>  Wed, 15 Jul 2009 20:48:16 -0400
+
+debathena-thirdparty-libraries (0.6) unstable; urgency=low
+
+  * Add libgl1-mesa-dev
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 18 May 2009 15:38:32 -0400
+
+debathena-thirdparty-libraries (0.5) unstable; urgency=low
+
+  * Demote i386-specific packages (libatlas-sse* and friends) to
+    recommendations
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 05 Apr 2009 00:28:51 -0400
+
+debathena-thirdparty-libraries (0.4) unstable; urgency=low
+
+  * Remove libitpp-doc because it pulls in apache 2
+  * Remove guile because it's a virtual package
+  * Punt g77 in favor of gfortran
+  * Punt jikes-gij which no longer exists
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 08 Mar 2009 05:51:07 -0400
+
+debathena-thirdparty-libraries (0.3) unstable; urgency=low
+
+  * First version
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 02 Mar 2009 22:49:04 -0500
+
