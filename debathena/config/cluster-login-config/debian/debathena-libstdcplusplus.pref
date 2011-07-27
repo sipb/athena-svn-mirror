@@ -1,7 +1,0 @@
-Package: *
-Pin: release a=lucid-backports
-Pin-Priority: -1
-
-Package: libstdc++5
-Pin: release a=lucid-backports
-Pin-Priority: 200
