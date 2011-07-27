@@ -2,7 +2,7 @@ debathena-cluster-login-config (1.36.2) unstable; urgency=low
 
   * Correctly punt the conffiles we removed in 1.36
 
- --
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 27 Jul 2011 13:36:08 -0400
 
 debathena-cluster-login-config (1.36.1) unstable; urgency=low
 
