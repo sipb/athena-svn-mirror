@@ -90,16 +90,9 @@ case "$1" in
         fi
 
 	# Cleanup from previous installs
-	# Shouldn't have happened, but be paranoid
-	if [ "$(lsb_release -sc)" != "lucid" ] && grep -qxF "Package: libstdc++5" /etc/apt/preferences; then
+	# /etc/apt/preferences was frobbed due to (LP:508545)
+	if grep -qxF "Package: libstdc++5" /etc/apt/preferences; then
 	    rm /etc/apt/preferences
-	fi
-
-	# Sigh  (LP:508545)
-	aptitude_vers="$(dpkg-query -W -f '${Version}' aptitude)"
-	if dpkg --compare-versions "$aptitude_vers" lt '0.6.3-3.2ubuntu1~' && \
-	    [ -f /etc/apt/preferences.d/debathena-libstdcplusplus.pref ]; then
-	    cp -f /etc/apt/preferences.d/debathena-libstdcplusplus.pref /etc/apt/preferences
 	fi
 
 	if dpkg --compare-versions "$2" lt 1.35.2~; then

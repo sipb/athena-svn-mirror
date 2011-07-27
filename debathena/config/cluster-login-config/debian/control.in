@@ -2,7 +2,7 @@ Source: debathena-cluster-login-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, system-services, debathena-gdm-config, lsb-release
+Build-Depends: @cdbs@, system-services, debathena-gdm-config
 Standards-Version: 3.8.4
 
 Package: debathena-cluster-login-config

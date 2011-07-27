@@ -33,12 +33,6 @@ DEB_REMOVE_FILES_debathena-cluster-login-config += \
 DEB_DIVERT_FILES_debathena-cluster-login-config += \
 	/sbin/getty.debathena
 
-ifeq ($(shell lsb_relase -sc),lucid)
-    install/debathena-cluster-login-config::
-	dh_install debian/debathena-backports.list etc/apt/sources.list.d
-	dh_install debian/debathena-libstdcplusplus.pref etc/apt/preferences.d
-endif
-
 ifeq ($(EVENT_D),y)
     DEB_UNREMOVE_FILES_debathena-cluster-login-config += \
 	/etc/event.d/tty1 \
