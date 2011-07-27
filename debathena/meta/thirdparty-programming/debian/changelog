@@ -1,0 +1,24 @@
+debathena-thirdparty-programming (1.0) unstable; urgency=low
+
+  * First non-equivs version
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 27 Jul 2011 16:24:00 -0400
+
+debathena-thirdparty-programming (0.3) unstable; urgency=low
+
+  * Add boo, mono-vbnc, monodoc-browser, mono-mcs, mono-utils and ironpython
+  
+ -- Debathena Project <debathena@mit.edu>  Wed, 20 Jan 2010 20:14:42 -0500
+
+debathena-thirdparty-programming (0.2) unstable; urgency=low
+
+  * Add tcl-dev, tk-dev, fluid, mono-gmcs, and ikvm
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 02 Oct 2009 15:21:29 -0400
+
+debathena-thirdparty-programming (0.1) unstable; urgency=low
+
+  * First version
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 02 Mar 2009 22:49:24 -0500
+
