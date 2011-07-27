@@ -38,6 +38,7 @@ Depends: build-essential, debathena-debian-dev,
   expect,
   traceroute,
   fortune-mod,
+  ${debathena-libstdc5-depends},
   ${misc:Depends}
 Recommends: ckermit,
   openjdk-6-jdk,
