@@ -1,10 +1,12 @@
+Source: debathena-thirdparty-utilities
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.9.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-thirdparty-utilities
-Version: 0.4
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: all
 Depends: nfs-common,
  rcs,
  g3data,
@@ -26,9 +28,6 @@ Depends: nfs-common,
  scratchbox2,
  mtools,
  dosemu,
-
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
 Description: Debathena metapackage for third-party utilities software
  This includes a set of subpackages of commonly-used third-party software
  within the utilities domain.  It is intended for cluster machines though usable
