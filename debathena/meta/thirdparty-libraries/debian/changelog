@@ -100,8 +100,6 @@ debathena-thirdparty-libraries (0.4) unstable; urgency=low
 
   * Remove libitpp-doc because it pulls in apache 2
   * Remove guile because it's a virtual package
-  * Punt g77 in favor of gfortran
-  * Punt jikes-gij which no longer exists
 
  -- Debathena Project <debathena@mit.edu>  Sun, 08 Mar 2009 05:51:07 -0400
 
