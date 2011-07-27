@@ -1,10 +1,12 @@
+Source: debathena-thirdparty-languages
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.9.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-thirdparty-languages
-Version: 0.14
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: all
 Depends: cmake,
  python-all-dev,
  python-numpy,
@@ -40,16 +42,12 @@ Depends: cmake,
  scala,
  irb,
  flex,
-
+ ${misc:Depends}
 Recommends:
  mit-scheme,
  mit-scheme-doc,
  eclipse-cdt,
  clisp-dev
-
-
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
 Description: Debathena metapackage for third-party languages software
  This includes a set of subpackages of commonly-used third-party software
  within the languages domain.  It is intended for cluster machines though usable
