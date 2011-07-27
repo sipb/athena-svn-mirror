@@ -89,15 +89,15 @@ case "$1" in
             rm_conffile debathena-cluster-login-config "/etc/init/ttymsg.conf"
         fi
 
-	if dpkg --compare-versions "$2" lt '1.36.1~'; then
+	if dpkg --compare-versions "$2" lt '1.36.2~'; then
 	    # Cleanup from previous installs
 	    # /etc/apt/preferences was frobbed due to (LP:508545)
 	    if grep -qxF "Package: libstdc++5" /etc/apt/preferences 2>/dev/null; then
 	        rm /etc/apt/preferences
 	    fi
 	    # Cleanup conffiles
-	    rm -f /etc/apt/sources.list.d/debathena-backports.list
-	    rm -f /etc/apt/preferences.d/debathena-libstdcplusplus.pref
+	    rm_conffile debathena-cluster-login-config /etc/apt/sources.list.d/debathena-backports.list
+	    rm_conffile debathena-cluster-login-config /etc/apt/preferences.d/debathena-libstdcplusplus.pref
 	fi
 
 	if dpkg --compare-versions "$2" lt 1.35.2~; then

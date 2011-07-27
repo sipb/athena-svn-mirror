@@ -33,6 +33,11 @@ case "$1" in
             rm_conffile debathena-cluster-login-config "/etc/event.d/ttymsg"
             rm_conffile debathena-cluster-login-config "/etc/init/ttymsg.conf"
         fi
+
+	if dpkg --compare-versions "$2" lt 1.36.2~; then
+	    rm_conffile debathena-cluster-login-config /etc/apt/sources.list.d/debathena-backports.list
+	    rm_conffile debathena-cluster-login-config /etc/apt/preferences.d/debathena-libstdcplusplus.pref
+	fi
     ;;
 
     purge|remove|upgrade|failed-upgrade|disappear)

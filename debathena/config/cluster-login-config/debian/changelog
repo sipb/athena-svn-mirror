@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.36.2) unstable; urgency=low
+
+  * Correctly punt the conffiles we removed in 1.36
+
+ --
+
 debathena-cluster-login-config (1.36.1) unstable; urgency=low
 
   * Punt the conffiles we removed in 1.36
