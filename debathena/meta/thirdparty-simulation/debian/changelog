@@ -1,0 +1,50 @@
+debathena-thirdparty-simulation (1.0) unstable; urgency=low
+
+  * First non-equivs release
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 27 Jul 2011 16:12:57 -0400
+
+debathena-thirdparty-simulation (0.6) unstable; urgency=low
+
+  * Remove verilog-mode since it's now part of emacs23
+  
+ -- Debathena Project <debathena@mit.edu>  Tue, 12 Jul 2011 11:59:24 -0400
+
+debathena-thirdparty-simulation (0.5) unstable; urgency=low
+
+  * Add mpb-doc package
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 06 Aug 2010 12:51:26 -0400
+
+debathena-thirdparty-simulation (0.4) unstable; urgency=low
+
+  * Add meep, harminv and mpb
+  * "Athena 10" -> "Debathena"
+  
+ -- Debathena Project <debathena@mit.edu>  Fri, 06 Aug 2010 12:50:44 -0400
+
+debathena-thirdparty-simulation (0.3) unstable; urgency=low
+
+  * Punt ramsol and ramsol-doc
+  * Punt emboss, hmmer, phylip, primer3 and doc packages
+  * Punt openbabel
+  * Support Jaunty; If you're unlucky enough to find libctl 3.0.3-2
+    without the -1ubuntu1 fix somewhere like Debian, this package won't
+    install too well
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 02 Oct 2009 15:23:17 -0400
+
+debathena-thirdparty-simulation (0.2) unstable; urgency=low
+
+  * Conflict libctl-dev ( << 3.0.3-3); before 3.0.3-3, libctl-dev used
+    guile-1.6, which conflicts with several other applications in this
+    list. It's recommended by libctl-doc which is recommended by mpb-doc
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 05 Apr 2009 00:28:45 -0400
+
+debathena-thirdparty-simulation (0.1) unstable; urgency=low
+
+  * First version
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 02 Mar 2009 22:49:34 -0500
+
