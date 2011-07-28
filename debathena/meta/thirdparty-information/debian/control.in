@@ -1,10 +1,12 @@
+Source: debathena-thirdparty-information
 Section: debathena/base
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.9.1
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-thirdparty-information
-Version: 0.4
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: all
 Depends: ncbi-tools-x11,
  wordnet,
  dict,
@@ -12,11 +14,9 @@ Depends: ncbi-tools-x11,
  liferea,
  postgresql-client,
  artha,
+ ${misc:Depends}
 Recommends: amaya,
  amaya-doc,
-
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
 Description: Debathena metapackage for third-party information software
  This includes a set of subpackages of commonly-used third-party software
  within the information domain.  It is intended for cluster machines though usable

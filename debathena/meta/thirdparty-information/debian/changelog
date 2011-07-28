@@ -1,0 +1,31 @@
+debathena-thirdparty-information (1.0) unstable; urgency=low
+
+  * First non-equivs version
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 28 Jul 2011 09:31:46 -0400
+
+debathena-thirdparty-information (0.4) unstable; urgency=low
+
+  * Add artha
+  * "Athena 10" -> "Debathena"
+
+ -- Debathena Project <debathena@mit.edu>  Sun, 27 Feb 2011 04:02:23 -0500
+
+debathena-thirdparty-information (0.3) unstable; urgency=low
+
+  * Add liferea, postgresql-client
+
+ -- Debathena Project <debathena@mit.edu>  Fri, 02 Oct 2009 15:19:16 -0400
+
+debathena-thirdparty-information (0.2) unstable; urgency=low
+
+  * Demote amaya to recommendation
+
+ -- Debathena Project <debathena@mit.edu>  Tue, 19 May 2009 17:32:42 -0400
+
+debathena-thirdparty-information (0.1) unstable; urgency=low
+
+  * First version
+
+ -- Debathena Project <debathena@mit.edu>  Mon, 02 Mar 2009 22:48:46 -0500
+
