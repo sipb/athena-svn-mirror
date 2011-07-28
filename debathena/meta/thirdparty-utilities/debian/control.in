@@ -28,6 +28,7 @@ Depends: nfs-common,
  scratchbox2,
  mtools,
  dosemu,
+ ${misc:Depends}
 Description: Debathena metapackage for third-party utilities software
  This includes a set of subpackages of commonly-used third-party software
  within the utilities domain.  It is intended for cluster machines though usable
