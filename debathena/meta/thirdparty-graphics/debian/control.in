@@ -1,10 +1,12 @@
+Source: debathena-thirdparty-graphics
 Section: debathena/base
 Priority: extra
 Standards-Version: 3.6.2
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
 
 Package: debathena-thirdparty-graphics
-Version: 0.6
-Maintainer: Debathena Project <debathena@mit.edu>
+Architecture: all
 Depends: inventor-data,
  inventor-demo,
  inventor-doc,
@@ -53,13 +55,10 @@ Depends: inventor-data,
  xprint-utils,
  pdftoipe,
  mgp,
-
+ ${misc:Depends}
 Recommends: inventor-dev,
  inventor-clients,
  gle-graphics,
-
-Copyright: ../common/copyright
-Readme: ../common/README-meta.in
 Description: Debathena metapackage for third-party graphics software
  This includes a set of subpackages of commonly-used third-party software
  within the graphics domain.  It is intended for cluster machines though usable
