@@ -30,6 +30,7 @@ Depends: maxima,
  sc,
  singular,
  libsingular-dev,
+ grace,
  ${misc:Depends}
 Description: Debathena metapackage for third-party numerical software
  This includes a set of subpackages of commonly-used third-party software

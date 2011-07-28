@@ -1,8 +1,9 @@
 debathena-thirdparty-numerical (1.0) unstable; urgency=low
 
   * First non-equivs package
+  * Add grace
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 27 Jul 2011 16:30:21 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 28 Jul 2011 10:45:05 -0400
 
 debathena-thirdparty-numerical (0.3) unstable; urgency=low
 
