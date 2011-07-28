@@ -43,6 +43,7 @@ Depends: lp-solve,
  harminv,
  mpb,
  mpb-doc,
+ openbabel,
  ${misc:Depends}
 Description: Debathena metapackage for third-party simulation software
  This includes a set of subpackages of commonly-used third-party software
