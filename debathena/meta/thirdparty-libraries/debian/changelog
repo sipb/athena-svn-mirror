@@ -1,8 +1,9 @@
 debathena-thirdparty-libraries (1.0) unstable; urgency=low
 
   * First non-equivs version
+  * Add libmpfr1ldbl
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 27 Jul 2011 09:17:40 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 28 Jul 2011 10:43:01 -0400
 
 debathena-thirdparty-libraries (0.18) unstable; urgency=low
 
