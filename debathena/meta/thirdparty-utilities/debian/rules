@@ -1,3 +1,10 @@
 #!/usr/bin/make -f
 
+HAVE_DOS2UNIX = $(shell apt-cache show dos2unix 2>/dev/null | grep -q '^Version:' && echo y)
+
+ifeq ($(HAVE_DOS2UNIX),y)
+    binary-predeb/debathena-thirdparty-utilities::
+	echo "debathena-maybe-dos2unix=dos2unix" >> debian/debathena-thirdparty-utilities.substvars
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk

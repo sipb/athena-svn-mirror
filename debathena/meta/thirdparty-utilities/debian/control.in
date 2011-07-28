@@ -28,6 +28,8 @@ Depends: nfs-common,
  scratchbox2,
  mtools,
  dosemu,
+ rlwrap,
+ ${debathena-maybe-dos2unix},
  ${misc:Depends}
 Description: Debathena metapackage for third-party utilities software
  This includes a set of subpackages of commonly-used third-party software
