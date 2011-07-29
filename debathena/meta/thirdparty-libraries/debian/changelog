@@ -1,9 +1,15 @@
 debathena-thirdparty-libraries (1.0) unstable; urgency=low
 
+  [ Jonathan Reed ]
   * First non-equivs version
   * Add libmpfr1ldbl
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 28 Jul 2011 10:43:01 -0400
+  [ Geoffrey Thomas ]
+  * Use libmpfr-dev instead, so that we get libmpfr4 on Natty and on
+    releases where libmpfr1ldbl doesn't exist (but continue to get
+    libmpfr1ldbl on Lucid)
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Thu, 28 Jul 2011 21:52:12 -0400
 
 debathena-thirdparty-libraries (0.18) unstable; urgency=low
 
