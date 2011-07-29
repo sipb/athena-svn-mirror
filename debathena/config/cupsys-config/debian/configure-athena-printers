@@ -1,0 +1,82 @@
+#!/bin/sh
+
+PHAROS_PRINTERS="mitprint"
+ATHENA_PRINTERS=
+PRLIST="/var/lib/debathena-cupsys-config.added_printers"
+
+add_printers() {
+    rm -f $PRLIST
+    for p in $PHAROS_PRINTERS; do
+	lpadmin -p $p -E -v lpd://mitprint.mit.edu/bw \
+	        -D "Pharos (Monochrome)" \
+	        -L "Release jobs from any Pharos printer" \
+	        -o printer-is-share=false \
+	        -m drv:///hpijs.drv/hp-laserjet_9050-hpijs-pcl3.ppd
+	if [ $? != 0 ]; then
+	    echo "FAILED to add Pharos printer $p"
+	else
+	    echo "Added Pharos printer $p"
+	    echo "$p" >> $PRLIST
+	fi
+    done
+    for a in $ATHENA_PRINTERS; do
+        # Don't clobber queue, this is -cluster
+	if add-athena-printer $a; then
+	    echo "Added Athena printer $a"
+	    echo "$p" >> $PRLIST
+	else
+	    echo "FAILED to add Athena printer $a"
+	fi
+    done
+}
+
+del_printers() {
+    # Initially assume we remove nothing and the user can deal
+    PRINTERS_TO_REMOVE=
+    if [ -s $PRLIST ]; then
+        PRINTERS_TO_REMOVE=`cat $PRLIST`
+    fi
+    for p in $PRINTERS_TO_REMOVE; do
+	lpadmin -x $p
+	if [ $? != 0 ]; then
+	    echo "Failed to remove printer $p!"
+	fi
+    done
+    rm -f $PRLIST
+}
+
+require_cups() {
+    # Ensure CUPS is running
+    [ -e /etc/init.d/cups ] && rcname=cups || rcname=cupsys
+    if hash invoke-rc.d; then
+        invoke="invoke-rc.d $rcname"
+    else
+        invoke="/etc/init.d/$rcname"
+    fi
+    if ! /etc/init.d/$rcname status; then
+	if ! $invoke start; then
+	    echo "FATAL: Couldn't start CUPS!"
+	    exit 1
+	fi
+    fi
+    if [ "$(lpstat -r)" != "scheduler is running" ]; then
+      echo "FATAL: cups claimed to have started, but lpstat -r says it's not running!"
+      exit 1
+    fi
+}
+
+case "$1" in
+    add)
+	require_cups  
+	add_printers
+	;;
+    remove)
+	require_cups
+	del_printers
+	;;
+    *)
+	echo "Usage: $0 [ add | remove ]"
+	exit 1
+	;;
+esac
+exit 0

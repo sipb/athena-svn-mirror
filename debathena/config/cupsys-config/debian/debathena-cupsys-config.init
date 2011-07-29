@@ -1,0 +1,42 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          debathena-cupsys-config
+# Required-Start:    cups $remote_fs
+# Required-Stop:     cups $remote_fs
+# Should-Start:      $local_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: CUPS configuration
+# Description:       Ensure printers exist
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    if [ -f /var/lib/debathena-cupsys-config-reconfigure_required ]; then
+      log_action_msg "Adding MIT printers"
+      nologin=0
+      if [ ! -f /var/run/athena-nologin ]; then
+	touch /var/run/athena-nologin
+	nologin=1
+      fi
+      if /usr/lib/debathena-cupsys-config/configure-athena-printers add; then
+	rm -f /var/lib/debathena-cupsys-config-reconfigure_required
+	log_end_msg 0
+      else
+	log_end_msg 1
+      fi
+      [ $nologin -eq 1 ] && rm /var/run/athena-nologin
+    fi
+    ;;
+  stop|restart|reload|force-reload|status)
+    exit 0
+    ;;
+  *)
+    log_action_msg "Usage: /etc/init.d/debathena-cupsys-config {start}"
+    exit 1
+    ;;
+esac
+exit 0

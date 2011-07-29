@@ -2,12 +2,8 @@
 
 DEB_DIVERT_EXTENSION = .debathena
 
-DEB_TRANSFORM_FILES_debathena-cupsys-config += \
+DEB_UNDIVERT_FILES_debathena-cupsys-config += \
 	/etc/cups/cupsd.conf.debathena
-ifneq ($(wildcard /etc/cups/cupsd.conf.default),)
-	DEB_CHECK_FILES_SOURCE_/etc/cups/cupsd.conf.debathena = \
-		/etc/cups/cupsd.conf.default
-endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk

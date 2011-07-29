@@ -1,11 +1,18 @@
-debathena-cupsys-config (1.14) UNRELEASED; urgency=low
+debathena-cupsys-config (1.14) unstable; urgency=low
 
+  [ Geoffrey Thomas ]
   * No need to make restart_cups.sh executable, since it's only intended
     to be included in other scripts and doesn't do anything if you
     execute it (since it just defines a function).
     This addresses Lintian warning executable-not-elf-or-script.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Sat, 25 Jun 2011 04:49:45 -0400
+  [ Jonathan Reed ]
+  * Stop BrowsePolling and just add the mitprint printer.  Remove any
+    printers added by cluster-cups-config at upgrade time
+  * Replace/Conflict/Provide debathena-cluster-cups-config
+  * Bump standards-version
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 29 Jul 2011 08:23:43 -0400
 
 debathena-cupsys-config (1.13) unstable; urgency=low
 

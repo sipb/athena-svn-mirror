@@ -25,6 +25,15 @@ set -e
 case "$1" in
     configure)
 	restart_cups
+        if [ "$(lpstat -r)" != "scheduler is running" ]; then
+            # CUPS isn't running even though it should be.  We're probably
+            # inside the installer.  Let the initscript deal.
+            touch /var/lib/debathena-cupsys-config-reconfigure_required
+            [ -x /usr/share/update-notifier/notify-reboot-required ] && \
+              /usr/share/update-notifier/notify-reboot-required
+            exit 0
+        fi
+        /usr/lib/debathena-cupsys-config/configure-athena-printers add
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
