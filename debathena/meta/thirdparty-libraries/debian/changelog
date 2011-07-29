@@ -7,7 +7,7 @@ debathena-thirdparty-libraries (1.0) unstable; urgency=low
   [ Geoffrey Thomas ]
   * Use libmpfr-dev instead, so that we get libmpfr4 on Natty and on
     releases where libmpfr1ldbl doesn't exist (but continue to get
-    libmpfr1ldbl on Lucid)
+    libmpfr1ldbl on Lucid). But require libmpfr1ldbl where it does exist.
 
  -- Geoffrey Thomas <geofft@mit.edu>  Thu, 28 Jul 2011 21:52:12 -0400
 

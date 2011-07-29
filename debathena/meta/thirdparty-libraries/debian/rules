@@ -1,3 +1,10 @@
 #!/usr/bin/make -f
 
+HAVE_MPFR1 = $(shell apt-cache show libmpfr1ldbl 2>/dev/null | grep -q '^Version:' && echo y)
+
+ifeq ($(HAVE_MPFR1),y)
+    binary-predeb/debathena-thirdparty-libraries::
+	echo "debathena-maybe-libmpfr1ldbl=libmpfr1ldbl" >> debian/debathena-thirdparty-libraries.substvars
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk
