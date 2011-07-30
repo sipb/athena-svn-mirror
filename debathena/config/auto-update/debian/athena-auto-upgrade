@@ -30,7 +30,7 @@ UPGRADE_TO_TESTING=no
 UPGRADE_ANYWAY=no
 [ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
 
-while getopts "fdta" opt; do
+while getopts "fdt" opt; do
     case "$opt" in
         d) 
             DEBUG=1
