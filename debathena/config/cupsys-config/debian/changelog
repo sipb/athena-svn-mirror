@@ -1,3 +1,10 @@
+debathena-cupsys-config (1.15) unstable; urgency=low
+
+  * Bump Conflicts statement for new cluster-cups-config
+  * Fix prerm syntax
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 30 Jul 2011 16:47:19 -0400
+
 debathena-cupsys-config (1.14) unstable; urgency=low
 
   [ Geoffrey Thomas ]

@@ -9,8 +9,8 @@ Package: debathena-cupsys-config
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, cups | cupsys, cups-bsd | cupsys-bsd, hpijs
 Provides: ${diverted-files}, debathena-cluster-cups-config
-Conflicts: ${diverted-files}, debathena-cluster-cups-config (<= 2.0.3)
-Replaces: debathena-cluster-cups-config (<= 2.0.3)
+Conflicts: ${diverted-files}, debathena-cluster-cups-config (<= 2.0.4)
+Replaces: debathena-cluster-cups-config (<= 2.0.4)
 Description: CUPS configuration for Debathena
  This package configures centralized MIT printing.  It doesn't
  actually change the CUPS configuration anymore; the name is

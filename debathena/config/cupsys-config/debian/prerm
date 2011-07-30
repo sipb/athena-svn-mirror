@@ -24,9 +24,7 @@ set -e
 
 case "$1" in
     remove|deconfigure)
-	if [ -z "$2" ]; then
-	    /usr/lib/debathena-cupsys-config/configure-athena-printers remove
-	fi
+	/usr/lib/debathena-cupsys-config/configure-athena-printers remove
     ;;
 
     upgrade)
