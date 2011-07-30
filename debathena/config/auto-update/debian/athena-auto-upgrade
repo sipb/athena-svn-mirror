@@ -14,28 +14,58 @@ complain() {
     fi
 }
 
+maybe_quit() {
+    if [ $FORCE -eq 1 ]; then
+        echo "Would normally quit here, but you passed -f, so we keep going..."
+    else
+        exit 0
+    fi
+}
+
 DEBUG=0
 MAYBE=""
-if [ "$1" = "--debug" ]; then
-    DEBUG=1
-    MAYBE=echo
-else
+FORCE=0
+
+UPGRADE_TO_TESTING=no
+UPGRADE_ANYWAY=no
+[ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
+
+while getopts "fdta" opt; do
+    case "$opt" in
+        d) 
+            DEBUG=1
+            MAYBE=echo
+	    UPGRADE_ANYWAY=yes
+            ;;
+        f) 
+            FORCE=1
+	    ;;
+        t)
+	    UPGRADE_TO_TESTING=yes
+	    ;;
+        \?)
+            echo "Usage: $0 [-d] [-t] [-f]"
+	    ;;
+    esac
+done
+
+if [ $DEBUG -eq 1 ] && [ $FORCE -eq 1 ]; then
+    echo "ERROR: -d and -f are mutually exclusive."
+    exit 2
+fi
+if [ $FORCE -eq 1 ]; then
+    echo "Using -f is a terrible idea.  Press Ctrl-C to reconsider and"
+    echo "save your machine, or Enter to continue."
+    read r
+fi
+
+if [ $DEBUG -ne 1 ]; then
     # Redirect output to a log file
     # Unless we're in debug mode
     exec >>/var/log/athena-upgrade 2>&1
 fi
 
 echo "Starting upgrade at $(date)"
-
-
-UPGRADE_TO_TESTING=no
-UPGRADE_ANYWAY=no
-[ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
-
-if [ $DEBUG -eq 1 ]; then
-    UPGRADE_TO_TESTING=yes
-    UPGRADE_ANYWAY=yes
-fi
 
 # Not supported on Debian
 if [ "$(lsb_release -si)" != "Ubuntu" ]; then
@@ -60,13 +90,13 @@ if [ $DEBUG -ne 1 ]; then
 	if [ -n "$pids" ]; then
 	    debug "Users logged in, won't continue."
 	    debug "PIDs: $pids"
-            exit 0
+	    maybe_quit
 	fi
     done
     # screen processes count as logins.
     if pgrep '^screen' > /dev/null; then
 	debug "Screen processes found, won't continue."
-	exit 0
+	maybe_quit
     fi
 fi
 

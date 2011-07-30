@@ -1,3 +1,9 @@
+debathena-auto-update (1.26) unstable; urgency=low
+
+  * Add some debugging and options to athena-auto-upgrade
+  
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 29 Jul 2011 20:43:47 -0400
+
 debathena-auto-update (1.25) unstable; urgency=low
 
   * Use the aptitude search predicate for removed packages, instead of

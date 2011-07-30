@@ -3,7 +3,7 @@
 athena-auto-upgrade \- Attempt to automatically upgrade to a newer release of Ubuntu
 .SH SYNOPSIS
 .nf
-.B athena-auto-upgrade
+.B athena-auto-upgrade [ -f | -d ] [ -t ]
 .sp
 .SH DESCRIPTION
 .BR athena-auto-upgrade
@@ -17,9 +17,19 @@ You really don't want to run this by hand.
 .SH FEATURES
 Here be dragons.
 
+.SH OPTIONS
+.IP -f
+Forces athena-auto-upgrade to reboot even if someone is logged in.
+Don't use this.
+.IP -t
+Causes athena-auto-upgrade to upgrade to a 'testing' release.  Don't
+use this.
+.IP -d
+Debug mode.  Will also force it to simulate an upgrade, even on
+non-cluster machines.
+
 .SH SEE ALSO
 getcluster(1), kexec(8)
 
 .SH AUTHOR
 SIPB Debathena Project (http://debathena.mit.edu)
-
