@@ -424,7 +424,7 @@ Release engineer: Removing a build chroot on the build server
      the build chroot is not mounted, substituting the name of the
      volume group for blah.
 
-  2. Edit /etc/schroot/schroot.conf and delete the section
+  2. Look in /etc/schroot/chroot.d/ and delete the file
      corresponding to the chroot.
 
   3. Run lvchange -an blah/chrootname
@@ -476,31 +476,37 @@ steps below.
      sure there is nothing in svn that isn't built. (An easy way to do
      this is running the check-unbuilt-packages script.)
 
-  2. Add the new dist to scripts/debian-versions.sh.  (It is not
-     necessary to add the new dist to codes at this point, but it must
-     be present in the gettag conditional.)  If you are building an
-     unreleased distribution, add an additional ~0.1 tag; if you're
-     rebilding, bump that tag.
+  2. Add the new dist to scripts/debian-versions.sh (and svn up into
+     the locker).  (It is not necessary to add the new dist to codes
+     at this point, but it must be present in the gettag conditional.)
+     If you are building an unreleased distribution, add an additional
+     ~0.1 tag; if you're rebilding, bump that tag.
 
   3. Create the new distribution in the apt repository's configuration
      file by editing /mit/debathena/apt/conf/gen-distributions and
      running it with output to the 'distributions' file in the same
-     directory.  Create the skeleton of the dist by running "dareprepro
-     export". (You don't need to do this if you're rebuilding.)
+     directory.  Create the skeleton of the dist by running
+     "dareprepro export" on the build server. (You don't need to do
+     this if you're rebuilding.)
 
   4. Add an appropriate sources.list.d/*/$suite.list entry in
      scripts/build-server. Commit and update
      /mit/debathena/bin/build-server.
 
-  5. On the build server, create a chroot for the new distribution:
+  5. On the build server (as root), create a chroot for the new distribution:
+
+     First, check if /usr/share/debootstrap/scripts/$suite exists.
+     If not, it may require downloading and installing a
+     more recent version of the debootstrap package from the
+     -backports dist corresponding to the build server's OS. (You
+     presumably don't need to do this if you're rebuilding.)
+
+     You could also just go into that directory and do
+     "ln -s gutsy $suite" since it apparently hasn't changed in years.
 
         /mit/debathena/bin/build-server/make-chroot $suite i386
         /mit/debathena/bin/build-server/make-chroot $suite amd64
 
-     This may require downloading and installing a
-     more recent version of the debootstrap package from the
-     -backports dist corresponding to the build server's OS. (You
-     presumably don't need to do this if you're rebuilding.)
 
   6. Fire up screen.
 
@@ -519,7 +525,7 @@ steps below.
   11. Run "make -k all".
       You can watch the builds happen in the other windows of the
       screen session.  It's possible to do several builds at once with
-      make -j N.
+      make -j N (except as of 7/2011 this is a bad idea)
 
 Release engineer: Maintaining autodebathenify
 ---------------------------------------------
