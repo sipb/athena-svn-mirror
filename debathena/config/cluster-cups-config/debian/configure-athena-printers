@@ -51,11 +51,9 @@ require_cups() {
     else
         invoke="/etc/init.d/$rcname"
     fi
-    if ! /etc/init.d/$rcname status; then
-	if ! $invoke start; then
-	    echo "FATAL: Couldn't start CUPS!"
-	    exit 1
-	fi
+    if ! $invoke start; then
+	echo "FATAL: Couldn't start CUPS!"
+	exit 1
     fi
     if [ "$(lpstat -r)" != "scheduler is running" ]; then
       echo "FATAL: cups claimed to have started, but lpstat -r says it's not running!"

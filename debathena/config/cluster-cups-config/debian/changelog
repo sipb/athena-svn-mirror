@@ -1,3 +1,11 @@
+debathena-cluster-cups-config (2.0.4) unstable; urgency=low
+
+  * /etc/init.d/cups status always returns 0, so require_cups() in
+    configure-athena-printers won't actually require cups.  Fix by just
+    calling start, since it's a noop if the service is already running.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 30 Jul 2011 12:25:55 -0400
+
 debathena-cluster-cups-config (2.0.3) unstable; urgency=low
 
   * lpstat -r always returns 0, you need to parse the output
