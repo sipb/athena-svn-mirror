@@ -1,3 +1,10 @@
+debathena-auto-update (1.27) UNRELEASED; urgency=low
+
+  * Call dh_installinit with --no-start, since the debathena-auto-update
+    initscript has no hope of working from inside a postinst
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sat, 30 Jul 2011 16:05:22 -0400
+
 debathena-auto-update (1.26) unstable; urgency=low
 
   * Add some debugging and options to athena-auto-upgrade
