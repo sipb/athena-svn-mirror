@@ -171,7 +171,7 @@ esac
 # This is just the guts of the hackboot script:
 dkargs="DEBCONF_DEBUG=5"
 kargs="$knetinfo locale=en_US $kbdcode \
-       interface=auto \
+       interface=auto acpi=off \
        url=http://18.9.60.73/installer/${UBUNTU_RELEASE}/debathena.preseed \
        debathena/pxetype=cluster --"
 if [ $(echo $kargs | wc -c) -ge 512 ]; then

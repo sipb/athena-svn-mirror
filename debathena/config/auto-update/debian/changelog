@@ -1,9 +1,13 @@
 debathena-auto-update (1.27) UNRELEASED; urgency=low
 
+  [ Geoffrey Thomas ]
   * Call dh_installinit with --no-start, since the debathena-auto-update
     initscript has no hope of working from inside a postinst
 
- -- Geoffrey Thomas <geofft@mit.edu>  Sat, 30 Jul 2011 16:05:22 -0400
+  [ Jonathan Reed ]
+  * Always kexec with acpi=off because either Dell or Linus sucks
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 31 Jul 2011 15:40:05 -0400
 
 debathena-auto-update (1.26) unstable; urgency=low
 
