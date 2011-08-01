@@ -24,6 +24,16 @@ ifneq ($(call compare_debian_version,3.1),y)
 endif
 
 ifeq ($(DISTRO),Ubuntu)
+    ifeq ($(call compare_ubuntu_version,11.10),y)
+        SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu1110,i386_ubuntu1110)
+    endif
+endif
+
+ifeq ($(call compare_debian_version,6),y)
+    SYS_COMPAT += $(call arch_sysnames,amd64_deb60,i386_deb60)
+endif
+
+ifeq ($(DISTRO),Ubuntu)
     ifeq ($(call compare_ubuntu_version,11.04),y)
         SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu1104,i386_ubuntu1104)
     endif
