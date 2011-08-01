@@ -1,0 +1,16 @@
+#!/bin/sh
+
+msg="OpenOffice.org has been renamed to LibreOffice.  You can launch it from
+the Applications menu, in the Office category.  Or you can launch it by
+typing 'soffice' in the Terminal window."
+
+if [ -n "$DISPLAY" ]; then
+    zenity --info --title="OpenOffice.org Renamed" --no-wrap --text="$msg"
+else
+    cat <<EOF
+OpenOffice.org has been renamed to LibreOffice.  You can launch it from
+the Applications menu, in the Office category.  Or you can launch it by
+typing 'soffice' in the Terminal window.
+EOF
+fi
+exit 0

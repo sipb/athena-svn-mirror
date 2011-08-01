@@ -1,10 +1,21 @@
 #!/usr/bin/make -f
 
 HAVE_ICEDTEA = $(shell apt-cache show icedtea6-plugin 2>/dev/null | grep -q '^Version:' && echo y)
+HAVE_LIBREOFFICE = $(shell apt-cache show libreoffice 2>/dev/null | grep -q '^Version:' && echo y)
 
 ifeq ($(HAVE_ICEDTEA),y)
     binary-predeb/debathena-extra-software::
 	echo "debathena-java-plugin=icedtea6-plugin" >> debian/debathena-extra-software.substvars
+endif
+
+ifeq ($(HAVE_LIBREOFFICE),y)
+    install/debathena-extra-software::
+	dh_install debian/ooffice usr/bin
+    binary-predeb/debathena-extra-software::
+	echo "debathena-cool-kids-office-suite=libreoffice" >> debian/debathena-extra-software.substvars
+else
+    binary-predeb/debathena-extra-software::
+	echo "debathena-cool-kids-office-suite=openoffice.org" >> debian/debathena-extra-software.substvars
 endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk

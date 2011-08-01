@@ -1,3 +1,11 @@
+debathena-extra-software (1.2) unstable; urgency=low
+
+  * Drop dependency on openoffice.org-java-common, since openoffice.org
+    (which we also depend on) depends on openoffice.org-java-common
+  * Conditionally depend on libreoffice and ship a wrapper (for now)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 01 Aug 2011 15:06:04 -0400
+
 debathena-extra-software (1.1) unstable; urgency=low
 
   * Remove dependency on wmtop and demote wmbubble to a recommendation.
