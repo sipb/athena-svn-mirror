@@ -22,16 +22,7 @@ esac
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and setting of search path)
 
-# If we see ENV_SET set to empty, we could be a tcsh user who has
-# decided to run bash, or we could be a bash user suffering from the
-# misfeature that the standard xsession script runs the tcsh dotfiles
-# for all users.  Running the environment setup for the former
-# category of user would be unfriendly (it resets the homedir and
-# changes the path), so for now, only run environment setup for bash
-# users.  If the xsession problem is ever fixed, change this
-# conditional to check for '"${ENV_SET+set}" != set' and eliminate the
-# shell check.
-if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
+if [ "${ENV_SET:+set}" != set ]; then
 
 	export ENV_SET=t			# Avoid unnecessary repeat
 	export HOSTTYPE="`/bin/machtype`"

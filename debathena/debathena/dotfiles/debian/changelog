@@ -1,9 +1,13 @@
 debathena-dotfiles (10.0.28-0debathena2) UNRELEASED; urgency=low
 
+  [ Geoffrey Thomas ]
   * quotawarn hasn't been in this package since 10.0.2-0debathena3, so
     we don't need to depend on debathena-quota.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Sun, 26 Jun 2011 21:44:36 -0400
+  [ Jonathan Reed ]
+  * Remove unneeded check for bash, per the comment (Trac: #878)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 01 Aug 2011 16:20:13 -0400
 
 debathena-dotfiles (10.0.28-0debathena1) unstable; urgency=low
 
