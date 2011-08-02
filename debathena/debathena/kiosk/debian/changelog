@@ -1,3 +1,11 @@
+debathena-kiosk (1.4.2) unstable; urgency=low
+
+  * Call .run() on the dialog so that people can press Esc (Trac: #1007)
+  * Make the button window non-resizable because the resize anchor is
+    giant and ugly these days
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 02 Aug 2011 18:20:51 -0400
+
 debathena-kiosk (1.4.1) unstable; urgency=low
 
   * Offer the user a chance to run the standalone reg applet, 

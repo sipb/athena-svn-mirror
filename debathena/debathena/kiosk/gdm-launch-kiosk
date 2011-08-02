@@ -40,6 +40,8 @@ class Kiosk:
         self.xml.signal_autoconnect(self)
         # Turn off all window decorations for the login screen.
         self.kioskWindow.set_decorated(False)
+        # Because the resize anchor in Natty is obscenely large
+        self.kioskWindow.set_property('resizable', False)
         self.kioskDialog.set_decorated(False)
         # Position the window near the bottom of the screen, in the center.
         self.kioskWindow.set_gravity(gtk.gdk.GRAVITY_SOUTH)
@@ -50,7 +52,7 @@ class Kiosk:
 
     def kioskButton_on_click(self, button):
         if not self.sessionEnding:
-            self.kioskDialog.show()
+            self.kioskDialog.run()
 
     def kioskDialogResponseHandler(self, dialog, response_id):
         if response_id == 1 and not self.sessionEnding:
