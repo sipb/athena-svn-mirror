@@ -171,23 +171,40 @@ esac
 # This is just the guts of the hackboot script:
 dkargs="DEBCONF_DEBUG=5"
 kargs="$knetinfo locale=en_US $kbdcode \
-       interface=auto acpi=off \
+       interface=auto \
        url=http://18.9.60.73/installer/${UBUNTU_RELEASE}/debathena.preseed \
        debathena/pxetype=cluster --"
+product_name="$(cat /sys/class/dmi/id/product_name | sed -e 's/[ ]*$//')"
+# Yes, really.  The actual value of product_name on the Vostro is:
+# "Vostro 320                   "
+case "$product_name" in
+  "Vostro 320")
+    # This is not so much Vostro 320-specific as it is i915 specific
+    # Known to be necessary on PCI ID 8086:2e32, rev 03
+    debug "Waving dead chicken..."
+    # Run the video card's POST to reset it
+    vbetool post
+    # Disable the framebuffer, falling back to VGA
+    echo 0 > /sys/class/vtconsole/vtcon1/bind
+    ;;
+  "OptiPlex 790")
+    debug "Adding 'reboot=pci' for Dell 790"
+    kargs="$kargs reboot=pci"
+    ;;
+esac
 if [ $(echo $kargs | wc -c) -ge 512 ]; then
   complain "kargs exceeds 512 bytes.  That's not good."
-fi
-debug "Would execute kexec with --append=\"$dkargs $kargs\""
-if [ $DEBUG -eq 1 ]; then
-    exit 0
 fi
 # Don't kexec -e here, because modern Ubuntu is unable to kexec while
 # X is running.  Instead, kexec -l and let the init script take care of.
 # Until Oneiric, when this will probably stop working if kexec-tools hasn't
 # been Upstartified.
-/sbin/kexec -l linux --append="$dkargs $kargs" --initrd=initrd.gz
+$MAYBE /sbin/kexec -l linux --append="$dkargs $kargs" --initrd=initrd.gz
+[ $DEBUG -eq 1 ] && exit 0
 if [ "`cat /sys/kernel/kexec_loaded`" != "1" ]; then
   echo "Hrm, looks like kexec -l didn't work.  This upgrade might fail."
+else
+  echo "Kernel loaded.  Rebooting in order to exec it."
 fi
 reboot
 exit 0
