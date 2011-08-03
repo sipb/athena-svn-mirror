@@ -1,13 +1,13 @@
 debathena-auto-update (1.29) unstable; urgency=low
 
-  * Only wave dead chickens on cluster hardware
+  * Only do the aforementioned VGA tricks on cluster hardware
   * It's pointless to reboot if we haven't loaded a kexec kernel
 
  -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Aug 2011 12:06:11 -0400
 
 debathena-auto-update (1.28) unstable; urgency=low
 
-  * Always wave dead chickens
+  * Always POST the video card and turn off VGA
 
  -- Jonathan Reed <jdreed@mit.edu>  Tue, 02 Aug 2011 23:36:10 -0400
 
@@ -19,7 +19,7 @@ debathena-auto-update (1.27) unstable; urgency=low
 
   [ Jonathan Reed ]
   * Reboot with 'reboot=pci' on the Dell 790 (Trac #993)
-  * Wave dead chickens at the framebuffer on the Vostro 320 (Trac #1004)
+  * POST the video card and turn off VGA on the Vostro 320 (Trac #1004)
 
  -- Jonathan Reed <jdreed@mit.edu>  Tue, 02 Aug 2011 16:59:35 -0400
 
