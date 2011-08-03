@@ -177,9 +177,13 @@ kargs="$knetinfo locale=en_US $kbdcode \
 dead_chicken() {
   debug "Waving dead chicken..."
   # Run the video card's POST to reset it
-  vbetool post
+  $MAYBE vbetool post
   # Disable the framebuffer, falling back to VGA
-  echo 0 > /sys/class/vtconsole/vtcon1/bind
+  if [ $DEBUG -eq 1 ]; then
+      echo "Would echo 0 > /sys/class/vtconsole/vtcon1/bind"
+  else
+      echo 0 > /sys/class/vtconsole/vtcon1/bind
+  fi
 }
 product_name="$(cat /sys/class/dmi/id/product_name | sed -e 's/[ ]*$//')"
 # Yes, really.  The actual value of product_name on the Vostro is:
