@@ -174,26 +174,43 @@ kargs="$knetinfo locale=en_US $kbdcode \
        interface=auto \
        url=http://18.9.60.73/installer/${UBUNTU_RELEASE}/debathena.preseed \
        debathena/pxetype=cluster --"
+dead_chicken() {
+  debug "Waving dead chicken..."
+  # Run the video card's POST to reset it
+  vbetool post
+  # Disable the framebuffer, falling back to VGA
+  echo 0 > /sys/class/vtconsole/vtcon1/bind
+}
 product_name="$(cat /sys/class/dmi/id/product_name | sed -e 's/[ ]*$//')"
 # Yes, really.  The actual value of product_name on the Vostro is:
 # "Vostro 320                   "
 case "$product_name" in
-  "OptiPlex 790")
-    debug "Adding 'reboot=pci' for Dell 790"
-    kargs="$kargs reboot=pci"
+  # This is not so much Vostro 320-specific as it is i915 specific
+  # Known to be necessary on PCI ID 8086:2e32, rev 03
+  # Actually, on all hardware, because Dell sucks.  Or possibly Ubuntu.
+  OptiPlex*)
+    model="$(echo "$product_name" | cut -d\  -f2)"
+    case "$model" in
+      790)
+	debug "Adding 'reboot=pci' for Dell 790"
+	kargs="$kargs reboot=pci"
+	dead_chicken
+	;;
+      GX620|745|755|760|780)
+	dead_chicken
+	;;
+    esac
+    ;;
+  Vostro\ 320)
+    dead_chicken
+    ;;
+  *)
+    echo "You appear to have functional hardware.  Huzzah."
     ;;
 esac
 if [ $(echo $kargs | wc -c) -ge 512 ]; then
   complain "kargs exceeds 512 bytes.  That's not good."
 fi
-# This is not so much Vostro 320-specific as it is i915 specific
-# Known to be necessary on PCI ID 8086:2e32, rev 03
-# Actually, on all hardware, because Dell sucks.  Or possibly Ubuntu.
-debug "Waving dead chicken..."
-# Run the video card's POST to reset it
-vbetool post
-# Disable the framebuffer, falling back to VGA
-echo 0 > /sys/class/vtconsole/vtcon1/bind
 # Don't kexec -e here, because modern Ubuntu is unable to kexec while
 # X is running.  Instead, kexec -l and let the init script take care of.
 # Until Oneiric, when this will probably stop working if kexec-tools hasn't
@@ -201,9 +218,9 @@ echo 0 > /sys/class/vtconsole/vtcon1/bind
 $MAYBE /sbin/kexec -l linux --append="$dkargs $kargs" --initrd=initrd.gz
 [ $DEBUG -eq 1 ] && exit 0
 if [ "`cat /sys/kernel/kexec_loaded`" != "1" ]; then
-  echo "Hrm, looks like kexec -l didn't work.  This upgrade might fail."
-else
-  echo "Kernel loaded.  Rebooting in order to exec it."
+  echo "Hrm, looks like kexec -l didn't work.  This upgrade will fail."
+  exit 1
 fi
+echo "Kernel loaded.  Rebooting in order to exec it."
 reboot
 exit 0
