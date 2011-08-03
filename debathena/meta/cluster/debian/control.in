@@ -17,7 +17,6 @@ Depends: debathena-cluster-branding,
  debathena-bugme,
  debathena-thirdparty,
  debathena-recovery-mode-config,
- debathena-cluster-cups-config,
  debathena-athinfod-cluster-config,
  ${misc:Depends}
 Conflicts: debathena-cluster-printing-config (<= 1.16)

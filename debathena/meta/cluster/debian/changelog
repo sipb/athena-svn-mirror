@@ -1,3 +1,10 @@
+debathena-cluster (1.10) unstable; urgency=low
+
+  * Remove dependency on debathena-cluster-cups-config, since that package
+    is no longer used
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Aug 2011 08:49:04 -0400
+
 debathena-cluster (1.9) unstable; urgency=low
 
   * Convert to non-equivs package (no other changes)
