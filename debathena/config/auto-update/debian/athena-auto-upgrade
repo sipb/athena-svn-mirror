@@ -176,8 +176,13 @@ kargs="$knetinfo locale=en_US $kbdcode \
        debathena/pxetype=cluster --"
 dead_chicken() {
   debug "Waving dead chicken..."
+  debug "Scribbling over Plymouth"
+  ln -nsf /bin/true /sbin/plymouthd
+  $MAYBE chvt 1
+  sleep 2
   # Run the video card's POST to reset it
   $MAYBE vbetool post
+  sleep 2
   # Disable the framebuffer, falling back to VGA
   if [ $DEBUG -eq 1 ]; then
       echo "Would echo 0 > /sys/class/vtconsole/vtcon1/bind"
