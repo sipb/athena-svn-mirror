@@ -1,3 +1,11 @@
+debathena-gdm-config (1.31) unstable; urgency=low
+
+  * Only display the nologin-monitor window on startup if the file exists
+    AND this is -cluster
+  * Include a timestamp in the window
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 04 Aug 2011 11:36:58 -0400
+
 debathena-gdm-config (1.30) unstable; urgency=low
 
   * Display the nologin-monitor window if the file exists when we start up

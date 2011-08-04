@@ -10,6 +10,7 @@ import gobject
 import sys
 import os
 import subprocess
+import time
 from optparse import OptionParser
 
 SM_DBUS_NAME = "org.gnome.SessionManager"
@@ -34,7 +35,7 @@ class GDMSucks:
         self.window.set_property('can-focus', False)
         box = gtk.VBox()
         self.label = gtk.Label()
-        self.label.set_markup('<span font_desc="Sans Bold 24">Software updates are being applied.\n\nThis workstation is temporarily unavailable.\n\nPlease use another workstation.</span>')
+        self.label.set_markup('<span font_desc="Sans Bold 24">Software updates are being applied.\n\nThis workstation is temporarily unavailable.\n\nPlease use another workstation.\n\n</span>(Update started at %s)' % (time.strftime("%Y-%m-%d %H:%M")))
         self.label.set_property('can-focus', False)
         self.label.set_justify(gtk.JUSTIFY_CENTER)
         box.pack_start(self.label, True, True, 5)
@@ -50,7 +51,7 @@ class GDMSucks:
         except OSError:
             # Assume cluster
             metapackage = 'debathena-cluster'
-        if os.path.isfile("/var/run/athena-nologin"):
+        if (self.debug or metapackage == 'debathena-cluster') and os.path.isfile("/var/run/athena-nologin"):
             self.window.show_all()
         if self.debug or metapackage == 'debathena-cluster':
             self.gfile = gio.File("/var/run/athena-nologin")
@@ -61,6 +62,7 @@ class GDMSucks:
         if self.debug:
             print str(evt_type), file1.get_path()
         if evt_type == gio.FILE_MONITOR_EVENT_CREATED:
+            self.label.set_markup('<span font_desc="Sans Bold 24">Software updates are being applied.\n\nThis workstation is temporarily unavailable.\n\nPlease use another workstation.\n\n</span>(Update started at %s)' % (time.strftime("%Y-%m-%d %H:%M")))
             self.window.show_all()
         if evt_type == gio.FILE_MONITOR_EVENT_DELETED:
             self.window.hide()
