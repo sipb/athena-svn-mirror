@@ -9,4 +9,9 @@
 			</dir>
 		</dir>
 	</dir>
+	<dir name="apps">
+		<dir name="gnome-screensaver">
+			<entry name="idle_activation_enabled" mtime="1312575197" type="bool" value="false"/>
+		</dir>
+	</dir>
 </gconf>

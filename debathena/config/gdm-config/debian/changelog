@@ -3,8 +3,11 @@ debathena-gdm-config (1.31) unstable; urgency=low
   * Only display the nologin-monitor window on startup if the file exists
     AND this is -cluster
   * Include a timestamp in the window
+  * Disable the screensaver on the login screen because Natty's metacity
+    is too stupid to redraw the screen correctly (and we blank the screen
+    via DPMS anyway)
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 04 Aug 2011 11:36:58 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 05 Aug 2011 16:16:32 -0400
 
 debathena-gdm-config (1.30) unstable; urgency=low
 
