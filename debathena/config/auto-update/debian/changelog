@@ -1,3 +1,10 @@
+debathena-auto-update (1.31) unstable; urgency=low
+
+  * Ship a cron job to prevent auto-update from wedging for more than an
+    hour.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 08 Aug 2011 10:31:31 -0400
+
 debathena-auto-update (1.30) unstable; urgency=low
 
   * If we do stupid VGA tricks, we need to scribble over plymouth
