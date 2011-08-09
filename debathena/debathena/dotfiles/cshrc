@@ -11,7 +11,7 @@ set initdir=/usr/lib/init
 set SILENT=no
 if ($?command) then
   switch ("$command")
-    case /usr/lib/openssh/sftp-server:
+    case '*/usr/lib/openssh/sftp-server':
       set SILENT=yes
       breaksw
     case 'scp *':

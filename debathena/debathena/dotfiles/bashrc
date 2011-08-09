@@ -9,7 +9,7 @@ initdir=/usr/lib/init
 # Determine if we're in an sftp or scp session and if so, be quiet
 SILENT=no
 case "$BASH_EXECUTION_STRING" in
-    /usr/lib/openssh/sftp-server)
+    */usr/lib/openssh/sftp-server)
 	SILENT=yes
 	;;
     scp\ *)

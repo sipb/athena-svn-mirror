@@ -1,4 +1,4 @@
-debathena-dotfiles (10.0.28-0debathena2) UNRELEASED; urgency=low
+debathena-dotfiles (10.0.28-0debathena2) unstable; urgency=low
 
   [ Geoffrey Thomas ]
   * quotawarn hasn't been in this package since 10.0.2-0debathena3, so
@@ -6,8 +6,13 @@ debathena-dotfiles (10.0.28-0debathena2) UNRELEASED; urgency=low
 
   [ Jonathan Reed ]
   * Remove unneeded check for bash, per the comment (Trac: #878)
+  * Actually fix Trac #512 by checking for the correct values in $command
+    and $BASH_EXECUTION_STRING (Hint: the original code didn't work when
+    it the sftp-server was nice'd).  It's unclear that the scp-related
+    block of the case statements ever get called, but scp also doesn't
+    suck with verbose dotfiles, so "meh"
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 01 Aug 2011 16:20:13 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 09 Aug 2011 09:10:24 -0400
 
 debathena-dotfiles (10.0.28-0debathena1) unstable; urgency=low
 
