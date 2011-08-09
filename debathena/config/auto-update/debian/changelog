@@ -1,3 +1,10 @@
+debathena-auto-update (1.33) unstable; urgency=low
+
+  * Ensure that aptitude install succeeds before describing the update as
+    successful, which apparently has been broken since 1.13
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 08 Aug 2011 23:03:50 -0400
+
 debathena-auto-update (1.32) unstable; urgency=low
 
   * Revert changes from 1.31 (which didn't actually work) and instead run

@@ -336,10 +336,11 @@ elif result=$(aptitude -F "%p" search '~b')
   v aptitude --quiet --assume-yes keep-all
   complain "packages would be broken by update:" $result
 else
-  v aptitude $APTITUDE_OPTS --quiet --assume-yes install
-  # Successful update, reset $updlast
-  updlast=$(date +"%s")
-  save_success "Successful update"
+  if v aptitude $APTITUDE_OPTS --quiet --assume-yes install; then
+    # Successful update, reset $updlast
+    updlast=$(date +"%s")
+    save_success "Successful update"
+  fi
 fi
 
 # Finally, update the apt-file cache
