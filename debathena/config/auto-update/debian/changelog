@@ -1,3 +1,10 @@
+debathena-auto-update (1.34) unstable; urgency=low
+
+  * Depend on the timeout package if necessary. Also special-case that
+    package's timeout command, as it has different syntax.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 09 Aug 2011 04:15:19 -0400
+
 debathena-auto-update (1.33) unstable; urgency=low
 
   * Ensure that aptitude install succeeds before describing the update as

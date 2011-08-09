@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: debathena-auto-update
 Architecture: all
-Depends: ${misc:Depends}, bsdutils, debathena-desync, cron, aptitude, apt-file, kexec-tools, bc, debathena-license-config
+Depends: ${misc:Depends}, bsdutils, debathena-desync, cron, aptitude, apt-file, kexec-tools, bc, debathena-license-config, coreutils (>= 7.5) | timeout
 Description: Performs automatic updates for Athena machines.
  This package performs automatic updates for Athena machines.
