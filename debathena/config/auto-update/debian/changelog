@@ -1,3 +1,10 @@
+debathena-auto-update (1.32) unstable; urgency=low
+
+  * Revert changes from 1.31 (which didn't actually work) and instead run
+    all aptitude --download-only invocations inside timeout(1).
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 08 Aug 2011 21:46:02 -0400
+
 debathena-auto-update (1.31) unstable; urgency=low
 
   * Ship a cron job to prevent auto-update from wedging for more than an

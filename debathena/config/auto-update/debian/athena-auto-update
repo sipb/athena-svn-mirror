@@ -291,7 +291,7 @@ if v aptitude --simulate --assume-yes full-upgrade | grep -q "$pattern"; then
 fi
 
 # Download packages first.
-if ! v aptitude --quiet --assume-yes --download-only full-upgrade; then
+if ! v timeout -k 10s 30m aptitude --quiet --assume-yes --download-only full-upgrade; then
   complain "download failed"
   exit
 fi
@@ -324,7 +324,7 @@ esac
 # that the best course of action is to remove the Debathena
 # metapackage, so be paranoid about that.
 v aptitude --quiet --assume-yes keep-all
-v aptitude --quiet --assume-yes --download-only dist-upgrade
+v timeout -k 10s 30m aptitude --quiet --assume-yes --download-only dist-upgrade
 if result=$(aptitude -F "%p" search '?action(remove) (^debathena-cluster$ | ^debathena-workstation$ | ^debathena-login$ | ^debathena-standard$ | ^openafs-modules-~D^linux-image-)')
   [ -n "$result" ]; then
   echo "** metapackages would be removed by the update, aborting:" $result
