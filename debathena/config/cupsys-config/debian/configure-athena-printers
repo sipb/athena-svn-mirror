@@ -2,6 +2,7 @@
 
 PHAROS_PRINTERS="mitprint"
 ATHENA_PRINTERS=
+DEFAULT_PRINTER="mitprint"
 PRLIST="/var/lib/debathena-cupsys-config.added_printers"
 
 add_printers() {
@@ -28,6 +29,15 @@ add_printers() {
 	    echo "FAILED to add Athena printer $a"
 	fi
     done
+    # Dear CUPS,  
+    # There exist return codes.  Use them.
+    # Love, Debathena
+    if [ "$(lpstat -d)" = "no system default destination" ]; then
+	lpadmin -d mitprint
+    fi
+    # We don't need to deal with this on uninstall.  CUPS is
+    # smart enough (for now, at least) to not retain a default when 
+    # the printer in question is deleted.
 }
 
 del_printers() {
