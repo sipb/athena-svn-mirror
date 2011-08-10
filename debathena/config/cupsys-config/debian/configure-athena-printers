@@ -33,7 +33,7 @@ add_printers() {
     # There exist return codes.  Use them.
     # Love, Debathena
     if [ "$(lpstat -d)" = "no system default destination" ]; then
-	lpadmin -d mitprint
+	lpadmin -d $DEFAULT_PRINTER
     fi
     # We don't need to deal with this on uninstall.  CUPS is
     # smart enough (for now, at least) to not retain a default when 
