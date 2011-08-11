@@ -1,4 +1,4 @@
-debathena-dotfiles (10.0.28-0debathena2) unstable; urgency=low
+debathena-dotfiles (10.0.29-0debathena1) unstable; urgency=low
 
   [ Geoffrey Thomas ]
   * quotawarn hasn't been in this package since 10.0.2-0debathena3, so
