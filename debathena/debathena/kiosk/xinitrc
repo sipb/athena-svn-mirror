@@ -40,6 +40,9 @@ if [ "$choice" = "reg" ]; then
     exit 0
 fi
 
+# Warn the user that printing is wrong.
+zenity --warning --title="No Printing" --text="You will not be able to print from this browser session.  Submitted print jobs will be discarded and cannot be released from Pharos printers.\n\nIf you need to print, please log in to a normal Athena session.  If you are a visitor looking to print a Campus Map, please visit the Information Center in Room 7-121."
+
 # Create a new firefox profile.
 rm -rf .mozilla
 firefox -CreateProfile default > /dev/null || exit 1

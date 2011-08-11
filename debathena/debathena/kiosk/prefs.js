@@ -8,6 +8,11 @@ user_pref("network.protocol-handler.external.news", false);
 user_pref("network.protocol-handler.external.nntp", false);
 user_pref("network.protocol-handler.external-default", false);
 
+// "Disable" printing.  (Doesn't actually disable it, but gives 
+// the illusion of doing so.  Users can't get their jobs anyway)
+user_pref("print.always_print_silent",true);
+user_pref("print.show_print_progress",false);
+
 // Disable the compatibility check for the r-kiosk extension
 // (the per-version preference is used in firefox 3.6+).
 user_pref("extensions.checkCompatibility", false);

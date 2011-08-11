@@ -1,3 +1,10 @@
+debathena-kiosk (1.4.3) unstable; urgency=low
+
+  * "Disable" printing and warn the user that they're doing it wrong
+    (Trac: #1016)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 11 Aug 2011 09:50:14 -0400
+
 debathena-kiosk (1.4.2) unstable; urgency=low
 
   * Call .run() on the dialog so that people can press Esc (Trac: #1007)
