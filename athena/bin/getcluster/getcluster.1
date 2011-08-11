@@ -36,7 +36,7 @@ By default,
 .B getcluster
 looks up cluster information for the current hostname.  This name may
 be overridden by the contents of the file
-.B /etc/athena/cluster
+.B /etc/cluster
 or via the command line using the
 .B \-h
 option.  A cluster name such as
@@ -44,12 +44,12 @@ option.  A cluster name such as
 may be given in place of a hostname.
 .PP
 If
-.B /etc/athena/cluster.fallback
+.B /etc/cluster.fallback
 is present, that file is read and the cluster records in it are
 considered lower priority than the Hesiod cluster records.  For each
 variable name in the Hesiod cluster record, no record with the same
 variable name in the fallback file will be considered.  If
-.B /etc/athena/cluster.local
+.B /etc/cluster.local
 is present, that file is read and the cluster records in it are
 considered higher priority than the Hesiod cluster records and
 fallback cluster records.
@@ -122,9 +122,9 @@ database for the host's cluster information.
 is usually invoked from
 .I save_cluster_info (8),
 which places its output in the files
-.I /var/athena/clusterinfo
+.I /var/run/athena-clusterinfo.csh
 and
-.I /var/athena/clusterinfo.bsh
+.I /var/run/athena-clusterinfo.sh
 to be accessed by the C shell in a user's .login file and the Bourne
 shell in a user's .profile, respectively.  It may also be invoked
 directly by any user.
@@ -161,3 +161,6 @@ Greg Hudson, MIT Information Systems
 Copyright 1987, 1997, Massachusetts Institute of Technology
 .br
 .SH BUGS
+If there exist two unversioned tags of the same name, getcluster will
+pick whichever one comes last (either in Hesiod output or in a local
+file).  This can be regarded as a feature instead of a bug.

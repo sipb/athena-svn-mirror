@@ -1,3 +1,10 @@
+debathena-getcluster (10.0.1-0debathena1) unstable; urgency=low
+
+  * Quote shell output (Trac: #1037)
+  * Update the man page for the 21st century (Trac: #964)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 11 Aug 2011 16:26:14 -0400
+
 debathena-getcluster (10.0.0-0debathena2) unstable; urgency=low
 
   * Change DEB_AUTO_UPDATE_AUTOCONF to 2.50, not 1.
