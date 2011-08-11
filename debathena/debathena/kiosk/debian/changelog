@@ -2,8 +2,9 @@ debathena-kiosk (1.4.3) unstable; urgency=low
 
   * "Disable" printing and warn the user that they're doing it wrong
     (Trac: #1016)
+  * Support FF 5.
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 11 Aug 2011 09:50:14 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 11 Aug 2011 12:28:24 -0400
 
 debathena-kiosk (1.4.2) unstable; urgency=low
 

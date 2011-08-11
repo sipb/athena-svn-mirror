@@ -17,6 +17,8 @@ user_pref("print.show_print_progress",false);
 // (the per-version preference is used in firefox 3.6+).
 user_pref("extensions.checkCompatibility", false);
 user_pref("extensions.checkCompatibility.3.6", false);
+// Because Firefox's new version numbering scheme is totally a good idea
+user_pref("extensions.checkCompatibility.5.0", false);
 
 // Set the home page.
 user_pref("browser.startup.homepage", "file:///usr/share/debathena-kiosk/index.html");
