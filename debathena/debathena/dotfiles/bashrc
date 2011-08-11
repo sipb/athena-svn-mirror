@@ -106,7 +106,11 @@ fi
 # Set up standard bash shell initializations
 
 if [ "${XSESSION+set}" = set ]; then
+   if [ -x /usr/bin/gnome-session-quit ]; then
+	logout () { gnome-session-quit --no-prompt; exit; } # logout for X
+   else   
 	logout () { gnome-session-save --kill --silent; exit; } # logout for X
+   fi
 fi
 
 #   aliases dealing with adding locker programs

@@ -1,3 +1,9 @@
+debathena-dotfiles (10.0.30-0debathena1) UNRELEASED; urgency=low
+
+  * Update logout alias for GNOME 3.0 (Trac: #1027)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 11 Aug 2011 18:08:36 -0400
+
 debathena-dotfiles (10.0.29-0debathena1) unstable; urgency=low
 
   [ Geoffrey Thomas ]

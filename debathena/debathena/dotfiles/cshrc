@@ -148,7 +148,11 @@ endif
 # Set up standard C shell aliases
 
 if ($?XSESSION) then
-  alias logout	'exit && gnome-session-save --kill --silent'	# logout for X
+  if ( -x /usr/bin/gnome-session-quit ) then
+    alias logout	'exit && gnome-session-quit --no-prompt'	# logout for X
+  else
+    alias logout	'exit && gnome-session-save --kill --silent'	# logout for X
+  endif
 endif
 
 #   aliases dealing with subjects
