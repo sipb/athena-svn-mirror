@@ -25,9 +25,10 @@ fi
 # To adjust the environment initialization sequence, see the instructions in
 # the .bashrc file.
 
-# If you want to CHANGE the login initialization sequence, revise this
-# .bash_login file (the one you're reading now).  You may want to copy
-# the contents of the system-wide bash_login file as a starting point.
+# In most cases, you will never need to edit this file.  All the 
+# customizations you could want to make can be made by editing one
+# of the user dotfiles, such as ~/.bashrc.mine, ~/.bash_environment, or
+# ~/.startup.tty.
 # 
 # WARNING: If you revise this .bash_login file, you will not
 # automatically get any changes that Athena may make to the

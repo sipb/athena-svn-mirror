@@ -31,9 +31,10 @@ fi
 #      .bashrc.mine  - setup bash environment (set shell variables, aliases,
 #                     unset system defaults, etc.)
                       
-# If you want to CHANGE the bash initialization sequence, revise this .bashrc
-# file (the one you're reading now).  You may want to copy the contents of
-# the system-wide bashrc file as a starting point.
+# In most cases, you will never need to edit this file.  All the 
+# customizations you could want to make can be made by editing one
+# of the user dotfiles, such as ~/.bashrc.mine, ~/.bash_environment, or
+# ~/.startup.tty.
 # 
 # WARNING: If you revise this .bashrc file, you will not automatically
 # get any changes that Athena may make to the system-wide file at a

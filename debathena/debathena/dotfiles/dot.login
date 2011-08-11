@@ -25,9 +25,10 @@ endif
 # To adjust the environment initialization sequence, see the instructions in
 # the .cshrc file.
 
-# If you want to CHANGE the login initialization sequence, revise this .login
-# file (the one you're reading now).  You may want to copy the contents of
-# the system-wide login file as a starting point.
+# In most cases, you will never need to edit this file.  All the 
+# customizations you could want to make can be made by editing one
+# of the user dotfiles, such as ~/.cshrc.mine, ~/.environment, 
+# ~/.startup.tty or ~/.startup.X
 #
 # WARNING: If you revise this .login file, you will not automatically
 # get any changes that Athena may make to the system-wide file at a

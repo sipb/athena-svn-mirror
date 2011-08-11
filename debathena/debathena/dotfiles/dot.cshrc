@@ -5,7 +5,7 @@
 # This file sources a system-wide cshrc file, which:
 #      - sets up standard environment variables
 #      - sources user file ~/.environment, if it exists
-#      - sets standard path, OR sources user file ~/.path, if it exists
+#      - sets standard path
 #      - sets up standard C shell variables, aliases, etc.
 #      - source user file ~/.cshrc.mine, if it exists
 
@@ -28,15 +28,13 @@ endif
 #
 #      .environment - set up session environment (set environmental
 #                     variables, attach lockers, etc.)
-#      .path        - set default search path (you can refer to the shell
-#                     variable $athena_path, which lists athena default path,
-#                     when you set path, e.g., "set path=(. $athena_path)")
 #      .cshrc.mine  - set up C shell environment (set shell variables,
 #                     aliases, unset system defaults, etc.)
 
-# If you want to CHANGE the C shell initialization sequence, revise
-# this .cshrc file (the one you're reading now). You may want to copy
-# the contents of the system-wide cshrc file as a starting point.
+# In most cases, you will never need to edit this file.  All the 
+# customizations you could want to make can be made by editing one
+# of the user dotfiles, such as ~/.cshrc.mine, ~/.environment, 
+# ~/.startup.tty or ~/.startup.X
 #
 # WARNING: If you revise this .cshrc file, you will not automatically
 # get any changes that Athena may make to the system-wide file at a
