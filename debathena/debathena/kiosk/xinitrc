@@ -64,6 +64,7 @@ fi
 
 # Apply our preference settings and UI customizations.
 cat "$prefs" >> "$profdir/prefs.js" || exit 1
+mkdir -p "$profdir/chrome"
 cp "$chrome" "$profdir/chrome/userChrome.css" || exit 1
 
 # Launch firefox.
