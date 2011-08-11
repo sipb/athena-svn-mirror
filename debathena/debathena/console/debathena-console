@@ -8,6 +8,8 @@ Based on pygtk textview example code
 import os
 import sys
 import time
+# We don't get argparse until 2.7 which is natty-only
+from optparse import OptionParser  
 
 import gobject
 import gtk
@@ -207,7 +209,7 @@ class ConsoleViewer(gtk.Window):
             # act like tee, so the logs still end up in .xsession-errors
             print data,
             text_buffer.insert_with_tags_by_name(text_buffer.get_end_iter(),
-                                                 data, tag)
+                                                 time.strftime("%H:%M ", time.localtime()) + data, tag)
 
             text_view.scroll_to_mark(text_buffer.create_mark(None, text_buffer.get_end_iter(), False), 0, False)
 
@@ -227,10 +229,14 @@ class ConsoleViewer(gtk.Window):
             gobject.io_add_watch(f, gobject.IO_IN, got_data, fds[i][0])
 
 def main():
+    parser = OptionParser()
+    parser.add_option("-n","--names", action="store_true", dest="names", 
+                      default=False, help="Use named files instead of FDs")
+    (opts, args) = parser.parse_args()
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-    if len(sys.argv) >= 2:
-        ConsoleViewer(fds=[(type, int(fd)) for x in sys.argv[1:]
-                            for type, fd in [x.split(':')]])
+    if len(args) >= 1:
+        ConsoleViewer(fds=[(type, opts.names and os.open(fname, os.O_RDONLY | os.O_NONBLOCK) or int(fname)) for x in args
+                           for type, fname in [x.split(':')]])
     else:
         ConsoleViewer(fds=[("stdout", 0)])
     gtk.main()

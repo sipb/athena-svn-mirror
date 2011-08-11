@@ -1,3 +1,10 @@
+debathena-console (1.2) unstable; urgency=low
+
+  * Actually support passing filenames on the command line
+  * Add a timestamp to each line (c.f. /etc/athena/console)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 11 Aug 2011 14:38:24 -0400
+
 debathena-console (1.1) unstable; urgency=low
 
   * Fix a line that used a variable before defining it.
