@@ -23,6 +23,11 @@ ifneq ($(call compare_debian_version,3.1),y)
     $(error Debian version $(DEBIAN_VERSION) is too old)
 endif
 
+# The order of the following code is important, and ensures the correct
+# relative order of Debian and Ubuntu releases. (Note this is not quite
+# chronological order, e.g., Debian 6.0 released before Ubuntu 11.04,
+# but after its DebianImportFreeze.)
+
 ifeq ($(DISTRO),Ubuntu)
     ifeq ($(call compare_ubuntu_version,11.10),y)
         SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu1110,i386_ubuntu1110)
