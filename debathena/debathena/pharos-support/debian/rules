@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+
+DEB_DH_FIXPERMS_ARGS = -X/usr/lib/cups/backend/pharos
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+# CUPS decides whether to execute a backend as root or lp based on whether
+# it's executable as lp or not.  We need to be executed as root in order
+# to exec the lpd backend.  "Yay".
+binary-install/debathena-pharos-support::
+	chmod 744 debian/debathena-pharos-support/usr/lib/cups/backend/pharos
+

@@ -1,0 +1,51 @@
+#!/bin/sh
+#
+# Usage: $0 [job_id] [username] [title] [copies] [options] [filename]
+#
+# Exit codes: 0 - Success
+#             1 - Failed
+#             2 - Auth required
+#             3 - Hold (try again later)
+#             4 - Stop (don't retry)
+#             5 - Cancel (cancel job and remove from queue
+
+discovery() {
+    printf "%s %s \"%s\" \"%s\"\n" network pharos Unknown "MIT Pharos Printer"
+}
+
+usage() {
+    echo "$0 job-id username title copies options [filename]"
+}
+
+case $# in
+    0)
+	discovery && exit 0
+	;;
+    5|6)
+	;;
+    *)
+	usage && exit 1
+	;;
+esac
+
+# I wonder if this works for Jerry Saltzer?
+DEVICE_URI="$(echo $DEVICE_URI | tr 'A-Z' 'a-z' | sed -e 's|^pharos://||')"
+PHAROS_QUEUE="$(echo $DEVICE_URI | awk -F/ '{print $1}')"
+case "$PHAROS_QUEUE" in
+    bw|color)
+	;;
+    *)
+	# Unknown Printer
+	exit 4         #CUPS_BACKEND_STOP
+	;;
+esac
+USERNAME="$(echo $DEVICE_URI | awk -F/ '{print $2}')"
+# Should we test for [A-Za-z] instead?
+if [ -z "$USERNAME" ]; then
+    USERNAME="$2"
+fi
+JOBID="$1"
+shift 2
+export DEVICE_URI="lpd://mitprint.mit.edu/${PHAROS_QUEUE}"
+exec /usr/lib/cups/backend/lpd "$JOBID" "$USERNAME" "$@"
+

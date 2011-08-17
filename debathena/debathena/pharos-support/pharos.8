@@ -1,0 +1,27 @@
+.TH pharos 8 "August 2011" Debathena debathena-pharos-support
+.SH NAME
+pharos \- CUPS backend for Pharos queues
+.SH SYNOPSIS
+(This command should never be invoked manually)
+.SH DESCRIPTION
+The
+.B pharos
+backend takes URIs of the form
+.I pharos://queue/user
+where 
+.I queue
+is one of the supported MIT Pharos queues ('bw' or 'color') and
+.I user
+is a Kerberos username.  This backend is only intended for use when
+the local username does not match the user's Kerberos username.  
+
+The backend does some argument parsing and invokes the built-in CUPS 
+.B lpd
+backend.
+.SH BUGS
+Probably.
+.SH AUTHOR
+Debathena Project
+.SH "SEE ALSO"
+The CUPS documentation for the lpd backend, if it existed in man page
+format and was accurate, but it doesn't and isn't.
