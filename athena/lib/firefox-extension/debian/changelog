@@ -1,3 +1,9 @@
+debathena-firefox-extension (10.0.7-0debathena3) unstable; urgency=low
+
+  * Set maxVersion to * to keep up with Mozilla's hourly release cycle
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 17 Aug 2011 09:35:53 -0400
+
 debathena-firefox-extension (10.0.7-0debathena2) unstable; urgency=low
 
   * And bump the extension's version number to fix compatibility issues
