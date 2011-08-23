@@ -1,3 +1,17 @@
 #!/usr/bin/make -f
 
+HAVE_ARTHA = $(shell apt-cache show artha 2>/dev/null | grep -q '^Version:' && echo y)
+
+ifeq ($(HAVE_ARTHA),y)
+    binary-predeb/debathena-thirdparty-text::
+	echo "debathena-maybe-artha=artha" >> debian/debathena-thirdparty-text.substvars
+endif
+
+HAVE_GNOME-DICTIONARY = $(shell apt-cache show gnome-dictionary 2>/dev/null | grep -q '^Version:' && echo y)
+
+ifeq ($(HAVE_GNOME-DICTIONARY),y)
+    binary-predeb/debathena-thirdparty-text::
+	echo "debathena-maybe-gnome-dictionary=gnome-dictionary" >> debian/debathena-thirdparty-text.substvars
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk

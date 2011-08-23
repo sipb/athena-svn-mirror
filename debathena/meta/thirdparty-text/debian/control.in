@@ -18,6 +18,8 @@ Depends: abiword,
  xpdf,
  jedit,
  pdfedit,
+ ${debathena-maybe-artha},
+ ${debathena-maybe-gnome-dictionary},
  ${misc:Depends}
 Recommends: abiword-plugins-gnome
 Description: Debathena metapackage for third-party text software

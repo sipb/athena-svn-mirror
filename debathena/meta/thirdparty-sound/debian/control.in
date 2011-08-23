@@ -9,6 +9,7 @@ Package: debathena-thirdparty-sound
 Architecture: all
 Depends: sox,
  libsox-dev,
+ rhythmbox,
  ${misc:Depends}
 Description: Debathena metapackage for third-party sound software
  This includes a set of subpackages of commonly-used third-party software
