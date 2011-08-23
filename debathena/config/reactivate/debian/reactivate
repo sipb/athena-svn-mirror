@@ -41,6 +41,5 @@ rm -rf /tmp/ticketenv
 # perfectly good time to do so -- auto-update is inhibited during a
 # login session.
 if [ -e /var/run/reboot-required ]; then
-  kexec -l /vmlinuz --initrd=/initrd.img --append="$(sed -e 's/\bsingle\b/quiet splash/' /proc/cmdline)" || :
   reboot
 fi

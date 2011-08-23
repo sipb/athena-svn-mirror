@@ -1,3 +1,10 @@
+debathena-reactivate (2.0.25) unstable; urgency=low
+
+  * Stop kexec'ing, because modern distributions are incapable of doing so
+    without sucking
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 23 Aug 2011 10:01:49 -0400
+
 debathena-reactivate (2.0.24) unstable; urgency=low
 
   * Fix the patch for Trac #656 to use the correct regexp
