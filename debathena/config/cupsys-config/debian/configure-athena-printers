@@ -1,39 +1,33 @@
 #!/bin/sh
 
-PHAROS_BW_PRINTERS="mitprint"
-PHAROS_COLOR_PRINTERS="mitprint-color"
 ATHENA_PRINTERS=
 DEFAULT_PRINTER="mitprint"
 PRLIST="/var/lib/debathena-cupsys-config.added_printers"
 
 add_printers() {
     rm -f $PRLIST
-    for p in $PHAROS_BW_PRINTERS; do
-	lpadmin -p $p -E -v lpd://mitprint.mit.edu/bw \
-	        -D "Pharos (Monochrome)" \
-	        -L "Release jobs from any Pharos printer" \
-	        -o printer-is-share=false \
-	        -m drv:///hpijs.drv/hp-laserjet_9050-hpijs-pcl3.ppd
-	if [ $? != 0 ]; then
-	    echo "FAILED to add Pharos printer $p"
-	else
-	    echo "Added Pharos printer $p"
-	    echo "$p" >> $PRLIST
-	fi
-    done
-    for p in $PHAROS_COLOR_PRINTERS; do
-	lpadmin -p $p -E -v lpd://mitprint.mit.edu/color \
-	        -D "Pharos (Color)" \
-	        -L "Release jobs from any Pharos Color printer" \
-	        -o printer-is-share=false \
-	        -m drv:///hpijs.drv/hp-color_laserjet_cp3525-hpijs-pcl3.ppd
-	if [ $? != 0 ]; then
-	    echo "FAILED to add Pharos printer $p"
-	else
-	    echo "Added Pharos printer $p"
-	    echo "$p" >> $PRLIST
-	fi
-    done
+    lpadmin -p mitprint -E -v lpd://mitprint.mit.edu/bw \
+	-D "Pharos (Monochrome)" \
+	-L "Release jobs from any Pharos B&W printer" \
+	-o printer-is-share=false \
+	-m drv:///hpijs.drv/hp-laserjet_9050-hpijs-pcl3.ppd
+    if [ $? != 0 ]; then
+	echo "FAILED to add Pharos printer $p"
+    else
+	echo "Added Pharos printer $p"
+	echo "$p" >> $PRLIST
+    fi
+    lpadmin -p mitprint-color -E -v lpd://mitprint.mit.edu/color \
+	-D "Pharos (Color)" \
+	-L "Release jobs from any Pharos Color printer" \
+	-o printer-is-share=false \
+	-m drv:///hpijs.drv/hp-color_laserjet_cp3525-hpijs-pcl3.ppd
+    if [ $? != 0 ]; then
+	echo "FAILED to add Pharos printer $p"
+    else
+	echo "Added Pharos printer $p"
+	echo "$p" >> $PRLIST
+    fi
     for a in $ATHENA_PRINTERS; do
         # Don't clobber queue, this is -cluster
 	if add-athena-printer $a; then
