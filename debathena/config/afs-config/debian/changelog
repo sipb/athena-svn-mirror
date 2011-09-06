@@ -1,3 +1,10 @@
+debathena-afs-config (1.18) unstable; urgency=low
+
+  * CellServDB update from /afs/athena/service/CellServDB (remove
+    soap.mit.edu and update to 14 Aug 2011 GCO Public CellServDB).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 06 Sep 2011 16:38:00 -0400
+
 debathena-afs-config (1.17) unstable; urgency=low
 
   * CellServDB update (merging in changes from grand.central.org).
