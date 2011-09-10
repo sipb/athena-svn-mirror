@@ -1,3 +1,10 @@
+debathena-gdm-config (1.32) unstable; urgency=low
+
+  * Support Debian's gdm3 package (Trac: #976).
+  * Fix typos caught by Lintian and do some other cleanup.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sat, 10 Sep 2011 01:40:19 -0400
+
 debathena-gdm-config (1.31) unstable; urgency=low
 
   * Only display the nologin-monitor window on startup if the file exists

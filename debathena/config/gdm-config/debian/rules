@@ -1,7 +1,20 @@
 #!/usr/bin/make -f
 
 GDM_VERSION = $(shell dpkg-query --showformat='$${Version}' --show gdm)
-NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' && echo y)
+GDM3_VERSION = $(shell dpkg-query --showformat='$${Version}' --show gdm3)
+ifneq ($(GDM3_VERSION),)
+    gdm = gdm3
+    NEW_GDM = y
+else
+    gdm = gdm
+    NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' && echo y)
+endif
+CDBS_BUILD_DEPENDS += $(gdm)
+
+binary-predeb/debathena-gdm-config:: debathena-gdm-config-substvars
+debathena-gdm-config-substvars::
+	echo "debathena-gdm=$(gdm)" \
+	    >> debian/debathena-gdm-config.substvars
 
 ifneq ($(wildcard /etc/gdm/gdm.conf-custom),)
     GDM_CONFFILE = /etc/gdm/gdm.conf-custom.debathena
@@ -13,8 +26,8 @@ endif
 DEB_DIVERT_EXTENSION = .debathena
 DEB_TRANSFORM_SCRIPT_${GDM_CONFFILE} = debian/transform_gdm.conf.debathena
 DEB_DIVERT_FILES_debathena-gdm-config += \
-	/etc/gdm/PreSession/Default.debathena \
-	/etc/gdm/PostSession/Default.debathena
+	/etc/$(gdm)/PreSession/Default.debathena \
+	/etc/$(gdm)/PostSession/Default.debathena
 DEB_REMOVE_FILES_debathena-gdm-config += \
 	/usr/share/xsessions/ssh.desktop
 
@@ -33,24 +46,27 @@ common-build-indep:: debathena/distro.svg
 debathena/distro.svg: debian/distro.svg.sh
 	sh $< > $@
 
+install/debathena-gdm-config::
+	dh_install debian/PreSession/Default.debathena etc/$(gdm)/PreSession
+	dh_install debian/PostSession/Default.debathena etc/$(gdm)/PostSession
+
 ifneq ($(NEW_GDM),y)
     install/debathena-gdm-config::
 	dh_install debian/default.desktop.debathena usr/share/gdm/BuiltInSessions
 else
     install/debathena-gdm-config::
 	dh_install debian/background.jpg usr/share/debathena-gdm-config
-	dh_install debian/%gconf-tree.xml var/lib/gdm/.gconf.debathena-gdm-config
+	dh_install debian/%gconf-tree.xml var/lib/$(gdm)/.gconf.debathena-gdm-config
 	dh_install debian/athena.desktop usr/share/xsessions
 	dh_install debian/athena-session usr/bin
 
-	install -m 660 debian/gconf.path.debathena debian/$(cdbs_curpkg)/var/lib/gdm/.gconf.path.debathena
+	install -m 660 debian/gconf.path.debathena debian/$(cdbs_curpkg)/var/lib/$(gdm)/.gconf.path.debathena
 	dh_install debian/debathena-branding usr/lib/debathena-branding
 	dh_install debian/debathena-branding.glade usr/share/debathena-branding
 	dh_install debian/debathena-branding.desktop usr/share/gdm/autostart/LoginWindow
 	dh_install debian/debathena-nologin-monitor usr/lib/debathena-nologin-monitor
 	dh_install debian/debathena-nologin-monitor.desktop usr/share/gdm/autostart/LoginWindow
 
-    binary-predeb/debathena-gdm-config:: debathena-gdm-config-substvars
     debathena-gdm-config-substvars::
 	echo "debathena-gdm-gconf-depends=debathena-gconf2-config (>= 1.8~)" \
 	    >> debian/debathena-gdm-config.substvars
