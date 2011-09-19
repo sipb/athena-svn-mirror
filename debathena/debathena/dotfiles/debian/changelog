@@ -1,4 +1,4 @@
-debathena-dotfiles (10.0.30-0debathena1) UNRELEASED; urgency=low
+debathena-dotfiles (10.0.30-0debathena1) unstable; urgency=low
 
   * Update logout alias for GNOME 3.0 (Trac: #1027)
 
