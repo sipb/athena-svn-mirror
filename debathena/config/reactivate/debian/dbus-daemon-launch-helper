@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if hash schroot >/dev/null 2>&1; then
+    session=$(schroot -l --all-sessions)
+fi
+
+if [ -n "$session" ] && [ "$(echo "$session" | wc -l)" -eq 1 ]; then
+    exec schroot -r -c "$session" /lib/dbus-1.0/dbus-daemon-launch-helper "$@"
+else
+    exec /lib/dbus-1.0/dbus-daemon-launch-helper "$@"
+fi

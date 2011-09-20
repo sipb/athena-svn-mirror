@@ -6,7 +6,8 @@ DEB_DIVERT_FILES_debathena-reactivate += \
 DEB_TRANSFORM_FILES_debathena-reactivate += \
 	/etc/pam.d/su.debathena \
 	/etc/default/schroot.debathena \
-	/etc/pam.d/schroot.debathena
+	/etc/pam.d/schroot.debathena \
+	/etc/dbus-1/system.conf.debathena
 DEB_REMOVE_FILES_debathena-reactivate += \
 	/etc/xdg/autostart/jockey-gtk.desktop \
 	/etc/xdg/autostart/update-notifier.desktop \

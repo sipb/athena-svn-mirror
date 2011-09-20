@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s|.*<servicehelper>.*</servicehelper>.*|  <servicehelper>/lib/debathena-reactivate/dbus-daemon-launch-helper</servicehelper>|m or die;

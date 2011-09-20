@@ -91,7 +91,7 @@ EOF
 	cleanup_old_diversion /etc/gdm/PreSession/Default
 	cleanup_old_diversion /etc/gdm/PostSession/Default
 
-	if dpkg --compare-versions "$2" lt 2.0.9~ && \
+	if dpkg --compare-versions "$2" lt 2.0.26~ && \
 	    [ -x /usr/share/update-notifier/notify-reboot-required ]; then
 	    /usr/share/update-notifier/notify-reboot-required
 	fi
