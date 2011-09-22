@@ -2,7 +2,7 @@ Source: debathena-cupsys-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, debathena-cups, debathena-cupsys-hack, config-package-dev (>= 4.12~)
+Build-Depends: @cdbs@, debathena-cups, config-package-dev (>= 4.12~)
 Standards-Version: 3.9.1
 
 Package: debathena-cupsys-config

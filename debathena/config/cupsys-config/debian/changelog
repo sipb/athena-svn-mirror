@@ -1,3 +1,9 @@
+debathena-cupsys-config (1.17.1) unstable; urgency=low
+
+  * Stop build-dep'ing on cupsys-hack
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 22 Sep 2011 12:07:34 -0400
+
 debathena-cupsys-config (1.17) unstable; urgency=low
 
   * Add the color printer
