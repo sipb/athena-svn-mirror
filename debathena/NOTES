@@ -508,11 +508,13 @@ steps below.
         /mit/debathena/bin/build-server/make-chroot $suite amd64
 
 
-  6. Fire up screen.
+  6. Fire up screen, ideally making use of the "-S" option to identify
+     your screen session.  e.g. "screen -S joeuser.oneiric_build".
 
   7. mkdir /mit/debathena/machines/awesome-build-server/stamps.$suite.
 
-  8. cd into a checkout of debathena/scripts/build-server/build-all.
+  8. cd into a checkout (probably on your local machine) of
+     debathena/scripts/build-server/build-all.
 
   9. Edit Makefile (and check in the edit) so that suite is the new
      distribution and psuite is the previously most recent Debian or
@@ -520,7 +522,9 @@ steps below.
      build-dependencies, so choose the closest distribution.  If you are
      rebuilding, you can set psuite to suite.
 
-  10. Run "make deps.mk".
+  10. cd to /mit/debathena/bin/build-server/build-all, which is a
+      totally logical place to run the build from.  Run "make
+      deps.mk".
 
   11. Run "make -k all".
       You can watch the builds happen in the other windows of the
