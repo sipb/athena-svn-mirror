@@ -1,3 +1,9 @@
+debathena-kerberos-config (1.12) unstable; urgency=low
+
+  * Add win.mit.edu (Trac: #1086)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 25 Sep 2011 15:55:31 -0400
+
 debathena-kerberos-config (1.11) unstable; urgency=low
 
   * Fix cleanup of old apparmor diversions in the postinst.
