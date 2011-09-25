@@ -1,13 +1,9 @@
 #!/usr/bin/perl -p0
 s/^([ \t]*default_realm *=).*$/\1 ATHENA.MIT.EDU/m or die;
-s/(\[realms\][^[]*\n)[ \t]*NUMENOR\.MIT\.EDU\s*=\s*\{[^}]*\}\s*\n/\1/;
-s/(\[realms\]\n)/\1\tNUMENOR.MIT.EDU = {\n\t\tkdc = numenor.mit.edu\n\t\tadmin_server = numenor.mit.edu\n\t}\n/ or die;
 s/(\[realms\][^[]*\n)[ \t]*CSAIL\.MIT\.EDU\s*=\s*\{[^}]*\}\s*\n/\1/;
 s/(\[realms\]\n)/\1\tCSAIL.MIT.EDU = {\n\t\tkdc = kerberos-1.csail.mit.edu\n\t\tkdc = kerberos-2.csail.mit.edu\n\t\tadmin_server = kerberos.csail.mit.edu\n\t\tdefault_domain = csail.mit.edu\n\t\tkrb524_server = krb524.csail.mit.edu\n\t}\n/ or die;
 s/(\[realms\][^[]*\n)[ \t]*ATHENA\.MIT\.EDU\s*=\s*\{[^}]*\}\s*\n/\1/;
 s/(\[realms\]\n)/\1\tATHENA.MIT.EDU = {\n\t\tkdc = kerberos.mit.edu:88\n\t\tkdc = kerberos-1.mit.edu:88\n\t\tkdc = kerberos-2.mit.edu:88\n\t\tadmin_server = kerberos.mit.edu\n\t\tdefault_domain = mit.edu\n\t}\n/ or die;
-s/(\[domain_realm\][^[]*\n)[ \t]*numenor\.mit\.edu\s*=[^\n]*\n/\1/;
-s/(\[domain_realm\]\n)/\1\tnumenor.mit.edu = NUMENOR.MIT.EDU\n/ or die;
 s/(\[domain_realm\][^[]*\n)[ \t]*csail\.mit\.edu\s*=[^\n]*\n/\1/;
 s/(\[domain_realm\]\n)/\1\tcsail.mit.edu = CSAIL.MIT.EDU\n/ or die;
 s/(\[domain_realm\][^[]*\n)[ \t]*\.csail\.mit\.edu\s*=[^\n]*\n/\1/;

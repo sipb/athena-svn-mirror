@@ -1,8 +1,9 @@
 debathena-kerberos-config (1.12) unstable; urgency=low
 
   * Add win.mit.edu (Trac: #1086)
+  * NUMENOR.MIT.EDU is no more
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 25 Sep 2011 15:55:31 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 25 Sep 2011 16:01:27 -0400
 
 debathena-kerberos-config (1.11) unstable; urgency=low
 
