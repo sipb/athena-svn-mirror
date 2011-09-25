@@ -17,7 +17,7 @@ SM_DBUS_INTERFACE = "org.gnome.SessionManager"
 SM_CLIENT_DBUS_INTERFACE = "org.gnome.SessionManager.ClientPrivate"
 APP_ID = "debathena-branding"
 GLADE_FILE="/usr/share/debathena-branding/debathena-branding.glade"
-DEBATHENA_LOGO_FILES=["/usr/share/pixmaps/debathena0.png",
+DEBATHENA_LOGO_FILES=["/usr/share/pixmaps/debathena.png",
                       "/usr/share/pixmaps/debathena1.png",
                       "/usr/share/pixmaps/debathena2.png",
                       "/usr/share/pixmaps/debathena3.png",
@@ -101,12 +101,16 @@ class Branding:
     def setup_owl(self, logoScale):
         self.logo_pixbufs = []
         num_pixbufs = 0
-        # try:
-        # Eyes go closed.
-        for img in DEBATHENA_LOGO_FILES:
-            pixbuf = gtk.gdk.pixbuf_new_from_file(img)
-            self.logo_pixbufs.append(pixbuf.scale_simple(int(pixbuf.get_width() * logoScale), int(pixbuf.get_height() * logoScale), gtk.gdk.INTERP_BILINEAR))
-            num_pixbufs += 1
+        try:
+            # Eyes go closed.
+            for img in DEBATHENA_LOGO_FILES:
+                pixbuf = gtk.gdk.pixbuf_new_from_file(img)
+                self.logo_pixbufs.append(pixbuf.scale_simple(int(pixbuf.get_width() * logoScale), int(pixbuf.get_height() * logoScale), gtk.gdk.INTERP_BILINEAR))
+                num_pixbufs += 1
+
+        except:
+            # Just don't display the image if it's missing
+            return False
 
         # Eyes come open.
         for pixbuf in self.logo_pixbufs[::-1]:
@@ -115,10 +119,6 @@ class Branding:
 
         # Eyes stay open.
         self.logo_pixbufs.extend([None] * (self.animation_loop_frames - num_pixbufs))
-
-        # except:
-        #     # Just don't display the image if it's missing
-        #     return False
 
         self.img_idx = -1
         return True
