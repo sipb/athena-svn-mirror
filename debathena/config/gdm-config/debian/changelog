@@ -1,3 +1,9 @@
+debathena-gdm-config (1.33) unstable; urgency=low
+
+  * Make Athena owl blink.
+
+ -- Benjamin Barenblat <bbaren@mit.edu>  Sun, 25 Sep 2011 16:20:20 -0400
+
 debathena-gdm-config (1.32) unstable; urgency=low
 
   * Support Debian's gdm3 package (Trac: #976).

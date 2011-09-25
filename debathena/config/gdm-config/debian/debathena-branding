@@ -17,9 +17,19 @@ SM_DBUS_INTERFACE = "org.gnome.SessionManager"
 SM_CLIENT_DBUS_INTERFACE = "org.gnome.SessionManager.ClientPrivate"
 APP_ID = "debathena-branding"
 GLADE_FILE="/usr/share/debathena-branding/debathena-branding.glade"
-DEBATHENA_LOGO_FILE="/usr/share/pixmaps/debathena.png"
+DEBATHENA_LOGO_FILES=["/usr/share/pixmaps/debathena0.png",
+                      "/usr/share/pixmaps/debathena1.png",
+                      "/usr/share/pixmaps/debathena2.png",
+                      "/usr/share/pixmaps/debathena3.png",
+                      "/usr/share/pixmaps/debathena4.png",
+                      "/usr/share/pixmaps/debathena5.png",
+                      "/usr/share/pixmaps/debathena6.png",
+                      "/usr/share/pixmaps/debathena7.png",
+                      "/usr/share/pixmaps/debathena8.png"]
 
 class Branding:
+    animation_loop_frames = 150
+
     def __init__(self, options):
         self.debug = options.debug
         self.sessionEnding = False
@@ -47,12 +57,7 @@ class Branding:
         self.winWelcome.move((gtk.gdk.screen_width() - self.winWelcome.get_size()[0]) / 2, moveY)
         self.imgDebathena = self.xml.get_widget('imgDebathena')
         self.imgDebathena.set_property('can_focus', False)
-        try:
-            pixbuf = gtk.gdk.pixbuf_new_from_file(DEBATHENA_LOGO_FILE)
-            self.imgDebathena.set_from_pixbuf(pixbuf.scale_simple(int(pixbuf.get_width() * logoScale), int(pixbuf.get_height() * logoScale), gtk.gdk.INTERP_BILINEAR))
-        except:
-            # Just don't display the image if it's missing
-            pass 
+        self.animate = self.setup_owl(logoScale)
         self.winBranding = self.xml.get_widget('winBranding')
         self.winBranding.set_property('can_focus', False)
         self.lblBranding = self.xml.get_widget('lblBranding')
@@ -91,6 +96,44 @@ class Branding:
                                          self.sm_on_CancelEndSession)
         self.smClient.connect_to_signal("Stop", self.sm_on_Stop)
 
+    # Load the Debathena owl image and generate self.logo_pixbufs, the list of
+    # animation frames.  Returns True if successful, False otherwise.
+    def setup_owl(self, logoScale):
+        self.logo_pixbufs = []
+        num_pixbufs = 0
+        # try:
+        # Eyes go closed.
+        for img in DEBATHENA_LOGO_FILES:
+            pixbuf = gtk.gdk.pixbuf_new_from_file(img)
+            self.logo_pixbufs.append(pixbuf.scale_simple(int(pixbuf.get_width() * logoScale), int(pixbuf.get_height() * logoScale), gtk.gdk.INTERP_BILINEAR))
+            num_pixbufs += 1
+
+        # Eyes come open.
+        for pixbuf in self.logo_pixbufs[::-1]:
+            self.logo_pixbufs.append(pixbuf)
+            num_pixbufs += 1
+
+        # Eyes stay open.
+        self.logo_pixbufs.extend([None] * (self.animation_loop_frames - num_pixbufs))
+
+        # except:
+        #     # Just don't display the image if it's missing
+        #     return False
+
+        self.img_idx = -1
+        return True
+
+    # Update the Debathena owl image.
+    def update_owl(self):
+        if not self.animate:
+            return False
+
+        self.img_idx = (self.img_idx + 1) % self.animation_loop_frames
+        pixbuf = self.logo_pixbufs[self.img_idx]
+        if pixbuf is not None:
+            self.imgDebathena.set_from_pixbuf(pixbuf)
+        return True
+
     # Here on a QueryEndSession signal from the session manager.
     def sm_on_QueryEndSession(self, flags):
         self.sessionEnding = True
@@ -114,7 +157,8 @@ class Branding:
 
 def main(options):
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-    Branding(options)
+    branding = Branding(options)
+    gobject.timeout_add(50, branding.update_owl)
     gtk.main()
 
 if __name__ == '__main__':
