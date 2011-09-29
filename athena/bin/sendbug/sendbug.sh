@@ -2,11 +2,24 @@
 # $Id: sendbug.sh,v 1.21 2003-07-30 19:16:12 zacheiss Exp $
 
 visual=false
-if [ x--gnome = x"$1" ]; then
-  # This is how we are invoked from the panel menu
-  gnome=true
-  shift
-fi
+
+help () {
+    echo "Usage: $0 [program]"
+    echo "Assist a user in sending an accurate and useful bug report."
+}
+
+TEMP="$(getopt -n "$0" -o '' -l gnome,help -- "$@")" || exit $?
+eval set -- "$TEMP"
+
+while true; do
+    case "$1" in
+        # This is how we are invoked from the panel menu
+        --gnome) gnome=true; shift;;
+        --help) help; exit;;
+        --) shift; break;;
+    esac
+done
+
 subject=$1
 bugs_address=bugs@mit.edu
 sendmail="/usr/sbin/sendmail -t -oi"

@@ -1,3 +1,11 @@
+debathena-sendbug (10.0.4-0debathena1) unstable; urgency=low
+
+  * Add a --help option. (http://diswww.mit.edu/menelaus/bugs/27568)
+  * Fix the manpage to not reference MH.
+  * Bump the compatibility level to 6.
+
+ -- Alex Dehnert <adehnert@mit.edu>  Thu, 29 Sep 2011 15:54:40 -0400
+
 debathena-sendbug (10.0.3-0debathena1) unstable; urgency=low
 
   * Debathena is no longer beta.
