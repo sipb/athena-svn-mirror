@@ -1,3 +1,11 @@
+debathena-tex-config (1.4) unstable; urgency=low
+
+  * Since 1.1, fmtutil-sys may not necessarily be installed, so test if
+    it's there before calling it. (If it's not called, that's fine.)
+    Closes part of Trac: #669.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sun, 02 Oct 2011 15:30:04 -0400
+
 debathena-tex-config (1.3) unstable; urgency=low
 
   [ Jonathan Reed ]

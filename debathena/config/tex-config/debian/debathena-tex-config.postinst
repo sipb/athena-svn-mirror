@@ -25,7 +25,12 @@ set -e
 
 case "$1" in
     configure)
-        fmtutil-sys --all
+        # If fmtutil-sys is not currently available, that's okay;
+        # our config will get picked up in the triggers or postinsts
+        # of TeX packages when they do get installed.
+        if hash fmtutil-sys 2>/dev/null; then
+            fmtutil-sys --all
+        fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
