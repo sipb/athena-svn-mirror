@@ -22,11 +22,13 @@ done
 for i in /var/lib/schroot/mount/*; do
   if mountpoint -q "$i"; then
     touch /var/run/reboot-required
+    echo "rebooting due to active mountpoint $i"
     break
   fi
 done
 if [ -n "$USER" -a "$USER" != root ]; then
   if pgrep -u "$USER"; then
+    echo "rebooting due to live user processes"
     touch /var/run/reboot-required
   fi
 fi

@@ -1,3 +1,9 @@
+debathena-reactivate (2.0.27) unstable; urgency=low
+
+  * Leave a reason for why we're rebooting in the athena-reactivate log.
+
+ -- Benjamin Kaduk <kaduk@mit.edu>  Sun, 16 Ocg 2011 23:10:32 -0400
+
 debathena-reactivate (2.0.26) unstable; urgency=low
 
   * Run D-Bus-spawned services inside the schroot session, if any.
