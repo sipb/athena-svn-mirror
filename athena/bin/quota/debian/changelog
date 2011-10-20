@@ -1,3 +1,9 @@
+debathena-quota (10.0.1-0debathena2) unstable; urgency=low
+
+  * Don't use /usr/lib/afs/libcom_err.a if it doesn't exist
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 20 Oct 2011 15:58:43 -0400
+
 debathena-quota (10.0.1-0debathena1) unstable; urgency=low
 
   * Add a configure-time option to tear the NFS (and therefore the krb4)
