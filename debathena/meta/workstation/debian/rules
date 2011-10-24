@@ -2,7 +2,7 @@
 
 # texlive-bin 2009-10 finally respects local paper size
 
-TEXLIVE_BIN_VERSION = $(shell apt-cache policy thunderbird 2>/dev/null | awk '/^  Candidate/ { print $$2 }' | fgrep -vx '(none)')
+TEXLIVE_BIN_VERSION = $(shell apt-cache policy texlive-binaries 2>/dev/null | awk '/^  Candidate/ { print $$2 }' | fgrep -vx '(none)')
 TEXLIVE_2009_11 = $(shell dpkg --compare-versions '$(TEXLIVE_BIN_VERSION)' ge '2009-10~' && echo y)
 
 ifneq ($(TEXLIVE_2009_11),y)
