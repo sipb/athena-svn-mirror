@@ -18,8 +18,8 @@ Depends: debathena-workstation-branding,
  debathena-ntp-config | debathena-chrony-config,
  debathena-tmp-cleaner,
  debathena-auto-update,
- debathena-tex-config,
  debathena-moira-update-server,
+ ${debathena-maybe-tex-config},
  ${misc:Depends}
 Description: Athena managed workstation configuration
  This package configures a private, graphical Debathena workstation.
