@@ -1,3 +1,9 @@
+debathena-afs-config (1.19) unstable; urgency=low
+
+  * No-change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Oct 2011 17:12:43 -0400
+
 debathena-afs-config (1.18) unstable; urgency=low
 
   * CellServDB update from /afs/athena/service/CellServDB (remove

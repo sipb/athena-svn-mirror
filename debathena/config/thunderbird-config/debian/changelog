@@ -1,3 +1,9 @@
+debathena-thunderbird-config (1.7) unstable; urgency=low
+
+  * No change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Oct 2011 18:31:50 -0400
+
 debathena-thunderbird-config (1.6) unstable; urgency=low
 
   * Unbreak Thunderbird 3 by temporarily making the package do nothing

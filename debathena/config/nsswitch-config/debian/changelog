@@ -1,3 +1,9 @@
+debathena-nsswitch-config (1.14) unstable; urgency=low
+
+  * No change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Oct 2011 18:30:24 -0400
+
 debathena-nsswitch-config (1.13) unstable; urgency=low
 
   * Recommend apparmor-config to ensure nsswitch.conf.debathena is

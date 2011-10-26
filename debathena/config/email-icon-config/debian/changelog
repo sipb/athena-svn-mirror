@@ -1,3 +1,9 @@
+debathena-email-icon-config (1.3) unstable; urgency=low
+
+  * No change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Oct 2011 18:28:49 -0400
+
 debathena-email-icon-config (1.2) unstable; urgency=low
 
   * Since the alternatives for sensible-browser are messed up on Ubuntu,

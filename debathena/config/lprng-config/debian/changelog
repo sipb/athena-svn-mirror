@@ -1,3 +1,9 @@
+debathena-lprng-config (1.9) unstable; urgency=low
+
+  * No change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Oct 2011 18:30:05 -0400
+
 debathena-lprng-config (1.8) unstable; urgency=low
 
   * Remove DEB_AUTO_UPDATE_DEBIAN_CONTROL.

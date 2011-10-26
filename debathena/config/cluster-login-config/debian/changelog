@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.36.3) unstable; urgency=low
+
+  * No change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Oct 2011 18:28:24 -0400
+
 debathena-cluster-login-config (1.36.2) unstable; urgency=low
 
   * Correctly punt the conffiles we removed in 1.36

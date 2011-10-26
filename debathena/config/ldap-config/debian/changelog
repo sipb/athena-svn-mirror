@@ -1,3 +1,9 @@
+debathena-ldap-config (1.8) unstable; urgency=low
+
+  * No change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Oct 2011 18:29:48 -0400
+
 debathena-ldap-config (1.7) unstable; urgency=low
 
   * Use ldap-too, not ldap (Trac: #392)

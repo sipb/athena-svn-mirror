@@ -1,3 +1,9 @@
+debathena-pam-config (1.18.3) unstable; urgency=low
+
+  * No change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Oct 2011 18:30:33 -0400
+
 debathena-pam-config (1.18.2) unstable; urgency=low
 
   * DEB_REMOVE_FILES conflicting pam-auth-update config file shipped in

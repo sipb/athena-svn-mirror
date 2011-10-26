@@ -1,3 +1,9 @@
+debathena-apparmor-config (1.2.2) unstable; urgency=low
+
+  * No change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Oct 2011 18:25:02 -0400
+
 debathena-apparmor-config (1.2.1) unstable; urgency=low
 
   * ensure local/usr.sbin/cupsd and local/usr.sbin.ntpd files exist even
