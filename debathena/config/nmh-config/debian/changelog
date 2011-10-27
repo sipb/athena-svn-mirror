@@ -1,3 +1,9 @@
+debathena-nmh-config (1.1.5) unstable; urgency=low
+
+  * No change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 27 Oct 2011 16:46:20 -0400
+
 debathena-nmh-config (1.1.4) unstable; urgency=low
 
   * Always add MH to the PATH
