@@ -1,3 +1,9 @@
+debathena-chrony-config (1.3) unstable; urgency=low
+
+  * No change rebuild to pick up config-package-dev 4.13 changes
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 27 Oct 2011 17:20:59 -0400
+
 debathena-chrony-config (1.2) unstable; urgency=low
 
   * Switch to using DEB_TRANSFORM_FILES instead of DEB_DIVERT_FILES
