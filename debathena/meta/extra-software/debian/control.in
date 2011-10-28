@@ -22,18 +22,18 @@ Depends: debathena-extra-software-nox,
   idle,
   twm,
   ratpoison,
-  wmaker, wmbutton, wmcalclock, wmfire, wmhdplop, wmmemload, wmnd, wmweather,
+  wmaker, wmbutton, wmcalclock, wmhdplop, wmmemload, wmnd, wmweather,
   xmonad, suckless-tools | dwm-tools,
   git-gui, gitk,
   compizconfig-settings-manager,
   ${debathena-java-plugin},
   ${misc:Depends}
-Recommends: flashplugin-nonfree,
+Recommends: flashplugin-installer | flashplugin-nonfree,
   mplayer,
   msttcorefonts,
   ttf-xfree86-nonfree,
   poppler-data,
-  wmbubble,
+  wmbubble, wmfire
 Description: Athena auxiliary software
  This package pulls in miscellaneous non-Athena-specific software
  for a fully-stocked Athena workstation.
