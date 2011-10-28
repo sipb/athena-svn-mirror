@@ -29,6 +29,9 @@ endif
 # but after its DebianImportFreeze.)
 
 ifeq ($(DISTRO),Ubuntu)
+    ifeq ($(call compare_ubuntu_version,12.04),y)
+        SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu1204,i386_ubuntu1204)
+    endif
     ifeq ($(call compare_ubuntu_version,11.10),y)
         SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu1110,i386_ubuntu1110)
     endif

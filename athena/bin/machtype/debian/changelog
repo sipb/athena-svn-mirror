@@ -1,3 +1,9 @@
+debathena-machtype (10.0.2-0debathena6) unstable; urgency=low
+
+  * Support Ubuntu 12.04.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 28 Oct 2011 17:31:33 -0400
+
 debathena-machtype (10.0.2-0debathena5) unstable; urgency=low
 
   * Support Debian 6.0 and Ubuntu 11.10.
