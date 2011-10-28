@@ -1,3 +1,11 @@
+debathena-tex-config (1.5) unstable; urgency=low
+
+  * Ensure texlive-base is configured first by depending on it
+  * Conflict with texlive 2009-12 which uses ucf instead
+  * Clean up installs where there is no .debathena-orig file
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 28 Oct 2011 15:11:12 -0400
+
 debathena-tex-config (1.4) unstable; urgency=low
 
   * Since 1.1, fmtutil-sys may not necessarily be installed, so test if
