@@ -1,3 +1,9 @@
+debathena-getcluster (10.0.2-0debathena1) unstable; urgency=low
+
+  * Update date for getcluster.1 to reflect reality
+
+ -- Benjamin Kaduk <kaduk@mit.edu>  Mon, 07 Nov 2011 19:01:32 -0500
+
 debathena-getcluster (10.0.1-0debathena1) unstable; urgency=low
 
   * Quote shell output (Trac: #1037)
