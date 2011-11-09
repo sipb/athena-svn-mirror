@@ -1,3 +1,10 @@
+debathena-reactivate (2.0.29) unstable; urgency=low
+
+  * Save lots of debugging information if we are rebooting in reactivate.
+    It will go to athena-reactivate.log for later forensics.
+
+ -- Benjamin Kaduk <kaduk@mit.edu>  Tue, 08 Nov 2011 21:19:39 -0500
+
 debathena-reactivate (2.0.28) unstable; urgency=low
 
   * No change rebuild to pick up config-package-dev 4.13 changes

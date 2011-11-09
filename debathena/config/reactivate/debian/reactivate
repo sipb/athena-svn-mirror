@@ -7,6 +7,15 @@
 # user processes or processes using the login snapshot, although
 # that circumstance should be fairly rare.
 
+print_processes_info() {
+  echo "BEGIN PRINT_PROCESS_INFO"
+  pstree -alcnpu
+  ps eauxwww
+  schroot --list
+  LC_ALL=C lsof -b +c 0 -w
+  echo "END PRINT_PROCESS_INFO"
+}
+
 set -e
 exec >>/var/log/athena-reactivate 2>&1
 
@@ -23,12 +32,14 @@ for i in /var/lib/schroot/mount/*; do
   if mountpoint -q "$i"; then
     touch /var/run/reboot-required
     echo "rebooting due to active mountpoint $i"
+    print_processes_info
     break
   fi
 done
 if [ -n "$USER" -a "$USER" != root ]; then
   if pgrep -u "$USER"; then
     echo "rebooting due to live user processes"
+    print_processes_info
     touch /var/run/reboot-required
   fi
 fi
