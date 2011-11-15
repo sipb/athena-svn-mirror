@@ -26,8 +26,10 @@ Causes athena-auto-upgrade to upgrade to a 'testing' release.  Don't
 use this.
 .IP -d
 Debug mode.  Will also force it to simulate an upgrade, even on
-non-cluster machines.
-
+non-cluster machines. Set DEBUG_RELEASE to force a specific release. 
+.IP -v
+Add verbosity. By default stdin and stderr for system calls are 
+redirected to /dev/null.
 .SH SEE ALSO
 getcluster(1), kexec(8)
 

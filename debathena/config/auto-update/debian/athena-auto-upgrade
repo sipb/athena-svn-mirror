@@ -2,39 +2,20 @@
 #
 # This is designed to be called from cron
 
-debug() {
-    [ $DEBUG -eq 1 ] && echo "DEBUG: $*"
-}
-
-complain() {
-    if [ $DEBUG -eq 1 ]; then
-	echo "ERROR: $*"
-    else
-	logger -t "athena-auto-upgrade" -p user.notice "$*"
-    fi
-}
-
-maybe_quit() {
-    if [ $FORCE -eq 1 ]; then
-        echo "Would normally quit here, but you passed -f, so we keep going..."
-    else
-        exit 0
-    fi
-}
-
 DEBUG=0
-MAYBE=""
 FORCE=0
-
+DEBUG_RELEASE=""
+VERBOSE=0
+FAKE=0
 UPGRADE_TO_TESTING=no
 UPGRADE_ANYWAY=no
-[ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
 
-while getopts "fdt" opt; do
+
+while getopts "vfdt" opt; do
     case "$opt" in
         d) 
             DEBUG=1
-            MAYBE=echo
+            FAKE=1
 	    UPGRADE_ANYWAY=yes
             ;;
         f) 
@@ -43,22 +24,100 @@ while getopts "fdt" opt; do
         t)
 	    UPGRADE_TO_TESTING=yes
 	    ;;
+        v) # Spam level
+            VERBOSE=1
+            ;;
         \?)
-            echo "Usage: $0 [-d] [-t] [-f]"
+            cat<<END
+    Usage: $0 [OPTION]
+
+            -d         debug mode, bypasses all checks, only prints
+            -t         upgrade to testing
+            -f         bypasses login checks
+            -v         echo the cmds that are run
+
+END
+            
 	    ;;
     esac
 done
+
 
 if [ $DEBUG -eq 1 ] && [ $FORCE -eq 1 ]; then
     echo "ERROR: -d and -f are mutually exclusive."
     exit 2
 fi
 if [ $FORCE -eq 1 ]; then
-    echo "Using -f is a terrible idea.  Press Ctrl-C to reconsider and"
+   echo "Using -f is a terrible idea.  Press Ctrl-C to reconsider and"
     echo "save your machine, or Enter to continue."
     read r
 fi
 
+function pie_grub() {
+
+    
+    # change DEFAULT in /etc/grub to SAVED
+    if [[ $FAKE == 1 ]]; then
+        echo perl -i.bak -pe 's/^GRUB_DEFAULT=.*$/GRUB_DEFAULT=saved/' /etc/default/grub
+    elif [[ $VERBOSE == 0 ]]; then
+        perl -i.bak -pe 's/^GRUB_DEFAULT=.*$/GRUB_DEFAULT=saved/' /etc/default/grub >/dev/null 2>&1
+    else
+        echo perl -i.bak -pe 's/^GRUB_DEFAULT=.*$/GRUB_DEFAULT=saved/' /etc/default/grub
+        perl -i.bak -pe 's/^GRUB_DEFAULT=.*$/GRUB_DEFAULT=saved/' /etc/default/grub 
+    fi
+    if [[ $? -ne 0 ]]; then
+        complain "Setting DEFAULT in /etc/default/grub returned a non-zero exit status"
+        exit 1
+    fi
+
+    if [[ $? -ne 0 ]]; then
+        complain "Setting GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub returned a non-zero exit status"
+        exit 1
+    fi
+
+}
+
+
+function complain() {
+    if [ $DEBUG -eq 1 ]; then
+	echo "ERROR: $*"
+    else
+	logger -t "athena-auto-upgrade" -p user.notice "$*"
+    fi
+}
+
+
+
+function runcmd()
+{
+    CMD=$1
+    if [[ $FAKE == 1 ]]; then
+        echo $CMD
+    elif [[ $VERBOSE == 0 ]]; then
+        $CMD > /dev/null 2>&1
+    else
+        echo $CMD
+        $CMD
+    fi
+    if [[ $? -ne 0 ]]; then
+        complain "$CMD returned a non-zero exit status"
+        exit 1
+    fi
+}
+
+function debug() {
+    [ $DEBUG -eq 1 ] && echo "DEBUG: $*"
+}
+
+function maybe_quit() {
+    if [ $FORCE -eq 1 ]; then
+        echo "Would normally quit here, but you passed -f, so we keep going..."
+    else
+        exit 0
+    fi
+}
+
+[ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
 if [ $DEBUG -ne 1 ]; then
     # Redirect output to a log file
     # Unless we're in debug mode
@@ -72,7 +131,6 @@ if [ "$(lsb_release -si)" != "Ubuntu" ]; then
     debug "Only supported on Ubuntu.".
     exit 0
 fi
-
 # Skip other sanity checks in debug mode
 if [ $DEBUG -ne 1 ]; then
     # Only run this on cluster
@@ -93,14 +151,14 @@ if [ $DEBUG -ne 1 ]; then
 	    maybe_quit
 	fi
     done
+
     # screen processes count as logins.
     if pgrep '^screen' > /dev/null; then
 	debug "Screen processes found, won't continue."
 	maybe_quit
     fi
 fi
-
-CLUSTERINFO=`getcluster -b $(lsb_release -sr)`
+export CLUSTERINFO=$(getcluster -b $(lsb_release -sr))
 [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
 eval $CLUSTERINFO
 if [ ! -z "$NEW_PRODUCTION_RELEASE" ]; then
@@ -115,8 +173,12 @@ elif [ ! -z "$NEW_TESTING_RELEASE" ] && \
     [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
     eval $NEWCLUSTER
 else
-    debug "No new releases."
-    exit 0
+    if [[ ! -z "$DEBUG_RELEASE" ]]; then
+        UBUNTU_RELEASE=$DEBUG_RELEASE
+    else
+        debug "No new releases."
+        exit 0
+    fi
 fi
 if [ "$(lsb_release -sc)" = "$UBUNTU_RELEASE" ]; then
     complain "Tried to upgrade to already running release; shouldn't happen"
@@ -155,12 +217,12 @@ else
   knetinfo="netcfg/dhcp_timeout=60 netcfg/get_hostname=$(hostname)"
 fi
 
-$MAYBE mkdir /h
-$MAYBE cd /h
-$MAYBE wget -N http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/initrd.gz
-$MAYBE wget -N http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/linux
+runcmd "mkdir -p /auto-upgrade" 
+runcmd "wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/initrd.gz -O /auto-upgrade/initrd.gz" 
+runcmd "wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/linux -O /auto-upgrade/linux" 
+
 case "$UBUNTU_RELEASE" in
-    natty)
+    natty|oneiric)
         # Sigh
         kbdcode="keyboard-configuration/layoutcode=us"
         ;;
@@ -171,65 +233,47 @@ esac
 # This is just the guts of the hackboot script:
 dkargs="DEBCONF_DEBUG=5"
 kargs="$knetinfo locale=en_US $kbdcode \
+       quiet \
+       panic=5 \
        interface=auto \
        url=http://18.9.60.73/installer/${UBUNTU_RELEASE}/debathena.preseed \
        debathena/pxetype=cluster --"
-dead_chicken() {
-  debug "Waving dead chicken..."
-  debug "Scribbling over Plymouth"
-  ln -nsf /bin/true /sbin/plymouthd
-  $MAYBE chvt 1
-  sleep 2
-  # Run the video card's POST to reset it
-  $MAYBE vbetool post
-  sleep 2
-  # Disable the framebuffer, falling back to VGA
-  if [ $DEBUG -eq 1 ]; then
-      echo "Would echo 0 > /sys/class/vtconsole/vtcon1/bind"
-  else
-      echo 0 > /sys/class/vtconsole/vtcon1/bind
-  fi
-}
-product_name="$(cat /sys/class/dmi/id/product_name | sed -e 's/[ ]*$//')"
-# Yes, really.  The actual value of product_name on the Vostro is:
-# "Vostro 320                   "
-case "$product_name" in
-  # This is not so much Vostro 320-specific as it is i915 specific
-  # Known to be necessary on PCI ID 8086:2e32, rev 03
-  # Actually, on all hardware, because Dell sucks.  Or possibly Ubuntu.
-  OptiPlex*)
-    model="$(echo "$product_name" | cut -d\  -f2)"
-    case "$model" in
-      790)
-	debug "Adding 'reboot=pci' for Dell 790"
-	kargs="$kargs reboot=pci"
-	dead_chicken
-	;;
-      GX620|745|755|760|780)
-	dead_chicken
-	;;
-    esac
-    ;;
-  Vostro\ 320)
-    dead_chicken
-    ;;
-  *)
-    echo "You appear to have functional hardware.  Huzzah."
-    ;;
-esac
+
+debug "USING kargs=$kargs"
+
 if [ $(echo $kargs | wc -c) -ge 512 ]; then
-  complain "kargs exceeds 512 bytes.  That's not good."
+    complain "kargs exceeds 512 bytes.  That's not good."
+    exit 1
 fi
-# Don't kexec -e here, because modern Ubuntu is unable to kexec while
-# X is running.  Instead, kexec -l and let the init script take care of.
-# Until Oneiric, when this will probably stop working if kexec-tools hasn't
-# been Upstartified.
-$MAYBE /sbin/kexec -l linux --append="$dkargs $kargs" --initrd=initrd.gz
-[ $DEBUG -eq 1 ] && exit 0
-if [ "`cat /sys/kernel/kexec_loaded`" != "1" ]; then
-  echo "Hrm, looks like kexec -l didn't work.  This upgrade will fail."
-  exit 1
-fi
-echo "Kernel loaded.  Rebooting in order to exec it."
-reboot
-exit 0
+
+tmpfile="/tmp/$(basename $0).$RANDOM.tmp"
+
+cat >"$tmpfile"<<END
+#!/bin/sh
+
+echo "Adding auto-upgrade /auto-upgrade/linux" >&2
+cat<<EOF
+menuentry "auto-upgrade" {
+  set root="(athena-root)"
+  echo "Loading auto-upgrade kernel for ${UBUNTU_RELEASE}" 
+  linux /auto-upgrade/linux $kargs
+  echo "Loading auto-upgrade ramdisk for ${UBUNTU_RELEASE}" 
+  initrd /auto-upgrade/initrd.gz
+}
+EOF
+
+END
+
+
+runcmd "cp $tmpfile /etc/grub.d/49_auto-upgrade"
+rm -f $tmpfile
+runcmd "chmod 755 /etc/grub.d/49_auto-upgrade" 
+
+pie_grub
+
+runcmd "/usr/sbin/grub-set-default 0"
+runcmd "/usr/sbin/grub-reboot auto-upgrade" 
+runcmd "/usr/sbin/update-grub" 
+
+# rebooting into the installer kernel
+runcmd "/sbin/reboot"
