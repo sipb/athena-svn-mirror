@@ -1,3 +1,11 @@
+debathena-getcluster (10.0.3-0debathena1) unstable; urgency=low
+
+  * Revert changes to getcluster.c in r25378.  Continue with broken
+    behavior and hope that nobody sets a clusterinfo value with a space in
+    it.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 28 Nov 2011 10:37:05 -0500
+
 debathena-getcluster (10.0.2-0debathena1) unstable; urgency=low
 
   * Update date for getcluster.1 to reflect reality
