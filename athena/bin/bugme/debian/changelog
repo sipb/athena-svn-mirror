@@ -1,3 +1,10 @@
+debathena-bugme (10.0.4-0debathena1) unstable; urgency=low
+
+  * Set always-on-top window manager hint (Trac: #386). Patch from Luke
+    Faraone.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 06 Jan 2012 15:37:46 -0500
+
 debathena-bugme (10.0.3-0debathena1) unstable; urgency=low
 
   * Don't run dpkg-query (Trac: #778)

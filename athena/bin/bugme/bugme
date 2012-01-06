@@ -73,6 +73,9 @@ class BugMe:
             self.nextWarn = now + self.warnInterval
             self.nag(((self.timeLimit - elapsed) / 60, 
                       (self.timeLimit - elapsed) % 60))
+	# It's a little odd to put this here, but it doesn't work in
+	# __init__; see comments in Trac #386
+        self.timerWindow.set_keep_above(True)
         return True
 
     def nag(self, remainingTime):
