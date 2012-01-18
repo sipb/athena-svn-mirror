@@ -1,3 +1,10 @@
+debathena-grenew (10.0.2-debathena1) unstable; urgency=low
+
+  * Attempt to appease compilers using -Werror=format-security.
+    (Trac: #1116)
+
+ -- Benjamin Kaduk <kaduk@mit.edu>  Wed, 18 Jan 2012 01:09:02 -0500
+
 debathena-grenew (10.0.1-0debathena1) unstable; urgency=low
 
   * Support building on systems where krb5 no longer comes with

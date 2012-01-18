@@ -46,7 +46,7 @@ static void do_error_dialog(char *msg)
   if (window)
     gtk_widget_destroy(window);
   window = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_WARNING,
-				  GTK_BUTTONS_OK, msg);
+				  GTK_BUTTONS_OK, "%s", msg);
   g_signal_connect(G_OBJECT(window), "response",
 		   G_CALLBACK(gtk_widget_destroy), NULL);
   g_signal_connect(G_OBJECT(window), "destroy",
@@ -63,7 +63,7 @@ static void do_fatal_dialog(char *msg)
   window = gtk_message_dialog_new(NULL, 
 				  GTK_DIALOG_MODAL,
 				  GTK_MESSAGE_ERROR,
-				  GTK_BUTTONS_OK, msg);
+				  GTK_BUTTONS_OK, "%s", msg);
   g_signal_connect(G_OBJECT(window), "response",
 		   G_CALLBACK(quit), NULL);
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
