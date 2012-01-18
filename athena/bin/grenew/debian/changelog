@@ -1,4 +1,4 @@
-debathena-grenew (10.0.2-debathena1) unstable; urgency=low
+debathena-grenew (10.0.2-0debathena1) unstable; urgency=low
 
   * Attempt to appease compilers using -Werror=format-security.
     (Trac: #1116)
