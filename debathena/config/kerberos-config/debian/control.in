@@ -12,7 +12,7 @@ Recommends: debathena-apparmor-config
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Kerberos configuration for Debathena
- This packages configures Kerberos to use the Athena realm, and adds a
+ This package configures Kerberos to use the Athena realm, and adds a
  few other MIT realms to the Kerberos configuration files, by
  diverting aside the Kerberos configuration files and replacing them
  with those appropriate for Debathena.
