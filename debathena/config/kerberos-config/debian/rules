@@ -14,8 +14,8 @@ ifeq ($(shell dpkg --compare-versions $(KRB5_VERSION) '<<' '1.7~' && echo y),y)
     DEB_CHECK_FILES_SOURCE_/etc/krb.conf.debathena = \
 	/usr/share/kerberos-configs/krb.conf.template
 
-    binary-predeb/debathena-kerberos-config:: debathena-krberos-config-substvars
-    debathena-krberos-config-substvars::
+    binary-predeb/debathena-kerberos-config:: debathena-kerberos-config-substvars
+    debathena-kerberos-config-substvars::
 	echo "debathena-krb4-depends=krb4-config" \
 	  >> debian/debathena-kerberos-config.substvars
 endif
