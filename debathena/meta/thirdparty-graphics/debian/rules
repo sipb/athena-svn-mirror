@@ -1,3 +1,10 @@
 #!/usr/bin/make -f
 
+HAVE_XDOT = $(shell apt-cache show xdot 2>/dev/null | grep -q '^Version:' && echo y)
+
+ifeq ($(HAVE_XDOT),y)
+    binary-predeb/debathena-thirdparty-graphics::
+        echo "debathena-maybe-xdot=xdot" >> debian/debathena-thirdparty-graphics .substvars
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk

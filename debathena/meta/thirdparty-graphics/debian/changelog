@@ -1,3 +1,9 @@
+debathena-thirdparty-graphics (1.1) unstable; urgency=low
+
+  * Add graphviz and xdot (the latter only when available)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 14 Feb 2012 16:34:49 -0500
+
 debathena-thirdparty-graphics (1.0) unstable; urgency=low
 
   * First non-equivs version

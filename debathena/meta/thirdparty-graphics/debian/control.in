@@ -55,6 +55,8 @@ Depends: inventor-data,
  xprint-utils,
  pdftoipe,
  mgp,
+ graphviz,
+ ${debathena-maybe-xdot},
  ${misc:Depends}
 Recommends: inventor-dev,
  inventor-clients,
