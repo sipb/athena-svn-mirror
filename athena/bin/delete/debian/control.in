@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: debathena-delete
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: A friendlier version of rm for Athena
+Description: A friendlier alternative to rm for Athena
  The delete utility marks files and directories for later permanent 
  removal by prefixing them with '.#'.  Files accidentally marked for 
  deletion can be recovered with undelete.  Permanent removal can be 

@@ -1,3 +1,11 @@
+debathena-saferm (10.0.1-0debathena2) UNRELEASED; urgency=low
+
+  * Change description to clarify that this package does not
+    provide a command called "rm"; thanks to John Ranson for pointing
+    this out.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 06 Mar 2012 08:51:10 -0800
+
 debathena-saferm (10.0.1-0debathena1) unstable; urgency=low
 
   * Make saferm largefile-compatible (Trac: #664).

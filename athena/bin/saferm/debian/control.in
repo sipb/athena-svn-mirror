@@ -9,7 +9,7 @@ Package: debathena-saferm
 Architecture: any
 Provides: saferm
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: A completely safe version of rm for Athena
+Description: A safe alternative to rm for Athena
  saferm is a file removal program which can be used running as root
  to safely remove, and optionally zero, files or directories from
  world-writable directories, such as /tmp.  It will refuse to
