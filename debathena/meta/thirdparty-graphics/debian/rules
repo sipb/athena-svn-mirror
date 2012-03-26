@@ -4,7 +4,7 @@ HAVE_XDOT = $(shell apt-cache show xdot 2>/dev/null | grep -q '^Version:' && ech
 
 ifeq ($(HAVE_XDOT),y)
     binary-predeb/debathena-thirdparty-graphics::
-        echo "debathena-maybe-xdot=xdot" >> debian/debathena-thirdparty-graphics.substvars
+	echo "debathena-maybe-xdot=xdot" >> debian/debathena-thirdparty-graphics.substvars
 endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk

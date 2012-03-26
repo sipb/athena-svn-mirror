@@ -1,3 +1,9 @@
+debathena-thirdparty-graphics (1.1.2) unstable; urgency=low
+
+  * 8 spaces is not a tab.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 26 Mar 2012 18:34:01 -0400
+
 debathena-thirdparty-graphics (1.1.1) unstable; urgency=low
 
   * Don't typo the substvars filename in the rules file
