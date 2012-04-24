@@ -1,3 +1,17 @@
+
+** NOTE **
+
+As of 24 April 2012, this file should be considered deprecated.  The
+canonical version of the information contained in this file is the
+Debathena Trac wiki (http://debathena.mit.edu/trac/wiki), in particular,
+the section titled "Release Engineering".  This file should be
+maintained for posterity, but should not be updated.
+
+**
+
+
+
+
 This hierarchy contains Debian/Ubuntu-specific materials, also known
 as "Debathena".  The contents are:
 
