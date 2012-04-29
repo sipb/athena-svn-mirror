@@ -1,3 +1,10 @@
+debathena-dns-config (1.6) unstable; urgency=low
+
+  * Check for template named.conf.options in /usr/share/bind9, as it is
+    in e.g. Precise.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sat, 28 Apr 2012 20:18:50 -0700
+
 debathena-dns-config (1.5) unstable; urgency=low
 
   * No change rebuild to pick up config-package-dev 4.13 changes
