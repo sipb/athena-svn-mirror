@@ -1,3 +1,10 @@
+debathena-reactivate (2.0.30) unstable; urgency=low
+
+  * No-change rebuild to pick up changes from r25453 (making the various
+    scripts executable)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 03 May 2012 13:15:13 -0400
+
 debathena-reactivate (2.0.29) unstable; urgency=low
 
   * Save lots of debugging information if we are rebooting in reactivate.
