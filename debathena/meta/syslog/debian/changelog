@@ -1,3 +1,10 @@
+debathena-syslog (1.1) unstable; urgency=low
+
+  * Deal with multi-arch by only accepting the first line aptitude returns
+  * Comment out unused DEFAULT_SYSLOG variable in rules
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 03 May 2012 15:51:11 -0400
+
 debathena-syslog (1.0) unstable; urgency=low
 
   * Initial Release.

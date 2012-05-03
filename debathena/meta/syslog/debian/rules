@@ -9,10 +9,10 @@ common-build-indep:: debian/deps
 
 debian/deps:
 	echo -n "debathena-syslog-depends=" > $@
-	$(APTITUDE) search '~Psystem-log-daemon~pimportant' -F '%p' >> $@
+	$(APTITUDE) search '~Psystem-log-daemon~pimportant' -F '%p' | head -1 >> $@
 	echo >> $@
 
-DEFAULT_SYSLOG = $(shell $(APTITUDE) search -F"%p" ~Psystem-log-daemon~pimportant)
+# DEFAULT_SYSLOG = $(shell $(APTITUDE) search -F"%p" ~Psystem-log-daemon~pimportant)
 
 binary-predeb/debathena-syslog:: add-deps/debathena-syslog
 
