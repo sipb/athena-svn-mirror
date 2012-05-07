@@ -1,9 +1,10 @@
 debathena-syslog (1.1) unstable; urgency=low
 
-  * Deal with multi-arch by only accepting the first line aptitude returns
+  * Deal with multi-arch by only accepting the first line aptitude
+    returns, and stripping out any arch component that may be there
   * Comment out unused DEFAULT_SYSLOG variable in rules
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 03 May 2012 15:51:11 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 07 May 2012 15:46:35 -0400
 
 debathena-syslog (1.0) unstable; urgency=low
 
