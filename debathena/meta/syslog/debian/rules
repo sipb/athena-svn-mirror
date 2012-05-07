@@ -4,12 +4,17 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 
 APTITUDE_LOCKFILE = $(CURDIR)/debian/aptitude-lockfile
 APTITUDE = aptitude -o 'Aptitude::LockFile=$(APTITUDE_LOCKFILE)' -o 'Debug::NoLocking=yes'
+MULTIARCH = $(shell $(APTITUDE) search '~Psystem-log-daemon~rnative' > /dev/null 2>&1 && echo "y")
 
 common-build-indep:: debian/deps
 
 debian/deps:
 	echo -n "debathena-syslog-depends=" > $@
-	$(APTITUDE) search '~Psystem-log-daemon~pimportant' -F '%p' | cut -d ':' -f 1 | head -1 >> $@
+ifeq ($(MULTIARCH),y)
+	$(APTITUDE) search '~Psystem-log-daemon~pimportant~rnative' -F '%p' | head -1 >> $@
+else
+	$(APTITUDE) search '~Psystem-log-daemon~pimportant' -F '%p' | head -1 >> $@
+endif
 	echo >> $@
 
 # DEFAULT_SYSLOG = $(shell $(APTITUDE) search -F"%p" ~Psystem-log-daemon~pimportant)
