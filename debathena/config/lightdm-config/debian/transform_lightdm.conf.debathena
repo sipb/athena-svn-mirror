@@ -1,0 +1,3 @@
+#!/usr/bin/perl -0p
+s|^(greeter-hide-users=).*$|{1}true|m or s|(\[SeatDefaults\]\n|\1greeter-hide-users=true\n| or die;
+s|^(greeter-show-manual-login=).*$|{1}true|m or s|(\[SeatDefaults\]\n|\1greeter-show-manual-login=true\n| or die;

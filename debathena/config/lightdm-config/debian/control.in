@@ -1,0 +1,14 @@
+Source: debathena-lightdm-config
+Section: debathena-config/gnome
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, lightdm
+Standards-Version: 3.9.1
+
+Package: debathena-lightdm-config
+Architecture: all
+Depends: lightdm
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Lightdm configuration for Debathena
+ This package configures the lightdm display manager.
