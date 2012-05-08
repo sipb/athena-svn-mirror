@@ -10,6 +10,8 @@ FAKE=0
 UPGRADE_TO_TESTING=no
 UPGRADE_ANYWAY=no
 
+# Read defaults here so as not to clobber command-line args later
+[ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
 
 while getopts "vfdt" opt; do
     case "$opt" in
@@ -117,7 +119,6 @@ function maybe_quit() {
     fi
 }
 
-[ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
 if [ $DEBUG -ne 1 ]; then
     # Redirect output to a log file
     # Unless we're in debug mode
@@ -222,7 +223,7 @@ runcmd "wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/init
 runcmd "wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/linux -O /auto-upgrade/linux" 
 
 case "$UBUNTU_RELEASE" in
-    natty|oneiric)
+    natty|oneiric|precise)
         # Sigh
         kbdcode="keyboard-configuration/layoutcode=us"
         ;;
@@ -237,7 +238,7 @@ kargs="$knetinfo locale=en_US $kbdcode \
        panic=5 \
        interface=auto \
        url=http://18.9.60.73/installer/${UBUNTU_RELEASE}/debathena.preseed \
-       debathena/pxetype=cluster --"
+       da/pxetype=cluster --"
 
 debug "USING kargs=$kargs"
 
