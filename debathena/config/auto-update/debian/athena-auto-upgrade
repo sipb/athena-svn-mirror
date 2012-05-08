@@ -18,14 +18,14 @@ while getopts "vfdt" opt; do
         d) 
             DEBUG=1
             FAKE=1
-	    UPGRADE_ANYWAY=yes
+            UPGRADE_ANYWAY=yes
             ;;
         f) 
             FORCE=1
-	    ;;
+            ;;
         t)
-	    UPGRADE_TO_TESTING=yes
-	    ;;
+            UPGRADE_TO_TESTING=yes
+            ;;
         v) # Spam level
             VERBOSE=1
             ;;
@@ -40,7 +40,7 @@ while getopts "vfdt" opt; do
 
 END
             
-	    ;;
+            ;;
     esac
 done
 
@@ -50,7 +50,7 @@ if [ $DEBUG -eq 1 ] && [ $FORCE -eq 1 ]; then
     exit 2
 fi
 if [ $FORCE -eq 1 ]; then
-   echo "Using -f is a terrible idea.  Press Ctrl-C to reconsider and"
+    echo "Using -f is a terrible idea.  Press Ctrl-C to reconsider and"
     echo "save your machine, or Enter to continue."
     read r
 fi
@@ -82,9 +82,9 @@ function pie_grub() {
 
 function complain() {
     if [ $DEBUG -eq 1 ]; then
-	echo "ERROR: $*"
+        echo "ERROR: $*"
     else
-	logger -t "athena-auto-upgrade" -p user.notice "$*"
+        logger -t "athena-auto-upgrade" -p user.notice "$*"
     fi
 }
 
@@ -137,26 +137,26 @@ if [ $DEBUG -ne 1 ]; then
     # Only run this on cluster
     if [ "$(machtype -L)" != "debathena-cluster" ] && \
        [ "$UPGRADE_ANYWAY" != "yes" ]; then
-	debug "Not a cluster machine and UPGRADE_ANYWAY != yes.".
-	exit 0
+        debug "Not a cluster machine and UPGRADE_ANYWAY != yes.".
+        exit 0
     fi
     
     # Bail if someone is logged in (stolen from auto-update)
     ttys=$(w -h -s | awk '{print $2}')
     for tty in $ttys; do
-	pids=$(ps --no-heading -j -t "$tty" 2>/dev/null \
+        pids=$(ps --no-heading -j -t "$tty" 2>/dev/null \
             | awk '($1 == $3) {print $1}')
-	if [ -n "$pids" ]; then
-	    debug "Users logged in, won't continue."
-	    debug "PIDs: $pids"
-	    maybe_quit
-	fi
+        if [ -n "$pids" ]; then
+            debug "Users logged in, won't continue."
+            debug "PIDs: $pids"
+            maybe_quit
+        fi
     done
 
     # screen processes count as logins.
     if pgrep '^screen' > /dev/null; then
-	debug "Screen processes found, won't continue."
-	maybe_quit
+        debug "Screen processes found, won't continue."
+        maybe_quit
     fi
 fi
 export CLUSTERINFO=$(getcluster -b $(lsb_release -sr))
