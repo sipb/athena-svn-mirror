@@ -238,7 +238,7 @@ kargs="$knetinfo locale=en_US $kbdcode \
        panic=5 \
        interface=auto \
        url=http://18.9.60.73/installer/${UBUNTU_RELEASE}/debathena.preseed \
-       da/pxetype=cluster --"
+       da/pxe=cluster --"
 
 debug "USING kargs=$kargs"
 
