@@ -119,7 +119,9 @@ class Branding:
 
         # Eyes stay open.
         self.logo_pixbufs.extend([None] * (self.animation_loop_frames - num_pixbufs))
-
+	# Set it to the first image so that the window can size itself          
+	# accordingly                                                           
+        self.imgDebathena.set_from_pixbuf(self.logo_pixbufs[0])
         self.img_idx = -1
         return True
 
