@@ -1,4 +1,36 @@
-This software and its Debian packaging are licensed as follows:
+The "debathena-lightdm-greeter" Python script is copyright (c) 2012,
+Massachusetts Institute of Technology and is licensed under version 3
+of the GNU General Public License.  The script incorporates some code
+from and the basic design of example_greeter.py by Matt Fischer.  The
+original copyright notice from example_greeter.py appears below:
+
+   # Author: Matt Fischer <matthew.fischer@canonical.com>
+   # Copyright (C) 2012 Canonical, Ltd
+   #
+   # This program is free software: you can redistribute it and/or
+   # modify it under the terms of the GNU General Public License as
+   # published by the Free Software Foundation, either version 3 of
+   # the License, or (at your option) any later version. See
+   # http://www.gnu.org/copyleft/gpl.html the full text of the
+   # license.
+   #
+   # This code is based on the LightDM GTK Greeter which was written by:
+   # Robert Ancell <robert.ancell@canonical.com>
+
+Debian policy requires us to inform you that instead of viewing the
+GNU General Public License on the GNU website, you should instead look
+at /usr/share/common-licenses/GPL-3.
+
+The owl's blinking functionality was added by Benjamin Barenblat
+<bbaren@mit.edu>.
+
+The image of MIT Building 10 (debian/background.jpg)
+is adapted from
+  http://www.flickr.com/photos/22240293@N05/3930252680/
+taken by Flickr user "Diez Photography" and licensed under CC-BY 2.0:
+  http://creativecommons.org/licenses/by/2.0/deed.en
+
+The rest of the software and its Debian packaging are licensed as follows:
 
 Copyright (c) 2012, Massachusetts Institute of Technology
 All rights reserved.

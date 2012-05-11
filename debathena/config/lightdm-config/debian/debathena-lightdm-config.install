@@ -1,0 +1,14 @@
+debian/background.jpg usr/share/debathena-lightdm-config
+debian/debathena-lightdm-greeter usr/sbin
+debian/debathena-lightdm-greeter.ui usr/share/debathena-lightdm-config
+debian/debathena.png usr/share/pixmaps
+debian/debathena1.png usr/share/pixmaps
+debian/debathena2.png usr/share/pixmaps
+debian/debathena3.png usr/share/pixmaps
+debian/debathena4.png usr/share/pixmaps
+debian/debathena5.png usr/share/pixmaps
+debian/debathena6.png usr/share/pixmaps
+debian/debathena7.png usr/share/pixmaps
+debian/debathena8.png usr/share/pixmaps
+debian/debathena-lightdm-greeter.desktop usr/share/xgreeters
+

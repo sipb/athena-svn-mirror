@@ -1,0 +1,412 @@
+#!/usr/bin/env python
+#
+
+from gi.repository import GObject
+from gi.repository import GLib
+from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import GdkPixbuf
+from gi.repository import LightDM
+
+import sys
+import platform
+import subprocess
+import pwd
+import time
+
+# TODO: ConfigParser
+MIN_UID=1
+UI_FILE="/usr/share/debathena-lightdm-config/debathena-lightdm-greeter.ui"
+BG_IMG_FILE="/usr/share/debathena-lightdm-config/background.jpg"
+DEBATHENA_LOGO_FILES=["/usr/share/pixmaps/debathena.png",
+                      "/usr/share/pixmaps/debathena1.png",
+                      "/usr/share/pixmaps/debathena2.png",
+                      "/usr/share/pixmaps/debathena3.png",
+                      "/usr/share/pixmaps/debathena4.png",
+                      "/usr/share/pixmaps/debathena5.png",
+                      "/usr/share/pixmaps/debathena6.png",
+                      "/usr/share/pixmaps/debathena7.png",
+                      "/usr/share/pixmaps/debathena8.png"]
+
+class DebathenaGreeter:
+    animation_loop_frames = 300
+    
+    
+    def _debug(self, *args):
+        if self.debugMode:
+            if type(args[0]) is str and len(args) > 1:
+                print >> sys.stderr, "D: " + args[0], args[1:]
+            else:
+                print >> sys.stderr, "D:", args[0]
+
+    def __init__(self):
+        self.debugMode = True
+        self.timePedantry = True
+
+        # Set up and connect to the greeter
+        self.greeter = LightDM.Greeter()
+        self.greeter.connect("authentication-complete", 
+                             self.cbAuthenticationComplete)
+        self.greeter.connect("show-message", self.cbShowMessage)
+        self.greeter.connect("show-prompt", self.cbShowPrompt)
+        self.greeter.connect_sync()
+
+        # Gtk signal handlers
+        handlers = {
+            "login_cb": self.cbLogin, 
+            "cancel_cb": self.cancelLogin,
+            "kpEvent": self.cbKeyPress,
+            "power_cb": self.showPowerDialog,
+            "access_cb": self.showAccessDialog,
+        }
+ 
+        # Save the screen size for various window operations
+        defaultScreen = Gdk.Screen.get_default()
+        self.screenSize = (defaultScreen.width(), defaultScreen.height())
+
+        # Load the UI and get objects we care about
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file(UI_FILE)
+
+        # The login window
+        self.winLogin = self.builder.get_object("winLogin")
+        # A box containing the prompt label, entry, and a spinner
+        self.prompt_box = self.builder.get_object("boxPrompt")
+        self.prompt_label = self.builder.get_object("lblPrompt")
+        self.prompt_entry = self.builder.get_object("entryPrompt")
+        self.loginSpinner = self.builder.get_object("loginSpinner")
+        # A label where we display messages received from the greeter
+        self.message_label = self.builder.get_object("lblMessage")
+        # The owl
+        self.imgDebathena = self.builder.get_object("imgDebathena")
+        # The workstation's hostname
+        lblHostname = self.builder.get_object("lblHostname")
+        lblHostname.set_text(LightDM.get_hostname())
+        # The buttons
+        self.btnCancel = self.builder.get_object("btnCancel")
+        self.btnLogin = self.builder.get_object("btnLogin")
+        # The session combo box
+        self.cmbSession = self.builder.get_object("cmbSession")
+        self.sessionBox = self.builder.get_object("sessionBox")
+        for s in LightDM.get_sessions():
+            self.cmbSession.append(s.get_key(), s.get_name())
+        # Select the first session
+        # TODO: Select the configured default session or the user's session
+        self.cmbSession.set_active(0)
+
+        # Scaling factor for smaller displays
+        logoScale = 0.40 if self.screenSize[1] <= 768 else 0.60
+        self.animate = self.setup_owl(logoScale)
+        
+        self.winLogin.set_position(Gtk.WindowPosition.CENTER)
+        self.winLogin.show()
+        self.initBackgroundWindow()
+        self.initPanelWindow()
+        self.initBrandingWindow()
+        # Connect Gtk+ signal handlers
+        self.builder.connect_signals(handlers)
+        # GNOME 3 turns off button images by default.  Turn it on
+        # for the "Panel" window
+        s = Gtk.Settings.get_default()
+        s.set_property('gtk-button-images', True)
+        # Set a cursor for the root window, otherwise there isn't one
+        rw = Gdk.get_default_root_window()
+        rw.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
+        # Setup the login window for first login
+        self.resetLoginWindow()
+
+    def initBackgroundWindow(self):
+        # The background image
+        self.winBg = self.builder.get_object("winBg")
+        self.imgBg = self.builder.get_object("imgBg")
+        self.imgBg.set_from_file(BG_IMG_FILE)
+        self.winBg.show_all()
+
+    def initPanelWindow(self):
+        # A window that looks like the GNOME "panel" at the top of the screen
+        self.winPanel = self.builder.get_object("winPanel")
+        self.lblTime = self.builder.get_object("lblTime")
+        self.winPanel.set_gravity(Gdk.Gravity.NORTH_WEST)
+        self.winPanel.move(0,0)
+        self.winPanel.set_size_request(self.screenSize[0], 2)
+        self.winPanel.show_all()
+
+    def initBrandingWindow(self):
+        # The "branding window", in the bottom right
+        winBranding = self.builder.get_object("winBranding")
+        lblBranding = self.builder.get_object("lblBranding")
+        (metapackage, baseos) = self.get_workstation_information()
+        arch = platform.machine()
+        if arch != "x86_64":
+            arch = "<b>" + arch + "</b>"
+        # Possibly no longer needed, workaround for a Glade bug in Gtk+ 2
+        lblBranding.set_property('can_focus', False)
+        winBranding.set_property('can_focus', False)
+        lblBranding.set_markup(metapackage + "\n" + baseos + "\n" + arch)
+        winBranding.set_gravity(Gdk.Gravity.SOUTH_EAST)
+        width, height = winBranding.get_size()
+        winBranding.move(self.screenSize[0] - width, self.screenSize[1] - height)
+        winBranding.show_all()
+
+    def showPowerDialog(self, widget):
+        pass
+
+    def showAccessDialog(self, widget):
+        pass
+
+    # Update the time in the "panel"
+    def updateTime(self):
+        timeFmt="%a, %b %e %Y %l:%M" + ":%S" if self.timePedantry else ""
+        # every second counts
+        timeFmt=timeFmt + " %p"
+        self.lblTime.set_text(time.strftime(timeFmt, time.localtime(time.time())))
+        return True
+
+    # Reset the UI and prepare for a new login
+    def resetLoginWindow(self):
+        self.spin(False)
+        self.clearMessage()
+        self.btnCancel.hide()
+        self.sessionBox.hide()
+        self.prompted=False
+        self.prompt_label.set_text("")
+        self.prompt_entry.set_text("")
+        self.prompt_box.hide()
+        self.btnLogin.grab_focus()
+        # Because there's no WM, we need to focus the actual X window
+        Gdk.Window.focus(self.winLogin.get_window(), Gdk.CURRENT_TIME)
+
+    def getSelectedSession(self):
+        i = self.cmbSession.get_active_iter()
+        session_name = self.cmbSession.get_model().get_value(i, 1)
+        self._debug("selected session is " + session_name)
+        return session_name
+
+    def startOver(self):
+        self.greeter.cancel_authentication()
+        self.greeter.authenticate(None)
+
+    # LightDM Callbacks
+    # The workflow is this:
+    # - call .authenticate() with a username
+    # - lightdm responds with a prompt for password
+    # - call .respond with whatever the user provides
+    # - lightdm responds with authentication-complete
+    #   N.B. complete != successful
+    # - .cancel_authentication will cancel the authentication in progress
+    #   call .authenticate with a new username to restart it
+    #
+    # Calling .authenticate with None (or NULL in C) will cause lightdm
+    # to first prompt for a username, then a password.  This means two
+    # show-prompt callbacks and thus two .respond calls
+    
+    # This callback is called when the authentication process is 
+    # complete.  "complete" means a username and password have been 
+    # received, and PAM has done its thing.  "complete" does not
+    # mean "successful".
+    def cbAuthenticationComplete(self, greeter):
+        self.spin(False)
+        self._debug("cbAuthenticationComplete: received authentication-complete message")
+        if greeter.get_is_authenticated():
+            self.spin(True)
+            self._debug("Authentication was successful.")
+            session_name = self.getSelectedSession()
+            #FIXME: Make sure it's a valid session
+            self._debug("User has selected '%s' session" % (session_name))
+            if not greeter.start_session_sync(session_name):
+                self._debug("Failed to start session")
+                print >> sys.stderr, "Failed to start session"
+        else:
+            self._debug("Authentication failed.")
+            self.displayMessage("Authentication failed, please try again")
+            self.greeter.authenticate(None)
+
+    # The show-prompt message is emitted when LightDM wants you to
+    # show a prompt to the user, and respond with the user's response.
+    # Currently, the prompts we care about are "login:" and
+    # "Password: " (yes, with the trailing space), which ask for the
+    # username and password respectively.  promptType is one of
+    # LightDM.PromptType.SECRET or LightDM.PromptType.QUESTION, which
+    # mean that the text of the user's response should or should not be
+    # masked/invisible, respectively.
+
+    def cbShowPrompt(self, greeter, text, promptType):
+        self._debug("cbShowPrompt: Received show-prompt message: ", 
+                   text, promptType)
+        self.prompted=True
+        # Make things pretty
+        if text == "login:":
+            text = "Username: "
+        # Sanity check the username
+        currUser = self.greeter.get_authentication_user()
+        if currUser:
+            self._debug("Current user being authenticated is " + currUser)
+            # See if the user exists
+            try:
+                passwd=pwd.getpwnam(currUser)
+            except KeyError:
+                # Why are we not using the message label here?
+                # Because what will happen is that someone will quickly
+                # typo their username, and then type their password without
+                # looking at the screen, which would otherwise result in the
+                # window resetting after the first error, and then they end
+                # up typing their password into the username box.
+                self.errDialog("Invalid username '%s'" % (currUser))
+                self.startOver()
+                return True
+            # There's probably a better way
+            if passwd.pw_uid < MIN_UID:
+                self.errDialog("Logging in as '%s' disallowed by configuation" % (currUser))
+                self.startOver()
+                return True
+
+        # Set the label to the value of the prompt
+        self.prompt_label.set_text(text)
+        # clear the entry and get focus
+        self.prompt_entry.set_text("")
+        self.prompt_entry.set_sensitive(True)
+        self.prompt_box.show()
+        self.prompt_entry.grab_focus()
+        # Mask the input if requested
+        if promptType == LightDM.PromptType.SECRET:
+            self.prompt_entry.set_visibility(False)
+        else:
+            self.prompt_entry.set_visibility(True)
+        self.spin(False)
+
+    # show-message is emitted when LightDM has something to say to the user
+    # In testing, I have never encountered this.  Note that this is _not_
+    # "authentication failed", as far as I can tell.  Some docs imply
+    # that is is for those types of messages or PAM messages, but that 
+    # contradicts the docs which say to check .is_authenticated() in
+    # the authentication-complete callback to determine login success or
+    # failure.  "Whatever".
+    #
+    # In theory, messageType is one of LightDM.MessageType.{ERROR,INFO}
+    def cbShowMessage(self, text, messageType):
+        self._debug("cbShowMessage: Received show-messsage message", 
+                   text, messageType)
+        self.displayMessage(text)
+        self.spin(False)
+
+    def cbKeyPress(self, widget, event):
+        if event.keyval == Gdk.KEY_Escape:
+            self.cancelLogin(widget)
+
+    def cancelLogin(self, widget=None):
+        self._debug("Cancelling authentication.  User=",
+                   self.greeter.get_authentication_user())
+        self.greeter.cancel_authentication()
+        self.resetLoginWindow()
+
+    def displayMessage(self, msg):
+        self.message_label.set_text(msg)
+        self.message_label.show()
+
+    def clearMessage(self):
+        self.message_label.set_text("")
+        self.message_label.hide()
+
+    def errDialog(self, errText):
+        dlg = Gtk.MessageDialog(self.winLogin,
+                                Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                Gtk.MessageType.ERROR,
+                                Gtk.ButtonsType.CLOSE, 
+                                errText)
+        dlg.run()
+        dlg.destroy()
+
+
+    def spin(self, start):
+        if start:
+            self.loginSpinner.show()
+            self.loginSpinner.start()
+        else:
+            self.loginSpinner.stop()
+            self.loginSpinner.hide()
+
+    # Some greeter implementations check .get_is_authenticated() here
+    # and then start the session.  I think that's only relevant
+    # dealing with a user-picker and passwordless users (that is, you
+    # would call .authenticate(joeuser), and then click the button,
+    # and you'd just be logged in.  But we disable the user picker, so
+    # that's not relevant.
+    def cbLogin(self, widget):
+        self.clearMessage()
+        self._debug("In cbLogin")
+        if self.prompted:
+            response = self.prompt_entry.get_text()
+            self._debug("Sending response to prompt", response if self.prompt_entry.get_visibility() else "[redacted]")
+            self.spin(True)
+            self.greeter.respond(response)
+            self.prompted=False
+        else:
+            self._debug("No prompt.  Beginning new authentication process.")
+            # Show the "Cancel" button"
+            self.sessionBox.show()
+            self.btnCancel.show()
+            self.greeter.authenticate(None)
+ 
+    # Load the Debathena owl image and generate self.logo_pixbufs, the list of
+    # animation frames.  Returns True if successful, False otherwise.
+    def setup_owl(self,logoScale):
+        self.logo_pixbufs = []
+        num_pixbufs = 0
+        # Eyes go closed.
+        for img in DEBATHENA_LOGO_FILES:
+            try:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(img)
+                self.logo_pixbufs.append(pixbuf.scale_simple(int(pixbuf.get_width() * logoScale), int(pixbuf.get_height() * logoScale), GdkPixbuf.InterpType.BILINEAR))
+                num_pixbufs += 1
+            except Glib.Gerror, e:
+                print >> sys.stderr, "Glib Error:", e
+                return False
+        # Eyes come open.
+        for pixbuf in self.logo_pixbufs[::-1]:
+            self.logo_pixbufs.append(pixbuf)
+            num_pixbufs += 1
+        # Eyes stay open.
+        self.logo_pixbufs.extend([None] * (self.animation_loop_frames - num_pixbufs))
+        self.img_idx = -1
+        # Set it to the first image so that the window can size itself
+        # accordingly
+        self.imgDebathena.set_from_pixbuf(self.logo_pixbufs[0])
+        self._debug("Owl setup done")
+        return True
+    
+    def update_owl(self):
+        if not self.animate:
+            self._debug("Owl loading failed, ending update_owl timer")
+            return False
+
+        self.img_idx = (self.img_idx + 1) % self.animation_loop_frames
+        pixbuf = self.logo_pixbufs[self.img_idx]
+        if pixbuf is not None:
+            self.imgDebathena.set_from_pixbuf(pixbuf)
+            return True
+
+
+    def get_workstation_information(self):
+        try:
+            metapackage = subprocess.Popen(["machtype", "-L"], stdout=subprocess.PIPE).communicate()[0].rstrip()
+        except OSError:
+            metapackage = '(error)'
+        try:
+            baseos = subprocess.Popen(["machtype", "-E"], stdout=subprocess.PIPE).communicate()[0].rstrip()
+        except OSError:
+            baseos = '(error)'
+
+        return (metapackage, baseos)
+
+
+
+if __name__ == '__main__':
+    Gtk.init(None);
+    main_loop = GObject.MainLoop ()
+    dagreeter = DebathenaGreeter()
+    # Add a timeout for the owl animation
+    GObject.timeout_add(50, dagreeter.update_owl)
+    # Add a timeout for the clock in the panel
+    GObject.timeout_add(30, dagreeter.updateTime)
+
+    main_loop.run ()
