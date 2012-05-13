@@ -1,3 +1,12 @@
+debathena-reactivate (2.0.31) UNRELEASED; urgency=low
+
+  * Stop creating a symlink from /var/run/athena-nologin to /etc/nologin,
+    because other thinks like to clobber /etc/nologin.  Our greeter (which
+    you have to use on cluster), will check for our own flag file and deny
+    logins
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 13 May 2012 19:56:28 -0400
+
 debathena-reactivate (2.0.30) unstable; urgency=low
 
   * No-change rebuild to pick up changes from r25453 (making the various
