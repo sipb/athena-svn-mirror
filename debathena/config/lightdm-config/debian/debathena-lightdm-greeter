@@ -20,15 +20,15 @@ from optparse import OptionParser
 MIN_UID=1
 UI_FILE="/usr/share/debathena-lightdm-config/debathena-lightdm-greeter.ui"
 BG_IMG_FILE="/usr/share/debathena-lightdm-config/background.jpg"
-DEBATHENA_LOGO_FILES=["/usr/share/pixmaps/debathena.png",
-                      "/usr/share/pixmaps/debathena1.png",
-                      "/usr/share/pixmaps/debathena2.png",
-                      "/usr/share/pixmaps/debathena3.png",
-                      "/usr/share/pixmaps/debathena4.png",
-                      "/usr/share/pixmaps/debathena5.png",
-                      "/usr/share/pixmaps/debathena6.png",
-                      "/usr/share/pixmaps/debathena7.png",
-                      "/usr/share/pixmaps/debathena8.png"]
+DEBATHENA_LOGO_FILES=["/usr/share/debathena-lightdm-config/debathena.png",
+                      "/usr/share/debathena-lightdm-config/debathena1.png",
+                      "/usr/share/debathena-lightdm-config/debathena2.png",
+                      "/usr/share/debathena-lightdm-config/debathena3.png",
+                      "/usr/share/debathena-lightdm-config/debathena4.png",
+                      "/usr/share/debathena-lightdm-config/debathena5.png",
+                      "/usr/share/debathena-lightdm-config/debathena6.png",
+                      "/usr/share/debathena-lightdm-config/debathena7.png",
+                      "/usr/share/debathena-lightdm-config/debathena8.png"]
 
 class DebathenaGreeter:
     animation_loop_frames = 300
