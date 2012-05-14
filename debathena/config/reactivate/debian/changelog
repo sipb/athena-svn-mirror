@@ -4,8 +4,10 @@ debathena-reactivate (2.0.31) UNRELEASED; urgency=low
     because other thinks like to clobber /etc/nologin.  Our greeter (which
     you have to use on cluster), will check for our own flag file and deny
     logins
+  * Use new Debathena-Build-For field in control file to control releases
+    this gets built on.
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 13 May 2012 19:56:28 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 13 May 2012 20:44:41 -0400
 
 debathena-reactivate (2.0.30) unstable; urgency=low
 
