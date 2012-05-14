@@ -1,0 +1,28 @@
+Template: debathena-lightdm-config/force_greeter
+Type: boolean
+Default: true
+_Description: Do you want to use the Debathena LightDM greeter?
+ The Debathena LightDM greeter is a greeter for the LightDM display
+ manager.  It configures your workstation's login screen to look like
+ those in the public Athena clusters.  
+ .
+ The Debathena team _strongly encourages_ the use of the Debathena
+ greeter.  If you choose to use another greeter, you are strongly
+ encouraged to read the instructions at
+ /usr/share/doc/debathena-lightdm-config/README or other users may have
+ difficulty logging in.
+ .
+ If you have no greeter set, the debathena-lightdm-greeter will be
+ selected regardless of the answer to this question.
+
+Template: debathena-lightdm-config/uninstall
+Type: note
+_Description: A new greeter will be selected for you
+ LightDM won't function without a greeter.  Since you're uninstalling
+ (or deconfiguring) this package, a new one will be selected
+ automatically, in the following order of preference:
+ - unity-greeter
+ - lightdm-gtk-greeter
+ - the first greeter found in /usr/share/xgreeters
+ .
+ You can change the greeter with /usr/lib/lightdm/lightdm-set-defaults

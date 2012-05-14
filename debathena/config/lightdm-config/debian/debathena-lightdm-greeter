@@ -13,6 +13,8 @@ import platform
 import subprocess
 import pwd
 import time
+import os.path
+from optparse import OptionParser
 
 # TODO: ConfigParser
 MIN_UID=1
@@ -37,10 +39,10 @@ class DebathenaGreeter:
             if type(args[0]) is str and len(args) > 1:
                 print >> sys.stderr, "D: " + args[0], args[1:]
             else:
-                print >> sys.stderr, "D:", args[0]
+                print >> sys.stderr, "D: ", args[0]
 
-    def __init__(self):
-        self.debugMode = True
+    def __init__(self, options):
+        self.debugMode = options.debug
         self.timePedantry = True
 
         # Set up and connect to the greeter
@@ -63,10 +65,16 @@ class DebathenaGreeter:
         # Save the screen size for various window operations
         defaultScreen = Gdk.Screen.get_default()
         self.screenSize = (defaultScreen.width(), defaultScreen.height())
+        
+        self.get_workstation_information()
 
         # Load the UI and get objects we care about
         self.builder = Gtk.Builder()
-        self.builder.add_from_file(UI_FILE)
+        try: 
+            self.builder.add_from_file(options.ui_file)
+        except GLib.GError, e:
+            print >> sys.stderr, "FATAL: Unable to load UI: ", e
+            sys.exit(-1)
 
         # The login window
         self.winLogin = self.builder.get_object("winLogin")
@@ -94,6 +102,14 @@ class DebathenaGreeter:
         # TODO: Select the configured default session or the user's session
         self.cmbSession.set_active(0)
 
+        self.powerDlg = self.builder.get_object("powerDialog")
+        # LightDM checks with PolKit for the various "get_can_foo()" functions
+        self.builder.get_object("rbShutdown").set_sensitive(LightDM.get_can_shutdown())
+        self.builder.get_object("rbReboot").set_sensitive(LightDM.get_can_restart())
+        # We don't allow suspend/hibernate on cluster
+        self.builder.get_object("rbHibernate").set_sensitive(LightDM.get_can_hibernate() and self.metapackage != "debathena-cluster")
+        self.builder.get_object("rbSuspend").set_sensitive(LightDM.get_can_suspend() and self.metapackage != "debathena-cluster")
+        
         # Scaling factor for smaller displays
         logoScale = 0.40 if self.screenSize[1] <= 768 else 0.60
         self.animate = self.setup_owl(logoScale)
@@ -135,21 +151,35 @@ class DebathenaGreeter:
         # The "branding window", in the bottom right
         winBranding = self.builder.get_object("winBranding")
         lblBranding = self.builder.get_object("lblBranding")
-        (metapackage, baseos) = self.get_workstation_information()
         arch = platform.machine()
         if arch != "x86_64":
             arch = "<b>" + arch + "</b>"
         # Possibly no longer needed, workaround for a Glade bug in Gtk+ 2
         lblBranding.set_property('can_focus', False)
         winBranding.set_property('can_focus', False)
-        lblBranding.set_markup(metapackage + "\n" + baseos + "\n" + arch)
+        lblBranding.set_markup(self.metapackage + "\n" + self.baseos + "\n" + arch)
         winBranding.set_gravity(Gdk.Gravity.SOUTH_EAST)
         width, height = winBranding.get_size()
         winBranding.move(self.screenSize[0] - width, self.screenSize[1] - height)
         winBranding.show_all()
 
     def showPowerDialog(self, widget):
-        pass
+        if self.powerDlg.run() == Gtk.ResponseType.OK:
+            # Just do the action.  The relevant buttons should be
+            # greyed out for things we can't do.  LightDM will
+            # check with ConsoleKit anyway
+            try:
+                if self.builder.get_object("rbShutdown").get_active():
+                    LightDM.shutdown()
+                elif self.builder.get_object("rbReboot").get_active():
+                    LightDM.restart()
+                elif self.builder.get_object("rbHiberate").get_active():
+                    LightDM.hibernate()
+                elif self.builder.get_object("rbSuspend").get_active():
+                    LightDM.suspend()
+            except Glib.Gerror, e:
+                self.errDialog(str(e))
+        self.powerDlg.hide()
 
     def showAccessDialog(self, widget):
         pass
@@ -388,22 +418,27 @@ class DebathenaGreeter:
 
     def get_workstation_information(self):
         try:
-            metapackage = subprocess.Popen(["machtype", "-L"], stdout=subprocess.PIPE).communicate()[0].rstrip()
+            self.metapackage = subprocess.Popen(["machtype", "-L"], stdout=subprocess.PIPE).communicate()[0].rstrip()
         except OSError:
-            metapackage = '(error)'
+            self.metapackage = '(unknown metapackage)'
         try:
-            baseos = subprocess.Popen(["machtype", "-E"], stdout=subprocess.PIPE).communicate()[0].rstrip()
+            self.baseos = subprocess.Popen(["machtype", "-E"], stdout=subprocess.PIPE).communicate()[0].rstrip()
         except OSError:
-            baseos = '(error)'
+            self.baseos = '(unknown OS)'
 
-        return (metapackage, baseos)
 
 
 
 if __name__ == '__main__':
+    parser = OptionParser()
+    parser.set_defaults(debug=False)
+    parser.add_option("--debug", action="store_true", dest="debug")
+    parser.add_option("--ui", action="store", type="string",
+                      default=UI_FILE, dest="ui_file")
+    (options, args) = parser.parse_args()
     Gtk.init(None);
     main_loop = GObject.MainLoop ()
-    dagreeter = DebathenaGreeter()
+    dagreeter = DebathenaGreeter(options)
     # Add a timeout for the owl animation
     GObject.timeout_add(50, dagreeter.update_owl)
     # Add a timeout for the clock in the panel

@@ -1,0 +1,73 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: debathena-lightdm-config@packages.debian.org\n"
+"POT-Creation-Date: 2012-05-14 11:05-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../debathena-lightdm-config.templates:1001
+msgid "Do you want to use the Debathena LightDM greeter?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../debathena-lightdm-config.templates:1001
+msgid ""
+"The Debathena LightDM greeter is a greeter for the LightDM display manager.  "
+"It configures your workstation's login screen to look like those in the "
+"public Athena clusters."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../debathena-lightdm-config.templates:1001
+msgid ""
+"The Debathena team _strongly encourages_ the use of the Debathena greeter.  "
+"If you choose to use another greeter, you are strongly encouraged to read "
+"the instructions at /usr/share/doc/debathena-lightdm-config/README or other "
+"users may have difficulty logging in."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../debathena-lightdm-config.templates:1001
+msgid ""
+"If you have no greeter set, the debathena-lightdm-greeter will be selected "
+"regardless of the answer to this question."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../debathena-lightdm-config.templates:2001
+msgid "A new greeter will be selected for you"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../debathena-lightdm-config.templates:2001
+msgid ""
+"LightDM won't function without a greeter.  Since you're uninstalling (or "
+"deconfiguring) this package, a new one will be selected automatically, in "
+"the following order of preference: - unity-greeter - lightdm-gtk-greeter - "
+"the first greeter found in /usr/share/xgreeters"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../debathena-lightdm-config.templates:2001
+msgid "You can change the greeter with /usr/lib/lightdm/lightdm-set-defaults"
+msgstr ""
