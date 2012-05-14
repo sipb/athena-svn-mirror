@@ -1,3 +1,9 @@
+debathena-cluster (1.11) unstable; urgency=low
+
+  * Remove -branding packages
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 14 May 2012 15:29:40 -0400
+
 debathena-cluster (1.10) unstable; urgency=low
 
   * Remove dependency on debathena-cluster-cups-config, since that package

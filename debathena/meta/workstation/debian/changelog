@@ -1,3 +1,9 @@
+debathena-workstation (1.7) unstable; urgency=low
+
+  * Remove -branding packages
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 14 May 2012 15:30:06 -0400
+
 debathena-workstation (1.6) unstable; urgency=low
 
   * Depend on debathena-tex-config only if texlive-binaries is earlier

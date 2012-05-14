@@ -1,9 +1,11 @@
-debathena-gdm-config (1.36) UNRELEASED; urgency=low
+ebathena-gdm-config (1.36) unstable; urgency=low
 
   * Populate the GtkImage prior to window mapping so that positioning the
     window is done correctly
+  * Remove -branding packages.  Ancient GDM users now get the word
+    "Debathena" instead of the metapackage name.
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 10 May 2012 10:17:06 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 14 May 2012 15:28:53 -0400
 
 debathena-gdm-config (1.35) unstable; urgency=low
 

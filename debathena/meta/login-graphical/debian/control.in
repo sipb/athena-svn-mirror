@@ -7,8 +7,7 @@ Standards-Version: 3.9.1
 
 Package: debathena-login-graphical
 Architecture: all
-Depends: debathena-login-graphical-branding,
- debathena-login,
+Depends: debathena-login,
  debathena-gdm-config,
  debathena-xsession,
  debathena-firefox-extension,

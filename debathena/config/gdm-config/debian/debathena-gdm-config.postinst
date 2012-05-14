@@ -97,14 +97,6 @@ case "$1" in
 		/etc/init.d/gdm reload || true
 	    fi
         fi
-	# We don't actually want the "unknown metapackage" file, but it
-	# needs to be present in case you have debathena-gdm-config and
-	# nothing else, so give it priority 0.
-        update-alternatives --install \
-            /usr/share/gdm/themes/debathena/metapackage.svg \
-            debathena-metapackage.svg \
-            /usr/share/gdm/themes/debathena/metapackage-unknown.svg \
-            0
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

@@ -60,7 +60,7 @@
 	<text>%c</text>
       </item>
       <item type="pixmap">
-        <normal file="metapackage.svg" />
+        <normal file="metapackage-generic.svg" />
         <pos x="-10" y="50%" anchor="e" />
       </item>
       <item type="pixmap">

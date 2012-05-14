@@ -16,25 +16,4 @@ Description: GDM configuration for Debathena
  This packages configures gdm to use the Debathena logo, store
  xauthority files in /tmp, and welcome the user to Debathena.
 
-Package: debathena-login-graphical-branding
-Architecture: all
-Depends: debathena-login-graphical, ${misc:Depends}
-Description: Displays which Debathena metapackage level is installed
- This package configures the Debathena login screen to note that
- debathena-login-graphical is installed, unless overriden by a
- higher -branding package.
 
-Package: debathena-workstation-branding
-Architecture: all
-Depends: debathena-workstation, ${misc:Depends}
-Description: Displays which Debathena metapackage level is installed
- This package configures the Debathena login screen to note that
- debathena-workstation is installed, unless overriden by a
- higher -branding package.
-
-Package: debathena-cluster-branding
-Architecture: all
-Depends: debathena-cluster, ${misc:Depends}
-Description: Displays which Debathena metapackage level is installed
- This package configures the Debathena login screen to note that
- debathena-cluster is installed.

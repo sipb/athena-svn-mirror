@@ -7,8 +7,7 @@ Build-Depends: @cdbs@
 
 Package: debathena-cluster
 Architecture: all
-Depends: debathena-cluster-branding,
- debathena-workstation,
+Depends: debathena-workstation,
  debathena-cluster-login-config,
  debathena-larvnet,
  debathena-reactivate,
