@@ -10,7 +10,7 @@ Architecture: all
 Depends: debathena-schroot | schroot (>= 1.3.2~), psmisc, gdm, alsa-utils, debathena-gdm-config (>= 1.14~), sudo, debathena-cupsys-config (>= 1.9~), kexec-tools, ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
-XSC-Debathena-Build-For: lucid natty precise
+X-Debathena-Build-For: lucid natty precise
 Description: Causes gdm logins to run in an ephemeral snapshot of the root
  This package causes each gdm login to run in a temporary copy of the
  root, so that any system modifications performed within the chroot
