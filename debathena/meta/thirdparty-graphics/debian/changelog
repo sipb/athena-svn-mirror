@@ -1,3 +1,11 @@
+debathena-thirdparty-graphics (1.1.3) unstable; urgency=low
+
+  * Demote povray, sdr, and xprint-utils to recommendations
+  * glutg3 is now called freeglut3 
+  * libghc6 is now libghc
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 15 May 2012 14:59:38 -0400
+
 debathena-thirdparty-graphics (1.1.2) unstable; urgency=low
 
   * 8 spaces is not a tab.

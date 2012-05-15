@@ -1,3 +1,9 @@
+debathena-thirdparty-programming (1.1) unstable; urgency=low
+
+  * Ironpython is gone in Precise
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 15 May 2012 13:03:45 -0400
+
 debathena-thirdparty-programming (1.0) unstable; urgency=low
 
   * First non-equivs version

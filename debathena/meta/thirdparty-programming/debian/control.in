@@ -7,9 +7,8 @@ Build-Depends: @cdbs@
 
 Package: debathena-thirdparty-programming
 Architecture: all
-Depends: fltk1.1-doc,
- libfltk1.1,
- libfltk1.1-dev,
+Depends: libfltk1.3 | libfltk1.1,
+ libfltk1.3-dev | libfltk1.1-dev,
  tcl-dev,
  tk-dev,
  fluid,
@@ -19,7 +18,7 @@ Depends: fltk1.1-doc,
  monodoc-browser,
  mono-mcs,
  mono-utils,
- ironpython,
+ ${debathena-maybe-ironpython},
  ikvm,
  ${misc:Depends}
 Description: Debathena metapackage for third-party programming software

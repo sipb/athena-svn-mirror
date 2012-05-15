@@ -1,3 +1,11 @@
 #!/usr/bin/make -f
 
+HAVE_IRONPYTHON = $(shell apt-cache show ironpython 2>/dev/null | grep -q '^Version:' && echo y)
+
+ifeq ($(HAVE_IRONPYTHON),y)
+    binary-predeb/debathena-thirdparty-programming::
+        echo "debathena-maybe-ironpython=ironpython" >> debian/debathena-thirdparty-programming.substvars
+endif
+
+
 include /usr/share/cdbs/1/rules/debhelper.mk

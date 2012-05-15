@@ -1,3 +1,9 @@
+debathena-thirdparty-languages (1.1) unstable; urgency=low
+
+  * jython-gcj is now part of jython
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 15 May 2012 16:09:42 -0400
+
 debathena-thirdparty-languages (1.0) unstable; urgency=low
 
   * First non-equivs version

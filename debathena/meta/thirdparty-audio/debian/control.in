@@ -10,8 +10,8 @@ Architecture: all
 Depends: mpg123,
  gxmms2,
  xmms2,
- xmcd,
  ${misc:Depends}
+Recommends: xmcd,
 Description: Debathena metapackage for third-party audio software
  This includes a set of subpackages of commonly-used third-party software
  within the audio domain.  It is intended for cluster machines though usable

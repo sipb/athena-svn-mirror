@@ -1,3 +1,14 @@
+debathena-thirdparty-libraries (1.0.2) unstable; urgency=low
+
+  * Stop depending on specific versions and depend on the generic -dev
+    packages for libvtk, libginac, libcln, libitpp, libpari (including
+    gmp3) and libboostc
+  * vtk-tcl got renamed to tcl-vtk
+  * libppl got a version boost
+  * xulrunner-dev demoted to a recommendation
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 15 May 2012 16:29:41 -0400
+
 debathena-thirdparty-libraries (1.0.1) unstable; urgency=low
 
   * No-change rebuild
