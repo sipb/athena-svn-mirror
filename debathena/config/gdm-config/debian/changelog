@@ -4,8 +4,10 @@ ebathena-gdm-config (1.36) unstable; urgency=low
     window is done correctly
   * Remove -branding packages.  Ancient GDM users now get the word
     "Debathena" instead of the metapackage name.
+  * gdm-config will temporarily Provide the old branding packages to avoid
+    the possibility of anything terrible happening.
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 14 May 2012 15:28:53 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 16 May 2012 09:56:37 -0400
 
 debathena-gdm-config (1.35) unstable; urgency=low
 

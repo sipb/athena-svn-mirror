@@ -8,7 +8,7 @@ Standards-Version: 3.8.4
 Package: debathena-gdm-config
 Architecture: all
 Depends: ${debathena-gdm}, gnome-session, python, ${misc:Depends}, ${debathena-gdm-gconf-depends}
-Provides: ${diverted-files}
+Provides: debathena-login-graphical-branding, debathena-workstation-branding, debathena-cluster-branding, ${diverted-files}
 Conflicts: ${diverted-files}
 Breaks: debathena-reactivate (<< 1.22~)
 Replaces: debathena-reactivate (<< 1.22~)
