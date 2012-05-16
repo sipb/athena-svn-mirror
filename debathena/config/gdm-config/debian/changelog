@@ -1,4 +1,4 @@
-ebathena-gdm-config (1.36) unstable; urgency=low
+debathena-gdm-config (1.36) unstable; urgency=low
 
   * Populate the GtkImage prior to window mapping so that positioning the
     window is done correctly
