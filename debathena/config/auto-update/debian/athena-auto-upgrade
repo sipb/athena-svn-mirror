@@ -4,6 +4,7 @@
 
 DEBUG=0
 FORCE=0
+# You can set DEBUG_RELEASE in the environment for testing
 DEBUG_RELEASE=""
 VERBOSE=0
 FAKE=0
@@ -22,6 +23,7 @@ while getopts "vfdt" opt; do
             ;;
         f) 
             FORCE=1
+	    UPGRADE_ANYWAY=yes
             ;;
         t)
             UPGRADE_TO_TESTING=yes
@@ -205,9 +207,25 @@ GATEWAY=`route -n | awk '/^0\.0\.0\.0/ { print $2 }'`
 debug "Using IPADDR=$IPADDR"
 debug "Using NETMASK=$NETMASK"
 debug "Using GATEWAY=$GATEWAY"
+
+nodhcp="netcfg/disable_dhcp=true"
+case "$UBUNTU_RELEASE" in
+    oneiric|precise)
+        kbdcode="keyboard-configuration/layoutcode=us"
+	# "Yay"
+	nodhcp="netcfg/disable_autoconfig=true"
+    natty)
+        # Sigh
+        kbdcode="keyboard-configuration/layoutcode=us"
+        ;;
+    *)
+        kbdcode="console-setup/layoutcode=us"
+        ;;
+esac
+
 if [ -n "$NETMASK" ] && [ -n "$GATEWAY" ]; then
   knetinfo="netcfg/get_hostname=$(hostname) \
-            netcfg/disable_dhcp=true \
+            $nodhcp \
             netcfg/get_domain=mit.edu \
             netcfg/get_nameservers=\"18.72.0.3 18.70.0.160\"\
             netcfg/get_ipaddress=$IPADDR \
@@ -222,15 +240,6 @@ runcmd "mkdir -p /auto-upgrade"
 runcmd "wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/initrd.gz -O /auto-upgrade/initrd.gz" 
 runcmd "wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/linux -O /auto-upgrade/linux" 
 
-case "$UBUNTU_RELEASE" in
-    natty|oneiric|precise)
-        # Sigh
-        kbdcode="keyboard-configuration/layoutcode=us"
-        ;;
-    *)
-        kbdcode="console-setup/layoutcode=us"
-        ;;
-esac
 # This is just the guts of the hackboot script:
 dkargs="DEBCONF_DEBUG=5"
 kargs="$knetinfo locale=en_US $kbdcode \
@@ -255,7 +264,10 @@ cat >"$tmpfile"<<END
 echo "Adding auto-upgrade /auto-upgrade/linux" >&2
 cat<<EOF
 menuentry "auto-upgrade" {
-  set root="(athena-root)"
+  insmod ext2
+  insmod part_msdos
+  insmod lvm
+  search --no-floppy --fs-uuid --set=root \${GRUB_DEVICE_UUID}
   echo "Loading auto-upgrade kernel for ${UBUNTU_RELEASE}" 
   linux /auto-upgrade/linux $kargs
   echo "Loading auto-upgrade ramdisk for ${UBUNTU_RELEASE}" 
@@ -266,6 +278,7 @@ EOF
 END
 
 
+debug "$(cat $tmpfile)"
 runcmd "cp $tmpfile /etc/grub.d/49_auto-upgrade"
 rm -f $tmpfile
 runcmd "chmod 755 /etc/grub.d/49_auto-upgrade" 

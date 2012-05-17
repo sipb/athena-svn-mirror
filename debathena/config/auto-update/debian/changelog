@@ -1,11 +1,17 @@
 debathena-auto-update (1.35) unstable; urgency=low
 
+  [ John Jarvis ]
   * Switched from using kexec to rebooting into the netinstall
     kernel/initrd copied to athena-root. (Trac #1011)
     Added a runcmd function for handling logging and verbose
     output.
 
- -- John Jarvis <jarv@madison>  Tue, 15 Nov 2011 11:10:18 -0500
+  [ Jonathan Reed ]
+  * UI fixup in athena-auto-upgrade
+  * Handle new netcfg/disable_autoconfig parameter
+  * Set the root device by UUID, not LVM name
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 17 May 2012 13:30:28 -0400
 
 debathena-auto-update (1.34) unstable; urgency=low
 
