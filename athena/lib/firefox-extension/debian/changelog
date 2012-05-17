@@ -3,8 +3,12 @@ debathena-firefox-extension (10.0.7-0debathena5) unstable; urgency=low
   * Don't attempt to symlink two things in the same place; on newer
     versions of Firefox, /usr/lib/firefox/extensions is a symlink into
     firefox-addons
+  * Instead, figure out whether to add that additional symlink in the
+    postinst and clean it up in the postrm.  Firefox is moving fast enough
+    that doing it at build time is wrong, since we don't rebuild the
+    package every time there's a FF bump
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 14 May 2012 17:07:11 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 17 May 2012 11:40:19 -0400
 
 debathena-firefox-extension (10.0.7-0debathena4) unstable; urgency=low
 

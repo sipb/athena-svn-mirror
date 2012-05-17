@@ -6,11 +6,6 @@ ifneq ($(wildcard /etc/firefox-3.0/pref/ubufox.js),)
 	/etc/firefox-3.0/pref/ubufox.js.debathena
 endif
 
-ifneq ($(shell readlink -f /usr/lib/firefox/extensions),/usr/lib/firefox-addons/extensions)
-DEB_DH_LINK_debathena-firefox-extension += \
-        usr/lib/debathena-firefox-extension usr/lib/firefox/extensions/athena@mit.edu
-endif
-
 DEB_AUTO_UPDATE_AUTOCONF = 2.50
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
