@@ -2,6 +2,17 @@
  * XPCOM component for the MIT Athena Firefox extension.
  */
 
+// XPCOM component scaffolding
+
+const SERVICE_NAME="Athena Service";
+const SERVICE_ID="{2276de48-911b-4acd-8b16-ef017b3eecad}";
+const SERVICE_CONTRACT_ID = "@mit.edu/athena-service;1";
+const SERVICE_CONSTRUCTOR=AthenaService;
+
+const SERVICE_CID = Components.ID(SERVICE_ID);
+
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+
 // Class constructor
 function AthenaService()
 {
@@ -10,40 +21,38 @@ function AthenaService()
 // Class definition
 AthenaService.prototype = {
 
+  // classDescription and contractID needed for Gecko 1.9 only
+  classDescription: SERVICE_NAME,
+  classID: SERVICE_CID,
+  contractID: SERVICE_CONTRACT_ID,
+  QueryInterface: XPCOMUtils.generateQI([Components.interfaces.nsIObserver]),
   properties: null,
 
-  // nsISupports implementation
-  QueryInterface: function(IID)
-  {
-    if (!IID.equals(Components.interfaces.nsIObserver) &&
-        !IID.equals(Components.interfaces.nsISupports))
-      throw Components.results.NS_ERROR_NO_INTERFACE;
-    return this;
-  },
+  // Needed for Gecko 1.9 only.  categories are specified in
+  // chrome.manifest for Gecko 2.0
+  _xpcom_categories: [ { category: "app-startup", service: true } ],
 
   // nsIObserver implementation 
   observe: function(subject, topic, data)
   {
+    const propertiesURI = "chrome://athena/content/athena.properties";
     switch (topic) {
     case "app-startup":
       // Set up to receive notifications when the profile changes
       // (including when it is set at startup) and at XPCOM shutdown.
+      // Only used in Gecko 1.9
       var observerService =
         Components.classes['@mozilla.org/observer-service;1']
           .getService(Components.interfaces.nsIObserverService);
       observerService.addObserver(this, "profile-after-change", false);
       observerService.addObserver(this, "xpcom-shutdown", false);
 
-      const propertiesURI = "chrome://athena/content/athena.properties";
-      var stringBundleService =
-        Components.classes["@mozilla.org/intl/stringbundle;1"]
-          .getService(Components.interfaces.nsIStringBundleService);
-      properties = stringBundleService.createBundle(propertiesURI);
       break;
 
     case "xpcom-shutdown":
       // The application is exiting.  Remove observers added in
       // "app-startup".
+      // Only used in Gecko 1.9
       var observerService =
         Components.classes['@mozilla.org/observer-service;1']
           .getService(Components.interfaces.nsIObserverService);
@@ -54,6 +63,10 @@ AthenaService.prototype = {
     case "profile-after-change":
       // This is called when the profile is set at startup, and when
       // a profile change is requested.  Perform our customizations.
+      var stringBundleService =
+        Components.classes["@mozilla.org/intl/stringbundle;1"]
+          .getService(Components.interfaces.nsIStringBundleService);
+      properties = stringBundleService.createBundle(propertiesURI);
       this.customize();
       break;
 
@@ -78,7 +91,7 @@ AthenaService.prototype = {
     var prefbranch =
       Components.classes["@mozilla.org/preferences-service;1"]
         .getService(Components.interfaces.nsIPrefBranch);
-    
+
     // Get the profile directory.
     var profileDirectory;
     try {
@@ -186,85 +199,11 @@ AthenaService.prototype = {
 
 }
 
-// XPCOM component scaffolding
-
-const SERVICE_NAME="Athena Service";
-const SERVICE_ID="{2276de48-911b-4acd-8b16-ef017b3eecad}";
-const SERVICE_CONTRACT_ID = "@mit.edu/athena-service;1";
-const SERVICE_CONSTRUCTOR=AthenaService;
-
-const SERVICE_CID = Components.ID(SERVICE_ID);
-
-var AthenaServiceFactory = {
-  createInstance: function(outer, IID)
-  {
-    if (outer != null)
-      throw Components.results.NS_ERROR_NO_AGGREGATION;
-
-    return (new AthenaService()).QueryInterface(IID);
-  }
-};
-
-// Module definition, XPCOM registration
-var AthenaServiceModule = {
-  _firstTime: true,
-
-  registerSelf: function(compMgr, fileSpec, location, type)
-  {
-    if (this._firstTime) {
-      // Register the component.
-      var compReg =
-        compMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-      compReg.registerFactoryLocation(SERVICE_CID, SERVICE_NAME,
-                                      SERVICE_CONTRACT_ID, fileSpec,
-                                      location, type);
-
-      // Set the component to receive app-startup notification.
-      var catMgr =
-        Components.classes["@mozilla.org/categorymanager;1"]
-          .getService(Components.interfaces.nsICategoryManager);
-      catMgr.addCategoryEntry("app-startup", SERVICE_NAME,
-                              "service," + SERVICE_CONTRACT_ID,
-                              true, true, null);
-
-      this._firstTime = false;
-    }
-  },
-
-  unregisterSelf: function(compMgr, location, type)
-  {
-    // Unregister.
-    var compReg =
-      compMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    compReg.unregisterFactoryLocation(SERVICE_CID, location);
-
-    // Remove app-startup notification.
-    var catMgr =
-      Components.classes["@mozilla.org/categorymanager;1"]
-        .getService(Components.interfaces.nsICategoryManager);
-    catMgr.deleteCategoryEntry("app-startup", SERVICE_NAME, true);
-  },
-
-  getClassObject: function(compMgr, CID, IID)
-  {
-    if (!IID.equals(Components.interfaces.nsIFactory))
-      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-
-    if (CID.equals(SERVICE_CID))
-      return AthenaServiceFactory;
-
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  },
-
-  canUnload: function(compMgr)
-  {
-    return true;
-  }
-};
-
-// Module initialization
-// This function is called when the application registers the component.
-function NSGetModule(compMgr, fileSpec)
-{
-  return AthenaServiceModule;
+if (XPCOMUtils.generateNSGetFactory) {
+  // Gecko 2.0 (FF 4 and higher)
+  var NSGetFactory = XPCOMUtils.generateNSGetFactory([AthenaService]);
+} else {
+  // Gecko 1.9 (FF 3)
+  var NSGetModule = XPCOMUtils.generateNSGetModule([AthenaService]);
 }
+

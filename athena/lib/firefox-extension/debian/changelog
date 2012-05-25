@@ -1,3 +1,13 @@
+debathena-firefox-extension (10.1-0debathena1) UNRELEASED; urgency=low
+
+  * Sync extension version number with package version number
+  * Support Gecko 2.0, because apparently the XPCOM component hasn't
+    worked since Firefox 3.x
+  * Switch to XPCOMUtils.jsm for the XPCOM scaffolding (break
+    compatibility with Firefox 2 and earlier)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 25 May 2012 17:07:03 -0400
+
 debathena-firefox-extension (10.0.7-0debathena5) unstable; urgency=low
 
   * Don't attempt to symlink two things in the same place; on newer

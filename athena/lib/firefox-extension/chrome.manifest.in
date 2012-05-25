@@ -1,3 +1,6 @@
 content	athena	chrome/content/
 skin	athena	default	chrome/skin/
 overlay	chrome://browser/content/browser.xul	chrome://athena/content/athena.xul
+component {2276de48-911b-4acd-8b16-ef017b3eecad} components/athenaService.js
+contract @mit.edu/athena-service;1 {2276de48-911b-4acd-8b16-ef017b3eecad}
+category profile-after-change AthenaService @mit.edu/athena-service;1
