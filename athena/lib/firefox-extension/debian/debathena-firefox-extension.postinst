@@ -17,9 +17,82 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+package=debathena-firefox-extension
+ours=.debathena
+theirs=.debathena-orig
+
+undivert_unlink_symlink()
+{
+    file="$1"
+    ourfile="$2"
+    theirfile="$3"
+    if [ ! -L "$file" ] || \
+        [ "$(readlink "$file")" != "$(basename "$ourfile")" -a \
+          "$(readlink "$file")" != "$(basename "$theirfile")" ]; then
+        echo "*** OMINOUS WARNING ***: $file is not linked to either $(basename "$ourfile") or $(basename "$theirfile")" >&2
+    else
+        rm -f "$file"
+    fi
+}
+
+undivert_unlink_divert()
+{
+    file="$1"
+    if [ ! -L "$file" ] && [ ! -e "$file" ]; then
+        dpkg-divert --remove --rename --package "$package" "$file"
+    else
+        echo "Not removing diversion of $file by $package" >&2
+    fi
+}
+
+undivert_unlink()
+{
+    prefix=$1
+    suffix=$2
+
+    file=$prefix$suffix
+    ourfile=$prefix$ours$suffix
+    theirfile=$prefix$theirs$suffix
+
+    undivert_unlink_symlink "$file" "$ourfile" "$theirfile"
+    undivert_unlink_divert "$file" "$package"
+}
+
+cleanup_old_diversion() {
+    file="$1"
+    if dpkg-divert --list "${file}" | grep -Fxq "diversion of ${file} to ${file}${theirs} by ${package}"; then
+        undivert_unlink "$file"
+    fi
+}
 
 case "$1" in
     configure)
+	# In 0.9~rc2-0ubuntu2, the conffile moved to /etc/xul-ext
+	# and we horribly broke things.  Let's attempt to unbreak them:
+	ubufox_version="$(dpkg-query -W -f '${Version}' ubufox)"
+	if dpkg --compare-versions "$ubufox_version" ge "0.9~rc2-0ubuntu2"; then
+	    cleanup_old_diversion /etc/firefox-3.0/pref/ubufox.js
+	    echo "*** The previous OMINOUS WARNING may be safely ignored ***" >&2
+	    # If there are files in the location, move them to
+	    # the new location, unless the user has already done that
+	    # and that will restore any broken symlinks.
+	    for f in $(ls /etc/firefox-3.0/pref/ubufox.js.debathena*); do
+		mv -u "$f" /etc/xul-ext
+	    fi
+	    new_file=/etc/xul-ext/ubufox.js
+	    if [ -L "$new_file" ] && 
+	       [ ! -e "$(readlink -f "$new_file")" ]; then
+		# If the link target is still missing, copy over upstream's
+		# new config file, or upstream's old config file, or give up
+		if [ -f /etc/xul-ext/ubufox.js.dpkg-new ]; then
+		    mv -f /etc/xul-ext/ubufox.js.dpkg-new /etc/xul-ext/ubufox.js
+		elif [ -f /etc/xul-ext/ubufox.js.debathena-orig ]; then
+		    mv -f /etc/xul-ext/ubufox.js.debathena-orig /etc/xul-ext/ubufox.js
+		else
+		    echo "*** Manual inspection and cleanup of /etc/xul-ext/ubufox.js may be required"
+		fi
+	    fi
+	fi
 	if [ -d /usr/lib/firefox/extensions ] && ! [ -h /usr/lib/firefox/extensions ]; then
 	    ln -s /usr/lib/debathena-firefox-extension /usr/lib/firefox/extensions/athena@mit.edu
 	fi
