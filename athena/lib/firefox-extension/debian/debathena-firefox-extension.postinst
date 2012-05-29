@@ -78,7 +78,7 @@ case "$1" in
 	    # and that will restore any broken symlinks.
 	    for f in $(ls /etc/firefox-3.0/pref/ubufox.js.debathena*); do
 		mv -u "$f" /etc/xul-ext
-	    fi
+	    done
 	    new_file=/etc/xul-ext/ubufox.js
 	    if [ -L "$new_file" ] && 
 	       [ ! -e "$(readlink -f "$new_file")" ]; then
