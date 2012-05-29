@@ -4,6 +4,9 @@ DEB_DIVERT_EXTENSION = .debathena
 ifneq ($(wildcard /etc/firefox-3.0/pref/ubufox.js),)
     DEB_TRANSFORM_FILES_debathena-firefox-extension += \
 	/etc/firefox-3.0/pref/ubufox.js.debathena
+else
+    DEB_UNDIVERT_FILES_debathena-firefox-extension += \
+	/etc/firefox-3.0/pref/ubufox.js.debathena
 endif
 
 DEB_AUTO_UPDATE_AUTOCONF = 2.50
