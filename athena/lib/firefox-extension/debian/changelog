@@ -6,8 +6,9 @@ debathena-firefox-extension (10.1-0debathena1) UNRELEASED; urgency=low
   * Switch to XPCOMUtils.jsm for the XPCOM scaffolding (break
     compatibility with Firefox 2 and earlier)
   * Clean up from when ubufox.js moved to /etc/xul-ext
+  * Add additional Help menu items
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 28 May 2012 12:03:40 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 29 May 2012 12:29:08 -0400
 
 debathena-firefox-extension (10.0.7-0debathena5) unstable; urgency=low
 

@@ -1,3 +1,9 @@
 <!ENTITY athenaHelp.label "Athena On-Line Help">
 <!ENTITY athenaHelp.url "http://ist.mit.edu/services/athena/olh">
 <!ENTITY athenaHelp.accesskey "">
+<!ENTITY athenaKB.label "MIT Knowledge Base">
+<!ENTITY athenaKB.url "http://kb.mit.edu">
+<!ENTITY athenaKB.accesskey "">
+<!ENTITY athenaCert.label "Get MIT Web Certificates">
+<!ENTITY athenaCert.url "http://web.mit.edu/certificates">
+<!ENTITY athenaCert.accesskey "">

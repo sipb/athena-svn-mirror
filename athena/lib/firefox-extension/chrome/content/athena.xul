@@ -8,6 +8,10 @@
     <menuseparator insertafter="aboutSeparator"/>
     <menuitem label="&athenaHelp.label;" insertafter="aboutSeparator"
        oncommand="openUILink('&athenaHelp.url;', event, false, true);"/>
+    <menuitem label="&athenaKB.label;" insertafter="aboutSeparator"
+       oncommand="openUILink('&athenaKB.url;', event, false, true);"/>
+    <menuitem label="&athenaCert.label;" insertafter="aboutSeparator"
+       oncommand="openUILink('&athenaCert.url;', event, false, true);"/>
   </menupopup>
 
 </overlay>
