@@ -7,9 +7,10 @@ Standards-Version: 3.9.1
 
 Package: debathena-lightdm-config
 Architecture: all
-Depends: lightdm, 
+Depends: lightdm (>> 1.0.6), 
 	 python, python-gobject, 
 	 gir1.2-lightdm-1, gir1.2-glib-2.0, gir1.2-gtk-3.0,
 	 ${misc:Depends}
 Description: Lightdm configuration for Debathena
- This package configures the lightdm display manager.
+ This package installs a lightdm greeter for Debathena, and strongly
+ encourages the user to use lightdm and the aforementioned greeter.

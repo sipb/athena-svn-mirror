@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: debathena-lightdm-config@packages.debian.org\n"
-"POT-Creation-Date: 2012-05-14 11:05-0400\n"
+"POT-Creation-Date: 2012-05-30 10:35-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,12 +20,35 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../debathena-lightdm-config.templates:1001
-msgid "Do you want to use the Debathena LightDM greeter?"
+msgid "Do you want to use lightdm?"
 msgstr ""
 
 #. Type: boolean
 #. Description
 #: ../debathena-lightdm-config.templates:1001
+msgid ""
+"LightDM is a display manager, like xdm or gdm.  You are not currently using "
+"lightdm, yet you're installing this package.  You are strongly encouraged to "
+"use LightDM as your display manager for the best Debathena experience."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../debathena-lightdm-config.templates:1001
+msgid ""
+"You can always change your mind later by editing  /etc/X11/default-display-"
+"manager or running \"dpkg-reconfigure lightdm\""
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../debathena-lightdm-config.templates:2001
+msgid "Do you want to use the Debathena LightDM greeter?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../debathena-lightdm-config.templates:2001
 msgid ""
 "The Debathena LightDM greeter is a greeter for the LightDM display manager.  "
 "It configures your workstation's login screen to look like those in the "
@@ -34,7 +57,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../debathena-lightdm-config.templates:1001
+#: ../debathena-lightdm-config.templates:2001
 msgid ""
 "The Debathena team _strongly encourages_ the use of the Debathena greeter.  "
 "If you choose to use another greeter, you are strongly encouraged to read "
@@ -44,21 +67,21 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../debathena-lightdm-config.templates:1001
+#: ../debathena-lightdm-config.templates:2001
 msgid ""
-"If you have no greeter set, the debathena-lightdm-greeter will be selected "
-"regardless of the answer to this question."
+"If you have no LightDM greeter set, the debathena-lightdm-greeter will be "
+"selected regardless of the answer to this question."
 msgstr ""
 
 #. Type: note
 #. Description
-#: ../debathena-lightdm-config.templates:2001
+#: ../debathena-lightdm-config.templates:3001
 msgid "A new greeter will be selected for you"
 msgstr ""
 
 #. Type: note
 #. Description
-#: ../debathena-lightdm-config.templates:2001
+#: ../debathena-lightdm-config.templates:3001
 msgid ""
 "LightDM won't function without a greeter.  Since you're uninstalling (or "
 "deconfiguring) this package, a new one will be selected automatically, in "
@@ -68,6 +91,6 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../debathena-lightdm-config.templates:2001
+#: ../debathena-lightdm-config.templates:3001
 msgid "You can change the greeter with /usr/lib/lightdm/lightdm-set-defaults"
 msgstr ""

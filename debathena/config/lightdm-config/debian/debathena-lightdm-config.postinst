@@ -25,6 +25,11 @@ SET_DEFAULTS="/usr/lib/lightdm/lightdm-set-defaults"
 
 case "$1" in
     configure)
+	db_get debathena-lightdm-config/force_lightdm 
+	if [ "$RET" = "true" ]; then
+	    db_set shared/default-x-display-manager "lightdm"
+	    echo "/usr/sbin/lightdm" > /etc/X11/default-display-manager
+	fi
 	# First, set it anyway with --keep-old since maybe they don't
 	# have a greeter set
 	[ -x "$SET_DEFAULTS" ] && \
