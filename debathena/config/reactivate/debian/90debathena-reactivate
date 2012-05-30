@@ -12,7 +12,7 @@ elif [ "$STATUS" = "ok" ]; then
 fi
 
 if [ $STAGE = "setup-start" ]; then
-    info "Adding messagebus to access list for session ${CHROOT_NAME}"
-    sed -i "/^root-users/s/$/,messagebus/" /var/lib/schroot/session/"${CHROOT_NAME}"
+    info "Adding messagebus to access list for session ${SESSION_ID}"
+    sed -i "/^root-users/s/$/,messagebus/" /var/lib/schroot/session/"${SESSION_ID}"
 fi
 

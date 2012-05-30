@@ -2,7 +2,8 @@
 
 DEB_DIVERT_EXTENSION = .debathena
 DEB_DIVERT_FILES_debathena-reactivate += \
-	/etc/gdm/Xsession.debathena
+	/etc/gdm/Xsession.debathena \
+	/usr/sbin/lightdm-session.debathena
 DEB_TRANSFORM_FILES_debathena-reactivate += \
 	/etc/pam.d/su.debathena \
 	/etc/default/schroot.debathena \
