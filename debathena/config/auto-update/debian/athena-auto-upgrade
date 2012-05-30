@@ -58,8 +58,6 @@ if [ $FORCE -eq 1 ]; then
 fi
 
 function pie_grub() {
-
-    
     # change DEFAULT in /etc/grub to SAVED
     if [[ $FAKE == 1 ]]; then
         echo perl -i.bak -pe 's/^GRUB_DEFAULT=.*$/GRUB_DEFAULT=saved/' /etc/default/grub
@@ -71,11 +69,6 @@ function pie_grub() {
     fi
     if [[ $? -ne 0 ]]; then
         complain "Setting DEFAULT in /etc/default/grub returned a non-zero exit status"
-        exit 1
-    fi
-
-    if [[ $? -ne 0 ]]; then
-        complain "Setting GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub returned a non-zero exit status"
         exit 1
     fi
 
@@ -236,6 +229,7 @@ else
   knetinfo="netcfg/dhcp_timeout=60 netcfg/get_hostname=$(hostname)"
 fi
 
+runcmd "rm -rf /auto-upgrade"
 runcmd "mkdir -p /auto-upgrade" 
 runcmd "wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/initrd.gz -O /auto-upgrade/initrd.gz" 
 runcmd "wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/linux -O /auto-upgrade/linux" 
