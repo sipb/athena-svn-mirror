@@ -2,16 +2,22 @@
 
 TBIRD_VERSION = $(shell apt-cache policy thunderbird 2>/dev/null | awk '/^  Candidate/ { print $$2 }' | fgrep -vx '(none)')
 TBIRD_3_1 = $(shell dpkg --compare-versions '$(TBIRD_VERSION)' ge '3.1~' && echo y)
-ICED_VERSION = $(shell apt-cache policy icedove 2>/dev/null | awk '/^  Can\
-didate/ { print $$2 }' | fgrep -vx '(none)')
+ICED_VERSION = $(shell apt-cache policy icedove 2>/dev/null | awk '/^  Candidate/ { print $$2 }' | fgrep -vx '(none)')
 ICED_3_1 = $(shell dpkg --compare-versions '$(ICED_VERSION)' ge '3.1~' && ech\
 o y)
+LIGHTDM_VERSION = $(shell apt-cache policy lightdm 2>/dev/null | awk '/^  Candidate/ { print $$2 }' | fgrep -vx '(none)')
+HAVE_LIGHTDM_106 = $(shell dpkg --compare-versions '$(LIGHTDM_VERSION)' ge '1.0.6~' && echo y)
 
 ifneq ($(TBIRD_3_1),y)
 ifneq ($(ICED_3_1),y)
 binary-predeb/debathena-login-graphical::
 	echo "debathena-thunderbird-config-recommends=debathena-thunderbird-config" >> debian/debathena-login-graphical.substvars
 endif
+endif
+
+ifeq ($(HAVE_LIGHTDM_106),y)
+binary-predeb/debathena-login-graphical::
+	echo "debathena-maybe-lightdm-config=debathena-lightdm-config" >> debian/debathena-login-graphical.substvars
 endif
 
 

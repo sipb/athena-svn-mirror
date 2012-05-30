@@ -20,6 +20,7 @@ Depends: debathena-login,
  debathena-xlock,
  debathena-email-icon-config,
  debathena-moira-gui,
+ ${debathena-maybe-lightdm-config},
  ${misc:Depends}
 Recommends: ubuntu-desktop,
  ${debathena-thunderbird-config-recommends},
