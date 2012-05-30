@@ -8,12 +8,22 @@ ARGS=""
 
 # STDERR will go somewhere useful at this point, right?
 echo "**** Athena session wrapper (/usr/bin/athena-session)" >&2
+echo "**** session started at $(date)" >&2
 
 # Support for --session was added in gnome-session 2.32.1-0ubuntu2
 # according to the changelog
 if dpkg --compare-versions "$GNOME_SESSION_VER" ge '2.32.1-0ubuntu2~'; then
-  ARGS="--session=classic-gnome"
-  echo "  Unity detected, invoking classic GNOME session." >&2
+  if [ -e /usr/share/gnome-session/sessions/classic-gnome.session ]; then
+    ARGS="--session=classic-gnome"
+  elif [ -e /usr/share/gnome-session/sessions/ubuntu-2d.session ]; then
+    ARGS="--session=ubuntu-2d"
+  elif [ -e /usr/share/gnome-session/sessions/ubuntu.session ]; then
+    ARGS="--session=ubuntu"
+  else
+    zenity --error --text="Can't find a valid GNOME session to run (shouldn't happen).  Please report this error to bugs@mit.edu and mention the hostname ($(hostname -f)) in your report."
+    exit 1
+  fi
 fi
 
+echo "**** About to run $SESSION $ARGS $@" >&2
 exec "$SESSION" "$ARGS" "$@"
