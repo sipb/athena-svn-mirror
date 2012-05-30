@@ -1,3 +1,9 @@
+debathena-kiosk (1.4.5) UNRELEASED; urgency=low
+
+  * Terminate kiosk sessions after 15 minutes.  Patch from Luke Faraone
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 29 May 2012 21:21:22 -0400
+
 debathena-kiosk (1.4.4) unstable; urgency=low
 
   * Support FF 6

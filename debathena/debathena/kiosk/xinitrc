@@ -68,7 +68,12 @@ mkdir -p "$profdir/chrome"
 cp "$chrome" "$profdir/chrome/userChrome.css" || exit 1
 
 # Launch firefox.
-firefox
+if [ "$(machtype -q)" = "quickstation" ] && [ -x /usr/bin/bugme ]; then
+    bugme --debug --fatal firefox
+else
+    firefox
+fi
+
 
 # Clean up.
 rm -rf .mozilla
