@@ -7,7 +7,7 @@ Standards-Version: 3.9.1
 
 Package: debathena-lightdm-config
 Architecture: all
-Depends: lightdm (>> 1.0.6), 
+Depends: lightdm (>= 1.0.6~), 
 	 python, python-gobject, 
 	 gir1.2-lightdm-1, gir1.2-glib-2.0, gir1.2-gtk-3.0,
 	 ${misc:Depends}
