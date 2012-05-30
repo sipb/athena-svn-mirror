@@ -21,6 +21,19 @@ user_pref("extensions.checkCompatibility.3.6", false);
 user_pref("extensions.checkCompatibility.5.0", false);
 user_pref("extensions.checkCompatibility.6.0", false);
 user_pref("extensions.checkCompatibility.7.0", false);
+user_pref("extensions.checkCompatibility.8.0", false);
+user_pref("extensions.checkCompatibility.9.0", false);
+user_pref("extensions.checkCompatibility.10.0", false);
+user_pref("extensions.checkCompatibility.11.0", false);
+user_pref("extensions.checkCompatibility.12.0", false);
+user_pref("extensions.checkCompatibility.13.0", false);
+user_pref("extensions.checkCompatibility.14.0", false);
+user_pref("extensions.checkCompatibility.15.0", false);
+user_pref("extensions.checkCompatibility.16.0", false);
+user_pref("extensions.checkCompatibility.17.0", false);
+user_pref("extensions.checkCompatibility.18.0", false);
+user_pref("extensions.checkCompatibility.19.0", false);
+user_pref("extensions.checkCompatibility.20.0", false);
 
 // Set the home page.
 user_pref("browser.startup.homepage", "file:///usr/share/debathena-kiosk/index.html");
