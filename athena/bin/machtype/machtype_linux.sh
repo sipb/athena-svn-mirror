@@ -22,6 +22,7 @@
 #           workstation is a quickstation or not
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
+QUICKSTATION_FILE=/afs/athena.mit.edu/system/config/quick/quickstations
 
 while getopts cdk:m:rvACELMNPSq i; do
 	case "$i" in
@@ -171,8 +172,11 @@ if [ $memory ] ; then
 fi
 
 if [ $quickstation ]; then
-	if (mount | grep -q '^AFS on /afs' && 
-		grep -Fxqi "$(hostname --fqdn)" /afs/athena.mit.edu/system/config/quick/quickstations) ||
+	hostname=$(hostname -f)
+	if ( [ -n "$hostname" ] &&
+		[ -e "$QUICKSTATION_FILE" ] &&
+		mount | grep -q '^AFS on /afs' && 
+		grep -Fxqi "$hostname" "$QUICKSTATION_FILE") ||
 	    [ "$FORCE_QUICKSTATION" = 1 ]; then
 		echo quickstation
 	else

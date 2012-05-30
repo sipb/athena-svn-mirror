@@ -1,3 +1,10 @@
+debathena-machtype (10.0.2-0debathena7) unstable; urgency=low
+
+  * hostname -f can fail and grep -Fqxi '' can return true
+  * define the quickstation file at the top
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 30 May 2012 15:57:54 -0400
+
 debathena-machtype (10.0.2-0debathena6) unstable; urgency=low
 
   * Support Ubuntu 12.04.
