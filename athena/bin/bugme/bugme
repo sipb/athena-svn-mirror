@@ -8,8 +8,6 @@ import os
 import sys
 from optparse import OptionParser
 
-gladeFile = "/usr/share/bugme/bugme.glade"
-
 class BugMe:
     def __init__(self):
         # Time limit in seconds  (600)
@@ -20,15 +18,18 @@ class BugMe:
         self.warnInterval = 60
         # How often to warn after time has expired (secs)
         self.annoyInterval = 30
+        # Hard time limit; user will be killed after this time
+        self.killTime = self.timeLimit * 1.5
         if options.debugMode:
             self.timeLimit = 120
             self.firstWarn = 90
             self.warnInterval = 30
             self.annoyInterval = 10
+            self.killTime = 180
         # (foreground, background)
         self.colors = ('black', 'white')
         try:
-            self.xml = gtk.glade.XML(gladeFile)
+            self.xml = gtk.glade.XML(options.gladeFile)
         except:
             print "Failed to create GladeXML object."
             # Kill the child
@@ -73,6 +74,11 @@ class BugMe:
             self.nextWarn = now + self.warnInterval
             self.nag(((self.timeLimit - elapsed) / 60, 
                       (self.timeLimit - elapsed) % 60))
+        if options.killMode and elapsed >= self.killTime:
+            # The user has outstayed their welcome, nuke their session
+            print "Quitting."
+            sys.exit(0)
+
 	# It's a little odd to put this here, but it doesn't work in
 	# __init__; see comments in Trac #386
         self.timerWindow.set_keep_above(True)
@@ -80,7 +86,10 @@ class BugMe:
 
     def nag(self, remainingTime):
         if self.timeExpired:
-            self.nagLabel.set_markup("<span font_desc=\"20\">Please log out immediately.</span>")
+            msg="Please log out immediately."
+            if options.killMode:
+                msg += "\n\nYour session will be terminated in %d seconds." % (self.killTime - (int(time.time()) - self.startTime))
+            self.nagLabel.set_markup("<span font_desc=\"20\">"+msg+"</span>")
         else:
             seconds = "%d second%s" % (remainingTime[1], 
                                        remainingTime[1] != 1 and 's' or '')
@@ -92,7 +101,7 @@ class BugMe:
                 remaining = minutes
             else:
                 remaining = "%s, %s" % (minutes, seconds)
-            self.nagLabel.set_markup("<span font_desc=\"20\">You have %s remaining\nin your login session.</span>" % (remaining))
+            self.nagLabel.set_markup("<span font_desc=\"20\">You have %s remaining\nin this session.</span>" % (remaining))
 
         self.nagDialog.show()
 
@@ -106,17 +115,23 @@ class BugMe:
 
 
 if __name__ == '__main__':
-    if not os.access(gladeFile, os.R_OK):
-        print 'error: Unable to read glade file "' + gladeFile + '"'
-        sys.exit(255)
-
     parser = OptionParser(usage="%prog [--debug] progname [args]",
                           version="%prog 0.1")
     parser.disable_interspersed_args()
     parser.add_option("--debug", 
                      action="store_true", dest="debugMode", default=False,
                      help="Enable debug mode (time limit of 2 minutes)")
+    parser.add_option("--fatal",
+                     action="store_true", dest="killMode", default=False,
+                     help="Kill the user session after 1.5 times the time limit.")
+    parser.add_option("--glade", action="store", type="string", 
+                      dest="gladeFile",
+                      default="/usr/share/bugme/bugme.glade",
+                      help="Specify an alternate Glade file for debugging")
     (options, args) = parser.parse_args()
+    if not os.access(options.gladeFile, os.R_OK):
+        print 'error: Unable to read glade file "' + gladeFile + '"'
+        sys.exit(255)
     if len(args) < 1:
         parser.error("'progname' is required")
     pid = os.fork()

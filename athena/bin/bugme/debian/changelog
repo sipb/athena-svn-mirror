@@ -1,9 +1,16 @@
 debathena-bugme (10.0.4-0debathena1) unstable; urgency=low
 
+  [ Geoffrey Thomas ]
   * Set always-on-top window manager hint (Trac: #386). Patch from Luke
     Faraone.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Fri, 06 Jan 2012 15:37:46 -0500
+  [ Jonathan Reed ]
+  * Add a feature which forces a logout after a 1.5x the "allowed"
+    duration (Trac: #830 and #831).  Patch from Luke Faraone.
+  * Allow speciyfing Glade file on command line for debugging
+  * Minor UI tweaks
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 29 May 2012 21:20:01 -0400
 
 debathena-bugme (10.0.3-0debathena1) unstable; urgency=low
 
