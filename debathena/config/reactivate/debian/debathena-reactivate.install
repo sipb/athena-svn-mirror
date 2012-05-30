@@ -9,7 +9,7 @@ debian/sudo-warning etc/athena
 debian/su-warning etc/athena
 debian/login etc/schroot/chroot.d
 debian/script-athena etc/schroot
-debian/mount-athena etc/schroot
+debian/mount-athena.in etc/schroot
 debian/snapshot-run usr/lib/debathena-reactivate
 debian/reactivate usr/lib/debathena-reactivate
 debian/dbus-daemon-launch-helper lib/debathena-reactivate
