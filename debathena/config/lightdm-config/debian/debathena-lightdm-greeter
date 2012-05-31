@@ -296,7 +296,7 @@ class DebathenaGreeter:
                 # looking at the screen, which would otherwise result in the
                 # window resetting after the first error, and then they end
                 # up typing their password into the username box.
-                self.errDialog("Invalid username '%s'" % (currUser))
+                self.errDialog("The username '%s' is invalid.\n\n(Tip: Please ensure you're typing your username in lowercase letters.\nDo not add '@mit.edu' or any other suffix to your username.)" % (currUser))
                 self.startOver()
                 return True
             # There's probably a better way
