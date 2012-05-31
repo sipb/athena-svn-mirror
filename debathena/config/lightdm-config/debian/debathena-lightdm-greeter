@@ -3,6 +3,7 @@
 
 from gi.repository import GObject
 from gi.repository import GLib
+from gi.repository import Gio
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GdkPixbuf
@@ -18,6 +19,7 @@ from optparse import OptionParser
 
 # TODO: ConfigParser
 MIN_UID=1
+NOLOGIN_FILE="/var/run/athena-nologin"
 UI_FILE="/usr/share/debathena-lightdm-config/debathena-lightdm-greeter.ui"
 BG_IMG_FILE="/usr/share/debathena-lightdm-config/background.jpg"
 DEBATHENA_LOGO_FILES=["/usr/share/debathena-lightdm-config/debathena.png",
@@ -110,8 +112,10 @@ class DebathenaGreeter:
         self.builder.get_object("rbHibernate").set_sensitive(LightDM.get_can_hibernate() and self.metapackage != "debathena-cluster")
         self.builder.get_object("rbSuspend").set_sensitive(LightDM.get_can_suspend() and self.metapackage != "debathena-cluster")
         
+        self.loginNotebook = self.builder.get_object("notebook1")
+
         # Scaling factor for smaller displays
-        logoScale = 0.40 if self.screenSize[1] <= 768 else 0.60
+        logoScale = 0.75 if self.screenSize[1] <= 768 else 1.0
         self.animate = self.setup_owl(logoScale)
         
         self.winLogin.set_position(Gtk.WindowPosition.CENTER)
@@ -128,6 +132,8 @@ class DebathenaGreeter:
         # Set a cursor for the root window, otherwise there isn't one
         rw = Gdk.get_default_root_window()
         rw.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
+        self.noLoginMonitor = Gio.File.new_for_path(NOLOGIN_FILE).monitor_file(Gio.FileMonitorFlags.NONE, None)
+        self.noLoginMonitor.connect("changed", self._file_changed)
         # Setup the login window for first login
         self.resetLoginWindow()
 
@@ -135,7 +141,9 @@ class DebathenaGreeter:
         # The background image
         self.winBg = self.builder.get_object("winBg")
         self.imgBg = self.builder.get_object("imgBg")
-        self.imgBg.set_from_file(BG_IMG_FILE)
+        bg_pixbuf = GdkPixbuf.Pixbuf.new_from_file(BG_IMG_FILE)
+        bg_scaled = bg_pixbuf.scale_simple(self.screenSize[0], self.screenSize[1], GdkPixbuf.InterpType.BILINEAR)
+        self.imgBg.set_from_pixbuf(bg_scaled)
         self.winBg.show_all()
 
     def initPanelWindow(self):
@@ -183,6 +191,13 @@ class DebathenaGreeter:
 
     def showAccessDialog(self, widget):
         pass
+
+    def _file_changed(self, monitor, file1, file2, evt_type):
+        if evt_type == Gio.FileMonitorEvent.CREATED:
+            self.loginNotebook.set_current_page(1)
+            self.builder.get_object("lblUpdTime").set_text("Update started at %s" % (time.strftime("%Y-%m-%d %H:%M")))
+        if evt_type == Gio.FileMonitorEvent.DELETED:
+            self.loginNotebook.set_current_page(0)
 
     # Update the time in the "panel"
     def updateTime(self):

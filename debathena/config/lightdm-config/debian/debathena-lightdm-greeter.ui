@@ -447,6 +447,50 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="GtkBox" id="box11">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="border_width">12</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="label12">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Software updates are being applied.
+
+This workstation is unavailable.
+
+Please use another workstation.</property>
+                <property name="justify">center</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans Bold 16"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblUpdTime">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">&lt;update start time&gt;</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
         <child type="tab">
           <placeholder/>
         </child>
