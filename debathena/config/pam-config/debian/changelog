@@ -1,3 +1,9 @@
+debathena-pam-config (1.19) unstable; urgency=low
+
+  * Explain that Kerberos errors can be caused by @ signs (Trac: #612)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 31 May 2012 09:24:41 -0400
+
 debathena-pam-config (1.18.3) unstable; urgency=low
 
   * No change rebuild to pick up config-package-dev 4.13 changes
