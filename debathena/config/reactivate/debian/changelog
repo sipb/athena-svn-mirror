@@ -7,7 +7,7 @@ debathena-reactivate (2.0.31) unstable; urgency=low
   * Use new Debathena-Build-For field in control file to control releases
     this gets built on.
   * Set NSS_NONLOCAL_IGNORE when running getent, because we care about
-    local gruops, not Hesiod ones
+    local groups, not Hesiod ones
   * Add the user to "sudo" as well, since "admin" is gone in Precise (LP:
     893842)
   * Use SESSION_ID, not CHROOT_NAME in schroot setup script.  SESSION_ID
