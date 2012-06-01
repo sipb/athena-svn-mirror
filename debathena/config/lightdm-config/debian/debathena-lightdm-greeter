@@ -320,17 +320,19 @@ class DebathenaGreeter:
         self.spin(False)
 
     # show-message is emitted when LightDM has something to say to the user
-    # In testing, I have never encountered this.  Note that this is _not_
-    # "authentication failed", as far as I can tell.  Some docs imply
-    # that is is for those types of messages or PAM messages, but that 
-    # contradicts the docs which say to check .is_authenticated() in
-    # the authentication-complete callback to determine login success or
-    # failure.  "Whatever".
+    # Typically, these are emitted by PAM modules (e.g. pam_echo)
+    # Note that this is _not_ "authentication failed" (unless a PAM module 
+    # specifically says that).  
+    # 
+    # The docs which say to check .is_authenticated() in the 
+    # authentication-complete callback to determine login success or
+    # failure. 
     #
-    # In theory, messageType is one of LightDM.MessageType.{ERROR,INFO}
-    def cbShowMessage(self, text, messageType):
+    # messageType is one of LightDM.MessageType.{ERROR,INFO}
+    def cbShowMessage(self, greeter, text, messageType):
         self._debug("cbShowMessage: Received show-messsage message", 
                    text, messageType)
+        # TODO: Wrap text
         self.displayMessage(text)
         self.spin(False)
 

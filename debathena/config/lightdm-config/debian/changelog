@@ -5,8 +5,9 @@ debathena-lightdm-config (1.1) unstable; urgency=low
     were in an additional window and could obscure the greeter
   * Disallow logins when we're taking an update
   * Explain how to type a username correctly
+  * The show-message callback takes 3 args, not 2.
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 31 May 2012 09:17:59 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 01 Jun 2012 11:32:08 -0400
 
 debathena-lightdm-config (1.0) unstable; urgency=low
 
