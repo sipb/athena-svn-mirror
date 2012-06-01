@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<gconf>
+  <dir name="apps">
+    <dir name="metacity">
+      <dir name="global_keybindings">
+        <entry name="run_command_terminal" type="string">
+          <stringvalue>disabled</stringvalue>
+        </entry>
+      </dir>
+    </dir>
+  </dir>
+</gconf>
