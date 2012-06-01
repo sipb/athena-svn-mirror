@@ -3,7 +3,6 @@ COPYFILES=""
 NSSDATABASES=""
 
 rm -f "${FSTAB}"
-cp "${FSTAB}.in" "${FSTAB}"
-sed -i -e "s|_VARRUN_|$(readlink -f /var/run)|g" \
+sed -e "s|_VARRUN_|$(readlink -f /var/run)|g" \
        -e "s|_VARLOCK_|$(readlink -f /var/lock)|g" \
-       -e "s|_DEVSHM_|$(readlink -f /dev/shm)|g" ${FSTAB}
+       -e "s|_DEVSHM_|$(readlink -f /dev/shm)|g" < "${FSTAB}.in" > "${FSTAB}"

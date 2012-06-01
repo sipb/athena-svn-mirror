@@ -1,3 +1,9 @@
+debathena-reactivate (2.0.32) unstable; urgency=low
+
+  * Remove unnecessary invocation of cp(1)
+
+ -- Benjamin Kaduk <kaduk@mit.edu>  Fri, 01 Jun 2012 00:37:29 -0400
+
 debathena-reactivate (2.0.31) unstable; urgency=low
 
   * Stop creating a symlink from /var/run/athena-nologin to /etc/nologin,
