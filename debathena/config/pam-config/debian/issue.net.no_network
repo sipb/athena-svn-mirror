@@ -1,1 +1,2 @@
-Cannot contact Kerberos realm.  Check network connection & ensure username does not contain '@'.
+Cannot contact the Kerberos servers.  Please check your network connection.  
+Please do not add '@mit.edu' or any other suffix to your username.
