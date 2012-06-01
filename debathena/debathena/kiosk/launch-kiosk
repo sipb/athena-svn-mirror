@@ -35,6 +35,8 @@ echo "$kiosk_vt" > "$kiosk_vt_file"
 rm -rf "$kiosk_home"
 mkdir "$kiosk_home"
 cp "$datadir/xinitrc" "$kiosk_home/.xinitrc"
+mkdir "$kiosk_home/.gconf"
+cp "$datadir/%gconf-tree.xml" "$kiosk_home/.gconf/"
 chown -R "$kiosk_user":"$kiosk_group" "$kiosk_home"
 
 # Launch the session on our VT, and wait for it to complete.  This will

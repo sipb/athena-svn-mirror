@@ -1,10 +1,12 @@
-debathena-kiosk (1.4.5) UNRELEASED; urgency=low
+debathena-kiosk (1.4.5) unstable; urgency=low
 
   * Terminate kiosk sessions after 15 minutes.  Patch from Luke Faraone
   * Support Firefox through November, at which point we should give up and
     switch to Chrome
+  * Add a gconf-tree.xml to prevent [redacted] (Trac: 1130)
+  * Tweak wording on home page.
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 29 May 2012 21:29:27 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 01 Jun 2012 13:25:54 -0400
 
 debathena-kiosk (1.4.4) unstable; urgency=low
 
