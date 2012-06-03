@@ -1,3 +1,9 @@
+debathena-lightdm-config (1.2) unstable; urgency=low
+
+  * Support kiosk browsing
+
+ -- Jonathan D Reed <jdreed@mit.edu>  Sun, 03 Jun 2012 17:14:33 -0400
+
 debathena-lightdm-config (1.1) unstable; urgency=low
 
   * Scale the background, since most displays are not 2560x1600

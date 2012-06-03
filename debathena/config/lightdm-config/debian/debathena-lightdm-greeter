@@ -31,6 +31,7 @@ DEBATHENA_LOGO_FILES=["/usr/share/debathena-lightdm-config/debathena.png",
                       "/usr/share/debathena-lightdm-config/debathena6.png",
                       "/usr/share/debathena-lightdm-config/debathena7.png",
                       "/usr/share/debathena-lightdm-config/debathena8.png"]
+KIOSK_LAUNCH_CMD="/usr/lib/debathena-kiosk/lightdm-launch-kiosk"
 
 class DebathenaGreeter:
     animation_loop_frames = 300
@@ -62,6 +63,7 @@ class DebathenaGreeter:
             "kpEvent": self.cbKeyPress,
             "power_cb": self.showPowerDialog,
             "access_cb": self.showAccessDialog,
+            "browse_cb": self.spawnBrowser,
         }
  
         # Save the screen size for various window operations
@@ -134,6 +136,9 @@ class DebathenaGreeter:
         rw.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
         self.noLoginMonitor = Gio.File.new_for_path(NOLOGIN_FILE).monitor_file(Gio.FileMonitorFlags.NONE, None)
         self.noLoginMonitor.connect("changed", self._file_changed)
+
+        if not os.path.exists(KIOSK_LAUNCH_CMD):
+            self.builder.get_object("btnBrowse").hide()
         # Setup the login window for first login
         self.resetLoginWindow()
 
@@ -353,6 +358,9 @@ class DebathenaGreeter:
     def clearMessage(self):
         self.message_label.set_text("")
         self.message_label.hide()
+
+    def spawnBrowser(self, event):
+        subprocess.call(KIOSK_LAUNCH_CMD)
 
     def errDialog(self, errText):
         dlg = Gtk.MessageDialog(self.winLogin,
