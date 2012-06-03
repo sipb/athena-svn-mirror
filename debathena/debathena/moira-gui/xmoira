@@ -20,6 +20,7 @@ import mrclient
 
 class XMoira():
     def __init__(self):
+        self.running=False
         self.widgets = gtk.glade.XML(gladeFile)
         self.window = self.widgets.get_widget("mainWindow")
         self.widgets.signal_autoconnect(self)
@@ -157,7 +158,14 @@ class XMoira():
         if self.connected:
             return
         moira.connect()
-        moira.auth(self.clientName)
+        try:
+            moira.auth(self.clientName)
+        except moira.MoiraException, e:
+            self.errorDialog("Unable to authenticate to Moira: %s" % (e.args[1]), True)
+            if self.running:
+                self.quit()
+            else:
+                sys.exit(255)
         self.connected = True
 
     def query(self, query, *argList):
@@ -177,6 +185,7 @@ class XMoira():
             
 
     def run(self):
+        self.running=True
         gtk.main()
 
     def quit(self, widget=None, event=None):
