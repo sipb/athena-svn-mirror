@@ -53,7 +53,7 @@ class Kiosk:
     def kioskButton_on_click(self, button):
         if not self.sessionEnding:
             if os.path.exists("/var/run/athena-nologin"):
-                errDlg = gtk.MessageDialog(None, 
+                errDlg = gtk.MessageDialog(self.kioskWindow, 
                                            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                            gtk.MESSAGE_ERROR,
                                            gtk.BUTTONS_CLOSE,
