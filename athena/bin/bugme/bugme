@@ -106,7 +106,10 @@ class BugMe:
         self.nagDialog.show()
 
     def on_dialog_response(self, dialog, response_id):
-        self.nagDialog.hide()
+        if response_id == gtk.RESPONSE_CLOSE:
+            sys.exit(0)
+        elif response_id == gtk.RESPONSE_OK:
+            self.nagDialog.hide()
 
     def visibility_event_handler(self, widget, event):
         if event.state != gtk.gdk.VISIBILITY_UNOBSCURED:

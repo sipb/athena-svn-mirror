@@ -8,9 +8,11 @@ debathena-bugme (10.0.4-0debathena1) unstable; urgency=low
   * Add a feature which forces a logout after a 1.5x the "allowed"
     duration (Trac: #830 and #831).  Patch from Luke Faraone.
   * Allow speciyfing Glade file on command line for debugging
-  * Minor UI tweaks
+  * Minor UI tweaks; this won't always be used on a "Quickstation"
+  * Add a "Log out" button to the warning dialog, in case the user somehow
+    minimized the kiosk browser and can't get it back
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 29 May 2012 21:20:01 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 03 Jun 2012 11:20:32 -0400
 
 debathena-bugme (10.0.3-0debathena1) unstable; urgency=low
 
