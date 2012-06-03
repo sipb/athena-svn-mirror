@@ -5,8 +5,9 @@ debathena-kiosk (1.4.5) unstable; urgency=low
     switch to Chrome
   * Add a gconf-tree.xml to prevent [redacted] (Trac: 1130)
   * Tweak wording on home page.
+  * Don't launch the kiosk mode if an update is in progress (Trac: #1006)
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 01 Jun 2012 13:25:54 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 03 Jun 2012 14:26:05 -0400
 
 debathena-kiosk (1.4.4) unstable; urgency=low
 

@@ -52,7 +52,16 @@ class Kiosk:
 
     def kioskButton_on_click(self, button):
         if not self.sessionEnding:
-            self.kioskDialog.run()
+            if os.path.exists("/var/run/athena-nologin"):
+                errDlg = gtk.MessageDialog(None, 
+                                           gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                                           gtk.MESSAGE_ERROR,
+                                           gtk.BUTTONS_CLOSE,
+                                           "This machine is currently taking an update and the kiosk browser can't be launched.  Please try again later.")
+                errDlg.run()
+                errDlg.destroy()
+            else:
+                self.kioskDialog.run()
 
     def kioskDialogResponseHandler(self, dialog, response_id):
         if response_id == 1 and not self.sessionEnding:
