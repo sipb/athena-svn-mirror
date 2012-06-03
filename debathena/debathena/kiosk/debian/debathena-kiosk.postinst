@@ -32,6 +32,7 @@ case "$1" in
 ### BEGIN debathena-kiosk
 # gdm can launch kiosk mode
 gdm ALL=NOPASSWD: /usr/lib/debathena-kiosk/launch-kiosk
+lightdm ALL=NOPASSWD: /usr/lib/debathena-kiosk/launch-kiosk
 ### END debathena-kiosk
 EOF
         fi
