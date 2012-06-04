@@ -1,8 +1,12 @@
 debathena-lightdm-config (1.2) unstable; urgency=low
 
   * Support kiosk browsing
+  * Explicitly set the text and id columns of the ComboBox to work around
+    GtkBuilder bugs
+  * The greeter needs to keep track of whether the user hit Cancel or not
+    in LightDM 1.0 (oneiric)
 
- -- Jonathan D Reed <jdreed@mit.edu>  Sun, 03 Jun 2012 17:14:33 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 04 Jun 2012 11:54:12 -0400
 
 debathena-lightdm-config (1.1) unstable; urgency=low
 

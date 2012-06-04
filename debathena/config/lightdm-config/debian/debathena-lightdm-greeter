@@ -65,6 +65,19 @@ class DebathenaGreeter:
             "access_cb": self.showAccessDialog,
             "browse_cb": self.spawnBrowser,
         }
+
+        # Sigh.  Pre lightdm-1.1, cancel_authentication() calls the
+        # authentication-complete callback, so when we're in that
+        # callback, we need to know if we cancelled, or if we typed
+        # the password wrong.  The lightdm daemon does in fact know
+        # the difference (return codes of 7 or 10), but gir has no way
+        # to get that info, AFAICT 
+        # So beingCancelled is set to True when the user hits Cancel
+        # (or Esc) and set back to False in the authentication-complete
+        # callback or before we try and send anything else to the greeter
+        # This only controls UI, and has no effect on whether LightDM
+        # thinks the authentication process is being cancelled.
+        self.beingCancelled=False
  
         # Save the screen size for various window operations
         defaultScreen = Gdk.Screen.get_default()
@@ -100,6 +113,12 @@ class DebathenaGreeter:
         # The session combo box
         self.cmbSession = self.builder.get_object("cmbSession")
         self.sessionBox = self.builder.get_object("sessionBox")
+        # Sigh.  Needed for Oneiric.  No-op on Precise
+        # See GNOME Bugzilla #650369 and 653579
+        # GtkBuilder calls g_object_new, not gtk_combo_box_text_new()
+        # so the properties don't get set.
+        self.cmbSession.set_entry_text_column(0);
+        self.cmbSession.set_id_column(1);
         for s in LightDM.get_sessions():
             self.cmbSession.append(s.get_key(), s.get_name())
         # Select the first session
@@ -266,10 +285,13 @@ class DebathenaGreeter:
             if not greeter.start_session_sync(session_name):
                 self._debug("Failed to start session")
                 print >> sys.stderr, "Failed to start session"
-        else:
+        elif not self.beingCancelled:
             self._debug("Authentication failed.")
             self.displayMessage("Authentication failed, please try again")
             self.greeter.authenticate(None)
+        else:
+            self.beingCancelled=False
+            self.resetLoginWindow()
 
     # The show-prompt message is emitted when LightDM wants you to
     # show a prompt to the user, and respond with the user's response.
@@ -348,6 +370,7 @@ class DebathenaGreeter:
     def cancelLogin(self, widget=None):
         self._debug("Cancelling authentication.  User=",
                    self.greeter.get_authentication_user())
+        self.beingCancelled=True
         self.greeter.cancel_authentication()
         self.resetLoginWindow()
 
@@ -387,6 +410,9 @@ class DebathenaGreeter:
     # and you'd just be logged in.  But we disable the user picker, so
     # that's not relevant.
     def cbLogin(self, widget):
+        # Because we just entered some text and are about to send it,
+        # we're no longer in the middle of a cancellation
+        self.beingCancelled=False
         self.clearMessage()
         self._debug("In cbLogin")
         if self.prompted:
