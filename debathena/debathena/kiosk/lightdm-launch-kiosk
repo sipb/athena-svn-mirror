@@ -1,0 +1,32 @@
+#!/usr/bin/python -Wall
+
+import os
+
+LAUNCH_COMMAND = "/usr/lib/debathena-kiosk/launch-kiosk"
+
+
+def main():
+    pid = os.fork()
+    if pid == 0:
+        # Start a new session.
+        os.setsid();
+            # Fork another child to launch the command.
+        pid = os.fork()
+        if pid == 0:
+            # Here in the second child, exec the command.
+            try:
+                os.execlp("sudo", "sudo", "-n", LAUNCH_COMMAND)
+            except OSError, e:
+                print "error: Could not run %s as root: %s" % (LAUNCH_COMMAND, e.strerror)
+                os._exit(255)
+        else:
+            # The first child exits immediately.
+            os._exit(0)
+    else:
+        # Here in the parent: wait for the first child to exit.
+        (pid, status) = os.waitpid(pid, 0)
+        if status != 0:
+            print "error launching command, status %d" % status
+
+if __name__ == '__main__':
+    main()
