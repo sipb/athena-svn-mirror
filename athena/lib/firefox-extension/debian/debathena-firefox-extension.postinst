@@ -50,7 +50,7 @@ case "$1" in
 		fi
 	    fi
 	fi
-	if [ -d /usr/lib/firefox/extensions ] && ! [ -h /usr/lib/firefox/extensions ]; then
+	if [ -d /usr/lib/firefox/extensions ] && ! [ -h /usr/lib/firefox/extensions ] && ! [ -e /usr/lib/firefox/extensions/athena@mit.edu ]; then
 	    ln -s /usr/lib/debathena-firefox-extension /usr/lib/firefox/extensions/athena@mit.edu
 	fi
     ;;

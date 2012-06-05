@@ -1,3 +1,9 @@
+debathena-firefox-extension (10.1-0debathena3) unstable; urgency=low
+
+  * Don't symlink onto something that exists
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 05 Jun 2012 16:00:54 -0400
+
 debathena-firefox-extension (10.1-0debathena2) unstable; urgency=low
 
   * Don't release packages with an distribution of "UNRELEASED"
