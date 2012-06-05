@@ -3,7 +3,7 @@ Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, sudo, schroot, dbus
-Standards-Version: 3.8.4
+Standards-Version: 3.9.3
 
 Package: debathena-reactivate
 Architecture: all
