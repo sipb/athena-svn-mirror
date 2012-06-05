@@ -4,8 +4,12 @@ if hash schroot >/dev/null 2>&1; then
     session=$(schroot -l --all-sessions)
 fi
 
+HELPER=/lib/dbus-1.0/dbus-daemon-launch-helper
+[ -x "$HELPER" ] || HELPER="/usr${HELPER}"
+[ -x "$HELPER" ] || logger -t "reactivate" "Can't execute $HELPER"
+
 if [ -n "$session" ] && [ "$(echo "$session" | wc -l)" -eq 1 ]; then
-    exec schroot -r -c "$session" /lib/dbus-1.0/dbus-daemon-launch-helper "$@"
+    exec schroot -r -c "$session" "$HELPER" "$@"
 else
-    exec /lib/dbus-1.0/dbus-daemon-launch-helper "$@"
+    exec "$HELPER" "$@"
 fi
