@@ -1,4 +1,5 @@
 debian/Xsession.debathena etc/gdm
+debian/lightdm-session.debathena usr/sbin
 debian/99debathena-reactivate-setup usr/share/debathena-gdm-config/PreSession.d
 debian/01debathena-reactivate-cleanup usr/share/debathena-gdm-config/PostSession.d
 debian/updatedb.findutils.cron.local etc
