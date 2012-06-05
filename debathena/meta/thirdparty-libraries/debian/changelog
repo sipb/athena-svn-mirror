@@ -2,8 +2,9 @@ debathena-thirdparty-libraries (1.0.3) unstable; urgency=low
 
   * Demote wine and libcv-dev to recommendations pending fixing of
     upstream bugs (LP #974504, #954209, #975967)
+  * Temporarily depend on libopencv-core-dev until libcv-dev is restored
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 05 Jun 2012 12:31:13 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 05 Jun 2012 12:33:18 -0400
 
 debathena-thirdparty-libraries (1.0.2) unstable; urgency=low
 
