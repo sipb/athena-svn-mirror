@@ -209,7 +209,7 @@ class DebathenaGreeter:
                     LightDM.hibernate()
                 elif self.builder.get_object("rbSuspend").get_active():
                     LightDM.suspend()
-            except Glib.Gerror, e:
+            except GLib.GError, e:
                 self.errDialog(str(e))
         self.powerDlg.hide()
 
@@ -439,7 +439,7 @@ class DebathenaGreeter:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(img)
                 self.logo_pixbufs.append(pixbuf.scale_simple(int(pixbuf.get_width() * logoScale), int(pixbuf.get_height() * logoScale), GdkPixbuf.InterpType.BILINEAR))
                 num_pixbufs += 1
-            except Glib.Gerror, e:
+            except GLib.GError, e:
                 print >> sys.stderr, "Glib Error:", e
                 return False
         # Eyes come open.

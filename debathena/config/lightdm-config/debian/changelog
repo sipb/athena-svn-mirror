@@ -5,8 +5,9 @@ debathena-lightdm-config (1.2) unstable; urgency=low
     GtkBuilder bugs
   * The greeter needs to keep track of whether the user hit Cancel or not
     in LightDM 1.0 (oneiric)
+  * It's GLib.GError, not Glib.Gerror
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 04 Jun 2012 11:54:12 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 05 Jun 2012 16:39:17 -0400
 
 debathena-lightdm-config (1.1) unstable; urgency=low
 
