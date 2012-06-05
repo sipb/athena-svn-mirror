@@ -1,3 +1,10 @@
+debathena-tex-config (1.6) unstable; urgency=low
+
+  * Remove build dependency on debathena-tex-bin, since we no longer
+    support non-texlive releases (e.g. Etch)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 05 Jun 2012 16:08:25 -0400
+
 debathena-tex-config (1.5) unstable; urgency=low
 
   * Ensure texlive-base is configured first by depending on it
