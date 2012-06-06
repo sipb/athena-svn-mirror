@@ -27,7 +27,8 @@ case "$1" in
         fi
         # In the new gdm, the launcher is invoked as user gdm.
         gdm_version="$(dpkg-query -W -f '${Version}' gdm)"
-        if dpkg --compare-versions "$gdm_version" ge '2.25.2~'; then
+        if dpkg --compare-versions "$gdm_version" ge '2.25.2~' &&
+	    [ "$(perl -e 'BEGIN { $found=0; } $found = 1 if /^### BEGIN debathena-kiosk/../^### END debathena-kiosk/; END { print $found; }' /etc/sudoers)" = "0" ]; then
             cat >>/etc/sudoers <<EOF
 ### BEGIN debathena-kiosk
 # gdm can launch kiosk mode

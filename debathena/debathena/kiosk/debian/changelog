@@ -1,3 +1,9 @@
+debathena-kiosk (1.4.6) UNRELEASED; urgency=low
+
+  * Make postinst idempotent (Trac: 770)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 06 Jun 2012 16:50:22 -0400
+
 debathena-kiosk (1.4.5) unstable; urgency=low
 
   * Terminate kiosk sessions after 15 minutes.  Patch from Luke Faraone
