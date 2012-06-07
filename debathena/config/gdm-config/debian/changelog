@@ -1,7 +1,7 @@
 debathena-gdm-config (1.38) unstable; urgency=low
 
   * In a multiple monitor setup, like all the cool kids have, position the
-    branding and welcome windows on the primary monitor
+    branding and welcome windows on the primary monitor (Trac: 1031)
 
  -- Jonathan Reed <jdreed@mit.edu>  Wed, 06 Jun 2012 20:20:56 -0400
 
