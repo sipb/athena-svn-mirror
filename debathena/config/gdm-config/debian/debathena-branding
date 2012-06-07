@@ -49,12 +49,16 @@ class Branding:
         
         self.winWelcome = self.xml.get_widget('winWelcome')
         self.winWelcome.set_property('can_focus', False)
-        moveY = 200
+        # Back in my day, we one monitor.  Monochrome.
+        defaultScreen = gtk.gdk.screen_get_default()
+        self.monitorGeometry = defaultScreen.get_monitor_geometry(defaultScreen.get_primary_monitor())
+        moveY = self.monitorGeometry.y + 200
         logoScale = 0.60
-        if gtk.gdk.screen_height() <= 900:
-            moveY = 10
+        if (self.monitorGeometry.height - self.monitorGeometry.y) <= 900:
+            moveY = self.monitorGeometry.y + 10
             logoScale = 0.40
-        self.winWelcome.move((gtk.gdk.screen_width() - self.winWelcome.get_size()[0]) / 2, moveY)
+        moveX = self.monitorGeometry.x + ((self.monitorGeometry.width - self.winWelcome.get_size()[0]) / 2)
+        self.winWelcome.move(moveX, moveY)
         self.imgDebathena = self.xml.get_widget('imgDebathena')
         self.imgDebathena.set_property('can_focus', False)
         self.animate = self.setup_owl(logoScale)
@@ -76,7 +80,7 @@ class Branding:
         self.lblBranding.set_markup(metapackage + "\n" + baseos + "\n" + arch)
         self.winBranding.set_gravity(gtk.gdk.GRAVITY_SOUTH_EAST)
         width, height = self.winBranding.get_size()
-        self.winBranding.move(gtk.gdk.screen_width() - width, gtk.gdk.screen_height() - height)
+        self.winBranding.move(self.monitorGeometry.x + (self.monitorGeometry.width - width), self.monitorGeometry.y + (self.monitorGeometry.height - height))
 
     # Connect to the session manager, and register our client.
     def register_with_sm(self):
