@@ -1,3 +1,10 @@
+debathena-sendbug (10.0.5-0debathena1) unstable; urgency=low
+
+  * Make the bug report questions clearer, give the user some guidance on
+    using archaic TTY editors
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 07 Jun 2012 10:24:48 -0400
+
 debathena-sendbug (10.0.4-0debathena1) unstable; urgency=low
 
   * Add a --help option. (http://diswww.mit.edu/menelaus/bugs/27568)
