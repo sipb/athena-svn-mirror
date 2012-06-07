@@ -49,7 +49,7 @@ class Branding:
         
         self.winWelcome = self.xml.get_widget('winWelcome')
         self.winWelcome.set_property('can_focus', False)
-        # Back in my day, we one monitor.  Monochrome.
+        # Multiple monitor support.  Use the primary monitor.
         defaultScreen = gtk.gdk.screen_get_default()
         self.monitorGeometry = defaultScreen.get_monitor_geometry(defaultScreen.get_primary_monitor())
         moveY = self.monitorGeometry.y + 200
