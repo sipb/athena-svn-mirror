@@ -1,0 +1,2 @@
+# That's the point.
+statically-linked-binary ./lib/ld-linux.so.1

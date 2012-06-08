@@ -1,0 +1,18 @@
+Source: debathena-ldso1-stub
+Section: debathena/libs
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@, gcc-multilib [amd64]
+Standards-Version: 3.9.1
+
+Package: debathena-ldso1-stub
+Architecture: i386 amd64
+Depends: ${misc:Depends}
+Provides: ldso
+Conflicts: ldso
+Replaces: ldso
+Description: Stub program interpreter (ld-linux.so.1) for old binaries
+ There's a good amount of old Linux software in Athena lockers
+ compiled against libc5, which uses /lib/ld-linux.so.1 as its program
+ interpreter. This package provides a stub version of that interpreter
+ that prints a helpful error message and exits.

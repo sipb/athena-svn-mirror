@@ -1,0 +1,5 @@
+debathena-ldso1-stub (1.0) unstable; urgency=low
+
+  * Initial release. (Trac: #476)
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Fri, 08 Jun 2012 12:45:09 -0700
