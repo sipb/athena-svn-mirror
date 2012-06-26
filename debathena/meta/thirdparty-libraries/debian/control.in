@@ -82,7 +82,6 @@ Depends: liblapack-dev,
  libppl-c2 | libppl-c4,
  libcurl4-gnutls-dev,
  libmpfr-dev, ${debathena-maybe-libmpfr1ldbl},
- libopencv-core-dev,
  ${misc:Depends}
 Recommends: libatlas-base-dev,
  libatlas-sse-dev,

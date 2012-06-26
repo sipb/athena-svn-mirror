@@ -1,3 +1,10 @@
+debathena-thirdparty-libraries (1.0.4) unstable; urgency=low
+
+  * Except libopencv-core-dev is precise-only, so this would break Natty.
+    Just leave libcv-dev as a recommendation for now.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 26 Jun 2012 13:20:06 -0400
+
 debathena-thirdparty-libraries (1.0.3) unstable; urgency=low
 
   * Demote wine and libcv-dev to recommendations pending fixing of
