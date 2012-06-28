@@ -207,6 +207,7 @@ case "$UBUNTU_RELEASE" in
         kbdcode="keyboard-configuration/layoutcode=us"
 	# "Yay"
 	nodhcp="netcfg/disable_autoconfig=true"
+	;;
     natty)
         # Sigh
         kbdcode="keyboard-configuration/layoutcode=us"

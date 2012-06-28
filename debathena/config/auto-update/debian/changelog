@@ -1,3 +1,9 @@
+debathena-auto-update (1.36) unstable; urgency=low
+
+  * Case blocks must end with a double semicolon
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 28 Jun 2012 08:54:59 -0400
+
 debathena-auto-update (1.35) unstable; urgency=low
 
   [ John Jarvis ]
