@@ -1,3 +1,10 @@
+debathena-reactivate (2.0.35) unstable; urgency=low
+
+  * Update debian/copyright for 3-clause BSD and one GPL'd file
+  * Ship 16killprocs-no-really to end sessions faster (Trac: #775)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 29 Jun 2012 12:48:18 -0400
+
 debathena-reactivate (2.0.34) unstable; urgency=low
 
   * dbus-daemon-launch-helper moved in precise

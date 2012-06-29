@@ -15,3 +15,4 @@ debian/snapshot-run usr/lib/debathena-reactivate
 debian/reactivate usr/lib/debathena-reactivate
 debian/dbus-daemon-launch-helper lib/debathena-reactivate
 debian/90debathena-reactivate etc/schroot/setup.d
+debian/16killprocs-no-really etc/schroot/setup.d
