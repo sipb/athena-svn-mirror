@@ -146,3 +146,33 @@ if [ "${NOCALLS+set}" != set -a -r ~/.bashrc.mine ]; then
 	. ~/.bashrc.mine
     fi
 fi
+if [ "${skip_sanity_checks+set}" != set ]; then
+    IFS=:
+    bin=no
+    usrbin=no
+    for p in $PATH; do
+	case $p in
+	    /bin)
+		bin=yes
+		;;
+	    /usr/bin)
+		usrbin=yes
+		;;
+	esac
+    done
+    unset IFS
+    if [ "$bin" != "yes" ] || [ "$usrbin" != "yes" ]; then
+	text="You appear to have incorrectly modified your PATH variable in your dotfiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem."
+	echo -e "$text" >&2
+	[ -n "$DISPLAY" ] && /usr/bin/zenity --warning --text="$text"
+    fi
+    if [ -n "$LD_ASSUME_KERNEL" ]; then
+	unset LD_ASSUME_KERNEL
+	echo "In your shell customizations, you set LD_ASSUME_KERNEL.  This is a bad idea." >&2
+	echo "We have unset it for you." >&2
+	echo "If you really did want that, set skip_sanity_checks=y in your .bashrc.mine." >&2
+	[ -n "$DISPLAY" ] && /usr/bin/zenity --warning --text="You tried to set LD_ASSUME_KERNEL in your shell customizations.  Don't do that.\nWe have unset it for you.\nSet skip_sanity_checks=y in your ~/.bashrc.mine if you really want that."
+    fi
+fi
+
+	

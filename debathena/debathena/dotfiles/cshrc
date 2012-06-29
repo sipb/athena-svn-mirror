@@ -182,3 +182,30 @@ if ((! $?NOCALLS) && (-r ~/.cshrc.mine)) then
     source ~/.cshrc.mine
   endif
 endif
+
+if (! $?skip_sanity_checks) then
+  echo $path | /usr/bin/tr ':' '\n' | grep -Fqx /bin
+  missing=0
+  if ( $? != 0 ) then
+    missing=1
+  endif
+  echo $path | /usr/bin/tr ':' '\n' | grep -Fqx /usr/bin
+  if ( $? != 0 ) then
+    missing=1
+  endif
+  if ( $missing == 1 ) then
+    text="You appear to have incorrectly modified your PATH variable in your dotiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem."
+    echo "$text" > /dev/stderr
+    if ( $?DISPLAY) then
+      /usr/bin/zenity --warning --text="$text"
+    endif
+  endif
+  if ( $?LD_ASSUME_KERNEL ) then
+    unsetenv LD_ASSUME_KERNEL
+    echo "Setting LD_ASSUME_KERNEL in your dotfiles is a bad idea." > /dev/stderr
+    echo "We have unset it for you.  Set skip_sanity_checks=y if you really wanted it." > /dev/stderr
+    if ( $?DISPLAY) then
+      /usr/bin/zenity --warning --text="You set LD_ASSUME_KERNEL in your dotfiles which is a bad idea.\nWe have unset it for you.\nSet skip_sanity_checks=y if you really wanted it."
+    endif
+  endif     
+endif

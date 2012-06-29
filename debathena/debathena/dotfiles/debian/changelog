@@ -1,3 +1,10 @@
+debathena-dotfiles (10.0.30-0debathena2) unstable; urgency=low
+
+  * Prevent users from shooting themselves in the foot with PATH or
+    LD_ASSUME_KERNEL
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 29 Jun 2012 14:45:43 -0400
+
 debathena-dotfiles (10.0.30-0debathena1) unstable; urgency=low
 
   * Update logout alias for GNOME 3.0 (Trac: #1027)
