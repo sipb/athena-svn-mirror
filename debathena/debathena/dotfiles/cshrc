@@ -184,17 +184,17 @@ if ((! $?NOCALLS) && (-r ~/.cshrc.mine)) then
 endif
 
 if (! $?skip_sanity_checks) then
-  echo $path | /usr/bin/tr ':' '\n' | grep -Fqx /bin
-  missing=0
+  set missing=0
+  echo $path | /usr/bin/tr ':' '\n' | /bin/grep -Fqx /bin
   if ( $? != 0 ) then
-    missing=1
+    set missing=1
   endif
-  echo $path | /usr/bin/tr ':' '\n' | grep -Fqx /usr/bin
+  echo $path | /usr/bin/tr ':' '\n' | /bin/grep -Fqx /usr/bin
   if ( $? != 0 ) then
-    missing=1
+    set missing=1
   endif
   if ( $missing == 1 ) then
-    text="You appear to have incorrectly modified your PATH variable in your dotiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem."
+    set text="You appear to have incorrectly modified your PATH variable in your dotiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem.\nThis warning can be disabled by setting the skip_sanity_checks variable."
     echo "$text" > /dev/stderr
     if ( $?DISPLAY) then
       /usr/bin/zenity --warning --text="$text"
@@ -202,10 +202,10 @@ if (! $?skip_sanity_checks) then
   endif
   if ( $?LD_ASSUME_KERNEL ) then
     unsetenv LD_ASSUME_KERNEL
-    echo "Setting LD_ASSUME_KERNEL in your dotfiles is a bad idea." > /dev/stderr
-    echo "We have unset it for you.  Set skip_sanity_checks=y if you really wanted it." > /dev/stderr
+    set text="Setting LD_ASSUME_KERNEL in your dotfiles is a bad idea.\nIt has been unset for you.\nSet the skip_sanity_checks variable if you really wanted it."
+    echo "$text" > /dev/stderr
     if ( $?DISPLAY) then
-      /usr/bin/zenity --warning --text="You set LD_ASSUME_KERNEL in your dotfiles which is a bad idea.\nWe have unset it for you.\nSet skip_sanity_checks=y if you really wanted it."
+      /usr/bin/zenity --warning --text="$text"
     endif
   endif     
 endif

@@ -147,31 +147,21 @@ if [ "${NOCALLS+set}" != set -a -r ~/.bashrc.mine ]; then
     fi
 fi
 if [ "${skip_sanity_checks+set}" != set ]; then
-    IFS=:
-    bin=no
-    usrbin=no
-    for p in $PATH; do
-	case $p in
-	    /bin)
-		bin=yes
-		;;
-	    /usr/bin)
-		usrbin=yes
-		;;
-	esac
-    done
-    unset IFS
-    if [ "$bin" != "yes" ] || [ "$usrbin" != "yes" ]; then
-	text="You appear to have incorrectly modified your PATH variable in your dotfiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem."
+    missing=0
+    echo $path | /usr/bin/tr ':' '\n' | /bin/grep -Fqx /bin
+    [ $? = 0 ] || missing=1
+    echo $path | /usr/bin/tr ':' '\n' | /bin/grep -Fqx /usr/bin
+    [ $? = 0 ] || missing=1
+    if [ $missing -eq 1 ]; then
+	text="You appear to have incorrectly modified your PATH variable in your dotfiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem.\nYou can set the skip_sanity_checks variable to disable this message."
 	echo -e "$text" >&2
 	[ -n "$DISPLAY" ] && /usr/bin/zenity --warning --text="$text"
     fi
     if [ -n "$LD_ASSUME_KERNEL" ]; then
 	unset LD_ASSUME_KERNEL
-	echo "In your shell customizations, you set LD_ASSUME_KERNEL.  This is a bad idea." >&2
-	echo "We have unset it for you." >&2
-	echo "If you really did want that, set skip_sanity_checks=y in your .bashrc.mine." >&2
-	[ -n "$DISPLAY" ] && /usr/bin/zenity --warning --text="You tried to set LD_ASSUME_KERNEL in your shell customizations.  Don't do that.\nWe have unset it for you.\nSet skip_sanity_checks=y in your ~/.bashrc.mine if you really want that."
+	text="In your shell customizations, you set LD_ASSUME_KERNEL.  This is a bad idea.\nIt has been unset.\nIf you really did want that, set the skip_sanity_checks variable in your .bashrc.mine."
+	echo -e "$text" >&2
+	[ -n "$DISPLAY" ] && /usr/bin/zenity --warning --text="$text"
     fi
 fi
 
