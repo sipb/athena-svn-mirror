@@ -1,0 +1,6 @@
+[LightDM]
+user-authority-in-system-dir=true
+
+[SeatDefaults]
+user-session=ubuntu
+greeter-session=debathena-lightdm-greeter
