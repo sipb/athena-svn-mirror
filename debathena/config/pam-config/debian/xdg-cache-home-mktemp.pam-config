@@ -3,4 +3,6 @@ Default: yes
 Priority: 17
 Session-Type: Additional
 Session:
+	[default=1 success=ignore] pam_succeed_if.so quiet home =~ /mit/*
+	[default=1 success=ignore] pam_succeed_if.so quiet home =~ /afs/*
 	optional	pam_mktemp.so var=XDG_CACHE_HOME prefix=/var/run/athena-sessions/xdgcache dir
