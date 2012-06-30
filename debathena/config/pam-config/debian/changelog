@@ -2,8 +2,9 @@ debathena-pam-config (1.20) unstable; urgency=low
 
   * Set XDG_CACHE_HOME to something on local disk if the user's homedir is
     in AFS (or an approximation thereof) (Trac: #1109 and #1162)
+  * Bump Standards-Version
 
- -- Jonathan Reed <jdreed@mit.edu>  Sat, 30 Jun 2012 00:11:36 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 30 Jun 2012 10:31:39 -0400
 
 debathena-pam-config (1.19) unstable; urgency=low
 
