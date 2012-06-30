@@ -1,3 +1,9 @@
+debathena-pam-config (1.20) unstable; urgency=low
+
+  * Set XDG_CACHE_HOME to something on local disk (Trac: #1109 and #1162)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 29 Jun 2012 23:34:52 -0400
+
 debathena-pam-config (1.19) unstable; urgency=low
 
   * Explain that Kerberos errors can be caused by @ signs (Trac: #612)

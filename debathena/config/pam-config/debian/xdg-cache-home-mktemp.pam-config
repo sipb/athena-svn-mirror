@@ -1,0 +1,6 @@
+Name: Athena: create local XDG_CACHE_HOME securely
+Default: yes
+Priority: 17
+Session-Type: Additional
+Session:
+	optional	pam_mktemp.so var=XDG_CACHE_HOME prefix=/var/run/athena-sessions/xdgcache dir

@@ -51,6 +51,8 @@ ifneq ($(pam_auth_update),)
 install/debathena-pam-config::
 	install -D -m 644 debian/athena-session-tmpdir-mktemp.pam-config \
 	  $(DEB_DESTDIR)/usr/share/pam-configs/athena-session-tmpdir-mktemp
+	install -D -m 644 debian/xdg-cache-home-mktemp.pam-config \
+	  $(DEB_DESTDIR)/usr/share/pam-configs/xdg-cache-home-mktemp
 	install -D -m 644 debian/libpam-krb5.pam-config \
 	  $(DEB_DESTDIR)/usr/share/pam-configs/krb5.debathena
 	install -D -m 644 debian/libpam-afs-session.pam-config \
