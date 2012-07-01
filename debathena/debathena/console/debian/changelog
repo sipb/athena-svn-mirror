@@ -1,3 +1,9 @@
+debathena-console (1.3) UNRELEASED; urgency=low
+
+  * Bump debian/compat to 6
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:42 -0400
+
 debathena-console (1.2) unstable; urgency=low
 
   * Actually support passing filenames on the command line

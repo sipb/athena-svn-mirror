@@ -1,3 +1,9 @@
+debathena-xdsc (10.0.0-0debathena5) UNRELEASED; urgency=low
+
+  * Bump debian/compat to 6
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:33 -0400
+
 debathena-xdsc (10.0.0-0debathena4) unstable; urgency=low
 
   * Revert 10.0.0-0debathena3 pending further investigation of the memory

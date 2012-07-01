@@ -1,3 +1,9 @@
+debathena-syslog-config (1.7) UNRELEASED; urgency=low
+
+  * Bump debian/compat to 6
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:37 -0400
+
 debathena-syslog-config (1.6) unstable; urgency=low
 
   * No change rebuild to pick up config-package-dev 4.13 changes

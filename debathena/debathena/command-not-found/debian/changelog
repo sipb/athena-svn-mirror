@@ -1,3 +1,9 @@
+debathena-command-not-found (1.2) UNRELEASED; urgency=low
+
+  * Bump debian/compat to 6
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:44 -0400
+
 debathena-command-not-found (1.1) unstable; urgency=low
 
   * Move /usr/lib/whichlocker to

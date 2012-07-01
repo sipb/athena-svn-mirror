@@ -1,3 +1,9 @@
+debathena-athinfod (10.0.0-0debathena18) UNRELEASED; urgency=low
+
+  * Bump debian/compat to 6
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:30 -0400
+
 debathena-athinfod (10.0.0-0debathena17) unstable; urgency=low
 
   * Make the cluster test executable, which it's not because this is a

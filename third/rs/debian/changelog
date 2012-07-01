@@ -1,3 +1,9 @@
+debathena-rs (10.0.4) UNRELEASED; urgency=low
+
+  * Bump debian/compat to 6
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:34 -0400
+
 debathena-rs (10.0.3) unstable; urgency=low
 
   * Rename getline to rs_getline to avoid conflicting with the getline in

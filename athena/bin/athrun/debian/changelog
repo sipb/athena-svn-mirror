@@ -1,3 +1,9 @@
+debathena-athrun (10.0.1-0debathena3) UNRELEASED; urgency=low
+
+  * Bump debian/compat to 6
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:32 -0400
+
 debathena-athrun (10.0.1-0debathena2) unstable; urgency=low
 
   * Don't spew errors in bash completion if /mit doesn't exist.

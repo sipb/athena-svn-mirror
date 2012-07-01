@@ -1,3 +1,9 @@
+debathena-lert (10.0.2-0debathena3) UNRELEASED; urgency=low
+
+  * Bump debian/compat to 6
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:31 -0400
+
 debathena-lert (10.0.2-0debathena2) unstable; urgency=low
 
   * Always build without krb4.

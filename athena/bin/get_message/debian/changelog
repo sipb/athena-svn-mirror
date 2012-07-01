@@ -1,3 +1,9 @@
+debathena-get-message (10.0.1-0debathena3) UNRELEASED; urgency=low
+
+  * Bump debian/compat to 6
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:33 -0400
+
 debathena-get-message (10.0.1-0debathena2) unstable; urgency=low
 
   * Update manpage to the new message cache.
