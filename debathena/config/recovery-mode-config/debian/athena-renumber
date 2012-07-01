@@ -34,6 +34,9 @@ bail() {
     exit 0;
 }
 
+# Precise mounts root read-only in recovery mode.
+mount -o remount,rw /
+
 # sulogin gets upset if it gets a ^C
 trap bail INT
 

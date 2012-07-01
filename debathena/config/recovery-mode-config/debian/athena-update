@@ -17,6 +17,9 @@ if [ "$1" = "test" ]; then
   exit 0
 fi
 
+# Precise mounts root read-only in recovery mode.
+mount -o remount,rw /
+
 . /usr/share/debathena-recovery-mode-config/require_network.sh
 
 echo "Testing networking, please wait..."
