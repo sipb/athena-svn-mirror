@@ -149,19 +149,19 @@ fi
 if [ "${skip_sanity_checks+set}" != set ]; then
     missing=0
     echo $path | /usr/bin/tr ':' '\n' | /bin/grep -Fqx /bin
-    [ $? = 0 ] || missing=1
+    [ $? -eq 0 ] || missing=1
     echo $path | /usr/bin/tr ':' '\n' | /bin/grep -Fqx /usr/bin
-    [ $? = 0 ] || missing=1
+    [ $? -eq 0 ] || missing=1
     if [ $missing -eq 1 ]; then
-	text="You appear to have incorrectly modified your PATH variable in your dotfiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem.\nYou can set the skip_sanity_checks variable to disable this message."
+	text="You appear to have incorrectly modified your PATH variable in your dotfiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem.\nThis warning can be disabled with 'skip_sanity_checks=t' in ~/.bashrc.mine."
 	echo -e "$text" >&2
 	[ -n "$DISPLAY" ] && /usr/bin/zenity --warning --text="$text"
     fi
     if [ -n "$LD_ASSUME_KERNEL" ]; then
 	unset LD_ASSUME_KERNEL
-	text="In your shell customizations, you set LD_ASSUME_KERNEL.  This is a bad idea.\nIt has been unset.\nIf you really did want that, set the skip_sanity_checks variable in your .bashrc.mine."
+	text="In your dotfiles, you set LD_ASSUME_KERNEL.  This generally causes undesirable behavior.\nIt has been unset for you.\nIf you really wanted it set, you can add 'skip_sanity_checks=t' to your ~/.bashrc.mine."
 	echo -e "$text" >&2
-	[ -n "$DISPLAY" ] && /usr/bin/zenity --warning --text="$text"
+	[ n "$DISPLAY" ] && /usr/bin/zenity --warning --text="$text"
     fi
 fi
 

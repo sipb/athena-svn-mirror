@@ -194,7 +194,7 @@ if (! $?skip_sanity_checks) then
     set missing=1
   endif
   if ( $missing == 1 ) then
-    set text="You appear to have incorrectly modified your PATH variable in your dotiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem.\nThis warning can be disabled by setting the skip_sanity_checks variable."
+    set text="You appear to have incorrectly modified your PATH variable in your dotiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem.\nThis warning can be disabled with 'set skip_sanity_checks=t' in ~/.cshrc.mine."
     echo "$text" > /dev/stderr
     if ( $?DISPLAY) then
       /usr/bin/zenity --warning --text="$text"
@@ -202,7 +202,7 @@ if (! $?skip_sanity_checks) then
   endif
   if ( $?LD_ASSUME_KERNEL ) then
     unsetenv LD_ASSUME_KERNEL
-    set text="Setting LD_ASSUME_KERNEL in your dotfiles is a bad idea.\nIt has been unset for you.\nSet the skip_sanity_checks variable if you really wanted it."
+    set text="In your dotfiles, you set LD_ASSUME_KERNEL.  This generally causes undesirable behavior.\nIt has been unset for you.\nIf you really wanted it set, you can add 'set skip_sanity_checks=t' to your ~/.cshrc.mine."
     echo "$text" > /dev/stderr
     if ( $?DISPLAY) then
       /usr/bin/zenity --warning --text="$text"
