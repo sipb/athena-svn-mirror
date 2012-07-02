@@ -4,8 +4,10 @@ debathena-lightdm-config (1.3) unstable; urgency=low
     the user has installed, because we need to clobber some additional
     lightdm.conf settings; remove now-unused debconf templates
   * Set user-authority-in-system-dir=true in lightdm.conf (Trac: #1161)
+  * Ship a session setup and cleanup script, which source some run-parts
+    directories
 
- -- Jonathan Reed <jdreed@mit.edu>  Sat, 30 Jun 2012 12:29:34 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 02 Jul 2012 11:40:55 -0400
 
 debathena-lightdm-config (1.2) unstable; urgency=low
 

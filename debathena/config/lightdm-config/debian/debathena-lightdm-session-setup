@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# This script runs as root at the beginning of a lightdm login session.
+# See 'session-setup-script' in lightdm.conf
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+DIR=/usr/share/debathena-lightdm-config/session-setup.d
+
+for i in `run-parts --list $DIR`; do
+    . "$i"
+done
+

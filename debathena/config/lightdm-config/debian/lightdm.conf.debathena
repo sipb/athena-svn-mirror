@@ -4,3 +4,5 @@ user-authority-in-system-dir=true
 [SeatDefaults]
 user-session=ubuntu
 greeter-session=debathena-lightdm-greeter
+session-setup-script=/usr/lib/debathena-lightdm-config/debathena-lightdm-session-setup
+session-cleanup-script=/usr/lib/debathena-lightdm-config/debathena-lightdm-session-cleanup

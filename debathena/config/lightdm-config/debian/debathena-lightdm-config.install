@@ -12,3 +12,5 @@ debian/debathena7.png usr/share/debathena-lightdm-config
 debian/debathena8.png usr/share/debathena-lightdm-config
 debian/debathena-lightdm-greeter.desktop usr/share/xgreeters
 debian/lightdm.conf.debathena etc/lightdm
+debian/debathena-lightdm-session-setup usr/lib/debathena-lightdm-config
+debian/debathena-lightdm-session-cleanup usr/lib/debathena-lightdm-config
