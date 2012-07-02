@@ -12,6 +12,7 @@ print_processes_info() {
   pstree -alcnpu
   ps eauxwww
   schroot --list -a
+  mount
   LC_ALL=C lsof -b +c 0 -w
   echo "END PRINT_PROCESS_INFO"
 }
