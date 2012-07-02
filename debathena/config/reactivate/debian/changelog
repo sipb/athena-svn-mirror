@@ -3,8 +3,10 @@ debathena-reactivate (2.0.35) unstable; urgency=low
   * Update debian/copyright for 3-clause BSD and one GPL'd file
   * Ship 16killprocs-no-really to end sessions faster (Trac: #775)
   * Use new lightdm-config hooks to actually run session setup and cleanup
+  * Recover from a 'set -e' failure in snapshot-run and don't leave
+    chroots lying around if possible
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 02 Jul 2012 10:59:02 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 02 Jul 2012 15:06:40 -0400
 
 debathena-reactivate (2.0.34) unstable; urgency=low
 

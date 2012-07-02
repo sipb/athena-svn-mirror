@@ -17,6 +17,20 @@ daemons="$(/usr/sbin/policy-rc.d --daemons)"
 # Setup
 
 session=$(schroot -c login -b)
+cleanup() {
+    # Teardown
+
+    # Remove file from above.
+    # (This also gets nuked in reactivate, but be paranoid)
+    rm -f /tmp/ticketenv
+
+    for daemon in $daemons; do
+	schr invoke-rc.d "$daemon" stop || [ $? = 100 ]
+    done
+
+    schroot -c "$session" -e
+}
+trap 'cleanup' EXIT
 sch() { schroot -r -c "$session" -- "$@"; }          # Run in the chroot
 schq() { schroot -q -r -c "$session" -- "$@"; }      # Run in the chroot quietly
 schr() { schroot -r -c "$session" -u root -- "$@"; } # Run in the chroot as root
@@ -61,14 +75,3 @@ cd
 schroot -c "$session" -r -p -- sudo -E -u "$USER" -- "$@"
 cd /
 
-# Teardown
-
-# Remove file from above.
-# (This also gets nuked in reactivate, but be paranoid)
-rm -f /tmp/ticketenv
-
-for daemon in $daemons; do
-    schr invoke-rc.d "$daemon" stop || [ $? = 100 ]
-done
-
-schroot -c "$session" -e
