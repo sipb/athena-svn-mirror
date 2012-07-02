@@ -1,5 +1,7 @@
 # This script is sourced (not executed) as root at the beginning of a
 # gdm login session.  gdm blocks until it finishes.
+# This script is also sourced as root at the end of a lightdm login
+# session
 
 # Stop daemons that need to be restarted inside the chroot
 daemons=$(/usr/sbin/policy-rc.d --daemons)

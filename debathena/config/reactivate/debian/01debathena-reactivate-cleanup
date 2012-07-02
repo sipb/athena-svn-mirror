@@ -1,6 +1,8 @@
 # This script is sourced (not executed) as root at the end of a gdm
 # login session.  gdm blocks until it finishes.  DISPLAY is set but
 # the X server might be dead in some cases.
+# This script is also sourced as root at the end of a lightdm login
+# session
 
 # Set the volume to zero for all sound cards, and save that state.
 invoke-rc.d debathena-reactivate start
