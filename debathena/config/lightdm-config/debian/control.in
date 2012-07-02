@@ -11,6 +11,8 @@ Depends: lightdm (>= 1.0.6~),
 	 python, python-gobject, 
 	 gir1.2-lightdm-1, gir1.2-glib-2.0, gir1.2-gtk-3.0,
 	 ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
 X-Debathena-No-Build: hardy lucid natty squeeze
 Description: Lightdm configuration for Debathena
  This package installs a lightdm greeter for Debathena, and strongly
