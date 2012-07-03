@@ -7,6 +7,7 @@ Standards-Version: 3.9.1
 
 Package: debathena-extra-software
 Architecture: all
+X-Debathena-No-Build: hardy
 Conflicts: debathena-cluster-software
 Replaces: debathena-cluster-software
 Depends: debathena-extra-software-nox,
@@ -26,6 +27,7 @@ Depends: debathena-extra-software-nox,
   xmonad, suckless-tools | dwm-tools,
   git-gui, gitk,
   compizconfig-settings-manager,
+  chromium-browser,
   ${debathena-java-plugin},
   ${misc:Depends}
 Recommends: flashplugin-installer | flashplugin-nonfree,
