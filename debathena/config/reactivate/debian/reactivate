@@ -58,3 +58,9 @@ if [ -e /var/run/reboot-required ]; then
   echo "Reboot initiated at $(date)"
   reboot
 fi
+
+# Yes, we want this here.  A reboot will take care of cleaning up
+# /var/run anyway, and since dbus is essential to rebooting these
+# days, we don't want to risk things magically getting spawned inside
+# a crippled chroot
+rm /var/run/debathena-inhibit-dbus-helper

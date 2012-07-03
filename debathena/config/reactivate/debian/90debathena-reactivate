@@ -16,3 +16,8 @@ if [ $STAGE = "setup-start" ]; then
     sed -i "/^root-users/s/$/,messagebus/" /var/lib/schroot/session/"${SESSION_ID}"
 fi
 
+if [ $STAGE = "setup-stop" ]; then
+    info "Inhibiting dbus-daemon-launch-helper during chroot shutdown"
+    touch /var/run/debathena-inhibit-dbus-helper
+fi
+

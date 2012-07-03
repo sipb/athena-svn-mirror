@@ -5,8 +5,10 @@ debathena-reactivate (2.0.35) unstable; urgency=low
   * Use new lightdm-config hooks to actually run session setup and cleanup
   * Recover from a 'set -e' failure in snapshot-run and don't leave
     chroots lying around if possible
+  * Avoid race conditions by inhibiting dbus-daemon-launch-helper during a
+    chroot shutdown (Trac: #1052, probably)
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 02 Jul 2012 15:06:40 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 03 Jul 2012 11:45:03 -0400
 
 debathena-reactivate (2.0.34) unstable; urgency=low
 

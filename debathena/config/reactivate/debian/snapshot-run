@@ -8,6 +8,11 @@
 # around their Xsession or shell. You probably want to run reactivate
 # immediately afterwards, as root.
 
+if [ -e /var/run/debathena-inhibit-dbus-helper ]; then
+    logger -p user.notice -t reactivate "debathena-inhibit-dbus-helper still exists in snapshot-run (shouldn't happen)"
+    rm /var/run/debathena-inhibit-dbus-helper
+fi
+
 set -e
 cd /
 
