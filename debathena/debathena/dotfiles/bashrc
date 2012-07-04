@@ -161,7 +161,7 @@ if [ "${skip_sanity_checks+set}" != set ]; then
 	unset LD_ASSUME_KERNEL
 	text="In your dotfiles, you set LD_ASSUME_KERNEL.  This generally causes undesirable behavior.\nIt has been unset for you.\nIf you really wanted it set, you can add 'skip_sanity_checks=t' to your ~/.bashrc.mine."
 	echo -e "$text" >&2
-	[ n "$DISPLAY" ] && /usr/bin/zenity --warning --text="$text"
+	[ -n "$DISPLAY" ] && /usr/bin/zenity --warning --text="$text"
     fi
 fi
 
