@@ -1,3 +1,11 @@
+debathena-reactivate (2.0.36) unstable; urgency=low
+
+  * Sigh.  Order matters in the mounts file because with the /run
+    transition, /run/shm needs to get bind-mounted after /run, otherwise
+    it ends up with the wrong mode bits.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 05 Jul 2012 13:24:33 -0400
+
 debathena-reactivate (2.0.35) unstable; urgency=low
 
   * Update debian/copyright for 3-clause BSD and one GPL'd file

@@ -5,10 +5,10 @@
 /proc		/proc		none	rw,bind		0	0
 /sys		/sys		none	rw,bind		0	0
 /dev		/dev		none	rw,bind		0	0
-_DEVSHM_	_DEVSHM_	none	rw,bind		0	0
 /dev/pts	/dev/pts	none	rw,bind		0	0
 _VARRUN_	_VARRUN_	none	rw,bind		0	0
 _VARLOCK_	_VARLOCK_	none	rw,bind		0	0
+_DEVSHM_	_DEVSHM_	none	rw,bind		0	0
 /var/log	/var/log	none	rw,bind		0	0
 /var/tmp	/var/tmp	none	rw,bind		0	0
 /afs		/afs		none	rw,bind		0	0
