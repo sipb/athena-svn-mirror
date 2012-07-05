@@ -148,9 +148,9 @@ if [ "${NOCALLS+set}" != set -a -r ~/.bashrc.mine ]; then
 fi
 if [ "${skip_sanity_checks+set}" != set ]; then
     missing=0
-    echo $path | /usr/bin/tr ':' '\n' | /bin/grep -Fqx /bin
+    echo $PATH | /usr/bin/tr ':' '\n' | /bin/grep -Fqx /bin
     [ $? -eq 0 ] || missing=1
-    echo $path | /usr/bin/tr ':' '\n' | /bin/grep -Fqx /usr/bin
+    echo $PATH | /usr/bin/tr ':' '\n' | /bin/grep -Fqx /usr/bin
     [ $? -eq 0 ] || missing=1
     if [ $missing -eq 1 ]; then
 	text="You appear to have incorrectly modified your PATH variable in your dotfiles,\nand as such have deleted /bin and/or /usr/bin from your PATH, which\nwill likely cause this login session to fail.  Please correct this problem.\nThis warning can be disabled with 'skip_sanity_checks=t' in ~/.bashrc.mine."
