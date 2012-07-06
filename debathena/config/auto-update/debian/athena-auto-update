@@ -144,6 +144,7 @@ finish() {
     echo "** Ending Athena auto-update at $(date)"
     echo "-----"
     echo
+    rm -f /etc/apt/apt.conf.d/99debathena-inhibit-preconfigure
     rm -f $pidfile
     rm -f /var/run/athena-nologin
     save_state
