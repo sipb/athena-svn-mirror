@@ -1,2 +1,2 @@
-pref('general.config.obscure_value', 0);
-pref('general.config.filename', 'debathena.cfg');
+lock_pref("mail.server.default.autosync_offline_stores", false);
+lock_pref("mail.server.default.offline_download", false);

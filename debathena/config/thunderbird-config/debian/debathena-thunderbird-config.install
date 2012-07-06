@@ -1,3 +1,1 @@
 debian/debathena.js usr/share/debathena-thunderbird-config
-debian/debathena.cfg usr/lib/thunderbird
-debian/thunderbird.debathena usr/bin

@@ -3,12 +3,14 @@ Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@
-Standards-Version: 3.8.4
+Standards-Version: 3.9.1
 
 Package: debathena-thunderbird-config
+X-Debathena-No-Build: hardy
 Architecture: all
-Depends: ${misc:Depends}, debathena-hesiod-config, icedove | thunderbird
+Depends: ${misc:Depends}, icedove | thunderbird
 Description: Thunderbird configuration for Debathena
- This package configures Thunderbird for the Debathena system, setting
- it to use MIT's IMAP and SMTP servers, and also setting a few other
- settings for the MIT environment.
+ This package configures Thunderbird for the Debathena system, which
+ primarily consists of disabling offline IMAP storage.  Account
+ settings are not dealt with here, but via Thunderbird's autoconfig
+ mechanism.

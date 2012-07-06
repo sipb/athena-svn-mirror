@@ -1,3 +1,2 @@
 usr/share/debathena-thunderbird-config/debathena.js etc/icedove/pref/debathena.js
-usr/bin/thunderbird.debathena usr/bin/icedove.debathena
-usr/lib/thunderbird/debathena.cfg usr/lib/icedove/debathena.cfg
+usr/share/debathena-thunderbird-config/debathena.js etc/thunderbird/pref/debathena.js

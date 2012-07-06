@@ -1,3 +1,10 @@
+debathena-thunderbird-config (1.8) unstable; urgency=low
+
+  * Update for Thunderbird 3.x, drop all support for pre-3.x releases
+  * Disable offline IMAP (Trac: #1020)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 06 Jul 2012 15:12:06 -0400
+
 debathena-thunderbird-config (1.7) unstable; urgency=low
 
   * No change rebuild to pick up config-package-dev 4.13 changes
