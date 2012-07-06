@@ -135,8 +135,8 @@ NOLOGIN
 
 echo "Inhibiting dpkg-preconfigure to work around aptitude bugs..."
 cat > /etc/apt/apt.conf.d/99debathena-inhibit-preconfigure <<APTCONF
-# This file should only exist while an auto-update is in progress.
-# It will be removed without notice.  You have been warned.
+// This file should only exist while an auto-update is in progress.
+// It will be removed without notice.  You have been warned.
 #clear DPkg::Pre-Install-Pkgs;
 APTCONF
 
