@@ -26,8 +26,7 @@ case "$1" in
     configure)
 	# In 0.9~rc2-0ubuntu2, the conffile moved to /etc/xul-ext
 	# and we horribly broke things.  Let's attempt to unbreak them:
-	ubufox_version="$(dpkg-query -W -f '${Version}' ubufox)"
-	if dpkg --compare-versions "$ubufox_version" ge "0.9~rc2-0ubuntu2" && [ -d /etc/firefox-3.0/pref ]; then
+	if dpkg-query -W ubufox 2>/dev/null 2>&1 && dpkg --compare-versions "$(dpkg-query -W -f '${Version}' ubufox)" ge "0.9~rc2-0ubuntu2" && [ -d /etc/firefox-3.0/pref ]; then
 	    # The file should have been undiverted at this point
 	    echo "*** The previous OMINOUS WARNING may be safely ignored ***" >&2
 	    # If there are files in the location, move them to
