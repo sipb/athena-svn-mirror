@@ -9,12 +9,6 @@ else
     gdm = gdm
     NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' && echo y)
 endif
-CDBS_BUILD_DEPENDS += $(gdm)
-
-binary-predeb/debathena-gdm-config:: debathena-gdm-config-substvars
-debathena-gdm-config-substvars::
-	echo "debathena-gdm=$(gdm)" \
-	    >> debian/debathena-gdm-config.substvars
 
 ifneq ($(wildcard /etc/gdm/gdm.conf-custom),)
     GDM_CONFFILE = /etc/gdm/gdm.conf-custom.debathena
@@ -67,6 +61,7 @@ else
 	dh_install debian/debathena-nologin-monitor usr/lib/debathena-nologin-monitor
 	dh_install debian/debathena-nologin-monitor.desktop usr/share/gdm/autostart/LoginWindow
 
+    binary-predeb/debathena-gdm-config:: debathena-gdm-config-substvars
     debathena-gdm-config-substvars::
 	echo "debathena-gdm-gconf-depends=debathena-gconf2-config (>= 1.8~)" \
 	    >> debian/debathena-gdm-config.substvars

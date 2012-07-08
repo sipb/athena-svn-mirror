@@ -1,0 +1,13 @@
+Section: debathena/gnome
+Priority: extra
+Standards-Version: 3.9.1
+
+Package: debathena-gdm
+Version: 1.0
+Maintainer: Debathena Project <debathena@mit.edu>
+Depends: gdm3 | gdm
+Copyright: ../common/copyright
+Readme: ../common/README-meta.in
+Description: Current GDM version for Debathena
+ This package depends on gdm3, if it exists, else gdm, to handle
+ different naming schemes between Debian and Ubuntu.

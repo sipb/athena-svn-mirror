@@ -2,12 +2,12 @@ Source: debathena-gdm-config
 Section: debathena-config/gnome
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, lsb-release
+Build-Depends: @cdbs@, debathena-gdm, lsb-release
 Standards-Version: 3.8.4
 
 Package: debathena-gdm-config
 Architecture: all
-Depends: ${debathena-gdm}, gnome-session, python, ${misc:Depends}, ${debathena-gdm-gconf-depends}
+Depends: debathena-gdm, gnome-session, python, ${misc:Depends}, ${debathena-gdm-gconf-depends}
 Provides: debathena-login-graphical-branding, debathena-workstation-branding, debathena-cluster-branding, ${diverted-files}
 Conflicts: ${diverted-files}
 Breaks: debathena-reactivate (<< 1.22~)

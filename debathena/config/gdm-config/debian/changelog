@@ -1,3 +1,10 @@
+debathena-gdm-config (1.39) unstable; urgency=low
+
+  * Make support for Debian's gdm3 (from version 1.32) actually work, by
+    splitting conditional build-dep into a separate package (Trac: #976).
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Sat, 07 Jul 2012 18:58:12 -0700
+
 debathena-gdm-config (1.38) unstable; urgency=low
 
   * In a multiple monitor setup, like all the cool kids have, position the
