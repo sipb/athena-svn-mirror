@@ -1,3 +1,10 @@
+debathena-lightdm-config (1.4) unstable; urgency=low
+
+  * Be clearer about what a DBus error probably means when initiating a
+    restart/shutdown from lightdm
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 08 Jul 2012 14:03:47 -0400
+
 debathena-lightdm-config (1.3) unstable; urgency=low
 
   * Switch to config-package-dev instead of trying to place nice with what

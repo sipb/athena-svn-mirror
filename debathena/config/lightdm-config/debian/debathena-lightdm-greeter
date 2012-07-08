@@ -210,7 +210,7 @@ class DebathenaGreeter:
                 elif self.builder.get_object("rbSuspend").get_active():
                     LightDM.suspend()
             except GLib.GError, e:
-                self.errDialog(str(e))
+                self.errDialog("An error occurred while trying to perform a power-related operation.  The most common cause of this is trying to shutdown, reboot, or suspend the machine when someone else is logged in remotely or on one of the virtual terminals.  The full error text appears below:\n\n" + str(e))
         self.powerDlg.hide()
 
     def showAccessDialog(self, widget):
