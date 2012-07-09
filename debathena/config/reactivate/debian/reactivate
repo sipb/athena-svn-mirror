@@ -59,6 +59,12 @@ if [ -e /var/run/reboot-required ]; then
   reboot
 fi
 
+# Trac: #749
+service ntp stop
+gettime -s time.mit.edu
+service ntp start
+
+
 # Yes, we want this here.  A reboot will take care of cleaning up
 # /var/run anyway, and since dbus is essential to rebooting these
 # days, we don't want to risk things magically getting spawned inside

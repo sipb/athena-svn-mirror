@@ -1,3 +1,9 @@
+debathena-reactivate (2.0.37) unstable; urgency=low
+
+  * Set the time in reactivate, because NTP apparently can't (Trac: #749)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 08 Jul 2012 20:40:27 -0400
+
 debathena-reactivate (2.0.36) unstable; urgency=low
 
   * Sigh.  Order matters in the mounts file because with the /run
