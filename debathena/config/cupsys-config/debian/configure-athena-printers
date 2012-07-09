@@ -4,29 +4,74 @@ ATHENA_PRINTERS=
 DEFAULT_PRINTER="mitprint"
 PRLIST="/var/lib/debathena-cupsys-config.added_printers"
 
+BW_PPDS="drv:///hpijs.drv/hp-laserjet_9050-hpijs-pcl3.ppd \
+         drv:///hpijs.drv/hp-laserjet_9050-hpijs.ppd"
+
+COLOR_PPDS="drv:///hpijs.drv/hp-color_laserjet_cp3525-hpijs-pcl3.ppd \
+            drv:///hpijs.drv/hp-color_laserjet_cp3505-hpijs.ppd"
+
+PPDCACHE="/var/tmp/debathena-cupsys-config-ppd-cache"
+
+select_ppd() {
+    [ -f "$PPDCACHE" ] && [ -r "$PPDCACHE" ] && [ -s "$PPDCACHE" ] || \
+	(rm -rf $PPDCACHE && lpinfo -m | cut -d ' ' -f 1 > $PPDCACHE)
+    first=1
+    ppd=
+    for p in $1; do
+	echo "trying $p"
+	if grep -qFx "$p" "$PPDCACHE"; then
+	    ppd=$p
+	    break
+	else
+	    first=0
+	fi
+    done
+    rv=0
+    [ -n "$ppd" ] && [ $first -ne 1 ] && rv=3
+    return $rv
+}
+
 add_printers() {
     rm -f $PRLIST
-    lpadmin -p mitprint -E -v lpd://mitprint.mit.edu/bw \
-	-D "Pharos (Monochrome)" \
-	-L "Release jobs from any Pharos B&W printer" \
-	-o printer-is-share=false \
-	-m drv:///hpijs.drv/hp-laserjet_9050-hpijs-pcl3.ppd
-    if [ $? != 0 ]; then
-	echo "FAILED to add Pharos printer $p"
-    else
-	echo "Added Pharos printer $p"
-	echo "$p" >> $PRLIST
+    ppd=
+    select_ppd "$BW_PPDS"
+    if [ $? -eq 3 ]; then
+	echo "NOTE: Using compatibility PPD for 'mitprint' printer" >&2
     fi
-    lpadmin -p mitprint-color -E -v lpd://mitprint.mit.edu/color \
-	-D "Pharos (Color)" \
-	-L "Release jobs from any Pharos Color printer" \
-	-o printer-is-share=false \
-	-m drv:///hpijs.drv/hp-color_laserjet_cp3525-hpijs-pcl3.ppd
-    if [ $? != 0 ]; then
-	echo "FAILED to add Pharos printer $p"
+    if [ -n "$ppd" ]; then
+	lpadmin -p mitprint -E -v lpd://mitprint.mit.edu/bw \
+	    -D "Pharos (Monochrome)" \
+	    -L "Release jobs from any Pharos B&W printer" \
+	    -o printer-is-share=false \
+	    -m "$ppd"
+	if [ $? != 0 ]; then
+	    echo "FAILED to add Pharos printer 'mitprint'" >&2
+	else
+	    echo "Added Pharos printer 'mitprint'" >&2
+	    echo "$p" >> $PRLIST
+	fi
+    else 
+	echo "Cannot add Pharos printer 'mitprint': no available PPDs!" >&2
+    fi
+    ppd=
+    select_ppd "$COLOR_PPDS"
+    if [ $? -eq 3 ]; then
+	echo "NOTE: Using compatibility driver for 'mitprint-color' printer" >&2
+    fi
+    if [ -n "$ppd" ]; then
+	lpadmin -p mitprint-color -E -v lpd://mitprint.mit.edu/color \
+	    -D "Pharos (Color)" \
+	    -L "Release jobs from any Pharos Color printer" \
+	    -o printer-is-share=false \
+	    -m "$ppd"
+	if [ $? != 0 ]; then
+	    echo "FAILED to add Pharos printer 'mitprint-color'" >&2
+	else
+	    echo "Added Pharos printer 'mitprint-color'" >&2
+	    echo "$p" >> $PRLIST
+	fi
     else
-	echo "Added Pharos printer $p"
-	echo "$p" >> $PRLIST
+	echo "Cannot add Pharos printer 'mitprint-color': no available PPDs!" >&2
     fi
     for a in $ATHENA_PRINTERS; do
         # Don't clobber queue, this is -cluster

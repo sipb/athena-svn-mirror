@@ -1,3 +1,10 @@
+debathena-cupsys-config (1.17.3) unstable; urgency=low
+
+  * Supply alternate PPDs for ancient distros (Trac: #1068)
+  * Depends on hpijs-ppds, not hpijs (Trac: #1067)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 09 Jul 2012 10:42:19 -0400
+
 debathena-cupsys-config (1.17.2) unstable; urgency=low
 
   * No change rebuild to pick up config-package-dev 4.13 changes

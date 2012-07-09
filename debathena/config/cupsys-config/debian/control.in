@@ -7,7 +7,7 @@ Standards-Version: 3.9.1
 
 Package: debathena-cupsys-config
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, cups | cupsys, cups-bsd | cupsys-bsd, hpijs
+Depends: ${shlibs:Depends}, ${misc:Depends}, cups | cupsys, cups-bsd | cupsys-bsd, hpijs-ppds
 Provides: ${diverted-files}, debathena-cluster-cups-config
 Conflicts: ${diverted-files}, debathena-cluster-cups-config (<= 2.0.4)
 Replaces: debathena-cluster-cups-config (<= 2.0.4)
