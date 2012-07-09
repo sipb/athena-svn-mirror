@@ -1,0 +1,6 @@
+# A list of D-Bus names to never start inside in the chroot
+# Format: One name per line
+
+# Never start rtkit-daemon inside the chroot, since it
+# does a chroot itself into /proc, and bad things happen
+org.freedesktop.RealtimeKit1

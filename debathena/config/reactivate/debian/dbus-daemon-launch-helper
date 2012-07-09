@@ -8,8 +8,11 @@ HELPER=/lib/dbus-1.0/dbus-daemon-launch-helper
 [ -x "$HELPER" ] || HELPER="/usr${HELPER}"
 [ -x "$HELPER" ] || logger -t "reactivate" "Can't execute $HELPER"
 
+BLACKLIST=/usr/share/debathena-reactivate/dbus-daemon-launch-helper-blacklist
+
 if [ -n "$session" ] && [ "$(echo "$session" | wc -l)" -eq 1 ] && \
-   ! [ -e /var/run/debathena-inhibit-dbus-helper ]; then
+   ! [ -e /var/run/debathena-inhibit-dbus-helper ] && \
+   ! grep -Fxq "$1" "$BLACKLIST"; then
     exec schroot -r -c "$session" "$HELPER" "$@"
 else
     exec "$HELPER" "$@"

@@ -1,8 +1,10 @@
 debathena-reactivate (2.0.37) unstable; urgency=low
 
   * Set the time in reactivate, because NTP apparently can't (Trac: #749)
+  * Implement a blacklist for services that should never start inside the
+    chroot
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 08 Jul 2012 20:40:27 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 09 Jul 2012 14:16:53 -0400
 
 debathena-reactivate (2.0.36) unstable; urgency=low
 
