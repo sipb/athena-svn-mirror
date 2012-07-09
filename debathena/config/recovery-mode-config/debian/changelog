@@ -1,3 +1,10 @@
+debathena-recovery-mode-config (1.5) unstable; urgency=low
+
+  * Don't set variable that don't exist; don't write out 127.0.1.1 line
+    (Trac: #1070)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sun, 08 Jul 2012 21:22:20 -0400
+
 debathena-recovery-mode-config (1.4) unstable; urgency=low
 
   * Ensure / is mounted read-write (Trac: #1153)

@@ -144,7 +144,7 @@ mv -f "/etc/hosts" "/etc/hosts.old"
 cat <<EOF >/etc/hosts
 # This file was created by athena-renumber
 127.0.0.1       localhost
-127.0.1.1       $fqdn $hostname
+$IPADDR         $FQDN $HOSTNAME
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     localhost ip6-localhost ip6-loopback
