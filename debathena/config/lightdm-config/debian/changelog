@@ -2,8 +2,11 @@ debathena-lightdm-config (1.4) unstable; urgency=low
 
   * Be clearer about what a DBus error probably means when initiating a
     restart/shutdown from lightdm
+  * Support basic accessibility options (read: a High Contrast Theme)
+  * For aesthetic reasons (since the windows have no borders), hide the
+    login window when displaying a dialog box
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 08 Jul 2012 14:03:47 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 10 Jul 2012 11:04:27 -0400
 
 debathena-lightdm-config (1.3) unstable; urgency=low
 
