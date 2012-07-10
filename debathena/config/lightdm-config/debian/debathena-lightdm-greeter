@@ -33,6 +33,9 @@ DEBATHENA_LOGO_FILES=["/usr/share/debathena-lightdm-config/debathena.png",
                       "/usr/share/debathena-lightdm-config/debathena8.png"]
 KIOSK_LAUNCH_CMD="/usr/lib/debathena-kiosk/lightdm-launch-kiosk"
 
+# See below, and then go cry.
+_OBJS_TO_RENAME=["miShutdown", "miRestart", "miSuspend", "miHibernate"]
+
 class DebathenaGreeter:
     animation_loop_frames = 300
     
@@ -46,6 +49,13 @@ class DebathenaGreeter:
 
     def __init__(self, options):
         self.debugMode = options.debug
+        if self.debugMode:
+            # Sigh.  In theory, APPMENU_DISPLAY_BOTH=1 should give me both
+            # an appmenu and the "real" menubar.
+            # In reality, it doesn't.  
+            # QT_X11_NO_NATIVE_MENUBAR=1 is the KDE equivalent
+            self._debug("Attempting to turn off appmenu...")
+            os.putenv('UBUNTU_MENUPROXY', '')
         self.timePedantry = True
 
         # Set up and connect to the greeter
@@ -61,9 +71,9 @@ class DebathenaGreeter:
             "login_cb": self.cbLogin, 
             "cancel_cb": self.cancelLogin,
             "kpEvent": self.cbKeyPress,
-            "power_cb": self.showPowerDialog,
-            "access_cb": self.showAccessDialog,
-            "browse_cb": self.spawnBrowser,
+            "power_cb": self.doPowerOperation,
+            "contrast_cb": self.toggleContrast,
+            "browse_cb": self.spawnBrowser
         }
 
         # Sigh.  Pre lightdm-1.1, cancel_authentication() calls the
@@ -93,6 +103,13 @@ class DebathenaGreeter:
             print >> sys.stderr, "FATAL: Unable to load UI: ", e
             sys.exit(-1)
 
+        # This is just ridiculous.  Due to a GtkBuilder bug, it scribbles over
+        # the widget's name when instantiating them (via get_object()), but we
+        # can then call set_name to re-name them.  In a perfect world, this
+        # would be a no-op.
+        for obj in _OBJS_TO_RENAME:
+            self.builder.get_object(obj).set_name(obj)
+        
         # The login window
         self.winLogin = self.builder.get_object("winLogin")
         # A box containing the prompt label, entry, and a spinner
@@ -125,16 +142,6 @@ class DebathenaGreeter:
         # TODO: Select the configured default session or the user's session
         self.cmbSession.set_active(0)
 
-        self.powerDlg = self.builder.get_object("powerDialog")
-        # LightDM checks with PolKit for the various "get_can_foo()" functions
-        self.builder.get_object("rbShutdown").set_sensitive(LightDM.get_can_shutdown())
-        self.builder.get_object("rbReboot").set_sensitive(LightDM.get_can_restart())
-        # We don't allow suspend/hibernate on cluster
-        self.builder.get_object("rbHibernate").set_sensitive(LightDM.get_can_hibernate() and self.metapackage != "debathena-cluster")
-        self.builder.get_object("rbSuspend").set_sensitive(LightDM.get_can_suspend() and self.metapackage != "debathena-cluster")
-        
-        self.accessDlg = self.builder.get_object("accessibilityDialog")
-
         self.loginNotebook = self.builder.get_object("notebook1")
 
         # Scaling factor for smaller displays
@@ -144,7 +151,6 @@ class DebathenaGreeter:
         self.winLogin.set_position(Gtk.WindowPosition.CENTER)
         self.winLogin.show()
         self.initBackgroundWindow()
-        self.initPanelWindow()
         self.initBrandingWindow()
         # Connect Gtk+ signal handlers
         self.builder.connect_signals(handlers)
@@ -160,7 +166,7 @@ class DebathenaGreeter:
         self.noLoginMonitor.connect("changed", self._file_changed)
 
         if not os.path.exists(KIOSK_LAUNCH_CMD):
-            self.builder.get_object("btnBrowse").hide()
+            self.builder.get_object("mnuBrowse").hide()
         # Setup the login window for first login
         self.resetLoginWindow()
 
@@ -171,16 +177,26 @@ class DebathenaGreeter:
         bg_pixbuf = GdkPixbuf.Pixbuf.new_from_file(BG_IMG_FILE)
         bg_scaled = bg_pixbuf.scale_simple(self.screenSize[0], self.screenSize[1], GdkPixbuf.InterpType.BILINEAR)
         self.imgBg.set_from_pixbuf(bg_scaled)
-        self.winBg.show_all()
+        # The menubar
+        # LightDM checks with PolKit for the various "get_can_foo()" functions
+        # We call .set_name() here because of a GtkBuilder bug 
+        self.builder.get_object("miShutdown").set_sensitive(LightDM.get_can_shutdown())
+        self.builder.get_object("miRestart").set_sensitive(LightDM.get_can_restart())
+#        self.builder.get_object("miRestart").set_name('restart')
+        # We don't allow suspend/hibernate on cluster
+        self.builder.get_object("miHibernate").set_sensitive(LightDM.get_can_hibernate() and self.metapackage != "debathena-cluster")
+        self.builder.get_object("miSuspend").set_sensitive(LightDM.get_can_suspend() and self.metapackage != "debathena-cluster")
 
-    def initPanelWindow(self):
-        # A window that looks like the GNOME "panel" at the top of the screen
-        self.winPanel = self.builder.get_object("winPanel")
-        self.lblTime = self.builder.get_object("lblTime")
-        self.winPanel.set_gravity(Gdk.Gravity.NORTH_WEST)
-        self.winPanel.move(0,0)
-        self.winPanel.set_size_request(self.screenSize[0], 2)
-        self.winPanel.show_all()
+        # We just want images.  A Glade bug removes the "label" property
+        # completely if it's null, which results in bad redrawing artifacts
+        # So we set the label to text we don't care about in Glade, and 
+        # change it here.
+        for menu in ("mnuPower", "mnuAccess", "mnuBrowse"):
+            self.builder.get_object(menu).set_property('label', '')
+        # Used in the updateTime callback
+        self.mnuTime = self.builder.get_object("mnuClock")
+
+        self.winBg.show_all()
 
     def initBrandingWindow(self):
         # The "branding window", in the bottom right
@@ -198,35 +214,37 @@ class DebathenaGreeter:
         winBranding.move(self.screenSize[0] - width, self.screenSize[1] - height)
         winBranding.show_all()
 
-    def showPowerDialog(self, widget):
-        self.winLogin.hide()
-        if self.powerDlg.run() == Gtk.ResponseType.OK:
-            # Just do the action.  The relevant buttons should be
-            # greyed out for things we can't do.  LightDM will
-            # check with ConsoleKit anyway
-            try:
-                if self.builder.get_object("rbShutdown").get_active():
-                    LightDM.shutdown()
-                elif self.builder.get_object("rbReboot").get_active():
-                    LightDM.restart()
-                elif self.builder.get_object("rbHiberate").get_active():
-                    LightDM.hibernate()
-                elif self.builder.get_object("rbSuspend").get_active():
-                    LightDM.suspend()
-            except GLib.GError, e:
-                self.errDialog("An error occurred while trying to perform a power-related operation.  The most common cause of this is trying to shutdown, reboot, or suspend the machine when someone else is logged in remotely or on one of the virtual terminals.  The full error text appears below:\n\n" + str(e))
-        self.powerDlg.hide()
-        self.winLogin.show()
+    def doPowerOperation(self, widget):
+        # This only works because of the calls to .set_name() above.
+        # Other stupid ideas include:
+        #   if widget == self.builder.get_object('whatever'):
+        #
+        # N.B. user_data for GtkBuilder is a complete mess and all
+        # kinds of wrong (you can only specify objects defined in the
+        # builder xml, and it forces the 'swap' flag when
+        # autoconnected, AND the object you get _replaces_ the widget
+        # in the callback)
+        actions = {"miShutdown": LightDM.shutdown,
+                   "miRestart": LightDM.restart,
+                   "miHibernate": LightDM.hibernate,
+                   "miSuspend": LightDM.suspend}
+        try:
+            actions[widget.get_name()]()
+        except KeyError:
+            # "won't" happen
+            print >>sys.stderr, "ERR: No action for widget name: "+ widget.get_name()
+        except GLib.GError, e:
+            # It's possible we should look at the error text to see if
+            # it's ConsoleKit that's whining?  Because you get a
+            # (valid) error from UPower if you try to suspend when
+            # your hardware doesn't support it
+            self.errDialog("An error occurred while trying to perform a power-related operation.  The most common cause of this is trying to shutdown, reboot, or suspend the machine when someone else is logged in remotely or on one of the virtual terminals.  The full error text appears below:\n\n" + str(e))
 
-    def showAccessDialog(self, widget):
-        self.winLogin.hide()
-        if self.accessDlg.run() == Gtk.ResponseType.OK:
-            if self.builder.get_object("cbHighContrast").get_active():
-                self.gtkSettings.set_property('gtk-theme-name', 'HighContrastInverse')
-            else:
-                self.gtkSettings.set_property('gtk-theme-name', self.origTheme)
-        self.accessDlg.hide()
-        self.winLogin.show()
+    def toggleContrast(self, widget):
+        if widget.get_active():
+            self.gtkSettings.set_property('gtk-theme-name', 'HighContrastInverse')
+        else:
+            self.gtkSettings.set_property('gtk-theme-name', self.origTheme)
 
 
     def _file_changed(self, monitor, file1, file2, evt_type):
@@ -241,7 +259,7 @@ class DebathenaGreeter:
         timeFmt="%a, %b %e %Y %l:%M" + ":%S" if self.timePedantry else ""
         # every second counts
         timeFmt=timeFmt + " %p"
-        self.lblTime.set_text(time.strftime(timeFmt, time.localtime(time.time())))
+        self.mnuTime.set_label(time.strftime(timeFmt, time.localtime(time.time())))
         return True
 
     # Reset the UI and prepare for a new login
