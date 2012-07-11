@@ -469,4 +469,26 @@ Please use another workstation.</property>
       </object>
     </child>
   </object>
+  <object class="GtkWindow" id="winMotd">
+    <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="skip_taskbar_hint">True</property>
+    <property name="skip_pager_hint">True</property>
+    <property name="accept_focus">False</property>
+    <property name="focus_on_map">False</property>
+    <property name="decorated">False</property>
+    <property name="has_resize_grip">False</property>
+    <child>
+      <object class="GtkLabel" id="lblMotd">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="label" translatable="yes">[motd]</property>
+        <property name="use_markup">True</property>
+      </object>
+    </child>
+  </object>
 </interface>

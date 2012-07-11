@@ -1,5 +1,5 @@
 debian/background.jpg usr/share/debathena-lightdm-config
-debian/debathena-lightdm-greeter usr/sbin
+debian/debathena-lightdm-greeter usr/lib/debathena-lightdm-config
 debian/debathena-lightdm-greeter.ui usr/share/debathena-lightdm-config
 debian/debathena.png usr/share/debathena-lightdm-config
 debian/debathena1.png usr/share/debathena-lightdm-config
@@ -14,3 +14,4 @@ debian/debathena-lightdm-greeter.desktop usr/share/xgreeters
 debian/lightdm.conf.debathena etc/lightdm
 debian/debathena-lightdm-session-setup usr/lib/debathena-lightdm-config
 debian/debathena-lightdm-session-cleanup usr/lib/debathena-lightdm-config
+debian/debathena-lightdm-greeter.ini etc
