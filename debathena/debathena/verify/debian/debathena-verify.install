@@ -1,0 +1,2 @@
+debian/verify_ws usr/sbin
+debian/verify_ws.pl usr/lib/debathena-verify

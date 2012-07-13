@@ -1,0 +1,61 @@
+#!/bin/sh
+
+statfile=/var/lib/verify_ws-status
+nologinfile=/var/run/athena-nologin
+updstatus=unknown
+updmsg=unknown
+
+[ -e /var/run/athena-login ] && exit || touch $nologinfile
+
+save_state() {
+    rm -f $statfile
+    echo "$(date +"%s")|$updstatus|$updmsg" > $statfile
+}
+
+cleanup() {
+    rm -f $nologinfile
+    save_state
+    exit
+}
+
+trap cleanup EXIT
+
+fail() {
+    logger -t "verify_ws" -p user.notice "$*"
+    updstatus=failed
+    updmsg="$*"
+    exit
+}
+
+warn() {
+    updstatus=warning
+    updmsg="$*"
+    exit
+}
+
+succeed() {
+    updstatus=ok
+    updmsg="$*"
+    exit
+}
+
+if ! [ -x /usr/lib/debathena-verify/verify_ws.pl ]; then
+    fail "Can't execute /usr/lib/debathena-verify/verify_ws.pl"
+fi
+
+if /usr/lib/debathena-verify/verify_ws.pl; then
+    succeed "Verification passed"
+else
+    case $? in
+	1)
+	    fail "Verification failed"
+	    ;;
+	2)
+	    warn "Non-fatal errors found"
+	    ;;
+	*)
+	    fail "unknown error"
+	    ;;
+    esac
+fi
+exit
