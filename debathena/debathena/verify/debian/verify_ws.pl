@@ -12,7 +12,7 @@ use AptPkg::Cache;
 my $logfile = "/var/log/verify_ws.log";
 my $verify_dir = "/afs/athena.mit.edu/system/athena10/verify";
 
-#($> == 0) || die "You must be root to run this.\n";
+($> == 0) || die "You must be root to run this.\n";
 
 our ($opt_d,$opt_s) = (0,'');
 
