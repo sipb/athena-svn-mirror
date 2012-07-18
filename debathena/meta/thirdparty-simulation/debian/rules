@@ -1,3 +1,10 @@
 #!/usr/bin/make -f
 
+HAVE_JMOL = $(shell apt-cache show jmol 2>/dev/null | grep -q '^Version:' && echo y)
+
+ifeq ($(HAVE_JMOL),y)
+    binary-predeb/debathena-thirdparty-simulation::
+	echo "debathena-maybe-jmol=jmol,jmol-applet" >> debian/debathena-thirdparty-simulation.substvars
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk

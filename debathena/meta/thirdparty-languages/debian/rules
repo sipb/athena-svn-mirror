@@ -1,3 +1,10 @@
 #!/usr/bin/make -f
 
+HAVE_GCCGO = $(shell apt-cache show gccgo 2>/dev/null | grep -q '^Version:' & echo y)
+
+ifeq ($(HAVE_GCCGO),y)
+    binary-predeb/debathena-thirdparty-languages::
+	echo "debathena-maybe-gccgo=gccgo" >> debian/debathena-thirdparty-languages.substvars
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk

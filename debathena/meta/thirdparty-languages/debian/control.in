@@ -41,6 +41,7 @@ Depends: cmake,
  scala,
  irb,
  flex,
+ ${debathena-maybe-gccgo},
  ${misc:Depends}
 Recommends:
  mit-scheme,

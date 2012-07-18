@@ -1,3 +1,9 @@
+debathena-thirdparty-languages (1.2) unstable; urgency=low
+
+  * Maybe depend on gccgo (Trac: #1155)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 18 Jul 2012 12:23:39 -0400
+
 debathena-thirdparty-languages (1.1) unstable; urgency=low
 
   * jython-gcj is now part of jython

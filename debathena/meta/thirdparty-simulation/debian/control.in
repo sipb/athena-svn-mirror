@@ -44,6 +44,7 @@ Depends: lp-solve,
  mpb,
  mpb-doc,
  openbabel,
+ ${debathena-maybe-jmol},
  ${misc:Depends}
 Description: Debathena metapackage for third-party simulation software
  This includes a set of subpackages of commonly-used third-party software
