@@ -118,9 +118,9 @@
                       <object class="GtkCheckMenuItem" id="miPickboard">
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Use On-screen Keyboard</property>
+                        <signal name="toggled" handler="pickboard_cb" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -130,6 +130,7 @@
                         <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Use Large Font</property>
+                        <signal name="toggled" handler="large_font_cb" swapped="no"/>
                       </object>
                     </child>
                   </object>

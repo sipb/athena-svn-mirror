@@ -2,7 +2,8 @@ debathena-lightdm-config (1.4) unstable; urgency=low
 
   * Be clearer about what a DBus error probably means when initiating a
     restart/shutdown from lightdm
-  * Support basic accessibility options (read: a High Contrast Theme)
+  * Support basic accessibility options (High Contrast theme and an
+    on-screen keyboard, if available)
   * Drop a separate panel window and actually implement a real menubar on
     the background window for the top "panel"
   * Display a MOTD on the login screen (Trac: #793)
@@ -12,7 +13,7 @@ debathena-lightdm-config (1.4) unstable; urgency=low
   * Deal more gracefully with a missing background image
   * Move greeter to /usr/lib/debathena-lightdm-config
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 11 Jul 2012 16:04:05 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 18 Jul 2012 12:01:54 -0400
 
 debathena-lightdm-config (1.3) unstable; urgency=low
 

@@ -20,6 +20,7 @@ import ConfigParser
 import io
 
 KIOSK_LAUNCH_CMD="/usr/lib/debathena-kiosk/lightdm-launch-kiosk"
+PICKBOARD_CMD="/usr/bin/onboard"
 UI_FILE="/usr/share/debathena-lightdm-config/debathena-lightdm-greeter.ui"
 CONFIG_FILE="/etc/debathena-lightdm-greeter.ini"
 CONFIG_DEFAULTS={"minimum_uid": 1,
@@ -97,6 +98,8 @@ class DebathenaGreeter:
             "kpEvent": self.cbKeyPress,
             "power_cb": self.doPowerOperation,
             "contrast_cb": self.toggleContrast,
+            "pickboard_cb": self.togglePickboard,
+            "large_font_cb": self.toggleLargeFont,
             "browse_cb": self.spawnBrowser
         }
 
@@ -134,6 +137,9 @@ class DebathenaGreeter:
         for obj in _OBJS_TO_RENAME:
             self.builder.get_object(obj).set_name(obj)
         
+        # For the pickboard
+        self.keyboardWindow = None
+
         # The login window
         self.winLogin = self.builder.get_object("winLogin")
         # A box containing the prompt label, entry, and a spinner
@@ -257,6 +263,8 @@ class DebathenaGreeter:
             self.builder.get_object(menu).set_property('label', '')
         # Used in the updateTime callback
         self.mnuTime = self.builder.get_object("mnuClock")
+        
+        self.builder.get_object("miPickboard").set_sensitive(os.path.exists(PICKBOARD_CMD))
 
         self.winBg.show_all()
 
@@ -301,6 +309,47 @@ class DebathenaGreeter:
             # (valid) error from UPower if you try to suspend when
             # your hardware doesn't support it
             self.errDialog("An error occurred while trying to perform a power-related operation.  The most common cause of this is trying to shutdown, reboot, or suspend the machine when someone else is logged in remotely or on one of the virtual terminals.  The full error text appears below:\n\n" + str(e))
+
+
+    def togglePickboard(self, widget):
+        if not widget.get_active():
+            if self.keyboardWindow:
+                self.keyboardWindow.destroy()
+            if self.onboardProc:
+                self.onboardProc.terminate()
+        else:
+            self.onboardProc = None
+            xid = None
+            try:
+                self.onboardProc = subprocess.Popen([PICKBOARD_CMD, "--xid"],
+                                                stdout=subprocess.PIPE)
+                xid = int(self.onboardProc.stdout.readline())
+            except OSError, e:
+                print >>sys.stderr, "Failed to spawn /usr/bin/onboard", str(e)
+            except ValueError:
+                print >>sys.stderr, "onboard didn't return an integer xid (shouldn't happen)"
+                self.onboardProc.kill()
+
+            if self.onboardProc is None or xid is None:
+                self.errDialog("An error occurred while starting the on-screen keyboard.")
+                widget.set_sensitive(False)
+                # Remember, this will call this callback again
+                widget.set_active(False)
+                return
+
+            self.keyboardWindow = Gtk.Window()
+            self.keyboardWindow.show()
+            self.keyboardWindow.accept_focus = False;
+            self.keyboardWindow.focus_on_map = False;
+            keyboardSocket = Gtk.Socket()
+            keyboardSocket.show()
+            self.keyboardWindow.add(keyboardSocket)
+            keyboardSocket.add_id(xid)
+            self.keyboardWindow.move(0, self.screenSize[1] - 200)
+            self.keyboardWindow.resize(int(self.screenSize[0] / 3), 200)
+
+    def toggleLargeFont(self, widget):
+        pass
 
     def toggleContrast(self, widget):
         if widget.get_active():
