@@ -1,3 +1,9 @@
+debathena-extra-software-nox (1.4) unstable; urgency=low
+
+  * Add rlpr to the release (Trac: #1021)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 19 Jul 2012 11:40:51 -0400
+
 debathena-extra-software-nox (1.3) unstable; urgency=low
 
   * Prefer the cyrus-clients metapackage (new in wheezy/oneiric) to the
