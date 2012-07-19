@@ -82,6 +82,11 @@ class BugMe:
 	# It's a little odd to put this here, but it doesn't work in
 	# __init__; see comments in Trac #386
         self.timerWindow.set_keep_above(True)
+        # And the above code doesn't work if the user has an "Always
+        # On Top" window above it.  The following does, and bugme lives
+        # up to its name:
+        if elapsed % 10 == 0:
+            self.timerWindow.present()
         return True
 
     def nag(self, remainingTime):
