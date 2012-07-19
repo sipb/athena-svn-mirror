@@ -107,9 +107,9 @@ fi
 
 if [ "${XSESSION+set}" = set ]; then
    if [ -x /usr/bin/gnome-session-quit ]; then
-	logout () { gnome-session-quit --no-prompt; exit; } # logout for X
+	logout () { /usr/lib/init/check-for-reboot; gnome-session-quit --no-prompt; exit; } # logout for X
    else   
-	logout () { gnome-session-save --kill --silent; exit; } # logout for X
+	logout () { /usr/lib/init/check-for-reboot; gnome-session-save --kill --silent; exit; } # logout for X
    fi
 fi
 

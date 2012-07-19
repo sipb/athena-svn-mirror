@@ -1,3 +1,11 @@
+debathena-dotfiles (10.0.31-0debathena1) unstable; urgency=low
+
+  * Add /usr/lib/init/check-for-reboot to the logout aliases (Trac: #971).
+    We add this here and not in xsession, because dotfiles can't/shouldn't
+    depend on xsession.  
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 19 Jul 2012 08:51:06 -0400
+
 debathena-dotfiles (10.0.30-0debathena5) unstable; urgency=low
 
   * Don't use bash's path separator in tcsh

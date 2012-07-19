@@ -1,0 +1,14 @@
+#!/bin/sh
+# 
+# This is _executed_, not sourced
+
+if [ "$(machtype -L)" != "debathena-cluster" ] && \
+   [ -f /var/run/reboot-required ] && \
+   [ -n "$DISPLAY" ]; then
+    reason="A package or process has indicated that a reboot is needed."
+    if egrep -q '[[:alnum:]]' /var/run/reboot-required; then
+	reason="$(cat /var/run/reboot-required)"
+    fi
+    zenity --no-wrap --info --title="Reboot Needed" --text="Your workstation needs to be rebooted.\nReason: $reason\nPlease reboot as soon as possible."
+fi
+exit 0

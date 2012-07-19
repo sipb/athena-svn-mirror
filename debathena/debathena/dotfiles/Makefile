@@ -47,6 +47,7 @@ install:
 	install -c -m 0755 welcome.desktop ${DESTDIR}${PROTODESKTOP}
 	install -c -m 0755 olh.desktop ${DESTDIR}${PROTODESKTOP}
 	install -c -m 0755 faq.desktop ${DESTDIR}${PROTODESKTOP}
+	install -c -m 0755 check-for-reboot ${DESTDIR}${SYSTEM}
 
 clean:
 
