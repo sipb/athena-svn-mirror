@@ -15,7 +15,7 @@ sub debug {
 }
 
 my $kuser;
-my $want_auth = $ENV{'DEBATHENA_SENDMAIL_AUTH'} || '';
+my $want_auth = $ENV{'DEBATHENA_SENDMAIL_AUTH'} || 'yes';
 
 system(qw(klist -s));
 if (($? == 0) &&
@@ -42,6 +42,9 @@ EOF
 
 sub from_address {
   # If we have tickets, use them
+  if ($ENV{'DEBATHENA_SENDMAIL_FROM'}) {
+    return "--from=" . $ENV{'DEBATHENA_SENDMAIL_FROM'};
+  }
   if ($kuser) {
     return "--from=" . join('@', $kuser, 'mit.edu');
   }
@@ -68,12 +71,12 @@ foreach my $arg (@ARGV) {
     push @aliases, $parser->expand($arg);
 }
 
-if ($kuser && (($want_auth eq 'yes') || ($want_auth eq '')) ) {
+if ($kuser) {
     #send auth
     debug(qw{msmtp --host=outgoing.mit.edu --port=587 --auth=gssapi}, "--user=$kuser", from_address(), @aliases);
     exec(qw{msmtp --host=outgoing.mit.edu --port=587 --auth=gssapi}, "--user=$kuser", from_address(), @aliases);
 }
-elsif ($want_auth eq 'yes') {
+elsif ($want_auth ne 'fallback') {
     $! = 1;
     die "Could not find valid ATHENA.MIT.EDU Kerberos tickets.\n";
 }

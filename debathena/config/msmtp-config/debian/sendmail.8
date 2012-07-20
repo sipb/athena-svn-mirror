@@ -8,13 +8,13 @@ sendmail \- A script which invokes msmtp in order to send mail
 .SH DESCRIPTION
 .BR sendmail
 sends a message to one or more recipients.  Flags and addresses are
-passed to msmtp, which is invoked with the requisite options.  If
-possible, the message is sent authenticated, but will fall back to
-unauthenticated smtp.  Authentication can be forced by setting the
-variable \fIDEBATHENA_SENDMAIL_AUTH\fP to "yes".  If authentication is
-forced, but no valid Kerberos tickets can be found to authenticate the
-user, the script will exit with status 1.  See mstmp(1) for possible
-values for \fIflags\fP.
+passed to msmtp, which is invoked with the requisite options.  The
+message is sent authenticated, and will fail if tickets are not
+available.  Fallback to unauthenticated SMTP can be permitted by setting
+the variable \fIDEBATHENA_SENDMAIL_AUTH\fP to "fallback".  If
+authentication is forced, but no valid Kerberos tickets can be found to
+authenticate the user, the script will exit with status 1.  See mstmp(1)
+for possible values for \fIflags\fP.
 
 .SH BUGS
 
@@ -30,7 +30,12 @@ Note that even if you specify a \fIFrom:\fP line, the
 \fIReturn-Path\fP will be set to the msmtp-constructed address, and
 thus you might miss bounces or other errors.  While you can specify
 \fIErrors-To:\fP, and most MTAs will honor it, it's discouraged (per
-RFC 2076).  So really, don't send mail with host tickets.
+RFC 2076).  You can force a Return-Path or From by setting the
+environment variable \fIDEBATHENA_SENDMAIL_FROM\fP.  The contents of the
+variable are passed verbatim.
+
+Really, this is not an MTA.  In the time it took you to read this
+section, you could have installed postfix or exim.  Just sayin'.
 
 .SH SEE ALSO
 
