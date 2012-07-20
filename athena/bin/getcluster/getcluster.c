@@ -21,8 +21,8 @@
 
 static void usage(void);
 static void die(const char *f, ...);
-static void shellenv(char **hp, const char *ws_version, int bourneshell);
-static void output_var(const char *var, const char *val, int bourneshell);
+static void shellenv(char **hp, const char *ws_version, int bourneshell, int plaintext);
+static void output_var(const char *var, const char *val, int bourneshell, int plaintext);
 static void upper(char *v);
 static char **readcluster(FILE *f);
 static char **merge(char **l1, char **l2);
@@ -70,7 +70,7 @@ static void *emalloc(size_t size);
 int main(int argc, char **argv)
 {
   char **hp = NULL, **fp = NULL, **lp = NULL, **or1, **or2;
-  int debug = 0, bourneshell = 0, ch;
+  int debug = 0, bourneshell = 0, plaintext = 0, ch;
   const char *fallbackfile = SYSCONFDIR "/cluster.fallback";
   const char *localfile = SYSCONFDIR "/cluster.local";
   const char *clusterfile = SYSCONFDIR "/cluster";
@@ -81,7 +81,7 @@ int main(int argc, char **argv)
   extern int optind;
   extern char *optarg;
 
-  while ((ch = getopt(argc, argv, "bdl:f:h:")) != -1)
+  while ((ch = getopt(argc, argv, "bdpl:f:h:")) != -1)
     {
       switch (ch)
 	{
@@ -90,6 +90,9 @@ int main(int argc, char **argv)
 	  break;
 	case 'b':
 	  bourneshell = 1;
+	  break;
+	case 'p':
+	  plaintext = 1;
 	  break;
 	case 'f':
 	  /* Deprecated option, for compatibility. */
@@ -113,6 +116,9 @@ int main(int argc, char **argv)
   if (argc != 1 && argc != 2)
     usage();
   version = (argc == 2) ? argv[1] : argv[0];
+
+  if (bourneshell && plaintext)
+    usage();
 
   if (hostname == NULL)
     {
@@ -183,7 +189,7 @@ int main(int argc, char **argv)
 
   or1 = merge(lp, hp);
   or2 = merge(or1, fp);
-  shellenv(or2, version, bourneshell);
+  shellenv(or2, version, bourneshell, plaintext);
   if (!debug)
     {
       if (hp != NULL)
@@ -251,7 +257,7 @@ static char **merge(char **l1, char **l2)
 
 static void usage(void)
 {
-  die("Usage: getcluster [-h hostname] [-b] [-d] version");
+  die("Usage: getcluster [-h hostname] [-b|-p] [-d] version");
   exit(1);
 }
 
@@ -291,7 +297,7 @@ static void die(const char *fmt, ...)
  * highest version number.  If there aren't any records left with
  * version numbers and there's one with no version number, output
  * that one. */
-static void shellenv(char **hp, const char *ws_version, int bourneshell)
+static void shellenv(char **hp, const char *ws_version, int bourneshell, int plaintext)
 {
   int *seen, count, i, j, output_time = 0, autoupdate = 0;
   char var[80], val[80], vers[80], flags[80], compvar[80], compval[80];
@@ -395,14 +401,14 @@ static void shellenv(char **hp, const char *ws_version, int bourneshell)
 	  if (*vers == '0')
 	    strcpy(val, defaultval);
 	  upper(var);
-	  output_var(var, val, bourneshell);
+	  output_var(var, val, bourneshell, plaintext);
 	}
     }
 
   if (vercmp(new_testing, ws_version) > 0)
-    output_var("NEW_TESTING_RELEASE", new_testing, bourneshell);
+    output_var("NEW_TESTING_RELEASE", new_testing, bourneshell, plaintext);
   if (vercmp(new_production, ws_version) > 0)
-    output_var("NEW_PRODUCTION_RELEASE", new_production, bourneshell);
+    output_var("NEW_PRODUCTION_RELEASE", new_production, bourneshell, plaintext);
   if (output_time)
     {
       /* If we have no time from the environment, make up one
@@ -413,15 +419,17 @@ static void shellenv(char **hp, const char *ws_version, int bourneshell)
 	  update_time = now + rand() % UPDATE_INTERVAL;
 	}
       sprintf(timebuf, "%lu", update_time);
-      output_var("UPDATE_TIME", timebuf, bourneshell);
+      output_var("UPDATE_TIME", timebuf, bourneshell, plaintext);
     }
   free(seen);
 }
 
-static void output_var(const char *var, const char *val, int bourneshell)
+static void output_var(const char *var, const char *val, int bourneshell, int plaintext)
 {
   if (bourneshell)
     printf("%s=%s ; export %s ;\n", var, val, var);
+  else if (plaintext)
+    printf("%s %s\n", var, val);
   else
     printf("setenv %s %s ;\n", var, val);
 }

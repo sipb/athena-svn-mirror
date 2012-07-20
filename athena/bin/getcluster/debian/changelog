@@ -1,8 +1,11 @@
-debathena-getcluster (10.0.3-0debathena2) UNRELEASED; urgency=low
+debathena-getcluster (10.1.0-0debathena1) unstable; urgency=low
 
   * Bump debian/compat to 6
+  * Add a "-p" flag to print out space-separated key/value pairs for
+    things to parse by hand
+  * Update man page for new option
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:33 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 20 Jul 2012 17:12:24 -0400
 
 debathena-getcluster (10.0.3-0debathena1) unstable; urgency=low
 

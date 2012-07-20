@@ -1,10 +1,11 @@
-.TH GETCLUSTER 1 "11 August 2011"
+.TH GETCLUSTER 1 "20 July 2012" "debathena-clusterinfo" "Hesiod Cluster Information"
 .SH NAME
-getcluster \- retrieve service cluster info from Hesiod as environment vars
+getcluster \- retrieve service cluster info from Hesiod 
 .SH SYNOPSIS
 .B getcluster
 [
-.B \-b
+.B \-b | 
+.B \-p
 ] [
 .B \-d
 ] [
@@ -20,6 +21,14 @@ variable assignments on its standard output in a format acceptable
 to the C shell, or, if the
 .B \-b
 flag is present, in Bourne shell syntax.
+If the 
+.B \-p
+flag is present, the results are written in space-separated key-value
+pairs, suitable for parsing by things that are not shells.  
+.B \-p
+and
+.B \-b
+are mutually exclusive. 
 .B getcluster
 returns an exit status of 2 if no cluster information is available, or
 1 if any other error was encountered.
@@ -164,3 +173,9 @@ Copyright 1987, 1997, Massachusetts Institute of Technology
 If there exist two unversioned tags of the same name, getcluster will
 pick whichever one comes last (either in Hesiod output or in a local
 file).  This can be regarded as a feature instead of a bug.
+
+.B getcluster 
+does not quote its shell output, nor does it do any checking
+of key names.  This means that if you have a key named "path" or have a
+value with the content of ";rm -rf *", you probably shouldn't eval or
+source its output.
