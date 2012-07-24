@@ -23,6 +23,10 @@ case "$1" in
         if dpkg --compare-versions "$2" lt 10.0.9-0debathena2~; then
             add-shell /bin/athena/bash /bin/athena/tcsh
         fi
+	if [ -z "$2" ] && [ -x "/etc/init.d/debathena-dotfiles" ]; then 
+	    invoke-rc.d debathena-dotfiles start || exit $?
+	fi
+
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

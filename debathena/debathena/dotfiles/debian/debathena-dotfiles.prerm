@@ -20,6 +20,9 @@ set -e
 case "$1" in
     remove)
         remove-shell /bin/athena/bash /bin/athena/tcsh
+	if [ -x "/etc/init.d/debathena-dotfiles" ]; then
+            invoke-rc.d debathena-dotfiles stop || exit $?
+	fi
     ;;
 
     upgrade|deconfigure)

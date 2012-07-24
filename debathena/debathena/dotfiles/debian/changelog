@@ -5,8 +5,9 @@ debathena-dotfiles (10.0.31-0debathena1) unstable; urgency=low
     depend on xsession.  
   * Use a test for LD_ASSUME_KERNEL that doesn't trigger unbound variable
     warnings
+  * Pass --no-start to dh_installinit (Trac: #1084)
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 20 Jul 2012 17:04:08 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 24 Jul 2012 16:13:41 -0400
 
 debathena-dotfiles (10.0.30-0debathena5) unstable; urgency=low
 
