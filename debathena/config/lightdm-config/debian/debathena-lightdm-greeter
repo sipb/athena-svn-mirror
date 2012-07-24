@@ -118,8 +118,11 @@ class DebathenaGreeter:
  
         # Save the screen size for various window operations
         defaultScreen = Gdk.Screen.get_default()
-        self.screenSize = (defaultScreen.width(), defaultScreen.height())
-        
+        # Kids these days have too many monitors
+        self.monitorGeometry = defaultScreen.get_monitor_geometry(defaultScreen.get_primary_monitor())
+        # Don't use this for window centering calculations
+        self.screenSize = (self.monitorGeometry.x + self.monitorGeometry.width,
+                           self.monitorGeometry.y + self.monitorGeometry.height)
         self.get_workstation_information()
 
         # Load the UI and get objects we care about
@@ -229,7 +232,7 @@ class DebathenaGreeter:
             self.builder.get_object('lblMotd').set_markup(motdTxt.strip())
             width, height = self.winMotd.get_size()
             self.winMotd.set_gravity(Gdk.Gravity.SOUTH)
-            self.winMotd.move((self.screenSize[0] - width )/ 2, self.screenSize[1] - height - 10)
+            self.winMotd.move(self.monitorGeometry.x + ((self.monitorGeometry.width - width )/ 2), self.screenSize[1] - height - 10)
             self.winMotd.show_all()
 
     def initBackgroundWindow(self):

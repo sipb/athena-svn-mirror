@@ -12,8 +12,9 @@ debathena-lightdm-config (1.4) unstable; urgency=low
     conditionally returned True
   * Deal more gracefully with a missing background image
   * Move greeter to /usr/lib/debathena-lightdm-config
+  * Support multiple monitors (Trac: #1031)
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 18 Jul 2012 12:01:54 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 24 Jul 2012 18:21:25 -0400
 
 debathena-lightdm-config (1.3) unstable; urgency=low
 
