@@ -1,7 +1,7 @@
 debathena-auto-update (1.37) UNRELEASED; urgency=low
 
   * Bump debian/compat to 6
-  * Inhibit dpkg-preconfigure during auto-updates (Trac: #1020)
+  * Inhibit all dpkg pre- and post- hooks during the download phase (Trac: #1020)
 
  -- Jonathan Reed <jdreed@mit.edu>  Fri, 06 Jul 2012 12:55:34 -0400
 

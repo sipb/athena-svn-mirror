@@ -133,18 +133,11 @@ This system is currently taking software updates.
 Please log in to a different system.
 NOLOGIN
 
-echo "Inhibiting dpkg-preconfigure to work around aptitude bugs..."
-cat > /etc/apt/apt.conf.d/99debathena-inhibit-preconfigure <<APTCONF
-// This file should only exist while an auto-update is in progress.
-// It will be removed without notice.  You have been warned.
-#clear DPkg::Pre-Install-Pkgs;
-APTCONF
-
 finish() {
     echo "** Ending Athena auto-update at $(date)"
     echo "-----"
     echo
-    rm -f /etc/apt/apt.conf.d/99debathena-inhibit-preconfigure
+    rm -f /etc/apt/apt.conf.d/99zzzzzdebathena-inhibit-pre-and-post-hooks
     rm -f $pidfile
     rm -f /var/run/athena-nologin
     save_state
@@ -308,6 +301,15 @@ if v aptitude --simulate --assume-yes full-upgrade | grep -q "$pattern"; then
   exit
 fi
 
+echo "Inhibiting dpkg-preconfigure to work around aptitude bugs..."
+cat > /etc/apt/apt.conf.d/99zzzzzdebathena-inhibit-pre-and-post-hooks <<APTCONF
+// This file should only exist while an auto-update is in progress.
+// It will be removed without notice.  You have been warned.
+#clear DPkg::Pre-Install-Pkgs;
+#clear DPkg::Post-Invoke;
+#clear DPkg::Pre-Invoke;
+APTCONF
+
 # Download packages first.
 if ! v withtimeout aptitude --quiet --assume-yes --download-only full-upgrade; then
   complain "download failed"
@@ -343,6 +345,7 @@ esac
 # metapackage, so be paranoid about that.
 v aptitude --quiet --assume-yes keep-all
 v withtimeout aptitude --quiet --assume-yes --download-only dist-upgrade
+rm -f /etc/apt/apt.conf.d/99zzzzzdebathena-inhibit-pre-and-post-hooks
 if result=$(aptitude -F "%p" search '?action(remove) (^debathena-cluster$ | ^debathena-workstation$ | ^debathena-login$ | ^debathena-standard$ | ^openafs-modules-~D^linux-image-)')
   [ -n "$result" ]; then
   echo "** metapackages would be removed by the update, aborting:" $result
