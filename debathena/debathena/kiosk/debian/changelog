@@ -1,4 +1,4 @@
-debathena-kiosk (1.4.6) UNRELEASED; urgency=low
+debathena-kiosk (1.4.6) unstable; urgency=low
 
   * Make postinst idempotent (Trac: 770)
 
