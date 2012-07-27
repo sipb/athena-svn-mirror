@@ -57,16 +57,6 @@ maybe_reboot() {
   fi
 }
 
-withtimeout () {
-  if dpkg-query --showformat '${Status}\n' -W timeout 2>/dev/null | grep -q ' installed$'; then
-    # tct timeout
-    timeout 1810 timeout -15 1800 "$@"
-  else
-    # coreutils timeout
-    timeout -k 10s 30m "$@"
-  fi
-}
-
 SKIP_REBOOT="n"
 DEBUG="n"
 VERBOSE="n"
