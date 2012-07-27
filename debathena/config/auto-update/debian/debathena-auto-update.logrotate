@@ -5,3 +5,11 @@
   missingok
   notifempty
 }
+
+/var/log/athena-upgrade {
+  rotate 6
+  monthly
+  compress
+  missingok
+  notifempty
+}

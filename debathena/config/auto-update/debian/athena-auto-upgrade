@@ -76,9 +76,8 @@ function pie_grub() {
 
 
 function complain() {
-    if [ $DEBUG -eq 1 ]; then
-        echo "ERROR: $*"
-    else
+    echo "ERROR: $*"
+    if [ $DEBUG -ne 1 ]; then
         logger -t "athena-auto-upgrade" -p user.notice "$*"
     fi
 }
@@ -110,6 +109,7 @@ function maybe_quit() {
     if [ $FORCE -eq 1 ]; then
         echo "Would normally quit here, but you passed -f, so we keep going..."
     else
+	echo "Ending upgrade at $(date)"
         exit 0
     fi
 }
@@ -120,6 +120,7 @@ if [ $DEBUG -ne 1 ]; then
     exec >>/var/log/athena-upgrade 2>&1
 fi
 
+echo
 echo "Starting upgrade at $(date)"
 
 # Not supported on Debian
@@ -172,7 +173,7 @@ else
     if [[ ! -z "$DEBUG_RELEASE" ]]; then
         UBUNTU_RELEASE=$DEBUG_RELEASE
     else
-        debug "No new releases."
+	echo "No new releases found."
         exit 0
     fi
 fi
@@ -180,7 +181,7 @@ if [ "$(lsb_release -sc)" = "$UBUNTU_RELEASE" ]; then
     complain "Tried to upgrade to already running release; shouldn't happen"
     exit 1
 fi
-debug "OK, trying to upgrade to $UBUNTU_RELEASE"
+echo "Found $UBUNTU_RELEASE, starting upgrade"
 
 # That's a space and then a tab inside the brackets
 if egrep -q '^flags[ 	].* lm( |$)' /proc/cpuinfo; then 
