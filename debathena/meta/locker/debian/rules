@@ -1,3 +1,10 @@
 #!/usr/bin/make -f
 
+HAVE_PERL4LIBS = $(shell apt-cache show libperl4-corelibs-perl 2>/dev/null | grep -q '^Version:' && echo y)
+
+ifeq ($(HAVE_PERL4LIBS),y)
+    binary-predeb/debathena-locker::
+	echo "debathena-maybe-perl4=libperl4-corelibs-perl" >> debian/debathena-locker.substvars
+endif
+
 include /usr/share/cdbs/1/rules/debhelper.mk

@@ -25,6 +25,7 @@ Depends: debathena-afs-config,
  debathena-tcsh-config,
  debathena-tellme,
  debathena-zephyr-config,
+ ${debathena-maybe-perl4},
  ${misc:Depends}
 Conflicts: debathena-afuse-automounter (<= 1.4)
 Description: Metapackage providing Athena locker support
