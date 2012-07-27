@@ -1,6 +1,7 @@
 #!/bin/sh
 
 complain() {
+  echo "ERROR: $*"
   logger -t "athena-auto-update" -p user.notice "$*"
   updstatus="failed"
   updmsg="$*"
@@ -15,6 +16,7 @@ warn() {
   else
       updstatus="warning"
       updmsg="$*"
+      echo "WARNING: $*"
   fi
 }
 
@@ -137,7 +139,6 @@ finish() {
     echo "** Ending Athena auto-update at $(date)"
     echo "-----"
     echo
-    rm -f /etc/apt/apt.conf.d/99zzzzzdebathena-inhibit-pre-and-post-hooks
     rm -f $pidfile
     rm -f /var/run/athena-nologin
     save_state
@@ -226,10 +227,10 @@ if [ "$RUN_UPDATE_HOOK" = "yes" ] && \
    fi
 fi
 
-echo "Running aptitude install"
-if ! v aptitude --quiet --assume-yes install; then
-  # Don't fail, because make dpkg --configure -a will save us  
-  echo "ERROR: aptitude install failed, but continuing anyway"
+echo "Running apt-get install"
+if ! v apt-get --fix-broken --assume-yes install; then
+  # Don't fail, because maybe dpkg --configure -a will save us  
+  echo "ERROR: apt-get install failed, but continuing anyway"
 fi
   
 
@@ -265,9 +266,9 @@ if [ -n "$failed" ]; then
     exit
 fi
 
-# Update the aptitude cache.
-if ! v aptitude --quiet --assume-yes update; then
-  complain "aptitude update failed"
+# Update the apt cache.
+if ! v apt-get --assume-yes update; then
+  complain "apt-get update failed"
   exit
 fi
 
@@ -293,44 +294,29 @@ fi
 
 # Exit quietly (except for perhaps rebooting) if there are no upgrades
 # to take.
-pattern='^0 packages upgraded, 0 newly installed, 0 to remove'
-if v aptitude --simulate --assume-yes full-upgrade | grep -q "$pattern"; then
+pattern='^0 upgraded, 0 newly installed, 0 to remove'
+if v apt-get --simulate --assume-yes dist-upgrade | grep -q "$pattern"; then
   echo "Nothing to do!"
   save_success "No updates"
   maybe_reboot
   exit
 fi
 
-echo "Inhibiting dpkg-preconfigure to work around aptitude bugs..."
-cat > /etc/apt/apt.conf.d/99zzzzzdebathena-inhibit-pre-and-post-hooks <<APTCONF
-// This file should only exist while an auto-update is in progress.
-// It will be removed without notice.  You have been warned.
-#clear DPkg::Pre-Install-Pkgs;
-#clear DPkg::Post-Invoke;
-#clear DPkg::Pre-Invoke;
-APTCONF
-
 # Download packages first.
-if ! v withtimeout aptitude --quiet --assume-yes --download-only full-upgrade; then
+echo "Downloading packages..."
+if ! v apt-get --quiet --assume-yes --download-only dist-upgrade; then
   complain "download failed"
   exit
 fi
 
-# If the debathena-reactivate package is installed, call into the
-# login snapshot script to create a root snapshot for the next update.
-if [ -x /usr/sbin/athena-login-snapshot ]; then
-  echo "** Creating root snapshot"
-  /usr/sbin/athena-login-snapshot update-start
-fi
-
-APTITUDE_OPTS=
+APTGET_OPTS=
 case $UPDATE_FORCE_CONFFILE in
     old) 
-	APTITUDE_OPTS="-o Dpkg::Options::=--force-confold"
+	APTGET_OPTS="-o Dpkg::Options::=--force-confold"
 	export UCF_FORCE_CONFFOLD=1
 	;;
     new)
-	APTITUDE_OPTS="-o Dpkg::Options::=--force-confnew"
+	APTGET_OPTS="-o Dpkg::Options::=--force-confnew"
 	export UCF_FORCE_CONFFNEW=1
 	;;
     *)
@@ -340,37 +326,26 @@ case $UPDATE_FORCE_CONFFILE in
 esac
 
 
-# Perform the update.  In some corner cases, aptitude might decide
+# Perform the update.  In some corner cases, apt-get might decide
 # that the best course of action is to remove the Debathena
 # metapackage, so be paranoid about that.
-v aptitude --quiet --assume-yes keep-all
-v withtimeout aptitude --quiet --assume-yes --download-only dist-upgrade
-rm -f /etc/apt/apt.conf.d/99zzzzzdebathena-inhibit-pre-and-post-hooks
-if result=$(aptitude -F "%p" search '?action(remove) (^debathena-cluster$ | ^debathena-workstation$ | ^debathena-login$ | ^debathena-standard$ | ^openafs-modules-~D^linux-image-)')
-  [ -n "$result" ]; then
-  echo "** metapackages would be removed by the update, aborting:" $result
-  v aptitude --quiet --assume-yes keep-all
-  complain "metapackages would be removed by update:" $result
-elif result=$(aptitude -F "%p" search '~b')
-  [ -n "$result" ]; then
-  echo "** packages would be broken by the update, aborting:" $result
-  v aptitude --quiet --assume-yes keep-all
-  complain "packages would be broken by update:" $result
+result="$(apt-get --quiet --assume-yes --simulate dist-upgrade)"
+if [ $? -ne 0 ]; then
+    complain "apt-get simulation failed!"
+elif echo "$result" | egrep -q '^Remv debathena-(cluster|workstation|login-graphical|login|standard|auto-update) '; then
+    complain "metapackages would be removed by update:" $result
 else
-  if v aptitude $APTITUDE_OPTS --quiet --assume-yes install; then
+  if v apt-get $APTGET_OPTS --quiet --assume-yes dist-upgrade; then
     # Successful update, reset $updlast
     updlast=$(date +"%s")
     save_success "Successful update"
+  else
+    complain "Simulation was successful, but update failed (shouldn't happen)"
   fi
 fi
 
 # Finally, update the apt-file cache
 v apt-file update
-
-if [ -x /usr/sbin/athena-login-snapshot ]; then
-  echo "** Cleaning up root snapshot"
-  /usr/sbin/athena-login-snapshot update-end
-fi
 
 maybe_reboot
 exit

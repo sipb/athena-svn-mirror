@@ -1,11 +1,13 @@
 debathena-auto-update (1.37) unstable; urgency=low
 
   * Bump debian/compat to 6
-  * Inhibit all dpkg pre- and post- hooks during the download phase (Trac: #1020)
   * Be more verbose in auto-upgrade
   * rotate auto-upgrade logs
+  * Give up and switch to apt-get, because aptitude is incompetent (Trac:
+    #1020, #1026, #1145
+  * Drop support for reactivate-1.x machines.
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 27 Jul 2012 10:40:22 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 27 Jul 2012 13:14:14 -0400
 
 debathena-auto-update (1.36) unstable; urgency=low
 
