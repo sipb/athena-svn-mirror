@@ -7,7 +7,7 @@ Build-Depends: cdbs, debhelper (>= 6)
 
 Package: debathena-thirdparty-installer
 Architecture: all
-Depends: libapt-pkg-perl, ${misc:Depends}
+Depends: libapt-pkg-perl, coreutils, ${misc:Depends}
 Description: Debathena thirdparty software installer
  This ships an installer that installs "third party software" in a
  separate APT transaction.  It is only intended for use on public,

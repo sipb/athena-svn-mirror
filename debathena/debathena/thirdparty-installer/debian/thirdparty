@@ -66,6 +66,8 @@ install() {
     if ! /usr/lib/debathena-thirdparty/generate-package-list.pl -d "$LISTDIR" -c "$CACHEDIR"; then
 	exit 1
     fi
+    md5sum "${LISTDIR}/common" > "${CACHEDIR}/common.sum"
+    md5sum "${LISTDIR}/$(lsb_release -sc)" > "${CACHEDIR}/$(lsb_release -sc).sum"
     export DEBIAN_FRONTEND=noninteractive
     echo "** Required package list:"
     cat "${CACHEDIR}/dependencies"
@@ -114,11 +116,12 @@ case "$1" in
 	install
 	;;
     up-to-date)
-	if [ -e "$FLAGFILE" ]; then
-	    exit 1
-	else
-	    exit 0
-	fi
+	# If the package got upgraded, always do a reinstall
+	[ -e "$FLAGFILE" ] && exit 1
+	# If the files in AFS have changed, always do a reinstall
+	[ "$(md5sum "${LISTDIR}/common")" != "$(cat "${CACHEDIR}/common.sum")" ] && exit 1
+	[ "$(md5sum "${LISTDIR}/$(lsb_release -sc)")" != "$(cat "${CACHEDIR}/$(lsb_release -sc).sum")" ] && exit 1
+	exit 0
 	;;
     *)
 	echo "Usage: $0 [install | up-to-date]"
