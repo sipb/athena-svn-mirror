@@ -4,5 +4,5 @@ Comment="MATrix LABoratory" package for numeric computation, data analysis, and 
 Exec=gathrun matlab matlab -desktop
 Terminal=true
 Type=Application
-Icon=gnome-run
+Icon=/usr/share/debathena-locker-menu/matlabicon.png
 Categories=Locker;

@@ -2,3 +2,4 @@ debian/debathena-locker.menu etc/xdg/menus/applications-merged
 debian/Locker.directory usr/share/desktop-directories
 debian/*.desktop usr/share/applications
 debian/plif.png usr/share/debathena-locker-menu
+debian/matlabicon.png usr/share/debathena-locker-menu
