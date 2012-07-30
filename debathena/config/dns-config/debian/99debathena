@@ -1,0 +1,8 @@
+# debathena dnsmasq configuration
+
+# Only listen on lo
+interface=lo
+# And only on 127.0.0.1
+listen-address=127.0.0.1
+# DNS only, please
+no-dhcp-interface=lo

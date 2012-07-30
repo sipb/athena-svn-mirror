@@ -2,13 +2,13 @@ Source: debathena-dns-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, bind9
-Standards-Version: 3.7.2
+Build-Depends: @cdbs@
+Standards-Version: 3.9.1
 
 Package: debathena-dns-config
 Architecture: all
-Depends: bind9, resolvconf
-Description: Sets up a local caching named
- This package sets up a local caching named for better DNS lookup
+Depends: dnsmasq, resolvconf, ${misc:Depends}
+Description: Sets up a local caching nameserver using dnsmasq
+ This package sets up a local caching nameserver for better DNS lookup
  security and scalability than we can get by using the MIT resolvers
  directly.
