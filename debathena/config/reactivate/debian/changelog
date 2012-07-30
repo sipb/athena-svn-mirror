@@ -1,3 +1,12 @@
+debathena-reactivate (2.0.38) unstable; urgency=low
+
+  * Ship a session wrapper that runs initgroups(3) and stop abusing sudo
+    (Trac: #928)
+  * Stop depending on kexec-tools, which hasn't been needed since 2.0.25
+  * Wrap Depends line for easier reading
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 30 Jul 2012 14:44:14 -0400
+
 debathena-reactivate (2.0.37) unstable; urgency=low
 
   * Set the time in reactivate, because NTP apparently can't (Trac: #749)

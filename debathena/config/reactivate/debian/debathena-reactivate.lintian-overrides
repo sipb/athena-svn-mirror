@@ -1,0 +1,2 @@
+# No kidding.
+setuid-binary usr/lib/debathena-reactivate/session-wrapper 4755 root/root
