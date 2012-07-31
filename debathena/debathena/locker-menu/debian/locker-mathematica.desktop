@@ -4,5 +4,5 @@ Comment=Symbolic math and numerical calculation environment (unsupported, limite
 Exec=gathrun math mathematica 
 Terminal=false
 Type=Application
-Icon=gnome-run
+Icon=/usr/share/debathena-locker-menu/mathematica.png
 Categories=Locker;

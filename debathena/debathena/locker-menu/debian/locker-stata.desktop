@@ -4,5 +4,5 @@ Comment=Statistical analysis program
 Exec=gathrun stata xstata-se
 Terminal=false
 Type=Application
-Icon=gnome-run
+Icon=/usr/share/debathena-locker-menu/stata.png
 Categories=Locker;

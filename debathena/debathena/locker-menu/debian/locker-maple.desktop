@@ -4,5 +4,5 @@ Comment=Symbolic math and visualization package (supported)
 Exec=gathrun maple maple.java
 Terminal=false
 Type=Application
-Icon=gnome-run
+Icon=/usr/share/debathena-locker-menu/maple.png
 Categories=Locker;

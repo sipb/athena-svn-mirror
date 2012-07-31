@@ -13,5 +13,5 @@ Comment[it]=Visualizzatore file PDF
 Exec=gathrun acro acroread 
 Terminal=false
 Type=Application
-Icon=gnome-run
+Icon=/usr/share/debathena-locker-menu/acroread.png
 Categories=Locker;

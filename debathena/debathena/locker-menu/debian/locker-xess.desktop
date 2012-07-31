@@ -4,5 +4,5 @@ Comment=Spreadsheet program designed for scientists (supported)
 Exec=gathrun xess
 Terminal=false
 Type=Application
-Icon=gnome-run
+Icon=/usr/share/debathena-locker-menu/xess.png
 Categories=Locker;

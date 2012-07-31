@@ -1,3 +1,12 @@
 #!/usr/bin/make -f
 
 include /usr/share/cdbs/1/rules/debhelper.mk
+
+common-build-indep::
+	mkdir -p $(CURDIR)/icons-nonfree
+	cp /afs/athena.mit.edu/system/athena10/locker-menu-icons/*.png $(CURDIR)/icons-nonfree
+
+clean::
+	rm -rf $(CURDIR)/icons-nonfree
+
+

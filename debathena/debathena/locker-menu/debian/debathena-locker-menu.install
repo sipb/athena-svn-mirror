@@ -3,3 +3,6 @@ debian/Locker.directory usr/share/desktop-directories
 debian/*.desktop usr/share/applications
 debian/plif.png usr/share/debathena-locker-menu
 debian/matlabicon.png usr/share/debathena-locker-menu
+debian/generic-icon.png usr/share/debathena-locker-menu
+icons-nonfree/*.png usr/share/debathena-locker-menu/icons-nonfree
+

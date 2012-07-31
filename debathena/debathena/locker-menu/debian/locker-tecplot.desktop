@@ -4,5 +4,5 @@ Comment=Plotting package designed for engineers and scientists
 Exec=gathrun tecplot 
 Terminal=false
 Type=Application
-Icon=gnome-run
+Icon=/usr/share/debathena-locker-menu/tecplot.png
 Categories=Locker;

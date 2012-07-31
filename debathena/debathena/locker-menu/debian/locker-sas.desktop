@@ -4,5 +4,5 @@ Comment=Statistical analysis program
 Exec=gathrun sas
 Terminal=false
 Type=Application
-Icon=gnome-run
+Icon=/usr/share/debathena-locker-menu/sas.png
 Categories=Locker;

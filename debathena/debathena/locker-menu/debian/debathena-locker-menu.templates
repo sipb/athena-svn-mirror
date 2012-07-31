@@ -1,0 +1,11 @@
+Template: debathena-locker-menu/license
+Type: boolean
+Default: false
+_Description: Do you wish to install icons for the locker menu?
+ This package contains icons for third-party software programs that can
+ be launched via your desktop environment's menu system.  These icons
+ are copyrighted and their distribution is restricted to members of the
+ MIT Community.  If you are not a member of the MIT Community, you may
+ not install these icons.  If you choose not to install these icons, a
+ generic icon will be supplied instead.
+
