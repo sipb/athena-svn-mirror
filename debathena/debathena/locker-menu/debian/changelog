@@ -1,8 +1,9 @@
 debathena-locker-menu (1.8) unstable; urgency=low
 
   * Add an icon for MATLAB (Trac: #581)
+  * Launch maple.java instead of Maple (Trac: #1186)
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 30 Jul 2012 10:28:21 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 31 Jul 2012 10:32:01 -0400
 
 debathena-locker-menu (1.7) unstable; urgency=low
 
