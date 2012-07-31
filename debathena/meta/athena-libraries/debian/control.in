@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-athena-libraries
 Architecture: any
-Recommends: ${debathena-athena-libraries:Recommends}, libgtksourceview1.0-0
+Recommends: ${debathena-athena-libraries:Recommends}, libgtksourceview1.0-0, ia32-libs
 Description: Athena libraries for Debathena
  This package recommends a set of libraries for compatibility with a
  default Athena 9 installation.  When installing this package, include
