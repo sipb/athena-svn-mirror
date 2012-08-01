@@ -197,6 +197,10 @@ class DebathenaGreeter:
         rw = Gdk.get_default_root_window()
         rw.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
         self.noLoginMonitor = Gio.File.new_for_path(self.nologinFile).monitor_file(Gio.FileMonitorFlags.NONE, None)
+        # Check if the file is there right now...
+        if os.path.isfile(self.nologinFile):
+            self.loginNotebook.set_current_page(1)
+        # and then connect
         self.noLoginMonitor.connect("changed", self._file_changed)
 
         if not os.path.exists(KIOSK_LAUNCH_CMD):
