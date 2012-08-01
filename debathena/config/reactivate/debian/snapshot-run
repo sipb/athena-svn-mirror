@@ -25,10 +25,6 @@ session=$(schroot -c login -b)
 cleanup() {
     # Teardown
 
-    # Remove file from above.
-    # (This also gets nuked in reactivate, but be paranoid)
-    rm -f /tmp/ticketenv
-
     for daemon in $daemons; do
 	schr invoke-rc.d "$daemon" stop || [ $? = 100 ]
     done
@@ -63,14 +59,9 @@ schr sed -i "s| /var/lib/schroot/mount/${session}/| /|" /etc/mtab
 
 # Run the session
 #
-# We wrap the target command in sudo because it runs initgroups(3)
-# /after/ being chrooted, which puts users back in the groups we
-# added them to
-
-# Workaround for stupidity, see #928 for details
-# Remove this once we're running pam-afs-session 2.4
-# Run this inside the "set -e" block so it'll fail if necessary
-echo "KRB5CCNAME=$KRB5CCNAME" >| /tmp/ticketenv
+# We used to wrap the target command in sudo to run initgroups, now we
+# ship our own wrapper that does that.  Regardless, this runs /after/
+# being chrooted, which puts users back in the groups we added them to
 
 set +e
 
