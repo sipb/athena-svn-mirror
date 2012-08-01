@@ -6,6 +6,7 @@ Build-Depends: @cdbs@, gdm
 Standards-Version: 3.7.2
 
 Package: debathena-kiosk
+X-Debathena-Build-For: lucid natty precise
 Architecture: all
 Depends: ${misc:Depends}, firefox | iceweasel, metacity, unzip, adduser,
  gdm, python, python-gtk2, python-glade2, python-dbus, sun-java6-plugin | icedtea6-plugin, debathena-bugme (>= 10.0.4-0debathena1~)
