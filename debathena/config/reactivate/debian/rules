@@ -24,8 +24,7 @@ DEB_TRANSFORM_SCRIPT_/etc/pam.d/schroot.debathena = \
 	debian/transform_schroot_pam
 
 # The wrapper does in fact need to be setuid
-DEB_FIXPERMS_EXCLUDE += \
-    usr/lib/debathena-reactivate/session-wrapper
+DEB_DH_FIXPERMS_ARGS = -X/usr/lib/debathena-reactivate/session-wrapper
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/makefile.mk
