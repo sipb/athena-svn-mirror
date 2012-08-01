@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-HAVE_GCCGO = $(shell apt-cache show gccgo 2>/dev/null | grep -q '^Version:' & echo y)
+HAVE_GCCGO = $(shell apt-cache show gccgo 2>/dev/null | grep -q '^Version:' && echo y)
 
 ifeq ($(HAVE_GCCGO),y)
     binary-predeb/debathena-thirdparty-languages::
