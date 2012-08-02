@@ -1,1 +1,2 @@
 debian/usb-hid.py usr/share/debathena-athinfod-cluster-config
+debian/debathena-athinfod-cluster-config.defs etc/athena/athinfo.defs.d

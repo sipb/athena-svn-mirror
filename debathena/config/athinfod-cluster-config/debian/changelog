@@ -1,8 +1,11 @@
-debathena-athinfod-cluster-config (1.6) UNRELEASED; urgency=low
+debathena-athinfod-cluster-config (1.6) unstable; urgency=low
 
   * Bump debian/compat to 6
+  * Depend on new athinfod with query snippet support and stop diverting
+    the conffile
+  * Bump Standards-Version
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:39 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 02 Aug 2012 17:10:25 -0400
 
 debathena-athinfod-cluster-config (1.5) unstable; urgency=low
 

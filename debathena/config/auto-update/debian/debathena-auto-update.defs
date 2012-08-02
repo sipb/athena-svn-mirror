@@ -1,0 +1,3 @@
+update-schedule	 cat /etc/cron.d/athena-auto-update 
+upgrade-schedule cat /etc/cron.d/athena-auto-upgrade
+update-status	 cat /var/lib/athena-update-status

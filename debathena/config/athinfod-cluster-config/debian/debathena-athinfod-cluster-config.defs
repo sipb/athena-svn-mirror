@@ -1,17 +1,8 @@
-#!/usr/bin/perl -p0
-# For emacs: -*- mode: fundamental; -*-
-print;
-print <<EOF;
-
 # Added by debathena-athinfod-cluster-config
 update.log	/usr/lib/athinfod/is_cluster && cat /var/log/athena-update
 upgrade.log	/usr/lib/athinfod/is_cluster && cat /var/log/athena-upgrade
-update-status	/usr/lib/athinfod/is_cluster && cat /var/lib/athena-update-status
 in-use		/usr/lib/athinfod/is_cluster && (test `pgrep -c larvnet-wrapper` -gt 0 && echo "yes" || echo "no") || echo "n/a"
-update-schedule	/usr/lib/athinfod/is_cluster && cat /etc/cron.d/athena-auto-update /etc/cron.d/athena-auto-upgrade
 install.log	/usr/lib/athinfod/is_cluster && cat /var/log/athena-install.log
 usb-hid		/usr/share/debathena-athinfod-cluster-config/usb-hid.py
 lsusb		/usr/lib/athinfod/is_cluster && lsusb
 dmesg		/usr/lib/athinfod/is_cluster && dmesg
-EOF
-    exit 0;

@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 DEB_DIVERT_EXTENSION = .debathena
-DEB_TRANSFORM_FILES_debathena-athinfod-cluster-config += \
+DEB_UNDIVERT_FILES_debathena-athinfod-cluster-config += \
 	/etc/athena/athinfo.defs.debathena
 
 include /usr/share/cdbs/1/rules/debhelper.mk
