@@ -25,7 +25,7 @@ controls whether the athinfo daemon (see
 .BR athinfod (8))
 will answer requests for a given query.  Blank lines and lines
 beginning with '#' are ignored.  Each line begins with the word
-"enabled" or "disabled" and continues with either a query name or "*"
+"enable" or "disable" and continues with either a query name or "*"
 to match all queries.  A specific match ("enable foo" or "disable foo"
 when the query is "foo") takes priority over a glob match ("enable *"
 or "disable *").  If no lines match the query, then it is disabled (so

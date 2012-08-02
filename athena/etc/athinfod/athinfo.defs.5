@@ -13,11 +13,14 @@
 .\" M.I.T. makes no representations about the suitability of
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
-.TH ATHINFO.DEFS 5 "13 April 1999"
+.TH ATHINFO.DEFS 5 "2 August 2012"
 .SH NAME
 athinfo.defs \- Define athinfo queries
 .SH SYNOPSIS
 .B /etc/athena/athinfo.defs
+
+.B /etc/athena/athinfo.defs.d
+(optional)
 .SH DESCRIPTION
 The file
 .B /etc/athena/athinfo.defs
@@ -28,6 +31,35 @@ consists of a word giving the query name and a command to be executed
 by /bin/sh in response to the query.  The command executed will not
 receive input from the athinfo client.  For security reasons, the
 command should not depend on a network filesystem.
+
+The optional directory
+.B /etc/athena/athinfo.defs.d
+may contain query snippet files, whose filenames must end in
+.I .defs\fP.  The format is identical to the
+.I athinfo.defs
+file.  Queries listed in 
+.I athinfo.defs
+will always override queries in these files.  In the event of two files
+providing the same query name, the file which sorts first (using
+alphasort() from scandir(3)) will be used.  The directory need not be
+present, but if it is present, it (and all files in it) must be readable
+by the user as which athinfod runs, or athinfod will generate an error.
+.SH BUGS
+Actually, when parsing files in 
+.B athinfo.defs.d
+athinfod will only generate an error if attempts to read an unreadable
+file.  If it finds the query in question in a readable file before
+encountering an unreadable one, no error will be generated.  Users with
+an overly paranoid umask who routinely edit the query definition files
+as root should consider checking the file permissions after making
+changes.
+
+If you create a
+.I .defs
+file in
+.B /etc/athena/athinfo.defs.d
+whose full pathname (including the directory) exceeds PATH_MAX, it will
+not be parsed and will be silently skipped.  Don't do that.
 .SH EXAMPLE
 The following example defines two queries, one to display the routing
 table and another to display the rc.conf file.

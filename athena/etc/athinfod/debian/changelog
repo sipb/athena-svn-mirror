@@ -1,8 +1,10 @@
-debathena-athinfod (10.0.0-0debathena18) UNRELEASED; urgency=low
+debathena-athinfod (10.1-0debathena1) unstable; urgency=low
 
   * Bump debian/compat to 6
+  * Support athinfo.defs.d (Trac: #808)
+  * Correct typos in athinfo.access(5)
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:30 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 02 Aug 2012 16:12:48 -0400
 
 debathena-athinfod (10.0.0-0debathena17) unstable; urgency=low
 

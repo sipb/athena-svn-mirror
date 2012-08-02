@@ -24,9 +24,14 @@ static const char rcsid[] = "$Id: athinfod.c,v 1.3 1999-10-19 20:22:56 danw Exp 
 #include <ctype.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <dirent.h>
+#include <fnmatch.h>
+#include <errno.h>
 
 #define PATH_ATHINFO_DEFS "/etc/athena/athinfo.defs"
 #define PATH_ATHINFO_ACCESS "/etc/athena/athinfo.access"
+#define PATH_ATHINFO_DEFS_D "/etc/athena/athinfo.defs.d"
+#define ATHINFO_DEFS_D_WILDCARD "*.defs" /* Files to be read in defs.d */
 
 static const char *read_query(void);
 static void shutdown_input(void);
@@ -100,18 +105,19 @@ static void shutdown_input(void)
     }
 }
 
-/* Read the definition of query from the athinfo.defs file. */
-static const char *get_definition(const char *query)
+/* Read the definition of query from the specified file. */
+static const char *get_definition_from_file(const char *query,
+					    const char *filepath)
 {
   char *line = NULL;
   int linesize;
   FILE *fp;
 
-  fp = fopen(PATH_ATHINFO_DEFS, "r");
+  fp = fopen(filepath, "r");
   if (!fp)
     {
       fprintf(stderr,
-	      "athinfod: cannot open athinfo definitions file, aborting.\n");
+	      "athinfod: cannot open %s (%s), aborting.\n", filepath, strerror(errno));
       exit(1);
     }
 
@@ -129,6 +135,49 @@ static const char *get_definition(const char *query)
     }
 
   fclose(fp);
+  return NULL;
+}
+
+static int defs_file_filter(const struct dirent *entry) 
+{
+  return fnmatch(ATHINFO_DEFS_D_WILDCARD, entry->d_name, 0) == 0;
+}
+
+static const char *get_definition(const char *query)
+{
+  const char *definition;
+  definition = get_definition_from_file(query, PATH_ATHINFO_DEFS);
+  if (definition != NULL)
+    return definition;
+  
+  struct dirent **namelist;
+  int numfiles, i;
+  numfiles = scandir(PATH_ATHINFO_DEFS_D, &namelist, 
+	      defs_file_filter, alphasort);
+  if (numfiles < 0) {
+    if (errno != ENOENT) {
+      fprintf(stderr, "athinfod: %s while scanning %s.\n", 
+	      strerror(errno), PATH_ATHINFO_DEFS_D);
+      exit(1);
+    }
+  } else {
+    for (i = 0; i < numfiles; i++) {
+      int len;
+      char path[PATH_MAX];
+      len = snprintf(path, sizeof(path), "%s/%s", PATH_ATHINFO_DEFS_D,
+		     namelist[i]->d_name);
+      if (len < 0 || len >= (int)sizeof(path))
+	/* Should we print an error here?  I don't think so. */
+	continue;
+      definition = get_definition_from_file(query, path);
+      free(namelist[i]);
+      if (definition != NULL)
+	break;
+    }
+  }
+  free(namelist);
+  if (definition != NULL)
+    return definition;
   fprintf(stderr, "athinfod: unrecognized query.\n");
   exit(0);
 }
