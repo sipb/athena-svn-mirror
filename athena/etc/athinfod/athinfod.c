@@ -170,12 +170,15 @@ static const char *get_definition(const char *query)
 	/* Should we print an error here?  I don't think so. */
 	continue;
       definition = get_definition_from_file(query, path);
-      free(namelist[i]);
       if (definition != NULL)
 	break;
     }
   }
+
+  for (i = 0; i < numfiles; i++)
+    free(namelist[i]);
   free(namelist);
+
   if (definition != NULL)
     return definition;
   fprintf(stderr, "athinfod: unrecognized query.\n");
