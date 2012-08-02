@@ -2,8 +2,9 @@ debathena-msmtp-config (1.9.1) unstable; urgency=low
 
   * Bump debian/compat to 6
   * Send authenticated mail by default (Trac: #1140)
+  * Bump Standards-Version to 3.9.1
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 20 Jul 2012 18:34:03 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 02 Aug 2012 13:41:57 -0400
 
 debathena-msmtp-config (1.9.0) unstable; urgency=low
 
