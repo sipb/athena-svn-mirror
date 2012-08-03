@@ -6,7 +6,7 @@
 
 # Query		Command
 
-queries		cat /etc/athena/athinfo.defs
+queries		cat /etc/athena/athinfo.defs /etc/athena/athinfo.defs.d/*.defs 2>/dev/null 
 uname		uname -a
 machtype	/bin/machtype
 sysname		/bin/machtype -S
