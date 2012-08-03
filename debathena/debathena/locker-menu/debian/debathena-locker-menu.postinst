@@ -19,6 +19,7 @@ set -e
 
 SHAREDIR="/usr/share/debathena-locker-menu"
 ICON_NONFREE_DIR="/usr/share/debathena-locker-menu/icons-nonfree"
+# If you change this list, change it in the postrm too
 ICONS="acroread.png mathematica.png maple.png sas.png stata.png tecplot.png xess.png"
 
 # Source debconf library.
@@ -30,8 +31,9 @@ case "$1" in
 	if [ "$RET" = "true" ]; then
 	    echo "Using real icons for debathena-locker-menu..." >&2
 	    for i in $ICONS; do
-		if ! cp -f "$ICON_NONFREE_DIR/$i" "$SHAREDIR/$i"; then
-		    echo "Can't find real icon for $i, falling back to generic" >&2
+		if [ -f "$ICON_NONFREE_DIR/$i" ] && \
+		    ln -nsf "$ICON_NONFREE_DIR/$i" "$SHAREDIR/$i"; then
+		    echo "Can't find or link real icon for $i, falling back to generic" >&2
  		    ln -nsf "$SHAREDIR/generic-icon.png" "$SHAREDIR/$i"
 		fi
 	    done
