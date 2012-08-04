@@ -28,7 +28,8 @@ CONFIG_DEFAULTS={"minimum_uid": 1,
                  "background_image": "/usr/share/debathena-lightdm-config/background.jpg",
                  "base_logo_file": "/usr/share/debathena-lightdm-config/debathena.png",
                  "extra_logo_frames": 8,
-                 "motd_filename": "/afs/athena.mit.edu/system/config/motd/login.94",
+                 "motd_filename": "/afs/athena.mit.edu/system/config/motd/login.debathena",
+                 "append_codename_to_motd": "true",
                  "time_pedantry": "true"}
 
 # See below, and then go cry.
@@ -62,6 +63,11 @@ class DebathenaGreeter:
             self.timePedantry = config.getboolean('DEFAULT', 'time_pedantry')
 
         try:
+            self.appendCodenameToMotd = config.getboolean('Greeter', 'append_codename_to_motd')
+        except:
+            self.appendCodenameToMotd = config.getboolean('DEFAULT', 'append_codename_to_motd')
+
+        try:
             self.minimumUID = config.getint('Greeter', 'minimum_uid')
         except:
             self.minimumUID = config.getint('DEFAULT', 'minimum_uid')
@@ -81,6 +87,13 @@ class DebathenaGreeter:
         # No need to check these, they get checked later.
         self.backgroundImageFile = config.get('Greeter', 'background_image')
         self.motdFilename = config.get('Greeter', 'motd_filename')
+        if self.appendCodenameToMotd:
+            try:
+                codename = subprocess.Popen(["lsb_release", "-s", "-c"], stdout=subprocess.PIPE).communicate()[0]
+                if codename:
+                    self.motdFilename += "." + codename.strip()
+            except OSError:
+                print >>sys.stderr, "Couldn't append codename to motd_filename.  Oh well..."
         self.nologinFile = config.get('Greeter', 'nologin_file')
         
         # Set up and connect to the greeter
