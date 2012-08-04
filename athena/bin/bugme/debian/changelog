@@ -1,3 +1,10 @@
+debathena-bugme (10.0.5-0debathena1) unstable; urgency=low
+
+  * Support the --corner option (for limited definitions of "corner")
+    (Trac: #1199)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 04 Aug 2012 11:45:05 -0400
+
 debathena-bugme (10.0.4-0debathena2) unstable; urgency=low
 
   * Bump debian/compat to 6

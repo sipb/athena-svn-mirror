@@ -28,6 +28,8 @@ class BugMe:
             self.killTime = 180
         # (foreground, background)
         self.colors = ('black', 'white')
+        defaultScreen = gtk.gdk.screen_get_default()
+        self.monitorGeometry = defaultScreen.get_monitor_geometry(defaultScreen.get_primary_monitor())
         try:
             self.xml = gtk.glade.XML(options.gladeFile)
         except:
@@ -46,8 +48,13 @@ class BugMe:
         self.elapsed_label.set_markup("<span font_desc=\"50\">00:00</span>")
         self.timer = gobject.timeout_add(1000, self.updateTimer)
         self.xml.signal_autoconnect(self)
-        # 26 px should allow room for top panel
-        self.timerWindow.move(0,26)
+        if (options.corner == "NW"):
+            # 26 px should allow room for top panel
+            self.timerWindow.move(0,26)
+        elif (options.corner == "SE"):
+            self.timerWindow.set_gravity(gtk.gdk.GRAVITY_SOUTH_EAST)
+            width, height = self.timerWindow.get_size()
+            self.timerWindow.move(self.monitorGeometry.x + (self.monitorGeometry.width - width), self.monitorGeometry.y + (self.monitorGeometry.height - height))
         self.timerWindow.show_all()
         self.nextWarn = self.startTime + (self.timeLimit - self.firstWarn)
         self.timeExpired = False
@@ -136,7 +143,15 @@ if __name__ == '__main__':
                       dest="gladeFile",
                       default="/usr/share/bugme/bugme.glade",
                       help="Specify an alternate Glade file for debugging")
+    #TODO: --geometry
+    parser.add_option("--corner", action="store", type="string", 
+                      dest="corner",
+                      default="NW",
+                      help="Specify a corner for the timer")
     (options, args) = parser.parse_args()
+    if options.corner not in ("SE", "NW"):
+        print "Sorry, I don't know about the %s corner of the screen" % (options.corner)
+        sys.exit(255)
     if not os.access(options.gladeFile, os.R_OK):
         print 'error: Unable to read glade file "' + gladeFile + '"'
         sys.exit(255)
