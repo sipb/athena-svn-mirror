@@ -272,7 +272,7 @@ loadConfigFile('debsums-changed-files', \%DEBSUMS_CHANGED_FILE_OK);
 
 $checks{'keys'} && checkAptKeys();
 $checks{'sources'} && checkAptSources();
-$checks{'debums'} && debsums();
+$checks{'debsums'} && debsums();
 $checks{'policy'} && checkInstallability();
 close(LOG);
 if ($errors) {

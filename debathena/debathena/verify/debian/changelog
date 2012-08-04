@@ -1,5 +1,5 @@
 debathena-verify (1.0) unstable; urgency=low
 
-  * Initial release.
+  * Initial release (Trac: #410).
 
  -- Jonathan Reed <jdreed@mit.edu>  Fri, 13 Jul 2012 11:07:35 -0400

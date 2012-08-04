@@ -1,0 +1,7 @@
+/var/log/verify_ws.log {
+  rotate 6
+  daily
+  compress
+  missingok
+  notifempty
+}

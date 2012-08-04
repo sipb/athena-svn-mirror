@@ -7,7 +7,7 @@ Standards-Version: 3.9.1
 
 Package: debathena-verify
 Architecture: all
-Depends: ${misc:Depends}
+Depends: debathena-athinfod (>= 10.1-0debathena2~), ${misc:Depends}
 Description: Public workstation verification script
  This package does some periodic verification of public workstations.
  It is intended for workstation using the debathena-cluster
