@@ -1,3 +1,10 @@
+debathena-kiosk (1.4.7) unstable; urgency=low
+
+  * Put bugme in the bottom right of the screen (Trac: #1199)
+  * Bump standards-version
+
+ -- Jonathan Reed <jdreed@mit.edu>  Sat, 04 Aug 2012 11:47:25 -0400
+
 debathena-kiosk (1.4.6) unstable; urgency=low
 
   * Make postinst idempotent (Trac: 770)

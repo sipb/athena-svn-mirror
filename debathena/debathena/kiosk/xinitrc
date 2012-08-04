@@ -69,7 +69,7 @@ cp "$chrome" "$profdir/chrome/userChrome.css" || exit 1
 
 # Launch firefox.
 if [ "$(machtype -q)" = "quickstation" ] && [ -x /usr/bin/bugme ]; then
-    bugme --fatal firefox
+    bugme --fatal --corner SE firefox
 else
     firefox
 fi
