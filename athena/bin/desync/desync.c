@@ -34,6 +34,7 @@ static const char rcsid[] = "$Id: desync.c,v 1.9 2000-09-30 21:08:32 rbasch Exp 
 #include <errno.h>
 #include <unistd.h>
 #include <time.h>
+#include <limits.h>
 
 extern int optind;
 extern char *optarg;
@@ -46,7 +47,7 @@ static void usage(void);
 
 int main(int argc, char **argv)
 {
-  const char *timefile = NULL, *hostname = NULL;
+  const char *timefile = NULL, *hostname = NULL, *crontabhour = NULL;
   char buf[128];
   int range, interval, c, noop = 0;
   unsigned long tval;
@@ -57,7 +58,7 @@ int main(int argc, char **argv)
   progname = argv[0];
 
   /* Parse command-line flags. */
-  while ((c = getopt(argc, argv, "h:nt:")) != -1)
+  while ((c = getopt(argc, argv, "h:nc:t:")) != -1)
     {
       switch (c) {
       case 'h':
@@ -65,6 +66,9 @@ int main(int argc, char **argv)
 	break;
       case 'n':
 	noop = 1;
+	break;
+      case 'c':
+	crontabhour = optarg;
 	break;
       case 't':
 	timefile = optarg;
@@ -75,10 +79,24 @@ int main(int argc, char **argv)
       }
     }
 
+  if (crontabhour && ((timefile != NULL) || (noop == 1))) {
+    usage();
+    return 2;
+  }
   /* Get the time interval from the remaining argument, if there is one. */
   argc -= optind;
   argv += optind;
-  range = (argc == 1) ? atoi(argv[0]) : 3600;
+  if ((argc > 1) && ! crontabhour) {
+    usage();
+    return 2;
+  }
+  if (argc >= 1) {
+    range = atoi(argv[0]);
+    argc -= 1;
+    argv += 1;
+  } else {
+    range = 3600;
+  }
   if (range == 0)
     {
       fprintf(stderr, "%s: Invalid range value\n", progname);
@@ -155,6 +173,35 @@ int main(int argc, char **argv)
 	  return 1;
 	}
     }
+  else if (crontabhour)
+    {
+      char *endptr;
+      int mins, hours = 0;
+      int j;
+      errno = 0;
+      hours = strtol(crontabhour, &endptr, 10);
+      if ((errno == ERANGE && (hours == LONG_MAX || hours == LONG_MIN))
+	  || (errno != 0 && hours == 0)
+	  || (endptr == crontabhour))
+	{
+	  fprintf(stderr, "%s: Could not convert %s to integer\n", progname,
+		  crontabhour);
+	return 1;
+      }
+      if ((hours > 23) || (hours < 0 ))
+	{
+	  fprintf(stderr, 
+		  "%s: in crontab mode, hours must be between 0 and 23\n",
+		  progname);
+	return 1;
+      }
+      mins = interval % 60;
+      hours = (hours + (interval / 60)) % 24;
+      printf("%d %d * * *", mins, hours);
+      for (j = 0; j < argc; j++)
+	printf(" %s", argv[j]);
+      printf("\n");
+    }
   else if (noop)
     printf("%lu\n", (unsigned long) interval);
   else
@@ -187,6 +234,6 @@ static unsigned long get_hash(const char *str)
 static void usage()
 {
   fprintf(stderr,
-	  "Usage: %s [-h name] [-n] [-t timefile] [range]\n",
-	  progname);
+	  "Usage: %s [-h name] [-n] [-t timefile] [range]\n       %s [-c hour] [range] [crontab arguments]\n",
+	  progname, progname);
 }

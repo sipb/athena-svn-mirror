@@ -14,7 +14,7 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH DESYNC 1 "5 March 1997"
+.TH DESYNC 1 "3 August 2012"
 .SH NAME
 desync \- desynchronize timed jobs on networks
 .SH SYNOPSIS
@@ -22,6 +22,11 @@ desync \- desynchronize timed jobs on networks
 [
 .B \-t
 timefile ] [ range ]
+
+.B desync 
+[ 
+.B \-c 
+hours ] [ range ] [ other arguments ]
 .SH DESCRIPTION
 .I desync
 is a tool which sleeps a random (hostname seeded) period of time (up
@@ -83,7 +88,7 @@ takes no action and exits with status 1.  If
 .I timefile
 exists and the current time is equal to or greater than the time value
 listed in
-.IR timefile ,
+q.IR timefile ,
 then
 .I desync
 unlinks
@@ -99,6 +104,28 @@ the following form:
 	fi
 .fi
 
+.TP 8
+.B \-c hours
+This option changes the behavior of
+.I desync
+and causes it to generate output suitable for use in a crontab file.
+This is useful on modern Linux distributions, where sleeping for
+extended periods inside a cron job can confuse power management software
+or packages such as ConsoleKit, and running a cron job every 5 minutes
+to see if desync thinks it is "time to run" is undesirable.  Since
+desync will generate the same value each time on the same machine, it is
+fine to generate crontab files in a package's post-install script, for
+example.  In this mode, desync will output the crontab fields and then
+any additional arguments you supply.  So to generate a crontab with a
+randomized job, one might do something like this:
+
+.nf
+	for i in 2 4 8 14 20; do
+	    desync -c $i 120 root /etc/athena/update_ws >> /etc/cron.d/update
+	done
+.fi
+
+
 .SH SEE ALSO
 cron(8)
 .SH AUTHOR
@@ -106,4 +133,6 @@ Craig Fields, MIT Information Systems
 .br
 Greg Hudson, MIT Information Systems
 .br
-Copyright (c) 1995, 1996, 1997, Massachusetts Institute of Technology
+Debathena Project
+.br
+Copyright (c) 1995, 1996, 1997, 2012 Massachusetts Institute of Technology

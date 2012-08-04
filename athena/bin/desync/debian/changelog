@@ -1,8 +1,9 @@
-debathena-desync (10.0.0-0debathena3) UNRELEASED; urgency=low
+debathena-desync (10.1-0debathena1) unstable; urgency=low
 
   * Bump debian/compat to 6
+  * Add -c option to generate crontab output (Trac: #1173)
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:32 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 03 Aug 2012 23:26:43 -0400
 
 debathena-desync (10.0.0-0debathena2) unstable; urgency=low
 
