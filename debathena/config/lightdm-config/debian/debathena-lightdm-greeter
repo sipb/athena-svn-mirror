@@ -90,7 +90,7 @@ class DebathenaGreeter:
         if self.appendCodenameToMotd:
             try:
                 codename = subprocess.Popen(["lsb_release", "-s", "-c"], stdout=subprocess.PIPE).communicate()[0]
-                if codename:
+                if codename and os.path.exists(self.motdFilename + "." + codename.strip()):
                     self.motdFilename += "." + codename.strip()
             except OSError:
                 print >>sys.stderr, "Couldn't append codename to motd_filename.  Oh well..."
