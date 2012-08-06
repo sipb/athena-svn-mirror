@@ -234,6 +234,6 @@ static unsigned long get_hash(const char *str)
 static void usage()
 {
   fprintf(stderr,
-	  "Usage: %s [-h name] [-n] [-t timefile] [range]\n       %s [-c hour] [range] [crontab arguments]\n",
+	  "Usage: %s [-h name] [-n] [-t timefile] [range]\n       %s -c hour [range] [crontab arguments]\n",
 	  progname, progname);
 }
