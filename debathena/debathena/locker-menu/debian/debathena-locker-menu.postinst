@@ -31,8 +31,8 @@ case "$1" in
 	if [ "$RET" = "true" ]; then
 	    echo "Using real icons for debathena-locker-menu..." >&2
 	    for i in $ICONS; do
-		if [ -f "$ICON_NONFREE_DIR/$i" ] && \
-		    ln -nsf "$ICON_NONFREE_DIR/$i" "$SHAREDIR/$i"; then
+		if ! [ -f "$ICON_NONFREE_DIR/$i" ] || \
+		    ! ln -nsf "$ICON_NONFREE_DIR/$i" "$SHAREDIR/$i"; then
 		    echo "Can't find or link real icon for $i, falling back to generic" >&2
  		    ln -nsf "$SHAREDIR/generic-icon.png" "$SHAREDIR/$i"
 		fi
