@@ -1,3 +1,13 @@
+debathena-locker (1.2) unstable; urgency=low
+
+  * Sigh.  Depend on a specific version of libperl4-corelibs-perl, because
+    upstream decided it was a good idea for perl-modules to Provide: this
+    package in the interim.  In theory, we don't care, and things will
+    work when Ubuntu actually drops perl4 support, but in reality, it
+    causes confusing errors for users.  (Trac: #1188)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 07 Aug 2012 15:58:15 -0400
+
 debathena-locker (1.1) unstable; urgency=low
 
   * Depend on libperl4-corelibs-perl if it exists (Trac: #1188)
