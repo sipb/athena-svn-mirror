@@ -95,9 +95,10 @@ int main(int argc, char **argv)
     argc -= 1;
     argv += 1;
   } else {
-    range = 3600;
+    range = crontabhour == NULL ? 3600 : 60;
   }
-  if (range == 0)
+  if ((range == 0) ||
+      (crontabhour && (range >= 1440)))
     {
       fprintf(stderr, "%s: Invalid range value\n", progname);
       usage();
@@ -234,6 +235,6 @@ static unsigned long get_hash(const char *str)
 static void usage()
 {
   fprintf(stderr,
-	  "Usage: %s [-h name] [-n] [-t timefile] [range]\n       %s -c hour [range] [crontab arguments]\n",
+	  "Usage: %s [-h name] [-n] [-t timefile] [range]\n       %s -c hour [range [crontab arguments]]\n",
 	  progname, progname);
 }

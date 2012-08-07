@@ -24,7 +24,7 @@ desync \- desynchronize timed jobs on networks
 timefile ] [ range ]
 
 .B desync -c
-hours [ range ] [ other arguments ]
+hours [ range [ other arguments ] ]
 .SH DESCRIPTION
 .I desync
 is a tool which sleeps a random (hostname seeded) period of time (up
@@ -44,7 +44,8 @@ in a crontab file.
 .TP 8
 .B range
 This optional range specifies, in seconds, the maximum value for the
-randomly selected sleep time.  The default value is 3600.
+randomly selected sleep time.  The default value is 3600 (except in
+"crontab" mode, see below).
 .TP 8
 .B \-h name
 Use
@@ -106,16 +107,20 @@ the following form:
 .B \-c hours
 This option changes the behavior of
 .I desync
-and causes it to generate output suitable for use in a crontab file.
-This is useful on modern Linux distributions, where sleeping for
-extended periods inside a cron job can confuse power management software
-or packages such as ConsoleKit, and running a cron job every 5 minutes
-to see if desync thinks it is "time to run" is undesirable.  Since
-desync will generate the same value each time on the same machine, it is
-fine to generate crontab files in a package's post-install script, for
-example.  In this mode, desync will output the crontab fields and then
-any additional arguments you supply.  So to generate a crontab with a
-randomized job, one might do something like this:
+and causes it to generate output suitable for use in a crontab file.  It
+also changes the units of 
+.I range
+to minutes (from seconds), changes the default value to 60 and enforces
+a maximum value of 1439.  This is useful on modern Linux distributions,
+where sleeping for extended periods inside a cron job can confuse power
+management software or packages such as ConsoleKit, and running a cron
+job every 5 minutes to see if desync thinks it is "time to run" is
+undesirable.  Since desync will generate the same value each time on the
+same machine, it is fine to generate crontab files in a package's
+post-install script, for example.  In this mode, desync will output the
+crontab fields and then any additional arguments you supply.  So to
+generate a crontab with a randomized job, one might do something like
+this:
 
 .nf
 	for i in 2 4 8 14 20; do
