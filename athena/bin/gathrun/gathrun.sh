@@ -4,6 +4,10 @@
 # gathrun - Run a program, or put up an error dialog saying that it
 # doesn't exist.
 
+# Set sane values
+export ATHENA_SYS=${ATHENA_SYS:-$(machtype -S)}
+export ATHENA_SYS_COMPAT=${ATHENA_SYS_COMPAT:-$(machtype -C)}
+
 case $# in
 0)
   echo "Usage: gathrun locker [program [args ...]]" >&2
