@@ -161,8 +161,8 @@ if [ -r "$cinfo" ] && ( [ ! -e "$slist" ] || [ -w "$slist" ] ); then
      case $APT_RELEASE in
        production)  ;;
        proposed)    echo "$dsource" | awk '$3 !~ /-/ {$3 = $3 "-proposed"; print}' ;;
-       development) echo "$dsource" | awk '$3 != /-/ {$3 = $3 "-proposed"; print}'
-                    echo "$dsource" | awk '$3 != /-/ {$3 = $3 "-development"; print}' ;;
+       development) echo "$dsource" | awk '$3 !~ /-/ {$3 = $3 "-proposed"; print}'
+                    echo "$dsource" | awk '$3 !~ /-/ {$3 = $3 "-development"; print}' ;;
      esac
     ) > $slist
   else
