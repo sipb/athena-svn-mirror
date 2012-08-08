@@ -2,8 +2,9 @@ debathena-gathrun (10.1-0debathena1) unstable; urgency=low
 
   * Bump debian/compat to 6
   * Ensure ATHENA_SYS and ATHENA_SYS_COMPAT are set (Trac: #1205)
+  * Depend on debathena-machtype for above change
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 07 Aug 2012 12:54:22 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 07 Aug 2012 20:12:15 -0400
 
 debathena-gathrun (10.0.0-0debathena1) unstable; urgency=low
 

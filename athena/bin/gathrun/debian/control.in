@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-gathrun
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-attachandrun, zenity
+Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-attachandrun, zenity, debathena-machtype
 Description: An Athena utility to run GUI programs out of lockers from a menu
  The gathrun utility allows a user to run a program from a specified
  locker.  If the program does not exist, a dialog box is displayed
