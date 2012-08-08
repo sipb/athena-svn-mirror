@@ -22,13 +22,10 @@ set -e
 
 case "$1" in
     configure)
-	if hash invoke-rc.d; then
-	    invoke-rc.d dnsmasq restart
-	    invoke-rc.d debathena-dns-config restart
-	else
-	    /etc/init.d/dnsmasq restart
-	    /etc/init.d/debathena-dns-config restart
-	fi
+	# Don't try to figure out what the network config is, because
+	# it's more complicated than we think.  Just reboot.
+        if [ -x /usr/share/update-notifier/notify-reboot-required ]; then
+            /usr/share/update-notifier/notify-reboot-required
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
