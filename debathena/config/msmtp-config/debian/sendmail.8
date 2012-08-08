@@ -1,4 +1,4 @@
-.TH SENDMAIL 8 "11 March 2010" "debathena-msmtp-mta" "Athena Electronic Mail"
+.TH SENDMAIL 8 "8 August 2012" "debathena-msmtp-mta" "Athena Electronic Mail"
 .SH NAME
 sendmail \- A script which invokes msmtp in order to send mail
 .SH SYNOPSIS
@@ -11,8 +11,8 @@ sends a message to one or more recipients.  Flags and addresses are
 passed to msmtp, which is invoked with the requisite options.  The
 message is sent authenticated, and will fail if tickets are not
 available.  Fallback to unauthenticated SMTP can be permitted by setting
-the variable \fIDEBATHENA_SENDMAIL_AUTH\fP to "fallback".  If
-authentication is forced, but no valid Kerberos tickets can be found to
+the variable \fIDEBATHENA_SENDMAIL_AUTH\fP to "fallback".  If fallback
+mode is not enabled and no valid Kerberos tickets can be found to
 authenticate the user, the script will exit with status 1.  See mstmp(1)
 for possible values for \fIflags\fP.
 

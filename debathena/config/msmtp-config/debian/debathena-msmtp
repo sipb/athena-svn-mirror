@@ -78,7 +78,7 @@ if ($kuser) {
 }
 elsif ($want_auth ne 'fallback') {
     $! = 1;
-    die "Could not find valid ATHENA.MIT.EDU Kerberos tickets.\n";
+    die "Could not find valid ATHENA.MIT.EDU Kerberos tickets.\n(Do you need to run 'renew'?)\n";
 }
 else {
     #send unauth

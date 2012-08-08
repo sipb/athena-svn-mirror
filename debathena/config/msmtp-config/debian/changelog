@@ -1,3 +1,10 @@
+debathena-msmtp-config (1.9.2) unstable; urgency=low
+
+  * Man page cleanup
+  * Remind users how to renew tickets
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 08 Aug 2012 10:27:26 -0400
+
 debathena-msmtp-config (1.9.1) unstable; urgency=low
 
   * Bump debian/compat to 6
