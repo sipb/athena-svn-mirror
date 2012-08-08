@@ -7,6 +7,7 @@ DEB_DIVERT_FILES_debathena-reactivate += \
 DEB_TRANSFORM_FILES_debathena-reactivate += \
 	/etc/pam.d/su.debathena \
 	/etc/default/schroot.debathena \
+	/etc/pam.d/schroot.debathena \
 	/etc/dbus-1/system.conf.debathena
 DEB_REMOVE_FILES_debathena-reactivate += \
 	/etc/xdg/autostart/jockey-gtk.desktop \
@@ -14,11 +15,13 @@ DEB_REMOVE_FILES_debathena-reactivate += \
 	/etc/xdg/autostart/nm-applet.desktop
 
 DEB_UNDIVERT_FILES_debathena-reactivate += \
-	/etc/pam.d/schroot.debathena \
 	/etc/pam.d/sudo.debathena
+DEB_UNDIVERT_VERSION_/etc/pam.d/sudo.debathena = 1.25.2~
 
 DEB_TRANSFORM_SCRIPT_/etc/default/schroot.debathena = \
 	debian/transform_schroot_defaults
+DEB_TRANSFORM_SCRIPT_/etc/pam.d/schroot.debathena = \
+	debian/transform_schroot_pam
 
 # The wrapper does in fact need to be setuid
 DEB_DH_FIXPERMS_ARGS = -X/usr/lib/debathena-reactivate/session-wrapper

@@ -1,3 +1,9 @@
+debathena-reactivate (2.0.39) unstable; urgency=low
+
+  * Yes, the pam_env hack is still needed.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 08 Aug 2012 14:33:36 -0400
+
 debathena-reactivate (2.0.38) unstable; urgency=low
 
   * Ship a session wrapper that runs initgroups(3) and stop abusing sudo
