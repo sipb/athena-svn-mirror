@@ -213,6 +213,7 @@ class DebathenaGreeter:
         # Check if the file is there right now...
         if os.path.isfile(self.nologinFile):
             self.loginNotebook.set_current_page(1)
+            self.builder.get_object("lblUpdTime").set_text("Update started at %s" % (time.strftime("%Y-%m-%d %H:%M")))
         # and then connect
         self.noLoginMonitor.connect("changed", self._file_changed)
 

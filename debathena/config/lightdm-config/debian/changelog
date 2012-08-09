@@ -1,3 +1,9 @@
+debathena-lightdm-config (1.6) unstable; urgency=low
+
+  * Populate the update start time correctly
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 09 Aug 2012 13:02:04 -0400
+
 debathena-lightdm-config (1.5) unstable; urgency=low
 
   * Append the codename to the motd filename, if possible
