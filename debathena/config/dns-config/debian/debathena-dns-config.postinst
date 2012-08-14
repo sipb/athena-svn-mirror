@@ -22,10 +22,20 @@ set -e
 
 case "$1" in
     configure)
-	# Don't try to figure out what the network config is, because
-	# it's more complicated than we think.  Just reboot.
-        if [ -x /usr/share/update-notifier/notify-reboot-required ]; then
-            /usr/share/update-notifier/notify-reboot-required
+	if hash invoke-rc.d 2>/dev/null; then
+	    invoke-rc.d dnsmasq restart || true
+	    invoke-rc.d debathena-dns-config restart
+	else
+	    /etc/init.d/dnsmasq restart || true
+	    /etc/init.d/debathena-dns-config restart
+	fi
+	if ! grep -q '^nameserver' /etc/resolv.conf; then
+	    # Don't leave people without a nameserver
+	    /bin/echo -e "nameserver 18.70.0.160\nnameserver 18.71.0.151" | /sbin/resolvconf -a lo.dns-config
+	fi
+	if [ -x /usr/share/update-notifier/notify-reboot-required ]; then
+	    /usr/share/update-notifier/notify-reboot-required
+	fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
