@@ -31,7 +31,7 @@ case "$1" in
 	fi
 	if ! grep -q '^nameserver' /etc/resolv.conf; then
 	    # Don't leave people without a nameserver
-	    /bin/echo -e "nameserver 18.70.0.160\nnameserver 18.71.0.151" | /sbin/resolvconf -a lo.dns-config
+	    cat /usr/share/debathena-dns-config/mit-resolv-conf | /sbin/resolvconf -a lo.dns-config
 	fi
 	if [ -x /usr/share/update-notifier/notify-reboot-required ]; then
 	    /usr/share/update-notifier/notify-reboot-required

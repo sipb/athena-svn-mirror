@@ -7,8 +7,11 @@ debathena-dns-config (1.7) unstable; urgency=low
   * Bump Standards-Version
   * Make initscript LSB-compliant
   * Conflict bind9
+  * Do not build for Hardy anymore
+  * Ship a sample resolv.conf for MIT, and use it if we end up with no
+    nameservers configured at the end of the postinst
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 14 Aug 2012 12:51:04 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 14 Aug 2012 18:31:08 -0400
 
 debathena-dns-config (1.6) unstable; urgency=low
 

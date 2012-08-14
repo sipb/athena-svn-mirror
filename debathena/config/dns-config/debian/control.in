@@ -7,6 +7,7 @@ Standards-Version: 3.9.1
 
 Package: debathena-dns-config
 Architecture: all
+X-Debathena-No-Build: hardy
 Depends: dnsmasq, resolvconf, ${misc:Depends}
 Conflicts: bind9
 Description: Sets up a local caching nameserver using dnsmasq

@@ -1,1 +1,2 @@
 debian/99debathena etc/dnsmasq.d
+debian/mit-resolv-conf usr/share/debathena-dns-config
