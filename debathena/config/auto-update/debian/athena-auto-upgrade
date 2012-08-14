@@ -222,7 +222,7 @@ if [ -n "$NETMASK" ] && [ -n "$GATEWAY" ]; then
   knetinfo="netcfg/get_hostname=$(hostname) \
             $nodhcp \
             netcfg/get_domain=mit.edu \
-            netcfg/get_nameservers=\"18.72.0.3 18.70.0.160\"\
+            netcfg/get_nameservers=\"18.72.0.3 18.71.0.151 18.70.0.160\"\
             netcfg/get_ipaddress=$IPADDR \
             netcfg/get_netmask=$NETMASK \
             netcfg/get_gateway=$GATEWAY \
