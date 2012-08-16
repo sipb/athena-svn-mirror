@@ -1,8 +1,10 @@
 debathena-kiosk (1.4.8) unstable; urgency=low
 
   * Build-dep on debathena-gdm
+  * And remove GDM version conditionals in debian/rules, we no longer need
+    to support old-gdm
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 16 Aug 2012 15:25:47 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 16 Aug 2012 17:06:47 -0400
 
 debathena-kiosk (1.4.7) unstable; urgency=low
 

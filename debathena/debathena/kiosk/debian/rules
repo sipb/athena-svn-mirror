@@ -1,11 +1,7 @@
 #!/usr/bin/make -f
 
-GDM_VERSION = $(shell dpkg-query --showformat='$${Version}' --show gdm)
-NEW_GDM = $(shell dpkg --compare-versions $(GDM_VERSION) ge '2.25.2~' && echo y)
-
 include /usr/share/cdbs/1/rules/debhelper.mk
 
-ifeq ($(NEW_GDM),y)
-    install/debathena-kiosk::
+install/debathena-kiosk::
 	dh_install debian/debathena-kiosk.desktop usr/share/gdm/autostart/LoginWindow
-endif
+
