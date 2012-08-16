@@ -62,6 +62,37 @@ cleanup_old_diversion() {
     fi
 }
 	
+if dpkg-maintscript-helper supports rm_conffile 2> /dev/null; then
+    dpkg-maintscript-helper rm_conffile /etc/athena/sudo-error 2.0.39 -- "$@"
+    dpkg-maintscript-helper rm_conffile /etc/athena/su-error 2.0.39 -- "$@"
+else
+    # From http://wiki.debian.org/DpkgConffileHandling
+    rm_conffile() {
+	local PKGNAME="$1"
+	local CONFFILE="$2"
+	
+	[ -e "$CONFFILE" ] || return 0
+	
+	local md5sum="$(md5sum $CONFFILE | sed -e 's/ .*//')"
+	local old_md5sum="$(dpkg-query -W -f='${Conffiles}' $PKGNAME | \
+            sed -n -e "\' $CONFFILE ' { s/ obsolete$//; s/.* //; p }")"
+	if [ "$md5sum" != "$old_md5sum" ]; then
+            echo "Obsolete conffile $CONFFILE has been modified by you."
+            echo "Saving as $CONFFILE.dpkg-bak ..."
+            mv -f "$CONFFILE" "$CONFFILE".dpkg-bak
+	else
+            echo "Removing obsolete conffile $CONFFILE ..."
+            mv -f "$CONFFILE" "$CONFFILE".dpkg-del
+	fi
+    }
+    case "$1" in
+	install|upgrade)
+	    if dpkg --compare-versions "$2" le-nl 2.0.39; then
+		rm_conffile debathena-reactivate "/etc/athena/sudo-error"
+		rm_conffile debathena-reactivate "/etc/athena/su-error"
+	    fi
+    esac
+fi
 
 case "$1" in
     install|upgrade)

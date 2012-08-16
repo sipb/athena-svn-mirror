@@ -68,6 +68,26 @@ cleanup_old_diversion() {
 
 . /usr/lib/debathena-cupsys-config/restart-cups.sh
 
+if dpkg-maintscript-helper supports rm_conffile 2> /dev/null; then
+    dpkg-maintscript-helper rm_conffile /etc/athena/sudo-error 2.0.39 -- "$@"
+    dpkg-maintscript-helper rm_conffile /etc/athena/su-error 2.0.39 -- "$@"
+else
+    # From http://wiki.debian.org/DpkgConffileHandling
+    rm_conffile() {
+        local PKGNAME="$1" # Unused
+        local CONFFILE="$2"
+        if [ -f "$CONFFILE".dpkg-del ]; then
+            rm -f "$CONFFILE".dpkg-del
+        fi
+    }
+    case "$1" in
+        configure)
+	    if dpkg --compare-versions "$2" le-nl 2.0.39; then
+		rm_conffile debathena-reactivate "/etc/athena/sudo-error"
+		rm_conffile debathena-reactivate "/etc/athena/su-error"
+	    fi
+    esac
+fi
 
 case "$1" in
     configure)
@@ -78,8 +98,8 @@ case "$1" in
         done
         cat >>/etc/sudoers <<EOF
 ### BEGIN debathena-reactivate
-Defaults lecture_file=/etc/athena/sudo-error, lecture=always
 Defaults:%admin lecture_file=/etc/athena/sudo-warning, lecture=once
+Defaults:%sudo lecture_file=/etc/athena/sudo-warning, lecture=once
 ### END debathena-reactivate
 EOF
 

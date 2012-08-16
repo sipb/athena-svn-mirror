@@ -1,3 +1,13 @@
+debathena-reactivate (2.0.40) unstable; urgency=low
+
+  * Cleanup from r24057, where we had to special-case quickstations via
+    su-error and sudo-error, and cleanup those conffiles in a Debian-esque
+    way
+  * Add a trailing NUL to the end of sudo-warning to workaround a bug
+    in sudo 1.8.3p1 (fixed upstream, but not in Precise)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 16 Aug 2012 13:23:17 -0400
+
 debathena-reactivate (2.0.39) unstable; urgency=low
 
   * Yes, the pam_env hack is still needed.

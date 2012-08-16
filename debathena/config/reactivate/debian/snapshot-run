@@ -44,8 +44,6 @@ for group in $addgroups; do
     schr env NSS_NONLOCAL_IGNORE=ignore getent group "$group" >/dev/null 2>&1 && schr adduser "$USER" "$group"
 done
 
-schr sed -i "/su-error/d" "/etc/pam.d/su.debathena"
-
 schr touch /ClusterLogin
 
 for daemon in $daemons; do
@@ -63,9 +61,8 @@ schr sed -i "s| /var/lib/schroot/mount/${session}/| /|" /etc/mtab
 
 # Run the session
 #
-# We wrap the target command in sudo because it runs initgroups(3)
-# /after/ being chrooted, which puts users back in the groups we
-# added them to
+# We wrap the target command in a session-wrapper so that it can run
+# initgroups(3), which puts users back in the groups we added them to
 
 # Workaround for stupidity, see #928 for details
 # Remove this once we're running pam-afs-session 2.4
