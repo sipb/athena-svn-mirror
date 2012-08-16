@@ -87,13 +87,6 @@ class DebathenaGreeter:
         # No need to check these, they get checked later.
         self.backgroundImageFile = config.get('Greeter', 'background_image')
         self.motdFilename = config.get('Greeter', 'motd_filename')
-        if self.appendCodenameToMotd:
-            try:
-                codename = subprocess.Popen(["lsb_release", "-s", "-c"], stdout=subprocess.PIPE).communicate()[0]
-                if codename and os.path.exists(self.motdFilename + "." + codename.strip()):
-                    self.motdFilename += "." + codename.strip()
-            except OSError:
-                print >>sys.stderr, "Couldn't append codename to motd_filename.  Oh well..."
         self.nologinFile = config.get('Greeter', 'nologin_file')
         
         # Set up and connect to the greeter
@@ -198,6 +191,9 @@ class DebathenaGreeter:
         self.winLogin.show()
         self.initBackgroundWindow()
         self.initBrandingWindow()
+        self.afsMonitor = Gio.File.new_for_path("/afs/athena").monitor_directory(Gio.FileMonitorFlags.WATCH_MOUNTS, None)
+        self.afsAvailable = os.path.isdir("/afs/athena")
+        self.afsMonitor.connect("changed", self.afsStatusChanged)
         self.initMotdWindow()
         # Connect Gtk+ signal handlers
         self.builder.connect_signals(handlers)
@@ -225,6 +221,13 @@ class DebathenaGreeter:
     def initMotdWindow(self):
         self.winMotd = self.builder.get_object("winMotd")
         motdFile=None
+        if self.appendCodenameToMotd:
+            try:
+                codename = subprocess.Popen(["lsb_release", "-s", "-c"], stdout=subprocess.PIPE).communicate()[0]
+                if codename and os.path.exists(self.motdFilename + "." + codename.strip()):
+                    self.motdFilename += "." + codename.strip()
+            except OSError:
+                print >>sys.stderr, "Couldn't get codename to append to motd_filename.  Oh well..."
         try:
             motdFile = open(self.motdFilename, "r")
         except IOError, e:
@@ -379,6 +382,14 @@ class DebathenaGreeter:
             self.gtkSettings.set_property('gtk-theme-name', self.origTheme)
 
 
+    def afsStatusChanged(self, monitor, file1, file2, evt_type):
+        if evt_type == Gio.FileMonitorEvent.CREATED:
+            if not self.winMotd.get_property("visible"):
+                self.initMotdWindow()
+            self.afsAvailable = True
+        if evt_type == Gio.FileMonitorEvent.UNMOUNTED:
+            self.afsAvailable = False
+
     def _file_changed(self, monitor, file1, file2, evt_type):
         if evt_type == Gio.FileMonitorEvent.CREATED:
             self.loginNotebook.set_current_page(1)
@@ -492,6 +503,10 @@ class DebathenaGreeter:
             # There's probably a better way
             if passwd.pw_uid < self.minimumUID:
                 self.errDialog("Logging in as '%s' disallowed by configuation" % (currUser))
+                self.startOver()
+                return True
+            if not self.afsAvailable and (passwd.pw_dir.startswith("/mit") or passwd.pw_dir.startswith("/afs")):
+                self.errDialog("Your AFS home directory does not appear to be available.  This may indicate a problem with this workstation, or with the AFS servers.  Please try another workstation.")
                 self.startOver()
                 return True
 
@@ -657,7 +672,6 @@ if __name__ == '__main__':
     # in any calls
     config.readfp(io.BytesIO("[Greeter]\n"))
     config.read(options.config_file)
-    print >>sys.stderr, config.get('Greeter', 'time_PEDANTRY')
     Gtk.init(None);
     main_loop = GObject.MainLoop ()
     dagreeter = DebathenaGreeter(options, config)
