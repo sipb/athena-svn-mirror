@@ -1,8 +1,9 @@
 debathena-pam-config (1.21) unstable; urgency=low
 
   * Build-dep on debathena-gdm
+  * And actually transform /etc/pam.d/gdm3 correctly
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 16 Aug 2012 15:27:32 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 16 Aug 2012 16:35:06 -0400
 
 debathena-pam-config (1.20) unstable; urgency=low
 

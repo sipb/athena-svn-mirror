@@ -23,6 +23,13 @@ ifeq ($(pam_auth_update),)
     endif
 endif
 
+ifneq ($(wildcard /etc/pam.d/gdm3),)
+    PAM_GDM = /etc/pam.d/gdm3.debathena
+    DEB_TRANSFORM_SCRIPT_$(PAM_GDM) = debian/transform_gdm.debathena
+else
+    PAM_GDM = /etc/pam.d/gdm.debathena
+endif
+
 ifneq ($(wildcard /etc/pam.d/sshd),)
     PAM_SSHD = /etc/pam.d/sshd.debathena
     DEB_TRANSFORM_SCRIPT_$(PAM_SSHD) = debian/transform_ssh.debathena
@@ -31,7 +38,7 @@ else
 endif
 
 DEB_TRANSFORM_FILES_debathena-pam-config += \
-	/etc/pam.d/gdm.debathena \
+	$(PAM_GDM) \
 	$(PAM_SSHD) \
 	/etc/pam.d/login.debathena
 
