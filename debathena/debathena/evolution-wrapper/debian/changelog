@@ -1,8 +1,9 @@
-debathena-evolution-wrapper (10.0.11) UNRELEASED; urgency=low
+debathena-evolution-wrapper (10.0.11) unstable; urgency=low
 
   * Bump debian/compat to 6
+  * Depend on Evolution
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:43 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 16 Aug 2012 10:48:38 -0400
 
 debathena-evolution-wrapper (10.0.10) unstable; urgency=low
 

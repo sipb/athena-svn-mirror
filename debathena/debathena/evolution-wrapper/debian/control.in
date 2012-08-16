@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: debathena-evolution-wrapper
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, libgnome2-gconf-perl
+Depends: ${shlibs:Depends}, ${misc:Depends}, libgnome2-gconf-perl, evolution
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Wrapper to configure Evolution for Debathena
