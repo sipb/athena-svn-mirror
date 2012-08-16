@@ -10,5 +10,5 @@ if [ "$DEBATHENA_HOME_TYPE" = "afs" ] && hesinfo "$USER" pobox | egrep -q "^POP 
     fi
     exec "$browser" http://owa.mit.edu/
 else
-    exec evolution --component=mail
+    exec evolution
 fi
