@@ -2,7 +2,7 @@ Source: debathena-pam-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, libpam-runtime, gdm, debathena-ssh-server, lsb-release, krb5-clients
+Build-Depends: @cdbs@, libpam-runtime, debathena-gdm, debathena-ssh-server, lsb-release, krb5-clients
 Standards-Version: 3.9.1
 
 Package: debathena-pam-config

@@ -2,7 +2,7 @@ Source: debathena-kiosk
 Section: debathena/web
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, gdm
+Build-Depends: @cdbs@, debathena-gdm
 Standards-Version: 3.9.1
 
 Package: debathena-kiosk
