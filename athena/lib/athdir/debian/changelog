@@ -1,3 +1,10 @@
+debathena-libathdir (10.0.2-0debathena4) unstable; urgency=low
+
+  * Do not permit builds unless both ATHENA_HOSTTYPE and ATHENA_SYS are
+    set (Trac: #1204)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 16 Aug 2012 18:52:12 -0400
+
 debathena-libathdir (10.0.2-0debathena3) unstable; urgency=low
 
   * Stop forcing SHELL to /bin/sh in Makefile.in, since this breaks
