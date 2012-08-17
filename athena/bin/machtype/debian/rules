@@ -28,7 +28,14 @@ endif
 # chronological order, e.g., Debian 6.0 released before Ubuntu 11.04,
 # but after its DebianImportFreeze.)
 
+ifeq ($(call compare_debian_version,7),y)
+    SYS_COMPAT += $(call arch_sysnames,amd64_deb70,i386_deb70)
+endif
+
 ifeq ($(DISTRO),Ubuntu)
+    ifeq ($(call compare_ubuntu_version,12.10),y)
+        SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu1210,i386_ubuntu1210)
+    endif
     ifeq ($(call compare_ubuntu_version,12.04),y)
         SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu1204,i386_ubuntu1204)
     endif

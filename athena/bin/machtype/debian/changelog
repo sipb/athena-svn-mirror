@@ -1,3 +1,9 @@
+debathena-machtype (10.1) unstable; urgency=low
+
+  * Support Quantal and Wheezy
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 17 Aug 2012 15:57:27 -0400
+
 debathena-machtype (10.0.2-0debathena7) unstable; urgency=low
 
   * hostname -f can fail and grep -Fqxi '' can return true
