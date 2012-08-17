@@ -1,8 +1,10 @@
-debathena-nmh-config (1.1.6) UNRELEASED; urgency=low
+debathena-nmh-config (1.1.6) unstable; urgency=low
 
   * Bump debian/compat to 6
+  * Upstream nmh is good enough after 1.5, because it has the mbx_close
+    fix
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:36 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 17 Aug 2012 13:43:21 -0400
 
 debathena-nmh-config (1.1.5) unstable; urgency=low
 
