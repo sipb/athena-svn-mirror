@@ -3,7 +3,7 @@ set -e
 
 name=lprng
 daname=debathena-lprng
-daversionappend=debathena8
+daversionappend=debathena9
 section=debathena
 
 hack_package () {
@@ -65,6 +65,10 @@ EOS
     # lpr/lprm/lpq and thus needs to be adjusted for the command
     # renaming.
     perl -pe 's|/usr/bin/lp|/usr/bin/mit-lp|' -i debian/postinst
+
+    # The init script is auto-generated in some versions, and we changed its
+    # name in the giant substitution above:
+    [ -f debian/lprng.init.in ] && mv debian/lprng.init.in debian/debathena-lprng.init.in
 
     # The renamed binary package no longer matches the source package
     # name, so we have to rename a bunch of debhelper files.
