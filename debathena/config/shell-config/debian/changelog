@@ -1,8 +1,10 @@
-debathena-shell-config (1.16) UNRELEASED; urgency=low
+debathena-shell-config (1.16) unstable; urgency=low
 
   * Bump debian/compat to 6
+  * Use profile.d to avoid diverting /etc/profile (Trac: #923)
+  * Bump standards-version
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:37 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 29 Aug 2012 16:46:39 -0400
 
 debathena-shell-config (1.15) unstable; urgency=low
 

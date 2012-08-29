@@ -1,4 +1,4 @@
 debian/bash.bashrc.debathena /etc/
-debian/profile.debathena /etc/
+debian/profile.debathena.sh /etc/profile.d
 debian/01-debathena-shell-init /usr/share/debathena-bash-config/bashrc.d/
 debian/01-set-athena-user /usr/share/debathena-bash-config/profile.d/
