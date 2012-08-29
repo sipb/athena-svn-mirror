@@ -3,7 +3,7 @@ Section: debathena-config/editors
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@
-Standards-Version: 3.8.0
+Standards-Version: 3.9.1
 
 Package: debathena-emacs-config
 Architecture: all

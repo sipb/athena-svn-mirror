@@ -1,7 +1,3 @@
-; Too many users get bit if we don't set this.
-; We can probably remove this setting once tcsh is gone.
-(setq require-final-newline t)
-
 ; lpr -d doesn't do anything in the Athena environment; use dvips to print
 ; DVI files.
 (setq tex-dvi-print-command "dvips")
