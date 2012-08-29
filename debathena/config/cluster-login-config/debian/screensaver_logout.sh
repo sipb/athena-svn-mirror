@@ -5,8 +5,13 @@
 
 PATH=/usr/bin:/bin:$PATH
 
+GSESSION_END="gnome-session-quit --logout --no-prompt"
+if ! hash gnome-session-quit 2>/dev/null; then
+    GSESSION_END="gnome-session-save --force-logout"
+fi
+
 if [ "$(machtype -L)" != "debathena-cluster" ]; then
-    gnome-session-save --force-logout
+    $GSESSION_END
     exit 0
 fi
 
@@ -20,7 +25,7 @@ if echo $afspath | grep -q ^/afs; then
     cell=$(echo $afspath | cut -d/ -f 3)
 fi
 if tokens | fgrep -q $cell; then
-    gnome-session-save --force-logout
+    $GSESSION_END
 else
     pkill schroot
 fi

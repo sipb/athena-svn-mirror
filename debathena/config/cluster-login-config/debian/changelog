@@ -1,3 +1,10 @@
+debathena-cluster-login-config (1.37) unstable; urgency=low
+
+  * Provide a gsettings-override file for Precise (Trac: #1242)
+  * Update screensaver-logout to use gnome-session-quit
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 29 Aug 2012 14:15:30 -0400
+
 debathena-cluster-login-config (1.36.3) unstable; urgency=low
 
   * No change rebuild to pick up config-package-dev 4.13 changes

@@ -1,0 +1,7 @@
+[org.gnome.desktop.screensaver]
+logout-enabled=true
+logout-delay=1200
+logout-command='/usr/share/debathena-cluster-login-config/screensaver_logout.sh'
+user-switch-enabled=false
+
+
