@@ -45,6 +45,13 @@ my $serverRE = "($user" . '\.mail\.mit\.edu)|(po\d+\.mit\.edu)|((imap\.)?exchang
 my $old_server = "";
 
 my $client = Gnome2::GConf::Client->get_default;
+
+# Set the initial homedir to something other than null
+unless ($client->get("/apps/evolution/shell/file_chooser_folder")) {
+    $client->set_string("/apps/evolution/shell/file_chooser_folder",
+			"file://" . $homedir);
+}
+
 my $accounts = $client->get_list("/apps/evolution/mail/accounts");
 
 if ($accounts && @$accounts) {

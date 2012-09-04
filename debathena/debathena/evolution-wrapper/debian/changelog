@@ -1,3 +1,10 @@
+debathena-evolution-wrapper (10.0.12) unstable; urgency=low
+
+  * Set the inital Gtk file chooser dir to the user's homedir avoid user
+    confusion (Trac: #1249)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 04 Sep 2012 15:43:04 -0400
+
 debathena-evolution-wrapper (10.0.11) unstable; urgency=low
 
   * Bump debian/compat to 6
