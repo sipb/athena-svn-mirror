@@ -1,3 +1,10 @@
+debathena-auto-update (1.40) unstable; urgency=low
+
+  * Fetch the Release file, not the directory listing, when attempting to
+    verify mirrors.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 05 Sep 2012 08:35:09 -0400
+
 debathena-auto-update (1.39) unstable; urgency=low
 
   * If someone has other debathena repos enabled, don't add -proposed and

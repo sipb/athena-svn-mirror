@@ -235,7 +235,7 @@ save_success "Rebooted after dpkg --configure -a"
 maybe_reboot
 
 # Ensure that the mirrors aren't broken
-urls=$(cat /etc/apt/sources.list /etc/apt/sources.list.d/*.list | grep -v ^# | grep -v ^$ | awk '{print $2}' | sort | uniq)
+urls=$(cat /etc/apt/sources.list /etc/apt/sources.list.d/*.list | grep -v ^# | grep -v ^$ | awk '{print $2"/dists/"$3"/Release"}' | sort | uniq)
 failed=""
 for u in $urls; do
     # We don't (yet) know how to verify other URI schemes
