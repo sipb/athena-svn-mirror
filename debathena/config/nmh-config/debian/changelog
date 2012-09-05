@@ -1,3 +1,9 @@
+debathena-nmh-config (1.1.7) unstable; urgency=low
+
+  * Inform NMH users that they're going to be sad after Dec 2013
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 05 Sep 2012 13:17:16 -0400
+
 debathena-nmh-config (1.1.6) unstable; urgency=low
 
   * Bump debian/compat to 6

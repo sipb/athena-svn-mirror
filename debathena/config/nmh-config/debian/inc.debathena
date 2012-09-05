@@ -2,4 +2,17 @@
 if ! [ -e ~/.config/debathena/nmh-in-path ]; then
     mkdir -p ~/.config/debathena >/dev/null 2>&1 && echo yes > ~/.config/debathena/nmh-in-path
 fi
+
+if ! [ -e ~/.config/debathena/nmh-cyrus-warned ]; then
+    echo "Please note that MIT is planning to retire the Cyrus IMAP/POP" >&2
+    echo "servers by December 2013.  Individual users will be contacted" >&2
+    echo "regarding migration to MIT's Exchange environment.  The Exchange" >&2
+    echo "environment does not support POP connections." >&2
+    echo "If you have questions about this migration, please contact" >&2
+    echo "cyrus-imap-retirement@mit.edu." >&2
+    echo >&2
+    echo "(You will only receive this message once.)" >&2
+    mkdir -p ~/.config/debathena >/dev/null 2>&1 && touch ~/.config/debathena/nmh-cyrus-warned
+fi
+
 exec -a inc /usr/bin/mh/inc.debathena-orig -host "${ATHENA_USER:-$USER}.mail.mit.edu" -sasl "$@"
