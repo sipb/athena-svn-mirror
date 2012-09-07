@@ -43,6 +43,7 @@ add_printers() {
 	    -D "Pharos (Monochrome)" \
 	    -L "Release jobs from any Pharos B&W printer" \
 	    -o printer-is-share=false \
+	    -o OptionDuplex=True \
 	    -m "$ppd"
 	if [ $? != 0 ]; then
 	    echo "FAILED to add Pharos printer 'mitprint'" >&2
@@ -63,6 +64,7 @@ add_printers() {
 	    -D "Pharos (Color)" \
 	    -L "Release jobs from any Pharos Color printer" \
 	    -o printer-is-share=false \
+	    -o OptionDuplex=True \
 	    -m "$ppd"
 	if [ $? != 0 ]; then
 	    echo "FAILED to add Pharos printer 'mitprint-color'" >&2

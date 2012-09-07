@@ -1,3 +1,10 @@
+debathena-cupsys-config (1.17.4) unstable; urgency=low
+
+  * When adding printers, add -o OptionDuplex=True, needed for Precise and
+    later, to actually enable duplex printing
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 07 Sep 2012 09:56:27 -0400
+
 debathena-cupsys-config (1.17.3) unstable; urgency=low
 
   * Supply alternate PPDs for ancient distros (Trac: #1068)
