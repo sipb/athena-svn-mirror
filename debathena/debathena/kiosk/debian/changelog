@@ -1,3 +1,9 @@
+debathena-kiosk (1.4.9) unstable; urgency=low
+
+  * Stop scribbling over sudoers and use sudoers.d (Trac: #1219)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 07 Sep 2012 14:33:47 -0400
+
 debathena-kiosk (1.4.8) unstable; urgency=low
 
   * Build-dep on debathena-gdm

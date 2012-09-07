@@ -11,3 +11,4 @@ gdm-launch-kiosk usr/lib/debathena-kiosk
 gdm-launch-kiosk.glade usr/share/debathena-kiosk
 %gconf-tree.xml usr/share/debathena-kiosk
 lightdm-launch-kiosk usr/lib/debathena-kiosk
+debian/debathena-kiosk-sudoers etc/sudoers.d

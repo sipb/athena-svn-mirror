@@ -1,0 +1,4 @@
+# gdm can launch kiosk mode
+gdm ALL=NOPASSWD: /usr/lib/debathena-kiosk/launch-kiosk
+# so can lightdm
+lightdm ALL=NOPASSWD: /usr/lib/debathena-kiosk/launch-kiosk
