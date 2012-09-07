@@ -5,3 +5,4 @@ debian/screensaver_logout.sh usr/share/debathena-cluster-login-config
 debian/disable-suspend.pkla etc/polkit-1/localauthority/30-site.d
 debian/disable-hibernate.pkla etc/polkit-1/localauthority/30-site.d
 debian/50_debathena-cluster etc/grub.d
+debian/debathena-cluster-login-config-sudoers etc/sudoers.d

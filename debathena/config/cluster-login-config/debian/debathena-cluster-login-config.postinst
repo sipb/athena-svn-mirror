@@ -129,12 +129,9 @@ case "$1" in
 	# Attempt to initially set the root password.
 	/usr/sbin/athena-root-password
 
-        cat >>/etc/sudoers <<EOF
-### BEGIN debathena-cluster-login-config
-ALL !ALL=!ALL
-%admin ALL=(ALL) ALL
-### END debathena-cluster-login-config
-EOF
+	# Files in sudoers.d must be chmod 0440 and not contain . or ~
+	# Sadly, dh_installsudoers is not a thing.
+	chmod 0440 /etc/sudoers.d/debathena-cluster-login-config-sudoers
 
 	exit 0
     ;;

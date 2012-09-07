@@ -1,0 +1,4 @@
+# debathena-cluster-login-config enables sudo for the admin group
+ALL !ALL=!ALL
+%admin ALL=(ALL) ALL
+

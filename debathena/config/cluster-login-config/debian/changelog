@@ -5,8 +5,9 @@ debathena-cluster-login-config (1.38) unstable; urgency=low
   * Port the rest of the gconf mandatory keys to gsettings
   * De-support (and Break:) gdm << 2.25.2
   * Stop supporting Lucid and cleanup the rules file
+  * Stop scribbling over sudoers and use sudoers.d (Trac: #1219)
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 07 Sep 2012 13:26:02 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 07 Sep 2012 14:25:53 -0400
 
 debathena-cluster-login-config (1.37) unstable; urgency=low
 
