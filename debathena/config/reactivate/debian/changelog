@@ -5,8 +5,9 @@ debathena-reactivate (2.0.40) unstable; urgency=low
     way
   * Add a trailing NUL to the end of sudo-warning to workaround a bug
     in sudo 1.8.3p1 (fixed upstream, but not in Precise)
+  * Stop scribbling over sudoers and use sudoers.d (Trac: #1219)
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 16 Aug 2012 13:23:17 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 07 Sep 2012 14:29:52 -0400
 
 debathena-reactivate (2.0.39) unstable; urgency=low
 

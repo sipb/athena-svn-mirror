@@ -96,12 +96,8 @@ case "$1" in
         for group in $(sed -ne 's/^addgroups="\(.*\)"/\1/p' /etc/gdm/Xsession.debathena); do
             getent group "$group" >/dev/null || addgroup --system "$group"
         done
-        cat >>/etc/sudoers <<EOF
-### BEGIN debathena-reactivate
-Defaults:%admin lecture_file=/etc/athena/sudo-warning, lecture=once
-Defaults:%sudo lecture_file=/etc/athena/sudo-warning, lecture=once
-### END debathena-reactivate
-EOF
+	# Files in sudoers.d need to be chmod 0440
+	chmod 0440 /etc/sudoers.d/debathena-reactivate-sudoers
 
 	if dpkg --compare-versions "$2" lt 1.25.5~ && \
 	    dpkg --compare-versions "$2" ge 1.25.2; then

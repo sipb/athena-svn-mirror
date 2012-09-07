@@ -17,3 +17,4 @@ debian/dbus-daemon-launch-helper lib/debathena-reactivate
 debian/90debathena-reactivate etc/schroot/setup.d
 debian/16killprocs-no-really etc/schroot/setup.d
 debian/dbus-daemon-launch-helper-blacklist usr/share/debathena-reactivate
+debian/debathena-reactivate-sudoers etc/sudoers.d

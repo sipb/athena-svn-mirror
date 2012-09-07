@@ -1,0 +1,3 @@
+# Ensure people get lectured about sudo'ing in a chroot
+Defaults:%admin lecture_file=/etc/athena/sudo-warning, lecture=once
+Defaults:%sudo lecture_file=/etc/athena/sudo-warning, lecture=once
