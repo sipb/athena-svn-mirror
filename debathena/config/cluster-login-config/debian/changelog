@@ -1,3 +1,13 @@
+debathena-cluster-login-config (1.38) unstable; urgency=low
+
+  * Use dh_gconf instead of calling gconftool-2 in the postinst (Trac:
+    #550)
+  * Port the rest of the gconf mandatory keys to gsettings
+  * De-support (and Break:) gdm << 2.25.2
+  * Stop supporting Lucid and cleanup the rules file
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 07 Sep 2012 13:26:02 -0400
+
 debathena-cluster-login-config (1.37) unstable; urgency=low
 
   * Provide a gsettings-override file for Precise (Trac: #1242)

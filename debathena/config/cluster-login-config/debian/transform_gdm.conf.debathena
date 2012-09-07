@@ -1,6 +1,0 @@
-#!/usr/bin/perl -0p
-s|^([ ]+<allow send_destination="org.gnome.DisplayManager"\s+send_interface="org.gnome.DisplayManager.LocalDisplayFactory"\s+send_member="CreateTransientDisplay"/>)|<!--\n$1\n-->|m or die;
-s|^([ ]+<allow send_destination="org.gnome.DisplayManager"\s+send_interface="org.gnome.DisplayManager.LocalDisplayFactory"\s+send_member="StartGuestSession"/>)|<!--\n$1\n-->|m or die;
-if (m|<allow send_destination="org.gnome.DisplayManager"\s+send_interface="org.gnome.DisplayManager.LocalDisplayFactory"\s+send_member="SwitchToUser"/>|) {
-    s|^([ ]+<allow send_destination="org.gnome.DisplayManager"\s+send_interface="org.gnome.DisplayManager.LocalDisplayFactory"\s+send_member="SwitchToUser"/>)|<!--\n$1\n-->|m or die;
-}

@@ -1,0 +1,8 @@
+/apps/gnome-screensaver/logout_enabled true
+/apps/gnome-screensaver/logout_delay 20
+/apps/gnome-screensaver/logout_command "/usr/share/debathena-cluster-login-config/screensaver_logout.sh"
+/apps/gnome-screensaver/user_switch_enabled false
+/apps/gnome-screensaver/lock_enabled true
+/apps/gnome-screensaver/lock_delay 1
+/apps/gnome-power-manager/timeout/sleep_display_ac 600
+/desktop/gnome/lockdown/disable_user_switching true

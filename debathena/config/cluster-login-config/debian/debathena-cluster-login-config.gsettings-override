@@ -3,5 +3,11 @@ logout-enabled=true
 logout-delay=1200
 logout-command='/usr/share/debathena-cluster-login-config/screensaver_logout.sh'
 user-switch-enabled=false
+lock-delay=1
+lock-enabled=true
 
+[org.gnome.desktop.lockdown]
+disable-user-switching=true
 
+[org.gnome.settings-daemon.plugins.power]
+sleep-display-ac=600
