@@ -4,10 +4,14 @@ if ! [ -e ~/.config/debathena/nmh-in-path ]; then
 fi
 
 if ! [ -e ~/.config/debathena/nmh-cyrus-warned ]; then
+    echo "If you are seeing this message, you are using POP to connect to" >&2
+    echo "MIT's legacy mail (\"Cyrus\") infrastructure." > &2
+    echo >&2
     echo "Please note that MIT is planning to retire the Cyrus IMAP/POP" >&2
     echo "servers by December 2013.  Individual users will be contacted" >&2
     echo "regarding migration to MIT's Exchange environment.  The Exchange" >&2
-    echo "environment does not support POP connections." >&2
+    echo "environment does not support POP connections, and you will" >&2
+    echo "likely need to select a different e-mail client, such as Pine.">&2
     echo "If you have questions about this migration, please contact" >&2
     echo "cyrus-imap-retirement@mit.edu." >&2
     echo >&2
