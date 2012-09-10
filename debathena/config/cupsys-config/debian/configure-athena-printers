@@ -42,7 +42,7 @@ add_printers() {
 	lpadmin -p mitprint -E -v lpd://mitprint.mit.edu/bw \
 	    -D "Pharos (Monochrome)" \
 	    -L "Release jobs from any Pharos B&W printer" \
-	    -o printer-is-share=false \
+	    -o printer-is-shared=false \
 	    -o OptionDuplex=True \
 	    -m "$ppd"
 	if [ $? != 0 ]; then
@@ -63,7 +63,7 @@ add_printers() {
 	lpadmin -p mitprint-color -E -v lpd://mitprint.mit.edu/color \
 	    -D "Pharos (Color)" \
 	    -L "Release jobs from any Pharos Color printer" \
-	    -o printer-is-share=false \
+	    -o printer-is-shared=false \
 	    -o OptionDuplex=True \
 	    -m "$ppd"
 	if [ $? != 0 ]; then
