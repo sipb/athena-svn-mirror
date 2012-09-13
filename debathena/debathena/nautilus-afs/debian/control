@@ -3,11 +3,12 @@ Section: debathena-config/gnome
 Priority: extra
 Build-Depends: cdbs, debhelper
 Maintainer: Debathena Project <debathena@mit.edu>
-Standards-Version: 3.8.4 
+Standards-Version: 3.9.1
 
 Package: debathena-nautilus-afs
+X-Debathena-Build-For: precise quantal
 Architecture: all
-Depends: ${misc:Depends}, python-nautilus (>= 0.5.0-0ubuntu3), python-gtk2, python
+Depends: ${misc:Depends}, python-nautilus (>= 1.1-1), python, gir1.2-glib-2.0, gir1.2-gtk-3.0, openafs-client
 Description: Provide a Nautilus GUI for AFS ACLs
  This package provides a Nautilus GUI for viewing and modifying AFS
  ACLs.

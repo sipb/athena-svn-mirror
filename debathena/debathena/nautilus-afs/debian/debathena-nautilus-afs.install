@@ -1,2 +1,2 @@
-afs-property-page.glade usr/share/debathena-nautilus-afs-integration
-afs-property-page.py usr/lib/nautilus/extensions-2.0/python
+afs-property-page.ui usr/share/debathena-nautilus-afs
+afs-property-page.py usr/share/nautilus-python/extensions

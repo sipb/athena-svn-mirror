@@ -1,3 +1,10 @@
+debathena-nautilus-afs (2.0) unstable; urgency=low
+
+  * Complete rewrite for Nautilus 3 and Gtk3
+  * Does not depend on pyafs
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 13 Sep 2012 14:29:35 -0400
+
 debathena-nautilus-afs (1.0) unstable; urgency=low
 
   * Initial release
