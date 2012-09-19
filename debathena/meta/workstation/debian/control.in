@@ -20,6 +20,7 @@ Depends: debathena-login-graphical,
  debathena-moira-update-server,
  ${debathena-maybe-tex-config},
  ${misc:Depends}
+Recommends: debathena-nautilus-afs
 Description: Athena managed workstation configuration
  This package configures a private, graphical Debathena workstation.
  It includes configuration, such as automatic updates, designed to

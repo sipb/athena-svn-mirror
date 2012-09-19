@@ -1,3 +1,9 @@
+debathena-workstation (1.8) unstable; urgency=low
+
+  * Add debathena-nautilus-afs (Trac: #395)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 19 Sep 2012 15:39:45 -0400
+
 debathena-workstation (1.7) unstable; urgency=low
 
   * Remove -branding packages
