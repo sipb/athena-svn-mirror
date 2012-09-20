@@ -7,17 +7,10 @@ complain() {
   updmsg="$*"
 }
 
-# NOTE: Unlike complain(), calling warn() without subsequently 
-#       calling "exit" is not supported and its behavior is undefined
 warn() {
-  # If we've already had a warning once, then fail
-  if [ "$updstatus" = "warning" ]; then
-      complain "$*"
-  else
-      updstatus="warning"
-      updmsg="$*"
-      echo "WARNING: $*"
-  fi
+  updstatus="warning"
+  updmsg="$*"
+  echo "WARNING: $*"
 }
 
 save_success() {
@@ -235,13 +228,10 @@ save_success "Rebooted after dpkg --configure -a"
 maybe_reboot
 
 # Ensure that the mirrors aren't broken
-urls=$(cat /etc/apt/sources.list /etc/apt/sources.list.d/*.list | grep -v ^# | grep -v ^$ | awk '{print $2"/dists/"$3"/Release"}' | sort | uniq)
+# Google's apt repos are ridiculously picky
+urls=$(cat /etc/apt/sources.list /etc/apt/sources.list.d/*.list | awk '!/^deb/ {next;} $2 ~ /^https/ {printf $2; if ($2 !~ /\/$/) printf "/"; printf "dists/"$3"/Release\n"}' | sort -u)
 failed=""
 for u in $urls; do
-    # We don't (yet) know how to verify other URI schemes
-    if ! echo $u | grep -q "^http:"; then
-	continue
-    fi
     curl -m 60 -sfL -o /dev/null $u
     if [ $? != 0 ]; then
 	if [ -z "$failed" ]; then

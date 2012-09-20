@@ -1,3 +1,10 @@
+debathena-auto-update (1.41) unstable; urgency=low
+
+  * Ensure there are no double slashes in URLs, because Google hates them
+  * Make the mirror check non-fatal -- merely warn
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 20 Sep 2012 15:20:23 -0400
+
 debathena-auto-update (1.40) unstable; urgency=low
 
   * Fetch the Release file, not the directory listing, when attempting to
