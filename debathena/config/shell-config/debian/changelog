@@ -1,3 +1,9 @@
+debathena-shell-config (1.17) unstable; urgency=low
+
+  * Remove stray escaped newline in DEB_DIVERT_FILES_debathena-bash-config
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 20 Sep 2012 15:22:09 -0400
+
 debathena-shell-config (1.16) unstable; urgency=low
 
   * Bump debian/compat to 6

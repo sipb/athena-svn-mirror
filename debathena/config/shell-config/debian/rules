@@ -2,7 +2,7 @@
 
 DEB_DIVERT_EXTENSION = .debathena
 DEB_DIVERT_FILES_debathena-bash-config += \
-	/etc/bash.bashrc.debathena \
+	/etc/bash.bashrc.debathena
 DEB_DIVERT_FILES_debathena-tcsh-config += \
 	/etc/csh.cshrc.debathena
 DEB_UNDIVERT_FILES_debathena-bash-config += \
