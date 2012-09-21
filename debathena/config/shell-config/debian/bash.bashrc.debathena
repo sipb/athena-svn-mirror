@@ -8,8 +8,6 @@ DEBATHENA_BASHRC_DIR=/usr/share/debathena-bash-config/bashrc.d
 # Source all bash scripts in our bashrc.d directory.
 for i in `run-parts --list "$DEBATHENA_BASHRC_DIR"`; do . "$i"; done
 
-# In the event we're being sourced from something sourced by
-# profile.debathena, inform it that bashrc.d/* has already been sourced.
-if [ "$debathena_test_if_bashrc_runs" = 0 ]; then
-    debathena_test_if_bashrc_runs=1
-fi
+# Inform our /etc/profile.d script that bashrc.d has already been
+# sourced.
+debathena_bashrc_sourced=1

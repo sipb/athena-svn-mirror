@@ -1,3 +1,9 @@
+debathena-shell-config (1.18) unstable; urgency=low
+
+  * Don't source the now non-existent original undiverted profile
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 21 Sep 2012 14:37:39 -0400
+
 debathena-shell-config (1.17) unstable; urgency=low
 
   * Remove stray escaped newline in DEB_DIVERT_FILES_debathena-bash-config
