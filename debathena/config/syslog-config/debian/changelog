@@ -1,8 +1,9 @@
-debathena-syslog-config (1.7) UNRELEASED; urgency=low
+debathena-syslog-config (1.7) unstable; urgency=low
 
   * Bump debian/compat to 6
+  * Drop afs byte-range locking messages (Trac: #1258)
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:37 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Sep 2012 13:41:03 -0400
 
 debathena-syslog-config (1.6) unstable; urgency=low
 
