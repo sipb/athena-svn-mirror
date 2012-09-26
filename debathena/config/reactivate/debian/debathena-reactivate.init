@@ -25,8 +25,12 @@ case "$1" in
 	# Create a tmpfs where schroot puts overlays. This is needed
 	# because aufs won't let you put an overlay and underlay on the
 	# same file system.
+	tmpfssize="50%"
+	if [ "$(machtype -M)" -le 2007518 ]; then
+	    tmpfssize="1073741824"
+	fi
 	if ! mountpoint -q /var/lib/schroot/union/overlay; then
-	    mount -t tmpfs -o size=1073741824 tmpfs /var/lib/schroot/union/overlay
+	    mount -t tmpfs -o size="$tmpfssize" tmpfs /var/lib/schroot/union/overlay
 	fi
 
 	# Enable subtree operations on /media by making it a mount point,

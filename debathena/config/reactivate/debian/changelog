@@ -1,3 +1,10 @@
+debathena-reactivate (2.0.41) unstable; urgency=low
+
+  * Bump the chroot's ramdisk to 50% of RAM or 1G, whichever is higher
+    (Trac: #1207)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Sep 2012 15:49:05 -0400
+
 debathena-reactivate (2.0.40) unstable; urgency=low
 
   * Cleanup from r24057, where we had to special-case quickstations via
