@@ -1,8 +1,9 @@
-debathena-xsession (1.17.6) UNRELEASED; urgency=low
+debathena-xsession (1.18) unstable; urgency=low
 
   * Bump debian/compat to 6
+  * Cleanup lightdm's cached dmrc
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:40 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Sep 2012 17:13:58 -0400
 
 debathena-xsession (1.17.5) unstable; urgency=low
 

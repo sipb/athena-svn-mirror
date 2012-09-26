@@ -7,9 +7,12 @@ if [ "$GDMSESSION" = "000debathena-nocalls" ]; then
 fi
 
 # You don't actually want nocalls as your default session
-[ -e "$HOME/.dmrc" ] && \
-  grep -q 000debathena-nocalls "$HOME/.dmrc" && \
-  rm "$HOME/.dmrc"
-[ -e "/var/cache/gdm/$USER/dmrc" ] && \
-  grep -q 000debathena-nocalls "/var/cache/gdm/$USER/dmrc" && \
-  rm "/var/cache/gdm/$USER/dmrc"
+DMRCFILES="$HOME/.dmrc \
+           /var/cache/gdm/$USER/dmrc \
+           /var/cache/lightdm/dmrc/$USER.dmrc"
+
+for f in $DMRCFILES; do
+    [ -e "$f" ] && \
+	grep -q 000debathena-nocalls "$f" && \
+	rm "$f"
+done

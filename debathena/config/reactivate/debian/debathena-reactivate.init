@@ -18,6 +18,10 @@ case "$1" in
   start)
 	# Clean up the per-user files cached locally by gdm.
 	rm -rf /var/cache/gdm/*
+	# And lightdm's cached dmrc
+	rm -rf /var/cache/lightdm/dmrc/*
+	# And AccountsService's cached session info
+	rm -rf /var/lib/AccountsService/users/*
 
 	# Set the volume to zero for all sound cards, and save that state.
 	(/etc/init.d/alsa-utils stop all && alsactl store) > /dev/null 2>&1
