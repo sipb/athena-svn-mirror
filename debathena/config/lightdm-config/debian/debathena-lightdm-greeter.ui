@@ -55,6 +55,7 @@
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Hibernate this computer</property>
                         <property name="label" translatable="yes">Hibernate</property>
                         <signal name="activate" handler="power_cb" swapped="no"/>
                       </object>
@@ -64,6 +65,7 @@
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Suspend this computer</property>
                         <property name="label" translatable="yes">Suspend</property>
                         <signal name="activate" handler="power_cb" swapped="no"/>
                       </object>
@@ -73,7 +75,7 @@
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">a</property>
+                        <property name="tooltip_text" translatable="yes">Restart (reboot) this computer</property>
                         <property name="label" translatable="yes">Restart</property>
                         <signal name="activate" handler="power_cb" swapped="no"/>
                       </object>
@@ -83,6 +85,7 @@
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Shutdown (power off) this computer</property>
                         <property name="label" translatable="yes">Shutdown</property>
                         <signal name="activate" handler="power_cb" swapped="no"/>
                       </object>
