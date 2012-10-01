@@ -1,8 +1,0 @@
-#!/bin/sh
-
-if [ -x /usr/bin/python.debathena-orig ]; then
-    exec /usr/bin/python.debathena-orig
-else
-    echo "ERROR: debathena-python-config is improperly installed." >&2
-    exit 1
-fi
