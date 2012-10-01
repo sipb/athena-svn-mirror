@@ -9,10 +9,5 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 DEB_DH_LINK_debathena-base = --your-mother || true
 
 common-install-indep::
-	mkdir -p $(DEB_DESTDIR)/usr/athena
-	ln -nsf ../bin $(DEB_DESTDIR)/usr/athena/bin
-	ln -nsf ../include $(DEB_DESTDIR)/usr/athena/include
-	ln -nsf ../lib $(DEB_DESTDIR)/usr/athena/lib
-	ln -nsf ../sbin $(DEB_DESTDIR)/usr/athena/sbin
-	ln -nsf ../share $(DEB_DESTDIR)/usr/athena/share
+	ln -s . $(DEB_DESTDIR)/usr/athena
 	ln -s . $(DEB_DESTDIR)/bin/athena
