@@ -1,0 +1,16 @@
+Source: debathena-python-config
+Section: debathena-config/utils
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: @cdbs@
+Standards-Version: 3.9.1
+
+Package: debathena-python-config
+Architecture: all
+Depends: python, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Site customizations for python.
+ Adds a wrapper script for Python which merely execs the "real"
+ python.  Necessary because python tries to be clever and breaks
+ the /usr/athena symlink
