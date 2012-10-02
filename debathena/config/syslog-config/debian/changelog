@@ -1,3 +1,9 @@
+debathena-syslog-config (1.8) unstable; urgency=low
+
+  * Previous fix didn't work; give up and drop everything below err.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 02 Oct 2012 15:56:17 -0400
+
 debathena-syslog-config (1.7) unstable; urgency=low
 
   * Bump debian/compat to 6
