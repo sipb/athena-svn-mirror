@@ -74,9 +74,9 @@ case "$1" in
 	    cleanup_old_diversion /etc/syslog.conf.debathena
 
 	    if hash invoke-rc.d; then
-		invoke-rc.d rsyslog reload
+		invoke-rc.d rsyslog restart
 	    else
-		/etc/init.d/rsyslog reload
+		/etc/init.d/rsyslog restart
 	    fi
 	else
 	    # We're using sysklogd
