@@ -1,3 +1,11 @@
+debathena-thunderbird-config (1.9) unstable; urgency=low
+
+  * Symlink the config file into /usr/lib/thunderbird/defaults/pref, since
+    that's where Thunderbird is looking for .js files this week. (Trac:
+    #1020)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 22 Oct 2012 11:23:50 -0400
+
 debathena-thunderbird-config (1.8) unstable; urgency=low
 
   * Update for Thunderbird 3.x, drop all support for pre-3.x releases
