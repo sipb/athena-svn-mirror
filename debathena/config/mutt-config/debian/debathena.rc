@@ -42,6 +42,3 @@ set use_domain=no
 
 # TODO auto_view?
 # or upstream in debian
-
-
-# TODO deal with Etch's lack of /etc/Muttrc.d/
