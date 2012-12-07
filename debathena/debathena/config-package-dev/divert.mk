@@ -21,7 +21,9 @@
 # config-package.mk.
 
 # divert.mk handles the low-level diversion logic.  It includes
-# divert.sh.in in the postinst and prerm scripts, and adds 
+# divert.sh.in in the postinst and prerm scripts, and adds calls to the
+# functions in divert.sh.in to add and remove diversions and symlinks at
+# the appropriate points.
 
 ifndef _cdbs_rules_divert
 _cdbs_rules_divert = 1
@@ -53,14 +55,14 @@ endif
 # foo.divert.divert-orig
 divert_files_replace_name = $(shell echo $(1) | perl -pe 's/(.*)\Q$(DEB_DIVERT_EXTENSION)\E/$$1$(2)/')
 
-# Transform a full path into the path it should be diverted to if it's
+# Encode a full path into the path it should be diverted to if it's
 # removed
 remove_files_name = /usr/share/$(cdbs_curpkg)/$(shell $(DEB_DIVERT_ENCODER) $(1))
 
-dh_compat_5 := $(shell if [ '$(DH_COMPAT)' -ge 5 ]; then echo y; fi)
+dh_compat_6 := $(shell if [ '$(DH_COMPAT)' -ge 6 ]; then echo y; fi)
 
 reverse = $(foreach n,$(shell seq $(words $(1)) -1 1),$(word $(n),$(1)))
-reverse_dh_compat_5 = $(if $(dh_compat_5),$(call reverse,$(1)),$(1))
+reverse_dh_compat_6 = $(if $(dh_compat_6),$(call reverse,$(1)),$(1))
 
 debian-divert/%: package = $(subst debian-divert/,,$@)
 debian-divert/%: divert_files = $(DEB_DIVERT_FILES_$(package)) $(DEB_TRANSFORM_FILES_$(package))
@@ -93,20 +95,20 @@ $(patsubst %,debian-divert/%,$(DEB_DIVERT_PACKAGES)) :: debian-divert/%:
 # Add code to prerm script to undo diversions when package is removed.
 	set -e; \
 	{ \
-	    $(if $(dh_compat_5),, \
+	    $(if $(dh_compat_6),, \
 		if [ -e $(CURDIR)/debian/$(cdbs_curpkg).prerm.debhelper ]; then \
 		    cat $(CURDIR)/debian/$(cdbs_curpkg).prerm.debhelper; \
 		fi;) \
 	    sed 's/#PACKAGE#/$(cdbs_curpkg)/g; s/#DEB_DIVERT_EXTENSION#/$(DEB_DIVERT_EXTENSION)/g' $(DEB_DIVERT_SCRIPT); \
 	    $(if $(divert_files_thispkg), \
-		echo 'if [ "$$1" = "remove" ]; then'; \
-		$(foreach file,$(call reverse_dh_compat_5,$(divert_files)), \
+		echo 'if [ "$$1" = "remove" ] || [ "$$1" = "deconfigure" ]; then'; \
+		$(foreach file,$(call reverse_dh_compat_6,$(divert_files)), \
 		    echo "    undivert_unlink $(call divert_files_replace_name,$(file), )";) \
-		$(foreach file,$(call reverse_dh_compat_5,$(divert_remove_files)), \
+		$(foreach file,$(call reverse_dh_compat_6,$(divert_remove_files)), \
 		    echo "    undivert_unremove $(file) $(cdbs_curpkg)";) \
 		echo 'fi'; \
 	    ) \
-	    $(if $(dh_compat_5), \
+	    $(if $(dh_compat_6), \
 		if [ -e $(CURDIR)/debian/$(cdbs_curpkg).prerm.debhelper ]; then \
 		    cat $(CURDIR)/debian/$(cdbs_curpkg).prerm.debhelper; \
 		fi;) \
@@ -117,8 +119,8 @@ $(patsubst %,debian-divert/%,$(DEB_DIVERT_PACKAGES)) :: debian-divert/%:
 # and Conflicts: lists.  This prevents two packages diverting the same
 # file from being installed simultaneously (it cannot work, and this
 # produces a much less ugly error).  Requires in debian/control:
-#   Provides: $(diverted-files)
-#   Conflicts: $(diverted-files)
+#   Provides: ${diverted-files}
+#   Conflicts: ${diverted-files}
 	set -e; \
 	{ \
 	    echo -n "diverted-files="; \
