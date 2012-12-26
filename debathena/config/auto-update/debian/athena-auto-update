@@ -171,11 +171,13 @@ export DEBIAN_FRONTEND=noninteractive
 # Set conservative defaults in case file is missing
 UPDATE_FORCE_CONFFILE=old
 RUN_UPDATE_HOOK=no
+CLEANUP_OLD_KERNELS=no
 # Process defaults file
 [ -f /etc/default/debathena-auto-update ] && . /etc/default/debathena-auto-update
 # On cluster machines, force our desired settings
 # Ignore /etc/default/debathena-auto-update
 if dpkg-query --showformat '${Status}\n' -W "debathena-cluster" 2>/dev/null | grep -q ' installed$'; then
+    CLEANUP_OLD_KERNELS=yes
     UPDATE_FORCE_CONFFILE=new
     RUN_UPDATE_HOOK=yes
 fi
@@ -321,6 +323,35 @@ else
     save_success "Successful update"
   else
     complain "Simulation was successful, but update failed (shouldn't happen)"
+  fi
+fi
+
+# Cleanup old kernels
+if [ "$CLEANUP_OLD_KERNELS" = "yes" ]; then
+  echo "Cleaning up old kernels..."
+  kernels=$(dpkg-query -W -f '${Package}:${Status}\n' linux-image-\*-generic | \
+    awk -F ':' '$2=="install ok installed" {print $1;}' | \
+    sed -e 's/^linux-image-//' | sort -V)
+  numkernels=$(echo "$kernels" | wc -l)
+  echo "Found $numkernels kernels: $kernels"
+  if [ $numkernels -gt 2 ]; then
+    toremove=$(echo "$kernels" | head -$(($numkernels-2)))
+    kpkgs=
+    for k in $toremove; do
+      if [ "$(uname -r)" != "$k" ]; then
+        kpkgs="$kpkgs linux-image-$k"
+      fi
+    done
+    echo "Will remove these kernels: $kpkgs"
+    echo "Simulating..."
+    if v apt-get -y -s remove $kpkgs; then
+      echo "Simulation ok, proceeding..."
+      if ! v apt-get -y remove $kpkgs; then
+	warn "Something went wrong trying to remove kernels!"
+      fi
+    else
+	warn "Simulation failed!"
+    fi
   fi
 fi
 

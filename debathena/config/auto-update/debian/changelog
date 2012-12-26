@@ -1,3 +1,12 @@
+debathena-auto-update (1.42) unstable; urgency=low
+
+  * Cleanup old kernels, keeping the two most recent ones installed.  This
+    only works on the "-generic" flavor of kernels, on the assumption that
+    anyone running a different flavor knows what they're doing.  It is
+    only enabled by default on debathena-cluster workstations.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 26 Dec 2012 10:49:00 -0500
+
 debathena-auto-update (1.41) unstable; urgency=low
 
   * Ensure there are no double slashes in URLs, because Google hates them

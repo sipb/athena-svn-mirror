@@ -1,5 +1,7 @@
 # Defaults for athena-auto-update(8) 
 #
+# (This file is sourced by a Bourne shell)
+#
 # N.B. The defaults for athena-auto-update (not upgrade) do not apply
 # when the debathena-cluster metapackage is installed
 
@@ -16,6 +18,9 @@ UPDATE_FORCE_CONFFILE=old
 # of a catastrophe?
 # Values: yes, no
 RUN_UPDATE_HOOK=no
+
+# Cleanup old kernels (keeping the two most recent ones)?
+CLEANUP_OLD_KERNELS=no
 
 ######################################################################
 # Defaults for athena-auto-upgrade(8)
