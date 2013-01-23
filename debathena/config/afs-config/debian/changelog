@@ -1,3 +1,9 @@
+debathena-afs-config (1.21) unstable; urgency=low
+
+  * Update CellServDB to pick up new net.mit.edu cell servers
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 23 Jan 2013 09:59:25 -0500
+
 debathena-afs-config (1.20) unstable; urgency=low
 
   * Catch up with athena-cell CellServDB and CellAlias changes (the
