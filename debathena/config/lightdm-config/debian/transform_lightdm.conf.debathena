@@ -1,0 +1,2 @@
+#!/usr/bin/perl -0p
+s/^(\s+initctl emit desktop-shutdown\s*)$/$1 || :/m or die;

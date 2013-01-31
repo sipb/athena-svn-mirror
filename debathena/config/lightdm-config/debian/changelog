@@ -1,3 +1,11 @@
+debathena-lightdm-config (1.9) unstable; urgency=low
+
+  * Make lightdm's upstart job not fail fatally, thus triggering the
+    failsafe X job (Trac: #1167)
+  * Make the background window not resizable, because it shouldn't be
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 31 Jan 2013 10:25:37 -0500
+
 debathena-lightdm-config (1.8) unstable; urgency=low
 
   * Fix tooltips in power menu (Trac: #1260)
