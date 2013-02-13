@@ -2,7 +2,7 @@ Source: debathena-reactivate
 Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, sudo, schroot, dbus
+Build-Depends: @cdbs@, sudo, schroot, dbus, gettext
 Standards-Version: 3.9.3
 
 Package: debathena-reactivate
@@ -18,7 +18,7 @@ Depends: debathena-schroot | schroot (>= 1.3.2~),
  ${shlibs:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
-X-Debathena-Build-For: natty precise
+X-Debathena-Build-For: precise
 Description: Causes gdm logins to run in an ephemeral snapshot of the root
  This package causes each gdm login to run in a temporary copy of the
  root, so that any system modifications performed within the chroot

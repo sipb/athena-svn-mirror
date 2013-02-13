@@ -1,3 +1,11 @@
+debathena-reactivate (2.0.42) unstable; urgency=low
+
+  * Stop building for Natty.
+  * Install a translation to tweak what command-not-found says. (Trac:
+    #585)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 13 Feb 2013 14:54:41 -0500
+
 debathena-reactivate (2.0.41) unstable; urgency=low
 
   * Bump the chroot's ramdisk to 50% of RAM or 1G, whichever is higher

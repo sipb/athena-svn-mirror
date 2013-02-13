@@ -1,0 +1,10 @@
+# You can't start or end a translation with a newline if the msgid
+# lacks those newlines.  Intermediate ones are fine.  You can in fact
+# start and end with, e.g. \r or ^H.  Hilarity ensues.
+
+msgid "You can install it by typing:"
+msgstr " \n\n"
+"NOTE: Because this is a debathena-cluster workstation, you can\n"
+"install it for the duration of this session by typing the following:\n "
+
+

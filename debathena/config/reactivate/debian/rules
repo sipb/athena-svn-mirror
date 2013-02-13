@@ -31,3 +31,9 @@ include /usr/share/cdbs/1/class/makefile.mk
 include /usr/share/cdbs/1/rules/config-package.mk
 
 DEB_MAKE_INSTALL_TARGET = install DESTDIR=$(DEB_DESTDIR)
+
+build/debathena-reactivate::
+	msgfmt -o command-not-found.mo command-not-found.po
+
+clean::
+	rm -f command-not-found.mo
