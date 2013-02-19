@@ -13,7 +13,7 @@ Depends: lightdm (>= 1.0.6~),
 	 ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
-X-Debathena-No-Build: hardy lucid natty squeeze
+X-Debathena-No-Build: hardy lucid natty squeeze wheezy
 Description: Lightdm configuration for Debathena
  This package installs a lightdm greeter for Debathena, and strongly
  encourages the user to use lightdm and the aforementioned greeter.
