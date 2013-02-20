@@ -29,6 +29,7 @@ Depends: nfs-common,
  mtools,
  dosemu,
  rlwrap,
+ ksh,
  ${debathena-maybe-dos2unix},
  ${misc:Depends}
 Description: Debathena metapackage for third-party utilities software
