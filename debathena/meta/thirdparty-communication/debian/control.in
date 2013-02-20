@@ -8,6 +8,7 @@ Build-Depends: @cdbs@
 Package: debathena-thirdparty-communication
 Architecture: all
 Depends: tnef,
+ pan,
  ${misc:Depends}
 Description: Debathena metapackage for third-party communication software
  This includes a set of subpackages of commonly-used third-party software

@@ -48,6 +48,7 @@ Depends: inventor-data,
  pdftoipe,
  mgp,
  graphviz,
+ mesa-utils,
  ${debathena-maybe-xdot},
  ${misc:Depends}
 Recommends: inventor-dev,

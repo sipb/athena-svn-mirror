@@ -81,6 +81,7 @@ Depends: liblapack-dev,
  python-psycopg2,
  libppl-c2 | libppl-c4,
  libcurl4-gnutls-dev,
+ iwidgets4,
  libmpfr-dev, ${debathena-maybe-libmpfr1ldbl},
  ${misc:Depends}
 Recommends: libatlas-base-dev,

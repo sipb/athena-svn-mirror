@@ -1,3 +1,9 @@
+debathena-thirdparty-communication (1.1) unstable; urgency=low
+
+  * Add pan (Trac: 1288)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 20 Feb 2013 16:43:01 -0500
+
 debathena-thirdparty-communication (1.0) unstable; urgency=low
 
   * First non-equivs version
