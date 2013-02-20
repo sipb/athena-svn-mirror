@@ -2,7 +2,9 @@ Source: debathena-lightdm-config
 Section: debathena-config/gnome
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, lightdm
+# The build dependency on x11-common is to work around LP: #921169
+# It can be removed once we stop building for Oneiric.
+Build-Depends: @cdbs@, x11-common, lightdm
 Standards-Version: 3.9.1
 
 Package: debathena-lightdm-config
