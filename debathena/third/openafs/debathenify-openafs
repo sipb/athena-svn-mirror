@@ -16,6 +16,10 @@ chroot=$dist_arch-sbuild
 dist=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\1/')
 arch=$(echo "$dist_arch" | sed 's/^\(.*\)-\([^-]*\)$/\2/')
 . /mit/debathena/bin/debian-versions.sh
+if [ -e nobuild ] && fgrep -q "$dist" nobuild; then
+  echo "Skipping $dist_$arch since $dist is listed in ./nobuild."
+  exit
+fi
 tag=$(gettag $dist)
 : ${DEBATHENA_APT=/mit/debathena/apt}
 : ${DEBATHENA_RELEASE=production}
