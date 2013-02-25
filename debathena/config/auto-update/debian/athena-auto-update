@@ -327,6 +327,8 @@ else
 fi
 
 # Cleanup old kernels
+# This can probably go away once /boot is no longer on its own
+# partition.
 if [ "$CLEANUP_OLD_KERNELS" = "yes" ]; then
   echo "Cleaning up old kernels..."
   kernels=$(dpkg-query -W -f '${Package}:${Status}\n' linux-image-\*-generic | \
