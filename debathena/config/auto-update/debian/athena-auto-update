@@ -340,6 +340,7 @@ if [ "$CLEANUP_OLD_KERNELS" = "yes" ]; then
     for k in $toremove; do
       if [ "$(uname -r)" != "$k" ]; then
         kpkgs="$kpkgs linux-image-$k"
+	khpkgs="$khpkgs linux-headers-$k"
       fi
     done
     echo "Will remove these kernels: $kpkgs"
@@ -347,6 +348,16 @@ if [ "$CLEANUP_OLD_KERNELS" = "yes" ]; then
     if v apt-get -y -s remove $kpkgs; then
       echo "Simulation ok, proceeding..."
       if ! v apt-get -y remove $kpkgs; then
+	warn "Something went wrong trying to remove kernels!"
+      fi
+    else
+	warn "Simulation failed!"
+    fi
+    echo "Removing corresponding headers: $khpkgs"
+    echo "Simulating..."
+    if v apt-get -y -s remove $khpkgs; then
+      echo "Simulation ok, proceeding..."
+      if ! v apt-get -y remove $khpkgs; then
 	warn "Something went wrong trying to remove kernels!"
       fi
     else
