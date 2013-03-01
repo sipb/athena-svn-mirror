@@ -2,7 +2,8 @@
 Encoding=UTF-8
 Name=Login Without Customizations
 Comment=This provides a GNOME session without running your Athena dotfiles
-Exec=/usr/bin/gnome-session
+Exec=athena-session
+TryExec=athena-session
 Icon=
 Type=Application
 

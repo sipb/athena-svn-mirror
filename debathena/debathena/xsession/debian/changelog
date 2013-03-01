@@ -1,3 +1,10 @@
+debathena-xsession (1.19) unstable; urgency=low
+
+  * The nocalls session should exec athena-session, not gnome-session
+    (Trac: #1299)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 01 Mar 2013 16:08:45 -0500
+
 debathena-xsession (1.18) unstable; urgency=low
 
   * Bump debian/compat to 6
