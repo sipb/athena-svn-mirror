@@ -214,6 +214,42 @@ for image_mpkg in $mpkgs; do
   if schq apt-cache show openafs-modules-dkms > /dev/null 2>&1; then
     # epoch
     ver=1:1.0
+    # Check if the headers we identified above actually exist
+    # and deal appropriately (Trac: #948)
+    should_skip=0
+    if ! schq apt-cache show "$hdr_mpkg" >/dev/null 2>&1; then
+      # This is why we can't have nice things
+      echo "*** $image_mpkg has no corresponding $hdr_mpkg, looking for alternatives..."
+      should_skip=1
+      # OK, there's no header for it.  Let's see what its siblings are
+      # Get its dependency
+      dep=$(echo "$info" | sed -ne 's/^Depends:.*\(linux-image-[^ ,]*\).*$/\1/p')
+      # See what reverse-depends on that (i.e. what else provides it)
+      rdeps=$(apt-cache --no-pre-depends --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances rdepends "$dep" | tr -d '\n' | sed -e "s/${dep}Reverse Depends://")
+      for rd in $rdeps; do
+        # If we managed to find ourself, skip it
+        [ "$rd" = "$image_mpkg" ] && continue
+	# See if it is a metapackage
+        rdinfo=$(schq apt-cache show --no-all-versions "$rd")
+        rdsrc=$(echo "$rdinfo" | sed -ne 's/^Source: //p')
+        if [ $(expr "$rdsrc" : "$metareg") != 0 ]; then
+          # OK, we found another metapackage that provides this.
+          # Let's see if it has headers
+          rdhdr=$(echo "$rd" | sed -e 's/^linux-image/linux-headers/')
+          if schq apt-cache show "$rdhdr" > /dev/null 2>&1; then
+	    # Yay.  Use it instead
+	    image_mpkg=$rd
+            hdr_mpkg=$rdhdr
+            should_skip=0
+            break
+          fi
+        fi
+      done
+      if [ $should_skip -ne 0 ]; then
+        echo "*** Skipping $afs_mpkg (DKMS), can't find matching headers for $image_mpkg"
+        continue
+      fi
+    fi
   fi
 
   # Check if we already have an up-to-date OpenAFS metapackage.
