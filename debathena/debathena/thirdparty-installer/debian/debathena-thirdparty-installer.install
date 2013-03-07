@@ -1,2 +1,0 @@
-debian/generate-package-list.pl usr/lib/debathena-thirdparty
-debian/thirdparty usr/sbin
