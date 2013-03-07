@@ -1,0 +1,11 @@
+debathena-bin-example (1.1) unstable; urgency=low
+
+  * suppose elinks bug is fixed; stop displacing elinks.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 11 Sep 2012 12:50:13 -0700
+
+debathena-bin-example (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Geoffrey Thomas <geofft@mit.edu>  Tue, 11 Sep 2012 12:39:03 -0700

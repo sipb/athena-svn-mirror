@@ -1,0 +1,457 @@
+#!/usr/bin/perl -w
+# Copyright © 2007-2008 Anders Kaseorg <andersk@mit.edu> and
+#                       Tim Abbott <tabbott@mit.edu>
+# Copyright © 2011-2012 Geoffrey Thomas <geofft@mit.edu>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2, or (at
+# your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+# 02111-1307 USA.
+
+
+=head1 NAME
+
+dh_configpackage - add maintainer script rules to displace, hide, or transform files
+
+=cut
+
+use strict;
+use Debian::Debhelper::Dh_Lib;
+use Debian::Debhelper::config_package;
+use Digest::MD5;
+use IPC::Open3;
+
+
+=head1 SYNOPSIS
+
+B<dh_configpackage> [B<--displace> I<path>] [B<--hide> I<path>] [B<--undisplace> I<path>] [B<--unhide> I<file>] [B<--transform> I<transformation>] [S<I<debhelper options>>] [B<-n>]
+
+=head1 DESCRIPTION
+
+B<dh_configpackage> is a debhelper program to create "configuration
+packages".  These packages provide an ideal way to distribute
+configurations to target systems while still affording local system
+administrators a degree of control over their workstations.  The
+motivation and philosophy behind this style of packaging is described
+in detail on the config-package-dev website.  Configuration packages
+make use of dpkg diversions and maintainer script snippets to provide
+three primary operations: displacing, hiding, and transforming files.
+
+The I<displace> operation consists of replacing a file on the target
+system.  The original file is renamed out of the way and diverted in the
+dpkg database.  The replacement file is then installed by the package,
+and the config-package-dev maintainer script snippets create a symlink
+from the original name.  A common use of this is to install a wrapper
+script for an executable.
+
+The I<transform> operation is a special case of the displace operation.
+At build time, a "transform script" is applied to the original source,
+and the result is used as the replacement in the displace operation.  A
+common use of this is to change one value in a config file without
+needing to re-type the entire config file (and risk bit-rot).
+
+The I<hide> operation is yet another special case of the displace
+operation, namely that there is no replacement or symlink.  Instead, the
+file is diverted to a unique path on the target system, thus preserving
+its contents.  A common use of this is to suppress a snippet file in a
+configuration directory (e.g. /etc/foo.d), thus disabling a specific
+operation or configuration.
+
+The I<displace extension> is a suffix appended to the diverted versions
+of files, and this suffix plus the string "-orig" is appended to the
+original versions of the files.  The default value is the first word of
+the package name.  For example, the extension for debathena-bin-example
+would be ".debathena".  So if debathena-bin-example displaced /bin/true,
+the original /bin/true would be found at /bin/true.debathena-orig and
+the new version (installed by e.g. dh_install) found at
+/bin/true.debathena.  /bin/true itself would become a symbolic link.
+(For the remainder of this documentation, ".debathena" will be used as
+the displace extension.)
+
+=head1 FILES
+
+=over 4
+
+=item debian/I<package>.displace
+
+List the files to displace, one per line, including the full path and
+displace extension.  For example, to displace /usr/bin/true to
+/usr/bin/true.debathena, you would list "/usr/bin/true.debathena" in
+the file.  (As with other Debhelper commands, you can omit the initial
+leading slash in pathnames in the package, but these examples retain
+it.)
+
+=item debian/I<package>.hide
+
+List the files to hide, one per line, including the full path and
+displace extension.  As noted above, these files won't actually be
+removed, but merely diverted and renamed to a unique path below
+/usr/share/I<package>.
+
+=item debian/I<package>.undisplace
+
+List the files to undisplace, one per line, including the full path and
+displace extension.  B<NOTE:> This is only needed when a new version of
+the package no longer needs to displace a file (for example, if an
+upstream bug was fixed).  Packages automatically undo all operations
+upon removal or deconfiguration.
+
+=item debian/I<package>.unhide
+
+List the files to unhide, one per line, including the full path
+and displace extension.  B<NOTE:> As with undisplace, this is only needed
+when a new version of the package no longer needs to hide a file.
+
+=item debian/I<package>.transform
+
+Each line in the file specifies a transformation.  A transformation
+consists of two space-separated fields: the full path of the
+target file including the displace extension and the transformation
+command itself.  The transformation can either be a single shell
+command, or an executable file in the debian directory.  The
+transformation takes the original source of the file on stdin and prints
+its transformation on stdout.  Transformations are typically performed
+by perl, sed, or awk, but there is no limitation on what can be used as
+a transformation.
+
+For example, to transform /etc/school.conf by replacing all
+occurrences of the word 'Harvard' with the word 'MIT', you might
+specify the following line:
+
+ /etc/school.conf.debathena sed -e 's/Harvard/MIT/g'
+
+Or, storing the command in a separate script:
+
+ /etc/school.conf.debathena debian/transform_school.conf.pl
+
+If the transformation script fails, the package build fails. You can use
+this with e.g. Perl's C<or die> syntax to make sure that the source
+file of the transformation has not changed from what you expected.
+
+I<Transformation sources>: Under normal operation, the source (passed
+on stdin) for the transformation is the name of the diversion without
+the divert extension.  In some cases, you may wish to use a different
+source (e.g. a sample configuration file in /usr/share/doc).  You can
+specify this source as an optional field between the diversion
+filename and the transformation.  This field must begin with a '<'
+immediately followed by the full path to the source.  Taking the
+example above, we might alter it as follows:
+
+ /etc/school.conf.debathena </usr/share/doc/school/conf.example sed -e 's/Harvard/MIT/g'
+
+B<NOTE:> There is no "untransform" operation.  Because a transform
+operation is a special case of a displace operation, the "undisplace"
+operation is the correct way of removing a no-longer-needed
+transformation in future versions of the package.
+
+=item debian/I<package>.displace-extension
+
+This file is used to specify the displace extension for any files
+diverted by this package, if you do not want to accept the default of
+the first word in the package name.  It will not normally be present.
+(See L<"CAVEATS">.)
+
+=back
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-n>, B<--noscripts>
+
+Do not modify maintainer scripts.  This is a standard debhelper
+option, though you are strongly discouraged from using it except for
+debugging, as these operations rely heavily on the maintainer scripts.
+
+=item B<--displace> I<path>
+
+=item B<--hide> I<path>
+
+=item B<--undisplace> I<path>
+
+=item B<--unhide> I<path>
+
+=item B<--transform> I<transformation>
+
+These options allow for specifying an operation on the command line.
+The argument to the option is the same as a single line of the
+corresponding file, as described above.  You may specify multiple
+occurrences of B<--displace>, or you may invoke B<dh_configpackage>
+repeatedly with different invocations.  The most common use of this
+format is in a rules file when performing conditional operations, in an
+C<override_dh_configpackage> target in the C<rules> file.  See the
+debathena-conffile-example-1.1 package in
+/usr/share/doc/config-package-dev/EXAMPLES for one such use.
+
+=back
+
+=cut
+
+my (@arg_displace, @arg_hide, @arg_undisplace, @arg_unhide, @arg_transform);
+my $args_present = 0;
+
+init(options => {
+    "displace=s" => \@arg_displace,
+    "hide=s" => \@arg_hide,
+    "undisplace=s" => \@arg_undisplace,
+    "unhide=s" => \@arg_unhide,
+    "transform=s" => \@arg_transform,
+});
+
+if (@arg_displace or @arg_hide or @arg_undisplace or @arg_unhide or @arg_transform) {
+    $args_present = 1;
+}
+
+# We default the displace extension to a period followed by the first
+# word of the package name, on the assumption that it is probably the
+# site name (e.g., "debathena-kerberos-config" displaces to
+# ".debathena"). You can set this extension explicitly in
+# debian/$package.displace-extension or debian/displace-extension.
+sub displace_extension {
+    my $package = shift;
+    my $file = pkgfile($package, "displace-extension");
+    if ($file) {
+        open(my $fh, $file);
+        my $ret = <$fh>;
+        chomp $ret;
+        close $fh;
+        return $ret;
+    }
+    $package =~ s/-.*//;
+    return ".$package";
+}
+
+# Replace only the last instance of the displace extension in the
+# filename, to make it possible to displace /path/foo.divert to
+# foo.divert.divert-orig
+sub displace_files_replace_name {
+    my ($package, $filename, $replacement) = @_;
+    my $extension = displace_extension($package);
+    $filename =~ s/(.*)\Q$extension\E/$1$replacement/;
+    return $filename;
+}
+
+# Encode a full path into the path it should be diverted to if it's
+# hidden
+sub hide_files_name {
+    my ($filename, $package) = @_;
+    return "/usr/share/$package/" . encode($filename);
+}
+
+# At compatibility levels 6 and above, prerms take effect in the
+# opposite order from postinsts
+sub reverse_if_6 {
+    if (compat(5)) {
+        return @_;
+    } else {
+        return reverse @_;
+    }
+}
+
+
+# check_file is used to verify that files on local disk have not
+# been modified from the upstream packaged version.
+#
+# We check md5sums from both /var/lib/dpkg/info/$(package).md5sums
+# (the md5sums database for non-conffiles) and the conffiles database
+# used for prompting about conffiles being changed (via dpkg-query).
+#
+# There is some wrangling here because the formats of these sources differ.
+
+sub check_file {
+    my $name = shift;
+    my $truename = `dpkg-divert --truename $name`;
+    chomp $truename;
+    die "$truename missing\n" unless (-e $truename);
+    my $package = `LC_ALL=C dpkg -S $name | sed -n '/^diversion by /! s/: .*\$// p'`;
+    chomp $package;
+    die "$truename is not owned by any package\n" unless ($package);
+
+    my $ctx = Digest::MD5->new;
+    open(my $fh, $truename);
+    binmode $fh;
+    $ctx->addfile($fh);
+    my $digest = $ctx->hexdigest;
+    close $fh;
+
+    my $hassums = 0;
+
+    FINDMD5: {
+        open($fh, "-|", qw(dpkg-query --showformat=${Conffiles}\n --show), $package);
+        while (<$fh>) {
+            next unless /^ \Q$name\E ([0-9a-f]{32})$/;
+            $hassums = 1;
+            if ($1 eq $digest) {
+                last FINDMD5;
+            } else {
+                die "md5sum mismatch on $name\n";
+            }
+        }
+        close $fh;
+
+        open(my $devnull, ">/dev/null");
+        my $pid = open3(undef, my $dpkg_query, $devnull, qw(dpkg-query --control-path), $package, "md5sums");
+        my $md5sums = <$dpkg_query>;
+        chomp $md5sums;
+        close $dpkg_query;
+        close $devnull;
+        waitpid $pid, 0;
+
+        $md5sums ||= "/var/lib/dpkg/info/$package.md5sums";
+
+        if (-e $md5sums) {
+            $hassums = 1;
+            open($fh, $md5sums);
+            my $relname = $name;
+            $relname =~ s|^/||;
+            while (<$fh>) {
+                next unless /^([0-9a-f]{32})  \Q$relname\E$/;
+                if ($1 eq $digest) {
+                    last FINDMD5;
+                } else {
+                    die "md5sum mismatch on $name\n";
+                }
+            }
+            close $fh;
+        }
+
+        if ($hassums) {
+            die "$package contains no md5sums for $name. Is it a generated file?\n";
+        } else {
+            print "config-package-dev: warning: $package does not include md5sums!\n";
+            print "config-package-dev: warning: md5sum for $name not verified.\n";
+        }
+     }
+
+    return $truename;
+}
+
+foreach my $package (@{$dh{DOPACKAGES}}) {
+    my (@displacefiles, @hidefiles, @undisplacefiles, @unhidefiles, @transformfiles);
+
+    if (($package eq $dh{FIRSTPACKAGE} || $dh{PARAMS_ALL}) && $args_present) {
+        @displacefiles = @arg_displace;
+        @hidefiles = @arg_hide;
+        @undisplacefiles = @arg_undisplace;
+        @unhidefiles = @arg_unhide;
+        @transformfiles = map {[split]} @arg_transform;
+    } else {
+        my $displacefile = pkgfile($package, "displace");
+        @displacefiles = filearray($displacefile) if $displacefile;
+        my $hidefile = pkgfile($package, "hide");
+        @hidefiles = filearray($hidefile) if $hidefile;
+        my $undisplacefile = pkgfile($package, "undisplace");
+        @undisplacefiles = filearray($undisplacefile) if $undisplacefile;
+        my $unhidefile = pkgfile($package, "unhide");
+        @unhidefiles = filearray($unhidefile) if $unhidefile;
+        my $transformfile = pkgfile($package, "transform");
+        @transformfiles = filedoublearray($transformfile) if $transformfile;
+    }
+
+    my $tmp = tmpdir($package);
+    my $extension = displace_extension($package);
+
+    if (! $dh{ONLYSCRIPTS} && @hidefiles) {
+        doit("install", "-d", "$tmp/usr/share/$package");
+    }
+
+    foreach my $line (@transformfiles) {
+        my $file = shift @$line;
+        $file =~ s|^/?|/|;
+        my $source;
+        if (@$line[0] =~ /^</) {
+            $source = shift @$line;
+            $source =~ s/^<//;
+        } else {
+            $source = displace_files_replace_name($package, $file, "");
+            if ($source eq $file) {
+                die("Error: '$file' does not contain '$extension'\n");
+            }
+        }
+
+        #if ($rest =~ m|^debian/[^ ]*| && -e $rest) {
+        #    # In case this is a single file in debian/, make sure it's
+        #    # executable, since source-format 1.0 debian/ directories
+        #    # (from .diff.gz) cannot have mode bits
+        #    chmod 0755, $rest;
+        #}
+
+        $source = check_file($source);
+        my $destdir = dirname("$tmp/$file");
+        if (! -d $destdir) {
+            doit("install", "-d", $destdir);
+        }
+        complex_doit(@$line, "<", $source, ">", "$tmp/$file");
+        push @displacefiles, $source;
+    }
+
+    # Add code to postinst to add/remove diversions as appropriate
+    if (! $dh{NOSCRIPTS}) {
+        if (@undisplacefiles || @unhidefiles || @displacefiles || @hidefiles) {
+            my $postinst = escape_shell(join "\\n", (
+                'if [ "$1" = "configure" ]; then',
+                (map {"    check_undisplace_unlink " . displace_files_replace_name($package, $_, " ")} @undisplacefiles),
+                (map {"    check_undisplace_unhide $_ " . hide_files_name($_, $package)} @unhidefiles),
+                (map {"    displace_link " . displace_files_replace_name($package, $_, " ")} @displacefiles),
+                (map {"    displace_hide $_ " . hide_files_name($_, $package)} @hidefiles),
+                'fi'
+            ));
+            autoscript($package, "postinst", "displace.sh.in",
+                "s/#PACKAGE#/$package/g; s/#DEB_DISPLACE_EXTENSION#/$extension/g; \\\$a\"$postinst\"");
+        }
+        if (@displacefiles || @hidefiles) {
+            my $prerm = escape_shell(join "\\n", (
+                'if [ "$1" = "remove" ] || [ "$1" = "deconfigure" ]; then',
+                (map {"    undisplace_unlink " . displace_files_replace_name($package, $_, " ")} reverse_if_6 (@displacefiles)),
+                (map {"    undisplace_unhide $_ $package"} reverse_if_6 (@hidefiles)),
+                'fi'
+            ));
+            autoscript($package, "prerm", "displace.sh.in",
+                "s/#PACKAGE#/$package/g; s/#DEB_DISPLACE_EXTENSION#/$extension/g; \\\$a\"$prerm\"");
+        }
+    }
+
+    # Add an encoding of the names of the diverted files to the Provides:
+    # and Conflicts: lists.  This prevents two packages diverting the same
+    # file from being installed simultaneously (it cannot work, and this
+    # produces a much less ugly error).  Requires in debian/control:
+    #   Provides: ${diverted-files}
+    #   Conflicts: ${diverted-files}
+    foreach my $file (@displacefiles, @hidefiles) {
+        my $encodedfile = encode(displace_files_replace_name($package, $file, ""));
+        addsubstvar($package, "diverted-files", "diverts-$encodedfile");
+    }
+}
+
+=head1 CAVEATS
+
+Because the displace extension is automatically generated from the
+package name, renaming the package can have unintended consequences.
+If you must rename a package such that the first component of the name
+changes, specify the old extension using the C<displace-extension> file
+(see above).
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<The config-package-dev
+homepage|http://debathena.mit.edu/config-package-dev>
+
+This program is a part of config-package-dev.
+
+=head1 AUTHOR
+
+config-package-dev was written by Anders Kaseorg <andersk@mit.edu> and
+Tim Abbott <tabbott@mit.edu>. The debhelper port is by Geoffrey Thomas
+<geofft@mit.edu>.  Documentation by Jonathan Reed <jdreed@mit.edu>.
+
+=cut
