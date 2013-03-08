@@ -1,3 +1,14 @@
+debathena-zephyr-config (1.12) unstable; urgency=low
+
+  * Drop debconf-hack (Trac: #1298) and Pre-Depend on
+    debathena-hesiod-config instead to workaround upstream bug
+    (zephyr.1ts.org #108)
+  * Bump compat level to 7 and Standards-Version
+  * Depend on debhelper 7.4.3+ for dh_installifdown and remove workaround
+    in rules file for older versions
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 08 Mar 2013 13:35:51 -0500
+
 debathena-zephyr-config (1.11) unstable; urgency=low
 
   * No change rebuild to pick up config-package-dev 4.13 changes

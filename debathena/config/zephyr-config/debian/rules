@@ -5,12 +5,4 @@ DEB_DIVERT_FILES_debathena-zephyr-config += \
 	/etc/default/zephyr-clients.debathena
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
-include /usr/share/cdbs/1/rules/debconf-divert.mk
 
-common-install-indep::
-	if hash dh_installifupdown 2>/dev/null; then \
-	    dh_installifupdown; \
-	else \
-	    dh_installdirs etc/network/if-up.d; \
-	    install -p debian/debathena-zephyr-config.if-up $(DEB_DESTDIR)/etc/network/if-up.d/debathena-zephyr-config; \
-	fi
