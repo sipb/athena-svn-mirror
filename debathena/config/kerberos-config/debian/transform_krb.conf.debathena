@@ -1,5 +1,0 @@
-#!/usr/bin/perl -p0
-s/^ATHENA\.MIT\.EDU\n/\@defaultrealm\n/s;
-s/^ATHENA\.MIT\.EDU[ \t]*.*\n//mg;
-s/^NUMENOR\.MIT\.EDU[ \t]*.*\n//mg;
-s/^\@defaultrealm\n/ATHENA.MIT.EDU\nATHENA.MIT.EDU kerberos.mit.edu admin server\nATHENA.MIT.EDU kerberos-1.mit.edu\nATHENA.MIT.EDU kerberos-2.mit.edu\nNUMENOR.MIT.EDU numenor.mit.edu admin server\n/ or die;

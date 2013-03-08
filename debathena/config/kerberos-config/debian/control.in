@@ -3,11 +3,11 @@ Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
 Build-Depends: @cdbs@, krb5-user, krb5-config, debathena-maybe-krb4-config
-Standards-Version: 3.8.4
+Standards-Version: 3.9.3
 
 Package: debathena-kerberos-config
 Architecture: all
-Depends: krb5-config, krb5-user, krb5-clients, ntp | ntp-server | time-daemon, ntpdate | time-daemon, ${misc:Depends}, ${debathena-krb4-depends}
+Depends: krb5-config, krb5-user, krb5-clients, ntp | ntp-server | time-daemon, ntpdate | time-daemon, ${misc:Depends}
 Recommends: debathena-apparmor-config
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}

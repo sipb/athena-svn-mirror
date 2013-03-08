@@ -1,8 +1,16 @@
-debathena-kerberos-config (1.14) UNRELEASED; urgency=low
+debathena-kerberos-config (1.14) unstable; urgency=low
 
+  [ Geoffrey Thomas ]
   * Spelling and grammar fixes.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Fri, 20 Jan 2012 19:29:56 -0500
+  [ Jonathan Reed ]
+  * Drop the krb4 conditionals in the rules file, we no longer have any
+    krb4 releases
+  * undivert /etc/krb.{realms,conf} from any previous krb4 versions (Trac:
+    #1060)
+  * Change debian/copyright to DEP5 format
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 08 Mar 2013 14:57:43 -0500
 
 debathena-kerberos-config (1.13) unstable; urgency=low
 

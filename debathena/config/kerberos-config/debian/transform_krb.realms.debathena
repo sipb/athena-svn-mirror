@@ -1,5 +1,0 @@
-#!/usr/bin/perl -p0
-
-s/^.*[ \t]*ATHENA\.MIT\.EDU\n//mg;
-s/^.*[ \t]*NUMENOR\.MIT\.EDU\n//mg;
-s/^/.mit.edu ATHENA.MIT.EDU\nmit.edu ATHENA.MIT.EDU\nnumenor.mit.edu NUMENOR.MIT.EDU\n/ or die;

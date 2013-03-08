@@ -1,12 +1,8 @@
-This package was created as part of the Debathena Project
-<http://debathena.mit.edu/> of the MIT Student Information Processing
-Board.
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 
-The source code was obtained from the Athena SVN repository at
-<svn://debathena.mit.edu/athena/trunk>, and is licensed as follows:
-
-  Copyright © 2007-2008 Tim Abbott and Anders Kaseorg
-
+Files: *
+Copyright: Copyright © 2007-2008 Tim Abbott and Anders Kaseorg
+License: Expat
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation files
   (the "Software"), to deal in the Software without restriction,
@@ -26,6 +22,3 @@ The source code was obtained from the Athena SVN repository at
   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
-
-The Debian packaging is Copyright © 2007-2008 Tim Abbott and Anders
-Kaseorg, and has the same license as the original software.
