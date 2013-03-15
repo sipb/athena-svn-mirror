@@ -1,3 +1,9 @@
+debathena-workstation (1.9) unstable; urgency=low
+
+  * Punt debathena-language-support (Trac: #1310)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 15 Mar 2013 16:00:31 -0400
+
 debathena-workstation (1.8) unstable; urgency=low
 
   * Add debathena-nautilus-afs (Trac: #395)

@@ -10,7 +10,6 @@ Architecture: all
 Depends: debathena-login-graphical,
  debathena-extra-software,
  debathena-build-depends,
- debathena-language-support,
  debathena-clusterinfo,
  debathena-dns-config,
  debathena-emacs-config,
