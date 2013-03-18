@@ -213,7 +213,7 @@ for image_mpkg in $mpkgs; do
   # Check if we have dkms
   if schq apt-cache show openafs-modules-dkms > /dev/null 2>&1; then
     # epoch
-    ver=1:1.0
+    ver=1:1.0.1
     # Check if the headers we identified above actually exist
     # and deal appropriately (Trac: #948)
     should_skip=0
