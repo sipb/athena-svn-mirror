@@ -1,3 +1,15 @@
+debathena-extra-software (1.5) unstable; urgency=low
+
+  * Recommend motif-clients (Trac: #946)
+  * Convert from CDBS to dh7
+  * Remove X-Debathena-Nobuild line now that hardy isn't a thing
+  * Explicitly depend on icedtea6-plugin, as there are no releases without
+    it anymore.
+  * Bump Standards-Version to 3.9.3
+  * Change copyright file to new copyright format
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 19 Mar 2013 15:55:20 -0400
+
 debathena-extra-software (1.4) unstable; urgency=low
 
   * include debhelper.mk before adding to the targets, not after.
