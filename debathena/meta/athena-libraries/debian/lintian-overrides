@@ -1,0 +1,1 @@
+debathena-athena-libraries: package-depends-on-multiple-libstdc-versions libstdc++5 libstdc++6

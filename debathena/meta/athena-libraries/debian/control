@@ -1,0 +1,52 @@
+Source: debathena-athena-libraries
+Section: debathena/libs
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: debhelper (>= 7.0~)
+Standards-Version: 3.9.3
+
+Package: debathena-athena-libraries
+Architecture: all
+Depends: ${misc:Depends}
+Recommends: freeglut3,
+ guile-1.6-libs,
+ lib32bz2-1.0,
+ lib32gcc1,
+ lib32ncurses5,
+ lib32ncursesw5,
+ lib32z1,
+ libc6-i386,
+ lib32asound2,
+ libasound2,
+ libesd0,
+ lib32gmp3,
+ libgmp3c2,
+ lib32stdc++6,
+ libstdc++5,
+ libstdc++6,
+ libgnome2-0,
+ libgtk2.0-0,
+ vorbis-tools,
+ x11-apps,
+ x11-utils,
+ lesstif2,
+ libxss1,
+ libdb1-compat,
+ libgif4,
+ libgamin0,
+ libhesiod0,
+ libsmbclient,
+ libstartup-notification0,
+ libusb-0.1-4,
+ libutempter0,
+ libwrap0,
+ libgtksourceview1.0-0,
+ ia32-libs
+# Note: libgtksourceview1.0-0 was requested by alexp for
+#       Stata locker.  It is gone in Oneiric+
+# Note: Make some effort to figure out what exactly wants
+#       libxss1 through libwrap0 and whether they're still needed 
+Description: Athena libraries for Debathena
+ This metapackage recommends a set of libraries for compatibility with
+ older locker software.  For simplicity, the package may recommend
+ larger packages with both binaries and libraries.
