@@ -4,14 +4,16 @@ Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
 # The build dependency on x11-common is to work around LP: #921169
 # It can be removed once we stop building for Oneiric.
-Build-Depends: @cdbs@, x11-common, lightdm
-Standards-Version: 3.9.1
+Build-Depends: debhelper (>= 7.0.50~), config-package-dev (>= 5.0~),
+               x11-common, lightdm
+Standards-Version: 3.9.3
 
 Package: debathena-lightdm-config
 Architecture: all
 Depends: lightdm (>= 1.0.6~), 
 	 python, python-gobject, 
 	 gir1.2-lightdm-1, gir1.2-glib-2.0, gir1.2-gtk-3.0,
+	 ${python:Depends},
 	 ${misc:Depends}
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}

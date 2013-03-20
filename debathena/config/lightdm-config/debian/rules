@@ -1,13 +1,10 @@
 #!/usr/bin/make -f
 
-DEB_DIVERT_EXTENSION = .debathena
-DEB_DIVERT_FILES_debathena-lightdm-config += \
-	/etc/lightdm/lightdm.conf.debathena
+%:
+	dh $@ --with config-package
 
+override_dh_configpackage:
+	dh_configpackage
 ifneq ($(wildcard /etc/init/lightdm.conf),)
-    DEB_TRANSFORM_FILES_debathena-lightdm-config += \
-	/etc/init/lightdm.conf.debathena
+	dh_configpackage --transform "/etc/init/lightdm.conf.debathena debian/transform_lightdm.conf.debathena"
 endif
-
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/config-package.mk
