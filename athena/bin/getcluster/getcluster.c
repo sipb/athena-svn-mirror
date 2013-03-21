@@ -427,11 +427,11 @@ static void shellenv(char **hp, const char *ws_version, int bourneshell, int pla
 static void output_var(const char *var, const char *val, int bourneshell, int plaintext)
 {
   if (bourneshell)
-    printf("%s=%s ; export %s ;\n", var, val, var);
+    printf("%s=\"%s\" ; export %s ;\n", var, val, var);
   else if (plaintext)
     printf("%s %s\n", var, val);
   else
-    printf("setenv %s %s ;\n", var, val);
+    printf("setenv %s \"%s\" ;\n", var, val);
 }
 
 static void upper(char *v)

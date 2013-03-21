@@ -1,3 +1,10 @@
+debathena-getcluster (10.1.0-0debathena2) unstable; urgency=low
+
+  * Quote shell output (Trac: #1037), now that the dotfiles are actually
+    fixed.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 21 Mar 2013 16:45:44 -0400
+
 debathena-getcluster (10.1.0-0debathena1) unstable; urgency=low
 
   * Bump debian/compat to 6
