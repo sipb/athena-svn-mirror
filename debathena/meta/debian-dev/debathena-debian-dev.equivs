@@ -1,9 +1,9 @@
 Section: debathena/utils
 Priority: extra
-Standards-Version: 3.6.2
+Standards-Version: 3.9.3
 
 Package: debathena-debian-dev
-Version: 0.2.4
+Version: 0.3
 Maintainer: Debathena Project <debathena@mit.edu>
 Depends: apt-file,
  apt-rdepends,
@@ -25,7 +25,8 @@ Depends: apt-file,
  pbuilder,
  quilt,
  sbuild,
- wdiff
+ wdiff,
+ debathena-lintian-config
 Copyright: ../common/copyright
 Readme: ../common/README-meta.in
 Description: Metapackage providing tools for Debathena development
