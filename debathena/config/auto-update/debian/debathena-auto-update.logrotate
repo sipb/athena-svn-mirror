@@ -2,14 +2,16 @@
   rotate 6
   monthly
   compress
+  delaycompress
   missingok
   notifempty
 }
 
-/var/log/athena-upgrade {
+/var/log/athena-upgrade { 
   rotate 6
   monthly
   compress
+  delaycompress
   missingok
   notifempty
 }

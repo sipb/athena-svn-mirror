@@ -9,8 +9,9 @@ debathena-auto-update (1.42.2) unstable; urgency=low
   * Remove unneeded dependency on bsdutils (it's required)
   * Add $remote_fs dependency in init script because it's apparently still
     1992 and /usr might be an NFS mount
+  * Add 'delaycompress' directive to logrotate (Trac: #1313)
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 21 Mar 2013 13:20:48 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 21 Mar 2013 13:33:44 -0400
 
 debathena-auto-update (1.42.1) unstable; urgency=low
 
