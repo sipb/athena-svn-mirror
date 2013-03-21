@@ -2,12 +2,14 @@ Source: debathena-auto-update
 Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 7.0.50~)
+Standards-Version: 3.9.3
 
 Package: debathena-auto-update
 Architecture: all
-Depends: ${misc:Depends}, bsdutils, debathena-desync, cron, aptitude, apt-file, kexec-tools, bc, debathena-license-config, debathena-athinfod (>= 10.1-0debathena1~)
+# For dpkg-maintscript-helper
+Pre-Depends: dpkg (>= 1.15.7.2~)
+Depends: ${misc:Depends}, debathena-desync, cron, aptitude, apt-file, kexec-tools, bc, debathena-license-config, debathena-athinfod (>= 10.1-0debathena1~)
 Breaks: debathena-reactivate (<< 2.0~)
 Description: Performs automatic updates for Athena machines.
  This package performs automatic updates for Athena machines.

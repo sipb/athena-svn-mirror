@@ -1,3 +1,17 @@
+debathena-auto-update (1.42.2) unstable; urgency=low
+
+  * Actually, don't bother cleaning up the headers by hand.  Instead, just
+    auto-remove packages (unless that would remove metapackages) for
+    compatibility with old aptitude-based updater.  (Trac: #1012)
+  * Convert from CDBS to dh7 and build-dep on dh 7.0.50
+  * Update copyright file to format 1.0 and re-license under BSD 3-clause
+  * Bump Standards-Version to 3.9.3
+  * Remove unneeded dependency on bsdutils (it's required)
+  * Add $remote_fs dependency in init script because it's apparently still
+    1992 and /usr might be an NFS mount
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 21 Mar 2013 13:20:48 -0400
+
 debathena-auto-update (1.42.1) unstable; urgency=low
 
   * Also cleanup the headers for any kernels we remove. (Trac: #1012)

@@ -342,7 +342,6 @@ if [ "$CLEANUP_OLD_KERNELS" = "yes" ]; then
     for k in $toremove; do
       if [ "$(uname -r)" != "$k" ]; then
         kpkgs="$kpkgs linux-image-$k"
-	khpkgs="$khpkgs linux-headers-$k"
       fi
     done
     echo "Will remove these kernels: $kpkgs"
@@ -355,17 +354,21 @@ if [ "$CLEANUP_OLD_KERNELS" = "yes" ]; then
     else
 	warn "Simulation failed!"
     fi
-    echo "Removing corresponding headers: $khpkgs"
-    echo "Simulating..."
-    if v apt-get -y -s remove $khpkgs; then
-      echo "Simulation ok, proceeding..."
-      if ! v apt-get -y remove $khpkgs; then
-	warn "Something went wrong trying to remove kernels!"
-      fi
-    else
-	warn "Simulation failed!"
-    fi
   fi
+fi
+
+# Auto-remove packages
+echo "Attempting to auto-remove old packages"
+echo "Simulating..."
+AUTOREMOVE="$(apt-get --assume-yes --simulate autoremove)"
+if [ $? -ne 0 ]; then
+    warn "Auto-remove simulation failed!"
+elif echo "$AUTOREMOVE" | egrep -q '^Remv debathena-(cluster|workstation|login-graphical|login|standard|auto-update) '; then
+    warn "Metapackages would be removed by auto-remove!"
+else
+    if ! v apt-get -y autoremove; then 
+	complain "Auto-remove failed even though simulation succeeded (shouldn't happen)"
+    fi
 fi
 
 # Finally, update the apt-file cache

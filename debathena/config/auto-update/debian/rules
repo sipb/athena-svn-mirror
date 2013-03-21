@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
-DEB_DH_INSTALLINIT_ARGS_debathena-auto-update="--no-start"
-DEB_UPDATE_RCD_PARAMS_debathena-auto-update="defaults 98 02"
+%:
+	dh $@
 
-include /usr/share/cdbs/1/rules/debhelper.mk
+override_dh_installinit:
+	dh_installinit --no-start --update-rcd-params="defaults 98 02"
