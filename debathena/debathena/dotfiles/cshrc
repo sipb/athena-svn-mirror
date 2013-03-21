@@ -82,7 +82,8 @@ if (! $?ENV_SET) then
   set bindir=arch/${ATHENA_SYS}/bin
 
   if ( ! $?PRINTER && -e /var/run/athena-clusterinfo.csh ) then
-    setenv PRINTER `awk '/LPR/ { print $3 }' /var/run/athena-clusterinfo.csh`
+    # Backticks will get us a subshell to avoid any other variables
+    setenv PRINTER `setenv LPR '' && source /var/run/athena-clusterinfo.sh && echo $LPR`
     if ( $PRINTER == "" ) unsetenv PRINTER
   endif
 

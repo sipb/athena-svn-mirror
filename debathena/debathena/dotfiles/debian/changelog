@@ -1,11 +1,15 @@
-debathena-dotfiles (10.0.32-0debathena1) UNRELEASED; urgency=low
+debathena-dotfiles (10.0.32-0debathena1) unstable; urgency=low
 
+  [ Geoffrey Thomas ]
   * Quote harder in cshrc, because tcsh's philosophy is apparently that
     one can never have enough quoting. (This fixes a bug spotted by Alex
     Dehnert where passing tcsh -c a command with an embedded newline
     would print a spurious error message.)
 
- -- Geoffrey Thomas <geofft@mit.edu>  Sun, 09 Dec 2012 02:59:36 -0500
+  [ Jonathan Reed ]
+  * Don't attempt to parse the clusterinfo with awk (Trac: #1037)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 21 Mar 2013 16:43:23 -0400
 
 debathena-dotfiles (10.0.31-0debathena1) unstable; urgency=low
 
