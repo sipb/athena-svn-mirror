@@ -1,3 +1,10 @@
+debathena-lightdm-config (1.11) UNRELEASED; urgency=low
+
+  * Be robust against the fact that you're not supposed to use symlinks in
+    Upstart jobs.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 21 Mar 2013 12:35:54 -0400
+
 debathena-lightdm-config (1.10) unstable; urgency=low
 
   * Convert from CDBS to dh7 by moving diversion to .displace file, and
