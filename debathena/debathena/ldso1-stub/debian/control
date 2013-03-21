@@ -2,8 +2,8 @@ Source: debathena-ldso1-stub
 Section: debathena/libs
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@, gcc-multilib [amd64]
-Standards-Version: 3.9.1
+Build-Depends: debhelper (>= 7.0.50~), nasm
+Standards-Version: 3.9.3
 
 Package: debathena-ldso1-stub
 Architecture: i386 amd64

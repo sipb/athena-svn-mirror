@@ -1,3 +1,13 @@
+debathena-ldso1-stub (1.1) unstable; urgency=low
+
+  * Write it in assembly, not C, because apparently C doesn't work. (Trac:
+    #476)
+  * Switch to copyright-format 1.0
+  * Switch to dh7 from CDBS
+  * Bump Standards-Version
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 21 Mar 2013 15:22:46 -0400
+
 debathena-ldso1-stub (1.0) unstable; urgency=low
 
   * Initial release. (Trac: #476)
