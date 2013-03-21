@@ -15,5 +15,5 @@ _start:
 
 section     .data
 
-msg     db  'ERROR: The program you are trying to run is too old for this system.',0xa,'       (libc5 not available)',0xa,0x0
+msg     db  'ERROR: The program you are trying to run is too old for this system.',0xa,'       (libc5 not available)',0xa
 len     equ $ - msg
