@@ -43,6 +43,9 @@ case "$1" in
 	    # I hope this doesn't break the world.
 	    initctl reload-configuration
 	fi
+        if pgrep -u lightdm -f debathena-lightdm-greeter >/dev/null 2>&1; then
+	    restart lightdm || :
+	fi
 
     ;;
 

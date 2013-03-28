@@ -1,9 +1,13 @@
-debathena-lightdm-config (1.11) UNRELEASED; urgency=low
+debathena-lightdm-config (1.11) unstable; urgency=low
 
   * Be robust against the fact that you're not supposed to use symlinks in
     Upstart jobs.
+  * If the greeter is running, restart lightdm after installation.
+    (i.e. Do not restart lightdm if the greeter isn't running, because
+    that likely means someone is logged in on console)
+  * Absolutely no other changes as part of this release.
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 21 Mar 2013 12:35:54 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 01 Apr 2013 23:59:00 -0400
 
 debathena-lightdm-config (1.10) unstable; urgency=low
 
