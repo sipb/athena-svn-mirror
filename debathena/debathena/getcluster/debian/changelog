@@ -1,3 +1,16 @@
+debathena-getcluster (10.2) unstable; urgency=low
+
+  * Rewrite in Python and remove autogoo (Trac: #1037)
+  * Actually quote shell output (Trac: #1037)
+  * Add decision debugging with DEBUG_GETCLUSTER=yes
+  * Convert to Debian native package
+  * Bump compat level and Standards-Version
+  * Depend on python-hesiod
+  * Build-Depend on python-hesiod (for 'make check')
+  * Convert to arch-indep package
+
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 28 Mar 2013 13:29:29 -0400
+
 debathena-getcluster (10.1.0-0debathena2) unstable; urgency=low
 
   * Quote shell output (Trac: #1037), now that the dotfiles are actually
