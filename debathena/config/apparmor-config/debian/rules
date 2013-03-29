@@ -28,7 +28,7 @@ endif
 ifneq ($(wildcard /etc/apparmor.d/tunables/home),)
     ifeq ($(wildcard /etc/apparmor.d/tunables/home.d),)
         # Needed for anything older than Lucid
-	# Reverse case handled in postinst
+        # Reverse case handled in postinst
         DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/tunables/home.debathena
     endif
 endif
