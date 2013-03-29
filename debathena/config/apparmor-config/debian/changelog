@@ -1,3 +1,9 @@
+debathena-apparmor-config (1.2.3) unstable; urgency=low
+
+  * Undivert things that we conditionally divert (Trac: #866)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 29 Mar 2013 12:41:20 -0400
+
 debathena-apparmor-config (1.2.2) unstable; urgency=low
 
   * No change rebuild to pick up config-package-dev 4.13 changes

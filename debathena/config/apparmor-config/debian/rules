@@ -3,33 +3,46 @@
 DEB_DIVERT_EXTENSION = .debathena
 ifneq ($(wildcard /etc/apparmor.d/abstractions/kerberosclient),)
     DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/kerberosclient.debathena
+else
+    DEB_UNDIVERT_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/kerberosclient.debathena
 endif
 
 ifneq ($(wildcard /etc/apparmor.d/abstractions/cups-client),)
     DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/cups-client.debathena
+else
+    DEB_UNDIVERT_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/cups-client.debathena
 endif
 
 ifneq ($(wildcard /etc/apparmor.d/abstractions/X),)
     DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/X.debathena
+else
+    DEB_UNDIVERT_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/X.debathena
 endif
 
 ifneq ($(wildcard /etc/apparmor.d/abstractions/nameservice),)
     DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/nameservice.debathena
+else
+    DEB_UNDIVERT_FILES_debathena-apparmor-config += /etc/apparmor.d/abstractions/nameservice.debathena
 endif
 
 ifneq ($(wildcard /etc/apparmor.d/tunables/home),)
     ifeq ($(wildcard /etc/apparmor.d/tunables/home.d),)
         # Needed for anything older than Lucid
+	# Reverse case handled in postinst
         DEB_TRANSFORM_FILES_debathena-apparmor-config += /etc/apparmor.d/tunables/home.debathena
     endif
 endif
 
 ifneq ($(wildcard /etc/apparmor.d/usr.sbin.cupsd),)
     DEB_REMOVE_FILES_debathena-apparmor-config += /etc/apparmor.d/usr.sbin.cupsd
+else
+    DEB_UNREMOVE_FILES_debathena-apparmor-config += /etc/apparmor.d/usr.sbin.cupsd
 endif
 
 ifneq ($(wildcard /etc/apparmor.d/usr.sbin.ntpd),)
     DEB_REMOVE_FILES_debathena-apparmor-config += /etc/apparmor.d/usr.sbin.ntpd
+else
+    DEB_UNREMOVE_FILES_debathena-apparmor-config += /etc/apparmor.d/usr.sbin.ntpd
 endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk
