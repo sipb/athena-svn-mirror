@@ -1,8 +1,0 @@
-#!/usr/bin/make -f
-
-DEB_DIVERT_EXTENSION = .debathena
-DEB_TRANSFORM_FILES_debathena-help-config += \
-	/usr/share/applications/yelp.debathena.desktop
-
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/config-package.mk

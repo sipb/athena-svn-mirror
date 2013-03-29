@@ -1,3 +1,0 @@
-#!/usr/bin/perl -0p
-s{^Comment=Get help with .*$}{Comment=Get help with Debathena}m or die;
-s{^Exec=yelp( %u)?$}{Exec=yelp file:///usr/share/debathena-help-config/debathena.xml}m or die;
