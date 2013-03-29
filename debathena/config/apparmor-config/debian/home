@@ -5,3 +5,4 @@
 @{HOMEDIRS}+=/afs/athena.mit.edu/user/other/
 @{HOMEDIRS}+=/afs/sipb.mit.edu/user/
 @{HOMEDIRS}+=/afs/net.mit.edu/user/
+@{HOMEDIRS}+=/afs/zone.mit.edu/user/
