@@ -202,25 +202,9 @@ debug "Using IPADDR=$IPADDR"
 debug "Using NETMASK=$NETMASK"
 debug "Using GATEWAY=$GATEWAY"
 
-nodhcp="netcfg/disable_dhcp=true"
-case "$UBUNTU_RELEASE" in
-    oneiric|precise)
-        kbdcode="keyboard-configuration/layoutcode=us"
-	# "Yay"
-	nodhcp="netcfg/disable_autoconfig=true"
-	;;
-    natty)
-        # Sigh
-        kbdcode="keyboard-configuration/layoutcode=us"
-        ;;
-    *)
-        kbdcode="console-setup/layoutcode=us"
-        ;;
-esac
-
 if [ -n "$NETMASK" ] && [ -n "$GATEWAY" ]; then
   knetinfo="netcfg/get_hostname=$(hostname) \
-            $nodhcp \
+            netcfg/disable_autoconfig=true \
             netcfg/get_domain=mit.edu \
             netcfg/get_nameservers=\"18.72.0.3 18.71.0.151 18.70.0.160\"\
             netcfg/get_ipaddress=$IPADDR \
@@ -238,7 +222,8 @@ runcmd "wget http://debathena.mit.edu/net-install/${UBUNTU_RELEASE}/${arch}/linu
 
 # This is just the guts of the hackboot script:
 dkargs="DEBCONF_DEBUG=5"
-kargs="$knetinfo locale=en_US $kbdcode \
+kargs="$knetinfo locale=en_US \
+       keyboard-configuration/layoutcode=us \
        quiet \
        panic=5 \
        interface=auto \

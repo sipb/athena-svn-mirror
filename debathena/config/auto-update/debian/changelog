@@ -1,3 +1,9 @@
+debathena-auto-update (1.43) unstable; urgency=low
+
+  * Desupport auto-upgrades to anything older than precise
+
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 01 Apr 2013 16:27:24 -0400
+
 debathena-auto-update (1.42.2) unstable; urgency=low
 
   * Actually, don't bother cleaning up the headers by hand.  Instead, just
