@@ -1,0 +1,43 @@
+Source: debathena-mitmailutils
+Section: debathena/mail
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, autoconf
+Standards-Version: 3.9.3
+
+Package: debathena-mitmailutils
+Architecture: all
+Provides: from, mailquota, mailusage, mitmailappend, mitmailcreate,
+ mitmaildel, mitmailexp, mitmailmove, mitmailrename, mitmailscan,
+ mitmailshow, debathena-from, debathena-mailquota,
+ debathena-mailusage, debathena-mitmailappend,
+ debathena-mitmailcreate, debathena-mitmaildel, debathena-mitmailexp,
+ debathena-mitmailmove, debathena-mitmailrename,
+ debathena-mitmailscan, debathena-mitmailshow
+Depends: ${shlibs:Depends}, ${misc:Depends}, libcyrus-imap-perl22 | debathena-libcyrus-imap-perl, libsasl2-modules-gssapi-mit, hesiod
+Replaces: debathena-from, debathena-mailquota, debathena-mailusage,
+ debathena-mitmailappend, debathena-mitmailcreate,
+ debathena-mitmaildel, debathena-mitmailexp, debathena-mitmailmove,
+ debathena-mitmailrename, debathena-mitmailscan, debathena-mitmailshow
+Conflicts: debathena-mitmailutils (<< 9.4), debathena-from,
+ debathena-mailquota, debathena-mailusage, debathena-mitmailappend,
+ debathena-mitmailcreate, debathena-mitmaildel, debathena-mitmailexp,
+ debathena-mitmailmove, debathena-mitmailrename,
+ debathena-mitmailscan, debathena-mitmailshow
+Description: Utilities for manipulating MIT mail
+ The mitmail* suite of tools for manipulating MIT mail in IMAP in a
+ scriptable manner.
+ .
+ This package includes:
+  - from: Print a list of the user's unread Athena mail
+  - mailquota: Display post office resource usage and limits
+  - mailusage: Display size of mail folders on a post office server
+  - mitmailappend: Append a message to an IMAP folder
+  - mitmailcreate: Create, remove, or subscribe or unsubscribe to IMAP
+    folders
+  - mitmaildel: Delete messages in an IMAP folder
+  - mitmailexp: Expunge an IMAP folder
+  - mitmailmove: Move or copy messages between IMAP folders
+  - mitmailrename: Rename an IMAP mailbox
+  - mitmailscan: Scan messages in an IMAP folder
+  - mitmailshow: Show messages in an IMAP folder

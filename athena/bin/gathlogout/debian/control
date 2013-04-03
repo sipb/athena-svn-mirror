@@ -1,0 +1,13 @@
+Source: debathena-gathlogout
+Section: debathena/gnome
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, autoconf, libgtk2.0-dev, libx11-dev, libxt-dev
+Standards-Version: 3.9.3
+
+Package: debathena-gathlogout
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Confirms user desire to logout and does so
+ gathlogout displays a dialog confirming that the user wishes to log
+ out.  If the user says yes, gathlogout logs the user out.

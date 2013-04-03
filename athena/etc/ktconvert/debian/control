@@ -1,0 +1,14 @@
+Source: debathena-ktconvert
+Section: debathena/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, autoconf
+Standards-Version: 3.9.3
+
+Package: debathena-ktconvert
+Architecture: all
+Depends: ${misc:Depends}, krb5-user, debathena-saferm
+Description: Script to convert /etc/athena/srvtab to /etc/krb5.keytab
+ The ktconvert script automates the process of converting a Kerberos 4
+ srvtab located at /etc/srvtab into a Kerberos 5 keytab located at
+ /etc/krb5.keytab.  It also allows this process to be reversed.

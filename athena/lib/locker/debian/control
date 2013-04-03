@@ -1,0 +1,27 @@
+Source: debathena-liblocker
+Section: debathena/libs
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, automake1.9, autoconf, autotools-dev, debathena-aclocal, libopenafs-dev, libkrb5-dev, libhesiod-dev, libzephyr-dev
+Standards-Version: 3.9.3
+
+Package: debathena-liblocker
+Architecture: all
+Provides: liblocker
+Conflicts: debathena-attach (<< 9.4)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libzephyr4-krb5 | libzephyr3-krb
+Description: Runtime files for Athena locker management library
+ Locker management library functions for Athena.
+ .
+ This package contains configuration and runtime files.
+
+Package: debathena-liblocker-dev
+Section: debathena/libdevel
+Architecture: any
+Provides: liblocker-dev
+Replaces: debathena-liblocker (<< 9.4)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libopenafs-dev, libkrb5-dev, libhesiod-dev, libzephyr-dev, libzephyr4-krb5 | libzephyr3-krb
+Description: Development files for Athena locker management library
+ Locker management library functions for Athena.
+ .
+ This package contains headers and static libraries for development.

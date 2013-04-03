@@ -1,0 +1,14 @@
+Source: debathena-gathrun
+Section: debathena/gnome
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, autoconf
+Standards-Version: 3.9.3
+
+Package: debathena-gathrun
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-attachandrun, zenity, debathena-machtype
+Description: An Athena utility to run GUI programs out of lockers from a menu
+ The gathrun utility allows a user to run a program from a specified
+ locker.  If the program does not exist, a dialog box is displayed
+ saying so (using gdialog).

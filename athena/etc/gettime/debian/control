@@ -1,0 +1,14 @@
+Source: debathena-gettime
+Section: debathena/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, autoconf
+Standards-Version: 3.9.3
+
+Package: debathena-gettime
+Architecture: any
+Provides: gettime
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: An Athena program to sychronize the clock with a remote host
+ Contact a remote machine and synchronize the local clock with that
+ machine's clock.

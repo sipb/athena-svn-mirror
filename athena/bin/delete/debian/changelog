@@ -1,10 +1,16 @@
 debathena-delete (10.0.3-0debathena2) UNRELEASED; urgency=low
 
+  [ Geoffrey Thomas ]
   * Change description to clarify that this package does not
     provide a command called "rm"; thanks to John Ranson for pointing
     this out.
 
- -- Geoffrey Thomas <geofft@mit.edu>  Tue, 06 Mar 2012 08:46:06 -0800
+  [ Jonathan Reed ]
+  * Switch from control.in to control (Trac: #561)
+  * Bump Standards-Version to 3.9.3
+  * Bump compat level to 7
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:59:35 -0400
 
 debathena-delete (10.0.3-0debathena1) unstable; urgency=low
 

@@ -1,0 +1,17 @@
+Source: debathena-athdir
+Section: debathena/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, autoconf, automake1.9, autotools-dev, pkg-config, debathena-libathdir-dev (>= 10.0.1-0debathena1~)
+Standards-Version: 3.9.3
+
+Package: debathena-athdir
+Architecture: any
+Provides: athdir
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A utility to find machine-specific directories using Athena conventions
+ The athdir utility is used to locate specific types of files in an
+ Athena locker.  It knows about all the conventions for compatibility
+ with older operating system versions and processor types, and is the
+ preferred way to determine the correct directory in a locker in which
+ to find binaries or other architecture-dependent files.

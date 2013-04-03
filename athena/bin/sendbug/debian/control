@@ -1,0 +1,13 @@
+Source: debathena-sendbug
+Section: debathena/utils
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, autoconf
+Standards-Version: 3.9.3
+
+Package: debathena-sendbug
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Interface for sending Athena bug reports
+ The sendbug program prompts the user to fill out a form to report a
+ bug in the Athena system.
