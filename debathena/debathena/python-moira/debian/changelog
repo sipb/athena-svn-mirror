@@ -1,10 +1,3 @@
-python-moira (4.3.0-3) UNRELEASED; urgency=low
-
-  * Switch from control.in to control (Trac: #561)
-  * Bump Standards-Version to 3.9.3
-
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:31:19 -0400
-
 python-moira (4.3.0-2) unstable; urgency=low
 
   * Add missing build-dependency on debathena-libmrclient-dev.
