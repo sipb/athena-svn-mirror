@@ -1,0 +1,1 @@
+/etc/krb5.conf.debathena </usr/share/kerberos-configs/krb5.conf.template debian/transform_krb5.conf.debathena

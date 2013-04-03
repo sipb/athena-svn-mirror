@@ -1,15 +1,4 @@
 #!/usr/bin/make -f
 
-DEB_DIVERT_EXTENSION = .debathena
-DEB_TRANSFORM_FILES_debathena-kerberos-config += \
-	/etc/krb5.conf.debathena
-DEB_CHECK_FILES_SOURCE_/etc/krb5.conf.debathena = \
-	/usr/share/kerberos-configs/krb5.conf.template
-
-# Undivert old krb.conf/krb.realms diversions, if any:
-DEB_UNDIVERT_FILES_debathena-kerberos-config += \
-	/etc/krb.conf.debathena \
-	/etc/krb.realms.debathena
-
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/config-package.mk
+%:
+	dh $@ --with=config-package

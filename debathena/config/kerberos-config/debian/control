@@ -2,7 +2,7 @@ Source: debathena-kerberos-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~), krb5-user, krb5-config, debathena-maybe-krb4-config
+Build-Depends: debhelper (>= 7.0~), dh-buildinfo, config-package-dev (>= 5.0~), krb5-user, krb5-config
 Standards-Version: 3.9.3
 
 Package: debathena-kerberos-config
