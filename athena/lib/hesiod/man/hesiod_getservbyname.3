@@ -1,0 +1,75 @@
+.\" $Id: hesiod_getservbyname.3,v 1.1 1996-12-08 21:38:45 ghudson Exp $
+.\"
+.\" Copyright 1996 by the Massachusetts Institute of Technology.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"
+.\" * Redistributions of source code must retain the above copyright
+.\"   notice, this list of conditions and the following disclaimer.
+.\"
+.\" * Redistributions in binary form must reproduce the above copyright
+.\"   notice, this list of conditions and the following disclaimer in
+.\"   the documentation and/or other materials provided with the
+.\"   distribution.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+.\" "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+.\" LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+.\" FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+.\" COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+.\" INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+.\" (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+.\" SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+.\" STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+.\" ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+.\" OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.TH HESIOD 3 "30 November 1996"
+.SH NAME
+hesiod_getservbyname, hesiod_free_servent \- Hesiod functions for retrieving service information
+.SH SYNOPSIS
+.nf
+.B #include <hesiod.h>
+.PP
+.B struct servent *hesiod_getservbyname(void *\fIcontext\fP,
+.B 	const char *\fIname\fP, const char *\fIproto\fP)
+.B void hesiod_free_servent(void *\fIcontext\fP, struct servent *\fIserv\fP)
+.PP
+.B cc file.c -lhesiod
+.fi
+.SH DESCRIPTION
+This family of functions allows you to retrieve service to port
+mappings using Hesiod.  To perform lookups, you need an initialized
+Hesiod context; see hesiod(3) for details.  Information is returned in
+the same format as by
+.IR getservbyname .
+It is the caller's responsibility to call
+.I hesiod_free_servent
+with the returned service entry to free the resources used by the
+service entry.
+.PP
+Hesiod queries for service information are made using the ``service''
+Hesiod type, using the service name as the Hesiod name.  The
+corresponding records should be space-separated lists of strings
+giving the service name, protocol, port number (in decimal), and zero
+or more aliases for the service.  There may be multiple records per
+service name;
+.I hesiod_getservbyname
+will pick the first one whose protocol matches
+.IR proto .
+.SH RETURN VALUES
+On failure,
+.I hesiod_getservbyname
+returns NULL and sets the global variable
+.I errno
+to indicate the error.
+.SH ERRORS
+.I hesiod_getservbyname
+may fail for any of the reasons the routine
+.I hesiod_resolve
+may fail.
+.SH SEE ALSO
+hesiod(3)
