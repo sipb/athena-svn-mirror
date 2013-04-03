@@ -1,0 +1,16 @@
+Source: debathena-command-not-found
+Section: debathena/admin
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-command-not-found
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, debathena-bash-config, debathena-ssl-certificates, curl
+Description: Displays the AFS locker an unknown command is in
+ This package updates the bash command-not-found
+ handle to print the AFS locker a command can
+ be found in (if applicable).  This is in
+ addition to checking if the command is available
+ through the package database.

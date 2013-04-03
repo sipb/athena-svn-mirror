@@ -1,0 +1,23 @@
+Source: debathena-login
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.9.3
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+
+Package: debathena-login
+Architecture: all
+Depends: debathena-athinfod,
+ fingerd,
+ debathena-moira-passwd-config,
+ debathena-nsswitch-config,
+ debathena-pam-config,
+ debathena-ssh-server-config,
+ debathena-standard,
+ debathena-gconf2-config,
+ debathena-gconfd-2-wrapper,
+ debathena-olc,
+ ${misc:Depends}
+Description: Athena login services for Debathena
+ This package installs support for Athena-like Kerberos login with AFS
+ home directories.

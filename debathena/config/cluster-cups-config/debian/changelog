@@ -1,3 +1,11 @@
+debathena-cluster-cups-config (2.0.5) UNRELEASED; urgency=low
+
+  * Switch from control.in to control (Trac: #561)
+  * Bump Standards-Version to 3.9.3
+  * Bump compat level to 7
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:38:24 -0400
+
 debathena-cluster-cups-config (2.0.4) unstable; urgency=low
 
   * /etc/init.d/cups status always returns 0, so require_cups() in

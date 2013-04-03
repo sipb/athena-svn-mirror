@@ -1,0 +1,14 @@
+Source: debathena-tmp-cleaner
+Section: debathena/base
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-tmp-cleaner
+Architecture: all
+Depends: perl, cron, debathena-saferm, ${misc:Depends}
+Description: Cleans up temporary areas of the filesystem
+ This package contains a cron job which runs once a day to clean up
+ files in temporary areas of the filesystem which have not been
+ recently accessed.

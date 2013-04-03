@@ -1,0 +1,14 @@
+Source: debathena-syslog
+Section: debathena/admin
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, aptitude
+Standards-Version: 3.9.3
+
+Package: debathena-syslog
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${debathena-syslog-depends}
+Description: Metapackage for syslog daemon
+ This package depends on either sysklogd or rsyslog, depending on
+ which is the default syslog daemon for this platform. It is otherwise
+ empty, so you may safely remove it.

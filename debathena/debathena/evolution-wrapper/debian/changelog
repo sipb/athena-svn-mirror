@@ -1,3 +1,12 @@
+debathena-evolution-wrapper (10.0.13) UNRELEASED; urgency=low
+
+  * Switch from control.in to control (Trac: #561)
+  * Bump Standards-Version to 3.9.3
+  * Bump compat level to 7
+  * Replace obsolete divert.mk with config-package.mk
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:37:41 -0400
+
 debathena-evolution-wrapper (10.0.12) unstable; urgency=low
 
   * Set the inital Gtk file chooser dir to the user's homedir avoid user

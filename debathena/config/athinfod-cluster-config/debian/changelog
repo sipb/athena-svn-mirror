@@ -1,3 +1,11 @@
+debathena-athinfod-cluster-config (1.7) UNRELEASED; urgency=low
+
+  * Switch from control.in to control (Trac: #561)
+  * Bump Standards-Version to 3.9.3
+  * Bump compat level to 7
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:38:20 -0400
+
 debathena-athinfod-cluster-config (1.6) unstable; urgency=low
 
   * Bump debian/compat to 6

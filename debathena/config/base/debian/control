@@ -1,0 +1,14 @@
+Source: debathena-base
+Section: debathena/base
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-base
+Architecture: all
+Depends: ${misc:Depends}
+Conflicts: debathena-athena-files (<< 0.2)
+Description: Debathena base files
+ This package creates the /usr/athena and /bin/athena symlinks, and
+ contains /etc/athena/version and a dummy /etc/athena/reactivate.

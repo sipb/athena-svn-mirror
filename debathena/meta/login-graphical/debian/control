@@ -1,0 +1,31 @@
+Source: debathena-login-graphical
+Section: debathena/base
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-login-graphical
+X-Debathena-No-Build: hardy
+Architecture: all
+Depends: debathena-login,
+ debathena-gdm-config,
+ debathena-xsession,
+ debathena-firefox-extension,
+ debathena-firefox-wrapper,
+ debathena-pidgin-wrapper,
+ debathena-evolution-wrapper,
+ debathena-locker-menu,
+ debathena-transcript-glue, 
+ debathena-misc-glue,
+ debathena-xlock,
+ debathena-email-icon-config,
+ debathena-moira-gui,
+ ${debathena-maybe-lightdm-config},
+ ${misc:Depends}
+Recommends: ubuntu-desktop,
+ debathena-thunderbird-config,
+Description: Athena graphical login configuration
+ This package allows Athena users to login through the Athena greeter
+ and configures graphical software to integrate with the Athena
+ environment.

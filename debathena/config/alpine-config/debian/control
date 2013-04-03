@@ -1,0 +1,17 @@
+Source: debathena-alpine-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~), alpine
+Standards-Version: 3.9.3
+
+Package: debathena-alpine-config
+Architecture: all
+Depends: ${misc:Depends}, alpine, debathena-msmtp-config, debianutils (>= 2.0)
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}, pine
+Replaces: pine
+Description: Alpine configuration for Debathena
+ This package configures Alpine for the Debathena system by
+ setting up the default inbox, changing a few default flags, and
+ creating a "pine" symlink for historical compatibility.

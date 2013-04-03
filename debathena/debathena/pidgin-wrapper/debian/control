@@ -1,0 +1,16 @@
+Source: debathena-pidgin-wrapper
+Section: debathena/web
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~), lsb-release
+Standards-Version: 3.9.3
+
+Package: debathena-pidgin-wrapper
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, pidgin
+Description: Wrapper to configure Pidgin for Debathena
+ This package provides a wrapper for the stock Pidgin IM client.  It
+ ensures that newly-created .purple directories are made private, and
+ automatically creates an MIT Chat account when Pidgin is run for the
+ first time.
+

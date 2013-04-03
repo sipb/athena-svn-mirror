@@ -1,0 +1,33 @@
+Source: debathena-shell-config
+Section: debathena-config/shells
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~)
+Standards-Version: 3.9.3
+
+Package: debathena-bash-config
+Architecture: all
+Depends: debathena-attach, debathena-machtype, debathena-zephyr-config
+Recommends: bash-completion
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: bash configuration for Debathena
+ This package configures /etc/bash.bashrc to provide things like add,
+ renew, and sets of the ATHENA_SYS and ATHENA_SYS_COMPAT environment
+ variables, etc.  It still sources the system's original
+ /etc/bash.bashrc.
+ .
+ It does not provide a version of the Athena bash_login script.
+
+Package: debathena-tcsh-config
+Architecture: all
+Depends: debathena-attach, debathena-machtype, debathena-zephyr-config, tcsh
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: tcsh configuration for Debathena
+ This package configures /etc/csh.cshrc to provide things like add,
+ renew, and sets of the ATHENA_SYS and ATHENA_SYS_COMPAT environment
+ variables, etc.  It still sources the system's original
+ /etc/csh.cshrc.
+ .
+ It does not provide a version of the Athena csh login script.

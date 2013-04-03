@@ -1,0 +1,15 @@
+Source: debathena-dotfiles
+Section: debathena/base
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-dotfiles
+Architecture: all
+Depends: tcsh, debathena-base, debathena-attach, debathena-machtype, debathena-athdir, debathena-get-message, debathena-lert, debathena-mitmailutils (>= 10.1.0), debathena-afs-config, debathena-mit-automounter, debathena-kerberos-config, debathena-zephyr-config, ${misc:Depends}
+Replaces: debathena-athena-files (<< 0.2)
+Conflicts: debathena-athena-files (<< 0.2), debathena-afuse-automounter (<= 1.4)
+Description: User template and system standard shell dotfiles for Athena
+ This package contains user template and system standard shell
+ dotfiles that are used for a non-graphical Athena environment.

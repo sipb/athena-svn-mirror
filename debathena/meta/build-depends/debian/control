@@ -1,0 +1,12 @@
+Source: debathena-build-depends
+Section: debathena/devel
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, aptitude, dpkg-awk
+Standards-Version: 3.9.3
+
+Package: debathena-build-depends
+Architecture: all
+Depends: ${misc:Depends}, ${debathena-build-depends:Depends}, debathena-debian-dev
+Description: Metapackage providing build dependencies for Debathena
+ This metapackage installs the packages you need to build Debathena.

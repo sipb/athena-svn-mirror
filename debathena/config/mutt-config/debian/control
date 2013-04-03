@@ -1,0 +1,14 @@
+Source: debathena-mutt-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-mutt-config
+Architecture: all
+Depends: ${misc:Depends}, debathena-hesiod-config, debathena-msmtp-config, mutt
+Description: Mutt configuration for Debathena
+ This package configures Mutt for the Debathena system,
+ setting it to use MIT's IMAP and outgoing-SMTP servers
+ and changing some other pertinent settings.

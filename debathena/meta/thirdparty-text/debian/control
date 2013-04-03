@@ -1,0 +1,29 @@
+Source: debathena-thirdparty-text
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.9.3
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+
+Package: debathena-thirdparty-text
+Architecture: all
+Depends: abiword,
+ lyx,
+ nvi,
+ wv,
+ html2ps,
+ latex2html,
+ nedit,
+ xemacs21,
+ xpdf,
+ jedit,
+ pdfedit,
+ ${debathena-maybe-artha},
+ ${debathena-maybe-gnome-dictionary},
+ ${misc:Depends}
+Recommends: abiword-plugins-gnome
+Description: Debathena metapackage for third-party text software
+ This includes a set of subpackages of commonly-used third-party software
+ within the text domain.  It is intended for cluster machines though usable
+ anywhere.  Direct questions about software included in this metapackage
+ to 3partysw@mit.edu.

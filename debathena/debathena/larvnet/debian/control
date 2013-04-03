@@ -1,0 +1,13 @@
+Source: debathena-larvnet
+Section: debathena/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-larvnet
+Architecture: all
+Provides: larvnet
+Depends: ${shlibs:Depends}, ${misc:Depends}, x11-common, socat, hostname, hesiod, debathena-machtype, netbase, openbsd-inetd | inet-superserver
+Description: Larvnet monitoring software for Debathena machines
+ Allows the Larvnet service to track whether this workstation is in use.

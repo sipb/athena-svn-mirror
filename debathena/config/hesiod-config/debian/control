@@ -1,0 +1,14 @@
+Source: debathena-hesiod-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~)
+Standards-Version: 3.9.3
+
+Package: debathena-hesiod-config
+Architecture: all
+Depends: hesiod, libhesiod0, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Hesiod configuration for Debathena
+ This packages configures Hesiod to access the Athena Hesiod domain.

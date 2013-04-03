@@ -1,0 +1,14 @@
+Source: debathena-athinfod-cluster-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~), debathena-athinfod
+Standards-Version: 3.9.3
+
+Package: debathena-athinfod-cluster-config
+Architecture: all
+Depends: debathena-athinfod (>= 10.1-0debathena1~), debathena-machtype, python-usb, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Athinfod configuration for Debathena
+ This package configures athinfod with additional queries for cluster machines.

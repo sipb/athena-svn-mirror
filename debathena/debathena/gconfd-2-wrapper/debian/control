@@ -1,0 +1,16 @@
+Source: debathena-gconfd-2-wrapper
+Section: debathena/gnome
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+
+Standards-Version: 3.9.3
+
+Package: debathena-gconfd-2-wrapper
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-gconf2-config
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Wrapper to configure gconf2 daemon for Debathena
+ This package provides a wrapper for the stock gconf2 daemon.  It
+ ensures that newly-created .gconf and .gconfd directories are made
+ private.

@@ -1,0 +1,14 @@
+Source: debathena-fingerd-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~)
+Standards-Version: 3.9.3
+
+Package: debathena-fingerd-config
+Architecture: all
+Depends: debathena-finger-config, finger, fingerd, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: fingerd configuration for Debathena
+ This package makes the finger daemon call finger.debathena-orig -m.

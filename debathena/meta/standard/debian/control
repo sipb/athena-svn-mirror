@@ -1,0 +1,22 @@
+Source: debathena-standard
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.9.3
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+
+Package: debathena-standard
+Architecture: all
+Depends: debathena-athena-libraries,
+ debathena-clients,
+ debathena-dotfiles,
+ debathena-locker,
+ debathena-archive-keyring,
+ debathena-upgrade-config,
+ ${misc:Depends}
+Recommends: debathena-msmtp-mta
+Description: Metapackage providing Debathena standard environment
+ This package and its dependencies provide an environment for
+ accessing MIT Athena services from your Debian-based computer,
+ including Kerberos authentication, AFS and AFS locker software, and
+ other miscellaneous clients.

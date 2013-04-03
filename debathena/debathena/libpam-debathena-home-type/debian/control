@@ -1,0 +1,13 @@
+Source: libpam-debathena-home-type
+Section: debathena/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, libpam0g-dev
+Standards-Version: 3.9.3
+
+Package: libpam-debathena-home-type
+Architecture: any
+Depends: ${shlibs:Depends}, openafs-client
+Description: Debathena hack to set DEBATHENA_HOME_TYPE
+ This package contains a PAM module that sets DEBATHENA_HOME_TYPE to
+ afs or local depending whether the user's home directory is in AFS.

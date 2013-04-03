@@ -1,0 +1,13 @@
+Source: debathena-archive-keyring
+Section: debathena/base
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-archive-keyring
+Architecture: all
+Depends: ${misc:Depends}, apt
+Description: GnuPG archive keys of the Debathena archive
+ The Debathena project digitally signs its Release files. This package
+ contains the GnuPG archive keys used for that purpose.

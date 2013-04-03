@@ -1,3 +1,11 @@
+debathena-olc (1.1) UNRELEASED; urgency=low
+
+  * Switch from control.in to control (Trac: #561)
+  * Bump Standards-Version to 3.9.3
+  * Bump compat level to 7
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:31:16 -0400
+
 debathena-olc (1.0) unstable; urgency=low
 
   * Initial release.

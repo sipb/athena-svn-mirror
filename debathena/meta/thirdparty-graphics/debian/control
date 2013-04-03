@@ -1,0 +1,68 @@
+Source: debathena-thirdparty-graphics
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.9.3
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+
+Package: debathena-thirdparty-graphics
+Architecture: all
+Depends: inventor-data,
+ inventor-demo,
+ inventor-doc,
+ libinventor0,
+ imagemagick,
+ freeglut3 | glutg3,
+ freeglut3-dev | glutg3-dev,
+ libghc-glut-dev | libghc6-glut-dev,
+ libghc-glut-doc | libghc6-glut-doc,
+ libghc-glut-prof | libghc6-glut-prof,
+ libglui-dev,
+ libglui2c2,
+ inkscape,
+ plotutils,
+ gnome-mplayer,
+ smplayer,
+ mplayer-fonts,
+ mplayer-doc,
+ vlc,
+ mozilla-plugin-vlc,
+ xine-ui,
+ gxine,
+ gxineplugin,
+ xine-plugin,
+ netpbm,
+ libnetpbm10-dev,
+ xcircuit,
+ dia,
+ djvulibre-bin,
+ ipe,
+ pstoedit,
+ tgif,
+ xfig,
+ xfig-libs,
+ xfig-doc,
+ xpaint,
+ blender,
+ gerbv,
+ pdftoipe,
+ mgp,
+ graphviz,
+ mesa-utils,
+ ${debathena-maybe-xdot},
+ ${misc:Depends}
+Recommends: inventor-dev,
+ inventor-clients,
+ gle-graphics,
+ glut-doc,
+ povray,
+ povray-doc,
+ povray-examples,
+ povray-includes,
+ sdr,
+ xprint-utils,
+Description: Debathena metapackage for third-party graphics software
+ This includes a set of subpackages of commonly-used third-party software
+ within the graphics domain.  It is intended for cluster machines though usable
+ anywhere.  Direct questions about software included in this metapackage
+ to 3partysw@mit.edu.

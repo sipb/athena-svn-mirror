@@ -1,3 +1,11 @@
+debathena-login-graphical (1.4) UNRELEASED; urgency=low
+
+  * Switch from control.in to control (Trac: #561)
+  * Bump Standards-Version to 3.9.3
+  * Bump compat level to 7
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:40:08 -0400
+
 debathena-login-graphical (1.3) unstable; urgency=low
 
   * Recommend thunderbird-config for everything (and stop building on

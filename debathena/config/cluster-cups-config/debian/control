@@ -1,0 +1,14 @@
+Source: debathena-cluster-cups-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~), debathena-cups
+Standards-Version: 3.9.3
+
+Package: debathena-cluster-cups-config
+Architecture: all
+Depends: ${misc:Depends}, debathena-cupsys-config (>= 1.12~), debathena-printing-config, hpijs
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: CUPS configuration for Athena cluster machines
+ This package configures CUPS on cluster machines.

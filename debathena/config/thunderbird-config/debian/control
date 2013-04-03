@@ -1,0 +1,16 @@
+Source: debathena-thunderbird-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-thunderbird-config
+X-Debathena-No-Build: hardy
+Architecture: all
+Depends: ${misc:Depends}, icedove | thunderbird
+Description: Thunderbird configuration for Debathena
+ This package configures Thunderbird for the Debathena system, which
+ primarily consists of disabling offline IMAP storage.  Account
+ settings are not dealt with here, but via Thunderbird's autoconfig
+ mechanism.

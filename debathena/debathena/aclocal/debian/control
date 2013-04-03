@@ -1,0 +1,13 @@
+Source: debathena-aclocal
+Section: debathena/devel
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-aclocal
+Architecture: all
+Depends: ${misc:Depends}, pkg-config
+Description: Common autoconf macros for Debathena
+ This package contains autoconf macros shared by multiple Debathena
+ packages.

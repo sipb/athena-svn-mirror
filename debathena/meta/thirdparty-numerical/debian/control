@@ -1,0 +1,39 @@
+Source: debathena-thirdparty-numerical
+Section: debathena/base
+Priority: extra
+Standards-Version: 3.9.3
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+
+Package: debathena-thirdparty-numerical
+Architecture: all
+Depends: maxima,
+ xmaxima,
+ maxima-doc,
+ maxima-share,
+ maxima-test,
+ maxima-emacs,
+ nickle,
+ gnumeric,
+ gnumeric-doc,
+ gnumeric-plugins-extra,
+ gnuplot-doc,
+ octave3.2,
+ octave3.2-doc,
+ octave3.2-headers,
+ octave3.2-htmldoc,
+ octave3.2-emacsen,
+ pari-gp,
+ pari-gp2c,
+ pari-doc,
+ pari-extra,
+ sc,
+ singular,
+ libsingular-dev,
+ grace,
+ ${misc:Depends}
+Description: Debathena metapackage for third-party numerical software
+ This includes a set of subpackages of commonly-used third-party software
+ within the numerical domain.  It is intended for cluster machines though usable
+ anywhere.  Direct questions about software included in this metapackage
+ to 3partysw@mit.edu.

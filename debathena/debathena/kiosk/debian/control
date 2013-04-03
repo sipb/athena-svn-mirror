@@ -1,0 +1,18 @@
+Source: debathena-kiosk
+Section: debathena/web
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, debathena-gdm
+Standards-Version: 3.9.3
+
+Package: debathena-kiosk
+X-Debathena-Build-For: lucid natty precise
+Architecture: all
+Depends: ${misc:Depends}, firefox | iceweasel, metacity, unzip, adduser,
+ gdm, python, python-gtk2, python-glade2, python-dbus, sun-java6-plugin | icedtea6-plugin, debathena-bugme (>= 10.0.5-0debathena1~), sudo (>= 1.7.2p1-1~)
+Description: Starts a kiosk mode web browser on a new virtual terminal
+ This package provides a tool to launch a separate X11 session, running
+ a kiosk mode web browser, on a new virtual terminal.  It is most useful
+ when configured to be invoked as a custom command from gdm, to enable
+ functions such as registering for an Athena account from a pre-login
+ environment.

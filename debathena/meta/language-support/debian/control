@@ -1,0 +1,12 @@
+Source: debathena-language-support
+Section: debathena/translations
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, aptitude
+Standards-Version: 3.9.3
+
+Package: debathena-language-support
+Architecture: all
+Depends: ${misc:Depends}, ${debathena-language-support:Depends}
+Description: Metapackage providing input methods for Debathena
+ This metapackage installs all input methods available.

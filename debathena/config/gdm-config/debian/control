@@ -1,0 +1,19 @@
+Source: debathena-gdm-config
+Section: debathena-config/gnome
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~), debathena-gdm, lsb-release
+Standards-Version: 3.9.3
+
+Package: debathena-gdm-config
+Architecture: all
+Depends: debathena-gdm, gnome-session, python, ${misc:Depends}, ${debathena-gdm-gconf-depends}
+Provides: debathena-login-graphical-branding, debathena-workstation-branding, debathena-cluster-branding, ${diverted-files}
+Conflicts: ${diverted-files}
+Breaks: debathena-reactivate (<< 1.22~)
+Replaces: debathena-reactivate (<< 1.22~)
+Description: GDM configuration for Debathena
+ This packages configures gdm to use the Debathena logo, store
+ xauthority files in /tmp, and welcome the user to Debathena.
+
+

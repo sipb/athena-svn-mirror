@@ -1,0 +1,13 @@
+Source: debathena-locker-menu
+Section: debathena/base
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-locker-menu
+Architecture: all
+Depends: debathena-gathrun, ${misc:Depends}
+Description: Athena locker software application sub-menu
+ This package creates an application sub-menu for popular Athena
+ locker software.

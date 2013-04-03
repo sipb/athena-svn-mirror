@@ -1,0 +1,13 @@
+Source: debathena-tex-extras
+Section: debathena/tex
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-tex-extras
+Architecture: all
+Depends: ${misc:Depends}
+Description: Extra TeX materials developed for Athena
+ This package contains TeX materials developed for the Athena
+ computing environment.

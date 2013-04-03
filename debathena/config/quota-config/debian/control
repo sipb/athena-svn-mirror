@@ -1,0 +1,14 @@
+Source: debathena-quota-config
+Section: debathena-config/utils
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~)
+Standards-Version: 3.9.3
+
+Package: debathena-quota-config
+Architecture: all
+Depends: debathena-quota (>= 9.4.0-0debathena2~), ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Set Athena quota as default
+ This package makes /usr/bin/quota point to the Debathena version.

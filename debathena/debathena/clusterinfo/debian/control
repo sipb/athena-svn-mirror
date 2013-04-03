@@ -1,0 +1,14 @@
+Source: debathena-clusterinfo
+Section: debathena/base
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: cdbs, debhelper, dh-buildinfo
+Standards-Version: 3.9.3
+
+Package: debathena-clusterinfo
+Architecture: all
+Depends: debathena-getcluster, ${misc:Depends}
+Description: Cluster info caching for Debathena
+ This package contains a script to retrieve and cache the machine's
+ cluster info, as well as a boot script and cron job to update the
+ cache on a regular basis.
