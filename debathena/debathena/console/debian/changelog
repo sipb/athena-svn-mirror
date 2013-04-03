@@ -1,8 +1,10 @@
 debathena-console (1.3) UNRELEASED; urgency=low
 
   * Bump debian/compat to 6
+  * Do not depend on the no-longer-existent python-gnome2-desktop package
+  * Make the window and font smaller
 
- -- Jonathan Reed <jdreed@mit.edu>  Sun, 01 Jul 2012 12:21:42 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 12:50:49 -0400
 
 debathena-console (1.2) unstable; urgency=low
 

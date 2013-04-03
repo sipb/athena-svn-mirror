@@ -75,7 +75,7 @@ class ConsoleViewer(gtk.Window):
 
 
         self.set_title(NAME)
-        self.set_default_size(640, 320)
+        self.set_default_size(480, 240)
         self.set_border_width(0)
 
         vbox = gtk.VBox(False, 0)
@@ -184,8 +184,8 @@ class ConsoleViewer(gtk.Window):
         import pango
 
         # See http://www.pygtk.org/docs/pygtk/class-gtktexttag.html
-        default_args = {'family': 'monospace',
-                        'size_points': 12}
+        default_args = {'family': 'courier',
+                        'size_points': 8}
 
         text_buffer.create_tag("stdout", **default_args)
         text_buffer.create_tag("stderr", foreground="red", **default_args)
