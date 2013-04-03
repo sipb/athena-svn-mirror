@@ -2,23 +2,38 @@
 set -e
 
 name=nmh
-daversionappend=debathena2
+daversionappend=debathena3
 
 dir=$(cd "$(dirname "$0")"; pwd)
 
 hack_package () {
-    cp -a "$dir/nmh-mbx_close.dpatch" debian/patches/
+    if [ -s "debian/patches/00list" ] && \
+       [ -n "$(tail -c 1 debian/patches/00list)" ]; then
+	# Upstream sometimes doesn't end in a newline
+	echo >> debian/patches/00list
+    fi
+    if dpkg --compare-versions "$version" lt 1.5~; then
+	cp -a "$dir/nmh-mbx_close.dpatch" debian/patches/
+	echo nmh-mbx_close.dpatch >> debian/patches/00list
+    fi
     cp -a "$dir/nmh-mhshow_pager.dpatch" debian/patches/
-    echo nmh-mbx_close.dpatch >> debian/patches/00list
     echo nmh-mhshow_pager.dpatch >> debian/patches/00list
-    append_description <<EOF
+    if [ -f "debian/patches/nmh-mbx_close.dpatch" ]; then
+	append_description <<EOF
  .
  This package was rebuilt for the Debathena project. It adds a patch
  to to avoid losing mail if close() fails (as it can in AFS if you run
  over quota) when writing mailbox files, and a patch to wrap output
  from MIME mail in a pager.
 EOF
-    add_changelog 'Avoid losing mail if close() fails, as it can in AFS.'
+	add_changelog 'Avoid losing mail if close() fails, as it can in AFS.'
+    else
+	append_description <<EOF
+ .
+ This package was rebuilt for the Debathena project. It adds a patch
+ to wrap output from MIME mail in a pager.
+EOF
+    fi
     add_changelog 'Wrap as much output from MIME mail in the moreproc as possible.'
     add_debathena_provides
     munge_sections
