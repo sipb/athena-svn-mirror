@@ -14,7 +14,7 @@ Depends: debathena-athena-libraries,
  debathena-archive-keyring,
  debathena-upgrade-config,
  ${misc:Depends}
-Recommends: debathena-msmtp-mta
+Recommends: debathena-msmtp-mta | mail-transport-agent
 Description: Metapackage providing Debathena standard environment
  This package and its dependencies provide an environment for
  accessing MIT Athena services from your Debian-based computer,

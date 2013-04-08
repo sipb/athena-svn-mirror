@@ -1,10 +1,12 @@
-debathena-standard (1.1) UNRELEASED; urgency=low
+debathena-standard (1.1) unstable; urgency=low
 
   * Switch from control.in to control (Trac: #561)
   * Bump Standards-Version to 3.9.3
   * Bump compat level to 7
+  * Recommend mail-transport-agent as an alternative to
+    debathena-msmtp-mta, for people who already have an MTA (Trac: #1025)
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:40:13 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 08 Apr 2013 16:08:13 -0400
 
 debathena-standard (1.0) unstable; urgency=low
 
