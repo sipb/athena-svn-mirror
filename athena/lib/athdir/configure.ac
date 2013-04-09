@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.67])
 AC_INIT([libathdir], [10.0.2], [debathena@mit.edu])
-AM_INIT_AUTOMAKE([foreign -Wall -Wno-extra-portability])
+AM_INIT_AUTOMAKE([foreign -Wall])
 AM_MAINTAINER_MODE([enable])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_MACRO_DIR([m4])
@@ -12,6 +12,8 @@ AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CC
+# automake 1.12 seems to require this, but automake 1.11 doesn't recognize it
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 LT_INIT
 
 # Checks for libraries.
