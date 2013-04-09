@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.67])
 AC_INIT([libathdir], [10.0.2], [debathena@mit.edu])
-AM_INIT_AUTOMAKE([foreign -Wall])
+AM_INIT_AUTOMAKE([foreign -Wall -Wno-extra-portability])
 AM_MAINTAINER_MODE([enable])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_MACRO_DIR([m4])
