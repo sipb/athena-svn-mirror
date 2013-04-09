@@ -1,2 +1,5 @@
 /etc/krb.conf.debathena
 /etc/krb.realms.debathena
+# We used to divert these pre 1.10.  See also .unhide
+/etc/apparmor.d/usr.sbin.cupsd
+/etc/apparmor.d/abstractions/kerberosclient

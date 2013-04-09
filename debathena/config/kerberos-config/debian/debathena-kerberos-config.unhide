@@ -1,0 +1,3 @@
+# We used to hide ("remove") these pre-1.10.  See also .undisplace
+/etc/apparmor.d/abstractions/kerberosclient
+/etc/apparmor.d/usr.sbin.cupsd

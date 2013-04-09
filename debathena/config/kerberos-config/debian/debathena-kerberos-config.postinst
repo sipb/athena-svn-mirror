@@ -22,83 +22,10 @@ set -e
 
 #DEBHELPER#
 
-package=debathena-kerberos-config
-ours=.debathena
-theirs=.debathena-orig
-
-undivert_unlink_symlink()
-{
-    file="$1"
-    ourfile="$2"
-    theirfile="$3"
-    if [ ! -L "$file" ] || \
-        [ "$(readlink "$file")" != "$(basename "$ourfile")" -a \
-          "$(readlink "$file")" != "$(basename "$theirfile")" ]; then
-        echo "*** OMINOUS WARNING ***: $file is not linked to either $(basename "$ourfile") or $(basename "$theirfile")" >&2
-    else
-        rm -f "$file"
-    fi
-}
-
-undivert_unlink_divert()
-{
-    file="$1"
-    if [ ! -L "$file" ] && [ ! -e "$file" ]; then
-        dpkg-divert --remove --rename --package "$package" "$file"
-    else
-        echo "Not removing diversion of $file by $package" >&2
-    fi
-}
-
-undivert_unlink()
-{
-    prefix=$1
-    suffix=$2
-
-    file=$prefix$suffix
-    ourfile=$prefix$ours$suffix
-    theirfile=$prefix$theirs$suffix
-
-    undivert_unlink_symlink "$file" "$ourfile" "$theirfile"
-    undivert_unlink_divert "$file" "$package"
-}
-
-cleanup_old_diversion() {
-    file="$1"
-    if dpkg-divert --list "${file}" | grep -Fxq "diversion of ${file} to ${file}${theirs} by ${package}"; then
-        undivert_unlink "$file"
-    fi
-}
-
-cleanup_old_removal() {
-    file="$1"
-    removedfile="$2"
-    if dpkg-divert --list "${file}" | grep -Fxq "diversion of ${file} to ${removedfile} by ${package}"; then
-	undivert_unlink_divert "$file"
-    fi
-}
-
-
 case "$1" in
     configure)
 	if dpkg-query -f '${Conffiles}\n' -W debathena-kerberos-config | grep '/etc/apparmor.d/usr.sbin.cups.debathena' | awk '{ print $2"  "$1 }' | md5sum -c >/dev/null 2>&1; then
 	    rm -f /etc/apparmor.d/usr.sbin.cups.debathena
-	fi
-
-	# The cupsd config can be removed, but not diverted; the
-	# kerberosclient config can be diverted but not removed. Since
-	# both files have been both at various points in the package's
-	# history, if one of them is wrong, fix it.
-	cleanup_old_removal /etc/apparmor.d/usr.sbin.cupsd /usr/share/debathena-kerberos-config/etc++apparmor.d++usr.sbin.cupsd
-	cleanup_old_diversion /etc/apparmor.d/usr.sbin.cupsd
-	cleanup_old_removal /etc/apparmor.d/abstractions/kerberosclient /usr/share/debathena-kerberos-config/etc++apparmor.d++abstractions++kerberosclient
-	cleanup_old_diversion /etc/apparmor.d/abstractions/kerberosclient
-
-	# Handle upgrading from a system with krb4 to one without
-	krb5_version="$(dpkg-query -W -f '${Version}' krb5-user)"
-	if dpkg --compare-versions "$krb5_version" ge "1.7~"; then
-	    cleanup_old_diversion /etc/krb.conf
-	    cleanup_old_diversion /etc/krb.realms
 	fi
 
 	if dpkg --compare-versions "$2" lt-nl "1.10~" && \
