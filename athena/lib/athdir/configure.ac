@@ -11,8 +11,14 @@ AC_CONFIG_SRCDIR([src/athdir.c])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
+AC_PROG_CXX
+AC_PROG_AWK
 AC_PROG_CC
+AC_PROG_CPP
 AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
 # automake 1.12 seems to require this, but automake 1.11 doesn't recognize it
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 LT_INIT
@@ -32,9 +38,24 @@ AC_CHECK_FUNCS([strchr])
 
 # More stuff
 AS_IF([test x"$ATHENA_SYS" = x], [AC_MSG_ERROR([ATHENA_SYS must be set])])
-AS_IF([test x"$ATHENA_HOSTTYPE" = x], [AC_MSG_ERROR([ATHENA_HOSTTYPE must be set])])
 AC_DEFINE_UNQUOTED([ATHSYS], ["$ATHENA_SYS"], [Define the Athena System Version])
-AC_DEFINE_UNQUOTED([HOSTTYPE_$ATHENA_HOSTTYPE], [Define the type of the Athena System])
+
+AC_ARG_WITH([hosttype],
+    [AS_HELP_STRING([--with-hosttype],
+                    [machtype for compatibility])],
+    [
+	case $withval in
+	     linux)	withval='"linux"';;
+	     sun4)    	withval='"sun4"';;
+	     inbsd)	withval='"inbsd"';;
+	     yes)	withval='"linux"';;
+	     no)	withval=NULL;;
+	     *)		AC_MSG_ERROR([invalid hosttype specified]);;
+	esac
+	hosttype=$withval
+    ],
+    [hosttype='"linux"'])
+AC_DEFINE_UNQUOTED([HOSTTYPE], [$hosttype], [Define the type of the Athena System])
 
 
 AC_CONFIG_FILES([Makefile

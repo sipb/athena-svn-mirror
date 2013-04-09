@@ -44,17 +44,10 @@ static const char rcsid[] = "$Id: athdir.c,v 1.6 1999-10-23 19:28:46 danw Exp $"
 #include "stringlist.h"
 #include "config.h"
 
-/* Define HOSTTYPE for the platforms where `machtype`bin has historic
- * use.  Never add new platforms to this list.
- */
-#if defined(HOSTTYPE_sun4)
-#define HOSTTYPE "sun4"
-#elif defined(HOSTTYPE_linux)
-#define HOSTTYPE "linux"
-#elif defined(HOSTTYPE_inbsd)
-#define HOSTTYPE "inbsd"
-#endif
-
+/* HOSTTYPE should always be defined when we get here, because
+   configure is responsible for getting it to us. Nonetheless, this
+   codepath is beign left in for legacy reasons, like the rest of this
+   entire file... */
 #ifdef HOSTTYPE
 char *hosttype = HOSTTYPE;
 #else
