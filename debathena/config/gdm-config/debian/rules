@@ -30,6 +30,10 @@ ifneq ($(NEW_GDM),y)
 	${GDM_CONFFILE}
     DEB_DIVERT_FILES_debathena-gdm-config += \
 	/usr/share/gdm/BuiltInSessions/default.desktop.debathena
+else
+    DEB_UNDIVERT_FILES_debathena-gdm-config += \
+	/usr/share/gdm/BuiltInSessions/default.desktop.debathena \
+	${GDM_CONFFILE}
 endif
 
 include /usr/share/cdbs/1/rules/debhelper.mk
