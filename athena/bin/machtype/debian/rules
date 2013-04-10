@@ -28,6 +28,14 @@ endif
 # chronological order, e.g., Debian 6.0 released before Ubuntu 11.04,
 # but after its DebianImportFreeze.)
 
+# Wheezy has had like 3 freezes, all before raring's DIF, so
+# who knows if this order is right.
+ifeq ($(DISTRO),Ubuntu)
+    ifeq ($(call compare_ubuntu_version,13.04),y)
+        SYS_COMPAT += $(call arch_sysnames,amd64_ubuntu1210,i386_ubuntu1210)
+    endif
+endif
+
 ifeq ($(call compare_debian_version,7),y)
     SYS_COMPAT += $(call arch_sysnames,amd64_deb70,i386_deb70)
 endif
@@ -84,7 +92,9 @@ ifeq ($(call compare_debian_version,4),y)
     SYS_COMPAT += $(call arch_sysnames,amd64_deb40,i386_deb40 i386_rhel4)
 endif
 
-SYS_COMPAT += i386_rhel3 i386_linux24
+ifneq ($(call compare_debian_version,7),y)
+    SYS_COMPAT += i386_rhel3 i386_linux24
+endif
 
 OPENAFS_VERSION := $(shell dpkg-query --showformat='$${Version}' --show openafs-client)
 MAX_SYSNAMES_PLUS_ONE := $(if $(shell dpkg --compare-versions $(OPENAFS_VERSION) '>=' '1.4.12+dfsg-3~' && echo y),33,17)
