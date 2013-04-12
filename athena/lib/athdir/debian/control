@@ -2,7 +2,7 @@ Source: debathena-libathdir
 Section: debathena/libs
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: cdbs, debhelper, dh-buildinfo, libtool, automake1.9, autoconf, autotools-dev, debathena-machtype
+Build-Depends: debhelper (>= 7), autotools-dev, dh-autoreconf, debathena-machtype
 Standards-Version: 3.9.3
 
 Package: debathena-libathdir0

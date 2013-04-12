@@ -1,33 +1,6 @@
 #!/usr/bin/make -f
 
-DEB_AUTO_UPDATE_AUTOCONF = 2.50
-DEB_AUTO_UPDATE_ACLOCAL = 1.9
-DEB_AUTO_UPDATE_LIBTOOL = pre
-
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/autotools.mk
-
-DEB_DH_INSTALL_SOURCEDIR = $(DEB_DESTDIR)
-
-debian/stamp-autotools-files: aclocal.m4 config.guess config.sub install-sh missing
-aclocal.m4:
-	aclocal-1.9
-config.guess config.sub:
-	cp /usr/share/misc/$@ $@
-install-sh missing:
-	-automake-1.9 --foreign --add-missing
-
-common-configure-arch:: verify-versions
-verify-versions: debian/stamp-autotools-files
-	if ! $(DEB_CONFIGURE_SCRIPT) --version | \
-	    grep -Fqx "libathdir configure $(DEB_UPSTREAM_VERSION)"; then \
-	    echo "E: Debian and upstream version numbers don't match." >&2 ; \
-	    echo "E: Did you forget to update the version number in configure.ac?" >&2 ; \
-	    exit 1 ; \
-	fi
-
 export ATHENA_SYS=$(shell machtype -S)
-export ATHENA_HOSTTYPE=$(shell machtype)
 
-clean::
-	rm -f configure aclocal.m4 install-sh missing libtool ltmain.sh config.guess config.sub
+%:
+	dh $@ --with autoreconf
