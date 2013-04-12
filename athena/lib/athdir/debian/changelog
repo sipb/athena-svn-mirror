@@ -1,3 +1,9 @@
+debathena-libathdir (10.1.1-0debathena1) unstable; urgency=low
+
+  * Reduce autoconf dependency to 2.65 for lucid compatibility.
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Fri, 12 Apr 2013 17:21:16 -0400
+
 debathena-libathdir (10.1-0debathena1) unstable; urgency=low
 
   * Bump upstream version number

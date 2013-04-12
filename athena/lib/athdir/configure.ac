@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.67])
+AC_PREREQ([2.65])
 AC_INIT([libathdir], [10.1], [debathena@mit.edu])
 AM_INIT_AUTOMAKE([foreign -Wall])
 AM_MAINTAINER_MODE([enable])
