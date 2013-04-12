@@ -1,3 +1,11 @@
+debathena-libathdir (10.1-0debathena1) unstable; urgency=low
+
+  * Bump upstream version number
+  * Acknowledge the contributions of one Alexander Chernyakhovsky in the
+    previous changelog entry, for his valiant dh7 and automake efforts
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 12 Apr 2013 16:37:26 -0400
+
 debathena-libathdir (10.0.2-0debathena5) unstable; urgency=low
 
   * Switch from control.in to control (Trac: #561)
