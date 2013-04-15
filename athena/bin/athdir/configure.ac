@@ -1,17 +1,41 @@
-dnl Process this file with autoconf to produce a configure script.
-AC_INIT
-AC_CONFIG_SRCDIR([athdir.c])
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
 
+AC_PREREQ([2.65])
+AC_INIT([athdir], [10.1], [debathena@mit.edu])
+AM_INIT_AUTOMAKE([foreign -Wall])
+AM_MAINTAINER_MODE([enable])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_SRCDIR([src/athdir.c])
+AC_CONFIG_HEADERS([config.h])
+
+# Checks for programs.
 AC_PROG_CC
-AC_PROG_INSTALL
-AC_PROG_MKDIR_P
+AM_PROG_CC_C_O
+# automake 1.12 seems to require this, but automake 1.11 doesn't recognize it
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+LT_INIT
 
-PKG_CHECK_MODULES([ATHDIR], [athdir])
+# Checks for libraries.
 
-AC_MSG_NOTICE([Adding athdir CFLAGS ${ATHDIR_CFLAGS}])
-CFLAGS="${ATHDIR_CFLAGS} ${CFLAGS}"
-AC_MSG_NOTICE([Adding athdir LIBS ${ATHDIR_LIBS}])
-LIBS="${ATHDIR_LIBS} ${LIBS}"
+# Checks for header files.
+AC_CHECK_HEADERS([stdlib.h string.h sys/param.h])
 
-AC_CONFIG_FILES([Makefile])
+# Checks for typedefs, structures, and compiler characteristics.
+
+# Checks for library functions.
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_CHECK_FUNCS([strchr])
+
+# More stuff
+PKG_CHECK_MODULES([LIBATHDIR], [athdir])
+AC_SUBST([LIBATHDIR_CFLAGS])
+AC_SUBST([LIBATHDIR_LIBS])
+
+AC_CONFIG_FILES([Makefile
+                 src/Makefile
+		 man/Makefile
+])
 AC_OUTPUT
