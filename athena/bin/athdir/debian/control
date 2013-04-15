@@ -2,7 +2,7 @@ Source: debathena-athdir
 Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: cdbs, debhelper, dh-buildinfo, autoconf, automake1.9, autotools-dev, pkg-config, debathena-libathdir-dev (>= 10.0.1-0debathena1~)
+Build-Depends: debhelper (>= 7), dh-autoreconf, autotools-dev, pkg-config, debathena-libathdir-dev (>= 10.0.1-0debathena1~)
 Standards-Version: 3.9.3
 
 Package: debathena-athdir
