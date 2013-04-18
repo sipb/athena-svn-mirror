@@ -2,7 +2,7 @@ Source: debathena-gconfd-2-wrapper
 Section: debathena/gnome
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-
+Build-Depends: debhelper (>= 7.0~), dh-buildinfo, config-package-dev (>= 5.0~)
 Standards-Version: 3.9.3
 
 Package: debathena-gconfd-2-wrapper

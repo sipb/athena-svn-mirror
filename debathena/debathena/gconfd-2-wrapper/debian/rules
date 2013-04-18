@@ -1,8 +1,4 @@
 #!/usr/bin/make -f
 
-DEB_DIVERT_EXTENSION=.debathena
-DEB_DIVERT_FILES_debathena-gconfd-2-wrapper += \
-	/usr/lib/libgconf2-4/gconfd-2.debathena
-
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/divert.mk
+%:
+	dh $@ --with=config-package
