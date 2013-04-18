@@ -2,12 +2,12 @@ Source: debathena-evolution-wrapper
 Section: debathena/web
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~), lsb-release
+Build-Depends: debhelper (>= 7.0~), dh-buildinfo, config-package-dev (>= 5.0~)
 Standards-Version: 3.9.3
 
 Package: debathena-evolution-wrapper
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, libgnome2-gconf-perl, evolution
+Depends: ${misc:Depends}, libgnome2-gconf-perl, evolution
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Wrapper to configure Evolution for Debathena

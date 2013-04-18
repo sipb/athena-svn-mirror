@@ -1,11 +1,12 @@
-debathena-evolution-wrapper (10.0.13) UNRELEASED; urgency=low
+debathena-evolution-wrapper (10.0.13) unstable; urgency=low
 
   * Switch from control.in to control (Trac: #561)
   * Bump Standards-Version to 3.9.3
   * Bump compat level to 7
-  * Replace obsolete divert.mk with config-package.mk
+  * Switch to dh7 from CDBS
+  * Remove shlibs:Depends and Build-Dep on lsb-release (both unused)
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:37:41 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 18 Apr 2013 16:47:34 -0400
 
 debathena-evolution-wrapper (10.0.12) unstable; urgency=low
 
