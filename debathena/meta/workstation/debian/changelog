@@ -3,8 +3,10 @@ debathena-workstation (1.10) UNRELEASED; urgency=low
   * Switch from control.in to control (Trac: #561)
   * Bump Standards-Version to 3.9.3
   * Bump compat level to 7
+  * Depend on plymouth-config (Trac: #145)
+  * Recommend ldso1-stub (Trac: #476)
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:40:31 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Mon, 22 Apr 2013 12:21:36 -0400
 
 debathena-workstation (1.9) unstable; urgency=low
 
