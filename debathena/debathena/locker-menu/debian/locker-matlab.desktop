@@ -6,3 +6,6 @@ Terminal=true
 Type=Application
 Icon=/usr/share/debathena-locker-menu/matlabicon.png
 Categories=Locker;
+# The name of the window first opened by the app to indicate
+# a successful launch
+StartupWMClass="MATLAB"

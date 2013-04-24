@@ -6,3 +6,5 @@ Terminal=false
 Type=Application
 Icon=/usr/share/debathena-locker-menu/mathematica.png
 Categories=Locker;
+# This is probably a bad idea
+StartupWMClass="Qt-subapplication"

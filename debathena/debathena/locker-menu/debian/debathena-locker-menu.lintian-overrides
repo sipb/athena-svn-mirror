@@ -1,0 +1,4 @@
+desktop-entry-lacks-main-category
+desktop-entry-invalid-category
+desktop-command-not-in-package
+extra-license-file usr/share/doc/debathena-locker-menu/matlab-icon-license.txt

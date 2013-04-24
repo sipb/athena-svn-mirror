@@ -6,3 +6,4 @@ Terminal=false
 Type=Application
 Icon=/usr/share/debathena-locker-menu/tecplot.png
 Categories=Locker;
+StartupWMClass="Tecplot"

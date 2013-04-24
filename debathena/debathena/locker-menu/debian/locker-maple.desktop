@@ -6,3 +6,4 @@ Terminal=false
 Type=Application
 Icon=/usr/share/debathena-locker-menu/maple.png
 Categories=Locker;
+# Maple's StartupWMClass is " ", which needless to say doesn't work.
