@@ -4,6 +4,12 @@
 # gathrun - Run a program, or put up an error dialog saying that it
 # doesn't exist.
 
+splash=no
+if [ "$1" = "--splash" ]; then
+  shift
+  splash=yes
+fi
+
 # Set sane values
 export ATHENA_SYS=${ATHENA_SYS:-$(machtype -S)}
 export ATHENA_SYS_COMPAT=${ATHENA_SYS_COMPAT:-$(machtype -C)}
@@ -26,8 +32,11 @@ case $# in
 esac
 
 if attachandrun --check "$locker" "$program" "$@"; then
+  if [ "$splash" = "yes" ]; then
+    yes | zenity --progress --text="Launching $program, please wait.\n(This may take a few moments)" --pulsate --no-cancel --timeout 7 &
+  fi
   exec /bin/athena/attachandrun "$locker" "$program" "$program" "$@"
 else
-  gdialog --msgbox \
-    "$program is not available in the $locker locker on this platform." 1 100
+  zenity --info \
+    --text="$program is not available in the $locker locker on this platform."
 fi
