@@ -4,4 +4,4 @@
 	dh $@
 
 override_dh_fixperms:
-	dh_fixperms -Xldlinux.so.1
+	dh_fixperms -Xld-linux.so.1
