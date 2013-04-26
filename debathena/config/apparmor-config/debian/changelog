@@ -1,4 +1,4 @@
-debathena-apparmor-config (1.2.4) UNRELEASED; urgency=low
+debathena-apparmor-config (1.2.4) unstable; urgency=low
 
   * Switch from control.in to control (Trac: #561)
   * Bump Standards-Version to 3.9.3
