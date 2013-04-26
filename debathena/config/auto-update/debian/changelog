@@ -1,8 +1,9 @@
 debathena-auto-update (1.43) unstable; urgency=low
 
   * Desupport auto-upgrades to anything older than precise
+  * Provide a mechanism for reinstallation (Trac: #1305) and document it
 
- -- Jonathan Reed <jdreed@mit.edu>  Mon, 01 Apr 2013 16:27:24 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 26 Apr 2013 12:21:10 -0400
 
 debathena-auto-update (1.42.2) unstable; urgency=low
 

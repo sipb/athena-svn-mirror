@@ -158,6 +158,7 @@ fi
 export CLUSTERINFO=$(getcluster -b $(lsb_release -sr))
 [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
 eval $CLUSTERINFO
+REINSTALL=no
 if [ ! -z "$NEW_PRODUCTION_RELEASE" ]; then
     debug "Taking new production release: $NEW_PRODUCTION_RELEASE"
     NEWCLUSTER=`getcluster -b $NEW_PRODUCTION_RELEASE`
@@ -169,6 +170,19 @@ elif [ ! -z "$NEW_TESTING_RELEASE" ] && \
     NEWCLUSTER=`getcluster -b $NEW_TESTING_RELEASE`
     [ $? != 0 ] && complain "Failed to get clusterinfo" && exit 1
     eval $NEWCLUSTER
+elif [ ! -z "$REINSTALL_AT" ] && echo $REINSTALL_AT | grep -qx '[0-9]*'; then
+    debug "Found REINSTALL_AT = $REINSTALL_AT ..."
+    installtime=$(stat -c "%Y" /var/log/athena-install.log 2>/dev/null)
+    debug "Machine was last installed at $installtime"
+    if [ -z "$installtime" ]; then
+	echo "W: Could not stat /var/log/athena-install.log, forcing reinstall."
+	installtime=0
+    fi
+    if [ $installtime -lt $REINSTALL_AT ]; then
+	debug "$installtime less than $REINSTALL_AT, so reinstalling"
+	REINSTALL=yes
+	UBUNTU_RELEASE="$(lsb_release -sc)"
+    fi
 else
     if [[ ! -z "$DEBUG_RELEASE" ]]; then
         UBUNTU_RELEASE=$DEBUG_RELEASE
@@ -178,8 +192,10 @@ else
     fi
 fi
 if [ "$(lsb_release -sc)" = "$UBUNTU_RELEASE" ]; then
-    complain "Tried to upgrade to already running release; shouldn't happen"
-    exit 1
+    if [ "$REINSTALL" = "no" ]; then
+	complain "Tried to upgrade to already running release; shouldn't happen"
+	exit 1
+    fi
 fi
 echo "Found $UBUNTU_RELEASE, starting upgrade"
 

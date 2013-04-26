@@ -12,6 +12,11 @@ for the newest release of Ubuntu, and then kexec's into the installer
 for that version. If the upgrade fails prior to kexec, a message will
 be sent to the \fIuser\fP syslog facility, with priority \fInotice\fP.
 
+It will also reinstall the machine at the current version if the
+\fIreinstall_at\fP clusterinfo tag exists and its value is greater than
+the last mod time of /var/log/athena-install.log (in seconds since the
+epoch).
+
 You really don't want to run this by hand.
 
 .SH FEATURES
