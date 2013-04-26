@@ -1,4 +1,4 @@
-debathena-dotfiles (10.0.32-0debathena2) UNRELEASED; urgency=low
+debathena-dotfiles (10.0.32-0debathena2) unstable; urgency=low
 
   * Switch from control.in to control (Trac: #561)
   * Bump Standards-Version to 3.9.3

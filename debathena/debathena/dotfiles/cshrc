@@ -83,7 +83,7 @@ if (! $?ENV_SET) then
 
   if ( ! $?PRINTER && -e /var/run/athena-clusterinfo.csh ) then
     # Backticks will get us a subshell to avoid any other variables
-    setenv PRINTER `setenv LPR '' && source /var/run/athena-clusterinfo.sh && echo $LPR`
+    setenv PRINTER `setenv LPR '' && source /var/run/athena-clusterinfo.csh && echo $LPR`
     if ( $PRINTER == "" ) unsetenv PRINTER
   endif
 
