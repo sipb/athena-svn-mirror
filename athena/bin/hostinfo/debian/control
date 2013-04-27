@@ -2,13 +2,13 @@ Source: debathena-hostinfo
 Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: cdbs, debhelper, dh-buildinfo, autoconf
+Build-Depends: debhelper (>= 7)
 Standards-Version: 3.9.3
 
 Package: debathena-hostinfo
 Architecture: all
 Provides: hostinfo
-Depends: ${misc:Depends}, bind9-host
+Depends: ${perl:Depends}, ${misc:Depends}, bind9-host
 Description: A utility to ask an Internet nameserver for host information
  The hostinfo utility fetches the Domain Name System records for the
  specified host name and prints them.
