@@ -274,6 +274,10 @@ class AFSPermissionsPane():
     def _prepareAclDialog(self, editMode=False, entity=None, rights=None, negative=False):
         self.addDlg.set_transient_for(self._getParentWindow())
         self.addDlg.set_title("Change permissions for '%s'" % (entity) if editMode else "Add an entry")
+        # Set entity combo to "specify manually"
+        # This would be easier if GtkBuilder actually set the id-column
+        # property.  Fortunately, it's the first entry in the list.
+        self.builder.get_object("entityCombo").set_active_iter(self.builder.get_object("entityCombo").get_model().get_iter_first())
         # Set the "OK" button to unsensitive until something is in the text field
         self.builder.get_object("aclDlgOK").set_sensitive(False)
         # Clear the text field

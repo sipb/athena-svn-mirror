@@ -1,3 +1,12 @@
+debathena-nautilus-afs (2.1) unstable; urgency=low
+
+  * Fix bug which didn't reset "add" dialog after cancel (Trac: #1339)
+  * Switch to dh7 from CDBS
+  * Bump Standards-Version to 3.9.3 and compat to 7
+  * Replace completely wrong copyright file with copyright format 1.0
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 03 May 2013 10:01:38 -0400
+
 debathena-nautilus-afs (2.0) unstable; urgency=low
 
   * Complete rewrite for Nautilus 3 and Gtk3

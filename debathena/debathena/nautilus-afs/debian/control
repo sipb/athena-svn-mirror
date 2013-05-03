@@ -1,9 +1,9 @@
 Source: debathena-nautilus-afs
 Section: debathena-config/gnome
 Priority: extra
-Build-Depends: cdbs, debhelper
+Build-Depends: debhelper
 Maintainer: Debathena Project <debathena@mit.edu>
-Standards-Version: 3.9.1
+Standards-Version: 3.9.3
 
 Package: debathena-nautilus-afs
 X-Debathena-Build-For: precise quantal
