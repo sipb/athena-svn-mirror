@@ -2,7 +2,7 @@ Source: debathena-desync
 Section: debathena/text
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: cdbs, debhelper, dh-buildinfo, autoconf
+Build-Depends: debhelper (>= 7), dh-autoreconf
 Standards-Version: 3.9.3
 
 Package: debathena-desync
@@ -13,3 +13,4 @@ Description: Sleep to desynchronize periodic tasks
  The desync program sleeps for a randomly selected period of time
  (depending on the machine's hostname) and can be used to
  desynchronize periodic tasks which are run on many machines.
+
