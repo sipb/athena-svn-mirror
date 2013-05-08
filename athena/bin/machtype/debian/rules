@@ -28,6 +28,10 @@ endif
 # chronological order, e.g., Debian 6.0 released before Ubuntu 11.04,
 # but after its DebianImportFreeze.)
 
+ifeq ($(call compare_debian_version,8),y)
+    SYS_COMPAT += $(call arch_sysnames,amd64_deb80,i386_deb80)
+endif
+
 # Wheezy has had like 3 freezes, all before raring's DIF, so
 # who knows if this order is right.
 ifeq ($(DISTRO),Ubuntu)

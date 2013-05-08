@@ -1,3 +1,9 @@
+debathena-machtype (10.3) unstable; urgency=low
+
+  * Pretend to support Jessie.
+
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 08 May 2013 15:23:30 -0400
+
 debathena-machtype (10.2) unstable; urgency=low
 
   * Switch from control.in to control (Trac: #561)
