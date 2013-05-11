@@ -61,7 +61,7 @@ fi
 
 # Trac: #749
 service ntp stop
-gettime -s time.mit.edu
+rdate time.mit.edu
 service ntp start
 
 

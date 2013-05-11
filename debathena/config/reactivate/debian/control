@@ -7,13 +7,14 @@ Standards-Version: 3.9.3
 
 Package: debathena-reactivate
 Architecture: any
-Depends: debathena-schroot | schroot (>= 1.3.2~), 
- psmisc, 
- gdm, 
- alsa-utils, 
- debathena-gdm-config (>= 1.14~), 
+Depends: debathena-schroot | schroot (>= 1.3.2~),
+ psmisc,
+ gdm,
+ alsa-utils,
+ debathena-gdm-config (>= 1.14~),
  sudo (>= 1.7.2p1-1~),
- debathena-cupsys-config (>= 1.9~), 
+ debathena-cupsys-config (>= 1.9~),
+ rdate,
  ${misc:Depends}, 
  ${shlibs:Depends}
 Provides: ${diverted-files}
