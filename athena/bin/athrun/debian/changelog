@@ -1,3 +1,14 @@
+debathena-athrun (10.2-0debathena1) unstable; urgency=low
+
+  * Merge debathena-gathrun and debathena-attachandrun into the debathena-athrun source package.
+  * Rewrite debathena-attachandrun in Python.
+    - Fix a segementation fault in attachandrun that could be triggered by
+      running with just "-c" and a locker.
+    - Stop trying to run the file as a shell script if execv() fails.
+  * Switch to DEP-5-style copyright file.
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Sat, 11 May 2013 17:03:28 -0400
+
 debathena-athrun (10.1-0debathena1) unstable; urgency=low
 
   [ Jonathan Reed ] 

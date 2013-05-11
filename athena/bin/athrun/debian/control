@@ -8,7 +8,23 @@ Standards-Version: 3.9.3
 Package: debathena-athrun
 Architecture: all
 Provides: athrun
-Depends: ${shlibs:Depends}, ${misc:Depends}, debathena-attachandrun
+Depends: ${misc:Depends}, debathena-attachandrun
 Description: An Athena utility for users to run a program from a locker
  The athrun utility allows a user to robustly run a program from a 
  specified Athena locker.
+
+Package: debathena-gathrun
+Architecture: all
+Depends: ${misc:Depends}, debathena-attachandrun, zenity, debathena-machtype
+Description: An Athena utility to run GUI programs out of lockers from a menu
+ The gathrun utility allows a user to run a program from a specified
+ locker.  If the program does not exist, a dialog box is displayed
+ saying so (using gdialog).
+
+Package: debathena-attachandrun
+Architecture: any
+Provides: attachandrun
+Depends: ${misc:Depends}, ${python:Depends}, debathena-attach, python
+Description: An Athena utility for scripts to run a program from a locker
+ The attachandrun utility allows a script to robustly run a program from
+ a specified locker.

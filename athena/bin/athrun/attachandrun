@@ -1,0 +1,87 @@
+#!/usr/bin/python
+
+import errno
+import os
+import subprocess
+import sys
+
+progname = 'attachandrun'
+
+def extract(args):
+    if len(args) < 1:
+        raise Exception('Missing arguments')
+    return (args[0], args[1:])
+
+def usage():
+    print >>sys.stderr, 'Usage: %s [--check|-c] locker program program_name [args...]' % (progname,)
+    sys.exit(1)
+
+def invoke(args):
+    try:
+        process = subprocess.Popen(args,
+                                   stdout=subprocess.PIPE)
+        result, _ = process.communicate()
+        if process.returncode != 0:
+            raise Exception("Non-zero return code from '%s'" % (args[0],))
+        return result.strip()
+    except subprocess.CalledProcessError as e:
+        print >>sys.stderr, "Unable to invoke '%s'." % (args[0],)
+        sys.exit(1)
+
+def attach(locker):
+    try:
+        return invoke(['attach', '-p', locker])
+    except Exception as e:
+        raise Exception("Could not find locker '%s'" % (locker,))
+
+def athdir(path):
+    try:
+        return invoke(['athdir', '-t', 'bin', '-p', path])
+    except Exception as e:
+        raise Exception("Could not find binary directory in '%s'" % (path,))
+
+def execute(path, args):
+    try:
+        os.execv(path, args)
+    except OSError as e:
+        return e.errno
+
+def main():
+    # First, figure out our name, in the strange case it isn't
+    # 'attachandrun'. After we process each argument, consume it.
+    global progname
+    potential, argv = extract(sys.argv)
+    progname = os.path.basename(potential)
+
+    if len(argv) < 1:
+        raise Exception('Missing arguments')
+    
+    check = False
+    if argv[0] == '--check' or argv[0] == '-c':
+        check = True
+        _, argv = extract(argv)
+    locker, argv = extract(argv)
+    program, argv = extract(argv)
+
+    # Use attach and athdir to figure out where the program we want to
+    # execute lives
+    locker_path = attach(locker)
+    program_location = os.path.join(athdir(locker_path), program)
+
+    # If we're in check (aka dry-run), see if we can execute this
+    # program
+    if check:
+        if os.access(program_location, os.X_OK):
+            sys.exit(0)
+        sys.exit(1)
+
+    # Actually execute the program, 
+    error = execute(program_location, argv)
+    print >>sys.stderr, "%s: %s" % (progname, os.strerror(error))
+    
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception as e:
+        print >>sys.stderr, "%s: %s" % (progname, e)
+        usage()
