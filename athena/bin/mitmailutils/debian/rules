@@ -1,13 +1,5 @@
 #!/usr/bin/make -f
 
-DEB_AUTO_UPDATE_AUTOCONF = 2.50
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/autotools.mk
+%:
+	dh $@
 
-common-install-impl::
-	mv $(DEB_DESTDIR)/usr/bin/from $(DEB_DESTDIR)/usr/bin/from.debathena
-	mv $(DEB_DESTDIR)/usr/share/man/man1/from.1 \
-	    $(DEB_DESTDIR)/usr/share/man/man1/from.debathena.1
-
-clean::
-	rm -f configure
