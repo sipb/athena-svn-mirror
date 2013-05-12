@@ -1,0 +1,11 @@
+man/from.1
+man/mailquota.1
+man/mailusage.1
+man/mitmailappend.1
+man/mitmailcreate.1
+man/mitmaildel.1
+man/mitmailexp.1
+man/mitmailmove.1
+man/mitmailrename.1
+man/mitmailscan.1
+man/mitmailshow.1

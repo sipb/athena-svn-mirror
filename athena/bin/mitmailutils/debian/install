@@ -1,0 +1,11 @@
+bin/from usr/bin
+bin/mailquota usr/bin
+bin/mailusage usr/bin
+bin/mitmailappend usr/bin
+bin/mitmailcreate usr/bin
+bin/mitmaildel usr/bin
+bin/mitmailexp usr/bin
+bin/mitmailmove usr/bin
+bin/mitmailrename usr/bin
+bin/mitmailscan usr/bin
+bin/mitmailshow usr/bin
