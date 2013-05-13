@@ -3,6 +3,7 @@
 SHELL=/bin/sh
 ATHBINDIR=/usr/bin
 ATHMANDIR=/usr/share/man
+LIBS=-lbsd
 
 all: lam
 

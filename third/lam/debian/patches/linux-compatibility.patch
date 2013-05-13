@@ -1,0 +1,18 @@
+--- a/lam.c
++++ b/lam.c
+@@ -39,7 +39,6 @@
+ #endif
+ #endif /* not lint */
+ #include <sys/cdefs.h>
+-__FBSDID("$FreeBSD$");
+ 
+ /*
+  *	lam - laminate files
+@@ -51,6 +50,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <bsd/string.h>
+ 
+ #define	MAXOFILES	20
+ #define	BIGBUFSIZ	5 * BUFSIZ
