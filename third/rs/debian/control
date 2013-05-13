@@ -2,8 +2,8 @@ Source: debathena-rs
 Section: debathena/text
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: @cdbs@
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.9.3
 
 Package: debathena-rs
 Architecture: any

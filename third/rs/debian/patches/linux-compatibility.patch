@@ -1,0 +1,53 @@
+--- a/rs.c
++++ b/rs.c
+@@ -44,7 +44,6 @@
+  */
+ 
+ #include <sys/cdefs.h>
+-__FBSDID("$FreeBSD$");
+ 
+ #include <err.h>
+ #include <ctype.h>
+@@ -93,7 +92,7 @@
+ 
+ static void	  getargs(int, char *[]);
+ static void	  getfile(void);
+-static int	  getline(void);
++static int	  rs_getline(void);
+ static char	 *getlist(short **, char *);
+ static char	 *getnum(int *, char *, int);
+ static char	**getptrs(char **);
+@@ -133,13 +132,13 @@
+ 	char **padto;
+ 
+ 	while (skip--) {
+-		c = getline();
++		c = rs_getline();
+ 		if (flags & SKIPPRINT)
+ 			puts(curline);
+ 		if (c == EOF)
+ 			return;
+ 	}
+-	getline();
++	rs_getline();
+ 	if (flags & NOARGS && curlen < owidth)
+ 		flags |= ONEPERLINE;
+ 	if (flags & ONEPERLINE)
+@@ -184,7 +183,7 @@
+ 				INCR(ep);
+ 			}
+ 		}
+-	} while (getline() != EOF);
++	} while (rs_getline() != EOF);
+ 	*ep = 0;				/* mark end of pointers */
+ 	nelem = ep - elem;
+ }
+@@ -333,7 +332,7 @@
+ static char	ibuf[BSIZE];
+ 
+ static int
+-getline(void)	/* get line; maintain curline, curlen; manage storage */
++rs_getline(void)	/* get line; maintain curline, curlen; manage storage */
+ {
+ 	static	int putlength;
+ 	static	char *endblock = ibuf + BSIZE;
