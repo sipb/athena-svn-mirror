@@ -1,8 +1,12 @@
 debathena-login-graphical (1.4) UNRELEASED; urgency=low
 
+  [ Jonathan Reed ]
   * Switch from control.in to control (Trac: #561)
   * Bump Standards-Version to 3.9.3
   * Bump compat level to 7
+
+  [ Victor Vasiliev ]
+  * Recommend chromium-config.
 
  -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:40:08 -0400
 
