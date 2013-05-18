@@ -25,6 +25,7 @@ Depends: debathena-login,
  ${misc:Depends}
 Recommends: ubuntu-desktop,
  debathena-thunderbird-config,
+ debathena-chromium-config,
 Description: Athena graphical login configuration
  This package allows Athena users to login through the Athena greeter
  and configures graphical software to integrate with the Athena

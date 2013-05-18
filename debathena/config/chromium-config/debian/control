@@ -1,0 +1,15 @@
+Source: debathena-chromium-config
+Section: debathena-config/net
+Priority: extra
+Maintainer: Debathena Project <debathena@mit.edu>
+Build-Depends: debhelper (>= 7.0.50~), config-package-dev (>= 5), chromium-browser | chromium
+Standards-Version: 3.9.3
+
+Package: debathena-chromium-config
+Architecture: all
+Depends: ${misc:Depends}, chromium-browser | chromium
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Enable GSSAPI authentication in Chromium.
+ This package enables GSSAPI authentication in Chromium for idp.mit.edu.
+

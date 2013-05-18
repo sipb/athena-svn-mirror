@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --with config-package
+
+# Disambiguate between distro versions with chromium-browser and ones with
+# chromium
+override_dh_configpackage:
+ifneq ($(wildcard /etc/chromium-browser/default),)
+	dh_configpackage --transform "/etc/chromium-browser/default.debathena sed -e's/^CHROMIUM_FLAGS=\"/CHROMIUM_FLAGS=\"--auth-server-whitelist=idp.mit.edu /'"
+else
+ifneq ($(wildcard /etc/chromium/default),)
+	dh_configpackage --transform "/etc/chromium/default.debathena sed -e's/^CHROMIUM_FLAGS=\"/CHROMIUM_FLAGS=\"--auth-server-whitelist=idp.mit.edu /'"
+else
+	exit 1
+endif
+endif
