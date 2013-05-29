@@ -7,10 +7,12 @@
 # chromium
 override_dh_configpackage:
 ifneq ($(wildcard /etc/chromium-browser/default),)
-	dh_configpackage --transform "/etc/chromium-browser/default.debathena sed -e's/^CHROMIUM_FLAGS=\"/CHROMIUM_FLAGS=\"--auth-server-whitelist=idp.mit.edu /'"
+	dh_configpackage --transform "/etc/chromium-browser/default.debathena perl -0777 -pe's/\nCHROMIUM_FLAGS=\"/\nCHROMIUM_FLAGS=\"--auth-server-whitelist=idp.mit.edu / or die'"
+	echo "chromium-package-name=chromium-browser" >> debian/debathena-chromium-config.substvars
 else
 ifneq ($(wildcard /etc/chromium/default),)
-	dh_configpackage --transform "/etc/chromium/default.debathena sed -e's/^CHROMIUM_FLAGS=\"/CHROMIUM_FLAGS=\"--auth-server-whitelist=idp.mit.edu /'"
+	dh_configpackage --transform "/etc/chromium/default.debathena perl -0777 -pe's/\nCHROMIUM_FLAGS=\"/\nCHROMIUM_FLAGS=\"--auth-server-whitelist=idp.mit.edu / or die'"
+	echo "chromium-package-name=chromium" >> debian/debathena-chromium-config.substvars
 else
 	exit 1
 endif
