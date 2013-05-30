@@ -35,7 +35,7 @@ if attachandrun --check "$locker" "$program" "$@"; then
   if [ "$splash" = "yes" ]; then
     yes | zenity --progress --text="Launching $program, please wait.\n(This may take a few moments)" --pulsate --no-cancel --timeout 7 &
   fi
-  exec /bin/athena/attachandrun "$locker" "$program" "$program" "$@"
+  exec attachandrun "$locker" "$program" "$program" "$@"
 else
   zenity --info \
     --text="$program is not available in the $locker locker on this platform."

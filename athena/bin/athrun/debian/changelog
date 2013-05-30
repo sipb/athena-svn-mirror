@@ -1,3 +1,10 @@
+debathena-athrun (10.2-0debathena2) unstable; urgency=low
+
+  * Install compatibility symlinks in attachandrun so it also appears in /bin
+  * Stop using a fully-qualified path to attachandrun in athrun and gathrun
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Thu, 30 May 2013 04:45:39 -0400
+
 debathena-athrun (10.2-0debathena1) unstable; urgency=low
 
   * Merge debathena-gathrun and debathena-attachandrun into the debathena-athrun source package.
