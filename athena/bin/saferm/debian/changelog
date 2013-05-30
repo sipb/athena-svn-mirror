@@ -1,4 +1,4 @@
-debathena-saferm (10.1.0-0debathena1) UNRELEASED; urgency=low
+debathena-saferm (10.1-0debathena1) unstable; urgency=low
 
   [ Geoffrey Thomas ]
   * Change description to clarify that this package does not
