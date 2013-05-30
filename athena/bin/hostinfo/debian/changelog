@@ -1,4 +1,4 @@
-debathena-hostinfo (10.0.1-0debathena1) UNRELEASED; urgency=low
+debathena-hostinfo (10.1-0debathena1) unstable; urgency=low
 
   [ Jonathan Reed ]
   * Bump debian/compat to 6
