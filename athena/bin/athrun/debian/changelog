@@ -1,4 +1,4 @@
-debathena-athrun (10.2-0debathena2) unstable; urgency=low
+debathena-athrun (10.3-0debathena1) unstable; urgency=low
 
   * Install compatibility symlinks in attachandrun so it also appears in /bin
   * Stop using a fully-qualified path to attachandrun in athrun and gathrun
