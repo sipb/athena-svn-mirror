@@ -1,4 +1,4 @@
-debathena-rs (10.0.4) UNRELEASED; urgency=low
+debathena-rs (10.0.4) unstable; urgency=low
 
   [ Jonathan Reed ]
   * Bump debian/compat to 6
