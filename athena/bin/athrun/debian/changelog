@@ -1,4 +1,4 @@
-debathena-athrun (10.3.1-0debathena2) unstable; urgency=low
+debathena-athrun (10.3-0debathena2) unstable; urgency=low
 
   * attachandrun is architecture-independent, mark it appropraitely
 
