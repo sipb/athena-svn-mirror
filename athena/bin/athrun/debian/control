@@ -2,7 +2,7 @@ Source: debathena-athrun
 Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: debhelper (>= 7), bash-completion
+Build-Depends: debhelper (>= 7), bash-completion, python-support
 Standards-Version: 3.9.3
 
 Package: debathena-athrun

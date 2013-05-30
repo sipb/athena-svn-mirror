@@ -6,6 +6,7 @@ debathena-athrun (10.2-0debathena1) unstable; urgency=low
       running with just "-c" and a locker.
     - Stop trying to run the file as a shell script if execv() fails.
   * Switch to DEP-5-style copyright file.
+  * Build-dep on python-support
 
  -- Alexander Chernyakhovsky <achernya@mit.edu>  Sat, 11 May 2013 17:03:28 -0400
 
