@@ -1,4 +1,4 @@
-debathena-sendbug (10.0.6-0debathena1) UNRELEASED; urgency=low
+debathena-sendbug (10.1-0debathena1) unstable; urgency=low
 
   [ Jonathan Reed ]
   * Switch from control.in to control (Trac: #561)
