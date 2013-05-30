@@ -1,0 +1,4 @@
+/etc/default/schroot.debathena debian/transform_schroot_defaults
+/etc/pam.d/schroot.debathena debian/transform_schroot_pam
+/etc/pam.d/su.debathena debian/transform_su
+/etc/dbus-1/system.conf.debathena debian/transform_system.conf.debathena

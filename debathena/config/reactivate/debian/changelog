@@ -1,4 +1,4 @@
-debathena-reactivate (2.0.43) UNRELEASED; urgency=low
+debathena-reactivate (2.0.43) unstable; urgency=low
 
   [ Jonathan Reed ]
   * Switch from control.in to control (Trac: #561)
@@ -7,6 +7,7 @@ debathena-reactivate (2.0.43) UNRELEASED; urgency=low
 
   [ Alexander Chernyakhovsky ]
   * Switch from debathena-gettime to rdate
+  * Convert to dh7
   
  -- Jonathan Reed <jdreed@mit.edu>  Sat, 11 May 2013 18:10:16 -0400
 

@@ -2,7 +2,7 @@ Source: debathena-reactivate
 Section: debathena/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~), sudo, schroot, dbus, gettext
+Build-Depends: debhelper (>= 7.0.50~), config-package-dev (>= 5.0~), sudo, schroot, dbus, gettext
 Standards-Version: 3.9.3
 
 Package: debathena-reactivate
