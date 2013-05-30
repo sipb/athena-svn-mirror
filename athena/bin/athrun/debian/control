@@ -22,7 +22,7 @@ Description: An Athena utility to run GUI programs out of lockers from a menu
  saying so (using gdialog).
 
 Package: debathena-attachandrun
-Architecture: any
+Architecture: all
 Provides: attachandrun
 Depends: ${misc:Depends}, ${python:Depends}, debathena-attach, python
 Description: An Athena utility for scripts to run a program from a locker

@@ -1,3 +1,9 @@
+debathena-athrun (10.3.1-0debathena2) unstable; urgency=low
+
+  * attachandrun is architecture-independent, mark it appropraitely
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Thu, 30 May 2013 15:49:24 -0400
+
 debathena-athrun (10.3-0debathena1) unstable; urgency=low
 
   * Install compatibility symlinks in attachandrun so it also appears in /bin
