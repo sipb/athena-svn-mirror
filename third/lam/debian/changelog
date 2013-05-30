@@ -1,4 +1,4 @@
-debathena-lam (10.0.4) unstable; urgency=low
+debathena-lam (10.0.4-0debathena1) unstable; urgency=low
 
   [ Jonathon Reed ]
   * Bump debian/compat to 6
