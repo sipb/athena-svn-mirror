@@ -44,6 +44,7 @@ static const char sccsid[] = "@(#)rs.c	8.1 (Berkeley) 6/6/93";
  */
 
 #include <sys/cdefs.h>
+__FBSDID("$FreeBSD$");
 
 #include <err.h>
 #include <ctype.h>
@@ -92,7 +93,7 @@ static int	owidth = 80, gutter = 2;
 
 static void	  getargs(int, char *[]);
 static void	  getfile(void);
-static int	  rs_getline(void);
+static int	  getline(void);
 static char	 *getlist(short **, char *);
 static char	 *getnum(int *, char *, int);
 static char	**getptrs(char **);
@@ -132,13 +133,13 @@ getfile(void)
 	char **padto;
 
 	while (skip--) {
-		c = rs_getline();
+		c = getline();
 		if (flags & SKIPPRINT)
 			puts(curline);
 		if (c == EOF)
 			return;
 	}
-	rs_getline();
+	getline();
 	if (flags & NOARGS && curlen < owidth)
 		flags |= ONEPERLINE;
 	if (flags & ONEPERLINE)
@@ -183,7 +184,7 @@ getfile(void)
 				INCR(ep);
 			}
 		}
-	} while (rs_getline() != EOF);
+	} while (getline() != EOF);
 	*ep = 0;				/* mark end of pointers */
 	nelem = ep - elem;
 }
@@ -332,7 +333,7 @@ prepfile(void)
 static char	ibuf[BSIZE];
 
 static int
-rs_getline(void)	/* get line; maintain curline, curlen; manage storage */
+getline(void)	/* get line; maintain curline, curlen; manage storage */
 {
 	static	int putlength;
 	static	char *endblock = ibuf + BSIZE;
