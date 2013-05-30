@@ -17,55 +17,6 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-
-package=debathena-reactivate
-ours=.debathena
-theirs=.debathena-orig
-
-undivert_unlink_symlink()
-{
-    file="$1"
-    ourfile="$2"
-    theirfile="$3"
-    if [ ! -L "$file" ] || \
-	[ "$(readlink "$file")" != "$(basename "$ourfile")" -a \
-	  "$(readlink "$file")" != "$(basename "$theirfile")" ]; then
-	echo "*** OMINOUS WARNING ***: $file is not linked to either $(basename "$ourfile") or $(basename "$theirfile")" >&2
-    else
-	rm -f "$file"
-    fi
-}
-
-undivert_unlink_divert()
-{
-    file="$1"
-    if [ ! -L "$file" ] && [ ! -e "$file" ]; then
-	dpkg-divert --remove --rename --package "$package" "$file"
-    else
-	echo "Not removing diversion of $file by $package" >&2
-    fi
-}
-
-undivert_unlink()
-{
-    prefix=$1
-    suffix=$2
-
-    file=$prefix$suffix
-    ourfile=$prefix$ours$suffix
-    theirfile=$prefix$theirs$suffix
-
-    undivert_unlink_symlink "$file" "$ourfile" "$theirfile"
-    undivert_unlink_divert "$file" "$package"
-}
-
-cleanup_old_diversion() {
-    file="$1"
-    if dpkg-divert --list "${file}" | grep -Fxq "diversion of ${file} to ${file}${theirs} by ${package}"; then
-	undivert_unlink "$file"
-    fi
-}
-
 . /usr/lib/debathena-cupsys-config/restart-cups.sh
 
 if dpkg-maintscript-helper supports rm_conffile 2> /dev/null; then
@@ -103,10 +54,6 @@ case "$1" in
 	    dpkg --compare-versions "$2" ge 1.25.2; then
 	    ln -nsf su.debathena /etc/pam.d/su
 	fi
-
-	cleanup_old_diversion /etc/gdm/PreSession/Default
-	cleanup_old_diversion /etc/gdm/PostSession/Default
-
 	if dpkg --compare-versions "$2" lt 2.0.26~ && \
 	    [ -x /usr/share/update-notifier/notify-reboot-required ]; then
 	    /usr/share/update-notifier/notify-reboot-required

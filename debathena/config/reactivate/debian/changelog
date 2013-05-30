@@ -1,3 +1,10 @@
+debathena-reactivate (2.0.44) UNRELEASED; urgency=low
+
+  * Remove old c-p-d undivert code, it's no longer needed
+  * Stop processing schroot.conf in the preinst
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Thu, 30 May 2013 03:20:55 -0400
+
 debathena-reactivate (2.0.43) unstable; urgency=low
 
   [ Jonathan Reed ]
