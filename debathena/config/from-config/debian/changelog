@@ -1,4 +1,4 @@
-debathena-from-config (1.5.4) UNRELEASED; urgency=low
+debathena-from-config (1.5.4) unstable; urgency=low
 
   * Bump debian/compat to 6
   * Switch from control.in to control (Trac: #561)
