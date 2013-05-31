@@ -2,6 +2,7 @@ debathena-reactivate (2.0.44) UNRELEASED; urgency=low
 
   * Remove old c-p-d undivert code, it's no longer needed
   * Stop processing schroot.conf in the preinst
+  * Don't forget the divert-extension for hidden files
 
  -- Alexander Chernyakhovsky <achernya@mit.edu>  Thu, 30 May 2013 03:20:55 -0400
 
