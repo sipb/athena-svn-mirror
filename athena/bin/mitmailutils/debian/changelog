@@ -1,3 +1,13 @@
+debathena-mitmailutils (10.2.1-0debathena1) unstable; urgency=low
+
+  * Fix regression failure from CDBS version: install from and its manpage
+    as from.debathena
+  * Remove the .DA macro from the 'from' man page because it's not a thing
+    anymore; move date to .TH macro
+  * Build-dep on dh 7.0.50 because we need override targets
+
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 31 May 2013 10:01:13 -0400
+
 debathena-mitmailutils (10.2-0debathena1) unstable; urgency=low
 
   [ Jonathan Reed ]

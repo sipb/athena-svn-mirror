@@ -3,3 +3,8 @@
 %:
 	dh $@
 
+override_dh_auto_install:
+	dh_auto_install
+	mkdir -p debian/tmp
+	cp bin/from debian/tmp/from.debathena
+	cp man/from.1 debian/tmp/from.debathena.1

@@ -1,4 +1,4 @@
-bin/from usr/bin
+from.debathena usr/bin
 bin/mailquota usr/bin
 bin/mailusage usr/bin
 bin/mitmailappend usr/bin

@@ -1,4 +1,4 @@
-man/from.1
+debian/tmp/from.debathena.1
 man/mailquota.1
 man/mailusage.1
 man/mitmailappend.1
