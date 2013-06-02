@@ -2,7 +2,7 @@ Source: debathena-aclocal
 Section: debathena/devel
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: cdbs, debhelper, dh-buildinfo
+Build-Depends: debhelper (>= 7)
 Standards-Version: 3.9.3
 
 Package: debathena-aclocal
