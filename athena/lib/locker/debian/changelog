@@ -1,8 +1,16 @@
-debathena-liblocker (10.0.2-0debathena2) UNRELEASED; urgency=low
+debathena-liblocker (10.1-0debathena1) UNRELEASED; urgency=low
 
+  [ Jonathan Reed ]
   * Switch from control.in to control (Trac: #561)
   * Bump Standards-Version to 3.9.3
   * Bump compat level to 7
+
+  [ Alexander Chernyakhovsky ]
+  * Convert to dh7
+  * Update build system to use automake
+  * Provide a pkg-config file
+  * Switch from pioctl to k_pioctl
+  * Don't build for squeeze and lucid, OpenAFS 1.4 is too old
 
  -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 14:01:56 -0400
 

@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: @PACKAGE@
+Description: Project Athena's lockers library
+Version: @PACKAGE_VERSION@
+Requires: hesiod zephyr
+Libs: -L${libdir} -l@PACKAGE_NAME@
+Libs.private: @KRB5_LIBS@ @HESIOD_LIBS@ @ZEPHYR_LIBS@
+Cflags: -I${includedir}

@@ -2,8 +2,9 @@ Source: debathena-liblocker
 Section: debathena/libs
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: cdbs, debhelper, dh-buildinfo, automake1.9, autoconf, autotools-dev, debathena-aclocal, libopenafs-dev, libkrb5-dev, libhesiod-dev, libzephyr-dev
+Build-Depends: debhelper (>= 7.0.50~), dh-autoreconf, debathena-aclocal (>= 1.1.3), libopenafs-dev, libkrb5-dev, libhesiod-dev, libzephyr-dev
 Standards-Version: 3.9.3
+X-Debathena-No-Build: squeeze lucid
 
 Package: debathena-liblocker
 Architecture: all

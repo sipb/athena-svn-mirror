@@ -63,7 +63,7 @@ static const char rcsid[] = "$Id: afs.c,v 1.16 2006-08-08 21:50:09 ghudson Exp $
 /*
  * Why doesn't AFS provide this prototype?
  */
-extern int pioctl(char *, afs_int32, struct ViceIoctl *, afs_int32);
+/*extern int k_pioctl(char *, afs_int32, struct ViceIoctl *, afs_int32); */
 
 static int afs_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **at);
@@ -285,7 +285,7 @@ static int afs_attach(locker_context context, locker_attachent *at,
   vio.in_size = 0;
   vio.out = (caddr_t)hosts;
   vio.out_size = sizeof(hosts);
-  if (pioctl(at->hostdir, VIOCWHEREIS, &vio, 1) == 0)
+  if (k_pioctl(at->hostdir, VIOCWHEREIS, &vio, 1) == 0)
     {
       /* Only record the hostaddr if the locker is on a single host.
        * (We assume that if it's on multiple hosts, it can't fail,
@@ -474,7 +474,7 @@ static int afs_zsubs(locker_context context, locker_attachent *at)
       vio.in_size = 0;
       vio.out = cell;
       vio.out_size = sizeof(cell);
-      if (pioctl(path, VIOC_FILE_CELL_NAME, &vio, 1) != 0)
+      if (k_pioctl(path, VIOC_FILE_CELL_NAME, &vio, 1) != 0)
 	continue;
 
       /* Get mountpoint name and generate cell:mountpoint. */
@@ -489,7 +489,7 @@ static int afs_zsubs(locker_context context, locker_attachent *at)
       vio.in_size = strlen(vio.in) + 1;
       vio.out = vol;
       vio.out_size = sizeof(vol);
-      pstatus = pioctl(path, VIOC_AFS_STAT_MT_PT, &vio, 1);
+      pstatus = k_pioctl(path, VIOC_AFS_STAT_MT_PT, &vio, 1);
       if (last_component)
 	*(last_component - 1) = '/';
 
@@ -508,7 +508,7 @@ static int afs_zsubs(locker_context context, locker_attachent *at)
       memset(hosts, 0, 2 * sizeof(*hosts));
       vio.out = (caddr_t)hosts;
       vio.out_size = sizeof(hosts);
-      if (pioctl(path, VIOCWHEREIS, &vio, 1) != 0)
+      if (k_pioctl(path, VIOCWHEREIS, &vio, 1) != 0)
 	continue;
       if (!hosts[1])
 	{
